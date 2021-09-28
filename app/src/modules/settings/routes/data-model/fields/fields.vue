@@ -80,6 +80,19 @@
 				<div v-md="t('page_help_settings_datamodel_fields')" class="page-description" />
 			</sidebar-detail>
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -91,8 +104,9 @@ import { useCollection } from '@directus/shared/composables';
 import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -131,6 +145,26 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
+		const isSavable = computed(() => {
+			if (hasEdits.value === true) return true;
+			return hasEdits.value;
+		});
+
+		unsavedChanges(isSavable);
+
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
+
 		return {
 			t,
 			collectionInfo,
@@ -150,6 +184,10 @@ export default defineComponent({
 			deleteAndQuit,
 			saveAndQuit,
 			hasEdits,
+			isSavable,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		async function deleteAndQuit() {
@@ -164,6 +202,13 @@ export default defineComponent({
 			await collectionsStore.hydrate();
 			await fieldsStore.hydrate();
 			router.push(`/settings/data-model`);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });

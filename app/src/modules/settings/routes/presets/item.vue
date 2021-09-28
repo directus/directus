@@ -113,6 +113,19 @@
 					</sidebar-detail>
 				</div>
 			</template>
+
+			<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+				<v-card>
+					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+					<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+					<v-card-actions>
+						<v-button secondary @click="discardAndLeave">
+							{{ t('discard_changes') }}
+						</v-button>
+						<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 		</private-view>
 	</component>
 </template>
@@ -126,9 +139,10 @@ import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@/composables/use-layout';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 type FormattedPreset = {
 	id: number;
@@ -184,6 +198,26 @@ export default defineComponent({
 
 		const { layoutWrapper } = useLayout(layout);
 
+		const isSavable = computed(() => {
+			if (hasEdits.value === true) return true;
+			return hasEdits.value;
+		});
+
+		unsavedChanges(isSavable);
+
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
+
 		return {
 			t,
 			backLink,
@@ -205,6 +239,10 @@ export default defineComponent({
 			confirmDelete,
 			updateFilters,
 			searchQuery,
+			isSavable,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		function useSave() {
@@ -495,6 +533,13 @@ export default defineComponent({
 			]);
 
 			return { fields };
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });
