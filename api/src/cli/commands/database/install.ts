@@ -4,7 +4,7 @@ import getDatabase from '../../../database';
 import logger from '../../../logger';
 
 export default async function start(): Promise<void> {
-	const database = getDatabase();
+	const database = getDatabase({ foreignKeys: false });
 
 	try {
 		await installSeeds(database);

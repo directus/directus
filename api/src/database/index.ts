@@ -13,7 +13,13 @@ import { promisify } from 'util';
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
 
-export default function getDatabase(): Knex {
+type DatabaseOptions = {
+	foreignKeys: boolean;
+};
+
+export default function getDatabase(databaseOptions?: DatabaseOptions): Knex {
+	const { foreignKeys = true } = databaseOptions || {};
+
 	if (database) {
 		return database;
 	}
@@ -78,7 +84,8 @@ export default function getDatabase(): Knex {
 			logger.trace('Enabling SQLite Foreign Keys support...');
 
 			const run = promisify(conn.run.bind(conn));
-			await run('PRAGMA foreign_keys = ON');
+
+			if (foreignKeys) await run('PRAGMA foreign_keys = ON');
 
 			callback(null, conn);
 		};
