@@ -400,14 +400,14 @@ export default defineComponent({
 					if (relatedFieldExists.value === true) {
 						return (
 							state.updateFields.find((updateField: any) => updateField.field === state.relations[0].field)?.meta
-								?.interface === 'many-to-one' ||
+								?.interface === 'select-dropdown-m2o' ||
 							fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.meta?.interface ===
-								'many-to-one'
+								'select-dropdown-m2o'
 						);
 					} else {
 						return (
 							state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta?.interface ===
-							'many-to-one'
+							'select-dropdown-m2o'
 						);
 					}
 				},
@@ -459,7 +459,7 @@ export default defineComponent({
 								if (newField.$type === 'manyRelated') {
 									if (!newField.meta) newField.meta = {};
 									if (enabled === true) {
-										newField.meta.interface = 'many-to-one';
+										newField.meta.interface = 'select-dropdown-m2o';
 										newField.meta.special = ['m2o'];
 									} else {
 										newField.meta.interface = null;

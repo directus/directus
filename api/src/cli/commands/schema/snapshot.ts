@@ -5,6 +5,7 @@ import { constants as fsConstants, promises as fs } from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
+import { flushCaches } from '../../../cache';
 
 export async function snapshot(
 	snapshotPath: string,
@@ -34,6 +35,8 @@ export async function snapshot(
 			process.exit(0);
 		}
 	}
+
+	await flushCaches();
 
 	const database = getDatabase();
 

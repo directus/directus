@@ -18,16 +18,16 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'neq',
 				'empty',
 				'nempty',
+				'null',
+				'nnull',
 				'in',
 				'nin',
 			];
 
 		// JSON
-		case 'json':
-			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
-
 		// UUID
 		case 'uuid':
+		case 'json':
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
 
 		// Boolean
@@ -61,7 +61,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 			];
 
 		case 'geometry':
-			return ['eq', 'neq', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
+			return ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
 
 		default:
 			return [

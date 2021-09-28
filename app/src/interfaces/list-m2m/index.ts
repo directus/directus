@@ -10,7 +10,7 @@ export default defineInterface({
 	component: InterfaceListM2M,
 	relational: true,
 	types: ['alias'],
-	groups: ['m2m', 'files'],
+	groups: ['m2m'],
 	options: Options,
 	recommendedDisplays: ['related-values'],
 });

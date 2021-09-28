@@ -8,8 +8,8 @@ export type SchemaOverview = {
 				default_value: any;
 				is_nullable: boolean;
 				data_type: string;
-				numeric_precision: number | null;
-				numeric_scale: number | null;
+				numeric_precision?: number | null;
+				numeric_scale?: number | null;
 				max_length: number | null;
 			};
 		};

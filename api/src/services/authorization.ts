@@ -16,6 +16,7 @@ import {
 	PrimaryKey,
 	Query,
 	SchemaOverview,
+	Aggregate,
 } from '../types';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
@@ -97,24 +98,38 @@ export class AuthorizationService {
 			if (ast.type !== 'field') {
 				if (ast.type === 'm2a') {
 					for (const [collection, children] of Object.entries(ast.children)) {
-						checkChildren(collection, children);
+						checkFields(collection, children, ast.query?.[collection]?.aggregate);
 					}
 				} else {
-					checkChildren(ast.name, ast.children);
+					checkFields(ast.name, ast.children, ast.query?.aggregate);
 				}
 			}
 
-			function checkChildren(collection: string, children: (NestedCollectionNode | FieldNode)[]) {
+			function checkFields(collection: string, children: (NestedCollectionNode | FieldNode)[], aggregate?: Aggregate) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 				const allowedFields = permissions.fields || [];
+
+				if (aggregate && allowedFields.includes('*') === false) {
+					for (const aliasMap of Object.values(aggregate)) {
+						if (!aliasMap) continue;
+
+						for (const column of Object.keys(aliasMap)) {
+							if (allowedFields.includes(column) === false) throw new ForbiddenException();
+						}
+					}
+				}
+
 				for (const childNode of children) {
 					if (childNode.type !== 'field') {
 						validateFields(childNode);
 						continue;
 					}
+
 					if (allowedFields.includes('*')) continue;
+
 					const fieldKey = childNode.name;
+
 					if (allowedFields.includes(fieldKey) === false) {
 						throw new ForbiddenException();
 					}
