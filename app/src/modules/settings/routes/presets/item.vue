@@ -537,6 +537,7 @@ export default defineComponent({
 	--sidebar-detail-color: var(--warning);
 	--sidebar-detail-color-active: var(--warning);
 	--form-vertical-gap: 24px;
+
 	display: contents;
 }
 
