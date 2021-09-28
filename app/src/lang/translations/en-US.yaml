@@ -20,6 +20,8 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+avatar: Avatar
+default_provider: Default
 published: Published
 draft: Draft
 archived: Archived
@@ -847,6 +849,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    color: Color
     display_template: Display Template
     hidden: Hidden
     singleton: Singleton

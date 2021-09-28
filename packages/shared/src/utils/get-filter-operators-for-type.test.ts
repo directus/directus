@@ -100,6 +100,8 @@ describe('', () => {
 			'neq',
 			'empty',
 			'nempty',
+			'null',
+			'nnull',
 			'in',
 			'nin',
 		]);
@@ -109,6 +111,8 @@ describe('', () => {
 		expect(getFilterOperatorsForType(TYPES[17])).toStrictEqual([
 			'eq',
 			'neq',
+			'null',
+			'nnull',
 			'intersects',
 			'nintersects',
 			'intersects_bbox',

@@ -197,7 +197,7 @@ export default defineComponent({
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 12px;
+	grid-gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	padding-bottom: 24px;
 }
@@ -207,7 +207,7 @@ export default defineComponent({
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 
-	margin-top: -8px;
+	margin-top: -12px;
 
 	.v-icon {
 		margin-right: 8px;
