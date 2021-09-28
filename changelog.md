@@ -8,69 +8,112 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 
 - **App**
   - [#8359](https://github.com/directus/directus/pull/8359) Style updates ([@benhaynes](https://github.com/benhaynes))
-  - [#8327](https://github.com/directus/directus/pull/8327) Use user language as first on translations ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8327](https://github.com/directus/directus/pull/8327) Use user language as first on translations
+    ([@joselcvarela](https://github.com/joselcvarela))
 - **API**
-  - [#8257](https://github.com/directus/directus/pull/8257) Allow environment syntax prefix per item within an array ([@azrikahar](https://github.com/azrikahar))
-  - [#6942](https://github.com/directus/directus/pull/6942) Modular authentication ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#8257](https://github.com/directus/directus/pull/8257) Allow environment syntax prefix per item within an array
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#6942](https://github.com/directus/directus/pull/6942) Modular authentication
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 
 ### :bug: Bug Fixes
 
 - **API**
-  - [#8357](https://github.com/directus/directus/pull/8357) Migrate down chronologically instead of by version ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8355](https://github.com/directus/directus/pull/8355) Don't track primary keys of relations/fields ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8352](https://github.com/directus/directus/pull/8352) Don't error on missing meta key for collection ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8351](https://github.com/directus/directus/pull/8351) Add missing system data points ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8349](https://github.com/directus/directus/pull/8349) Use field key instead of ID for group value ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8335](https://github.com/directus/directus/pull/8335) Fix getSchema while trx on postgres ([@joselcvarela](https://github.com/joselcvarela))
-  - [#8334](https://github.com/directus/directus/pull/8334) prevent ambiguous role selection in middleware ([@azrikahar](https://github.com/azrikahar))
-  - [#8333](https://github.com/directus/directus/pull/8333) Fix multiple issues in Data Model view ([@azrikahar](https://github.com/azrikahar))
+  - [#8357](https://github.com/directus/directus/pull/8357) Migrate down chronologically instead of by version
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8355](https://github.com/directus/directus/pull/8355) Don't track primary keys of relations/fields
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8352](https://github.com/directus/directus/pull/8352) Don't error on missing meta key for collection
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8351](https://github.com/directus/directus/pull/8351) Add missing system data points
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8349](https://github.com/directus/directus/pull/8349) Use field key instead of ID for group value
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8335](https://github.com/directus/directus/pull/8335) Fix getSchema while trx on postgres
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8334](https://github.com/directus/directus/pull/8334) prevent ambiguous role selection in middleware
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8333](https://github.com/directus/directus/pull/8333) Fix multiple issues in Data Model view
+    ([@azrikahar](https://github.com/azrikahar))
   - [#8286](https://github.com/directus/directus/pull/8286) Allow for + in $NOW ([@Nitwel](https://github.com/Nitwel))
   - [#8272](https://github.com/directus/directus/pull/8272) Fix oas parameters ([@Nitwel](https://github.com/Nitwel))
-  - [#8111](https://github.com/directus/directus/pull/8111) Fixed error when setting Oracle column to not null ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#6942](https://github.com/directus/directus/pull/6942) Modular authentication ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#8111](https://github.com/directus/directus/pull/8111) Fixed error when setting Oracle column to not null
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6942](https://github.com/directus/directus/pull/6942) Modular authentication
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 - **App**
-  - [#8349](https://github.com/directus/directus/pull/8349) Use field key instead of ID for group value ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8346](https://github.com/directus/directus/pull/8346) Fix panel not assigned on insights ([@joselcvarela](https://github.com/joselcvarela))
-  - [#8344](https://github.com/directus/directus/pull/8344) Fix input not being masked ([@Nitwel](https://github.com/Nitwel))
-  - [#8337](https://github.com/directus/directus/pull/8337) Debounce app idle tracker autorefresh token ([@azrikahar](https://github.com/azrikahar))
-  - [#8333](https://github.com/directus/directus/pull/8333) Fix multiple issues in Data Model view ([@azrikahar](https://github.com/azrikahar))
-  - [#8317](https://github.com/directus/directus/pull/8317) fix target collection interface for o2m relationship ([@azrikahar](https://github.com/azrikahar))
-  - [#8293](https://github.com/directus/directus/pull/8293) Vertically center content of v-button ([@paescuj](https://github.com/paescuj))
-  - [#8285](https://github.com/directus/directus/pull/8285) Add missing null,nnull and remove unused file ([@Nitwel](https://github.com/Nitwel))
-  - [#8278](https://github.com/directus/directus/pull/8278) Fix sorting for alias fields ([@azrikahar](https://github.com/azrikahar))
-  - [#8260](https://github.com/directus/directus/pull/8260) Fix primary key not being passed to v-form ([@Nitwel](https://github.com/Nitwel))
-  - [#8256](https://github.com/directus/directus/pull/8256) Reinstate v-click-outside event in v-menu ([@azrikahar](https://github.com/azrikahar))
+  - [#8349](https://github.com/directus/directus/pull/8349) Use field key instead of ID for group value
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8346](https://github.com/directus/directus/pull/8346) Fix panel not assigned on insights
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8344](https://github.com/directus/directus/pull/8344) Fix input not being masked
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#8337](https://github.com/directus/directus/pull/8337) Debounce app idle tracker autorefresh token
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8333](https://github.com/directus/directus/pull/8333) Fix multiple issues in Data Model view
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8317](https://github.com/directus/directus/pull/8317) fix target collection interface for o2m relationship
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8293](https://github.com/directus/directus/pull/8293) Vertically center content of v-button
+    ([@paescuj](https://github.com/paescuj))
+  - [#8285](https://github.com/directus/directus/pull/8285) Add missing null,nnull and remove unused file
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#8278](https://github.com/directus/directus/pull/8278) Fix sorting for alias fields
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8260](https://github.com/directus/directus/pull/8260) Fix primary key not being passed to v-form
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#8256](https://github.com/directus/directus/pull/8256) Reinstate v-click-outside event in v-menu
+    ([@azrikahar](https://github.com/azrikahar))
 - **drive**
-  - [#8294](https://github.com/directus/directus/pull/8294) Fix azure storage content-type ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8294](https://github.com/directus/directus/pull/8294) Fix azure storage content-type
+    ([@joselcvarela](https://github.com/joselcvarela))
 - **shared**
-  - [#8283](https://github.com/directus/directus/pull/8283) Allow date strings in gt(e)/lt(e)/between in validation step ([@azrikahar](https://github.com/azrikahar))
+  - [#8283](https://github.com/directus/directus/pull/8283) Allow date strings in gt(e)/lt(e)/between in validation step
+    ([@azrikahar](https://github.com/azrikahar))
 
 ### :sponge: Optimizations
 
 - **API**
-  - [#6942](https://github.com/directus/directus/pull/6942) Modular authentication ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6942](https://github.com/directus/directus/pull/6942) Modular authentication
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 
 ### :memo: Documentation
 
-- [#8279](https://github.com/directus/directus/pull/8279) Prevent unnecessary interpolation by Vuepress ([@azrikahar](https://github.com/azrikahar))
-- [#8257](https://github.com/directus/directus/pull/8257) Allow environment syntax prefix per item within an array ([@azrikahar](https://github.com/azrikahar))
+- [#8279](https://github.com/directus/directus/pull/8279) Prevent unnecessary interpolation by Vuepress
+  ([@azrikahar](https://github.com/azrikahar))
+- [#8257](https://github.com/directus/directus/pull/8257) Allow environment syntax prefix per item within an array
+  ([@azrikahar](https://github.com/azrikahar))
 
 ### :package: Dependency Updates
 
-- [#8361](https://github.com/directus/directus/pull/8361) Update dependency @types/lodash to v4.14.175 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8348](https://github.com/directus/directus/pull/8348) Update typescript-eslint monorepo to v4.32.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8345](https://github.com/directus/directus/pull/8345) Update dependency knex-schema-inspector to v1.6.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8328](https://github.com/directus/directus/pull/8328) Update dependency nanoid to v3.1.28 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8320](https://github.com/directus/directus/pull/8320) Update vue monorepo to v3.2.19 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8316](https://github.com/directus/directus/pull/8316) Update jest monorepo to v27.2.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8308](https://github.com/directus/directus/pull/8308) Update dependency @types/lodash to v4.14.174 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8304](https://github.com/directus/directus/pull/8304) Update dependency @vitejs/plugin-vue to v1.9.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8303](https://github.com/directus/directus/pull/8303) Update vue monorepo to v3.2.18 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8300](https://github.com/directus/directus/pull/8300) Update dependency vue to v3.2.17 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8299](https://github.com/directus/directus/pull/8299) Update dependency @vue/compiler-sfc to v3.2.17 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8275](https://github.com/directus/directus/pull/8275) Update dependency npm to v7.24.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8273](https://github.com/directus/directus/pull/8273) Update dependency @vitejs/plugin-vue to v1.9.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8271](https://github.com/directus/directus/pull/8271) Update vue monorepo to v3.2.16 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8361](https://github.com/directus/directus/pull/8361) Update dependency @types/lodash to v4.14.175
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8348](https://github.com/directus/directus/pull/8348) Update typescript-eslint monorepo to v4.32.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8345](https://github.com/directus/directus/pull/8345) Update dependency knex-schema-inspector to v1.6.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8328](https://github.com/directus/directus/pull/8328) Update dependency nanoid to v3.1.28
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8320](https://github.com/directus/directus/pull/8320) Update vue monorepo to v3.2.19
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8316](https://github.com/directus/directus/pull/8316) Update jest monorepo to v27.2.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8308](https://github.com/directus/directus/pull/8308) Update dependency @types/lodash to v4.14.174
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8304](https://github.com/directus/directus/pull/8304) Update dependency @vitejs/plugin-vue to v1.9.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8303](https://github.com/directus/directus/pull/8303) Update vue monorepo to v3.2.18
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8300](https://github.com/directus/directus/pull/8300) Update dependency vue to v3.2.17
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8299](https://github.com/directus/directus/pull/8299) Update dependency @vue/compiler-sfc to v3.2.17
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8275](https://github.com/directus/directus/pull/8275) Update dependency npm to v7.24.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8273](https://github.com/directus/directus/pull/8273) Update dependency @vitejs/plugin-vue to v1.9.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8271](https://github.com/directus/directus/pull/8271) Update vue monorepo to v3.2.16
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.94 (September 22, 2021)
 
