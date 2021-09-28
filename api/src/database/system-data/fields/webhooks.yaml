@@ -102,7 +102,7 @@ fields:
           foreground: 'var(--danger)'
           background: 'var(--danger-25)'
         - text: $t:login
-          value: authenticate
+          value: login
           foreground: 'var(--purple)'
           background: 'var(--purple-25)'
 
