@@ -91,27 +91,25 @@
 					<div v-md="t('page_help_settings_presets_item')" class="page-description" />
 				</sidebar-detail>
 
-				<div class="layout-sidebar">
-					<sidebar-detail icon="search" :title="t('search')">
-						<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
-					</sidebar-detail>
+				<sidebar-detail icon="search" :title="t('search')">
+					<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+				</sidebar-detail>
 
-					<component
-						:is="`layout-sidebar-${values.layout}`"
-						v-if="values.layout && values.collection"
-						v-bind="layoutState"
-					/>
+				<component
+					:is="`layout-sidebar-${values.layout}`"
+					v-if="values.layout && values.collection"
+					v-bind="layoutState"
+				/>
 
-					<sidebar-detail icon="layers" :title="t('layout_options')">
-						<div class="layout-options">
-							<component
-								:is="`layout-options-${values.layout}`"
-								v-if="values.layout && values.collection"
-								v-bind="layoutState"
-							/>
-						</div>
-					</sidebar-detail>
-				</div>
+				<sidebar-detail icon="layers" :title="t('layout_options')">
+					<div class="layout-options">
+						<component
+							:is="`layout-options-${values.layout}`"
+							v-if="values.layout && values.collection"
+							v-bind="layoutState"
+						/>
+					</div>
+				</sidebar-detail>
 			</template>
 		</private-view>
 	</component>
@@ -530,15 +528,6 @@ export default defineComponent({
 	width: 100%;
 	margin-top: 48px;
 	overflow: auto;
-}
-
-.layout-sidebar {
-	--sidebar-detail-icon-color: var(--primary);
-	--sidebar-detail-color: var(--primary);
-	--sidebar-detail-color-active: var(--primary);
-	--form-vertical-gap: 24px;
-
-	display: contents;
 }
 
 :deep(.layout-options) {
