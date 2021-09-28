@@ -13,33 +13,27 @@
 		"conjunctions",
 		"prepositions"
 	],
-	"main": "dist/format-title.cjs.js",
-	"module": "dist/format-title.bundler.js",
-	"unpkg": "dist/format-title.global.min.js",
-	"types": "dist/types/index.d.ts",
+	"main": "dist/esm/index.js",
+	"module": "dist/esm/index.js",
+	"unpkg": "dist/esm/index.js",
+	"types": "dist/esm/index.d.ts",
 	"files": [
 		"dist"
 	],
 	"author": "rijkvanzanten <rijkvanzanten@me.com>",
-	"repository": "directus/format-title",
+	"repository": "directus/directus",
 	"license": "MIT",
+	"type": "module",
 	"engines": {
 		"node": ">=6.0.0"
 	},
 	"scripts": {
 		"prebuild": "rimraf dist",
-		"build": "rollup -c rollup.config.js",
-		"start": "rollup -c rollup.config.js -w"
+		"build": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "20.0.0",
-		"@rollup/plugin-json": "4.1.0",
-		"@rollup/plugin-node-resolve": "13.0.5",
 		"rimraf": "3.0.2",
-		"rollup": "2.56.3",
-		"rollup-plugin-sourcemaps": "0.6.3",
-		"rollup-plugin-terser": "7.0.2",
-		"rollup-plugin-typescript2": "0.30.0",
 		"typescript": "4.4.3"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"

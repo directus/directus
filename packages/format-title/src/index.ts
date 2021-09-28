@@ -1,14 +1,14 @@
-import prepositions from './prepositions';
-import conjunctions from './conjunctions';
-import acronyms from './acronyms';
-import specialCase from './special-case';
+import prepositions from './prepositions.js';
+import conjunctions from './conjunctions.js';
+import acronyms from './acronyms.js';
+import specialCase from './special-case.js';
 
 function handleSpecialWords(str: string, index: number, words: string[]): string {
 	const lowercaseStr = str.toLowerCase();
 	const uppercaseStr = str.toUpperCase();
 
 	for (let i = 0; i < specialCase.length; i += 1) {
-		if (specialCase[i].toLowerCase() === lowercaseStr) return specialCase[i];
+		if (specialCase[i]!.toLowerCase() === lowercaseStr) return specialCase[i] as string;
 	}
 
 	if (acronyms.includes(uppercaseStr)) return uppercaseStr;
