@@ -4,8 +4,6 @@ import { uniq } from 'lodash';
 export async function up(knex: Knex): Promise<void> {
 	const groupsInUse = await knex.select('id', 'group').from('directus_fields').whereNotNull('group');
 
-	if (groupsInUse.length === 0) return;
-
 	const groupIDs: number[] = uniq(groupsInUse.map(({ group }) => group));
 
 	const groupFields = await knex.select('id', 'field').from('directus_fields').whereIn('id', groupIDs);
@@ -15,6 +13,10 @@ export async function up(knex: Knex): Promise<void> {
 	for (const { id, field } of groupFields) {
 		groupMap.set(id, field);
 	}
+
+	await knex.schema.alterTable('directus_fields', (table) => {
+		table.dropForeign('group');
+	});
 
 	await knex.schema.alterTable('directus_fields', (table) => {
 		table.dropColumn('group');

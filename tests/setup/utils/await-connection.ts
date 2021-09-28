@@ -30,10 +30,14 @@ export async function awaitDirectusConnection(port = 6100, currentAttempt = 0): 
 			throw new Error(`Couldn't connect to Directus`);
 		}
 
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			setTimeout(async () => {
-				await awaitDirectusConnection(port, currentAttempt + 1);
-				resolve(null);
+				try {
+					await awaitDirectusConnection(port, currentAttempt + 1);
+					resolve(null);
+				} catch (err) {
+					reject(err);
+				}
 			}, 5000);
 		});
 	}
