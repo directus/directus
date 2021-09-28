@@ -107,7 +107,6 @@ import { usePreset } from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
 import api from '@/api';
 import SearchInput from '@/views/private/components/search-input';
-import useShortcut from '@/composables/use-shortcut';
 
 type Item = {
 	[field: string]: any;
@@ -127,10 +126,6 @@ export default defineComponent({
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		const { layoutWrapper } = useLayout(layout);
-
-		useShortcut('delete', () => {
-			if (selection.value.length > 0) confirmDelete.value = true;
-		});
 
 		return {
 			t,

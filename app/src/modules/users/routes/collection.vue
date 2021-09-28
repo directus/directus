@@ -156,7 +156,6 @@ import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Role } from '@directus/shared/types';
-import useShortcut from '@/composables/use-shortcut';
 
 type Item = {
 	[field: string]: any;
@@ -227,10 +226,6 @@ export default defineComponent({
 		const { layoutWrapper } = useLayout(layout);
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
-
-		useShortcut('delete', () => {
-			if (selection.value.length > 0) confirmDelete.value = true;
-		});
 
 		return {
 			t,
