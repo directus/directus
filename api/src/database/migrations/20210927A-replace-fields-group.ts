@@ -15,6 +15,10 @@ export async function up(knex: Knex): Promise<void> {
 	}
 
 	await knex.schema.alterTable('directus_fields', (table) => {
+		table.dropForeign('group');
+	});
+
+	await knex.schema.alterTable('directus_fields', (table) => {
 		table.dropColumn('group');
 	});
 
