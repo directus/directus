@@ -13,7 +13,7 @@ describe('generateExtensionsEntry', () => {
 export default [e0];`
 		);
 	});
-	it('return an a string of an empty array when the type does not match the extension type', () => {
+	it('returns an empty extension entrypoint if there is no extension with the provided type', () => {
 		const mockExtension = [
 			{ path: './extensions', name: 'mockExtension', type: 'pack', local: true, root: true },
 		] as Extension[];
