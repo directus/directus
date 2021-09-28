@@ -442,23 +442,22 @@ export default defineComponent({
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 12px;
+	grid-gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {
-		margin-top: 12px;
+		margin-top: 8px;
 	}
 }
 
 .field {
 	:deep(.input) {
-		background-color: var(--card-face-color) !important;
-		border: none !important;
-		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2) !important;
+		border: var(--border-width) solid var(--border-subdued) !important;
 	}
 
 	:deep(.input:hover) {
 		background-color: var(--card-face-color) !important;
+		border: var(--border-width) solid var(--border-normal-alt) !important;
 	}
 
 	.label {
@@ -475,7 +474,7 @@ export default defineComponent({
 			text-overflow: ellipsis;
 
 			.name {
-				margin-right: 12px;
+				margin-right: 8px;
 				font-family: var(--family-monospace);
 			}
 

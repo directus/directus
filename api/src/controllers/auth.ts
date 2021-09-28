@@ -1,79 +1,46 @@
 import { Router } from 'express';
 import grant from 'grant';
-import Joi from 'joi';
 import ms from 'ms';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import {
+	InvalidCredentialsException,
+	RouteNotFoundException,
+	ServiceUnavailableException,
+	InvalidPayloadException,
+} from '../exceptions';
 import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
+import { getAuthProviders } from '../utils/get-auth-providers';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
+import { createLocalAuthRouter } from '../auth/drivers';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const router = Router();
 
-const loginSchema = Joi.object({
-	email: Joi.string().email().required(),
-	password: Joi.string().required(),
-	mode: Joi.string().valid('cookie', 'json'),
-	otp: Joi.string(),
-}).unknown();
+const authProviders = getAuthProviders();
 
-router.post(
-	'/login',
-	asyncHandler(async (req, res, next) => {
-		const accountability = {
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			role: null,
-		};
+for (const authProvider of authProviders) {
+	let authRouter: Router | undefined;
 
-		const authenticationService = new AuthenticationService({
-			accountability: accountability,
-			schema: req.schema,
-		});
+	switch (authProvider.driver) {
+		case 'local':
+			authRouter = createLocalAuthRouter(authProvider.name);
+	}
 
-		const { error } = loginSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
+	if (!authRouter) {
+		logger.warn(`Couldn't create login router for auth provider "${authProvider.name}"`);
+		continue;
+	}
 
-		const mode = req.body.mode || 'json';
+	router.use(`/login/${authProvider.name}`, authRouter);
+}
 
-		const ip = req.ip;
-		const userAgent = req.get('user-agent');
-
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-			...req.body,
-			ip,
-			userAgent,
-		});
-
-		const payload = {
-			data: { access_token: accessToken, expires },
-		} as Record<string, Record<string, any>>;
-
-		if (mode === 'json') {
-			payload.data.refresh_token = refreshToken;
-		}
-
-		if (mode === 'cookie') {
-			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
-				httpOnly: true,
-				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
-			});
-		}
-
-		res.locals.payload = payload;
-		return next();
-	}),
-	respond
-);
+router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 
 router.post(
 	'/refresh',
@@ -214,6 +181,15 @@ router.post(
 );
 
 router.get(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		res.locals.payload = { data: getAuthProviders() };
+		return next();
+	}),
+	respond
+);
+
+router.get(
 	'/oauth',
 	asyncHandler(async (req, res, next) => {
 		const providers = toArray(env.OAUTH_PROVIDERS);
@@ -317,9 +293,9 @@ router.get(
 				// Do nothing
 			});
 
-			authResponse = await authenticationService.authenticate({
-				email,
-			});
+			// Workaround to use the default local auth provider to validate
+			// the email and login without a password.
+			authResponse = await authenticationService.login(undefined, { identifier: email });
 		} catch (error: any) {
 			emitStatus('fail');
 
