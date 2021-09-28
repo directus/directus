@@ -6,7 +6,7 @@ describe('', () => {
 	let childDir: SynchrounousResult;
 
 	beforeEach(() => {
-		rootDir = dirSync({ unsafeCleanup: true });
+		rootDir = dirSync({ unsafeCleanup: true, tmpdir: './' } as any);
 		childDir = dirSync({ dir: rootDir.name });
 	});
 
