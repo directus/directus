@@ -1,4 +1,4 @@
-import { ensureExtensionDirs } from '.';
+import { ensureExtensionDirs } from './ensure-extension-dirs';
 import { EXTENSION_TYPES } from '../../constants/extensions';
 import { ExtensionType } from '../../types';
 import { dirSync, SynchrounousResult } from 'tmp';

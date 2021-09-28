@@ -1,4 +1,4 @@
-import { validatePayload } from '.';
+import { validatePayload } from './validate-payload';
 import { Filter } from '../types/filter';
 
 describe('validatePayload', () => {
