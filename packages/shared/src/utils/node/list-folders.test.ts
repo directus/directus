@@ -1,4 +1,4 @@
-import { listFolders } from '.';
+import { listFolders } from './list-folders';
 import { dirSync, SynchrounousResult } from 'tmp';
 
 describe('', () => {
