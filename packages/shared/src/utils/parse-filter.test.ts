@@ -1,4 +1,4 @@
-import { parseFilter } from '.';
+import { parseFilter } from './parse-filter';
 import { Filter } from '../types/filter';
 
 describe('', () => {
