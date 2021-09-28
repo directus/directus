@@ -533,9 +533,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--primary);
-	--sidebar-detail-color: var(--primary);
-	--sidebar-detail-color-active: var(--primary);
+	--sidebar-detail-icon-color: var(--warning);
+	--sidebar-detail-color: var(--warning);
+	--sidebar-detail-color-active: var(--warning);
 	--form-vertical-gap: 24px;
 
 	display: contents;
