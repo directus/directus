@@ -31,7 +31,6 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 				if (value.includes(substring) === false) {
 					return helpers.error('string.contains', { substring });
 				}
-
 				return value;
 			},
 		},

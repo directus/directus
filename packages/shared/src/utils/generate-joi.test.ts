@@ -75,7 +75,7 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
-	it(`returns the correct schema for an _ncontains contain match`, () => {
+	it(`returns the correct schema for an _contains contain match`, () => {
 		const mockFieldFilter = { field: { _contains: 'field' } } as FieldFilter;
 		const mockSchema = Joi.object({
 			field: (Joi.string() as StringSchema).contains('field'),
@@ -83,6 +83,28 @@ describe(`generateJoi`, () => {
 			.unknown()
 			.describe();
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+	it(`returns a value if the substring is included in the value`, () => {
+		expect(() => {
+			Joi.assert('testfield', (Joi.string() as StringSchema).contains('field'));
+		}).toEqual(expect.any(Function));
+	});
+	it(`returns a value if the substring is not contained in the value`, () => {
+		expect(() => {
+			Joi.assert('testfield', (Joi.string() as StringSchema).contains('field'));
+		}).toEqual(expect.any(Function));
+	});
+	it(`returns an error if the substring is included in the value`, () => {
+		expect(() => {
+			Joi.assert('field', (Joi.string() as StringSchema).ncontains('field'));
+			// eslint-disable-next-line no-useless-escape
+		}).toThrowError(`\"value\" can't contain [field]`);
+	});
+	it(`returns an error if the substring is not contained in the value`, () => {
+		expect(() => {
+			Joi.assert('test', (Joi.string() as StringSchema).contains('field'));
+			// eslint-disable-next-line no-useless-escape
+		}).toThrowError(`\\"value\\" must contain [field`);
 	});
 	it(`returns the correct schema for a _starts_with match`, () => {
 		const mockFieldFilter = { field: { _starts_with: 'field' } } as FieldFilter;
