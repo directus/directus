@@ -41,7 +41,7 @@
 		"eslint-plugin-prettier": "4.0.0",
 		"eslint-plugin-vue": "7.18.0",
 		"globby": "11.0.4",
-		"jest": "27.2.3",
+		"jest": "27.2.4",
 		"knex": "0.95.11",
 		"lerna": "4.0.0",
 		"lint-staged": "11.1.2",
