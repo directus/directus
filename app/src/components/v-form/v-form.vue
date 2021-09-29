@@ -222,6 +222,13 @@ export default defineComponent({
 				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
 			});
 
+			const fieldsDefaultValues = computed(() => {
+				return fields.value.reduce((acc, field) => {
+					if (field.schema?.default_value) acc[field.field] = field.schema.default_value;
+					return acc;
+				}, {} as Record<string, string>);
+			});
+
 			const fieldsParsed = computed(() => {
 				if (props.group !== null) return fields.value;
 
@@ -247,7 +254,12 @@ export default defineComponent({
 							if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 
 							const rule = parseFilter(condition.rule);
-							const errors = validatePayload(rule, values.value, { requireAll: true });
+
+							const errors =
+								Object.keys(values.value).length !== 1
+									? validatePayload(rule, fieldsDefaultValues.value, { requireAll: true })
+									: validatePayload(rule, values.value, { requireAll: true });
+
 							return errors.length === 0;
 						});
 
