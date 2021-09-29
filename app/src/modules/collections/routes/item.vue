@@ -151,7 +151,7 @@
 			v-model="edits"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
-			:initial-values="item || defaultItem"
+			:initial-values="item"
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
@@ -366,22 +366,10 @@ export default defineComponent({
 			return props.primaryKey;
 		});
 
-		const defaultItem = computed(() => {
-			if (isNew.value) {
-				return fields.value.reduce((acc, field) => {
-					if (field.schema?.default_value) acc[field.field] = field.schema.default_value;
-					return acc;
-				}, {});
-			}
-
-			return null;
-		});
-
 		return {
 			t,
 			router,
 			item,
-			defaultItem,
 			loading,
 			error,
 			isNew,
