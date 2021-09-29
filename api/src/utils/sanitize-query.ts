@@ -108,8 +108,8 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 		}
 	}
 
-	for (const [operation, fields] of Object.entries(rawAggregate)) {
-		if (typeof fields === 'string') aggregate[operation as keyof Aggregate] = fields.split(',');
+	for (const [operation, fields] of Object.entries(aggregate)) {
+		if (typeof fields === 'string') aggregate[operation as keyof Aggregate] = (fields as string).split(',');
 		else if (Array.isArray(fields)) aggregate[operation as keyof Aggregate] = fields as string[];
 	}
 
