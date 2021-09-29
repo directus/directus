@@ -44,9 +44,9 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		const user = await database
 			.select(
-				'role',
-				'directus_roles.admin_access',
-				'directus_roles.app_access',
+        'directus_users.role',
+        'directus_roles.admin_access',
+        'directus_roles.app_access',
 				...userDynamicVars.map((v) => 'directus_users.' + v)
 			)
 			.from('directus_users')

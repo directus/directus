@@ -17,7 +17,7 @@ or user invite emails respectively.
 
 ::: tip Variables
 
-When overriding the default email templates, make sure to include the `{{ url }}` variable somewhere. A password reset
-email wouldn't be that useful without the link to go reset your password!
+When overriding the default email templates, make sure to include the <code v-pre>{{ url }}</code> variable somewhere. A
+password reset email wouldn't be that useful without the link to go reset your password!
 
 :::

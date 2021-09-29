@@ -22,7 +22,7 @@ export type FieldMeta = {
 	id: number;
 	collection: string;
 	field: string;
-	group: number | null;
+	group: string | null;
 	hidden: boolean;
 	interface: string | null;
 	display: string | null;

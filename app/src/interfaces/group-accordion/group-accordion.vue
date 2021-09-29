@@ -13,7 +13,7 @@
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-errors="validationErrors"
-			:group="field.meta.id"
+			:group="field.meta.field"
 			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
 			@toggleAll="toggleAll"
@@ -85,7 +85,7 @@ export default defineComponent({
 	emits: ['apply'],
 	setup(props) {
 		const rootFields = computed(() => {
-			return props.fields.filter((field) => field.meta?.group === props.field.meta?.id);
+			return props.fields.filter((field) => field.meta?.group === props.field.meta?.field);
 		});
 
 		const selection = ref<string[]>([]);
