@@ -1,5 +1,12 @@
 <template>
-	<span v-if="type === 'boolean'" class="preview" @click="$emit('input', !value)">{{ value }}</span>
+	<v-icon
+		v-if="type === 'boolean'"
+		:name="value === null ? 'indeterminate_check_box' : value ? 'check_box' : 'check_box_outline_blank'"
+		clickable
+		class="preview"
+		small
+		@click="$emit('input', !value)"
+	/>
 	<input
 		v-else-if="is === 'interface-input'"
 		:type="type"
@@ -9,7 +16,7 @@
 		placeholder="--"
 		@input="$emit('input', $event.target.value)"
 	/>
-	<v-menu v-else :close-on-content-click="false" :show-arrow="true" seamless>
+	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
 			<v-icon
 				v-if="type === 'geometry' || type === 'json'"
@@ -48,7 +55,16 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const displayValue = computed(() => (props.value === null ? '--' : props.value));
+		const displayValue = computed(() => {
+			if (props.value === null) return null;
+			if (props.value === undefined) return null;
+
+			if (typeof props.value === 'string' && props.value.length > 25) {
+				return props.value.substring(0, 22) + '...';
+			}
+
+			return props.value;
+		});
 
 		const width = computed(() => {
 			if (props.is === 'interface-input' && typeof props.value === 'string') {
@@ -68,10 +84,21 @@ export default defineComponent({
 	justify-content: center;
 	color: var(--primary);
 	font-family: var(--family-monospace);
+	white-space: nowrap;
+	text-overflow: ellipsis;
 	cursor: pointer;
+
+	&:empty {
+		&::after {
+			color: var(--foreground-subdued);
+			content: '--';
+		}
+	}
 }
 
 .input {
+	padding: 8px 4px;
+
 	&.date,
 	&.timestamp,
 	&.time,
@@ -82,10 +109,6 @@ export default defineComponent({
 	&.geometry,
 	&.json {
 		width: 500px;
-	}
-
-	:deep(.v-input .input) {
-		border: none;
 	}
 }
 

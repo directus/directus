@@ -104,10 +104,6 @@ export default defineComponent({
 			type: Number,
 			default: 0,
 		},
-		seamless: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -396,10 +392,6 @@ body {
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;
 	contain: content;
-
-	&.seamless {
-		padding: 0;
-	}
 
 	.v-list {
 		--v-list-background-color: transparent;

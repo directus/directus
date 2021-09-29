@@ -79,7 +79,7 @@ export default defineComponent({
 				integer: 'input',
 				json: 'input-code',
 				string: 'input',
-				text: 'input',
+				text: 'input-multiline',
 				time: 'datetime',
 				timestamp: 'datetime',
 				uuid: 'input',
