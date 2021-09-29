@@ -159,7 +159,7 @@
 		"nodemailer-mailgun-transport": "^2.1.3",
 		"pg": "^8.6.0",
 		"sqlite3": "^5.0.2",
-		"tedious": "^12.0.0"
+		"tedious": "^13.0.0"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
@@ -198,7 +198,7 @@
 		"@types/wellknown": "0.5.1",
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
-		"jest": "27.2.3",
+		"jest": "27.2.4",
 		"ts-jest": "27.0.5",
 		"ts-node-dev": "1.1.8",
 		"typescript": "4.4.3"
