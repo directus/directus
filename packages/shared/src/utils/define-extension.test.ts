@@ -1,4 +1,11 @@
-import { defineInterface, defineDisplay, defineModule, defineLayout, defineHook, defineEndpoint } from '.';
+import {
+	defineInterface,
+	defineDisplay,
+	defineModule,
+	defineLayout,
+	defineHook,
+	defineEndpoint,
+} from './define-extension';
 import { Type } from '../types/fields';
 import { defineComponent } from 'vue';
 
