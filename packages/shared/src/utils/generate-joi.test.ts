@@ -104,7 +104,7 @@ describe(`generateJoi`, () => {
 		expect(() => {
 			Joi.assert('test', (Joi.string() as StringSchema).contains('field'));
 			// eslint-disable-next-line no-useless-escape
-		}).toThrowError(`\\"value\\" must contain [field`);
+		}).toThrowError(`\"value\" must contain [field`);
 	});
 	it(`returns the correct schema for a _starts_with match`, () => {
 		const mockFieldFilter = { field: { _starts_with: 'field' } } as FieldFilter;
