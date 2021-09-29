@@ -7,7 +7,7 @@ interface StringSchema extends BaseStringSchema {
 	ncontains(substring: string): this;
 }
 
-const Joi: typeof BaseJoi = BaseJoi.extend({
+export const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
 	base: BaseJoi.string(),
 	messages: {
