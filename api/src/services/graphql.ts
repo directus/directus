@@ -49,8 +49,8 @@ import ms from 'ms';
 import { getCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { BaseException } from '@directus/shared/exceptions';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import { Accountability } from '@directus/shared/types';
 import { AbstractServiceOptions, Action, Aggregate, GraphQLParams, Item, Query, SchemaOverview } from '../types';
@@ -72,10 +72,12 @@ import { RolesService } from './roles';
 import { ServerService } from './server';
 import { SettingsService } from './settings';
 import { SpecificationService } from './specifications';
+import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 import { generateHash } from '../utils/generate-hash';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -1752,11 +1754,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const result = await authenticationService.authenticate({
-						...args,
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-					});
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
@@ -1888,7 +1886,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1909,7 +1907,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1925,15 +1923,11 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const authService = new AuthenticationService({
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-					const otpValid = await authService.verifyOTP(this.accountability.user, args.otp);
+					const otpValid = await service.verifyOTP(this.accountability.user, args.otp);
 					if (otpValid === false) {
 						throw new InvalidPayloadException(`"otp" is invalid`);
 					}

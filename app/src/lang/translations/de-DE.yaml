@@ -19,6 +19,8 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Standard
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
@@ -834,6 +836,7 @@ fields:
     collection: Sammlung
     icon: Symbol
     note: Notiz
+    color: Farbe
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
     singleton: Einzelnes Element

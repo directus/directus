@@ -19,6 +19,8 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Profilkép
+default_provider: Alapértelmezett
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
@@ -740,6 +742,7 @@ fields:
     collection: Gyűjtemény
     icon: Ikon
     note: Jegyzet
+    color: Szín
     display_template: Megjelenítési sablon
     hidden: Rejtett
     singleton: Egyedüli
