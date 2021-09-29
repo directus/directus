@@ -1,4 +1,26 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Imagem de Perfil
+default_provider: Padrão
 draft: Rascunho
 archived: Arquivado
 edit_field: Editar campo
@@ -8,7 +30,6 @@ item_revision: Revisão do item
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
-limit: Limite
 group: Grupos
 and: E
 or: Ou
@@ -34,7 +55,6 @@ create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
-email_examples: "admin{'@'}example.com, usuario{'@'}example.com..."
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
@@ -373,6 +393,7 @@ display_template_not_setup: A opção do modelo de exibição está configurada 
 collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
 select_a_collection: Selecione uma coleção
 active: Ativo
+copy: Copiar
 inactive: Inativo
 users: Usuários
 activity: Atividade
@@ -567,6 +588,7 @@ toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+full_screen: Tela cheia
 image_url: URL da Imagem
 alt_text: Texto Alternativo
 media: Mídia
@@ -664,7 +686,6 @@ unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
 keep_editing: Continuar editando
-page_help_collections_overview: '**Visão geral das coleções** — Lista de todas as coleções que você tem acesso.'
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 page_help_collections_item: >-
@@ -722,6 +743,7 @@ fields:
     collection: Coleção
     icon: Ícone
     note: Nota
+    color: Cor
     display_template: Modelo de exibição
     hidden: Oculto
     singleton: Singleton
@@ -827,7 +849,7 @@ fields:
     collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
-    method: Método
+    method: Método 
     status: Status
     data: Dados
     data_label: Enviar Dados do Evento
@@ -914,6 +936,7 @@ delete_field_are_you_sure: >-
 description: Descrição
 done: Finalizar
 duplicate: Duplicado
+limit: Limite
 email: E-mail
 embed: Incorporar
 fallback_icon: Ícone de reserva
@@ -1291,3 +1314,6 @@ layouts:
     end_date_field: Campo de Data Final
   map:
     field: Geometria
+panels:
+  label:
+    name: Rótulo

@@ -1,5 +1,5 @@
 <template>
-	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError }">
+	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
 		<v-checkbox
 			v-if="batchMode"
 			:model-value="batchActive"
@@ -57,6 +57,10 @@ export default defineComponent({
 		badge: {
 			type: String,
 			default: null,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['toggle-batch'],

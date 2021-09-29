@@ -19,17 +19,20 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Avatar
 published: Zveřejněno
+modules: Moduly
+module_bar: Panel modulů
 tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 maps: Mapy
+item_creation: Vytvoření položky
 item_revision: Revize položky
 enter_a_name: Zadejte název...
 duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
-limit: Limit
 group: Skupina
 and: A
 or: Nebo
@@ -51,12 +54,12 @@ required: Povinné
 required_for_app_access: Vyžadováno pro přístup k aplikacím
 requires_value: Vyžaduje hodnotu
 create_preset: Vytvořit šablonu
+create_panel: Vytvořit panel
 create_role: Vytvořit roli
 create_user: Vytvořit uživatele
+delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
@@ -217,6 +220,7 @@ no_comments: Zatím bez komentářů
 request_feature: Požadavek na funkci
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
 create_collection: Vytvořit kategorii
+copy: Kopírovat
 users: Uživatelé
 activity: Aktivita
 webhooks: Webhooky
@@ -311,6 +315,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    color: Barva
     hidden: Skryté
   directus_files:
     title: Název
@@ -381,6 +386,7 @@ delete_field_are_you_sure: >-
 description: Popis
 done: Hotovo
 duplicate: Duplikovat
+limit: Limit
 email: E-mail
 embed: Vložení
 field: Pole | Pole

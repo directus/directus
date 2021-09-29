@@ -281,7 +281,7 @@ export default defineComponent({
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${fieldKey}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}" disabled="${props.disabled}">${field.name}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;
@@ -323,7 +323,7 @@ export default defineComponent({
 	user-select: none;
 }
 
-:deep(button:hover) {
+:deep(button:not(:disabled):hover) {
 	color: var(--white);
 	background-color: var(--danger);
 }

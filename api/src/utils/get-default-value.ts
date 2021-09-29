@@ -1,10 +1,12 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import getLocalType from './get-local-type';
+import logger from '../logger';
+import env from '../env';
 
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column
-): string | boolean | null {
+): string | boolean | number | Record<string, any> | any[] | null {
 	const { type } = getLocalType(column);
 
 	let defaultValue = column.default_value ?? null;
@@ -29,6 +31,8 @@ export default function getDefaultValue(
 			return Number.isNaN(Number(defaultValue)) === false ? Number(defaultValue) : defaultValue;
 		case 'boolean':
 			return castToBoolean(defaultValue);
+		case 'json':
+			return castToObject(defaultValue);
 		default:
 			return defaultValue;
 	}
@@ -44,4 +48,24 @@ function castToBoolean(value: any): boolean {
 	if (value === 'true' || value === true) return true;
 
 	return Boolean(value);
+}
+
+function castToObject(value: any): any | any[] {
+	if (!value) return value;
+
+	if (typeof value === 'object') return value;
+
+	if (typeof value === 'string') {
+		try {
+			return JSON.parse(value);
+		} catch (err: any) {
+			if (env.NODE_ENV === 'development') {
+				logger.error(err);
+			}
+
+			return value;
+		}
+	}
+
+	return {};
 }
