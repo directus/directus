@@ -159,7 +159,7 @@
 		"nodemailer-mailgun-transport": "^2.1.3",
 		"pg": "^8.6.0",
 		"sqlite3": "^5.0.2",
-		"tedious": "^12.0.0"
+		"tedious": "^13.0.0"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
