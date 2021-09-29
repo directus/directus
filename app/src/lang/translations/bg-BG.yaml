@@ -165,13 +165,19 @@ field_update_success: 'Обновено поле: "{field}"'
 duplicate_where_to: Къде искате да дублирате полето?
 language: Език
 aggregate_function: Агрегираща функция
+aggregate_precision: Точност при агрегация
+group_aggregation: Групираща агрегация
+group_precision: Точност при групиране
 global: Глобален
 admins_have_all_permissions: Администраторите имат всички позволения
 camera: Камера
 show_zero: Показване на нули
-sum: Сума
-avg: Средно
+sum: Сумиране
+sum_distinct: Сумиране на уникалните
+avg: Усредняване
+avg_distinct: Усредняване на уникалните
 count: Брой
+count_distinct: Брой на униикалните
 min: Минимум
 max: Максимум
 exposure: Експозиция
@@ -282,6 +288,7 @@ revision_delta_reverted: Възстановен
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
 private_user: Частни потребители
+creation_preview: Първоначален вид
 revision_preview: Преглед на ревизия
 updates_made: Направени промени
 leave_comment: Коментар...
@@ -427,6 +434,8 @@ inactive: Неактивен
 users: Потребители
 activity: Активности
 webhooks: Уеб-куки
+decimals: Десетични знаци
+value_decimals: Десетични знаци
 min_value: Минимална стойност
 max_value: Максимална стойност
 automatic: Автоматично
@@ -641,7 +650,7 @@ delete_dashboard: Изтриване на таблото
 visible: Видимост
 prefix_placeholder: Текст пред стойността...
 suffix_placeholder: Текст след стойността...
-decimals_placeholder: Брой места за десетични числа...
+decimals_placeholder: Брой на цифрите след десетичния знак...
 no_dashboards: Няма табла
 no_dashboards_copy: Все още нямате нито едно табло.
 no_data: Няма данни
@@ -819,7 +828,7 @@ fields:
     collection: Колекция
     timestamp: Действие на
     user: Действие от
-    comment: Кометнар
+    comment: Коментиране
     user_agent: Потребителски агент
     ip: IP адрес
     revisions: Ревизии
@@ -914,7 +923,7 @@ fields:
     files_and_thumbnails: Файлове и картинки
     storage_default_folder: Папка по подразбиране
     storage_asset_presets: Заготовки за съхранените файлове
-    storage_asset_transform: Трансформации на съхранените файлове
+    storage_asset_transform: Трансформиране на съхранените файлове
     overrides: Отмяна
     custom_css: Потребителски CSS
   directus_fields:
@@ -951,7 +960,7 @@ field_options:
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
-      none_text: Без - не се препоръчва
+      none_text: Няма - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
       strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
@@ -1049,7 +1058,7 @@ save_current_user_role: Запазване на ролята на текущия
 save_current_datetime: Запазване на текущия дата/час
 block: Блок
 inline: Вложен
-comment: Кометнар
+comment: Коментиране
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
 referential_action_field_label_o2m: При деселектиране на {collection}...
