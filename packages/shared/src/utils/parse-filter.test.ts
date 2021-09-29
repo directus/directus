@@ -11,7 +11,7 @@ describe('', () => {
 		jest.useRealTimers();
 	});
 	it('returns the filter when passed accountability with only a role', () => {
-		const mockFilter = { _and: [{ field: 'field' }] } as Filter;
+		const mockFilter = { _and: [{ field: { _eq: 'field' } }] } as Filter;
 		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
 	});
