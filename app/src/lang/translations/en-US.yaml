@@ -1159,9 +1159,8 @@ interfaces:
     any: Any
     and: and
     of_the_following: of the following
-    no_rules: no rules yet
+    no_rules: No rules yet...
     change_value: Click to change value
-    remove_element: Click to remove element
     placeholder: Drag rules here
   group-accordion:
     name: Accordion

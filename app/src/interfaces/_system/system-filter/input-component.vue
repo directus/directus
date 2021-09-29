@@ -19,14 +19,7 @@
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component
-				:is="is"
-				class="input-component"
-				small
-				:type="type"
-				:value="value"
-				@input="$emit('input', $event)"
-			></component>
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="$emit('input', $event)" />
 		</div>
 	</v-menu>
 </template>
@@ -37,9 +30,18 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
-		is: String,
-		type: String,
-		value: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
+		is: {
+			type: String,
+			required: true,
+		},
+		type: {
+			type: String,
+			required: true,
+		},
+		value: {
+			type: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props) {
@@ -89,6 +91,7 @@ export default defineComponent({
 input {
 	color: var(--primary);
 	font-family: var(--family-monospace);
+	line-height: 1em;
 	border: none;
 
 	&::placeholder {

@@ -17,41 +17,23 @@
 			].includes(getComparator(field))
 		"
 	>
-		<input-component
-			:is="interfaceType"
-			:type="fieldInfo.type"
-			:value="value"
-			@input="value = $event"
-		></input-component>
+		<input-component :is="interfaceType" :type="fieldInfo.type" :value="value" @input="value = $event" />
 	</template>
+
 	<div
 		v-else-if="['_in', '_nin'].includes(getComparator(field))"
 		class="list"
 		:class="{ moveComma: interfaceType === 'interface-input' }"
 	>
 		<div v-for="(val, index) in value" :key="index" class="value">
-			<input-component
-				:is="interfaceType"
-				:type="fieldInfo.type"
-				:value="val"
-				@input="setValueAt(index, $event)"
-			></input-component>
+			<input-component :is="interfaceType" :type="fieldInfo.type" :value="val" @input="setValueAt(index, $event)" />
 		</div>
 	</div>
+
 	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))" class="between">
-		<input-component
-			:is="interfaceType"
-			:type="fieldInfo.type"
-			:value="value[0]"
-			@input="setValueAt(0, $event)"
-		></input-component>
+		<input-component :is="interfaceType" :type="fieldInfo.type" :value="value[0]" @input="setValueAt(0, $event)" />
 		<div class="and">{{ t('interfaces.filter.and') }}</div>
-		<input-component
-			:is="interfaceType"
-			:type="fieldInfo.type"
-			:value="value[1]"
-			@input="setValueAt(1, $event)"
-		></input-component>
+		<input-component :is="interfaceType" :type="fieldInfo.type" :value="value[1]" @input="setValueAt(1, $event)" />
 	</template>
 </template>
 
@@ -62,7 +44,7 @@ import { useI18n } from 'vue-i18n';
 import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
 import { FieldFilter } from '@directus/shared/types';
-import { fieldToFilter, getComparator, getField, getNodeName } from './system-filter.vue';
+import { fieldToFilter, getComparator, getField } from './utils';
 
 export default defineComponent({
 	components: { InputComponent },

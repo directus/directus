@@ -6,17 +6,16 @@
 		handle=".drag-handle"
 		:item-key="getIndex"
 		tag="ul"
-		:animation="150"
-		:invert-swap="true"
+		:swap-threshold="0.3"
 		class="group"
 	>
 		<template #item="{ element, index }">
 			<li class="row">
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header">
-						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
+						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
 						<v-select
-							v-tooltip="filterInfo[index].field"
+							v-tooltip.monospace="filterInfo[index].field"
 							inline
 							class="name"
 							:full-width="false"
@@ -36,19 +35,22 @@
 							:model-value="filterInfo[index].comparator"
 							:items="getCompareOptions(filterInfo[index].field)"
 							@update:modelValue="updateComparator(index, $event)"
-						></v-select>
+						/>
 						<input-group :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
 						<v-icon
-							v-tooltip="t('interfaces.filter.remove_element')"
+							v-tooltip="t('delete_label')"
 							class="delete"
 							name="close"
+							small
+							clickable
 							@click="$emit('remove-node', [index])"
-						></v-icon>
+						/>
 					</div>
 				</div>
+
 				<div v-else class="node logic">
 					<div class="header">
-						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
+						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
 						<div class="logic-type" :class="{ blue: filterInfo[index].name === '_or' }">
 							<span v-tooltip="t('interfaces.filter.change_value')" class="key" @click="toggleLogic(index)">
 								{{ filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any') }}
@@ -56,11 +58,13 @@
 							<span class="text">{{ t('interfaces.filter.of_the_following') }}</span>
 						</div>
 						<v-icon
-							v-tooltip="t('interfaces.filter.remove_element')"
+							v-tooltip="t('delete_label')"
 							class="delete"
 							name="close"
+							small
+							clickable
 							@click="$emit('remove-node', [index])"
-						></v-icon>
+						/>
 					</div>
 					<nodes
 						:filter="element[filterInfo[index].name]"
@@ -77,7 +81,7 @@
 
 <script lang="ts">
 import useFieldTree from '@/composables/use-field-tree';
-import { computed, defineComponent, PropType, ref, toRefs } from 'vue';
+import { computed, defineComponent, PropType, toRefs } from 'vue';
 import InputGroup from './input-group.vue';
 import Draggable from 'vuedraggable';
 import { useFieldsStore } from '@/stores';
@@ -86,7 +90,7 @@ import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { get } from 'lodash';
 import { FieldFilter, Filter, FilterOperator } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { fieldToFilter, getField, getNodeName, getComparator } from './system-filter.vue';
+import { fieldToFilter, getField, getNodeName, getComparator } from './utils';
 
 type FilterInfo =
 	| {
@@ -254,7 +258,8 @@ export default defineComponent({
 	align-items: center;
 	width: fit-content;
 	margin-bottom: 8px;
-	padding: 2px 12px 2px 6px;
+	padding: 2px 6px;
+	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-subdued);
 	border-radius: 100px;
 
@@ -300,22 +305,28 @@ export default defineComponent({
 	}
 
 	.delete {
-		display: none;
-		margin-left: 8px;
-		color: var(--danger);
-		cursor: pointer;
-	}
+		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color-hover: var(--danger);
 
-	&:hover {
-		.delete {
-			display: block;
-		}
+		margin-left: 4px;
 	}
 
 	.drag-handle {
-		margin-right: 6px;
-		color: var(--foreground-subdued);
+		--v-icon-color: var(--foreground-subdued);
+
+		margin-right: 4px;
 		cursor: grab;
+	}
+}
+
+.group :deep(.sortable-ghost) {
+	.node .header {
+		background-color: var(--primary-alt);
+		border-color: var(--primary);
+
+		> * {
+			opacity: 0;
+		}
 	}
 }
 </style>

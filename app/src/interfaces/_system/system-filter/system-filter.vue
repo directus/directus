@@ -31,39 +31,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
-
-export function getNodeName(node: Filter) {
-	return Object.keys(node)[0];
-}
-
-export function getField(node: Record<string, any>): string {
-	const name = getNodeName(node);
-	if (name.startsWith('_')) return '';
-	const subFields = getField(node[name]);
-	return subFields !== '' ? `${name}.${subFields}` : name;
-}
-
-export function getComparator(node: Record<string, any>): string {
-	return getNodeName(get(node, getField(node)));
-}
-
-export function fieldToFilter(field: string, operator: string, value: any) {
-	return fieldToFilterR(field.split('.'));
-
-	function fieldToFilterR(sections: string[]): Record<string, any> {
-		const section = sections.shift();
-
-		if (section !== undefined) {
-			return {
-				[section]: fieldToFilterR(sections),
-			};
-		} else {
-			return {
-				[operator]: value,
-			};
-		}
-	}
-}
+import { getNodeName } from './utils';
 
 export default defineComponent({
 	components: {
@@ -72,7 +40,7 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Object as PropType<Record<string, any>>,
-			required: true,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -90,6 +58,8 @@ export default defineComponent({
 
 		const innerValue = computed<Filter[]>({
 			get() {
+				if (!props.value) return [];
+
 				const name = getNodeName(props.value);
 
 				if (name === '_and') {
@@ -128,10 +98,12 @@ export default defineComponent({
 
 		function removeNode(ids: string[]) {
 			const id = ids.pop();
+
 			if (ids.length === 0) {
 				innerValue.value = innerValue.value.filter((node, index) => index !== Number(id));
 				return;
 			}
+
 			let list = get(innerValue.value, ids.join('.')) as Filter[];
 
 			list = list.filter((node, index) => index !== Number(id));
