@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash';
 import { FieldFilter } from '../types';
-import { generateJoi, Joi, JoiOptions } from './generate-joi';
+import { generateJoi, Joi, JoiOptions, StringSchema } from './generate-joi';
 
 describe(`generateJoi`, () => {
 	const date = new Date(1632431505992);
@@ -65,25 +65,25 @@ describe(`generateJoi`, () => {
 			.describe();
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
-	// it(`returns the correct schema for an _ncontains contain match`, () => {
-	// 	const mockFieldFilter = { field: { _ncontains: 'field' } } as FieldFilter;
-	// 	const mockSchema = Joi.object({
-	// 		field: Joi.string().
-	// 	})
-	// 		.unknown()
-	// 		.describe();
-	// 	expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
-	// });
+	it(`returns the correct schema for an _ncontains contain match`, () => {
+		const mockFieldFilter = { field: { _ncontains: 'field' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: (Joi.string() as StringSchema).ncontains('field'),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
 
-	// it('returns the correct schema for a _contains match', () => {
-	// 	const mockFieldFilter = { field: { _contains: 'field' } } as FieldFilter;
-	// 	const mockSchema = Joi.object({
-	// 		field: Joi.string().contains('field'),
-	// 	})
-	// 		.unknown()
-	// 		.describe();
-	// 	expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
-	// });
+	it(`returns the correct schema for an _ncontains contain match`, () => {
+		const mockFieldFilter = { field: { _contains: 'field' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: (Joi.string() as StringSchema).contains('field'),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
 	it(`returns the correct schema for a _starts_with match`, () => {
 		const mockFieldFilter = { field: { _starts_with: 'field' } } as FieldFilter;
 		const mockSchema = Joi.object({

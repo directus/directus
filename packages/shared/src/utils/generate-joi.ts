@@ -2,7 +2,7 @@ import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema, Dat
 import { escapeRegExp, merge } from 'lodash';
 import { FieldFilter } from '../types/filter';
 
-interface StringSchema extends BaseStringSchema {
+export interface StringSchema extends BaseStringSchema {
 	contains(substring: string): this;
 	ncontains(substring: string): this;
 }
