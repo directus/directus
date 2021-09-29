@@ -1,10 +1,11 @@
 <template>
 	<v-menu
-		:disabled="disabled"
 		class="v-select"
+		:disabled="disabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
+		:placement="placement"
 	>
 		<template #activator="{ toggle, active }">
 			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue }" @click="toggle">
@@ -200,6 +201,10 @@ export default defineComponent({
 		multiplePreviewThreshold: {
 			type: Number,
 			default: 3,
+		},
+		placement: {
+			type: String as PropType<Placement>,
+			default: 'bottom',
 		},
 	},
 	emits: ['update:modelValue', 'group-toggle'],

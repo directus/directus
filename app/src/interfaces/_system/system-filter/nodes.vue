@@ -18,53 +18,56 @@
 							v-tooltip.monospace="filterInfo[index].field"
 							inline
 							class="name"
+							item-text="name"
+							item-value="key"
+							placement="bottom-start"
 							:full-width="false"
 							:model-value="filterInfo[index].field"
 							:items="fieldOptions"
-							item-text="name"
-							item-value="key"
 							:mandatory="false"
 							:groups-clickable="true"
 							@group-toggle="loadFieldRelations($event.value, 1)"
 							@update:modelValue="updateField(index, $event)"
 						/>
 						<v-select
-							v-tooltip="t('interfaces.filter.change_value')"
 							inline
 							class="comparator"
+							placement="bottom-start"
 							:model-value="filterInfo[index].comparator"
 							:items="getCompareOptions(filterInfo[index].field)"
 							@update:modelValue="updateComparator(index, $event)"
 						/>
 						<input-group :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
-						<v-icon
-							v-tooltip="t('delete_label')"
-							class="delete"
-							name="close"
-							small
-							clickable
-							@click="$emit('remove-node', [index])"
-						/>
+						<span class="delete">
+							<v-icon
+								v-tooltip="t('delete_label')"
+								name="close"
+								small
+								clickable
+								@click="$emit('remove-node', [index])"
+							/>
+						</span>
 					</div>
 				</div>
 
 				<div v-else class="node logic">
 					<div class="header">
-						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<div class="logic-type" :class="{ blue: filterInfo[index].name === '_or' }">
-							<span v-tooltip="t('interfaces.filter.change_value')" class="key" @click="toggleLogic(index)">
+						<v-icon name="drag_indicator" class="drag-handle" small />
+						<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
+							<span class="key" @click="toggleLogic(index)">
 								{{ filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any') }}
 							</span>
 							<span class="text">{{ t('interfaces.filter.of_the_following') }}</span>
 						</div>
-						<v-icon
-							v-tooltip="t('delete_label')"
-							class="delete"
-							name="close"
-							small
-							clickable
-							@click="$emit('remove-node', [index])"
-						/>
+						<span class="delete">
+							<v-icon
+								v-tooltip="t('delete_label')"
+								name="close"
+								small
+								clickable
+								@click="$emit('remove-node', [index])"
+							/>
+						</span>
 					</div>
 					<nodes
 						:filter="element[filterInfo[index].name]"
@@ -254,30 +257,43 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header {
+	position: relative;
 	display: flex;
 	align-items: center;
 	width: fit-content;
 	margin-bottom: 8px;
 	padding: 2px 6px;
+	padding-right: 8px;
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-subdued);
 	border-radius: 100px;
+	transition: border-color var(--fast) var(--transition);
 
 	.logic-type {
-		font-weight: 600;
+		color: var(--foreground-subdued);
 
 		.key {
 			margin-right: 4px;
 			padding: 2px 6px;
-			color: var(--green);
-			background-color: var(--green-25);
+			color: var(--primary);
+			background-color: var(--primary-alt);
 			border-radius: 6px;
 			cursor: pointer;
+			transition: var(--fast) var(--transition);
+			transition-property: color, background-color;
+
+			&:hover {
+				background-color: var(--primary-25);
+			}
 		}
 
-		&.blue .key {
-			color: var(--blue);
-			background-color: var(--blue-25);
+		&.or .key {
+			color: var(--secondary);
+			background-color: var(--secondary-alt);
+
+			&:hover {
+				background-color: var(--secondary-25);
+			}
 		}
 	}
 
@@ -289,15 +305,35 @@ export default defineComponent({
 		}
 	}
 
-	.name {
+	.name,
+	.comparator {
+		position: relative;
+		z-index: 2;
 		display: inline-block;
 		margin-right: 8px;
+
+		&::before {
+			position: absolute;
+			top: 0px;
+			left: -4px;
+			z-index: -1;
+			width: calc(100% + 8px);
+			height: 100%;
+			background-color: var(--background-normal);
+			border-radius: 6px;
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
+			content: '';
+			pointer-events: none;
+		}
+
+		&:hover::before {
+			opacity: 1;
+		}
 	}
 
 	.comparator {
-		display: inline-block;
-		margin-right: 8px;
-		font-weight: 600;
+		font-weight: 700;
 	}
 
 	.value {
@@ -308,7 +344,22 @@ export default defineComponent({
 		--v-icon-color: var(--foreground-subdued);
 		--v-icon-color-hover: var(--danger);
 
-		margin-left: 4px;
+		position: absolute;
+		top: 50%;
+		left: 100%;
+		padding-left: 4px;
+		transform: translateY(-50%);
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+	}
+
+	&:hover {
+		border-color: var(--border-normal);
+
+		.delete,
+		&:hover {
+			opacity: 1;
+		}
 	}
 
 	.drag-handle {

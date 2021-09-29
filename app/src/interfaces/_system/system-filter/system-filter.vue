@@ -29,7 +29,7 @@ import { useFieldsStore } from '@/stores';
 import { get, set } from 'lodash';
 import { defineComponent, PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Filter } from '@directus/shared/types';
+import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 
@@ -89,10 +89,10 @@ export default defineComponent({
 					...innerValue.value,
 					{
 						[pkField]: {
-							_eq: 0,
+							_eq: null,
 						},
 					},
-				];
+				] as FieldFilter[];
 			}
 		}
 

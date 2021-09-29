@@ -5,6 +5,7 @@
 		:type="type"
 		:value="value"
 		:style="{ width }"
+		autofocus
 		placeholder="--"
 		@input="$emit('input', $event.target.value)"
 	/>
@@ -95,7 +96,7 @@ input {
 	border: none;
 
 	&::placeholder {
-		color: var(--primary);
+		color: var(--foreground-subdued);
 		font-weight: 500;
 		font-family: var(--family-monospace);
 	}
