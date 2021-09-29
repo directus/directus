@@ -305,7 +305,7 @@ export class AuthenticationService {
 			schema: this.schema,
 			payload: refreshToken,
 			accountability: this.accountability,
-			user: null,
+			user: record?.id,
 			database: this.knex,
 		});
 		emitAsyncSafe('auth.logout', refreshToken, {
@@ -314,7 +314,7 @@ export class AuthenticationService {
 			schema: this.schema,
 			payload: refreshToken,
 			accountability: this.accountability,
-			user: null,
+			user: record?.id,
 			database: this.knex,
 		});
 		if (record) {
@@ -324,6 +324,16 @@ export class AuthenticationService {
 			await provider.logout(clone(user), sessionData);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
+			if (this.accountability) {
+				await this.activityService.createOne({
+					action: Action.LOGOUT,
+					user: user.id,
+					ip: this.accountability.ip,
+					user_agent: this.accountability.userAgent,
+					collection: 'directus_users',
+					item: user.id,
+				});
+			}
 		}
 	}
 
