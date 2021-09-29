@@ -98,7 +98,7 @@ function sanitizeSort(rawSort: any) {
 }
 
 function sanitizeAggregate(rawAggregate: any): Aggregate {
-	let aggregate: Aggregate = {};
+	let aggregate: Aggregate = rawAggregate;
 
 	if (typeof rawAggregate === 'string') {
 		try {
