@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Profilbillede
 edit_field: Rediger Felt
 conditions: Betingelser
 item_revision: Genstandsrevision
@@ -97,6 +118,7 @@ allow_multiple: Tillad Flere
 allow_multiple_to_be_open: Tillad åbning af flere
 enter_value_to_replace_nulls: Indtast venligst en ny værdi for at erstatte eventuelle NULL'er, der er i øjeblikket i dette felt.
 field_standard: Standard
+field_presentation: Presentation & Aliases
 field_m2o: M2O Forhold
 field_m2a: M2A Forhold
 field_o2m: O2M Forhold
@@ -202,6 +224,7 @@ original: Original
 url: URL
 import_label: Importér
 dimensions: Dimensioner
+created: Oprettet
 modified: Ændret
 checksum: Kontrolsum
 owner: Ejer
@@ -222,6 +245,10 @@ field_width: Felt Bredde
 user_directory: Bruger Mappe
 duration: Varighed
 modified_on: Ændringsdato
+status: Status
+remove: Fjern
+errors:
+  NOT_NULL_VIOLATION: Værdien kan ikke være null
 bookmarks: Foretrukne
 back: Tilbage
 placeholder: Placeholder
@@ -237,6 +264,7 @@ operators:
   ncontains: Indeholder ikke
   empty: Er tom
 loading: Indlæser...
+value_unique: Værdien skal være unik
 no_results: Ingen resultater
 role: Rolle
 create: Opret
@@ -244,15 +272,19 @@ on_update: Ved Opdatering
 read: Læs
 update: Opdater
 select_fields: Vælg felter
+width: Bredde
+height: Højde
 wysiwyg_options:
   codeblock: Kode
   remove: Fjern
+  selectall: Vælg alle
   table: Tabel
 choices: Valgmuligheder
 deselect: Afmarkér
 editing_in_batch: 'Masseredigerer {count} elementer'
 settings_permissions: Roller og Tilladelser
 settings_project: Projektindstillinger
+settings_webhooks: Webhooks
 unsaved_changes: Ikke gemte ændringer
 unsaved_changes_copy: Er du sikker på du vil forlade denne side?
 discard_changes: Kassér Ændringer
@@ -268,44 +300,91 @@ fields:
   directus_activity:
     item: Element Primær Nøgle
     action: Handling
+    collection: Samling
     timestamp: Handling Til
     user: Handling Af
     comment: Kommenter
     user_agent: Brugeragent
     ip: IP adresse
+  directus_collections:
+    collection: Samling
+    icon: Ikon
+    note: Kommentar
+    color: Farve
+    hidden: Skjult
   directus_files:
+    title: Titel
     description: Beskrivelse
     tags: Tags
     location: Placering
     metadata: Metadata
     filesize: Filstørrelse
+    modified_on: Ændringsdato
+    created_on: Oprettet d.
+    created_by: Oprettet af
+    embed: Indlejr
     uploaded_by: Uploadet af
     width: Bredde
     uploaded_on: Uploadet d.
     height: Højde
+    duration: Varighed
   directus_users:
     first_name: Fornavn
     last_name: Efternavn
     email: E-mail
     password: Adgangskode
     avatar: Profilbillede
+    location: Placering
+    title: Titel
+    description: Beskrivelse
+    tags: Tags
+    language: Sprog
     theme: Tema
     tfa_secret: To-faktor godkendelse
     status: Status
+    role: Rolle
+    last_page: Sidste side
   directus_settings:
     project_name: Projektnavn
   directus_fields:
+    note: Kommentar
     hidden: Skjult
+    translation: Oversættelse af feltnavn
     display_template: Skabelon
+  directus_roles:
+    name: Rollenavn
+    description: Beskrivelse
+  directus_webhooks:
+    name: Navn
+    status: Status
+field_options:
+  directus_activity:
+    create: Opret
+    update: Opdater
+  directus_collections:
+    language: Sprog
+    archive_divider: Arkiver
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Navn
+    collections_name: Samlinger
+  directus_webhooks:
+    actions_create: Opret
+    actions_update: Opdater
+comment: Kommenter
 delete_field_are_you_sure: >-
   Er du sikker på du vil slette feltet "{field}"? Denne handling kan ikke fortrydes.
+description: Beskrivelse
 done: Udført
 duplicate: Dupliker
+email: E-mail
 embed: Indlejr
 field: Felt | Felter
 file: Fil
 file_library: Fil Bibliotek
 forgot_password: Glemt adgangskode
+hidden: Skjult
 icon: Ikon
 info: Info
 junction_collection: Junction Samling
@@ -315,6 +394,7 @@ my_activity: Min Aktivitet
 not_authenticated: Ikke godkendt
 options: Valgmuligheder
 otp: Engangs Adgangskode
+password: Adgangskode
 permissions: Rettigheder
 relationship: Forhold
 reset: Nulstil
@@ -331,22 +411,56 @@ sign_out: Log ud
 sign_out_confirm: Er du sikker på, at du vil logge ud?
 something_went_wrong: Noget gik galt.
 sort_direction: Sorteringsretning
+template: Skabelon
 translation: Oversættelse
 value: Værdi
 interfaces:
+  presentation-links:
+    primary: Primær
+  input-code:
+    code: Kode
+  system-collection:
+    collection: Samling
+  system-collections:
+    collections: Samlinger
+  select-color:
+    color: Farve
   datetime:
     datetime: Datotid
+  file:
+    file: Fil
   files:
     files: Filer
+  select-icon:
+    icon: Ikon
+  tags:
+    tags: Tags
 displays:
+  boolean:
+    boolean: Boolean
+  collection:
+    collection: Samling
+  color:
+    color: Farve
+  datetime:
+    datetime: Datotid
+    format: Format
+  file:
+    file: Fil
+  icon:
+    icon: Ikon
   user:
+    avatar: Profilbillede
+    name: Navn
     both: Begge
 layouts:
   cards:
     cards: Kort
     image_source: Billedkilde
+    title: Titel
     subtitle: Undertitel
   tabular:
+    tabular: Tabel
     spacing: Afstand
     comfortable: Behageligt
     compact: Kompakt
