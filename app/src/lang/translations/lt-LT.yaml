@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Nuotrauka
 edit_field: Redaguoti lauką
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
@@ -94,10 +115,14 @@ nullable: Gali būti Null
 allow_null_value: Leisti NULL vertę
 enter_value_to_replace_nulls: Prašome įvesti naują vertę, kuri pakeistų visus NULL esančius šiame lauke.
 field_standard: Standartinis
+field_presentation: Atvaizdavimas ir sinonimai
+field_file: Vienas failas
+field_files: Keli failai
 field_m2o: M2O sąryšis
 field_m2a: M2A sąryšis
 field_o2m: O2M sąryšis
 field_m2m: M2M sąryšis
+field_translations: Vertimai
 field_group: Laukų grupė
 item_permissions: Elemento leidimai
 field_permissions: Lauko leidimai
@@ -246,6 +271,7 @@ move_to_folder: Perkelti į aplanką
 move: Perkelti
 system: Sistema
 add_field_related: Pridėti lauką į susijusią kolekciją
+interface_label: Sąsaja
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
@@ -272,6 +298,7 @@ url: URL
 file_details: Failo duomenys
 dimensions: Matmenys
 size: Dydis
+created: Sukurta
 modified: Modifikuota
 checksum: Kontrolinė suma
 owner: Savininkas
@@ -339,6 +366,7 @@ display_template_not_setup: Blogai sukonfigūruota atvaizdavimo šablono parinkt
 collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
 select_a_collection: Pasirinkite kolekciją
 active: Aktyvus
+copy: Kopijuoti
 users: Vartotojai
 activity: Veiksmas
 webhooks: '„Webhook“''ai'
@@ -357,6 +385,8 @@ modified_on: Pakeista
 card_size: Kortelės dydis
 sort_field: Rūšiavimo laukas
 sort: Rūšiuoti
+status: Būsena
+remove: Pašalinti
 toggle_manual_sorting: Perjungti rankinį rūšiavimą
 bookmark_doesnt_exist: Žymė neegzistuoja
 bookmark_doesnt_exist_copy: Žymė, kurią bandote atidaryti, neegzistuoja.
@@ -382,6 +412,8 @@ errors:
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
   ROUTE_NOT_FOUND: Nerasta
+  INTERNAL_SERVER_ERROR: Nenumatyta klaida
+  NOT_NULL_VIOLATION: Reikšmė negali būti null
   UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
@@ -389,6 +421,7 @@ create_bookmark: Kurti žymę
 edit_bookmark: Redaguoti žymę
 bookmarks: Žymės
 presets: Ruošiniai
+unexpected_error: Nenumatyta klaida
 unexpected_error_copy: Nutiko nenumatyta klaida. Prašome pabandyti vėliau.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
@@ -464,6 +497,7 @@ rows: Eilutės
 columns: Stulpeliai
 collection_setup: Kolekcijos konfigūracija
 optional_system_fields: Neprivalomi sisteminiai laukai
+value_unique: Reikšmė turi būti unikali
 all_activity: Visa Veikla
 create_item: Sukurti elementą
 display_template: Rodymo šablonas
@@ -497,12 +531,18 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+full_screen: Per visą ekraną
+width: Plotis
+height: Aukštis
 wysiwyg_options:
   aligncenter: Vidurinė lygiuotė
   alignjustify: Abipusė lygiuotė
   alignleft: Kairinė lygiuotė
   alignnone: Be lygiuotės
   alignright: Dešininė lygiuotė
+  forecolor: Teksto spalva
+  backcolor: Fono spalva
+  bold: Paryškintas
   italic: Pasviręs
   underline: Pabrauktas
   strikethrough: Perbrauktas
@@ -532,6 +572,7 @@ wysiwyg_options:
   redo: Grąžinti
   remove: Pašalinti
   removeformat: Pašalinti formatavimą
+  selectall: Pažymėti visus
   table: Lentelė
   visualaid: Peržiūrėti nematomos elementus
   fullscreen: Per visą ekraną
@@ -551,6 +592,7 @@ no_options_available: Nėra parinkčių
 settings_data_model: Duomenų modelis
 settings_permissions: Grupės ir leidimai
 settings_project: Projekto nustatymai
+settings_webhooks: '„Webhook“''ai'
 settings_presets: Ruošiniai ir žymos
 scope: Apimtis
 layout: Išdėstymas
@@ -607,30 +649,58 @@ fields:
   directus_activity:
     item: Įrašo Pirminis Raktas
     action: Veiksmas
+    collection: Rinkinys
     timestamp: Atlikta
     user: Veiksmas atliktas
     comment: Komentaras
     user_agent: Naršyklė
     ip: IP adresas
+    revisions: Pakeitimai
+  directus_collections:
+    collection: Rinkinys
+    icon: Ikona
+    note: Pastaba
+    color: Spalva
+    display_template: Rodymo šablonas
+    hidden: Paslėptas
+    singleton: Singleton objektas
+    sort_field: Rūšiavimo laukas
   directus_files:
+    title: Pavadinmas
     description: Aprašymas
     tags: Žymos
     location: Vietovė
     metadata: Meta duomenys
     filesize: Failo dydis
+    modified_on: Pakeista
+    created_on: Sukurta
+    created_by: Sukūrė
+    embed: Įterptas
     uploaded_by: Įkelta
+    folder: Aplankas
     width: Plotis
     uploaded_on: Įkelta
     height: Aukštis
+    charset: Simbolių rinkinys
+    duration: Trukmė
   directus_users:
     first_name: Vardas
     last_name: Pavardė
     email: El. paštas
     password: Slaptažodis
     avatar: Nuotrauka
+    location: Vietovė
+    title: Pavadinmas
+    description: Aprašymas
+    tags: Žymos
+    language: Kalba
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
     status: Būsena
+    status_active: Aktyvus
+    role: Vaidmuo
+    last_page: Paskutinis puslapis
+    last_access: Paskutinė prieiga
   directus_settings:
     project_name: Projekto pavadinimas
     project_url: Projekto adresas
@@ -646,10 +716,15 @@ fields:
   directus_fields:
     collection: Kolekcijos pavadinimas
     icon: Kolekcijos ikonėlė
+    note: Pastaba
     hidden: Paslėptas
+    singleton: Singleton objektas
+    translation: Laukų pavadinimų vertimai
     display_template: Šablonas
   directus_roles:
+    name: Vaidmens pavadinimas
     icon: Grupės ikonėlė
+    description: Aprašymas
     app_access: Programos prieiga
     admin_access: Administratoriaus prieiga
     ip_access: IP adresas
@@ -657,6 +732,33 @@ fields:
     users: Vartotojai grupėje
     module_list: Modulių navigacija
     collection_list: Kolekcijų navigacija
+  directus_webhooks:
+    name: Pavadinimas
+    status: Būsena
+field_options:
+  directus_activity:
+    create: Kurti
+    update: Atnaujinti
+  directus_collections:
+    collection_setup: Kolekcijos konfigūracija
+    singleton: Laikyti vienu objektu
+    language: Kalba
+    archive_divider: Archyvuoti
+    divider: Rūšiuoti
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Pavadinimas
+    collection_list:
+      fields:
+        type_name: Tipas
+    collections_name: Kolekcijos
+  directus_users:
+    status_dropdown_active: Aktyvus
+  directus_webhooks:
+    status_options_active: Aktyvus
+    actions_create: Kurti
+    actions_update: Atnaujinti
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
 do_nothing: Nieko nedaryti
 generate_and_save_uuid: Generuoti ir išsaugoti UUID
@@ -665,20 +767,24 @@ save_current_user_role: Išsaugoti dabartinio vartotojo grupę
 save_current_datetime: Išsaugoti dabartinį datą/laiką
 block: Blokas
 inline: Toje pačioje eilutėje
+comment: Komentaras
 editing_role: '{role} grupė'
 creating_webhook: Kuriamas Webhook'ą
 delete_are_you_sure: >-
   Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
 delete_field_are_you_sure: >-
   Ar tikrai norite panaikinti lauką "{field}"? Šio veiksmo nebus galima atšaukti.
+description: Aprašymas
 done: Atlikta
 duplicate: Dublikatas
+email: El. paštas
 embed: Įterptas
 fallback_icon: Atsarginė ikona
 field: Laukelis | Laukeliai
 file: Failas
 file_library: Failų biblioteka
 forgot_password: Pamiršote slaptažodį
+hidden: Paslėptas
 icon: Ikona
 info: Informacija
 normal: Normalus
@@ -693,6 +799,7 @@ not_authenticated: Neprisijungta
 authenticated: Prisijungta
 options: Parinktys
 otp: Vienkartinis slaptažodis
+password: Slaptažodis
 permissions: Leidimai
 relationship: Sąryšis
 reset: Atstatyti
@@ -713,28 +820,62 @@ something_went_wrong: Įvyko klaida.
 sort_direction: Rūšiavimo kryptis
 sort_asc: Rūšiuoti didėjimo tvarka
 sort_desc: Rūšiuoti mažėjimo tvarka
+template: Šablonas
 translation: Vertimas
 value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
-  system-collections:
+  presentation-links:
+    primary: Pirminis
+  input-code:
+    code: Kodas
+  system-collection:
+    collection: Rinkinys
     description: Pasirinkite tarp egzistuojančių kolekcijų
     include_system_collections: Įtraukti sistemines kolekcijas
+  system-collections:
+    collections: Kolekcijos
+    description: Pasirinkite tarp egzistuojančių kolekcijų
+    include_system_collections: Įtraukti sistemines kolekcijas
+  select-color:
+    color: Spalva
   datetime:
     datetime: Data ir laikas
     description: Įvesti datas ir laikus
     include_seconds: Įtraukti sekundes
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
+  system-display-template:
+    display-template: Rodymo šablonas
+    collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
+    select_a_collection: Pasirinkite kolekciją
+  presentation-divider:
+    divider: Skyriklis
+  select-dropdown:
+    choices_value_placeholder: Įveskite reikšmę...
   file:
+    file: Failas
     description: Pasirinkite arba įkelkite failą
   files:
     files: Failai
     description: Pasirinkite arba įkelkite kelis failus
+  input-hash:
+    hash: Maiša
+  select-icon:
+    icon: Ikona
+  file-image:
+    image: Paveikslėlis
   system-interface:
     interface: Sąsaja
+  select-dropdown-m2o:
+    display_template: Rodymo šablonas
+  map:
+    zoom: Padidinti
+  system-folder:
+    folder: Aplankas
   tags:
+    tags: Žymos
     whitespace: Matomi tarpai
     hyphen: Pakeisti į brūkšnelius
     underscore: Pakeisti į pabraukimo brūkšnelius
@@ -746,31 +887,44 @@ interfaces:
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
     add_tags: Pridėti žymes...
+  boolean:
+    toggle: Perjungti
+    label_default: Įjungtas
   translations:
+    display_template: Rodymo šablonas
     no_collection: Nėra kolekcijos
   user:
+    user: Vartotojas
     description: Pasirinkti egzistuojantį Directus vartotoją
     select_mode: Pasirinkti režimą
     modes:
       auto: Automatiškai
+      dropdown: Išskleidžiamasis meniu
       modal: Dialogas
 displays:
   boolean:
+    boolean: Loginis
     description: Rodyti įjungimo/išjungimo būsenas
     label_on: Tekstas, kai įjungta
     label_on_placeholder: Įveskite tekstą, kai įjungta...
     label_off: Tekstas, kai išjungta
     label_off_placeholder: Įveskite tekstą, kai išjungta...
+    icon_on: Įjungumo ikona
+    icon_off: Išjungimo ikona
     color_on: Spalva, kai įjungta
     color_off: Spalva, kai išjungta
   collection:
+    collection: Rinkinys
     description: Rodyti kolekciją
     icon_label: Rodyti kolekcijos ikoną
   color:
+    color: Spalva
     description: Rodyti spalvotą tašką
     default_color: Numatytoji spalva
   datetime:
+    datetime: Data ir laikas
     description: Rodyti reikšmes susijusias su laiku
+    format: Formatas
     format_note: >-
       Pasirinktinis formatas priima __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Ilgas
@@ -778,6 +932,7 @@ displays:
     relative: Santykinis
     relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
   file:
+    file: Failas
     description: Rodyti failus
   filesize:
     filesize: Failo dydis
@@ -791,12 +946,14 @@ displays:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją
   icon:
+    icon: Ikona
     description: Rodyti ikoną
     filled: Užpildyta
     filled_label: Naudoti užpildytą variantą
   image:
     image: Paveikslėlis
     description: Rodyti nedidelį paveikslėlį
+    circle: Apskritimas
     circle_label: Atvaizduoti kaip apskritimą
   labels:
     labels: Žymos
@@ -805,10 +962,20 @@ displays:
     default_background: Numatytoji fono spalva
     format_label: Formatuoti kiekvieną žymą
     show_as_dot: Rodyti kaip tašką
+    choices_value_placeholder: Įveskite reikšmę...
   user:
+    user: Vartotojas
+    avatar: Nuotrauka
+    name: Pavadinimas
     both: Abu
 layouts:
+  cards:
+    title: Pavadinmas
   tabular:
+    tabular: Lentelė
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
+panels:
+  label:
+    name: Žyma
