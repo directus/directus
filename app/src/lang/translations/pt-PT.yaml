@@ -98,10 +98,14 @@ nullable: Nulo
 allow_null_value: Permitir valor NULL
 enter_value_to_replace_nulls: Por favor, insira um novo valor para substituir qualquer NULLs atualmente dentro deste campo.
 field_standard: Predefinido
+field_presentation: Apresentação & Pseudônimos
+field_file: Ficheiro Único
+field_files: Vários Ficheiros
 field_m2o: Relação Muitos para Um
 field_m2a: Relação Muitos para Alguns
 field_o2m: Relação Um para Muitos
 field_m2m: Relação Muitos para Muitos
+field_translations: Traduções
 field_group: Grupo de Campos
 item_permissions: Permissões do documento
 field_permissions: Permisões do campo
@@ -252,6 +256,7 @@ move_to_folder: Mover para pasta
 move: Mover
 system: Sistema
 add_field_related: Adicionar Campo à Coleção Relacionada
+interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Remover comentário
@@ -284,6 +289,7 @@ url: URL
 file_details: Detalhes do ficheiro
 dimensions: Dimensões
 size: Tamanho
+created: Criado
 modified: Modificado
 checksum: Soma de verificação
 owner: Proprietário
@@ -375,6 +381,8 @@ card_size: Tamanho do cartão
 sort_field: Campo de ordenação
 add_sort_field: Adicionar Campo de Ordenação
 sort: Ordenar
+status: Estado
+remove: Remover
 toggle_manual_sorting: Alternar classificação manual
 bookmark_doesnt_exist: Marcador Não Existe
 bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde ser encontrado.
@@ -403,6 +411,7 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Utilizador suspenso
   CONTAINS_NULL_VALUES: Campo contém valores nulos
+  NOT_NULL_VIOLATION: O valor não pode ser nulo
 bookmarks: Favoritos
 back: Voltar
 delete_collection: Remover coleção
@@ -448,6 +457,7 @@ rows: Linhas
 columns: Colunas
 collection_setup: Configuração da coleção
 optional_system_fields: Campos de Sistema Opcionais
+value_unique: O valor tem de ser único
 all_activity: Toda a atividade
 create_item: Criar item
 display_template: Templates de Exibição
@@ -472,7 +482,10 @@ user: Utilizador
 no_presets: Sem predefinições
 no_presets_copy: Nenhuma predefinição ou marcador foi guardado ainda.
 no_presets_cta: Adicionar predefinição
+full_screen: Ecrã completo
 wysiwyg_options:
+  forecolor: Cor principal
+  backcolor: Cor de Fundo
   h3: Título 3
   h4: Título 4
   h5: Título 5
@@ -483,6 +496,7 @@ wysiwyg_options:
   redo: Refazer
   remove: Remover
   removeformat: Remover Formato
+  selectall: Selecionar Tudo
   table: Tabela
   visualaid: Ver elementos invisíveis
   source_code: Editar o código-fonte
@@ -504,6 +518,7 @@ no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
 settings_permissions: Perfis & Permissões
 settings_project: Definições do projeto
+settings_webhooks: Webhooks
 settings_presets: Predefinições & Marcadores
 one_or_more_options_are_missing: Uma ou mais opções estão em falta
 select: Selecionar...
@@ -534,20 +549,42 @@ fields:
   directus_activity:
     item: Chave primária
     action: Ação
+    collection: Coleção
     timestamp: Ação de
     user: Ação de
     comment: Comentário
     user_agent: User Agent
     ip: Endereço IP
+  directus_collections:
+    collection: Coleção
+    note: Nota
+    display_template: Templates de Exibição
+    sort_field: Campo de ordenação
   directus_files:
+    title: Título
     description: Descrição
     tags: Etiquetas
     location: Localização
+    modified_on: Modificado em
+    created_on: Criada em
+    created_by: Criado por
+    folder: Pasta
+    charset: Codificação
+    duration: Duração
   directus_users:
+    location: Localização
+    title: Título
+    description: Descrição
+    tags: Etiquetas
+    language: Idioma
     theme: Tema
     tfa_secret: Autenticação em dois passos
     status: Estado
+    status_active: Ativar
+    role: Perfil
     token: Token
+    last_page: Última página
+    last_access: Último Acesso
   directus_settings:
     project_name: Nome do projeto
     project_url: URL do projeto
@@ -559,7 +596,11 @@ fields:
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
+    note: Nota
+    translation: Nome do campo para as traduções
   directus_roles:
+    name: Nome do cargo
+    description: Descrição
     app_access: Acesso da aplicação
     admin_access: Acesso de administrador
     ip_access: Acesso IP
@@ -567,11 +608,28 @@ fields:
     users: Utilizadores na função
     module_list: Navegação do Modulo
     collection_list: Navegação da coleção
+  directus_webhooks:
+    name: Nome
+    status: Estado
 field_options:
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Apenas rastrear Atividade
     do_not_track_anything: Não rastrear nada
+    collection_setup: Configuração da coleção
+    language: Idioma
+    archive_divider: Arquivar
+    divider: Ordenar
+  directus_roles:
+    fields:
+      name_name: Nome
+    collection_list:
+      fields:
+        type_name: Tipo
+  directus_users:
+    status_dropdown_active: Ativar
+  directus_webhooks:
+    status_options_active: Ativar
 no_fields_in_collection: 'Ainda não há nenhum campo em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e guardar UUID
@@ -580,6 +638,7 @@ save_current_user_role: Salvar a função de usuário atual
 save_current_datetime: Guardar data/hora atual
 block: Bloquear
 inline: Em linha
+comment: Comentário
 relational_triggers: Gatilhos Relacionais
 referential_action_field_label_m2o: Ao Eliminar de {collection}...
 referential_action_field_label_o2m: Ao desseleccionar de {collection}...
@@ -590,16 +649,56 @@ choose_action: Escolher ação
 continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
 creating_webhook: Criando Webhook
+description: Descrição
 interfaces:
+  presentation-links:
+    primary: Primário
+  system-collection:
+    collection: Coleção
+  system-display-template:
+    display-template: Templates de Exibição
+    collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
+    select_a_collection: Selecione uma coleção
+  select-dropdown:
+    choices_value_placeholder: Insira um valor...
   files:
     files: Ficheiros
+  input-hash:
+    hash: Hash
   system-interface:
     interface: Interface
-displays:
+  select-dropdown-m2o:
+    display_template: Templates de Exibição
+  map:
+    zoom: Zoom
+  system-folder:
+    folder: Pasta
+  tags:
+    tags: Etiquetas
+  boolean:
+    label_default: Activo
+  translations:
+    display_template: Templates de Exibição
   user:
+    user: Utilizador
+displays:
+  boolean:
+    boolean: Boleano
+  collection:
+    collection: Coleção
+  datetime:
+    format: Formatar
+  labels:
+    choices_value_placeholder: Insira um valor...
+  user:
+    user: Utilizador
+    name: Nome
     both: Ambos
 layouts:
   cards:
     cards: Cartões
     image_source: Origem da imagem
+    title: Título
     subtitle: Subtítulo
+  tabular:
+    tabular: Tabela
