@@ -1,28 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Avatar
-default_provider: Privzeto
-draft: Osnutek
-archived: Arhivirano
 edit_field: Uredi polje
 conditions: Pogoji
 maps: Zemljevidi
@@ -126,14 +102,10 @@ allow_multiple: Dovoli več elementov
 allow_multiple_to_be_open: Dovoli odpiranje večih
 enter_value_to_replace_nulls: Prosimo vnesite novo vrednost, ki bo nadomestila nično v tem polju.
 field_standard: Običajno
-field_presentation: Predstavitev in aliasi
-field_file: Ena datoteka
-field_files: Več datotek
 field_m2o: M2O razmerje - več na ena
 field_m2a: M2A razmerje - več na karkoli
 field_o2m: O2M razmerje - ena na več
 field_m2m: M2M razmerje - več na več
-field_translations: Prevodi
 field_group: Skupina polj
 item_permissions: Dovoljenja zapisa
 field_permissions: Dovoljenja polja
@@ -285,7 +257,6 @@ move_to_folder: Premakni v mapo
 move: Premakni
 system: Sistem
 add_field_related: Dodaj polje v povezano zbirko
-interface_label: Vmesnik
 today: Danes
 yesterday: Včeraj
 delete_comment: Izbriši komentar
@@ -319,7 +290,6 @@ import_label: Uvoz
 file_details: Podatki o datoteki
 dimensions: Mere
 size: Velikost
-created: Ustvarjeno
 modified: Spremenjeno
 checksum: Kontrolna vsota
 owner: Lastnik
@@ -393,7 +363,6 @@ display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
 active: Aktivno
-copy: Kopiraj
 inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
@@ -415,8 +384,6 @@ card_size: Velikost kartice
 sort_field: Polje za razvrščanje
 add_sort_field: Dodaj polje za razvrščanje
 sort: Razvrsti
-status: Stanje
-remove: Odstrani
 toggle_manual_sorting: Preklopi ročno razvrščanje
 bookmark_doesnt_exist: Zaznamek ne obstaja
 bookmark_doesnt_exist_copy: Zaznamek ne obstaja.
@@ -446,8 +413,6 @@ errors:
   USER_SUSPENDED: Uporabnik suspendiran
   CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
   UNPROCESSABLE_ENTITY: Obdelava nemogoča
-  INTERNAL_SERVER_ERROR: Nepričakovana napaka
-  NOT_NULL_VIOLATION: Vrednost ne sme biti nična
   UNKNOWN: Nepričakovana napaka
 security: Varnost
 value_hashed: Vrednost varno zgoščena
@@ -456,7 +421,6 @@ create_bookmark: Ustvari zaznamek
 edit_bookmark: Uredi zaznamek
 bookmarks: Zaznamki
 presets: Prednastavitve
-unexpected_error: Nepričakovana napaka
 unexpected_error_copy: Nepričakovana napaka. Prosimo, poskusite kasneje.
 copy_details: Kopiraj podrobnosti
 no_app_access: Nimate dostopa do aplikacije
@@ -544,13 +508,11 @@ upload_files_success: '{count} datotek naloženih'
 upload_pending: Nalaganje v teku
 drag_file_here: Povleci & spusti datoteko sem
 click_to_browse: Klikni za brskanje
-interface_options: Možnosti vmesnika
 layout_options: Možnosti postavitve
 rows: Vrstice
 columns: Stolpci
 collection_setup: Nastavitve zbirke
 optional_system_fields: Neobvezna sistemska polja
-value_unique: Vrednost mora biti edinstvena
 all_activity: Vse aktivnosti
 create_item: Ustvari zapis
 display_template: Prikaži predlogo
@@ -588,13 +550,10 @@ toggle: Preklopi
 icon_on: Prikaži ikono
 icon_off: Skrij ikono
 label: Oznaka
-full_screen: Celozaslonski način
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
 media: Medijska datoteka
 quality: Kakovost
-width: Širina
-height: Višina
 source: Vir
 url_placeholder: Vnesite URL ...
 display_text: Prikaži besedilo
@@ -611,9 +570,6 @@ wysiwyg_options:
   alignleft: Poravnaj levo
   alignnone: Brez poravnave
   alignright: Poravnaj desno
-  forecolor: Barva vsebine
-  backcolor: Barva ozadja
-  bold: Krepko
   italic: Ležeče
   underline: Podčrtano
   strikethrough: Prečrtano
@@ -646,7 +602,6 @@ wysiwyg_options:
   redo: Uveljavi
   remove: Odstrani
   removeformat: Odstrani oblikovanje
-  selectall: Izberi vse
   table: Tabela
   visualaid: Pokaži nevidne elemente
   source_code: Uredi izvorno kodo
@@ -669,7 +624,6 @@ no_options_available: Ni opcij
 settings_data_model: Podatkovni model
 settings_permissions: Vloge in dovoljenja
 settings_project: Nastavitve projekta
-settings_webhooks: Prožilci
 settings_presets: Prednastavitve in zaznamki
 one_or_more_options_are_missing: Manjka ena ali več opcij
 scope: Obseg
@@ -733,30 +687,19 @@ fields:
   directus_activity:
     item: Primarni ključ zapisa
     action: Dejanje
-    collection: Zbirka
     timestamp: Dejanje ob
     user: uporabnik
     comment: Komentar
     user_agent: Brskalnik
     ip: IP naslov
-    revisions: Revizija
   directus_collections:
-    collection: Zbirka
-    icon: Ikona
-    note: Opomba
-    color: Barva
-    display_template: Prikaži predlogo
-    hidden: Skrito
-    singleton: En zapis
     translations: Prevodi imen zbirk
     archive_app_filter: Arhiviraj aplikacijski filter
     archive_value: Arhiviraj vrednost
     unarchive_value: Odarhiviraj vrednost
-    sort_field: Polje za razvrščanje
     accountability: Sledenje aktivnosti in revizij
   directus_files:
     $thumbnail: Predogledna slika
-    title: Naslov
     description: Opis
     tags: Značke
     location: Lokacija
@@ -767,29 +710,17 @@ fields:
     type: Vrsta MIME
     filesize: Velikost datoteke
     modified_by: Spremenil(a)
-    modified_on: Spremenjeno dne
-    created_on: Ustvarjeno
-    created_by: Ustvaril
-    embed: Vstavi
     uploaded_by: Naložil(a)
-    folder: Mapa
     width: Širina
     uploaded_on: Naloženo
     height: Višina
-    charset: Nabor znakov
-    duration: Trajanje
   directus_users:
     first_name: Ime
     last_name: Priimek
     email: E-pošta
     password: Geslo
     avatar: Avatar
-    location: Lokacija
-    title: Naslov
-    description: Opis
-    tags: Značke
     user_preferences: Uporabniške nastavitve
-    language: Jezik
     theme: Tema
     theme_auto: Avtomatsko (sistemsko)
     theme_light: Svetla tema
@@ -798,15 +729,10 @@ fields:
     admin_options: Administracijske opcije
     status: Stanje
     status_draft: Osnutek
-    status_invited: Povabljen
-    status_active: Aktivno
     status_suspended: Zaustavljeno
     status_archived: Arhivirano
-    role: Vloga
     token: Žeton
     token_placeholder: Vnesite žeton ...
-    last_page: Zadnja stran
-    last_access: Zadnji dostop
   directus_settings:
     transforms_note: Ime Sharp metode in parametri. Več na https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatne pretvorbe
@@ -829,15 +755,10 @@ fields:
   directus_fields:
     collection: Ime zbirke
     icon: Ikona zbirke
-    note: Opomba
     hidden: Skrito
-    singleton: En zapis
-    translation: Prevodi imen polj
     display_template: Predloga
   directus_roles:
-    name: Ime vloge
     icon: Ikona vloge
-    description: Opis
     app_access: Aplikacijski dostop
     admin_access: Administracijski dostop
     ip_access: IP dostop
@@ -846,9 +767,7 @@ fields:
     module_list: Krmarjenje po modulu
     collection_list: Krmarjenje po zbirki
   directus_webhooks:
-    name: Ime
     method: Metoda
-    status: Stanje
     data: Podatki
     data_label: Pošlji podatke dogodka
     triggers: Sprožilci
@@ -858,7 +777,6 @@ field_options:
     project_name_placeholder: Moj projekt ...
     project_logo_note: Ozadje prijave in logotip
     public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
-    security_divider_title: Varnost
     auth_password_policy:
       none_text: Brez - ni priporočljivo
       weak_text: Šibko - najmanj 8 znakov
@@ -869,32 +787,17 @@ field_options:
         cover_text: Zapolni (točna velikost)
         fit_text: Prilagodi znotraj
         outside_text: Prilagodi zunaj
-    additional_transforms: Dodatne pretvorbe
-    transforms_note: Ime Sharp metode in parametri. Več na https://sharp.pixelplumbing.com/api-constructor.
-    files_divider_title: Datoteke & sličice
-    overrides_divider_title: Aplikacijske preglasitve
-  directus_activity:
-    login: Prijava
-    create: Ustvari
-    update: Posodobi
-    delete: Izbriši
   directus_collections:
     track_activity_revisions: Sledi aktivnosti in revizije
     only_track_activity: Sledi samo aktivnosti
     do_not_track_anything: Ne sledi ničesar
-    collection_setup: Nastavitve zbirke
     note_placeholder: Opis te zbirke ...
     hidden_label: Skrij v aplikaciji
-    singleton: Obravnavaj kot en objekt
-    language: Jezik
     translation: Vnesite prevod ...
-    archive_divider: Arhiviraj
     archive_field: Izberite polje ...
     archive_app_filter: Omogoči aplikacijski arhivski filter
     archive_value: Nastavljena vrednost pri arhiviranju ...
     unarchive_value: Nastavljena vrednost pri dearhiviranju ...
-    divider: Razvrsti
-    sort_field: Izberite polje ...
     accountability_divider: Odgovornost
   directus_files:
     title: Edinstven naziv ...
@@ -908,9 +811,6 @@ field_options:
     description: Opis te vloge ...
     ip_access: Dovoljeni IP naslovi, pustite prazno za neomejen dostop ...
     fields:
-      icon_name: Ikona
-      name_name: Ime
-      name_placeholder: Vnesite naslov ...
       link_name: Povezava
       link_placeholder: Relativni ali absolutni URL naslov ...
     collection_list:
@@ -918,32 +818,12 @@ field_options:
       fields:
         group_name: Ime skupine
         group_placeholder: Naziv te skupine ...
-        type_name: Tip
         choices_always: Vedno odprto
-        choices_start_open: Začni odprto
         choices_start_collapsed: Začni zaprto
-    collections_name: Zbirke
     collections_addLabel: Dodaj zbirko ...
   directus_users:
-    preferences_divider: Uporabniške nastavitve
-    dropdown_auto: Avtomatsko (sistemsko)
-    dropdown_light: Svetla tema
-    dropdown_dark: Temna tema
-    admin_divider: Administracijske opcije
-    status_dropdown_draft: Osnutek
     status_dropdown_invited: Povabljen
-    status_dropdown_active: Aktivno
-    status_dropdown_suspended: Zaustavljeno
-    status_dropdown_archived: Arhivirano
-    token: Vnesite žeton ...
   directus_webhooks:
-    status_options_active: Aktivno
-    status_options_inactive: Neaktivno
-    data_label: Pošlji podatke dogodka
-    triggers_divider: Sprožilci
-    actions_create: Ustvari
-    actions_update: Posodobi
-    actions_delete: Izbriši
     actions_login: Prijava
 no_fields_in_collection: 'Zbirka {collection} še nima polj'
 do_nothing: Ne stori ničesar
@@ -953,7 +833,6 @@ save_current_user_role: Shrani vlogo uporabnika
 save_current_datetime: Shrani datum in uro
 block: Blokiraj
 inline: V vrstici
-comment: Komentar
 relational_triggers: Povezani prožilci
 referential_action_field_label_m2o: Ob brisanju v {collection} ...
 referential_action_field_label_o2m: Pri deselektiranju iz {collection} ...
@@ -973,18 +852,15 @@ delete_are_you_sure: >-
   Ta aktivnost je permanetna in se ne da povrniti. Ste prepričani, da želite nadaljevati?
 delete_field_are_you_sure: >-
   Ste prepričani, da želite izbrisati polje "{field}"? To se ne da povrniti.
-description: Opis
 done: Opravljeno
 duplicate: Dvojnik
 limit: Omejitev
-email: E-pošta
 embed: Vstavi
 fallback_icon: Nadomestna ikona
 field: Polje | Polja
 file: Datoteka
 file_library: Knjižnjica datotek
 forgot_password: Pozabljeno geslo
-hidden: Skrito
 icon: Ikona
 info: Informacije
 normal: Običajno
@@ -999,7 +875,6 @@ not_authenticated: Neprijavljeno
 authenticated: Preverjena pristnost
 options: Možnosti
 otp: Enkratno geslo
-password: Geslo
 permissions: Dovoljenja
 relationship: Povezava
 reset: Ponastavi
@@ -1020,7 +895,6 @@ something_went_wrong: Nekaj je šlo narobe.
 sort_direction: Smer razvrščanja
 sort_asc: Razvrsti naraščajoče
 sort_desc: Razvrsti padajoče
-template: Predloga
 require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
@@ -1031,7 +905,6 @@ interfaces:
   group-accordion:
     name: Harmonika
     description: Prikaži polja ali skupine kot segmente harmonike
-    start: Začetek
     all_closed: Vse zaprto
     first_opened: Prvo odprto
     all_opened: Vse odprto
@@ -1042,8 +915,6 @@ interfaces:
     links: Povezave
     description: Konfigurabilni navigacijski gumbi za dinamične povezave
     style: Slog
-    primary: Glavni
-    link: Povezave
     button: Gumbi
     error: Dejanja ni mogoče izvesti
   select-multiple-checkbox:
@@ -1060,20 +931,13 @@ interfaces:
     show_all: Pokaži vse
     show_selected: Pokaži izbrano
   input-code:
-    code: Koda
     description: Piši ali deli košček kode
     line_number: Vrstica številka
     placeholder: Tukaj vnesite kodo ...
-  system-collection:
-    collection: Zbirka
-    description: Izberite med obstoječimi zbirkami
-    include_system_collections: Vključi sistemske zbirke
   system-collections:
-    collections: Zbirke
     description: Izberite med obstoječimi zbirkami
     include_system_collections: Vključi sistemske zbirke
   select-color:
-    color: Barva
     description: Vnesi ali izberi barvo
     placeholder: Izberite barvo ...
     preset_colors: Prednastavljene barve
@@ -1086,13 +950,9 @@ interfaces:
     set_to_now: Nastavi na trenutni čas
     use_24: Uporabi 24-urno obliko
   system-display-template:
-    display-template: Prikaži predlogo
     description: Mešano statični tekst in dinamične vrednosti polja
     collection_field: Polje zbirke
-    collection_field_not_setup: Polje zbirke ni nastavljeno
-    select_a_collection: Izberite zbirko
   presentation-divider:
-    divider: Ločilo
     description: Oznaka in delilnik polj v odseke
     title_placeholder: Vnesite naslov ...
     inline_title: Naslov v vrstici
@@ -1102,32 +962,26 @@ interfaces:
   select-dropdown:
     description: Izberi vrednost iz možnosti
     choices_placeholder: Dodaj novo opcijo
-    allow_other: Dovoli drugo
     allow_other_label: Dovoli druge vrednosti
     allow_none: Ne dovoli nič
     allow_none_label: Ne dovoli izbora
     choices_name_placeholder: Vnesi ime ...
-    choices_value_placeholder: Vnesite vrednost ...
   select-multiple-dropdown:
     select-multiple-dropdown: Izbirnik (večkratni)
     description: Izberite več vrednosti iz izbirnika
   file:
-    file: Datoteka
     description: Izberi ali naloži datoteko
   files:
     files: Datoteke
     description: Izberi ali naloži več datotek
   input-hash:
-    hash: Hash
     description: Vnesi vrednost za hashiranje
     masked: Maskirano
     masked_label: Skrij dejanske vrednosti
   select-icon:
-    icon: Ikona
     description: Izberi ikono iz izbirnika
     search_for_icon: Iskanje ikone ...
   file-image:
-    image: Slika
     description: Izberi ali naloži sliko
   system-interface:
     interface: Vmesnik
@@ -1142,7 +996,6 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Mnogo na ena
     description: Izberi en povezan zapis
-    display_template: Prikaži predlogo
   input-rich-text-md:
     markdown: Markdown
     description: Vnos in predogled markdown-a
@@ -1155,7 +1008,6 @@ interfaces:
   map:
     map: Zemljevid
     description: Izberite lokacijo
-    zoom: Povečaj
     geometry_type: Tip geometrije
     geometry_format: Geometrijski format
     default_view: Privzeti pogled
@@ -1177,7 +1029,6 @@ interfaces:
     description: Izberite več povezanih zapisov
     no_collection: Zbirke ni mogoče najti
   system-folder:
-    folder: Mapa
     description: Izberi mapo
     field_hint: Naloži novo datoteko v izbrano mapo. Ne vpliva na obstoječe izbrane datoteke.
     root_name: Korenska mapa knjižnjice
@@ -1197,7 +1048,6 @@ interfaces:
     description: Z drsnikom izberite vrednost
     always_show_value: Vedno pokaži vrednost
   tags:
-    tags: Značke
     description: Izberi ali dodaj značke
     whitespace: Presledek
     hyphen: Zamenjaj z vezajem
@@ -1215,7 +1065,6 @@ interfaces:
     description: Ročno vnesite vrednost
     trim: Obreži
     trim_label: Obreži začetek in konec
-    mask: Maskirano
     mask_label: Skrij dejansko vrednost
     clear: Počiščena vrednost
     clear_label: Shrani kot prazen tekst
@@ -1228,23 +1077,18 @@ interfaces:
     textarea: Besedilo
     description: Vnesite več vrstic teksta
   boolean:
-    toggle: Preklopi
     description: Preklopi
     label_placeholder: Vnesite oznako ...
-    label_default: Omogočeno
   translations:
-    display_template: Prikaži predlogo
     no_collection: Ni zbirke
   list-o2m-tree-view:
     description: Drevesni pogled za rekurzivne ena-na-več zapise
     recursive_only: Drevesni pogled deluje samo na rekurzivnih povezavah.
   user:
-    user: Uporabnik
     description: Izberite obstoječega uporabnika
     select_mode: Izberi način
     modes:
       auto: Samodejno
-      dropdown: Izbirnik
       modal: Modalno
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1272,28 +1116,21 @@ interfaces:
     start_closed: Začni zaprto
 displays:
   boolean:
-    boolean: Boolean
     description: Pokaži prižgano / ugasnjeno stanje
     label_on: Oznaka prikazana
     label_on_placeholder: Vnesite tekst za oznako prižgano/1/da ...
     label_off: Oznaka ugasnjeno
     label_off_placeholder: Vnesite tekst za oznako ugasnjeno/0/ne ...
-    icon_on: Prikaži ikono
-    icon_off: Skrij ikono
     color_on: Barva da
     color_off: Barva ne
   collection:
-    collection: Zbirka
     description: Prikaži zbirko
     icon_label: Prikaži ikono zbirke
   color:
-    color: Barva
     description: Prikaži barvno piko
     default_color: Privzeta barva
   datetime:
-    datetime: Datum in ura
     description: Prikaži relativni čas
-    format: Oblika
     format_note: >-
       Prilagojena oblika sprejema __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Dolgo
@@ -1301,7 +1138,6 @@ displays:
     relative: Relativno
     relative_label: 'Pokaži relativni čas, recimo pred 5 minutami'
   file:
-    file: Datoteka
     description: Prikaži datoteke
   filesize:
     filesize: Velikost datoteke
@@ -1316,14 +1152,12 @@ displays:
     formatted-json-value: Oblikovana JSON vrednost
     description: Prikaži oblikovano verzijo objekta
   icon:
-    icon: Ikona
     description: Prikaži ikono
     filled: Zapolnjeno
     filled_label: Uporabi zapolnjeno varianto
   image:
     image: Slika
     description: Pokaži majhen predogled
-    circle: Krog
     circle_label: Prikaži v krogu
   labels:
     labels: Oznake
@@ -1332,7 +1166,6 @@ displays:
     default_background: Privzeta barva ozadja
     format_label: Oblikuj vse oznake
     show_as_dot: Prikaži kot piko
-    choices_value_placeholder: Vnesite vrednost ...
     choices_text_placeholder: Vnesite tekst ...
   mime-type:
     mime-type: Vrsta MIME
@@ -1350,10 +1183,7 @@ displays:
     related-values: Povezane vrednosti
     description: Pokaži povezane vrednosti
   user:
-    user: Uporabnik
     description: Prikaži uporabnika
-    avatar: Avatar
-    name: Ime
     both: Oboje
     circle_label: Pokaži uporabnika v krogu
 layouts:
@@ -1363,10 +1193,8 @@ layouts:
     image_fit: Prileganje slike
     crop: Obrezovanje
     contain: Vsebuje
-    title: Naslov
     subtitle: Podnaslov
   tabular:
-    tabular: Tabela
     fields: Polja
     spacing: Razmik
     comfortable: Udobno
@@ -1377,7 +1205,6 @@ layouts:
     start_date_field: Polje začetnega datuma
     end_date_field: Polje končnega datuma
   map:
-    map: Zemljevid
     basemap: Osnovni zemljevid
     layers: Plasti
     edit_custom_layers: Uredi plasti
@@ -1386,8 +1213,4 @@ layouts:
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
-    field: Geometrija
     invalid_geometry: Neveljavna geometrija
-panels:
-  label:
-    name: Oznaka
