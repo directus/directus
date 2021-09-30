@@ -54,14 +54,10 @@ allow_multiple: امکان چندین انتخاب
 allow_multiple_to_be_open: اجازه دهید Multiple باز شود
 enter_value_to_replace_nulls: لطفاً یک مقدار جدید برای جایگزینی هر گونه NULL موجود در این قسمت وارد کنید.
 field_standard: استاندارد
-field_presentation: ارائه و نام مستعار
-field_file: فیلتر تک
-field_files: چندین فیلتر
 field_m2o: نسبت
 field_m2a: نسبت
 field_o2m: نسبت
 field_m2m: نسبت
-field_translations: ترجمه‌ها
 field_group: گروه میدانی
 item_permissions: مجوزهای مورد
 field_permissions: مجوزهای مورد
@@ -149,7 +145,6 @@ import_label: وارد کردن
 file_details: جزئیات فایل
 dimensions: ابعاد
 size: سایز
-created: ایجاد شد
 modified: دستکاری شده
 checksum: کنترلی
 owner: مالک
@@ -181,53 +176,4 @@ creating_collection_system: هر یک از این زمینه های اختیار
 auto_increment_integer: عدد صحیح افزایش خودکار
 generated_uuid: UUID تولید شده
 manual_string: رشته به صورت دستی وارد شده است
-wysiwyg_options:
-  forecolor: رنگ روی‌زمینه
-  backcolor: رنگ زمینه
-fields:
-  directus_collections:
-    note: شرح
-  directus_files:
-    title: عنوان
-    created_on: ایجاد شده در
-    created_by: ایجاد شده توسط
-    folder: Folder
-  directus_users:
-    title: عنوان
-    language: زبان
-  directus_fields:
-    note: شرح
-    translation: ترجمه‌های نام فیلد
-  directus_roles:
-    name: نام نقش
-  directus_webhooks:
-    name: نام
-field_options:
-  directus_collections:
-    language: زبان
-  directus_roles:
-    fields:
-      name_name: نام
-    collection_list:
-      fields:
-        type_name: نوع
 limit: محدوده
-interfaces:
-  presentation-links:
-    primary: اصلی
-  select-dropdown:
-    choices_value_placeholder: یک مقدار وارد کنید...
-  map:
-    zoom: بزرگنمايی
-  system-folder:
-    folder: Folder
-displays:
-  boolean:
-    boolean: بولین
-  labels:
-    choices_value_placeholder: یک مقدار وارد کنید...
-  user:
-    name: نام
-layouts:
-  cards:
-    title: عنوان
