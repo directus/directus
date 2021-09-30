@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Άβαταρ
 edit_field: Επεξεργασία Πεδίου
 item_revision: Αναθεώρηση Αντικειμένου
 duplicate_field: Αντίγραφο Πεδίου
@@ -115,6 +136,10 @@ users: Χρήστες
 activity: Δραστηριότητα
 field_width: Πλάτος πεδίου
 duration: Διάρκεια
+status: Κατάσταση
+remove: Διαγραφή
+errors:
+  NOT_NULL_VIOLATION: Η τιμή δεν μπορεί να είναι μηδενική
 bookmarks: Σελιδοδείκτες
 back: Πίσω
 operators:
@@ -123,10 +148,13 @@ operators:
   gte: Μεγαλύτερο από ή ίσο με
   contains: Περιέχει
   empty: Είναι κενό
+value_unique: Η τιμή πρέπει να είναι μοναδική
 role: Ρόλος
 create: Δημιουργία
 read: Ανάγνωση
 update: Ενημέρωση
+width: Πλάτος
+height: Ύψος
 wysiwyg_options:
   remove: Διαγραφή
   table: Πίνακας
@@ -146,48 +174,91 @@ fields:
   directus_activity:
     item: Στοιχείο Πρωτεύον Κλειδί
     action: Ενέργεια
+    collection: Συλλογή
     timestamp: Ενέργεια στις
     user: Ενέργεια από
     comment: Σχόλιο
     user_agent: Πράκτορας χρήστη
     ip: Διεύθυνση IP
+  directus_collections:
+    collection: Συλλογή
+    icon: Εικονίδιο
+    note: Σημείωση
+    hidden: Κρυφό
   directus_files:
+    title: Τίτλος
     description: Περιγραφή
     tags: Ετικέτες
     location: Τοποθεσία
     metadata: Μεταδεδομένα
     filesize: Μέγεθος αρχείου
+    created_on: Δημιουργήθηκε στις
+    created_by: Δημιουργήθηκε από
+    embed: Ενσωμάτωση
     uploaded_by: Μεταφορτώθηκε από
     width: Πλάτος
     uploaded_on: Μεταφορτώθηκε στις
     height: Ύψος
+    duration: Διάρκεια
   directus_users:
     first_name: Όνομα
     last_name: Επώνυμο
     email: Ηλεκτρονικό ταχυδρομείο
     password: Κωδικός
     avatar: Άβαταρ
+    location: Τοποθεσία
+    title: Τίτλος
+    description: Περιγραφή
+    tags: Ετικέτες
     theme: Θέμα
     tfa_secret: Έλεγχος ταυτότητας δυο παραγόντων
     status: Κατάσταση
+    role: Ρόλος
   directus_settings:
     project_name: Όνομα Έργου
   directus_fields:
+    note: Σημείωση
     hidden: Κρυφό
+    translation: Μεταφράσεις Ονόματος Πεδίου
+  directus_roles:
+    name: Όνομα Ρόλου
+    description: Περιγραφή
+  directus_webhooks:
+    name: Όνομα
+    status: Κατάσταση
+field_options:
+  directus_activity:
+    create: Δημιουργία
+    update: Ενημέρωση
+  directus_collections:
+    archive_divider: Αρχειοθέτηση
+  directus_roles:
+    fields:
+      icon_name: Εικονίδιο
+      name_name: Όνομα
+    collections_name: Συλλογές
+  directus_webhooks:
+    actions_create: Δημιουργία
+    actions_update: Ενημέρωση
+comment: Σχόλιο
 delete_field_are_you_sure: >-
   Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.
+description: Περιγραφή
 done: Ολοκληρώθηκε
 duplicate: Αντίγραφο
+email: Ηλεκτρονικό ταχυδρομείο
 embed: Ενσωμάτωση
 field: Πεδίο | Πεδία
 file: Αρχείο
 file_library: Βιβλιοθήκη αρχείων
 forgot_password: Ξέχασα τον κωδικό πρόσβασης
+hidden: Κρυφό
 icon: Εικονίδιο
 info: Πληροφορίες
 latency: Καθυστέρηση
 options: Επιλογές
 otp: Κωδικός μιάς χρήσης
+password: Κωδικός
 permissions: Δικαιώματα
 relationship: Σχέση
 reset: Επαναφορά
@@ -198,17 +269,39 @@ settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
 interfaces:
+  presentation-links:
+    primary: Κυρίως
+  system-collection:
+    collection: Συλλογή
+  system-collections:
+    collections: Συλλογές
+  file:
+    file: Αρχείο
   files:
     files: Αρχεία
+  select-icon:
+    icon: Εικονίδιο
+  tags:
+    tags: Ετικέτες
 displays:
+  collection:
+    collection: Συλλογή
+  file:
+    file: Αρχείο
+  icon:
+    icon: Εικονίδιο
   user:
+    avatar: Άβαταρ
+    name: Όνομα
     both: Και τα δύο
 layouts:
   cards:
     cards: Κάρτες
     image_source: Πηγή εικόνας
+    title: Τίτλος
     subtitle: Υπότιτλος
   tabular:
+    tabular: Πίνακας
     comfortable: Άνετος
     compact: Συμπαγής
     cozy: Κανονικό
