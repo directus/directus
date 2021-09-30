@@ -1,26 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Avatar
-default_provider: Por defecto
 edit_field: Editar Campo
 conditions: Condiciones
 item_revision: Revisión de Elemento
@@ -120,14 +98,10 @@ nullable: Acepta valores nulos
 allow_null_value: Permitir valor NULL
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
-field_presentation: Presentación y Alias
-field_file: Un Archivo
-field_files: Múltiples Archivos
 field_m2o: Relación MAU
 field_m2a: Relación M2A
 field_o2m: Relación UAM
 field_m2m: Relación MAM
-field_translations: Traducciones
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
 field_validation: Validación de Campo
@@ -277,7 +251,6 @@ move_to_folder: Mover a Directorio
 move: Mover
 system: Sistema
 add_field_related: Agregar Campo a Colección Relacionada
-interface_label: Interfaz
 today: Hoy
 yesterday: Ayer
 delete_comment: Eliminar Comentario
@@ -311,7 +284,6 @@ import_label: Importar
 file_details: Detalles de Archivo
 dimensions: Dimensiones
 size: Tamaño
-created: Creado
 modified: Modificado
 checksum: Suma de verificación
 owner: Propietario
@@ -384,7 +356,6 @@ display_template_not_setup: La opción de plantilla de Presentación está mal c
 collection_field_not_setup: La opción del campo de colección está mal configurada
 select_a_collection: Seleccionar una Colección
 active: Activo
-copy: Copiar
 users: Usuarios
 activity: Actividad
 webhooks: Webhooks
@@ -405,8 +376,6 @@ card_size: Tamaño de Tarjeta
 sort_field: Campo Ordenamiento
 add_sort_field: Añadir campo de ordenación
 sort: Ordenar
-status: Estado
-remove: Eliminar
 toggle_manual_sorting: Alternar Ordenamiento Manual
 bookmark_doesnt_exist: El Marcador no existe
 bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser encontrado.
@@ -436,8 +405,6 @@ errors:
   USER_SUSPENDED: Usuario Suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   UNPROCESSABLE_ENTITY: Entidad no procesable
-  INTERNAL_SERVER_ERROR: Error Inesperado
-  NOT_NULL_VIOLATION: El valor no puede ser nulo
   UNKNOWN: Error Inesperado
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
@@ -445,7 +412,6 @@ create_bookmark: Crear Marcador
 edit_bookmark: Editar Marcador
 bookmarks: Marcadores
 presets: Predefinidos
-unexpected_error: Error Inesperado
 unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo más tarde.
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
@@ -528,13 +494,11 @@ upload_files_success: '{count} Archivos Subidos'
 upload_pending: Subida Pendiente
 drag_file_here: Arrastre y Suelte un Archivo Aquí
 click_to_browse: Haga Clic para Navegar
-interface_options: Opciones de Interfaz
 layout_options: Opciones de Diseño
 rows: Filas
 columns: Columnas
 collection_setup: Configuración de Colección
 optional_system_fields: Campos Opcionales del Sistema
-value_unique: El Valor tiene que ser único
 all_activity: Toda la Actividad
 create_item: Crear Elemento
 display_template: Plantilla de Presentación
@@ -571,12 +535,9 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
-full_screen: Pantalla Completa
 image_url: Url de la imagen
 alt_text: Texto Alternativo
 media: Medios
-width: Ancho
-height: Altura
 source: Fuente
 url_placeholder: Introduzca una url...
 display_text: Mostrar texto
@@ -593,9 +554,6 @@ wysiwyg_options:
   alignleft: Alinear a la Izquierda
   alignnone: No Alinear
   alignright: Alinear a la Derecha
-  forecolor: Color de Letra
-  backcolor: Color de Fondo
-  bold: Negrita
   italic: Cursiva
   underline: Subrayado
   strikethrough: Tachado
@@ -628,7 +586,6 @@ wysiwyg_options:
   redo: Rehacer
   remove: Eliminar
   removeformat: Quitar Formato
-  selectall: Seleccionar Todo
   table: Tabular
   visualaid: Ver elementos invisibles
   source_code: Editar código fuente
@@ -651,7 +608,6 @@ no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de Datos
 settings_permissions: Roles y permisos
 settings_project: Configuración de proyecto
-settings_webhooks: Webhooks
 settings_presets: Predefinidos y Marcadores
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
@@ -714,30 +670,19 @@ fields:
   directus_activity:
     item: Clave primaria del ítem
     action: Acción
-    collection: Colección
     timestamp: Realizado el
     user: Realizado por
     comment: Comentar
     user_agent: Agente de usuario
     ip: Dirección IP
-    revisions: Revisiones
   directus_collections:
-    collection: Colección
-    icon: Icono
-    note: Nota
-    color: Color
-    display_template: Plantilla de Presentación
-    hidden: Oculto
-    singleton: Singleton
     translations: Traducciones para Nombre de Colección
     archive_app_filter: Archivar filtros de App
     archive_value: Archivar valor
     unarchive_value: Desarchivar valor
-    sort_field: Campo Ordenamiento
     accountability: Actividad y seguimiento de revisión
   directus_files:
     $thumbnail: Miniatura
-    title: Título
     description: Descripción
     tags: Etiquetas
     location: Ubicación
@@ -748,36 +693,20 @@ fields:
     type: Tipo Mime
     filesize: Tamaño del archivo
     modified_by: Modificado por
-    modified_on: Modificado en
-    created_on: Creado El
-    created_by: Creado Por
-    embed: Empotrar
     uploaded_by: Subido por
-    folder: Directorio
     width: Ancho
     uploaded_on: Subido el
     height: Altura
-    charset: Codificación
-    duration: Duración
   directus_users:
     first_name: Primer nombre
     last_name: Apellido
     email: Correo electrónico
     password: Contraseña
     avatar: Avatar
-    location: Ubicación
-    title: Título
-    description: Descripción
-    tags: Etiquetas
-    language: Idioma
     theme: Tema
     tfa_secret: Autenticación de dos factores
     status: Estado
-    status_active: Activo
-    role: Rol
     token: Token
-    last_page: Última Página
-    last_access: Último Acceso
   directus_settings:
     project_name: Nombre de proyecto
     project_url: URL del Proyecto
@@ -794,15 +723,10 @@ fields:
   directus_fields:
     collection: Nombre de Colección
     icon: Ícono de Colección
-    note: Nota
     hidden: Oculto
-    singleton: Singleton
-    translation: Traducción de campos
     display_template: Plantilla
   directus_roles:
-    name: Nombre de rol
     icon: Ícono del Rol
-    description: Descripción
     app_access: Acceso a App
     admin_access: Acceso Admin
     ip_access: Acceso IP
@@ -810,39 +734,11 @@ fields:
     users: Usuarios en el Rol
     module_list: Navegación en Módulo
     collection_list: Navegación en Colección
-  directus_webhooks:
-    name: Nombre
-    status: Estado
 field_options:
-  directus_activity:
-    create: Crear
-    update: Actualizar
-    delete: Eliminar
   directus_collections:
     track_activity_revisions: Rastrear actividad y revisiones
     only_track_activity: Sólo seguimiento de actividad
     do_not_track_anything: No realizar seguimiento
-    collection_setup: Configuración de Colección
-    singleton: Tratar como un sólo objeto
-    language: Idioma
-    archive_divider: Archivar
-    divider: Ordenar
-  directus_roles:
-    fields:
-      icon_name: Icono
-      name_name: Nombre
-      name_placeholder: Ingresar un título...
-    collection_list:
-      fields:
-        type_name: Tipo
-    collections_name: Colecciones
-  directus_users:
-    status_dropdown_active: Activo
-  directus_webhooks:
-    status_options_active: Activo
-    actions_create: Crear
-    actions_update: Actualizar
-    actions_delete: Eliminar
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 do_nothing: No hacer nada
 generate_and_save_uuid: Generar y Guardar UUID
@@ -851,7 +747,6 @@ save_current_user_role: Guardar Rol Actual de Usuario
 save_current_datetime: Guardar Fecha y Hora Actual
 block: Bloque
 inline: Alineado
-comment: Comentar
 relational_triggers: Disparadores Relacionales
 referential_action_field_label_m2o: Al eliminar {collection}...
 referential_action_field_label_o2m: Al deseleccionar {collection}...
@@ -871,17 +766,14 @@ delete_are_you_sure: >-
   Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
 delete_field_are_you_sure: >-
   ¿Está seguro de que desea eliminar el campo? "{field}"? Esta acción no se puede deshacer.
-description: Descripción
 done: Hecho
 duplicate: Duplicado
-email: Correo electrónico
 embed: Empotrar
 fallback_icon: Ícono de Reserva
 field: Campo | Campos
 file: Archivo
 file_library: Biblioteca de archivos
 forgot_password: Se te olvidó tu contraseña
-hidden: Oculto
 icon: Icono
 info: Informacion
 normal: Normal
@@ -896,7 +788,6 @@ not_authenticated: No autenticado
 authenticated: Autenticado
 options: Opciones
 otp: Contraseña de un solo uso
-password: Contraseña
 permissions: Permisos
 relationship: Relación
 reset: Reiniciar
@@ -917,7 +808,6 @@ something_went_wrong: Algo salió mal.
 sort_direction: Dirección de Ordenamiento
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
-template: Plantilla
 require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
 value: Valor
@@ -926,7 +816,6 @@ report_error: Reportar Error
 start: Iniciar
 interfaces:
   group-accordion:
-    start: Iniciar
     all_closed: Todo Cerrado
     first_opened: Primero Abierto
     all_opened: Todo Abierto
@@ -935,8 +824,6 @@ interfaces:
     links: Enlaces
     description: Botones de enlace configurables para abrir URLs dinámicas
     style: Estilo
-    primary: Principal
-    link: Enlaces
     button: Botones
     error: No se puede realizar la acción
   select-multiple-checkbox:
@@ -946,20 +833,13 @@ interfaces:
     show_more: 'Mostrar {count} más'
     items_shown: Elementos Mostrados
   input-code:
-    code: Código
     description: Escribir o compartir fragmentos de código
     line_number: Número de línea
     placeholder: Ingrese el código aquí...
-  system-collection:
-    collection: Colección
-    description: Seleccionar entre colecciones existentes
-    include_system_collections: Incluir Colecciones del Sistema
   system-collections:
-    collections: Colecciones
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema
   select-color:
-    color: Color
     description: Introduzca o seleccione un valor de color
     placeholder: Seleccione un color...
     preset_colors: Colores preestablecidos
@@ -972,13 +852,9 @@ interfaces:
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
   system-display-template:
-    display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
     collection_field: Campo de colección
-    collection_field_not_setup: La opción del campo de colección está mal configurada
-    select_a_collection: Seleccionar una Colección
   presentation-divider:
-    divider: Separador
     description: Etiqueta y divide los campos en secciones
     title_placeholder: Ingresar un título...
     inline_title: Título seguido por línea
@@ -988,32 +864,26 @@ interfaces:
   select-dropdown:
     description: Seleccione un valor de una lista desplegable
     choices_placeholder: Agregar una nueva opción
-    allow_other: Permitir otro
     allow_other_label: Permitir otros valores
     allow_none: Permitir "Nada"
     allow_none_label: Permitir "Sin selección"
     choices_name_placeholder: Ingrese un nombre...
-    choices_value_placeholder: Ingrese un valor...
   select-multiple-dropdown:
     select-multiple-dropdown: Lista Desplegable (Múltiple)
     description: Seleccione múltiples valores de una lista de selección
   file:
-    file: Archivo
     description: Seleccionar o subir un archivo
   files:
     files: Archivos
     description: Seleccionar o subir múltiples archivos
   input-hash:
-    hash: Hash
     description: Introduzca un valor para ser cifrado
     masked: Enmascarado
     masked_label: Ocultar los valores reales
   select-icon:
-    icon: Icono
     description: Seleccione un ícono de la lista desplegable
     search_for_icon: Buscar un ícono...
   file-image:
-    image: Imagen
     description: Seleccionar o subir una imagen
   system-interface:
     interface: Interfaz
@@ -1028,7 +898,6 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
-    display_template: Plantilla de Presentación
   input-rich-text-md:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
@@ -1038,15 +907,12 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
-  map:
-    zoom: Zoom
   presentation-notice:
     notice: Aviso
   list-o2m:
     one-to-many: Uno a Muchos
     no_collection: No se encontró la colección
   system-folder:
-    folder: Directorio
     description: Seleccione una carpeta
     root_name: Raíz de la Biblioteca de Archivos
     system_default: Valores por defecto del sistema
@@ -1057,7 +923,6 @@ interfaces:
     description: Seleccionar un número usando un deslizador
     always_show_value: Siemrpe presentar valor
   tags:
-    tags: Etiquetas
     description: Seleccionar o agregar etiquetas
     whitespace: Espacio en Blanco
     hyphen: Reemplazar con guiones
@@ -1071,7 +936,6 @@ interfaces:
     alphabetize_label: Forzar Orden Alfabético
     add_tags: Agregar etiquetas...
   input:
-    mask: Enmascarado
     mask_label: Ocultar el valor real
     clear: Valor Limpiado
     clear_label: Guardar como cadena vacía
@@ -1082,19 +946,14 @@ interfaces:
   input-multiline:
     textarea: Área de Texto
   boolean:
-    toggle: Alternar
     description: Alternar entre Activado y Desactivado
-    label_default: Habilitado
   translations:
-    display_template: Plantilla de Presentación
     no_collection: Sin Colección
   user:
-    user: Usuario
     description: Seleccionar un usuario existente de Directus
     select_mode: Seleccionar Modo
     modes:
       auto: Automático
-      dropdown: Lista Desplegable
       modal: Diálogo
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1105,28 +964,21 @@ interfaces:
     results_path: Ruta de Resultados
 displays:
   boolean:
-    boolean: Booleano
     description: Presentar estados Activo e Inactivo
     label_on: Etiqueta Activo
     label_on_placeholder: Ingrese una etiqueta para Activo...
     label_off: Etiqueta Inactivo
     label_off_placeholder: Ingrese una etiqueta para Inactivo...
-    icon_on: Icono Activado
-    icon_off: Icono Desactivado
     color_on: Color para Activo
     color_off: Color para Inactivo
   collection:
-    collection: Colección
     description: Presentar una colección
     icon_label: Presentar el ícono de la colección
   color:
-    color: Color
     description: Presentar un punto coloreado
     default_color: Color por Defecto
   datetime:
-    datetime: Fecha/hora
     description: Presentar valores relacionados a la hora
-    format: Formato
     format_note: >-
       El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Larga
@@ -1134,7 +986,6 @@ displays:
     relative: Relativa
     relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
   file:
-    file: Archivo
     description: Presentar archivos
   filesize:
     filesize: Tamaño del archivo
@@ -1149,14 +1000,12 @@ displays:
     formatted-json-value: Valor JSON Formateado
     description: Presentar una versión formateada del objeto
   icon:
-    icon: Icono
     description: Presentar un ícono
     filled: Lleno
     filled_label: Usar una variante de llenado
   image:
     image: Imagen
     description: Presentar una previsualización pequeña de la imagen
-    circle: Círculo
     circle_label: Presentar como un círculo
   labels:
     labels: Etiquetas
@@ -1165,7 +1014,6 @@ displays:
     default_background: Fondo por defecto
     format_label: Formatear cada etiqueta
     show_as_dot: Presentar como Punto
-    choices_value_placeholder: Ingrese un valor...
     choices_text_placeholder: Ingresar un texto...
   mime-type:
     mime-type: Tipo MIME
@@ -1183,10 +1031,7 @@ displays:
     related-values: Valores Relacionados
     description: Presentar valores relativos
   user:
-    user: Usuario
     description: Presentar un usuario de Directus
-    avatar: Avatar
-    name: Nombre
     both: Ambos
     circle_label: Presentar usuario en un círculo
 layouts:
@@ -1196,10 +1041,8 @@ layouts:
     image_fit: Ajuste de Imagen
     crop: Recortar
     contain: Contiene
-    title: Título
     subtitle: Subtítulo
   tabular:
-    tabular: Tabular
     fields: Campos
     spacing: Espaciado
     comfortable: Cómoda
@@ -1209,6 +1052,3 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Fecha de Inicio
     end_date_field: Campo Fecha de Fin
-panels:
-  label:
-    name: Etiqueta
