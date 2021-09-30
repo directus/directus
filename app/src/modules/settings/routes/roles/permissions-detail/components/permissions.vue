@@ -9,7 +9,11 @@
 			}}
 		</v-notice>
 
-		<interface-input-code :value="permissions" language="json" type="json" @input="permissions = $event" />
+		<interface-system-filter
+			:value="permissions"
+			:collection-name="permission.collection"
+			@input="permissions = $event"
+		/>
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
