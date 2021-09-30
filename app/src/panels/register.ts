@@ -26,7 +26,7 @@ export async function registerPanels(app: App): Promise<void> {
 	panelsRaw.value = panels;
 
 	panelsRaw.value.forEach((panel: PanelConfig) => {
-		app.component('panel-' + panel.id, panel.component);
+		app.component(`panel-${panel.id}`, panel.component);
 
 		if (typeof panel.options !== 'function' && Array.isArray(panel.options) === false && panel.options !== null) {
 			app.component(`panel-options-${panel.id}`, panel.options);
