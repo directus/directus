@@ -103,6 +103,7 @@ nullable: Nullable
 allow_null_value: NULL मान की अनुमति दें
 enter_value_to_replace_nulls: इस क्षेत्र में वर्तमान में किसी भी NULL मान को बदलने के लिए कृपया एक नया मान दर्ज करें
 field_standard: नार्मल फील्ड
+field_presentation: प्रस्तुति और उपनाम
 field_m2o: M2O रिलेशन
 field_m2a: M2A रिलेशन
 field_o2m: O2M रिलेशन
@@ -191,6 +192,8 @@ card_size: Card Size
 sort_field: Sort Field
 add_sort_field: Add Sort Field
 sort: सॉर्ट
+errors:
+  NOT_NULL_VIOLATION: मान null नहीं हो सकता
 flip_horizontal: फ्लिप हॉरिजॉन्टल
 one_item: '1 समान'
 font: फ़ॉन्ट
@@ -205,6 +208,7 @@ operators:
 loading: लोड हो रहा है...
 item: समान
 columns: कॉलमस
+value_unique: मान अद्वितीय होना चाहिए
 all_files: सभी फाइलें
 my_files: मेरी फ़ाइलें
 recent_files: हाल की फ़ाइल
@@ -218,3 +222,57 @@ user: यूज़र
 create: Create
 read: Read
 update: Update
+wysiwyg_options:
+  selectall: सभी चुनें
+settings_webhooks: Webhooks
+fields:
+  directus_collections:
+    color: Color
+    sort_field: Sort Field
+  directus_files:
+    modified_on: संशोधन का समय
+    duration: अवधि
+  directus_users:
+    language: भाषा
+    role: भूमिका
+  directus_fields:
+    translation: फ़ील्ड नाम अनुवाद
+  directus_roles:
+    name: भूमिका नाम
+  directus_webhooks:
+    name: नाम
+field_options:
+  directus_activity:
+    create: Create
+    update: Update
+  directus_collections:
+    language: भाषा
+    archive_divider: आर्काइव
+    divider: सॉर्ट
+  directus_roles:
+    fields:
+      name_name: नाम
+  directus_webhooks:
+    actions_create: Create
+    actions_update: Update
+interfaces:
+  presentation-links:
+    primary: प्राइमरी
+  select-color:
+    color: Color
+  presentation-divider:
+    divider: Divider
+  input-hash:
+    hash: Hash
+  user:
+    user: यूज़र
+displays:
+  boolean:
+    boolean: Boolean
+  color:
+    color: Color
+  image:
+    circle: Circle
+  user:
+    user: यूज़र
+    name: नाम
