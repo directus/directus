@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Profilbild
 edit_field: Redigera fält
 item_revision: Revision objekt
 duplicate_field: Duplicera fält
@@ -85,10 +106,14 @@ all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
 field_standard: Standard
+field_presentation: Presentation & alias
+field_file: Enskild fil
+field_files: Flera filer
 field_m2o: M2O Relation
 field_m2a: M2A Relationship
 field_o2m: O2M Relation
 field_m2m: M2M Relation
+field_translations: Översättningar
 item_permissions: Behörigheter för objekt
 field_permissions: Behörigheter för fält
 field_validation: Validering av fält
@@ -235,6 +260,7 @@ move_to_folder: Flytta till mapp
 move: Flytta
 system: System
 add_field_related: Lägg till fält i relaterad kollektion
+interface_label: Gränssnitt
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
@@ -267,6 +293,7 @@ url: URL
 file_details: Fildetaljer
 dimensions: Dimensioner
 size: Storlek
+created: Skapad
 modified: Ändrad
 checksum: Kontrollsumma
 owner: Ägare
@@ -334,6 +361,7 @@ display_template_not_setup: Visningsmallens alternativ är felaktigt konfigurera
 collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
 select_a_collection: Välj en kollektion
 active: Aktiv
+copy: Kopiera
 users: Användare
 activity: Händelser
 webhooks: Webhooks
@@ -353,6 +381,8 @@ card_size: Kortets storlek
 sort_field: Sortera fält
 add_sort_field: Lägg till sorteringsfält
 sort: Sortera
+status: Status
+remove: Ta bort
 toggle_manual_sorting: Växla manuell sortering
 bookmark_doesnt_exist: Bokmärket finns inte
 bookmark_doesnt_exist_copy: Bokmärket du försöker öppna kunde inte hittas.
@@ -380,6 +410,8 @@ errors:
   ROUTE_NOT_FOUND: Hittades inte
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   USER_SUSPENDED: Användare avstängd
+  INTERNAL_SERVER_ERROR: Oväntat fel
+  NOT_NULL_VIOLATION: Värdet kan inte vara null
   UNKNOWN: Oväntat fel
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
@@ -387,6 +419,7 @@ create_bookmark: Skapa bokmärke
 edit_bookmark: Redigera bokmärke
 bookmarks: Bokmärken
 presets: Förval
+unexpected_error: Oväntat fel
 unexpected_error_copy: Ett oväntat fel har inträffat. Försök igen senare.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
@@ -468,6 +501,7 @@ rows: Rader
 columns: Kolumner
 collection_setup: Konfiguration av kollektion
 optional_system_fields: Valfria systemfält
+value_unique: Värdet måste vara unikt
 all_activity: All aktivitet
 create_item: Skapa objekt
 display_template: Visningsmall
@@ -501,9 +535,12 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+full_screen: Helskärm
 image_url: Bild-URL
 alt_text: Alternativ text
 media: Media
+width: Bredd
+height: Höjd
 source: Källa
 url_placeholder: Ange en webbadress...
 display_text: Visningstext
@@ -520,6 +557,9 @@ wysiwyg_options:
   alignleft: Vänsterjustera
   alignnone: Ingen justering
   alignright: Högerjustera
+  forecolor: Förgrundsfärg
+  backcolor: Bakgrundsfärg
+  bold: Fet
   italic: Kursiv
   underline: Understruken
   strikethrough: Genomstruken
@@ -552,6 +592,7 @@ wysiwyg_options:
   redo: Gör om
   remove: Ta bort
   removeformat: Ta bort format
+  selectall: Markera alla
   table: Tabell
   visualaid: Visa osynliga element
   source_code: Redigera källkod
@@ -572,6 +613,7 @@ no_options_available: Inga tillgängliga alternativ
 settings_data_model: Datamodell
 settings_permissions: Roller & behörigheter
 settings_project: Projektinställningar
+settings_webhooks: Webhooks
 settings_presets: Förinställningar & bokmärken
 scope: Omfattning
 select: Välj...
@@ -632,17 +674,28 @@ fields:
   directus_activity:
     item: Primärnyckel för objekt
     action: Åtgärd
+    collection: Kollektion
     timestamp: Åtgärd på
     user: Åtgärd av
     comment: Kommentera
     user_agent: Användaragent
     ip: IP-adress
+    revisions: Revidering
   directus_collections:
+    collection: Kollektion
+    icon: Ikon
+    note: Anteckning
+    color: Färg
+    display_template: Visningsmall
+    hidden: Dold
+    singleton: Singleton
     archive_app_filter: Arkivera appfilter
     archive_value: Arkivera värde
     unarchive_value: Avarkivera värde
+    sort_field: Sortera fält
   directus_files:
     $thumbnail: Miniatyrbild
+    title: Rubrik
     description: Beskrivning
     tags: Etiketter
     location: Position
@@ -653,20 +706,36 @@ fields:
     type: Mime Type
     filesize: Filstorlek
     modified_by: Ändrad av
+    modified_on: Ändrad den
+    created_on: Skapad den
+    created_by: Skapad av
+    embed: Bädda in
     uploaded_by: Uppladdad av
+    folder: Mapp
     width: Bredd
     uploaded_on: Uppladdad den
     height: Höjd
+    charset: Teckenuppsättning
+    duration: Varaktighet
   directus_users:
     first_name: Förnamn
     last_name: Efternamn
     email: E-post
     password: Lösenord
     avatar: Profilbild
+    location: Position
+    title: Rubrik
+    description: Beskrivning
+    tags: Etiketter
+    language: Språk
     theme: Tema
     tfa_secret: Tvåfaktorsautentisering
     status: Status
+    status_active: Aktiv
+    role: Roll
     token: Token
+    last_page: Sista sidan
+    last_access: Senaste åtkomsten
   directus_settings:
     project_name: Projektnamn
     project_url: Projektets URL
@@ -683,10 +752,15 @@ fields:
   directus_fields:
     collection: Namn kollektion
     icon: Ikon kollektion
+    note: Anteckning
     hidden: Dold
+    singleton: Singleton
+    translation: Översättningar fältnamn
     display_template: Mall
   directus_roles:
+    name: Rollens namn
     icon: Ikon roll
+    description: Beskrivning
     app_access: Åtkomst till appen
     admin_access: Åtkomst admin
     ip_access: Åtkomst med IP
@@ -694,6 +768,33 @@ fields:
     users: Användare i rollen
     module_list: Navigering för modul
     collection_list: Navigering för kollektion
+  directus_webhooks:
+    name: Namn
+    status: Status
+field_options:
+  directus_activity:
+    create: Skapa
+    update: Uppdatera
+  directus_collections:
+    collection_setup: Konfiguration av kollektion
+    singleton: Behandla som ett enskilt objekt
+    language: Språk
+    archive_divider: Arkivera
+    divider: Sortera
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Namn
+    collection_list:
+      fields:
+        type_name: Typ
+    collections_name: Kollektioner
+  directus_users:
+    status_dropdown_active: Aktiv
+  directus_webhooks:
+    status_options_active: Aktiv
+    actions_create: Skapa
+    actions_update: Uppdatera
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 do_nothing: Gör ingenting
 generate_and_save_uuid: Generera och spara UUID
@@ -702,20 +803,24 @@ save_current_user_role: Spara aktuell användarroll
 save_current_datetime: Spara aktuellt datum/tid
 block: Blockera
 inline: Infogad
+comment: Kommentera
 editing_role: '{role} roll'
 creating_webhook: Skapar Webhook
 delete_are_you_sure: >-
   Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
 delete_field_are_you_sure: >-
   Är du säker på att du vill radera fältet "{field}"? Den här åtgärden kan inte ångras.
+description: Beskrivning
 done: Klart
 duplicate: Duplicera
+email: E-post
 embed: Bädda in
 fallback_icon: Fallback Ikon
 field: Fält | Fält
 file: Fil
 file_library: Fil bibliotek
 forgot_password: Glömt lösenord
+hidden: Dold
 icon: Ikon
 info: Info
 normal: Normal
@@ -730,6 +835,7 @@ not_authenticated: Inte autentiserad
 authenticated: Autentiserad
 options: Alternativ
 otp: Engångslösenord
+password: Lösenord
 permissions: Behörigheter
 relationship: Relation
 reset: Återställ
@@ -750,32 +856,66 @@ something_went_wrong: Något gick fel.
 sort_direction: Sorteringsordning
 sort_asc: Sortera stigande
 sort_desc: Sortera fallande
+template: Mall
 translation: Översättning
 value: Värde
 view_project: Visa projekt
 report_error: Rapportera fel
 interfaces:
-  system-collections:
+  presentation-links:
+    primary: Primär
+  input-code:
+    code: Kod
+  system-collection:
+    collection: Kollektion
     description: Välj mellan befintliga kollektioner
     include_system_collections: Inkludera systemets kollektioner
+  system-collections:
+    collections: Kollektioner
+    description: Välj mellan befintliga kollektioner
+    include_system_collections: Inkludera systemets kollektioner
+  select-color:
+    color: Färg
   datetime:
     datetime: Datum och tid
     description: Ange datum och tider
     include_seconds: Inkludera sekunder
     set_to_now: Ställ in till nu
     use_24: Använd 24-timmars format
+  system-display-template:
+    display-template: Visningsmall
+    collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
+    select_a_collection: Välj en kollektion
+  presentation-divider:
+    divider: Avdelare
+  select-dropdown:
+    choices_value_placeholder: Ange ett värde...
   file:
+    file: Fil
     description: Välj eller ladda upp en fil
   files:
     files: Filer
     description: Välj eller ladda upp flera filer
+  input-hash:
+    hash: Hash
+  select-icon:
+    icon: Ikon
+  file-image:
+    image: Bild
   system-interface:
     interface: Gränssnitt
+  select-dropdown-m2o:
+    display_template: Visningsmall
+  map:
+    zoom: Zooma
+  system-folder:
+    folder: Mapp
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage
     always_show_value: Visa alltid värde
   tags:
+    tags: Etiketter
     description: Välj eller lägg till taggar
     whitespace: Blanksteg
     hyphen: Ersätt med bindestreck
@@ -788,31 +928,44 @@ interfaces:
     alphabetize: Alfabetisera
     alphabetize_label: Tvinga alfabetisk ordning
     add_tags: Lägg till taggar...
+  boolean:
+    toggle: Växla
+    label_default: Aktiverad
   translations:
+    display_template: Visningsmall
     no_collection: Ingen kollektion
   user:
+    user: Användare
     description: Välj en befintlig Directus användare
     select_mode: Välj läge
     modes:
       auto: Automatisk
+      dropdown: Rullgardinsmeny
       modal: Popup
 displays:
   boolean:
+    boolean: Boolean
     description: Visa på och av lägen
     label_on: Etikett aktiv
     label_on_placeholder: Ange en aktiv etikett...
     label_off: Etikett avstängd
     label_off_placeholder: Ange en avstängd etikett...
+    icon_on: Ikon på
+    icon_off: Ikon Av
     color_on: Färg på
     color_off: Färg av
   collection:
+    collection: Kollektion
     description: Visa en kollektion
     icon_label: Visa kollektionens ikon
   color:
+    color: Färg
     description: Visa en färgad punkt
     default_color: Förvald färg
   datetime:
+    datetime: Datum och tid
     description: Visa värden relaterade till tid
+    format: Format
     format_note: >-
       Det anpassade formatet accepterar __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lång
@@ -820,6 +973,7 @@ displays:
     relative: Relativ
     relative_label: 'Visa relativ tid, t. ex.: 5 minuter sedan'
   file:
+    file: Fil
     description: Visa filer
   filesize:
     filesize: Filstorlek
@@ -834,12 +988,14 @@ displays:
     formatted-json-value: Formaterat JSON-värde
     description: Visa en formaterad version av objektet
   icon:
+    icon: Ikon
     description: Visa en ikon
     filled: Fylld
     filled_label: Använd den ifyllda varianten
   image:
     image: Bild
     description: Visa en liten förhandsgranskning av bilden
+    circle: Cirkel
     circle_label: Visa som en cirkel
   labels:
     labels: Etiketter
@@ -848,6 +1004,7 @@ displays:
     default_background: Förvald bakgrund
     format_label: Formatera varje etikett
     show_as_dot: Visa som punkt
+    choices_value_placeholder: Ange ett värde...
     choices_text_placeholder: Ange en text...
   mime-type:
     mime-type: MIME Type
@@ -865,7 +1022,10 @@ displays:
     related-values: Relaterade värden
     description: Visa relativa värden
   user:
+    user: Användare
     description: Visa en Directus användare
+    avatar: Profilbild
+    name: Namn
     both: Båda
     circle_label: Visa användare i en cirkel
 layouts:
@@ -875,10 +1035,15 @@ layouts:
     image_fit: Anpassa bildstorlek
     crop: Beskär
     contain: Behåll
+    title: Rubrik
     subtitle: Underrubrik
   tabular:
+    tabular: Tabell
     fields: Fält
     spacing: Mellanrum
     comfortable: Bekväm
     compact: Kompakt
     cozy: Mysig
+panels:
+  label:
+    name: Etikett
