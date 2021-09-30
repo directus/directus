@@ -1,17 +1,30 @@
 import request from 'supertest';
-import { getURLsToTest } from '../get-urls-to-test';
+import config from '../config';
+import global from '../setup/global';
 
 describe('/server', () => {
-	it('/ping', () =>
-		Promise.all(
-			getURLsToTest().map((url) =>
-				request(url)
+	describe('/ping', () => {
+		for (const { vendor, knex } of global.knexInstances) {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+
+			beforeEach(async () => {
+				await knex.schema.createTable('articles', (table) => {
+					table.increments();
+				});
+			});
+
+			afterEach(async () => {
+				await knex.schema.dropTableIfExists('articles');
+			});
+
+			it(vendor, async () => {
+				const response = await request(url)
 					.get('/server/ping')
 					.expect('Content-Type', /text\/html/)
-					.expect(200)
-					.then((response) => {
-						expect(response.text).toBe('pong');
-					})
-			)
-		));
+					.expect(200);
+
+				expect(response.text).toBe('pong');
+			});
+		}
+	});
 });
