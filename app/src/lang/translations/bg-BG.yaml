@@ -1,29 +1,5 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Аватар
-default_provider: По подразбиране
 published: Публикувано
-draft: Чернова
-archived: Архивиран
 modules: Модули
 module_bar: Модулна лента
 tile_size: Големина на сегментите
@@ -134,14 +110,10 @@ allow_multiple: Множествен избор
 allow_multiple_to_be_open: Отваряне на множество
 enter_value_to_replace_nulls: Въвеждане на нова стойност, която да замени NULL в полето.
 field_standard: Стандартно
-field_presentation: Презентационни и псевдоними
-field_file: Единствен файл
-field_files: Множество файлове
 field_m2o: M2O релация
 field_m2a: M2A релация
 field_o2m: O2M релация
 field_m2m: M2M релация
-field_translations: Преводи
 field_group: Групиране на полета
 item_permissions: Позволения по запис
 field_permissions: Позволения по поле
@@ -316,7 +288,6 @@ move_to_folder: Преместване в папка
 move: Преместване
 system: Система
 add_field_related: Добавяне на поле към релативната колекция
-interface_label: Интерфейс
 today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
@@ -350,7 +321,6 @@ import_label: Импортиране
 file_details: Детайли за файл
 dimensions: Размери
 size: Големина
-created: Създаден
 modified: Променен
 checksum: Checksum
 owner: Собственик
@@ -427,7 +397,6 @@ select_a_collection: Избор на колекция
 select_a_field: Избор на поле
 active: Активен
 move_to: Преместване в...
-copy: Копиране
 copy_to: Копиране в...
 no_other_dashboards_copy: Все още нямате други табла.
 inactive: Неактивен
@@ -456,8 +425,6 @@ card_size: Големина на картите
 sort_field: Сортиране по поле
 add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
-status: Статус
-remove: Премахване
 toggle_manual_sorting: Ръчна подредба
 bookmark_doesnt_exist: Отметката не съществива
 bookmark_doesnt_exist_copy: Отметката която се опитвате да отворите не може да бъде намерена.
@@ -487,8 +454,6 @@ errors:
   USER_SUSPENDED: Потребителя е деактивиран
   CONTAINS_NULL_VALUES: Полето съдържа null стойност
   UNPROCESSABLE_ENTITY: Необработен обект
-  INTERNAL_SERVER_ERROR: Неочаквана грешка
-  NOT_NULL_VIOLATION: Стойността не трябва да е null
   ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
   UNKNOWN: Неочаквана грешка
 security: Сигурност
@@ -498,7 +463,6 @@ create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
 bookmarks: Отметки
 presets: Заготовки
-unexpected_error: Неочаквана грешка
 unexpected_error_copy: Възникна неочаквана грешка, опитайте отново по-късно.
 copy_details: Копиране на детайли
 no_app_access: Без достъп до приложението
@@ -589,13 +553,11 @@ upload_files_success: '{count} файла са качени'
 upload_pending: Качване в изчакване
 drag_file_here: За да качите файловете, пуснете ги тук
 click_to_browse: Натиснете за избор
-interface_options: Опции за интерфейса
 layout_options: Опции за оформление
 rows: Редове
 columns: Колони
 collection_setup: Настройки на колекция
 optional_system_fields: Незадължителни системни полета
-value_unique: Само уникални стойности
 all_activity: Цялата активност
 create_item: Създаване на запис
 display_template: Шаблон при показване
@@ -656,15 +618,12 @@ no_dashboards_copy: Все още нямате нито едно табло.
 no_data: Няма данни
 create_dashboard: Създаване на табло
 dashboard_name: Име на таблото
-full_screen: Пълен Екран
 edit_panels: Редактиране на панелите
 fit_to_screen: Побиране в екрана
 image_url: URL на изображение
 alt_text: Алтернативен текст
 media: Медия
 quality: Качество
-width: Ширина
-height: Височина
 source: Източник
 url_placeholder: Въвеждане на URL...
 display_text: Текст за показване
@@ -681,9 +640,6 @@ wysiwyg_options:
   alignleft: Подравняване отляво
   alignnone: Без подравняване
   alignright: Подравняване отдясно
-  forecolor: Основен цвят
-  backcolor: Цвят на фона
-  bold: Удебеляване
   italic: Курсив
   underline: Подчертан
   strikethrough: Зачеркнат
@@ -716,7 +672,6 @@ wysiwyg_options:
   redo: Повторение
   remove: Премахване
   removeformat: Премахване на форматиране
-  selectall: Избиране на всичко
   table: Таблица
   visualaid: Преглед на невидимите елементи
   source_code: Редактиране на изходен код
@@ -739,7 +694,6 @@ no_options_available: Не са налични опции
 settings_data_model: Модел на данни
 settings_permissions: Роли и позволения
 settings_project: Настройки на проект
-settings_webhooks: Уеб-куки
 settings_presets: Заготовки и отметки
 one_or_more_options_are_missing: Липсват една или повече опции
 scope: Обхват
@@ -825,30 +779,19 @@ fields:
   directus_activity:
     item: Първичен ключ на запис
     action: Действие
-    collection: Колекция
     timestamp: Действие на
     user: Действие от
     comment: Коментиране
     user_agent: Потребителски агент
     ip: IP адрес
-    revisions: Ревизии
   directus_collections:
-    collection: Колекция
-    icon: Икона
-    note: Бележка
-    color: Цвят
-    display_template: Шаблон при показване
-    hidden: Скриване
-    singleton: Сек
     translations: Преводи на името за колекцията
     archive_app_filter: Филтър за архивни
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране
-    sort_field: Сортиране по поле
     accountability: Следене за активност и ревизии
   directus_files:
     $thumbnail: Умалена картинка
-    title: Заглавие
     description: Описание
     tags: Тагове
     location: Местоположение
@@ -859,29 +802,17 @@ fields:
     type: MIME тип
     filesize: Размер на файла
     modified_by: Променен от
-    modified_on: Променен на
-    created_on: Създаден на
-    created_by: Създаден от
-    embed: Вграждане
     uploaded_by: Качено от
-    folder: Папка
     width: Ширина
     uploaded_on: Редактирано на
     height: Височина
-    charset: Набор символи
-    duration: Продължителност
   directus_users:
     first_name: Име
     last_name: Фамилия
     email: Е-поща
     password: Парола
     avatar: Аватар
-    location: Местоположение
-    title: Заглавие
-    description: Описание
-    tags: Тагове
     user_preferences: Потребителски настройки
-    language: Език
     theme: Тема
     theme_auto: Автоматично (според системата)
     theme_light: Светъл режим
@@ -890,15 +821,10 @@ fields:
     admin_options: Административни настройки
     status: Статус
     status_draft: Чернова
-    status_invited: Поканен
-    status_active: Активен
     status_suspended: Замразен
     status_archived: Архивиран
-    role: Роля
     token: Токен
     token_placeholder: Въвеждане на сигурен токен...
-    last_page: Последна страница
-    last_access: Последно посещение
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -929,15 +855,10 @@ fields:
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
-    note: Бележка
     hidden: Скриване
-    singleton: Сек
-    translation: Превод на името за полето
     display_template: Шаблон
   directus_roles:
-    name: Име на роля
     icon: Икона на роля
-    description: Описание
     app_access: Достъп до приложението
     admin_access: Администраторски достъп
     ip_access: IP адрес
@@ -946,9 +867,7 @@ fields:
     module_list: Модули
     collection_list: Навигация в колекции
   directus_webhooks:
-    name: Име
     method: Метод
-    status: Статус
     data: Данни
     data_label: Изпращане на данните
     triggers: Тригери
@@ -958,7 +877,6 @@ field_options:
     project_name_placeholder: Моят проект...
     project_logo_note: Фон на логото и вход-а
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
-    security_divider_title: Сигурност
     auth_password_policy:
       none_text: Няма - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
@@ -969,36 +887,17 @@ field_options:
         cover_text: Обложка (точни размери)
         fit_text: Напасване отвътре
         outside_text: Напасване отвън
-    additional_transforms: Допълнителни трансформации
-    transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
-    mapbox_key: Токен за mapbox
-    basemaps_raster: Растерен
-    basemaps_tile: Растерен TileJSON
-    basemaps_style: Стил на географската карта
-    files_divider_title: Файлове и картинки
-    overrides_divider_title: Отмяна
-  directus_activity:
-    login: Вход
-    create: Създаване
-    update: Обновяване
-    delete: Изтриване
   directus_collections:
     track_activity_revisions: Проследяване на активността и ревизиите
     only_track_activity: Проследяване само на активността
     do_not_track_anything: Без следене
-    collection_setup: Настройки на колекция
     note_placeholder: Описание на колекцията...
     hidden_label: Скриване в приложението
-    singleton: Използване като единствен запис
-    language: Език
     translation: Въвеждане на превод...
-    archive_divider: Архивиране
     archive_field: Избор на поле...
     archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
-    divider: Сортиране
-    sort_field: Избор на поле...
     accountability_divider: Профилиране
   directus_files:
     title: Уникално заглавие...
@@ -1012,9 +911,6 @@ field_options:
     description: Описание на ролята...
     ip_access: Позволяване на определни IP адреси, оставяне на празно за всички...
     fields:
-      icon_name: Икона
-      name_name: Име
-      name_placeholder: Въвеждане на заглавие...
       link_name: Връзка
       link_placeholder: Релативен или абсолютен URL...
     collection_list:
@@ -1022,32 +918,12 @@ field_options:
       fields:
         group_name: Име на група
         group_placeholder: Именуване на групата...
-        type_name: Тип
         choices_always: Винаги отворена
-        choices_start_open: Отворена в началото
         choices_start_collapsed: Затворена в началото
-    collections_name: Колекции
     collections_addLabel: Добавяне на колекция...
   directus_users:
-    preferences_divider: Потребителски настройки
-    dropdown_auto: Автоматично (според системата)
-    dropdown_light: Светъл режим
-    dropdown_dark: Тъмен режим
-    admin_divider: Административни настройки
-    status_dropdown_draft: Чернова
     status_dropdown_invited: Поканен
-    status_dropdown_active: Активен
-    status_dropdown_suspended: Замразен
-    status_dropdown_archived: Архивиран
-    token: Въвеждане на сигурен токен...
   directus_webhooks:
-    status_options_active: Активен
-    status_options_inactive: Неактивен
-    data_label: Изпращане на данните
-    triggers_divider: Тригери
-    actions_create: Създаване
-    actions_update: Обновяване
-    actions_delete: Изтриване
     actions_login: Вход
 no_fields_in_collection: 'Все още няма полета в {collection}'
 no_value: Няма стойност
@@ -1058,7 +934,6 @@ save_current_user_role: Запазване на ролята на текущия
 save_current_datetime: Запазване на текущия дата/час
 block: Блок
 inline: Вложен
-comment: Коментиране
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
 referential_action_field_label_o2m: При деселектиране на {collection}...
@@ -1078,18 +953,15 @@ delete_are_you_sure: >-
   Действието е постоянно и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
 delete_field_are_you_sure: >-
   Сигурни ли сте, че искате да изтриете полето "{field}"? Действието не може да бъде отменено.
-description: Описание
 done: Готово
 duplicate: Дублиране
 limit: Лимит
-email: Е-поща
 embed: Вграждане
 fallback_icon: Резервна икона
 field: Поле | Полета
 file: Файл
 file_library: Файлов архив
 forgot_password: Забравена парола
-hidden: Скриване
 icon: Икона
 info: Информация
 normal: Нормално
@@ -1104,7 +976,6 @@ not_authenticated: Неоторизиран
 authenticated: Оторизиран
 options: Опции
 otp: Еднократна парола
-password: Парола
 permissions: Позволения
 relationship: Релация
 reset: Нулиране
@@ -1125,7 +996,6 @@ something_went_wrong: Нещо се обърка.
 sort_direction: Ред на подредба
 sort_asc: Възходящо сортиране
 sort_desc: Низходящо сортиране
-template: Шаблон
 require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
@@ -1136,7 +1006,6 @@ interfaces:
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон
-    start: Начало
     all_closed: Всички са затворени
     first_opened: Първият е отворен
     all_opened: Всички са отворени
@@ -1147,8 +1016,6 @@ interfaces:
     links: Връзки
     description: Конфигуриуеми бутонни връзки за отваряне на динамични URL адреси
     style: Стил
-    primary: Първичен
-    link: Връзки
     button: Бутони
     error: Действието не може да бъде изпълнено
   select-multiple-checkbox:
@@ -1165,20 +1032,13 @@ interfaces:
     show_all: Показване на всички
     show_selected: Показване на избраното
   input-code:
-    code: Код
     description: Писане или споделяне на кодови откъси
     line_number: Номериране на редове
     placeholder: Въвеждане на кода...
-  system-collection:
-    collection: Колекция
-    description: Избор от съществуващи колекции
-    include_system_collections: Включване на системните колекции
   system-collections:
-    collections: Колекции
     description: Избор от съществуващи колекции
     include_system_collections: Включване на системните колекции
   select-color:
-    color: Цвят
     description: Въвеждане или избор на стойност за цвят
     placeholder: Избор на цвят...
     preset_colors: Заготовки от цветове
@@ -1191,13 +1051,9 @@ interfaces:
     set_to_now: Задаване към сега
     use_24: Използване на 24 часов формат
   system-display-template:
-    display-template: Шаблон при показване
     description: Комбиниране на статичен текст и динамични стойности от полета
     collection_field: Поле на колекцията
-    collection_field_not_setup: Опциите на полето от колекцията са неправилно конфигурирани
-    select_a_collection: Избор на колекция
   presentation-divider:
-    divider: Разделител
     description: Именуване и разделяне на полетата по секции
     title_placeholder: Въвеждане на заглавие...
     inline_title: Заглавие в линия
@@ -1207,32 +1063,26 @@ interfaces:
   select-dropdown:
     description: Избор на стойност от падащо меню
     choices_placeholder: Добавяне на избор
-    allow_other: Други
     allow_other_label: Позволяване на други стойности
     allow_none: Празен избор
     allow_none_label: Позволяване на празен избор
     choices_name_placeholder: Въвеждане на име...
-    choices_value_placeholder: Въвеждане на стойност...
   select-multiple-dropdown:
     select-multiple-dropdown: Падащо меню (множествен избор)
     description: Избор на множество стойности от падащо меню
   file:
-    file: Файл
     description: Избор или качване на файл
   files:
     files: Файлове
     description: Избор или качване на множество файлове
   input-hash:
-    hash: Хеш
     description: Въвеждане на стойност за хеширане
     masked: Маскиране
     masked_label: Скриване на истинските стойности
   select-icon:
-    icon: Икона
     description: Избор на икона от падащото меню
     search_for_icon: Търсене на икона...
   file-image:
-    image: Изображение
     description: Избор или качване на изображение
   system-interface:
     interface: Интерфейс
@@ -1247,7 +1097,6 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Много към един
     description: Избор на един свързан запис
-    display_template: Шаблон при показване
   input-rich-text-md:
     markdown: Markdown
     description: Въвеждане и преглед за markdown
@@ -1260,7 +1109,6 @@ interfaces:
   map:
     map: Географска карта
     description: Избор на местоположение по картата
-    zoom: Мащабиране
     geometry_type: Тип
     geometry_format: Формат
     default_view: Изглед по подразбиране
@@ -1282,7 +1130,6 @@ interfaces:
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена
   system-folder:
-    folder: Папка
     description: Избор на папка
     field_hint: Влагане на новите файлове в избраната папка. Вече добавените файлове за полето не се променят.
     root_name: Коренова папка
@@ -1302,7 +1149,6 @@ interfaces:
     description: Избор на число чрез плъзгач
     always_show_value: Показване на стойностите винаги
   tags:
-    tags: Тагове
     description: Избор или добавяне на етикети
     whitespace: Интервали
     hyphen: Замяна с тире
@@ -1320,7 +1166,6 @@ interfaces:
     description: Ръчно въвеждане на стойност
     trim: Почистване
     trim_label: Почистване на краищата от интервали
-    mask: Маскиране
     mask_label: Скриване на истинската стойност
     clear: Изчистване на стойност
     clear_label: Запазване като празен стринг
@@ -1333,12 +1178,9 @@ interfaces:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
   boolean:
-    toggle: Превключване
     description: Превключване между вкл. и изкл.
     label_placeholder: Въвеждане на етикет...
-    label_default: Включване
   translations:
-    display_template: Шаблон при показване
     no_collection: Няма колекция
     toggle_split_view: Превключване на разделен режим
     language_field: Поле за език
@@ -1346,12 +1188,10 @@ interfaces:
     description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
     recursive_only: Дървовидния интерфейс, работи само за рекурсивни релации.
   user:
-    user: Потребител
     description: Избор на съществуващ потребител
     select_mode: Избор на режим
     modes:
       auto: Автоматичен
-      dropdown: Падащо меню
       modal: Диалог
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1379,28 +1219,21 @@ interfaces:
     start_closed: Затворена в началото
 displays:
   boolean:
-    boolean: Булев
     description: Показване на активно и неактивно състояние
     label_on: Активен текст
     label_on_placeholder: Въвеждане на активен текст...
     label_off: Неактивен текст
     label_off_placeholder: Въвеждане на неактивен текст...
-    icon_on: Активна икона
-    icon_off: Неактивна икона
     color_on: Активен цвят
     color_off: Неактивен цвят
   collection:
-    collection: Колекция
     description: Показване на колекция
     icon_label: Показване на иконката на колекцията
   color:
-    color: Цвят
     description: Показване на цветна точка
     default_color: Свят по подразбиране
   datetime:
-    datetime: Дата и час
     description: Показване на стойностите релативни към момента
-    format: Формат
     format_note: >-
       Персонализирания формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Дълго
@@ -1408,7 +1241,6 @@ displays:
     relative: Относително
     relative_label: 'Показване на относително време, пр. преди 5 минути'
   file:
-    file: Файл
     description: Показване на файлове
   filesize:
     filesize: Големина на файла
@@ -1423,14 +1255,12 @@ displays:
     formatted-json-value: Форматирана JSON стойност
     description: Показване на форматирана стойност на JSON обект
   icon:
-    icon: Икона
     description: Показване като икона
     filled: Запълване
     filled_label: Използване на изпълнен вариант
   image:
     image: Изображение
     description: Показване на малко изображение
-    circle: Кръг
     circle_label: Показване в кръгла форма
   labels:
     labels: Етикети
@@ -1439,7 +1269,6 @@ displays:
     default_background: Фонов цвят по подразбиране
     format_label: Форматиране на всеки етикет
     show_as_dot: Показване като точка
-    choices_value_placeholder: Въвеждане на стойност...
     choices_text_placeholder: Въвеждане на текст...
   mime-type:
     mime-type: MIME тип
@@ -1457,10 +1286,7 @@ displays:
     related-values: Релативни стойности
     description: Показване на релативните стойности
   user:
-    user: Потребител
     description: Показване на потребител от Directus
-    avatar: Аватар
-    name: Име
     both: И двете
     circle_label: Показване на потребител в кръг
 layouts:
@@ -1470,10 +1296,8 @@ layouts:
     image_fit: Напасване на изображението
     crop: Изрязване
     contain: Напасване
-    title: Заглавие
     subtitle: Подзаглавие
   tabular:
-    tabular: Таблица
     fields: Полета
     spacing: Отстояние
     comfortable: Удобно
@@ -1484,7 +1308,6 @@ layouts:
     start_date_field: Начална дата
     end_date_field: Крайна дата
   map:
-    map: Географска карта
     basemap: Основна карта
     layers: Слоеве
     edit_custom_layers: Редактиране на слоевете
@@ -1493,7 +1316,6 @@ layouts:
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
-    field: Геометрия
     invalid_geometry: Невалидна геометрия
     auto_location_filter: Филтриране на данните спрямо границите
     search_this_area: Търсене в тази зона
@@ -1510,7 +1332,6 @@ panels:
     date_field: Поле за дата
     value_field: Поле за стойност
   label:
-    name: Етикет
     description: Показване на някакъв текст
   list:
     name: Списък
