@@ -43,11 +43,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-divider {
-	margin-top: 10px;
-	margin-bottom: -10px;
-}
-
 .add-margin-top {
 	margin-top: 40px;
 }
