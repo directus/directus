@@ -5,6 +5,7 @@ import path from 'path';
 import env from '../../env';
 import logger from '../../logger';
 import { Migration } from '../../types';
+import { orderBy } from 'lodash';
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest'): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
@@ -68,13 +69,13 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	}
 
 	async function down() {
-		const currentVersion = completedMigrations[completedMigrations.length - 1];
+		const lastAppliedMigration = orderBy(completedMigrations, ['timestamp'], ['desc'])[0];
 
-		if (!currentVersion) {
+		if (!lastAppliedMigration) {
 			throw Error('Nothing to downgrade');
 		}
 
-		const migration = migrations.find((migration) => migration.version === currentVersion.version);
+		const migration = migrations.find((migration) => migration.version === lastAppliedMigration.version);
 
 		if (!migration) {
 			throw new Error("Couldn't find migration");

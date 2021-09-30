@@ -1,0 +1,23 @@
+table: directus_panels
+
+fields:
+  - field: id
+    special: uuid
+  - field: name
+  - field: icon
+  - field: color
+  - field: note
+  - field: type
+  - field: show_header
+    special: boolean
+  - field: position_x
+  - field: position_y
+  - field: width
+  - field: height
+  - field: options
+    special: json
+  - field: date_created
+    special: date-created
+  - field: user_created
+    special: user-created
+  - field: dashboard

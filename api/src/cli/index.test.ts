@@ -4,9 +4,14 @@ import { createCli } from '.';
 
 jest.mock('../env', () => ({
 	...jest.requireActual('../env').default,
-	LOG_LEVEL: 'silent',
 	EXTENSIONS_PATH: '',
 	SERVE_APP: false,
+	DB_CLIENT: 'pg',
+	DB_HOST: 'localhost',
+	DB_PORT: 5432,
+	DB_DATABASE: 'directus',
+	DB_USER: 'postgres',
+	DB_PASSWORD: 'psql1234',
 }));
 
 jest.mock('@directus/shared/utils/node/get-extensions', () => ({

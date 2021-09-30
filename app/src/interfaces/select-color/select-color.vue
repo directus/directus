@@ -4,7 +4,7 @@
 			<v-input
 				v-model="hex"
 				:disabled="disabled"
-				:placeholder="t('interfaces.select-color.placeholder')"
+				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
 				maxlength="7"
@@ -96,6 +96,10 @@ export default defineComponent({
 			default: null,
 			validator: (val: string) => val === null || val === '' || isHex(val),
 		},
+		placeholder: {
+			type: String,
+			default: null,
+		},
 		presets: {
 			type: Array as PropType<string[]>,
 			default: () => [
@@ -130,6 +134,10 @@ export default defineComponent({
 				{
 					name: 'Light Gray',
 					color: '#ECEFF1',
+				},
+				{
+					name: 'White',
+					color: '#FFFFFF',
 				},
 			],
 		},

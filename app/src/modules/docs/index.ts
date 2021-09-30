@@ -19,7 +19,7 @@ export default defineModule({
 			component: NotFound,
 		},
 	],
-	order: 20,
+	order: 30,
 });
 
 function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
@@ -28,6 +28,7 @@ function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
 	for (const route of routes) {
 		if (!('children' in route)) {
 			updatedRoutes.push({
+				name: `docs-${route.path.replace('/', '-')}`,
 				path: route.path,
 				component: StaticDocs,
 				meta: {

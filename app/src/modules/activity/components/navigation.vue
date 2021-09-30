@@ -78,8 +78,8 @@
 
 		<v-list-item
 			clickable
-			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'authenticate'"
-			@click="setNavFilter('action', 'authenticate')"
+			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'login'"
+			@click="setNavFilter('action', 'login')"
 		>
 			<v-list-item-icon>
 				<v-icon name="login" />

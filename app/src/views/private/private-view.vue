@@ -7,8 +7,8 @@
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme }">
-		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
+	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
+		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
 				<project-info />
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 		</aside>
-		<div ref="contentEl" class="content">
+		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				:small="smallHeader"
 				show-sidebar-toggle
@@ -36,8 +36,9 @@
 			</main>
 		</div>
 		<aside
+			id="sidebar"
 			role="contentinfo"
-			class="sidebar alt-colors"
+			class="alt-colors"
 			aria-label="Module Sidebar"
 			:class="{ 'is-open': sidebarOpen }"
 			@click="openSidebar"
@@ -113,7 +114,7 @@ export default defineComponent({
 
 		const notificationsPreviewActive = ref(false);
 
-		const { sidebarOpen } = toRefs(appStore);
+		const { sidebarOpen, fullScreen } = toRefs(appStore);
 
 		const theme = computed(() => {
 			return userStore.currentUser?.theme || 'auto';
@@ -123,11 +124,22 @@ export default defineComponent({
 
 		router.afterEach(async () => {
 			contentEl.value?.scrollTo({ top: 0 });
+			fullScreen.value = false;
 		});
 
 		useTitle(title);
 
-		return { t, navOpen, contentEl, theme, sidebarOpen, openSidebar, notificationsPreviewActive, appAccess };
+		return {
+			t,
+			navOpen,
+			contentEl,
+			theme,
+			sidebarOpen,
+			openSidebar,
+			notificationsPreviewActive,
+			appAccess,
+			fullScreen,
+		};
 
 		function openSidebar(event: PointerEvent) {
 			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
@@ -165,7 +177,7 @@ export default defineComponent({
 		}
 	}
 
-	.navigation {
+	#navigation {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -203,7 +215,7 @@ export default defineComponent({
 		}
 	}
 
-	.content {
+	#main-content {
 		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; // (60 - 4 - 24) / 2
@@ -233,7 +245,7 @@ export default defineComponent({
 		}
 	}
 
-	.sidebar {
+	#sidebar {
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -279,6 +291,24 @@ export default defineComponent({
 	@media (min-width: 600px) {
 		--content-padding: 32px;
 		--content-padding-bottom: 132px;
+	}
+
+	&.full-screen {
+		#navigation {
+			position: fixed;
+			transform: translateX(-100%);
+			transition: none;
+		}
+
+		#main-content {
+			margin: 0;
+		}
+
+		#sidebar {
+			position: fixed;
+			transform: translateX(100%);
+			transition: none;
+		}
 	}
 }
 </style>

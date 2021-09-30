@@ -25,6 +25,12 @@ declare module 'jsonlint-mod' {
 	export default x;
 }
 
+declare module 'frappe-charts/src/js/charts/AxisChart' {
+	export class Chart {
+		constructor(element: string, options: Record<string, any>);
+	}
+}
+
 declare module '@directus-extensions-interface' {
 	import { InterfaceConfig } from '@directus/shared/types';
 	const interfaces: InterfaceConfig[];
@@ -46,5 +52,11 @@ declare module '@directus-extensions-layout' {
 declare module '@directus-extensions-module' {
 	import { ModuleConfig } from '@directus/shared/types';
 	const modules: ModuleConfig[];
+	export default modules;
+}
+
+declare module '@directus-extensions-panel' {
+	import { PanelConfig } from '@directus/shared/types';
+	const modules: PanelConfig[];
 	export default modules;
 }

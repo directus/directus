@@ -135,7 +135,7 @@ export default defineComponent({
 			reference,
 			popper,
 			computed(() => ({
-				placement: props.placement as Placement,
+				placement: props.placement,
 				attached: props.attached,
 				arrow: props.showArrow,
 			}))

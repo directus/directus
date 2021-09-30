@@ -107,7 +107,7 @@ const linkFields: DeepPartial<Field>[] = [
 			required: true,
 			interface: 'input',
 			options: {
-				placeholder: '$t:url_example',
+				placeholder: 'https://example.com',
 			},
 		},
 	},

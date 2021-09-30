@@ -1,11 +1,31 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Awatar
 edit_field: Edytuj pole
 maps: Mapy
 item_revision: Wersja elementu
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
-limit: Limit
 group: Grupa
 and: I
 or: Lub
@@ -31,7 +51,6 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
-email_examples: "admin@example.com, użytkownik@example.com..."
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
 emails: E-maile
@@ -370,6 +389,7 @@ display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo sko
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
 select_a_collection: Wybierz kolekcje
 active: Aktywne
+copy: Kopiuj
 inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
@@ -555,6 +575,7 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
+full_screen: Pełny ekran
 image_url: Adres Url obrazu
 alt_text: Tekst alternatywny
 media: Media
@@ -651,7 +672,6 @@ unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
 keep_editing: Kontynuuj edycję
-page_help_collections_overview: '**Przegląd kolekcji** — Lista wszystkich kolekcji, do których masz dostęp.'
 page_help_collections_collection: >-
   **Przeglądaj przedmioty** — Lista wszystkich {collection} elementów, do których masz dostęp. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
 page_help_collections_item: >-
@@ -709,6 +729,7 @@ fields:
     collection: Kolekcja
     icon: Ikona
     note: Notatka
+    color: Kolor
     display_template: Wyświetl szablon
     hidden: Ukryte
     singleton: Singleton
@@ -855,6 +876,7 @@ delete_field_are_you_sure: >-
 description: Opis
 done: Skończone
 duplicate: Zduplikuj
+limit: Limit
 email: E-Mail
 embed: Osadzony
 fallback_icon: Ikona Fallback
@@ -1214,3 +1236,6 @@ layouts:
     end_date_field: Pole daty zakończenia
   map:
     field: Geometria
+panels:
+  label:
+    name: Etykieta

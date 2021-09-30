@@ -75,11 +75,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
-.form-grid {
-	@include form-grid;
-}
-</style>

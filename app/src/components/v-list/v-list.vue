@@ -51,6 +51,7 @@ export default defineComponent({
 <style scoped>
 :global(body) {
 	--v-list-padding: 4px 0;
+	--v-list-border-radius: var(--border-radius);
 	--v-list-max-height: none;
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;
@@ -74,7 +75,7 @@ export default defineComponent({
 	color: var(--v-list-color);
 	line-height: 22px;
 	list-style: none;
-	border-radius: var(--border-radius);
+	border-radius: var(--v-list-border-radius);
 }
 
 .large {
@@ -86,7 +87,7 @@ export default defineComponent({
 	margin: 8px;
 }
 
-:slotted(*) {
+/* :slotted(*) {
 	pointer-events: all;
-}
+} */
 </style>

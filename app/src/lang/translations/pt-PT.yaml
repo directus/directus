@@ -29,7 +29,6 @@ create_role: Criar estatuto
 create_user: Criar utilizador
 create_webhook: Criar webhook
 invite_users: Convidar utlizadores
-email_examples: "admin{'@'}example.com, usuário{'@'}example.com..."
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
 emails: Emails
@@ -483,6 +482,7 @@ user: Utilizador
 no_presets: Sem predefinições
 no_presets_copy: Nenhuma predefinição ou marcador foi guardado ainda.
 no_presets_cta: Adicionar predefinição
+full_screen: Ecrã completo
 wysiwyg_options:
   forecolor: Cor principal
   backcolor: Cor de Fundo
@@ -531,7 +531,6 @@ unsaved_changes: Alterações por guardar
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Cancelar alterações
 keep_editing: Continuar a editar
-page_help_collections_overview: '**Visão geral das coleções** — Lista de todas as coleções que você tem acesso.'
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 page_help_collections_item: >-

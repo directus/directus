@@ -27,6 +27,7 @@ import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
 import { schedule, validate } from 'node-cron';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { rollup } from 'rollup';
 // @TODO Remove this once a new version of @rollup/plugin-virtual has been released
 // @ts-expect-error
@@ -167,12 +168,18 @@ function registerHooks(hooks: Extension[]) {
 
 		for (const [event, handler] of Object.entries(events)) {
 			if (event.startsWith('cron(')) {
-				const cron = event.match(/\(([^)]+)\)/)?.[1];
+				const cron = event.match(REGEX_BETWEEN_PARENS)?.[1];
 
 				if (!cron || validate(cron) === false) {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 				} else {
-					schedule(cron, handler);
+					schedule(cron, async () => {
+						try {
+							await handler();
+						} catch (error: any) {
+							logger.error(error);
+						}
+					});
 				}
 			} else {
 				emitter.on(event, handler);
