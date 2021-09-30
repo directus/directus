@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: צלמית
 edit_field: ערוך שדה
 half_width: חצי עמוד
 full_width: רוחב מלא
@@ -47,24 +26,17 @@ checksum: מחרוזת בדיקה
 users: משתמשים
 activity: פעילות
 duration: משך זמן
-status: סטטוס
 role: תפקיד
-width: רוחב
-height: גובה
 collection: מאגר
 fields:
   directus_activity:
     item: מפתח ראשי
     action: פעולה
-    collection: מאגר
     timestamp: מועד פעולה
     user: מבצע פעולה
     comment: הערה
     ip: '‏כתובת IP'
-  directus_collections:
-    collection: מאגר
   directus_files:
-    title: כותרת
     description: תיאור
     tags: תגיות
     location: מיקום
@@ -72,51 +44,28 @@ fields:
     filesize: גודל קובץ
     width: רוחב
     height: גובה
-    duration: משך זמן
   directus_users:
     first_name: שם פרטי
     last_name: שם משפחה
     email: דוא"ל
     password: סיסמה
     avatar: צלמית
-    location: מיקום
-    title: כותרת
-    description: תיאור
-    tags: תגיות
     theme: ערכת נושא
     tfa_secret: אימות דו-שלבי
     status: סטטוס
-    role: תפקיד
-  directus_roles:
-    name: שם תפקיד
-    description: תיאור
-  directus_webhooks:
-    status: סטטוס
-comment: הערה
-description: תיאור
-email: דוא"ל
-password: סיסמה
 interfaces:
-  system-collection:
-    collection: מאגר
   files:
     files: קבצים
-  tags:
-    tags: תגיות
 displays:
-  collection:
-    collection: מאגר
   mime-type:
     mime-type: MIME Type
   rating:
     rating: דירוג
     simple: פשוט
   user:
-    avatar: צלמית
     both: שניהם
 layouts:
   cards:
-    title: כותרת
     subtitle: כותרת משנית
   tabular:
     fields: שדות
