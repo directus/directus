@@ -19,7 +19,7 @@ describe('define-extensions', () => {
 		return { test: 'test' };
 	};
 	const interfaceConfig = { id: '1', name: 'test', icon: 'icon', component: mockComponent, types: types, options: {} };
-	const displayConfig = { id: '1', name: 'test', icon: 'icon', handler: mockHandler, types: types, options: {} };
+	const displayConfig = { id: '1', name: 'test', icon: 'icon', component: mockComponent, types: types, options: {} };
 	const layoutConfig = {
 		id: '1',
 		name: 'test',
