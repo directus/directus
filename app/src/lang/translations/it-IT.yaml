@@ -1132,10 +1132,14 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
+  filter:
+    name: Filtro
+    add_filter: Aggiungi Filtro
+    all: Tutti
+    any: Qualsiasi
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
