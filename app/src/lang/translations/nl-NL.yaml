@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Profielafbeelding
 edit_field: Veld Bewerken
 conditions: Voorwaarden
 item_revision: Item revisie
@@ -119,14 +98,10 @@ nullable: Mag NULL zijn
 allow_null_value: NULL waarde toestaan
 enter_value_to_replace_nulls: Voer een nieuwe waarde in om alle NULL's in dit veld te vervangen.
 field_standard: Standaard
-field_presentation: Presentatie & Aliasen
-field_file: Enkel bestand
-field_files: Meerdere bestanden
 field_m2o: M2O Relatie
 field_m2a: M2A Relatie
 field_o2m: O2M Relatie
 field_m2m: M2M Relatie
-field_translations: Vertalingen
 field_group: Veld-Groep
 item_permissions: Item Permissies
 field_permissions: Veld Permissies
@@ -277,7 +252,6 @@ move_to_folder: Verplaats naar map
 move: Verplaatsen
 system: Systeem
 add_field_related: Veld toevoegen aan gerelateerde collectie
-interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
@@ -311,7 +285,6 @@ import_label: Importeren
 file_details: Bestand Details
 dimensions: Afmetingen
 size: Grootte
-created: Aangemaakt
 modified: Aangepast
 checksum: Checksum
 owner: Eigenaar
@@ -384,7 +357,6 @@ display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
 active: Actief
-copy: Kopieer
 users: Gebruikers
 activity: Activiteit
 webhooks: Webhooks
@@ -404,8 +376,6 @@ card_size: Kaart grootte
 sort_field: Sorteerveld
 add_sort_field: Voeg Sorteerveld Toe
 sort: Sorteren
-status: Status
-remove: Verwijder
 toggle_manual_sorting: Activeer handmatige volgorde
 bookmark_doesnt_exist: Bladwijzer bestaat niet
 bookmark_doesnt_exist_copy: De bladwijzer die je probeert te openen kon niet worden gevonden.
@@ -435,8 +405,6 @@ errors:
   USER_SUSPENDED: Gebruiker geschorst
   CONTAINS_NULL_VALUES: Veld bevat NULL waarden
   UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
-  INTERNAL_SERVER_ERROR: Onverwachte fout
-  NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
   UNKNOWN: Onverwachte fout
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
@@ -444,7 +412,6 @@ create_bookmark: Bladwijzer aanmaken
 edit_bookmark: Bladwijzer bewerken
 bookmarks: Bladwijzers
 presets: Voorkeuren
-unexpected_error: Onverwachte fout
 unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opnieuw.
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
@@ -527,13 +494,11 @@ upload_files_success: '{count} bestanden geüpload'
 upload_pending: Uploaden in afwachting
 drag_file_here: Sleep een bestand hierheen
 click_to_browse: Klik om te bladeren
-interface_options: Interface-opties
 layout_options: Lay-out opties
 rows: Rijen
 columns: Kolommen
 collection_setup: Collectie setup
 optional_system_fields: Optionele systeemvelden
-value_unique: Waarde moet uniek zijn
 all_activity: Alle activiteiten
 create_item: Item aanmaken
 display_template: Weergavesjabloon
@@ -570,12 +535,9 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
-full_screen: Volledig scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
 media: Media
-width: Breedte
-height: Hoogte
 source: Bron
 url_placeholder: Voer een URL in...
 display_text: Weergegeven tekst
@@ -592,9 +554,6 @@ wysiwyg_options:
   alignleft: Align Left
   alignnone: Align None
   alignright: Align Right
-  forecolor: Voorgrondkleur
-  backcolor: Achtergrond kleur
-  bold: Vetgedrukt
   italic: Cursief
   underline: Onderstreept
   strikethrough: Doorhalen
@@ -627,7 +586,6 @@ wysiwyg_options:
   redo: Opnieuw uitvoeren
   remove: Verwijder
   removeformat: Opmaak verwijderen
-  selectall: Alles selecteren
   table: Tabel
   visualaid: Onzichtbare elementen weergeven
   source_code: Broncode bewerken
@@ -650,7 +608,6 @@ no_options_available: Geen opties beschikbaar
 settings_data_model: Data model
 settings_permissions: Rollen & Permissies
 settings_project: Project Instellingen
-settings_webhooks: Webhooks
 settings_presets: Voorkeuren & Bladwijzers
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
@@ -713,30 +670,19 @@ fields:
   directus_activity:
     item: Item Primary Key
     action: Actie
-    collection: Collectie
     timestamp: Actie op
     user: Actie door
     comment: Reactie
     user_agent: User Agent
     ip: IP Adres
-    revisions: Revisies
   directus_collections:
-    collection: Collectie
-    icon: Icoon
-    note: Notitie
-    color: Kleur
-    display_template: Weergavesjabloon
-    hidden: Verborgen
-    singleton: Singleton
     translations: Collectie-naam vertalingen
     archive_app_filter: Archiveer App Filter
     archive_value: Archiveer waarde
     unarchive_value: Dearchiveer waarde
-    sort_field: Sorteerveld
     accountability: Activiteit & Revisie Tracking
   directus_files:
     $thumbnail: Thumbnail
-    title: Titel
     description: Beschrijving
     tags: Tags
     location: Locatie
@@ -747,36 +693,20 @@ fields:
     type: Mediatype
     filesize: Bestandsgrootte
     modified_by: Gewijzigd door
-    modified_on: Aangepast op
-    created_on: Aangemaakt op
-    created_by: Aangemaakt door
-    embed: Insluiten
     uploaded_by: Geüpload door
-    folder: Map
     width: Breedte
     uploaded_on: Geüpload op
     height: Hoogte
-    charset: Karakterset
-    duration: Duur
   directus_users:
     first_name: Voornaam
     last_name: Achternaam
     email: Email
     password: Wachtwoord
     avatar: Profielafbeelding
-    location: Locatie
-    title: Titel
-    description: Beschrijving
-    tags: Tags
-    language: Taal
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
     status: Status
-    status_active: Actief
-    role: Rol
     token: Token
-    last_page: Laatste pagina
-    last_access: Laatste toegang
   directus_settings:
     project_name: Project Naam
     project_url: Project URL
@@ -793,15 +723,10 @@ fields:
   directus_fields:
     collection: Collectie naam
     icon: Collectie Icoon
-    note: Notitie
     hidden: Verborgen
-    singleton: Singleton
-    translation: Veld-naam Vertalingen
     display_template: Sjabloon
   directus_roles:
-    name: Rol Naam
     icon: Rol Icoon
-    description: Beschrijving
     app_access: App toegang
     admin_access: Admin toegang
     ip_access: IP Toegang
@@ -809,36 +734,11 @@ fields:
     users: Gebruikers in rol
     module_list: Module Navigatie
     collection_list: Collectie navigatie
-  directus_webhooks:
-    name: Naam
-    status: Status
 field_options:
-  directus_activity:
-    create: Maak
-    update: Updaten
   directus_collections:
     track_activity_revisions: Track Activiteiten & Revisies
     only_track_activity: Track alleen activiteiten
     do_not_track_anything: Niets tracken
-    collection_setup: Collectie setup
-    singleton: Behandel als één object
-    language: Taal
-    archive_divider: Archiveren
-    divider: Sorteren
-  directus_roles:
-    fields:
-      icon_name: Icoon
-      name_name: Naam
-    collection_list:
-      fields:
-        type_name: Type
-    collections_name: Collecties
-  directus_users:
-    status_dropdown_active: Actief
-  directus_webhooks:
-    status_options_active: Actief
-    actions_create: Maak
-    actions_update: Updaten
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID
@@ -847,7 +747,6 @@ save_current_user_role: Huidige gebruikersrol opslaan
 save_current_datetime: Huidige datum/tijd opslaan
 block: Blok
 inline: Doorlopend
-comment: Reactie
 relational_triggers: Relationele triggers
 referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
 referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
@@ -859,17 +758,14 @@ delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-
   Weet je zeker dat je het {field} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
-description: Beschrijving
 done: Klaar
 duplicate: Dupliceer
-email: Email
 embed: Insluiten
 fallback_icon: Standaard Icoon
 field: Veld | Velden
 file: Bestand
 file_library: Bestandsbibliotheek
 forgot_password: Wachtwoord vergeten
-hidden: Verborgen
 icon: Icoon
 info: Info
 normal: Normaal
@@ -884,7 +780,6 @@ not_authenticated: Niet Ingelogd
 authenticated: Ingelogd
 options: Opties
 otp: Eenmalig wachtwoord
-password: Wachtwoord
 permissions: Permissies
 relationship: Relatie
 reset: Reset
@@ -905,61 +800,38 @@ something_went_wrong: Iets ging mis.
 sort_direction: Sorteerrichting
 sort_asc: Sorteer Oplopend
 sort_desc: Sorteer Aflopend
-template: Sjabloon
 translation: Vertaling
 value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
-  presentation-links:
-    primary: Primair
-  input-code:
-    code: Code
-  system-collection:
-    collection: Collectie
-    description: Selecteer tussen bestaande collecties
-    include_system_collections: Toon systeem collecties
   system-collections:
-    collections: Collecties
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
-  select-color:
-    color: Kleur
   datetime:
     datetime: Datum/tijd
     description: Voer datums en tijden in
     include_seconds: Seconden opnemen
     set_to_now: Op Nu instellen
     use_24: 24-uurs formaat gebruiken
-  system-display-template:
-    display-template: Weergavesjabloon
-    collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
-    select_a_collection: Selecteer een collectie
-  presentation-divider:
-    divider: Scheidingslijn
   select-dropdown:
     choices_name_placeholder: Voer een naam in...
-    choices_value_placeholder: Voer een waarde in...
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (meerdere)
     description: Selecteer meerdere waarden in een dropdown
   file:
-    file: Bestand
     description: Selecteer of upload een bestand
   files:
     files: Bestanden
     description: Selecteer of upload meerdere bestanden
   input-hash:
-    hash: Hash
     description: Voer een waarde in om te hashen
     masked: Gemaskeerd
     masked_label: Verberg de echte waarden
   select-icon:
-    icon: Icoon
     description: Selecteer een waarde in een dropdown
     search_for_icon: Zoek naar een icoon...
   file-image:
-    image: Afbeelding
     description: Selecteer of upload een afbeelding
   system-interface:
     interface: Interface
@@ -972,19 +844,14 @@ interfaces:
     description: Selecteer meerdere gerelateerde items
   select-dropdown-m2o:
     description: Selecteer één gerelateerd item
-    display_template: Weergavesjabloon
   input-rich-text-md:
     markdown: Markdown
     customSyntax: Aangepaste blokken
     box: Blok / Inline
     imageToken: Afbeeldingstoken
-  map:
-    zoom: Zoom
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
-  system-folder:
-    folder: Map
   select-radio:
     radio-buttons: Keuzerondjes
   list:
@@ -995,7 +862,6 @@ interfaces:
     description: Selecteer een nummer met een slider
     always_show_value: Waarde altijd weergeven
   tags:
-    tags: Tags
     description: Selecteer of voeg tags toe
     whitespace: Witruimte
     hyphen: Vervang met -
@@ -1009,25 +875,19 @@ interfaces:
     alphabetize_label: Alfabetische volgorde forceren
     add_tags: Tags toevoegen...
   input:
-    mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
     clear_label: Opslaan als lege tekst
     minimum_value: Minimale waarde
     maximum_value: Maximale waarde
   boolean:
-    toggle: Schakel
     label_placeholder: Voer een label in...
-    label_default: Ingeschakeld
   translations:
-    display_template: Weergavesjabloon
     no_collection: Geen collectie
   user:
-    user: Gebruiker
     description: Selecteer een bestaande Directus gebruiker
     select_mode: Selecteer modus
     modes:
       auto: Automatisch
-      dropdown: Keuzemenu
       modal: Modal
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1036,28 +896,21 @@ interfaces:
     options_override: Overschrijf opties
 displays:
   boolean:
-    boolean: Boolean
     description: Toon aan/uit status
     label_on: Label aan
     label_on_placeholder: Voer een "aan" label in...
     label_off: Label uit
     label_off_placeholder: Voer een uit-label in...
-    icon_on: Icoon aan
-    icon_off: Icoon Uit
     color_on: Kleur Aan
     color_off: Kleur uit
   collection:
-    collection: Collectie
     description: Een collectie weergeven
     icon_label: Toon de icoon van de collectie
   color:
-    color: Kleur
     description: Een gekleurde stip weergeven
     default_color: Standaard Kleur
   datetime:
-    datetime: Datum/tijd
     description: Toon waarden gerelateerd aan tijd
-    format: Format
     format_note: >-
       Het aangepaste formaat accepteert de __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lang
@@ -1065,7 +918,6 @@ displays:
     relative: Relatief
     relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
   file:
-    file: Bestand
     description: Bestanden weergeven
   filesize:
     filesize: Bestandsgrootte
@@ -1080,14 +932,12 @@ displays:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven
   icon:
-    icon: Icoon
     description: Toon een icoon
     filled: Gevuld
     filled_label: De gevulde variant gebruiken
   image:
     image: Afbeelding
     description: Een kleine voorvertoning weergeven
-    circle: Cirkel
     circle_label: Weergeven als cirkel
   labels:
     labels: Labels
@@ -1096,7 +946,6 @@ displays:
     default_background: Standaard achtergrond
     format_label: Formatteer elk label
     show_as_dot: Toon als stip
-    choices_value_placeholder: Voer een waarde in...
     choices_text_placeholder: Voer tekst in...
   mime-type:
     mime-type: MIME-type
@@ -1114,10 +963,7 @@ displays:
     related-values: Gerelateerde waarden
     description: Relatieve waarden weergeven
   user:
-    user: Gebruiker
     description: Toon een directus gebruiker
-    avatar: Profielafbeelding
-    name: Naam
     both: Beiden
     circle_label: Gebruiker in een cirkel weergeven
 layouts:
@@ -1127,10 +973,8 @@ layouts:
     image_fit: Afbeelding passend maken
     crop: Bijsnijden
     contain: Bevat
-    title: Titel
     subtitle: Ondertitel
   tabular:
-    tabular: Tabel
     fields: Velden
     spacing: Ruimte
     comfortable: Comfortabel
@@ -1138,6 +982,3 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
-panels:
-  label:
-    name: Label
