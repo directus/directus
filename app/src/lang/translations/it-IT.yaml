@@ -1,29 +1,5 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Avatar
-default_provider: Predefinito
 published: Pubblicato
-draft: Bozza
-archived: Archiviato
 modules: Moduli
 module_bar: Barra del modulo
 tile_size: Dimensione della casella
@@ -134,14 +110,10 @@ allow_multiple: Consenti apertura multipla
 allow_multiple_to_be_open: Consenti l'apertura di più sezioni
 enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
-field_presentation: Presentazione e Alias
-field_file: File Singolo
-field_files: File Multipli
 field_m2o: Relazione M2O
 field_m2a: Relazione M2A
 field_o2m: Relazione O2M
 field_m2m: Relazione M2M
-field_translations: Traduzioni
 field_group: Gruppo di campi
 item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
@@ -316,7 +288,6 @@ move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
 add_field_related: Crea campo corrispondente
-interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
@@ -350,7 +321,6 @@ import_label: Importa
 file_details: Dettagli File
 dimensions: Dimensioni
 size: Dimensione
-created: Creato
 modified: Modificato
 checksum: Checksum
 owner: Proprietario
@@ -427,7 +397,6 @@ select_a_collection: Seleziona una Raccolta
 select_a_field: Seleziona un campo
 active: Attivo
 move_to: Sposta in...
-copy: Copia
 copy_to: Copia in...
 no_other_dashboards_copy: Non hai altre bacheche per ora.
 inactive: Disattivato
@@ -456,8 +425,6 @@ card_size: Dimensione della Card
 sort_field: Ordina per
 add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordina
-status: Stato
-remove: Rimuovere
 toggle_manual_sorting: Attiva/disattiva l'ordinamento manuale
 bookmark_doesnt_exist: Segnalibro Non Esiste
 bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è stato trovato.
@@ -487,8 +454,6 @@ errors:
   USER_SUSPENDED: Utente sospeso
   CONTAINS_NULL_VALUES: Il campo contiene valori nulli
   UNPROCESSABLE_ENTITY: Entità non elaborabile
-  INTERNAL_SERVER_ERROR: Errore Imprevisto
-  NOT_NULL_VIOLATION: Il valore non può essere nullo
   ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
   UNKNOWN: Errore Imprevisto
 security: Sicurezza
@@ -498,7 +463,6 @@ create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
 bookmarks: Segnalibri
 presets: Preset
-unexpected_error: Errore Imprevisto
 unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi.
 copy_details: Copia Dettagli
 no_app_access: Nessun Accesso all'App
@@ -589,13 +553,11 @@ upload_files_success: '{count} File Caricati'
 upload_pending: Caricamento In Attesa
 drag_file_here: Trascina e rilascia il file qui
 click_to_browse: Clicca per Sfogliare
-interface_options: Opzioni interfaccia
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
 optional_system_fields: Campi di Sistema Opzionali
-value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
@@ -656,15 +618,12 @@ no_dashboards_copy: Non hai ancora bacheche.
 no_data: Nessun dato
 create_dashboard: Crea bacheca
 dashboard_name: Nome della bacheca
-full_screen: Schermo Intero
 edit_panels: Modifica pannelli
 fit_to_screen: Adatta allo schermo
 image_url: URL immagine
 alt_text: Testo alternativo
 media: Media
 quality: Qualità
-width: Larghezza
-height: Altezza
 source: Sorgente
 url_placeholder: Inserisci url...
 display_text: Visualizza testo
@@ -681,9 +640,6 @@ wysiwyg_options:
   alignleft: Allineamento a sinistra
   alignnone: Senza allineamento
   alignright: Allineamento a destra
-  forecolor: Colore di primo piano
-  backcolor: Colore dello sfondo
-  bold: Grassetto
   italic: Corsivo
   underline: Sottolineato
   strikethrough: Barrato
@@ -716,7 +672,6 @@ wysiwyg_options:
   redo: Ripristina
   remove: Rimuovere
   removeformat: Rimuovi Formato
-  selectall: Seleziona tutto
   table: Tabella
   visualaid: Visualizza elementi invisibili
   source_code: Modifica Codice Sorgente
@@ -739,7 +694,6 @@ no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
 settings_permissions: Ruoli e permessi
 settings_project: Impostazioni progetto
-settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 one_or_more_options_are_missing: Mancano una o più opzioni
 scope: Ambito
@@ -825,30 +779,19 @@ fields:
   directus_activity:
     item: Chiave primaria elemento
     action: Azioni
-    collection: Raccolta
     timestamp: Azione il
     user: Azione di
     comment: Commento
     user_agent: User agent
     ip: Indirizzo IP
-    revisions: Revisioni
   directus_collections:
-    collection: Raccolta
-    icon: Icona
-    note: Nota
-    color: Colore
-    display_template: Display Template
-    hidden: Nascosto
-    singleton: Singleton
     translations: Traduzioni del nome della raccolta
     archive_app_filter: Filtro archiviati in app
     archive_value: Valore archiviazione
     unarchive_value: Valore ripristino
-    sort_field: Ordina per
     accountability: Monitoraggio Attività e Revisione
   directus_files:
     $thumbnail: Miniatura
-    title: Titolo
     description: Descrizione
     tags: Tag
     location: Posizione
@@ -859,29 +802,17 @@ fields:
     type: Tipo MIME
     filesize: Dimensione file
     modified_by: Modificato da
-    modified_on: Modificato il
-    created_on: Creato il
-    created_by: Creato da
-    embed: Embed
     uploaded_by: Caricato da
-    folder: Cartella
     width: Larghezza
     uploaded_on: Caricato il
     height: Altezza
-    charset: Set di caratteri
-    duration: Durata
   directus_users:
     first_name: Nome
     last_name: Cognome
     email: E-mail
     password: Password
     avatar: Avatar
-    location: Posizione
-    title: Titolo
-    description: Descrizione
-    tags: Tag
     user_preferences: Preferenze utente
-    language: Linguaggio
     theme: Tema
     theme_auto: Automatico (in base al sistema)
     theme_light: Tema chiaro
@@ -890,15 +821,10 @@ fields:
     admin_options: Opzioni Amministratore
     status: Stato
     status_draft: Bozza
-    status_invited: Invitato
-    status_active: Attivo
     status_suspended: Sospeso
     status_archived: Archiviato
-    role: Ruolo
     token: Token
     token_placeholder: Inserisci un token di accesso sicuro...
-    last_page: Ultima Pagina
-    last_access: Ultimo Acesso
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -930,15 +856,10 @@ fields:
   directus_fields:
     collection: Nome della Raccolta
     icon: Icona Raccolta
-    note: Nota
     hidden: Nascosto
-    singleton: Singleton
-    translation: Traduzioni nome del campo
     display_template: Template
   directus_roles:
-    name: Nome ruolo
     icon: Icona Ruolo
-    description: Descrizione
     app_access: Accesso App
     admin_access: Accesso Amministratore
     ip_access: Accesso IP
@@ -947,9 +868,7 @@ fields:
     module_list: Navigazione del modulo
     collection_list: Navigazione Raccolte
   directus_webhooks:
-    name: Nome
     method: Metodo
-    status: Stato
     data: Dati
     data_label: Invia dati evento
     triggers: Trigger
@@ -959,7 +878,6 @@ field_options:
     project_name_placeholder: Il mio progetto...
     project_logo_note: Sfondo per l'accesso e il logo
     public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
-    security_divider_title: Sicurezza
     auth_password_policy:
       none_text: Nessuna – non consigliato
       weak_text: Debole – minimo 8 caratteri
@@ -970,37 +888,17 @@ field_options:
         cover_text: Ricopri (forza dimensione esatta)
         fit_text: Adatta all'interno
         outside_text: Adatta all'esterno
-    additional_transforms: Trasformazioni aggiuntive
-    transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
-    mapbox_key: Access Token di Mapbox
-    mapbox_placeholder: pk.eyJ1Ijo.....
-    basemaps_raster: Raster
-    basemaps_tile: Raster TileJSON
-    basemaps_style: Stile Mapbox
-    files_divider_title: File e miniature
-    overrides_divider_title: Personalizzazioni App
-  directus_activity:
-    login: Accedi
-    create: Creazione
-    update: Modifica
-    delete: Cancellazione
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
     do_not_track_anything: Non Tracciare nulla
-    collection_setup: Configurazione Raccolta
     note_placeholder: Una descrizione di questa raccolta...
     hidden_label: Nascondi nell'app
-    singleton: Tratta come oggetto singolo
-    language: Linguaggio
     translation: Inserisci una traduzione...
-    archive_divider: Archivio
     archive_field: Scegli un campo...
     archive_app_filter: Abilita filtro archiviati in app
     archive_value: Valore impostato all'archiviazione...
     unarchive_value: Valore impostato al ripristino...
-    divider: Ordina
-    sort_field: Scegli un campo...
     accountability_divider: Autorizzazioni
   directus_files:
     title: Un titolo unico...
@@ -1014,9 +912,6 @@ field_options:
     description: Una descrizione per questo ruolo...
     ip_access: Aggiungi gli indirizzi IP consentiti, lascia vuoto per consentirli tutti...
     fields:
-      icon_name: Icona
-      name_name: Nome
-      name_placeholder: Inserisci un titolo...
       link_name: Link
       link_placeholder: URL relativo o assoluto...
     collection_list:
@@ -1024,32 +919,12 @@ field_options:
       fields:
         group_name: Nome del gruppo
         group_placeholder: Etichetta questo gruppo...
-        type_name: Tipo
         choices_always: Sempre aperto
-        choices_start_open: Inizia aperto
         choices_start_collapsed: Inizia chiuse
-    collections_name: Raccolte
     collections_addLabel: Aggiungi raccolta...
   directus_users:
-    preferences_divider: Preferenze utente
-    dropdown_auto: Automatico (in base al sistema)
-    dropdown_light: Tema chiaro
-    dropdown_dark: Tema scuro
-    admin_divider: Opzioni Amministratore
-    status_dropdown_draft: Bozza
     status_dropdown_invited: Invitato
-    status_dropdown_active: Attivo
-    status_dropdown_suspended: Sospeso
-    status_dropdown_archived: Archiviato
-    token: Inserisci un token di accesso sicuro...
   directus_webhooks:
-    status_options_active: Attivo
-    status_options_inactive: Disattivato
-    data_label: Invia dati evento
-    triggers_divider: Trigger
-    actions_create: Creazione
-    actions_update: Modifica
-    actions_delete: Cancellazione
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
@@ -1060,7 +935,6 @@ save_current_user_role: Salva Ruolo Utente Attuale
 save_current_datetime: Salva Data/Ora Attuale
 block: Blocco
 inline: In linea
-comment: Commento
 relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
 referential_action_field_label_o2m: Alla deselezione di {collection}...
@@ -1080,18 +954,15 @@ delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
   Sei sicuro di voler cancellare il campo "{field}"? Questa azione non può essere annullata.
-description: Descrizione
 done: Fatto
 duplicate: Duplica
 limit: Limite
-email: E-mail
 embed: Embed
 fallback_icon: Icona di default
 field: Campo | Campi
 file: File
 file_library: Libreria File
 forgot_password: Ha dimenticato la password
-hidden: Nascosto
 icon: Icona
 info: Informazioni
 normal: Normale
@@ -1106,7 +977,6 @@ not_authenticated: Non autenticato
 authenticated: Autenticato
 options: Opzioni
 otp: Password monouso
-password: Password
 permissions: permessi
 relationship: Relazione
 reset: Resetta
@@ -1127,19 +997,16 @@ something_went_wrong: Qualcosa è andato storto.
 sort_direction: Direzione ordine
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
-template: Template
 require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
-    start: Inizio
     all_closed: Tutto chiuso
     first_opened: Apri la prima sezione
     all_opened: Tutto aperto
@@ -1150,8 +1017,6 @@ interfaces:
     links: Collegamenti
     description: Pulsanti configurabili per avviare URL dinamici
     style: Stile
-    primary: Principale
-    link: Collegamenti
     button: Pulsanti
     error: Non è possibile eseguire l'azione
   select-multiple-checkbox:
@@ -1168,20 +1033,13 @@ interfaces:
     show_all: Mostra tutte
     show_selected: Mostra selezionate
   input-code:
-    code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
     placeholder: Inserisci il codice qui...
-  system-collection:
-    collection: Raccolta
-    description: Seleziona tra raccolte esistenti
-    include_system_collections: Includi Raccolte di Sistema
   system-collections:
-    collections: Raccolte
     description: Seleziona tra raccolte esistenti
     include_system_collections: Includi Raccolte di Sistema
   select-color:
-    color: Colore
     description: Inserisci o seleziona un valore di colore
     placeholder: Scegli un colore...
     preset_colors: Colori Predefiniti
@@ -1194,13 +1052,9 @@ interfaces:
     set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
   system-display-template:
-    display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
     collection_field: Campo della raccolta
-    collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
-    select_a_collection: Seleziona una Raccolta
   presentation-divider:
-    divider: Separatore
     description: Etichetta e divide i campi in sezioni
     title_placeholder: Inserisci un titolo...
     inline_title: Titolo incorporato
@@ -1210,32 +1064,26 @@ interfaces:
   select-dropdown:
     description: Seleziona un valore da un menu a discesa
     choices_placeholder: Aggiungi una nuova scelta
-    allow_other: Consenti altro
     allow_other_label: Consenti altri valori
     allow_none: Consenti nessuna
     allow_none_label: Consenti nessuna selezione
     choices_name_placeholder: Inserisci un nome...
-    choices_value_placeholder: Inserisci un valore...
   select-multiple-dropdown:
     select-multiple-dropdown: Menu a discesa (Multipla)
     description: Seleziona più valori da un menu a discesa
   file:
-    file: File
     description: Seleziona o carica un file
   files:
     files: File
     description: Seleziona o carica più file
   input-hash:
-    hash: Hash
     description: Inserisci un valore da cifrare
     masked: Nascosto
     masked_label: Nascondi il valore reale
   select-icon:
-    icon: Icona
     description: Seleziona un'icona dal menu a discesa
     search_for_icon: Cerca un'icona...
   file-image:
-    image: Immagine
     description: Seleziona o carica un'immagine
   system-interface:
     interface: Interfaccia
@@ -1250,7 +1098,6 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Molti a Uno
     description: Seleziona un singolo elemento correlato
-    display_template: Display Template
   input-rich-text-md:
     markdown: Markdown
     description: Inserisci e visualizza in anteprima markdown
@@ -1263,7 +1110,6 @@ interfaces:
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
-    zoom: Zoom
     geometry_type: Tipo di geometria
     geometry_format: Formato geometria
     default_view: Vista predefinita
@@ -1285,7 +1131,6 @@ interfaces:
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta
   system-folder:
-    folder: Cartella
     description: Seleziona una cartella
     field_hint: Mette i file appena caricati nella cartella selezionata. Non influisce sui file esistenti selezionati.
     root_name: Radice libreria file
@@ -1305,7 +1150,6 @@ interfaces:
     description: Seleziona un numero usando un cursore
     always_show_value: Mostra sempre il valore
   tags:
-    tags: Tag
     description: Seleziona o aggiungi tag
     whitespace: Spazio
     hyphen: Sostituisci con trattino
@@ -1323,7 +1167,6 @@ interfaces:
     description: Inserisci manualmente un valore
     trim: Rifila
     trim_label: Elimina gli spazi a inizio e fine
-    mask: Nascosto
     mask_label: Nascondi il valore reale
     clear: Valore vuoto
     clear_label: Salva come stringa vuota
@@ -1336,12 +1179,9 @@ interfaces:
     textarea: Area di testo
     description: Inserisci testo su più righe
   boolean:
-    toggle: Interrutore
     description: Cambia tra attivato e disattivato
     label_placeholder: Inserisci un'etichetta...
-    label_default: Abilitato
   translations:
-    display_template: Display Template
     no_collection: Nessuna Raccolta
     toggle_split_view: Attiva/disattiva la Split View
     language_field: Campo lingua
@@ -1349,12 +1189,10 @@ interfaces:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
   user:
-    user: Utente
     description: Seleziona un utente di directus esistente
     select_mode: Seleziona la modalità
     modes:
       auto: Automatica
-      dropdown: Menu a tendina
       modal: Modale
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1382,28 +1220,21 @@ interfaces:
     start_closed: Inizia chiuso
 displays:
   boolean:
-    boolean: Boolean
     description: Mostra gli stati attivato e disattivato
     label_on: Etichetta attivato
     label_on_placeholder: Inserisci l'etichetta attivato...
     label_off: Etichetta disattivato
     label_off_placeholder: Inserisci l'etichetta disattivato...
-    icon_on: Icona attivato
-    icon_off: Icona disattivato
     color_on: Colore attivato
     color_off: Colore Disattivato
   collection:
-    collection: Raccolta
     description: Mostra una raccolta
     icon_label: Mostra l'icona della raccolta
   color:
-    color: Colore
     description: Mostra un punto colorato
     default_color: Colore Predefinito
   datetime:
-    datetime: Data e ora
     description: Visualizza valori relativi al tempo
-    format: Formato
     format_note: >-
       Il formato personalizzato accetta la __[tabella dei simboli del campo data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lungo
@@ -1411,7 +1242,6 @@ displays:
     relative: Relativo
     relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
   file:
-    file: File
     description: Visualizza file
   filesize:
     filesize: Dimensione File
@@ -1426,14 +1256,12 @@ displays:
     formatted-json-value: Valore JSON formattato
     description: Visualizza una versione formattata dell'oggetto
   icon:
-    icon: Icona
     description: Visualizza un'icona
     filled: Piena
     filled_label: Usa la versione piena
   image:
     image: Immagine
     description: Visualizza una piccola anteprima dell'immagine
-    circle: Cerchio
     circle_label: Visualizza come un cerchio
   labels:
     labels: Etichette
@@ -1442,7 +1270,6 @@ displays:
     default_background: Sfondo Predefinito
     format_label: Formatta ogni etichetta
     show_as_dot: Mostra come pallino
-    choices_value_placeholder: Inserisci un valore...
     choices_text_placeholder: Inserisci un testo...
   mime-type:
     mime-type: Tipo MIME
@@ -1460,10 +1287,7 @@ displays:
     related-values: Valori Correlati
     description: Visualizza i valori relativi
   user:
-    user: Utente
     description: Mostra un utente directus
-    avatar: Avatar
-    name: Nome
     both: Tutti e due
     circle_label: Mostra utente in un cerchio
 layouts:
@@ -1473,10 +1297,8 @@ layouts:
     image_fit: Adatta immagini
     crop: Ritaglia
     contain: Contiene
-    title: Titolo
     subtitle: Sottotitolo
   tabular:
-    tabular: Tabella
     fields: campi
     spacing: Spaziatura
     comfortable: Confortevole
@@ -1487,7 +1309,6 @@ layouts:
     start_date_field: Campo Data inizio
     end_date_field: Campo Data fine
   map:
-    map: Mappa
     basemap: Mappa base
     layers: Livelli
     edit_custom_layers: Modifica i livelli
@@ -1496,7 +1317,6 @@ layouts:
     cluster_radius: Raggio del Cluster
     cluster_minpoints: Dimensione minima del cluster
     cluster_maxzoom: Zoom massimo per il clustering
-    field: Geometria
     invalid_geometry: Geometria non valida
     auto_location_filter: Filtra sempre i dati al rettangolo di selezione
     search_this_area: Cerca in quest'area
@@ -1513,7 +1333,6 @@ panels:
     date_field: Campo data
     value_field: Campo valore
   label:
-    name: Etichetta
     description: Mostra del testo
   list:
     name: Elenco
