@@ -74,7 +74,7 @@ export default defineComponent({
 					return {
 						...modulePart,
 						...registeredModules.value.find((module) => module.id === modulePart.id),
-						to: module.link === undefined ? `/${module.id}` : '',
+						to: `/${module.id}`,
 					};
 				});
 		});
