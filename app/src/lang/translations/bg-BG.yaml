@@ -1133,6 +1133,11 @@ view_project: Преглед на проект
 report_error: Докладване на грешка
 start: Начало
 interfaces:
+  filter:
+    name: Филтър
+    add_filter: Добавяне на филтър
+    all: Всичко
+    any: Който и да е
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон
