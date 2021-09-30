@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Awatar
 edit_field: Edytuj pole
 maps: Mapy
 item_revision: Wersja elementu
@@ -122,14 +101,10 @@ allow_multiple: Zezwalaj na wiele
 allow_multiple_to_be_open: Zezwalaj na otwieranie wielu
 enter_value_to_replace_nulls: Wprowadź nową wartość, aby zastąpić wszystkie pola NULL.
 field_standard: Standard
-field_presentation: Prezentacja i aliasy
-field_file: Pojedynczy plik
-field_files: Wiele plików
 field_m2o: Powiązanie M20
 field_m2a: Powiązanie M2A
 field_o2m: Powiązanie 02M
 field_m2m: Powiązanie M2M
-field_translations: Tłumaczenia
 field_group: Grupa pól
 item_permissions: Uprawnienia
 field_permissions: Uprawnienia pola
@@ -281,7 +256,6 @@ move_to_folder: Przenieś do folderu
 move: Przenieś
 system: System
 add_field_related: Dodaj pole do powiązanej kolekcji
-interface_label: Interfejs
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
@@ -315,7 +289,6 @@ import_label: Importuj
 file_details: Szczegóły pliku
 dimensions: Wymiary
 size: Wielkość
-created: Utworzony
 modified: Zmodyfikowane
 checksum: Suma kontrolna
 owner: Właściciel
@@ -389,7 +362,6 @@ display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo sko
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
 select_a_collection: Wybierz kolekcje
 active: Aktywne
-copy: Kopiuj
 inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
@@ -410,8 +382,6 @@ card_size: Rozmiar karty
 sort_field: Pole sortowania
 add_sort_field: Dodaj pole sortowania
 sort: Sortuj
-status: Status
-remove: Usuń
 toggle_manual_sorting: Przełącz ręczne sortowanie
 bookmark_doesnt_exist: Zakładka nie istnieje
 bookmark_doesnt_exist_copy: Nie znaleziono zakładki, którą próbujesz otworzyć.
@@ -440,8 +410,6 @@ errors:
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
-  INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
-  NOT_NULL_VIOLATION: Wartość nie może być pusta
   UNKNOWN: Nieoczekiwany błąd
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
@@ -449,7 +417,6 @@ create_bookmark: Utwórz zakładkę
 edit_bookmark: Edytuj zakładkę
 bookmarks: Zakładki
 presets: Ustawienia
-unexpected_error: Nieoczekiwany błąd
 unexpected_error_copy: Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.
 copy_details: Kopiuj szczegóły
 no_app_access: Brak dostępu do aplikacji
@@ -533,13 +500,11 @@ upload_files_success: 'Przesłano {count} plików'
 upload_pending: Prześlij oczekujące
 drag_file_here: Przeciągnij i upuść plik tutaj
 click_to_browse: Kliknij, aby przeglądać
-interface_options: Opcje interfejsu
 layout_options: Opcje Układu
 rows: Wiersze
 columns: Kolumny
 collection_setup: Ustawienia kolekcji
 optional_system_fields: Opcjonalne pola systemu
-value_unique: Wartość musi być unikalna
 all_activity: Wszystkie aktywności
 create_item: Utwórz element
 display_template: Wyświetl szablon
@@ -575,12 +540,9 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
-full_screen: Pełny ekran
 image_url: Adres Url obrazu
 alt_text: Tekst alternatywny
 media: Media
-width: Szerokość
-height: Wysokość
 source: Źródło
 url_placeholder: Wprowadź adres url...
 display_text: Wyświetl tekst
@@ -597,9 +559,6 @@ wysiwyg_options:
   alignleft: Wyrównaj do lewej
   alignnone: Brak wyrównania
   alignright: Wyrównaj do prawej
-  forecolor: Kolor pierwszego planu
-  backcolor: Kolor tła
-  bold: Pogrubiony
   italic: Kursywa
   underline: Podkreślenie
   strikethrough: Przekreślenie
@@ -632,7 +591,6 @@ wysiwyg_options:
   redo: Powtórz
   remove: Usuń
   removeformat: Usuń formatowanie
-  selectall: Wybierz wszystkie
   table: Tabela
   visualaid: Pokaż niewidoczne elementy
   source_code: Edytuj kod źródłowy
@@ -655,7 +613,6 @@ no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
 settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
-settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
@@ -718,30 +675,19 @@ fields:
   directus_activity:
     item: Klucz główny produktu
     action: Czynność
-    collection: Kolekcja
     timestamp: Czynność na
     user: Czynność przez
     comment: Komentarz
     user_agent: User agent
     ip: Adres IP
-    revisions: Wersje
   directus_collections:
-    collection: Kolekcja
-    icon: Ikona
-    note: Notatka
-    color: Kolor
-    display_template: Wyświetl szablon
-    hidden: Ukryte
-    singleton: Singleton
     translations: Tłumaczenia Kolekcji
     archive_app_filter: Filtr archiwum
     archive_value: Wartości archiwalne
     unarchive_value: Niezarchiwizowane wartości
-    sort_field: Pole sortowania
     accountability: Śledzenie Aktywności i Wersji
   directus_files:
     $thumbnail: Miniaturka
-    title: Tytuł
     description: Opis
     tags: Etykiety
     location: Lokalizacja
@@ -752,37 +698,21 @@ fields:
     type: Typ Mime
     filesize: Rozmiar pliku
     modified_by: Zmodyfikowane przez
-    modified_on: Modyfikowane Dnia
-    created_on: Stworzony dnia
-    created_by: Stworzone przez
-    embed: Osadzony
     uploaded_by: Przesłane przez
-    folder: Folder
     width: Szerokość
     uploaded_on: Przesłano
     height: Wysokość
-    charset: Zestaw znaków
-    duration: Czas trwania
   directus_users:
     first_name: Imię
     last_name: Nazwisko
     email: E-Mail
     password: Hasło
     avatar: Awatar
-    location: Lokalizacja
-    title: Tytuł
-    description: Opis
-    tags: Etykiety
-    language: Język
     theme: Motyw
     tfa_secret: Uwierzytelnianie dwuetapowe
     admin_options: Opcje administratora
     status: Status
-    status_active: Aktywne
-    role: Rola
     token: Token
-    last_page: Ostatnia strona
-    last_access: Ostatni dostęp
   directus_settings:
     project_name: Nazwa projektu
     project_url: Adres URL projektu
@@ -799,15 +729,10 @@ fields:
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
-    note: Notatka
     hidden: Ukryte
-    singleton: Singleton
-    translation: Tłumaczenie nazwy pola
     display_template: Szablon
   directus_roles:
-    name: Nazwa roli
     icon: Ikona roli
-    description: Opis
     app_access: Dostęp aplikacji
     admin_access: Dostęp do panelu administratora
     ip_access: Dostęp IP
@@ -815,39 +740,11 @@ fields:
     users: Użytkownicy w roli
     module_list: Moduł Nawigacji
     collection_list: Kolekcja Nawigacji
-  directus_webhooks:
-    name: Nazwa
-    status: Status
 field_options:
-  directus_activity:
-    create: Stwórz
-    update: Zaktualizuj
   directus_collections:
     track_activity_revisions: Śledź aktywność i rewizje
     only_track_activity: Tylko Śledź Aktywność
     do_not_track_anything: Nie śledź niczego
-    collection_setup: Ustawienia kolekcji
-    singleton: Traktuj jako pojedynczy obiekt
-    language: Język
-    archive_divider: Archiwum
-    divider: Sortuj
-  directus_roles:
-    fields:
-      icon_name: Ikona
-      name_name: Nazwa
-      name_placeholder: Wprowadź tytuł...
-    collection_list:
-      fields:
-        type_name: Typ
-    collections_name: Kolekcje
-  directus_users:
-    admin_divider: Opcje administratora
-    status_dropdown_active: Aktywne
-  directus_webhooks:
-    status_options_active: Aktywne
-    status_options_inactive: Nieaktywny
-    actions_create: Stwórz
-    actions_update: Zaktualizuj
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 do_nothing: Nic nie rób
 generate_and_save_uuid: Generuj i zapisz UUID
@@ -856,7 +753,6 @@ save_current_user_role: Zapisz bieżącą rolę użytkownika
 save_current_datetime: Zapisz bieżącą datę/czas
 block: Zablokuj
 inline: W lini
-comment: Komentarz
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
 referential_action_field_label_o2m: Po odznaczeniu {collection}...
@@ -873,18 +769,15 @@ delete_are_you_sure: >-
   Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
 delete_field_are_you_sure: >-
   Na pewno chcesz usunąć pole "{field}"? Tej akcji nie będzie można cofnąć.
-description: Opis
 done: Skończone
 duplicate: Zduplikuj
 limit: Limit
-email: E-Mail
 embed: Osadzony
 fallback_icon: Ikona Fallback
 field: Pole | Pola
 file: Plik
 file_library: Biblioteka plików
 forgot_password: Zapomniałem hasła
-hidden: Ukryte
 icon: Ikona
 info: Informacja
 normal: Normalny
@@ -899,7 +792,6 @@ not_authenticated: Brak uwierzytelnienia
 authenticated: Uwierzytelniony
 options: Opcje
 otp: Jednorazowe hasło
-password: Hasło
 permissions: Uprawnienia
 relationship: Powiązanie
 reset: Wyczyść
@@ -920,7 +812,6 @@ something_went_wrong: Coś poszło nie tak.
 sort_direction: Kierunek sortowania
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
-template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
@@ -931,8 +822,6 @@ interfaces:
     links: Linki
     description: Konfigurowalne przyciski linków do uruchamiania dynamicznych adresów URL
     style: Style
-    primary: Podstawowy
-    link: Linki
     button: Przyciski
     error: Nie można wykonać akcji
   select-multiple-checkbox:
@@ -947,20 +836,13 @@ interfaces:
     value_combining: Połączenie wartości
     value_combining_note: Kontroluje wartość zapisaną podczas zagnieżdżonych wyborów.
   input-code:
-    code: Kod
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii
     placeholder: Wprowadź kod tutaj...
-  system-collection:
-    collection: Kolekcja
-    description: Wybierz pomiędzy istniejącymi kolekcjami
-    include_system_collections: Dołącz kolekcje systemowe
   system-collections:
-    collections: Kolekcje
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe
   select-color:
-    color: Kolor
     description: Wprowadź lub wybierz kolor
     placeholder: Wybierz kolor...
     preset_colors: Ustawienia kolorów
@@ -973,13 +855,9 @@ interfaces:
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
   system-display-template:
-    display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
     collection_field: Pole kolekcji
-    collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
-    select_a_collection: Wybierz kolekcje
   presentation-divider:
-    divider: Separator
     description: Etykietowanie i dzielenie pól na sekcje
     title_placeholder: Wprowadź tytuł...
     inline_title: Tytuł w linii
@@ -989,32 +867,26 @@ interfaces:
   select-dropdown:
     description: Wybierz wartość z listy rozwijanej
     choices_placeholder: Dodaj nowy wybór
-    allow_other: Zezwól na inne
     allow_other_label: Zezwalaj na inne wartości
     allow_none: Zezwalaj na brak
     allow_none_label: Zezwól na brak zaznaczenia
     choices_name_placeholder: Wprowadź nazwę...
-    choices_value_placeholder: Wprowadź wartość...
   select-multiple-dropdown:
     select-multiple-dropdown: Rozwijanie menu listy (Wielokrotnego wyboru)
     description: Wybierz wiele wartości z listy rozwijanej
   file:
-    file: Plik
     description: Wybierz lub prześlij plik
   files:
     files: Pliki
     description: Wybierz lub prześlij wiele plików
   input-hash:
-    hash: Hash
     description: Wprowadź wartość do hashowania
     masked: Zamaskowany
     masked_label: Ukryj rzeczywiste wartości
   select-icon:
-    icon: Ikona
     description: Wybierz ikonę z listy rozwijanej
     search_for_icon: Szukaj ikony...
   file-image:
-    image: Obraz
     description: Wybierz lub prześlij plik
   system-interface:
     interface: Interfejs
@@ -1029,7 +901,6 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
-    display_template: Wyświetl szablon
   input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
@@ -1039,8 +910,6 @@ interfaces:
     box: Blok / Inline
     imageToken: Token obrazu
     imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
-  map:
-    zoom: Powiększ
   presentation-notice:
     notice: Informacja
     description: Wyświetl krótką informacje
@@ -1049,8 +918,6 @@ interfaces:
     one-to-many: Jeden do wielu
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
-  system-folder:
-    folder: Folder
   select-radio:
     radio-buttons: Pola wyboru
     description: Wybierz jeden lub wiele obiektów
@@ -1066,7 +933,6 @@ interfaces:
     description: Wybierz numer używając suwaka
     always_show_value: Zawsze pokazuj wartość
   tags:
-    tags: Etykiety
     description: Wybierz lub dodaj tagi
     whitespace: Białe znaki
     hyphen: Zastąp myślnikiem
@@ -1084,7 +950,6 @@ interfaces:
     description: Ręcznie wprowadź wartość
     trim: Przytnij
     trim_label: Przytnij początek i koniec
-    mask: Zamaskowany
     mask_label: Ukryj rzeczywistą wartość
     clear: Wyczyść wartość
     clear_label: Zapisz jako pusty ciąg
@@ -1097,23 +962,18 @@ interfaces:
     textarea: Obszar tekstowy
     description: Wprowadź wieloliniowy zwykły tekst
   boolean:
-    toggle: Przełącz
     description: Przełącz między włącz/wyłącz
     label_placeholder: Wprowadź etykietę...
-    label_default: Włączone
   translations:
-    display_template: Wyświetl szablon
     no_collection: Brak kolekcji
   list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
     recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
   user:
-    user: Użytkownik
     description: Wybierz istniejącego użytkownika
     select_mode: Wybierz tryb
     modes:
       auto: Automatycznie
-      dropdown: Lista rozwijana
       modal: Okno
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1130,28 +990,21 @@ interfaces:
     rate: Oceń
 displays:
   boolean:
-    boolean: Wartość logiczna
     description: Wyświetlaj włącz/wyłącz
     label_on: Etykieta włączona
     label_on_placeholder: Wprowadź etykietę...
     label_off: Etykieta włączona
     label_off_placeholder: Wprowadź wyłączoną etykietę...
-    icon_on: Ikona włączona
-    icon_off: Ikona wyłączona
     color_on: Kolor włączony
     color_off: Kolor wyłączony
   collection:
-    collection: Kolekcja
     description: Wyświetl kolekcję
     icon_label: Pokaż ikonę kolekcji
   color:
-    color: Kolor
     description: Wyświetl kolorową kropkę
     default_color: Domyślny kolor
   datetime:
-    datetime: Data i godzina
     description: Wyświetlaj wartości związane z czasem
-    format: Formatowanie
     format_note: >-
       Niestandardowy format akceptuje __[tabelę symboli daty w polu daty](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Długi
@@ -1159,7 +1012,6 @@ displays:
     relative: Względny
     relative_label: 'Pokaż czas względny, np. 5 minut temu'
   file:
-    file: Plik
     description: Wyświetl pliki
   filesize:
     filesize: Rozmiar pliku
@@ -1174,14 +1026,12 @@ displays:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
   icon:
-    icon: Ikona
     description: Wyświetl ikonę
     filled: Wypełniony
     filled_label: Użyj wypełnionego wariantu
   image:
     image: Obraz
     description: Wyświetl mały podgląd obrazu
-    circle: Okrąg
     circle_label: Wyświetl jako okrąg
   labels:
     labels: Etykiety
@@ -1190,7 +1040,6 @@ displays:
     default_background: Domyślne tło
     format_label: Formatuj każdą etykietę
     show_as_dot: Pokaż jako kropkę
-    choices_value_placeholder: Wprowadź wartość...
     choices_text_placeholder: Wprowadź tekst...
   mime-type:
     mime-type: Typ MIME
@@ -1208,10 +1057,7 @@ displays:
     related-values: Powiązane wartości
     description: Wyświetl wartości Raw
   user:
-    user: Użytkownik
     description: Wyświetl użytkownika
-    avatar: Awatar
-    name: Nazwa
     both: Oba
     circle_label: Pokaż użytkownika w kółku
 layouts:
@@ -1221,10 +1067,8 @@ layouts:
     image_fit: Dopasuj obraz
     crop: Przytnij
     contain: Zawiera
-    title: Tytuł
     subtitle: Subtytuł
   tabular:
-    tabular: Tabela
     fields: Pola
     spacing: Odstępy
     comfortable: Wygodny
@@ -1234,8 +1078,3 @@ layouts:
     calendar: Kalendarz
     start_date_field: Pole daty rozpoczęcia
     end_date_field: Pole daty zakończenia
-  map:
-    field: Geometria
-panels:
-  label:
-    name: Etykieta
