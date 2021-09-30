@@ -1,6 +1,6 @@
 <template>
 	<div class="system-filter">
-		<v-list :mandatory="true">
+		<v-list :mandatory="true" :class="{ empty: innerValue.length === 0 }">
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
@@ -33,7 +33,6 @@
 </template>
 
 <script lang="ts">
-import { useFieldsStore } from '@/stores';
 import { get, set } from 'lodash';
 import { defineComponent, PropType, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -63,7 +62,6 @@ export default defineComponent({
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
-		const fieldsStore = useFieldsStore();
 
 		const { collectionName } = toRefs(props);
 
@@ -167,14 +165,19 @@ export default defineComponent({
 			cursor: pointer;
 		}
 	}
-}
 
-.no-rules {
-	height: 30px; // match height of single node
-	margin-bottom: 8px;
-	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
-	line-height: 30px;
+	.empty {
+		display: flex;
+		align-items: center;
+		height: var(--input-height);
+		padding-top: 0;
+		padding-bottom: 0;
+
+		.no-rules {
+			color: var(--foreground-subdued);
+			font-family: var(--family-monospace);
+		}
+	}
 }
 
 .add-filter {
