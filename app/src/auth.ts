@@ -30,9 +30,10 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 	// for tokens that last > 24 days. Ref #4054
 	if (response.data.data.expires <= 2100000000) {
-		setTimeout(() => refresh(), response.data.data.expires - 10000);
+		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
+	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 	appStore.authenticated = true;
 
 	await hydrate();
@@ -76,6 +77,11 @@ idleTracker.on(
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
 	const appStore = useAppStore();
 
+	// Skip refresh if access token is still fresh
+	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
+		return;
+	}
+
 	try {
 		// Delete the token header if it still exists
 		delete api.defaults.headers.Authorization;
@@ -96,6 +102,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		if (response.data.data.expires <= 2100000000) {
 			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		}
+
+		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 		appStore.authenticated = true;
 
 		return accessToken;
