@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Аватар
 edit_field: Уреди поља
 item_revision: Ревизија итема
 duplicate_field: Дуплирај поље
@@ -71,15 +50,12 @@ create_collection: Креирајте колекцију
 users: Корисници
 activity: Активност
 duration: Трајање
-status: Стање
 bookmarks: Сачуване странице
 back: Назад
 operators:
   contains: Садржи
 role: Рола
 create: Креирај
-width: Ширина
-height: Висина
 wysiwyg_options:
   codeblock: Код
   table: Табела
@@ -97,92 +73,45 @@ fields:
   directus_activity:
     item: Примарни кључ ставке
     action: Акција
-    collection: Колекција
     timestamp: Акција укључена
     user: Акција од стране
     comment: Коментар
     user_agent: Кориснички агент
     ip: ИП адреса
-  directus_collections:
-    collection: Колекција
   directus_files:
-    title: Наслов
     description: Опис
     tags: Ознаке
     location: Локација
     metadata: Мета подаци
     filesize: Veličina
-    created_on: Креирано
-    created_by: Креирао
-    embed: Угради
     width: Ширина
     height: Висина
-    duration: Трајање
   directus_users:
     first_name: Име
     last_name: Презиме
     email: Имејл
     password: Лозинка
     avatar: Аватар
-    location: Локација
-    title: Наслов
-    description: Опис
-    tags: Ознаке
-    language: Језик
     theme: Тема
     tfa_secret: Дво-факторска аутентификација
     status: Стање
-    role: Рола
   directus_fields:
     display_template: Шаблон
-  directus_roles:
-    description: Опис
-  directus_webhooks:
-    name: Име
-    status: Стање
-field_options:
-  directus_activity:
-    create: Креирај
-  directus_collections:
-    language: Језик
-    archive_divider: Архивирај
-  directus_roles:
-    fields:
-      name_name: Име
-  directus_webhooks:
-    actions_create: Креирај
-comment: Коментар
-description: Опис
 done: Завршено
-email: Имејл
 embed: Угради
 my_activity: Моја активност
-password: Лозинка
-template: Шаблон
 interfaces:
-  input-code:
-    code: Код
-  system-collection:
-    collection: Колекција
   files:
     files: Фајлови
-  tags:
-    tags: Ознаке
 displays:
-  collection:
-    collection: Колекција
   user:
-    avatar: Аватар
-    name: Име
     both: Оба
 layouts:
   cards:
     cards: Картице
     image_source: Извор слике
-    title: Наслов
     subtitle: Поднаслов
   tabular:
-    tabular: Табела
     comfortable: Комфорно
     compact: Компактни
     cozy: Удобно
