@@ -28,7 +28,9 @@
 							:groups-clickable="true"
 							@group-toggle="loadFieldRelations($event.value, 1)"
 							@update:modelValue="updateField(index, $event)"
-						/>
+						>
+							<template #preview>{{ getFieldPreview(element) }}</template>
+						</v-select>
 						<v-select
 							inline
 							class="comparator"
@@ -179,7 +181,22 @@ export default defineComponent({
 			getComparator,
 			filterInfo,
 			getIndex,
+			getFieldPreview,
 		};
+
+		function getFieldPreview(node: Record<string, any>) {
+			const fieldKey = getField(node);
+
+			const fieldParts = fieldKey.split('.');
+
+			const fieldNames = fieldParts.map((fieldKey, index) => {
+				const pathPrefix = fieldParts.slice(0, index);
+				const field = fieldsStore.getField(props.collection, [...pathPrefix, fieldKey].join('.'));
+				return field?.name ?? fieldKey;
+			});
+
+			return fieldNames.join(' -> ');
+		}
 
 		function getIndex(item: Filter) {
 			return props.filter.findIndex((filter) => filter === item);
