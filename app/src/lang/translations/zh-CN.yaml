@@ -1,5 +1,29 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: 头像
+default_provider: 默认值
 published: 已发布
+draft: 草稿
+archived: 已存档
 modules: 模块
 module_bar: 模块栏
 tile_size: 裁剪尺寸
@@ -110,10 +134,14 @@ allow_multiple: 允许多个
 allow_multiple_to_be_open: 允许打开多个
 enter_value_to_replace_nulls: 请输入一个新的值来替换当前在此字段内的任何NULL。
 field_standard: 基本设置
+field_presentation: 别名
+field_file: 单个文件
+field_files: 多个文件
 field_m2o: M2O 关系
 field_m2a: M2A 关系
 field_o2m: O2M 关系
 field_m2m: M2M 关系
+field_translations: 翻译
 field_group: 字段组
 item_permissions: 项目权限
 field_permissions: 字段权限
@@ -288,6 +316,7 @@ move_to_folder: 移动到文件夹
 move: 移动
 system: 系统
 add_field_related: 将字段添加到关联的模型
+interface_label: 接口
 today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
@@ -321,6 +350,7 @@ import_label: 导入
 file_details: 文件信息
 dimensions: 尺寸
 size: 大小
+created: 已创建
 modified: 已修改
 checksum: 校验和
 owner: 所有者
@@ -397,6 +427,7 @@ select_a_collection: 选择模型
 select_a_field: 选择字段
 active: 激活
 move_to: 移动到...
+copy: 复制
 copy_to: 复制到...
 no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
@@ -425,6 +456,8 @@ card_size: 卡片大小
 sort_field: 排序字段
 add_sort_field: 添加排序字段
 sort: 排序
+status: 状态
+remove: 移除
 toggle_manual_sorting: 切换手动排序
 bookmark_doesnt_exist: 书签不存在
 bookmark_doesnt_exist_copy: 找不到您试图打开的书签。
@@ -454,6 +487,8 @@ errors:
   USER_SUSPENDED: 用户已禁用
   CONTAINS_NULL_VALUES: 字段包含空值
   UNPROCESSABLE_ENTITY: 不可处理的实体
+  INTERNAL_SERVER_ERROR: 未知错误
+  NOT_NULL_VIOLATION: 值不能为null
   ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
   UNKNOWN: 未知错误
 security: 安全
@@ -463,6 +498,7 @@ create_bookmark: 创建书签
 edit_bookmark: 编辑书签
 bookmarks: 书签
 presets: 预设
+unexpected_error: 未知错误
 unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
@@ -553,11 +589,13 @@ upload_files_success: '{count} 个文件已上传'
 upload_pending: 上传等待中
 drag_file_here: 拖放文件到这里
 click_to_browse: 点击浏览
+interface_options: 接口选项
 layout_options: 布局选项
 rows: 行
 columns: 列
 collection_setup: 模型设置
 optional_system_fields: 可选系统字段
+value_unique: 值必须唯一
 all_activity: 所有活动的
 create_item: 创建项目
 display_template: 显示模板
@@ -618,12 +656,15 @@ no_dashboards_copy: 您还没有任何工作台。
 no_data: 没有数据
 create_dashboard: 创建Dashboard
 dashboard_name: Dashboard名称
+full_screen: 全屏显示
 edit_panels: 编辑面板
 fit_to_screen: 自适应
 image_url: 图片 Url
 alt_text: 替代文本
 media: Media
 quality: 质量
+width: 宽
+height: 高度
 source: 来源
 url_placeholder: 输入网址...
 display_text: 显示文本
@@ -640,6 +681,9 @@ wysiwyg_options:
   alignleft: 左对齐
   alignnone: 不对齐
   alignright: 右对齐
+  forecolor: 前景色
+  backcolor: 背景色
+  bold: 加粗
   italic: 斜体
   underline: 下划线
   strikethrough: 删除线
@@ -672,6 +716,7 @@ wysiwyg_options:
   redo: 重做
   remove: 移除
   removeformat: 清除格式
+  selectall: 全选
   table: 表
   visualaid: 显示不可见的元素
   source_code: 编辑源代码
@@ -694,6 +739,7 @@ no_options_available: 无可用的选项
 settings_data_model: 数据模型
 settings_permissions: 角色与权限
 settings_project: 项目设置
+settings_webhooks: Webhook
 settings_presets: 预设&书签
 one_or_more_options_are_missing: 缺少一个或多个选项
 scope: Scope
@@ -779,19 +825,30 @@ fields:
   directus_activity:
     item: 项目主键
     action: 操作
+    collection: 数据模型
     timestamp: 操作于
     user: 操作人
     comment: 注释
     user_agent: 用户代理（User Agent）
     ip: IP 地址
+    revisions: 修订版本
   directus_collections:
+    collection: 数据模型
+    icon: 图标
+    note: 注释
+    color: 颜色
+    display_template: 显示模板
+    hidden: 隐藏
+    singleton: 单一
     translations: 模型名称的翻译
     archive_app_filter: 后台Admin App中归档数据过滤器
     archive_value: 归档值
     unarchive_value: 取消归档值
+    sort_field: 排序字段
     accountability: 活动和版本修订跟踪
   directus_files:
     $thumbnail: 缩略图
+    title: 标题
     description: 描述
     tags: 标签
     location: 地理位置
@@ -802,17 +859,29 @@ fields:
     type: Mime 类型
     filesize: 文件大小
     modified_by: 修改人：
+    modified_on: 修改于
+    created_on: 创建于
+    created_by: 创建自
+    embed: 嵌入
     uploaded_by: 上传人
+    folder: 文件夹
     width: 宽
     uploaded_on: 上传于
     height: 高度
+    charset: 字符集
+    duration: 持续时间
   directus_users:
     first_name: 名
     last_name: 姓
     email: 邮箱
     password: 密码
     avatar: 头像
+    location: 地理位置
+    title: 标题
+    description: 描述
+    tags: 标签
     user_preferences: 用户设置
+    language: 语言
     theme: 主题
     theme_auto: 自动 (系统主题)
     theme_light: 亮色模式
@@ -821,10 +890,15 @@ fields:
     admin_options: 管理员设置
     status: 状态
     status_draft: 草稿
+    status_invited: 已邀请
+    status_active: 激活
     status_suspended: 已停用
     status_archived: 已存档
+    role: 角色
     token: Token
     token_placeholder: 请输入安全访问令牌...
+    last_page: 尾页
+    last_access: 上次访问
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -856,10 +930,15 @@ fields:
   directus_fields:
     collection: 模型名称
     icon: 图标
+    note: 注释
     hidden: 隐藏
+    singleton: 单一
+    translation: 字段名称翻译
     display_template: 模板
   directus_roles:
+    name: 角色名称
     icon: 角色 Icon
+    description: 描述
     app_access: App 访问
     admin_access: 管理员访问
     ip_access: IP 访问
@@ -868,7 +947,9 @@ fields:
     module_list: 模块导航
     collection_list: 模型导航
   directus_webhooks:
+    name: 名称
     method: 方法
+    status: 状态
     data: 数据
     data_label: 发送事件数据
     triggers: 触发条件
@@ -878,6 +959,7 @@ field_options:
     project_name_placeholder: 我的项目
     project_logo_note: 登录和Logo背景
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
+    security_divider_title: 安全
     auth_password_policy:
       none_text: 无 — 不推荐使用
       weak_text: 弱 - 最少 8 个字符
@@ -888,17 +970,37 @@ field_options:
         cover_text: 裁剪（强制大小）
         fit_text: 自适应（短边）
         outside_text: 自适应（长边）
+    additional_transforms: 其它转换
+    transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
+    mapbox_key: Mapbox 访问令牌
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: 栅格化
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox 样式
+    files_divider_title: 文件和缩略图
+    overrides_divider_title: 应用设置覆盖
+  directus_activity:
+    login: 登录
+    create: 创建
+    update: 更新
+    delete: 删除
   directus_collections:
     track_activity_revisions: 跟踪活动和历史修改版本
     only_track_activity: 仅跟踪活动
     do_not_track_anything: 不跟踪任何内容
+    collection_setup: 模型设置
     note_placeholder: 此模型的简介...
     hidden_label: 在管理菜单中隐藏
+    singleton: 视为单个对象
+    language: 语言
     translation: 请输入翻译...
+    archive_divider: 存档
     archive_field: 选择字段...
     archive_app_filter: 启用归档功能
     archive_value: 归档时设定的值...
     unarchive_value: 解除归档时设定的值...
+    divider: 排序
+    sort_field: 选择字段...
     accountability_divider: 访问控制
   directus_files:
     title: 唯一的标题...
@@ -912,6 +1014,9 @@ field_options:
     description: 角色介绍...
     ip_access: 添加允许的 IP 地址，留空表示允许所有...
     fields:
+      icon_name: 图标
+      name_name: 名称
+      name_placeholder: 输入标题...
       link_name: 链接
       link_placeholder: 相对或绝对的 URL...
     collection_list:
@@ -919,12 +1024,32 @@ field_options:
       fields:
         group_name: 分组名称
         group_placeholder: 分组标签
+        type_name: 类型
         choices_always: 总是展开
+        choices_start_open: 默认打开
         choices_start_collapsed: 默认收起
+    collections_name: 数据模型
     collections_addLabel: 添加到模型...
   directus_users:
+    preferences_divider: 用户设置
+    dropdown_auto: 自动 (系统主题)
+    dropdown_light: 亮色模式
+    dropdown_dark: 暗色模式
+    admin_divider: 管理员设置
+    status_dropdown_draft: 草稿
     status_dropdown_invited: 已邀请
+    status_dropdown_active: 激活
+    status_dropdown_suspended: 已停用
+    status_dropdown_archived: 已存档
+    token: 请输入安全访问令牌...
   directus_webhooks:
+    status_options_active: 激活
+    status_options_inactive: 非活跃
+    data_label: 发送事件数据
+    triggers_divider: 触发条件
+    actions_create: 创建
+    actions_update: 更新
+    actions_delete: 删除
     actions_login: 登录
 no_fields_in_collection: '集合 {collection} 中没有任何字段'
 no_value: 没有值
@@ -935,6 +1060,7 @@ save_current_user_role: 保存当前用户角色
 save_current_datetime: 保存当前日期/时间
 block: 阻止
 inline: 内联
+comment: 注释
 relational_triggers: 关联触发器
 referential_action_field_label_m2o: 删除 {collection} 时...
 referential_action_field_label_o2m: 取消选择 {collection}...
@@ -954,15 +1080,18 @@ delete_are_you_sure: >-
   此操作是永久性的，无法撤销。您确定要继续吗？
 delete_field_are_you_sure: >-
   您确定要删除字段 "{field}" 吗? 此操作无法撤消。
+description: 描述
 done: 已完成
 duplicate: 复制
 limit: 限制
+email: 邮箱
 embed: 嵌入
 fallback_icon: 备用图标
 field: 字段 | 字段
 file: 文件
 file_library: 文件管理
 forgot_password: 忘记密码
+hidden: 隐藏
 icon: 图标
 info: 更多信息
 normal: 标准
@@ -977,6 +1106,7 @@ not_authenticated: 未认证
 authenticated: 已认证。
 options: 选项
 otp: 一次性密码
+password: 密码
 permissions: 权限
 relationship: 关联
 reset: 重置
@@ -997,16 +1127,19 @@ something_went_wrong: 出了点问题。
 sort_direction: 排序
 sort_asc: 升序
 sort_desc: 降序
+template: 模板
 require_value_to_be_set: 需要设置值
 translation: 翻译
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:
   group-accordion:
     name: 折叠
     description: 在折叠面板中显示字段或分组
+    start: 开始
     all_closed: 全部已关闭
     first_opened: 最早打开
     all_opened: 全部已打开
@@ -1017,6 +1150,8 @@ interfaces:
     links: 链接
     description: 启动动态URL的可配置链接按钮
     style: 样式
+    primary: 主要的
+    link: 链接
     button: 按钮
     error: 无法执行操作
   select-multiple-checkbox:
@@ -1033,13 +1168,20 @@ interfaces:
     show_all: 显示全部
     show_selected: 显示所选
   input-code:
+    code: 代码
     description: 编辑或分享代码片段
     line_number: 行号
     placeholder: 在此输入
+  system-collection:
+    collection: 数据模型
+    description: 在现有模型之间选择
+    include_system_collections: 包含系统模型
   system-collections:
+    collections: 数据模型
     description: 在现有模型之间选择
     include_system_collections: 包含系统模型
   select-color:
+    color: 颜色
     description: 输入或选择颜色
     placeholder: 选择颜色
     preset_colors: 预设颜色
@@ -1052,9 +1194,13 @@ interfaces:
     set_to_now: 设置为现在
     use_24: 使用24小时格式
   system-display-template:
+    display-template: 显示模板
     description: 混合静态文本和动态字段值
     collection_field: 模型字段
+    collection_field_not_setup: 该模型的字段配置错误
+    select_a_collection: 选择模型
   presentation-divider:
+    divider: 分隔线
     description: 标记字段并分成多个部分
     title_placeholder: 输入标题...
     inline_title: 行内标题
@@ -1064,26 +1210,32 @@ interfaces:
   select-dropdown:
     description: 请选择
     choices_placeholder: 添加选项
+    allow_other: 允许其他
     allow_other_label: 允许其他值
     allow_none: 不允许
     allow_none_label: 不允许选择
     choices_name_placeholder: 输入名称...
+    choices_value_placeholder: 请输入值...
   select-multiple-dropdown:
     select-multiple-dropdown: 下拉(多选)
     description: 从下拉列表中选择多个值
   file:
+    file: 文件
     description: 选择或上传文件
   files:
     files: 多个文件
     description: 选择或上传多个文件
   input-hash:
+    hash: Hash
     description: 输入一个hash值
     masked: Masked
     masked_label: Hide the true values
   select-icon:
+    icon: 图标
     description: 从下拉列表中选择一个图标
     search_for_icon: 搜索图标...
   file-image:
+    image: 图片
     description: 选择或上传图片
   system-interface:
     interface: 接口
@@ -1098,6 +1250,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: 多对一
     description: 选择一个条目
+    display_template: 显示模板
   input-rich-text-md:
     markdown: Markdown
     description: 输入并预览Markdown
@@ -1110,6 +1263,7 @@ interfaces:
   map:
     map: 地图
     description: 选择地图上的位置
+    zoom: 缩放
     geometry_type: 几何类型
     geometry_format: 几何格式
     default_view: 默认视图
@@ -1131,6 +1285,7 @@ interfaces:
     description: 选择多个相关项目
     no_collection: 找不到collection
   system-folder:
+    folder: 文件夹
     description: 选择文件夹
     field_hint: 将新上传的文件放入选中的文件夹。不影响已选中的现有文件。
     root_name: 文件管理
@@ -1150,6 +1305,7 @@ interfaces:
     description: 使用滑块选择一个数字
     always_show_value: 总是显示
   tags:
+    tags: 标签
     description: 选择或添加标签
     whitespace: 空白
     hyphen: 用连字符替换
@@ -1167,6 +1323,7 @@ interfaces:
     description: 手动输入一个值
     trim: Trim
     trim_label: 修剪开始和结束
+    mask: Masked
     mask_label: 隐藏真实值
     clear: 已清除的值
     clear_label: 保存为空字符串
@@ -1179,9 +1336,12 @@ interfaces:
     textarea: Textarea
     description: 输入多行纯文本
   boolean:
+    toggle: 切换
     description: 开启或关闭
     label_placeholder: 输入标签...
+    label_default: 已启用
   translations:
+    display_template: 显示模板
     no_collection: 暂无模型
     toggle_split_view: 切换视图
     language_field: 语言字段
@@ -1189,10 +1349,12 @@ interfaces:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
   user:
+    user: 用户
     description: 选择一个已有的用户
     select_mode: 选择模式
     modes:
       auto: 自动
+      dropdown: 下拉列表
       modal: 模式
   input-rich-text-html:
     wysiwyg: 所见即所得
@@ -1220,21 +1382,28 @@ interfaces:
     start_closed: 默认收起
 displays:
   boolean:
+    boolean: Boolean
     description: 显示开启或关闭状态
     label_on: 标签开启
     label_on_placeholder: 在标签上输入...
     label_off: 关闭标签
     label_off_placeholder: 输入关闭标签...
+    icon_on: 图标开启
+    icon_off: 关闭图标
     color_on: 启用颜色
     color_off: 禁用颜色
   collection:
+    collection: 数据模型
     description: 显示模型
     icon_label: 显示模型的图标
   color:
+    color: 颜色
     description: 显示一个彩色的圆点
     default_color: 默认颜色
   datetime:
+    datetime: 日期时间
     description: 显示与时间相关的值
+    format: 格式
     format_note: >-
       自定义格式接受__[日期字段符号表](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
@@ -1242,6 +1411,7 @@ displays:
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
   file:
+    file: 文件
     description: 显示文件
   filesize:
     filesize: 文件大小
@@ -1256,12 +1426,14 @@ displays:
     formatted-json-value: 格式化JSON值
     description: 显示对象的格式化版本
   icon:
+    icon: 图标
     description: 显示图标
     filled: 填充
     filled_label: 使用填充变量
   image:
     image: 图片
     description: 显示一个小的图像预览
+    circle: 圆圈
     circle_label: 显示为圆形
   labels:
     labels: 标签
@@ -1270,6 +1442,7 @@ displays:
     default_background: 默认背景颜色
     format_label: 格式化每个标签
     show_as_dot: 显示小圆点
+    choices_value_placeholder: 请输入值...
     choices_text_placeholder: 请输入文本…
   mime-type:
     mime-type: MIME 类型
@@ -1287,7 +1460,10 @@ displays:
     related-values: 应用值
     description: 显示相对值
   user:
+    user: 用户
     description: 显示一个系统用户
+    avatar: 头像
+    name: 名称
     both: 两个
     circle_label: 以圆形头像显示用户
 layouts:
@@ -1297,8 +1473,10 @@ layouts:
     image_fit: 适合图像
     crop: 裁剪
     contain: 包含
+    title: 标题
     subtitle: 副标题
   tabular:
+    tabular: 表
     fields: 字段
     spacing: 间距
     comfortable: 宽松
@@ -1309,6 +1487,7 @@ layouts:
     start_date_field: 开始日期
     end_date_field: 结束日期
   map:
+    map: 地图
     basemap: 底图
     layers: 图层
     edit_custom_layers: 编辑图层
@@ -1317,6 +1496,7 @@ layouts:
     cluster_radius: 集群半径
     cluster_minpoints: 集群最小尺寸
     cluster_maxzoom: 集群的最大缩放
+    field: 几何
     invalid_geometry: 无效几何图形
     auto_location_filter: 总是筛选数据以查看边框
     search_this_area: 搜索此区域
@@ -1333,6 +1513,7 @@ panels:
     date_field: 日期字段
     value_field: 值字段
   label:
+    name: 标签
     description: 显示一些文本
   list:
     name: 列表
