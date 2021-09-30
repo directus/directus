@@ -76,7 +76,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	}
 
 	try {
-		const response = await api.post('/auth/refresh', { headers: { 'Authorization': undefined }});
+		const response = await api.post('/auth/refresh', { headers: { Authorization: undefined } });
 
 		const accessToken = response.data.data.access_token;
 
