@@ -82,14 +82,10 @@ all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
 field_standard: Standard
-field_presentation: Presentation & Aliaser
-field_file: En fil
-field_files: Flere filer
 field_m2o: M2O Relasjon
 field_m2a: M2A Relasjon
 field_o2m: O2M Relasjon
 field_m2m: M2M Relasjon
-field_translations: Oversettelser
 item_permissions: Element Tillatelser
 field_permissions: Felt Tillatelser
 field_validation: Felt validering
@@ -236,7 +232,6 @@ move_to_folder: Flytt til mappe
 move: Flytt
 system: System
 add_field_related: Legg til felt til relatert kolleksjon
-interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
@@ -264,7 +259,6 @@ months:
   december: desember
 drag_mode: Dra modus
 cancel_crop: Avbryt beskjæring
-created: Opprettet
 owner: Eier
 name: Navn
 created_by: Opprettet av
@@ -308,8 +302,6 @@ card_size: Kort størrelse
 sort_field: Sorter felt
 add_sort_field: Legg til sorteringsfelt
 sort: Sorter
-status: Status
-remove: Fjern
 toggle_manual_sorting: Veksle manuell sortering
 bookmark_doesnt_exist: Bokmerket finnes ikke
 bookmark_doesnt_exist_copy: Kunne ikke finne bokmerket du prøver å åpne.
@@ -330,7 +322,6 @@ errors:
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_OTP: Feil engangspassord
-  NOT_NULL_VIOLATION: Verdien kan ikke være null
 bookmarks: Bokmerke
 back: Tilbake
 operators:
@@ -350,13 +341,11 @@ update: Oppdater
 select_fields: Velg felter
 wysiwyg_options:
   remove: Fjern
-  selectall: Merk alt
   table: Tabell
 deselect: Velg bort
 editing_in_batch: 'Batch Editing {count} elementer'
 settings_permissions: Roller og tilganger
 settings_project: Prosjektinnstillinger
-settings_webhooks: Webhooks
 discard_changes: Forkast endringer
 keep_editing: Fortsett å rediger
 add_new: Legg til ny
@@ -369,82 +358,29 @@ collections: Kolleksjoner
 fields:
   directus_activity:
     item: Element Hovednøkkel
-    collection: Kolleksjon
     comment: Kommenter
     user_agent: Brukeragent
     ip: IP-addresse
-  directus_collections:
-    collection: Kolleksjon
-    icon: Ikon
-    note: Notat
-    hidden: Skjult
-    sort_field: Sorter felt
   directus_files:
-    title: Tittel
     description: Beskrivelse
     tags: Etiketter
     location: Lokasjon
-    modified_on: Modifisert den
-    created_on: Opprettet den
-    created_by: Opprettet av
-    embed: Embed
-    charset: Charset
-    duration: Varighet
   directus_users:
     email: E-post
     password: Passord
-    location: Lokasjon
-    title: Tittel
-    description: Beskrivelse
-    tags: Etiketter
-    language: Språk
     status: Status
-    status_active: Aktiv
-    last_page: Siste side
-    last_access: Siste tilgang
   directus_settings:
     project_name: Prosjektnavn
   directus_fields:
-    note: Notat
     hidden: Skjult
-    translation: Feltnavn oversettelser
-  directus_roles:
-    name: Rollenavn
-    description: Beskrivelse
-  directus_webhooks:
-    name: Navn
-    status: Status
-field_options:
-  directus_activity:
-    create: Opprett
-    update: Oppdater
-  directus_collections:
-    language: Språk
-    archive_divider: Arkiv
-    divider: Sorter
-  directus_roles:
-    fields:
-      icon_name: Ikon
-      name_name: Navn
-    collections_name: Kolleksjoner
-  directus_users:
-    status_dropdown_active: Aktiv
-  directus_webhooks:
-    status_options_active: Aktiv
-    actions_create: Opprett
-    actions_update: Oppdater
-comment: Kommenter
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
-description: Beskrivelse
 done: Ferdig
 duplicate: Dupliser
-email: E-post
 embed: Embed
 file: Fil
 file_library: Filbibliotek
 forgot_password: Glemt passord
-hidden: Skjult
 icon: Ikon
 info: Info
 junction_collection: Junction Collection
@@ -453,7 +389,6 @@ login: Logg inn
 my_activity: Min aktivitet
 options: Alternativer
 otp: Engangspassord
-password: Passord
 permissions: Tilganger
 relationship: Relasjon
 reset_password: Tilbakestill passord
@@ -470,53 +405,19 @@ sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
-  presentation-links:
-    primary: Primær
-  system-collection:
-    collection: Kolleksjon
-  system-collections:
-    collections: Kolleksjoner
-  system-display-template:
-    collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
-    select_a_collection: Velg en Kolleksjon
-  select-dropdown:
-    choices_value_placeholder: Legg inn verdi...
-  file:
-    file: Fil
   files:
     files: Filer
-  select-icon:
-    icon: Ikon
   system-interface:
     interface: Grensesnitt
-  tags:
-    tags: Etiketter
-  boolean:
-    label_default: Aktivert
 displays:
-  boolean:
-    boolean: Sann/usann
-  collection:
-    collection: Kolleksjon
-  datetime:
-    format: Format
-  file:
-    file: Fil
-  icon:
-    icon: Ikon
-  labels:
-    choices_value_placeholder: Legg inn verdi...
   user:
-    name: Navn
     both: Begge
 layouts:
   cards:
     cards: Kort
     image_source: Bilde Kilde
-    title: Tittel
     subtitle: Undertittel
   tabular:
-    tabular: Tabell
     fields: Felter
     spacing: Mellomrom
     comfortable: Komfortabel
