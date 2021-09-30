@@ -50,13 +50,12 @@ import { defineComponent, computed, ref } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import usePreset from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
 	name: 'ActivityCollection',
-	components: { ActivityNavigation, FilterSidebarDetail, LayoutSidebarDetail, SearchInput },
+	components: { ActivityNavigation, LayoutSidebarDetail, SearchInput },
 	props: {
 		primaryKey: {
 			type: String,

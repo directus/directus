@@ -171,7 +171,6 @@ import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextT
 import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
 import usePreset from '@/composables/use-preset';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
 import SearchInput from '@/views/private/components/search-input';
@@ -195,7 +194,6 @@ export default defineComponent({
 	name: 'FilesCollection',
 	components: {
 		FilesNavigation,
-		FilterSidebarDetail,
 		LayoutSidebarDetail,
 		AddFolder,
 		SearchInput,

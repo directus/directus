@@ -1,5 +1,4 @@
 <template>
-	<filter-sidebar-detail v-model="filtersWritable" :collection="collection" :loading="loading" />
 	<export-sidebar-detail :filters="filtersWithCalendarView" :search-query="searchQuery" :collection="collection" />
 </template>
 
