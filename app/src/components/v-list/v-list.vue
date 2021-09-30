@@ -27,7 +27,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'toggle'],
 	setup(props, { emit }) {
 		const { modelValue, multiple, mandatory } = toRefs(props);
 		useGroupableParent(
@@ -35,6 +35,9 @@ export default defineComponent({
 				selection: modelValue,
 				onSelectionChange: (newSelection) => {
 					emit('update:modelValue', newSelection);
+				},
+				onToggle: (item) => {
+					emit('toggle', item);
 				},
 			},
 			{
