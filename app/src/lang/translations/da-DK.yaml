@@ -415,6 +415,8 @@ template: Skabelon
 translation: Oversættelse
 value: Værdi
 interfaces:
+  filter:
+    all: Alle
   presentation-links:
     primary: Primær
   input-code:
