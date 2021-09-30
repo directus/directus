@@ -1,7 +1,7 @@
 import { useApi } from './use-system';
 import { useCollection } from './use-collection';
 import { Filter, Item } from '../types';
-import { moveInArray, filtersToQuery } from '../utils';
+import { moveInArray } from '../utils';
 import { isEqual, orderBy, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, ref, Ref, watch } from 'vue';
 
@@ -10,7 +10,7 @@ type Query = {
 	fields: Ref<readonly string[]>;
 	sort: Ref<string>;
 	page: Ref<number>;
-	filters: Ref<readonly Filter[]>;
+	filter: Ref<Filter>;
 	searchQuery: Ref<string | null>;
 };
 
@@ -36,7 +36,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 	let loadingTimeout: number | null = null;
 
-	const { limit, fields, sort, page, filters, searchQuery } = query;
+	const { limit, fields, sort, page, filter, searchQuery } = query;
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
@@ -108,7 +108,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		}
 	});
 
-	watch([filters, limit], async (after, before) => {
+	watch([filter, limit], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
@@ -159,15 +159,6 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 			fieldsToFetch.push(primaryKeyField.value.field);
 		}
 
-		// Make sure all fields that are used to filter are fetched
-		if (fields.value.includes('*') === false) {
-			filters.value.forEach((filter) => {
-				if (fieldsToFetch.includes((filter as any).field as string) === false) {
-					fieldsToFetch.push((filter as any).field as string);
-				}
-			});
-		}
-
 		// Make sure that the field we're sorting on is fetched
 		if (fields.value.includes('*') === false && sortField.value && sort.value) {
 			const sortFieldKey = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
@@ -188,7 +179,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 					sort: sort.value,
 					page: page.value,
 					search: searchQuery.value,
-					...filtersToQuery(filters.value),
+					filter: filter.value,
 				},
 			});
 
@@ -237,7 +228,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 				fields: primaryKeyField.value.field,
 				meta: ['filter_count', 'total_count'],
 				search: searchQuery.value,
-				...filtersToQuery(filters.value),
+				filter: filter.value,
 			},
 		});
 
