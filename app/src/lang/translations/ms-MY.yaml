@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
 edit_field: Sunting halaman
 item_revision: Barang semakan
 duplicate_field: Halaman salinan
@@ -49,6 +70,8 @@ users: Pengguna-pengguna
 activity: Aktiviti
 user_directory: Direktori pengguna
 duration: Durasi
+status: Status
+remove: Buang
 bookmarks: Penandabuku
 back: Kembali
 operators:
@@ -67,6 +90,8 @@ on_update: Apabila Dikemaskini
 read: Baca
 update: Kemaskini
 select_fields: Pilih medan-medan
+width: Lebar
+height: Tinggi
 wysiwyg_options:
   remove: Buang
 editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'
@@ -85,31 +110,64 @@ fields:
   directus_activity:
     item: Kunci Utama Item
     action: Tindakan
+    collection: Koleksi
     timestamp: Tindakan Pada
     user: Tindakan Oleh
     comment: Komen
     ip: Alamat IP
+  directus_collections:
+    collection: Koleksi
+    note: Nota
   directus_files:
+    title: Tajuk
     description: Penerangan
     tags: Tag
     location: Lokasi
     metadata: Metadata
+    embed: Benamkan
     uploaded_by: Dimuat naik oleh
     width: Lebar
     uploaded_on: Dimuat naik pada
     height: Tinggi
+    duration: Durasi
   directus_users:
     first_name: Nama pertama
     email: Emel
     password: Katalaluan
     avatar: Avatar
+    location: Lokasi
+    title: Tajuk
+    description: Penerangan
+    tags: Tag
     theme: Tema
     status: Status
+    role: Peranan
   directus_settings:
     project_name: Nama Projek
+  directus_fields:
+    note: Nota
+  directus_roles:
+    description: Penerangan
+  directus_webhooks:
+    name: Nama
+    status: Status
+field_options:
+  directus_activity:
+    create: Cipta
+    update: Kemaskini
+  directus_roles:
+    fields:
+      name_name: Nama
+    collections_name: Koleksi-koleksi
+  directus_webhooks:
+    actions_create: Cipta
+    actions_update: Kemaskini
+comment: Komen
 delete_field_are_you_sure: >-
   Adakah anda pasti ingin memadam medan "{field}"? Tindakan ini tidak dapat dibatalkan.
+description: Penerangan
 duplicate: Pendua
+email: Emel
 embed: Benamkan
 file: Fail
 file_library: Perpustakaan Fail
@@ -119,6 +177,7 @@ latency: Kependaman
 login: Log masuk
 my_activity: Aktiviti Saya
 options: Pilihan-pilihan
+password: Katalaluan
 permissions: Kebenaran
 relationship: Perhubungan
 reset_password: Tetapkan Semula Katalaluan
@@ -134,12 +193,30 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
+  presentation-links:
+    primary: Utama
+  system-collection:
+    collection: Koleksi
+  system-collections:
+    collections: Koleksi-koleksi
+  file:
+    file: Fail
   files:
     files: Fail-fail
+  tags:
+    tags: Tag
 displays:
+  collection:
+    collection: Koleksi
+  file:
+    file: Fail
   user:
+    avatar: Avatar
+    name: Nama
     both: Kedua-duanya
 layouts:
+  cards:
+    title: Tajuk
   tabular:
     fields: Medan-medan
     compact: Padat
