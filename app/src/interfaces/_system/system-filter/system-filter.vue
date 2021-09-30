@@ -14,12 +14,20 @@
 			/>
 		</v-list>
 		<div class="buttons">
-			<div class="add" @click="addNode('field')">
-				{{ t('interfaces.filter.add_filter') }}
-			</div>
-			<div class="add" @click="addNode('logic')">
-				{{ t('interfaces.filter.add_group') }}
-			</div>
+			<v-select
+				inline
+				item-text="name"
+				item-value="key"
+				placement="bottom-start"
+				:placeholder="t('interfaces.filter.add_filter')"
+				:full-width="false"
+				:model-value="null"
+				:items="fieldOptions"
+				:mandatory="false"
+				:groups-clickable="true"
+				@group-toggle="loadFieldRelations($event.value, 1)"
+				@update:modelValue="addNode('field')"
+			/>
 		</div>
 	</div>
 </template>
@@ -27,11 +35,12 @@
 <script lang="ts">
 import { useFieldsStore } from '@/stores';
 import { get, set } from 'lodash';
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
+import useFieldTree from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: {
@@ -56,6 +65,10 @@ export default defineComponent({
 		const { t } = useI18n();
 		const fieldsStore = useFieldsStore();
 
+		const { collectionName } = toRefs(props);
+
+		const { treeList, loadFieldRelations } = useFieldTree(collectionName);
+
 		const innerValue = computed<Filter[]>({
 			get() {
 				if (!props.value) return [];
@@ -69,11 +82,19 @@ export default defineComponent({
 				}
 			},
 			set(newVal) {
-				emit('input', { _and: newVal });
+				if (newVal.length === 0) {
+					emit('input', null);
+				} else {
+					emit('input', { _and: newVal });
+				}
 			},
 		});
 
-		return { t, addNode, removeNode, innerValue };
+		const fieldOptions = computed(() => {
+			return [{ key: '$group', name: t('interfaces.filter.add_group') }, { divider: true }, ...treeList.value];
+		});
+
+		return { t, addNode, removeNode, innerValue, fieldOptions, loadFieldRelations };
 
 		function addNode(type: 'logic' | 'field') {
 			if (type === 'logic') {
