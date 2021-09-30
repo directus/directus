@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
 edit_field: Alanı Düzenle
 item_revision: Revizyonları Göster
 duplicate_field: Yinelenen Alan
@@ -90,10 +111,14 @@ nullable: Boş (null) olabilir
 allow_null_value: NULL değere izin ver
 enter_value_to_replace_nulls: Bu alandaki tüm NULLları değiştirecek yeni bir değer girin.
 field_standard: Standart
+field_presentation: Sunum ve Takma Adlar
+field_file: Tek Dosya
+field_files: Birden Fazla Dosya
 field_m2o: M2O İlişkisi
 field_m2a: M2A İlişkisi
 field_o2m: O2M İlişkisi
 field_m2m: M2M İlişkisi
+field_translations: Çeviriler
 item_permissions: Alan İzinleri
 field_permissions: Alan İzinleri
 field_validation: Alan Doğrulama
@@ -243,6 +268,7 @@ move_to_folder: Klasöre Taşı
 move: Taşı
 system: Sistem
 add_field_related: Alakalı Koleksiyona Alan Ekle
+interface_label: Arayüz
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu sil
@@ -275,6 +301,7 @@ url: URL
 file_details: Dosya Ayrıntıları
 dimensions: Boyutlar
 size: Boyut
+created: Oluşturulma tarihi
 modified: Değiştirildi
 checksum: Checksum
 owner: Sahip
@@ -330,6 +357,7 @@ create_collection: Koleksiyon Oluştur
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
 select_a_collection: Koleksiyon Seç
 active: Aktif
+copy: Kopyala
 users: Kullanıcılar
 activity: Aktivite
 webhooks: Ağ Kancaları
@@ -348,6 +376,8 @@ modified_on: Düzenleme Tarihi
 card_size: Kart Boyutu
 sort_field: Sıralama Alanı
 sort: Sırala
+status: Durum
+remove: Kaldır
 toggle_manual_sorting: Elle sıralamayı aç/kapa
 bookmark_doesnt_exist_cta: Koleksiyona dön
 select_an_item: Seçim Yapın...
@@ -369,6 +399,8 @@ errors:
   RECORD_NOT_UNIQUE: Kopya değer tespit edildi
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
+  INTERNAL_SERVER_ERROR: Beklenmeyen hata
+  NOT_NULL_VIOLATION: Değer null olamaz
   UNKNOWN: Beklenmeyen hata
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
@@ -376,6 +408,7 @@ create_bookmark: Yer imi oluştur
 edit_bookmark: Yer imini düzenle
 bookmarks: Yer İmleri
 presets: Ön ayarlar
+unexpected_error: Beklenmeyen hata
 unexpected_error_copy: Beklenmedik bir hata oluştu. Lütfen daha sonra tekrar deneyin.
 no_app_access: Uygulama erişimi yok
 password_reset_sent: Sana içinde şifreni yenilemeni sağlayacak bağlantı olan bir eposta gönderdik
@@ -441,6 +474,7 @@ upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı buraya Sürükle & Bırak
 layout_options: Sayfa Düzeni Seçenekleri
 rows: Satırlar
+value_unique: Değer benzersiz olmalı
 display_template: Görüntüleme Şablonu
 no_results: Sonuç Yok
 role: Rol
@@ -451,12 +485,17 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 label: Etiket
+full_screen: Tam Ekran
+width: Genişlik
+height: Yükseklik
 wysiwyg_options:
   aligncenter: Ortala
   alignjustify: İki Yana Yasla
   alignleft: Sola Hizala
   alignnone: Hizalama
   alignright: Sağa Hizala
+  forecolor: Ön Plan Rengi
+  backcolor: Arkaplan Rengi
   italic: İtalik
   underline: Alt çizgi
   strikethrough: Üstü Çizili
@@ -486,6 +525,7 @@ wysiwyg_options:
   redo: Yinele
   remove: Kaldır
   removeformat: Biçimi Kaldır
+  selectall: Tümünü Seç
   table: Tablo
   fullscreen: Tam Ekran
 dropdown: Açılır Liste
@@ -501,6 +541,7 @@ editing_in_batch: '{count} Ögeyi Toplu Düzenle'
 no_options_available: Kullanılabilir seçenek yok
 settings_permissions: Roller & İzinler
 settings_project: Proje Ayarları
+settings_webhooks: Ağ Kancaları
 scope: Kapsam
 layout: Yerleşim
 editing_preset: Önayarı Düzenle
@@ -519,30 +560,57 @@ fields:
   directus_activity:
     item: Öğe Birincil Anahtarı
     action: İşlem
+    collection: Koleksiyon
     timestamp: Tarihinde Uygulandı
     user: Uygulayan
     comment: Yorum
     user_agent: Kullanıcı Aracısı
     ip: IP Adresi
+    revisions: Revizyonlar
+  directus_collections:
+    collection: Koleksiyon
+    icon: İkon
+    note: Not
+    color: Renk
+    display_template: Görüntüleme Şablonu
+    hidden: Gizli
+    sort_field: Sıralama Alanı
   directus_files:
+    title: Ünvan
     description: Açıklama
     tags: Etiketler
     location: Konum
     metadata: Metaveri
     filesize: Dosya boyutu
+    modified_on: Düzenleme Tarihi
+    created_on: Oluşturulma tarihi
+    created_by: Oluşturan
+    embed: Yerleştir
     uploaded_by: Tarafından Yüklendi
+    folder: Klasör
     width: Genişlik
     uploaded_on: Tarihinde Yüklendi
     height: Yükseklik
+    charset: Karakter seti
+    duration: Süre
   directus_users:
     first_name: Ad
     last_name: Soyad
     email: E-posta
     password: Şifre
     avatar: Avatar
+    location: Konum
+    title: Ünvan
+    description: Açıklama
+    tags: Etiketler
+    language: Dil
     theme: Tema
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     status: Durum
+    status_active: Aktif
+    role: Rol
+    last_page: Son Sayfa
+    last_access: Son Erişim
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -552,29 +620,62 @@ fields:
   directus_fields:
     collection: Koleksiyon Adı
     icon: Koleksiyon İkonu
+    note: Not
     hidden: Gizli
+    translation: Alan İsim Çevirileri
     display_template: Şablon
   directus_roles:
+    name: Rol Adı
     icon: Rol İkonu
+    description: Açıklama
     app_access: Uygulama erişimi
     admin_access: Yönetici erişimi
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
+  directus_webhooks:
+    name: İsim
+    status: Durum
+field_options:
+  directus_activity:
+    create: Oluştur
+    update: Güncelle
+  directus_collections:
+    language: Dil
+    archive_divider: Arşiv
+    divider: Sırala
+  directus_roles:
+    fields:
+      icon_name: İkon
+      name_name: İsim
+    collection_list:
+      fields:
+        type_name: Tür
+    collections_name: Koleksiyonlar
+  directus_users:
+    status_dropdown_active: Aktif
+  directus_webhooks:
+    status_options_active: Aktif
+    actions_create: Oluştur
+    actions_update: Güncelle
 do_nothing: Hiçbir Şey Yapma
 block: Blok
+comment: Yorum
 editing_role: '{role} Rolü'
 creating_webhook: Webhook Oluştur
 delete_field_are_you_sure: >-
   "{field}" alanını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+description: Açıklama
 done: Tamam
 duplicate: Çoğalt
+email: E-posta
 embed: Yerleştir
 fallback_icon: Temel İkon
 field: Alan | Alanlar
 file: Dosya
 file_library: Dosya Kütüphanesi
 forgot_password: Şifremi Unuttum
+hidden: Gizli
 icon: İkon
 info: Bilgi
 normal: Normal
@@ -589,6 +690,7 @@ not_authenticated: Kimlik Doğrulanamadı
 authenticated: Kimlik doğrulandı
 options: Seçenekler
 otp: Tek Kullanımlık Şifre
+password: Şifre
 permissions: İzinler
 relationship: İlişki
 reset: Sıfırla
@@ -609,44 +711,94 @@ something_went_wrong: Birşeyler ters gitti.
 sort_direction: Sıralama Yönü
 sort_asc: Artan şekilde sırala
 sort_desc: Azalan şekilde sırala
+template: Şablon
 translation: Çeviri
 value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
+  presentation-links:
+    primary: Birincil
+  input-code:
+    code: Kod
+  system-collection:
+    collection: Koleksiyon
+  system-collections:
+    collections: Koleksiyonlar
+  select-color:
+    color: Renk
   datetime:
     datetime: Tarih/Saat
+  system-display-template:
+    display-template: Görüntüleme Şablonu
+    select_a_collection: Koleksiyon Seç
+  presentation-divider:
+    divider: Ayırıcı
+  select-dropdown:
+    choices_value_placeholder: Bir değer girin...
+  file:
+    file: Dosya
   files:
     files: Dosyalar
+  input-hash:
+    hash: Hash
+  select-icon:
+    icon: İkon
   system-interface:
     interface: Arayüz
+  select-dropdown-m2o:
+    display_template: Görüntüleme Şablonu
+  map:
+    zoom: Yakınlaş
+  system-folder:
+    folder: Klasör
   slider:
     slider: Kaydırıcı
   tags:
+    tags: Etiketler
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
+  boolean:
+    label_default: Etkin
   translations:
+    display_template: Görüntüleme Şablonu
     no_collection: Koleksiyon Yok
   user:
+    user: Kullanıcı
     select_mode: Mod Seç
     modes:
       auto: Otomatik
+      dropdown: Açılır Liste
 displays:
+  boolean:
+    boolean: Evet/Hayır
+  collection:
+    collection: Koleksiyon
   color:
+    color: Renk
     default_color: Varsayılan Renk
+  datetime:
+    datetime: Tarih/Saat
+    format: Biçim
+  file:
+    file: Dosya
   filesize:
     filesize: Dosya Boyutu
   formatted-value:
     format_title: Başlığı Biçimlendir
     bold_label: Kalınlaştır
   icon:
+    icon: İkon
     description: Simge olarak görüntüle
     filled: Dolu
+  image:
+    circle: Daire
   labels:
     labels: Etiketler
     default_foreground: Varsayılan Ön plan
     default_background: Varsayılan Arkaplan
+    choices_value_placeholder: Bir değer girin...
     choices_text_placeholder: Metin girin...
   mime-type:
     mime-type: MIME Type
@@ -657,6 +809,9 @@ displays:
   raw:
     raw: Ham Veri
   user:
+    user: Kullanıcı
+    avatar: Avatar
+    name: İsim
     both: İkisi de
 layouts:
   cards:
@@ -665,10 +820,15 @@ layouts:
     image_fit: Resmi sığdır
     crop: Kırp
     contain: Şunu içerir
+    title: Ünvan
     subtitle: Altyazı
   tabular:
+    tabular: Tablo
     fields: Alanlar
     spacing: Aralık
     comfortable: Geniş
     compact: Sıkışık
     cozy: Normal
+panels:
+  label:
+    name: Etiket
