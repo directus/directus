@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Аватар
 published: Опубліковано
 tile_size: Розмір плитки
 edit_field: Редагувати поле
@@ -146,6 +167,8 @@ field_width: Ширина поля
 user_directory: Директорія користувачів
 duration: Тривалість
 modified_on: Час зміни
+status: Статус
+remove: Видалити
 errors:
   ROUTE_NOT_FOUND: Не знайдено
 create_bookmark: Створити закладку
@@ -175,6 +198,8 @@ on_update: При оновленні
 read: Прочитайте
 update: Оновити
 select_fields: Обрати поля
+width: Ширина
+height: Висота
 wysiwyg_options:
   codeblock: Код
   remove: Видалити
@@ -185,6 +210,7 @@ deselect: Зняти виділення
 editing_in_batch: 'Пакетне редагування {count} елементів'
 settings_permissions: Ролі і Дозволи
 settings_project: Налаштування проекту
+settings_webhooks: Вебхуки
 unsaved_changes: Незбережені зміни
 unsaved_changes_copy: Ви впевнені, що хочете залишити цю сторінку?
 discard_changes: Скасувати зміни
@@ -200,45 +226,91 @@ fields:
   directus_activity:
     item: Первинний ключ елемента
     action: Дія
+    collection: Колекція
     timestamp: Час події
     user: Дія від
     comment: Коментар
     user_agent: Ідентифікатор браузера
     ip: IP адреса
+  directus_collections:
+    collection: Колекція
+    icon: Іконка
+    note: Примітка
+    color: Колір
+    hidden: Приховано
   directus_files:
+    title: Заголовок
     description: Опис
     tags: Теги
     location: Розташування
     metadata: Метадані
     filesize: Розмір файлу
+    modified_on: Час зміни
+    created_on: Створено
+    created_by: Автор
+    embed: Вбудувати
     uploaded_by: Завантажено
     width: Ширина
     uploaded_on: Завантажено
     height: Висота
+    duration: Тривалість
   directus_users:
     first_name: Ім'я
     last_name: Прізвище
     email: Email
     password: Пароль
     avatar: Аватар
+    location: Розташування
+    title: Заголовок
+    description: Опис
+    tags: Теги
+    language: Мова
     theme: Тема
     tfa_secret: Двофакторна автентифікація
     status: Статус
+    role: Роль
   directus_settings:
     project_name: Назва проекту
   directus_fields:
+    note: Примітка
     hidden: Приховано
+    translation: Переклад назви поля
     display_template: Шаблон
+  directus_roles:
+    name: Назва ролі
+    description: Опис
+  directus_webhooks:
+    name: Назва
+    status: Статус
+field_options:
+  directus_activity:
+    create: Створити
+    update: Оновити
+  directus_collections:
+    language: Мова
+    archive_divider: Архів
+  directus_roles:
+    fields:
+      icon_name: Іконка
+      name_name: Назва
+    collections_name: Колекції
+  directus_webhooks:
+    actions_create: Створити
+    actions_update: Оновити
+comment: Коментар
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
+description: Опис
 done: Готово
 duplicate: Дублювати
 limit: Обмеження
+email: Email
 embed: Вбудувати
 field: Поле | Поля
 file: Файл
 file_library: Бібліотека файлів
 forgot_password: Забули пароль
+hidden: Приховано
 icon: Іконка
 info: Інформація
 junction_collection: Збірна колекція
@@ -248,6 +320,7 @@ my_activity: Активність
 not_authenticated: Не автентифіковано
 options: Параметри
 otp: Одноразовий пароль
+password: Пароль
 permissions: Права
 relationship: Відносини
 reset: Скинути
@@ -264,24 +337,63 @@ sign_out: Вихід
 sign_out_confirm: Ви справді бажаєте вийти?
 something_went_wrong: Щось пішло не так.
 sort_direction: Напрямок сортування
+template: Шаблон
 translation: Переклад
 value: Значення
 interfaces:
+  presentation-links:
+    primary: Стандартно
+  input-code:
+    code: Код
+  system-collection:
+    collection: Колекція
+  system-collections:
+    collections: Колекції
+  select-color:
+    color: Колір
   datetime:
     datetime: Дата й час
+  presentation-divider:
+    divider: Розділювач
+  file:
+    file: Файл
   files:
     files: Файли
+  select-icon:
+    icon: Іконка
+  tags:
+    tags: Теги
+  user:
+    user: Користувач
+    modes:
+      dropdown: Випадаюче меню
 displays:
+  collection:
+    collection: Колекція
+  color:
+    color: Колір
+  datetime:
+    datetime: Дата й час
+    format: Формат
+  file:
+    file: Файл
   filesize:
     filesize: Розмір файлу
+  icon:
+    icon: Іконка
   user:
+    user: Користувач
+    avatar: Аватар
+    name: Назва
     both: Обидва
 layouts:
   cards:
     cards: Картки
     image_source: Джерело зображення
+    title: Заголовок
     subtitle: Підзаголовок
   tabular:
+    tabular: Таблиця
     fields: Поля
     spacing: Відступ
     comfortable: Комфортна
