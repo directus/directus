@@ -40,6 +40,9 @@ no_access: 접근 불가
 use_custom: 직접 설정
 nullable: NULL허용
 field_standard: 표준
+field_file: 단일 파일
+field_files: 여러 파일들
+field_translations: 번역
 delete_field: 필드 삭제
 language: 언어
 global: 글로벌
@@ -83,6 +86,7 @@ submit: 확인
 move_to_folder: 폴더로 이동
 move: 이동
 system: 시스템
+interface_label: 인터페이스
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
@@ -105,6 +109,35 @@ months:
 drag_mode: 끌기 모드
 type: 타입
 creating_new_collection: 새 컬렉션 만들기
+value_unique: 생산Key는 유일해야만 합니다.
+wysiwyg_options:
+  selectall: 모두 선택
+fields:
+  directus_collections:
+    note: 메모
+  directus_users:
+    language: 언어
+    last_page: 마지막 페이지
+    last_access: 최근 접속
+  directus_fields:
+    note: 메모
+    translation: 항목 명 번역
+  directus_roles:
+    name: 권한 이름
+field_options:
+  directus_collections:
+    language: 언어
+  directus_roles:
+    collection_list:
+      fields:
+        type_name: 타입
 interfaces:
+  select-dropdown:
+    choices_value_placeholder: 값 입력
   system-interface:
     interface: 인터페이스
+displays:
+  datetime:
+    format: 형식
+  labels:
+    choices_value_placeholder: 값 입력
