@@ -143,7 +143,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
@@ -314,6 +314,10 @@ export default defineComponent({
 			const title = computed(() => {
 				if (!props.role) return t('user_directory');
 				return roles.value?.find((role: Role) => role.id === props.role)?.name;
+			});
+
+			watch(breadcrumb, () => {
+				selection.value = [];
 			});
 
 			return { breadcrumb, title };

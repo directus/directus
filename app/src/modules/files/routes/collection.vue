@@ -167,7 +167,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick } from 'vue';
+import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
 import usePreset from '@/composables/use-preset';
@@ -410,6 +410,10 @@ export default defineComponent({
 				}
 
 				return null;
+			});
+
+			watch(breadcrumb, () => {
+				selection.value = [];
 			});
 
 			return { breadcrumb, title };
