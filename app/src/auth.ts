@@ -76,9 +76,6 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	}
 
 	try {
-		// Delete the token header if it still exists
-		delete api.defaults.headers.Authorization;
-
 		const response = await api.post('/auth/refresh');
 
 		const accessToken = response.data.data.access_token;
