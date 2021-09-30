@@ -123,6 +123,7 @@ import { get } from 'lodash';
 import SelectListItemGroup from './select-list-item-group.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
+import { Placement } from '@popperjs/core';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
@@ -308,6 +309,7 @@ export default defineComponent({
 <style scoped>
 :global(body) {
 	--v-select-font-family: var(--family-sans-serif);
+	--v-select-placeholder-color: var(--foreground-subdued);
 }
 
 .list {
@@ -357,6 +359,6 @@ export default defineComponent({
 }
 
 .inline-display.placeholder {
-	color: var(--foreground-subdued);
+	color: var(--v-select-placeholder-color);
 }
 </style>

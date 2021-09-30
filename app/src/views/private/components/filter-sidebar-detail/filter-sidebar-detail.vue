@@ -51,7 +51,7 @@ import { debounce } from 'lodash';
 import FieldListItem from './field-list-item.vue';
 import { useCollection } from '@directus/shared/composables';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
-import useFieldTree from '@/composables/use-field-tree';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldFilter, FieldListItem },

@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import useFieldTree from '@/composables/use-field-tree';
+import { useFieldTree } from '@/composables/use-field-tree';
 import { computed, defineComponent, PropType, toRefs } from 'vue';
 import InputGroup from './input-group.vue';
 import Draggable from 'vuedraggable';

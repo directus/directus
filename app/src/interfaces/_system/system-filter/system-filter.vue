@@ -9,7 +9,6 @@
 				v-model:filter="innerValue"
 				:collection="collectionName"
 				:depth="1"
-				@add-node="addNode($event)"
 				@remove-node="removeNode($event)"
 			/>
 		</v-list>
@@ -19,6 +18,7 @@
 				item-text="name"
 				item-value="key"
 				placement="bottom-start"
+				class="add-filter"
 				:placeholder="t('interfaces.filter.add_filter')"
 				:full-width="false"
 				:model-value="null"
@@ -26,7 +26,7 @@
 				:mandatory="false"
 				:groups-clickable="true"
 				@group-toggle="loadFieldRelations($event.value, 1)"
-				@update:modelValue="addNode('field')"
+				@update:modelValue="addNode($event)"
 			/>
 		</div>
 	</div>
@@ -40,7 +40,7 @@ import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
-import useFieldTree from '@/composables/use-field-tree';
+import { useFieldTree, FieldOption } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: {
@@ -96,8 +96,8 @@ export default defineComponent({
 
 		return { t, addNode, removeNode, innerValue, fieldOptions, loadFieldRelations };
 
-		function addNode(type: 'logic' | 'field') {
-			if (type === 'logic') {
+		function addNode(key: string) {
+			if (key === '$group') {
 				innerValue.value = [
 					...innerValue.value,
 					{
@@ -105,11 +105,10 @@ export default defineComponent({
 					},
 				];
 			} else {
-				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(props.collectionName).field;
 				innerValue.value = [
 					...innerValue.value,
 					{
-						[pkField]: {
+						[key]: {
 							_eq: null,
 						},
 					},
@@ -158,12 +157,6 @@ export default defineComponent({
 			padding-left: 0px;
 			border-left: none;
 		}
-
-		.no-rules {
-			margin-bottom: 8px;
-			color: var(--foreground-subdued);
-			font-family: var(--family-monospace);
-		}
 	}
 
 	.buttons {
@@ -177,5 +170,17 @@ export default defineComponent({
 			cursor: pointer;
 		}
 	}
+}
+
+.no-rules {
+	height: 30px; // match height of single node
+	margin-bottom: 8px;
+	color: var(--foreground-subdued);
+	font-family: var(--family-monospace);
+	line-height: 30px;
+}
+
+.add-filter {
+	--v-select-placeholder-color: var(--primary);
 }
 </style>

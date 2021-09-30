@@ -33,7 +33,7 @@ import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType }
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
-import useFieldTree from '@/composables/use-field-tree';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldListItem },

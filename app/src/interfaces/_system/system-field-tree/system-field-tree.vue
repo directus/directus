@@ -22,7 +22,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, PropType } from 'vue';
-import useFieldTree from '@/composables/use-field-tree';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	props: {

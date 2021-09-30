@@ -4,11 +4,11 @@ import { getRelationType } from '@directus/shared/utils';
 import { get, set } from 'lodash';
 import { computed, Ref, ref, ComputedRef } from 'vue';
 
-type FieldTree = Record<string, FieldInfo>;
-type FieldInfo = { name: string; field: string; children: FieldTree; collection: string; type: string };
-type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
+export type FieldTree = Record<string, FieldInfo>;
+export type FieldInfo = { name: string; field: string; children: FieldTree; collection: string; type: string };
+export type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
 
-type FieldTreeContext = {
+export type FieldTreeContext = {
 	tree: Ref<FieldTree>;
 	treeList: ComputedRef<FieldOption[]>;
 	loadFieldRelations: (fieldPath: string, depth?: number) => void;
@@ -17,7 +17,7 @@ type FieldTreeContext = {
 	visitedRelations: Ref<string[][]>;
 };
 
-export default function useFieldTree(
+export function useFieldTree(
 	collection: Ref<string | null>,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
 	filter: (field: Field) => boolean = () => true
