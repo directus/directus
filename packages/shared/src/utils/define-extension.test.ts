@@ -28,6 +28,12 @@ describe('define-extensions', () => {
 		slots: { options: mockComponent, sidebar: mockComponent, actions: mockComponent },
 		setup: mockRecord,
 	};
+	const moduleConfig = {
+		id: '1',
+		name: 'test',
+		icon: 'icon',
+		routes: [],
+	};
 	const hookHandler = () => {
 		return { test: (..._values: any[]) => undefined };
 	};
@@ -45,8 +51,8 @@ describe('define-extensions', () => {
 		expect(defineLayout(layoutConfig)).toBe(layoutConfig);
 	});
 
-	it('return a config', () => {
-		expect(defineModule(interfaceConfig)).toBe(interfaceConfig);
+	it('return a module config', () => {
+		expect(defineModule(moduleConfig)).toBe(moduleConfig);
 	});
 
 	it('return a hook config', () => {
