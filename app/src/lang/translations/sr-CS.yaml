@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
 edit_field: Izmijeni
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
@@ -88,10 +109,14 @@ nullable: Prazno
 allow_null_value: Dozvoli NULL vrijednost
 enter_value_to_replace_nulls: Molimo unesite novu vrijednost kako biste zamijenili sve NULL vrijednosti u sklopu ovog polja.
 field_standard: Uobičajeno
+field_presentation: Prezentacija & Pseudonimi
+field_file: Single File
+field_files: Multiple Files
 field_m2o: M2O Relacija
 field_m2a: M2A Relacija
 field_o2m: O2M Relacija
 field_m2m: M2M Relacija
+field_translations: Prevodi
 item_permissions: Dozvole na stavkama
 field_permissions: Dozvole na Poljima
 field_validation: Validacija Polja
@@ -241,6 +266,7 @@ move_to_folder: Prebaci u fasciklu
 move: Premjesti
 system: Sistem
 add_field_related: Dodaj Polje u Povezanu Kolekciju
+interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -273,6 +299,7 @@ url: URL adresa
 file_details: Detalji Fajla
 dimensions: Dimenzije
 size: Veličina
+created: Kreiran
 modified: Izmijenjeno
 checksum: Kontrolni zbir
 owner: Vlasnik
@@ -345,6 +372,7 @@ display_template_not_setup: Šablon za grafički prikaz nije ispravno konfiguris
 collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
 select_a_collection: Izaberi Kolekciju
 active: Aktivan
+copy: Kopiraj
 users: Korisnici
 activity: Aktivnost
 webhooks: Webhooks
@@ -364,6 +392,8 @@ card_size: Veličina Kartice
 sort_field: Polje za Sortiranje
 add_sort_field: Dodaj Polje za Sortiranje
 sort: Sortiranje
+status: Status
+remove: Ukloni
 toggle_manual_sorting: Uključi Ručno Sortiranje
 bookmark_doesnt_exist: Oznaka ne postoji
 bookmark_doesnt_exist_copy: Oznaku koju pokušavate otvoriti nije moguće pronaći.
@@ -392,6 +422,8 @@ errors:
   RECORD_NOT_UNIQUE: Detektovana je dupla vrijednost
   USER_SUSPENDED: Suspendovan Korisnik
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
+  INTERNAL_SERVER_ERROR: Neočekivana greška
+  NOT_NULL_VIOLATION: Vrijednost ne može biti null
   UNKNOWN: Neočekivana greška
 value_hashed: Vrijednost je Sigurno Skladištena
 bookmark_name: Naziv oznake...
@@ -399,6 +431,7 @@ create_bookmark: Napravi Oznaku
 edit_bookmark: Ažuriraj Oznaku
 bookmarks: Oznake
 presets: Izgledi
+unexpected_error: Neočekivana greška
 unexpected_error_copy: Desila se neočekivana greška. Molimo pokušajte kasnije.
 copy_details: Kopiraj Detalje
 no_app_access: Bez pristupa Aplikaciji
@@ -477,11 +510,13 @@ upload_files_success: '{count} Fajlova Otpremljeno'
 upload_pending: Otpremanje na Čekanju
 drag_file_here: Prevuci Fajl ovdje
 click_to_browse: Klikni za Pretraživanje
+interface_options: Opcije Interfejsa
 layout_options: Opcije Izgleda
 rows: Redova
 columns: Kolona
 collection_setup: Podešavanje Kolekcije
 optional_system_fields: Neobavezna Sistemska Polja
+value_unique: Vrijednost mora biti jedinstvena
 all_activity: Sva Aktivnost
 create_item: Napravi Stavku
 display_template: Šablon za Prikaz
@@ -517,9 +552,12 @@ toggle: Isključi / Uključi
 icon_on: Ikonica Na
 icon_off: Bez Ikonice
 label: Oznaka
+full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
 media: Medij
+width: Širina
+height: Visina
 source: Izvor
 url_placeholder: Unesi url...
 display_text: Prikaži tekst
@@ -536,6 +574,9 @@ wysiwyg_options:
   alignleft: Lijevo poravnanje
   alignnone: Bez Poravnanja
   alignright: Desno poravnanje
+  forecolor: Primarna Boja
+  backcolor: Boja Pozadine
+  bold: Podebljano
   italic: Kurziv
   underline: Podvučeno
   strikethrough: Precrtano
@@ -568,6 +609,7 @@ wysiwyg_options:
   redo: Vrati poništeno
   remove: Ukloni
   removeformat: Ukloni formatiranje
+  selectall: Odaberi Sve
   table: Tabela
   visualaid: Pregledaj Nevidljive elemente
   source_code: Uredi Izvorni Kod
@@ -590,6 +632,7 @@ no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
 settings_permissions: Uloge & Dozvole
 settings_project: Podešavanje Projekta
+settings_webhooks: Webhooks
 settings_presets: Izgledi & Oznake
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
 scope: Opseg
@@ -652,19 +695,30 @@ fields:
   directus_activity:
     item: Primarni Ključ Stavke
     action: Akcija
+    collection: Kolekcija
     timestamp: Akcija Na
     user: Akcija Od
     comment: Komentar
     user_agent: Korisnički Agent
     ip: IP adresa
+    revisions: Revizije
   directus_collections:
+    collection: Kolekcija
+    icon: Ikonica
+    note: Napomena
+    color: Boja
+    display_template: Šablon za Prikaz
+    hidden: Sakriveno
+    singleton: Singleton
     translations: Prevodi Imena Kolekcije
     archive_app_filter: Filter za Arhivu
     archive_value: Arhiviraj Vrijednost
     unarchive_value: Poništi arhiviranje vrijednosti
+    sort_field: Polje za Sortiranje
     accountability: Aktivnost & Praćenje Revizija
   directus_files:
     $thumbnail: Sličica
+    title: Naslov
     description: Opis
     tags: Tagovi
     location: Lokacija
@@ -675,20 +729,36 @@ fields:
     type: Mime Tip
     filesize: Veličina
     modified_by: Izmijenjeno Od
+    modified_on: Izmijenjeno
+    created_on: Kreirano
+    created_by: Kreirao
+    embed: Ugradi
     uploaded_by: Otpremljeno Od
+    folder: Fascikla
     width: Širina
     uploaded_on: Otpremljeno
     height: Visina
+    charset: Set karaktera
+    duration: Trajanje
   directus_users:
     first_name: Ime
     last_name: Prezime
     email: Email adresa
     password: Lozinka
     avatar: Avatar
+    location: Lokacija
+    title: Naslov
+    description: Opis
+    tags: Tagovi
+    language: Jezik
     theme: Tema
     tfa_secret: Dvostruka potvrda Autentičnosti
     status: Status
+    status_active: Aktivan
+    role: Uloga
     token: Token
+    last_page: Posljednja Stranica
+    last_access: Posljednji Pristup
   directus_settings:
     project_name: Ime Projekta
     project_url: URL projekta
@@ -705,10 +775,15 @@ fields:
   directus_fields:
     collection: Ime Kolekcije
     icon: Ikonica Kolekcije
+    note: Napomena
     hidden: Sakriveno
+    singleton: Singleton
+    translation: Prevodi Polja
     display_template: Šablon
   directus_roles:
+    name: Naziv uloge
     icon: Ikonica Uloge
+    description: Opis
     app_access: Potpun Pristup aplikaciji
     admin_access: Administratorski pristup
     ip_access: IP pristup
@@ -716,11 +791,37 @@ fields:
     users: Svi korisnici ove Uloge
     module_list: Navigacija Modula
     collection_list: Navigacija Kolekcije
+  directus_webhooks:
+    name: Ime
+    status: Status
 field_options:
+  directus_activity:
+    create: Kreiraj
+    update: Ažuriranje
   directus_collections:
     track_activity_revisions: Prati Aktivnost & Revizije
     only_track_activity: Samo Prati Aktivnost
     do_not_track_anything: Bez praćenja
+    collection_setup: Podešavanje Kolekcije
+    singleton: Tretiraj kao jedinstven objekat
+    language: Jezik
+    archive_divider: Arhiviraj
+    divider: Sortiranje
+  directus_roles:
+    fields:
+      icon_name: Ikonica
+      name_name: Ime
+      name_placeholder: Unesi naslov...
+    collection_list:
+      fields:
+        type_name: Tip
+    collections_name: Kolekcije
+  directus_users:
+    status_dropdown_active: Aktivan
+  directus_webhooks:
+    status_options_active: Aktivan
+    actions_create: Kreiraj
+    actions_update: Ažuriranje
 no_fields_in_collection: 'Trenutno ne postoji nijedno polje u "{collection}" kolekciji'
 do_nothing: Ne radi ništa
 generate_and_save_uuid: Generiši i Sačuvaj UUID
@@ -729,6 +830,7 @@ save_current_user_role: Sačuvaj Trenutnu Korisničku Ulogu
 save_current_datetime: Sačuvaj Trenutni Datum/Vrijeme
 block: Blok
 inline: Linijski
+comment: Komentar
 relational_triggers: Relacioni Okidači
 referential_action_field_label_m2o: Kod Brisanja {collection}...
 referential_action_field_label_o2m: Kod Poništenog odabira {collection}...
@@ -743,14 +845,17 @@ delete_are_you_sure: >-
   Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
 delete_field_are_you_sure: >-
   Da li ste sigurni da želite da obrišete polje "{field}"? Ova operacija ne može biti poništena.
+description: Opis
 done: Urađeno
 duplicate: Dupliraj
+email: Email adresa
 embed: Ugradi
 fallback_icon: IkonicaPrethodnog stanja
 field: Polje | Polja
 file: Fajl
 file_library: Biblioteka Fajlova
 forgot_password: Zaboravljena lozinka
+hidden: Sakriveno
 icon: Ikonica
 info: Informacija
 normal: Normalno
@@ -765,6 +870,7 @@ not_authenticated: Nije Autorizovan
 authenticated: Autorizovan
 options: Opcije
 otp: Kratkoročna Lozinka
+password: Lozinka
 permissions: Dozvole
 relationship: Relacija
 reset: Resetuj
@@ -785,6 +891,7 @@ something_went_wrong: Došlo je do greške.
 sort_direction: Smjer sortiranja
 sort_asc: Opadajuće sortiranje
 sort_desc: Rastuće sortiranje
+template: Šablon
 translation: Prevodi
 value: Vrijednost
 view_project: Pregledaj Projekat
@@ -795,6 +902,8 @@ interfaces:
     links: Linkovi
     description: Podesivi linkovi za otvaranje dinamičkih URL-ova
     style: Stil
+    primary: Primarni
+    link: Linkovi
     button: Dugmad
     error: Radnja se ne može izvršiti
   select-multiple-checkbox:
@@ -804,13 +913,20 @@ interfaces:
     show_more: 'Prikaži {count} više'
     items_shown: Stavki Prikazano
   input-code:
+    code: Kod
     description: Napiši ili podijeli isječke koda
     line_number: Broj Linije
     placeholder: Unesite kod ovde...
+  system-collection:
+    collection: Kolekcija
+    description: Odaberi između postojećih kolekcija
+    include_system_collections: Uključi Sistemske Kolekcije
   system-collections:
+    collections: Kolekcije
     description: Odaberi između postojećih kolekcija
     include_system_collections: Uključi Sistemske Kolekcije
   select-color:
+    color: Boja
     description: Unesi ili odaberi vrijednost boje
     placeholder: Izaberi boju...
     preset_colors: Boje Izgleda
@@ -823,9 +939,13 @@ interfaces:
     set_to_now: Postavi na Sadašnji
     use_24: Koristi 24-časovni Format
   system-display-template:
+    display-template: Šablon za Prikaz
     description: Miješanje statičnih tekstualnih i dinamičkih vrijednosti polja
     collection_field: Polje Kolekcije
+    collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
+    select_a_collection: Izaberi Kolekciju
   presentation-divider:
+    divider: Djelilac
     description: Označi i podijeli polja u sekcije
     title_placeholder: Unesi naslov...
     inline_title: Linijski Naslov
@@ -835,26 +955,32 @@ interfaces:
   select-dropdown:
     description: Odaberi vrijednost iz padajuće liste
     choices_placeholder: Dodaj novi odabir
+    allow_other: Omogući Druge
     allow_other_label: Dozvoli Ostale Vrijednosti
     allow_none: Ne dozvoli
     allow_none_label: Dozvoli Bez Odabira
     choices_name_placeholder: Unesi ime...
+    choices_value_placeholder: Unesi vrijednost...
   select-multiple-dropdown:
     select-multiple-dropdown: Padajuća lista (Više opcija)
     description: Odaberi više od jedne vrijednosti iz padajuće liste
   file:
+    file: Fajl
     description: Odaberi ili otpremi fajl
   files:
     files: Fajlovi
     description: Odaberi ili otpremi više fajlova
   input-hash:
+    hash: Hash
     description: Unesi vrijednost koja će biti sigurno skladištena
     masked: Maskirano
     masked_label: Sakrij "true" vrijednosti
   select-icon:
+    icon: Ikonica
     description: Odaberi ikonicu iz padajuće liste
     search_for_icon: Traži ikonicu...
   file-image:
+    image: Slika
     description: Odaberi ili otpremi sliku
   system-interface:
     interface: Interfejs
@@ -869,6 +995,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Many to One
     description: Odaberi samo jednu povezanu stavku
+    display_template: Šablon za Prikaz
   input-rich-text-md:
     markdown: Smanjenje
     description: Unesi i pregledaj opcije smanjenja
@@ -878,6 +1005,8 @@ interfaces:
     box: Blok / Linijski
     imageToken: Token Fotografije
     imageToken_label: Koji (statični) token prikačiti na izvore slika
+  map:
+    zoom: Uvеćanjе
   presentation-notice:
     notice: Napomеna
     description: Prikaži kratku napomenu
@@ -886,6 +1015,8 @@ interfaces:
     one-to-many: One to Many
     description: Odaberi više povezanih stavki
     no_collection: Kolekciju nije moguće pronaći
+  system-folder:
+    folder: Fascikla
   select-radio:
     radio-buttons: Radio dugmići
     description: Odaberi jednu od više ponuđenih opcija
@@ -901,6 +1032,7 @@ interfaces:
     description: Odaberi broj uz pomoć slajdera
     always_show_value: Uvijek prikaži vrijednost
   tags:
+    tags: Tagovi
     description: Odaberi ili dodaj tagove
     whitespace: Razmak
     hyphen: Zamijeni sa crticom
@@ -918,6 +1050,7 @@ interfaces:
     description: Ručno unesite vrijednost
     trim: Odsjecanje
     trim_label: Odsjecanje sa početka i kraja
+    mask: Maskirano
     mask_label: Sakrij pravu vrijednost
     clear: Poništena Vrijednost
     clear_label: Sačuvaj kao praznu sekvencu karaktera
@@ -930,18 +1063,23 @@ interfaces:
     textarea: Polje Teksta
     description: Unesi višelinijski čisti-tekst
   boolean:
+    toggle: Isključi / Uključi
     description: Prebaci između uključeno i isključeno
     label_placeholder: Unesi ime...
+    label_default: Omogućen
   translations:
+    display_template: Šablon za Prikaz
     no_collection: Nema Kolekcije
   list-o2m-tree-view:
     description: Prikaz Stabla za ugnježđene rekurzivne one-to-many stavke
     recursive_only: Interfejs u prikazu stabla radi samo u slučajevima rekurzivnih relacija.
   user:
+    user: Korisnik
     description: Odaberi postojećeg directus korisnika
     select_mode: Način Odabira
     modes:
       auto: Automatski
+      dropdown: Padajuća lista
       modal: Modalni
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -958,21 +1096,28 @@ interfaces:
     rate: Ocjena
 displays:
   boolean:
+    boolean: Boolean
     description: Prikaži uključena i isključena stanja
     label_on: Oznaka Uključeno
     label_on_placeholder: Unesi oznaku za uključeno...
     label_off: Oznaka Isključeno
     label_off_placeholder: Unesi oznaku za isključeno...
+    icon_on: Ikonica Na
+    icon_off: Bez Ikonice
     color_on: Boja Uključena
     color_off: Boja Isključena
   collection:
+    collection: Kolekcija
     description: Prikaži kolekciju
     icon_label: Prikaži ikonicu kolekcije
   color:
+    color: Boja
     description: Prikaži obojenu tačku
     default_color: Podrazumijevana Boja
   datetime:
+    datetime: Datum i vrijeme
     description: Prikaži vrijednosti povezane sa vremenom
+    format: Format
     format_note: >-
       Prilagođeni format prihvata __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Dugo
@@ -980,6 +1125,7 @@ displays:
     relative: Relativno
     relative_label: 'Prikaži relativno vrijeme, primjer: prije 5 minuta'
   file:
+    file: Fajl
     description: Prikaži fajlove
   filesize:
     filesize: Veličina Fajla
@@ -994,12 +1140,14 @@ displays:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta
   icon:
+    icon: Ikonica
     description: Prikaži ikonicu
     filled: Popunjeno
     filled_label: Koristi popunjenu varijantu
   image:
     image: Slika
     description: Prikaži umanjeni pregled slike
+    circle: Krug
     circle_label: Prikaži kao krug
   labels:
     labels: Oznake
@@ -1008,6 +1156,7 @@ displays:
     default_background: Podrazumijevana Pozadina
     format_label: Formatiraj svaku oznaku
     show_as_dot: Prikaži kao Tačku
+    choices_value_placeholder: Unesi vrijednost...
     choices_text_placeholder: Unesi tekst...
   mime-type:
     mime-type: MIME Tip
@@ -1025,7 +1174,10 @@ displays:
     related-values: Povezane Vrijednosti
     description: Prikaži povezane vrijednosti
   user:
+    user: Korisnik
     description: Prikaži directus korisnika
+    avatar: Avatar
+    name: Ime
     both: Oba
     circle_label: Prikaži korisnika u obliku kruga
 layouts:
@@ -1035,8 +1187,10 @@ layouts:
     image_fit: Uklapanje Slike
     crop: Isjecanje
     contain: Sadržano
+    title: Naslov
     subtitle: Pod naslov
   tabular:
+    tabular: Tabela
     fields: Polja
     spacing: Razmak
     comfortable: Udobno
@@ -1046,3 +1200,6 @@ layouts:
     calendar: Kalendar
     start_date_field: Polje Početnog Datuma
     end_date_field: Polje Završnog Datuma
+panels:
+  label:
+    name: Oznaka
