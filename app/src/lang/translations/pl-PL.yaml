@@ -926,6 +926,10 @@ value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
 interfaces:
+  filter:
+    add_filter: Dodaj Filtr
+    all: Wszystkie
+    any: Dowolny
   presentation-links:
     presentation-links: Linki przycisków
     links: Linki
