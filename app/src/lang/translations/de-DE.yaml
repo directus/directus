@@ -135,7 +135,7 @@ allow_multiple_to_be_open: Gleichzeitiges Öffnen erlauben
 enter_value_to_replace_nulls: Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
 field_standard: Standard
 field_presentation: Darstellung & Aliase
-field_file: Einzelne Datei
+field_file: Eine Datei
 field_files: Mehrere Dateien
 field_m2o: M2O Beziehung
 field_m2a: M2A Beziehung
@@ -316,7 +316,7 @@ move_to_folder: In Ordner verschieben
 move: Verschieben
 system: System
 add_field_related: Feld zur abhängigen Sammlung hinzufügen
-interface_label: Schnittstelle
+interface_label: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
@@ -488,7 +488,7 @@ errors:
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
   UNPROCESSABLE_ENTITY: Unverarbeitbare Anfrage
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
-  NOT_NULL_VIOLATION: Wert darf nicht null sein
+  NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
   UNKNOWN: Unerwarteter Fehler
 security: Sicherheit
@@ -589,7 +589,7 @@ upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
-interface_options: Schnittstellen-Optionen
+interface_options: Schnittstellenoptionen
 layout_options: Optionen für Ansicht
 rows: Reihen
 columns: Spalten
@@ -681,6 +681,9 @@ wysiwyg_options:
   alignleft: Linksbündig
   alignnone: Nicht ausrichten
   alignright: Rechtsbündig
+  forecolor: Vordergrundfarbe
+  backcolor: Hintergrundfarbe
+  bold: Fett
   italic: Kursiv
   underline: Unterstrichen
   strikethrough: Durchgestrichen
@@ -713,6 +716,7 @@ wysiwyg_options:
   redo: Wiederherstellen
   remove: Löschen
   removeformat: Formatierung entfernen
+  selectall: Alle auswählen
   table: Tabelle
   visualaid: Unsichtbare Elemente anzeigen
   source_code: Quellcode bearbeiten
@@ -735,6 +739,7 @@ no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
 settings_permissions: Rollen & Berechtigungen
 settings_project: Projekt-Einstellungen
+settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
@@ -820,16 +825,26 @@ fields:
   directus_activity:
     item: Item-Primärschlüssel
     action: Aktion
+    collection: Sammlung
     timestamp: Aktion am
     user: Aktion von
     comment: Kommentar
     user_agent: User Agent
     ip: IP Adresse
+    revisions: Revisionen
   directus_collections:
+    collection: Sammlung
+    icon: Symbol
+    note: Notiz
+    color: Farbe
+    display_template: Anzeigevorlage
+    hidden: Ausgeblendet
+    singleton: Einzelnes Element
     translations: Namens-Übersetzungen der Sammlung
     archive_app_filter: Archivierungs-App-Filter
     archive_value: Archivierungswert
     unarchive_value: Dearchivierungswert
+    sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
   directus_files:
     $thumbnail: Miniaturansicht
@@ -844,18 +859,29 @@ fields:
     type: MIME-Typ
     filesize: Dateigröße
     modified_by: Geändert von
+    modified_on: Geändert am
+    created_on: Erstellt am
+    created_by: Erstellt von
+    embed: Einbetten
     uploaded_by: Hochgeladen von
+    folder: Ordner
     width: Breite
     uploaded_on: Hochgeladen am
     height: Höhe
+    charset: Zeichensatz
+    duration: Dauer
   directus_users:
     first_name: Vorname
     last_name: Nachname
     email: E-Mail
     password: Passwort
     avatar: Avatar
+    location: Ort
     title: Titel
+    description: Beschreibung
+    tags: Stichwörter
     user_preferences: Benutzereinstellungen
+    language: Sprache
     theme: Design
     theme_auto: Automatisch (Systemeinstellung verwenden)
     theme_light: Heller Modus
@@ -864,10 +890,15 @@ fields:
     admin_options: Admin-Optionen
     status: Status
     status_draft: Entwurf
+    status_invited: Eingeladen
+    status_active: Aktiv
     status_suspended: Angehalten
     status_archived: Archiviert
+    role: Rolle
     token: Token
     token_placeholder: Einen sicheren Zugangs-Token eingeben...
+    last_page: Letzte Seite
+    last_access: Letzter Zugriff
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -899,10 +930,15 @@ fields:
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon
+    note: Notiz
     hidden: Ausgeblendet
+    singleton: Einzelnes Element
+    translation: Feldnamen-Übersetzungen
     display_template: Vorlage
   directus_roles:
+    name: Rollenname
     icon: Rollen-Symbol
+    description: Beschreibung
     app_access: App-Zugriff
     admin_access: Admin-Zugriff
     ip_access: IP-Zugriff
@@ -911,7 +947,9 @@ fields:
     module_list: Modulnavigation
     collection_list: Sammlungsnavigation
   directus_webhooks:
+    name: Name
     method: Methode
+    status: Status
     data: Daten
     data_label: Ereignisdaten senden
     triggers: Auslöser
@@ -932,19 +970,37 @@ field_options:
         cover_text: Abdecken (erzwingt exakte Größe)
         fit_text: Passform innen
         outside_text: Passform außen
+    additional_transforms: Zusätzliche Umwandlungen
+    transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
+    mapbox_key: Mapbox Zugangs-Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox-Stil
     files_divider_title: Dateien & Vorschaubilder
     overrides_divider_title: App-Überschreibungen
+  directus_activity:
+    login: Login
+    create: Erstellen
+    update: Aktualisieren
+    delete: Löschen
   directus_collections:
     track_activity_revisions: Verfolge Aktivitäten und Änderungen
     only_track_activity: Nur Aktivitäten verfolgen
     do_not_track_anything: Nichts verfolgen
+    collection_setup: Einrichtung Sammlung
     note_placeholder: Eine Beschreibung dieser Sammlung...
     hidden_label: Innerhalb der App verstecken
+    singleton: Als einzelnes Objekt behandeln
+    language: Sprache
     translation: Übersetzung eingeben...
+    archive_divider: Archivieren
     archive_field: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
+    divider: Sortieren
+    sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortung
   directus_files:
     title: Ein einzigartiger Titel...
@@ -958,6 +1014,8 @@ field_options:
     description: Eine Beschreibung von dieser Rolle...
     ip_access: Erlaubte IP-Adressen hinzufügen, leer lassen um alle zuzulassen...
     fields:
+      icon_name: Symbol
+      name_name: Name
       name_placeholder: Titel eingeben...
       link_name: Link
       link_placeholder: Relative oder absolute URL...
@@ -966,12 +1024,32 @@ field_options:
       fields:
         group_name: Gruppen-Name
         group_placeholder: Diese Gruppe benennen...
+        type_name: Typ
         choices_always: Immer geöffnet
+        choices_start_open: Geöffnet starten
         choices_start_collapsed: Eingeklappt starten
+    collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
   directus_users:
+    preferences_divider: Benutzereinstellungen
+    dropdown_auto: Automatisch (Systemeinstellung verwenden)
+    dropdown_light: Heller Modus
+    dropdown_dark: Nachtmodus
+    admin_divider: Admin-Optionen
+    status_dropdown_draft: Entwurf
     status_dropdown_invited: Eingeladen
+    status_dropdown_active: Aktiv
+    status_dropdown_suspended: Angehalten
+    status_dropdown_archived: Archiviert
+    token: Einen sicheren Zugangs-Token eingeben...
   directus_webhooks:
+    status_options_active: Aktiv
+    status_options_inactive: Inaktiv
+    data_label: Ereignisdaten senden
+    triggers_divider: Auslöser
+    actions_create: Erstellen
+    actions_update: Aktualisieren
+    actions_delete: Löschen
     actions_login: Login
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 no_value: Kein Wert
@@ -982,6 +1060,7 @@ save_current_user_role: Aktuelle Benutzerrolle speichern
 save_current_datetime: Aktuelles Datum/Zeit speichern
 block: Blockieren
 inline: Inline
+comment: Kommentar
 relational_triggers: Relationale Trigger
 referential_action_field_label_m2o: Beim Löschen von {collection}...
 referential_action_field_label_o2m: Beim Abwählen von {collection}...
@@ -1001,15 +1080,18 @@ delete_are_you_sure: >-
   Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
 delete_field_are_you_sure: >-
   Soll das Feld "{field}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
+description: Beschreibung
 done: Erledigt
 duplicate: Duplikat
 limit: Limit
+email: E-Mail
 embed: Einbetten
 fallback_icon: Fallback-Symbol
 field: Feld | Felder
 file: Datei
-file_library: Datei-Browser
+file_library: Dateien
 forgot_password: Passwort vergessen
+hidden: Ausgeblendet
 icon: Symbol
 info: Information
 normal: Normal
@@ -1024,6 +1106,7 @@ not_authenticated: Nicht authentifiziert
 authenticated: Authentifiziert
 options: Optionen
 otp: Einmaliges Passwort
+password: Passwort
 permissions: Berechtigungen
 relationship: Beziehung
 reset: Zurücksetzen
@@ -1044,16 +1127,19 @@ something_went_wrong: Irgendwas ist schief gelaufen...
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
+template: Vorlage
 require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
+    start: Start
     all_closed: Alle geschlossen
     first_opened: Zuerst geöffnet
     all_opened: Alle geöffnet
@@ -1064,6 +1150,8 @@ interfaces:
     links: Links
     description: Konfigurierbare Link-Buttons für dynamische URLs
     style: Stil
+    primary: Primär
+    link: Links
     button: Buttons
     error: Aktion kann nicht ausgeführt werden
   select-multiple-checkbox:
@@ -1080,13 +1168,20 @@ interfaces:
     show_all: Alle anzeigen
     show_selected: Auswahl anzeigen
   input-code:
+    code: Code
     description: Code-Snippets schreiben oder teilen
     line_number: Zeilennummer
     placeholder: Code hier eingeben...
+  system-collection:
+    collection: Sammlung
+    description: Aus bestehenden Sammlungen auswählen
+    include_system_collections: Systemsammlungen einbeziehen
   system-collections:
+    collections: Sammlungen
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
   select-color:
+    color: Farbe
     description: Farbwert eingeben oder auswählen
     placeholder: Farbe wählen...
     preset_colors: Farben für Vorlage
@@ -1099,9 +1194,13 @@ interfaces:
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
   system-display-template:
+    display-template: Anzeigevorlage
     description: Statischen Text und dynamische Feldwerte mischen
     collection_field: Sammlungsfeld
+    collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
+    select_a_collection: Sammlung auswählen
   presentation-divider:
+    divider: Divider
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
     inline_title: Inline-Titel
@@ -1111,26 +1210,32 @@ interfaces:
   select-dropdown:
     description: Wert aus einer Dropdown-Liste auswählen
     choices_placeholder: Neue Auswahl hinzufügen
+    allow_other: Andere erlauben
     allow_other_label: Andere Werte erlauben
     allow_none: Keine Auswahl zulassen
     allow_none_label: Keine Auswahl zulassen
     choices_name_placeholder: Namen eingeben...
+    choices_value_placeholder: Gib einen Wert ein...
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (Mehrfachauswahl)
     description: Mehrere Werte aus einer Dropdown-Liste auswählen
   file:
+    file: Datei
     description: Datei auswählen oder hochladen
   files:
     files: Dateien
     description: Mehrere Dateien auswählen oder hochladen
   input-hash:
+    hash: Hash
     description: Den zu hashenden Wert eingeben
     masked: Maskiert
     masked_label: Wahre Werte ausblenden
   select-icon:
+    icon: Symbol
     description: Icon aus einer Dropdown-Liste auswählen
     search_for_icon: Nach Icon suchen...
   file-image:
+    image: Bild
     description: Bild auswählen oder hochladen
   system-interface:
     interface: Benutzeroberfläche
@@ -1145,6 +1250,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
+    display_template: Anzeigevorlage
   input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
@@ -1157,6 +1263,7 @@ interfaces:
   map:
     map: Karte
     description: Ort auf der Karte wählen
+    zoom: Zoom
     geometry_type: Geometrie-Typ
     geometry_format: Geometrie-Format
     default_view: Standardansicht
@@ -1178,6 +1285,7 @@ interfaces:
     description: Mehrere verwandte Elemente auswählen
     no_collection: Die Sammlung konnte nicht gefunden werden
   system-folder:
+    folder: Ordner
     description: Ordner auswählen
     field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
     root_name: Root-Ordner für Dateien
@@ -1197,6 +1305,7 @@ interfaces:
     description: Nummer mit Schieberegler auswählen
     always_show_value: Wert immer anzeigen
   tags:
+    tags: Stichwörter
     description: Tags auswählen oder hinzufügen
     whitespace: Leerzeichen
     hyphen: Mit Bindestrich ersetzen
@@ -1214,6 +1323,7 @@ interfaces:
     description: Wert manuell eingeben
     trim: Leerzeichen entfernen
     trim_label: Leerzeichen am Anfang und Ende entfernen
+    mask: Maskiert
     mask_label: Tatsächlichen Wert ausblenden
     clear: Gelöschter Wert
     clear_label: Als leeren String abspeichern
@@ -1226,9 +1336,12 @@ interfaces:
     textarea: Textfeld (mehrzeilig)
     description: Mehrzeiligen Klartext eingeben
   boolean:
+    toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
     label_placeholder: Label eingeben...
+    label_default: Aktiviert
   translations:
+    display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
     language_field: Sprachfeld
@@ -1236,10 +1349,12 @@ interfaces:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
   user:
+    user: Benutzer
     description: Bestehenden Benutzer auswählen
     select_mode: Modus wählen
     modes:
       auto: Auto
+      dropdown: Dropdown
       modal: Modal
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1267,21 +1382,28 @@ interfaces:
     start_closed: Geschlossen starten
 displays:
   boolean:
+    boolean: Boolean
     description: Ein-/Aus-Status anzeigen
     label_on: Label Ein
     label_on_placeholder: Label für Ein eingeben...
     label_off: Label Aus
     label_off_placeholder: Label für Aus eingeben...
+    icon_on: Symbol an
+    icon_off: Symbol aus
     color_on: Farbe Ein
     color_off: Farbe Aus
   collection:
+    collection: Sammlung
     description: Sammlung anzeigen
     icon_label: Symbol der Sammlung anzeigen
   color:
+    color: Farbe
     description: Einen farbigen Punkt anzeigen
     default_color: Standardfarbe
   datetime:
+    datetime: Datum & Uhrzeit
     description: Werte in Bezug zur Zeit anzeigen
+    format: Format
     format_note: >-
       Das benutzerdefinierte Format akzeptiert die __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
@@ -1289,6 +1411,7 @@ displays:
     relative: Relativ
     relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
   file:
+    file: Datei
     description: Dateien anzeigen
   filesize:
     filesize: Dateigröße
@@ -1303,12 +1426,14 @@ displays:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
   icon:
+    icon: Symbol
     description: Icon anzeigen
     filled: Ausgefüllt
     filled_label: Gefüllte Variante verwenden
   image:
     image: Bild
     description: Eine kleine Bildvorschau zeigen
+    circle: Kreis
     circle_label: Als Kreis anzeigen
   labels:
     labels: Labels
@@ -1317,6 +1442,7 @@ displays:
     default_background: Standard Hintergrund
     format_label: Jedes Label formatieren
     show_as_dot: Als Punkt anzeigen
+    choices_value_placeholder: Gib einen Wert ein...
     choices_text_placeholder: Text eingeben...
   mime-type:
     mime-type: MIME-Typ
@@ -1334,7 +1460,10 @@ displays:
     related-values: Verwandte Werte
     description: Relative Werte anzeigen
   user:
+    user: Benutzer
     description: Benutzer anzeigen
+    avatar: Avatar
+    name: Name
     both: Beide
     circle_label: Benutzer in einem Kreis anzeigen
 layouts:
@@ -1347,6 +1476,7 @@ layouts:
     title: Titel
     subtitle: Untertitel
   tabular:
+    tabular: Tabelle
     fields: Felder
     spacing: Abstand
     comfortable: Groß
@@ -1357,6 +1487,7 @@ layouts:
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
   map:
+    map: Karte
     basemap: Basiskarte
     layers: Ebenen
     edit_custom_layers: Ebenen bearbeiten
@@ -1365,6 +1496,7 @@ layouts:
     cluster_radius: Cluster-Radius
     cluster_minpoints: Minimale Punkte Clustering
     cluster_maxzoom: Maximaler Zoom für Clustering
+    field: Dimensionen
     invalid_geometry: Ungültige Geometrie
     auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
     search_this_area: Diesen Bereich durchsuchen
@@ -1381,6 +1513,7 @@ panels:
     date_field: Datums-Feld
     value_field: Wert-Feld
   label:
+    name: Label
     description: Einen Text anzeigen
   list:
     name: Liste
