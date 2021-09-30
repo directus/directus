@@ -70,6 +70,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Đăng xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
+public_label: Công khai
 public_description: Kiểm soát dữ liệu API nào có thể truy cập mà không cần đăng nhập.
 not_allowed: Không Cho Phép
 directus_version: Phiên bản hệ thống
@@ -108,9 +109,11 @@ validationError:
   null: Dữ liệu phải là null
   nnull: Dữ liệu không thể là null
   required: Dữ liệu là bắt buộc
+  unique: Giá trị phải là duy nhất
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
+allow_null_value: Cho phép NULL
 field_standard: Tiêu chuẩn
 field_file: Tập tin đơn
 field_files: Nhiều Tập Tin
@@ -152,6 +155,7 @@ decimal: Dạng thập phân
 float: Số thực
 integer: Số nguyên
 json: JSON
+xml: XML
 string: Chuỗi
 text: Đoạn văn bản
 time: Thời gian
@@ -428,6 +432,7 @@ operators:
   empty: Bị rỗng
 loading: Đang tải...
 layout_options: Các Tuỳ Chọn Bố Cục
+value_unique: Giá trị phải là duy nhất
 create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
 no_results: Không có kết quả

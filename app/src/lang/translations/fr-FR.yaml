@@ -26,6 +26,7 @@ draft: Brouillon
 archived: Archivé
 modules: Modules
 module_bar: Barre de modules
+tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
 maps: Cartes
@@ -1350,6 +1351,7 @@ interfaces:
   group-detail:
     name: Détail du groupe
     description: Rendre les champs comme une section pliable
+    header_color: Couleur d'en-tête
 displays:
   boolean:
     boolean: Booléen

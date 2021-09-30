@@ -92,5 +92,4 @@ export default defineModule({
 			beforeEnter: checkForSystem,
 		},
 	],
-	order: 5,
 });
