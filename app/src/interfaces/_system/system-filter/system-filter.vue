@@ -40,7 +40,7 @@ import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
-import { useFieldTree, FieldOption } from '@/composables/use-field-tree';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: {
@@ -105,14 +105,11 @@ export default defineComponent({
 					},
 				];
 			} else {
-				innerValue.value = [
-					...innerValue.value,
-					{
-						[key]: {
-							_eq: null,
-						},
-					},
-				] as FieldFilter[];
+				const filterObj = {};
+
+				set(filterObj, key, { _eq: null });
+
+				innerValue.value = [...innerValue.value, filterObj] as FieldFilter[];
 			}
 		}
 
