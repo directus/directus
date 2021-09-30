@@ -1,30 +1,37 @@
 import request from 'supertest';
 import config from '../config';
-import global from '../setup/global';
+import { getDBsToTest } from '../get-dbs-to-test';
+import knex, { Knex } from 'knex';
 
 describe('/server', () => {
+	const databases = new Map<string, Knex>();
+
+	beforeAll(() => {
+		const vendors = getDBsToTest();
+
+		for (const vendor of vendors) {
+			databases.set(vendor, knex(config.knexConfig[vendor]!));
+		}
+	});
+
+	afterAll(() => {
+		for (const [_vendor, connection] of databases) {
+			connection.destroy();
+		}
+	});
+
 	describe('/ping', () => {
-		for (const { vendor, knex } of global.knexInstances) {
+		it.each(getDBsToTest())('%p', async (vendor) => {
+			// const knex = databases.get(vendor);
+
 			const url = `http://localhost:${config.ports[vendor]!}`;
 
-			beforeEach(async () => {
-				await knex.schema.createTable('articles', (table) => {
-					table.increments();
-				});
-			});
+			const response = await request(url)
+				.get('/server/ping')
+				.expect('Content-Type', /text\/html/)
+				.expect(200);
 
-			afterEach(async () => {
-				await knex.schema.dropTableIfExists('articles');
-			});
-
-			it(vendor, async () => {
-				const response = await request(url)
-					.get('/server/ping')
-					.expect('Content-Type', /text\/html/)
-					.expect(200);
-
-				expect(response.text).toBe('pong');
-			});
-		}
+			expect(response.text).toBe('pong');
+		});
 	});
 });
