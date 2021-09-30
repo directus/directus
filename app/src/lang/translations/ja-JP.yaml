@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: プロフィール画像
 edit_field: フィールドの編集
 item_revision: 履歴
 full_width: 最大幅
@@ -58,9 +37,6 @@ validationError:
 no_access: アクセスなし
 use_custom: カスタムを使う
 field_standard: 標準
-field_file: 1つのファイル
-field_files: 複数のファイル
-field_translations: 翻訳
 delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
 language: 言語
@@ -197,7 +173,6 @@ csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
-copy: コピー
 users: ユーザー
 activity: 操作履歴
 webhooks: Webhook
@@ -208,8 +183,6 @@ collection_created: コレクションが作成されました
 modified_on: 修正日時
 sort_field: フィールドの並べ替え
 sort: 並べ替え
-status: ステータス
-remove: 削除
 toggle_manual_sorting: 手動ソートを有効にする
 bookmark_doesnt_exist: ブックマークは存在しません
 bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
@@ -223,14 +196,12 @@ errors:
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
-  INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
   UNKNOWN: 予期しないエラーが発生しました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
 bookmarks: ブックマーク
 presets: プリセット
-unexpected_error: 予期しないエラーが発生しました
 back: 戻る
 rotate: 回転
 all_users: すべてのユーザー
@@ -256,7 +227,6 @@ click_to_browse: クリックしてローカルフォルダを参照
 layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
-value_unique: 他と重複しない値である必要があります
 all_activity: すべてのアクティビティ
 create_item: アイテムの作成
 all_files: すべてのファイル
@@ -276,14 +246,10 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
-full_screen: 全画面表示
-width: 幅
-height: 高さ
 wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
-  backcolor: 背景色
   hr: 水平線
   copy: コピー
   paste: ペースト
@@ -296,7 +262,6 @@ wysiwyg_options:
   h6: 見出し6
   fontselect: フォントを選択
   remove: 削除
-  selectall: すべて
   table: テーブル
   fullscreen: 全画面表示
   directionality: 方向
@@ -308,7 +273,6 @@ editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 settings_data_model: データモデル
 settings_permissions: 役割・権限
 settings_project: プロジェクト設定
-settings_webhooks: Webhook
 settings_presets: プリセットとブックマーク
 layout: レイアウト
 editing_preset: プリセットを編集
@@ -330,15 +294,7 @@ fields:
     comment: コメント
     user_agent: ユーザーエージェント
     ip: IPアドレス
-  directus_collections:
-    icon: アイコン
-    note: 備考
-    color: 色
-    hidden: 非表示
-    singleton: シングルトン
-    sort_field: フィールドの並べ替え
   directus_files:
-    title: タイトル
     description: 説明
     tags: タグ
     location: 場所
@@ -346,11 +302,6 @@ fields:
     filename_download: ファイル名 (ダウンロード)
     type: MIMEタイプ
     filesize: ファイルサイズ
-    modified_on: 修正日時
-    created_on: 作成日時
-    created_by: 作成したユーザー
-    embed: 埋め込む
-    folder: フォルダ
     width: 幅
     height: 高さ
   directus_users:
@@ -359,71 +310,32 @@ fields:
     email: メールアドレス
     password: パスワード
     avatar: プロフィール画像
-    location: 場所
-    title: タイトル
-    description: 説明
-    tags: タグ
-    language: 言語
     theme: テーマ
     status: ステータス
     token: トークン
-    last_access: 最後にアクセスした日時
   directus_settings:
     project_name: プロジェクト名
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
   directus_fields:
-    note: 備考
     hidden: 非表示
-    singleton: シングルトン
-    translation: 項目名の翻訳を追加する
   directus_roles:
-    name: 権限名
-    description: 説明
     ip_access: IP アクセス
     enforce_tfa: 二段階認証が必要
-  directus_webhooks:
-    name: 名前
-    status: ステータス
-field_options:
-  directus_activity:
-    create: 作成
-    update: 更新
-  directus_collections:
-    collection_setup: コレクションの作成
-    singleton: シングルオブジェクトに設定する
-    language: 言語
-    archive_divider: アーカイブ
-    divider: 並べ替え
-  directus_roles:
-    fields:
-      icon_name: アイコン
-      name_name: 名前
-    collection_list:
-      fields:
-        type_name: タイプ
-    collections_name: コレクション
-  directus_webhooks:
-    actions_create: 作成
-    actions_update: 更新
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
-comment: コメント
 delete_field_are_you_sure: >-
   このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
-description: 説明
 done: 完了
 duplicate: 複製
-email: メールアドレス
 embed: 埋め込む
 file: ファイル
 file_library: ファイルライブラリー
 forgot_password: パスワード忘れ
-hidden: 非表示
 icon: アイコン
 info: 情報
 success: 成功
@@ -436,7 +348,6 @@ not_authenticated: ' 認証されていません'
 authenticated: 認証済み
 options: オプション
 otp: ワンタイムパスワード
-password: パスワード
 permissions: 許可
 relationship: 関連
 reset: リセット
@@ -456,58 +367,23 @@ sort_direction: ソート順
 translation: 翻訳
 value: 値
 interfaces:
-  system-collections:
-    collections: コレクション
-  select-color:
-    color: 色
   datetime:
     set_to_now: 現在時刻を設定
-  select-dropdown:
-    choices_value_placeholder: 値を入力...
-  file:
-    file: ファイル
   files:
     files: ファイル
-  input-hash:
-    hash: ハッシュ値
-  select-icon:
-    icon: アイコン
-  system-folder:
-    folder: フォルダ
-  tags:
-    tags: タグ
   translations:
     no_collection: コレクションがありません
-  user:
-    user: ユーザー
 displays:
-  boolean:
-    boolean: 真偽値
-  color:
-    color: 色
-  datetime:
-    format: 書式
-  file:
-    file: ファイル
   filesize:
     filesize: ファイルサイズ
-  icon:
-    icon: アイコン
-  labels:
-    choices_value_placeholder: 値を入力...
   user:
-    user: ユーザー
-    avatar: プロフィール画像
-    name: 名前
     both: 両方
 layouts:
   cards:
     cards: カード
     image_source: 画像ソース
-    title: タイトル
     subtitle: サブタイトル
   tabular:
-    tabular: テーブル
     fields: 入力欄
     spacing: 間隔
     comfortable: 広め
