@@ -9,26 +9,27 @@
 	>
 		<template #activator="{ toggle, active }">
 			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue }" @click="toggle">
-				{{ displayValue || placeholder }}
+				<slot name="preview">{{ displayValue || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
-			<v-input
-				v-else
-				:full-width="fullWidth"
-				readonly
-				:model-value="displayValue"
-				clickable
-				:placeholder="placeholder"
-				:disabled="disabled"
-				:active="active"
-				@click="toggle"
-			>
-				<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
-				<template #append>
-					<v-icon name="expand_more" :class="{ active }" />
-					<slot name="append" />
-				</template>
-			</v-input>
+			<slot v-else name="preview">
+				<v-input
+					:full-width="fullWidth"
+					readonly
+					:model-value="displayValue"
+					clickable
+					:placeholder="placeholder"
+					:disabled="disabled"
+					:active="active"
+					@click="toggle"
+				>
+					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
+					<template #append>
+						<v-icon name="expand_more" :class="{ active }" />
+						<slot name="append" />
+					</template>
+				</v-input>
+			</slot>
 		</template>
 
 		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
