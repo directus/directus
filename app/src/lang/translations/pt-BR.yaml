@@ -988,6 +988,10 @@ view_project: Visualizar projeto
 report_error: Relatar erro
 start: Início
 interfaces:
+  filter:
+    add_filter: Adicionar filtro
+    all: Tudo
+    any: Qualquer
   group-accordion:
     name: Sanfonada
     description: Exibir campos ou grupos como seções sanfonadas
