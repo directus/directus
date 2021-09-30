@@ -73,15 +73,4 @@ archive_confirm_count: >-
   зүйлсийг архивлахдаа итгэлтэй байна уу?
 reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
 reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
-fields:
-  directus_fields:
-    translation: Талбарын нэрний орчуулга
-  directus_roles:
-    name: Үүргийн нэр
-field_options:
-  directus_collections:
-    archive_divider: Архивлах
 limit: Хязгаар
-interfaces:
-  presentation-links:
-    primary: Үндсэн
