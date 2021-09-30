@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Avatar
 edit_field: Edit Kolom
 conditions: Kondisi
 maps: Peta
@@ -115,14 +94,10 @@ nullable: Dapat dikosongkan
 allow_null_value: Izinkan nilai KOSONG
 enter_value_to_replace_nulls: Harap masukkan nilai baru untuk menggantikan nilai kosong pada kolom ini.
 field_standard: Standar
-field_presentation: Presentasi & Alias
-field_file: Satu Berkas
-field_files: Beberapa Berkas
 field_m2o: Hubungan M2O
 field_m2a: Hubungan M2A
 field_o2m: Hubungan O2M
 field_m2m: Hubungan M2M
-field_translations: Terjemahan
 item_permissions: Perizinan Item
 field_permissions: Perizinan Baris
 field_validation: Validasi Baris
@@ -272,7 +247,6 @@ move_to_folder: Pindahkan ke Folder
 move: Pindah
 system: Sistem
 add_field_related: Tambah Baris ke Koleksi Terkait
-interface_label: Antarmuka
 today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
@@ -305,7 +279,6 @@ url: URL
 file_details: Rincian Berkas
 dimensions: Dimensi
 size: Ukuran
-created: Dibuat
 modified: Telah dimodifikasi
 checksum: Checksum
 owner: Pemilik
@@ -391,8 +364,6 @@ card_size: Ukuran Kartu
 sort_field: Sortir Baris
 add_sort_field: Tambah Baris Sortir
 sort: Sortir
-status: Status
-remove: Hapus
 toggle_manual_sorting: Aktifkan Sortir Manual
 bookmark_doesnt_exist: Bookmark Tidak Tersedia
 bookmark_doesnt_exist_copy: Bookmark yang Anda ingin bukan tidak dapat ditemukan.
@@ -418,8 +389,6 @@ errors:
   ITEM_NOT_FOUND: Item tidak ditemukan
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
-  INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
-  NOT_NULL_VIOLATION: Nilai tidak boleh kosong
   UNKNOWN: Kesalahan Tidak Terduga
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
@@ -427,7 +396,6 @@ create_bookmark: Buat Bookmark
 edit_bookmark: Sunting Bookmark
 bookmarks: Markah
 presets: Preset
-unexpected_error: Kesalahan Tidak Terduga
 unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi nanti.
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
@@ -463,7 +431,6 @@ operators:
   nempty: Tidak kosong
 loading: Memuat...
 layout_options: Pilihan Tata Letak
-value_unique: Nilai harus unik
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
 saves_automatically: Menyimpan Secara Otomatis
@@ -473,14 +440,9 @@ on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
 select_fields: Pilih Bidang
-width: Lebar
-height: Tinggi
 wysiwyg_options:
-  forecolor: Warna Latar Depan
-  backcolor: Warna Latar Belakang
   codeblock: Kode
   remove: Hapus
-  selectall: Pilih Semua
   table: Tabel
 dropdown: Dropwdown
 choices: Pilihan
@@ -488,7 +450,6 @@ deselect: Hapus pilihan
 editing_in_batch: 'Mengedit Masal {count} item'
 settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
-settings_webhooks: Webhooks
 scope: Lingkup
 discard_changes: Batalkan Perubahan
 keep_editing: Tetap Mengedit
@@ -502,94 +463,39 @@ collections: Pengumpulan
 fields:
   directus_activity:
     action: Aksi
-    collection: Koleksi
     comment: Komentar
     user_agent: Agen pengguna
     ip: Alamat IP
-  directus_collections:
-    collection: Koleksi
-    icon: Ikon
-    note: Catatan
-    color: Warna
-    display_template: Tampilan Template
-    hidden: Tersembunyi
-    sort_field: Sortir Baris
   directus_files:
-    title: Judul
     description: Deskripsi
     location: Lokasi
     metadata: Metadata
     filesize: Ukuran berkas
-    modified_on: Dimodifikasi Pada
-    created_on: Dibuat Pada
-    created_by: Dibuat Oleh
-    embed: Lampirkan
-    folder: Direktori
     width: Lebar
     height: Tinggi
-    charset: Charset
-    duration: Durasi
   directus_users:
     first_name: Nama Depan
     last_name: Nama belakang
     email: Email
     password: Kata Sandi
     avatar: Avatar
-    location: Lokasi
-    title: Judul
-    description: Deskripsi
-    language: Bahasa
     theme: Tema
     status: Status
-    role: Peran
-    last_page: Halaman Terakhir
-    last_access: Akses Terakhir
   directus_settings:
     project_name: Nama Proyek
   directus_fields:
-    note: Catatan
     hidden: Tersembunyi
-    translation: Terjemahan Nama Kolom
     display_template: Templat
-  directus_roles:
-    name: Nama Peran
-    description: Deskripsi
-  directus_webhooks:
-    name: Nama
-    status: Status
-field_options:
-  directus_activity:
-    create: Buat
-    update: Perbarui
-  directus_collections:
-    language: Bahasa
-    archive_divider: Arsip
-    divider: Sortir
-  directus_roles:
-    fields:
-      icon_name: Ikon
-      name_name: Nama
-    collection_list:
-      fields:
-        type_name: Tipe
-    collections_name: Pengumpulan
-  directus_webhooks:
-    actions_create: Buat
-    actions_update: Perbarui
-comment: Komentar
 editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
   Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.
-description: Deskripsi
 done: Selesai
 duplicate: Gandakan
 limit: Batas
-email: Email
 embed: Lampirkan
 file: Berkas
 file_library: Pustaka Berkas
 forgot_password: Lupa Kata Sandi
-hidden: Tersembunyi
 icon: Ikon
 info: Info
 junction_collection: Pengumpulan Persimpangan
@@ -598,7 +504,6 @@ login: Masuk
 my_activity: Aktivitas Saya
 options: Pilihan
 otp: Kata Sandi Sekali Pakai
-password: Kata Sandi
 permissions: Izin
 relationship: Hubungan
 reset_password: Atur Ulang Kata Sandi
@@ -613,82 +518,25 @@ sign_in: Masuk
 sign_out: Keluar
 sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
-template: Templat
 value: Nilai
 interfaces:
-  presentation-links:
-    primary: Primer
-  input-code:
-    code: Kode
-  system-collection:
-    collection: Koleksi
-  system-collections:
-    collections: Pengumpulan
-  select-color:
-    color: Warna
   datetime:
     datetime: Datetime
-  system-display-template:
-    display-template: Tampilan Template
-  presentation-divider:
-    divider: Pembagi/Pemecah
-  select-dropdown:
-    choices_value_placeholder: Masukkan sebuah nilai...
-  file:
-    file: Berkas
   files:
     files: Berkas
-  input-hash:
-    hash: Hash
-  select-icon:
-    icon: Ikon
   system-interface:
     interface: Antarmuka
-  select-dropdown-m2o:
-    display_template: Tampilan Template
-  map:
-    zoom: Perbesar
-  system-folder:
-    folder: Direktori
-  boolean:
-    label_default: Diaktifkan
-  translations:
-    display_template: Tampilan Template
-  user:
-    modes:
-      dropdown: Dropwdown
 displays:
-  boolean:
-    boolean: Boolean
-  collection:
-    collection: Koleksi
-  color:
-    color: Warna
-  datetime:
-    datetime: Datetime
-    format: Format
-  file:
-    file: Berkas
   filesize:
     filesize: Ukuran Berkas
-  icon:
-    icon: Ikon
-  image:
-    circle: Lingkaran
-  labels:
-    choices_value_placeholder: Masukkan sebuah nilai...
   user:
-    avatar: Avatar
-    name: Nama
     both: Keduanya
 layouts:
   cards:
     cards: Kartu
     image_source: Sumber Gambar
-    title: Judul
     subtitle: Subjudul
   tabular:
-    tabular: Tabel
     fields: Bidang
     spacing: Spasi
     comfortable: Longgar
