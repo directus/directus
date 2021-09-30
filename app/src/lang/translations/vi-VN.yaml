@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Ảnh đại diện
 edit_field: Sửa trường
 conditions: Điều kiện
 maps: Bản đồ
@@ -94,10 +115,13 @@ no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
 allow_null_value: Cho phép NULL
 field_standard: Tiêu chuẩn
+field_file: Tập tin đơn
+field_files: Nhiều Tập Tin
 field_m2o: Quan hệ Nhiều -> Một
 field_m2a: Quan hệ M2A
 field_o2m: Quan hệ Một -> Nhiều
 field_m2m: Quan hệ Nhiều -> Nhiều
+field_translations: Các Bản Dịch
 item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
 field_validation: Xác Thực Trường
@@ -202,6 +226,7 @@ submit: Gửi đi
 move: Di Chuyển
 system: Hệ thống
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
+interface_label: Giao diện
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
@@ -228,6 +253,7 @@ url: Đường Dẫn
 file_details: Thông Tin Chi Tiết của Tập Tin
 dimensions: Kích thước
 size: Kích thước
+created: Đã tạo
 modified: Đã sửa đổi
 checksum: Giá trị checksum
 owner: Sở hữu bởi
@@ -288,6 +314,7 @@ create_collection: Tạo Danh mục mới
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 select_a_collection: Chọn Bảng
 active: Kích hoạt
+copy: Sao chép
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks
@@ -307,6 +334,8 @@ card_size: Kích thước Card
 sort_field: Sắp xếp theo trường
 add_sort_field: Sắp xếp theo trường
 sort: Sắp xếp
+status: Trạng thái
+remove: Xoá
 toggle_manual_sorting: Kích hoạt sắp xếp thủ công
 bookmark_doesnt_exist: Bookmark Không Tồn Tại
 bookmark_doesnt_exist_copy: Không thể tìm thấy Bookmark bạn đang muốn mở.
@@ -332,6 +361,8 @@ errors:
   ITEM_LIMIT_REACHED: Đạt mức giới hạn của bản ghi
   ITEM_NOT_FOUND: Bản ghi không tồn tại
   ROUTE_NOT_FOUND: Không tìm thấy
+  INTERNAL_SERVER_ERROR: Lỗi Bất Thường
+  NOT_NULL_VIOLATION: Dữ liệu không thể là null
   UNKNOWN: Lỗi Bất Thường
 value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
@@ -339,6 +370,7 @@ create_bookmark: Tạo Dấu trang
 edit_bookmark: Chỉnh sửa Dấu trang
 bookmarks: Đánh dấu
 presets: Mẫu thiết lập
+unexpected_error: Lỗi Bất Thường
 unexpected_error_copy: Đã có lỗi không xác định xảy ra. Vui lòng thử lại sau.
 copy_details: Sao chép Chi tiết
 no_app_access: Không Có Quyền Truy Cập Chương Trình
@@ -400,6 +432,7 @@ operators:
   empty: Bị rỗng
 loading: Đang tải...
 layout_options: Các Tuỳ Chọn Bố Cục
+value_unique: Giá trị phải là duy nhất
 create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
 no_results: Không có kết quả
@@ -412,8 +445,12 @@ update: Cập nhật
 select_fields: Chọn trường
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
+width: Độ rộng
+height: Độ dài
 wysiwyg_options:
   alignright: Canh phải
+  forecolor: Màu Tô
+  backcolor: Màu Nền
   italic: Nghiêng
   underline: Gạch chân
   strikethrough: Gạch ngang
@@ -438,6 +475,7 @@ wysiwyg_options:
   fontselect: Chọn kiểu chữ
   fontsizeselect: Chọn kích thước phông chữ
   remove: Xoá
+  selectall: Chọn Tất Cả
   table: Bảng
 dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
@@ -447,6 +485,7 @@ editing_in_batch: 'Sửa cùng lúc {count} mục'
 settings_data_model: Mô Hình Dữ Liệu
 settings_permissions: Vai trò & Quyền hạn
 settings_project: Cài Đặt Chung
+settings_webhooks: Webhooks
 layout: Bố cục
 layout_preview: Xem Trước Bố Cục
 layout_setup: Cài Đặt Bố Cục
@@ -467,46 +506,104 @@ fields:
   directus_activity:
     item: Trường khoá chính định danh
     action: Hành động
+    collection: Danh mục
     timestamp: Hành động tại
     user: Thực hiện bởi
     comment: Bình luận
     user_agent: Tài khoản người dùng
     ip: Địa chỉ IP
+  directus_collections:
+    collection: Danh mục
+    icon: Biểu tượng
+    note: Ghi chú
+    color: Màu sắc
+    display_template: Mẫu hiển thị
+    hidden: Ẩn
+    sort_field: Sắp xếp theo trường
   directus_files:
+    title: Tiêu đề
     description: Mô tả
     tags: Tags
     location: Vị trí
     metadata: Thông tin metadata
     filesize: Kích thước tệp
+    modified_on: Sửa đổi vào
+    created_on: Tạo lúc
+    created_by: Tạo bởi
+    embed: Nhúng
     uploaded_by: Tài khoản tải lên
+    folder: Thư mục
     width: Độ rộng
     uploaded_on: Thời điểm tải lên
     height: Độ dài
+    charset: Bảng mã
+    duration: Thời lượng
   directus_users:
     first_name: Tên
     last_name: Họ
     email: Địa chỉ email
     password: Mật khẩu
     avatar: Ảnh đại diện
+    location: Vị trí
+    title: Tiêu đề
+    description: Mô tả
+    tags: Tags
+    language: Ngôn ngữ
     theme: Theme
     tfa_secret: Xác thực hai yếu tố
     status: Trạng thái
+    status_active: Kích hoạt
+    role: Phân quyền
   directus_settings:
     project_name: Tên Dự Án
   directus_fields:
     icon: Biểu tượng của Danh mục
+    note: Ghi chú
     hidden: Ẩn
+    translation: Hiển thị Ngôn ngữ Khác
     display_template: Mẫu
+  directus_roles:
+    name: Tên Quyền
+    description: Mô tả
+  directus_webhooks:
+    name: Tên
+    status: Trạng thái
+field_options:
+  directus_activity:
+    create: Tạo
+    update: Cập nhật
+  directus_collections:
+    language: Ngôn ngữ
+    archive_divider: Lưu trữ
+    divider: Sắp xếp
+  directus_roles:
+    fields:
+      icon_name: Biểu tượng
+      name_name: Tên
+    collection_list:
+      fields:
+        type_name: Kiểu
+    collections_name: Danh mục
+  directus_users:
+    status_dropdown_active: Kích hoạt
+  directus_webhooks:
+    status_options_active: Kích hoạt
+    actions_create: Tạo
+    actions_update: Cập nhật
+comment: Bình luận
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
+description: Mô tả
 done: Hoàn thành
 duplicate: Nhân bản
+email: Địa chỉ email
 embed: Nhúng
 fallback_icon: Biểu tượng Dự phòng
 field: Trường | Các trường
 file: Tệp
 file_library: Thư viện tệp
 forgot_password: Quên mật khẩu
+hidden: Ẩn
 icon: Biểu tượng
 info: Thông tin
 junction_collection: Danh mục liên kết
@@ -516,6 +613,7 @@ my_activity: Hoạt động cá nhân
 not_authenticated: Chưa xác thực
 options: Tuỳ chọn
 otp: Mật khẩu sử dụng một lần
+password: Mật khẩu
 permissions: Các quyền
 relationship: Quan hệ
 reset: Thiết lập lại
@@ -532,35 +630,95 @@ sign_out: Đăng xuất
 sign_out_confirm: Bạn có chắc bạn muốn đăng xuất không?
 something_went_wrong: Đã xảy ra lỗi.
 sort_direction: Chiều sắp xếp
+template: Mẫu
 translation: Bản dịch
 value: Giá trị
 interfaces:
+  presentation-links:
+    primary: Khóa chính
+  input-code:
+    code: Mã nguồn
+  system-collection:
+    collection: Danh mục
+  system-collections:
+    collections: Danh mục
+  select-color:
+    color: Màu sắc
   datetime:
     datetime: Ngày giờ
     use_24: Sử dụng Định dạng 24-giờ
+  system-display-template:
+    display-template: Mẫu hiển thị
+    select_a_collection: Chọn Bảng
+  presentation-divider:
+    divider: Bộ chia
+  select-dropdown:
+    choices_value_placeholder: Nhập vào một giá trị...
+  file:
+    file: Tệp
   files:
     files: Tệp
+  select-icon:
+    icon: Biểu tượng
   system-interface:
     interface: Giao diện
+  select-dropdown-m2o:
+    display_template: Mẫu hiển thị
+  map:
+    zoom: Thu phóng
+  system-folder:
+    folder: Thư mục
   slider:
     slider: Thanh trượt
+  tags:
+    tags: Tags
+  boolean:
+    label_default: Đã kích hoạt
+  translations:
+    display_template: Mẫu hiển thị
+  user:
+    user: Người dùng
+    modes:
+      dropdown: Tuỳ chọn dạng thả xuống
 displays:
+  boolean:
+    boolean: Boolean
+    icon_on: Biểu tượng của trạng thái Bật
+    icon_off: Biểu tượng của trạng thái Tắt
   collection:
+    collection: Danh mục
     icon_label: Hiển thị biểu tượng của danh mục
+  color:
+    color: Màu sắc
+  datetime:
+    datetime: Ngày giờ
+    format: Định dạng
+  file:
+    file: Tệp
   filesize:
     filesize: Kích thước tệp
   icon:
+    icon: Biểu tượng
     description: Hiển thị một biểu tượng
+  image:
+    circle: Vòng tròn
+  labels:
+    choices_value_placeholder: Nhập vào một giá trị...
   rating:
     rating: Xếp hạng
   user:
+    user: Người dùng
+    avatar: Ảnh đại diện
+    name: Tên
     both: Cả hai
 layouts:
   cards:
     cards: Thẻ
     image_source: Nguồn ảnh
+    title: Tiêu đề
     subtitle: Tiêu đề phụ
   tabular:
+    tabular: Bảng
     fields: Các trường
     spacing: Khoảng cách
     comfortable: Thoải mái
