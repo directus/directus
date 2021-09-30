@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: 頭像
 edit_field: 編輯欄位
 item_revision: 項目修改
 duplicate_field: 複製欄位
@@ -90,12 +69,9 @@ validationError:
   nnull: 值不能為null
   required: 必須輸入值
 use_custom: 使用自訂
-field_file: 單一檔案
-field_files: 多個檔案
 field_m2o: 多對一關聯
 field_o2m: 一對多關聯
 field_m2m: 多對多關聯
-field_translations: 翻譯
 item_permissions: 項目權限
 field_permissions: 欄位權限
 field_validation: 欄位驗證
@@ -198,7 +174,6 @@ move_to_folder: 移動到資料夾
 move: 移動
 system: 系統
 add_field_related: 新增欄位到關聯集合
-interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
@@ -223,7 +198,6 @@ url: URL
 file_details: 檔案詳細資訊
 dimensions: 尺寸
 size: 尺寸
-created: 已建立
 modified: 已修改
 checksum: 校驗和
 owner: 擁有者
@@ -285,7 +259,6 @@ no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始�
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
 select_a_collection: 選擇一個集合
-copy: 複製
 users: 用戶
 activity: 活動
 webhooks: Webhooks
@@ -304,8 +277,6 @@ modified_on: 修改日期
 card_size: 卡片大小
 sort_field: 排序欄位
 sort: 排序
-status: 狀態
-remove: 移除
 toggle_manual_sorting: 啟用手動排序
 bookmark_doesnt_exist: 書籤不存在
 select_an_item: 選取一個項目...
@@ -325,14 +296,11 @@ errors:
   INVALID_QUERY: 無效的查詢
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
-  INTERNAL_SERVER_ERROR: 未預期的錯誤
-  NOT_NULL_VIOLATION: 值不能為null
   UNKNOWN: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
 bookmarks: 書籤
-unexpected_error: 未預期的錯誤
 unexpected_error_copy: 發生意外的錯誤，請稍後再試。
 copy_details: 複製詳細資訊
 password_reset_sent: 我們已經把重設密碼連結寄到您的電子信箱
@@ -401,16 +369,11 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
-width: 寬度
-height: 高度
 wysiwyg_options:
   aligncenter: 置中
   alignleft: 置左對齊
   alignnone: 不對齊
   alignright: 置右對齊
-  forecolor: 前景顏色
-  backcolor: 背景顏色
-  bold: 粗體
   italic: 斜體
   underline: 底線
   strikethrough: 刪除線
@@ -440,7 +403,6 @@ wysiwyg_options:
   redo: 重做
   remove: 移除
   removeformat: 移除格式
-  selectall: 全選
   table: 表格
 dropdown: 下拉選單
 choices: 選擇
@@ -449,7 +411,6 @@ deselect_all: 取消全選
 editing_in_batch: '批次編輯 {count} 個項目'
 settings_permissions: 角色和權限
 settings_project: 專案設定
-settings_webhooks: Webhooks
 unsaved_changes: 未保存的更改
 unsaved_changes_copy: 您確定要離開此頁面嗎？
 discard_changes: 放棄修改
@@ -467,22 +428,12 @@ fields:
   directus_activity:
     item: 項目主鍵值
     action: 操作
-    collection: 集合
     timestamp: 操作於
     user: 操作人
     comment: 評論
     user_agent: 代理用戶
     ip: IP位址
-  directus_collections:
-    collection: 集合
-    icon: 圖示
-    note: 備註
-    color: 顏色
-    display_template: 顯示模板
-    hidden: 隱藏
-    sort_field: 排序欄位
   directus_files:
-    title: 標題
     description: 描述說明
     tags: 標籤
     location: 位置
@@ -491,33 +442,19 @@ fields:
     type: Mime 類型
     filesize: 檔案大小
     modified_by: 修改者
-    modified_on: 修改日期
-    created_on: 建立於
-    created_by: 建立者
-    embed: 內嵌
     uploaded_by: 上傳者
-    folder: 資料夾
     width: 寬度
     uploaded_on: 上傳於
     height: 高度
-    charset: 字元集
-    duration: 持續時間
   directus_users:
     first_name: 名字
     last_name: 姓氏
     email: 電子郵件
     password: 密碼
     avatar: 頭像
-    location: 位置
-    title: 標題
-    description: 描述說明
-    tags: 標籤
-    language: 語言
     theme: 主題
     tfa_secret: 雙重身份驗證
     status: 狀態
-    role: 角色
-    last_page: 最後一頁
   directus_settings:
     project_name: 專案名稱
     project_url: 專案 URL
@@ -531,62 +468,32 @@ fields:
   directus_fields:
     collection: 集合名稱
     icon: 集合圖示
-    note: 備註
     hidden: 隱藏
-    translation: 欄位名稱翻譯
     display_template: 模板
   directus_roles:
-    name: 角色名稱
     icon: 角色圖示
-    description: 描述說明
     enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
-  directus_webhooks:
-    name: 名稱
-    status: 狀態
-field_options:
-  directus_activity:
-    create: 新建
-    update: 更新
-  directus_collections:
-    language: 語言
-    archive_divider: 封存
-    divider: 排序
-  directus_roles:
-    fields:
-      icon_name: 圖示
-      name_name: 名稱
-    collection_list:
-      fields:
-        type_name: 類型
-    collections_name: 資料集
-  directus_webhooks:
-    actions_create: 新建
-    actions_update: 更新
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID
 save_current_user_id: 儲存當前使用者 ID
 save_current_user_role: 儲存當前使用者角色
 save_current_datetime: 儲存當前日期/時間
-comment: 評論
 editing_role: '{role} 角色'
 creating_webhook: 建立 Webhook
 delete_are_you_sure: >-
   此操作是永久性的，無法撤銷。是否確實要繼續？
 delete_field_are_you_sure: >-
   是否確定要刪除此欄位 "{field}"? 此動作無法還原。
-description: 描述說明
 done: 完成
 duplicate: 複製
-email: 電子郵件
 embed: 內嵌
 fallback_icon: 後備圖示
 field: 欄位｜欄位
 file: 檔案
 file_library: 檔案庫
 forgot_password: 忘記密碼
-hidden: 隱藏
 icon: 圖示
 info: 資訊
 normal: 一般
@@ -600,7 +507,6 @@ my_activity: 我的活動
 not_authenticated: 未認證
 options: 選項
 otp: 一次性密碼
-password: 密碼
 permissions: 權限
 relationship: 關聯
 reset: 重設
@@ -618,53 +524,23 @@ sign_out: 登出
 sign_out_confirm: 是否確定要登出?
 something_went_wrong: 出了點問題
 sort_direction: 排序方向
-template: 模板
 translation: 翻譯
 value: 值
 interfaces:
-  input-code:
-    code: 程式碼
-  system-collection:
-    collection: 集合
-  system-collections:
-    collections: 資料集
-  select-color:
-    color: 顏色
   datetime:
     datetime: 日期時間
-  system-display-template:
-    display-template: 顯示模板
-    select_a_collection: 選擇一個集合
-  presentation-divider:
-    divider: 分隔線
-  select-dropdown:
-    choices_value_placeholder: 請輸入...
   file:
-    file: 檔案
     description: 選擇或上傳檔案
   files:
     files: 檔案
     description: 選擇或上傳多個檔案
-  input-hash:
-    hash: 哈希
-  select-icon:
-    icon: 圖示
-  file-image:
-    image: 圖像
   system-interface:
     interface: 介面
-  select-dropdown-m2o:
-    display_template: 顯示模板
-  map:
-    zoom: 縮放
-  system-folder:
-    folder: 資料夾
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
     always_show_value: 永遠顯示值
   tags:
-    tags: 標籤
     description: 選擇或新增標籤
     whitespace: 空格
     remove: 移除空白
@@ -672,32 +548,19 @@ interfaces:
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
-  boolean:
-    toggle: 切換
-    label_default: 已啟用
-  translations:
-    display_template: 顯示模板
   user:
-    user: 用戶
     select_mode: 選取模式
     modes:
       auto: 自動
-      dropdown: 下拉選單
 displays:
   boolean:
     description: 顯示開關狀態
-  collection:
-    collection: 集合
   color:
-    color: 顏色
     default_color: 預設顏色
   datetime:
-    datetime: 日期時間
-    format: 格式
     long: 長
     short: 短
   file:
-    file: 檔案
     description: 顯示檔案
   filesize:
     filesize: 檔案大小
@@ -712,15 +575,12 @@ displays:
     formatted-json-value: 格式化JSON值
     description: 顯示物件的格式化版本
   icon:
-    icon: 圖示
     description: 顯示圖示
   image:
     image: 圖像
     description: 顯示圖像預覽
-    circle: 圓形
   labels:
     labels: 標籤
-    choices_value_placeholder: 請輸入...
     choices_text_placeholder: 輸入文字...
   mime-type:
     mime-type: MIME 類型
@@ -728,9 +588,6 @@ displays:
   rating:
     rating: 評分
   user:
-    user: 用戶
-    avatar: 頭像
-    name: 名稱
     both: 都要
     circle_label: 在圓圈中顯示使用者
 layouts:
@@ -739,10 +596,8 @@ layouts:
     image_source: 圖片來源
     crop: 裁剪
     contain: 包含
-    title: 標題
     subtitle: 副標題
   tabular:
-    tabular: 表格
     fields: 欄位
     spacing: 間距
     comfortable: 舒適
