@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
 published: Zveřejněno
 modules: Moduly
 module_bar: Panel modulů
@@ -199,6 +220,7 @@ no_comments: Zatím bez komentářů
 request_feature: Požadavek na funkci
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
 create_collection: Vytvořit kategorii
+copy: Kopírovat
 users: Uživatelé
 activity: Aktivita
 webhooks: Webhooky
@@ -207,6 +229,10 @@ user_directory: Uživatelé
 documentation: Dokumentace
 duration: Trvání
 modified_on: Upraveno
+status: Stav
+remove: Odebrat
+errors:
+  NOT_NULL_VIOLATION: Hodnota nesmí být null
 bookmarks: Záložky
 back: Zpět
 all_users: Všichni uživatelé
@@ -230,6 +256,7 @@ upload_files_indeterminate: 'Nahrávám soubory {done}/{total}'
 upload_files_success: 'Nahráno {count} souborů'
 drag_file_here: Přetáhněte sem soubor
 layout_options: Možnosti rozvržení
+value_unique: Hodnota musí být unikátní
 all_files: Všechny soubory
 my_files: Mé soubory
 recent_files: Nedávné soubory
@@ -245,6 +272,8 @@ on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+width: Šířka
+height: Výška
 wysiwyg_options:
   copy: Kopírovat
   cut: Vyjmout
@@ -258,6 +287,7 @@ deselect: Zrušit výběr
 editing_in_batch: 'Hromadná úprava {count} položek'
 settings_permissions: Role a oprávnění
 settings_project: Nastavení projektu
+settings_webhooks: Webhooky
 layout: Rozvržení
 layout_preview: Náhled rozvržení
 unsaved_changes: Neuložené změny
@@ -275,45 +305,95 @@ fields:
   directus_activity:
     item: Primární klíč položky
     action: Akce
+    collection: Kategorie
     timestamp: Akce podle
     user: Akce podle
     comment: Komentář
     user_agent: Uživatelský agent
     ip: IP adresa
+  directus_collections:
+    collection: Kategorie
+    icon: Ikona
+    note: Poznámka
+    color: Barva
+    hidden: Skryté
   directus_files:
+    title: Název
     description: Popis
     tags: Štítky
     location: Poloha
     metadata: Metadata
     filesize: Velikost souboru
     modified_by: Upravil/-a
+    modified_on: Upraveno
+    created_on: Vytvořeno
+    created_by: Vytvořil/-a
+    embed: Vložení
     uploaded_by: Nahráno od
+    folder: Složka
     width: Šířka
     uploaded_on: Nahráno
     height: Výška
+    duration: Trvání
   directus_users:
     first_name: Křestní jméno
     last_name: Příjmení
     email: E-mail
     password: Heslo
     avatar: Avatar
+    location: Poloha
+    title: Název
+    description: Popis
+    tags: Štítky
+    language: Jazyk
     theme: Téma
     tfa_secret: Dvoufázové ověření
     status: Stav
+    role: Role
   directus_settings:
     project_name: Název projektu
   directus_fields:
+    note: Poznámka
     hidden: Skryté
+    translation: Překlady názvu polí
+  directus_roles:
+    name: Jméno role
+    description: Popis
+  directus_webhooks:
+    name: Jméno
+    status: Stav
+field_options:
+  directus_activity:
+    create: Vytořit
+    update: Úpravy
+  directus_collections:
+    language: Jazyk
+    archive_divider: Archivovat
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Jméno
+    collection_list:
+      fields:
+        type_name: Typ
+    collections_name: Kategorie
+  directus_webhooks:
+    actions_create: Vytořit
+    actions_update: Úpravy
+comment: Komentář
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
+description: Popis
 done: Hotovo
 duplicate: Duplikovat
 limit: Limit
+email: E-mail
 embed: Vložení
 field: Pole | Pole
 file: Soubor
 file_library: Složka souborů
 forgot_password: Zapomenuté heslo
+hidden: Skryté
 icon: Ikona
 info: Informace
 junction_collection: Spojovací kategorie
@@ -323,6 +403,7 @@ my_activity: Moje aktivita
 not_authenticated: Neověřená/-ý
 options: Možnosti
 otp: Jednorázové heslo
+password: Heslo
 permissions: Oprávnění
 relationship: Vztah
 reset: Resetovat
@@ -342,22 +423,53 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
+  presentation-links:
+    primary: Primární
+  system-collection:
+    collection: Kategorie
+  system-collections:
+    collections: Kategorie
+  select-color:
+    color: Barva
   file:
+    file: Soubor
     description: Vyberte nebo nahrajte soubor
   files:
     files: Soubory
     description: Vyberte nebo nahrajte soubory
+  select-icon:
+    icon: Ikona
+  system-folder:
+    folder: Složka
+  tags:
+    tags: Štítky
+  user:
+    user: Uživatel
 displays:
+  collection:
+    collection: Kategorie
+  color:
+    color: Barva
+  datetime:
+    format: Formát
   file:
+    file: Soubor
     description: Zobrazit soubory
   filesize:
     filesize: Velikost souboru
+  icon:
+    icon: Ikona
   user:
+    user: Uživatel
+    avatar: Avatar
+    name: Jméno
     both: Vše
 layouts:
   cards:
     cards: Karty
+    title: Název
   tabular:
+    tabular: Tabulka
     fields: Sloupce
     spacing: Odsazení
     comfortable: Komfortní
