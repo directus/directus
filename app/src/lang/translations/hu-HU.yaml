@@ -1,29 +1,5 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Profilkép
-default_provider: Alapértelmezett
 published: Közzétett
-draft: Vázlat
-archived: Archiválva
 edit_field: Mező szerkesztése
 conditions: Feltételek
 maps: Térképek
@@ -127,14 +103,10 @@ allow_multiple: Többszörös engedélyezése
 allow_multiple_to_be_open: Nyitott Többszörös engedélyezése
 enter_value_to_replace_nulls: Kérjük, adjon meg egy új értéket a mezőben jelenleg található NULL-ok cseréjére!
 field_standard: Normál
-field_presentation: Prezentációk és Aliasok
-field_file: Egyetlen fájl
-field_files: Több fájl egyidejű hozzáadása
 field_m2o: M2O kapcsolat
 field_m2a: M2A kapcsolat
 field_o2m: O2M kapcsolat
 field_m2m: M2M kapcsolat
-field_translations: Fordítások
 field_group: Mezőcsoport
 item_permissions: Elem engedélyek
 field_permissions: Mező engedélyek
@@ -286,7 +258,6 @@ move_to_folder: Áthelyezés mappába
 move: Áthelyezés
 system: Rendszer
 add_field_related: Mező hozzáadása kapcsolódó gyűjteményhez
-interface_label: Kezelőfelület
 today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
@@ -320,7 +291,6 @@ import_label: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
 size: Méret
-created: Létrehozva
 modified: Módosítva
 checksum: Ellenőrző
 owner: Tulajdonos
@@ -393,7 +363,6 @@ display_template_not_setup: A megjelenítő sablon nem megfelelően van beállí
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
 active: Aktív
-copy: Másolás
 inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
@@ -415,8 +384,6 @@ card_size: Kártya mérete
 sort_field: Rendezési mező
 add_sort_field: Rendezési mező hozzáadása
 sort: Rendezés
-status: Állapot
-remove: Eltávolítás
 toggle_manual_sorting: Manuális rendezés ki/bekapcsolása
 bookmark_doesnt_exist: Könyvjelző nem létezik
 bookmark_doesnt_exist_copy: Ez a könyvjelző nem található.
@@ -446,8 +413,6 @@ errors:
   USER_SUSPENDED: Felhasználó felfüggesztve
   CONTAINS_NULL_VALUES: A mező null értékeket tartalmaz
   UNPROCESSABLE_ENTITY: Feldolgozhatatlan entitás
-  INTERNAL_SERVER_ERROR: Váratlan hiba történt
-  NOT_NULL_VIOLATION: Az érték nem lehet null
   UNKNOWN: Váratlan hiba történt
 security: Biztonság
 value_hashed: Biztonságosan hashelt érték
@@ -456,7 +421,6 @@ create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
 presets: Alapbeállítások
-unexpected_error: Váratlan hiba történt
 unexpected_error_copy: Váratlan hiba történt. Kérjük, próbálja meg később újra!
 copy_details: Részletek másolása
 no_app_access: Nincs alkalmazás hozzáférés
@@ -544,13 +508,11 @@ upload_files_success: '{count} fájl feltöltve'
 upload_pending: Feltöltés folyamatban
 drag_file_here: Dobj ide egy fájlt
 click_to_browse: Kattints a böngészéshez
-interface_options: Interfész opciók
 layout_options: Elrendezés beállításai
 rows: Sorok
 columns: Oszlopok
 collection_setup: Gyűjtemény beállítások
 optional_system_fields: Opcionális rendszer mezők
-value_unique: Egyedi érték szükséges
 all_activity: Minden Tevékenység
 create_item: Elem létrehozása
 display_template: Megjelenítési sablon
@@ -586,13 +548,10 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
-full_screen: Teljes képernyő
 image_url: Kép URL
 alt_text: Alternatív szöveg
 media: Média
 quality: Minőség
-width: Szélesség
-height: Magasság
 source: Forrás
 url_placeholder: Írjon be egy url-t...
 display_text: Szöveg megjelenítése
@@ -609,9 +568,6 @@ wysiwyg_options:
   alignleft: Balra igazítás
   alignnone: Rendezés nélkül
   alignright: Jobbra igazítás
-  forecolor: Előtérszín
-  backcolor: Háttérszín
-  bold: Félkövér
   italic: Dőlt
   underline: Aláhúzott
   strikethrough: Áthúzás
@@ -644,7 +600,6 @@ wysiwyg_options:
   redo: Újra
   remove: Eltávolítás
   removeformat: Formázás eltávolítása
-  selectall: Összes kijelölése
   table: Táblázat
   visualaid: Láthatatlan elemek mutatása
   source_code: Forráskód szerkesztése
@@ -667,7 +622,6 @@ no_options_available: Nincs választási lehetőség
 settings_data_model: Adatmodell
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
-settings_webhooks: Webhookok
 settings_presets: Alapértelmezések és Könyvjelzők
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
@@ -731,29 +685,18 @@ fields:
   directus_activity:
     item: Elem elsődleges kulcsa
     action: Művelet
-    collection: Gyűjtemény
     timestamp: Művelet időpontja
     user: Művelet kezdeményezője
     comment: Hozzászólás
     user_agent: Felhasználói ügynök
     ip: IP cím
-    revisions: Változatok
   directus_collections:
-    collection: Gyűjtemény
-    icon: Ikon
-    note: Jegyzet
-    color: Szín
-    display_template: Megjelenítési sablon
-    hidden: Rejtett
-    singleton: Egyedüli
     archive_app_filter: Szűrő archíválása
     archive_value: Archív érték
     unarchive_value: Archiválás megszüntetése utáni érték
-    sort_field: Rendezési mező
     accountability: Tevékenység és revízió nyomkövetése
   directus_files:
     $thumbnail: Miniatűr
-    title: Cím
     description: Leírás
     tags: Címkék
     location: Pozíció
@@ -764,29 +707,17 @@ fields:
     type: MIME típus
     filesize: Fájl mérete
     modified_by: Módosította
-    modified_on: Változtatás dátuma
-    created_on: Létrehozva
-    created_by: Készítette
-    embed: Beágyazás
     uploaded_by: Feltöltve
-    folder: Könyvtár
     width: Szélesség
     uploaded_on: Feltöltve
     height: Magasság
-    charset: Karakterkészlet
-    duration: Időtartam
   directus_users:
     first_name: Családnév
     last_name: Vezetéknév
     email: Email
     password: Jelszó
     avatar: Profilkép
-    location: Pozíció
-    title: Cím
-    description: Leírás
-    tags: Címkék
     user_preferences: Felhasználói beállítások
-    language: Nyelv
     theme: Téma
     theme_auto: Automatikus (A rendszeren alapuló)
     theme_light: Világos mód
@@ -795,15 +726,10 @@ fields:
     admin_options: Admin beállítások
     status: Állapot
     status_draft: Vázlat
-    status_invited: Meghívott
-    status_active: Aktív
     status_suspended: Felfüggesztve
     status_archived: Archiválva
-    role: Szerepkör
     token: Token
     token_placeholder: Írja be a biztonságos hozzáférés tokenjét...
-    last_page: Utolsó oldal
-    last_access: Utolsó hozzáférés
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -835,15 +761,10 @@ fields:
   directus_fields:
     collection: Gyűjtemény neve
     icon: Gyűjtemény ikonja
-    note: Jegyzet
     hidden: Rejtett
-    singleton: Egyedüli
-    translation: Lefordított mezőnevek
     display_template: Sablon
   directus_roles:
-    name: Szerepkör neve
     icon: Szerep ikonja
-    description: Leírás
     app_access: Alkalmazás hozzáférés
     admin_access: Admin hozzáférés
     ip_access: IP cím
@@ -851,9 +772,7 @@ fields:
     users: Felhasználók a szerepkörben
     collection_list: Gyűjtemény navigáció
   directus_webhooks:
-    name: Név
     method: Metódus
-    status: Állapot
     data: Adat
     data_label: Eseményadatok küldése
     triggers: Triggerek
@@ -863,7 +782,6 @@ field_options:
     project_name_placeholder: Saját projektem...
     project_logo_note: Bejelentkezés és logó háttere
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
-    security_divider_title: Biztonság
     auth_password_policy:
       none_text: Nincs - Nem ajánlott
       weak_text: Gyenge - Minimum 8 karakter
@@ -874,37 +792,17 @@ field_options:
         cover_text: Fedje (pontos méretre kényszerítés)
         fit_text: Illeszkedjen bele
         outside_text: Illeszkedjen külsőleg
-    additional_transforms: További transzformációk
-    transforms_note: 'A Sharp módszer neve és argumentumai. További információért lásd: https://sharp.pixelplumbing.com/api-constructor'
-    mapbox_key: Mapbox hozzáférési token
-    mapbox_placeholder: pk.eyJ1Ijo.....
-    basemaps_raster: Raszter
-    basemaps_tile: Raszter TileJSON
-    basemaps_style: Mapbox stílus
-    files_divider_title: Fájlok és miniatűrök
-    overrides_divider_title: Alkalmazás felülbírálások
-  directus_activity:
-    login: Bejelentkezés
-    create: Létrehozás
-    update: Frissítés
-    delete: Törlés
   directus_collections:
     track_activity_revisions: Tevékenységek és módosítások nyomon követése
     only_track_activity: Csak a tevékenység nyomon követése
     do_not_track_anything: Minden nyomkövetés tiltása
-    collection_setup: Gyűjtemény beállítások
     note_placeholder: A gyűjtemény leírása pár szóban...
     hidden_label: Legyen rejtett az alkalmazásban
-    singleton: Egyetlen objektumként kezelendő
-    language: Nyelv
     translation: Fordítás megadása...
-    archive_divider: Archiválás
     archive_field: Mező kiválasztása...
     archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
     archive_value: Archiváláskor beállított érték...
     unarchive_value: Az archiválás visszavonásakor beállított érték...
-    divider: Rendezés
-    sort_field: Mező kiválasztása...
   directus_files:
     title: Egy egyedi cím...
     description: Egy opcionális leírás...
@@ -916,9 +814,6 @@ field_options:
     description: A szerepkör leírása...
     ip_access: Adja hozzá az engedélyezett IP-címeket, minden IP engedélyezéséhez hagyja üresen...
     fields:
-      icon_name: Ikon
-      name_name: Név
-      name_placeholder: Írjon be egy címet...
       link_name: Hivatkozás
       link_placeholder: Relatív vagy abszolút URL...
     collection_list:
@@ -926,32 +821,12 @@ field_options:
       fields:
         group_name: Csoportnév
         group_placeholder: Címkézze fel ezt a csoportot...
-        type_name: Típus
         choices_always: Mindig nyitva
-        choices_start_open: Indíts nyitva!
         choices_start_collapsed: Kezdetben összecsukva
-    collections_name: Gyűjtemények
     collections_addLabel: Gyűjtemény hozzáadása...
   directus_users:
-    preferences_divider: Felhasználói beállítások
-    dropdown_auto: Automatikus (A rendszeren alapuló)
-    dropdown_light: Világos mód
-    dropdown_dark: Sötét mód
-    admin_divider: Admin beállítások
-    status_dropdown_draft: Vázlat
     status_dropdown_invited: Meghívott
-    status_dropdown_active: Aktív
-    status_dropdown_suspended: Felfüggesztve
-    status_dropdown_archived: Archiválva
-    token: Írja be a biztonságos hozzáférés tokenjét...
   directus_webhooks:
-    status_options_active: Aktív
-    status_options_inactive: Inaktív
-    data_label: Eseményadatok küldése
-    triggers_divider: Triggerek
-    actions_create: Létrehozás
-    actions_update: Frissítés
-    actions_delete: Törlés
     actions_login: Bejelentkezés
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 do_nothing: Ne tegyen semmit
@@ -961,7 +836,6 @@ save_current_user_role: Jelenlegi felhasználói szerepkör mentése
 save_current_datetime: Aktuális dátum/idő mentése
 block: Blokk
 inline: Inline
-comment: Hozzászólás
 relational_triggers: Relációs triggerek
 referential_action_field_label_m2o: '{collection} törlésekor...'
 referential_action_field_label_o2m: '{collection} kiválasztásának megszüntetésekor...'
@@ -981,18 +855,15 @@ delete_are_you_sure: >-
   Ez a művelet végleges és visszavonhatatlan. Biztos, hogy folytatni szeretné?
 delete_field_are_you_sure: >-
   Biztosan törölni szeretnéd ezt a mezőt ({field})? Ha törlöd, nem lehet visszaállítani.
-description: Leírás
 done: Kész
 duplicate: Duplikálás
 limit: Korlát
-email: Email
 embed: Beágyazás
 fallback_icon: Tartalék ikon
 field: Mező | Mezők
 file: File
 file_library: Könyvtár
 forgot_password: Elfelejtett jelszó
-hidden: Rejtett
 icon: Ikon
 info: Információ
 normal: Normál
@@ -1007,7 +878,6 @@ not_authenticated: Nem hitelesített
 authenticated: Hitelesítve
 options: Lehetőségek
 otp: Egyszer használható jelszó
-password: Jelszó
 permissions: Jogosultságok
 relationship: Kapcsolat
 reset: Visszaállítás
@@ -1028,7 +898,6 @@ something_went_wrong: Valami hiba történt.
 sort_direction: Rendezés iránya
 sort_asc: Növekvő sorrend
 sort_desc: Csökkenő sorrend
-template: Sablon
 require_value_to_be_set: Az érték beállítása kötelező
 translation: Fordítás
 value: Érték
@@ -1048,8 +917,6 @@ interfaces:
     links: Linkek
     description: Konfigurálható linkgombok dinamikus URL-ek indításához
     style: Stílus
-    primary: Elsődleges
-    link: Linkek
     button: Gombok
     error: A művelet nem hajtható végre
   select-multiple-checkbox:
@@ -1066,20 +933,13 @@ interfaces:
     show_all: Mind megjelenítése
     show_selected: Kiválasztottak megjelenítése
   input-code:
-    code: Kód
     description: Kódrészletek írása vagy megosztása
     line_number: Sorok számozása
     placeholder: Kód beírása...
-  system-collection:
-    collection: Gyűjtemény
-    description: Választás meglévő gyűjteményekből
-    include_system_collections: Beleértve a rendszergyűjteményeket
   system-collections:
-    collections: Gyűjtemények
     description: Választás meglévő gyűjteményekből
     include_system_collections: Beleértve a rendszergyűjteményeket
   select-color:
-    color: Szín
     description: Írjon be vagy válasszon egy színértéket
     placeholder: Szín választása...
     preset_colors: Alapértelmezett színek
@@ -1092,13 +952,9 @@ interfaces:
     set_to_now: Mai nap
     use_24: 24 órás formátum használata
   system-display-template:
-    display-template: Megjelenítési sablon
     description: Statikus szöveg és dinamikus mezőértékek keverése
     collection_field: Gyűjteménymező
-    collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
-    select_a_collection: Gyűjtemény kiválasztása
   presentation-divider:
-    divider: Elválasztó
     description: A mezők felcímkézése és szakaszokra osztása
     title_placeholder: Írjon be egy címet...
     inline_title: Inline cím
@@ -1108,32 +964,26 @@ interfaces:
   select-dropdown:
     description: Válasszon értéket legördülő listából
     choices_placeholder: Új lehetőség hozzáadása
-    allow_other: Egyéb engedélyezése
     allow_other_label: Egyéb érték engedélyezése
     allow_none: Egyik sem engedélyezett
     allow_none_label: Nem kötelező választani
     choices_name_placeholder: Adjon meg egy nevet...
-    choices_value_placeholder: Adjon meg egy értéket...
   select-multiple-dropdown:
     select-multiple-dropdown: Legördülő lista (többválasztós)
     description: Válasszon több értéket legördülő listából
   file:
-    file: File
     description: Válasszon vagy töltsön fel fájlt
   files:
     files: Fájlok
     description: Válasszon vagy töltsön fel fájlokat
   input-hash:
-    hash: Hash
     description: Adjon meg egy hashelni kívánt értéket
     masked: Maszkolt
     masked_label: Valós értékek elrejtése
   select-icon:
-    icon: Ikon
     description: Válasszon egy ikont legördülő listából
     search_for_icon: Ikon keresése...
   file-image:
-    image: Kép
     description: Válasszon vagy töltsön fel egy képet
   system-interface:
     interface: Kezelőfelület
@@ -1148,7 +998,6 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Sok az egyhez
     description: Egyetlen kapcsolódó elem kiválasztása
-    display_template: Megjelenítési sablon
   input-rich-text-md:
     markdown: Markdown
     description: Markdown bevitele és előnézete
@@ -1161,7 +1010,6 @@ interfaces:
   map:
     map: Térkép
     description: Hely megadása térképen
-    zoom: Nagyítás
     geometry_type: Geometria típusa
     geometry_format: Geometria formátuma
     default_view: Alapértelmezett nézet
@@ -1183,7 +1031,6 @@ interfaces:
     description: Több kapcsolódó elem választása
     no_collection: A gyűjtemény nem található
   system-folder:
-    folder: Könyvtár
     description: Válasszon egy mappát
     field_hint: Az újonnan feltöltött fájlokat a kiválasztott mappába helyezi. Nem érinti a kiválasztott, de már létező fájlokat.
     root_name: Fájlok gyökérkönyvtára
@@ -1203,7 +1050,6 @@ interfaces:
     description: Válasszon számot csúszka segítségével
     always_show_value: Mindig mutassa az értéket
   tags:
-    tags: Címkék
     description: Címke megadása vagy kiválasztása
     whitespace: Szóköz
     hyphen: Helyettesítse kötőjellel
@@ -1220,7 +1066,6 @@ interfaces:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!
     trim: Vágás
-    mask: Maszkolt
     mask_label: Valós érték elrejtése
     clear: Törölt érték
     clear_label: Mentés üres karakterláncként
@@ -1233,23 +1078,18 @@ interfaces:
     textarea: Szövegmező
     description: Többsoros egyszerű szöveg (multiline plain-text) bevitele
   boolean:
-    toggle: Váltás
     description: Be- és kikapcsolás közti váltás
     label_placeholder: Címke beírása...
-    label_default: Engedélyezve
   translations:
-    display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
     recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
   user:
-    user: Felhasználó
     description: Válasszon ki egy létező directus felhasználót!
     select_mode: Kiválasztott mód
     modes:
       auto: Automatikus
-      dropdown: Legördülő lista
       modal: Ablak
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1275,28 +1115,21 @@ interfaces:
     start_closed: Indíts zárva!
 displays:
   boolean:
-    boolean: Logikai
     description: Be- és kikapcsolt állapotok megjelenítése
     label_on: Címke be
     label_on_placeholder: Címke megadása...
     label_off: Címke ki
     label_off_placeholder: Címke megadása...
-    icon_on: Ikon be
-    icon_off: Ikon ki
     color_on: Szín be
     color_off: Szín ki
   collection:
-    collection: Gyűjtemény
     description: Gyűjtemény megjelenítése
     icon_label: Gyűjtemény ikon megjelenítése
   color:
-    color: Szín
     description: Színes kör megjelenítése
     default_color: Alapértelmezett szín
   datetime:
-    datetime: Dátum és idő
     description: Az idővel kapcsolatos értékek megjelenítése
-    format: Formátum
     format_note: >-
       Az egyéni formátum elfogadja a __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Hosszú
@@ -1304,7 +1137,6 @@ displays:
     relative: Relatív
     relative_label: 'Relatív idő megjelenítése, pl.: 5 perccel ezelőtt'
   file:
-    file: File
     description: Fájlok megjelenítése
   filesize:
     filesize: Fájlméret
@@ -1319,14 +1151,12 @@ displays:
     formatted-json-value: Formázott JSON érték
     description: Az objektum formázott változatának megjelenítése
   icon:
-    icon: Ikon
     description: Egy ikon megjelenítése
     filled: Kitöltve
     filled_label: Használja a kitöltött változatot
   image:
     image: Kép
     description: Egy apró előnézeti kép megjelenítése
-    circle: Kör
     circle_label: Megjelenítés körszegéllyel
   labels:
     labels: Feliratok
@@ -1335,7 +1165,6 @@ displays:
     default_background: Alapértelmezett háttér
     format_label: Mindegyik címke formázása
     show_as_dot: Pontszerű megjelenítés
-    choices_value_placeholder: Adjon meg egy értéket...
     choices_text_placeholder: Szöveg megadása...
   mime-type:
     mime-type: MIME típus
@@ -1353,10 +1182,7 @@ displays:
     related-values: Hasonló értékek
     description: Hasonló értékek megjelenítése
   user:
-    user: Felhasználó
     description: Egy directus felhasználó megjelenítése
-    avatar: Profilkép
-    name: Név
     both: Mindkettő
     circle_label: Felhasználó megjelenítése körszegéllyel
 layouts:
@@ -1366,10 +1192,8 @@ layouts:
     image_fit: Kép pozíciója
     crop: Vágás
     contain: Tartalmaz
-    title: Cím
     subtitle: Alcím
   tabular:
-    tabular: Táblázat
     fields: Mezők
     spacing: Sorköz
     comfortable: Kényelmes
@@ -1380,7 +1204,6 @@ layouts:
     start_date_field: Kezdő dátum mező
     end_date_field: Záró dátum mező
   map:
-    map: Térkép
     basemap: Alaptérkép
     layers: Rétegek
     edit_custom_layers: Rétegek szerkesztése
@@ -1389,10 +1212,6 @@ layouts:
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
-    field: Geometria
     invalid_geometry: Érvénytelen geometria
     auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
     search_this_area: Keresés ezen a területen
-panels:
-  label:
-    name: Címke
