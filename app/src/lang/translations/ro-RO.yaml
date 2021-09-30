@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-avatar: Avatar
 edit_field: Editează câmp
 item_revision: Revizuire element
 duplicate_field: Duplicare câmp
@@ -88,7 +67,6 @@ create_collection: Creează Colecție
 users: Utilizatori
 activity: Activitate
 duration: Durată
-status: Stare
 bookmarks: Semne de carte
 back: Înapoi
 operators:
@@ -97,8 +75,6 @@ operators:
   contains: Conține
 role: Rol
 create: Creează
-width: Lățime
-height: Înălţime
 wysiwyg_options:
   table: Tabel
 choices: Opțiuni
@@ -116,104 +92,52 @@ fields:
   directus_activity:
     item: Cheia primară a elementului
     action: Acţiune
-    collection: Colecție
     timestamp: Acțiune pe
     user: Acțiune de
     comment: Comentariu
     user_agent: User Agent
     ip: Adresă IP
-  directus_collections:
-    collection: Colecție
-    icon: Iconiță
-    hidden: Ascuns
   directus_files:
-    title: Titlu
     description: Descriere
     tags: Etichete
     location: Locație
     metadata: Metadate
     filesize: Dimensiune fişier
-    created_on: Creat Pe
-    created_by: Creat De
-    embed: Încorporați
     uploaded_by: Încărcat de
     width: Lățime
     uploaded_on: Încărcat pe
     height: Înălţime
-    duration: Durată
   directus_users:
     first_name: Prenume
     last_name: Nume
     email: Email
     password: Parolă
     avatar: Avatar
-    location: Locație
-    title: Titlu
-    description: Descriere
-    tags: Etichete
     theme: Temă
     tfa_secret: Autentificare în doi pași
     status: Stare
-    role: Rol
   directus_fields:
     hidden: Ascuns
-    translation: Traducerile numelui câmpului
-  directus_roles:
-    name: Nume de rol
-    description: Descriere
-  directus_webhooks:
-    status: Stare
-field_options:
-  directus_activity:
-    create: Creează
-  directus_collections:
-    archive_divider: Arhivează
-  directus_roles:
-    fields:
-      icon_name: Iconiță
-    collections_name: Colecții
-  directus_webhooks:
-    actions_create: Creează
-comment: Comentariu
 delete_field_are_you_sure: >-
   Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.
-description: Descriere
 done: Efectuat
 duplicate: Duplicare
-email: Email
 embed: Încorporați
 field: Câmp | Câmpuri
-hidden: Ascuns
 icon: Iconiță
 info: Info
-password: Parolă
 interfaces:
-  system-collection:
-    collection: Colecție
-  system-collections:
-    collections: Colecții
   files:
     files: Fişiere
-  select-icon:
-    icon: Iconiță
-  tags:
-    tags: Etichete
 displays:
-  collection:
-    collection: Colecție
-  icon:
-    icon: Iconiță
   user:
-    avatar: Avatar
     both: Ambele
 layouts:
   cards:
     cards: Carduri
     image_source: Sursa Imaginii
-    title: Titlu
     subtitle: Subtitlu
   tabular:
-    tabular: Tabel
     comfortable: Confortabil
     compact: Compact
     cozy: Comod
