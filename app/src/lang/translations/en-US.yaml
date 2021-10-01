@@ -1149,6 +1149,19 @@ weeks: {}
 report_error: Report Error
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Configure a filter object.
+    add_filter: Add Filter
+    add_group: And / Or group
+    add_value: Add Value
+    all: All
+    any: Any
+    and: and
+    of_the_following: of the following
+    no_rules: No configured rules
+    change_value: Click to change value
+    placeholder: Drag rules here
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections

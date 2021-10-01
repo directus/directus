@@ -22,7 +22,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup() {
+	setup(props) {
 		const { t } = useI18n();
 
 		const value = computed({
@@ -52,14 +52,9 @@ export default defineComponent({
 				name: t('rule'),
 				type: 'json',
 				meta: {
-					interface: 'input-code',
+					interface: 'system-filter',
 					options: {
-						language: 'json',
-						placeholder: `{
-	"myField": {
-		"_eq": "Some Text"
-	}
-}`,
+						collectionName: props.collection,
 					},
 				},
 			},

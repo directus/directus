@@ -196,7 +196,7 @@ export default defineComponent({
 
 					return {
 						...part,
-						to: module.link === undefined ? `/${module.id}` : '',
+						to: `/${module.id}`,
 						name: module.name,
 						icon: module.icon,
 					};

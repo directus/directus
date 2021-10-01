@@ -2,7 +2,7 @@ import { isEmpty, notEmpty } from '@/utils/is-empty/';
 import { isEqual } from 'lodash';
 import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 
-type GroupableInstance = {
+export type GroupableInstance = {
 	active: Ref<boolean>;
 	value: string | number | undefined;
 };
@@ -94,6 +94,7 @@ export function useGroupable(options?: GroupableOptions): UsableGroupable {
 type GroupableParentState = {
 	selection?: Ref<(string | number)[] | undefined> | Ref<readonly (string | number)[] | undefined>;
 	onSelectionChange?: (newSelectionValues: readonly (string | number)[]) => void;
+	onToggle?: (item: GroupableInstance) => void;
 };
 
 type GroupableParentOptions = {
@@ -201,6 +202,10 @@ export function useGroupableParent(
 			toggleMultiple(item);
 		} else {
 			toggleSingle(item);
+		}
+
+		if (notEmpty(state.onToggle)) {
+			state.onToggle(item);
 		}
 	}
 

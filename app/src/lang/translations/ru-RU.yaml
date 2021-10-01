@@ -26,14 +26,14 @@ draft: Черновик
 archived: В архиве
 modules: Модули
 module_bar: Панель модулей
-tile_size: Размер тайла
+tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
 maps: Карты
 item_creation: Создание элемента
-item_revision: Редакция
+item_revision: Пересмотр Элемента
 enter_a_name: Введите название...
-duplicate_field: Клонировать поле
+duplicate_field: Дублировать поле
 half_width: Полширины
 full_width: Вся ширина
 group: Группа
@@ -933,10 +933,10 @@ fields:
     note: Заметка
     hidden: Скрыто
     singleton: Синглтон
-    translation: Переводы названия поля
+    translation: Переводы названий полей
     display_template: Шаблон
   directus_roles:
-    name: Название роли
+    name: Имя роли
     icon: Иконка Роли
     description: Описание
     app_access: Доступ к Приложению
@@ -975,7 +975,7 @@ field_options:
     mapbox_key: Токен доступа Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps_raster: Растр
-    basemaps_tile: Растр TileJSON
+    basemaps_tile: Raster TileJSON
     basemaps_style: Стиль Mapbox
     files_divider_title: Файлы и миниатюры
     overrides_divider_title: Переопределить заводские настройки

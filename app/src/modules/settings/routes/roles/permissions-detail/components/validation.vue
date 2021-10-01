@@ -9,7 +9,11 @@
 			}}
 		</v-notice>
 
-		<interface-input-code :value="validation" language="json" type="json" @input="validation = $event" />
+		<interface-system-filter
+			:value="validation"
+			:collection-name="permission.collection"
+			@input="validation = $event"
+		/>
 	</div>
 </template>
 
