@@ -26,7 +26,7 @@ const notFound: RequestHandler = async (req, res, next) => {
 				accountability: req.accountability ?? null,
 			}
 		);
-		if (hooksResult.reduce((prev, current) => current || prev, false)) {
+		if (hooksResult) {
 			return next();
 		}
 		next(new RouteNotFoundException(req.path));

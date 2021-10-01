@@ -1,4 +1,3 @@
-import { compact, last } from 'lodash';
 import getDatabase, { getDatabaseClient } from '../../database';
 import emitter from '../../emitter';
 import { extractError as mssql } from './dialects/mssql';
@@ -39,7 +38,7 @@ export async function translateDatabaseError(error: SQLError): Promise<any> {
 			break;
 	}
 
-	const hookResult = await emitter.emitFilter(
+	const hookError = await emitter.emitFilter(
 		'database.error',
 		defaultError,
 		{ client },
@@ -49,7 +48,6 @@ export async function translateDatabaseError(error: SQLError): Promise<any> {
 			accountability: null,
 		}
 	);
-	const hookError = Array.isArray(hookResult) ? last(compact(hookResult)) : hookResult;
 
-	return hookError || defaultError;
+	return hookError;
 }
