@@ -24,6 +24,7 @@ import getASTFromQuery from '../utils/get-ast-from-query';
 import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
+import { ActivityService, RevisionsService } from './internal';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -34,7 +35,7 @@ export type MutationOptions = {
 	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */
-	onRevisionCreate?: (id: number) => void;
+	onRevisionCreate?: (pk: PrimaryKey) => void;
 
 	/**
 	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
@@ -172,38 +173,44 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecord = {
+				const activityService = new ActivityService({
+					knex: trx,
+					schema: this.schema,
+				});
+
+				const activity = await activityService.createOne({
 					action: Action.CREATE,
 					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
 					item: primaryKey,
-				};
-
-				const activityID = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
+				});
 
 				// If revisions are tracked, create revisions record
 				if (this.schema.collections[this.collection].accountability === 'all') {
-					const revisionRecord = {
-						activity: activityID,
+					const revisionsService = new RevisionsService({
+						knex: trx,
+						schema: this.schema,
+					});
+
+					const revision = await revisionsService.createOne({
+						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
 						data: await payloadService.prepareDelta(payload),
 						delta: await payloadService.prepareDelta(payload),
-					};
-
-					const revisionID = (await trx.insert(revisionRecord).into('directus_revisions').returning('id'))[0] as number;
+					});
 
 					// Make sure to set the parent field of the child-revision rows
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
 
 					if (childrenRevisions.length > 0) {
-						await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
+						await revisionsService.updateMany(childrenRevisions, { parent: revision });
 					}
 
 					if (opts?.onRevisionCreate) {
-						opts.onRevisionCreate(revisionID);
+						opts.onRevisionCreate(revision);
 					}
 				}
 			}
@@ -457,21 +464,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecords = keys.map((key) => ({
-					action: Action.UPDATE,
-					user: this.accountability!.user,
-					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
-					item: key,
-				}));
+				const activityService = new ActivityService({
+					knex: trx,
+					schema: this.schema,
+				});
 
-				const activityPrimaryKeys: PrimaryKey[] = [];
-
-				for (const activityRecord of activityRecords) {
-					const primaryKey = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
-					activityPrimaryKeys.push(primaryKey);
-				}
+				const activity = await activityService.createMany(
+					keys.map((key) => ({
+						action: Action.UPDATE,
+						user: this.accountability!.user,
+						collection: this.collection,
+						ip: this.accountability!.ip,
+						user_agent: this.accountability!.userAgent,
+						item: key,
+					}))
+				);
 
 				if (this.schema.collections[this.collection].accountability === 'all') {
 					const itemsService = new ItemsService(this.collection, {
@@ -481,43 +488,39 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 					const snapshots = await itemsService.readMany(keys);
 
-					const revisionRecords: {
-						activity: PrimaryKey;
-						collection: string;
-						item: PrimaryKey;
-						data: string;
-						delta: string;
-					}[] = [];
+					const revisionsService = new RevisionsService({
+						knex: trx,
+						schema: this.schema,
+					});
 
-					for (let i = 0; i < activityPrimaryKeys.length; i++) {
-						revisionRecords.push({
-							activity: activityPrimaryKeys[i],
-							collection: this.collection,
-							item: keys[i],
-							data: snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[i]) : JSON.stringify(snapshots),
-							delta: await payloadService.prepareDelta(payloadWithTypeCasting),
-						});
-					}
+					const revision = await revisionsService.createMany(
+						await Promise.all(
+							activity.map(async (activity, index) => ({
+								activity: activity,
+								collection: this.collection,
+								item: keys[index],
+								data:
+									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
+								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+							}))
+						)
+					);
 
-					for (let i = 0; i < revisionRecords.length; i++) {
-						const revisionID = (
-							await trx.insert(revisionRecords[i]).into('directus_revisions').returning('id')
-						)[0] as number;
-
+					revision.forEach(async (revision, index) => {
 						if (opts?.onRevisionCreate) {
-							opts.onRevisionCreate(revisionID);
+							opts.onRevisionCreate(revision);
 						}
 
-						if (i === 0) {
+						if (index === 0) {
 							// In case of a nested relational creation/update in a updateMany, the nested m2o/a2o
 							// creation is only done once. We treat the first updated item as the "main" update,
 							// with all other revisions on the current level as regular "flat" updates, and
 							// nested revisions as children of this first "root" item.
 							if (childrenRevisions.length > 0) {
-								await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
+								await revisionsService.updateMany(childrenRevisions, { parent: revision });
 							}
 						}
-					}
+					});
 				}
 			}
 		});
@@ -642,18 +645,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecords = keys.map((key) => ({
-					action: Action.DELETE,
-					user: this.accountability!.user,
-					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
-					item: key,
-				}));
+				const activityService = new ActivityService({
+					knex: trx,
+					schema: this.schema,
+				});
 
-				if (activityRecords.length > 0) {
-					await trx.insert(activityRecords).into('directus_activity');
-				}
+				await activityService.createMany(
+					keys.map((key) => ({
+						action: Action.DELETE,
+						user: this.accountability!.user,
+						collection: this.collection,
+						ip: this.accountability!.ip,
+						user_agent: this.accountability!.userAgent,
+						item: key,
+					}))
+				);
 			}
 		});
 
