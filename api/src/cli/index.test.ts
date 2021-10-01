@@ -27,7 +27,6 @@ const customCliExtension: Extension = {
 	type: 'hook',
 	entrypoint: 'index.js',
 	local: true,
-	root: true,
 };
 
 const beforeHook = jest.fn();

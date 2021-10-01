@@ -16,18 +16,20 @@ export async function registerPanels(app: App): Promise<void> {
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/panels/index.js`);
 
 		panels.push(...customPanels.default);
-	} catch {
+	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom panels`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	panelsRaw.value = panels;
 
-	panelsRaw.value.forEach((inter: PanelConfig) => {
-		app.component('panel-' + inter.id, inter.component);
+	panelsRaw.value.forEach((panel: PanelConfig) => {
+		app.component(`panel-${panel.id}`, panel.component);
 
-		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {
-			app.component(`panel-options-${inter.id}`, inter.options);
+		if (typeof panel.options !== 'function' && Array.isArray(panel.options) === false && panel.options !== null) {
+			app.component(`panel-options-${panel.id}`, panel.options);
 		}
 	});
 }

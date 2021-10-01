@@ -30,7 +30,6 @@ export type Extension = {
 	children?: string[];
 
 	local: boolean;
-	root: boolean;
 };
 
 export type ExtensionManifestRaw = {
