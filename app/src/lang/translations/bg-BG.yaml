@@ -1144,6 +1144,8 @@ interfaces:
     and: и
     of_the_following: от следните
     no_rules: Няма зададени правила
+    change_value: Кликнете за промяна
+    placeholder: Привлачете правилата тук
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон
