@@ -15,8 +15,8 @@ import {
 import { version } from '../../package.json';
 import getDatabase from '../database';
 import env from '../env';
-import { AbstractServiceOptions, Collection, Permission, Relation, SchemaOverview } from '../types';
-import { Accountability, Field, Type } from '@directus/shared/types';
+import { AbstractServiceOptions, Collection, Relation, SchemaOverview } from '../types';
+import { Accountability, Field, Type, Permission } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';

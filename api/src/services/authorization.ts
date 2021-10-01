@@ -11,13 +11,10 @@ import {
 	FieldNode,
 	Item,
 	NestedCollectionNode,
-	Permission,
-	PermissionsAction,
 	PrimaryKey,
-	Query,
 	SchemaOverview,
-	Aggregate,
 } from '../types';
+import { Query, Aggregate, Permission, PermissionsAction } from '@directus/shared/types';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
 
@@ -185,7 +182,7 @@ export class AuthorizationService {
 					query.filter._and.push(parsedPermissions);
 				}
 
-				if (query.filter._and.length === 0) delete query.filter._and;
+				if (query.filter._and.length === 0) delete query.filter;
 			}
 		}
 	}
@@ -258,7 +255,7 @@ export class AuthorizationService {
 		}
 
 		if (requiredColumns.length > 0) {
-			permission.validation = hasValidationRules ? { _and: [permission.validation] } : { _and: [] };
+			permission.validation = hasValidationRules ? { _and: [permission.validation!] } : { _and: [] };
 
 			for (const field of requiredColumns) {
 				if (action === 'create' && field.defaultValue === null) {

@@ -9,17 +9,8 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import logger from '../logger';
-import { Accountability } from '@directus/shared/types';
-import {
-	AbstractService,
-	AbstractServiceOptions,
-	Action,
-	Item as AnyItem,
-	PermissionsAction,
-	PrimaryKey,
-	Query,
-	SchemaOverview,
-} from '../types';
+import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
+import { AbstractService, AbstractServiceOptions, Action, Item as AnyItem, PrimaryKey, SchemaOverview } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';

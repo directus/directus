@@ -1,4 +1,4 @@
-import { Meta } from './meta';
+import { Filter } from './filter';
 
 export type Query = {
 	fields?: string[];
@@ -7,7 +7,6 @@ export type Query = {
 	limit?: number;
 	offset?: number;
 	page?: number;
-	meta?: Meta[];
 	search?: string;
 	export?: 'json' | 'csv' | 'xml';
 	group?: string[];
@@ -19,10 +18,6 @@ export type Query = {
 export type Sort = {
 	column: string;
 	order: 'asc' | 'desc';
-};
-
-export type Filter = {
-	[keyOrOperator: string]: Filter | any;
 };
 
 /**

@@ -1,7 +1,8 @@
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import logger from '../logger';
 import { ItemsService, QueryOptions } from '../services/items';
-import { AbstractServiceOptions, Item, PermissionsAction, PrimaryKey, Query } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey } from '../types';
+import { Query, PermissionsAction } from '@directus/shared/types';
 import { filterItems } from '../utils/filter-items';
 
 export class PermissionsService extends ItemsService {

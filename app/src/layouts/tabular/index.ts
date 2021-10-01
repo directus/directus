@@ -4,7 +4,7 @@ import TabularOptions from './options.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { ref, computed, inject, watch, toRefs } from 'vue';
+import { ref, computed, inject, watch, toRefs, reactive } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@directus/shared/types';
@@ -48,16 +48,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
+		const query = reactive({
+			sort,
+			limit,
+			page,
+			fields: fieldsWithRelational,
+			filter,
+			searchQuery,
+		});
+
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
-			{
-				sort,
-				limit,
-				page,
-				fields: fieldsWithRelational,
-				filter: filter,
-				searchQuery: searchQuery,
-			}
+			query
 		);
 
 		const { tableSort, tableHeaders, tableRowHeight, onRowClick, onSortChange, activeFields, tableSpacing } =
