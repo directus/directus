@@ -278,6 +278,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	width: fit-content;
+	margin-right: 12px;
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;

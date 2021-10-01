@@ -10,7 +10,7 @@ type Query = {
 	fields: Ref<readonly string[]>;
 	sort: Ref<string>;
 	page: Ref<number>;
-	filter: Ref<Filter>;
+	filter: Ref<Filter | null>;
 	searchQuery: Ref<string | null>;
 };
 

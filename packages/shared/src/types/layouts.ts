@@ -21,7 +21,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	selection: Item[];
 	layoutOptions: Options;
 	layoutQuery: Query;
-	filters: Filter;
+	filter: Filter | null;
 	searchQuery: string | null;
 	selectMode: boolean;
 	readonly: boolean;

@@ -39,7 +39,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		// const filter = useSync(props, 'filter', emit);
+		const filter = useSync(props, 'filter', emit);
 		const searchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection } = toRefs(props);
@@ -55,8 +55,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				limit,
 				page,
 				fields: fieldsWithRelational,
-				// filter: filter,
-				filter: ref({}),
+				filter: filter,
 				searchQuery: searchQuery,
 			}
 		);

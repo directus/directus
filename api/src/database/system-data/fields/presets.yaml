@@ -1,7 +1,7 @@
 table: directus_presets
 
 fields:
-  - field: filters
+  - field: filter
     hidden: true
     special: json
 
