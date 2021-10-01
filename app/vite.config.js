@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import yaml from '@rollup/plugin-yaml';
 import path from 'path';
@@ -32,6 +32,9 @@ export default defineConfig({
 				target: process.env.API_URL ? process.env.API_URL : 'http://localhost:8055/',
 				changeOrigin: true,
 			},
+		},
+		fs: {
+			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
 		},
 	},
 });
