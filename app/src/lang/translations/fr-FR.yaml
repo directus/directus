@@ -1114,6 +1114,11 @@ view_project: Voir le projet
 report_error: Signaler l'erreur
 start: Début
 interfaces:
+  filter:
+    name: Filtre
+    add_filter: Ajouter un filtre
+    all: Tout
+    any: N'importe quel
   group-accordion:
     name: Accordéon
     description: Afficher les champs ou les groupes en tant que sections d'accordéon

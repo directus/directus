@@ -193,6 +193,8 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
+  filter:
+    all: Semua
   presentation-links:
     primary: Utama
   system-collection:
