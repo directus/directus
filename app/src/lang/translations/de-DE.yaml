@@ -19,6 +19,8 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Standard
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
@@ -1087,7 +1089,7 @@ embed: Einbetten
 fallback_icon: Fallback-Symbol
 field: Feld | Felder
 file: Datei
-file_library: Datei-Browser
+file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 icon: Symbol

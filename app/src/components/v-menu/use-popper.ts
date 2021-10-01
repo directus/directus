@@ -67,7 +67,7 @@ export function usePopper(
 	}
 
 	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
-		const modifiers: Partial<Modifier<string, any>>[] = [
+		const modifiers: Modifier<string, any>[] = [
 			popperOffsets,
 			{
 				...offset,
@@ -79,12 +79,6 @@ export function usePopper(
 				...preventOverflow,
 				options: {
 					padding: 8,
-				},
-			},
-			{
-				name: 'arrow',
-				options: {
-					padding: 6,
 				},
 			},
 			computeStyles,
@@ -111,7 +105,12 @@ export function usePopper(
 		];
 
 		if (options.value.arrow === true) {
-			modifiers.push(arrow);
+			modifiers.push({
+				...arrow,
+				options: {
+					padding: 6,
+				},
+			});
 		}
 
 		if (options.value.attached === true) {

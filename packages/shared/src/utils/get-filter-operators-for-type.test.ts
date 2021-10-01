@@ -1,4 +1,4 @@
-import { getFilterOperatorsForType } from '.';
+import { getFilterOperatorsForType } from './get-filter-operators-for-type';
 import { TYPES } from '../constants/fields';
 
 describe('', () => {

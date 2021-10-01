@@ -558,7 +558,6 @@ fields:
   directus_collections:
     collection: Coleção
     note: Nota
-    color: Cor
     display_template: Templates de Exibição
     sort_field: Campo de ordenação
   directus_files:

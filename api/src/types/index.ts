@@ -1,6 +1,7 @@
 export * from './activity';
 export * from './assets';
 export * from './ast';
+export * from './auth';
 export * from './collection';
 export * from './extensions';
 export * from './files';
@@ -14,6 +15,5 @@ export * from './relation';
 export * from './revision';
 export * from './schema';
 export * from './services';
-export * from './sessions';
 export * from './snapshot';
 export * from './webhooks';

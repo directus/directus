@@ -63,7 +63,7 @@ body {
 	display: inline-block;
 
 	&.bordered {
-		--v-badge-size: 20px;
+		--v-badge-size: 18px;
 	}
 
 	&.dot {
@@ -87,8 +87,8 @@ body {
 		height: var(--v-badge-size);
 		padding: 0 5px;
 		color: var(--v-badge-color);
-		font-weight: 600;
-		font-size: 11px;
+		font-weight: 800;
+		font-size: 9px;
 		background-color: var(--v-badge-background-color);
 		border-radius: calc(var(--v-badge-size) / 2);
 

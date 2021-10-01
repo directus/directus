@@ -1,4 +1,4 @@
-import { filtersToQuery } from '.';
+import { filtersToQuery } from './filters-to-query';
 import { Filter } from '../types/filter';
 
 describe('filtersToQuery', () => {
