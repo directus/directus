@@ -69,7 +69,7 @@
 		"@vue/cli-service": "4.5.13",
 		"@vue/compiler-sfc": "3.2.19",
 		"apexcharts": "3.28.3",
-		"axios": "0.21.4",
+		"axios": "0.22.0",
 		"base-64": "1.0.0",
 		"codemirror": "5.63.1",
 		"copyfiles": "2.4.1",
