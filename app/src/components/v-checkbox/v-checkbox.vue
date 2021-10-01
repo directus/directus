@@ -81,7 +81,7 @@ export default defineComponent({
 				return props.modelValue.includes(props.value);
 			}
 
-			return props.modelValue === true;
+			return !!props.modelValue === true;
 		});
 
 		const icon = computed<string>(() => {
