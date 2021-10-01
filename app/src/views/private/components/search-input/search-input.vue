@@ -8,7 +8,7 @@
 		<v-icon name="search" />
 		<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
 		<v-icon v-if="modelValue" class="empty" name="close" @click.stop="emptyAndClose" />
-		<v-menu :close-on-content-click="false" show-arrow placement="bottom-end" :offset="16">
+		<v-menu :close-on-content-click="false" placement="bottom-end" :offset="16">
 			<template #activator="{ toggle }">
 				<v-icon class="filter-toggle" name="filter_list" clickable @click="toggle" />
 			</template>

@@ -14,7 +14,7 @@
 		:style="{ width }"
 		autofocus
 		placeholder="--"
-		@input="$emit('input', $event.target.value)"
+		@input="emitValue($event.target.value)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
@@ -27,7 +27,7 @@
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="$emit('input', $event)" />
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
 		</div>
 	</v-menu>
 </template>
@@ -52,7 +52,7 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const displayValue = computed(() => {
@@ -73,7 +73,15 @@ export default defineComponent({
 			return 3 + 'ch';
 		});
 
-		return { displayValue, width, t };
+		return { displayValue, width, t, emitValue };
+
+		function emitValue(val: unknown) {
+			if (val === '') {
+				emit('input', null);
+			} else {
+				emit('input', val);
+			}
+		}
 	},
 });
 </script>
