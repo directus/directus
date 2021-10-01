@@ -15,6 +15,7 @@ describe('/server', () => {
 	});
 
 	afterAll(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		for (const [_vendor, connection] of databases) {
 			connection.destroy();
 		}
@@ -22,8 +23,6 @@ describe('/server', () => {
 
 	describe('/ping', () => {
 		it.each(getDBsToTest())('%p', async (vendor) => {
-			// const knex = databases.get(vendor);
-
 			const url = `http://localhost:${config.ports[vendor]!}`;
 
 			const response = await request(url)
