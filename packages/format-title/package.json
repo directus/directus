@@ -36,7 +36,7 @@
 		"@rollup/plugin-json": "4.1.0",
 		"@rollup/plugin-node-resolve": "13.0.5",
 		"rimraf": "3.0.2",
-		"rollup": "2.56.3",
+		"rollup": "2.58.0",
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",
 		"rollup-plugin-typescript2": "0.30.0",
