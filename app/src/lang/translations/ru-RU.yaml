@@ -848,7 +848,7 @@ fields:
     accountability: Отслеживание активности и редакций
   directus_files:
     $thumbnail: Миниатюра
-    title: Заголовок
+    title: Название
     description: Описание
     tags: Теги
     location: Локация
@@ -877,7 +877,7 @@ fields:
     password: Пароль
     avatar: Аватар
     location: Локация
-    title: Заголовок
+    title: Должность
     description: Описание
     tags: Теги
     user_preferences: Пользовательские настройки
