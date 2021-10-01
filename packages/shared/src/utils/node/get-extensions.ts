@@ -18,9 +18,9 @@ export async function getPackageExtensions(root: string, types: readonly Extensi
 
 	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
 
-	return listExtensionsChildren(extensionNames, root);
+	return listExtensionsChildren(extensionNames);
 
-	async function listExtensionsChildren(extensionNames: string[], root?: string) {
+	async function listExtensionsChildren(extensionNames: string[]) {
 		const extensions: Extension[] = [];
 
 		for (const extensionName of extensionNames) {
@@ -48,7 +48,7 @@ export async function getPackageExtensions(root: string, types: readonly Extensi
 					};
 
 					extensions.push(extension);
-					extensions.push(...(await listExtensionsChildren(extension.children || [], extension.path)));
+					extensions.push(...(await listExtensionsChildren(extension.children || [])));
 				} else {
 					extensions.push({
 						path: extensionPath,
