@@ -4,7 +4,7 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="layoutFilters"
+		v-model:filter="layoutFilter"
 		v-model:search-query="searchQuery"
 		:collection="values.collection"
 		readonly
@@ -156,7 +156,7 @@ type FormattedPreset = {
 	layout_query: Record<string, any> | null;
 
 	layout_options: Record<string, any> | null;
-	filters: readonly Filter[] | null;
+	filter: Filter | null;
 };
 
 export default defineComponent({
@@ -186,9 +186,9 @@ export default defineComponent({
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
-		const layoutFilters = computed<any>({
+		const layoutFilter = computed<any>({
 			get() {
-				return values.value.filters || [];
+				return values.value.filter ?? null;
 			},
 			set(newFilters) {
 				updateFilters(newFilters);
@@ -237,7 +237,7 @@ export default defineComponent({
 			layoutWrapper,
 			layoutQuery,
 			layoutOptions,
-			layoutFilters,
+			layoutFilter,
 			hasEdits,
 			deleting,
 			deleteAndQuit,
@@ -266,7 +266,7 @@ export default defineComponent({
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
 				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
-				if (edits.value.filters) editsParsed.filters = edits.value.filters;
+				if (edits.value.filter) editsParsed.filter = edits.value.filter;
 				editsParsed.search = edits.value.search;
 
 				if (edits.value.scope) {
@@ -334,7 +334,7 @@ export default defineComponent({
 					scope: 'all',
 					layout_query: null,
 					layout_options: null,
-					filters: null,
+					filter: null,
 				};
 				if (isNew.value === true) return defaultValues;
 				if (preset.value === null) return defaultValues;
@@ -357,7 +357,7 @@ export default defineComponent({
 					scope: scope,
 					layout_query: preset.value.layout_query,
 					layout_options: preset.value.layout_options,
-					filters: preset.value.filters,
+					filter: preset.value.filter,
 				};
 
 				return value;
@@ -420,10 +420,10 @@ export default defineComponent({
 
 			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, searchQuery };
 
-			function updateFilters(newFilters: Filter) {
+			function updateFilters(newFilter: Filter) {
 				edits.value = {
 					...edits.value,
-					filters: newFilters,
+					filter: newFilter,
 				};
 			}
 		}

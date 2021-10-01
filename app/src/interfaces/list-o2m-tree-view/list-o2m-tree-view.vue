@@ -40,7 +40,6 @@
 			v-model:active="selectDrawer"
 			:collection="collection"
 			:selection="[]"
-			:filters="selectionFilters"
 			multiple
 			@input="stageSelection"
 		/>
@@ -56,7 +55,7 @@ import api from '@/api';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
-import { Filter, Relation } from '@directus/shared/types';
+import { Relation } from '@directus/shared/types';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 
@@ -107,7 +106,7 @@ export default defineComponent({
 		const { info, primaryKeyField } = useCollection(relation.value.related_collection!);
 		const { loading, error, stagedValues, fetchValues, emitValue } = useValues();
 
-		const { stageSelection, selectDrawer, selectionFilters } = useSelection();
+		const { stageSelection, selectDrawer } = useSelection();
 		const { addNewActive, addNew } = useAddNew();
 
 		const template = computed(() => {
@@ -253,30 +252,7 @@ export default defineComponent({
 				}
 			});
 
-			const selectionFilters = computed<Filter[]>(() => {
-				const pkField = primaryKeyField.value?.field;
-
-				if (selectedPrimaryKeys.value.length === 0) return [];
-
-				return [
-					{
-						key: 'selection',
-						field: pkField,
-						operator: 'nin',
-						value: selectedPrimaryKeys.value.join(','),
-						locked: true,
-					},
-					{
-						key: 'parent',
-						field: relation.value.field,
-						operator: 'null',
-						value: true,
-						locked: true,
-					},
-				] as Filter[];
-			});
-
-			return { stageSelection, selectDrawer, selectionFilters };
+			return { stageSelection, selectDrawer };
 
 			async function stageSelection(newSelection: (number | string)[]) {
 				loading.value = true;

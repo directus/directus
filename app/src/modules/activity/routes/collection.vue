@@ -4,7 +4,7 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="filters"
+		v-model:filter="filter"
 		v-model:search-query="searchQuery"
 		collection="directus_activity"
 	>
@@ -24,7 +24,7 @@
 			</template>
 
 			<template #navigation>
-				<activity-navigation v-model:filters="filters" />
+				<activity-navigation v-model:filter="filter" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout" />
@@ -65,12 +65,12 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
+		const { layout, layoutOptions, layoutQuery, filter, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
 		const { layoutWrapper } = useLayout(layout);
 
-		return { t, breadcrumb, layout, layoutWrapper, layoutOptions, layoutQuery, searchQuery, filters };
+		return { t, breadcrumb, layout, layoutWrapper, layoutOptions, layoutQuery, searchQuery, filter };
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {

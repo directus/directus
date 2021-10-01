@@ -24,10 +24,10 @@ export type ClientFilterOperator = FilterOperator | 'starts_with' | 'nstarts_wit
 
 export type Filter =
 	| {
-			_or: FieldFilter[];
+			_or: (Filter | FieldFilter)[];
 	  }
 	| {
-			_and: FieldFilter[];
+			_and: (Filter | FieldFilter)[];
 	  }
 	| FieldFilter;
 

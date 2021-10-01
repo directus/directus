@@ -1,7 +1,6 @@
 import { defineLayout } from '@directus/shared/utils';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
-import CardsSidebar from './sidebar.vue';
 import CardsActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
@@ -23,7 +22,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: CardsLayout,
 	slots: {
 		options: CardsOptions,
-		sidebar: CardsSidebar,
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		sidebar: () => {},
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {

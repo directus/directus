@@ -20,7 +20,6 @@ import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
-import CalendarSidebar from './sidebar.vue';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions } from './types';
 
@@ -31,7 +30,8 @@ export default defineLayout<LayoutOptions>({
 	component: CalendarLayout,
 	slots: {
 		options: CalendarOptions,
-		sidebar: CalendarSidebar,
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		sidebar: () => {},
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {

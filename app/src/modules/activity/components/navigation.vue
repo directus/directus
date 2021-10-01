@@ -100,12 +100,12 @@ import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
-		filters: {
-			type: Array as PropType<Filter[]>,
+		filter: {
+			type: Object as PropType<Filter>,
 			required: true,
 		},
 	},
-	emits: ['update:filters'],
+	emits: ['update:filter'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -113,14 +113,14 @@ export default defineComponent({
 		const currentUserID = computed(() => userStore.currentUser?.id);
 
 		const activeFilter = computed(() => {
-			return props.filters.find((filter) => filter.locked === true);
+			return props.filter.find((filter) => filter.locked === true);
 		});
 
 		return { t, currentUserID, setNavFilter, clearNavFilter, activeFilter };
 
 		function setNavFilter(key: string, value: any) {
-			emit('update:filters', [
-				...props.filters.filter((filter) => {
+			emit('update:filter', [
+				...props.filter.filter((filter) => {
 					return filter.locked === false;
 				}),
 				{
@@ -135,8 +135,8 @@ export default defineComponent({
 
 		function clearNavFilter() {
 			emit(
-				'update:filters',
-				props.filters.filter((filter) => {
+				'update:filter',
+				props.filter.filter((filter) => {
 					return filter.locked === false;
 				})
 			);

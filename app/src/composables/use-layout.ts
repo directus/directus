@@ -1,9 +1,9 @@
 import { getLayouts } from '@/layouts';
 import { computed, reactive, toRefs, defineComponent, Ref, PropType, Component, ComputedRef } from 'vue';
-import { AppFilter, Item, LayoutConfig } from '@directus/shared/types';
+import { Filter, Item, LayoutConfig } from '@directus/shared/types';
 
 const NAME_SUFFIX = 'wrapper';
-const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery', 'filters', 'searchQuery'] as const;
+const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery', 'filter', 'searchQuery'] as const;
 
 type WritableProp = typeof WRITABLE_PROPS[number];
 
@@ -31,9 +31,9 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 				type: Object as PropType<Query>,
 				default: () => ({}),
 			},
-			filters: {
-				type: Array as PropType<AppFilter[]>,
-				default: () => [],
+			filter: {
+				type: Object as PropType<Filter>,
+				default: () => ({}),
 			},
 			searchQuery: {
 				type: String as PropType<string | null>,

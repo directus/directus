@@ -6,7 +6,7 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="layoutFilters"
+		v-model:filter="layoutFilter"
 		v-model:search-query="searchQuery"
 		collection="directus_users"
 		:reset-preset="resetPreset"
@@ -155,7 +155,7 @@ import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
-import { Role } from '@directus/shared/types';
+import { Filter, Role } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;
@@ -181,30 +181,37 @@ export default defineComponent({
 		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_users'));
+		const { layout, layoutOptions, layoutQuery, filter, searchQuery, resetPreset } = usePreset(ref('directus_users'));
 		const { addNewLink } = useLinks();
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const layoutFilters = computed({
+		const layoutFilter = computed<Filter | null>({
 			get() {
 				if (props.role !== null) {
-					const roleFilter = {
-						locked: true,
-						operator: 'eq',
-						field: 'role',
-						value: props.role,
+					const roleFilter: Filter = {
+						_and: [
+							{
+								role: {
+									_eq: props.role,
+								},
+							},
+						],
 					};
 
-					return [roleFilter, ...filters.value];
+					if (filter.value) {
+						roleFilter._and.push(filter.value);
+					}
+
+					return roleFilter;
 				}
 
-				return filters.value;
+				return filter.value;
 			},
-			set(newFilters) {
-				filters.value = newFilters;
+			set(newFilter: Filter | null) {
+				filter.value = newFilter;
 			},
 		});
 
@@ -236,7 +243,7 @@ export default defineComponent({
 			layoutRef,
 			layoutWrapper,
 			selection,
-			layoutFilters,
+			layoutFilter,
 			layoutOptions,
 			layoutQuery,
 			layout,
@@ -320,7 +327,7 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
+			filter.value = null;
 			searchQuery.value = null;
 		}
 

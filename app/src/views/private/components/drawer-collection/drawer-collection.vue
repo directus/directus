@@ -5,7 +5,7 @@
 		v-model:selection="layoutSelection"
 		v-model:layout-options="localOptions"
 		v-model:layout-query="localQuery"
-		v-model:filters="layoutFilters"
+		v-model:filter="layoutFilter"
 		v-model:search-query="searchQuery"
 		:collection="collection"
 		select-mode
@@ -72,12 +72,12 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			default: () => [],
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
 		},
 	},
-	emits: ['update:filters', 'update:active', 'input'],
+	emits: ['update:filter', 'update:active', 'input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -105,12 +105,12 @@ export default defineComponent({
 			},
 		});
 
-		const layoutFilters = computed<Filter[]>({
+		const layoutFilter = computed<Filter>({
 			get() {
-				return props.filters;
+				return props.filter;
 			},
 			set(newFilters) {
-				emit('update:filters', newFilters);
+				emit('update:filter', newFilters);
 			},
 		});
 
@@ -123,7 +123,7 @@ export default defineComponent({
 			internalActive,
 			layoutWrapper,
 			layoutSelection,
-			layoutFilters,
+			layoutFilter,
 			localLayout,
 			localOptions,
 			localQuery,

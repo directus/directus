@@ -1,7 +1,6 @@
 import { defineLayout } from '@directus/shared/utils';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
-import MapSidebar from './sidebar.vue';
 import MapActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
@@ -28,7 +27,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: MapLayout,
 	slots: {
 		options: MapOptions,
-		sidebar: MapSidebar,
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		sidebar: () => {},
 		actions: MapActions,
 	},
 	setup(props, { emit }) {

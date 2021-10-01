@@ -6,7 +6,7 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="filters"
+		v-model:filter="filter"
 		v-model:search-query="searchQuery"
 		:collection="collection"
 		:reset-preset="resetPreset"
@@ -322,7 +322,7 @@ export default defineComponent({
 			layout,
 			layoutOptions,
 			layoutQuery,
-			filters,
+			filter,
 			searchQuery,
 			savePreset,
 			bookmarkExists,
@@ -373,7 +373,7 @@ export default defineComponent({
 			confirmDelete,
 			currentCollection,
 			deleting,
-			filters,
+			filter,
 			layoutRef,
 			layoutWrapper,
 			selection,
@@ -543,7 +543,7 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
+			filter.value = null;
 			searchQuery.value = null;
 		}
 

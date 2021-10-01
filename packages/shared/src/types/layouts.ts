@@ -1,6 +1,6 @@
 import { Component } from 'vue';
 import { Item } from './items';
-import { AppFilter } from './presets';
+import { Filter } from './filter';
 
 export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
@@ -21,7 +21,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	selection: Item[];
 	layoutOptions: Options;
 	layoutQuery: Query;
-	filters: AppFilter[];
+	filters: Filter;
 	searchQuery: string | null;
 	selectMode: boolean;
 	readonly: boolean;

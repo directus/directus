@@ -6,7 +6,7 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="filters"
+		v-model:filter="filter"
 		v-model:search-query="searchQuery"
 		collection="directus_webhooks"
 	>
@@ -121,7 +121,7 @@ export default defineComponent({
 		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_webhooks'));
+		const { layout, layoutOptions, layoutQuery, filter, searchQuery } = usePreset(ref('directus_webhooks'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
@@ -136,7 +136,7 @@ export default defineComponent({
 			deleting,
 			layoutRef,
 			layoutWrapper,
-			filters,
+			filter,
 			selection,
 			layoutOptions,
 			layoutQuery,
@@ -186,7 +186,7 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
+			filter.value = null;
 			searchQuery.value = null;
 		}
 	},

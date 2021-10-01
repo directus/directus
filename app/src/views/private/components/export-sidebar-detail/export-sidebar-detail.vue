@@ -35,10 +35,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType, computed } from 'vue';
-import { Filter } from '@directus/shared/types';
+// import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { filtersToQuery } from '@directus/shared/utils';
+// import { filtersToQuery } from '@directus/shared/utils';
 import { useCollectionsStore } from '@/stores/';
 
 type LayoutQuery = {
@@ -53,10 +53,10 @@ export default defineComponent({
 			type: Object as PropType<LayoutQuery>,
 			default: (): LayoutQuery => ({}),
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			default: () => [],
-		},
+		// filters: {
+		// 	type: Array as PropType<Filter[]>,
+		// 	default: () => [],
+		// },
 		searchQuery: {
 			type: String as PropType<string | null>,
 			default: null,
@@ -95,12 +95,12 @@ export default defineComponent({
 
 				if (props.searchQuery) params.search = props.searchQuery;
 
-				if (props.filters?.length) {
-					params = {
-						...params,
-						...filtersToQuery(props.filters),
-					};
-				}
+				// if (props.filters?.length) {
+				// 	params = {
+				// 		...params,
+				// 		...filtersToQuery(props.filters),
+				// 	};
+				// }
 
 				if (props.searchQuery) {
 					params.search = props.searchQuery;

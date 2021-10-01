@@ -6,7 +6,7 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="layoutFilters"
+		v-model:filter="layoutFilter"
 		v-model:search-query="searchQuery"
 		collection="directus_files"
 		:reset-preset="resetPreset"
@@ -118,7 +118,7 @@
 						{{ t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+							<v-button @click="clearFilters">{{ t('clear_filter') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -185,6 +185,7 @@ import { useLayout } from '@/composables/use-layout';
 import uploadFiles from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';
+import { Filter } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;
@@ -224,67 +225,70 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_files'));
+		const { layout, layoutOptions, layoutQuery, filter, searchQuery, resetPreset } = usePreset(ref('directus_files'));
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const filtersWithFolderAndType = computed(() => {
-			const filtersParsed: any[] = [
-				{
-					locked: true,
-					field: 'type',
-					operator: 'nnull',
-					value: 1,
-				},
-			];
+		const filterWithFolderAndType = computed(() => {
+			const filterParsed: Filter = {
+				_and: [
+					{
+						type: {
+							_nnull: true,
+						},
+					},
+				],
+			};
 
 			if (props.special === null) {
 				if (props.folder !== null) {
-					filtersParsed.push({
-						locked: true,
-						operator: 'eq',
-						field: 'folder',
-						value: props.folder,
+					filterParsed._and.push({
+						folder: {
+							_eq: props.folder,
+						},
 					});
 				} else {
-					filtersParsed.push({
-						locked: true,
-						operator: 'null',
-						field: 'folder',
-						value: true,
+					filterParsed._and.push({
+						folder: {
+							_null: true,
+						},
 					});
 				}
 			}
 
 			if (props.special === 'mine' && userStore.currentUser) {
-				filtersParsed.push({
-					locked: true,
-					operator: 'eq',
-					field: 'uploaded_by',
-					value: userStore.currentUser.id,
+				filterParsed._and.push({
+					uploaded_by: {
+						_eq: userStore.currentUser.id,
+					},
 				});
 			}
 
 			if (props.special === 'recent') {
-				filtersParsed.push({
-					locked: true,
-					operator: 'gt',
-					field: 'uploaded_on',
-					value: subDays(new Date(), 5).toISOString(),
+				filterParsed._and.push({
+					uploaded_on: {
+						_gt: subDays(new Date(), 5).toISOString(),
+					},
 				});
 			}
 
-			return filtersParsed;
+			return filterParsed;
 		});
 
-		const layoutFilters = computed<any[]>({
+		const layoutFilter = computed<Filter | null>({
 			get() {
-				return [...filters.value, ...filtersWithFolderAndType.value];
+				if (filter.value) {
+					return {
+						_and: [filter.value, filterWithFolderAndType.value],
+					};
+				} else {
+					return filterWithFolderAndType.value;
+				}
 			},
 			set(newFilters) {
-				filters.value = newFilters;
+				filter.value = newFilters;
 			},
 		});
 
@@ -310,12 +314,12 @@ export default defineComponent({
 			title,
 			layoutRef,
 			layoutWrapper,
-			layoutFilters,
+			layoutFilter,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
-			filtersWithFolderAndType,
+			filterWithFolderAndType,
 			searchQuery,
 			moveToDialogActive,
 			moveToFolder,
@@ -453,7 +457,7 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
+			filter.value = null;
 			searchQuery.value = null;
 		}
 

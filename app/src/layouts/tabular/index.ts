@@ -1,7 +1,6 @@
 import { defineLayout } from '@directus/shared/utils';
 import TabularLayout from './tabular.vue';
 import TabularOptions from './options.vue';
-import TabularSidebar from './sidebar.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
@@ -26,7 +25,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: TabularLayout,
 	slots: {
 		options: TabularOptions,
-		sidebar: TabularSidebar,
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		sidebar: () => {},
 		actions: TabularActions,
 	},
 	setup(props, { emit }) {
@@ -39,7 +39,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
+		// const filter = useSync(props, 'filter', emit);
 		const searchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection } = toRefs(props);
@@ -55,7 +55,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				limit,
 				page,
 				fields: fieldsWithRelational,
-				filters: filters,
+				// filter: filter,
+				filter: ref({}),
 				searchQuery: searchQuery,
 			}
 		);
@@ -85,7 +86,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const activeFilterCount = computed(() => {
-			let count = filters.value.filter((filter) => !filter.locked).length;
+			// let count = filter.value.filter((filter) => !filter.locked).length;
+			let count = 0;
 
 			if (searchQuery.value && searchQuery.value.length > 0) count++;
 

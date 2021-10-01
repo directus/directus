@@ -1,7 +1,6 @@
 export * from './adjust-date';
 export * from './deep-map';
 export * from './define-extension';
-export * from './filters-to-query';
 export * from './generate-joi';
 export * from './get-fields-from-template';
 export * from './get-filter-operators-for-type';
