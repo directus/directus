@@ -14,7 +14,7 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge, clone, cloneDeep } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 
@@ -81,15 +81,11 @@ export class AuthenticationService {
 			}
 		);
 
-		if (updatedPayload) {
-			payload = updatedPayload.length > 0 ? updatedPayload.reduce((acc, val) => merge(acc, val), {}) : payload;
-		}
-
 		const emitStatus = (status: 'fail' | 'success') => {
 			emitter.emitAction(
 				'auth.login',
 				{
-					payload: payload,
+					payload: updatedPayload,
 					status,
 					user: user?.id,
 				},
@@ -139,7 +135,7 @@ export class AuthenticationService {
 		let sessionData: SessionData = null;
 
 		try {
-			sessionData = await provider.login(clone(user), cloneDeep(payload));
+			sessionData = await provider.login(clone(user), cloneDeep(updatedPayload));
 		} catch (e) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -163,7 +159,7 @@ export class AuthenticationService {
 			}
 		}
 
-		let tokenPayload = {
+		const tokenPayload = {
 			id: user.id,
 		};
 
@@ -181,12 +177,7 @@ export class AuthenticationService {
 			}
 		);
 
-		if (customClaims) {
-			tokenPayload =
-				customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), tokenPayload) : tokenPayload;
-		}
-
-		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
