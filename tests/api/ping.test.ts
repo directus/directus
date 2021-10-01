@@ -15,7 +15,6 @@ describe('/server', () => {
 	});
 
 	afterAll(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		for (const [_vendor, connection] of databases) {
 			connection.destroy();
 		}
