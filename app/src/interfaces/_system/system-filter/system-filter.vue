@@ -1,5 +1,5 @@
 <template>
-	<div class="system-filter">
+	<div class="system-filter" :class="{ inline }">
 		<v-list :mandatory="true" :class="{ empty: innerValue.length === 0 }">
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
@@ -14,13 +14,13 @@
 		</v-list>
 		<div class="buttons">
 			<v-select
-				inline
+				:inline="!inline"
 				item-text="name"
 				item-value="key"
 				placement="bottom-start"
 				class="add-filter"
 				:placeholder="t('interfaces.filter.add_filter')"
-				:full-width="false"
+				:full-width="inline"
 				:model-value="null"
 				:items="fieldOptions"
 				:mandatory="false"
@@ -57,6 +57,11 @@ export default defineComponent({
 		collectionName: {
 			type: String,
 			default: null,
+		},
+		// Inline = stylistic rendering without borders. Used inside search-input
+		inline: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['input'],
@@ -155,15 +160,8 @@ export default defineComponent({
 	}
 
 	.buttons {
-		display: flex;
-		gap: 10px;
 		padding: 0 10px;
-		color: var(--primary);
 		font-weight: 700;
-
-		.add {
-			cursor: pointer;
-		}
 	}
 
 	.empty {
@@ -178,9 +176,47 @@ export default defineComponent({
 			font-family: var(--family-monospace);
 		}
 	}
-}
 
-.add-filter {
-	--v-select-placeholder-color: var(--primary);
+	.add-filter {
+		--v-select-placeholder-color: var(--primary);
+	}
+
+	&.inline {
+		.empty {
+			display: none;
+		}
+
+		.v-list {
+			margin-bottom: 0;
+			padding: 12px;
+			padding-bottom: 0;
+			border: 0;
+		}
+
+		.buttons {
+			padding: 12px;
+		}
+
+		.add-filter {
+			width: 100%;
+
+			:deep(.v-input) {
+				position: relative;
+				width: 100%;
+				height: 30px;
+				padding: 2px 12px;
+				padding: 0;
+				background-color: var(--background-page);
+				border: var(--border-width) solid var(--border-subdued);
+				border-radius: 100px;
+				transition: border-color var(--fast) var(--transition);
+
+				.input {
+					background: transparent;
+					border: 0;
+				}
+			}
+		}
+	}
 }
 </style>

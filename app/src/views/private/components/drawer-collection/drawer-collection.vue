@@ -24,7 +24,7 @@
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="searchQuery" :collection="collection" />
 
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 					<v-icon name="check" />

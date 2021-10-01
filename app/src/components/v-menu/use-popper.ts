@@ -12,7 +12,7 @@ import { onUnmounted, ref, Ref, watch } from 'vue';
 export function usePopper(
 	reference: Ref<HTMLElement | null>,
 	popper: Ref<HTMLElement | null>,
-	options: Readonly<Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean }>>>
+	options: Readonly<Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean; offset: number }>>>
 ): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
 	const styles = ref({});
@@ -72,7 +72,7 @@ export function usePopper(
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, 0] : [0, 8],
+					offset: options.value.attached ? [0, 0] : [0, options.value.offset ?? 8],
 				},
 			},
 			{

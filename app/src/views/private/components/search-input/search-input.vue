@@ -1,6 +1,5 @@
 <template>
 	<div
-		v-click-outside="disable"
 		v-tooltip.bottom="active ? null : t('search')"
 		class="search-input"
 		:class="{ active, 'has-content': !!modelValue }"
@@ -9,12 +8,27 @@
 		<v-icon name="search" />
 		<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
 		<v-icon v-if="modelValue" class="empty" name="close" @click.stop="emptyAndClose" />
+		<v-menu :close-on-content-click="false" show-arrow placement="bottom-end" :offset="16">
+			<template #activator="{ toggle }">
+				<v-icon class="filter-toggle" name="filter_list" clickable @click="toggle" />
+			</template>
+
+			<div class="filter">
+				<interface-system-filter
+					inline
+					:value="filter"
+					:collection-name="collection"
+					@input="$emit('update:filter', $event)"
+				/>
+			</div>
+		</v-menu>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, ref, watch, PropType } from 'vue';
+import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -22,8 +36,16 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		collection: {
+			type: String,
+			required: true,
+		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'update:filter'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -135,5 +157,11 @@ input {
 .v-icon {
 	margin: 0 8px;
 	cursor: pointer;
+}
+
+.filter {
+	min-width: 280px;
+	max-width: 600px;
+	padding: 0;
 }
 </style>

@@ -20,7 +20,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="searchQuery" collection="directus_activity" />
 			</template>
 
 			<template #navigation>
