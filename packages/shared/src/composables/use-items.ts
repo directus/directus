@@ -1,6 +1,6 @@
 import { useApi } from './use-system';
 import { useCollection } from './use-collection';
-import { APIResponse, Filter, Item } from '../types';
+import { Filter, Item } from '../types';
 import { moveInArray, filtersToQuery } from '../utils';
 import { isEqual, orderBy, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, ref, Ref, watch } from 'vue';
@@ -181,7 +181,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			const response = await api.get<APIResponse>(endpoint.value, {
+			const response = await api.get<any>(endpoint.value, {
 				params: {
 					limit: limit.value,
 					fields: fieldsToFetch,
@@ -231,7 +231,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 	async function getItemCount() {
 		if (!primaryKeyField.value || !endpoint.value) return;
 
-		const response = await api.get<APIResponse>(endpoint.value, {
+		const response = await api.get<any>(endpoint.value, {
 			params: {
 				limit: 0,
 				fields: primaryKeyField.value.field,
