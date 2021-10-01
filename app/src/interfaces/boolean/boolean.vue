@@ -10,7 +10,7 @@
 		:style="{
 			'--v-checkbox-color': color,
 		}"
-		@update:model-value="$emit('input', $event)"
+		@click.stop="toggleInput"
 	/>
 </template>
 
@@ -25,6 +25,10 @@ export default defineComponent({
 			default: null,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		nullable: {
 			type: Boolean,
 			default: false,
 		},
@@ -44,6 +48,30 @@ export default defineComponent({
 			type: String,
 			default: '#00C897',
 		},
+	},
+	methods: {
+		toggleInput() {
+			if (this.nullable === true) {
+				if (this.value === null) {
+					this.$emit('input', true);
+				}
+				else if (this.value === false) {
+					this.$emit('input', null);
+				}
+				else {
+					this.$emit('input', false);
+				}
+			} else {
+				if (this.value === null || this.value === false) {
+					this.$emit('input', true);
+				}
+				else {
+					this.$emit('input', false);
+				}
+			}
+			console.log(this);
+		}
+
 	},
 	emits: ['input'],
 });

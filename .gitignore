@@ -20,3 +20,4 @@ app/public/img/docs/*
 coverage
 schema.yaml
 schema.json
+/.vs
