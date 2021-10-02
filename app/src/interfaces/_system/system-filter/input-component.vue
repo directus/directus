@@ -9,10 +9,10 @@
 	/>
 	<input
 		v-else-if="is === 'interface-input'"
+		ref="inputEl"
 		:type="type"
 		:value="value"
 		:style="{ width }"
-		autofocus
 		placeholder="--"
 		@input="emitValue($event.target.value)"
 	/>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -53,6 +53,7 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
+		const inputEl = ref<HTMLElement>();
 		const { t } = useI18n();
 
 		const displayValue = computed(() => {
@@ -70,10 +71,15 @@ export default defineComponent({
 			if (props.is === 'interface-input' && typeof props.value === 'string') {
 				return (props.value?.length >= 3 ? props.value.length + 1 : 3) + 'ch';
 			}
+
 			return 3 + 'ch';
 		});
 
-		return { displayValue, width, t, emitValue };
+		onMounted(() => {
+			inputEl.value?.focus();
+		});
+
+		return { displayValue, width, t, emitValue, inputEl };
 
 		function emitValue(val: unknown) {
 			if (val === '') {

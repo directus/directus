@@ -46,8 +46,8 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style lang="scss" scoped>
+:global(body) {
 	--v-badge-color: var(--white);
 	--v-badge-background-color: var(--danger);
 	--v-badge-border-color: var(--background-page);
@@ -55,9 +55,7 @@ body {
 	--v-badge-offset-y: 0px;
 	--v-badge-size: 16px;
 }
-</style>
 
-<style lang="scss" scoped>
 .v-badge {
 	position: relative;
 	display: inline-block;

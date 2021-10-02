@@ -1,34 +1,40 @@
 <template>
-	<div
-		v-tooltip.bottom="active ? null : t('search')"
-		class="search-input"
-		:class="{ active, 'has-content': !!modelValue }"
-		@click="active = true"
-	>
-		<v-icon name="search" />
-		<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
-		<v-icon v-if="modelValue" class="empty" name="close" @click.stop="emptyAndClose" />
-		<v-menu :close-on-content-click="false" placement="bottom-end" :offset="16">
-			<template #activator="{ toggle }">
-				<v-icon class="filter-toggle" name="filter_list" clickable @click="toggle" />
-			</template>
+	<v-badge bottom left class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount">
+		<div
+			v-tooltip.bottom="active ? null : t('search')"
+			v-click-outside="{
+				handler: disable,
+				middleware: onClickOutside,
+			}"
+			class="search-input"
+			:class="{ active, 'has-content': !!modelValue }"
+			@click="active = true"
+		>
+			<v-icon name="search" />
+			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
+			<v-icon v-if="modelValue" class="empty" name="close" @click.stop="emptyAndClose" />
+			<v-menu :close-on-content-click="false" placement="bottom-end" :offset-x="10" :offset-y="16" rounded>
+				<template #activator="{ toggle }">
+					<v-icon class="filter-toggle" name="filter_list" clickable @click="toggle" />
+				</template>
 
-			<div class="filter">
-				<interface-system-filter
-					inline
-					:value="filter"
-					:collection-name="collection"
-					@input="$emit('update:filter', $event)"
-				/>
-			</div>
-		</v-menu>
-	</div>
+				<div class="filter">
+					<interface-system-filter
+						inline
+						:value="filter"
+						:collection-name="collection"
+						@input="$emit('update:filter', $event)"
+					/>
+				</div>
+			</v-menu>
+		</div>
+	</v-badge>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, PropType } from 'vue';
-import { Filter } from '@directus/shared/types';
+import { defineComponent, ref, watch, PropType, computed } from 'vue';
+import { Filter, LogicalFilterAND } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -59,7 +65,13 @@ export default defineComponent({
 			}
 		});
 
-		return { t, active, disable, input, emptyAndClose, emitValue };
+		const activeFilterCount = computed(() => {
+			if (!props.filter) return 0;
+
+			return (props.filter as LogicalFilterAND)._and?.length ?? 0;
+		});
+
+		return { t, active, disable, input, emptyAndClose, emitValue, onClickOutside, activeFilterCount };
 
 		function disable() {
 			active.value = false;
@@ -75,11 +87,23 @@ export default defineComponent({
 			const value = input.value?.value;
 			emit('update:modelValue', value);
 		}
+
+		function onClickOutside(e: { path: HTMLElement[] }) {
+			if (e.path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
+
+			return true;
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+.search-badge {
+	--v-badge-background-color: var(--primary);
+	--v-badge-offset-y: 8px;
+	--v-badge-offset-x: 8px;
+}
+
 .search-input {
 	display: flex;
 	align-items: center;
@@ -112,6 +136,7 @@ export default defineComponent({
 
 	&.active {
 		width: 300px;
+		border-color: var(--primary);
 
 		.empty {
 			display: block;
@@ -160,7 +185,7 @@ input {
 }
 
 .filter {
-	min-width: 280px;
+	min-width: 292px;
 	max-width: 400px;
 	padding: 0;
 }

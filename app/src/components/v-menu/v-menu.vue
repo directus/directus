@@ -38,6 +38,7 @@
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div
 						class="v-menu-content"
+						:class="{ rounded }"
 						@click.stop="onContentClick"
 						@pointerenter.stop="onPointerEnter"
 						@pointerleave.stop="onPointerLeave"
@@ -103,9 +104,17 @@ export default defineComponent({
 			type: Number,
 			default: 0,
 		},
-		offset: {
+		offsetY: {
 			type: Number,
 			default: 8,
+		},
+		offsetX: {
+			type: Number,
+			default: 0,
+		},
+		rounded: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
@@ -142,7 +151,8 @@ export default defineComponent({
 				placement: props.placement,
 				attached: props.attached,
 				arrow: props.showArrow,
-				offset: props.offset,
+				offsetY: props.offsetY,
+				offsetX: props.offsetX,
 			}))
 		);
 
@@ -455,5 +465,9 @@ body {
 			transform: translateY(2px);
 		}
 	}
+}
+
+.rounded {
+	border-radius: 22px;
 }
 </style>

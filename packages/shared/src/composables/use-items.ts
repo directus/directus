@@ -87,7 +87,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		{ deep: true, immediate: true }
 	);
 
-	let currentRequest: CancelTokenSource;
+	let currentRequest: CancelTokenSource | null = null;
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
@@ -95,6 +95,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		if (!endpoint.value) return;
 
 		currentRequest?.cancel();
+		currentRequest = null;
 
 		error.value = null;
 

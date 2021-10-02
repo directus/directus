@@ -189,13 +189,13 @@ export default defineComponent({
 		.v-list {
 			margin-bottom: 0;
 			margin-bottom: -12px;
-			padding: 12px;
+			padding: 12px 6px;
 			padding-bottom: 0;
 			border: 0;
 		}
 
 		.buttons {
-			padding: 12px;
+			padding: 12px 6px;
 		}
 
 		.add-filter {
