@@ -4,7 +4,7 @@ import TabularOptions from './options.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { ref, computed, inject, watch, toRefs, reactive } from 'vue';
+import { ref, computed, inject, watch, toRefs } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@directus/shared/types';
@@ -236,9 +236,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function useTable() {
 			const tableSort = computed(() => {
 				if (sort.value?.[0].startsWith('-')) {
-					return { by: sort.value?.[0].substring(1), desc: true };
+					return { by: sort.value[0].substring(1), desc: true };
 				} else {
-					return { by: sort.value, desc: false };
+					return { by: sort.value[0], desc: false };
 				}
 			});
 
