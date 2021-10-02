@@ -20,9 +20,39 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Avatar
+default_provider: Permintaan
+published: Diterbitkan
+draft: Draf
+archived: Diarkibkan
+modules: Modul
+module_bar: Modul.bar
+tile_size: Saiz jubin
 edit_field: Sunting halaman
+conditions: Syarat
+maps: Peta
+item_creation: Pembuatan barang
 item_revision: Barang semakan
+enter_a_name: Masukkan nama
 duplicate_field: Halaman salinan
+half_width: Separuh lebar
+full_width: Kelebaran penuh
+group: Kumpulan
+and: Dan
+or: Atau
+fill_width: Isi lebar
+field_name_translations: Terjemahan nama bidang
+enter_password_to_enable_tfa: Masukkan kata laluan anda untuk mengaktifkan pengesahan dua faktor
+add_field: Tambah medan
+role_name: Nama peranan
+branch: Cawangan
+leaf: Daun
+indeterminate: Tidak tentu arah
+edit_collection: Edit koleksi
+exclusive: Eksklusif
+children: Kanak-kanak
+db_only_click_to_configure: 'Pangkalan data sahaja: klik untuk mengkonfigurasi '
+show_archived_items: Tunjukkan item yang diarkibkan
+edited: Nilai diedit
 required: Diperlukan
 create_role: Buat Peranan
 invite: Jemputan
@@ -38,7 +68,7 @@ prefix: Awalan
 suffix: Akhiran
 reset_bookmark: Tetapkan semula penanda buku
 rename_bookmark: Namakan semula penanda buku
-update_bookmark: Kemas kini penanda buku
+update_bookmark: Padam Penanda Buku
 delete_bookmark: Padam Penanda Buku
 create_field: Cipta Medan
 hidden_on_detail: Tersembunyi di Butiran
@@ -146,7 +176,9 @@ fields:
     project_name: Nama Projek
   directus_fields:
     note: Nota
+    translation: Terjemahan nama bidang
   directus_roles:
+    name: Nama peranan
     description: Penerangan
   directus_webhooks:
     name: Nama
