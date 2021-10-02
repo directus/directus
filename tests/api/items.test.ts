@@ -10,7 +10,7 @@ describe('/items', () => {
 	const userID = uuid();
 	const roleID = uuid();
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		const vendors = getDBsToTest();
 
 		for (const vendor of vendors) {
@@ -49,7 +49,7 @@ describe('/items', () => {
 		}
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		for (const [vendor, connection] of databases) {
 			const database = databases.get(vendor);
 			await database!('directus_users').where('id', userID).del();
@@ -97,6 +97,32 @@ describe('/items', () => {
 				'streetName',
 				'zipCode',
 			]);
+		});
+	});
+
+	describe('/:collection/:id', () => {
+		it.each(getDBsToTest())('%p retrieves one item', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const item = createAddress();
+			await databases.get(vendor)!('address').insert(item);
+
+			const response = await request(url)
+				.get(`/items/address/${item.id}`)
+				.set('Authorization', 'Bearer test_token')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			if (vendor === 'mssql') {
+				expect(response.body.data).toStrictEqual({
+					id: item.id.toUpperCase(),
+					streetName: item.streetName,
+					city: item.city,
+					zipCode: item.zipCode,
+					country: item.country,
+				});
+			} else {
+				expect(response.body.data).toStrictEqual(item);
+			}
 		});
 	});
 });
