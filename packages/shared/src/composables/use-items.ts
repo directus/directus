@@ -1,257 +1,187 @@
-export default 'rijk';
+import { useApi } from './use-system';
+import axios, { CancelTokenSource } from 'axios';
+import { useCollection } from './use-collection';
+import { Item } from '../types';
+import { moveInArray } from '../utils';
+import { isEqual, throttle } from 'lodash';
+import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';
+import { Query } from '../types/query';
 
-// import { useApi } from './use-system';
-// import { useCollection } from './use-collection';
-// import { Item } from '../types';
-// import { moveInArray } from '../utils';
-// import { isEqual, orderBy, throttle } from 'lodash';
-// import { computed, ComputedRef, nextTick, ref, Ref, watch } from 'vue';
-// import { Query } from '../types/query';
+type ManualSortData = {
+	item: string | number;
+	to: string | number;
+};
 
-// type ManualSortData = {
-// 	item: string | number;
-// 	to: string | number;
-// };
+type UsableItems = {
+	itemCount: Ref<number | null>;
+	totalCount: Ref<number | null>;
+	items: Ref<Item[]>;
+	totalPages: ComputedRef<number>;
+	loading: Ref<boolean>;
+	error: Ref<any>;
+	changeManualSort: (data: ManualSortData) => Promise<void>;
+	getItems: () => Promise<void>;
+};
 
-// type UsableItems = {
-// 	itemCount: Ref<number | null>;
-// 	totalCount: Ref<number | null>;
-// 	items: Ref<Item[]>;
-// 	totalPages: ComputedRef<number>;
-// 	loading: Ref<boolean>;
-// 	error: Ref<any>;
-// 	changeManualSort: (data: ManualSortData) => Promise<void>;
-// 	getItems: () => Promise<void>;
-// };
+type ComputedQuery = {
+	fields: Ref<Query['fields']> | ComputedRef<Query['fields']> | WritableComputedRef<Query['fields']>;
+	limit: Ref<Query['limit']> | ComputedRef<Query['limit']> | WritableComputedRef<Query['limit']>;
+	sort: Ref<Query['sort']> | ComputedRef<Query['sort']> | WritableComputedRef<Query['sort']>;
+	search: Ref<Query['search']> | ComputedRef<Query['search']> | WritableComputedRef<Query['search']>;
+	filter: Ref<Query['filter']> | ComputedRef<Query['filter']> | WritableComputedRef<Query['filter']>;
+	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
+};
 
-// export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): UsableItems {
-// 	const api = useApi();
-// 	const { primaryKeyField, sortField } = useCollection(collection);
+export function useItems(collection: Ref<string | null>, query: ComputedQuery, fetchOnInit = true): UsableItems {
+	const api = useApi();
+	const { primaryKeyField } = useCollection(collection);
 
-// 	let loadingTimeout: number | null = null;
+	const { fields, limit, sort, search, filter, page } = query;
 
-// 	const { limit, fields, sort, page, filter, searchQuery } = query;
+	const endpoint = computed(() => {
+		if (!collection.value) return null;
+		return collection.value.startsWith('directus_')
+			? `/${collection.value.substring(9)}`
+			: `/items/${collection.value}`;
+	});
 
-// 	const endpoint = computed(() => {
-// 		if (!collection.value) return null;
-// 		return collection.value.startsWith('directus_')
-// 			? `/${collection.value.substring(9)}`
-// 			: `/items/${collection.value}`;
-// 	});
+	const items = ref<Item[]>([]);
+	const loading = ref(false);
+	const error = ref<any>(null);
 
-// 	const items = ref<Item[]>([]);
-// 	const loading = ref(false);
-// 	const error = ref<any>(null);
+	const itemCount = ref<number | null>(null);
+	const totalCount = ref<number | null>(null);
 
-// 	const itemCount = ref<number | null>(null);
-// 	const totalCount = ref<number | null>(null);
+	const totalPages = computed(() => {
+		if (itemCount.value === null) return 1;
+		if (itemCount.value < (unref(limit) ?? 100)) return 1;
+		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
+	});
 
-// 	const totalPages = computed(() => {
-// 		if (itemCount.value === null) return 1;
-// 		if (itemCount.value < limit.value) return 1;
-// 		return Math.ceil(itemCount.value / limit.value);
-// 	});
+	const fetchItems = throttle(getItems, 250);
 
-// 	if (fetchOnInit) {
-// 		getItems();
-// 	}
+	if (fetchOnInit) {
+		fetchItems();
+	}
 
-// 	watch(
-// 		collection,
-// 		async (after, before) => {
-// 			if (!before || isEqual(after, before)) {
-// 				return;
-// 			}
+	watch(
+		[collection, limit, sort, search, filter, fields, page],
+		async (after, before) => {
+			if (isEqual(after, before)) return;
 
-// 			// Waiting for the tick here makes sure the query have been adjusted for the new
-// 			// collection
-// 			await nextTick();
-// 			reset();
-// 			getItems();
-// 		},
-// 		{ immediate: fetchOnInit }
-// 	);
+			const [newCollection, newLimit, newSort, newSearch, newFilter, _newFields, _newPage] = after;
+			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, _oldFields, _oldPage] = before;
 
-// 	watch([page, fields], async (after, before) => {
-// 		if (!before || isEqual(after, before)) {
-// 			return;
-// 		}
+			if (!newCollection || !query) return;
 
-// 		await nextTick();
-// 		if (loading.value === false) {
-// 			getItems();
-// 		}
-// 	});
+			if (newFilter !== oldFilter || newLimit !== oldLimit || newSort !== oldSort || newSearch !== oldSearch) {
+				page.value = 1;
+			}
 
-// 	watch(sort, async (after, before) => {
-// 		if (!before || isEqual(after, before)) {
-// 			return;
-// 		}
+			if (isEqual(newCollection, oldCollection) === false) {
+				reset();
+			}
 
-// 		// When all items are on page, we only sort locally
-// 		const hasAllItems = limit.value > (itemCount.value || 0);
+			fetchItems();
+		},
+		{ deep: true, immediate: true }
+	);
 
-// 		if (hasAllItems) {
-// 			sortItems(after);
-// 			return;
-// 		}
+	let currentRequest: CancelTokenSource;
 
-// 		await nextTick();
-// 		if (loading.value === false) {
-// 			getItems();
-// 		}
-// 	});
+	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
-// 	watch([filter, limit], async (after, before) => {
-// 		if (!before || isEqual(after, before)) {
-// 			return;
-// 		}
-// 		page.value = 1;
-// 		await nextTick();
-// 		if (loading.value === false) {
-// 			getItems();
-// 		}
-// 	});
+	async function getItems() {
+		if (!endpoint.value) return;
 
-// 	watch(
-// 		searchQuery,
-// 		throttle(
-// 			async (after, before) => {
-// 				if (isEqual(after, before)) {
-// 					return;
-// 				}
-// 				page.value = 1;
-// 				await nextTick();
-// 				if (loading.value === false) {
-// 					getItems();
-// 				}
-// 			},
-// 			500,
-// 			{ trailing: true }
-// 		)
-// 	);
+		currentRequest?.cancel();
 
-// 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
+		error.value = null;
 
-// 	async function getItems() {
-// 		if (loadingTimeout || !endpoint.value) return;
+		loading.value = true;
 
-// 		error.value = null;
+		let fieldsToFetch = [...(unref(fields) ?? [])];
 
-// 		loadingTimeout = window.setTimeout(() => {
-// 			loading.value = true;
-// 		}, 250);
+		// Make sure the primary key is always fetched
+		if (
+			!unref(fields)?.includes('*') &&
+			primaryKeyField.value &&
+			fieldsToFetch.includes(primaryKeyField.value.field) === false
+		) {
+			fieldsToFetch.push(primaryKeyField.value.field);
+		}
 
-// 		let fieldsToFetch = [...fields.value];
+		// Filter out fake internal columns. This is (among other things) for a fake $thumbnail m2o field
+		// on directus_files
+		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
-// 		// Make sure the primary key is always fetched
-// 		if (
-// 			fields.value.includes('*') === false &&
-// 			primaryKeyField.value &&
-// 			fieldsToFetch.includes(primaryKeyField.value.field) === false
-// 		) {
-// 			fieldsToFetch.push(primaryKeyField.value.field);
-// 		}
+		try {
+			currentRequest = axios.CancelToken.source();
 
-// 		// Make sure that the field we're sorting on is fetched
-// 		if (fields.value.includes('*') === false && sortField.value && sort.value) {
-// 			const sortFieldKey = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
-// 			if (fieldsToFetch.includes(sortFieldKey) === false) {
-// 				fieldsToFetch.push(sortFieldKey);
-// 			}
-// 		}
+			const response = await api.get<any>(endpoint.value, {
+				params: {
+					limit: unref(limit),
+					fields: fieldsToFetch,
+					sort: unref(sort),
+					page: unref(page),
+					search: unref(search),
+					filter: unref(filter),
+					meta: ['filter_count', 'total_count'],
+				},
+				cancelToken: currentRequest.token,
+			});
 
-// 		// Filter out fake internal columns. This is (among other things) for a fake $thumbnail m2o field
-// 		// on directus_files
-// 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
+			let fetchedItems = response.data.data;
 
-// 		try {
-// 			const response = await api.get<any>(endpoint.value, {
-// 				params: {
-// 					limit: limit.value,
-// 					fields: fieldsToFetch,
-// 					sort: sort.value,
-// 					page: page.value,
-// 					search: searchQuery.value,
-// 					filter: filter.value,
-// 				},
-// 			});
+			/**
+			 * @NOTE
+			 *
+			 * This is used in conjunction with the fake field in /src/stores/fields/fields.ts to be
+			 * able to render out the directus_files collection (file library) using regular layouts
+			 *
+			 * Layouts expect the file to be a m2o of a `file` type, however, directus_files is the
+			 * only collection that doesn't have this (obviously). This fake $thumbnail field is used to
+			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
+			 */
+			if (collection.value === 'directus_files') {
+				fetchedItems = fetchedItems.map((file: any) => ({
+					...file,
+					$thumbnail: file,
+				}));
+			}
 
-// 			let fetchedItems = response.data.data;
+			items.value = fetchedItems;
+			totalCount.value = response.data.meta!.total_count!;
+			itemCount.value = response.data.meta!.filter_count!;
 
-// 			/**
-// 			 * @NOTE
-// 			 *
-// 			 * This is used in conjunction with the fake field in /src/stores/fields/fields.ts to be
-// 			 * able to render out the directus_files collection (file library) using regular layouts
-// 			 *
-// 			 * Layouts expect the file to be a m2o of a `file` type, however, directus_files is the
-// 			 * only collection that doesn't have this (obviously). This fake $thumbnail field is used to
-// 			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
-// 			 */
-// 			if (collection.value === 'directus_files') {
-// 				fetchedItems = fetchedItems.map((file: any) => ({
-// 					...file,
-// 					$thumbnail: file,
-// 				}));
-// 			}
+			if (page && fetchedItems.length === 0 && page?.value !== 1) {
+				page.value = 1;
+			}
+		} catch (err: any) {
+			if (!axios.isCancel(err)) {
+				error.value = err;
+			}
+		} finally {
+			loading.value = false;
+		}
+	}
 
-// 			items.value = fetchedItems;
-// 			itemCount.value = response.data.data.length;
+	function reset() {
+		items.value = [];
+		totalCount.value = null;
+		itemCount.value = null;
+	}
 
-// 			if (fetchedItems.length === 0 && page.value !== 1) {
-// 				page.value = 1;
-// 			}
+	async function changeManualSort({ item, to }: ManualSortData) {
+		const pk = primaryKeyField.value?.field;
+		if (!pk) return;
 
-// 			getItemCount();
-// 		} catch (err: any) {
-// 			error.value = err;
-// 		} finally {
-// 			clearTimeout(loadingTimeout);
-// 			loadingTimeout = null;
-// 			loading.value = false;
-// 		}
-// 	}
+		const fromIndex = items.value.findIndex((existing: Record<string, any>) => existing[pk] === item);
+		const toIndex = items.value.findIndex((existing: Record<string, any>) => existing[pk] === to);
 
-// 	async function getItemCount() {
-// 		if (!primaryKeyField.value || !endpoint.value) return;
+		items.value = moveInArray(items.value, fromIndex, toIndex);
 
-// 		const response = await api.get<any>(endpoint.value, {
-// 			params: {
-// 				limit: 0,
-// 				fields: primaryKeyField.value.field,
-// 				meta: ['filter_count', 'total_count'],
-// 				search: searchQuery.value,
-// 				filter: filter.value,
-// 			},
-// 		});
-
-// 		totalCount.value = response.data.meta!.total_count!;
-// 		itemCount.value = response.data.meta!.filter_count!;
-// 	}
-
-// 	function reset() {
-// 		items.value = [];
-// 		totalCount.value = null;
-// 		itemCount.value = null;
-// 	}
-
-// 	function sortItems(sortBy: string) {
-// 		const field = sortBy.startsWith('-') ? sortBy.substring(1) : sortBy;
-// 		const descending = sortBy.startsWith('-');
-// 		items.value = orderBy(items.value, [field], [descending ? 'desc' : 'asc']);
-// 	}
-
-// 	async function changeManualSort({ item, to }: ManualSortData) {
-// 		const pk = primaryKeyField.value?.field;
-// 		if (!pk) return;
-
-// 		const fromIndex = items.value.findIndex((existing: Record<string, any>) => existing[pk] === item);
-// 		const toIndex = items.value.findIndex((existing: Record<string, any>) => existing[pk] === to);
-
-// 		items.value = moveInArray(items.value, fromIndex, toIndex);
-
-// 		const endpoint = computed(() => `/utils/sort/${collection.value}`);
-// 		await api.post(endpoint.value, { item, to });
-// 	}
-// }
+		const endpoint = computed(() => `/utils/sort/${collection.value}`);
+		await api.post(endpoint.value, { item, to });
+	}
+}

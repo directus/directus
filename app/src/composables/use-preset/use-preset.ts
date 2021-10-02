@@ -1,4 +1,3 @@
-import { useCollection } from '@directus/shared/composables';
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
 import { debounce, isEqual } from 'lodash';
@@ -10,7 +9,7 @@ type UsablePreset = {
 	layoutOptions: Ref<Record<string, any>>;
 	layoutQuery: Ref<Record<string, any>>;
 	filter: Ref<Filter | null>;
-	searchQuery: Ref<string | null>;
+	search: Ref<string | null>;
 	refreshInterval: Ref<number | null>;
 	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
 	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
@@ -167,7 +166,7 @@ export function usePreset(
 		},
 	});
 
-	const searchQuery = computed<string | null>({
+	const search = computed<string | null>({
 		get() {
 			return localPreset.value.search || null;
 		},
@@ -202,7 +201,7 @@ export function usePreset(
 		layoutOptions,
 		layoutQuery,
 		filter,
-		searchQuery,
+		search,
 		refreshInterval,
 		savePreset,
 		saveCurrentAsBookmark,

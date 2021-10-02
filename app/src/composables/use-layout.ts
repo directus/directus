@@ -3,7 +3,7 @@ import { computed, reactive, toRefs, defineComponent, Ref, PropType, Component, 
 import { Filter, Item, LayoutConfig } from '@directus/shared/types';
 
 const NAME_SUFFIX = 'wrapper';
-const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery', 'filter', 'searchQuery'] as const;
+const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery'] as const;
 
 type WritableProp = typeof WRITABLE_PROPS[number];
 
@@ -35,7 +35,7 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 				type: Object as PropType<Filter>,
 				default: () => ({}),
 			},
-			searchQuery: {
+			search: {
 				type: String as PropType<string | null>,
 				default: null,
 			},

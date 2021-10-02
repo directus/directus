@@ -161,7 +161,7 @@ input {
 
 .filter {
 	min-width: 280px;
-	max-width: 600px;
+	max-width: 400px;
 	padding: 0;
 }
 </style>

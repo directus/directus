@@ -1,23 +1,18 @@
 import { Filter } from './filter';
 
 export type Query = {
-	fields?: string[];
-	sort?: Sort[];
-	filter?: Filter;
-	limit?: number;
-	offset?: number;
-	page?: number;
-	search?: string;
-	export?: 'json' | 'csv' | 'xml';
-	group?: string[];
-	aggregate?: Aggregate;
-	deep?: Record<string, Query>;
-	alias?: Record<string, string>;
-};
-
-export type Sort = {
-	column: string;
-	order: 'asc' | 'desc';
+	fields?: string[] | null;
+	sort?: string[] | null;
+	filter?: Filter | null;
+	limit?: number | null;
+	offset?: number | null;
+	page?: number | null;
+	search?: string | null;
+	export?: 'json' | 'csv' | 'xml' | null;
+	group?: string[] | null;
+	aggregate?: Aggregate | null;
+	deep?: Record<string, Query> | null;
+	alias?: Record<string, string> | null;
 };
 
 /**

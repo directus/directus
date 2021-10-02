@@ -23,7 +23,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	layoutOptions: Options;
 	layoutQuery: Query;
 	filter: Filter | null;
-	searchQuery: string | null;
+	search: string | null;
 	selectMode: boolean;
 	readonly: boolean;
 	resetPreset?: () => Promise<void>;
@@ -31,7 +31,7 @@ export interface LayoutProps<Options = any, Query = any> {
 
 interface LayoutContext {
 	emit: (
-		event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery' | 'update:filters' | 'update:searchQuery',
+		event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery' | 'update:filter' | 'update:search',
 		...args: any[]
 	) => void;
 }

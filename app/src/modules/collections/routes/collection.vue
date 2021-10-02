@@ -6,8 +6,8 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filter="filter"
-		v-model:search-query="searchQuery"
+		:filter="filter"
+		:search="search"
 		:collection="collection"
 		:reset-preset="resetPreset"
 	>
@@ -88,7 +88,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" v-model:filter="filter" :collection="collection" />
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -323,7 +323,7 @@ export default defineComponent({
 			layoutOptions,
 			layoutQuery,
 			filter,
-			searchQuery,
+			search,
 			savePreset,
 			bookmarkExists,
 			saveCurrentAsBookmark,
@@ -380,7 +380,7 @@ export default defineComponent({
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
+			search,
 			savePreset,
 			bookmarkExists,
 			currentCollectionLink,
@@ -544,7 +544,7 @@ export default defineComponent({
 
 		function clearFilters() {
 			filter.value = null;
-			searchQuery.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {

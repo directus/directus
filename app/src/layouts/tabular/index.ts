@@ -39,27 +39,23 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filter = useSync(props, 'filter', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
-		const query = reactive({
-			sort,
-			limit,
-			page,
-			fields: fieldsWithRelational,
-			filter,
-			searchQuery,
-		});
-
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
-			query
+			{
+				sort,
+				limit,
+				page,
+				fields: fieldsWithRelational,
+				filter,
+				search,
+			}
 		);
 
 		const { tableSort, tableHeaders, tableRowHeight, onRowClick, onSortChange, activeFields, tableSpacing } =
@@ -76,9 +72,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					count: n(itemCount.value || 0),
 				});
 			}
+
 			if (itemCount.value === 1) {
 				return t('one_item');
 			}
+
 			return t('start_end_of_count_items', {
 				start: n((+page.value - 1) * limit.value + 1),
 				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
@@ -90,7 +88,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			// let count = filter.value.filter((filter) => !filter.locked).length;
 			let count = 0;
 
-			if (searchQuery.value && searchQuery.value.length > 0) count++;
+			if (search.value && search.value.length > 0) count++;
 
 			return count;
 		});
@@ -167,11 +165,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			const sort = computed({
+			const sort = computed<string[]>({
 				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
+					return layoutQuery.value?.sort || [primaryKeyField.value!.field] || [];
 				},
-				set(newSort: string) {
+				set(newSort: string[]) {
 					layoutQuery.value = {
 						...(layoutQuery.value || {}),
 						page: 1,
@@ -237,8 +235,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value?.startsWith('-')) {
-					return { by: sort.value.substring(1), desc: true };
+				if (sort.value?.[0].startsWith('-')) {
+					return { by: sort.value?.[0].substring(1), desc: true };
 				} else {
 					return { by: sort.value, desc: false };
 				}
@@ -361,7 +359,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				let sortString = newSort.by;
 				if (newSort.desc === true) sortString = '-' + sortString;
 
-				sort.value = sortString;
+				sort.value = [sortString];
 			}
 
 			function getFieldDisplay(fieldKey: string) {
