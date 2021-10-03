@@ -32,10 +32,9 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 
 		if (val && typeof val === 'string' && val.startsWith('$CURRENT_USER')) {
 			const column = val.split('.');
-			if (accountability?.userDynamicVars)
-				if (column.length > 1 && accountability?.userDynamicVars) {
-					return accountability?.userDynamicVars[String(column[1])] || null;
-				}
+			if (accountability?.userDynamicVars && column.length > 1 && accountability?.userDynamicVars) {
+				return accountability?.userDynamicVars[String(column[1])] || null;
+			}
 			return null;
 		}
 
