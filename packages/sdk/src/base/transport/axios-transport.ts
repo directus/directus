@@ -114,7 +114,7 @@ export class AxiosTransport implements ITransport {
 				}
 			}
 
-			const response = await this.axios.request(config);
+			const response = await this.axios.request<any>(config);
 
 			const responseData = response.data;
 			const content = {
@@ -138,7 +138,7 @@ export class AxiosTransport implements ITransport {
 			}
 
 			if (axios.isAxiosError(err)) {
-				const data = err.response?.data;
+				const data = err.response?.data as any;
 
 				throw new TransportError<T>(err as AxiosError, {
 					raw: err.response?.data,

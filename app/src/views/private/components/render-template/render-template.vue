@@ -99,12 +99,6 @@ export default defineComponent({
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;
 
-					// If the display handler is a function, we parse the value and return the result
-					if (typeof displayInfo.handler === 'function') {
-						const handler = displayInfo.handler;
-						return handler(value, field.meta?.display_options ?? null);
-					}
-
 					return {
 						component: field.meta?.display,
 						options: field.meta?.display_options,

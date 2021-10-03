@@ -456,6 +456,8 @@ sort_direction: ソート順
 translation: 翻訳
 value: 値
 interfaces:
+  filter:
+    all: すべて
   system-collections:
     collections: コレクション
   select-color:

@@ -717,6 +717,9 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
+  filter:
+    add_filter: Filtre Ekle
+    all: Tümü
   presentation-links:
     primary: Birincil
   input-code:
