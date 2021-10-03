@@ -1169,6 +1169,9 @@ displays:
     show_as_dot: Presentar como Punto
     choices_value_placeholder: Ingrese un valor...
     choices_text_placeholder: Ingresar un texto...
+  link:
+    link: Enlace
+    description: Permite navegar hacia el enlace
   mime-type:
     mime-type: Tipo MIME
     description: Presentar el Tipo MIME del archivo
