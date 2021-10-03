@@ -21,12 +21,18 @@
 #'Proxy', 'Intl'
 avatar: Imagem de Perfil
 default_provider: Padrão
+published: Publicado
 draft: Rascunho
 archived: Arquivado
+modules: Módulos
+module_bar: Barra de módulo
+tile_size: Tamanho do ladrilho
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
+item_creation: Criação de ítem
 item_revision: Revisão do item
+enter_a_name: Insira um nome...
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
@@ -51,8 +57,10 @@ required: Obrigatório
 required_for_app_access: Obrigatório para o Acesso ao Aplicativo
 requires_value: Requer valor
 create_preset: Criar predefinição
+create_panel: Criar painel
 create_role: Criar Função
 create_user: Criar usuário
+delete_panel: Excluir Painel
 create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
 invite: Convidar
