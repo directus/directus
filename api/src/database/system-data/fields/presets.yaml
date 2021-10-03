@@ -34,4 +34,15 @@ fields:
   - field: layout
     width: half
 
+  - field: icon
+    interface: select-icon
+    options:
+    width: half
+
+  - field: color
+    interface: select-color
+    options:
+      placeholder: $t:interfaces.select-color.placeholder
+    width: half
+
   - field: refresh_interval
