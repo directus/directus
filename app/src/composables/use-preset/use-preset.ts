@@ -200,7 +200,7 @@ export function usePreset(
 
 	const bookmarkIcon = computed<string | null>({
 		get() {
-			return localPreset.value?.icon || 'bookmark_border';
+			return localPreset.value?.icon || null;
 		},
 		set(newIcon: string | null) {
 			localPreset.value = {

@@ -20,8 +20,8 @@
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon secondary disabled>
 					<v-icon
-						:name="bookmarkExists ? bookmarkIcon : currentCollection.icon"
-						:color="bookmarkExists ? bookmarkColor : currentCollection.color"
+						:name="bookmarkIcon || currentCollection.icon"
+						:color="bookmarkIcon ? bookmarkColor : currentCollection.color"
 					/>
 				</v-button>
 			</template>
