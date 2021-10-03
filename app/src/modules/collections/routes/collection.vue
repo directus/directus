@@ -19,7 +19,10 @@
 		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="currentCollection.icon" :color="currentCollection.color" />
+					<v-icon
+						:name="bookmarkExists ? bookmarkIcon : currentCollection.icon"
+						:color="bookmarkExists ? bookmarkColor : currentCollection.color"
+					/>
 				</v-button>
 			</template>
 
@@ -328,6 +331,8 @@ export default defineComponent({
 			bookmarkExists,
 			saveCurrentAsBookmark,
 			bookmarkTitle,
+			bookmarkIcon,
+			bookmarkColor,
 			resetPreset,
 			bookmarkSaved,
 			bookmarkIsMine,
@@ -388,6 +393,8 @@ export default defineComponent({
 			creatingBookmark,
 			createBookmark,
 			bookmarkTitle,
+			bookmarkIcon,
+			bookmarkColor,
 			editingBookmark,
 			editBookmark,
 			breadcrumb,

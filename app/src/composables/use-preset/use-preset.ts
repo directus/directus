@@ -15,6 +15,8 @@ type UsablePreset = {
 	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
 	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
 	bookmarkTitle: Ref<string | null>;
+	bookmarkIcon: Ref<string | null>;
+	bookmarkColor: Ref<string | null>;
 	resetPreset: () => Promise<void>;
 	bookmarkSaved: Ref<boolean>;
 	bookmarkIsMine: ComputedRef<boolean>;
@@ -196,6 +198,36 @@ export function usePreset(
 		},
 	});
 
+	const bookmarkIcon = computed<string | null>({
+		get() {
+			return localPreset.value?.icon || 'bookmark_border';
+		},
+		set(newIcon: string | null) {
+			localPreset.value = {
+				...localPreset.value,
+				icon: newIcon,
+			};
+
+			// This'll save immediately
+			savePreset();
+		},
+	});
+
+	const bookmarkColor = computed<string | null>({
+		get() {
+			return localPreset.value?.color || null;
+		},
+		set(newColor: string | null) {
+			localPreset.value = {
+				...localPreset.value,
+				color: newColor,
+			};
+
+			// This'll save immediately
+			savePreset();
+		},
+	});
+
 	return {
 		bookmarkExists,
 		layout,
@@ -207,6 +239,8 @@ export function usePreset(
 		savePreset,
 		saveCurrentAsBookmark,
 		bookmarkTitle,
+		bookmarkIcon,
+		bookmarkColor,
 		resetPreset,
 		bookmarkSaved,
 		bookmarkIsMine,
