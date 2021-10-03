@@ -256,7 +256,7 @@ export class AuthenticationService {
 		const { data: sessionData, ...user } = record;
 
 		const provider = getAuthProvider(user.provider);
-		await provider.refresh(clone(user), sessionData);
+		const newSessionData = await provider.refresh(clone(user), sessionData);
 
 		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -267,7 +267,11 @@ export class AuthenticationService {
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
 		await this.knex('directus_sessions')
-			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
+			.update({
+				token: newRefreshToken,
+				expires: refreshTokenExpiration,
+				data: newSessionData,
+			})
 			.where({ token: refreshToken });
 
 		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });

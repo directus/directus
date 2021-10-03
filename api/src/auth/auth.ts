@@ -48,8 +48,9 @@ export abstract class AuthDriver {
 	 * @param _sessionData Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async refresh(_user: User, _sessionData: SessionData): Promise<void> {
+	async refresh(_user: User, sessionData: SessionData): Promise<SessionData> {
 		/* Optional */
+		return sessionData;
 	}
 
 	/**
