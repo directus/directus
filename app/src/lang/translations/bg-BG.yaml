@@ -1133,6 +1133,19 @@ view_project: Преглед на проект
 report_error: Докладване на грешка
 start: Начало
 interfaces:
+  filter:
+    name: Филтър
+    description: Конфигуриране на обект използван за филтриране
+    add_filter: Добавяне на филтър
+    add_group: И/или група
+    add_value: Добавяне на стойност
+    all: Всичко
+    any: Който и да е
+    and: и
+    of_the_following: от следните
+    no_rules: Няма зададени правила
+    change_value: Кликнете за промяна
+    placeholder: Привлачете правилата тук
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон

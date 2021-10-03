@@ -470,6 +470,9 @@ sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
+  filter:
+    add_filter: Legg til filter
+    all: Alle
   presentation-links:
     primary: Primær
   system-collection:

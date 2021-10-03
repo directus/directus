@@ -651,6 +651,9 @@ continue_as: >-
 creating_webhook: Criando Webhook
 description: Descrição
 interfaces:
+  filter:
+    add_filter: Adicionar filtro
+    all: Todos
   presentation-links:
     primary: Primário
   system-collection:

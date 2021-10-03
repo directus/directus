@@ -911,6 +911,9 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
+  filter:
+    add_filter: Filter toevoegen
+    all: Alle
   presentation-links:
     primary: Primair
   input-code:

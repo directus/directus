@@ -51,6 +51,8 @@ fields:
 email: E-mail
 password: Heslo
 interfaces:
+  filter:
+    all: Všetko
   system-collection:
     collection: Zbierka
 displays:
