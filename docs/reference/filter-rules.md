@@ -140,6 +140,11 @@ allowing for more complex filtering.
 In addition to static values, you can also filter against _dynamic_ values using the following variables.
 
 - `$CURRENT_USER` — The primary key of the currently authenticated user
+- `$CURRENT_USER.<column_name>` — Dynamic column of the currently authenticated user.
+  - Configured through the setting of `USER_DYNAMIC_VARS` in
+    [Environment Variables](/reference/environment-variables#general).
+  - This feature only retrieves the raw value stored in `directus_users` for filtering and does not merge in data from
+    related tables.
 - `$CURRENT_ROLE` — The primary key of the role for the currently authenticated user
 - `$NOW` — The current timestamp
 - `$NOW(<adjustment>)` - The current timestamp plus/minus a given distance, for example `$NOW(-1 year)`,
