@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useUserStore } from '@/stores/';
 import availableLanguages from '@/lang/available-languages.yaml';
 
 export default defineComponent({
@@ -19,9 +20,12 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup() {
+		const userStore = useUserStore();
+
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,
 			value: key,
+			mostUsed: key === userStore?.currentUser?.language,
 		}));
 
 		return { languages };
