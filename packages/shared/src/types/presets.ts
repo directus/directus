@@ -11,6 +11,8 @@ export type AppFilter = {
 export type Preset = {
 	id?: number;
 	bookmark: string | null;
+	icon: string | null;
+	color: string | null;
 	user: string | null;
 	role: string | null;
 	collection: string;

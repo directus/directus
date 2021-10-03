@@ -157,6 +157,9 @@ type FormattedPreset = {
 
 	layout_options: Record<string, any> | null;
 	filters: readonly Filter[] | null;
+
+	icon: string | null;
+	color: string | null;
 };
 
 export default defineComponent({
@@ -267,6 +270,8 @@ export default defineComponent({
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
 				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
 				if (edits.value.filters) editsParsed.filters = edits.value.filters;
+				if ('icon' in edits.value) editsParsed.icon = edits.value.icon;
+				if ('color' in edits.value) editsParsed.color = edits.value.color;
 				editsParsed.search = edits.value.search;
 
 				if (edits.value.scope) {
@@ -335,6 +340,8 @@ export default defineComponent({
 					layout_query: null,
 					layout_options: null,
 					filters: null,
+					icon: 'bookmark_border',
+					color: null,
 				};
 				if (isNew.value === true) return defaultValues;
 				if (preset.value === null) return defaultValues;
@@ -358,6 +365,8 @@ export default defineComponent({
 					layout_query: preset.value.layout_query,
 					layout_options: preset.value.layout_options,
 					filters: preset.value.filters,
+					icon: preset.value.icon,
+					color: preset.value.color,
 				};
 
 				return value;
@@ -520,6 +529,24 @@ export default defineComponent({
 						options: {
 							placeholder: t('preset_name_placeholder'),
 						},
+					},
+				},
+				{
+					field: 'icon',
+					name: t('icon'),
+					type: 'string',
+					meta: {
+						interface: 'select-icon',
+						width: 'half',
+					},
+				},
+				{
+					field: 'color',
+					name: t('color'),
+					type: 'string',
+					meta: {
+						interface: 'select-color',
+						width: 'half',
 					},
 				},
 				{
