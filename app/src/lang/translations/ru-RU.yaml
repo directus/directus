@@ -1137,9 +1137,14 @@ start: Начало
 interfaces:
   filter:
     name: Фильтр
+    description: Настроить фильтр
     add_filter: Добавить Фильтр
+    add_group: Группа и/или
+    add_value: Добавить значение
     all: Все
     any: Любой
+    and: и
+    placeholder: Перетащите правила сюда
   group-accordion:
     name: Аккордеон
     description: Отображать поля или группы как секции аккордеона
