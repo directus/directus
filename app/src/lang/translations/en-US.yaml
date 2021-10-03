@@ -1471,6 +1471,9 @@ displays:
     show_as_dot: Show As Dot
     choices_value_placeholder: Enter a value...
     choices_text_placeholder: Enter a text...
+  link:
+    link: Link
+    description: Allows to navigate to the link
   mime-type:
     mime-type: MIME Type
     description: Show the MIME-Type of a file
