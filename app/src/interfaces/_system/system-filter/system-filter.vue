@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { get, set } from 'lodash';
+import { get, set, isEmpty } from 'lodash';
 import { defineComponent, PropType, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
@@ -69,7 +69,7 @@ export default defineComponent({
 
 		const innerValue = computed<Filter[]>({
 			get() {
-				if (!props.value) return [];
+				if (!props.value || isEmpty(props.value)) return [];
 
 				const name = getNodeName(props.value);
 
