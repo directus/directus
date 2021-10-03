@@ -1,7 +1,7 @@
 <template>
 	<v-list-item :to="bookmark.to" query class="bookmark" @contextmenu.prevent.stop="activateContextMenu">
-		<v-list-item-icon>
-			<v-icon :name="bookmark.icon || 'bookmark_border'" :color="bookmark.color" />
+		<v-list-item-icon v-if="bookmark.icon">
+			<v-icon :name="bookmark.icon" :color="bookmark.color" />
 		</v-list-item-icon>
 		<v-list-item-content>
 			<v-text-overflow :text="bookmark.bookmark" />
