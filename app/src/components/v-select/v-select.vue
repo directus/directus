@@ -48,6 +48,27 @@
 				<v-divider />
 			</template>
 
+			<template v-for="(item, index) in mostUsedItems" :key="index">
+				<select-list-item-group
+					v-if="item.children"
+					:item="item"
+					:model-value="modelValue"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
+				<select-list-item
+					v-else
+					:model-value="modelValue"
+					:item="item"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
+			</template>
+
+			<v-divider v-if="mostUsedItems.length" />
+
 			<template v-for="(item, index) in internalItems" :key="index">
 				<select-list-item-group
 					v-if="item.children"
@@ -156,6 +177,10 @@ export default defineComponent({
 			type: String,
 			default: 'selectable',
 		},
+		itemMostUsed: {
+			type: String,
+			default: 'mostUsed',
+		},
 		itemChildren: {
 			type: String,
 			default: 'children',
@@ -213,7 +238,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { internalItems } = useItems();
+		const { internalItems, mostUsedItems } = useItems();
 		const { displayValue } = useDisplayValue();
 		const { modelValue } = toRefs(props);
 		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
@@ -225,7 +250,17 @@ export default defineComponent({
 			(value) => emit('update:modelValue', value)
 		);
 
-		return { t, internalItems, displayValue, otherValue, usesOtherValue, otherValues, addOtherValue, setOtherValue };
+		return {
+			t,
+			mostUsedItems,
+			internalItems,
+			displayValue,
+			otherValue,
+			usesOtherValue,
+			otherValues,
+			addOtherValue,
+			setOtherValue,
+		};
 
 		function useItems() {
 			const internalItems = computed(() => {
@@ -248,6 +283,7 @@ export default defineComponent({
 						disabled: get(item, props.itemDisabled),
 						selectable: get(item, props.itemSelectable),
 						children,
+						mostUsed: get(item, props.itemMostUsed),
 					};
 				};
 
@@ -256,7 +292,9 @@ export default defineComponent({
 				return items;
 			});
 
-			return { internalItems };
+			const mostUsedItems = internalItems.value.filter((item) => item.mostUsed);
+
+			return { internalItems, mostUsedItems };
 		}
 
 		function useDisplayValue() {
