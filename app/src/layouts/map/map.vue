@@ -47,18 +47,15 @@
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 			<v-info
-				v-else-if="itemCount === 0 && (searchQuery || activeFilterCount > 0 || !locationFilterOutdated)"
+				v-else-if="itemCount === 0 && (search || filter || !locationFilterOutdated)"
 				icon="search"
 				center
-				:title="t('no_results_here')"
+				:title="t('no_results')"
 			>
 				<template #append>
 					<v-card-actions>
-						<v-button
-							:disabled="!searchQuery && !filters.filter((f) => f.key !== 'location-filter').length"
-							@click="clearDataFilters"
-						>
-							{{ t('clear_data_filters') }}
+						<v-button :disabled="!search && !locationFilter" @click="clearDataFilters">
+							{{ t('layouts.map.clear_data_filter') }}
 						</v-button>
 						<v-button :disabled="locationFilterOutdated" @click="clearLocationFilter">
 							{{ t('layouts.map.clear_location_filter') }}
@@ -128,7 +125,7 @@ export default defineComponent({
 			type: Array as PropType<Item[]>,
 			default: () => [],
 		},
-		searchQuery: {
+		search: {
 			type: String as PropType<string | null>,
 			default: null,
 		},
@@ -192,10 +189,6 @@ export default defineComponent({
 			type: Number,
 			default: null,
 		},
-		activeFilterCount: {
-			type: Number,
-			required: true,
-		},
 		totalPages: {
 			type: Number,
 			required: true,
@@ -210,10 +203,6 @@ export default defineComponent({
 		},
 		limit: {
 			type: Number,
-			required: true,
-		},
-		filters: {
-			type: Array as PropType<Filter[]>,
 			required: true,
 		},
 		autoLocationFilter: {
@@ -240,8 +229,16 @@ export default defineComponent({
 			type: Boolean,
 			required: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
+		locationFilter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
-	emits: ['update:cameraOptions', 'update:limit'],
+	emits: ['update:cameraOptions', 'update:limit', 'update:locationFilterOutdated'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
