@@ -1,7 +1,7 @@
 <template>
-	<v-badge bottom left class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount">
+	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount">
 		<div
-			v-tooltip.bottom="active ? null : t('search')"
+			v-tooltip.bottom="active ? null : t('search_and_filter')"
 			v-click-outside="{
 				handler: disable,
 				middleware: onClickOutside,
@@ -10,12 +10,18 @@
 			:class="{ active, 'has-content': !!modelValue }"
 			@click="active = true"
 		>
-			<v-icon name="search" />
+			<v-icon clickable name="search" class="icon-search" />
 			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
-			<v-icon v-if="modelValue" class="empty" name="close" @click.stop="emptyAndClose" />
+			<v-icon
+				v-if="modelValue"
+				clickable
+				class="icon-empty"
+				name="close"
+				@click.stop="$emit('update:modelValue', null)"
+			/>
 			<v-menu :close-on-content-click="false" placement="bottom-end" :offset-x="10" :offset-y="16" rounded>
 				<template #activator="{ toggle }">
-					<v-icon class="filter-toggle" name="filter_list" clickable @click="toggle" />
+					<v-icon clickable class="icon-filter" name="filter_list" @click="toggle" />
 				</template>
 
 				<div class="filter">
@@ -71,14 +77,9 @@ export default defineComponent({
 			return (props.filter as LogicalFilterAND)._and?.length ?? 0;
 		});
 
-		return { t, active, disable, input, emptyAndClose, emitValue, onClickOutside, activeFilterCount };
+		return { t, active, disable, input, emitValue, onClickOutside, activeFilterCount };
 
 		function disable() {
-			active.value = false;
-		}
-
-		function emptyAndClose() {
-			emit('update:modelValue', null);
 			active.value = false;
 		}
 
@@ -107,7 +108,7 @@ export default defineComponent({
 .search-input {
 	display: flex;
 	align-items: center;
-	width: 44px;
+	width: 84px;
 	height: 44px;
 	overflow: hidden;
 	border: 2px solid var(--border-normal);
@@ -115,14 +116,19 @@ export default defineComponent({
 	cursor: pointer;
 	transition: width var(--slow) var(--transition);
 
-	.empty {
+	.icon-empty {
 		--v-icon-color: var(--foreground-subdued);
 
 		display: none;
+		margin-left: 8px;
 
 		&:hover {
 			--v-icon-color: var(--danger);
 		}
+	}
+
+	.icon-filter {
+		margin: 0 8px;
 	}
 
 	&:hover {
@@ -135,41 +141,55 @@ export default defineComponent({
 	}
 
 	&.active {
-		width: 300px;
+		width: 360px;
 		border-color: var(--primary);
 
-		.empty {
+		.icon-empty {
 			display: block;
+		}
+
+		.icon-filter {
+			margin-left: 0;
 		}
 	}
 
 	&.has-content {
-		width: 140px;
+		width: 200px;
 
 		&:focus,
 		&:focus-within {
-			width: 300px;
+			width: 360px;
 		}
 
-		.empty {
+		.icon-empty {
 			display: block;
 		}
+
+		.icon-filter {
+			margin-left: 0;
+		}
 	}
-}
 
-input {
-	flex-grow: 1;
-	width: 0px;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	color: var(--foreground-normal);
-	background-color: var(--background-page);
-	border: none;
-	border-radius: 0;
+	input {
+		flex-grow: 1;
+		width: 0px;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		color: var(--foreground-normal);
+		text-overflow: ellipsis;
+		background-color: var(--background-page);
+		border: none;
+		border-radius: 0;
 
-	&::placeholder {
-		color: var(--foreground-subdued);
+		&::placeholder {
+			color: var(--foreground-subdued);
+		}
+	}
+
+	.icon-search {
+		margin: 0 8px;
 	}
 }
 
@@ -179,14 +199,9 @@ input {
 	text-overflow: ellipsis;
 }
 
-.v-icon {
-	margin: 0 8px;
-	cursor: pointer;
-}
-
 .filter {
-	min-width: 292px;
-	max-width: 400px;
+	min-width: 352px;
+	max-width: 420px; // blaze it
 	padding: 0;
 }
 </style>
