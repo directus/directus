@@ -88,7 +88,7 @@
 		"mitt": "3.0.0",
 		"nanoid": "3.1.28",
 		"p-queue": "7.1.0",
-		"pinia": "2.0.0-rc.10",
+		"pinia": "2.0.0-rc.11",
 		"prettier": "2.4.1",
 		"pretty-ms": "7.0.1",
 		"qrcode": "1.4.4",
