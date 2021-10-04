@@ -46,7 +46,7 @@
 		"@turf/meta": "6.5.0",
 		"@types/base-64": "1.0.0",
 		"@types/bytes": "3.1.1",
-		"@types/codemirror": "5.60.3",
+		"@types/codemirror": "5.60.4",
 		"@types/color": "3.0.2",
 		"@types/diacritics": "1.3.1",
 		"@types/diff": "5.0.1",

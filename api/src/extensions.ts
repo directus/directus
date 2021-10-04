@@ -64,11 +64,15 @@ class ExtensionManager {
 
 	private endpointRouter: Router;
 
+	private isScheduleHookEnabled = true;
+
 	constructor() {
 		this.endpointRouter = Router();
 	}
 
-	public async initialize(): Promise<void> {
+	public async initialize({ schedule } = { schedule: true }): Promise<void> {
+		this.isScheduleHookEnabled = schedule;
+
 		if (this.isInitialized) return;
 
 		try {
@@ -229,10 +233,12 @@ class ExtensionManager {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 				} else {
 					const task = schedule(cron, async () => {
-						try {
-							await handler();
-						} catch (error: any) {
-							logger.error(error);
+						if (this.isScheduleHookEnabled) {
+							try {
+								await handler();
+							} catch (error: any) {
+								logger.error(error);
+							}
 						}
 					});
 

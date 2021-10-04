@@ -634,6 +634,9 @@ template: Mẫu
 translation: Bản dịch
 value: Giá trị
 interfaces:
+  filter:
+    add_filter: Thêm bộ lọc
+    all: Tất cả
   presentation-links:
     primary: Khóa chính
   input-code:

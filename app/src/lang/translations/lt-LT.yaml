@@ -826,6 +826,9 @@ value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
+  filter:
+    add_filter: Pridėti filtrą
+    all: Visi
   presentation-links:
     primary: Pirminis
   input-code:

@@ -848,7 +848,7 @@ fields:
     accountability: Отслеживание активности и редакций
   directus_files:
     $thumbnail: Миниатюра
-    title: Заголовок
+    title: Название
     description: Описание
     tags: Теги
     location: Локация
@@ -877,7 +877,7 @@ fields:
     password: Пароль
     avatar: Аватар
     location: Локация
-    title: Заголовок
+    title: Должность
     description: Описание
     tags: Теги
     user_preferences: Пользовательские настройки
@@ -1132,10 +1132,14 @@ require_value_to_be_set: Требовать установки значения
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
-weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
+  filter:
+    name: Фильтр
+    add_filter: Добавить Фильтр
+    all: Все
+    any: Любой
   group-accordion:
     name: Аккордеон
     description: Отображать поля или группы как секции аккордеона
