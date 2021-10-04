@@ -55,6 +55,7 @@ router.get(
 			schema: req.schema,
 		});
 
+		res.attachment('types.ts');
 		res.type('text/plain');
 		res.send(await service.typescript.generate());
 	}),
