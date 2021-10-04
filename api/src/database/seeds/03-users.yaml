@@ -33,7 +33,7 @@ columns:
   language:
     type: string
     length: 8
-    default: 'en-US'
+    default: null
   theme:
     type: string
     length: 20

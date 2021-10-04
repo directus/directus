@@ -42,7 +42,6 @@ fields:
 
   - field: project_language
     interface: system-language
-    note: Default language for new users and before app login
     options:
       iconRight: language
       placeholder: en-US

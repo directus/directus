@@ -21,7 +21,7 @@ export default defineComponent({
 	setup() {
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,
-			value: key,
+			value: key !== 'null' ? key : null,
 		}));
 
 		return { languages };
