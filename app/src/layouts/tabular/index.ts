@@ -84,15 +84,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
-		const activeFilterCount = computed(() => {
-			// let count = filter.value.filter((filter) => !filter.locked).length;
-			let count = 0;
-
-			if (search.value && search.value.length > 0) count++;
-
-			return count;
-		});
-
 		const availableFields = computed(() => {
 			return fieldsInCollection.value.filter((field: Field) => field.meta?.special?.includes('no-data') !== true);
 		});
@@ -122,11 +113,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sortField,
 			changeManualSort,
 			hideDragImage,
-			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
 			selectAll,
 			availableFields,
+			filter,
 		};
 
 		async function resetPresetAndRefresh() {
