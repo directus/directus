@@ -73,7 +73,7 @@
 			</template>
 		</v-info>
 
-		<slot v-else-if="itemCount === 0 && activeFilterCount > 0" name="no-results" />
+		<slot v-else-if="itemCount === 0 && filter" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
 </template>
@@ -87,7 +87,7 @@ import CardsHeader from './components/header.vue';
 import useElementSize from '@/composables/use-element-size';
 import { Field, Item } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { Collection } from '@directus/shared/types';
+import { Collection, Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { Card, CardsHeader },
@@ -178,7 +178,7 @@ export default defineComponent({
 			required: true,
 		},
 		sort: {
-			type: String,
+			type: Array as PropType<string[]>,
 			required: true,
 		},
 		info: {
@@ -193,10 +193,6 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
-		activeFilterCount: {
-			type: Number,
-			required: true,
-		},
 		selectAll: {
 			type: Function as PropType<() => void>,
 			required: true,
@@ -204,6 +200,10 @@ export default defineComponent({
 		resetPresetAndRefresh: {
 			type: Function as PropType<() => Promise<void>>,
 			required: true,
+		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
 		},
 	},
 	emits: ['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width'],

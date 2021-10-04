@@ -36,8 +36,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
+		const filter = useSync(props, 'filter', emit);
+		const search = useSync(props, 'search', emit);
 
 		const { collection } = toRefs(props);
 
@@ -66,9 +66,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sort,
 			limit,
 			page,
-			fields: fields,
-			filters: filters,
-			searchQuery: searchQuery,
+			fields,
+			filter,
+			search,
 		});
 
 		const showingCount = computed(() => {
@@ -99,10 +99,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return cardsWidth <= width.value;
 		});
 
-		const activeFilterCount = computed(() => {
-			return filters.value.filter((filter) => !filter.locked).length;
-		});
-
 		return {
 			items,
 			loading,
@@ -128,10 +124,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			showingCount,
 			isSingleRow,
 			width,
-			activeFilterCount,
 			refresh,
 			selectAll,
 			resetPresetAndRefresh,
+			filter,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -189,11 +185,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			const sort = computed({
+			const sort = computed<string[]>({
 				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
+					return layoutQuery.value?.sort || [primaryKeyField.value!.field] || [];
 				},
-				set(newSort: string) {
+				set(newSort: string[]) {
 					layoutQuery.value = {
 						...(layoutQuery.value || {}),
 						page: 1,
@@ -230,14 +226,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
 					fields.push('modified_on');
 					fields.push('type');
-				}
-
-				if (sort.value) {
-					const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
-
-					if (fields.includes(sortField) === false) {
-						fields.push(sortField);
-					}
 				}
 
 				const titleSubtitleFields: string[] = [];
