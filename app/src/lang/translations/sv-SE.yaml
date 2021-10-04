@@ -862,6 +862,9 @@ value: Värde
 view_project: Visa projekt
 report_error: Rapportera fel
 interfaces:
+  filter:
+    add_filter: Lägg till filter
+    all: Alla
   presentation-links:
     primary: Primär
   input-code:

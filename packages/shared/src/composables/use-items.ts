@@ -162,8 +162,8 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		// Make sure all fields that are used to filter are fetched
 		if (fields.value.includes('*') === false) {
 			filters.value.forEach((filter) => {
-				if (fieldsToFetch.includes(filter.field as string) === false) {
-					fieldsToFetch.push(filter.field as string);
+				if (fieldsToFetch.includes((filter as any).field as string) === false) {
+					fieldsToFetch.push((filter as any).field as string);
 				}
 			});
 		}
@@ -181,7 +181,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			const response = await api.get(endpoint.value, {
+			const response = await api.get<any>(endpoint.value, {
 				params: {
 					limit: limit.value,
 					fields: fieldsToFetch,
@@ -231,7 +231,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 	async function getItemCount() {
 		if (!primaryKeyField.value || !endpoint.value) return;
 
-		const response = await api.get(endpoint.value, {
+		const response = await api.get<any>(endpoint.value, {
 			params: {
 				limit: 0,
 				fields: primaryKeyField.value.field,
@@ -241,8 +241,8 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 			},
 		});
 
-		totalCount.value = response.data.meta.total_count;
-		itemCount.value = response.data.meta.filter_count;
+		totalCount.value = response.data.meta!.total_count!;
+		itemCount.value = response.data.meta!.filter_count!;
 	}
 
 	function reset() {

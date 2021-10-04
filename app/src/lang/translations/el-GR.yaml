@@ -269,6 +269,8 @@ settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
 interfaces:
+  filter:
+    all: Όλα
   presentation-links:
     primary: Κυρίως
   system-collection:

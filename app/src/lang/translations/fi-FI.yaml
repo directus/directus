@@ -890,6 +890,9 @@ value: Arvo
 view_project: Näytä projekti
 report_error: Raportoi virhe
 interfaces:
+  filter:
+    add_filter: Lisää suodatin
+    all: Kaikki
   presentation-links:
     presentation-links: Painikelinkit
     links: Linkit

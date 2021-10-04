@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.formatted-value.description',
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
-	handler: DisplayFormattedValue,
+	component: DisplayFormattedValue,
 	options: [
 		{
 			field: 'formatTitle',

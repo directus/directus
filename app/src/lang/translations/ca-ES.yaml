@@ -978,6 +978,10 @@ view_project: Veure el projecte
 report_error: Notifica un error
 start: Comença
 interfaces:
+  filter:
+    add_filter: Afegeix un filtre
+    all: Tots
+    any: Qualsevol
   group-accordion:
     name: Acordió
     description: Mostra els camps o els grups com a seccions de l'acordió

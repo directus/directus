@@ -116,6 +116,8 @@ email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
+  filter:
+    all: Alle
   input-code:
     code: Kode
   system-collection:
