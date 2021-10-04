@@ -21,3 +21,5 @@ coverage
 schema.yaml
 schema.json
 /.vs
+/api
+/iisnode
