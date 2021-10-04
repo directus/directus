@@ -297,7 +297,7 @@ export class UsersService extends ItemsService {
 			schema: this.schema,
 		});
 
-		service.updateOne(user.id, { password, status: 'active' });
+		await service.updateOne(user.id, { password, status: 'active' });
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
@@ -361,7 +361,7 @@ export class UsersService extends ItemsService {
 			schema: this.schema,
 		});
 
-		service.updateOne(user.id, { password, status: 'active' });
+		await service.updateOne(user.id, { password, status: 'active' });
 	}
 
 	/**
