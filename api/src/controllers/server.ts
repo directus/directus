@@ -47,6 +47,20 @@ router.get(
 	})
 );
 
+router.get(
+	'/specs/ts',
+	asyncHandler(async (req, res) => {
+		const service = new SpecificationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		res.type('text/plain');
+		res.send(await service.typescript.generate());
+	}),
+	respond
+);
+
 router.get('/ping', (req, res) => res.send('pong'));
 
 router.get(

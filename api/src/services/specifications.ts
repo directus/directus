@@ -15,7 +15,7 @@ import {
 import { version } from '../../package.json';
 import getDatabase from '../database';
 import env from '../env';
-import { AbstractServiceOptions, Collection, Permission, Relation, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Collection, FieldOverview, Permission, Relation, SchemaOverview } from '../types';
 import { Accountability, Field, Type } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
@@ -34,6 +34,7 @@ export class SpecificationService {
 
 	oas: OASSpecsService;
 	graphql: GraphQLSpecsService;
+	typescript: TypescriptSpecsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -51,6 +52,7 @@ export class SpecificationService {
 		});
 
 		this.graphql = new GraphQLSpecsService(options);
+		this.typescript = new TypescriptSpecsService(options);
 	}
 }
 
@@ -577,5 +579,64 @@ class GraphQLSpecsService implements SpecificationSubService {
 		if (scope === 'items') return this.items.getSchema('sdl');
 		if (scope === 'system') return this.system.getSchema('sdl');
 		return null;
+	}
+}
+
+class TypescriptSpecsService implements SpecificationSubService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+
+	constructor(options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || getDatabase();
+		this.schema = options.schema;
+	}
+
+	async generate() {
+		return (
+			Object.values(this.schema.collections)
+				.map((collection) => this.generateCollectionType(this.getPascalName(collection.collection), collection.fields))
+				.join('\n\n') +
+			'\n\n' +
+			this.generateCustomDirectusTypes(Object.keys(this.schema.collections))
+		);
+	}
+
+	generateCollectionType(
+		collectionName: string,
+		fields: {
+			[name: string]: FieldOverview;
+		}
+	) {
+		let collectionType = `export type ${collectionName} = {\n`;
+		collectionType += Object.values(fields)
+			.map((x) => `  ${x.field}${x.nullable ? '?' : ''}: ${this.getType(x.type)};`)
+			.join('\n');
+		collectionType += '\n}';
+		return collectionType;
+	}
+
+	generateCustomDirectusTypes(fields: string[]) {
+		let customDirectusTypes = `export type CustomDirectusTypes = {\n`;
+		customDirectusTypes += fields
+			.map((snakeCaseName) => `  ${snakeCaseName}: ${this.getPascalName(snakeCaseName)};`)
+			.join('\n');
+		customDirectusTypes += '\n}';
+		return customDirectusTypes;
+	}
+
+	getPascalName(snakeName: string) {
+		return snakeName
+			.split('_')
+			.map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+			.join('');
+	}
+
+	getType(directusType: string) {
+		if (['integer', 'bigInteger', 'float', 'decimal'].includes(directusType)) return 'number';
+		if (['boolean'].includes(directusType)) return 'boolean';
+		if (['json', 'csv'].includes(directusType)) return 'any[]';
+		return 'string';
 	}
 }
