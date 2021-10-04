@@ -1172,6 +1172,7 @@ displays:
   link:
     link: Enlace
     description: Permite navegar hacia el enlace
+    tooltip: Abrir enlace
   mime-type:
     mime-type: Tipo MIME
     description: Presentar el Tipo MIME del archivo

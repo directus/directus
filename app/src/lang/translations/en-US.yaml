@@ -1474,6 +1474,7 @@ displays:
   link:
     link: Link
     description: Allows to navigate to the link
+    tooltip: Open link
   mime-type:
     mime-type: MIME Type
     description: Show the MIME-Type of a file
