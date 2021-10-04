@@ -21,8 +21,15 @@
 #'Proxy', 'Intl'
 avatar: Avatar
 default_provider: Por defecto
+published: Publicado
+draft: Borrador
+archived: Archivado
+modules: Módulos
+module_bar: Barra de módulos
+tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
+maps: Mapas
 item_revision: Revisión de Elemento
 duplicate_field: Campo duplicado
 half_width: Ancho a la Mitad
