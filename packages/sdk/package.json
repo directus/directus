@@ -16,6 +16,7 @@
 	"files": [
 		"dist"
 	],
+	"type": "module",
 	"scripts": {
 		"prebuild": "npm run cleanup",
 		"build": "run-p build:*",

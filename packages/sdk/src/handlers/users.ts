@@ -2,11 +2,11 @@
  * Users handler
  */
 
-import { ItemsHandler } from '../base/items';
-import { ITransport } from '../transport';
-import { DefaultType, UserType } from '../types';
-import { InvitesHandler } from './invites';
-import { MeHandler } from './me';
+import { ItemsHandler } from '@/src/base/items.js';
+import { ITransport } from '@/src/transport.js';
+import { DefaultType, UserType } from '@/src/types.js';
+import { InvitesHandler } from '@/src/handlers/invites.js';
+import { MeHandler } from '@/src/handlers/me.js';
 
 export type UserItem<T = DefaultType> = UserType & T;
 

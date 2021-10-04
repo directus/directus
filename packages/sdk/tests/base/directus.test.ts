@@ -2,17 +2,19 @@
  * @jest-environment node
  */
 
-import { Auth } from '../../src/base/auth';
-import { ItemsHandler } from '../../src/base/items';
-import { AxiosTransport } from '../../src/base/transport/axios-transport';
-import { Directus } from '../../src/base';
 import {
 	ActivityHandler,
+	Auth,
+	AxiosTransport,
 	CollectionsHandler,
 	CommentsHandler,
+	Directus,
 	FieldsHandler,
 	FilesHandler,
 	FoldersHandler,
+	InvitesHandler,
+	ItemsHandler,
+	MeHandler,
 	PermissionsHandler,
 	PresetsHandler,
 	RelationsHandler,
@@ -20,13 +22,11 @@ import {
 	RolesHandler,
 	ServerHandler,
 	SettingsHandler,
+	TFAHandler,
 	UsersHandler,
 	UtilsHandler,
-} from '../../src/handlers';
-import { test } from '../utils';
-import { InvitesHandler } from '../../src/handlers/invites';
-import { TFAHandler } from '../../src/handlers/tfa';
-import { MeHandler } from '../../src/handlers/me';
+} from '@/src/index.js';
+import { test } from '@/tests/utils.js';
 
 describe('sdk', function () {
 	const sdk = new Directus('http://example.com');

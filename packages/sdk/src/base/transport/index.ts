@@ -1,1 +1,1 @@
-export * from './axios-transport';
+export * from '@/src/base/transport/axios-transport.js';

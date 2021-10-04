@@ -1,5 +1,5 @@
-import { ITransport } from '../transport';
-import { ID } from '../types';
+import { ITransport } from '@/src/transport.js';
+import { ID } from '@/src/types.js';
 
 export class InvitesHandler {
 	private transport: ITransport;

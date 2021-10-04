@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { Directus, LocalStorage } from '../../src/base';
+import { Directus, LocalStorage } from '@/src/index.js';
 
 describe('browser sdk', function () {
 	const sdk = new Directus('http://example.com');

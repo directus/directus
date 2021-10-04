@@ -1,6 +1,6 @@
-export * from './storage';
-export * from './transport';
+export * from '@/src/base/storage/index.js';
+export * from '@/src/base/transport/index.js';
 
-export * from './auth';
-export * from './directus';
-export * from './items';
+export * from '@/src/base/auth.js';
+export * from '@/src/base/directus.js';
+export * from '@/src/base/items.js';

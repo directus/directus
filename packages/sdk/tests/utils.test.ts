@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import { Debouncer } from '../src/utils';
-import { timers } from './utils';
+import { Debouncer } from '@/src/index.js';
+import { timers } from '@/tests/utils.js';
 
 describe('debouncer', function () {
 	test(`concurrent calls should return with the error from the first call`, async () => {

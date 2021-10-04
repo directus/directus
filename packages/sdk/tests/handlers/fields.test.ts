@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import { Directus } from '../../src';
-import { test } from '../utils';
+import { Directus } from '@/src/index.js';
+import { test } from '@/tests/utils.js';
 
 describe('fields', function () {
 	test(`update one`, async (url, nock) => {

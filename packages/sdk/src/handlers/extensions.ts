@@ -2,7 +2,7 @@
  * Settings handler
  */
 
-import { ITransport, TransportOptions, TransportResponse } from '../transport';
+import { ITransport, TransportOptions, TransportResponse } from '@/src/transport.js';
 
 export class ExtensionEndpoint implements ITransport {
 	private name: string;

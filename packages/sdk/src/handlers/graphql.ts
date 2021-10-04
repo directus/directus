@@ -1,4 +1,4 @@
-import { ITransport, TransportResponse } from '../transport';
+import { ITransport, TransportResponse } from '@/src/transport.js';
 
 export class GraphQLHandler {
 	private transport: ITransport;

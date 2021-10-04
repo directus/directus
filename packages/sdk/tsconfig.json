@@ -26,7 +26,11 @@
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"rootDir": "./src",
-		"outDir": "./dist"
+		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"]
+		}
 	},
 	"include": ["./src/**/*.ts"]
 }

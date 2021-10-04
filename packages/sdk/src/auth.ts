@@ -1,4 +1,4 @@
-import { PasswordsHandler } from './handlers/passwords';
+import { PasswordsHandler } from '@/src/handlers/passwords.js';
 
 export type AuthCredentials = {
 	email: string;

@@ -1,4 +1,4 @@
-import { ID } from './types';
+import { ID } from '@/src/types.js';
 
 export type Field = string;
 

@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { LocalStorage } from '../../../src/base/storage';
-import { createStorageTests } from './tests';
+import { LocalStorage } from '@/src/index.js';
+import { createStorageTests } from '@/tests/base/storage/tests.js';
 
 describe(
 	'localstorage storage',

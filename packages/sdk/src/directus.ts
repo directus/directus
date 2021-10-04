@@ -1,4 +1,4 @@
-import { IAuth } from './auth';
+import { IAuth } from '@/src/auth.js';
 import {
 	ActivityHandler,
 	CollectionsHandler,
@@ -13,15 +13,15 @@ import {
 	ServerHandler,
 	SettingsHandler,
 	UsersHandler,
-} from './handlers';
+} from '@/src/handlers/index.js';
 
-import { IItems } from './items';
-import { ITransport } from './transport';
-import { UtilsHandler } from './handlers/utils';
-import { IStorage } from './storage';
-import { TypeMap, TypeOf } from './types';
-import { GraphQLHandler } from './handlers/graphql';
-import { ISingleton } from './singleton';
+import { IItems } from '@/src/items.js';
+import { ITransport } from '@/src/transport.js';
+import { UtilsHandler } from '@/src/handlers/utils.js';
+import { IStorage } from '@/src/storage.js';
+import { TypeMap, TypeOf } from '@/src/types.js';
+import { GraphQLHandler } from '@/src/handlers/graphql.js';
+import { ISingleton } from '@/src/singleton.js';
 
 export type DirectusTypes = {
 	activity: undefined;
