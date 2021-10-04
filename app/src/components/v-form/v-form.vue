@@ -23,7 +23,7 @@
 				v-if="field.meta?.special?.includes('group')"
 				v-show="!field.meta?.hidden"
 				:key="field.field"
-				:class="field.meta?.width || 'full'"
+				:class="[field.meta?.width || 'full', index === firstVisibleFieldIndex ? 'first-visible-field' : '']"
 				:field="field"
 				:fields="fieldsForGroup[index]"
 				:values="modelValue || {}"
@@ -42,6 +42,7 @@
 				v-else
 				v-show="!field.meta?.hidden"
 				:key="field.field"
+				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="field"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[field.field]"
@@ -167,6 +168,15 @@ export default defineComponent({
 			return null;
 		});
 
+		const firstVisibleFieldIndex = computed(() => {
+			for (let i = 0; i < formFields.value.length; i++) {
+				if (formFields.value[i].meta && !formFields.value[i].meta?.hidden) {
+					return i;
+				}
+			}
+			return null;
+		});
+
 		/**
 		 * The validation errors that don't apply to any visible fields. This can occur if an admin accidentally
 		 * made a hidden field required for example. We want to show these errors at the top of the page, so the
@@ -199,6 +209,7 @@ export default defineComponent({
 			unsetValue,
 			unknownValidationErrors,
 			firstEditableFieldIndex,
+			firstVisibleFieldIndex,
 			isNil,
 			apply,
 			el,
@@ -352,5 +363,9 @@ export default defineComponent({
 
 .v-form {
 	@include form-grid;
+}
+
+.v-form .first-visible-field :deep(.v-divider) {
+	margin-top: 0;
 }
 </style>
