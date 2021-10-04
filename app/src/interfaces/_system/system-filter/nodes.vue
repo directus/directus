@@ -1,7 +1,7 @@
 <template>
 	<draggable
+		v-model="filterSync"
 		:group="{ name: 'g1' }"
-		:list="filter"
 		draggable=".row"
 		handle=".drag-handle"
 		:item-key="getIndex"
@@ -93,7 +93,7 @@ import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { get } from 'lodash';
-import { FieldFilter, Filter, FilterOperator } from '@directus/shared/types';
+import { FieldFilter, Filter, FilterOperator, LogicalFilterAND, LogicalFilterOR } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 import { fieldToFilter, getField, getNodeName, getComparator } from './utils';
 
@@ -182,6 +182,7 @@ export default defineComponent({
 			filterInfo,
 			getIndex,
 			getFieldPreview,
+			filterSync,
 		};
 
 		function getFieldPreview(node: Record<string, any>) {
@@ -204,12 +205,25 @@ export default defineComponent({
 
 		function toggleLogic(index: number) {
 			const nodeInfo = filterInfo.value[index];
-			if (nodeInfo.isField) return;
+
+			if (filterInfo.value[index].isField) return;
 
 			if ('_and' in nodeInfo.node) {
-				filterSync.value[index] = { _or: nodeInfo.node._and as FieldFilter[] };
+				filterSync.value = filterSync.value.map((filter, filterIndex) => {
+					if (filterIndex === index) {
+						return { _or: (nodeInfo.node as LogicalFilterAND)._and as FieldFilter[] };
+					}
+
+					return filter;
+				});
 			} else {
-				filterSync.value[index] = { _and: nodeInfo.node._or as FieldFilter[] };
+				filterSync.value = filterSync.value.map((filter, filterIndex) => {
+					if (filterIndex === index) {
+						return { _and: (nodeInfo.node as LogicalFilterOR)._or as FieldFilter[] };
+					}
+
+					return filter;
+				});
 			}
 		}
 
@@ -233,7 +247,11 @@ export default defineComponent({
 
 			function update(value: any) {
 				if (nodeInfo.isField === false) return;
-				filterSync.value[index] = fieldToFilter(nodeInfo.field, newVal, value);
+
+				filterSync.value = filterSync.value.map((filter, filterIndex) => {
+					if (filterIndex === index) return fieldToFilter(nodeInfo.field, newVal, value);
+					return filter;
+				});
 			}
 		}
 
@@ -253,7 +271,10 @@ export default defineComponent({
 				comparator = getCompareOptions(newField)[0].value;
 			}
 
-			filterSync.value[index] = fieldToFilter(newField, comparator, value);
+			filterSync.value = filterSync.value.map((filter, filterIndex) => {
+				if (filterIndex === index) return fieldToFilter(newField, comparator, value);
+				return filter;
+			});
 		}
 
 		function updateNode(index: number, field: Filter) {
@@ -263,6 +284,7 @@ export default defineComponent({
 		function getCompareOptions(name: string) {
 			const fieldInfo = fieldsStore.getField(props.collection, name);
 			if (fieldInfo === null) return [];
+
 			return getFilterOperatorsForType(fieldInfo.type).map((type) => ({
 				text: t(`operators.${type}`),
 				value: `_${type}`,

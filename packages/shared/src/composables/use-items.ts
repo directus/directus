@@ -58,6 +58,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
 	});
 
+	let currentRequest: CancelTokenSource | null = null;
+
 	const fetchItems = throttle(getItems, 250);
 
 	if (fetchOnInit) {
@@ -86,8 +88,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		},
 		{ deep: true, immediate: true }
 	);
-
-	let currentRequest: CancelTokenSource | null = null;
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
