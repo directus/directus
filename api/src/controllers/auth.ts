@@ -17,7 +17,7 @@ import { getAuthProviders } from '../utils/get-auth-providers';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
-import { createLocalAuthRouter } from '../auth/drivers';
+import { createLocalAuthRouter, createOAuth2AuthRouter } from '../auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const router = Router();
@@ -30,6 +30,11 @@ for (const authProvider of authProviders) {
 	switch (authProvider.driver) {
 		case 'local':
 			authRouter = createLocalAuthRouter(authProvider.name);
+			break;
+
+		case 'oauth2':
+			authRouter = createOAuth2AuthRouter(authProvider.name);
+			break;
 	}
 
 	if (!authRouter) {

@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import { AuthDriver } from '../auth';
-import { User } from '../../types';
+import { User, SessionData } from '../../types';
 import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
 import { AuthenticationService } from '../../services';
 import { Router } from 'express';
@@ -41,7 +41,7 @@ export class LocalAuthDriver extends AuthDriver {
 		}
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<null> {
+	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
 		if (payload.password) {
 			await this.verify(user, payload.password);
 		}

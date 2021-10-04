@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 import { Knex } from 'knex';
-import { User, SessionData } from '../types';
+import { AuthDriverOptions, User, SessionData } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;
+	schema: SchemaOverview;
 
-	constructor(knex: Knex, _config: Record<string, any>) {
-		this.knex = knex;
+	constructor(options: AuthDriverOptions, _config: Record<string, any>) {
+		this.knex = options.knex;
+		this.schema = options.schema;
 	}
 
 	/**

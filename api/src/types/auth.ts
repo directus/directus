@@ -1,3 +1,11 @@
+import { Knex } from 'knex';
+import { SchemaOverview } from './schema';
+
+export interface AuthDriverOptions {
+	knex: Knex;
+	schema: SchemaOverview;
+}
+
 export interface User {
 	id: string;
 	first_name: string | null;

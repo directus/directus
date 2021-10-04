@@ -2,42 +2,44 @@ import { Knex } from 'knex';
 import { Router } from 'express';
 import { Issuer, Client, TokenSet, generators, ClientMetadata, CallbackParamsType, errors } from 'openid-client';
 import env from '../../env';
-import { getAuthProvider } from '../../env';
+import { getAuthProvider } from '../../auth';
 import { UsersService } from '../../services';
-import LocalAuth from './local';
-import { User, SessionData } from '../../types';
+import { LocalAuthDriver } from './local';
+import { AuthDriverOptions, User, SessionData } from '../../types';
 import { InvalidCredentialsException, ServiceUnavailableException } from '../../exceptions';
 import { transformObject } from '../../utils/transform-object';
 import { respond } from '../../middleware/respond';
 import { Url } from '../../utils/url';
+import { getSchema } from '../../utils/get-schema';
 
 const isWhitelistedEmail = () => true;
 
-export default class OAuth2Auth extends LocalAuth {
+export class OAuth2AuthDriver extends LocalAuthDriver {
 	config: Record<string, any>;
 	redirectUrl: string;
-	client: Client;
 	usersService: UsersService;
+	client: Client;
 
-	constructor(knex: Knex, config: Record<string, any>) {
-		super(knex);
+	constructor(options: AuthDriverOptions, config: Record<string, any>) {
+		super(options, config);
 
-		const { authorizeUrl, accessUrl, client: clientConfig, ...config } = config;
+		const { issuer: issuerName, authorizeUrl, accessUrl, client: clientConfig, ...additionalConfig } = config;
 
 		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', config.provider, 'callback');
 		const issuer = new Issuer({
+			issuer: issuerName,
 			authorize_url: authorizeUrl,
 			access_url: accessUrl,
 		});
 
-		this.config = config;
+		this.config = additionalConfig;
 		this.redirectUrl = redirectUrl.toString();
+		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.client = new issuer.Client({
 			...transformObject(clientConfig, 'underscore'),
 			redirect_uris: [this.redirectUrl],
 			response_types: ['code'],
 		} as ClientMetadata);
-		this.usersService = new UsersService(knex);
 	}
 
 	/**
@@ -62,6 +64,17 @@ export default class OAuth2Auth extends LocalAuth {
 		}
 	}
 
+	async fetchUserId(identifier: string): Promise<string | undefined> {
+		const user = await this.knex
+			.select('id')
+			.from('directus_users')
+			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
+			.first();
+
+		return user?.id;
+	}
+
 	/**
 	 * Get user id by email or oauth id
 	 */
@@ -79,23 +92,18 @@ export default class OAuth2Auth extends LocalAuth {
 			throw handleError(e);
 		}
 
-		const email = tokenSet[emailKey ?? 'email'];
+		const email = tokenSet[emailKey ?? 'email'] as string | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = tokenSet[identifierKey] ?? email;
+		const identifier = (tokenSet[identifierKey] as string | undefined) ?? email;
 
 		if (!identifier) {
 			throw new InvalidCredentialsException();
 		}
 
-		const user = await this.knex
-			.select('id')
-			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
-			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
-			.first();
+		const userId = await this.fetchUserId(identifier);
 
-		if (user) {
-			return user.id;
+		if (userId) {
+			return userId;
 		}
 
 		if (!this.config.allowPublicRegistration || !isWhitelistedEmail()) {
@@ -103,14 +111,16 @@ export default class OAuth2Auth extends LocalAuth {
 		}
 
 		// If the email is identifier, don't set "external_identifier"
-		const emailIsIdentifier = email.toLowerCase() === identifier.toLowerCase();
+		const emailIsIdentifier = email?.toLowerCase() === identifier.toLowerCase();
 
-		return await this.usersService.createUser({
+		await this.usersService.createOne({
 			provider: this.config.provider,
 			email: email,
 			external_identifier: !emailIsIdentifier ? identifier : undefined,
 			role: this.config.defaultRole,
 		});
+
+		return (await this.fetchUserId(identifier)) as string;
 	}
 
 	async login(_user: User, payload: Record<string, any>): Promise<SessionData> {
@@ -188,7 +198,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 	router.get(
 		'/',
 		(req, res) => {
-			const provider = getAuthProvider(providerName) as OAuth2Auth;
+			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 
 			res.cookie(
