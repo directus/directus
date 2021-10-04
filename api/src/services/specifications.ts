@@ -596,7 +596,12 @@ class TypescriptSpecsService implements SpecificationSubService {
 	async generate() {
 		return (
 			Object.values(this.schema.collections)
-				.map((collection) => this.generateCollectionType(this.getPascalName(collection.collection), collection.fields))
+				.map((collection) =>
+					this.generateCollectionType(
+						this.tryGetPascalName(collection.collection, Object.keys(this.schema.collections)),
+						collection.fields
+					)
+				)
 				.join('\n\n') +
 			'\n\n' +
 			this.generateCustomDirectusTypes(Object.keys(this.schema.collections))
@@ -620,10 +625,27 @@ class TypescriptSpecsService implements SpecificationSubService {
 	generateCustomDirectusTypes(fields: string[]) {
 		let customDirectusTypes = `export type CustomDirectusTypes = {\n`;
 		customDirectusTypes += fields
-			.map((snakeCaseName) => `  ${snakeCaseName}: ${this.getPascalName(snakeCaseName)};`)
+			.map((snakeCaseName) => `  ${snakeCaseName}: ${this.tryGetPascalName(snakeCaseName, fields)};`)
 			.join('\n');
 		customDirectusTypes += '\n}';
 		return customDirectusTypes;
+	}
+
+	// Try to get the pascal case name from a (supposedly) snake case name
+	// (for example `user-list` -> `UserList`)
+	//
+	// If this collides with another pascal case name
+	// (for example both `user-list` and `userList` get turned into `UserList`),
+	// just return the original name.
+	tryGetPascalName(snakeName: string, allSnakeNames: string[]) {
+		const pascalName = this.getPascalName(snakeName);
+		let equalNames = 0;
+		allSnakeNames.forEach((otherSnakeName) => {
+			if (pascalName.toLowerCase() === this.getPascalName(otherSnakeName).toLowerCase()) {
+				equalNames += 1;
+			}
+		});
+		return equalNames < 2 ? pascalName : snakeName;
 	}
 
 	getPascalName(snakeName: string) {
