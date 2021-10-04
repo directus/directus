@@ -636,7 +636,7 @@ class TypescriptSpecsService implements SpecificationSubService {
 	getType(directusType: string) {
 		if (['integer', 'bigInteger', 'float', 'decimal'].includes(directusType)) return 'number';
 		if (['boolean'].includes(directusType)) return 'boolean';
-		if (['json', 'csv'].includes(directusType)) return 'any[]';
+		if (['json', 'csv'].includes(directusType)) return 'any[] | Record<string, any>';
 		return 'string';
 	}
 }
