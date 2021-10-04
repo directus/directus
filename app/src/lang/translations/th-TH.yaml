@@ -941,6 +941,10 @@ value: ค่า
 view_project: ดูโครงการ
 report_error: แจ้งข้อผิดพลาด
 interfaces:
+  filter:
+    add_filter: เพิ่มตัวกรอง
+    all: ทั้งหมด
+    any: ใด ๆ
   presentation-links:
     presentation-links: ปุ่มลิงก์
     links: ลิงค์

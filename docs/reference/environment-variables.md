@@ -433,8 +433,8 @@ to use for the given value by prefixing the value with `{type}:`. The following 
 | ------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `string`      | `string:value`                                                                                                    | `"value"`                                                                                                                    |
 | `number`      | `number:3306`                                                                                                     | `3306`                                                                                                                       |
-| `regex`       | `regex:/\.example\.com$/`                                                                                         | `/\.example\.com$/`                                                                                                          |
-| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:/\.example3\.com$/` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
+| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
+| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
 
 ## File Based Environment Variables (Docker Secrets)
 

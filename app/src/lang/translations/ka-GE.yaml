@@ -87,6 +87,8 @@ description: აღწერა
 email: ელ-ფოსტა
 password: პაროლი
 interfaces:
+  filter:
+    all: ყველა
   system-collection:
     collection: კოლექცია
   files:

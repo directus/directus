@@ -32,7 +32,7 @@
 		"start": "rollup -c rollup.config.js -w"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "20.0.0",
+		"@rollup/plugin-commonjs": "21.0.0",
 		"@rollup/plugin-json": "4.1.0",
 		"@rollup/plugin-node-resolve": "13.0.5",
 		"rimraf": "3.0.2",
