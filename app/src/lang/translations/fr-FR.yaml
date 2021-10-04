@@ -1132,7 +1132,6 @@ require_value_to_be_set: Nécessite que la valeur soit définie
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
