@@ -49,29 +49,29 @@ export default defineComponent({
 			default: '#00C897',
 		},
 	},
-	methods: {
-		toggleInput() {
-			if (this.nullable === true) {
-				if (this.value === null) {
-					this.$emit('input', true);
+	setup(props, context) {
+		const toggleInput = () => {
+			if (props.nullable === true) {
+				if (props.value === null) {
+					context.emit('input', true);
 				}
-				else if (this.value === false) {
-					this.$emit('input', null);
+				else if (props.value === false) {
+					context.emit('input', null);
 				}
 				else {
-					this.$emit('input', false);
+					context.emit('input', false);
 				}
 			} else {
-				if (this.value === null || this.value === false) {
-					this.$emit('input', true);
+				if (props.value === null || props.value === false) {
+					context.emit('input', true);
 				}
 				else {
-					this.$emit('input', false);
+					context.emit('input', false);
 				}
 			}
-			console.log(this);
-		}
+		};
 
+		return { toggleInput }
 	},
 	emits: ['input'],
 });
