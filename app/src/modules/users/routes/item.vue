@@ -184,7 +184,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useCollectionsStore, useServerStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -220,7 +220,6 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
-		const serverStore = useServerStore();
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -252,8 +251,6 @@ export default defineComponent({
 				...edits.value,
 			};
 		}
-
-		setDefaults();
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
@@ -373,12 +370,6 @@ export default defineComponent({
 			]);
 
 			return { breadcrumb };
-		}
-
-		function setDefaults() {
-			if (props.primaryKey !== '+') return;
-			if (!item.value) item.value = {};
-			item.value.language = serverStore.info?.project?.project_language ?? 'en-US';
 		}
 
 		async function saveAndQuit() {
