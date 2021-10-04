@@ -1,4 +1,4 @@
-import { IStorage } from '@/src/index.js';
+import { IStorage } from '../../../src/storage';
 
 export function createStorageTests(createStorage: () => IStorage) {
 	return function (): void {

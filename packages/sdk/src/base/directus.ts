@@ -1,5 +1,5 @@
-import { IAuth } from '@/src/auth.js';
-import { IDirectus } from '@/src/directus.js';
+import { IAuth } from '../auth';
+import { IDirectus } from '../directus';
 import {
 	ActivityHandler,
 	CollectionsHandler,
@@ -15,18 +15,18 @@ import {
 	SettingsHandler,
 	UsersHandler,
 	UtilsHandler,
-} from '@/src/handlers/index.js';
-import { IItems } from '@/src/items.js';
-import { ITransport } from '@/src/transport.js';
-import { ItemsHandler } from '@/src/base/items.js';
-import { AxiosTransport } from '@/src/base/transport/index.js';
-import { Auth } from '@/src/base/auth.js';
-import { IStorage } from '@/src/storage.js';
-import { LocalStorage, MemoryStorage } from '@/src/base/storage/index.js';
-import { TypeMap, TypeOf } from '@/src/types.js';
-import { GraphQLHandler } from '@/src/handlers/graphql.js';
-import { ISingleton } from '@/src/singleton.js';
-import { SingletonHandler } from '@/src/handlers/singleton.js';
+} from '../handlers';
+import { IItems } from '../items';
+import { ITransport } from '../transport';
+import { ItemsHandler } from './items';
+import { AxiosTransport } from './transport';
+import { Auth } from './auth';
+import { IStorage } from '../storage';
+import { LocalStorage, MemoryStorage } from './storage';
+import { TypeMap, TypeOf } from '../types';
+import { GraphQLHandler } from '../handlers/graphql';
+import { ISingleton } from '../singleton';
+import { SingletonHandler } from '../handlers/singleton';
 
 export type DirectusOptions = {
 	auth?: IAuth;

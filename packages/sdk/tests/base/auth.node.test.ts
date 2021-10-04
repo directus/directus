@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import { Auth, AxiosTransport, Directus, MemoryStorage } from '@/src/index.js';
-import { test, timers } from '@/tests/utils.js';
+import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
+import { test, timers } from '../utils';
 
 describe('auth (node)', function () {
 	test(`sets default auth mode to json`, async (url) => {

@@ -1,4 +1,4 @@
-import { ID } from '@/src/types.js';
+import { ID } from '../src/types';
 
 export type Post = {
 	id: ID;

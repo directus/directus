@@ -1,14 +1,10 @@
-import { config as dotenv } from 'dotenv';
-dotenv();
+require('dotenv').config();
 
-export default {
+module.exports = {
 	preset: 'ts-jest',
 	verbose: true,
 	setupFiles: ['dotenv/config'],
 	testURL: process.env.TEST_URL || 'http://localhost',
 	collectCoverageFrom: ['src/**/*.ts'],
 	testPathIgnorePatterns: ['dist'],
-	moduleNameMapper: {
-		'^@/(.*).js$': '<rootDir>/$1',
-	},
 };

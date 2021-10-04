@@ -1,6 +1,6 @@
-import { IStorage } from '@/src/storage.js';
+import { IStorage } from '../../storage';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '@/src/transport.js';
+import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
 
 export type AxiosTransportRefreshHandler = () => Promise<void>;
 

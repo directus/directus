@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import { MemoryStorage } from '@/src/index.js';
-import { createStorageTests } from '@/tests/base/storage/tests.js';
+import { MemoryStorage } from '../../../src/base/storage';
+import { createStorageTests } from './tests';
 
 describe(
 	'memory storage',

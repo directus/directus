@@ -2,9 +2,9 @@
  * Fields handler
  */
 
-import { ManyItems, OneItem, PartialItem } from '@/src/items.js';
-import { ITransport } from '@/src/transport.js';
-import { FieldType, DefaultType, ID } from '@/src/types.js';
+import { ManyItems, OneItem, PartialItem } from '../items';
+import { ITransport } from '../transport';
+import { FieldType, DefaultType, ID } from '../types';
 
 export type FieldItem<T = DefaultType> = FieldType & T;
 

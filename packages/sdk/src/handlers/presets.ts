@@ -2,9 +2,9 @@
  * Presets handler
  */
 
-import { ItemsHandler } from '@/src/base/items.js';
-import { ITransport } from '@/src/transport.js';
-import { PresetType, DefaultType } from '@/src/types.js';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { PresetType, DefaultType } from '../types';
 
 export type PresetItem<T = DefaultType> = PresetType & T;
 

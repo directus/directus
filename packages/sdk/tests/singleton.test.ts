@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import { Directus } from '@/src/index.js';
-import { test } from '@/tests/utils.js';
+import { Directus } from '../src';
+import { test } from './utils';
 
 type Settings = {
 	url: string;

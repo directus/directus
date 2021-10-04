@@ -2,9 +2,9 @@
  * Roles handler
  */
 
-import { ItemsHandler } from '@/src/base/items.js';
-import { ITransport } from '@/src/transport.js';
-import { RoleType, DefaultType } from '@/src/types.js';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { RoleType, DefaultType } from '../types';
 
 export type RoleItem<T = DefaultType> = RoleType & T;
 

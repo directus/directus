@@ -1,4 +1,4 @@
-import { ITransport } from '@/src/transport.js';
+import { ITransport } from '../transport';
 
 export class PasswordsHandler {
 	private transport: ITransport;

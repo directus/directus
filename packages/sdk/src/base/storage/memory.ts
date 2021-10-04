@@ -1,4 +1,4 @@
-import { BaseStorage } from '@/src/base/storage/base.js';
+import { BaseStorage } from './base';
 
 export class MemoryStorage extends BaseStorage {
 	private prefix: string;

@@ -1,6 +1,6 @@
-import { Comment, ID } from '@/src/types.js';
-import { ITransport } from '@/src/transport.js';
-import { ActivityItem } from '@/src/handlers/activity.js';
+import { Comment, ID } from '../types';
+import { ITransport } from '../transport';
+import { ActivityItem } from './activity';
 
 export class CommentsHandler<T> {
 	private transport: ITransport;

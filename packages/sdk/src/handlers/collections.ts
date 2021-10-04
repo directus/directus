@@ -2,9 +2,9 @@
  * Collections handler
  */
 
-import { ManyItems, OneItem, PartialItem, QueryOne } from '@/src/items.js';
-import { ITransport } from '@/src/transport.js';
-import { CollectionType, DefaultType } from '@/src/types.js';
+import { ManyItems, OneItem, PartialItem, QueryOne } from '../items';
+import { ITransport } from '../transport';
+import { CollectionType, DefaultType } from '../types';
 
 export type CollectionItem<T = DefaultType> = CollectionType & T;
 

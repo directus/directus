@@ -2,9 +2,9 @@
  * @jest-environment node
  */
 
-import { Blog } from '@/tests/blog.d.js';
-import { Directus } from '@/src/index.js';
-import { test } from '@/tests/utils.js';
+import { Blog } from './blog.d';
+import { Directus } from '../src';
+import { test } from './utils';
 
 describe('items', function () {
 	test(`can get an item by id`, async (url, nock) => {

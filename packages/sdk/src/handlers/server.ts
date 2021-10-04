@@ -2,7 +2,7 @@
  * Server handler
  */
 
-import { ITransport } from '@/src/transport.js';
+import { ITransport } from '../transport';
 
 export type ServerInfo = {
 	project: {

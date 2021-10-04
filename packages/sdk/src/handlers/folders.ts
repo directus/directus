@@ -2,9 +2,9 @@
  * Folders handler
  */
 
-import { ItemsHandler } from '@/src/base/items.js';
-import { ITransport } from '@/src/transport.js';
-import { FolderType, DefaultType } from '@/src/types.js';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { FolderType, DefaultType } from '../types';
 
 export type FolderItem<T = DefaultType> = FolderType & T;
 

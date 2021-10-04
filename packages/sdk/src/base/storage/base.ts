@@ -1,4 +1,4 @@
-import { IStorage } from '@/src/storage.js';
+import { IStorage } from '../../storage';
 
 export abstract class BaseStorage implements IStorage {
 	get auth_token(): string | null {

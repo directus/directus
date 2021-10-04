@@ -2,9 +2,9 @@
  * Files handler
  */
 
-import { ItemsHandler } from '@/src/base/items.js';
-import { ITransport } from '@/src/transport.js';
-import { FileType, DefaultType } from '@/src/types.js';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { FileType, DefaultType } from '../types';
 
 export type FileItem<T = DefaultType> = FileType & T;
 

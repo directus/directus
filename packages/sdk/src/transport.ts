@@ -1,4 +1,4 @@
-import { ItemMetadata } from '@/src/items.js';
+import { ItemMetadata } from './items';
 
 export type TransportErrorDescription = {
 	message?: string;
