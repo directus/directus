@@ -10,13 +10,8 @@
 			/>
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
-				<template v-if="loading">
-					<card v-for="n in 6" :key="`loader-${n}`" item-key="loading" loading />
-				</template>
-
 				<card
 					v-for="item in items"
-					v-else
 					:key="item[primaryKeyField.field]"
 					v-model="selectionWritable"
 					:item-key="primaryKeyField.field"

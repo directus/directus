@@ -6,8 +6,8 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filter="layoutFilter"
-		v-model:search="search"
+		:filter="layoutFilter"
+		:search="search"
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
@@ -27,7 +27,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" collection="directus_files" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
@@ -114,11 +114,21 @@
 
 			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
+					<v-info v-if="!filter && !search" :title="t('file_count', 0)" icon="folder" center>
+						{{ t('no_files_copy') }}
+
+						<template #append>
+							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+								{{ t('add_file') }}
+							</v-button>
+						</template>
+					</v-info>
+
+					<v-info v-else :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filter') }}</v-button>
+							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -231,7 +241,7 @@ export default defineComponent({
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const filterWithFolderAndType = computed(() => {
+		const folderTypeFilter = computed(() => {
 			const filterParsed: Filter = {
 				_and: [
 					{
@@ -281,10 +291,10 @@ export default defineComponent({
 			get() {
 				if (filter.value) {
 					return {
-						_and: [filter.value, filterWithFolderAndType.value],
+						_and: [filter.value, folderTypeFilter.value],
 					};
 				} else {
-					return filterWithFolderAndType.value;
+					return folderTypeFilter.value;
 				}
 			},
 			set(newFilters) {
@@ -319,7 +329,7 @@ export default defineComponent({
 			layoutOptions,
 			layoutQuery,
 			layout,
-			filterWithFolderAndType,
+			folderTypeFilter,
 			search,
 			moveToDialogActive,
 			moveToFolder,
@@ -342,6 +352,7 @@ export default defineComponent({
 			batchDelete,
 			deleteError,
 			batchEditActive,
+			filter,
 		};
 
 		function useBatch() {
