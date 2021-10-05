@@ -62,7 +62,8 @@ export default defineComponent({
 				else {
 					context.emit('input', false);
 				}
-			} else {
+			}
+			else {
 				if (props.value === null || props.value === false) {
 					context.emit('input', true);
 				}
