@@ -128,6 +128,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			selectAll,
 			resetPresetAndRefresh,
 			filter,
+			search,
 		};
 
 		async function resetPresetAndRefresh() {

@@ -73,7 +73,7 @@
 			</template>
 		</v-info>
 
-		<slot v-else-if="itemCount === 0 && filter" name="no-results" />
+		<slot v-else-if="itemCount === 0 && (filter || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
 </template>
@@ -203,6 +203,10 @@ export default defineComponent({
 		},
 		filter: {
 			type: Object as PropType<Filter>,
+			default: null,
+		},
+		search: {
+			type: String,
 			default: null,
 		},
 	},
