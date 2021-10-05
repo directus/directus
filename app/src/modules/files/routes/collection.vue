@@ -7,7 +7,7 @@
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
 		v-model:filter="layoutFilter"
-		v-model:search-query="searchQuery"
+		v-model:search="search"
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
@@ -27,7 +27,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" collection="directus_files" />
+				<search-input v-model="search" collection="directus_files" />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
@@ -225,7 +225,7 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 
-		const { layout, layoutOptions, layoutQuery, filter, searchQuery, resetPreset } = usePreset(ref('directus_files'));
+		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
@@ -320,7 +320,7 @@ export default defineComponent({
 			layoutQuery,
 			layout,
 			filterWithFolderAndType,
-			searchQuery,
+			search,
 			moveToDialogActive,
 			moveToFolder,
 			moving,
@@ -458,7 +458,7 @@ export default defineComponent({
 
 		function clearFilters() {
 			filter.value = null;
-			searchQuery.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {

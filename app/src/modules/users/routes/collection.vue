@@ -7,7 +7,7 @@
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
 		v-model:filter="layoutFilter"
-		v-model:search-query="searchQuery"
+		v-model:search="search"
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
@@ -27,7 +27,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" collection="directus_users" />
+				<search-input v-model="search" collection="directus_users" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -181,7 +181,7 @@ export default defineComponent({
 		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filter, searchQuery, resetPreset } = usePreset(ref('directus_users'));
+		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 		const { addNewLink } = useLinks();
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
@@ -247,7 +247,7 @@ export default defineComponent({
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
+			search,
 			clearFilters,
 			userInviteModalActive,
 			refresh,
@@ -328,7 +328,7 @@ export default defineComponent({
 
 		function clearFilters() {
 			filter.value = null;
-			searchQuery.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {

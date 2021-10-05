@@ -4,8 +4,8 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filter="filter"
-		v-model:search-query="searchQuery"
+		:filter="filterWithRole"
+		:search="search"
 		collection="directus_activity"
 	>
 		<private-view :title="t('activity_feed')">
@@ -20,14 +20,26 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" collection="directus_activity" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
 			</template>
 
 			<template #navigation>
-				<activity-navigation v-model:filter="filter" />
+				<activity-navigation v-model:filter="roleFilter" />
 			</template>
 
-			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout" />
+			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout">
+				<template #no-results>
+					<v-info :title="t('no_results')" icon="search" center>
+						{{ t('no_results_copy') }}
+					</v-info>
+				</template>
+
+				<template #no-items>
+					<v-info :title="t('item_count', 0)" icon="access_time" center>
+						{{ t('no_items_copy') }}
+					</v-info>
+				</template>
+			</component>
 
 			<router-view name="detail" :primary-key="primaryKey" />
 
@@ -52,6 +64,7 @@ import usePreset from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	name: 'ActivityCollection',
@@ -65,12 +78,34 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		const { layout, layoutOptions, layoutQuery, filter, searchQuery } = usePreset(ref('directus_activity'));
+		const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
 		const { layoutWrapper } = useLayout(layout);
 
-		return { t, breadcrumb, layout, layoutWrapper, layoutOptions, layoutQuery, searchQuery, filter };
+		const roleFilter = ref<Filter | null>(null);
+
+		const filterWithRole = computed(() => {
+			if (!roleFilter.value) return filter.value;
+			if (!filter.value) return roleFilter.value;
+
+			return {
+				_and: [roleFilter.value, filter.value],
+			};
+		});
+
+		return {
+			t,
+			breadcrumb,
+			layout,
+			layoutWrapper,
+			layoutOptions,
+			layoutQuery,
+			search,
+			filter,
+			roleFilter,
+			filterWithRole,
+		};
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
