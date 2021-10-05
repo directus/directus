@@ -6,8 +6,8 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filter="layoutFilter"
-		v-model:search="search"
+		:filter="layoutFilter"
+		:search="search"
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
@@ -27,7 +27,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" collection="directus_users" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -99,7 +99,17 @@
 
 			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
+					<v-info v-if="!filter && !search" :title="t('user_count', 0)" icon="people_alt" center>
+						{{ t('no_users_copy') }}
+
+						<template v-if="canInviteUsers" #append>
+							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+								{{ t('create_user') }}
+							</v-button>
+						</template>
+					</v-info>
+
+					<v-info v-else :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
 
 						<template #append>
@@ -260,6 +270,7 @@ export default defineComponent({
 			batchDelete,
 			deleteError,
 			batchEditActive,
+			filter,
 		};
 
 		async function refresh() {

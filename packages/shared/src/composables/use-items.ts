@@ -60,7 +60,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 	let currentRequest: CancelTokenSource | null = null;
 
-	const fetchItems = throttle(getItems, 250);
+	const fetchItems = throttle(getItems, 350);
 
 	if (fetchOnInit) {
 		fetchItems();
