@@ -1,18 +1,20 @@
 <template>
 	<draggable
-		v-model="filterSync"
-		:group="{ name: 'g1' }"
+		tag="ul"
 		draggable=".row"
 		handle=".drag-handle"
-		:item-key="getIndex"
-		tag="ul"
-		:swap-threshold="0.3"
 		class="group"
+		:list="filterSync"
+		:group="{ name: 'g1' }"
+		:item-key="getIndex"
+		:swap-threshold="0.3"
+		:force-fallback="true"
+		@change="$emit('change')"
 	>
 		<template #item="{ element, index }">
 			<li class="row">
 				<div v-if="filterInfo[index].isField" block class="node field">
-					<div class="header">
+					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
 						<v-select
 							v-tooltip.monospace="filterInfo[index].field"
@@ -39,7 +41,7 @@
 							:items="getCompareOptions(filterInfo[index].field)"
 							@update:modelValue="updateComparator(index, $event)"
 						/>
-						<input-group :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
+						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
 						<span class="delete">
 							<v-icon
 								v-tooltip="t('delete_label')"
@@ -53,7 +55,7 @@
 				</div>
 
 				<div v-else class="node logic">
-					<div class="header">
+					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small />
 						<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
 							<span class="key" @click="toggleLogic(index)">
@@ -75,8 +77,10 @@
 						:filter="element[filterInfo[index].name]"
 						:collection="collection"
 						:depth="depth + 1"
+						:inline="inline"
+						@change="$emit('change')"
 						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
-						@update:filter="updateNode(index, { [filterInfo[index].name]: $event })"
+						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
 					/>
 				</div>
 			</li>
@@ -132,8 +136,12 @@ export default defineComponent({
 			type: Number,
 			default: 1,
 		},
+		inline: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	emits: ['remove-node', 'update:filter'],
+	emits: ['remove-node', 'update:filter', 'change'],
 	setup(props, { emit }) {
 		const { collection } = toRefs(props);
 		const filterSync = useSync(props, 'filter', emit);
@@ -173,7 +181,7 @@ export default defineComponent({
 			updateField,
 			updateComparator,
 			t,
-			updateNode,
+			replaceNode,
 			toggleLogic,
 			loadFieldRelations,
 			getNodeName,
@@ -277,8 +285,11 @@ export default defineComponent({
 			});
 		}
 
-		function updateNode(index: number, field: Filter) {
-			filterSync.value = filterSync.value.map((val, i) => (i === index ? field : val));
+		function replaceNode(index: number, newFilter: Filter) {
+			filterSync.value = filterSync.value.map((val, filterIndex) => {
+				if (filterIndex === index) return newFilter;
+				return val;
+			});
 		}
 
 		function getCompareOptions(name: string) {
@@ -407,6 +418,18 @@ export default defineComponent({
 
 		margin-right: 4px;
 		cursor: grab;
+	}
+
+	&.inline {
+		width: auto;
+		margin-right: 0;
+		padding-right: 12px;
+
+		.delete {
+			right: 8px;
+			left: unset;
+			background-color: var(--background-page);
+		}
 	}
 }
 

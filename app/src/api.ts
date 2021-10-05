@@ -50,6 +50,8 @@ export const onResponse = (response: AxiosResponse | Response): AxiosResponse | 
 
 export const onError = async (error: RequestError): Promise<RequestError> => {
 	const requestsStore = useRequestsStore();
+
+	// Note: Cancelled requests don't respond with the config
 	const id = (error.response?.config as RequestConfig)?.id;
 
 	if (id) requestsStore.endRequest(id);

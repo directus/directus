@@ -9,7 +9,9 @@
 				v-model:filter="innerValue"
 				:collection="collectionName"
 				:depth="1"
+				:inline="inline"
 				@remove-node="removeNode($event)"
+				@change="emitValue"
 			/>
 		</v-list>
 		<div class="buttons">
@@ -33,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { get, set, isEmpty } from 'lodash';
+import { get, set, isEmpty, cloneDeep } from 'lodash';
 import { defineComponent, PropType, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
@@ -79,9 +81,9 @@ export default defineComponent({
 				const name = getNodeName(props.value);
 
 				if (name === '_and') {
-					return props.value['_and'];
+					return cloneDeep(props.value['_and']);
 				} else {
-					return [props.value];
+					return cloneDeep([props.value]);
 				}
 			},
 			set(newVal) {
@@ -97,7 +99,23 @@ export default defineComponent({
 			return [{ key: '$group', name: t('interfaces.filter.add_group') }, { divider: true }, ...treeList.value];
 		});
 
-		return { t, addNode, removeNode, innerValue, fieldOptions, loadFieldRelations };
+		return {
+			t,
+			addNode,
+			removeNode,
+			innerValue,
+			fieldOptions,
+			loadFieldRelations,
+			emitValue,
+		};
+
+		function emitValue() {
+			if (innerValue.value.length === 0) {
+				emit('input', null);
+			} else {
+				emit('input', { _and: innerValue.value });
+			}
+		}
 
 		function addNode(key: string) {
 			if (key === '$group') {
@@ -205,7 +223,6 @@ export default defineComponent({
 				position: relative;
 				width: 100%;
 				height: 30px;
-				padding: 2px 12px;
 				padding: 0;
 				background-color: var(--background-page);
 				border: var(--border-width) solid var(--border-subdued);
@@ -213,6 +230,7 @@ export default defineComponent({
 				transition: border-color var(--fast) var(--transition);
 
 				.input {
+					padding-right: 5px;
 					background: transparent;
 					border: 0;
 				}
