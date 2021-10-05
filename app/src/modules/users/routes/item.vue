@@ -162,6 +162,7 @@
 				ref="revisionsDrawerDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
@@ -359,6 +360,7 @@ export default defineComponent({
 			userName,
 			revisionsAllowed,
 			validationErrors,
+			revert,
 		};
 
 		function useBreadcrumb() {
@@ -496,6 +498,13 @@ export default defineComponent({
 			} else {
 				confirmArchive.value = false;
 			}
+		}
+
+		function revert(values: Record<string, any>) {
+			edits.value = {
+				...edits.value,
+				...values,
+			};
 		}
 	},
 });
