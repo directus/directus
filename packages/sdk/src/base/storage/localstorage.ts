@@ -1,4 +1,4 @@
-import { BaseStorage } from './base';
+import { BaseStorage } from './base.js';
 
 export class LocalStorage extends BaseStorage {
 	private prefix: string;

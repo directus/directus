@@ -1,4 +1,4 @@
-import { Item, OneItem, PartialItem, QueryOne } from './items';
+import { Item, OneItem, PartialItem, QueryOne } from './items.js';
 
 /**
  * CRUD at its finest

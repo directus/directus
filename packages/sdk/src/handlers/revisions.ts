@@ -2,9 +2,9 @@
  * Revisions handler
  */
 
-import { ItemsHandler } from '../base/items';
-import { ITransport } from '../transport';
-import { RevisionType, DefaultType } from '../types';
+import { ItemsHandler } from '../base/items.js';
+import { ITransport } from '../transport.js';
+import { RevisionType, DefaultType } from '../types.js';
 
 export type RevisionItem<T = DefaultType> = RevisionType & T;
 

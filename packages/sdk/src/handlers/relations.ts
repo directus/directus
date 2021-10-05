@@ -1,9 +1,9 @@
 /**
  * Relations handler
  */
-import { ManyItems, OneItem, PartialItem } from '../items';
-import { ITransport } from '../transport';
-import { RelationType, DefaultType, ID } from '../types';
+import { ManyItems, OneItem, PartialItem } from '../items.js';
+import { ITransport } from '../transport.js';
+import { RelationType, DefaultType, ID } from '../types.js';
 
 export type RelationItem<T = DefaultType> = RelationType & T;
 export class RelationsHandler<T = RelationItem> {

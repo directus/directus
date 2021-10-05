@@ -2,10 +2,10 @@
  * Activity handler
  */
 
-import { ItemsHandler } from '../base/items';
-import { ITransport } from '../transport';
-import { ActivityType, DefaultType } from '../types';
-import { CommentsHandler } from './comments';
+import { ItemsHandler } from '../base/items.js';
+import { ITransport } from '../transport.js';
+import { ActivityType, DefaultType } from '../types.js';
+import { CommentsHandler } from './comments.js';
 
 export type ActivityItem<T = DefaultType> = ActivityType & T;
 

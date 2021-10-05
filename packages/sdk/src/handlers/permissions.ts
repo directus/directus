@@ -2,9 +2,9 @@
  * Permissions handler
  */
 
-import { ItemsHandler } from '../base/items';
-import { ITransport } from '../transport';
-import { PermissionType, DefaultType } from '../types';
+import { ItemsHandler } from '../base/items.js';
+import { ITransport } from '../transport.js';
+import { PermissionType, DefaultType } from '../types.js';
 
 export type PermissionItem<T = DefaultType> = PermissionType & T;
 

@@ -1,5 +1,5 @@
-import { ITransport } from '../transport';
-import { TfaType, DefaultType } from '../types';
+import { ITransport } from '../transport.js';
+import { TfaType, DefaultType } from '../types.js';
 
 type TfaItem<T = DefaultType> = TfaType & T;
 export class TFAHandler {

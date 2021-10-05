@@ -1,8 +1,8 @@
-import { AuthCredentials, AuthLoginOptions, AuthRefreshOptions, AuthResult, AuthToken, IAuth } from '../auth';
-import { PasswordsHandler } from '../handlers/passwords';
-import { IStorage } from '../storage';
-import { ITransport } from '../transport';
-import { Debouncer } from '../utils';
+import { AuthCredentials, AuthLoginOptions, AuthRefreshOptions, AuthResult, AuthToken, IAuth } from '../auth.js';
+import { PasswordsHandler } from '../handlers/passwords.js';
+import { IStorage } from '../storage.js';
+import { ITransport } from '../transport.js';
+import { Debouncer } from '../utils.js';
 
 export type AuthOptions = {
 	mode?: 'json' | 'cookie';

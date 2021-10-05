@@ -1,9 +1,9 @@
 /**
  * Settings handler
  */
-import { ITransport } from '../transport';
-import { SettingType, DefaultType } from '../types';
-import { SingletonHandler } from './singleton';
+import { ITransport } from '../transport.js';
+import { SettingType, DefaultType } from '../types.js';
+import { SingletonHandler } from './singleton.js';
 
 export type SettingItem<T = DefaultType> = SettingType & T;
 

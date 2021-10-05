@@ -1,6 +1,6 @@
-import { ITransport } from '../transport';
-import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items';
-import { ID } from '../types';
+import { ITransport } from '../transport.js';
+import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items.js';
+import { ID } from '../types.js';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
 	protected transport: ITransport;

@@ -1,6 +1,6 @@
-import { PartialItem, QueryOne } from '../items';
-import { ITransport } from '../transport';
-import { TFAHandler } from './tfa';
+import { PartialItem, QueryOne } from '../items.js';
+import { ITransport } from '../transport.js';
+import { TFAHandler } from './tfa.js';
 
 export class MeHandler<T> {
 	private _transport: ITransport;

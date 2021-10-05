@@ -1,1 +1,1 @@
-export * from './axios-transport';
+export * from './axios-transport.js';

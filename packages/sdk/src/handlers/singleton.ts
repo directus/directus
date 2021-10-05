@@ -1,6 +1,6 @@
-import { ITransport } from '../transport';
-import { QueryOne, OneItem, PartialItem } from '../items';
-import { ISingleton } from '../singleton';
+import { ITransport } from '../transport.js';
+import { QueryOne, OneItem, PartialItem } from '../items.js';
+import { ISingleton } from '../singleton.js';
 
 export class SingletonHandler<T> implements ISingleton<T> {
 	protected collection: string;

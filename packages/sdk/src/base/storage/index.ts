@@ -1,3 +1,3 @@
-export * from './base';
-export * from './memory';
-export * from './localstorage';
+export * from './base.js';
+export * from './memory.js';
+export * from './localstorage.js';

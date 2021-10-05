@@ -1,14 +1,14 @@
 // Interfaces
-export * from './auth';
-export * from './directus';
-export * from './handlers';
-export * from './items';
-export * from './singleton';
-export * from './storage';
-export * from './transport';
+export * from './auth.js';
+export * from './directus.js';
+export * from './handlers/index.js';
+export * from './items.js';
+export * from './singleton.js';
+export * from './storage.js';
+export * from './transport.js';
 
 // Implementations
-export * from './base';
+export * from './base/index.js';
 
 // Types
-export * from './types';
+export * from './types.js';
