@@ -247,7 +247,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 
 			for (const payload of data) {
-				const primaryKey = await service.createOne(payload, { autoPurgeCache: false });
+				const primaryKey = await service.createOne(payload, { ...(opts || {}), autoPurgeCache: false });
 				primaryKeys.push(primaryKey);
 			}
 
