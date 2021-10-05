@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix-nullable-boolean
   pull_request:
     branches:
       - main
