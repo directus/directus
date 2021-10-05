@@ -6,8 +6,8 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filter="filter"
-		v-model:search-query="searchQuery"
+		:filter="filter"
+		:search-query="search"
 		collection="directus_webhooks"
 	>
 		<private-view :title="t('webhooks')">
@@ -24,7 +24,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" collection="directus_webhooks" />
+				<search-input v-model="search" collection="directus_webhooks" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -121,7 +121,7 @@ export default defineComponent({
 		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filter, searchQuery } = usePreset(ref('directus_webhooks'));
+		const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_webhooks'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
@@ -141,7 +141,7 @@ export default defineComponent({
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
+			search,
 			clearFilters,
 		};
 
@@ -187,7 +187,7 @@ export default defineComponent({
 
 		function clearFilters() {
 			filter.value = null;
-			searchQuery.value = null;
+			search.value = null;
 		}
 	},
 });

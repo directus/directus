@@ -4,8 +4,8 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filter="layoutFilter"
-		v-model:search-query="searchQuery"
+		:filter="layoutFilter"
+		:search="search"
 		:collection="values.collection"
 		readonly
 	>
@@ -93,7 +93,7 @@
 
 				<div class="layout-sidebar">
 					<sidebar-detail icon="search" :title="t('search')">
-						<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+						<v-input v-model="search" :placeholder="t('preset_search_placeholder')"></v-input>
 					</sidebar-detail>
 
 					<component
@@ -181,8 +181,7 @@ export default defineComponent({
 
 		const { loading, preset } = usePreset();
 		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, searchQuery } =
-			useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, search } = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
@@ -243,7 +242,7 @@ export default defineComponent({
 			deleteAndQuit,
 			confirmDelete,
 			updateFilters,
-			searchQuery,
+			search,
 			isSavable,
 			confirmLeave,
 			leaveTo,
@@ -406,7 +405,7 @@ export default defineComponent({
 				},
 			});
 
-			const searchQuery = computed<string | null>({
+			const search = computed<string | null>({
 				get() {
 					return values.value.search;
 				},
@@ -418,7 +417,7 @@ export default defineComponent({
 				},
 			});
 
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, searchQuery };
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, search };
 
 			function updateFilters(newFilter: Filter) {
 				edits.value = {
