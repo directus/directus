@@ -66,11 +66,9 @@ export class PayloadService {
 			if (action === 'read') {
 				if (value === true || value === 1 || value === '1') {
 					return true;
-				}
-				else if (value === false || value === 0 || value === '0') {
+				} else if (value === false || value === 0 || value === '0') {
 					return false;
-				}
-				else if (value === null || value === '') {
+				} else if (value === null || value === '') {
 					return null;
 				}
 			}
