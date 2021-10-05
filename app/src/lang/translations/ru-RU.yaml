@@ -904,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Основа карты
     basemaps_raster: Растр
     basemaps_tile: Растр TileJSON
     basemaps_style: Стиль Mapbox
@@ -974,6 +975,7 @@ field_options:
     transforms_note: Имя метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Токен доступа Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Основа карты
     basemaps_raster: Растр
     basemaps_tile: Raster TileJSON
     basemaps_style: Стиль Mapbox
@@ -1144,6 +1146,7 @@ interfaces:
     all: Все
     any: Любой
     and: и
+    no_rules: Правила не установлены
     placeholder: Перетащите правила сюда
   group-accordion:
     name: Аккордеон
