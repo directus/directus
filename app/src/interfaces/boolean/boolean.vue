@@ -49,6 +49,7 @@ export default defineComponent({
 			default: '#00C897',
 		},
 	},
+	emits: ['input'],
 	setup(props, context) {
 		const toggleInput = () => {
 			if (props.nullable === true) {
@@ -71,8 +72,7 @@ export default defineComponent({
 			}
 		};
 
-		return { toggleInput }
+		return { toggleInput };
 	},
-	emits: ['input'],
 });
 </script>
