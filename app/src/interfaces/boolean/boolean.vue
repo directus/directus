@@ -55,19 +55,15 @@ export default defineComponent({
 			if (props.nullable === true) {
 				if (props.value === null) {
 					context.emit('input', true);
-				}
-				else if (props.value === false) {
+				} else if (props.value === false) {
 					context.emit('input', null);
-				}
-				else {
+				} else {
 					context.emit('input', false);
 				}
-			}
-			else {
+			} else {
 				if (props.value === null || props.value === false) {
 					context.emit('input', true);
-				}
-				else {
+				} else {
 					context.emit('input', false);
 				}
 			}
