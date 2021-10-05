@@ -59,6 +59,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	});
 
 	let currentRequest: CancelTokenSource | null = null;
+	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	const fetchItems = throttle(getItems, 350);
 
@@ -99,7 +100,13 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 		error.value = null;
 
-		loading.value = true;
+		if (loadingTimeout) {
+			clearTimeout(loadingTimeout);
+		}
+
+		loadingTimeout = setTimeout(() => {
+			loading.value = true;
+		}, 150);
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];
 
@@ -163,6 +170,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				error.value = err;
 			}
 		} finally {
+			if (loadingTimeout) {
+				clearTimeout(loadingTimeout);
+				loadingTimeout = null;
+			}
+
 			loading.value = false;
 		}
 	}
