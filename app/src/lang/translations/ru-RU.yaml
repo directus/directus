@@ -1343,7 +1343,7 @@ interfaces:
     maximum_value: Максимальное значение
     step_interval: Интервал шага
     slug: Форматировать для URL
-    slug_label: Сделать введённое значение безопасным для URL
+    slug_label: Форматировать для URL
   input-multiline:
     textarea: Область текста
     description: Введите простой текст (несколько строк)
