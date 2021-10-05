@@ -35,6 +35,7 @@ needs to be publicly available on the internet.
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                |
 | `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys` |
+| `DB_CHARSET`           | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI` |
 
 ::: tip Additional Database Variables
 
@@ -429,10 +430,10 @@ Directus will attempt to automatically type cast environment variables based on 
 ([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type
 to use for the given value by prefixing the value with `{type}:`. The following types are available:
 
-| Syntax Prefix | Example                                                                                                           | Output                                                                                                                       |
-| ------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `string`      | `string:value`                                                                                                    | `"value"`                                                                                                                    |
-| `number`      | `number:3306`                                                                                                     | `3306`                                                                                                                       |
+| Syntax Prefix | Example                                                                                                         | Output                                                                                                                       |
+| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `string`      | `string:value`                                                                                                  | `"value"`                                                                                                                    |
+| `number`      | `number:3306`                                                                                                   | `3306`                                                                                                                       |
 | `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
 | `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
 
