@@ -142,7 +142,10 @@ export default defineComponent({
 			collection
 		);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const hasEdits = computed<boolean>(() => {
+			if (!edits.value.meta) return false;
+			return Object.keys(edits.value.meta).length > 0;
+		});
 
 		useShortcut('meta+s', () => {
 			if (hasEdits.value) saveAndStay();
