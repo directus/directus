@@ -32,14 +32,14 @@
 		"@types/listr": "0.14.4",
 		"@types/node": "15.12.2",
 		"@types/supertest": "2.0.11",
-		"@typescript-eslint/eslint-plugin": "4.32.0",
-		"@typescript-eslint/parser": "4.32.0",
+		"@typescript-eslint/eslint-plugin": "4.33.0",
+		"@typescript-eslint/parser": "4.33.0",
 		"axios": "0.22.0",
 		"dockerode": "3.3.1",
 		"eslint": "7.32.0",
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-prettier": "4.0.0",
-		"eslint-plugin-vue": "7.18.0",
+		"eslint-plugin-vue": "7.19.0",
 		"globby": "11.0.4",
 		"jest": "27.2.4",
 		"knex": "0.95.11",
@@ -75,6 +75,6 @@
 	},
 	"volta": {
 		"node": "16.5.0",
-		"npm": "7.24.1"
+		"npm": "7.24.2"
 	}
 }
