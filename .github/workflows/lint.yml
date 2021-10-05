@@ -41,4 +41,6 @@ jobs:
         run: npm ci
 
       - name: Run linters
-        run: npm run lint -- --fix
+        with:
+          auto_fix: true
+        run: npm run lint
