@@ -39,10 +39,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filter = useSync(props, 'filter', emit);
-		const search = useSync(props, 'search', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter, filterUser, search } = toRefs(props);
+
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const page = syncOption(layoutQuery, 'page', 1);
@@ -302,7 +301,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
 				if (itemCount.value === 1) {
 					return t('one_filtered_item');
 				}

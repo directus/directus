@@ -4,7 +4,9 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="filterWithRole"
+		:filter="mergeFilters"
+		:filter-user="filter"
+		:filter-system="roleFilter"
 		:search="search"
 		collection="directus_activity"
 	>
@@ -65,6 +67,7 @@ import { useLayout } from '@/composables/use-layout';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import { Filter } from '@directus/shared/types';
+import { mergeFilters } from '@directus/shared/utils';
 
 export default defineComponent({
 	name: 'ActivityCollection',
@@ -85,15 +88,6 @@ export default defineComponent({
 
 		const roleFilter = ref<Filter | null>(null);
 
-		const filterWithRole = computed(() => {
-			if (!roleFilter.value) return filter.value;
-			if (!filter.value) return roleFilter.value;
-
-			return {
-				_and: [roleFilter.value, filter.value],
-			};
-		});
-
 		return {
 			t,
 			breadcrumb,
@@ -104,7 +98,7 @@ export default defineComponent({
 			search,
 			filter,
 			roleFilter,
-			filterWithRole,
+			mergeFilters,
 		};
 
 		function useBreadcrumb() {

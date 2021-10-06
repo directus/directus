@@ -66,7 +66,12 @@
 				<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
 
 				<div class="layout">
-					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
+					<component
+						:is="`layout-${values.layout}`"
+						v-if="values.layout && values.collection"
+						v-bind="layoutState"
+						:collection="values.collection"
+					>
 						<template #no-results>
 							<v-info :title="t('no_results')" icon="search" center>
 								{{ t('no_results_copy') }}

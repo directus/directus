@@ -6,7 +6,9 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="filter"
+		:filter-user="filter"
+		:filter-system="archiveFilter"
+		:filter="mergeFilters(filter, archiveFilter)"
 		:search="search"
 		:collection="collection"
 		:reset-preset="resetPreset"
@@ -272,6 +274,7 @@ import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
+import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {
 	[field: string]: any;
@@ -298,6 +301,10 @@ export default defineComponent({
 		bookmark: {
 			type: String,
 			default: null,
+		},
+		showArchive: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -365,6 +372,32 @@ export default defineComponent({
 
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
+		const archiveFilter = computed(() => {
+			if (!currentCollection.value?.meta) return null;
+
+			const field = currentCollection.value.meta.archive_field;
+
+			if (!field) return filter.value;
+
+			let archiveValue: any = currentCollection.value.meta.archive_value;
+			if (archiveValue === 'true') archiveValue = true;
+			if (archiveValue === 'false') archiveValue = false;
+
+			if (props.showArchive) {
+				return {
+					[field]: {
+						_eq: archiveValue,
+					},
+				};
+			} else {
+				return {
+					[field]: {
+						_neq: archiveValue,
+					},
+				};
+			}
+		});
+
 		return {
 			t,
 			addNewLink,
@@ -408,6 +441,8 @@ export default defineComponent({
 			refresh,
 			refreshInterval,
 			currentLayout,
+			archiveFilter,
+			mergeFilters,
 		};
 
 		async function refresh() {

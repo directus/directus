@@ -22,6 +22,8 @@ export interface LayoutProps<Options = any, Query = any> {
 	selection: Item[];
 	layoutOptions: Options;
 	layoutQuery: Query;
+	filterUser: Filter | null;
+	filterSystem: Filter | null;
 	filter: Filter | null;
 	search: string | null;
 	selectMode: boolean;
@@ -30,10 +32,7 @@ export interface LayoutProps<Options = any, Query = any> {
 }
 
 interface LayoutContext {
-	emit: (
-		event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery' | 'update:filter' | 'update:search',
-		...args: any[]
-	) => void;
+	emit: (event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery', ...args: any[]) => void;
 }
 
 export type LayoutState<T, Options, Query> = {

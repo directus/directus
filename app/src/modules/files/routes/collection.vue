@@ -6,7 +6,9 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="layoutFilter"
+		:filter="mergeFilters(filter, folderTypeFilter)"
+		:filter-user="filter"
+		:filter-system="folderTypeFilter"
 		:search="search"
 		collection="directus_files"
 		:reset-preset="resetPreset"
@@ -196,6 +198,7 @@ import uploadFiles from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Filter } from '@directus/shared/types';
+import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {
 	[field: string]: any;
@@ -287,21 +290,6 @@ export default defineComponent({
 			return filterParsed;
 		});
 
-		const layoutFilter = computed<Filter | null>({
-			get() {
-				if (filter.value) {
-					return {
-						_and: [filter.value, folderTypeFilter.value],
-					};
-				} else {
-					return folderTypeFilter.value;
-				}
-			},
-			set(newFilters) {
-				filter.value = newFilters;
-			},
-		});
-
 		const { layoutWrapper } = useLayout(layout);
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
@@ -324,7 +312,6 @@ export default defineComponent({
 			title,
 			layoutRef,
 			layoutWrapper,
-			layoutFilter,
 			selection,
 			layoutOptions,
 			layoutQuery,
@@ -353,6 +340,7 @@ export default defineComponent({
 			deleteError,
 			batchEditActive,
 			filter,
+			mergeFilters,
 		};
 
 		function useBatch() {

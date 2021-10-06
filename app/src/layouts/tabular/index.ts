@@ -40,7 +40,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const { collection, filter, search } = toRefs(props);
+		const { collection, filter, filterUser, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
@@ -62,10 +62,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			useTable();
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
 				if (itemCount.value === 1) {
 					return t('one_filtered_item');
 				}
+
 				return t('start_end_of_count_filtered_items', {
 					start: n((+page.value - 1) * limit.value + 1),
 					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),

@@ -7,7 +7,7 @@
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
 		:filter="filter"
-		:search-query="search"
+		:search="search"
 		collection="directus_webhooks"
 	>
 		<private-view :title="t('webhooks')">

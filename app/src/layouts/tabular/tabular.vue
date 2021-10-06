@@ -74,7 +74,7 @@
 			</template>
 		</v-info>
 
-		<slot v-else-if="itemCount === 0 && (filter || search)" name="no-results" />
+		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
 </template>
@@ -182,7 +182,7 @@ export default defineComponent({
 			type: Function as PropType<() => void>,
 			required: true,
 		},
-		filter: {
+		filterUser: {
 			type: Object as PropType<Filter>,
 			default: null,
 		},

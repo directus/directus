@@ -33,7 +33,15 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 			},
 			filter: {
 				type: Object as PropType<Filter>,
-				default: () => ({}),
+				default: null,
+			},
+			filterUser: {
+				type: Object as PropType<Filter>,
+				default: null,
+			},
+			filterSystem: {
+				type: Object as PropType<Filter>,
+				default: null,
 			},
 			search: {
 				type: String as PropType<string | null>,
