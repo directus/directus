@@ -344,7 +344,14 @@ function mergeWithParentItems(
 				})
 				.sort((a, b) => {
 					// This is pre-filled in get-ast-from-query
-					const { column, order } = nestedNode.query.sort![0]!;
+					const sortField = nestedNode.query.sort![0]!;
+					let column = sortField;
+					let order: 'asc' | 'desc' = 'asc';
+
+					if (sortField.startsWith('-')) {
+						column = sortField.substring(1);
+						order = 'desc';
+					}
 
 					if (a[column] === b[column]) return 0;
 					if (a[column] === null) return 1;

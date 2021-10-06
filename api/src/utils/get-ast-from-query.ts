@@ -88,7 +88,7 @@ export default async function getASTFromQuery(
 			sortField = query.group[0];
 		}
 
-		query.sort = [{ column: sortField, order: 'asc' }];
+		query.sort = [sortField];
 	}
 
 	// When no group by is supplied, but an aggregate function is used, only a single row will be
@@ -236,9 +236,7 @@ export default async function getASTFromQuery(
 				};
 
 				if (relationType === 'o2m' && !child!.query.sort) {
-					child!.query.sort = [
-						{ column: relation.meta?.sort_field || schema.collections[relation.collection].primary, order: 'asc' },
-					];
+					child!.query.sort = [relation.meta?.sort_field || schema.collections[relation.collection].primary];
 				}
 			}
 

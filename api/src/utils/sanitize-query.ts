@@ -91,11 +91,7 @@ function sanitizeSort(rawSort: any) {
 	if (typeof rawSort === 'string') fields = rawSort.split(',');
 	else if (Array.isArray(rawSort)) fields = rawSort as string[];
 
-	return fields.map((field) => {
-		const order = field.startsWith('-') ? 'desc' : 'asc';
-		const column = field.startsWith('-') ? field.substring(1) : field;
-		return { column, order } as Sort;
-	});
+	return fields;
 }
 
 function sanitizeAggregate(rawAggregate: any): Aggregate {

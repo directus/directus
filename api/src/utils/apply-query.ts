@@ -25,10 +25,20 @@ export default function applyQuery(
 ): void {
 	if (query.sort) {
 		dbQuery.orderBy(
-			query.sort.map((sort) => ({
-				...sort,
-				column: getColumn(knex, collection, sort.column, false) as any,
-			}))
+			query.sort.map((sortField) => {
+				let column = sortField;
+				let order: 'asc' | 'desc' = 'asc';
+
+				if (sortField.startsWith('-')) {
+					column = column.substring(1);
+					order = 'desc';
+				}
+
+				return {
+					order,
+					column: getColumn(knex, collection, column, false) as any,
+				};
+			})
 		);
 	}
 
