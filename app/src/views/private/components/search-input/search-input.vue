@@ -158,10 +158,6 @@ export default defineComponent({
 	&.has-content {
 		width: 200px;
 
-		.icon-search {
-			margin-right: 8px;
-		}
-
 		.icon-empty {
 			display: block;
 		}
@@ -177,10 +173,6 @@ export default defineComponent({
 
 		.icon-empty {
 			display: block;
-		}
-
-		.icon-search {
-			margin-right: 8px;
 		}
 	}
 

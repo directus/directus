@@ -235,8 +235,13 @@ export default defineComponent({
 
 				.input {
 					padding-right: 5px;
+					padding-left: 6px;
 					background: transparent;
 					border: 0;
+
+					.prepend {
+						margin-right: 4px;
+					}
 				}
 			}
 		}
