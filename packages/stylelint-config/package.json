@@ -1,0 +1,36 @@
+{
+  "name": "@directus/stylelint-config",
+  "version": "9.0.0-rc.95",
+  "description": "Sharable stylelint config used by Directus",
+  "license": "GPL-3.0-only",
+  "author": "",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "directus",
+    "stylelint",
+    "stylelint-config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/directus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/directus/directus/issues"
+  },
+  "homepage": "https://github.com/directus/directus/blob/main/packages/stylelint-config/readme.md",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "stylelint-config-rational-order": "0.1.2",
+    "stylelint-config-standard": "22.0.0",
+    "stylelint-order": "4.1.0",
+    "stylelint-scss": "3.21.0"
+  },
+  "peerDependencies": {
+    "stylelint": ">=13.13.0"
+  }
+}

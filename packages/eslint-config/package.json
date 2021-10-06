@@ -1,0 +1,36 @@
+{
+  "name": "@directus/eslint-config",
+  "version": "9.0.0-rc.95",
+  "description": "Sharable eslint config used by Directus",
+  "license": "GPL-3.0-only",
+  "author": "",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "directus",
+    "eslint",
+    "stylelint-config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/directus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/directus/directus/issues"
+  },
+  "homepage": "https://github.com/directus/directus/blob/main/packages/eslint-config/readme.md",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "4.33.0",
+    "@typescript-eslint/parser": "4.33.0",
+    "eslint-plugin-vue": "7.19.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=7.0.0",
+    "typescript":">=4.4.0"
+  }
+}
