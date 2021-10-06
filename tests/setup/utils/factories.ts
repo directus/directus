@@ -1,41 +1,64 @@
 import { v4 as uuid } from 'uuid';
-import { company, internet, git as gitFaker, name, image, hacker } from 'faker';
+import { music, internet, name, finance, random, datatype, lorem, address, time, helpers } from 'faker';
 import { Knex } from 'knex';
 
-// type ProfilePic = {
-// 	id: string;
-// 	source: string;
-// 	employee?: string;
-// };
-// type GitPR = {
-// 	id: string;
-// 	branch: string;
-// 	name: string;
-// };
-// type Company = {
-// 	id: string;
-// 	name: string;
-// 	slogan: string;
-// };
+type User = {
+	id: string;
+	name: string;
+	birthday: Date;
+	search_radius: string;
+	earliest_events_to_show: number;
+	latest_events_to_show: number;
+	password: string;
+	shows_attended: number;
+	artist_id?: string;
+};
 
-// type Employee = {
-// 	id: string;
-// 	git_email: string;
-// 	git_username: string;
-// 	name: string;
-// 	job_title: string;
-// 	profile_pic?: string;
-// 	company?: string;
-// 	git_commit?: string;
-// 	git_pr?: string;
-// };
-// type Item = Employee | Company | GitPR | ProfilePic | unknown;
+type Artist = {
+	id: string;
+	name: string;
+	members: string;
+};
+
+type Tour = {
+	id: string;
+	route: string;
+	map_of_stops: string;
+	area_of_reach: string;
+	revenue_estimated: bigint;
+};
+
+type Organizer = {
+	id: string;
+	name: string;
+};
+
+type Event = {
+	id: string;
+	time: Date;
+	description: string;
+	cost: number;
+	location: string;
+	created_at: Date;
+	tags: string;
+};
+
+type JoinTable = {
+	id: string;
+	[key: string]: any;
+};
+
+type Item = User | Artist | Tour | Organizer | Event | JoinTable | (() => Artist);
+
+function randomDate(start: Date, end: Date) {
+	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
 
 export const seedTable = async function (
 	knex: Knex<any, unknown>,
 	count: number,
 	table: string,
-	factory: any
+	factory: Item
 ): Promise<void> {
 	if (typeof factory === 'object') {
 		await knex(table).insert(factory);
@@ -48,45 +71,42 @@ export const seedTable = async function (
 	}
 };
 
-export const createCompany = () => ({
+export const createArtist = (): Artist => ({
 	id: uuid(),
-	name: company.companyName(),
-	slogan: company.catchPhrase(),
+	name: internet.userName(),
+	// eslint-disable-next-line prettier/prettier
+	members: JSON.stringify({role: internet.userName})
 });
 
-export const createEmployee = () => ({
+export const createEvent = (): Event => ({
 	id: uuid(),
-	git_email: internet.email(),
-	git_username: internet.userName(),
-	name: `name.lastName, + name.firstName`,
-	job_title: name.jobTitle(),
+	cost: random.float(),
+	description: lorem.paragraphs(2),
+	location: address.streetAddress(),
+	created_at: randomDate(new Date(1030436120350), new Date(1633466120350)),
+	time: randomDate(new Date(1030436120350), new Date(1633466120350)),
+	tags: `tags
+${music.genre}
+${music.genre}
+${music.genre}
+`,
 });
 
-export const createGitPR = () => ({
+export const createTour = (): Tour => ({
 	id: uuid(),
-	branch: gitFaker.branch(),
-	name: hacker.phrase(),
-});
-export const createEmployeePRJoinTable = (employeeId: string, gitPrId: string) => ({
-	id: uuid(),
-	employee_id: employeeId,
-	git_pr_id: gitPrId,
+	route: 'string',
+	map_of_stops: 'string',
+	area_of_reach: 'string',
+	revenue_estimated: BigInt(finance.amount(Number.MAX_SAFE_INTEGER)),
 });
 
-export const createGitCommit = () => ({
+export const createUser = (): User => ({
+	birthday: helpers.contextualCard().dob,
 	id: uuid(),
-	branch: gitFaker.branch(),
-	commit: gitFaker.commitEntry(),
-	message: gitFaker.commitMessage(),
-	sha: gitFaker.commitSha(),
-	short_sha: gitFaker.shortSha(),
-});
-
-export const createProfilePic = () => ({
-	id: uuid(),
-	source: image.imageUrl(),
-});
-
-export const createManyToAny = () => ({
-	id: uuid(),
+	name: `${name.firstName()} ${name.lastName()}`,
+	search_radius: 'string',
+	earliest_events_to_show: time.recent(),
+	latest_events_to_show: time.recent(),
+	password: 'string',
+	shows_attended: datatype.number(),
 });

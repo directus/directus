@@ -3,7 +3,7 @@ import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
-import { createEmployee, createEmployeePRJoinTable, createGitPR, seedTable } from '../setup/utils/factories';
+import { createArtist, createUser, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -38,163 +38,100 @@ describe('/items', () => {
 
 			await database!('directus_collections').insert([
 				{
-					collection: 'employees',
+					collection: 'users',
 				},
 				{
-					collection: 'companys',
-				},
-
-				{
-					collection: 'git_commits',
-				},
-				{
-					collection: 'git_prs',
-				},
-				{
-					collection: 'profile_pics',
-				},
-
-				{
-					collection: 'employees_git_prs',
+					collection: 'artists',
 				},
 			]);
-			if ((await database!.schema.hasTable('employees')) === false) {
-				await database!.schema.createTable('employees', (table) => {
+
+			if ((await database!.schema.hasTable('artists')) === false) {
+				await database!.schema.createTable('artists', (table) => {
 					table.uuid('id').primary();
-					table.string('git_email');
-					table.string('git_username');
 					table.string('name');
-					table.string('job_title');
+					table.json('members');
 				});
 			}
 
-			// M2M: Employees => git Pull Requests, join table required
-			if ((await database!.schema.hasTable('git_prs')) === false) {
-				await database!.schema.createTable('git_prs', (table) => {
+			if ((await database!.schema.hasTable('users')) === false) {
+				await database!.schema.createTable('users', (table) => {
 					table.uuid('id').primary();
-					table.string('branch');
 					table.string('name');
-				});
-			}
-
-			if ((await database!.schema.hasTable('employees_git_prs')) === false) {
-				await database!.schema.createTable('employees_git_prs', (table) => {
-					table.uuid('id').primary();
-					table.uuid('employee_id').references('employees.id');
-					table.uuid('git_pr_id').references('git_prs.id');
+					table.date('birthday');
+					table.string('search_radius');
+					table.time('earliest_events_to_show');
+					table.time('latest_events_to_show');
+					table.string('password');
+					table.integer('shows_attended');
+					table.uuid('favorite_artist').references('artist_id').inTable('artists');
 				});
 			}
 
 			await database!('directus_relations').insert({
-				many_collection: 'employees_git_prs',
-				one_collection: 'employees',
-				many_field: 'git_prs',
-			});
-
-			await database!('directus_relations').insert({
-				many_collection: 'employees_git_prs',
-				one_collection: 'git_prs',
-				many_field: 'employee',
+				many_collection: 'artists',
+				many_field: 'favorite_artist',
+				one_collection: 'users',
+				one_field: 'favorite_artist',
 			});
 		}
 	});
 
 	afterEach(async () => {
 		for (const [vendor, connection] of databases) {
-			const database = databases.get(vendor);
-			await database!('directus_users').where('id', userID).del();
-			await database!('directus_roles').where('id', roleID).del();
-			await database!('directus_collections').where('collection', 'companys').del();
-			await database!('directus_collections').where('collection', 'employees').del();
-			await database!('directus_collections').where('collection', 'git_commits').del();
-			await database!('directus_collections').where('collection', 'git_prs').del();
-			await database!('directus_collections').where('collection', 'employees_git_prs').del();
-			await database!('directus_collections').where('collection', 'profile_pics').del();
-			await database!('directus_relations').where('many_collection', 'employees').del();
-			await database!('directus_relations').where('one_collection', 'employees').del();
-			await database!('directus_relations').where('one_collection', 'git_prs').del();
+			const database = databases.get(vendor)!;
+			await database('directus_users').where('id', userID).del();
+			await database('directus_roles').where('id', roleID).del();
+			await database('directus_collections').where('collection', 'users').del();
+			await database('directus_collections').where('collection', 'artists').del();
 
-			await database!.schema.dropTableIfExists('profile_pics');
-			await database!.schema.dropTableIfExists('git_commits');
-			await database!.schema.dropTableIfExists('companys');
-			await database!.schema.dropTableIfExists('employees_git_prs');
-			await database!.schema.dropTableIfExists('git_prs');
-			await database!.schema.dropTableIfExists('employees');
+			await database.schema.dropTableIfExists('users');
+			await database.schema.dropTableIfExists('artists');
 
 			connection.destroy();
 		}
 	});
 
 	describe('/:collection GET', () => {
-		it.each(getDBsToTest())('%p retrieves all items from employees table with no relations', async (vendor) => {
+		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			seedTable(databases.get(vendor)!, 100, 'employees', createEmployee);
+			seedTable(databases.get(vendor)!, 100, 'artists', createArtist);
 
 			const response = await request(url)
-				.get('/items/employees')
+				.get('/items/artists')
 				.set('Authorization', 'Bearer test_token')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
 			expect(response.body.data.length).toBe(100);
-			expect(Object.keys(response.body.data[0]).sort()).toStrictEqual([
-				'git_email',
-				'git_username',
-				'id',
-				'job_title',
-				'name',
-			]);
+			expect(Object.keys(response.body.data[0]).sort()).toStrictEqual(['id', 'members', 'name']);
 		});
-		it.each(getDBsToTest())(
-			'%p retrieves all items from employees table with a many to many relation',
-			async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
-				const employee = createEmployee();
-				const gitPR = createGitPR();
-				const join = createEmployeePRJoinTable(employee.id, gitPR.id);
-				await seedTable(databases.get(vendor)!, 1, 'employees', employee);
-				await seedTable(databases.get(vendor)!, 1, 'git_prs', gitPR);
-				await seedTable(databases.get(vendor)!, 1, 'employees_git_prs', join);
-
-				const response = await request(url)
-					.get('/items/employees')
-					.set('Authorization', 'Bearer test_token')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
-
-				expect(response.body.data.length).toBe(1);
-				expect(Object.keys(response.body.data[0]).sort()).toStrictEqual([
-					'git_email',
-					'git_username',
-					'id',
-					'job_title',
-					'name',
-				]);
-			}
-		);
 	});
 	describe('/:collection/:id', () => {
 		it.each(getDBsToTest())('%p retrieves one item', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const item = await createEmployee();
-			await databases.get(vendor)!('employees').insert(item);
+			const artist = createArtist();
+			await databases.get(vendor)!('artists').insert(artist);
 
 			const response = await request(url)
-				.get(`/items/employees/${item.id}`)
+				.get(`/items/artists/${artist.id}`)
 				.set('Authorization', 'Bearer test_token')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
 			if (vendor === 'mssql') {
 				expect(response.body.data).toStrictEqual({
-					id: item.id.toUpperCase(),
-					git_email: item.git_email,
-					git_username: item.git_username,
-					name: item.name,
-					job_title: item.job_title,
+					id: artist.id.toUpperCase(),
+					name: artist.name,
+					members: artist.members,
+				});
+			} else if (vendor === 'postgres') {
+				expect(response.body.data).toStrictEqual({
+					id: artist.id,
+					name: artist.name,
+					members: JSON.parse(artist.members),
 				});
 			} else {
-				expect(response.body.data).toStrictEqual(item);
+				expect(response.body.data.members).toStrictEqual(artist.members);
 			}
 		});
 	});
