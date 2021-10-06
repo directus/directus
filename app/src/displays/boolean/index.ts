@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.boolean.description',
 	types: ['boolean'],
 	icon: 'check_box',
-	handler: DisplayBoolean,
+	component: DisplayBoolean,
 	options: [
 		{
 			field: 'labelOn',

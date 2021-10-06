@@ -2,95 +2,95 @@
 
 // Default / Light Mode
 @mixin light {
-	--border-normal: #D3DAE4;
-	--border-normal-alt: #A2B5CD;
-	--border-subdued: #F0F4F9;
+	--border-normal: #d3dae4;
+	--border-normal-alt: #a2b5cd;
+	--border-subdued: #f0f4f9;
 
-	--foreground-normal: #4F5464; // Less contrast for improved hierarchy
+	--foreground-normal: #4f5464; // Less contrast for improved hierarchy
 	--foreground-normal-alt: #172940; // More contrast for titles and labels
-	--foreground-subdued: #A2B5CD;
-	--foreground-inverted:#FFF;
+	--foreground-subdued: #a2b5cd;
+	--foreground-inverted: #fff;
 
-	--background-normal: #F0F4F9;
-	--background-normal-alt: #E4EAF1;
-	--background-subdued: #F7FAFC;
-	--background-highlight: #F7F9FD;
-	--background-page: #FFFFFF;
-	--background-input: #FFFFFF;
+	--background-normal: #f0f4f9;
+	--background-normal-alt: #e4eaf1;
+	--background-subdued: #f7fafc;
+	--background-highlight: #f7f9fd;
+	--background-page: #ffffff;
+	--background-input: #ffffff;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;
 
-	--card-face-color: #FAFCFD;
-	--card-shadow-color: 23,41,64;
-	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color),0.2);
+	--card-face-color: #fafcfd;
+	--card-shadow-color: 23, 41, 64;
+	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 	--overlay-color: rgba(38, 50, 56, 0.9);
 
-	--purple-alt: #F6F4FD;
-	--purple-10: #F6F4FD;
-	--purple-25: #E7E2F8;
-	--purple-50: #CEC5F1;
-	--purple-75: #B7AAEB;
-	--purple: #9E8DE4;
-	--purple-125: #8279BC;
+	--purple-alt: #f6f4fd;
+	--purple-10: #f6f4fd;
+	--purple-25: #e7e2f8;
+	--purple-50: #cec5f1;
+	--purple-75: #b7aaeb;
+	--purple: #9e8de4;
+	--purple-125: #8279bc;
 	--purple-150: #666493;
-	--purple-175: #4A506B;
+	--purple-175: #4a506b;
 	--purple-190: #394453;
 
-	--blue-alt: #F0F8FE;
-	--blue-10: #F0F8FE;
-	--blue-25: #D9EBFC;
-	--blue-50: #B3D7F9;
-	--blue-75: #8EC4F7;
-	--blue: #68B0F4;
-	--blue-125: #5993C8;
-	--blue-150: #4B769B;
-	--blue-175: #3C596F;
+	--blue-alt: #f0f8fe;
+	--blue-10: #f0f8fe;
+	--blue-25: #d9ebfc;
+	--blue-50: #b3d7f9;
+	--blue-75: #8ec4f7;
+	--blue: #68b0f4;
+	--blue-125: #5993c8;
+	--blue-150: #4b769b;
+	--blue-175: #3c596f;
 	--blue-190: #344855;
 
-	--green-alt: #E6FAF5;
-	--green-10: #E6FAF5;
-	--green-25: #BFF1E5;
-	--green-50: #7FE3CA;
-	--green-75: #40D6B1;
-	--green: #00C897;
-	--green-110: #05BA8F; // Text readability
-	--green-125: #0BA582;
-	--green-150: #17826D;
-	--green-175: #225F58;
-	--green-190: #294A4B;
+	--green-alt: #e6faf5;
+	--green-10: #e6faf5;
+	--green-25: #bff1e5;
+	--green-50: #7fe3ca;
+	--green-75: #40d6b1;
+	--green: #00c897;
+	--green-110: #05ba8f; // Text readability
+	--green-125: #0ba582;
+	--green-150: #17826d;
+	--green-175: #225f58;
+	--green-190: #294a4b;
 
-	--yellow-alt: #FFF9ED;
-	--yellow-10: #FFF9ED;
-	--yellow-25: #FEF0D3;
-	--yellow-50: #FDE2A7;
-	--yellow-75: #FCD37B;
-	--yellow: #FFB300;
-	--yellow-125: #C8A34C;
+	--yellow-alt: #fff9ed;
+	--yellow-10: #fff9ed;
+	--yellow-25: #fef0d3;
+	--yellow-50: #fde2a7;
+	--yellow-75: #fcd37b;
+	--yellow: #ffb300;
+	--yellow-125: #c8a34c;
 	--yellow-150: #948049;
-	--yellow-175: #615E46;
-	--yellow-190: #424A44;
+	--yellow-175: #615e46;
+	--yellow-190: #424a44;
 
-	--orange-alt: #FFF5E9;
-	--orange-10: #FFF5E9;
-	--orange-25: #FDE5C6;
-	--orange-50: #FACA8D;
-	--orange-75: #F9B155;
-	--orange: #F7971C;
-	--orange-125: #C58026;
-	--orange-150: #926A2F;
+	--orange-alt: #fff5e9;
+	--orange-10: #fff5e9;
+	--orange-25: #fde5c6;
+	--orange-50: #faca8d;
+	--orange-75: #f9b155;
+	--orange: #f7971c;
+	--orange-125: #c58026;
+	--orange-150: #926a2f;
 	--orange-175: #605339;
-	--orange-190: #42453F;
+	--orange-190: #42453f;
 
-	--red-alt: #FDEEF0;
-	--red-10: #FDEEF0;
-	--red-25: #F8D3D9;
-	--red-50: #F0A7B3;
-	--red-75: #EA7D8F;
-	--red: #E35169;
-	--red-125: #B64C5F;
+	--red-alt: #fdeef0;
+	--red-10: #fdeef0;
+	--red-25: #f8d3d9;
+	--red-50: #f0a7b3;
+	--red-75: #ea7d8f;
+	--red: #e35169;
+	--red-125: #b64c5f;
 	--red-150: #884756;
-	--red-175: #5B414C;
-	--red-190: #403E47;
+	--red-175: #5b414c;
+	--red-190: #403e47;
 
 	--primary-10: var(--green-10);
 	--primary-25: var(--green-25);
@@ -103,6 +103,17 @@
 	--primary-150: var(--green-150);
 	--primary-175: var(--green-175);
 	--primary-190: var(--green-190);
+
+	--secondary-alt: var(--blue-alt);
+	--secondary-10: var(--blue-10);
+	--secondary-25: var(--blue-25);
+	--secondary-50: var(--blue-50);
+	--secondary-75: var(--blue-75);
+	--secondary: var(--blue);
+	--secondary-125: var(--blue-125);
+	--secondary-150: var(--blue-150);
+	--secondary-175: var(--blue-175);
+	--secondary-190: var(--blue-190);
 
 	--success-10: var(--green-10);
 	--success-25: var(--green-25);
@@ -141,4 +152,3 @@
 		--background-subdued: var(--background-page);
 	}
 }
-

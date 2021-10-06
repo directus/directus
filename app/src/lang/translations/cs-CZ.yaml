@@ -423,6 +423,8 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
+  filter:
+    all: Vše
   presentation-links:
     primary: Primární
   system-collection:

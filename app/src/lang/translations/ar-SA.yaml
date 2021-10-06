@@ -859,6 +859,10 @@ value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
 interfaces:
+  filter:
+    add_filter: إضافة فلتر
+    all: الجميع
+    any: أي
   presentation-links:
     links: روابط
     primary: الأساسي

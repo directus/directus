@@ -1028,6 +1028,10 @@ view_project: Poglej projekt
 report_error: Sporoči napako
 start: Začetek
 interfaces:
+  filter:
+    add_filter: Dodaj filter
+    all: Vse
+    any: Katerokoli
   group-accordion:
     name: Harmonika
     description: Prikaži polja ali skupine kot segmente harmonike

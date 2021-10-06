@@ -160,6 +160,8 @@ my_activity: Моја активност
 password: Лозинка
 template: Шаблон
 interfaces:
+  filter:
+    all: Sve
   input-code:
     code: Код
   system-collection:

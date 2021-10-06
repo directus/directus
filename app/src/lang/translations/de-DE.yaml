@@ -1089,7 +1089,7 @@ embed: Einbetten
 fallback_icon: Fallback-Symbol
 field: Feld | Felder
 file: Datei
-file_library: Datei-Browser
+file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 icon: Symbol
@@ -1136,6 +1136,19 @@ weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Ein Filterobjekt konfigurieren.
+    add_filter: Filter hinzufügen
+    add_group: Und / Oder Gruppe
+    add_value: Wert hinzufügen
+    all: Alle
+    any: Irgendein
+    and: und
+    of_the_following: der folgenden
+    no_rules: Keine konfigurierten Regeln
+    change_value: Klicken um Wert zu ändern
+    placeholder: Regeln hierher ziehen
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen

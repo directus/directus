@@ -622,6 +622,9 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
+  filter:
+    add_filter: 新增篩選器
+    all: 全部
   input-code:
     code: 程式碼
   system-collection:

@@ -897,6 +897,9 @@ value: Vrijednost
 view_project: Pregledaj Projekat
 report_error: Prijavi Grešku
 interfaces:
+  filter:
+    add_filter: Dodaj Filter
+    all: Svi
   presentation-links:
     presentation-links: Linkovi dugmeta
     links: Linkovi
