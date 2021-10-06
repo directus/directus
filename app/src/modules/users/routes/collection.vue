@@ -6,7 +6,9 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="layoutFilter"
+		:filter="mergeFilters(filter, roleFilter)"
+		:filter-user="filter"
+		:filter-system="roleFilter"
 		:search="search"
 		collection="directus_users"
 		:reset-preset="resetPreset"
@@ -146,6 +148,11 @@
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<export-sidebar-detail
+					collection="directus_users"
+					:filter="mergeFilters(filter, roleFilter)"
+					:search="search"
+				/>
 			</template>
 		</private-view>
 	</component>
@@ -165,7 +172,8 @@ import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
-import { Filter, Role } from '@directus/shared/types';
+import { Role } from '@directus/shared/types';
+import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {
 	[field: string]: any;
@@ -198,31 +206,20 @@ export default defineComponent({
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const layoutFilter = computed<Filter | null>({
-			get() {
-				if (props.role !== null) {
-					const roleFilter: Filter = {
-						_and: [
-							{
-								role: {
-									_eq: props.role,
-								},
+		const roleFilter = computed(() => {
+			if (props.role !== null) {
+				return {
+					_and: [
+						{
+							role: {
+								_eq: props.role,
 							},
-						],
-					};
+						},
+					],
+				};
+			}
 
-					if (filter.value) {
-						roleFilter._and.push(filter.value);
-					}
-
-					return roleFilter;
-				}
-
-				return filter.value;
-			},
-			set(newFilter: Filter | null) {
-				filter.value = newFilter;
-			},
+			return null;
 		});
 
 		const canInviteUsers = computed(() => {
@@ -253,7 +250,6 @@ export default defineComponent({
 			layoutRef,
 			layoutWrapper,
 			selection,
-			layoutFilter,
 			layoutOptions,
 			layoutQuery,
 			layout,
@@ -271,6 +267,8 @@ export default defineComponent({
 			deleteError,
 			batchEditActive,
 			filter,
+			roleFilter,
+			mergeFilters,
 		};
 
 		async function refresh() {

@@ -165,6 +165,11 @@
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<export-sidebar-detail
+					collection="directus_files"
+					:filter="mergeFilters(filter, folderTypeFilter)"
+					:search="search"
+				/>
 			</template>
 
 			<template v-if="showDropEffect">

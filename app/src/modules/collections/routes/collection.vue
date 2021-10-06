@@ -237,6 +237,11 @@
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
+				<export-sidebar-detail
+					:collection="collection"
+					:filter="mergeFilters(filter, archiveFilter)"
+					:search="search"
+				/>
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
