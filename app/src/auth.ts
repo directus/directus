@@ -40,6 +40,7 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 
 let refreshTimeout: any;
 let idle = false;
+let isRefreshing = false;
 
 // Prevent the auto-refresh when the app isn't in use
 idleTracker.on('idle', () => {
@@ -68,6 +69,13 @@ idleTracker.on('show', () => {
 });
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+	// Prevent concurrent refreshes
+	if (isRefreshing) {
+		return;
+	} else {
+		isRefreshing = true;
+	}
+
 	const appStore = useAppStore();
 
 	// Skip refresh if access token is still fresh
@@ -95,9 +103,11 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 
 		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 		appStore.authenticated = true;
+		isRefreshing = false;
 
 		return accessToken;
 	} catch (error: any) {
+		isRefreshing = false;
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	}
 }
