@@ -11,7 +11,7 @@ database ready to connect to.
 Run the following command in your terminal and follow the prompts.
 
 ```bash
-npx create-directus-project example-project
+npm init directus-project example-project
 ```
 
 ![Successful installation](../assets/getting-started/quickstart/terminal-install.png)
