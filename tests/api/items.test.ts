@@ -3,7 +3,7 @@ import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
-import { createArtist, createUser, seedTable } from '../setup/utils/factories';
+import { createArtist, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -50,20 +50,6 @@ describe('/items', () => {
 					table.uuid('id').primary();
 					table.string('name');
 					table.json('members');
-				});
-			}
-
-			if ((await database!.schema.hasTable('users')) === false) {
-				await database!.schema.createTable('users', (table) => {
-					table.uuid('id').primary();
-					table.string('name');
-					table.date('birthday');
-					table.string('search_radius');
-					table.time('earliest_events_to_show');
-					table.time('latest_events_to_show');
-					table.string('password');
-					table.integer('shows_attended');
-					table.uuid('favorite_artist').references('artist_id').inTable('artists');
 				});
 			}
 
@@ -119,17 +105,11 @@ describe('/items', () => {
 				.expect(200);
 
 			if (vendor === 'mssql') {
-				expect(response.body.data).toStrictEqual({
-					id: artist.id.toUpperCase(),
-					name: artist.name,
-					members: artist.members,
-				});
+				artist.id = artist.id.toUpperCase();
+				expect(response.body.data).toStrictEqual(artist);
 			} else if (vendor === 'postgres') {
-				expect(response.body.data).toStrictEqual({
-					id: artist.id,
-					name: artist.name,
-					members: JSON.parse(artist.members),
-				});
+				artist.members = JSON.parse(artist.members);
+				expect(response.body.data).toStrictEqual(artist);
 			} else {
 				expect(response.body.data.members).toStrictEqual(artist.members);
 			}
