@@ -118,6 +118,14 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 							task: () => {
 								return new Listr([
 									{
+										title: 'Create Volume',
+										task: async () => {
+											docker.createVolume({
+												name: 'local-db',
+											});
+										},
+									},
+									{
 										title: 'Database',
 										task: async () => {
 											if (!config.containerConfig[vendor] || config.containerConfig[vendor] === false) return;
@@ -126,6 +134,9 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 												vendor,
 												container,
 											});
+											vendor === 'sqlite3'
+												? docker.run(container.id, ['-v local-db:${pwd}/data.db'], process.stdout)
+												: undefined;
 										},
 									},
 									{
@@ -154,7 +165,9 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 													},
 												},
 											} as ContainerSpec);
-
+											vendor === 'sqlite3'
+												? docker.run(container.id, ['-v local-db:${pwd}/data.db'], process.stdout)
+												: undefined;
 											global.directusContainers.push({
 												vendor,
 												container,
