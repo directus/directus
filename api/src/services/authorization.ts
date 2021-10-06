@@ -102,7 +102,11 @@ export class AuthorizationService {
 				}
 			}
 
-			function checkFields(collection: string, children: (NestedCollectionNode | FieldNode)[], aggregate?: Aggregate) {
+			function checkFields(
+				collection: string,
+				children: (NestedCollectionNode | FieldNode)[],
+				aggregate?: Aggregate | null
+			) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 				const allowedFields = permissions.fields || [];

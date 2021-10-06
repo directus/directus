@@ -1413,7 +1413,7 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
-		const replaceFuncs = (filter?: Filter): undefined | Filter => {
+		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
 			if (!filter) return filter;
 
 			return replaceFuncDeep(filter);

@@ -1,7 +1,7 @@
 import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
 import { Meta } from '../types';
-import { Query, Sort, Aggregate, Filter } from '@directus/shared/types';
+import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter, deepMap } from '@directus/shared/utils';
 
