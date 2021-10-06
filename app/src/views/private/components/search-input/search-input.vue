@@ -45,7 +45,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
-import { Filter, LogicalFilterAND } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
+import { isObject } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -81,7 +82,25 @@ export default defineComponent({
 		const activeFilterCount = computed(() => {
 			if (!props.filter) return 0;
 
-			return (props.filter as LogicalFilterAND)._and?.length ?? 0;
+			let filterOperators: string[] = [];
+
+			parseLevel(props.filter);
+
+			return filterOperators.length;
+
+			function parseLevel(level: Record<string, any>) {
+				for (const [key, value] of Object.entries(level)) {
+					if (key === '_and' || key === '_or') {
+						value.forEach(parseLevel);
+					} else if (key.startsWith('_')) {
+						filterOperators.push(key);
+					} else {
+						if (isObject(value)) {
+							parseLevel(value);
+						}
+					}
+				}
+			}
 		});
 
 		return { t, active, disable, input, emitValue, activeFilterCount, filterActive, onClickOutside, filterBorder };
