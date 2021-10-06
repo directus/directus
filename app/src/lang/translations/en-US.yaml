@@ -1131,7 +1131,6 @@ revert: Revert
 save: Save
 schema: Schema
 search: Search
-search_and_filter: Search & Filter
 select_existing: Select Existing
 select_field_type: Select a field type
 select_interface: Select an interface

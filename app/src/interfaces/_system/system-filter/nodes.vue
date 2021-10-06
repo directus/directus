@@ -17,7 +17,6 @@
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
 						<v-select
-							v-tooltip.monospace="filterInfo[index].field"
 							inline
 							class="name"
 							item-text="name"

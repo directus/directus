@@ -1,6 +1,6 @@
 <template>
-	<div class="system-filter" :class="{ inline }">
-		<v-list :mandatory="true" :class="{ empty: innerValue.length === 0 }">
+	<div class="system-filter" :class="{ inline, empty: innerValue.length === 0 }">
+		<v-list :mandatory="true">
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
@@ -9,7 +9,6 @@
 				v-model:filter="innerValue"
 				:collection="collectionName"
 				:depth="1"
-				:inline="inline"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
@@ -179,15 +178,17 @@ export default defineComponent({
 
 	.buttons {
 		padding: 0 10px;
-		font-weight: 700;
+		font-weight: 600;
 	}
 
-	.empty {
-		display: flex;
-		align-items: center;
-		height: var(--input-height);
-		padding-top: 0;
-		padding-bottom: 0;
+	&.empty {
+		.v-list {
+			display: flex;
+			align-items: center;
+			height: var(--input-height);
+			padding-top: 0;
+			padding-bottom: 0;
+		}
 
 		.no-rules {
 			color: var(--foreground-subdued);
@@ -200,20 +201,22 @@ export default defineComponent({
 	}
 
 	&.inline {
-		.empty {
-			display: none;
-		}
-
 		.v-list {
 			margin-bottom: 0;
-			margin-bottom: -12px;
-			padding: 12px 6px;
+			margin-bottom: -9px;
+			// padding: 12px 6px;
+			padding: 7px 3px;
 			padding-bottom: 0;
 			border: 0;
 		}
 
+		&.empty .v-list {
+			display: none;
+		}
+
 		.buttons {
-			padding: 12px 6px;
+			// padding: 12px 6px;
+			padding: 7px 3px;
 		}
 
 		.add-filter {
