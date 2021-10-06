@@ -103,12 +103,12 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 
 		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 		appStore.authenticated = true;
-		isRefreshing = false;
 
 		return accessToken;
 	} catch (error: any) {
-		isRefreshing = false;
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
+	} finally {
+		isRefreshing = false;
 	}
 }
 
