@@ -476,11 +476,15 @@ export default defineComponent({
 
 				archiving.value = true;
 
+				let archiveValue: any = currentCollection.value.meta.archive_value;
+				if (archiveValue === 'true') archiveValue = true;
+				if (archiveValue === 'false') archiveValue = false;
+
 				try {
 					await api.patch(`/items/${props.collection}`, {
 						keys: selection.value,
 						data: {
-							[currentCollection.value.meta.archive_field]: currentCollection.value.meta.archive_value,
+							[currentCollection.value.meta.archive_field]: archiveValue,
 						},
 					});
 
