@@ -15,7 +15,7 @@ export default defineDisplay({
 	name: '$t:displays.related-values.related-values',
 	description: '$t:displays.related-values.description',
 	icon: 'settings_ethernet',
-	handler: DisplayRelatedValues,
+	component: DisplayRelatedValues,
 	options: options,
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	groups: ['m2m', 'm2o', 'o2m'],

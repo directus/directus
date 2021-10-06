@@ -188,6 +188,8 @@ icon: Iconiță
 info: Info
 password: Parolă
 interfaces:
+  filter:
+    all: Tot
   system-collection:
     collection: Colecție
   system-collections:

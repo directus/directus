@@ -900,6 +900,9 @@ value: Väärtus
 view_project: Näita projekti
 report_error: Raporteeri viga
 interfaces:
+  filter:
+    add_filter: Lisa filter
+    all: Kõik
   presentation-links:
     presentation-links: Nuppude lingid
     links: Lingid

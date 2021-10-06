@@ -616,6 +616,9 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
+  filter:
+    add_filter: Tambah Filter
+    all: Semua
   presentation-links:
     primary: Primer
   input-code:
