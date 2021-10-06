@@ -24,6 +24,7 @@ default_provider: Alapértelmezett
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
+modules: Modulok
 edit_field: Mező szerkesztése
 conditions: Feltételek
 maps: Térképek
