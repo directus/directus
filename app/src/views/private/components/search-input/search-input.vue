@@ -116,7 +116,8 @@ export default defineComponent({
 .search-input {
 	display: flex;
 	align-items: center;
-	width: 76px;
+	width: 72px;
+	max-width: 100%;
 	height: 44px;
 	overflow: hidden;
 	border: 2px solid var(--border-normal);
@@ -142,6 +143,7 @@ export default defineComponent({
 
 	.icon-search {
 		margin: 0 8px;
+		margin-right: 4px;
 	}
 
 	.icon-filter {
@@ -153,16 +155,38 @@ export default defineComponent({
 		border-color: var(--border-normal-alt);
 	}
 
+	&.has-content {
+		width: 200px;
+
+		.icon-search {
+			margin-right: 8px;
+		}
+
+		.icon-empty {
+			display: block;
+		}
+
+		.icon-filter {
+			margin-left: 0;
+		}
+	}
+
 	&.active {
-		width: 420px; // blaze it
+		width: 300px;
 		border-color: var(--border-normal);
 
 		.icon-empty {
 			display: block;
 		}
+
+		.icon-search {
+			margin-right: 8px;
+		}
 	}
 
 	&.filter-active {
+		width: 420px; // blaze it
+
 		.icon-filter {
 			--v-icon-color: var(--primary);
 		}
@@ -185,18 +209,6 @@ export default defineComponent({
 			background-color: var(--border-subdued);
 			content: '';
 			pointer-events: none;
-		}
-	}
-
-	&.has-content {
-		width: 200px;
-
-		.icon-empty {
-			display: block;
-		}
-
-		.icon-filter {
-			margin-left: 0;
 		}
 	}
 

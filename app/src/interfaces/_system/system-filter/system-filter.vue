@@ -28,7 +28,11 @@
 				:groups-clickable="true"
 				@group-toggle="loadFieldRelations($event.value, 1)"
 				@update:modelValue="addNode($event)"
-			/>
+			>
+				<template v-if="inline" #prepend>
+					<v-icon name="add" small />
+				</template>
+			</v-select>
 		</div>
 	</div>
 </template>
