@@ -202,11 +202,8 @@ export default defineComponent({
 
 	&.inline {
 		.v-list {
-			margin-bottom: 0;
-			margin-bottom: -9px;
-			// padding: 12px 6px;
-			padding: 7px 3px;
-			padding-bottom: 0;
+			margin: 0;
+			padding: 0;
 			border: 0;
 		}
 
@@ -215,8 +212,8 @@ export default defineComponent({
 		}
 
 		.buttons {
-			// padding: 12px 6px;
-			padding: 7px 3px;
+			margin: 0;
+			padding: 0;
 		}
 
 		.add-filter {

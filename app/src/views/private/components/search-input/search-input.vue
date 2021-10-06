@@ -1,15 +1,15 @@
 <template>
-	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount">
+	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
 		<div
 			v-click-outside="{
 				handler: disable,
 				middleware: onClickOutside,
 			}"
 			class="search-input"
-			:class="{ active, 'filter-active': filterActive, 'has-content': !!modelValue }"
+			:class="{ active, 'filter-active': filterActive, 'has-content': !!modelValue, 'filter-border': filterBorder }"
 			@click="active = true"
 		>
-			<v-icon v-tooltip.bottom="active ? null : t('search')" clickable name="search" class="icon-search" />
+			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
 			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
 			<v-icon
 				v-if="modelValue"
@@ -18,26 +18,26 @@
 				name="close"
 				@click.stop="$emit('update:modelValue', null)"
 			/>
-			<v-menu
-				v-model="filterActive"
-				:close-on-content-click="false"
-				placement="bottom-end"
-				:offset-x="10"
-				:offset-y="10"
-			>
-				<template #activator="{ toggle }">
-					<v-icon v-tooltip.bottom="t('filter')" clickable class="icon-filter" name="filter_list" @click="toggle" />
-				</template>
 
-				<div class="filter">
+			<v-icon
+				v-tooltip.bottom="t('filter')"
+				clickable
+				class="icon-filter"
+				name="filter_list"
+				@click="filterActive = !filterActive"
+			/>
+
+			<transition-expand @beforeEnter="filterBorder = true" @afterLeave="filterBorder = false">
+				<div v-show="filterActive" class="filter">
 					<interface-system-filter
+						class="filter-input"
 						inline
 						:value="filter"
 						:collection-name="collection"
 						@input="$emit('update:filter', $event)"
 					/>
 				</div>
-			</v-menu>
+			</transition-expand>
 		</div>
 	</v-badge>
 </template>
@@ -70,6 +70,7 @@ export default defineComponent({
 
 		const active = ref(props.modelValue !== null);
 		const filterActive = ref(false);
+		const filterBorder = ref(false);
 
 		watch(active, (newActive: boolean) => {
 			if (newActive === true && input.value !== null) {
@@ -83,22 +84,23 @@ export default defineComponent({
 			return (props.filter as LogicalFilterAND)._and?.length ?? 0;
 		});
 
-		return { t, active, disable, input, emitValue, onClickOutside, activeFilterCount, filterActive };
+		return { t, active, disable, input, emitValue, activeFilterCount, filterActive, onClickOutside, filterBorder };
+
+		function onClickOutside(e: { path: HTMLElement[] }) {
+			if (e.path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
+
+			return true;
+		}
 
 		function disable() {
 			active.value = false;
+			filterActive.value = false;
 		}
 
 		function emitValue() {
 			if (!input.value) return;
 			const value = input.value?.value;
 			emit('update:modelValue', value);
-		}
-
-		function onClickOutside(e: { path: HTMLElement[] }) {
-			if (e.path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
-
-			return true;
 		}
 	},
 });
@@ -119,8 +121,8 @@ export default defineComponent({
 	overflow: hidden;
 	border: 2px solid var(--border-normal);
 	border-radius: calc(44px / 2);
-	cursor: pointer;
-	transition: width var(--slow) var(--transition);
+	transition: width var(--slow) var(--transition), border-bottom-left-radius var(--fast) var(--transition),
+		border-bottom-right-radius var(--fast) var(--transition);
 
 	.icon-empty {
 		--v-icon-color: var(--foreground-subdued);
@@ -152,15 +154,8 @@ export default defineComponent({
 	}
 
 	&.active {
-		width: 360px;
-		border-color: var(--primary);
-		border-bottom-color: var(--background-page);
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-
-		.icon-search {
-			--v-icon-color: var(--primary);
-		}
+		width: 420px; // blaze it
+		border-color: var(--border-normal);
 
 		.icon-empty {
 			display: block;
@@ -173,13 +168,28 @@ export default defineComponent({
 		}
 	}
 
+	&.filter-border {
+		padding-bottom: 2px;
+		border-bottom: none;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+		transition: border-bottom-left-radius none, border-bottom-right-radius none;
+
+		&::after {
+			position: absolute;
+			bottom: 0px;
+			left: 0;
+			z-index: -1;
+			width: 100%;
+			height: 2px;
+			background-color: var(--border-subdued);
+			content: '';
+			pointer-events: none;
+		}
+	}
+
 	&.has-content {
 		width: 200px;
-
-		&:focus,
-		&:focus-within {
-			width: 360px;
-		}
 
 		.icon-empty {
 			display: block;
@@ -216,8 +226,20 @@ export default defineComponent({
 }
 
 .filter {
-	min-width: 352px;
-	max-width: 420px; // blaze it
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
 	padding: 0;
+	background-color: var(--background-subdued);
+	border: 2px solid var(--border-normal);
+	border-top: 0;
+	border-bottom-right-radius: 22px;
+	border-bottom-left-radius: 22px;
+}
+
+.filter-input {
+	// Use margin instead of padding to make sure transition expand takes it into account
+	margin: 10px 8px;
 }
 </style>
