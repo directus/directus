@@ -13,7 +13,7 @@ Install `stylelint` and `@directus/stylelint-config`:
 Add `@directus/stylelint-config` in the `extends` property of your
 [stylelint configuration file](https://stylelint.io/user-guide/configure/):
 
-```json
+```jsonc
 // .stylelintrc.json
 {
 	"extends": ["@directus/stylelint-config"]
