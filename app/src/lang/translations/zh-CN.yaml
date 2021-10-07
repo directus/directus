@@ -1132,10 +1132,14 @@ require_value_to_be_set: 需要设置值
 translation: 翻译
 value: 值
 view_project: 查看项目
-weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:
+  filter:
+    name: 筛选
+    add_filter: 添加过滤器
+    all: 全部
+    any: 任意
   group-accordion:
     name: 折叠
     description: 在折叠面板中显示字段或分组

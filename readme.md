@@ -31,7 +31,7 @@ certain features might be missing or broken. You can follow along with
 Create a new Directus project by running the following npm command:
 
 ```
-npx create-directus-project my-project
+npm init directus-project my-project
 ```
 
 Or, using yarn:

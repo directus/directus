@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.labels.description',
 	types: ['string', 'json', 'csv'],
 	icon: 'flag',
-	handler: DisplayLabels,
+	component: DisplayLabels,
 	options: [
 		{
 			field: 'defaultForeground',

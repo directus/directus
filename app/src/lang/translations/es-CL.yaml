@@ -925,6 +925,9 @@ view_project: Ver Proyecto
 report_error: Reportar Error
 start: Iniciar
 interfaces:
+  filter:
+    add_filter: Agregar Filtro
+    all: Todo
   group-accordion:
     start: Iniciar
     all_closed: Todo Cerrado

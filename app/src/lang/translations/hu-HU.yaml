@@ -1035,6 +1035,10 @@ value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
+  filter:
+    add_filter: Szűrő hozzáadása
+    all: Összes
+    any: Bármely
   group-accordion:
     name: Harmonika
     description: Mezőcsoportok megjelenítése harmonika nézetben

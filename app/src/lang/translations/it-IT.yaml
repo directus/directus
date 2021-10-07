@@ -1136,6 +1136,19 @@ weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
+  filter:
+    name: Filtro
+    description: Configura un oggetto filtro.
+    add_filter: Aggiungi Filtro
+    add_group: Gruppo And / Or
+    add_value: Aggiungi valore
+    all: Tutti
+    any: Qualsiasi
+    and: e
+    of_the_following: dei seguenti
+    no_rules: Nessuna regola configurata
+    change_value: Clicca per cambiare il valore
+    placeholder: Trascina qui le regole
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion

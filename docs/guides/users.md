@@ -12,10 +12,9 @@
 
 ## Inviting a User
 
-1. Navigate to **Settings > Roles & Permissions > [Role Name]**
-2. Scroll to the **Users in Role** field
-3. Click the **Invite Users** button
-4. Enter **one or more email addresses**, separated by commas, in the modal
+1. Navigate to the **User Library**
+2. Click the **Invite Users** button in the header
+4. Enter **one or more email addresses**, separated by new lines, in the modal
 5. Click **Invite**
 
 At this point the invited user(s) will receive an email with a link to the App where they set a password and enable

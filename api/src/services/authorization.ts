@@ -114,7 +114,7 @@ export class AuthorizationService {
 					for (const aliasMap of Object.values(aggregate)) {
 						if (!aliasMap) continue;
 
-						for (const column of Object.keys(aliasMap)) {
+						for (const column of Object.values(aliasMap)) {
 							if (allowedFields.includes(column) === false) throw new ForbiddenException();
 						}
 					}

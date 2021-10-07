@@ -27,8 +27,8 @@
 				</v-input>
 			</template>
 
-			<v-list>
-				<field-list-item v-for="field in fieldTree" :key="field.field" :field="field" @add="addFilterForField" />
+			<v-list @toggle="loadFieldRelations($event.value, 1)">
+				<field-list-item v-for="field in treeList" :key="field.field" :field="field" @add="addFilterForField" />
 			</v-list>
 		</v-menu>
 
@@ -78,7 +78,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 		const { info: collectionInfo } = useCollection(collection);
 
-		const { tree: fieldTree } = useFieldTree(collection);
+		const { treeList, loadFieldRelations } = useFieldTree(collection);
 
 		const localFilters = ref<Filter[]>([]);
 
@@ -139,7 +139,17 @@ export default defineComponent({
 			},
 		});
 
-		return { t, fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
+		return {
+			t,
+			treeList,
+			addFilterForField,
+			filters,
+			removeFilter,
+			updateFilter,
+			showArchiveToggle,
+			archived,
+			loadFieldRelations,
+		};
 
 		function addFilterForField(fieldKey: string) {
 			const field = fieldsStore.getField(props.collection, fieldKey) as Field;
