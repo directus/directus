@@ -904,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -974,6 +975,7 @@ field_options:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1001,7 +1003,7 @@ field_options:
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
     divider: Sortieren
     sort_field: Wählen Sie ein Feld...
-    accountability_divider: Verantwortung
+    accountability_divider: Verantwortlichkeit
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1132,6 +1134,7 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
