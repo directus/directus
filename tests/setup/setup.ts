@@ -2,7 +2,7 @@
 
 import Dockerode, { ContainerSpec } from 'dockerode';
 import knex from 'knex';
-import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
+import { awaitDirectusConnection } from './utils/await-connection';
 import Listr, { ListrTask } from 'listr';
 import { getDBsToTest } from '../get-dbs-to-test';
 import config, { CONTAINER_PERSISTENCE_FILE } from '../config';
@@ -141,6 +141,9 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 													'KEY=directus-test',
 													'SECRET=directus-test',
 													'TELEMETRY=false',
+													'CACHE_SCHEMA=false',
+													'CACHE_ENABLED=false',
+													'RATE_LIMITER_ENABLED=false',
 												],
 												HostConfig: {
 													Links:
@@ -191,11 +194,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 						return {
 							title: config.names[vendor]!,
 							task: () => {
-								if (vendor === 'mssql') {
-									console.log('error prone');
-								} else {
-									global.knexInstances.push({ vendor, knex: knex(config.knexConfig[vendor]!) });
-								}
+								global.knexInstances.push({ vendor, knex: knex(config.knexConfig[vendor]!) });
 							},
 						};
 					}),
@@ -207,10 +206,40 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 			title: 'Wait for databases to be ready',
 			task: async () => {
 				return new Listr(
-					global.knexInstances.map(({ vendor, knex }) => {
+					global.databaseContainers.map(({ vendor, container }) => {
 						return {
 							title: config.names[vendor]!,
-							task: async () => await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL),
+							task: async () => {
+								try {
+									container.exec(
+										{
+											Cmd: [
+												'/bin/bash',
+												'-c',
+												'/opt/mssql-tools/bin/sqlcmd -S test -U sa -P Test@123 -d model -Q "SELECT 1"',
+											],
+
+											AttachStdout: true,
+											AttachStderr: true,
+										},
+										function (err, exec) {
+											if (err) throw new Error(err);
+											exec!.start({}, function (err: any, stream: any) {
+												if (err) throw new Error(err);
+
+												container.modem.demuxStream(stream, process.stdout, process.stderr);
+
+												exec!.inspect(function (err, data) {
+													if (err) throw new Error(err);
+													return data;
+												});
+											});
+										}
+									);
+								} catch (error: any) {
+									throw new Error('errorrrrr');
+								}
+							},
 						};
 					}),
 					{ concurrent: true }
