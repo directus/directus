@@ -55,6 +55,7 @@ export class GoogleCloudStorage extends Storage {
 
 	public constructor(config: GoogleCloudStorageConfig) {
 		super();
+		// This is necessary as only credentials are in snake_case, not camelCase. Ref #8601
 		if (config.credentials) {
 			config.credentials = mapKeys(config.credentials, (_value, key) => snakeCase(key));
 		}
