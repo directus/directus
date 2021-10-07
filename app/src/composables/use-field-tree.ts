@@ -2,7 +2,7 @@ import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@directus/shared/types';
 import { getRelationType } from '@directus/shared/utils';
 import { get, set } from 'lodash';
-import { computed, Ref, ref, ComputedRef } from 'vue';
+import { computed, Ref, ref, ComputedRef, watch } from 'vue';
 
 export type FieldTree = Record<string, FieldInfo>;
 export type FieldInfo = { name: string; field: string; children: FieldTree; collection: string; type: string };
@@ -30,6 +30,12 @@ export function useFieldTree(
 	if (collection.value) {
 		tree.value = getFieldTreeForCollection(collection.value, 'any');
 	}
+
+	watch(collection, () => {
+		if (collection.value) {
+			tree.value = getFieldTreeForCollection(collection.value, 'any');
+		}
+	});
 
 	const visitedRelations = ref<string[][]>([]);
 

@@ -1,6 +1,6 @@
 import BaseJoi, { AnySchema } from 'joi';
-import { Filter } from '../types';
 import { escapeRegExp } from 'lodash';
+import { Filter } from '@directus/shared/types';
 
 const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',

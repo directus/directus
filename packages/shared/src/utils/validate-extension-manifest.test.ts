@@ -24,7 +24,7 @@ describe('', () => {
 		expect(validateExtensionManifest(mockExtension)).toBe(false);
 	});
 
-	it('returns false when passed item has a type other than pack and has no path, source, host, or hidden', () => {
+	it('returns false when passed item has a type other than pack and has no path, source or host', () => {
 		const mockExtension = {
 			name: 'test',
 			version: '0.1',
@@ -33,7 +33,7 @@ describe('', () => {
 		expect(validateExtensionManifest(mockExtension)).toBe(false);
 	});
 
-	it('returns false when passed item has a type of pack and has no host or hidden', () => {
+	it('returns false when passed item has a type of pack and has no host', () => {
 		const mockExtension = {
 			name: 'test',
 			version: '0.1',
@@ -46,7 +46,7 @@ describe('', () => {
 		const mockExtension = {
 			name: 'test',
 			version: '0.1',
-			'directus:extension': { type: 'interface', path: './', source: 'test', host: '^9.0.0', hidden: true },
+			'directus:extension': { type: 'interface', path: './', source: 'test', host: '^9.0.0' },
 		};
 		expect(validateExtensionManifest(mockExtension)).toBe(true);
 	});
@@ -55,7 +55,7 @@ describe('', () => {
 		const mockExtension = {
 			name: 'test',
 			version: '0.1',
-			'directus:extension': { type: 'pack', host: '^9.0.0', hidden: true },
+			'directus:extension': { type: 'pack', host: '^9.0.0' },
 		};
 		expect(validateExtensionManifest(mockExtension)).toBe(true);
 	});

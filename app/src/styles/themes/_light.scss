@@ -70,16 +70,16 @@
 	--yellow-175: #615e46;
 	--yellow-190: #424a44;
 
-	--orange-alt: #fff5e9;
-	--orange-10: #fff5e9;
-	--orange-25: #fde5c6;
-	--orange-50: #faca8d;
-	--orange-75: #f9b155;
-	--orange: #f7971c;
-	--orange-125: #c58026;
-	--orange-150: #926a2f;
-	--orange-175: #605339;
-	--orange-190: #42453f;
+	--orange-alt: #fdf5ec;
+	--orange-10: #fdf5ec;
+	--orange-25: #fbe5d1;
+	--orange-50: #f7cba3;
+	--orange-75: #f2b174;
+	--orange: #ee9746;
+	--orange-125: #be8045;
+	--orange-150: #8e6a44;
+	--orange-175: #5e5344;
+	--orange-190: #414543;
 
 	--red-alt: #fdeef0;
 	--red-10: #fdeef0;
@@ -126,16 +126,16 @@
 	--success-175: var(--green-175);
 	--success-190: var(--green-190);
 
-	--warning-10: var(--yellow-10);
-	--warning-25: var(--yellow-25);
-	--warning-50: var(--yellow-50);
-	--warning-75: var(--yellow-75);
-	--warning: var(--yellow);
-	--warning-alt: var(--yellow-10);
-	--warning-125: var(--yellow-125);
-	--warning-150: var(--yellow-150);
-	--warning-175: var(--yellow-175);
-	--warning-190: var(--yellow-190);
+	--warning-10: var(--orange-10);
+	--warning-25: var(--orange-25);
+	--warning-50: var(--orange-50);
+	--warning-75: var(--orange-75);
+	--warning: var(--orange);
+	--warning-alt: var(--orange-10);
+	--warning-125: var(--orange-125);
+	--warning-150: var(--orange-150);
+	--warning-175: var(--orange-175);
+	--warning-190: var(--orange-190);
 
 	--danger-10: var(--red-10);
 	--danger-25: var(--red-25);

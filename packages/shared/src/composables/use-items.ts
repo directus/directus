@@ -1,18 +1,11 @@
 import { useApi } from './use-system';
+import axios, { CancelTokenSource } from 'axios';
 import { useCollection } from './use-collection';
-import { Filter, Item } from '../types';
-import { moveInArray, filtersToQuery } from '../utils';
-import { isEqual, orderBy, throttle } from 'lodash';
-import { computed, ComputedRef, nextTick, ref, Ref, watch } from 'vue';
-
-type Query = {
-	limit: Ref<number>;
-	fields: Ref<readonly string[]>;
-	sort: Ref<string>;
-	page: Ref<number>;
-	filters: Ref<readonly Filter[]>;
-	searchQuery: Ref<string | null>;
-};
+import { Item } from '../types';
+import { moveInArray } from '../utils';
+import { isEqual, throttle } from 'lodash';
+import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';
+import { Query } from '../types/query';
 
 type ManualSortData = {
 	item: string | number;
@@ -30,13 +23,20 @@ type UsableItems = {
 	getItems: () => Promise<void>;
 };
 
-export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): UsableItems {
+type ComputedQuery = {
+	fields: Ref<Query['fields']> | ComputedRef<Query['fields']> | WritableComputedRef<Query['fields']>;
+	limit: Ref<Query['limit']> | ComputedRef<Query['limit']> | WritableComputedRef<Query['limit']>;
+	sort: Ref<Query['sort']> | ComputedRef<Query['sort']> | WritableComputedRef<Query['sort']>;
+	search: Ref<Query['search']> | ComputedRef<Query['search']> | WritableComputedRef<Query['search']>;
+	filter: Ref<Query['filter']> | ComputedRef<Query['filter']> | WritableComputedRef<Query['filter']>;
+	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
+};
+
+export function useItems(collection: Ref<string | null>, query: ComputedQuery, fetchOnInit = true): UsableItems {
 	const api = useApi();
-	const { primaryKeyField, sortField } = useCollection(collection);
+	const { primaryKeyField } = useCollection(collection);
 
-	let loadingTimeout: number | null = null;
-
-	const { limit, fields, sort, page, filters, searchQuery } = query;
+	const { fields, limit, sort, search, filter, page } = query;
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
@@ -54,126 +54,69 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 	const totalPages = computed(() => {
 		if (itemCount.value === null) return 1;
-		if (itemCount.value < limit.value) return 1;
-		return Math.ceil(itemCount.value / limit.value);
+		if (itemCount.value < (unref(limit) ?? 100)) return 1;
+		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
 	});
 
+	let currentRequest: CancelTokenSource | null = null;
+	let loadingTimeout: NodeJS.Timeout | null = null;
+
+	const fetchItems = throttle(getItems, 350);
+
 	if (fetchOnInit) {
-		getItems();
+		fetchItems();
 	}
 
 	watch(
-		collection,
+		[collection, limit, sort, search, filter, fields, page],
 		async (after, before) => {
-			if (!before || isEqual(after, before)) {
-				return;
+			if (isEqual(after, before)) return;
+
+			const [newCollection, newLimit, newSort, newSearch, newFilter, _newFields, _newPage] = after;
+			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, _oldFields, _oldPage] = before;
+
+			if (!newCollection || !query) return;
+
+			if (newFilter !== oldFilter || newLimit !== oldLimit || newSort !== oldSort || newSearch !== oldSearch) {
+				page.value = 1;
 			}
 
-			// Waiting for the tick here makes sure the query have been adjusted for the new
-			// collection
-			await nextTick();
-			reset();
-			getItems();
+			if (isEqual(newCollection, oldCollection) === false) {
+				reset();
+			}
+
+			fetchItems();
 		},
-		{ immediate: fetchOnInit }
-	);
-
-	watch([page, fields], async (after, before) => {
-		if (!before || isEqual(after, before)) {
-			return;
-		}
-
-		await nextTick();
-		if (loading.value === false) {
-			getItems();
-		}
-	});
-
-	watch(sort, async (after, before) => {
-		if (!before || isEqual(after, before)) {
-			return;
-		}
-
-		// When all items are on page, we only sort locally
-		const hasAllItems = limit.value > (itemCount.value || 0);
-
-		if (hasAllItems) {
-			sortItems(after);
-			return;
-		}
-
-		await nextTick();
-		if (loading.value === false) {
-			getItems();
-		}
-	});
-
-	watch([filters, limit], async (after, before) => {
-		if (!before || isEqual(after, before)) {
-			return;
-		}
-		page.value = 1;
-		await nextTick();
-		if (loading.value === false) {
-			getItems();
-		}
-	});
-
-	watch(
-		searchQuery,
-		throttle(
-			async (after, before) => {
-				if (isEqual(after, before)) {
-					return;
-				}
-				page.value = 1;
-				await nextTick();
-				if (loading.value === false) {
-					getItems();
-				}
-			},
-			500,
-			{ trailing: true }
-		)
+		{ deep: true, immediate: true }
 	);
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
 	async function getItems() {
-		if (loadingTimeout || !endpoint.value) return;
+		if (!endpoint.value) return;
+
+		currentRequest?.cancel();
+		currentRequest = null;
 
 		error.value = null;
 
-		loadingTimeout = window.setTimeout(() => {
-			loading.value = true;
-		}, 250);
+		if (loadingTimeout) {
+			clearTimeout(loadingTimeout);
+		}
 
-		let fieldsToFetch = [...fields.value];
+		loadingTimeout = setTimeout(() => {
+			loading.value = true;
+		}, 150);
+
+		let fieldsToFetch = [...(unref(fields) ?? [])];
 
 		// Make sure the primary key is always fetched
 		if (
-			fields.value.includes('*') === false &&
+			!unref(fields)?.includes('*') &&
 			primaryKeyField.value &&
 			fieldsToFetch.includes(primaryKeyField.value.field) === false
 		) {
 			fieldsToFetch.push(primaryKeyField.value.field);
-		}
-
-		// Make sure all fields that are used to filter are fetched
-		if (fields.value.includes('*') === false) {
-			filters.value.forEach((filter) => {
-				if (fieldsToFetch.includes((filter as any).field as string) === false) {
-					fieldsToFetch.push((filter as any).field as string);
-				}
-			});
-		}
-
-		// Make sure that the field we're sorting on is fetched
-		if (fields.value.includes('*') === false && sortField.value && sort.value) {
-			const sortFieldKey = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
-			if (fieldsToFetch.includes(sortFieldKey) === false) {
-				fieldsToFetch.push(sortFieldKey);
-			}
 		}
 
 		// Filter out fake internal columns. This is (among other things) for a fake $thumbnail m2o field
@@ -181,15 +124,19 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
+			currentRequest = axios.CancelToken.source();
+
 			const response = await api.get<any>(endpoint.value, {
 				params: {
-					limit: limit.value,
+					limit: unref(limit),
 					fields: fieldsToFetch,
-					sort: sort.value,
-					page: page.value,
-					search: searchQuery.value,
-					...filtersToQuery(filters.value),
+					sort: unref(sort),
+					page: unref(page),
+					search: unref(search),
+					filter: unref(filter),
+					meta: ['filter_count', 'total_count'],
 				},
+				cancelToken: currentRequest.token,
 			});
 
 			let fetchedItems = response.data.data;
@@ -212,49 +159,30 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 			}
 
 			items.value = fetchedItems;
-			itemCount.value = response.data.data.length;
+			totalCount.value = response.data.meta!.total_count!;
+			itemCount.value = response.data.meta!.filter_count!;
 
-			if (fetchedItems.length === 0 && page.value !== 1) {
+			if (page && fetchedItems.length === 0 && page?.value !== 1) {
 				page.value = 1;
 			}
-
-			getItemCount();
 		} catch (err: any) {
-			error.value = err;
+			if (!axios.isCancel(err)) {
+				error.value = err;
+			}
 		} finally {
-			clearTimeout(loadingTimeout);
-			loadingTimeout = null;
+			if (loadingTimeout) {
+				clearTimeout(loadingTimeout);
+				loadingTimeout = null;
+			}
+
 			loading.value = false;
 		}
-	}
-
-	async function getItemCount() {
-		if (!primaryKeyField.value || !endpoint.value) return;
-
-		const response = await api.get<any>(endpoint.value, {
-			params: {
-				limit: 0,
-				fields: primaryKeyField.value.field,
-				meta: ['filter_count', 'total_count'],
-				search: searchQuery.value,
-				...filtersToQuery(filters.value),
-			},
-		});
-
-		totalCount.value = response.data.meta!.total_count!;
-		itemCount.value = response.data.meta!.filter_count!;
 	}
 
 	function reset() {
 		items.value = [];
 		totalCount.value = null;
 		itemCount.value = null;
-	}
-
-	function sortItems(sortBy: string) {
-		const field = sortBy.startsWith('-') ? sortBy.substring(1) : sortBy;
-		const descending = sortBy.startsWith('-');
-		items.value = orderBy(items.value, [field], [descending ? 'desc' : 'asc']);
 	}
 
 	async function changeManualSort({ item, to }: ManualSortData) {
