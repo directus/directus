@@ -20,10 +20,14 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: الصورةالرمزية
+draft: مسوّدة
+modules: الوحدات
+tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 maps: الخرائط
 item_revision: التعديلات على العنصر
+enter_a_name: أدخل اسم...
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
@@ -478,6 +482,7 @@ visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
 show_hidden_collections: أظهر المجموعات المخفية
 hide_hidden_collections: اخفي المجموعات المخفية
+show_header: إظهار العناوين الرأسية
 unmanaged_collections: مجموعات غير مهيأة
 system_collections: مجموعات النظام
 placeholder: مكان محجوز
@@ -572,6 +577,7 @@ read: قراءة
 update: تحديث
 select_fields: حدد حقول
 format_text: تنسيق النص
+toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
@@ -972,6 +978,7 @@ interfaces:
   input-multiline:
     description: أدخل النص المتعدد الأسطر
   boolean:
+    toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
     label_default: تمكين
   translations:
