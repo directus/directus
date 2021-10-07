@@ -191,7 +191,11 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 						return {
 							title: config.names[vendor]!,
 							task: () => {
-								global.knexInstances.push({ vendor, knex: knex(config.knexConfig[vendor]!) });
+								if (vendor === 'mssql') {
+									console.log('error prone');
+								} else {
+									global.knexInstances.push({ vendor, knex: knex(config.knexConfig[vendor]!) });
+								}
 							},
 						};
 					}),
