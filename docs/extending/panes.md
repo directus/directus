@@ -1,0 +1,3 @@
+# Panes
+
+## Boilerplate for Panes
