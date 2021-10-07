@@ -829,7 +829,7 @@ fields:
     timestamp: Aktion am
     user: Aktion von
     comment: Kommentar
-    user_agent: User Agent
+    user_agent: Benutzer-Agent
     ip: IP Adresse
     revisions: Revisionen
   directus_collections:
