@@ -38,7 +38,7 @@ Navigate to the directory where you wish to create a new Directus project. The n
 inside the current directory. Create a new Directus project by running the following npm command.
 
 ```bash
-npx create-directus-project my-project
+npm init directus-project my-project
 ```
 
 ::: warning
