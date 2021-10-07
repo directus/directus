@@ -1,0 +1,30 @@
+{
+  "name": "@directus/prettier-config",
+  "version": "9.0.0-rc.95",
+  "description": "Sharable prettier config used by Directus",
+  "license": "GPL-3.0-only",
+  "author": "",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "directus",
+    "prettier",
+    "prettier-config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/directus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/directus/directus/issues"
+  },
+  "homepage": "https://github.com/directus/directus/blob/main/packages/prettier-config/readme.md",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "prettier": ">=2.4.0"
+  }
+}
