@@ -1,5 +1,12 @@
 <template>
-	<div class="system-filter" :class="{ inline, empty: innerValue.length === 0 }">
+	<v-notice v-if="!collectionField && !collection" type="warning">
+		{{ t('collection_field_not_setup') }}
+	</v-notice>
+	<v-notice v-else-if="!collection" type="warning">
+		{{ t('select_a_collection') }}
+	</v-notice>
+
+	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0 }">
 		<v-list :mandatory="true">
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
@@ -7,7 +14,7 @@
 			<nodes
 				v-else
 				v-model:filter="innerValue"
-				:collection="collectionName"
+				:collection="collection"
 				:depth="1"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
@@ -39,7 +46,7 @@
 
 <script lang="ts">
 import { get, set, isEmpty, cloneDeep } from 'lodash';
-import { defineComponent, PropType, computed, toRefs } from 'vue';
+import { defineComponent, PropType, computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
@@ -63,6 +70,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		collectionField: {
+			type: String,
+			default: null,
+		},
 		// Inline = stylistic rendering without borders. Used inside search-input
 		inline: {
 			type: Boolean,
@@ -73,9 +84,15 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { collectionName } = toRefs(props);
+		const values = inject('values', ref<Record<string, any>>({}));
 
-		const { treeList, loadFieldRelations } = useFieldTree(collectionName);
+		const collection = computed(() => {
+			if (props.collectionName) return props.collectionName;
+
+			return values.value[props.collectionField] ?? null;
+		});
+
+		const { treeList, loadFieldRelations } = useFieldTree(collection);
 
 		const innerValue = computed<Filter[]>({
 			get() {
@@ -110,6 +127,7 @@ export default defineComponent({
 			fieldOptions,
 			loadFieldRelations,
 			emitValue,
+			collection,
 		};
 
 		function emitValue() {
