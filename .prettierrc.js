@@ -1,7 +1,1 @@
-module.exports = {
-	htmlWhitespaceSensitivity: 'ignore',
-	printWidth: 120,
-	singleQuote: true,
-	useTabs: true,
-	proseWrap: 'always',
-};
+module.exports = require('./packages/prettier-config');
