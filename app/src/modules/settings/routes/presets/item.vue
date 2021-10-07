@@ -4,8 +4,8 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="layoutFilters"
-		v-model:search-query="searchQuery"
+		:filter="layoutFilter"
+		:search="search"
 		:collection="values.collection"
 		readonly
 	>
@@ -66,7 +66,12 @@
 				<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
 
 				<div class="layout">
-					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
+					<component
+						:is="`layout-${values.layout}`"
+						v-if="values.layout && values.collection"
+						v-bind="layoutState"
+						:collection="values.collection"
+					>
 						<template #no-results>
 							<v-info :title="t('no_results')" icon="search" center>
 								{{ t('no_results_copy') }}
@@ -93,7 +98,7 @@
 
 				<div class="layout-sidebar">
 					<sidebar-detail icon="search" :title="t('search')">
-						<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+						<v-input v-model="search" :placeholder="t('preset_search_placeholder')"></v-input>
 					</sidebar-detail>
 
 					<component
@@ -156,7 +161,7 @@ type FormattedPreset = {
 	layout_query: Record<string, any> | null;
 
 	layout_options: Record<string, any> | null;
-	filters: readonly Filter[] | null;
+	filter: Filter | null;
 };
 
 export default defineComponent({
@@ -181,14 +186,13 @@ export default defineComponent({
 
 		const { loading, preset } = usePreset();
 		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, searchQuery } =
-			useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, search } = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
-		const layoutFilters = computed<any>({
+		const layoutFilter = computed<any>({
 			get() {
-				return values.value.filters || [];
+				return values.value.filter ?? null;
 			},
 			set(newFilters) {
 				updateFilters(newFilters);
@@ -237,13 +241,13 @@ export default defineComponent({
 			layoutWrapper,
 			layoutQuery,
 			layoutOptions,
-			layoutFilters,
+			layoutFilter,
 			hasEdits,
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
 			updateFilters,
-			searchQuery,
+			search,
 			isSavable,
 			confirmLeave,
 			leaveTo,
@@ -266,7 +270,7 @@ export default defineComponent({
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
 				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
-				if (edits.value.filters) editsParsed.filters = edits.value.filters;
+				if (edits.value.filter) editsParsed.filter = edits.value.filter;
 				editsParsed.search = edits.value.search;
 
 				if (edits.value.scope) {
@@ -334,7 +338,7 @@ export default defineComponent({
 					scope: 'all',
 					layout_query: null,
 					layout_options: null,
-					filters: null,
+					filter: null,
 				};
 				if (isNew.value === true) return defaultValues;
 				if (preset.value === null) return defaultValues;
@@ -357,7 +361,7 @@ export default defineComponent({
 					scope: scope,
 					layout_query: preset.value.layout_query,
 					layout_options: preset.value.layout_options,
-					filters: preset.value.filters,
+					filter: preset.value.filter,
 				};
 
 				return value;
@@ -406,7 +410,7 @@ export default defineComponent({
 				},
 			});
 
-			const searchQuery = computed<string | null>({
+			const search = computed<string | null>({
 				get() {
 					return values.value.search;
 				},
@@ -418,12 +422,12 @@ export default defineComponent({
 				},
 			});
 
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, searchQuery };
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, search };
 
-			function updateFilters(newFilters: Filter) {
+			function updateFilters(newFilter: Filter) {
 				edits.value = {
 					...edits.value,
-					filters: newFilters,
+					filter: newFilter,
 				};
 			}
 		}

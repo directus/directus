@@ -1,13 +1,14 @@
 import { Knex } from 'knex';
 import { clone, cloneDeep, pick, uniq } from 'lodash';
 import { PayloadService } from '../services/payload';
-import { Item, Query, SchemaOverview } from '../types';
+import { Item, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
 import { toArray } from '@directus/shared/utils';
+import { Query } from '@directus/shared/types';
 import getDatabase from './index';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
@@ -289,7 +290,7 @@ function applyParentFilters(
 					...nestedNode.query[relatedCollection],
 					filter: {
 						_and: [
-							nestedNode.query[relatedCollection].filter,
+							nestedNode.query[relatedCollection].filter ?? {},
 							{
 								[nestedNode.relatedKey[relatedCollection]]: {
 									_in: uniq(keysPerCollection[relatedCollection]),
@@ -343,7 +344,14 @@ function mergeWithParentItems(
 				})
 				.sort((a, b) => {
 					// This is pre-filled in get-ast-from-query
-					const { column, order } = nestedNode.query.sort![0]!;
+					const sortField = nestedNode.query.sort![0]!;
+					let column = sortField;
+					let order: 'asc' | 'desc' = 'asc';
+
+					if (sortField.startsWith('-')) {
+						column = sortField.substring(1);
+						order = 'desc';
+					}
 
 					if (a[column] === b[column]) return 0;
 					if (a[column] === null) return 1;

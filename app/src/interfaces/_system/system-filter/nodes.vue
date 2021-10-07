@@ -1,21 +1,22 @@
 <template>
 	<draggable
-		:group="{ name: 'g1' }"
-		:list="filter"
+		tag="ul"
 		draggable=".row"
 		handle=".drag-handle"
-		:item-key="getIndex"
-		tag="ul"
-		:swap-threshold="0.3"
 		class="group"
+		:list="filterSync"
+		:group="{ name: 'g1' }"
+		:item-key="getIndex"
+		:swap-threshold="0.3"
+		:force-fallback="true"
+		@change="$emit('change')"
 	>
 		<template #item="{ element, index }">
 			<li class="row">
 				<div v-if="filterInfo[index].isField" block class="node field">
-					<div class="header">
+					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
 						<v-select
-							v-tooltip.monospace="filterInfo[index].field"
 							inline
 							class="name"
 							item-text="name"
@@ -39,7 +40,7 @@
 							:items="getCompareOptions(filterInfo[index].field)"
 							@update:modelValue="updateComparator(index, $event)"
 						/>
-						<input-group :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
+						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
 						<span class="delete">
 							<v-icon
 								v-tooltip="t('delete_label')"
@@ -53,7 +54,7 @@
 				</div>
 
 				<div v-else class="node logic">
-					<div class="header">
+					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small />
 						<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
 							<span class="key" @click="toggleLogic(index)">
@@ -75,8 +76,10 @@
 						:filter="element[filterInfo[index].name]"
 						:collection="collection"
 						:depth="depth + 1"
+						:inline="inline"
+						@change="$emit('change')"
 						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
-						@update:filter="updateNode(index, { [filterInfo[index].name]: $event })"
+						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
 					/>
 				</div>
 			</li>
@@ -93,7 +96,7 @@ import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { get } from 'lodash';
-import { FieldFilter, Filter, FilterOperator } from '@directus/shared/types';
+import { FieldFilter, Filter, FilterOperator, LogicalFilterAND, LogicalFilterOR } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 import { fieldToFilter, getField, getNodeName, getComparator } from './utils';
 
@@ -132,8 +135,12 @@ export default defineComponent({
 			type: Number,
 			default: 1,
 		},
+		inline: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	emits: ['remove-node', 'update:filter'],
+	emits: ['remove-node', 'update:filter', 'change'],
 	setup(props, { emit }) {
 		const { collection } = toRefs(props);
 		const filterSync = useSync(props, 'filter', emit);
@@ -173,7 +180,7 @@ export default defineComponent({
 			updateField,
 			updateComparator,
 			t,
-			updateNode,
+			replaceNode,
 			toggleLogic,
 			loadFieldRelations,
 			getNodeName,
@@ -182,6 +189,7 @@ export default defineComponent({
 			filterInfo,
 			getIndex,
 			getFieldPreview,
+			filterSync,
 		};
 
 		function getFieldPreview(node: Record<string, any>) {
@@ -204,12 +212,25 @@ export default defineComponent({
 
 		function toggleLogic(index: number) {
 			const nodeInfo = filterInfo.value[index];
-			if (nodeInfo.isField) return;
+
+			if (filterInfo.value[index].isField) return;
 
 			if ('_and' in nodeInfo.node) {
-				filterSync.value[index] = { _or: nodeInfo.node._and as FieldFilter[] };
+				filterSync.value = filterSync.value.map((filter, filterIndex) => {
+					if (filterIndex === index) {
+						return { _or: (nodeInfo.node as LogicalFilterAND)._and as FieldFilter[] };
+					}
+
+					return filter;
+				});
 			} else {
-				filterSync.value[index] = { _and: nodeInfo.node._or as FieldFilter[] };
+				filterSync.value = filterSync.value.map((filter, filterIndex) => {
+					if (filterIndex === index) {
+						return { _and: (nodeInfo.node as LogicalFilterOR)._or as FieldFilter[] };
+					}
+
+					return filter;
+				});
 			}
 		}
 
@@ -233,7 +254,11 @@ export default defineComponent({
 
 			function update(value: any) {
 				if (nodeInfo.isField === false) return;
-				filterSync.value[index] = fieldToFilter(nodeInfo.field, newVal, value);
+
+				filterSync.value = filterSync.value.map((filter, filterIndex) => {
+					if (filterIndex === index) return fieldToFilter(nodeInfo.field, newVal, value);
+					return filter;
+				});
 			}
 		}
 
@@ -253,16 +278,23 @@ export default defineComponent({
 				comparator = getCompareOptions(newField)[0].value;
 			}
 
-			filterSync.value[index] = fieldToFilter(newField, comparator, value);
+			filterSync.value = filterSync.value.map((filter, filterIndex) => {
+				if (filterIndex === index) return fieldToFilter(newField, comparator, value);
+				return filter;
+			});
 		}
 
-		function updateNode(index: number, field: Filter) {
-			filterSync.value = filterSync.value.map((val, i) => (i === index ? field : val));
+		function replaceNode(index: number, newFilter: Filter) {
+			filterSync.value = filterSync.value.map((val, filterIndex) => {
+				if (filterIndex === index) return newFilter;
+				return val;
+			});
 		}
 
 		function getCompareOptions(name: string) {
 			const fieldInfo = fieldsStore.getField(props.collection, name);
 			if (fieldInfo === null) return [];
+
 			return getFilterOperatorsForType(fieldInfo.type).map((type) => ({
 				text: t(`operators.${type}`),
 				value: `_${type}`,
@@ -278,6 +310,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	width: fit-content;
+	margin-right: 12px;
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
@@ -384,6 +417,18 @@ export default defineComponent({
 
 		margin-right: 4px;
 		cursor: grab;
+	}
+
+	&.inline {
+		width: auto;
+		margin-right: 0;
+		padding-right: 12px;
+
+		.delete {
+			right: 8px;
+			left: unset;
+			background-color: var(--background-page);
+		}
 	}
 }
 

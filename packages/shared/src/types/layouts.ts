@@ -1,6 +1,6 @@
 import { Component } from 'vue';
 import { Item } from './items';
-import { AppFilter } from './presets';
+import { Filter } from './filter';
 
 export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
@@ -22,18 +22,17 @@ export interface LayoutProps<Options = any, Query = any> {
 	selection: Item[];
 	layoutOptions: Options;
 	layoutQuery: Query;
-	filters: AppFilter[];
-	searchQuery: string | null;
+	filterUser: Filter | null;
+	filterSystem: Filter | null;
+	filter: Filter | null;
+	search: string | null;
 	selectMode: boolean;
 	readonly: boolean;
 	resetPreset?: () => Promise<void>;
 }
 
 interface LayoutContext {
-	emit: (
-		event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery' | 'update:filters' | 'update:searchQuery',
-		...args: any[]
-	) => void;
+	emit: (event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery', ...args: any[]) => void;
 }
 
 export type LayoutState<T, Options, Query> = {
