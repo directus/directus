@@ -51,6 +51,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const customLayerDrawerOpen = ref(false);
 
+		const displayTemplate = syncOption(layoutOptions, 'displayTemplate', undefined);
 		const cameraOptions = syncOption(layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(layoutOptions, 'customLayers', layers);
 		const autoLocationFilter = syncOption(layoutOptions, 'autoLocationFilter', false);
@@ -110,8 +111,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const template = computed(() => {
-			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			return `{{ ${primaryKeyField.value?.field} }}`;
+			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
 		});
 
 		const queryFields = computed(() => {
@@ -155,8 +155,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			shouldUpdateCamera.value = true;
 			locationFilterOutdated.value = false;
 			filters.value = filters.value.filter((filter) => filter.key !== 'location-filter');
+		}
+
+		function fitGeoJSONBounds() {
+			shouldUpdateCamera.value = true;
+			locationFilterOutdated.value = false;
 			if (geojson.value) {
-				geojsonBounds.value = geojson.value.bbox;
+				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
 		}
 
@@ -316,7 +321,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		return {
-			template,
 			geojson,
 			directusSource,
 			directusLayers,
@@ -332,6 +336,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			handleSelect,
 			geometryFormat,
 			geometryField,
+			displayTemplate,
 			isGeometryFieldNative,
 			cameraOptions,
 			autoLocationFilter,
@@ -359,6 +364,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			updateLocationFilter,
 			clearLocationFilter,
 			clearDataFilters,
+			fitGeoJSONBounds,
 		};
 
 		async function resetPresetAndRefresh() {

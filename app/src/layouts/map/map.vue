@@ -14,7 +14,7 @@
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
-			@fitdata="clearLocationFilter"
+			@fitdata="fitGeoJSONBounds"
 		/>
 
 		<v-button
@@ -222,6 +222,10 @@ export default defineComponent({
 		},
 		locationFilterOutdated: {
 			type: Boolean,
+			required: true,
+		},
+		fitGeoJSONBounds: {
+			type: Function as PropType<() => void>,
 			required: true,
 		},
 		updateLocationFilter: {

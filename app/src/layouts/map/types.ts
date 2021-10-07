@@ -16,4 +16,5 @@ export type LayoutOptions = {
 	autoLocationFilter?: boolean;
 	clusterData?: boolean;
 	animateOptions?: any;
+	displayTemplate?: string;
 };

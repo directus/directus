@@ -116,6 +116,7 @@ export default defineComponent({
 		let map: Map;
 		let mapLoading = ref(true);
 		let currentGeometry: Geometry | null | undefined;
+		let hoveredFeatureId: string | null;
 
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
@@ -145,16 +146,15 @@ export default defineComponent({
 		const controls = {
 			draw: new MapboxDraw(getDrawOptions(geometryType)),
 			fitData: new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds),
-			navigation: new NavigationControl(),
+			navigation: new NavigationControl({
+				showCompass: false,
+			}),
 			geolocate: new GeolocateControl(),
 		};
 
 		onMounted(() => {
-			setupMap();
-		});
-
-		onUnmounted(() => {
-			map.remove();
+			const cleanup = setupMap();
+			onUnmounted(cleanup);
 		});
 
 		return {
@@ -168,11 +168,12 @@ export default defineComponent({
 			basemap,
 		};
 
-		function setupMap() {
+		function setupMap(): () => void {
 			map = new Map({
 				container: container.value!,
 				style: style.value,
 				attributionControl: false,
+				dragRotate: false,
 				logoPosition: 'bottom-right',
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
@@ -200,6 +201,7 @@ export default defineComponent({
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
 				map.on('draw.modechange', handleDrawModeChange);
+				window.addEventListener('keydown', handleKeyDown);
 			});
 
 			watch(
@@ -247,6 +249,11 @@ export default defineComponent({
 					loadValueFromProps();
 				}
 			);
+
+			return () => {
+				window.removeEventListener('keydown', handleKeyDown);
+				map.remove();
+			};
 		}
 
 		function resetValue(hard: boolean) {
@@ -381,6 +388,12 @@ export default defineComponent({
 				emit('input', null);
 			} else {
 				emit('input', serialize(currentGeometry));
+			}
+		}
+
+		function handleKeyDown(event) {
+			if ([8, 46].includes(event.keyCode)) {
+				controls.draw.trash();
 			}
 		}
 	},
