@@ -50,7 +50,7 @@
 				v-else-if="itemCount === 0 && (searchQuery || activeFilterCount > 0 || !locationFilterOutdated)"
 				icon="search"
 				center
-				:title="t('no_results_here')"
+				:title="t('layouts.map.no_results_here')"
 			>
 				<template #append>
 					<v-card-actions>
@@ -58,7 +58,7 @@
 							:disabled="!searchQuery && !filters.filter((f) => f.key !== 'location-filter').length"
 							@click="clearDataFilters"
 						>
-							{{ t('clear_data_filters') }}
+							{{ t('layouts.map.clear_data_filters') }}
 						</v-button>
 						<v-button :disabled="locationFilterOutdated" @click="clearLocationFilter">
 							{{ t('layouts.map.clear_location_filter') }}

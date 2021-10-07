@@ -884,10 +884,11 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Fond de cartes
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
-    mapbox_key: Jeton d'accès Mapbox
+    mapbox_key: Clé d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     additional_transforms: Transformations supplémentaires
@@ -1467,6 +1468,14 @@ layouts:
     map: Carte
     field: Géométrie
     search_this_area: Chercher dans cette zone
+    basemap: Fond de carte
+    layers: Couches
+    cluster: Regrouper les données
+    invalid_geometry: Invalid geometry
+    auto_location_filter: Toujours filter les données selon l'emprise
+    clear_data_filters: Effacer les filtres avancées
+    clear_location_filter: Effacer le filtre géographique
+    no_results_here: Aucun résultat dans cette zone
 panels:
   label:
     name: Étiquette
