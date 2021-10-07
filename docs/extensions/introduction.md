@@ -3,6 +3,10 @@
 > In addition to being highly customizable, Directus has been architected to be completely modular and extensible. This
 > ensures you will never hit a hard feature ceiling within the platform.
 
+## Extension SDK
+
+The easiest way to start creating extensions is to use the [Extensions SDK](/extensions/creating-extensions/).
+
 ## App Extensions
 
 Allow creating custom experiences within the Directus App.

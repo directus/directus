@@ -414,6 +414,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/extensions/creating-extensions',
+						title: 'Creating Extensions',
+					},
+					{
+						type: 'page',
 						path: '/extensions/displays',
 						title: 'Displays',
 					},
