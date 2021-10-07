@@ -116,7 +116,6 @@ export default defineComponent({
 		let map: Map;
 		let mapLoading = ref(true);
 		let currentGeometry: Geometry | null | undefined;
-		let hoveredFeatureId: string | null;
 
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
