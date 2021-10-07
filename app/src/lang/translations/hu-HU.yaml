@@ -164,6 +164,8 @@ field_create_success: 'Létrehozott mező: "{field}"'
 field_update_success: 'Módosított mező: "{field}"'
 duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
+aggregate_function: Aggregáló függvény
+aggregate_precision: Aggregálás pontossága
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
@@ -804,6 +806,14 @@ directus_collection:
   directus_files: Metaadatok az összes kezelt fájleszközhöz
   directus_folders: Virtuális könyvtárakat biztosít a fájlok számára
   directus_migrations: Az adatbázis melyik verzióját használja
+  directus_presets: Gyűjtemény és könyvjelzők alapértelmezései
+  directus_relations: Reláció konfigurációja és metaadatok
+  directus_revisions: Pillanatkép minden tevékenységhez
+  directus_roles: Jogosultsági csoportok rendszerfelhasználók számára
+  directus_sessions: Felhasználói munkamenet-információk
+  directus_settings: Projekt konfigurációs lehetőségek
+  directus_users: A platform rendszerhasználói
+  directus_webhooks: Konfiguráció eseményalapú HTTP-kérésekhez
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
@@ -823,6 +833,7 @@ fields:
     display_template: Megjelenítési sablon
     hidden: Rejtett
     singleton: Egyedüli
+    translations: Gyűjteménynevek fordítása
     archive_app_filter: Szűrő archíválása
     archive_value: Archív érték
     unarchive_value: Archiválás megszüntetése utáni érték
@@ -886,6 +897,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Alaptérkép
     basemaps_raster: Raszter
     basemaps_tile: Raszter TileJSON
     basemaps_style: Mapbox stílus
@@ -955,6 +967,7 @@ field_options:
     transforms_note: 'A Sharp módszer neve és argumentumai. További információért lásd: https://sharp.pixelplumbing.com/api-constructor'
     mapbox_key: Mapbox hozzáférési token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Alaptérkép
     basemaps_raster: Raszter
     basemaps_tile: Raszter TileJSON
     basemaps_style: Mapbox stílus
@@ -1031,6 +1044,7 @@ field_options:
     actions_delete: Törlés
     actions_login: Bejelentkezés
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
+no_value: Hiányzó érték
 do_nothing: Ne tegyen semmit
 generate_and_save_uuid: UUID generálása és mentése
 save_current_user_id: Jelenlegi felhasználói azonosító mentése
@@ -1115,7 +1129,9 @@ start: Start
 interfaces:
   filter:
     name: Szűrő
+    description: Szűrőobjektum konfigurálása.
     add_filter: Szűrő hozzáadása
+    add_group: És / Vagy csoport
     add_value: Érték hozzáadása
     all: Összes
     any: Bármely
@@ -1501,6 +1517,7 @@ panels:
     value_field: Érték mező
   label:
     name: Címke
+    description: Szöveg megjelenítése
   list:
     name: Lista
     description: Mezők szűrése és listázása egy gyűjteményből
