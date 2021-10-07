@@ -1,53 +1,54 @@
 # Custom API Hooks <small></small>
 
-> Custom API Hooks allow running custom logic when a specified event occurs within your project. Types of API hooks are
-> Actions, Filters, Init, and Schedule.
+> Custom API Hooks allow running custom logic when a specified event occurs within your project. There are different
+> types of events to choose from.
 
-[[toc]]
+## Extension Entrypoint
 
-## Types of Hooks
+The entrypoint of your hook is the `index` file inside the `src/` folder of your extension package. It exports a
+register function to register one or more event listeners.
 
-- [Action](#action)
-- [Filter](#filter)
-- [Init](#init)
-- [Schedule](#schedule)
+Example of an entrypoint:
 
-Use filter hooks when you want the hook to fire before the event. Use action hooks when you want the hook to fire after
-the event.
+```js
+export default ({ filter, action }) => {
+	filter('items.create', () => {
+		console.log('Creating Item!');
+	});
 
-Hooks can impact performance when not carefully implemented. Filter hooks happen before the event fires, making them
-much more susceptible to performance issues. Hooks on `read` actions can also impact performance since a single request
-can result in many database reads.
+	action('items.create', () => {
+		console.log('Item created!');
+	});
+};
+```
 
-### Action
+## Events
 
-An action event executes after a defined event and receives data related to the event. Use actions hooks when you need
-to automate responses to CRUD events on items or server actions.
+Next, you will want to define your event. You can trigger your custom hook with any of the platform's many API events.
+An event is defined by its type and its name.
 
-The action register function receives two parameters:
+Event names consist of multiple scopes delimited by a dot:
 
-- The event name
-- A callback function that is executed whenever the event fires.
+```
+<scope>.<scope>...
+// eg: items.create
+// eg: users.update
+// eg: auth.login
+// eg: routes.custom.before
+```
 
-The callback function itself receives two parameters:
-
-- An event-specific meta object
-- A context object
-
-The context object has the following properties:
-
-- `database` — The current database transaction
-- `schema` — The current API schema in use
-- `accountability` — Information about the current user
+There are four event types to choose from.
 
 ### Filter
 
-Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
+A filter event executes prior to the event being fired. This allows you to check and/or modify the event's payload
+before it is processed.
 
-Below is an example of canceling a `create` event by throwing a standard Directus exception.
+It also allows you to cancel an event based on the logic within the hook. The following example shows how you can cancel
+an event by throwing a standard Directus exception:
 
 ```js
-module.exports = function registerHook({ filter }, { exceptions }) {
+export default ({ filter }, { exceptions }) => {
 	const { InvalidPayloadException } = exceptions;
 
 	filter('items.create', async (input) => {
@@ -60,81 +61,15 @@ module.exports = function registerHook({ filter }, { exceptions }) {
 };
 ```
 
-The filter register function receives two parameters:
-
-- The event name
-- A callback function that is executed whenever the event fires.
-
-The callback function itself receives three parameters:
-
-- The modifiable payload
-- An event-specific meta object
-- A context object
-
-The context object has the following properties:
+The first parameter of the filter register function is the event name. The second parameter is the modifiable payload.
+The third argument is an event-specific meta object. The fourth argument is a context object with the following
+properties:
 
 - `database` — The current database transaction
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
-### Init
-
-An init event executes at a defined point within the lifecycle of Directus. Use init event objects to inject logic into
-internal services.
-
-The init register function receives two parameters:
-
-- The event name
-- A callback function that is executed whenever the event fires.
-
-The callback function itself receives one parameter:
-
-- An event-specific meta object
-
-### Schedule
-
-A schedule event executes at certain points in time rather than when Directus performs a specific action. This is
-supported through [`node-cron`](https://www.npmjs.com/package/node-cron). To set up a scheduled event, provide a cron
-statement as the first parameter to the `schedule()` function. For example `schedule('15 14 1 * *', <...>)` (at 14:15 on
-day-of-month 1) or `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday). See example below:
-
-```js
-const axios = require('axios');
-
-module.exports = function registerHook({ schedule }) {
-	schedule('*/15 * * * *', async () => {
-		await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
-	});
-};
-```
-
-## Available Events
-
-### Action Events
-
-| Name                          | Meta                                                |
-| ----------------------------- | --------------------------------------------------- |
-| `server.start`                | `server`                                            |
-| `server.stop`                 | `server`                                            |
-| `response`                    | `request`, `response`, `ip`, `duration`, `finished` |
-| `auth.login`                  | `payload`, `status`, `user`, `provider`             |
-| `files.upload`                | `payload`, `key`, `collection`                      |
-| `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
-| `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
-| `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
-| `(<collection>.)items.delete` | `payload`, `collection`                             |
-| `<system-collection>.create`  | `payload`, `key`, `collection`                      |
-| `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
-| `<system-collection>.delete`  | `payload`, `collection`                             |
-
-::: tip System Collections
-
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
-
-:::
-
-### Filter Events
+#### Available Events
 
 | Name                          | Payload              | Meta                                 |
 | ----------------------------- | -------------------- | ------------------------------------ |
@@ -158,7 +93,63 @@ module.exports = function registerHook({ schedule }) {
 
 :::
 
-### Init Events
+::: warning Performance
+
+Filters can impact performance when not carefully implemented, as they are executed in a blocking manner.
+
+:::
+
+### Action
+
+An action event executes after a certain event and receives some data related to the event.
+
+The first parameter of the action register function is the event name. The second argument is an event-specific meta
+object. The third argument is a context object with the following properties:
+
+- `database` — The current database transaction
+- `schema` — The current API schema in use
+- `accountability` — Information about the current user
+
+#### Available Events
+
+| Name                          | Meta                                                |
+| ----------------------------- | --------------------------------------------------- |
+| `server.start`                | `server`                                            |
+| `server.stop`                 | `server`                                            |
+| `response`                    | `request`, `response`, `ip`, `duration`, `finished` |
+| `auth.login`                  | `payload`, `status`, `user`, `provider`             |
+| `files.upload`                | `payload`, `key`, `collection`                      |
+| `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
+| `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
+| `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
+| `(<collection>.)items.delete` | `payload`, `collection`                             |
+| `<system-collection>.create`  | `payload`, `key`, `collection`                      |
+| `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
+| `<system-collection>.delete`  | `payload`, `collection`                             |
+
+::: tip System Collections
+
+`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
+`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+
+:::
+
+::: warning Performance
+
+`read` actions can impact performance when not carefully implemented, as a single request can result in a large amount
+of database reads.
+
+:::
+
+### Init
+
+An init event executes at a certain point within the lifecycle of Directus. Init events can be used to inject logic into
+internal services.
+
+The first parameter of the init register function is the event name. The second parameter is an event-specific meta
+object.
+
+#### Available Events
 
 | Name                   | Meta      |
 | ---------------------- | --------- |
@@ -173,30 +164,33 @@ module.exports = function registerHook({ schedule }) {
 | `middlewares.before`   | `app`     |
 | `middlewares.after`    | `app`     |
 
-## Creating a Hook
+### Schedule
 
-### 1. Create a Hook File
+A schedule event executes at certain points in time. This is supported through
+[`node-cron`](https://www.npmjs.com/package/node-cron). To set this up, provide a cron statement as the first argument
+to the `schedule()` function, for example `schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or
+`schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday). See example below:
 
-Custom hooks are dynamically loaded from within your extensions folder. By default, this directory is located at
-`/extensions/hooks`, but it can be configured within your project's env file to be located anywhere. The hook-id is the
-name of your hook.
+```js
+const axios = require('axios');
 
-#### Default Standalone Hook Location
-
+export default ({ schedule }) => {
+	schedule('*/15 * * * *', async () => {
+		await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
+	});
+};
 ```
-/extensions/hooks/<hook-id>/index.js
-```
 
-### 2. Register your Hook
+## Register Function
 
-The `registerHook` function receives an object containing the type-specific register functions as the first parameter:
+The register function receives an object containing the type-specific register functions as the first parameter:
 
 - `filter` — Listen for a filter event
 - `action` — Listen for an action event
 - `init` — Listen for an init event
 - `schedule` — Execute a function at certain points in time
 
-A second parameter is a context object with the following properties:
+The second parameter is a context object with the following properties:
 
 - `services` — All API internal services
 - `exceptions` — API exception objects that can be used for throwing "proper" errors
@@ -205,62 +199,12 @@ A second parameter is a context object with the following properties:
 - `env` — Parsed environment variables
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
-Each custom hook is registered to its event scope using a function with the following format:
+## Example: Sync with External
 
 ```js
 const axios = require('axios');
 
-module.exports = function registerHook({ action }) {
-	action('items.create', () => {
-		axios.post('http://example.com/webhook');
-	});
-};
-```
-
-### 3. Develop your Custom Hook
-
-Trigger your custom hook with any of the platform's many API events.
-
-Event names consist of multiple scopes delimited by a dot:
-
-```
-<scope>.<scope>...
-// eg: items.create
-// eg: users.update
-// eg: auth.login
-// eg: routes.custom.before
-```
-
-Using the example from step 2, `action()` is the hook type and it receives two arguments. `items.create` is the API
-event that should trigger the hook. It also receives a callback function that says what the hook should do when the API
-event occurs.
-
-```js
-const axios = require('axios');
-
-module.exports = function registerHook({ action }) {
-	action('items.create', () => {
-		axios.post('http://example.com/webhook');
-	});
-};
-```
-
-### 4. Restart the API
-
-To deploy your hook, restart the API by running:
-
-```bash
-npx directus start
-```
-
-### Full Example
-
-`extensions/hooks/sync-with-external/index.js`:
-
-```js
-const axios = require('axios');
-
-module.exports = function registerHook({ filter }, { services, exceptions }) {
+export default ({ filter }, { services, exceptions }) => {
 	const { MailService } = services;
 	const { ServiceUnavailableException, ForbiddenException } = exceptions;
 

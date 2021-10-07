@@ -3,37 +3,50 @@
 > Custom API Endpoints register new API routes which can be used to infinitely extend the core functionality of the
 > platform.
 
-## 1. Setup the Boilerplate
+## Extension Entrypoint
 
-Custom endpoints are dynamically loaded from within your project's `/extensions/endpoints` folder. Keep in mind that the
-extensions directory is configurable within your env file, and may be located elsewhere.
+The entrypoint of your endpoint is the `index` file inside the `src/` folder of your extension package. It exports a
+register function to register one or more custom routes. Each route of your endpoint will be a sub-route of
+`/<extension-name>`.
 
-Each endpoint is registered using a registration function within a scoped directory. For example, to create a custom
-`/my-endpoint/` endpoint, you would add the following function to `/extensions/endpoints/my-endpoint/index.js`.
+::: tip Extension Name
+
+The extension name is usually the name of the folder where you put your extension when deploying it.
+
+:::
+
+Example of an entrypoint:
 
 ```js
-module.exports = function registerEndpoint(router) {
+export default (router) => {
 	router.get('/', (req, res) => res.send('Hello, World!'));
 };
 ```
 
-You can also create several scoped endpoints within a single function:
+Alternatively, you can export a configuration object to be able to customize the root route:
 
 ```js
-// /my-endpoint/
-// /my-endpoint/intro
-// /my-endpoint/goodbye
-module.exports = function registerEndpoint(router) {
-	router.get('/', (req, res) => res.send('Hello, World!'));
-	router.get('/intro', (req, res) => res.send('Nice to meet you.'));
-	router.get('/goodbye', (req, res) => res.send('Goodbye!'));
+export default {
+	id: 'greet',
+	register: (router) => {
+		router.get('/', (req, res) => res.send('Hello, World!'));
+		router.get('/intro', (req, res) => res.send('Nice to meet you.'));
+		router.get('/goodbye', (req, res) => res.send('Goodbye!'));
+	},
 };
 ```
 
-## 2. Develop your Custom Endpoint
+The routes of this endpoint are accessible at `/greet`, `/greet/intro` and `/greet/goodbye`.
 
-The `registerEndpoint` function receives two parameters: `router` and `context`. Router is an express Router instance
-that is scoped to `/<extension-name>`, while `context` holds the following properties:
+#### Available Options
+
+- `id` — The unique key for this endpoint. Each route of your endpoint will be a sub-route of `/<id>`.
+- `register` — The endpoint's register function.
+
+## Register Function
+
+The register function receives the two parameters `router` and `context`. `router` is an Express router instance.
+`context` is an object with the following properties:
 
 - `services` — All API internal services.
 - `exceptions` — API exception objects that can be used to throw "proper" errors.
@@ -42,20 +55,10 @@ that is scoped to `/<extension-name>`, while `context` holds the following prope
 - `env` — Parsed environment variables.
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
-## 3. Restart the API
-
-To deploy your endpoint, simply restart the API by running:
-
-```bash
-npx directus start
-```
-
-## Full Example:
+## Example: Recipes
 
 ```js
-// extensions/endpoints/recipes/index.js
-
-module.exports = function registerEndpoint(router, { services, exceptions }) {
+export default (router, { services, exceptions }) => {
 	const { ItemsService } = services;
 	const { ServiceUnavailableException } = exceptions;
 
