@@ -10,7 +10,9 @@
 		readonly
 	>
 		<private-view :title="t('editing_preset')">
-			<template #headline>{{ t('settings_presets') }}</template>
+			<template #headline>
+				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
+			</template>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact :to="backLink">
 					<v-icon name="arrow_back" />

@@ -11,7 +11,7 @@
 		collection="directus_webhooks"
 	>
 		<private-view :title="t('webhooks')">
-			<template #headline>{{ t('settings') }}</template>
+			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>

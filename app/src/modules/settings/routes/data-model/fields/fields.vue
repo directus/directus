@@ -1,6 +1,8 @@
 <template>
 	<private-view :title="collectionInfo && collectionInfo.name">
-		<template #headline>{{ t('settings_data_model') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
 				<v-icon name="arrow_back" />
