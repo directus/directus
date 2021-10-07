@@ -3,6 +3,8 @@ const defaultRules = {
 	'no-console': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
 	// No debugger statements in production
 	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
+	// Enforce prettier formatting
+	'prettier/prettier': 'error',
 };
 
 module.exports = {
@@ -14,8 +16,8 @@ module.exports = {
 		node: true,
 	},
 	// Basic configuration for js files
-	plugins: ['@typescript-eslint'],
-	extends: ['eslint:recommended'],
+	plugins: ['@typescript-eslint', 'prettier'],
+	extends: ['eslint:recommended', 'prettier'],
 	rules: defaultRules,
 	parserOptions: {
 		ecmaVersion: 2020,
@@ -35,7 +37,12 @@ module.exports = {
 			parserOptions: {
 				parser: '@typescript-eslint/parser',
 			},
-			extends: ['plugin:vue/vue3-recommended', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+			extends: [
+				'plugin:vue/vue3-recommended',
+				'eslint:recommended',
+				'plugin:@typescript-eslint/recommended',
+				'prettier',
+			],
 			rules: {
 				...defaultRules,
 				// It's recommended to turn off this rule on TypeScript projects
