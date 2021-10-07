@@ -630,14 +630,27 @@ icon_off: Ikon ki
 label: Címke
 insights: Betekintés (Béta)
 dashboard: Irányítópult
+panel: Panel
+panel_options: Panel beállításai
+panel_header: Panel fejléce
+panel_name_placeholder: Nevezze el a panelt...
+panel_note_placeholder: Opcionális részletek erről a panelről...
+panel_delete_confirm: Biztosan törölni szeretné ezt a panelt? Ez a művelet nem vonható vissza.
 dashboard_delete_confirm: Biztosan törölni kívánja ezt az irányítópultot? Ez a művelet nem vonható vissza.
 edit_dashboard: Irányítópult szerkesztése
 delete_dashboard: Irányítópult törlése
+visible: Látható
+prefix_placeholder: Érték előtti szöveg...
+suffix_placeholder: Érték utáni szöveg...
+decimals_placeholder: Decimális helyek száma...
 no_dashboards: Nincs irányítópult
 no_dashboards_copy: Önnek egy irányítópultja sincs még.
+no_data: Nincs adat
 create_dashboard: Irányítópult létrehozása
 dashboard_name: Irányítópult neve
 full_screen: Teljes képernyő
+edit_panels: Panel szerkesztése
+fit_to_screen: Képernyőhöz igazítva
 image_url: Kép URL
 alt_text: Alternatív szöveg
 media: Média
@@ -734,7 +747,11 @@ layout_setup: További beállítások
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
+discard_changes_copy: Biztos benne, hogy elveti az összes eddig végrehajtott változtatásokat?
+show_x_axis: X tengely megjelenítése
+show_y_axis: Y tengely megjelenítése
 keep_editing: Szerkesztés folytatása
+page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
 page_help_collections_collection: >-
   **Elemek böngészése** - Az összes {collection} elemet listázza, amelyhez hozzáférhet. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
 page_help_collections_item: >-
@@ -780,6 +797,13 @@ collections: Gyűjtemények
 singleton: Egyedüli
 singleton_label: Egyetlen objektumként kezelendő
 system_fields_locked: A rendszermezők zároltak és nem szerkeszthetők
+directus_collection:
+  directus_activity: Az összes esemény elszámoltathatósági naplója
+  directus_collections: Gyűjtemény további konfigurációja és metaadatok
+  directus_fields: Mező további konfigurációja és metaadatok
+  directus_files: Metaadatok az összes kezelt fájleszközhöz
+  directus_folders: Virtuális könyvtárakat biztosít a fájlok számára
+  directus_migrations: Az adatbázis melyik verzióját használja
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
@@ -1087,6 +1111,7 @@ translation: Fordítás
 value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
+start: Start
 interfaces:
   filter:
     name: Szűrő
@@ -1098,9 +1123,11 @@ interfaces:
     of_the_following: a következőkből
     no_rules: Nincsenek szabályok konfigurálva
     change_value: Klikkeljen az érték megváltoztatásához
+    placeholder: Húzza ide a szabályokat
   group-accordion:
     name: Harmonika
     description: Mezőcsoportok megjelenítése harmonika nézetben
+    start: Start
     all_closed: Mind bezárva
     first_opened: Első nyitva
     all_opened: Mind nyitva
@@ -1283,6 +1310,7 @@ interfaces:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!
     trim: Vágás
+    trim_label: Vágja le a kezdetét és a végét
     mask: Maszkolt
     mask_label: Valós érték elrejtése
     clear: Törölt érték
@@ -1303,6 +1331,8 @@ interfaces:
   translations:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
+    toggle_split_view: Osztott nézet váltása
+    language_field: Nyelv mező
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
     recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
@@ -1328,6 +1358,7 @@ interfaces:
     trigger: Eseményindító
     rate: Értékelés
   group-raw:
+    name: Nyers csoport
     description: A mezők megjelenítése a jelenlegi állapotnak megfelelően
   group-detail:
     description: A mezők renderelése összecsukható szakaszként
@@ -1456,6 +1487,20 @@ layouts:
     invalid_geometry: Érvénytelen geometria
     auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
     search_this_area: Keresés ezen a területen
+    clear_data_filter: Adatszűrő törlése
+    clear_location_filter: Lokalizációs szűrő törlése
 panels:
+  metric:
+    name: Metrikus
+    description: Egyetlen érték megjelenítése egy lekérdezés alapján
+    field: Mező
+  time_series:
+    name: Idősorok
+    description: Vonaldiagram megjelenítése az időbeli értékek alapján
+    date_field: Dátummező
+    value_field: Érték mező
   label:
     name: Címke
+  list:
+    name: Lista
+    description: Mezők szűrése és listázása egy gyűjteményből
