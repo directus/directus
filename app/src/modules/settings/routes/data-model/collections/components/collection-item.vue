@@ -12,21 +12,10 @@
 				/>
 				<span class="collection-name">{{ collection.name }}</span>
 			</div>
-			<v-icon
-				v-if="nestedCollections.length > 0"
-				class="toggle-collapse"
-				:class="{ collapsed }"
-				name="expand_more"
-				clickable
-				@click="
-					$emit('toggleCollapsed', { collectionKey: collection.collection, collapse: collapsed ? 'open' : 'closed' })
-				"
-			/>
 			<collection-options :collection="collection" />
 		</v-list-item>
 
 		<draggable
-			v-if="!collapsed"
 			:force-fallback="true"
 			:model-value="nestedCollections"
 			:group="{ name: 'collections' }"
