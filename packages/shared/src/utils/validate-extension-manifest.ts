@@ -27,13 +27,12 @@ export function validateExtensionManifest(
 		if (
 			extensionOptions.path === undefined ||
 			extensionOptions.source === undefined ||
-			extensionOptions.host === undefined ||
-			extensionOptions.hidden === undefined
+			extensionOptions.host === undefined
 		) {
 			return false;
 		}
 	} else {
-		if (extensionOptions.host === undefined || extensionOptions.hidden === undefined) {
+		if (extensionOptions.host === undefined) {
 			return false;
 		}
 	}

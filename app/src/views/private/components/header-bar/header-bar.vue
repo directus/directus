@@ -146,6 +146,8 @@ export default defineComponent({
 			top: 2px;
 			left: 0;
 			color: var(--foreground-subdued);
+			font-weight: 600;
+			font-size: 12px;
 			white-space: nowrap;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);

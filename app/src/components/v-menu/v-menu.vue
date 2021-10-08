@@ -103,6 +103,14 @@ export default defineComponent({
 			type: Number,
 			default: 0,
 		},
+		offsetY: {
+			type: Number,
+			default: 8,
+		},
+		offsetX: {
+			type: Number,
+			default: 0,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -138,6 +146,8 @@ export default defineComponent({
 				placement: props.placement,
 				attached: props.attached,
 				arrow: props.showArrow,
+				offsetY: props.offsetY,
+				offsetX: props.offsetX,
 			}))
 		);
 
@@ -311,17 +321,16 @@ body {
 }
 
 .arrow,
-.arrow::before,
 .arrow::after {
 	position: absolute;
 	z-index: 1;
 	width: 10px;
 	height: 10px;
 	border-radius: 2px;
+	box-shadow: none;
 }
 
 .arrow {
-	&::before,
 	&::after {
 		background: var(--card-face-color);
 		transform: rotate(45deg) scale(0);
@@ -330,15 +339,9 @@ body {
 		content: '';
 	}
 
-	&.active::before,
 	&.active::after {
 		transform: rotate(45deg) scale(1);
 		transition: transform var(--medium) var(--transition-in);
-	}
-
-	&::after {
-		background: var(--card-face-color);
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -347,7 +350,7 @@ body {
 
 	&::after {
 		bottom: 2px;
-		box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		// box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -356,7 +359,7 @@ body {
 
 	&::after {
 		top: 2px;
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		// box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -365,7 +368,7 @@ body {
 
 	&::after {
 		left: 2px;
-		box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		// box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -374,7 +377,7 @@ body {
 
 	&::after {
 		right: 2px;
-		box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		// box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 

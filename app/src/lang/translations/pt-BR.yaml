@@ -21,12 +21,18 @@
 #'Proxy', 'Intl'
 avatar: Imagem de Perfil
 default_provider: Padrão
+published: Publicado
 draft: Rascunho
 archived: Arquivado
+modules: Módulos
+module_bar: Barra de módulo
+tile_size: Tamanho do ladrilho
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
+item_creation: Criação de ítem
 item_revision: Revisão do item
+enter_a_name: Insira um nome...
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
@@ -51,8 +57,10 @@ required: Obrigatório
 required_for_app_access: Obrigatório para o Acesso ao Aplicativo
 requires_value: Requer valor
 create_preset: Criar predefinição
+create_panel: Criar painel
 create_role: Criar Função
 create_user: Criar usuário
+delete_panel: Excluir Painel
 create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
 invite: Convidar
@@ -144,6 +152,10 @@ fields_for_role: 'Campos que o cargo {role} pode {action}.'
 validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
 presets_for_role: 'Valores de campo padrões para a função {role}.'
 presentation_and_aliases: Apresentação e pseudônimos
+revision_post_create: Aqui está como este ítem ficou quando foi criado.
+revision_post_update: Aqui está como este item ficou após a atualização.
+changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
+no_relational_data: Tenha em mente que os dados relacionados não estão incluídos aqui.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
 delete_field: Excluir campo
@@ -152,6 +164,9 @@ field_create_success: 'Campo criado: "{field}"'
 field_update_success: 'Campo atualizado: "{field}"'
 duplicate_where_to: Para onde você gostaria de duplicar este campo?
 language: Idioma
+aggregate_function: Agregar função
+aggregate_precision: Agregar precisão
+group_aggregation: Grupo de agregação
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmera
@@ -239,6 +254,7 @@ raw_value: Valor bruto
 edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
 clear_value: Limpar valor
+clear_changes: Limpar alterações
 reset_to_default: Redefinir para o padrão
 undo_changes: Desfazer alterações
 notifications: Notificações
@@ -258,6 +274,7 @@ revision_delta_reverted: Revertido
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
 private_user: Usuário privado
+creation_preview: Pré-visualização da criação
 revision_preview: Pré-visualização de revisão
 updates_made: Atualizações feitas
 leave_comment: Deixe um comentário...
@@ -392,12 +409,18 @@ relationship_not_setup: O relacionamento não foi configurado corretamente
 display_template_not_setup: A opção do modelo de exibição está configurada incorretamente
 collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
 select_a_collection: Selecione uma coleção
+select_a_field: Escolha um campo
 active: Ativo
+move_to: Mover para...
 copy: Copiar
+copy_to: Copiar para...
 inactive: Inativo
 users: Usuários
 activity: Atividade
 webhooks: Webhooks
+value_decimals: Valores decimais
+min_value: Valor mínimo
+max_value: Valor máximo
 field_width: Largura do campo
 add_filter: Adicionar filtro
 upper_limit: Limite superior...

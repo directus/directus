@@ -15,6 +15,11 @@ export const useRequestsStore = defineStore({
 		startRequest() {
 			const id = nanoid();
 			this.queue = [...this.queue, id];
+
+			// If requests take more than 3.5 seconds, we'll have to assume they'll either never
+			// happen, or already crashed
+			setTimeout(() => this.endRequest(id), 3500);
+
 			return id;
 		},
 		endRequest(id: string) {

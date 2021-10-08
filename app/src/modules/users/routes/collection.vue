@@ -6,8 +6,10 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="layoutFilters"
-		v-model:search-query="searchQuery"
+		:filter="mergeFilters(filter, roleFilter)"
+		:filter-user="filter"
+		:filter-system="roleFilter"
+		:search="search"
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
@@ -27,7 +29,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -99,7 +101,17 @@
 
 			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
+					<v-info v-if="!filter && !search" :title="t('user_count', 0)" icon="people_alt" center>
+						{{ t('no_users_copy') }}
+
+						<template v-if="canInviteUsers" #append>
+							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+								{{ t('create_user') }}
+							</v-button>
+						</template>
+					</v-info>
+
+					<v-info v-else :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
 
 						<template #append>
@@ -136,6 +148,11 @@
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<export-sidebar-detail
+					collection="directus_users"
+					:filter="mergeFilters(filter, roleFilter)"
+					:search="search"
+				/>
 			</template>
 		</private-view>
 	</component>
@@ -156,6 +173,7 @@ import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Role } from '@directus/shared/types';
+import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {
 	[field: string]: any;
@@ -181,31 +199,27 @@ export default defineComponent({
 		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_users'));
+		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 		const { addNewLink } = useLinks();
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const layoutFilters = computed({
-			get() {
-				if (props.role !== null) {
-					const roleFilter = {
-						locked: true,
-						operator: 'eq',
-						field: 'role',
-						value: props.role,
-					};
+		const roleFilter = computed(() => {
+			if (props.role !== null) {
+				return {
+					_and: [
+						{
+							role: {
+								_eq: props.role,
+							},
+						},
+					],
+				};
+			}
 
-					return [roleFilter, ...filters.value];
-				}
-
-				return filters.value;
-			},
-			set(newFilters) {
-				filters.value = newFilters;
-			},
+			return null;
 		});
 
 		const canInviteUsers = computed(() => {
@@ -236,11 +250,10 @@ export default defineComponent({
 			layoutRef,
 			layoutWrapper,
 			selection,
-			layoutFilters,
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
+			search,
 			clearFilters,
 			userInviteModalActive,
 			refresh,
@@ -253,6 +266,9 @@ export default defineComponent({
 			batchDelete,
 			deleteError,
 			batchEditActive,
+			filter,
+			roleFilter,
+			mergeFilters,
 		};
 
 		async function refresh() {
@@ -320,8 +336,8 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
-			searchQuery.value = null;
+			filter.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {

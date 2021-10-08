@@ -38,7 +38,6 @@ import { defineComponent, ref, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { filtersToQuery } from '@directus/shared/utils';
 import { useCollectionsStore } from '@/stores/';
 
 type LayoutQuery = {
@@ -53,11 +52,11 @@ export default defineComponent({
 			type: Object as PropType<LayoutQuery>,
 			default: (): LayoutQuery => ({}),
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			default: () => [],
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
 		},
-		searchQuery: {
+		search: {
 			type: String as PropType<string | null>,
 			default: null,
 		},
@@ -84,7 +83,7 @@ export default defineComponent({
 			const url = getRootPath() + endpoint;
 
 			let params: Record<string, unknown> = {
-				access_token: api.defaults.headers.Authorization.substring(7),
+				access_token: api.defaults.headers?.Authorization.substring(7),
 				export: format.value || 'json',
 			};
 
@@ -93,17 +92,14 @@ export default defineComponent({
 				if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
 				if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
 
-				if (props.searchQuery) params.search = props.searchQuery;
+				if (props.search) params.search = props.search;
 
-				if (props.filters?.length) {
-					params = {
-						...params,
-						...filtersToQuery(props.filters),
-					};
+				if (props.filter) {
+					params.filter = props.filter;
 				}
 
-				if (props.searchQuery) {
-					params.search = props.searchQuery;
+				if (props.search) {
+					params.search = props.search;
 				}
 			}
 

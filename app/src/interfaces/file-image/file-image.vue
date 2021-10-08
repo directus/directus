@@ -369,6 +369,7 @@ img {
 	transition: max-height var(--fast) var(--transition);
 }
 
+.image-preview:focus-within,
 .image-preview:hover {
 	.shadow {
 		height: 100%;

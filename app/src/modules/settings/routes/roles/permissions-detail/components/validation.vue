@@ -9,11 +9,7 @@
 			}}
 		</v-notice>
 
-		<interface-system-filter
-			:value="validation"
-			:collection-name="permission.collection"
-			@input="validation = $event"
-		/>
+		<v-form v-model="permissionSync" :fields="fields" />
 	</div>
 </template>
 
@@ -38,21 +34,23 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const internalPermission = useSync(props, 'permission', emit);
+		const permissionSync = useSync(props, 'permission', emit);
 
-		const validation = computed({
-			get() {
-				return internalPermission.value.validation;
+		const fields = computed(() => [
+			{
+				field: 'permissions',
+				name: t('rule'),
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: permissionSync.value.collection,
+					},
+				},
 			},
-			set(newValidation: Record<string, any> | null) {
-				internalPermission.value = {
-					...internalPermission.value,
-					validation: newValidation,
-				};
-			},
-		});
+		]);
 
-		return { t, validation };
+		return { t, permissionSync, fields };
 	},
 });
 </script>

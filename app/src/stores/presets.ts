@@ -10,7 +10,7 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	role: null,
 	user: null,
 	search: null,
-	filters: null,
+	filter: null,
 	layout: null,
 	layout_query: null,
 	layout_options: null,
@@ -23,7 +23,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'cards',
 		layout_query: {
 			cards: {
-				sort: '-uploaded_on',
+				sort: ['-uploaded_on'],
 			},
 		},
 		layout_options: {
@@ -41,7 +41,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'cards',
 		layout_query: {
 			cards: {
-				sort: 'email',
+				sort: ['email'],
 			},
 		},
 		layout_options: {
@@ -58,7 +58,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'tabular',
 		layout_query: {
 			tabular: {
-				sort: '-timestamp',
+				sort: ['-timestamp'],
 				fields: ['action', 'collection', 'timestamp', 'user'],
 			},
 		},

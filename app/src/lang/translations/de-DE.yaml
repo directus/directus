@@ -829,7 +829,7 @@ fields:
     timestamp: Aktion am
     user: Aktion von
     comment: Kommentar
-    user_agent: User Agent
+    user_agent: Benutzer-Agent
     ip: IP Adresse
     revisions: Revisionen
   directus_collections:
@@ -904,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -974,6 +975,7 @@ field_options:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1001,7 +1003,7 @@ field_options:
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
     divider: Sortieren
     sort_field: Wählen Sie ein Feld...
-    accountability_divider: Verantwortung
+    accountability_divider: Verantwortlichkeit
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...

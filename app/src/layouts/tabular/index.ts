@@ -1,7 +1,6 @@
 import { defineLayout } from '@directus/shared/utils';
 import TabularLayout from './tabular.vue';
 import TabularOptions from './options.vue';
-import TabularSidebar from './sidebar.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
@@ -26,7 +25,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: TabularLayout,
 	slots: {
 		options: TabularOptions,
-		sidebar: TabularSidebar,
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		sidebar: () => {},
 		actions: TabularActions,
 	},
 	setup(props, { emit }) {
@@ -39,10 +39,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter, filterUser, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
@@ -55,8 +53,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				limit,
 				page,
 				fields: fieldsWithRelational,
-				filters: filters,
-				searchQuery: searchQuery,
+				filter,
+				search,
 			}
 		);
 
@@ -64,32 +62,27 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			useTable();
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
 				if (itemCount.value === 1) {
 					return t('one_filtered_item');
 				}
+
 				return t('start_end_of_count_filtered_items', {
 					start: n((+page.value - 1) * limit.value + 1),
 					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
 					count: n(itemCount.value || 0),
 				});
 			}
+
 			if (itemCount.value === 1) {
 				return t('one_item');
 			}
+
 			return t('start_end_of_count_items', {
 				start: n((+page.value - 1) * limit.value + 1),
 				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
 				count: n(itemCount.value || 0),
 			});
-		});
-
-		const activeFilterCount = computed(() => {
-			let count = filters.value.filter((filter) => !filter.locked).length;
-
-			if (searchQuery.value && searchQuery.value.length > 0) count++;
-
-			return count;
 		});
 
 		const availableFields = computed(() => {
@@ -121,11 +114,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sortField,
 			changeManualSort,
 			hideDragImage,
-			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
 			selectAll,
 			availableFields,
+			filter,
+			search,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -164,11 +158,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			const sort = computed({
+			const sort = computed<string[]>({
 				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
+					return layoutQuery.value?.sort || [primaryKeyField.value!.field] || [];
 				},
-				set(newSort: string) {
+				set(newSort: string[]) {
 					layoutQuery.value = {
 						...(layoutQuery.value || {}),
 						page: 1,
@@ -234,10 +228,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value?.startsWith('-')) {
-					return { by: sort.value.substring(1), desc: true };
+				if (sort.value?.[0].startsWith('-')) {
+					return { by: sort.value[0].substring(1), desc: true };
 				} else {
-					return { by: sort.value, desc: false };
+					return { by: sort.value[0], desc: false };
 				}
 			});
 
@@ -358,7 +352,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				let sortString = newSort.by;
 				if (newSort.desc === true) sortString = '-' + sortString;
 
-				sort.value = sortString;
+				sort.value = [sortString];
 			}
 
 			function getFieldDisplay(fieldKey: string) {

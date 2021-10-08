@@ -1,7 +1,6 @@
 import { defineLayout } from '@directus/shared/utils';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
-import CardsSidebar from './sidebar.vue';
 import CardsActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
@@ -23,7 +22,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: CardsLayout,
 	slots: {
 		options: CardsOptions,
-		sidebar: CardsSidebar,
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		sidebar: () => {},
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
@@ -36,10 +36,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter, search, filterUser } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -66,13 +64,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sort,
 			limit,
 			page,
-			fields: fields,
-			filters: filters,
-			searchQuery: searchQuery,
+			fields,
+			filter,
+			search,
 		});
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
 				if (itemCount.value === 1) {
 					return t('one_filtered_item');
 				}
@@ -82,9 +80,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					count: n(itemCount.value || 0),
 				});
 			}
+
 			if (itemCount.value === 1) {
 				return t('one_item');
 			}
+
 			return t('start_end_of_count_items', {
 				start: n((+page.value - 1) * limit.value + 1),
 				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
@@ -97,10 +97,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const isSingleRow = computed(() => {
 			const cardsWidth = items.value.length * (size.value * 40) + (items.value.length - 1) * 24;
 			return cardsWidth <= width.value;
-		});
-
-		const activeFilterCount = computed(() => {
-			return filters.value.filter((filter) => !filter.locked).length;
 		});
 
 		return {
@@ -128,10 +124,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			showingCount,
 			isSingleRow,
 			width,
-			activeFilterCount,
 			refresh,
 			selectAll,
 			resetPresetAndRefresh,
+			filter,
+			search,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -189,11 +186,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			const sort = computed({
+			const sort = computed<string[]>({
 				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
+					return layoutQuery.value?.sort || [primaryKeyField.value!.field] || [];
 				},
-				set(newSort: string) {
+				set(newSort: string[]) {
 					layoutQuery.value = {
 						...(layoutQuery.value || {}),
 						page: 1,
@@ -230,14 +227,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
 					fields.push('modified_on');
 					fields.push('type');
-				}
-
-				if (sort.value) {
-					const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
-
-					if (fields.includes(sortField) === false) {
-						fields.push(sortField);
-					}
 				}
 
 				const titleSubtitleFields: string[] = [];

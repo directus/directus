@@ -56,7 +56,7 @@ export type ExtensionManifest = {
 		path: string;
 		source: string;
 		host: string;
-		hidden: boolean;
+		hidden?: boolean;
 	};
 };
 

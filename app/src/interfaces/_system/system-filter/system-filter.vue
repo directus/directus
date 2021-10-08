@@ -1,40 +1,52 @@
 <template>
-	<div class="system-filter">
-		<v-list :mandatory="true" :class="{ empty: innerValue.length === 0 }">
+	<v-notice v-if="!collectionField && !collection" type="warning">
+		{{ t('collection_field_not_setup') }}
+	</v-notice>
+	<v-notice v-else-if="!collection" type="warning">
+		{{ t('select_a_collection') }}
+	</v-notice>
+
+	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0 }">
+		<v-list :mandatory="true">
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
 			<nodes
 				v-else
 				v-model:filter="innerValue"
-				:collection="collectionName"
+				:collection="collection"
 				:depth="1"
 				@remove-node="removeNode($event)"
+				@change="emitValue"
 			/>
 		</v-list>
 		<div class="buttons">
 			<v-select
-				inline
+				:inline="!inline"
 				item-text="name"
 				item-value="key"
 				placement="bottom-start"
 				class="add-filter"
 				:placeholder="t('interfaces.filter.add_filter')"
-				:full-width="false"
+				:full-width="inline"
 				:model-value="null"
 				:items="fieldOptions"
 				:mandatory="false"
 				:groups-clickable="true"
 				@group-toggle="loadFieldRelations($event.value, 1)"
 				@update:modelValue="addNode($event)"
-			/>
+			>
+				<template v-if="inline" #prepend>
+					<v-icon name="add" small />
+				</template>
+			</v-select>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { get, set, isEmpty } from 'lodash';
-import { defineComponent, PropType, computed, toRefs } from 'vue';
+import { get, set, isEmpty, cloneDeep } from 'lodash';
+import { defineComponent, PropType, computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
@@ -58,14 +70,29 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		collectionField: {
+			type: String,
+			default: null,
+		},
+		// Inline = stylistic rendering without borders. Used inside search-input
+		inline: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { collectionName } = toRefs(props);
+		const values = inject('values', ref<Record<string, any>>({}));
 
-		const { treeList, loadFieldRelations } = useFieldTree(collectionName);
+		const collection = computed(() => {
+			if (props.collectionName) return props.collectionName;
+
+			return values.value[props.collectionField] ?? null;
+		});
+
+		const { treeList, loadFieldRelations } = useFieldTree(collection);
 
 		const innerValue = computed<Filter[]>({
 			get() {
@@ -74,9 +101,9 @@ export default defineComponent({
 				const name = getNodeName(props.value);
 
 				if (name === '_and') {
-					return props.value['_and'];
+					return cloneDeep(props.value['_and']);
 				} else {
-					return [props.value];
+					return cloneDeep([props.value]);
 				}
 			},
 			set(newVal) {
@@ -92,7 +119,24 @@ export default defineComponent({
 			return [{ key: '$group', name: t('interfaces.filter.add_group') }, { divider: true }, ...treeList.value];
 		});
 
-		return { t, addNode, removeNode, innerValue, fieldOptions, loadFieldRelations };
+		return {
+			t,
+			addNode,
+			removeNode,
+			innerValue,
+			fieldOptions,
+			loadFieldRelations,
+			emitValue,
+			collection,
+		};
+
+		function emitValue() {
+			if (innerValue.value.length === 0) {
+				emit('input', null);
+			} else {
+				emit('input', { _and: innerValue.value });
+			}
+		}
 
 		function addNode(key: string) {
 			if (key === '$group') {
@@ -155,32 +199,70 @@ export default defineComponent({
 	}
 
 	.buttons {
-		display: flex;
-		gap: 10px;
 		padding: 0 10px;
-		color: var(--primary);
-		font-weight: 700;
-
-		.add {
-			cursor: pointer;
-		}
+		font-weight: 600;
 	}
 
-	.empty {
-		display: flex;
-		align-items: center;
-		height: var(--input-height);
-		padding-top: 0;
-		padding-bottom: 0;
+	&.empty {
+		.v-list {
+			display: flex;
+			align-items: center;
+			height: var(--input-height);
+			padding-top: 0;
+			padding-bottom: 0;
+		}
 
 		.no-rules {
 			color: var(--foreground-subdued);
 			font-family: var(--family-monospace);
 		}
 	}
-}
 
-.add-filter {
-	--v-select-placeholder-color: var(--primary);
+	.add-filter {
+		--v-select-placeholder-color: var(--primary);
+	}
+
+	&.inline {
+		.v-list {
+			margin: 0;
+			padding: 0;
+			border: 0;
+		}
+
+		&.empty .v-list {
+			display: none;
+		}
+
+		.buttons {
+			margin: 0;
+			padding: 0;
+		}
+
+		.add-filter {
+			width: 100%;
+
+			:deep(.v-input) {
+				position: relative;
+				width: 100%;
+				height: 30px;
+				padding: 0;
+				background-color: var(--background-page);
+				border: var(--border-width) solid var(--border-subdued);
+				border-radius: 100px;
+				transition: border-color var(--fast) var(--transition);
+
+				.input {
+					padding-right: 5px;
+					padding-left: 6px;
+					background: transparent;
+					border: 0;
+
+					.prepend {
+						margin-right: 4px;
+					}
+				}
+			}
+		}
+	}
 }
 </style>
