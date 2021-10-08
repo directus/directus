@@ -160,7 +160,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const sort = computed<string[]>({
 				get() {
-					return layoutQuery.value?.sort || [primaryKeyField.value!.field] || [];
+					return layoutQuery.value?.sort || (primaryKeyField.value ? [primaryKeyField.value.field] : []);
 				},
 				set(newSort: string[]) {
 					layoutQuery.value = {
