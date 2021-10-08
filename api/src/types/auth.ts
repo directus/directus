@@ -23,5 +23,5 @@ export type SessionData = Record<string, any> | null;
 export interface Session {
 	token: string;
 	expires: Date;
-	data: SessionData | string;
+	data: string;
 }
