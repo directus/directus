@@ -7,7 +7,6 @@
 		</template>
 
 		<template #navigation>
-			<collections-navigation-search />
 			<collections-navigation />
 		</template>
 
@@ -48,8 +47,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import CollectionsNavigationSearch from '../components/navigation-search.vue';
-import useNavigation, { NavItem } from '../composables/use-navigation';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 
@@ -57,7 +54,6 @@ export default defineComponent({
 	name: 'CollectionsOverview',
 	components: {
 		CollectionsNavigation,
-		CollectionsNavigationSearch,
 	},
 	props: {},
 	setup() {
@@ -86,15 +82,9 @@ export default defineComponent({
 			},
 		];
 
-		const { navItems } = useNavigation();
-
 		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
-		return { t, tableHeaders, navItems, navigateToCollection, isAdmin };
-
-		function navigateToCollection(navItem: NavItem) {
-			router.push(navItem.to);
-		}
+		return { t, tableHeaders, isAdmin, navItems: [] };
 	},
 });
 </script>

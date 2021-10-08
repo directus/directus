@@ -100,6 +100,11 @@ export const usePresetsStore = defineStore({
 	state: () => ({
 		collectionPresets: [] as Preset[],
 	}),
+	getters: {
+		bookmarks(): Preset[] {
+			return this.collectionPresets.filter((preset) => preset.bookmark !== null);
+		},
+	},
 	actions: {
 		async hydrate() {
 			// Hydrate is only called for logged in users, therefore, currentUser exists

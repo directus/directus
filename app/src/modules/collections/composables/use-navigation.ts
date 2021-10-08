@@ -1,95 +1,23 @@
-import { useCollectionsStore, useUserStore } from '@/stores/';
-import { Collection } from '@/types';
-import { computed, ComputedRef, Ref, ref } from 'vue';
-import { orderBy } from 'lodash';
+import { useCollectionsStore } from '@/stores/';
+import { Ref, ref } from 'vue';
 
-export type NavItem = {
-	collection: string;
-	name: string;
-	to: string;
-	icon: string;
-	color: string | null | undefined;
-	note: string | null;
-	sort: number | null;
-};
-
-export type NavItemGroup = {
-	name: string;
-	accordion: string;
-	items: NavItem[];
-};
-
+let showHidden: Ref<boolean>;
 let activeGroups: Ref<string[]>;
-let hiddenShown: Ref<boolean>;
 
-function collectionToNavItem(collection: Collection): NavItem {
-	return {
-		collection: collection.collection,
-		name: collection.name,
-		icon: collection.meta?.icon || 'label',
-		color: collection.meta?.color,
-		note: collection.meta?.note || null,
-		sort: collection.meta?.sort || null,
-		to: `/collections/${collection.collection}`,
-	};
-}
-
-type UsableNavigation = {
-	customNavItems: ComputedRef<NavItemGroup[] | null>;
-	navItems: ComputedRef<NavItem[]>;
-	activeGroups: Ref<string[]>;
-	hiddenNavItems: ComputedRef<NavItem[]>;
-	hiddenShown: Ref<boolean>;
-	search: (item: NavItem) => boolean;
-};
-
-export default function useNavigation(searchQuery?: Ref<string | null>): UsableNavigation {
+export function useNavigation() {
 	const collectionsStore = useCollectionsStore();
-	const userStore = useUserStore();
-
-	const customNavItems = computed<NavItemGroup[] | null>(() => {
-		if (!userStore.currentUser) return null;
-		if (!userStore.currentUser.role.collection_list) return null;
-
-		return userStore.currentUser?.role.collection_list.map((groupRaw) => {
-			const group: NavItemGroup = {
-				name: groupRaw.group_name,
-				accordion: groupRaw.accordion,
-				items:
-					groupRaw.collections
-						?.map(({ collection }) => collectionsStore.getCollection(collection) as Collection)
-						.filter((collection) => !!collection)
-						.map(collectionToNavItem)
-						.filter(search) ?? [],
-			};
-
-			return group;
-		});
-	});
-
-	const navItems = computed<NavItem[]>(() => {
-		return orderBy(collectionsStore.visibleCollections.map(collectionToNavItem).filter(search), ['sort', 'name']);
-	});
-
-	const hiddenNavItems = computed<NavItem[]>(() => {
-		return orderBy(collectionsStore.hiddenCollections.map(collectionToNavItem).filter(search), ['sort', 'name']);
-	});
 
 	if (!activeGroups) {
 		activeGroups = ref(
-			customNavItems.value?.filter(({ accordion }) => accordion === 'start_open').map(({ name }) => name) ?? []
+			collectionsStore.collections
+				.filter((collection) => collection.meta?.collapse === 'open' || collection.meta?.collapse === 'locked')
+				.map(({ collection }) => collection)
 		);
 	}
 
-	if (hiddenShown === undefined) {
-		hiddenShown = ref(false);
+	if (showHidden === undefined) {
+		showHidden = ref(false);
 	}
 
-	return { customNavItems, navItems, activeGroups, hiddenNavItems, hiddenShown, search };
-
-	function search(item: NavItem) {
-		if (!searchQuery?.value) return true;
-		if (typeof item.name !== 'string') return true;
-		return item.name.toLocaleLowerCase().includes(searchQuery.value.toLocaleLowerCase());
-	}
+	return { showHidden, activeGroups };
 }

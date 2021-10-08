@@ -26,10 +26,15 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		scope: {
+			type: String,
+			default: 'v-list',
+		},
 	},
 	emits: ['update:modelValue', 'toggle'],
 	setup(props, { emit }) {
 		const { modelValue, multiple, mandatory } = toRefs(props);
+
 		useGroupableParent(
 			{
 				selection: modelValue,
@@ -43,7 +48,8 @@ export default defineComponent({
 			{
 				mandatory,
 				multiple,
-			}
+			},
+			props.scope
 		);
 
 		return {};

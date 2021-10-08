@@ -176,7 +176,6 @@
 			</template>
 
 			<template #navigation>
-				<collections-navigation-search />
 				<collections-navigation />
 			</template>
 
@@ -263,7 +262,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
 import CollectionsNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
@@ -289,7 +287,6 @@ export default defineComponent({
 	name: 'CollectionsCollection',
 	components: {
 		CollectionsNavigation,
-		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		LayoutSidebarDetail,
 		SearchInput,
