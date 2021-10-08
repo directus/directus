@@ -1,12 +1,19 @@
 <template>
-	<v-list v-model="activeGroups" scope="collections-navigation" class="collections-navigation" large :mandatory="false">
+	<v-list
+		v-model="activeGroups"
+		scope="collections-navigation"
+		class="collections-navigation"
+		nav
+		:mandatory="false"
+		:dense="dense"
+	>
 		<navigation-item v-for="collection in rootItems" :key="collection.collection" :collection="collection" />
 	</v-list>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useNavigation } from '../composables/use-navigation';
 import { useCollectionsStore } from '@/stores/collections';
 import { orderBy, isNil } from 'lodash';
@@ -28,7 +35,9 @@ export default defineComponent({
 			);
 		});
 
-		return { t, activeGroups, showHidden, rootItems };
+		const dense = computed(() => collectionsStore.visibleCollections.length > 5);
+
+		return { t, activeGroups, showHidden, rootItems, dense };
 	},
 });
 </script>

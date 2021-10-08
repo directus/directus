@@ -1,5 +1,5 @@
 <template>
-	<v-list v-model="selection" large :mandatory="false">
+	<v-list v-model="selection" nav :mandatory="false">
 		<navigation-item v-for="item in navSections" :key="item.name" :section="item" />
 	</v-list>
 </template>

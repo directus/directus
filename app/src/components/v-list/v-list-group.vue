@@ -133,7 +133,7 @@ export default defineComponent({
 	}
 
 	.items {
-		padding-left: 16px;
+		padding-left: 18px;
 		list-style: none;
 	}
 }

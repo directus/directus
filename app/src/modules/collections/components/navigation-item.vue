@@ -5,6 +5,7 @@
 		</template>
 
 		<navigation-item v-for="collection in childCollections" :key="collection.collection" :collection="collection" />
+		<navigation-bookmark v-for="bookmark in childBookmarks" :key="bookmark.id" :bookmark="bookmark" />
 	</v-list-group>
 
 	<v-list-item v-else :to="to" :value="collection.collection">
@@ -17,10 +18,11 @@ import { defineComponent, PropType, computed } from 'vue';
 import { Collection } from '@/types';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import NavigationItemContent from './navigation-item-content.vue';
+import NavigationBookmark from './navigation-bookmark.vue';
 
 export default defineComponent({
 	name: 'NavigationItem',
-	components: { NavigationItemContent },
+	components: { NavigationItemContent, NavigationBookmark },
 	props: {
 		collection: {
 			type: Object as PropType<Collection>,
