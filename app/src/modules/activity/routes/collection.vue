@@ -4,7 +4,7 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="mergeFilters"
+		:filter="mergeFilters(filter, roleFilter)"
 		:filter-user="filter"
 		:filter-system="roleFilter"
 		:search="search"
