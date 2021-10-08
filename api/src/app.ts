@@ -49,6 +49,7 @@ import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
 import { flushCaches } from './cache';
+import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 
 export default async function createApp(): Promise<express.Application> {
@@ -73,6 +74,8 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	await flushCaches();
+
+	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
 

@@ -14,13 +14,13 @@ import isEmailAllowed from '../../utils/is-email-allowed';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 
-interface OAuth2Tokens {
+interface OpenIDTokens {
 	accessToken: string;
-	refreshToken?: string;
+	refreshToken: string;
 }
 
-export class OAuth2AuthDriver extends LocalAuthDriver {
-	client: Client;
+export class OpenIDAuthDriver extends LocalAuthDriver {
+	client: Promise<Client>;
 	redirectUrl: string;
 	usersService: UsersService;
 	config: Record<string, any>;
@@ -28,17 +28,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
-		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
+		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
-		if (
-			!authorizeUrl ||
-			!accessUrl ||
-			!profileUrl ||
-			!clientId ||
-			!clientSecret ||
-			!additionalConfig.provider ||
-			!additionalConfig.defaultRoleId
-		) {
+		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig.provider || !additionalConfig.defaultRoleId) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 
@@ -47,19 +39,19 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
-
-		const issuer = new Issuer({
-			authorization_endpoint: authorizeUrl,
-			token_endpoint: accessUrl,
-			userinfo_endpoint: profileUrl,
-			issuer: additionalConfig.provider,
-		});
-
-		this.client = new issuer.Client({
-			client_id: clientId,
-			client_secret: clientSecret,
-			redirect_uris: [this.redirectUrl],
-			response_types: ['code'],
+		this.client = new Promise((resolve, reject) => {
+			Issuer.discover(issuerUrl)
+				.then((issuer) => {
+					resolve(
+						new issuer.Client({
+							client_id: clientId,
+							client_secret: clientSecret,
+							redirect_uris: [this.redirectUrl],
+							response_types: ['code'],
+						})
+					);
+				})
+				.catch(reject);
 		});
 	}
 
@@ -67,9 +59,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string): string {
+	async generateAuthUrl(codeVerifier: string): Promise<string> {
 		try {
-			return this.client.authorizationUrl({
+			const client = await this.client;
+			return client.authorizationUrl({
 				scope: this.config.scope ?? 'email',
 				code_challenge: generators.codeChallenge(codeVerifier),
 				code_challenge_method: 'S256',
@@ -81,16 +74,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 	}
 
-	async fetchUserTokens(code: string, codeVerifier: string): Promise<OAuth2Tokens> {
+	async fetchUserTokens(code: string, codeVerifier: string): Promise<OpenIDTokens> {
 		try {
-			const tokenSet = await this.client.grant({
-				grant_type: 'authorization_code',
-				code,
-				redirect_uri: this.redirectUrl,
-				code_verifier: codeVerifier,
-			});
+			const client = await this.client;
+			const tokenSet = await client.callback(this.redirectUrl, { code }, { code_verifier: codeVerifier });
 
-			return { accessToken: tokenSet.access_token!, refreshToken: tokenSet.refresh_token };
+			return { accessToken: tokenSet.access_token!, refreshToken: tokenSet.refresh_token! };
 		} catch (e) {
 			throw handleError(e);
 		}
@@ -115,18 +104,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		let userInfo;
 
 		try {
-			userInfo = await this.client.userinfo(payload.accessToken);
+			const client = await this.client;
+			userInfo = await client.userinfo(payload.accessToken);
 		} catch (e) {
 			throw handleError(e);
 		}
 
-		const { emailKey, identifierKey, allowPublicRegistration, allowedEmailDomains } = this.config;
+		const { identifierKey, allowPublicRegistration, allowedEmailDomains, requireVerifiedEmail } = this.config;
 
-		const email = userInfo[emailKey ?? 'email'] as string | undefined;
+		const email = userInfo.email as string;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey] as string | undefined) ?? email;
+		const identifier = (userInfo[identifierKey ?? 'sub'] as string | undefined) ?? email;
 
 		if (!identifier) {
+			// TODO: What do we throw here?
 			throw new InvalidCredentialsException();
 		}
 
@@ -137,9 +128,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		const isAllowedEmail = email && allowedEmailDomains && isEmailAllowed(email, allowedEmailDomains);
+		const isEmailVerified = !requireVerifiedEmail || userInfo.email_verified;
 
 		// Is public registration allowed?
-		if (!allowPublicRegistration && !isAllowedEmail) {
+		if (!allowPublicRegistration && !isAllowedEmail && !isEmailVerified) {
 			throw new InvalidCredentialsException();
 		}
 
@@ -148,6 +140,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		await this.usersService.createOne({
 			provider: this.config.provider,
+			first_name: userInfo.given_name,
+			last_name: userInfo.family_name,
 			email: email,
 			external_identifier: !emailIsIdentifier ? identifier : undefined,
 			role: this.config.defaultRoleId,
@@ -171,7 +165,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		try {
-			const tokenSet = await this.client.refresh(sessionData.refreshToken);
+			const client = await this.client;
+			const tokenSet = await client.refresh(sessionData.refreshToken);
 			return {
 				...sessionData,
 				accessToken: tokenSet.access_token,
@@ -191,7 +186,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		try {
-			await this.client.revoke(sessionData.accessToken);
+			const client = await this.client;
+			await client.revoke(sessionData.accessToken);
 		} catch (e) {
 			if (e instanceof errors.OPError) {
 				// Server response error
@@ -206,7 +202,7 @@ const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		// Server response error
 		return new ServiceUnavailableException('Service returned unexpected response', {
-			service: 'oauth2',
+			service: 'openid',
 			message: e.error_description,
 		});
 	} else if (e instanceof errors.RPError) {
@@ -216,33 +212,33 @@ const handleError = (e: any) => {
 	return e;
 };
 
-export function createOAuth2AuthRouter(providerName: string): Router {
+export function createOpenIDAuthRouter(providerName: string): Router {
 	const router = Router();
 
 	router.get(
 		'/',
-		(req, res) => {
-			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
+		asyncHandler(async (req, res) => {
+			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect }, env.SECRET as string, {
 				expiresIn: '5m',
 				issuer: 'directus',
 			});
 
-			res.cookie(`oauth2.${providerName}`, token, {
+			res.cookie(`openid.${providerName}`, token, {
 				httpOnly: true,
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier));
-		},
+			return res.redirect(await provider.generateAuthUrl(codeVerifier));
+		}),
 		respond
 	);
 
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
-			const token = req.cookies[`oauth2.${providerName}`];
+			const token = req.cookies[`openid.${providerName}`];
 			const { verifier, redirect } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 				verifier: string;
 				redirect: string;
@@ -260,9 +256,9 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
 
 			try {
-				res.clearCookie(`oauth2.${providerName}`);
+				res.clearCookie(`openid.${providerName}`);
 
-				const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
+				const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 				const userTokens = await provider.fetchUserTokens(req.query.code as string, verifier);
 
 				authResponse = await authenticationService.login(providerName, userTokens);

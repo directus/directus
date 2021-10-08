@@ -191,7 +191,7 @@ export class AuthenticationService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
-			data: sessionData,
+			data: sessionData && JSON.stringify(sessionData),
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
@@ -256,7 +256,7 @@ export class AuthenticationService {
 		const { data: sessionData, ...user } = record;
 
 		const provider = getAuthProvider(user.provider);
-		const newSessionData = await provider.refresh(clone(user), sessionData);
+		const newSessionData = await provider.refresh(clone(user), sessionData && JSON.parse(sessionData as string));
 
 		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -270,7 +270,7 @@ export class AuthenticationService {
 			.update({
 				token: newRefreshToken,
 				expires: refreshTokenExpiration,
-				data: newSessionData,
+				data: newSessionData && JSON.stringify(newSessionData),
 			})
 			.where({ token: refreshToken });
 
@@ -307,7 +307,7 @@ export class AuthenticationService {
 			const { data: sessionData, ...user } = record;
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout(clone(user), sessionData);
+			await provider.logout(clone(user), sessionData && JSON.parse(sessionData as string));
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}

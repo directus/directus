@@ -17,7 +17,7 @@ import { getAuthProviders } from '../utils/get-auth-providers';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
-import { createLocalAuthRouter, createOAuth2AuthRouter } from '../auth/drivers';
+import { createLocalAuthRouter, createOAuth2AuthRouter, creatOpenIDAuthRouter } from '../auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const router = Router();
@@ -34,6 +34,10 @@ for (const authProvider of authProviders) {
 
 		case 'oauth2':
 			authRouter = createOAuth2AuthRouter(authProvider.name);
+			break;
+
+		case 'openid':
+			authRouter = creatOpenIDAuthRouter(authProvider.name);
 			break;
 	}
 

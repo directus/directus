@@ -11,9 +11,6 @@ import ms from 'ms';
 import { respond } from '../../middleware/respond';
 
 export class LocalAuthDriver extends AuthDriver {
-	/**
-	 * Get user id by email
-	 */
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.email) {
 			throw new InvalidCredentialsException();
@@ -32,9 +29,6 @@ export class LocalAuthDriver extends AuthDriver {
 		return user.id;
 	}
 
-	/**
-	 * Verify user password
-	 */
 	async verify(user: User, password?: string): Promise<void> {
 		if (!user.password || !(await argon2.verify(user.password, password as string))) {
 			throw new InvalidCredentialsException();

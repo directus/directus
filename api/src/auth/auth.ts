@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 import { Knex } from 'knex';
-import { AuthDriverOptions, User, SessionData } from '../types';
+import { AuthDriverOptions, SchemaOverview, User, SessionData } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;
