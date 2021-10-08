@@ -180,8 +180,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function clearDataFilters() {
-			filter.value = null;
-			search.value = null;
+			props?.clearFilters();
 		}
 
 		const shouldUpdateCamera = ref(false);
