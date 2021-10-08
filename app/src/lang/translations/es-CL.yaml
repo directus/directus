@@ -1,6 +1,35 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Por defecto
+published: Publicado
+draft: Borrador
+archived: Archivado
+modules: Módulos
+module_bar: Barra de módulos
+tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
+maps: Mapas
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
 half_width: Mitad del ancho
@@ -29,7 +58,6 @@ create_role: Crear Rol
 create_user: Crear usuario
 create_webhook: Crear un webhook(conección)
 invite_users: Invitar usuarios
-email_examples: "admin{'@'}ejemplo.com, usuario{'@'}ejemplo.com..."
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
 emails: Correos electrónicos
@@ -363,6 +391,7 @@ display_template_not_setup: La opción de plantilla de Presentación está mal c
 collection_field_not_setup: La opción del campo de colección está mal configurada
 select_a_collection: Seleccionar una Colección
 active: Activo
+copy: Copiar
 users: Usuarios
 activity: Actividad
 webhooks: Webhooks
@@ -413,10 +442,10 @@ errors:
   RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
   USER_SUSPENDED: Usuario Suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
-  UNKNOWN: Error Inesperado
   UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
   NOT_NULL_VIOLATION: El valor no puede ser nulo
+  UNKNOWN: Error Inesperado
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador
@@ -549,6 +578,7 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+full_screen: Pantalla Completa
 image_url: Url de la imagen
 alt_text: Texto Alternativo
 media: Medios
@@ -645,7 +675,6 @@ unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Estás seguro de que quieres salir de esta página?'
 discard_changes: Descartar los cambios
 keep_editing: Sigue editando
-page_help_collections_overview: '**Resumen de Colecciones** - Listas de todas las colecciones a las que tiene acceso.'
 page_help_collections_collection: >-
   **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_collections_item: >-
@@ -703,6 +732,7 @@ fields:
     collection: Colección
     icon: Icono
     note: Nota
+    color: Color
     display_template: Plantilla de Presentación
     hidden: Oculto
     singleton: Singleton
@@ -902,6 +932,9 @@ view_project: Ver Proyecto
 report_error: Reportar Error
 start: Iniciar
 interfaces:
+  filter:
+    add_filter: Agregar Filtro
+    all: Todo
   group-accordion:
     start: Iniciar
     all_closed: Todo Cerrado
@@ -1186,3 +1219,6 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Fecha de Inicio
     end_date_field: Campo Fecha de Fin
+panels:
+  label:
+    name: Etiqueta

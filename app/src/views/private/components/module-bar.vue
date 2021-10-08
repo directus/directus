@@ -10,7 +10,7 @@
 				icon
 				x-large
 				:to="modulePart.to"
-				:href="modulePart.url"
+				:href="modulePart.href"
 				tile
 				:style="
 					modulePart.color
@@ -34,6 +34,8 @@ import ModuleBarLogo from './module-bar-logo/';
 import ModuleBarAvatar from './module-bar-avatar/';
 import { useSettingsStore } from '@/stores/';
 import { translate } from '@/utils/translate-object-values';
+import { MODULE_BAR_DEFAULT } from '@/constants';
+import { omit } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -49,14 +51,22 @@ export default defineComponent({
 		const modules = computed(() => {
 			if (!settingsStore.settings) return [];
 
-			return settingsStore.settings.module_bar
+			return (settingsStore.settings.module_bar ?? MODULE_BAR_DEFAULT)
 				.filter((modulePart) => {
 					if (modulePart.type === 'link') return true;
 					return modulePart.enabled && registeredModuleIDs.value.includes(modulePart.id);
 				})
 				.map((modulePart) => {
 					if (modulePart.type === 'link') {
-						return translate(modulePart);
+						const link = omit<Record<string, any>>(modulePart, ['url']);
+
+						if (modulePart.url.startsWith('/')) {
+							link.to = modulePart.url;
+						} else {
+							link.href = modulePart.url;
+						}
+
+						return translate(link);
 					}
 
 					const module = registeredModules.value.find((module) => module.id === modulePart.id)!;
@@ -64,7 +74,7 @@ export default defineComponent({
 					return {
 						...modulePart,
 						...registeredModules.value.find((module) => module.id === modulePart.id),
-						to: module.link === undefined ? `/${module.id}` : '',
+						to: `/${module.id}`,
 					};
 				});
 		});

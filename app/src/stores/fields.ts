@@ -1,12 +1,10 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useRelationsStore } from '@/stores/';
-import { Relation } from '@/types';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
-import { DeepPartial, Field, FieldRaw } from '@directus/shared/types';
-import { parseFilter } from '@/utils/parse-filter';
+import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
 import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
@@ -87,13 +85,6 @@ export const useFieldsStore = defineStore({
 						},
 					});
 				}
-			}
-
-			if (field.meta?.conditions) {
-				field.meta.conditions = field.meta.conditions.map((condition) => ({
-					...condition,
-					rule: parseFilter(condition.rule),
-				}));
 			}
 
 			return {
@@ -244,7 +235,7 @@ export const useFieldsStore = defineStore({
 		getFieldsForCollection(collection: string): Field[] {
 			return orderBy(
 				this.fields.filter((field) => field.collection === collection),
-				(collection) => (collection.meta?.sort ? Number(collection.meta?.sort) : null)
+				[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)]
 			);
 		},
 		getFieldsForCollectionAlphabetical(collection: string): Field[] {

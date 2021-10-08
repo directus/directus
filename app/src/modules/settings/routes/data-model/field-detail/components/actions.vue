@@ -20,7 +20,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 type Tab = {
 	text: string;

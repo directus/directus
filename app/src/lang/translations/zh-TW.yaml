@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: 頭像
 edit_field: 編輯欄位
 item_revision: 項目修改
 duplicate_field: 複製欄位
@@ -264,6 +285,7 @@ no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始�
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
 select_a_collection: 選擇一個集合
+copy: 複製
 users: 用戶
 activity: 活動
 webhooks: Webhooks
@@ -303,9 +325,9 @@ errors:
   INVALID_QUERY: 無效的查詢
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
-  UNKNOWN: 未預期的錯誤
   INTERNAL_SERVER_ERROR: 未預期的錯誤
   NOT_NULL_VIOLATION: 值不能為null
+  UNKNOWN: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
@@ -455,6 +477,7 @@ fields:
     collection: 集合
     icon: 圖示
     note: 備註
+    color: 顏色
     display_template: 顯示模板
     hidden: 隱藏
     sort_field: 排序欄位
@@ -599,6 +622,9 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
+  filter:
+    add_filter: 新增篩選器
+    all: 全部
   input-code:
     code: 程式碼
   system-collection:

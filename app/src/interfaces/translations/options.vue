@@ -4,39 +4,17 @@
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field half">
-			<p class="type-label">{{ t('language_display_template') }}</p>
-			<v-field-template
-				v-model="languageTemplate"
-				:collection="languageCollection"
-				:depth="2"
-				:placeholder="
-					languageCollectionInfo && languageCollectionInfo.meta && languageCollectionInfo.meta.display_template
-				"
-			/>
-		</div>
-
-		<div class="field half">
-			<p class="type-label">{{ t('translations_display_template') }}</p>
-			<v-field-template
-				v-model="translationsTemplate"
-				:collection="translationsCollection"
-				:depth="2"
-				:placeholder="
-					translationsCollectionInfo &&
-					translationsCollectionInfo.meta &&
-					translationsCollectionInfo.meta.display_template
-				"
-			/>
+			<p class="type-label">{{ t('interfaces.translations.language_field') }}</p>
+			<v-select v-model="languageField" :items="languageCollectionFields" item-text="name" item-value="field" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
-import { useCollectionsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/';
 
 export default defineComponent({
 	props: {
@@ -61,28 +39,16 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const collectionsStore = useCollectionsStore();
+		const fieldsStore = useFieldsStore();
 
-		const translationsTemplate = computed({
+		const languageField = computed({
 			get() {
-				return props.value?.translationsTemplate;
+				return props.value?.languageField;
 			},
 			set(newTemplate: string) {
 				emit('input', {
 					...(props.value || {}),
-					translationsTemplate: newTemplate,
-				});
-			},
-		});
-
-		const languageTemplate = computed({
-			get() {
-				return props.value?.languageTemplate;
-			},
-			set(newTemplate: string) {
-				emit('input', {
-					...(props.value || {}),
-					languageTemplate: newTemplate,
+					languageField: newTemplate,
 				});
 			},
 		});
@@ -109,36 +75,19 @@ export default defineComponent({
 			);
 		});
 
-		const translationsCollection = computed(() => translationsRelation.value?.collection ?? null);
 		const languageCollection = computed(() => languageRelation.value?.related_collection ?? null);
 
-		const translationsCollectionInfo = computed(() => {
-			if (!translationsCollection.value) return null;
-			return collectionsStore.getCollection(translationsCollection.value);
-		});
-
-		const languageCollectionInfo = computed(() => {
-			if (!languageCollection.value) return null;
-			return collectionsStore.getCollection(languageCollection.value);
+		const languageCollectionFields = computed(() => {
+			if (!languageCollection.value) return [];
+			return fieldsStore.getFieldsForCollection(languageCollection.value);
 		});
 
 		return {
 			t,
-			languageTemplate,
-			translationsTemplate,
-			translationsCollection,
-			translationsCollectionInfo,
+			languageField,
 			languageCollection,
-			languageCollectionInfo,
+			languageCollectionFields,
 		};
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
-.form-grid {
-	@include form-grid;
-}
-</style>

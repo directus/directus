@@ -1,4 +1,26 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Privzeto
 draft: Osnutek
 archived: Arhivirano
 edit_field: Uredi polje
@@ -8,7 +30,6 @@ item_revision: Revizija postavke
 duplicate_field: Podvajanje polja
 half_width: Polovična širina
 full_width: Polna širina
-limit: Omejitev
 group: Skupina
 and: in
 or: ali
@@ -34,7 +55,6 @@ create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
 create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
 emails: E-pošte
@@ -373,6 +393,7 @@ display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
 active: Aktivno
+copy: Kopiraj
 inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
@@ -424,10 +445,10 @@ errors:
   RECORD_NOT_UNIQUE: Vrednost ni edinstvena (že obstaja)
   USER_SUSPENDED: Uporabnik suspendiran
   CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
-  UNKNOWN: Nepričakovana napaka
   UNPROCESSABLE_ENTITY: Obdelava nemogoča
   INTERNAL_SERVER_ERROR: Nepričakovana napaka
   NOT_NULL_VIOLATION: Vrednost ne sme biti nična
+  UNKNOWN: Nepričakovana napaka
 security: Varnost
 value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...
@@ -567,6 +588,7 @@ toggle: Preklopi
 icon_on: Prikaži ikono
 icon_off: Skrij ikono
 label: Oznaka
+full_screen: Celozaslonski način
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
 media: Medijska datoteka
@@ -664,7 +686,6 @@ unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
 keep_editing: Nadaljuj urejanje
-page_help_collections_overview: '**Pregled zbirk** - Spisek vseh zbirk, do katerih imate dostop.'
 page_help_collections_collection: >-
   **Brskaj zapise** - Pokaže vse {collection} zapise, do katerih imate dostop. Uredite postavitev, filter in razvrščanje za prilagojen pogled in shranite te nastavitve kot zaznamek za hiter dostop.
 page_help_collections_item: >-
@@ -723,6 +744,7 @@ fields:
     collection: Zbirka
     icon: Ikona
     note: Opomba
+    color: Barva
     display_template: Prikaži predlogo
     hidden: Skrito
     singleton: En zapis
@@ -954,6 +976,7 @@ delete_field_are_you_sure: >-
 description: Opis
 done: Opravljeno
 duplicate: Dvojnik
+limit: Omejitev
 email: E-pošta
 embed: Vstavi
 fallback_icon: Nadomestna ikona
@@ -1005,6 +1028,10 @@ view_project: Poglej projekt
 report_error: Sporoči napako
 start: Začetek
 interfaces:
+  filter:
+    add_filter: Dodaj filter
+    all: Vse
+    any: Katerokoli
   group-accordion:
     name: Harmonika
     description: Prikaži polja ali skupine kot segmente harmonike
@@ -1365,3 +1392,6 @@ layouts:
     cluster_maxzoom: Največja povečava za gruče
     field: Geometrija
     invalid_geometry: Neveljavna geometrija
+panels:
+  label:
+    name: Oznaka

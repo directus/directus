@@ -14,7 +14,5 @@ export function getCacheKey(req: Request): string {
 	};
 
 	const key = hash(info);
-
-	// hash() only returns a buffer if the encoding is set to 'buffer'
-	return key as string;
+	return key;
 }

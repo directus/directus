@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Nuotrauka
 edit_field: Redaguoti lauką
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
@@ -26,7 +47,6 @@ create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
 create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
-email_examples: "administratorius{'@'}pavyzdys.lt, naudotojas{'@'}pavyzdys.lt..."
 invite: Pakviesti
 email_already_invited: El. pašto "{email}" adresatas jau buvo pakviestas
 emails: El. pašto adresai
@@ -346,6 +366,7 @@ display_template_not_setup: Blogai sukonfigūruota atvaizdavimo šablono parinkt
 collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
 select_a_collection: Pasirinkite kolekciją
 active: Aktyvus
+copy: Kopijuoti
 users: Vartotojai
 activity: Veiksmas
 webhooks: '„Webhook“''ai'
@@ -391,9 +412,9 @@ errors:
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
   ROUTE_NOT_FOUND: Nerasta
-  UNKNOWN: Nenumatyta klaida
   INTERNAL_SERVER_ERROR: Nenumatyta klaida
   NOT_NULL_VIOLATION: Reikšmė negali būti null
+  UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
 create_bookmark: Kurti žymę
@@ -510,6 +531,7 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+full_screen: Per visą ekraną
 width: Plotis
 height: Aukštis
 wysiwyg_options:
@@ -582,7 +604,6 @@ unsaved_changes: Neįrašyti pakeitimai
 unsaved_changes_copy: Ar tikrai norite išeiti iš šio puslapio?
 discard_changes: Atšaukti pakeitimus
 keep_editing: Redaguoti toliau
-page_help_collections_overview: '**Kolekcijų peržiūra** — Rodomos visos kolekcijos, prie kurių turite prieigą.'
 page_help_collections_collection: >-
   **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_collections_item: >-
@@ -639,6 +660,7 @@ fields:
     collection: Rinkinys
     icon: Ikona
     note: Pastaba
+    color: Spalva
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas
@@ -804,6 +826,9 @@ value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
+  filter:
+    add_filter: Pridėti filtrą
+    all: Visi
   presentation-links:
     primary: Pirminis
   input-code:
@@ -954,3 +979,6 @@ layouts:
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
+panels:
+  label:
+    name: Žyma

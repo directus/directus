@@ -19,17 +19,23 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Predefinito
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+modules: Moduli
+module_bar: Barra del modulo
+tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
+item_creation: Creazione elemento
 item_revision: Revisione elemento
+enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
-limit: Limite
 group: Gruppo
 and: E
 or: O
@@ -51,11 +57,12 @@ required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
 create_preset: Crea Preset
+create_panel: Crea pannello
 create_role: Crea ruolo
 create_user: Crea utente
+delete_panel: Elimina Pannello
 create_webhook: Crea webhook
 invite_users: Invita utenti
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
@@ -142,9 +149,10 @@ field_validation: Convalida di Campo
 field_presets: Preset di Campo
 permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
-validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
+validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
+revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
@@ -156,9 +164,22 @@ field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Linguaggio
+aggregate_function: Funzione di aggregazione
+aggregate_precision: Precisione dell'aggregazione
+group_aggregation: Raggruppamento
+group_precision: Precisione raggruppamento
 global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
+show_zero: Mostra zero
+sum: Somma
+sum_distinct: Somma valori unici
+avg: Media
+avg_distinct: Media valori unici
+count: Quantità
+count_distinct: Quantità valori unici
+min: Minimo
+max: Massimo
 exposure: Esposizione
 shutter: Otturatore
 iso: ISO
@@ -176,7 +197,9 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Data
+date_range: Intervallo di date
 datetime: DateTime
+precision: Precisione
 decimal: Decimal
 float: Float
 integer: Integer
@@ -208,12 +231,14 @@ new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
-add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
-add_o2m_to_collection: 'Aggiungi One-to-Many a "{collection}"'
-add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
+add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
+add_o2m_to_collection: 'Aggiungi O2M a "{collection}"'
+add_m2m_to_collection: 'Aggiungi M2M a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
+add_link: Aggiungi link
+custom_link: Link personalizzato
 default_value: Valore predefinito
 standard_field: Campo Standard
 single_file: File Singolo
@@ -243,6 +268,7 @@ raw_value: Valore grezzo
 edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
 clear_value: Cancella valore
+clear_changes: Annulla modifiche
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
 notifications: Notifiche
@@ -262,6 +288,7 @@ revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 private_user: Utenti privati
+creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
 updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
@@ -288,7 +315,7 @@ submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
-add_field_related: Aggiungi il campo alla raccolta correlata
+add_field_related: Crea campo corrispondente
 interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
@@ -372,7 +399,7 @@ search_items: Ricerca elementi...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
-request_feature: Richiesta caratteristica
+request_feature: Richiesta funzionalità
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
 display_not_found: 'Display "{display}" non trovato.'
@@ -392,16 +419,26 @@ csv: CSV
 no_collections: Nessuna Raccolta
 create_collection: Crea Raccolta
 no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
-no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo l'amministratore di sistema.
+no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
 display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
+select_a_field: Seleziona un campo
 active: Attivo
+move_to: Sposta in...
+copy: Copia
+copy_to: Copia in...
+no_other_dashboards_copy: Non hai altre bacheche per ora.
 inactive: Disattivato
 users: Utenti
 activity: Attività
 webhooks: Webhooks
+decimals: Decimali
+value_decimals: Valore decimali
+min_value: Valore minimo
+max_value: Valore massimo
+automatic: Automatico
 field_width: Larghezza del Campo
 add_filter: Aggiungi Filtro
 upper_limit: Limite superiore...
@@ -449,10 +486,11 @@ errors:
   RECORD_NOT_UNIQUE: Rilevato valore duplicato
   USER_SUSPENDED: Utente sospeso
   CONTAINS_NULL_VALUES: Il campo contiene valori nulli
-  UNKNOWN: Errore Imprevisto
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
+  ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
+  UNKNOWN: Errore Imprevisto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -468,6 +506,7 @@ no_app_access_copy: Questo utente non è autorizzato ad utilizzare l'app amminis
 password_reset_sent: Ti abbiamo inviato un link sicuro per reimpostare la tua password
 password_reset_successful: Password reimpostata con successo
 back: Indietro
+filter: Filtro
 editing_image: Modifica Immagine
 square: Quadrato
 free: Libero
@@ -490,9 +529,10 @@ visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
 show_hidden_collections: Mostra le collezioni nascoste
 hide_hidden_collections: Nascondi le collezioni nascoste
+show_header: Mostra intestazione
 unmanaged_collections: Raccolte Non Configurate
 system_collections: Raccolte di Sistema
-placeholder: Placeholder
+placeholder: Segnaposto
 icon_left: Icona a sinistra
 icon_right: Icona a destra
 count_other_revisions: '{count} altre revisioni'
@@ -505,6 +545,7 @@ color: Colore
 circle: Cerchio
 empty_item: Elemento Vuoto
 log_in_with: 'Accedi con {provider}'
+conditional_styles: Stili Condizionali
 advanced_settings: Impostazioni avanzate
 advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
@@ -558,7 +599,7 @@ value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
-language_display_template: Modello Visualizzazione Lingua
+language_display_template: Modello di visualizzazione della lingua
 translations_display_template: Modello Visualizzazione Traduzioni
 n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
 per_page: Per Pagina
@@ -580,18 +621,44 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
-create: Creare
-on_create: Alla Creazione
-on_update: In aggiornamento
-read: Leggere
-update: Aggiornare
+create: Creazione
+on_create: Alla creazione
+on_update: Alla modifica
+read: Lettura
+update: Modifica
 select_fields: Seleziona campi
 format_text: Formato testo
+format_value: Formatta il valore
+abbreviate_value: Abbrevia il valore
+operator: Operatore
 bold: Grassetto
 toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
+insights: Approfondimenti (Beta)
+dashboard: Bacheca
+panel: Pannello
+panel_options: Opzioni del pannello
+panel_header: Intestazione del pannello
+panel_name_placeholder: Dai un nome a questo pannello...
+panel_note_placeholder: Dettagli opzionali di questo pannello...
+panel_delete_confirm: Sei sicuro di voler eliminare questo pannello? Questa azione non può essere annullata.
+dashboard_delete_confirm: Sei sicuro di voler eliminare questa bacheca? Questa azione non può essere annullata.
+edit_dashboard: Modifica bacheca
+delete_dashboard: Elimina bacheca
+visible: Visibile
+prefix_placeholder: Testo prima del valore...
+suffix_placeholder: Testo dopo il valore...
+decimals_placeholder: Numero di decimali...
+no_dashboards: Nessuna bacheca
+no_dashboards_copy: Non hai ancora bacheche.
+no_data: Nessun dato
+create_dashboard: Crea bacheca
+dashboard_name: Nome della bacheca
+full_screen: Schermo Intero
+edit_panels: Modifica pannelli
+fit_to_screen: Adatta allo schermo
 image_url: URL immagine
 alt_text: Testo alternativo
 media: Media
@@ -671,7 +738,7 @@ editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
 settings_permissions: Ruoli e permessi
-settings_project: Impostazioni del progetto
+settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 one_or_more_options_are_missing: Mancano una o più opzioni
@@ -688,6 +755,9 @@ layout_setup: Configurazione Layout
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
+discard_changes_copy: Sei sicuro di voler annullare tutte le modifiche che hai fatto?
+show_x_axis: Mostra asse X
+show_y_axis: Mostra asse Y
 keep_editing: Continua a modificare
 page_help_collections_overview: '**Panoramica delle raccolte** — Elenco di tutte le raccolte a cui hai accesso.'
 page_help_collections_collection: >-
@@ -718,6 +788,8 @@ page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per crear
 page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
 page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
+page_help_insights_overview: '**Approfondimenti** — Elenco delle bacheche a cui hai accesso.'
+page_help_insights_dashboard: '**Bacheca** — Spazio di lavoro per gestire uno o più pannelli'
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -764,6 +836,7 @@ fields:
     collection: Raccolta
     icon: Icona
     note: Nota
+    color: Colore
     display_template: Display Template
     hidden: Nascosto
     singleton: Singleton
@@ -778,7 +851,7 @@ fields:
     title: Titolo
     description: Descrizione
     tags: Tag
-    location: Percorso
+    location: Posizione
     storage: Archiviazione
     filename_disk: Nome File (Disco)
     filename_download: Nome File (Download)
@@ -803,7 +876,7 @@ fields:
     email: E-mail
     password: Password
     avatar: Avatar
-    location: Percorso
+    location: Posizione
     title: Titolo
     description: Descrizione
     tags: Tag
@@ -831,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Mappe base
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Stile Mapbox
@@ -846,7 +920,7 @@ fields:
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
-    auth_password_policy: Criteri Password di accesso
+    auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
     files_and_thumbnails: File e miniature
     storage_default_folder: Cartella predefinita di archiviazione
@@ -901,6 +975,7 @@ field_options:
     transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
     mapbox_key: Access Token di Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Mappe base
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Stile Mapbox
@@ -908,9 +983,9 @@ field_options:
     overrides_divider_title: Personalizzazioni App
   directus_activity:
     login: Accedi
-    create: Creare
-    update: Aggiornare
-    delete: Elimina
+    create: Creazione
+    update: Modifica
+    delete: Cancellazione
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -974,9 +1049,9 @@ field_options:
     status_options_inactive: Disattivato
     data_label: Invia dati evento
     triggers_divider: Trigger
-    actions_create: Creare
-    actions_update: Aggiornare
-    actions_delete: Elimina
+    actions_create: Creazione
+    actions_update: Modifica
+    actions_delete: Cancellazione
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
@@ -1002,14 +1077,15 @@ continue_as: >-
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
-delete_label: Elimina
+delete_label: Cancellazione
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
   Sei sicuro di voler cancellare il campo "{field}"? Questa azione non può essere annullata.
 description: Descrizione
 done: Fatto
-duplicate: Duplicare
+duplicate: Duplica
+limit: Limite
 email: E-mail
 embed: Embed
 fallback_icon: Icona di default
@@ -1058,9 +1134,23 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
+  filter:
+    name: Filtro
+    description: Configura un oggetto filtro.
+    add_filter: Aggiungi Filtro
+    add_group: Gruppo And / Or
+    add_value: Aggiungi valore
+    all: Tutti
+    any: Qualsiasi
+    and: e
+    of_the_following: dei seguenti
+    no_rules: Nessuna regola configurata
+    change_value: Clicca per cambiare il valore
+    placeholder: Trascina qui le regole
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
@@ -1071,7 +1161,7 @@ interfaces:
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
   presentation-links:
-    presentation-links: Collegamenti del pulsante
+    presentation-links: Pulsanti di collegamento
     links: Collegamenti
     description: Pulsanti configurabili per avviare URL dinamici
     style: Stile
@@ -1268,6 +1358,8 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: Nessuna Raccolta
+    toggle_split_view: Attiva/disattiva la Split View
+    language_field: Campo lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
@@ -1343,7 +1435,7 @@ displays:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
     format_title: Formatta il titolo
-    format_title_label: Maiuscole/minuscole automatiche
+    format_title_label: Maiuscole automatiche
     bold_label: Usa lo stile grassetto
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
@@ -1425,3 +1517,19 @@ layouts:
     search_this_area: Cerca in quest'area
     clear_data_filter: Rimuovi il filtro sui dati
     clear_location_filter: Rimuovi il filtro sulla posizione
+panels:
+  metric:
+    name: Metrica
+    description: Mostra un singolo valore basato su una query
+    field: Campo
+  time_series:
+    name: Serie temporali
+    description: Disegna un grafico a linee basato su valori nel tempo
+    date_field: Campo data
+    value_field: Campo valore
+  label:
+    name: Etichetta
+    description: Mostra del testo
+  list:
+    name: Elenco
+    description: Filtra ed elenca i campi da una collezione

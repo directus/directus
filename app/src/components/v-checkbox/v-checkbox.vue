@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {

@@ -7,6 +7,7 @@ export interface InterfaceConfig {
 	name: string;
 	icon: string;
 	description?: string;
+
 	component: Component;
 	options: DeepPartial<Field>[] | Component | null;
 	types: readonly Type[];

@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Profielafbeelding
 edit_field: Veld Bewerken
 conditions: Voorwaarden
 item_revision: Item revisie
@@ -29,7 +50,6 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 create_webhook: Webhook Aanmaken
 invite_users: Gebruikers Uitnodigen
-email_examples: "admin{'@'}voorbeeld.nl, gebruiker{'@'}voorbeeld.nl..."
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
 emails: E-mails
@@ -364,6 +384,7 @@ display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
 active: Actief
+copy: Kopieer
 users: Gebruikers
 activity: Activiteit
 webhooks: Webhooks
@@ -413,10 +434,10 @@ errors:
   RECORD_NOT_UNIQUE: Verdubbelde waarde gedetecteerd
   USER_SUSPENDED: Gebruiker geschorst
   CONTAINS_NULL_VALUES: Veld bevat NULL waarden
-  UNKNOWN: Onverwachte fout
   UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
   NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
+  UNKNOWN: Onverwachte fout
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
@@ -549,6 +570,7 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+full_screen: Volledig scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
 media: Media
@@ -645,7 +667,6 @@ unsaved_changes: Niet-opgeslagen wijzigingen
 unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
 discard_changes: Wijzigingen ongedaan maken
 keep_editing: Blijf wijzigen
-page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
 page_help_collections_collection: >-
   **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_collections_item: >-
@@ -703,6 +724,7 @@ fields:
     collection: Collectie
     icon: Icoon
     note: Notitie
+    color: Kleur
     display_template: Weergavesjabloon
     hidden: Verborgen
     singleton: Singleton
@@ -889,6 +911,9 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
+  filter:
+    add_filter: Filter toevoegen
+    all: Alle
   presentation-links:
     primary: Primair
   input-code:
@@ -1116,3 +1141,6 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+panels:
+  label:
+    name: Label

@@ -6,6 +6,7 @@
 			:init="editorOptions"
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
+			@dirty="setDirty"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 		/>
@@ -241,6 +242,7 @@ export default defineComponent({
 
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
+		const isEditorDirty = ref(false);
 		const { imageToken, publicUrl } = toRefs(props);
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
@@ -298,6 +300,7 @@ export default defineComponent({
 				return replaceTokens(props.value, getToken());
 			},
 			set(newValue: string) {
+				if (!isEditorDirty.value) return;
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
 					const removeToken = replaceTokens(newValue, props.imageToken ?? null);
 					emit('input', removeToken);
@@ -355,6 +358,7 @@ export default defineComponent({
 			editorOptions,
 			internalValue,
 			setFocus,
+			setDirty,
 			onImageSelect,
 			saveImage,
 			imageDrawerOpen,
@@ -389,6 +393,10 @@ export default defineComponent({
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 			editor.ui.registry.addToggleButton('customLink', linkButton);
 			editor.ui.registry.addButton('customCode', sourceCodeButton);
+		}
+
+		function setDirty() {
+			isEditorDirty.value = true;
 		}
 
 		function setFocus(val: boolean) {

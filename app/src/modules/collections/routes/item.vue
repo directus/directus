@@ -79,7 +79,7 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
@@ -113,7 +113,7 @@
 						<v-button secondary @click="confirmArchive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-archive" :loading="archiving" @click="toggleArchive">
+						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
@@ -153,7 +153,7 @@
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
-			:primary-key="primaryKey || '+'"
+			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 		/>
 
@@ -198,7 +198,7 @@ import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -481,6 +481,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
+				edits.value = {};
 				router.push(`/collections/${props.collection}`);
 			} catch {
 				// `remove` will show the unexpected error dialog

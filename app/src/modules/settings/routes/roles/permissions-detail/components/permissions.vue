@@ -9,7 +9,7 @@
 			}}
 		</v-notice>
 
-		<interface-input-code :value="permissions" language="json" type="json" @input="permissions = $event" />
+		<v-form v-model="permissionSync" :fields="fields" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
@@ -23,7 +23,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@directus/shared/types';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -44,21 +44,23 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const internalPermission = useSync(props, 'permission', emit);
+		const permissionSync = useSync(props, 'permission', emit);
 
-		const permissions = computed({
-			get() {
-				return internalPermission.value.permissions;
+		const fields = computed(() => [
+			{
+				field: 'permissions',
+				name: t('rule'),
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: permissionSync.value.collection,
+					},
+				},
 			},
-			set(newPermissions: Record<string, any> | null) {
-				internalPermission.value = {
-					...internalPermission.value,
-					permissions: newPermissions,
-				};
-			},
-		});
+		]);
 
-		return { t, permissions };
+		return { t, fields, permissionSync };
 	},
 });
 </script>

@@ -28,6 +28,6 @@ export async function down(knex: Knex): Promise<void> {
 	}
 
 	await knex.schema.alterTable('directus_webhooks', (table) => {
-		table.string('url').alter();
+		table.string('url').notNullable().alter();
 	});
 }

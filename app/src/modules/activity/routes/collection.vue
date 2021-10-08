@@ -4,8 +4,10 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="filters"
-		v-model:search-query="searchQuery"
+		:filter="mergeFilters"
+		:filter-user="filter"
+		:filter-system="roleFilter"
+		:search="search"
 		collection="directus_activity"
 	>
 		<private-view :title="t('activity_feed')">
@@ -20,14 +22,26 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
 			</template>
 
 			<template #navigation>
-				<activity-navigation v-model:filters="filters" />
+				<activity-navigation v-model:filter="roleFilter" />
 			</template>
 
-			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout" />
+			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout">
+				<template #no-results>
+					<v-info :title="t('no_results')" icon="search" center>
+						{{ t('no_results_copy') }}
+					</v-info>
+				</template>
+
+				<template #no-items>
+					<v-info :title="t('item_count', 0)" icon="access_time" center>
+						{{ t('no_items_copy') }}
+					</v-info>
+				</template>
+			</component>
 
 			<router-view name="detail" :primary-key="primaryKey" />
 
@@ -50,13 +64,14 @@ import { defineComponent, computed, ref } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import usePreset from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { Filter } from '@directus/shared/types';
+import { mergeFilters } from '@directus/shared/utils';
 
 export default defineComponent({
 	name: 'ActivityCollection',
-	components: { ActivityNavigation, FilterSidebarDetail, LayoutSidebarDetail, SearchInput },
+	components: { ActivityNavigation, LayoutSidebarDetail, SearchInput },
 	props: {
 		primaryKey: {
 			type: String,
@@ -66,12 +81,25 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
+		const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
 		const { layoutWrapper } = useLayout(layout);
 
-		return { t, breadcrumb, layout, layoutWrapper, layoutOptions, layoutQuery, searchQuery, filters };
+		const roleFilter = ref<Filter | null>(null);
+
+		return {
+			t,
+			breadcrumb,
+			layout,
+			layoutWrapper,
+			layoutOptions,
+			layoutQuery,
+			search,
+			filter,
+			roleFilter,
+			mergeFilters,
+		};
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {

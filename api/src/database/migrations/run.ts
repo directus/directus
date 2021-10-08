@@ -5,6 +5,7 @@ import path from 'path';
 import env from '../../env';
 import logger from '../../logger';
 import { Migration } from '../../types';
+import { orderBy } from 'lodash';
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest'): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
@@ -24,6 +25,11 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		...migrationFiles.map((path) => parseFilePath(path)),
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
 	].sort((a, b) => (a.version > b.version ? 1 : -1));
+
+	const migrationKeys = new Set(migrations.map((m) => m.version));
+	if (migrations.length > migrationKeys.size) {
+		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
+	}
 
 	function parseFilePath(filePath: string, custom = false) {
 		const version = filePath.split('-')[0];
@@ -68,13 +74,13 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	}
 
 	async function down() {
-		const currentVersion = completedMigrations[completedMigrations.length - 1];
+		const lastAppliedMigration = orderBy(completedMigrations, ['timestamp'], ['desc'])[0];
 
-		if (!currentVersion) {
+		if (!lastAppliedMigration) {
 			throw Error('Nothing to downgrade');
 		}
 
-		const migration = migrations.find((migration) => migration.version === currentVersion.version);
+		const migration = migrations.find((migration) => migration.version === lastAppliedMigration.version);
 
 		if (!migration) {
 			throw new Error("Couldn't find migration");

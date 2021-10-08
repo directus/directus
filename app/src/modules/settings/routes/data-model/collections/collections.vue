@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_data_model')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -100,7 +100,7 @@ import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { HeaderRaw } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { useRouter } from 'vue-router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';

@@ -20,20 +20,23 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+avatar: Avatar
+default_provider: Default
 published: Published
 draft: Draft
 archived: Archived
+modules: Modules
 module_bar: Module Bar
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
+item_creation: Item Creation
 item_revision: Item Revision
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
-limit: Limit
 group: Group
 and: And
 or: Or
@@ -55,12 +58,12 @@ required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
 create_preset: Create Preset
+create_panel: Create Panel
 create_role: Create Role
 create_user: Create User
+delete_panel: Delete Panel
 create_webhook: Create Webhook
 invite_users: Invite Users
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
 emails: Emails
@@ -154,6 +157,7 @@ fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
 presentation_and_aliases: Presentation & Aliases
+revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
@@ -165,9 +169,22 @@ field_create_success: 'Created Field: "{field}"'
 field_update_success: 'Updated Field: "{field}"'
 duplicate_where_to: Where would you like to duplicate this field to?
 language: Language
+aggregate_function: Aggregate Function
+aggregate_precision: Aggregate Precision
+group_aggregation: Group Aggregation
+group_precision: Group Precision
 global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
+show_zero: Show Zero
+sum: Sum
+sum_distinct: Sum Distinct
+avg: Average
+avg_distinct: Average Distinct
+count: Count
+count_distinct: Count Distinct
+min: Min
+max: Max
 exposure: Exposure
 shutter: Shutter
 iso: ISO
@@ -185,7 +202,9 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Date
+date_range: Date Range
 datetime: DateTime
+precision: Precision
 decimal: Decimal
 float: Float
 integer: Integer
@@ -255,6 +274,7 @@ raw_value: Raw value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 clear_value: Clear value
+clear_changes: Clear Changes
 reset_to_default: Reset to default
 undo_changes: Undo changes
 notifications: Notifications
@@ -274,6 +294,7 @@ revision_delta_reverted: Reverted
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 private_user: Private User
+creation_preview: Creation Preview
 revision_preview: Revision Preview
 updates_made: Updates Made
 leave_comment: Leave a comment...
@@ -409,11 +430,21 @@ relationship_not_setup: The relationship hasn't been configured correctly
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
+select_a_field: Select a Field
 active: Active
+move_to: Move To...
+copy: Copy
+copy_to: Copy To...
+no_other_dashboards_copy: You don't have any other Dashboards yet.
 inactive: Inactive
 users: Users
 activity: Activity
 webhooks: Webhooks
+decimals: Decimals
+value_decimals: Value Decimals
+min_value: Min Value
+max_value: Max Value
+automatic: Automatic
 field_width: Field Width
 add_filter: Add Filter
 upper_limit: Upper limit...
@@ -461,10 +492,11 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNKNOWN: Unexpected Error
   UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
+  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  UNKNOWN: Unexpected Error
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -480,6 +512,7 @@ no_app_access_copy: This user isn't allowed to use the admin app.
 password_reset_sent: We've sent you a secure link to reset your password
 password_reset_successful: Password successfully reset
 back: Back
+filter: Filter
 editing_image: Editing Image
 square: Square
 free: Free
@@ -503,6 +536,7 @@ visible_collections: Visible Collections
 hidden_collections: Hidden Collections
 show_hidden_collections: Show Hidden Collections
 hide_hidden_collections: Hide Hidden Collections
+show_header: Show Header
 unmanaged_collections: Unconfigured Collections
 system_collections: System Collections
 placeholder: Placeholder
@@ -518,6 +552,7 @@ color: Color
 circle: Circle
 empty_item: Empty Item
 log_in_with: 'Log In with {provider}'
+conditional_styles: Conditional Styles
 advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
@@ -600,11 +635,37 @@ read: Read
 update: Update
 select_fields: Select Fields
 format_text: Format Text
+format_value: Format Value
+abbreviate_value: Abbreviate Value
+operator: Operator
 bold: Bold
 toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
+insights: Insights (Beta)
+dashboard: Dashboard
+panel: Panel
+panel_options: Panel Options
+panel_header: Panel Header
+panel_name_placeholder: Name this panel...
+panel_note_placeholder: Optional details about this panel...
+panel_delete_confirm: Are you sure you want to delete this panel? This action can not be undone.
+dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
+edit_dashboard: Edit Dashboard
+delete_dashboard: Delete Dashboard
+visible: Visible
+prefix_placeholder: Text before value...
+suffix_placeholder: Text after value...
+decimals_placeholder: Number of decimal places...
+no_dashboards: No Dashboards
+no_dashboards_copy: You don’t have any Dashboards yet.
+no_data: No Data
+create_dashboard: Create Dashboard
+dashboard_name: Dashboard Name
+full_screen: Full Screen
+edit_panels: Edit Panels
+fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
 media: Media
@@ -701,8 +762,11 @@ layout_setup: Layout Setup
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
+discard_changes_copy: Are you sure you want to discard all the changes made?
+show_x_axis: Show X Axis
+show_y_axis: Show Y Axis
 keep_editing: Keep Editing
-page_help_collections_overview: '**Collections Overview** — Lists of all collections you have access to.'
+page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
 page_help_collections_collection: >-
   **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
   your view, and even save bookmarks of these different configurations for quick access.
@@ -736,6 +800,8 @@ page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating an
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
+page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
+page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -783,6 +849,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    color: Color
     display_template: Display Template
     hidden: Hidden
     singleton: Singleton
@@ -850,6 +917,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -920,6 +988,7 @@ field_options:
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -1029,6 +1098,7 @@ delete_field_are_you_sure: >-
 description: Description
 done: Done
 duplicate: Duplicate
+limit: Limit
 email: Email
 embed: Embed
 fallback_icon: Fallback Icon
@@ -1081,6 +1151,19 @@ weeks: {}
 report_error: Report Error
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Configure a filter object.
+    add_filter: Add Filter
+    add_group: And / Or group
+    add_value: Add Value
+    all: All
+    any: Any
+    and: and
+    of_the_following: of the following
+    no_rules: No configured rules
+    change_value: Click to change value
+    placeholder: Drag rules here
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections
@@ -1288,6 +1371,8 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
+    toggle_split_view: Toggle Split View
+    language_field: Language Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -1448,3 +1533,20 @@ layouts:
     search_this_area: Search this area
     clear_data_filter: Clear Data Filter
     clear_location_filter: Clear Location Filter
+
+panels:
+  metric:
+    name: Metric
+    description: Show a single value based on a query
+    field: Field
+  time_series:
+    name: Time Series
+    description: Render a line chart based on values over time
+    date_field: Date Field
+    value_field: Value Field
+  label:
+    name: Label
+    description: Show some text
+  list:
+    name: List
+    description: Filter and list fields from a collection

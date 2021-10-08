@@ -5,10 +5,11 @@ import { clone, cloneDeep, isObject, isPlainObject, omit, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview, Alterations } from '../types';
+import { Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
+import { unflatten } from 'flat';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 import { parse as wktToGeoJSON } from 'wellknown';
@@ -135,7 +136,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const processedPayload = toArray(payload);
+		let processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -176,6 +177,8 @@ export class PayloadService {
 				}
 			});
 		}
+
+		processedPayload = processedPayload.map((item: Record<string, any>) => unflatten(item, { delimiter: '->' }));
 
 		if (Array.isArray(payload)) {
 			return processedPayload;

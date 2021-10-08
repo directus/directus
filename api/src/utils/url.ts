@@ -19,7 +19,7 @@ export class Url {
 			!isProtocolRelative && !isRootRelative && !isPathRelative
 				? parsedUrl.protocol.substring(0, parsedUrl.protocol.length - 1)
 				: null;
-		this.host = !isRootRelative && !isPathRelative ? parsedUrl.host : null;
+		this.host = !isRootRelative && !isPathRelative ? parsedUrl.hostname : null;
 		this.port = parsedUrl.port !== '' ? parsedUrl.port : null;
 		this.path = parsedUrl.pathname.split('/').filter((p) => p !== '');
 		this.query = Object.fromEntries(parsedUrl.searchParams.entries());

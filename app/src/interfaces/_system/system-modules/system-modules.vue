@@ -68,6 +68,7 @@ import { assign } from 'lodash';
 import { useI18n } from 'vue-i18n';
 import { nanoid } from 'nanoid';
 import { Field, DeepPartial } from '@directus/shared/types';
+import { MODULE_BAR_DEFAULT } from '@/constants';
 
 type PreviewExtra = {
 	to: string;
@@ -106,7 +107,7 @@ const linkFields: DeepPartial<Field>[] = [
 			required: true,
 			interface: 'input',
 			options: {
-				placeholder: '$t:url_example',
+				placeholder: 'https://example.com',
 			},
 		},
 	},
@@ -118,7 +119,7 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Array as PropType<Settings['module_bar']>,
-			default: () => [],
+			default: () => MODULE_BAR_DEFAULT,
 		},
 	},
 	emits: ['input'],
@@ -145,12 +146,12 @@ export default defineComponent({
 
 		const valuesWithData = computed<PreviewValue[]>({
 			get() {
-				const savedModules = (props.value.filter((value) => value.type === 'module') as SettingsModuleBarModule[]).map(
-					(value) => value.id
-				);
+				const savedModules = (
+					(props.value ?? MODULE_BAR_DEFAULT).filter((value) => value.type === 'module') as SettingsModuleBarModule[]
+				).map((value) => value.id);
 
 				return valueToPreview([
-					...props.value,
+					...(props.value ?? MODULE_BAR_DEFAULT),
 					...availableModulesAsBarModule.value.filter(
 						(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false
 					),
@@ -195,7 +196,7 @@ export default defineComponent({
 
 					return {
 						...part,
-						to: module.link === undefined ? `/${module.id}` : '',
+						to: `/${module.id}`,
 						name: module.name,
 						icon: module.icon,
 					};
@@ -230,7 +231,7 @@ export default defineComponent({
 			let value: SettingsModuleBarLink;
 
 			if (id !== '+') {
-				value = props.value.find((val) => val.id === id) as SettingsModuleBarLink;
+				value = (props.value ?? MODULE_BAR_DEFAULT).find((val) => val.id === id) as SettingsModuleBarLink;
 			} else {
 				value = {
 					id: nanoid(),
@@ -248,11 +249,11 @@ export default defineComponent({
 
 		function save() {
 			if (editing.value === '+') {
-				emit('input', [...props.value, values.value]);
+				emit('input', [...(props.value ?? MODULE_BAR_DEFAULT), values.value]);
 			} else {
 				emit(
 					'input',
-					props.value.map((val) => (val.id === editing.value ? values.value : val))
+					(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value : val))
 				);
 			}
 
@@ -263,7 +264,7 @@ export default defineComponent({
 		function remove(id: string) {
 			emit(
 				'input',
-				props.value.filter((val) => val.id !== id)
+				(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id)
 			);
 		}
 	},

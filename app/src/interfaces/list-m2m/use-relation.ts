@@ -1,7 +1,6 @@
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
-import { Collection, Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Collection, Relation } from '@directus/shared/types';
 import { computed, ComputedRef, Ref } from 'vue';
 
 export type RelationInfo = {

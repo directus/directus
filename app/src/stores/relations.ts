@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/';
-import { Relation } from '@/types';
+import { Relation } from '@directus/shared/types';
 import { defineStore } from 'pinia';
 
 export const useRelationsStore = defineStore({

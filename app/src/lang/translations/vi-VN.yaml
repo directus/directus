@@ -1,24 +1,53 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Ảnh đại diện
 edit_field: Sửa trường
+conditions: Điều kiện
+maps: Bản đồ
 item_revision: Xem Phiên bản
 duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
 group: Chọn nhóm
+and: Và
+or: Hoặc
 fill_width: Rộng toàn bộ
 field_name_translations: Hiển thị Ngôn ngữ Khác
 enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt Bảo Mật 2 Lớp
 add_field: Thêm trường
 role_name: Tên Quyền
 branch: Chọn nhánh
+edit_collection: Chỉnh sửa Bộ sưu tập
+children: Trẻ em
 db_only_click_to_configure: 'Chỉ Cở Sở Dữ Liệu: Bấm để Cấu Hình '
 show_archived_items: Hiển thị các mục đã Lưu Trữ
 required: Bắt buộc
 required_for_app_access: Yêu Cầu cho Kết Nối
 requires_value: Giá trị bắt buộc
 create_preset: Tạo Định dạng
+create_panel: Tạo bảng
 create_role: Tạo vai trò (phân quyền)
 create_user: Tạo Người dùng
+delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
 invite: Mời
@@ -41,6 +70,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Đăng xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
+public_label: Công khai
 public_description: Kiểm soát dữ liệu API nào có thể truy cập mà không cần đăng nhập.
 not_allowed: Không Cho Phép
 directus_version: Phiên bản hệ thống
@@ -79,9 +109,11 @@ validationError:
   null: Dữ liệu phải là null
   nnull: Dữ liệu không thể là null
   required: Dữ liệu là bắt buộc
+  unique: Giá trị phải là duy nhất
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
+allow_null_value: Cho phép NULL
 field_standard: Tiêu chuẩn
 field_file: Tập tin đơn
 field_files: Nhiều Tập Tin
@@ -123,6 +155,7 @@ decimal: Dạng thập phân
 float: Số thực
 integer: Số nguyên
 json: JSON
+xml: XML
 string: Chuỗi
 text: Đoạn văn bản
 time: Thời gian
@@ -281,6 +314,7 @@ create_collection: Tạo Danh mục mới
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 select_a_collection: Chọn Bảng
 active: Kích hoạt
+copy: Sao chép
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks
@@ -327,9 +361,9 @@ errors:
   ITEM_LIMIT_REACHED: Đạt mức giới hạn của bản ghi
   ITEM_NOT_FOUND: Bản ghi không tồn tại
   ROUTE_NOT_FOUND: Không tìm thấy
-  UNKNOWN: Lỗi Bất Thường
   INTERNAL_SERVER_ERROR: Lỗi Bất Thường
   NOT_NULL_VIOLATION: Dữ liệu không thể là null
+  UNKNOWN: Lỗi Bất Thường
 value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
 create_bookmark: Tạo Dấu trang
@@ -398,6 +432,7 @@ operators:
   empty: Bị rỗng
 loading: Đang tải...
 layout_options: Các Tuỳ Chọn Bố Cục
+value_unique: Giá trị phải là duy nhất
 create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
 no_results: Không có kết quả
@@ -481,6 +516,7 @@ fields:
     collection: Danh mục
     icon: Biểu tượng
     note: Ghi chú
+    color: Màu sắc
     display_template: Mẫu hiển thị
     hidden: Ẩn
     sort_field: Sắp xếp theo trường
@@ -598,6 +634,9 @@ template: Mẫu
 translation: Bản dịch
 value: Giá trị
 interfaces:
+  filter:
+    add_filter: Thêm bộ lọc
+    all: Tất cả
   presentation-links:
     primary: Khóa chính
   input-code:

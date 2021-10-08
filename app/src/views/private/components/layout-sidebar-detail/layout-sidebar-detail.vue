@@ -19,7 +19,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {

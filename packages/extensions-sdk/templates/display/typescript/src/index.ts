@@ -6,7 +6,7 @@ export default defineDisplay({
 	name: 'Custom',
 	description: 'This is my custom display!',
 	icon: 'box',
-	handler: DisplayComponent,
+	component: DisplayComponent,
 	types: ['string'],
 	options: null,
 });

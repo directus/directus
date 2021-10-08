@@ -56,7 +56,7 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 			return systemFake === false;
 		});
 
-		formFields = orderBy(formFields, 'meta.sort');
+		formFields = orderBy(formFields, ['meta.sort', 'meta.id']);
 
 		formFields = translate(formFields);
 

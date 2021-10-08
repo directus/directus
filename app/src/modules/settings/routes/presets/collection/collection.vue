@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_presets')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -23,7 +23,7 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteSelection">
+						<v-button kind="danger" :loading="deleting" @click="deleteSelection">
 							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>

@@ -31,8 +31,8 @@
 				</v-notice>
 				<template #append>
 					<v-card-actions>
-						<v-button small class="soft-reset" secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
-						<v-button small class="hard-reset" @click="resetValue(true)">{{ t('reset') }}</v-button>
+						<v-button small secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
+						<v-button small kind="danger" @click="resetValue(true)">{{ t('reset') }}</v-button>
 					</v-card-actions>
 				</template>
 			</v-info>
@@ -455,12 +455,5 @@ export default defineComponent({
 	left: 50%;
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
-}
-
-.v-button.hard-reset {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
 }
 </style>

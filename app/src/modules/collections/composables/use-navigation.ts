@@ -1,5 +1,5 @@
 import { useCollectionsStore, useUserStore } from '@/stores/';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 
 export type NavItem = {

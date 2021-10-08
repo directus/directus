@@ -61,8 +61,8 @@ export default {};
 #### Accessing the API from within your extension
 
 The Directus App's Vue app instance provides a field called `api`, which can be injected into Vue components using
-[Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `api` field contains a 
-property called `api`, which is an authenticated Axios instance. Here's an example of how to use it:
+[Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `api` field contains a property
+called `api`, which is an authenticated Axios instance. Here's an example of how to use it:
 
 ```vue
 <template>

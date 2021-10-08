@@ -298,8 +298,6 @@ export class CollectionsService {
 
 	/**
 	 * Update a single collection by name
-	 *
-	 * Note: only supports updating `meta`
 	 */
 	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
@@ -315,7 +313,7 @@ export class CollectionsService {
 		const payload = data as Partial<Collection>;
 
 		if (!payload.meta) {
-			throw new InvalidPayloadException(`"meta" key is required`);
+			return collectionKey;
 		}
 
 		const exists = !!(await this.knex
@@ -330,13 +328,21 @@ export class CollectionsService {
 			await collectionItemsService.createOne({ ...payload.meta, collection: collectionKey }, opts);
 		}
 
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
+
 		return collectionKey;
 	}
 
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(collectionKeys: string[], data: Partial<Collection>): Promise<string[]> {
+	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -352,6 +358,14 @@ export class CollectionsService {
 				await service.updateOne(collectionKey, data, { autoPurgeCache: false });
 			}
 		});
+
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
 
 		return collectionKeys;
 	}
