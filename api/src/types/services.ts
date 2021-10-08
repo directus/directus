@@ -14,18 +14,16 @@ export interface AbstractService {
 	knex: Knex;
 	accountability: Accountability | null;
 
-	create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	create(data: Partial<Item>): Promise<PrimaryKey>;
+	createOne(data: Partial<Item>): Promise<PrimaryKey>;
+	createMany(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 
-	readByQuery(query: Query): Promise<null | Item | Item[]>;
+	readOne(key: PrimaryKey, query?: Query): Promise<Item>;
+	readMany(keys: PrimaryKey[], query?: Query): Promise<Item[]>;
+	readByQuery(query: Query): Promise<Item[]>;
 
-	readByKey(keys: PrimaryKey[], query: Query, action: PermissionsAction): Promise<null | Item[]>;
-	readByKey(key: PrimaryKey, query: Query, action: PermissionsAction): Promise<null | Item>;
+	updateOne(key: PrimaryKey, data: Partial<Item>): Promise<PrimaryKey>;
+	updateMany(keys: PrimaryKey[], data: Partial<Item>): Promise<PrimaryKey[]>;
 
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	deleteOne(key: PrimaryKey): Promise<PrimaryKey>;
+	deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 }
