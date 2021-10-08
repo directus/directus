@@ -614,7 +614,9 @@ all_files: All Files
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
+edit_folder: Edit Folder
 folder_name: Folder Name...
+folder_key: Folder Key...
 add_file: Add File
 replace_file: Replace File
 no_results: No Results

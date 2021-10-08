@@ -9,6 +9,14 @@
 		</template>
 
 		<template #actions>
+			<collection-dialog v-model="collectionDialogActive">
+				<template #activator="{ on }">
+					<v-button v-tooltip.bottom="t('create_folder')" rounded icon class="add-folder" @click="on">
+						<v-icon name="create_new_folder" />
+					</v-button>
+				</template>
+			</collection-dialog>
+
 			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
 				<v-icon name="add" />
 			</v-button>
@@ -42,6 +50,7 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
+							@editCollection="editCollection = $event"
 							@setNestedSort="onSort"
 							@toggleCollapsed="toggleCollapsed"
 						/>
@@ -79,12 +88,18 @@
 				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
 		</template>
+
+		<collection-dialog
+			:model-value="!!editCollection"
+			:collection="editCollection"
+			@update:model-value="editCollection = null"
+		/>
 	</private-view>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { useCollectionsStore } from '@/stores/';
 import { Collection } from '@/types';
@@ -95,11 +110,15 @@ import { translate } from '@/utils/translate-object-values';
 import Draggable from 'vuedraggable';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import CollectionDialog from './components/collection-dialog.vue';
 
 export default defineComponent({
-	components: { SettingsNavigation, CollectionItem, CollectionOptions, Draggable },
+	components: { SettingsNavigation, CollectionItem, CollectionOptions, Draggable, CollectionDialog },
 	setup() {
 		const { t } = useI18n();
+
+		const collectionDialogActive = ref(false);
+		const editCollection = ref<Collection>();
 
 		const collectionsStore = useCollectionsStore();
 
@@ -143,7 +162,17 @@ export default defineComponent({
 			);
 		});
 
-		return { t, collections, tableCollections, systemCollections, onSort, rootCollections, toggleCollapsed };
+		return {
+			collectionDialogActive,
+			t,
+			collections,
+			tableCollections,
+			systemCollections,
+			onSort,
+			rootCollections,
+			toggleCollapsed,
+			editCollection,
+		};
 
 		async function toggleCollapsed({
 			collectionKey,
@@ -242,5 +271,12 @@ export default defineComponent({
 			opacity: 0;
 		}
 	}
+}
+
+.add-folder {
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 </style>

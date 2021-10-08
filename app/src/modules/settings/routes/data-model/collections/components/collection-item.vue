@@ -29,6 +29,7 @@
 				<collection-item
 					:collection="element"
 					:collections="collections"
+					@editCollection="$emit('editCollection', $event)"
 					@setNestedSort="$emit('setNestedSort', $event)"
 					@toggleCollapsed="$emit('toggleCollapsed', $event)"
 				/>
@@ -57,7 +58,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['setNestedSort', 'toggleCollapsed'],
+	emits: ['setNestedSort', 'toggleCollapsed', 'editCollection'],
 	setup(props, { emit }) {
 		const router = useRouter();
 
@@ -69,8 +70,12 @@ export default defineComponent({
 
 		return { collapsed, openCollection, onGroupSortChange, nestedCollections };
 
-		function openCollection({ collection }: Collection) {
-			router.push(`/settings/data-model/${collection}`);
+		function openCollection(collection: Collection) {
+			if (collection.schema) {
+				router.push(`/settings/data-model/${collection.collection}`);
+			} else {
+				emit('editCollection', collection);
+			}
 		}
 
 		function onGroupSortChange(collections: Collection[]) {
