@@ -51,7 +51,7 @@ export default defineComponent({
 		},
 		active: {
 			type: Boolean,
-			default: false,
+			default: undefined,
 		},
 		exact: {
 			type: Boolean,

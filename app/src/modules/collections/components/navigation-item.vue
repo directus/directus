@@ -7,7 +7,7 @@
 		<navigation-item v-for="collection in childCollections" :key="collection.collection" :collection="collection" />
 	</v-list-group>
 
-	<v-list-item v-else :to="to">
+	<v-list-item v-else :to="to" :value="collection.collection">
 		<navigation-item-content :name="collection.name" :icon="collection.meta?.icon" :color="collection.meta?.color" />
 	</v-list-item>
 </template>
