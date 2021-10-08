@@ -14,8 +14,8 @@
 				ref="input"
 				:value="modelValue"
 				:placeholder="t('search_items')"
-				@input="debouncedEmitValue"
-				@paste="debouncedEmitValue"
+				@input="emitValueDebounced"
+				@paste="emitValueDebounced"
 			/>
 			<v-icon
 				v-if="modelValue"
@@ -109,14 +109,14 @@ export default defineComponent({
 			}
 		});
 
-		const debouncedEmitValue = debounce(() => emitValue(), 250);
+		const emitValueDebounced = debounce(() => emitValue(), 250);
 
 		return {
 			t,
 			active,
 			disable,
 			input,
-			debouncedEmitValue,
+			emitValueDebounced,
 			activeFilterCount,
 			filterActive,
 			onClickOutside,

@@ -14,7 +14,7 @@
 		:value="value"
 		:style="{ width }"
 		placeholder="--"
-		@input="debouncedEmitValue($event.target.value)"
+		@input="emitValueDebounced($event.target.value)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
@@ -33,7 +33,7 @@
 				small
 				:type="type"
 				:value="value"
-				@input="debouncedEmitValue($event)"
+				@input="emitValueDebounced($event)"
 			/>
 		</div>
 	</v-menu>
@@ -87,9 +87,9 @@ export default defineComponent({
 			inputEl.value?.focus();
 		});
 
-		const debouncedEmitValue = debounce((val: unknown) => emitValue(val), 250);
+		const emitValueDebounced = debounce((val: unknown) => emitValue(val), 250);
 
-		return { displayValue, width, t, debouncedEmitValue, inputEl };
+		return { displayValue, width, t, emitValueDebounced, inputEl };
 
 		function emitValue(val: unknown) {
 			if (val === '') {
