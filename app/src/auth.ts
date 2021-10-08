@@ -69,6 +69,9 @@ idleTracker.on('show', () => {
 });
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+	// Skip if not logged in
+	if (!api.defaults.headers['Authorization']) return;
+
 	// Prevent concurrent refreshes
 	if (isRefreshing) {
 		return;
@@ -134,6 +137,8 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 	};
 
 	delete api.defaults.headers.Authorization;
+
+	clearTimeout(refreshTimeout);
 
 	const options = { ...defaultOptions, ...optionsRaw };
 
