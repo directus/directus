@@ -3,7 +3,6 @@
 		<slot name="prepend-outer" />
 		<component
 			:is="component"
-			:ref="component === 'a' ? 'noopener noreferer' : undefined"
 			v-focus="autofocus"
 			:download="download"
 			class="button"
@@ -27,6 +26,7 @@
 			:to="to !== '' ? to : undefined"
 			:href="href"
 			:target="component === 'a' ? '_blank' : undefined"
+			:rel="component === 'a' ? 'noopener noreferrer' : undefined"
 			@click="onClick"
 		>
 			<span class="content" :class="{ invisible: loading }">
