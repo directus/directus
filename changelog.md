@@ -7,7 +7,7 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 ### :warning: Potential Breaking Changes
 
 * Custom displays's handler function was renamed to `component` to be consistent with the other app extensions
-* If you're upgrading from 95, and had some troubles with migrating due to "group" on directus_fields (https://github.com/directus/directus/issues/8369) on that version, please remove row `20210805A` from `directus_migrations` and re-run the migrations.
+* If you're upgrading from 95, and had some troubles with migrating due to "group" on directus_fields (https://github.com/directus/directus/issues/8369) on that version, please remove row `20210927A` from `directus_migrations` and re-run the migrations.
 
 ### :sparkles: New Features
 
