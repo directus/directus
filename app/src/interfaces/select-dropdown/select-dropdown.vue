@@ -10,7 +10,7 @@
 		:show-deselect="allowNone"
 		:placeholder="placeholder"
 		:allow-other="allowOther"
-		@update:model-value="$emit('input', $event)"
+		@update:model-value="emitter($event)"
 	>
 		<template v-if="icon" #prepend>
 			<v-icon :name="icon" />
@@ -61,9 +61,19 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup() {
+	setup(props, { emit, attrs }) {
 		const { t } = useI18n();
-		return { t };
+		const valueType = ['bigInteger', 'integer', 'float', 'decimal'].includes(attrs.type) ? 'number' : 'text';
+
+		return { t, emitter };
+
+		function emitter(value) {
+			if (valueType === 'number') {
+				emit('input', parseInt(value, 10) || null);
+			} else {
+				emit('input', value);
+			}
+		}
 	},
 });
 </script>

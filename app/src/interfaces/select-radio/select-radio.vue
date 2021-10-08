@@ -83,7 +83,7 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup(props, { emit }) {
+	setup(props, { emit, attrs }) {
 		const { t } = useI18n();
 
 		const { choices, value } = toRefs(props);
@@ -107,7 +107,11 @@ export default defineComponent({
 			return 'grid-1';
 		});
 
-		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, (value) => emit('input', value));
+		const valueType = ['bigInteger', 'integer', 'float', 'decimal'].includes(attrs.type) ? 'number' : 'text';
+
+		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, (value) => {
+			emit('input', valueType === 'number' ? parseInt(value, 10) || null : value);
+		});
 
 		const customIcon = computed(() => {
 			if (!otherValue.value) return 'add';
