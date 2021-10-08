@@ -213,37 +213,4 @@ export class FilesService extends ItemsService {
 
 		return keys;
 	}
-
-	/**
-	 * @deprecated Use `uploadOne` instead
-	 */
-	async upload(
-		stream: NodeJS.ReadableStream,
-		data: Partial<File> & { filename_download: string; storage: string },
-		primaryKey?: PrimaryKey
-	): Promise<PrimaryKey> {
-		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
-
-		return await this.uploadOne(stream, data, primaryKey);
-	}
-
-	/**
-	 * @deprecated Use `importOne` instead
-	 */
-	async import(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		return await this.importOne(importURL, body);
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'FilesService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
-		);
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		return await this.deleteOne(key);
-	}
 }
