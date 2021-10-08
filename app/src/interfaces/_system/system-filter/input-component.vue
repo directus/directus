@@ -14,7 +14,7 @@
 		:value="value"
 		:style="{ width }"
 		placeholder="--"
-		@input="emitValue($event.target.value)"
+		@input="debouncedEmitValue($event.target.value)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
@@ -27,12 +27,20 @@
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
+			<component
+				:is="is"
+				class="input-component"
+				small
+				:type="type"
+				:value="value"
+				@input="debouncedEmitValue($event)"
+			/>
 		</div>
 	</v-menu>
 </template>
 
 <script lang="ts">
+import { debounce } from 'lodash';
 import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -79,7 +87,9 @@ export default defineComponent({
 			inputEl.value?.focus();
 		});
 
-		return { displayValue, width, t, emitValue, inputEl };
+		const debouncedEmitValue = debounce((val: unknown) => emitValue(val), 250);
+
+		return { displayValue, width, t, debouncedEmitValue, inputEl };
 
 		function emitValue(val: unknown) {
 			if (val === '') {
