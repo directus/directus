@@ -61,6 +61,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const customLayerDrawerOpen = ref(false);
 
+		const displayTemplate = syncOption(layoutOptions, 'displayTemplate', undefined);
 		const cameraOptions = syncOption(layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(layoutOptions, 'customLayers', layers);
 		const autoLocationFilter = syncOption(layoutOptions, 'autoLocationFilter', false);
@@ -120,8 +121,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const template = computed(() => {
-			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			return `{{ ${primaryKeyField.value?.field} }}`;
+			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
 		});
 
 		const queryFields = computed(() => {
@@ -165,16 +165,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function clearLocationFilter() {
 			shouldUpdateCamera.value = true;
 			locationFilterOutdated.value = false;
-
 			locationFilter.value = undefined;
+		}
 
+		function fitGeoJSONBounds() {
+			if (!geojson.value?.features.length) {
+				return;
+			}
+			shouldUpdateCamera.value = true;
+			locationFilterOutdated.value = false;
 			if (geojson.value) {
-				geojsonBounds.value = geojson.value.bbox;
+				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
 		}
 
 		function clearDataFilters() {
-			locationFilter.value = undefined;
+			filter.value = null;
 			search.value = null;
 		}
 
@@ -322,7 +328,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		return {
-			template,
 			geojson,
 			directusSource,
 			directusLayers,
@@ -338,6 +343,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			handleSelect,
 			geometryFormat,
 			geometryField,
+			displayTemplate,
 			isGeometryFieldNative,
 			cameraOptions,
 			autoLocationFilter,
@@ -365,6 +371,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			clearLocationFilter,
 			clearDataFilters,
 			locationFilter,
+			fitGeoJSONBounds,
 		};
 
 		async function resetPresetAndRefresh() {
