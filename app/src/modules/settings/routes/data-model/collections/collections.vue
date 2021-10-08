@@ -198,7 +198,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .padding-box {
 	padding: var(--content-padding);
 	padding-top: 0;
@@ -230,15 +230,17 @@ export default defineComponent({
 .hidden .collection-name {
 	color: var(--foreground-subdued);
 }
-</style>
 
-<style>
-.sortable-ghost {
-	background-color: var(--primary-alt);
-	border-radius: var(--border-radius);
-}
+:deep(.sortable-ghost) {
+	.v-list-item {
+		--v-list-item-background-color: var(--primary-alt);
+		--v-list-item-border-color: var(--primary);
+		--v-list-item-background-color-hover: var(--primary-alt);
+		--v-list-item-border-color-hover: var(--primary);
 
-.sortable-ghost > * {
-	opacity: 0;
+		* {
+			opacity: 0;
+		}
+	}
 }
 </style>
