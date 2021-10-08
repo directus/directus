@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: ภาพประจำตัว
 published: เผยแพร่แล้ว
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
@@ -744,6 +745,7 @@ fields:
     collection: คอลเลกชัน
     icon: ไอคอน
     note: หมายเหตุ
+    color: สี
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
     singleton: Singleton
@@ -939,6 +941,10 @@ value: ค่า
 view_project: ดูโครงการ
 report_error: แจ้งข้อผิดพลาด
 interfaces:
+  filter:
+    add_filter: เพิ่มตัวกรอง
+    all: ทั้งหมด
+    any: ใด ๆ
   presentation-links:
     presentation-links: ปุ่มลิงก์
     links: ลิงค์

@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Avatar
 published: Zveřejněno
 modules: Moduly
 module_bar: Panel modulů
@@ -314,6 +315,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    color: Barva
     hidden: Skryté
   directus_files:
     title: Název
@@ -421,6 +423,8 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
+  filter:
+    all: Vše
   presentation-links:
     primary: Primární
   system-collection:

@@ -20,6 +20,8 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+avatar: Avatar
+default_provider: Default
 published: Published
 draft: Draft
 archived: Archived
@@ -847,6 +849,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    color: Color
     display_template: Display Template
     hidden: Hidden
     singleton: Singleton
@@ -914,6 +917,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -984,6 +988,7 @@ field_options:
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -1146,6 +1151,19 @@ weeks: {}
 report_error: Report Error
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Configure a filter object.
+    add_filter: Add Filter
+    add_group: And / Or group
+    add_value: Add Value
+    all: All
+    any: Any
+    and: and
+    of_the_following: of the following
+    no_rules: No configured rules
+    change_value: Click to change value
+    placeholder: Drag rules here
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections

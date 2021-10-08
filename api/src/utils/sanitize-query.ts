@@ -1,6 +1,7 @@
 import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
-import { Aggregate, Filter, Meta, Query, Sort } from '../types';
+import { Meta } from '../types';
+import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter, deepMap } from '@directus/shared/utils';
 
@@ -44,7 +45,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	}
 
 	if (rawQuery.meta) {
-		query.meta = sanitizeMeta(rawQuery.meta);
+		(query as any).meta = sanitizeMeta(rawQuery.meta);
 	}
 
 	if (rawQuery.search && typeof rawQuery.search === 'string') {
@@ -90,15 +91,11 @@ function sanitizeSort(rawSort: any) {
 	if (typeof rawSort === 'string') fields = rawSort.split(',');
 	else if (Array.isArray(rawSort)) fields = rawSort as string[];
 
-	return fields.map((field) => {
-		const order = field.startsWith('-') ? 'desc' : 'asc';
-		const column = field.startsWith('-') ? field.substring(1) : field;
-		return { column, order } as Sort;
-	});
+	return fields;
 }
 
 function sanitizeAggregate(rawAggregate: any): Aggregate {
-	let aggregate: Aggregate = {};
+	let aggregate: Aggregate = rawAggregate;
 
 	if (typeof rawAggregate === 'string') {
 		try {
@@ -108,8 +105,8 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 		}
 	}
 
-	for (const [operation, fields] of Object.entries(rawAggregate)) {
-		if (typeof fields === 'string') aggregate[operation as keyof Aggregate] = fields.split(',');
+	for (const [operation, fields] of Object.entries(aggregate)) {
+		if (typeof fields === 'string') aggregate[operation as keyof Aggregate] = (fields as string).split(',');
 		else if (Array.isArray(fields)) aggregate[operation as keyof Aggregate] = fields as string[];
 	}
 

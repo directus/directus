@@ -19,6 +19,8 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Standard
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
@@ -827,13 +829,14 @@ fields:
     timestamp: Aktion am
     user: Aktion von
     comment: Kommentar
-    user_agent: User Agent
+    user_agent: Benutzer-Agent
     ip: IP Adresse
     revisions: Revisionen
   directus_collections:
     collection: Sammlung
     icon: Symbol
     note: Notiz
+    color: Farbe
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
     singleton: Einzelnes Element
@@ -901,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -971,6 +975,7 @@ field_options:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -998,7 +1003,7 @@ field_options:
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
     divider: Sortieren
     sort_field: Wählen Sie ein Feld...
-    accountability_divider: Verantwortung
+    accountability_divider: Verantwortlichkeit
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1086,7 +1091,7 @@ embed: Einbetten
 fallback_icon: Fallback-Symbol
 field: Feld | Felder
 file: Datei
-file_library: Datei-Browser
+file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 icon: Symbol
@@ -1133,6 +1138,19 @@ weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Ein Filterobjekt konfigurieren.
+    add_filter: Filter hinzufügen
+    add_group: Und / Oder Gruppe
+    add_value: Wert hinzufügen
+    all: Alle
+    any: Irgendein
+    and: und
+    of_the_following: der folgenden
+    no_rules: Keine konfigurierten Regeln
+    change_value: Klicken um Wert zu ändern
+    placeholder: Regeln hierher ziehen
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen

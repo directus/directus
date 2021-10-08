@@ -1,4 +1,4 @@
-import { getRelationType } from '.';
+import { getRelationType } from './get-relation-type';
 import { Relation } from '../types';
 
 describe('getRelationType', () => {
