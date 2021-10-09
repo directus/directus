@@ -20,9 +20,17 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Awatar
+default_provider: Domyślny
+published: Opublikowany
+archived: Zarchiwizowany
+modules: Moduły
+module_bar: Pasek modułu
 edit_field: Edytuj pole
+conditions: Warunki
 maps: Mapy
+item_creation: Tworzenie elementu
 item_revision: Wersja elementu
+enter_a_name: Wprowadź nazwę...
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
@@ -47,8 +55,10 @@ required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
 requires_value: Wymaga wartości
 create_preset: Utwórz predefiniowane ustawienia
+create_panel: Utwórz panel
 create_role: Stwórz rolę
 create_user: Utwórz użytkownika
+delete_panel: Usuń panel
 create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 invite: Zaproś
@@ -140,6 +150,9 @@ fields_for_role: 'Pola roli {role} mogą {action}.'
 validation_for_role: 'Pole {action} zasad roli {role} musi być przestrzegane.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
 presentation_and_aliases: Prezentacja i aliasy
+revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
+revision_post_update: Oto jak wyglądał ten element po aktualizacji.
+changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
