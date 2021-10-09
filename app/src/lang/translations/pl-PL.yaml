@@ -1025,6 +1025,7 @@ field_options:
         group_placeholder: Oznacz tę grupę...
         type_name: Typ
         choices_always: Zawsze otwarte
+        choices_start_open: Rozpocznij otwarte
         choices_start_collapsed: Rozpocznij zwinięty
     collections_name: Kolekcje
     collections_addLabel: Dodaj kolekcję...
@@ -1381,6 +1382,15 @@ interfaces:
     rate: Oceń
   group-raw:
     name: Surowa grupa
+    description: Renderowanie pól jak jest
+  group-detail:
+    name: Szczegóły grupy
+    description: Renderuj pola jako sekcję zwijalną
+    show_header: Pokaż nagłówek grupy
+    header_icon: Ikona nagłówka
+    header_color: Kolor nagłówka
+    start_open: Rozpocznij otwarte
+    start_closed: Rozpocznij zamknięte
 displays:
   boolean:
     boolean: Wartość logiczna
@@ -1489,6 +1499,12 @@ layouts:
     end_date_field: Pole daty zakończenia
   map:
     map: Mapa
+    basemap: Mapa bazowa
+    layers: Warstwy
+    edit_custom_layers: Edytuj warstwy
+    cluster_options: Opcje klastrowania
+    cluster: Aktywuj klastrowanie
+    cluster_radius: Promień klastra
     cluster_minpoints: Minimalny rozmiar klastra
     cluster_maxzoom: Maksymalne powiększenie klastrów
     field: Geometria
@@ -1499,6 +1515,7 @@ layouts:
     clear_location_filter: Wyczyść filtr lokalizacji
 panels:
   metric:
+    name: Metryczny
     description: Pokaż pojedynczą wartość na podstawie zapytania
     field: Pole
   time_series:
