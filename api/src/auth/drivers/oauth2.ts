@@ -127,6 +127,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const identifier = (userInfo[identifierKey] as string | undefined) ?? email;
 
 		if (!identifier) {
+			logger.warn(`Failed to find user identifier in provider "${this.config.provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -157,8 +158,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	async login(_user: User, payload: Record<string, any>): Promise<SessionData> {
-		// TODO: We could add a refresh call here to ensure if the login function
-		// is called manually, some actual verification will be done
 		return {
 			accessToken: payload.accessToken,
 			refreshToken: payload.refreshToken,
@@ -257,7 +256,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				schema: req.schema,
 			});
 
-			let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
+			let authResponse;
 
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
