@@ -16,12 +16,15 @@ export interface User {
 	role: string | null;
 	provider: string;
 	external_identifier: string | null;
+	provider_data: string | null;
 }
 
-export type SessionData = Record<string, any> | null;
+export type ProviderData = Record<string, any> | null;
 
 export interface Session {
 	token: string;
 	expires: Date;
-	data: string;
+	data: string | null;
 }
+
+export type SessionData = Record<string, any> | null;

@@ -6,18 +6,13 @@ import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, SessionData } from '../../types';
+import { AuthDriverOptions, User, ProviderData, SessionData } from '../../types';
 import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import isEmailAllowed from '../../utils/is-email-allowed';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
-
-interface OpenIDTokens {
-	accessToken: string;
-	refreshToken: string;
-}
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -63,23 +58,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		try {
 			const client = await this.client;
 			return client.authorizationUrl({
-				scope: this.config.scope ?? 'email',
+				scope: this.config.scope ?? 'openid profile email',
 				code_challenge: generators.codeChallenge(codeVerifier),
 				code_challenge_method: 'S256',
 				access_type: 'offline',
-				prompt: 'consent',
 			});
-		} catch (e) {
-			throw handleError(e);
-		}
-	}
-
-	async fetchUserTokens(code: string, codeVerifier: string): Promise<OpenIDTokens> {
-		try {
-			const client = await this.client;
-			const tokenSet = await client.callback(this.redirectUrl, { code }, { code_verifier: codeVerifier });
-
-			return { accessToken: tokenSet.access_token!, refreshToken: tokenSet.refresh_token! };
 		} catch (e) {
 			throw handleError(e);
 		}
@@ -97,15 +80,21 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.accessToken) {
+		if (!payload.code || !payload.codeVerifier) {
 			throw new InvalidCredentialsException();
 		}
 
+		let tokenSet;
 		let userInfo;
 
 		try {
 			const client = await this.client;
-			userInfo = await client.userinfo(payload.accessToken);
+			tokenSet = await client.callback(
+				this.redirectUrl,
+				{ code: payload.code },
+				{ code_verifier: payload.codeVerifier }
+			);
+			userInfo = await client.userinfo(tokenSet);
 		} catch (e) {
 			throw handleError(e);
 		}
@@ -124,6 +113,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const userId = await this.fetchUserId(identifier);
 
 		if (userId) {
+			// Update user refreshToken if provided
+			if (tokenSet.refresh_token) {
+				await this.usersService.updateOne(userId, {
+					provider_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+				});
+			}
 			return userId;
 		}
 
@@ -145,51 +140,31 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			email: email,
 			external_identifier: !emailIsIdentifier ? identifier : undefined,
 			role: this.config.defaultRoleId,
+			provider_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
 
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(_user: User, payload: Record<string, any>): Promise<SessionData> {
-		return {
-			accessToken: payload.accessToken,
-			refreshToken: payload.refreshToken,
-		};
+	async login(user: User): Promise<SessionData> {
+		return this.refresh(user);
 	}
 
-	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
-		if (!sessionData?.refreshToken) {
-			return sessionData;
+	async refresh(user: User): Promise<SessionData> {
+		const providerData = (user.provider_data && JSON.parse(user.provider_data)) as ProviderData;
+
+		if (!providerData?.refreshToken) {
+			return null;
 		}
 
 		try {
 			const client = await this.client;
-			const tokenSet = await client.refresh(sessionData.refreshToken);
-			return {
-				...sessionData,
-				accessToken: tokenSet.access_token,
-			};
+			await client.refresh(providerData.refreshToken);
+			return null;
 		} catch (e) {
 			if (e instanceof errors.OPError) {
 				// Server response error
 				throw handleError(e);
-			}
-			throw e;
-		}
-	}
-
-	async logout(_user: User, sessionData: SessionData): Promise<void> {
-		if (!sessionData?.accessToken) {
-			return;
-		}
-
-		try {
-			const client = await this.client;
-			await client.revoke(sessionData.accessToken);
-		} catch (e) {
-			if (e instanceof errors.OPError) {
-				// Server response error
-				return;
 			}
 			throw e;
 		}
@@ -256,10 +231,10 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`openid.${providerName}`);
 
-				const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
-				const userTokens = await provider.fetchUserTokens(req.query.code as string, verifier);
-
-				authResponse = await authenticationService.login(providerName, userTokens);
+				authResponse = await authenticationService.login(providerName, {
+					code: req.query.code,
+					codeVerifier: verifier,
+				});
 			} catch (error: any) {
 				logger.warn(error);
 

@@ -6,18 +6,13 @@ import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, SessionData } from '../../types';
+import { AuthDriverOptions, User, ProviderData, SessionData } from '../../types';
 import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import isEmailAllowed from '../../utils/is-email-allowed';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
-
-interface OAuth2Tokens {
-	accessToken: string;
-	refreshToken?: string;
-}
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -81,21 +76,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 	}
 
-	async fetchUserTokens(code: string, codeVerifier: string): Promise<OAuth2Tokens> {
-		try {
-			const tokenSet = await this.client.grant({
-				grant_type: 'authorization_code',
-				code,
-				redirect_uri: this.redirectUrl,
-				code_verifier: codeVerifier,
-			});
-
-			return { accessToken: tokenSet.access_token!, refreshToken: tokenSet.refresh_token };
-		} catch (e) {
-			throw handleError(e);
-		}
-	}
-
 	private async fetchUserId(identifier: string): Promise<string | undefined> {
 		const user = await this.knex
 			.select('id')
@@ -108,14 +88,21 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.accessToken) {
+		if (!payload.code || !payload.codeVerifier) {
 			throw new InvalidCredentialsException();
 		}
 
+		let tokenSet;
 		let userInfo;
 
 		try {
-			userInfo = await this.client.userinfo(payload.accessToken);
+			tokenSet = await this.client.grant({
+				grant_type: 'authorization_code',
+				code: payload.code,
+				redirect_uri: this.redirectUrl,
+				code_verifier: payload.codeVerifier,
+			});
+			userInfo = await this.client.userinfo(tokenSet);
 		} catch (e) {
 			throw handleError(e);
 		}
@@ -134,6 +121,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const userId = await this.fetchUserId(identifier);
 
 		if (userId) {
+			// Update user refreshToken if provided
+			if (tokenSet.refresh_token) {
+				await this.usersService.updateOne(userId, {
+					provider_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+				});
+			}
 			return userId;
 		}
 
@@ -152,49 +145,30 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			email: email,
 			external_identifier: !emailIsIdentifier ? identifier : undefined,
 			role: this.config.defaultRoleId,
+			provider_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
 
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(_user: User, payload: Record<string, any>): Promise<SessionData> {
-		return {
-			accessToken: payload.accessToken,
-			refreshToken: payload.refreshToken,
-		};
+	async login(user: User): Promise<SessionData> {
+		return this.refresh(user);
 	}
 
-	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
-		if (!sessionData?.refreshToken) {
-			return sessionData;
+	async refresh(user: User): Promise<SessionData> {
+		const providerData = (user.provider_data && JSON.parse(user.provider_data)) as ProviderData;
+
+		if (!providerData?.refreshToken) {
+			return null;
 		}
 
 		try {
-			const tokenSet = await this.client.refresh(sessionData.refreshToken);
-			return {
-				...sessionData,
-				accessToken: tokenSet.access_token,
-			};
+			await this.client.refresh(providerData.refreshToken);
+			return null;
 		} catch (e) {
 			if (e instanceof errors.OPError) {
 				// Server response error
 				throw handleError(e);
-			}
-			throw e;
-		}
-	}
-
-	async logout(_user: User, sessionData: SessionData): Promise<void> {
-		if (!sessionData?.accessToken) {
-			return;
-		}
-
-		try {
-			await this.client.revoke(sessionData.accessToken);
-		} catch (e) {
-			if (e instanceof errors.OPError) {
-				// Server response error
-				return;
 			}
 			throw e;
 		}
@@ -261,10 +235,10 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
-				const userTokens = await provider.fetchUserTokens(req.query.code as string, verifier);
-
-				authResponse = await authenticationService.login(providerName, userTokens);
+				authResponse = await authenticationService.login(providerName, {
+					code: req.query.code,
+					codeVerifier: verifier,
+				});
 			} catch (error: any) {
 				logger.warn(error);
 

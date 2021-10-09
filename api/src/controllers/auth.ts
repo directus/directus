@@ -1,18 +1,11 @@
 import { Router } from 'express';
 import ms from 'ms';
-import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import {
-	InvalidCredentialsException,
-	RouteNotFoundException,
-	ServiceUnavailableException,
-	InvalidPayloadException,
-} from '../exceptions';
+import { InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import { getAuthProviders } from '../utils/get-auth-providers';
-import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
 import { createLocalAuthRouter, createOAuth2AuthRouter, createOpenIDAuthRouter } from '../auth/drivers';

@@ -166,3 +166,6 @@ fields:
       iconRight: account_circle
     interface: input
     readonly: true
+
+  - field: provider_data
+    hidden: true
