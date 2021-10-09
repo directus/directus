@@ -127,6 +127,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 					provider_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 				});
 			}
+
 			return userId;
 		}
 
