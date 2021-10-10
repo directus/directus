@@ -57,31 +57,39 @@ export default defineComponent({
 }
 
 .sso-link {
+	$sso-link-border-width: 2px;
+
 	display: flex;
 	width: 100%;
 	height: var(--input-height);
 	background-color: var(--background-normal);
+	border: $sso-link-border-width var(--background-normal) solid;
 	border-radius: var(--border-radius);
-	transition: background var(--fast) var(--transition);
+	transition: border-color var(--fast) var(--transition);
 
 	.sso-icon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: var(--input-height);
+		margin: -$sso-link-border-width;
 		background-color: var(--background-normal-alt);
 		border-radius: var(--border-radius);
 
 		span {
-			--v-icon-size: 32px;
+			--v-icon-size: 28px;
 		}
 	}
 
 	.sso-title {
 		display: flex;
 		align-items: center;
-		padding: 0 16px;
+		padding: 0 16px 0 20px;
 		font-size: 16px;
+	}
+
+	&:hover {
+		border-color: var(--background-normal-alt);
 	}
 
 	& + & {
