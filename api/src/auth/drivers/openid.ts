@@ -25,7 +25,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
-		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig.provider || !additionalConfig.defaultRoleId) {
+		if (
+			!issuerUrl ||
+			!clientId ||
+			!clientSecret ||
+			!additionalConfig.provider ||
+			(additionalConfig.allowPublicRegistration && !additionalConfig.defaultRoleId)
+		) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 
@@ -123,11 +129,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			return userId;
 		}
 
-		const isAllowedEmail = email && allowedEmailDomains && isEmailAllowed(email, allowedEmailDomains);
+		const isAllowedEmail = email && (!allowedEmailDomains || isEmailAllowed(email, allowedEmailDomains));
 		const isEmailVerified = !requireVerifiedEmail || userInfo.email_verified;
 
 		// Is public registration allowed?
-		if (!allowPublicRegistration && !isAllowedEmail && !isEmailVerified) {
+		if (!allowPublicRegistration || !isAllowedEmail || !isEmailVerified) {
 			throw new InvalidCredentialsException();
 		}
 

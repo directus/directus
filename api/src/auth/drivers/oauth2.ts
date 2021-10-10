@@ -32,7 +32,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			!clientId ||
 			!clientSecret ||
 			!additionalConfig.provider ||
-			!additionalConfig.defaultRoleId
+			(additionalConfig.allowPublicRegistration && !additionalConfig.defaultRoleId)
 		) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
@@ -131,10 +131,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			return userId;
 		}
 
-		const isAllowedEmail = email && allowedEmailDomains && isEmailAllowed(email, allowedEmailDomains);
+		const isAllowedEmail = email && (!allowedEmailDomains || isEmailAllowed(email, allowedEmailDomains));
 
 		// Is public registration allowed?
-		if (!allowPublicRegistration && !isAllowedEmail) {
+		if (!allowPublicRegistration || !isAllowedEmail) {
 			throw new InvalidCredentialsException();
 		}
 

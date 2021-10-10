@@ -300,28 +300,59 @@ STORAGE_LOCAL_ROOT="./uploads"
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
 
-## OAuth
+## Auth
 
-| Variable          | Description                             | Default Value |
-| ----------------- | --------------------------------------- | ------------- |
-| `OAUTH_PROVIDERS` | CSV of oAuth providers you want to use. | --            |
+| Variable         | Description                            | Default Value |
+| ---------------- | -------------------------------------- | ------------- |
+| `AUTH_PROVIDERS` | CSV of auth providers you want to use. | --            |
 
-For each of the OAuth providers you list, you must also provide a number of extra variables. These differ per external
-service. The following is a list of common required configuration options:
+For each of the auth providers you list, you must provide the following configuration:
 
-| Variable                         | Description                                                                                            | Default Value |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
-| `OAUTH_<PROVIDER>_KEY`           | oAuth key (a.k.a. application id) for the external service.                                            | --            |
-| `OAUTH_<PROVIDER>_SECRET`        | oAuth secret for the external service.                                                                 | --            |
-| `OAUTH_<PROVIDER>_SCOPE`         | A white-space separated list of privileges directus should ask for. A common value is: `openid email`. | --            |
-| `OAUTH_<PROVIDER>_AUTHORIZE_URL` | The authorize page URL of the external service                                                         | --            |
-| `OAUTH_<PROVIDER>_ACCESS_URL`    | The access URL of the external service                                                                 | --            |
-| `OAUTH_<PROVIDER>_PROFILE_URL`   | Where Directus can fetch the profile information of the authenticated user.                            | --            |
+| Variable                 | Description                                             | Default Value |
+| ------------------------ | ------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid` | --            |
 
-Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the oAuth flow. Grant includes
-[a lot of default values](https://github.com/simov/grant/blob/master/config/oauth.json) for popular services. For
-example, if you use `apple` as one of your providers, you only have to specify the key and secret, as Grant has the rest
-covered. Checkout [the grant repo](https://github.com/simov/grant) for more information.
+You must also provide a number of extra variables. These differ per auth driver service. The following is a list of
+common required configuration options:
+
+### Local
+
+Local is the default username and password authentication driver for Directus.
+
+### OAuth 2.0
+
+| Variable                                    | Description                                                                                | Default Value    |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                                 | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAUth secret for the external service.                                                     | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                          | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                            | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                              | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | Where Directus can fetch the profile information of the authenticated user.                | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to verify the user.                                           | `email`          |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Can be used in place of `EMAIL_KEY`. | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.                              | `false`          |
+| `AUTH_<PROVIDER>_ALLOWED_EMAIL_DOMAINS`     | CSV of email domains which can register publically. Ignored if empty.                      | --               |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                                       | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                                   | `account_circle` |
+
+If possible, OpenID is be preferred over OAuth 2.0 as it provides better verification and consistent user information,
+allowing more complete user registrations.
+
+### OpenID
+
+| Variable                                    | Description                                                           | Default Value          |
+| ------------------------------------------- | --------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                           | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                               | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.     | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                      | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.                | `sub`                  |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.         | `false`                |
+| `AUTH_<PROVIDER>_ALLOWED_EMAIL_DOMAINS`     | CSV of email domains which can register publically. Ignored if empty. | --                     |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                       | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                  | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                              | `account_circle`       |
 
 ## Extensions
 
