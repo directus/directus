@@ -1383,7 +1383,7 @@ interfaces:
     results_path: Pfad Ergebnis
     value_path: Wertpfad
     trigger: Trigger
-    rate: Rate
+    rate: Frequenz
   group-raw:
     name: Rohgruppe
     description: Felder so anzeigen wie sie sind
