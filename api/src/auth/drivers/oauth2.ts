@@ -69,7 +69,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge: generators.codeChallenge(codeVerifier),
 				code_challenge_method: 'S256',
 				access_type: 'offline',
-				prompt: 'consent',
 			});
 		} catch (e) {
 			throw handleError(e);
