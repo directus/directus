@@ -320,6 +320,7 @@ fields:
               placeholder: http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png
         - field: tileSize
           name: $t:tile_size
+          type: integer
           schema:
             is_nullable: true
           meta:

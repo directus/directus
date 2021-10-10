@@ -2,8 +2,7 @@ import { Knex } from 'knex';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
-import { Query } from '../types/query';
+import { Accountability, Query } from '@directus/shared/types';
 import { applyFilter, applySearch } from '../utils/apply-query';
 import { parseFilter } from '@directus/shared/utils';
 
@@ -18,11 +17,11 @@ export class MetaService {
 		this.schema = options.schema;
 	}
 
-	async getMetaForQuery(collection: string, query: Query): Promise<Record<string, any> | undefined> {
+	async getMetaForQuery(collection: string, query: any): Promise<Record<string, any> | undefined> {
 		if (!query || !query.meta) return;
 
 		const results = await Promise.all(
-			query.meta.map((metaVal) => {
+			query.meta.map((metaVal: string) => {
 				if (metaVal === 'total_count') return this.totalCount(collection);
 				if (metaVal === 'filter_count') return this.filterCount(collection, query);
 			})

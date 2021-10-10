@@ -36,13 +36,13 @@ describe('getPackageExtensions', () => {
 			name: 'test',
 			version: '0.1',
 			dependencies: {},
-			'directus:extension': { type: 'pack', path: './', source: 'test', host: 'localhost', hidden: true },
+			'directus:extension': { type: 'pack', path: './', source: 'test', host: '^9.0.0' },
 		});
 
 		expect(await getPackageExtensions(childPackage.name, EXTENSION_PACKAGE_TYPES)).toStrictEqual([
 			{
 				children: [],
-				host: 'localhost',
+				host: '^9.0.0',
 				local: false,
 				name: 'directus-extension-test',
 				path: childPackage.name + '/directus-extension-test',
@@ -73,12 +73,12 @@ describe('getPackageExtensions', () => {
 			name: 'test',
 			version: '0.1',
 			dependencies: {},
-			'directus:extension': { type: 'interface', path: './', source: 'test', host: 'localhost', hidden: true },
+			'directus:extension': { type: 'interface', path: './', source: 'test', host: '^9.0.0' },
 		});
 
 		expect(await getPackageExtensions(typePackage.name, EXTENSION_PACKAGE_TYPES)).toStrictEqual([
 			{
-				host: 'localhost',
+				host: '^9.0.0',
 				entrypoint: './',
 				local: false,
 				name: 'directus-extension-type',

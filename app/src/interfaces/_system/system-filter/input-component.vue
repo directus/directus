@@ -9,12 +9,12 @@
 	/>
 	<input
 		v-else-if="is === 'interface-input'"
+		ref="inputEl"
 		:type="type"
 		:value="value"
 		:style="{ width }"
-		autofocus
 		placeholder="--"
-		@input="$emit('input', $event.target.value)"
+		@input="emitValueDebounced($event.target.value)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
@@ -27,13 +27,21 @@
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="$emit('input', $event)" />
+			<component
+				:is="is"
+				class="input-component"
+				small
+				:type="type"
+				:value="value"
+				@input="emitValueDebounced($event)"
+			/>
 		</div>
 	</v-menu>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { debounce } from 'lodash';
+import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -52,7 +60,8 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup(props) {
+	setup(props, { emit }) {
+		const inputEl = ref<HTMLElement>();
 		const { t } = useI18n();
 
 		const displayValue = computed(() => {
@@ -70,10 +79,25 @@ export default defineComponent({
 			if (props.is === 'interface-input' && typeof props.value === 'string') {
 				return (props.value?.length >= 3 ? props.value.length + 1 : 3) + 'ch';
 			}
+
 			return 3 + 'ch';
 		});
 
-		return { displayValue, width, t };
+		onMounted(() => {
+			inputEl.value?.focus();
+		});
+
+		const emitValueDebounced = debounce((val: unknown) => emitValue(val), 250);
+
+		return { displayValue, width, t, emitValueDebounced, inputEl };
+
+		function emitValue(val: unknown) {
+			if (val === '') {
+				emit('input', null);
+			} else {
+				emit('input', val);
+			}
+		}
 	},
 });
 </script>

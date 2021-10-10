@@ -44,7 +44,7 @@ export type Command<T extends Toolbox = Toolbox, P = unknown, R extends any = vo
 	settings?: Settings<P>;
 	run: {
 		/**
-		 * @deprecated Please don't access this field. It's for internal use only and a workaround for Gluegun.
+		 * @note Please don't access this field. It's for internal use only and a workaround for Gluegun.
 		 */
 		$directus: {
 			settings: Settings<P>;
