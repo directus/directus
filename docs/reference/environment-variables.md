@@ -318,7 +318,7 @@ common required configuration options:
 
 ### Local
 
-Local is the default username and password authentication driver for Directus.
+Local is the default username and password authentication driver for Directus. It requires no additional configuration.
 
 ### OAuth 2.0
 
@@ -337,7 +337,7 @@ Local is the default username and password authentication driver for Directus.
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                                       | --               |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                                   | `account_circle` |
 
-If possible, OpenID is be preferred over OAuth 2.0 as it provides better verification and consistent user information,
+If possible, OpenID is preferred over OAuth 2.0 as it provides better verification and consistent user information,
 allowing more complete user registrations.
 
 ### OpenID
