@@ -10,23 +10,15 @@ import isDirectusJWT from '../utils/is-directus-jwt';
  * Verify the passed JWT and assign the user ID and role to `req`
  */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (req.accountability == null) {
-		req.accountability = {
-			user: null,
-			role: null,
-			admin: false,
-			app: false,
-			ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
-			userAgent: req.get('user-agent'),
-		};
-	} else {
-		if (req.accountability.ip == null) {
-			req.accountability.ip = req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip;
-		}
-		if (req.accountability.userAgent == null) {
-			req.accountability.userAgent = req.get('user-agent');
-		}
-	}
+  req.accountability = {
+    user: req.accountability?.user ?? null,
+    role: req.accountability?.role ?? null,
+    admin: req.accountability?.admin ?? false,
+    app: req.accountability?.app ?? false,
+    ip: req.accountability?.ip ?? (req.ip.startsWith("::ffff:") ? req.ip.substring(7) : req.ip),
+    userAgent: req.accountability?.userAgent ?? req.get("user-agent"),
+  };
+
 
 	if (!req.token) return next();
 
