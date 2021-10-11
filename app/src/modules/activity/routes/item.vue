@@ -1,5 +1,10 @@
 <template>
-	<v-drawer :model-value="isOpen" title="Activity Item" @update:model-value="close" @cancel="close">
+	<v-drawer
+		:model-value="isOpen"
+		:title="t('activity_items.activity_item')"
+		@update:model-value="close"
+		@cancel="close"
+	>
 		<v-progress-circular v-if="loading" indeterminate />
 
 		<div v-else-if="error" class="content">
@@ -10,27 +15,27 @@
 
 		<div v-else class="content">
 			<!-- @TODO add final design -->
-			<p class="type-label">User:</p>
+			<p class="type-label">{{ t('activity_items.user') }}:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
 				{{ userName(item.user) }}
 			</user-popover>
 
-			<p class="type-label">Action:</p>
+			<p class="type-label">{{ t('activity_items.action') }}:</p>
 			<p>{{ item.action }}</p>
 
-			<p class="type-label">Date:</p>
+			<p class="type-label">{{ t('activity_items.date') }}:</p>
 			<p>{{ item.timestamp }}</p>
 
-			<p class="type-label">IP Address:</p>
+			<p class="type-label">{{ t('activity_items.ip') }}:</p>
 			<p>{{ item.ip }}</p>
 
-			<p class="type-label">User Agent:</p>
+			<p class="type-label">{{ t('activity_items.user_agent') }}:</p>
 			<p>{{ item.user_agent }}</p>
 
-			<p class="type-label">Collection:</p>
+			<p class="type-label">{{ t('activity_items.collection') }}:</p>
 			<p>{{ item.collection }}</p>
 
-			<p class="type-label">Item:</p>
+			<p class="type-label">{{ t('activity_items.item') }}:</p>
 			<p>{{ item.item }}</p>
 		</div>
 
@@ -48,6 +53,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
+import { i18n } from '@/lang';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
@@ -77,7 +83,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t } = useI18n();
+		const { t, te } = useI18n();
 
 		const router = useRouter();
 
@@ -88,7 +94,7 @@ export default defineComponent({
 		const error = ref<any>(null);
 
 		const openItemLink = computed(() => {
-			if (!item.value) return;
+			if (!item.value || item.value.collection.startsWith('directus_')) return;
 			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
@@ -118,6 +124,11 @@ export default defineComponent({
 				});
 
 				item.value = response.data.data;
+				if (item.value) {
+					if (te(`field_options.directus_activity.${item.value.action}`))
+						item.value.action = t(`field_options.directus_activity.${item.value.action}`);
+					item.value.timestamp = new Date(item.value.timestamp).toLocaleString(i18n.global.locale.value);
+				}
 			} catch (err: any) {
 				error.value = err;
 			} finally {
