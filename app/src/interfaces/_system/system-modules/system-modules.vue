@@ -107,7 +107,7 @@ const linkFields: DeepPartial<Field>[] = [
 			required: true,
 			interface: 'input',
 			options: {
-				placeholder: '$t:url_example',
+				placeholder: 'https://example.com',
 			},
 		},
 	},
@@ -196,7 +196,7 @@ export default defineComponent({
 
 					return {
 						...part,
-						to: module.link === undefined ? `/${module.id}` : '',
+						to: `/${module.id}`,
 						name: module.name,
 						icon: module.icon,
 					};

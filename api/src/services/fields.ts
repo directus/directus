@@ -484,7 +484,9 @@ export class FieldsService {
 			column.nullable();
 		}
 
-		if (field.schema?.is_unique === true) {
+		if (field.schema?.is_primary_key) {
+			column.primary().notNullable();
+		} else if (field.schema?.is_unique === true) {
 			if (!alter || alter.is_unique === false) {
 				column.unique();
 			}
@@ -492,10 +494,6 @@ export class FieldsService {
 			if (alter && alter.is_unique === true) {
 				table.dropUnique([field.field]);
 			}
-		}
-
-		if (field.schema?.is_primary_key) {
-			column.primary().notNullable();
 		}
 
 		if (alter) {

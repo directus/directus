@@ -30,7 +30,7 @@
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.id"
+			:group="field.meta.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
@@ -47,7 +47,7 @@ import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
-	name: 'InterfaceGroupRaw',
+	name: 'InterfaceGroupDetail',
 	props: {
 		field: {
 			type: Object as PropType<Field>,

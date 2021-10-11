@@ -71,6 +71,7 @@ import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
 import { validatePayload } from '@directus/shared/utils';
+import { parseFilter } from '@/utils/parse-filter';
 
 type FieldValues = {
 	[field: string]: any;
@@ -122,7 +123,7 @@ export default defineComponent({
 			default: false,
 		},
 		group: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 		badge: {
@@ -245,8 +246,8 @@ export default defineComponent({
 						const matchingCondition = conditions.find((condition) => {
 							if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 
-							const errors = validatePayload(condition.rule, values.value, { requireAll: true });
-
+							const rule = parseFilter(condition.rule);
+							const errors = validatePayload(rule, values.value, { requireAll: true });
 							return errors.length === 0;
 						});
 
@@ -279,7 +280,7 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.id)));
+			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.field)));
 
 			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
 
@@ -293,14 +294,14 @@ export default defineComponent({
 				);
 			}
 
-			function getFieldsForGroup(group: null | number): Field[] {
+			function getFieldsForGroup(group: null | string): Field[] {
 				const fieldsInGroup: Field[] = fieldsParsed.value.filter(
 					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
 				);
 
 				for (const field of fieldsInGroup) {
 					if (field.meta?.special?.includes('group')) {
-						fieldsInGroup.push(...getFieldsForGroup(field.meta!.id));
+						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field));
 					}
 				}
 

@@ -74,7 +74,7 @@
 			</template>
 		</v-info>
 
-		<slot v-else-if="itemCount === 0 && activeFilterCount > 0" name="no-results" />
+		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
 </template>
@@ -84,7 +84,7 @@ import { useI18n } from 'vue-i18n';
 import { ComponentPublicInstance, defineComponent, PropType, ref } from 'vue';
 import { useSync } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import { Field, Item, Collection } from '@directus/shared/types';
+import { Field, Item, Collection, Filter } from '@directus/shared/types';
 import { HeaderRaw } from '@/components/v-table/types';
 
 export default defineComponent({
@@ -174,10 +174,6 @@ export default defineComponent({
 			type: Function as PropType<(data: any) => Promise<void>>,
 			required: true,
 		},
-		activeFilterCount: {
-			type: Number,
-			required: true,
-		},
 		resetPresetAndRefresh: {
 			type: Function as PropType<() => Promise<void>>,
 			required: true,
@@ -185,6 +181,14 @@ export default defineComponent({
 		selectAll: {
 			type: Function as PropType<() => void>,
 			required: true,
+		},
+		filterUser: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
+		search: {
+			type: String,
+			default: null,
 		},
 	},
 	emits: ['update:selection', 'update:tableHeaders', 'update:limit'],

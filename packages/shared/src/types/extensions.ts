@@ -30,7 +30,6 @@ export type Extension = {
 	children?: string[];
 
 	local: boolean;
-	root: boolean;
 };
 
 export type ExtensionManifestRaw = {
@@ -57,7 +56,7 @@ export type ExtensionManifest = {
 		path: string;
 		source: string;
 		host: string;
-		hidden: boolean;
+		hidden?: boolean;
 	};
 };
 

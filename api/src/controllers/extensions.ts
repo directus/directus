@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
-import { listExtensions, getAppExtensionSource } from '../extensions';
+import { getExtensionManager } from '../extensions';
 import { respond } from '../middleware/respond';
 import { depluralize, isAppExtension } from '@directus/shared/utils';
 import { Plural } from '@directus/shared/types';
@@ -17,7 +17,9 @@ router.get(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const extensions = listExtensions(type);
+		const extensionManager = getExtensionManager();
+
+		const extensions = extensionManager.listExtensions(type);
 
 		res.locals.payload = {
 			data: extensions,
@@ -37,7 +39,9 @@ router.get(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const extensionSource = getAppExtensionSource(type);
+		const extensionManager = getExtensionManager();
+
+		const extensionSource = extensionManager.getAppExtensions(type);
 		if (extensionSource === undefined) {
 			throw new RouteNotFoundException(req.path);
 		}

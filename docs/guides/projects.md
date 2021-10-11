@@ -67,6 +67,14 @@ See [Creating a Thumbnail Preset](/guides/files/#creating-a-thumbnail-preset)
 
 See [Styles > Custom CSS](/guides/styles/#custom-css)
 
+### Modules
+
+- **Module Bar** — Allows the customisation of links displayed in the module bar:
+  - Module Visibility — Show or hide modules by toggling the checkbox.
+  - Link Reordering — Reorder links by dragging on the sort handle.
+  - Link Creation — URLs should start with a `/` for links within the
+    [Directus App](/concepts/application/#the-directus-application).
+
 ## Upgrading / Updating a Project
 
 1. Backup your project

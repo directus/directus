@@ -6,8 +6,10 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="filters"
-		v-model:search-query="searchQuery"
+		:filter-user="filter"
+		:filter-system="archiveFilter"
+		:filter="mergeFilters(filter, archiveFilter)"
+		:search="search"
 		:collection="collection"
 		:reset-preset="resetPreset"
 	>
@@ -88,7 +90,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -235,6 +237,11 @@
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
+				<export-sidebar-detail
+					:collection="collection"
+					:filter="mergeFilters(filter, archiveFilter)"
+					:search="search"
+				/>
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -272,6 +279,7 @@ import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
+import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {
 	[field: string]: any;
@@ -299,6 +307,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		showArchive: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const { t } = useI18n();
@@ -322,8 +334,8 @@ export default defineComponent({
 			layout,
 			layoutOptions,
 			layoutQuery,
-			filters,
-			searchQuery,
+			filter,
+			search,
 			savePreset,
 			bookmarkExists,
 			saveCurrentAsBookmark,
@@ -365,6 +377,32 @@ export default defineComponent({
 
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
+		const archiveFilter = computed(() => {
+			if (!currentCollection.value?.meta) return null;
+
+			const field = currentCollection.value.meta.archive_field;
+
+			if (!field) return filter.value;
+
+			let archiveValue: any = currentCollection.value.meta.archive_value;
+			if (archiveValue === 'true') archiveValue = true;
+			if (archiveValue === 'false') archiveValue = false;
+
+			if (props.showArchive) {
+				return {
+					[field]: {
+						_eq: archiveValue,
+					},
+				};
+			} else {
+				return {
+					[field]: {
+						_neq: archiveValue,
+					},
+				};
+			}
+		});
+
 		return {
 			t,
 			addNewLink,
@@ -373,14 +411,14 @@ export default defineComponent({
 			confirmDelete,
 			currentCollection,
 			deleting,
-			filters,
+			filter,
 			layoutRef,
 			layoutWrapper,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
+			search,
 			savePreset,
 			bookmarkExists,
 			currentCollectionLink,
@@ -408,6 +446,8 @@ export default defineComponent({
 			refresh,
 			refreshInterval,
 			currentLayout,
+			archiveFilter,
+			mergeFilters,
 		};
 
 		async function refresh() {
@@ -476,11 +516,15 @@ export default defineComponent({
 
 				archiving.value = true;
 
+				let archiveValue: any = currentCollection.value.meta.archive_value;
+				if (archiveValue === 'true') archiveValue = true;
+				if (archiveValue === 'false') archiveValue = false;
+
 				try {
 					await api.patch(`/items/${props.collection}`, {
 						keys: selection.value,
 						data: {
-							[currentCollection.value.meta.archive_field]: currentCollection.value.meta.archive_value,
+							[currentCollection.value.meta.archive_field]: archiveValue,
 						},
 					});
 
@@ -543,8 +587,8 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
-			searchQuery.value = null;
+			filter.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {

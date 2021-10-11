@@ -4,7 +4,9 @@ import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
 
-export function parseFilter(filter: Filter, accountability: Accountability | null): any {
+export function parseFilter(filter: Filter | null, accountability: Accountability | null): any {
+	if (!filter) return filter;
+
 	return deepMap(filter, applyFilter);
 
 	function applyFilter(val: any, key: string | number) {

@@ -20,14 +20,18 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+avatar: Avatar
+default_provider: Default
 published: Published
 draft: Draft
 archived: Archived
+modules: Modules
 module_bar: Module Bar
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
+item_creation: Item Creation
 item_revision: Item Revision
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
@@ -60,8 +64,6 @@ create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 invite_users: Invite Users
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
 emails: Emails
@@ -155,6 +157,7 @@ fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
 presentation_and_aliases: Presentation & Aliases
+revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
@@ -291,6 +294,7 @@ revision_delta_reverted: Reverted
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 private_user: Private User
+creation_preview: Creation Preview
 revision_preview: Revision Preview
 updates_made: Updates Made
 leave_comment: Leave a comment...
@@ -845,6 +849,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    color: Color
     display_template: Display Template
     hidden: Hidden
     singleton: Singleton
@@ -912,6 +917,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -982,6 +988,7 @@ field_options:
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -1144,6 +1151,19 @@ weeks: {}
 report_error: Report Error
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Configure a filter object.
+    add_filter: Add Filter
+    add_group: And / Or group
+    add_value: Add Value
+    all: All
+    any: Any
+    and: and
+    of_the_following: of the following
+    no_rules: No configured rules
+    change_value: Click to change value
+    placeholder: Drag rules here
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections

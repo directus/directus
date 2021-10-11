@@ -150,3 +150,19 @@ fields:
     display: datetime
     display_options:
       relative: true
+
+  - field: provider
+    width: half
+    interface: select-dropdown
+    readonly: true
+    options:
+      choices:
+        - text: $t:default_provider
+          value: default
+
+  - field: external_identifier
+    width: half
+    options:
+      iconRight: account_circle
+    interface: input
+    readonly: true
