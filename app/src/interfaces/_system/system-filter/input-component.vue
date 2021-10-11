@@ -58,6 +58,10 @@ export default defineComponent({
 			type: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
 			default: null,
 		},
+		focus: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -84,7 +88,7 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
-			inputEl.value?.focus();
+			if (props.focus) inputEl.value?.focus();
 		});
 
 		const emitValueDebounced = debounce((val: unknown) => emitValue(val), 250);
@@ -140,6 +144,7 @@ input {
 	color: var(--primary);
 	font-family: var(--family-monospace);
 	line-height: 1em;
+	background-color: var(--background-page);
 	border: none;
 
 	&::placeholder {
