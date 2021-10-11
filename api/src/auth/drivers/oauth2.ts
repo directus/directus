@@ -113,7 +113,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const identifier = (userInfo[identifierKey] as string | undefined) ?? email;
 
 		if (!identifier) {
-			logger.warn(`Failed to find user identifier in provider "${this.config.provider}"`);
+			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -126,7 +126,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 					auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 				});
 			}
-
 			return userId;
 		}
 
@@ -166,20 +165,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			await this.client.refresh(authData.refreshToken);
 			return null;
 		} catch (e) {
-			if (e instanceof errors.OPError) {
-				// Server response error
-				throw handleError(e);
-			}
-			throw e;
+			throw handleError(e);
 		}
 	}
 }
 
 const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
+		if (e.error === 'invalid_grant') {
+			// Invalid token
+			return new InvalidCredentialsException();
+		}
 		// Server response error
 		return new ServiceUnavailableException('Service returned unexpected response', {
-			service: 'oauth2',
+			service: 'openid',
 			message: e.error_description,
 		});
 	} else if (e instanceof errors.RPError) {

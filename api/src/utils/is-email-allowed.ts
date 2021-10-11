@@ -1,7 +1,7 @@
 import isUrlAllowed from './is-url-allowed';
 
 /**
- * Check if email domain matches allow list either exactly or by domain+path
+ * Check if email domain matches allow list
  */
 export default function isEmailAllowed(email: string, allowList: string | string[]): boolean {
 	const emailData = email.split('@');
