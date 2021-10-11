@@ -1,17 +1,6 @@
-# Projects
+# Project Settings
 
-> A Project is a complete instance of Directus, including its **Database**, config file, asset storage, and any custom
-> extensions. [Learn more about Projects](/concepts/projects/).
-
-## Creating a Project
-
-To install Directus, choose one of the following methods.
-
-- [Command Line Interface (CLI)](/guides/installation/cli)
-- [Docker](/guides/installation/docker)
-- [Manually](/guides/installation/manual)
-
-## Configuring a Project
+> TK
 
 All project configuration is handled by the `.env` file within the `/api` directory. This file accepts a number of
 environment variables, each is explained in the following reference:
@@ -61,7 +50,14 @@ In addition to the above global Project Settings, you can also apply the followi
 
 ### Files & Thumbnails
 
-See [Creating a Thumbnail Preset](/guides/files/#creating-a-thumbnail-preset)
+#### Creating a Thumbnail Preset
+
+1. Navigate to **Settings > Project Settings**
+2. Scroll to the **Storage Asset Presets** field
+3. Click **Add a New Item**
+4. Enter a unique **Key** for the preset
+5. Enter the **Fit**, **Width**, **Height**, and **Quality** for the preset
+6. Click the **Save** action button in the header
 
 ### App Overrides
 
@@ -74,51 +70,3 @@ See [Styles > Custom CSS](/guides/styles/#custom-css)
   - Link Reordering — Reorder links by dragging on the sort handle.
   - Link Creation — URLs should start with a `/` for links within the
     [Directus App](/concepts/application/#the-directus-application).
-
-## Upgrading / Updating a Project
-
-1. Backup your project
-2. Run `npm update`
-3. Run `npx directus database migrate:latest` to update the DB
-
-## Backing-up a Project
-
-1. Make a copy of the **files within each storage adapter**, and store them in a safe place
-2. Make a copy of the **Env file** (`/api/.env`), and store it in a safe place
-3. Create a database dump
-
-## Migrating a Project
-
-Directus doesn't rely on anything besides the database for it's operation. Therefore, migrating your Directus project
-can be done by moving the whole database to a new location using a database dump.
-
-::: tip File Storage
-
-If you have files uploaded, make sure to copy those over as well, or use the same storage location in the new location
-of Directus.
-
-:::
-
-## Downgrading a Project
-
-Directus can be reverted to an earlier version by going to your terminal, navigating into your project folder and
-running `npm install directus@<version>`.
-
-If you ran any database migrations for a newer version, you can revert those by running
-`npx directus database migrate:down`
-
-## Deleting a Project
-
-1. Optional: **Backup any local files** stored within the project's root directory
-2. Optional: **Backup any custom code and extensions** within the project's root directory
-3. Optional: **Backup your entire database**, only system tables, or only project tables
-4. **Delete the project's root directory** from the server
-5. **Delete all Directus system tables** (`directus_*`) from the database
-
-::: tip Pure SQL
-
-After completing this process, you will be left with a pure SQL database, with no trace that Directus was ever
-installed. Any external services connecting to your database's project tables directly (eg: SQL queries) should continue
-working normally.
-
-:::

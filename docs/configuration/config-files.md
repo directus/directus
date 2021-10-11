@@ -1,4 +1,4 @@
-# Configuring the API
+# Configuration Files
 
 [[toc]]
 

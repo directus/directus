@@ -1,4 +1,57 @@
-# Migrating from v8
+# Upgrades & Migrations
+
+> A Project is a complete instance of Directus, including its **Database**, config file, asset storage, and any custom
+> extensions. [Learn more about Projects](/concepts/projects/).
+
+## Upgrading / Updating a Project
+
+1. Backup your project
+2. Run `npm update`
+3. Run `npx directus database migrate:latest` to update the DB
+
+## Backing-up a Project
+
+1. Make a copy of the **files within each storage adapter**, and store them in a safe place
+2. Make a copy of the **Env file** (`/api/.env`), and store it in a safe place
+3. Create a database dump
+
+## Migrating a Project
+
+Directus doesn't rely on anything besides the database for it's operation. Therefore, migrating your Directus project
+can be done by moving the whole database to a new location using a database dump.
+
+::: tip File Storage
+
+If you have files uploaded, make sure to copy those over as well, or use the same storage location in the new location
+of Directus.
+
+:::
+
+## Downgrading a Project
+
+Directus can be reverted to an earlier version by going to your terminal, navigating into your project folder and
+running `npm install directus@<version>`.
+
+If you ran any database migrations for a newer version, you can revert those by running
+`npx directus database migrate:down`
+
+## Deleting a Project
+
+1. Optional: **Backup any local files** stored within the project's root directory
+2. Optional: **Backup any custom code and extensions** within the project's root directory
+3. Optional: **Backup your entire database**, only system tables, or only project tables
+4. **Delete the project's root directory** from the server
+5. **Delete all Directus system tables** (`directus_*`) from the database
+
+::: tip Pure SQL
+
+After completing this process, you will be left with a pure SQL database, with no trace that Directus was ever
+installed. Any external services connecting to your database's project tables directly (eg: SQL queries) should continue
+working normally.
+
+:::
+
+## Migrating from v8
 
 There are two ways to migrate from an existing Directus 8.X instance:
 
