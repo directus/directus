@@ -291,6 +291,13 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	function setItemValueToResponse(response: AxiosResponse) {
+		if (
+			'meta' in response.data.data &&
+			'note' in response.data.data.meta &&
+			response.data.data.meta.note?.startsWith('$t:')
+		) {
+			response.data.data.meta.note = i18n.global.t(response.data.data.meta.note.replace('$t:', ''));
+		}
 		if (isBatch.value === false) {
 			item.value = response.data.data;
 		} else {
