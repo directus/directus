@@ -2,12 +2,12 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_users', (table) => {
-		table.json('provider_data');
+		table.json('auth_data');
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_users', (table) => {
-		table.dropColumn('provider_data');
+		table.dropColumn('auth_data');
 	});
 }

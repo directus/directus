@@ -61,7 +61,7 @@ export class AuthenticationService {
 				'tfa_secret',
 				'provider',
 				'external_identifier',
-				'provider_data'
+				'auth_data'
 			)
 			.from('directus_users')
 			.where('id', await provider.getUserID(cloneDeep(payload)))
@@ -244,7 +244,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
-				'u.provider_data'
+				'u.auth_data'
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -298,7 +298,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
-				'u.provider_data',
+				'u.auth_data',
 				's.data'
 			)
 			.from('directus_sessions as s')
@@ -328,7 +328,7 @@ export class AuthenticationService {
 				'role',
 				'provider',
 				'external_identifier',
-				'provider_data'
+				'auth_data'
 			)
 			.from('directus_users')
 			.where('id', userID)

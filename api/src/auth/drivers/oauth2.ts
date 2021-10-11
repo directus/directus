@@ -6,7 +6,7 @@ import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, ProviderData, SessionData } from '../../types';
+import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
 import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
@@ -123,14 +123,14 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			// Update user refreshToken if provided
 			if (tokenSet.refresh_token) {
 				await this.usersService.updateOne(userId, {
-					provider_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+					auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 				});
 			}
 
 			return userId;
 		}
 
-		const isAllowedEmail = email && (!allowedEmailDomains || isEmailAllowed(email, allowedEmailDomains));
+		const isAllowedEmail = !allowedEmailDomains || (email && isEmailAllowed(email, allowedEmailDomains));
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isAllowedEmail) {
@@ -145,7 +145,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			email: email,
 			external_identifier: !emailIsIdentifier ? identifier : undefined,
 			role: this.config.defaultRoleId,
-			provider_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
 
 		return (await this.fetchUserId(identifier)) as string;
@@ -156,14 +156,14 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	async refresh(user: User): Promise<SessionData> {
-		const providerData = (user.provider_data && JSON.parse(user.provider_data)) as ProviderData;
+		const authData = (user.auth_data && JSON.parse(user.auth_data)) as AuthData;
 
-		if (!providerData?.refreshToken) {
+		if (!authData?.refreshToken) {
 			return null;
 		}
 
 		try {
-			await this.client.refresh(providerData.refreshToken);
+			await this.client.refresh(authData.refreshToken);
 			return null;
 		} catch (e) {
 			if (e instanceof errors.OPError) {

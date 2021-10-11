@@ -167,5 +167,5 @@ fields:
     interface: input
     readonly: true
 
-  - field: provider_data
+  - field: auth_data
     hidden: true

@@ -16,10 +16,10 @@ export interface User {
 	role: string | null;
 	provider: string;
 	external_identifier: string | null;
-	provider_data: string | null;
+	auth_data: string | null;
 }
 
-export type ProviderData = Record<string, any> | null;
+export type AuthData = Record<string, any> | null;
 
 export interface Session {
 	token: string;
