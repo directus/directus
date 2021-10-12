@@ -20,10 +20,7 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"serve": "vite preview",
-		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 \"../docs/assets/**/*\" \"public/img/docs\" --verbose",
-		"predev": "npm run copy-docs-images",
-		"prebuild": "npm run copy-docs-images"
+		"serve": "vite preview"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
@@ -97,6 +94,7 @@
 		"tinymce": "5.10.0",
 		"typescript": "4.4.3",
 		"vite": "2.6.7",
+		"vite-plugin-md": "0.11.1",
 		"vue": "3.2.20",
 		"vue-i18n": "9.1.9",
 		"vue-router": "4.0.11",
