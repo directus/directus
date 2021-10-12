@@ -332,6 +332,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutes
+hours: Hours
 month: Month
 year: Year
 select_all: Select All
@@ -821,10 +823,12 @@ system_fields_locked: System fields are locked and can't be edited
 directus_collection:
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
+  directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
+  directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
@@ -917,6 +921,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -987,6 +992,7 @@ field_options:
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -1527,8 +1533,9 @@ layouts:
     invalid_geometry: Invalid geometry
     auto_location_filter: Always filter data to view bounds
     search_this_area: Search this area
-    clear_data_filter: Clear Data Filter
-    clear_location_filter: Clear Location Filter
+    clear_data_filter: Clear data filter
+    clear_location_filter: Clear location filter
+    no_results_here: No results in this area
 
 panels:
   metric:

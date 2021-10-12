@@ -904,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
@@ -972,6 +973,7 @@ field_options:
     additional_transforms: Допълнителни трансформации
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Токен за mapbox
+    basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
@@ -1378,7 +1380,7 @@ interfaces:
     results_path: Път до резултатите
     value_path: Път до стойността
     trigger: Задействане
-    rate: Оценка
+    rate: Скорост
   group-raw:
     name: Обикновена група
     description: Показване на полетата, както са си

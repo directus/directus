@@ -347,7 +347,7 @@ cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
 import_label: Importieren
-file_details: Dateiinformationen
+file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
@@ -540,7 +540,7 @@ font: Schriftart
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
-divider: Divider
+divider: Trenner
 color: Farbe
 circle: Kreis
 empty_item: Leeres Element
@@ -769,7 +769,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
-  **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
 page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
@@ -829,7 +829,7 @@ fields:
     timestamp: Aktion am
     user: Aktion von
     comment: Kommentar
-    user_agent: User Agent
+    user_agent: Benutzer-Agent
     ip: IP Adresse
     revisions: Revisionen
   directus_collections:
@@ -904,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -974,6 +975,7 @@ field_options:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1001,7 +1003,7 @@ field_options:
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
     divider: Sortieren
     sort_field: Wählen Sie ein Feld...
-    accountability_divider: Verantwortung
+    accountability_divider: Verantwortlichkeit
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1123,7 +1125,7 @@ settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
-something_went_wrong: Irgendwas ist schief gelaufen...
+something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
@@ -1143,7 +1145,7 @@ interfaces:
     add_group: Und / Oder Gruppe
     add_value: Wert hinzufügen
     all: Alle
-    any: Irgendein
+    any: Irgendeiner
     and: und
     of_the_following: der folgenden
     no_rules: Keine konfigurierten Regeln
@@ -1213,7 +1215,7 @@ interfaces:
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
   presentation-divider:
-    divider: Divider
+    divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
     inline_title: Inline-Titel
@@ -1301,7 +1303,7 @@ interfaces:
     folder: Ordner
     description: Ordner auswählen
     field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
-    root_name: Root-Ordner für Dateien
+    root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
     radio-buttons: Radio Buttons
@@ -1381,7 +1383,7 @@ interfaces:
     results_path: Pfad Ergebnis
     value_path: Wertpfad
     trigger: Trigger
-    rate: Rate
+    rate: Frequenz
   group-raw:
     name: Rohgruppe
     description: Felder so anzeigen wie sie sind
