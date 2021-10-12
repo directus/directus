@@ -30,6 +30,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
 maps: Mapas
+item_creation: Creación de artículos
 item_revision: Revisión de Elemento
 enter_a_name: Introduce un Nombre...
 duplicate_field: Duplicar Campo
@@ -46,7 +47,9 @@ role_name: Nombre del Rol
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
+edit_collection: Editar Colección
 exclusive: Exclusivo
+children: Subsecciones
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
 edited: Valor Editado
@@ -54,8 +57,10 @@ required: Requerido
 required_for_app_access: Necesario para el acceso a App
 requires_value: Valor obligatorio
 create_preset: Crear Predefinido
+create_panel: Crear Panel
 create_role: Crear Rol
 create_user: Crear Usuario
+delete_panel: Eliminar Panel
 create_webhook: Crear Webhook
 invite_users: Invitar Usuarios
 invite: Invitar
@@ -125,6 +130,8 @@ no_access: Sin Acceso
 use_custom: Personalizar
 nullable: Acepta valores nulos
 allow_null_value: Permitir valor NULL
+allow_multiple: Permitir Múltiples
+allow_multiple_to_be_open: Permitir que se abran múltiples
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
 field_presentation: Presentación y Alias
@@ -135,6 +142,7 @@ field_m2a: Relación M2A
 field_o2m: Relación UAM
 field_m2m: Relación MAM
 field_translations: Traducciones
+field_group: Grupo de campos
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
 field_validation: Validación de Campo
@@ -144,6 +152,10 @@ fields_for_role: 'Campos que el Rol {role} puede {action}.'
 validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
 presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
 presentation_and_aliases: Presentación y Alias
+revision_post_create: Este es el aspecto de este elemento cuando fue creado.
+revision_post_update: Así se vería el elemento después de la actualización.
+changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
+no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
 hide_field_on_detail: Ocultar campo en el Detalle
 show_field_on_detail: Mostrar campo en el Detalle
 delete_field: Eliminar Campo
@@ -155,6 +167,15 @@ language: Idioma
 global: Global
 admins_have_all_permissions: Los Administradores tienen todos los permisos
 camera: Cámara
+show_zero: Mostrar cero
+sum: Suma
+sum_distinct: Sumar Diferentes
+avg: Media
+avg_distinct: Media de elementos distintos
+count: Contar
+count_distinct: Recuento de elementos distintos
+min: Min
+max: Máx
 exposure: Exposición
 shutter: Obturación
 iso: ISO
@@ -172,7 +193,9 @@ alias: Alias
 bigInteger: Número Entero (Grande)
 boolean: Booleano
 date: Fecha
+date_range: Rango de fechas
 datetime: Fecha y Hora
+precision: Precisión
 decimal: Decimal
 float: Número Flotante
 integer: Número Entero
@@ -184,6 +207,7 @@ time: Hora
 timestamp: Marca de Tiempo
 uuid: UUID
 hash: Hash
+geometry: Geometría
 not_available_for_type: No disponible para este Tipo
 create_translations: Crear Traducciones
 auto_refresh: Actualización automática
@@ -209,6 +233,8 @@ add_m2m_to_collection: 'Agregar Muchos-A-Muchos a "{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinado por la Relación
 add_note: Añadir una nota útil para los usuarios...
+add_link: Agregar Enlace
+custom_link: Enlance Personalizado
 default_value: Valor por Defecto
 standard_field: Campo Estándar
 single_file: Un Archivo
@@ -238,6 +264,7 @@ raw_value: Valor Plano
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
+clear_changes: Borrar Cambios
 reset_to_default: Restablecer ajustes
 undo_changes: Deshacer cambios
 notifications: Notificaciones
@@ -257,6 +284,7 @@ revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 private_user: Usuario Privado
+creation_preview: Vista previa de creación
 revision_preview: Vista Previa de Revisión
 updates_made: Actualizaciones Realizadas
 leave_comment: Deja un comentario...
@@ -380,7 +408,9 @@ no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
 webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
+no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando uno a continuación.
 all_items: Todos los Elementos
+any: Cualquiera
 csv: CSV
 no_collections: Sin Colecciones
 create_collection: Crear colección
@@ -390,11 +420,21 @@ relationship_not_setup: La relación no se ha configurado correctamente
 display_template_not_setup: La opción de plantilla de Presentación está mal configurada
 collection_field_not_setup: La opción del campo de colección está mal configurada
 select_a_collection: Seleccionar una Colección
+select_a_field: Selecciona un campo
 active: Activo
+move_to: Mover a...
 copy: Copiar
+copy_to: Copiar a...
+no_other_dashboards_copy: Aún no tienes un Panel.
+inactive: Inactivo
 users: Usuarios
 activity: Actividad
 webhooks: Webhooks
+decimals: Decimales
+value_decimals: Valor Decimal
+min_value: Valor Mínimo
+max_value: Valor máximo
+automatic: Automático
 field_width: Ancho de Campo
 add_filter: Agregar Filtro
 upper_limit: Límite Superior...
@@ -445,7 +485,9 @@ errors:
   UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
   NOT_NULL_VIOLATION: El valor no puede ser nulo
+  ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
   UNKNOWN: Error Inesperado
+security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador
@@ -460,6 +502,7 @@ no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
 password_reset_sent: Le hemos enviado un enlace seguro para restablecer su contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
+filter: Filtro
 editing_image: Editar Imagen
 square: Cuadrado
 free: Libre
@@ -482,6 +525,7 @@ visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
 show_hidden_collections: Mostrar colecciones ocultas
 hide_hidden_collections: Ocultar colecciones ocultas
+show_header: Mostrar encabezado
 unmanaged_collections: Colecciones No Configuradas
 system_collections: Colecciones del Sistema
 placeholder: Valor de Ejemplo
@@ -497,6 +541,8 @@ color: Color
 circle: Círculo
 empty_item: Elemento Vacío
 log_in_with: 'Iniciar Sesión con {provider}'
+conditional_styles: Estilos condicionales
+advanced_settings: Configuración Avanzada
 advanced_filter: Filtro Avanzado
 delete_advanced_filter: Borrar filtro
 change_advanced_filter_operator: Cambiar operador
@@ -717,6 +763,8 @@ collections: Colecciones
 singleton: Singleton
 singleton_label: Tratar como un sólo objeto
 system_fields_locked: Los campos del sistema están bloqueados y no pueden ser editados
+directus_collection:
+  directus_relations: Configuración de relaciones y metadatos
 fields:
   directus_activity:
     item: Clave Primaria del Item
@@ -821,6 +869,8 @@ fields:
     name: Nombre
     status: Estado
 field_options:
+  directus_settings:
+    security_divider_title: Seguridad
   directus_activity:
     create: Crear
     update: Actualización
@@ -847,6 +897,7 @@ field_options:
     status_dropdown_active: Activo
   directus_webhooks:
     status_options_active: Activo
+    status_options_inactive: Inactivo
     actions_create: Crear
     actions_update: Actualización
     actions_delete: Eliminar
@@ -933,8 +984,10 @@ report_error: Reportar Error
 start: Iniciar
 interfaces:
   filter:
+    name: Filtro
     add_filter: Agregar Filtro
     all: Todo
+    any: Cualquiera
   group-accordion:
     start: Iniciar
     all_closed: Todo Cerrado
@@ -1219,6 +1272,8 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Fecha de Inicio
     end_date_field: Campo Fecha de Fin
+  map:
+    field: Geometría
 panels:
   label:
     name: Etiqueta
