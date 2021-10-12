@@ -4,7 +4,7 @@ import CardsOptions from './options.vue';
 import CardsActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { toRefs, inject, computed, ref } from 'vue';
+import { toRefs, inject, computed, ref, watch } from 'vue';
 import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -14,6 +14,7 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { clone } from 'lodash';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
@@ -22,8 +23,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: CardsLayout,
 	slots: {
 		options: CardsOptions,
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		sidebar: () => {},
+		sidebar: () => undefined,
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
@@ -59,6 +59,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { size, icon, imageSource, title, subtitle, imageFit } = useLayoutOptions();
 		const { sort, limit, page, fields } = useLayoutQuery();
+		watch([collection, search, limit, sort], () => (page.value = 1));
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
 			sort,
@@ -174,43 +175,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useLayoutQuery() {
-			const page = computed({
-				get() {
-					return layoutQuery.value?.page || 1;
-				},
-				set(newPage: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: newPage,
-					};
-				},
-			});
-
-			const sort = computed<string[]>({
-				get() {
-					return layoutQuery.value?.sort || (primaryKeyField.value ? [primaryKeyField.value.field] : []);
-				},
-				set(newSort: string[]) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: 1,
-						sort: newSort,
-					};
-				},
-			});
-
-			const limit = computed({
-				get() {
-					return layoutQuery.value?.limit || 25;
-				},
-				set(newLimit: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: 1,
-						limit: newLimit,
-					};
-				},
-			});
+			const page = syncRefProperty(layoutQuery, 'page', 1);
+			const limit = syncRefProperty(layoutQuery, 'limit', 25);
+			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
+			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort.value);
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value || !props.collection) return [];

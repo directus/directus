@@ -43,7 +43,7 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"license": "MIT",
 	"dependencies": {
-		"axios": "^0.22.0"
+		"axios": "^0.23.0"
 	},
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "21.0.0",
@@ -63,8 +63,8 @@
 		"rollup-plugin-terser": "7.0.2",
 		"rollup-plugin-typescript2": "0.30.0",
 		"ts-jest": "27.0.5",
-		"ts-node": "10.2.1",
-		"typescript": "4.4.3"
+		"ts-node": "10.3.0",
+		"typescript": "4.4.4"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
 }

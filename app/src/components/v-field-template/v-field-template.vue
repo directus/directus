@@ -54,7 +54,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		depth: Number,
+		depth: {
+			type: Number,
+			default: undefined,
+		},
 		placeholder: {
 			type: String,
 			default: null,

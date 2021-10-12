@@ -16,6 +16,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 import { cloneDeep, merge } from 'lodash';
 
@@ -44,9 +45,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const page = syncOption(layoutQuery, 'page', 1);
-		const limit = syncOption(layoutQuery, 'limit', 1000);
-		const sort = syncOption(layoutQuery, 'sort', [fieldsInCollection.value?.[0]?.field]);
+		const page = syncRefProperty(layoutQuery, 'page', 1);
+		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
+		const sort = syncRefProperty(layoutQuery, 'sort', [fieldsInCollection.value?.[0]?.field]);
 
 		const locationFilter = ref<Filter>();
 
@@ -61,11 +62,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const customLayerDrawerOpen = ref(false);
 
-		const cameraOptions = syncOption(layoutOptions, 'cameraOptions', undefined);
-		const customLayers = syncOption(layoutOptions, 'customLayers', layers);
-		const autoLocationFilter = syncOption(layoutOptions, 'autoLocationFilter', false);
-		const clusterData = syncOption(layoutOptions, 'clusterData', false);
-		const geometryField = syncOption(layoutOptions, 'geometryField', undefined);
+		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
+		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
+		const customLayers = syncRefProperty(layoutOptions, 'customLayers', layers);
+		const autoLocationFilter = syncRefProperty(layoutOptions, 'autoLocationFilter', false);
+		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
+		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
 		const geometryFormat = computed<GeometryFormat | undefined>({
 			get: () => layoutOptions.value?.geometryFormat,
 			set(newValue: GeometryFormat | undefined) {
@@ -120,8 +122,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const template = computed(() => {
-			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			return `{{ ${primaryKeyField.value?.field} }}`;
+			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
 		});
 
 		const queryFields = computed(() => {
@@ -165,17 +166,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function clearLocationFilter() {
 			shouldUpdateCamera.value = true;
 			locationFilterOutdated.value = false;
-
 			locationFilter.value = undefined;
+		}
 
+		function fitGeoJSONBounds() {
+			if (!geojson.value?.features.length) {
+				return;
+			}
+			shouldUpdateCamera.value = true;
+			locationFilterOutdated.value = false;
 			if (geojson.value) {
-				geojsonBounds.value = geojson.value.bbox;
+				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
 		}
 
 		function clearDataFilters() {
-			locationFilter.value = undefined;
-			search.value = null;
+			props?.clearFilters();
 		}
 
 		const shouldUpdateCamera = ref(false);
@@ -322,7 +328,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		return {
-			template,
 			geojson,
 			directusSource,
 			directusLayers,
@@ -338,6 +343,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			handleSelect,
 			geometryFormat,
 			geometryField,
+			displayTemplate,
 			isGeometryFieldNative,
 			cameraOptions,
 			autoLocationFilter,
@@ -365,6 +371,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			clearLocationFilter,
 			clearDataFilters,
 			locationFilter,
+			fitGeoJSONBounds,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -378,15 +385,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function toPage(newPage: number) {
 			page.value = newPage;
-		}
-
-		function syncOption<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T]) {
-			return computed<R[T]>({
-				get: () => ref.value?.[key] ?? defaultValue,
-				set: (value: R[T]) => {
-					ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
-				},
-			});
 		}
 	},
 });

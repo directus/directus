@@ -14,7 +14,7 @@
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
-			@fitdata="clearLocationFilter"
+			@fitdata="fitGeoJSONBounds"
 		/>
 
 		<v-button
@@ -47,17 +47,17 @@
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 			<v-info
-				v-else-if="itemCount === 0 && (search || filter || !locationFilterOutdated)"
+				v-else-if="!loading && !itemCount && !locationFilterOutdated && (search || filter || locationFilter)"
 				icon="search"
 				center
-				:title="t('no_results')"
+				:title="t('layouts.map.no_results_here')"
 			>
 				<template #append>
 					<v-card-actions>
-						<v-button :disabled="!search && !locationFilter" @click="clearDataFilters">
+						<v-button :disabled="!search && !filter" @click="clearDataFilters">
 							{{ t('layouts.map.clear_data_filter') }}
 						</v-button>
-						<v-button :disabled="locationFilterOutdated" @click="clearLocationFilter">
+						<v-button :disabled="!locationFilter" @click="clearLocationFilter">
 							{{ t('layouts.map.clear_location_filter') }}
 						</v-button>
 					</v-card-actions>
@@ -211,6 +211,10 @@ export default defineComponent({
 		},
 		locationFilterOutdated: {
 			type: Boolean,
+			required: true,
+		},
+		fitGeoJSONBounds: {
+			type: Function as PropType<() => void>,
 			required: true,
 		},
 		updateLocationFilter: {

@@ -26,7 +26,13 @@
 		:class="{ moveComma: interfaceType === 'interface-input' }"
 	>
 		<div v-for="(val, index) in value" :key="index" class="value">
-			<input-component :is="interfaceType" :type="fieldInfo.type" :value="val" @input="setValueAt(index, $event)" />
+			<input-component
+				:is="interfaceType"
+				:type="fieldInfo.type"
+				:value="val"
+				:focus="false"
+				@input="setValueAt(index, $event)"
+			/>
 		</div>
 	</div>
 
