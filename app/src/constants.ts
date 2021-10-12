@@ -59,6 +59,12 @@ export const MODULE_BAR_DEFAULT = [
 	},
 	{
 		type: 'module',
+		id: 'activity',
+		enabled: true,
+		locked: false,
+	},
+	{
+		type: 'module',
 		id: 'docs',
 		enabled: true,
 	},
