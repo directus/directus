@@ -81,6 +81,7 @@ module.exports = function registerHook({ exceptions }) {
 | `routes.init`                   | `before` and `after`                                               | No               |
 | `routes.custom.init`            | `before` and `after`                                               | No               |
 | `middlewares.init`              | `before` and `after`                                               | No               |
+| `authenticate`                  |                                                                    | No               |
 | `request`                       | `not_found`                                                        | No               |
 | `response`                      |                                                                    | No<sup>[1]</sup> |
 | `database.error`                | When a database error is thrown                                    | No               |
@@ -207,6 +208,15 @@ The `auth` and `oauth` hooks have the following context properties:
 - `user` <sup>†</sup> - ID of the user that tried logging in/has logged in
 
 <sup>†</sup> Not available in `oauth`
+
+#### Authenticate
+
+The `authenticate` hook allows customizing authentication and authorization flow for request. Returning `accountability`
+object will bypass default authentication. The `authenticate` hook have the following context properties:
+
+- `accountability` - base accountability object
+- `req` - request
+- `token` - token that is present in request
 
 ## 5. Restart the API
 
