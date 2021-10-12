@@ -1511,8 +1511,6 @@ layouts:
     invalid_geometry: Nieprawidłowa geometria
     auto_location_filter: Zawsze filtruj dane do wyświetlania granic
     search_this_area: Przeszukaj ten obszar
-    clear_data_filter: Wyczyść filtr danych
-    clear_location_filter: Wyczyść filtr lokalizacji
 panels:
   metric:
     name: Metryczny
