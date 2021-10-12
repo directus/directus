@@ -29,12 +29,14 @@ body:
     validations:
       required: true
   - type: input
+    id: directus-version
     attributes:
       label: What version of Directus are you using?
       description: 'For example: v9.1.4'
     validations:
       required: true
   - type: input
+    id: node-version
     attributes:
       label: What version of Node.js are you using?
       description: 'For example: 12.0.0'
@@ -53,6 +55,7 @@ body:
     validations:
       required: true
   - type: input
+    id: operating-system
     attributes:
       label: What operating system are you using?
       description: 'For example: macOS, Windows'
