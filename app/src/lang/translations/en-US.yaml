@@ -366,6 +366,7 @@ zoom: Zoom
 download: Download
 open: Open
 open_in_new_window: Open in New Window
+open_folder: Open "{folder}" folder
 foreground_color: Foreground Color
 background_color: Background Color
 upload_from_device: Upload File from Device
