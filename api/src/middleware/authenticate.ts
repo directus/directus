@@ -5,6 +5,7 @@ import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
 import isDirectusJWT from '../utils/is-directus-jwt';
+import { emitAsyncSafe } from '../emitter';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
@@ -18,6 +19,17 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
 		userAgent: req.get('user-agent'),
 	};
+
+	const accountability = await emitAsyncSafe('authenticate', {
+		accountability: req.accountability,
+		req,
+		token: req.token,
+	});
+
+	if (accountability != null) {
+		req.accountability = accountability;
+		return next();
+	}
 
 	if (!req.token) return next();
 
