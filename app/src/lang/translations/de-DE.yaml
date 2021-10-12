@@ -347,7 +347,7 @@ cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
 import_label: Importieren
-file_details: Dateiinformationen
+file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
@@ -769,7 +769,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
-  **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
 page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
@@ -1303,7 +1303,7 @@ interfaces:
     folder: Ordner
     description: Ordner auswählen
     field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
-    root_name: Root-Ordner für Dateien
+    root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
     radio-buttons: Radio Buttons
