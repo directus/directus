@@ -823,10 +823,12 @@ system_fields_locked: System fields are locked and can't be edited
 directus_collection:
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
+  directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
+  directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
