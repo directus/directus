@@ -6,7 +6,6 @@ import getDatabase, { getSchemaInspector } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import logger from '../logger';
 import { FieldsService } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
 import Keyv from 'keyv';

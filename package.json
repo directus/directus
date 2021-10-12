@@ -44,7 +44,7 @@
 		"jest": "27.2.5",
 		"knex": "0.95.11",
 		"lerna": "4.0.0",
-		"lint-staged": "11.2.0",
+		"lint-staged": "11.2.3",
 		"listr": "0.14.3",
 		"mysql": "2.18.1",
 		"nanoid": "3.1.29",
@@ -63,7 +63,7 @@
 		"supertest": "6.1.6",
 		"tedious": "13.1.0",
 		"ts-jest": "27.0.5",
-		"ts-node": "10.2.1"
+		"ts-node": "10.3.0"
 	},
 	"simple-git-hooks": {
 		"pre-commit": "npx lint-staged"

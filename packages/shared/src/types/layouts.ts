@@ -29,6 +29,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	selectMode: boolean;
 	readonly: boolean;
 	resetPreset?: () => Promise<void>;
+	clearFilters?: () => void;
 }
 
 interface LayoutContext {
