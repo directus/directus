@@ -1512,8 +1512,6 @@ layouts:
     invalid_geometry: Некорректная геометрия
     auto_location_filter: Всегда фильтровать данные к границам отображения
     search_this_area: Искать в этой области
-    clear_data_filter: Очистить фильтр данных
-    clear_location_filter: Очистить фильтр местоположения
 panels:
   metric:
     name: Метрика
