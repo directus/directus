@@ -68,7 +68,6 @@ export default defineComponent({
 
 		const externalItems = computed(() => {
 			const bugReportParams = new URLSearchParams({
-				labels: 'Bug (Potential)',
 				template: 'bug_report.yml',
 				'directus-version': parsedInfo.value?.directus.version ?? '',
 				'node-version': parsedInfo.value?.node.version ?? '',
