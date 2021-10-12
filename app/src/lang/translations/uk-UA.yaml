@@ -136,7 +136,21 @@ field_presentation: Подання та Аліаси
 field_file: Один файл
 field_files: Кілька файлів
 field_m2o: Зв’язок M2O
+field_m2a: Зв’язок M2A
+field_o2m: Зв’язок 02M
+field_m2m: Зв’язок M2M
+field_translations: Переклади
+field_group: Група полів
+item_permissions: Дозволи елемента
+field_permissions: Дозволи Поля
+field_validation: Валідація Поля
+field_presets: Пресети Полів
+delete_field: Видалити поле
 language: Мова
+global: Глобальний
+camera: Камера
+show_zero: Показати нуль
+sum: Сума
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі
 date: Дата
