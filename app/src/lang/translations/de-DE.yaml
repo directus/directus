@@ -540,7 +540,7 @@ font: Schriftart
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
-divider: Divider
+divider: Trenner
 color: Farbe
 circle: Kreis
 empty_item: Leeres Element
@@ -1125,7 +1125,7 @@ settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
-something_went_wrong: Irgendwas ist schief gelaufen...
+something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
@@ -1145,7 +1145,7 @@ interfaces:
     add_group: Und / Oder Gruppe
     add_value: Wert hinzufügen
     all: Alle
-    any: Irgendein
+    any: Irgendeiner
     and: und
     of_the_following: der folgenden
     no_rules: Keine konfigurierten Regeln
@@ -1215,7 +1215,7 @@ interfaces:
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
   presentation-divider:
-    divider: Divider
+    divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
     inline_title: Inline-Titel
@@ -1383,7 +1383,7 @@ interfaces:
     results_path: Pfad Ergebnis
     value_path: Wertpfad
     trigger: Trigger
-    rate: Rate
+    rate: Frequenz
   group-raw:
     name: Rohgruppe
     description: Felder so anzeigen wie sie sind

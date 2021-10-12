@@ -20,6 +20,13 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Ảnh đại diện
+default_provider: Mặc định
+published: Đã xuất bản
+draft: Bản nháp
+archived: Đã lưu trữ
+modules: Mô đun
+module_bar: Thanh công cụ
+tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 maps: Bản đồ
@@ -36,6 +43,7 @@ enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt
 add_field: Thêm trường
 role_name: Tên Quyền
 branch: Chọn nhánh
+indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 children: Trẻ em
 db_only_click_to_configure: 'Chỉ Cở Sở Dữ Liệu: Bấm để Cấu Hình '
