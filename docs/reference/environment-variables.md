@@ -196,40 +196,6 @@ Alternatively, you can provide the individual connection parameters:
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `CACHE_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
-## Sessions
-
-Sessions are only used in the oAuth authentication flow.
-
-| Variable        | Description                                                                          | Default Value |
-| --------------- | ------------------------------------------------------------------------------------ | ------------- |
-| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, `memcache` or `database`. | `memory`      |
-
-Based on the `SESSION_STORE` used, you must also provide the following configurations:
-
-### Memory
-
-No additional configuration required.
-
-### Redis
-
-| Variable        | Description                                                           | Default Value |
-| --------------- | --------------------------------------------------------------------- | ------------- |
-| `SESSION_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable                 | Description                      | Default Value |
-| ------------------------ | -------------------------------- | ------------- |
-| `SESSION_REDIS_HOST`     | Hostname of the Redis instance   | --            |
-| `SESSION_REDIS_PORT`     | Port of the Redis instance       | --            |
-| `SESSION_REDIS_PASSWORD` | Password for your Redis instance | --            |
-
-### Memcache
-
-| Variable                 | Description                                                                                                                                                           | Default Value |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
-
 ### Database
 
 No additional configuration required.
@@ -316,11 +282,11 @@ For each of the auth providers you list, you must provide the following configur
 You must also provide a number of extra variables. These differ per auth driver service. The following is a list of
 common required configuration options:
 
-### Local
+### Local (`local`)
 
-Local is the default username and password authentication driver for Directus. It requires no additional configuration.
+No additional configuration required.
 
-### OAuth 2.0
+### OAuth 2.0 (`oauth2`)
 
 | Variable                                    | Description                                                                                | Default Value    |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------- |
@@ -340,7 +306,7 @@ Local is the default username and password authentication driver for Directus. I
 If possible, OpenID is preferred over OAuth 2.0 as it provides better verification and consistent user information,
 allowing more complete user registrations.
 
-### OpenID
+### OpenID (`openid`)
 
 | Variable                                    | Description                                                           | Default Value          |
 | ------------------------------------------- | --------------------------------------------------------------------- | ---------------------- |
