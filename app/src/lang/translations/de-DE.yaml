@@ -1134,7 +1134,6 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1515,8 +1514,6 @@ layouts:
     invalid_geometry: Ungültige Geometrie
     auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
     search_this_area: Diesen Bereich durchsuchen
-    clear_data_filter: Datenfilter löschen
-    clear_location_filter: Standortfilter löschen
 panels:
   metric:
     name: Metrik
