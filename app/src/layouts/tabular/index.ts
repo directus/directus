@@ -45,6 +45,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
+		watch([collection, search, limit, sort], () => (page.value = 1));
 
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
