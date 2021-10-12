@@ -29,10 +29,13 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { version } from '../../../../package.json';
+import { useProjectInfo } from '../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
+
+		const { parsedInfo } = useProjectInfo();
 
 		const navItems = [
 			{
@@ -63,20 +66,30 @@ export default defineComponent({
 			},
 		];
 
-		const externalItems = [
-			{
-				icon: 'bug_report',
-				name: t('report_bug'),
-				href: `https://github.com/directus/directus/issues/new?labels=Bug+%28Potential%29&template=bug_report.yml`,
-				outline: true,
-			},
-			{
-				icon: 'new_releases',
-				name: t('request_feature'),
-				href: 'https://github.com/directus/directus/discussions/new',
-				outline: true,
-			},
-		];
+		const externalItems = computed(() => {
+			const bugReportParams = new URLSearchParams({
+				labels: 'Bug (Potential)',
+				template: 'bug_report.yml',
+				'directus-version': parsedInfo.value?.directus.version ?? '',
+				'node-version': parsedInfo.value?.node.version ?? '',
+				'operating-system': `${parsedInfo.value?.os.type ?? ''} ${parsedInfo.value?.os.version ?? ''}`,
+			});
+
+			return [
+				{
+					icon: 'bug_report',
+					name: t('report_bug'),
+					href: `https://github.com/directus/directus/issues/new?${bugReportParams.toString()}`,
+					outline: true,
+				},
+				{
+					icon: 'new_releases',
+					name: t('request_feature'),
+					href: 'https://github.com/directus/directus/discussions/new',
+					outline: true,
+				},
+			];
+		});
 
 		return { version, navItems, externalItems };
 	},
