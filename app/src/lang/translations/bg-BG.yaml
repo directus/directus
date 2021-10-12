@@ -1512,8 +1512,6 @@ layouts:
     invalid_geometry: Невалидна геометрия
     auto_location_filter: Филтриране на данните спрямо границите
     search_this_area: Търсене в тази зона
-    clear_data_filter: Изчистване на филтрирането
-    clear_location_filter: Изчистване на локацията
 panels:
   metric:
     name: Метричен Индикатор
