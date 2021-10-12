@@ -8,9 +8,6 @@
 
 ## Browsing Users
 
-::: tip Collection Page This page has the same features and functionality as the
-[Collection Page](/app/content/collection). :::
-
 Lists all users of the project, with a navigation that allows quick access to the different role groups. This page has
 the same functionality as other [Collection Pages](#).
 
@@ -22,11 +19,9 @@ profile page.
 
 ## Editing a User
 
-::: tip Item Page This page has the same features and functionality as the [Item Page](/app/content/item). :::
-
-In addition to the User Directory, the current user can also access their own profile page by clicking on the
-[User Menu](#) in the Module Bar. The fields on this page can be customized by administrators, but the following core
-fields are available by default.
+You can access your profile page from the User Directory or by clicking the [User Menu](#) in the Module Bar. The
+profile page has the same features and functionality as the [Item Page](/app/content/item). Administrators can customize
+the fields on this page, but the following are available by default.
 
 - **First Name** — The given name
 - **Last Name** — The family/surname

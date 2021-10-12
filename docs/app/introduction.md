@@ -15,10 +15,11 @@ The leftmost section of the App is the module bar, which includes the:
 - **Module Navigation** — Allows navigating between the different modules your user has access to. Customizing the
   Module Navigation is done within the [Role's configuration](/guides/roles/#configuring-a-role), but the default module
   list includes:
-  - [Collections](#collections)
+  - [Content](#collections)
   - [User Directory](#user-directory)
   - [File Library](#file-library)
-  - [Documentation](#documentation)
+  - [Insights](#insights)
+  - [App Guide](#documentation)
   - [Settings](#settings) (Admin Roles Only)
   - [Any Custom Modules](/concepts/modules/) (Only if Configured)
 - **Current User Menu** — This component displays the authenticated user's name and avatar.

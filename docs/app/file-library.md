@@ -7,17 +7,14 @@
 
 ## Browsing Files
 
-This module aggregates all files within the project into one consolidated library.
-
-::: tip Collection Page This page has the same features and functionality as the
-[Collection Page](/app/content/collection). :::
+This module aggregates all files within the project into one consolidated library. This listing page has the same
+features and functionality as the [Collection Page](/app/content/collection).
 
 ## Viewing or Editing a File
 
 Provides a custom form for viewing assets and embeds, with core fields included out-of-the-box (see below), and the
-ability for administrators to add additional custom fields.
-
-::: tip Item Page This page has the same features and functionality as the [Item Page](/app/content/item). :::
+ability for administrators to add additional custom fields. This page has the same features and functionality as the
+[Item Page](/app/content/item).
 
 #### File Info
 
@@ -43,10 +40,9 @@ ability for administrators to add additional custom fields.
 Clicking the "Edit" action button on the File Detail opens an image editor for rotating, cropping, or mirroring the
 file.
 
-1. Navigate to the **File Library**
-2. Click a file to open it's detail page
-3. Click the edit button in the top right to open the image editor
-4. Make your changes and hit save in the top right to save the updates to the file
+1. From the **File Library**, click a file to open it's detail page
+2. Click the edit button in the top right to open the image editor
+3. Make your changes and hit save in the top right to save the updates to the file
 
 ## Replacing a File
 
@@ -58,9 +54,8 @@ want to change the file, but keep existing file info and maintain all of the fil
 There are many ways that a file can be uploaded into Directus via the App. We'll cover the primary method below, but
 keep in mind that files can also be added directly through different interfaces.
 
-1. Navigate to the **File Library**
-2. Click on the **"Create Item"** (+ icon) button located in the header
-3. **Upload** the file by:
+1. From the **File Library**, click on the **"Create Item"** (+ icon) button located in the header
+2. **Upload** the file by:
    - Dragging a file from your desktop to the modal
    - Click the modal area to manually select a file from your device
    - Clicking the "..." icon and choosing "Import from URL"

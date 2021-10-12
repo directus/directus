@@ -150,8 +150,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/app/activity',
-						title: 'Activity',
+						path: '/app/activity-log',
+						title: 'Activity Log',
 					},
 				],
 			},
@@ -167,10 +167,6 @@ module.exports = {
 						type: 'page',
 						path: '/configuration/installation',
 						title: 'Installation',
-					},
-					{
-						title: 'Installation',
-						type: 'group',
 						children: [
 							{
 								type: 'page',
@@ -742,66 +738,66 @@ module.exports = {
 				],
 			},
 			{
-				title: 'Extending',
+				title: 'Extensions',
 				children: [
 					{
 						type: 'page',
-						path: '/extending/introduction',
+						path: '/extensions/introduction',
 						title: 'Introduction',
 					},
 					{
 						type: 'page',
-						path: '/extending/api-endpoints',
+						path: '/extensions/api-endpoints',
 						title: 'API Endpoints',
 					},
 					{
 						type: 'page',
-						path: '/extending/app-translations',
+						path: '/extensions/app-translations',
 						title: 'App Translations',
 					},
 					{
 						type: 'page',
-						path: '/extending/displays',
+						path: '/extensions/displays',
 						title: 'Displays',
 					},
 					{
 						type: 'page',
-						path: '/extending/email-templates',
+						path: '/extensions/email-templates',
 						title: 'Email Templates',
 					},
 					{
 						type: 'page',
-						path: '/extending/hooks',
+						path: '/extensions/hooks',
 						title: 'Hooks',
 					},
 					{
 						type: 'page',
-						path: '/extending/interfaces',
+						path: '/extensions/interfaces',
 						title: 'Interfaces',
 					},
 					{
 						type: 'page',
-						path: '/extending/layouts',
+						path: '/extensions/layouts',
 						title: 'Layouts',
 					},
 					{
 						type: 'page',
-						path: '/extending/migrations',
+						path: '/extensions/migrations',
 						title: 'Migrations',
 					},
 					{
 						type: 'page',
-						path: '/extending/modules',
+						path: '/extensions/modules',
 						title: 'Modules',
 					},
 					{
 						type: 'page',
-						path: '/extending/panes',
+						path: '/extensions/panes',
 						title: 'Panes',
 					},
 					{
 						type: 'page',
-						path: '/extending/themes',
+						path: '/extensions/themes',
 						title: 'Themes',
 					},
 				],

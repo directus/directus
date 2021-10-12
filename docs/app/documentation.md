@@ -1,28 +1,25 @@
 # Documentation
 
-> TK
+> An internal set of guides and docs for the installed version of the platform, including an
+> [API Reference](/reference/api/introduction) that is dynamically tailored to your custom schema.
 
-This module is an internal set of guides, concepts, and reference docs for your project's specific version of Directus.
-It also includes a dynamic [API Reference](/reference/api/introduction) that is dynamically tailored to your custom
-schema. The docs are organized into these distinct sections:
+Docs for the latest version of the platform are available via [https://docs.directus.io](https://docs.directus.io), and
+_version-specific_ docs are included within the App itself as a core module. Both sets come from the same source of
+markdown files on [GitHub](https://github.com/directus/directus), making them easy for anyone to work with.
 
-- [Getting Started](/getting-started/introduction/) — Novice oriented, for a platform intro and installation.
-- [Concepts](/concepts/activity) — Learning oriented, for understanding the platform.
-- [Guides](/guides/api-config) — Problem oriented, follow along with steps while working.
-- [Reference](/reference/command-line-interface) — Information oriented, look up info and specs while working.
-- [API Reference](/reference/api/introduction/) — Information oriented, look up API resources while working.
-- [Contributing](/contributing/introduction/) — Contributor oriented — resources for working on Open-Source Core.
+Below are the six main sections of the platform's documentation, as well as descriptions of each.
 
-::: tip Updating the Docs
+- [Getting Started](/getting-started/introduction/) — For anyone who is unfamiliar with the platform
+- [App Guide](/app-guide/introduction/) — For users (non-technical or technical) of the platform's no-code App
+- [Configuration](/configuration/introduction/) — For administrators installing and setting up the platform
+- [API Reference](/api-reference/introduction/) — For developers connecting with data via the platform's API toolkit
+- [Extensions](/extensions/introduction/) — For developers creating custom experiences on top of the platform
+- [Contributing](/contributing/introduction/) — For developers working on the platform's open-source core
 
-Our docs are written in markdown (with some additional VuePress styling like this hint box), and available for
-editing/fixing via [GitHub](https://github.com/directus/directus).
+::: tip In-App Exclusions
 
-:::
-
-::: tip Public Docs
-
-The latest version of the Directus Docs are also available publicly. This online version includes additional sections,
-such as how to install the platform. [https://docs.directus.io](https://docs.directus.io)
+Docs included within the app intentionally exclude certain pages, such as "Installation", as these sections are not
+relevant to running instances of the platform. Additionally, some sections may be hidden based on your role as a user
+versus a more technical administrator.
 
 :::
