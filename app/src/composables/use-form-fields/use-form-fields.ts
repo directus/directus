@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { FormField } from '@/components/v-form/types';
 import { getInterfaces } from '@/interfaces';
 import { Field, InterfaceConfig } from '@directus/shared/types';

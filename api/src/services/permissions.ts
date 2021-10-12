@@ -1,5 +1,4 @@
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import logger from '../logger';
 import { ItemsService, QueryOptions } from '../services/items';
 import { AbstractServiceOptions, Item, PrimaryKey } from '../types';
 import { Query, PermissionsAction } from '@directus/shared/types';
