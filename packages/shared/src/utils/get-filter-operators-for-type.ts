@@ -61,7 +61,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 			];
 
 		case 'geometry':
-			return ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
+			return ['null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
 
 		default:
 			return [
