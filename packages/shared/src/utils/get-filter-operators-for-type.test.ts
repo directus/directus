@@ -85,7 +85,7 @@ describe('', () => {
 	});
 
 	it('returns the filter operators for json', () => {
-		expect(getFilterOperatorsForType(TYPES[8])).toStrictEqual(['eq', 'neq', 'null', 'nnull', 'in', 'nin']);
+		expect(getFilterOperatorsForType(TYPES[8])).toStrictEqual(['null', 'nnull']);
 	});
 
 	it('returns the filter operators for binary', () => {

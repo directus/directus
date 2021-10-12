@@ -27,8 +27,9 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		// JSON
 		// UUID
 		case 'uuid':
-		case 'json':
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
+		case 'json':
+			return ['null', 'nnull'];
 
 		// Boolean
 		case 'boolean':
