@@ -60,6 +60,7 @@ delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
 invite: Mời
+email_already_invited: Email "{email}" đã được mời
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
 connection_good: Kết nối Tốt
@@ -594,6 +595,7 @@ fields:
     role: Phân quyền
   directus_settings:
     project_name: Tên Dự Án
+    auth_password_policy: Quy định về mật khẩu
   directus_fields:
     icon: Biểu tượng của Danh mục
     note: Ghi chú
@@ -607,6 +609,9 @@ fields:
     name: Tên
     status: Trạng thái
 field_options:
+  directus_settings:
+    auth_password_policy:
+      none_text: Không có - Không khuyến nghị
   directus_activity:
     create: Tạo
     update: Cập nhật
@@ -629,6 +634,9 @@ field_options:
     actions_create: Tạo
     actions_update: Cập nhật
 comment: Bình luận
+continue_label: Tiếp tục
+continue_as: >-
+  Đang đăng nhập {name}. Nhấn tiếp tục đề đăng nhập.
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 description: Mô tả
@@ -648,7 +656,7 @@ junction_collection: Danh mục liên kết
 latency: Đỗ trễ
 login: Đăng nhập
 my_activity: Hoạt động cá nhân
-not_authenticated: Chưa xác thực
+not_authenticated: Chư đăng nhập
 options: Tuỳ chọn
 otp: Mật khẩu sử dụng một lần
 password: Mật khẩu
