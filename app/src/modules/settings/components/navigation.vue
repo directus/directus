@@ -29,13 +29,10 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { version } from '../../../../package.json';
-import { useProjectInfo } from '../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
-
-		const { parsedInfo } = useProjectInfo();
 
 		const navItems = [
 			{
@@ -66,33 +63,20 @@ export default defineComponent({
 			},
 		];
 
-		const externalItems = computed(() => {
-			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
-
----
-
-### Project details
-Directus Version: ${parsedInfo.value?.directus.version}
-Environment: ${import.meta.env.MODE}
-OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
-Node: ${parsedInfo.value?.node.version}
-			`;
-
-			return [
-				{
-					icon: 'bug_report',
-					name: t('report_bug'),
-					href: `https://github.com/directus/directus/issues/new?body=${encodeURIComponent(debugInfo)}`,
-					outline: true,
-				},
-				{
-					icon: 'new_releases',
-					name: t('request_feature'),
-					href: 'https://github.com/directus/directus/discussions/new',
-					outline: true,
-				},
-			];
-		});
+		const externalItems = [
+			{
+				icon: 'bug_report',
+				name: t('report_bug'),
+				href: `https://github.com/directus/directus/issues/new?labels=Bug+%28Potential%29&template=bug_report.yml`,
+				outline: true,
+			},
+			{
+				icon: 'new_releases',
+				name: t('request_feature'),
+				href: 'https://github.com/directus/directus/discussions/new',
+				outline: true,
+			},
+		];
 
 		return { version, navItems, externalItems };
 	},
