@@ -13,6 +13,7 @@ import { isNil, flatten, merge } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { parseFilter } from '@/utils/parse-filter';
+import { translate } from '@/utils/translate-object-values';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -291,12 +292,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	function setItemValueToResponse(response: AxiosResponse) {
-		if (
-			'meta' in response.data.data &&
-			'note' in response.data.data.meta &&
-			response.data.data.meta.note?.startsWith('$t:')
-		) {
-			response.data.data.meta.note = i18n.global.t(response.data.data.meta.note.replace('$t:', ''));
+		if (response.data.data.collection?.startsWith('directus_') && 'meta' in response.data.data) {
+			response.data.data.meta = translate(response.data.data.meta);
 		}
 		if (isBatch.value === false) {
 			item.value = response.data.data;
