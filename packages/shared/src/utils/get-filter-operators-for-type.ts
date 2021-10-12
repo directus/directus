@@ -36,8 +36,10 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 			return ['eq', 'neq', 'null', 'nnull'];
 
 		// Numbers
+		case 'bigInteger':
 		case 'integer':
 		case 'decimal':
+		case 'float':
 			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
 
 		// Datetime
