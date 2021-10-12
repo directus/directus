@@ -1512,8 +1512,6 @@ layouts:
     invalid_geometry: Géométrie invalide
     auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
-    clear_data_filter: Réinitialiser le filtre
-    clear_location_filter: Éliminer le filtre de coupon
 panels:
   metric:
     name: Indicateurs
