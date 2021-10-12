@@ -904,10 +904,11 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Fond de cartes
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
-    mapbox_key: Jeton d'accès Mapbox
+    mapbox_key: Clé d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     additional_transforms: Transformations supplémentaires
@@ -1500,20 +1501,21 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
-    basemap: Carte de base
-    layers: Afficher...
+    basemap: Fond de carte
+    layers: Couches
     edit_custom_layers: Modifier la couche
     cluster_options: Options de regroupement
-    cluster: Activer le clustering
-    cluster_radius: Rayon de grappe
-    cluster_minpoints: Taille minimale du cluster
-    cluster_maxzoom: Zoom maximum pour la grappe
+    cluster: Regrouper les données
+    cluster_radius: Rayon de regroupement
+    cluster_minpoints: Taille minimale des clusters
+    cluster_maxzoom: Zoom maximum pour le regroupement
     field: Géométrie
     invalid_geometry: Géométrie invalide
-    auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
-    clear_data_filter: Réinitialiser le filtre
-    clear_location_filter: Éliminer le filtre de coupon
+    auto_location_filter: Toujours filter les données selon l'emprise
+    clear_data_filter: Enlever les filtres avancés
+    clear_location_filter: Enlever le filtre géographique
+    no_results_here: Aucun résultat dans cette zone
 panels:
   metric:
     name: Indicateurs

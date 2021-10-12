@@ -20,9 +20,19 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Awatar
+default_provider: Domyślny
+published: Opublikowany
+draft: Szkic
+archived: Zarchiwizowany
+modules: Moduły
+module_bar: Pasek modułu
+tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
+conditions: Warunki
 maps: Mapy
+item_creation: Tworzenie elementu
 item_revision: Wersja elementu
+enter_a_name: Wprowadź nazwę...
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
@@ -47,8 +57,10 @@ required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
 requires_value: Wymaga wartości
 create_preset: Utwórz predefiniowane ustawienia
+create_panel: Utwórz panel
 create_role: Stwórz rolę
 create_user: Utwórz użytkownika
+delete_panel: Usuń panel
 create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 invite: Zaproś
@@ -140,6 +152,10 @@ fields_for_role: 'Pola roli {role} mogą {action}.'
 validation_for_role: 'Pole {action} zasad roli {role} musi być przestrzegane.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
 presentation_and_aliases: Prezentacja i aliasy
+revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
+revision_post_update: Oto jak wyglądał ten element po aktualizacji.
+changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
+no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
@@ -148,9 +164,22 @@ field_create_success: 'Utworzono pole: "{field}"'
 field_update_success: 'Zaktualizowano pole: "{field}"'
 duplicate_where_to: Gdzie chcesz zduplikować to pole?
 language: Język
+aggregate_function: Funkcja agregacji
+aggregate_precision: Precyzja agregacji
+group_aggregation: Agregacja grup
+group_precision: Precyzja grupy
 global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
+show_zero: Pokaż zerowy
+sum: Suma
+sum_distinct: Suma z wyodrębnianiem
+avg: Średnia
+avg_distinct: Średnia z wyodrębnianiem
+count: Licz
+count_distinct: Liczenie z wyodrębnianiem
+min: Min
+max: Max
 exposure: Ekspozycja
 shutter: Migawka
 iso: ISO
@@ -168,7 +197,9 @@ alias: Alias
 bigInteger: Duża liczba całkowita
 boolean: Wartość logiczna
 date: Data
+date_range: Zakres dat
 datetime: Data i godzina
+precision: Dokładność
 decimal: Liczba dziesiętna
 float: Liczba zmiennoprzecinkowa
 integer: Liczba całkowita
@@ -206,6 +237,8 @@ add_m2m_to_collection: 'Dodaj relację wiele do wielu do "{collection}"'
 choose_a_type: Wybierz typ...
 determined_by_relationship: Określone przez relację
 add_note: Dodaj użyteczną informację dla użytkowników...
+add_link: Dodaj link
+custom_link: Link niestandardowy
 default_value: Domyślna wartość
 standard_field: Pole standardowe
 single_file: Pojedynczy plik
@@ -235,6 +268,7 @@ raw_value: Wartość surowa
 edit_raw_value: Edytuj wartość surową
 enter_raw_value: Wprowadź surową wartość...
 clear_value: Wyczyść wartość
+clear_changes: Wyczyść zmiany
 reset_to_default: Zresetuj do ustawień domyślnych
 undo_changes: Cofnij zmiany
 notifications: Powiadomienia
@@ -254,6 +288,7 @@ revision_delta_reverted: Odwrócony
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
 private_user: Prywatny Użytkownik
+creation_preview: Podgląd tworzenia
 revision_preview: Podgląd wersji
 updates_made: Aktualizacje wykonane
 leave_comment: Napisz komentarz...
@@ -377,6 +412,7 @@ no_files_copy: Brak plików.
 user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
+no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
 all_items: Wszystkie elementy
 any: Dowolny
 csv: CSV
@@ -388,12 +424,21 @@ relationship_not_setup: Relacja nie została prawidłowo skonfigurowana
 display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo skonfigurowana
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
 select_a_collection: Wybierz kolekcje
+select_a_field: Wybierz pole
 active: Aktywne
+move_to: Przenieś do...
 copy: Kopiuj
+copy_to: Kopiuj do...
+no_other_dashboards_copy: Nie masz jeszcze żadnych innych Panelów.
 inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
 webhooks: Webhooki
+decimals: Dziesiętne
+value_decimals: Wartość dziesiętna
+min_value: Minimalna wartość
+max_value: Maksymalna wartość
+automatic: Automatycznie
 field_width: Szerokość pola
 add_filter: Dodaj Filtr
 upper_limit: Górny limit...
@@ -440,9 +485,12 @@ errors:
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
+  UNPROCESSABLE_ENTITY: Jednostka niemożliwa do przetworzenia
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
+  ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
   UNKNOWN: Nieoczekiwany błąd
+security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
@@ -457,6 +505,7 @@ no_app_access_copy: Ten użytkownik nie może używać aplikacji administracyjne
 password_reset_sent: Wysłaliśmy Ci bezpieczny link do zresetowania hasła
 password_reset_successful: Hasło zostało pomyślnie zresetowane
 back: Wstecz
+filter: Filtr
 editing_image: Edycja obrazu
 square: Kwadratowy
 free: Wolne
@@ -479,6 +528,7 @@ visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
 show_hidden_collections: Pokaż ukryte kolekcje
 hide_hidden_collections: Ukryj ukryte kolekcje
+show_header: Pokaż nagłówek
 unmanaged_collections: Nieskonfigurowane kolekcje
 system_collections: Kolekcje systemowe
 placeholder: Tekst zastępczy
@@ -494,6 +544,7 @@ color: Kolor
 circle: Okrąg
 empty_item: Pusty element
 log_in_with: 'Zaloguj się za pomocą {provider}'
+conditional_styles: Style warunkowe
 advanced_settings: Zaawansowane Ustawienia
 advanced_filter: Filtr zaawansowany
 delete_advanced_filter: Usuń filtr
@@ -521,6 +572,10 @@ operators:
   nempty: Nie jest puste
   all: Zawiera te klucze
   has: Zawiera niektóre z tych kluczy
+  intersects: Przecięcia
+  nintersects: Nie przecina się
+  intersects_bbox: Przecina pole ograniczające
+  nintersects_bbox: Nie przecina pola ograniczającego
 loading: Wczytywanie...
 drop_to_upload: Upuść, aby przesłać
 item: Element
@@ -559,10 +614,12 @@ no_results_copy: Dostosuj lub wyczyść filtry wyszukiwania, aby zobaczyć wynik
 clear_filters: Wyczyść filtry
 saves_automatically: Zapisuje automatycznie
 role: Rola
+rule: Reguła
 user: Użytkownik
 no_presets: Brak szablonów
 no_presets_copy: Nie zapisano jeszcze żadnych szablonów lub zakładek.
 no_presets_cta: Dodaj szablon
+presets_only: Tylko presety
 create: Stwórz
 on_create: Przy tworzeniu
 on_update: Po zaktualizowaniu
@@ -570,15 +627,41 @@ read: Odczyt
 update: Zaktualizuj
 select_fields: Wybierz pola
 format_text: Formatuj tekst
+format_value: Wartość formatu
+abbreviate_value: Skrócona wartość
+operator: Operator
 bold: Pogrubiony
 toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
+insights: Spostrzeżenia (beta)
+dashboard: Pulpit
+panel: Panel
+panel_options: Opcje panelu
+panel_header: Nagłówek panelu
+panel_name_placeholder: Nazwij ten panel...
+panel_note_placeholder: Opcjonalne szczegóły dotyczące tego panelu...
+panel_delete_confirm: Na pewno chcesz usunąć ten panel? Tej akcji nie będzie można cofnąć.
+dashboard_delete_confirm: Czy na pewno chcesz usunąć ten pulpit? Tej akcji nie można cofnąć.
+edit_dashboard: Edytuj pulpit
+delete_dashboard: Usuń pulpit
+visible: Widoczny
+prefix_placeholder: Tekst przed wartością...
+suffix_placeholder: Tekst po wartości...
+decimals_placeholder: Liczba miejsc po przecinku...
+no_dashboards: Brak Paneli
+no_dashboards_copy: Nie masz jeszcze żadnych pulpitów.
+no_data: Brak danych
+create_dashboard: Utwórz pulpit
+dashboard_name: Nazwa Pulpitu
 full_screen: Pełny ekran
+edit_panels: Edytuj pulpit
+fit_to_screen: Dopasuj do ekranu
 image_url: Adres Url obrazu
 alt_text: Tekst alternatywny
 media: Media
+quality: Jakość
 width: Szerokość
 height: Wysokość
 source: Źródło
@@ -671,7 +754,11 @@ layout_setup: Ustawienia układu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
+discard_changes_copy: Czy na pewno chcesz odrzucić wszystkie wprowadzone zmiany?
+show_x_axis: Pokaż oś X
+show_y_axis: Pokaż oś Y
 keep_editing: Kontynuuj edycję
+page_help_collections_overview: '**Przegląd kolekcji** — Lista wszystkich kolekcji, do których masz dostęp.'
 page_help_collections_collection: >-
   **Przeglądaj przedmioty** — Lista wszystkich {collection} elementów, do których masz dostęp. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
 page_help_collections_item: >-
@@ -700,6 +787,8 @@ page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do twor
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
+page_help_insights_overview: '**Spostrzeżenia** - Lista pulpitów, do których masz dostęp.'
+page_help_insights_dashboard: '**Pulpit** - Obszar roboczy do zarządzania jednym lub kilkoma panelami'
 activity_feed: Kanał aktywności
 add_new: Dodaj nowy
 create_new: Utwórz nowy
@@ -709,11 +798,28 @@ no_layout_collection_selected_yet: Nie wybrano jeszcze żadnego układu/kolekcji
 batch_delete_confirm: >-
   Żaden element nie został zaznaczony | Na pewno chcesz usunąć ten element? Tej akcji nie będzie można cofnąć. | Na pewno chcesz usunąć {count} elementów? Tej akcji nie będzie można cofnąć.
 cancel: Anuluj
+no_upscale: Nie skaluj obrazów
 collection: Kolekcja
 collections: Kolekcje
 singleton: Singleton
 singleton_label: Traktuj jako pojedynczy obiekt
 system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
+directus_collection:
+  directus_activity: Dzienniki rozliczalności dla wszystkich wydarzeń
+  directus_collections: Dodatkowa konfiguracja kolekcji i metadane
+  directus_fields: Dodatkowa konfiguracja pola i metadane
+  directus_files: Metadane dla wszystkich zarządzanych zasobów plików
+  directus_folders: Dostarcza wirtualne katalogi dla plików
+  directus_migrations: Jaką wersję bazy danych używasz
+  directus_permissions: Uprawnienia dostępu do każdej roli
+  directus_presets: Ustawienia domyślne kolekcji i zakładek
+  directus_relations: Konfiguracja relacji i metadane
+  directus_revisions: Zrzuty danych dla wszystkich działań
+  directus_roles: Grupy uprawnień dla użytkowników systemu
+  directus_sessions: Informacje o sesji użytkownika
+  directus_settings: Opcje konfiguracji projektu
+  directus_users: Użytkownicy systemu dla platformy
+  directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
 fields:
   directus_activity:
     item: Klucz główny produktu
@@ -773,28 +879,52 @@ fields:
     title: Tytuł
     description: Opis
     tags: Etykiety
+    user_preferences: Ustawienia użytkownika
     language: Język
     theme: Motyw
+    theme_auto: Automatyczne (Oparte na systemie)
+    theme_light: Tryb jasny
+    theme_dark: Tryb ciemny
     tfa_secret: Uwierzytelnianie dwuetapowe
     admin_options: Opcje administratora
     status: Status
+    status_draft: Szkic
+    status_invited: Zaproszono
     status_active: Aktywne
+    status_suspended: Zawieszony
+    status_archived: Zarchiwizowane
     role: Rola
     token: Token
+    token_placeholder: Wprowadź bezpieczny token dostępu...
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Wskazówka
+    basemaps: Podstawowe
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Styl Mapbox
+    mapbox_key: Token dostępu do Mapbox
+    transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
+    additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
+    public_pages: Strony publiczne
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
+    files_and_thumbnails: Pliki i miniatury
+    storage_default_folder: Domyślny folder magazynu
     storage_asset_presets: Ustawienia magazynu zasobów
     storage_asset_transform: Przekształcanie zasobów magazynowych
+    overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
   directus_fields:
     collection: Nazwa kolekcji
@@ -817,38 +947,111 @@ fields:
     collection_list: Kolekcja Nawigacji
   directus_webhooks:
     name: Nazwa
+    method: Metoda
     status: Status
+    data: Dane
+    data_label: Wyślij dane wydarzenia
+    triggers: Wyzwalacze
+    actions: Akcje
 field_options:
+  directus_settings:
+    project_name_placeholder: Mój projekt...
+    project_logo_note: Tło logowania i logo
+    public_note_placeholder: Krótka, publiczna wiadomość, która obsługuje formatowanie markdown...
+    security_divider_title: Bezpieczeństwo
+    auth_password_policy:
+      none_text: Brak – nie zalecane
+      weak_text: Słabe - co najmniej 8 znaków
+      strong_text: Silne – duże / małe litery / cyfry / specjalne
+    storage_asset_presets:
+      fit:
+        contain_text: Zawiera (współczynnik proporcji zachowania)
+        cover_text: Okładka (wymusza dokładny rozmiar)
+        fit_text: Dopasuj do wnętrza
+        outside_text: Dopasuj na zewnątrz
+    additional_transforms: Dodatkowe przekształcenia
+    transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
+    mapbox_key: Token dostępu do Mapbox
+    basemaps: Podstawowe
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Styl Mapbox
+    files_divider_title: Pliki i miniatury
+    overrides_divider_title: Nadpisywanie aplikacji
   directus_activity:
+    login: Logowanie
     create: Stwórz
     update: Zaktualizuj
+    delete: Usuń
   directus_collections:
     track_activity_revisions: Śledź aktywność i rewizje
     only_track_activity: Tylko Śledź Aktywność
     do_not_track_anything: Nie śledź niczego
     collection_setup: Ustawienia kolekcji
+    note_placeholder: Opis tej kolekcji...
+    hidden_label: Ukryj w aplikacji
     singleton: Traktuj jako pojedynczy obiekt
     language: Język
+    translation: Wprowadź tłumaczenie...
     archive_divider: Archiwum
+    archive_field: Wybierz pole...
+    archive_app_filter: Włącz filtr archiwum aplikacji
+    archive_value: Wartość ustawiona podczas archiwizacji...
+    unarchive_value: Wartość ustawiona podczas usuwania archiwizacji...
     divider: Sortuj
+    sort_field: Wybierz pole...
+    accountability_divider: Odpowiedzialność
+  directus_files:
+    title: Unikalny tytuł...
+    description: Opcjonalny opis...
+    location: Opcjonalna lokalizacja...
+    storage_divider: Nazwy plików
+    filename_disk: Nazwa na dysku...
+    filename_download: Nazwa podczas pobierania...
   directus_roles:
+    name: Unikalna nazwa dla tej roli...
+    description: Opis tej roli...
+    ip_access: Dodaj dozwolone adresy IP, pozostaw puste, aby zezwolić na wszystkie...
     fields:
       icon_name: Ikona
       name_name: Nazwa
       name_placeholder: Wprowadź tytuł...
+      link_name: Link
+      link_placeholder: Względny lub bezwzględny URL...
     collection_list:
+      group_name_addLabel: Dodaj nową grupę...
       fields:
+        group_name: Nazwa grupy
+        group_placeholder: Oznacz tę grupę...
         type_name: Typ
+        choices_always: Zawsze otwarte
+        choices_start_open: Rozpocznij otwarte
+        choices_start_collapsed: Rozpocznij zwinięty
     collections_name: Kolekcje
+    collections_addLabel: Dodaj kolekcję...
   directus_users:
+    preferences_divider: Ustawienia użytkownika
+    dropdown_auto: Automatyczne (Oparte na systemie)
+    dropdown_light: Tryb jasny
+    dropdown_dark: Tryb ciemny
     admin_divider: Opcje administratora
+    status_dropdown_draft: Szkic
+    status_dropdown_invited: Zaproszono
     status_dropdown_active: Aktywne
+    status_dropdown_suspended: Zawieszony
+    status_dropdown_archived: Zarchiwizowane
+    token: Wprowadź bezpieczny token dostępu...
   directus_webhooks:
     status_options_active: Aktywne
     status_options_inactive: Nieaktywny
+    data_label: Wyślij dane wydarzenia
+    triggers_divider: Wyzwalacze
     actions_create: Stwórz
     actions_update: Zaktualizuj
+    actions_delete: Usuń
+    actions_login: Logowanie
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
+no_value: Brak wartości
 do_nothing: Nic nie rób
 generate_and_save_uuid: Generuj i zapisz UUID
 save_current_user_id: Zapisz bieżący identyfikator użytkownika
@@ -865,10 +1068,13 @@ referential_action_cascade: Usuń {collection} element (kaskada)
 referential_action_set_null: Pola oznaczone jako bez wartości {field}
 referential_action_set_default: Ustaw {field} na wartość domyślną
 choose_action: Wybierz akcję
+continue_label: Kontynuuj
 continue_as: >-
   {name} jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
 creating_webhook: Tworzenie Webhooka
+default_label: Domyślny
+delete_label: Usuń
 delete_are_you_sure: >-
   Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
 delete_field_are_you_sure: >-
@@ -921,15 +1127,35 @@ sort_direction: Kierunek sortowania
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
+require_value_to_be_set: Wymagaj ustawienia wartości
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
+start: Rozpocznij
 interfaces:
   filter:
+    name: Filtr
+    description: Skonfiguruj filtr obiektu.
     add_filter: Dodaj Filtr
+    add_group: I / lub grupa
+    add_value: Dodaj wartość
     all: Wszystkie
     any: Dowolny
+    and: i
+    of_the_following: z następujących
+    no_rules: Brak skonfigurowanych reguł
+    change_value: Kliknij, aby zmienić wartość
+    placeholder: Przeciągnij tutaj reguły
+  group-accordion:
+    name: Akordion
+    description: Wyświetlaj pola lub grupy jako sekcje akordionu
+    start: Rozpocznij
+    all_closed: Wszystkie zamknięte
+    first_opened: Pierwsze otwarte
+    all_opened: Wszystkie otwarte
+    accordion_mode: Tryb Accordion
+    max_one_section_open: Otwórz maksymalnie 1 sekcję
   presentation-links:
     presentation-links: Linki przycisków
     links: Linki
@@ -950,6 +1176,8 @@ interfaces:
     description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
     value_combining: Połączenie wartości
     value_combining_note: Kontroluje wartość zapisaną podczas zagnieżdżonych wyborów.
+    show_all: Pokaż wszystkie
+    show_selected: Pokaż zaznaczone
   input-code:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
@@ -1044,7 +1272,21 @@ interfaces:
     imageToken: Token obrazu
     imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
   map:
+    map: Mapa
+    description: Wybierz lokalizację na mapie
     zoom: Powiększ
+    geometry_type: Typ geometrii
+    geometry_format: Format geometrii
+    default_view: Widok domyślny
+    invalid_options: Nieprawidłowe opcje
+    invalid_format: Nieprawidłowy format ({format})
+    unexpected_geometry: Oczekiwano {expected}, otrzymano {got}.
+    fit_bounds: Dopasuj widok do danych
+    native: Natywny
+    geojson: GeoJSON
+    lnglat: Długość geograficzna
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Informacja
     description: Wyświetl krótką informacje
@@ -1055,6 +1297,10 @@ interfaces:
     no_collection: Kolekcja nie została znaleziona
   system-folder:
     folder: Folder
+    description: Wybierz folder
+    field_hint: Wstawia nowo przesłane pliki w wybranym folderze. Nie wpływa na istniejące pliki, które są zaznaczone.
+    root_name: Root biblioteki plików
+    system_default: Ustawienia systemowe
   select-radio:
     radio-buttons: Pola wyboru
     description: Wybierz jeden lub wiele obiektów
@@ -1108,6 +1354,8 @@ interfaces:
   translations:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
+    toggle_split_view: Przełącz widok dzielony
+    language_field: Pole językowe
   list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
     recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
@@ -1132,6 +1380,17 @@ interfaces:
     value_path: Ścieżka bazowa
     trigger: Wyzwalacz
     rate: Oceń
+  group-raw:
+    name: Surowa grupa
+    description: Renderowanie pól jak jest
+  group-detail:
+    name: Szczegóły grupy
+    description: Renderuj pola jako sekcję zwijalną
+    show_header: Pokaż nagłówek grupy
+    header_icon: Ikona nagłówka
+    header_color: Kolor nagłówka
+    start_open: Rozpocznij otwarte
+    start_closed: Rozpocznij zamknięte
 displays:
   boolean:
     boolean: Wartość logiczna
@@ -1239,7 +1498,34 @@ layouts:
     start_date_field: Pole daty rozpoczęcia
     end_date_field: Pole daty zakończenia
   map:
+    map: Mapa
+    basemap: Mapa bazowa
+    layers: Warstwy
+    edit_custom_layers: Edytuj warstwy
+    cluster_options: Opcje klastrowania
+    cluster: Aktywuj klastrowanie
+    cluster_radius: Promień klastra
+    cluster_minpoints: Minimalny rozmiar klastra
+    cluster_maxzoom: Maksymalne powiększenie klastrów
     field: Geometria
+    invalid_geometry: Nieprawidłowa geometria
+    auto_location_filter: Zawsze filtruj dane do wyświetlania granic
+    search_this_area: Przeszukaj ten obszar
+    clear_data_filter: Wyczyść filtr danych
+    clear_location_filter: Wyczyść filtr lokalizacji
 panels:
+  metric:
+    name: Metryczny
+    description: Pokaż pojedynczą wartość na podstawie zapytania
+    field: Pole
+  time_series:
+    name: Seria czasowa
+    description: Renderowanie wykresu liniowego na podstawie wartości w czasie
+    date_field: Pole daty
+    value_field: Pole wartości
   label:
     name: Etykieta
+    description: Pokaż tekst
+  list:
+    name: Lista
+    description: Filtruj i wyświetl pola z kolekcji

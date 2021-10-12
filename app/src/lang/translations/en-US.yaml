@@ -1529,8 +1529,9 @@ layouts:
     invalid_geometry: Invalid geometry
     auto_location_filter: Always filter data to view bounds
     search_this_area: Search this area
-    clear_data_filter: Clear Data Filter
-    clear_location_filter: Clear Location Filter
+    clear_data_filter: Clear data filter
+    clear_location_filter: Clear location filter
+    no_results_here: No results in this area
 
 panels:
   metric:
