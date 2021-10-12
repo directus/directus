@@ -7,8 +7,8 @@ export type LayoutOptions = {
 };
 
 export type LayoutQuery = {
-	fields?: string[];
-	sort?: string[];
-	page?: number;
-	limit?: number;
+	fields: string[];
+	sort: string[];
+	page: number;
+	limit: number;
 };
