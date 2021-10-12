@@ -109,8 +109,6 @@ describe('', () => {
 
 	it('returns the filter operators for geometry', () => {
 		expect(getFilterOperatorsForType(TYPES[17])).toStrictEqual([
-			'eq',
-			'neq',
 			'null',
 			'nnull',
 			'intersects',
