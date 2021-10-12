@@ -59,6 +59,10 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 				type: Function as PropType<() => Promise<void>>,
 				default: null,
 			},
+			clearFilters: {
+				type: Function as PropType<() => void>,
+				default: null,
+			},
 		},
 		emits: WRITABLE_PROPS.map((prop) => `update:${prop}` as const),
 		setup(props, { emit }) {

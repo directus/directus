@@ -12,6 +12,7 @@
 		:search="search"
 		:collection="collection"
 		:reset-preset="resetPreset"
+		:clear-filters="clearFilters"
 	>
 		<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
 		<private-view
