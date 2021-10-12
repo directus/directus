@@ -30,24 +30,18 @@ import webhooksRouter from './controllers/webhooks';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import { emitAsyncSafe } from './emitter';
 import env from './env';
-import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
-import logger, { expressLogger } from './logger';
-import authenticate from './middleware/authenticate';
+import logger from './logger';
 import cache from './middleware/cache';
-import { checkIP } from './middleware/check-ip';
-import cors from './middleware/cors';
 import errorHandler from './middleware/error-handler';
-import extractToken from './middleware/extract-token';
-import rateLimiter from './middleware/rate-limiter';
-import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
+import { middlewaresFactory } from './middlewares';
+import asyncHandler from './utils/async-handler';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
-import { session } from './middleware/session';
 import { flushCaches } from './cache';
 import { Url } from './utils/url';
 
@@ -86,44 +80,11 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitAsyncSafe('init.before', { app });
 
-	await emitAsyncSafe('middlewares.init.before', { app });
+	const middlewares = middlewaresFactory();
 
-	app.use(expressLogger);
+	await emitAsyncSafe('middlewares.init.before', { app, middlewares, asyncHandler });
 
-	app.use((req, res, next) => {
-		(
-			express.json({
-				limit: env.MAX_PAYLOAD_SIZE,
-			}) as RequestHandler
-		)(req, res, (err: any) => {
-			if (err) {
-				return next(new InvalidPayloadException(err.message));
-			}
-
-			return next();
-		});
-	});
-
-	app.use(cookieParser());
-
-	app.use(extractToken);
-
-	app.use((req, res, next) => {
-		res.setHeader('X-Powered-By', 'Directus');
-		next();
-	});
-
-	if (env.CORS_ENABLED === true) {
-		app.use(cors);
-	}
-
-	app.get('/', (req, res, next) => {
-		if (env.ROOT_REDIRECT) {
-			res.redirect(env.ROOT_REDIRECT);
-		} else {
-			next();
-		}
-	});
+	middlewares.forEach(({ handler }) => app.use(handler));
 
 	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
@@ -142,20 +103,6 @@ export default async function createApp(): Promise<express.Application> {
 			res.send(html);
 		});
 	}
-
-	// use the rate limiter - all routes for now
-	if (env.RATE_LIMITER_ENABLED === true) {
-		app.use(rateLimiter);
-	}
-
-	// We only rely on cookie-sessions in the oAuth flow where it's required
-	app.use(session);
-
-	app.use(authenticate);
-
-	app.use(checkIP);
-
-	app.use(sanitizeQuery);
 
 	await emitAsyncSafe('middlewares.init.after', { app });
 
