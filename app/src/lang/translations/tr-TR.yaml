@@ -774,6 +774,8 @@ interfaces:
       auto: Otomatik
       dropdown: Açılır Liste
 displays:
+  translations:
+    translations: Çeviriler
   boolean:
     boolean: Evet/Hayır
   collection:
