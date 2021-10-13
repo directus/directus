@@ -5,6 +5,7 @@
 			:active="active"
 			:to="to"
 			:exact="exact"
+			:query="query"
 			:disabled="disabled"
 			:dense="dense"
 			clickable
@@ -54,6 +55,10 @@ export default defineComponent({
 			default: undefined,
 		},
 		exact: {
+			type: Boolean,
+			default: false,
+		},
+		query: {
 			type: Boolean,
 			default: false,
 		},

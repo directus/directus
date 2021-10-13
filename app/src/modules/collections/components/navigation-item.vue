@@ -1,5 +1,5 @@
 <template>
-	<v-list-group v-if="isGroup" :to="to" scope="collections-navigation" :value="collection.collection">
+	<v-list-group v-if="isGroup" :to="to" scope="collections-navigation" :value="collection.collection" query>
 		<template #activator>
 			<navigation-item-content :name="collection.name" :icon="collection.meta?.icon" :color="collection.meta?.color" />
 		</template>
@@ -8,7 +8,7 @@
 		<navigation-bookmark v-for="bookmark in childBookmarks" :key="bookmark.id" :bookmark="bookmark" />
 	</v-list-group>
 
-	<v-list-item v-else :to="to" :value="collection.collection" :class="{ hidden: collection.meta?.hidden }">
+	<v-list-item v-else :to="to" :value="collection.collection" :class="{ hidden: collection.meta?.hidden }" query>
 		<navigation-item-content :name="collection.name" :icon="collection.meta?.icon" :color="collection.meta?.color" />
 	</v-list-item>
 </template>
