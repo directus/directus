@@ -1098,6 +1098,8 @@ interfaces:
     trigger: Okidač
     rate: Ocjena
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Prikaži uključena i isključena stanja
