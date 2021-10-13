@@ -1,10 +1,5 @@
 <template>
-	<v-drawer
-		:model-value="isOpen"
-		:title="t('activity_items.activity_item')"
-		@update:model-value="close"
-		@cancel="close"
-	>
+	<v-drawer :model-value="isOpen" :title="t('activity_item')" @update:model-value="close" @cancel="close">
 		<v-progress-circular v-if="loading" indeterminate />
 
 		<div v-else-if="error" class="content">
@@ -15,27 +10,27 @@
 
 		<div v-else class="content">
 			<!-- @TODO add final design -->
-			<p class="type-label">{{ t('activity_items.user') }}:</p>
+			<p class="type-label">{{ t('user') }}:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
 				{{ userName(item.user) }}
 			</user-popover>
 
-			<p class="type-label">{{ t('activity_items.action') }}:</p>
+			<p class="type-label">{{ t('action') }}:</p>
 			<p>{{ item.action }}</p>
 
-			<p class="type-label">{{ t('activity_items.date') }}:</p>
+			<p class="type-label">{{ t('date') }}:</p>
 			<p>{{ item.timestamp }}</p>
 
-			<p class="type-label">{{ t('activity_items.ip') }}:</p>
+			<p class="type-label">{{ t('ip_address') }}:</p>
 			<p>{{ item.ip }}</p>
 
-			<p class="type-label">{{ t('activity_items.user_agent') }}:</p>
+			<p class="type-label">{{ t('user_agent') }}:</p>
 			<p>{{ item.user_agent }}</p>
 
-			<p class="type-label">{{ t('activity_items.collection') }}:</p>
+			<p class="type-label">{{ t('collection') }}:</p>
 			<p>{{ item.collection }}</p>
 
-			<p class="type-label">{{ t('activity_items.item') }}:</p>
+			<p class="type-label">{{ t('item') }}:</p>
 			<p>{{ item.item }}</p>
 		</div>
 
