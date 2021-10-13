@@ -497,6 +497,8 @@ interfaces:
   boolean:
     label_default: Aktivert
 displays:
+  translations:
+    translations: Oversettelser
   boolean:
     boolean: Sann/usann
   collection:
