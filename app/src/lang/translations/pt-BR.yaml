@@ -1234,6 +1234,8 @@ interfaces:
     trigger: Acionar
     rate: Avaliar
 displays:
+  translations:
+    translations: Traduções
   boolean:
     boolean: Boolean
     description: Exibir estados ativados e desativados
