@@ -1504,8 +1504,6 @@ layouts:
     invalid_geometry: 无效几何图形
     auto_location_filter: 总是筛选数据以查看边框
     search_this_area: 搜索此区域
-    clear_data_filter: 清除过滤器
-    clear_location_filter: 清除过滤器
 panels:
   metric:
     name: 公制

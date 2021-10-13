@@ -163,7 +163,7 @@ fields_and_layout: Campi & Layout
 field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
-language: Linguaggio
+language: Lingua
 aggregate_function: Funzione di aggregazione
 aggregate_precision: Precisione dell'aggregazione
 group_aggregation: Raggruppamento
@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minuti
+hours: Ore
 month: Mese
 year: Anno
 select_all: Seleziona tutto
@@ -455,7 +457,7 @@ modified_on: Modificato il
 card_size: Dimensione della Card
 sort_field: Ordina per
 add_sort_field: Aggiungi Campo Ordinamento
-sort: Ordina
+sort: Ordinamento
 status: Stato
 remove: Rimuovere
 toggle_manual_sorting: Attiva/disattiva l'ordinamento manuale
@@ -808,10 +810,12 @@ system_fields_locked: I campi di sistema sono bloccati e non possono essere modi
 directus_collection:
   directus_activity: Log autorizzazioni per tutti gli eventi
   directus_collections: Configurazione e metadati aggiuntivi della raccolta
+  directus_dashboards: Bacheche nel modulo approfondimenti
   directus_fields: Configurazione e metadati aggiuntivi del campo
   directus_files: Metadati per tutti i file degli asset gestiti
   directus_folders: Fornisce directory virtuali per i file
   directus_migrations: Quale versione del database stai usando
+  directus_panels: Singoli pannelli nelle bacheche di approfondimento
   directus_permissions: Autorizzazioni di accesso per ciascun ruolo
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
@@ -881,7 +885,7 @@ fields:
     description: Descrizione
     tags: Tag
     user_preferences: Preferenze utente
-    language: Linguaggio
+    language: Lingua
     theme: Tema
     theme_auto: Automatico (in base al sistema)
     theme_light: Tema chiaro
@@ -994,14 +998,14 @@ field_options:
     note_placeholder: Una descrizione di questa raccolta...
     hidden_label: Nascondi nell'app
     singleton: Tratta come oggetto singolo
-    language: Linguaggio
+    language: Lingua
     translation: Inserisci una traduzione...
     archive_divider: Archivio
     archive_field: Scegli un campo...
     archive_app_filter: Abilita filtro archiviati in app
     archive_value: Valore impostato all'archiviazione...
     unarchive_value: Valore impostato al ripristino...
-    divider: Ordina
+    divider: Ordinamento
     sort_field: Scegli un campo...
     accountability_divider: Autorizzazioni
   directus_files:
@@ -1517,6 +1521,7 @@ layouts:
     search_this_area: Cerca in quest'area
     clear_data_filter: Rimuovi il filtro sui dati
     clear_location_filter: Rimuovi il filtro sulla posizione
+    no_results_here: Non ci sono risultati in quest'area
 panels:
   metric:
     name: Metrica

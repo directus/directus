@@ -1503,8 +1503,6 @@ layouts:
     invalid_geometry: Érvénytelen geometria
     auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
     search_this_area: Keresés ezen a területen
-    clear_data_filter: Adatszűrő törlése
-    clear_location_filter: Lokalizációs szűrő törlése
 panels:
   metric:
     name: Metrikus

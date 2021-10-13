@@ -20,11 +20,17 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Аватар
+default_provider: За замовчуванням
 published: Опубліковано
+draft: Чернетка
+archived: Архівовано
+modules: Модулі
+module_bar: Панель модулів
 tile_size: Розмір плитки
 edit_field: Редагувати поле
 conditions: Умови
 maps: Мапи
+item_creation: Створення елемента
 item_revision: Перегляд об'єкта
 enter_a_name: Вкажіть назву...
 duplicate_field: Дублювати поле
@@ -93,8 +99,14 @@ archive_confirm: Ви впевнені, що хочете додати цей ф
 archive_confirm_count: >-
   Жодного елементу не обрано | Ви впевнені, що хочете додати цей файл до архіву? | Ви впевнені, що хочете додати ці {count} файлів до архіву?
 reset_system_permissions_to: 'Скинути налаштування до:'
+reset_system_permissions_copy: Ця дія перезапише будь-які користувацькі дозволи, які ви могли задати до системних колекцій. Ви впевнені?
+the_following_are_minimum_permissions: Нижче наведені дозволи, необхідні при включеному доступі до додатка. Їх можна розширити, але не скоротити.
+app_access_minimum: Мінімальний доступ до додатку
+recommended_defaults: Рекомендовані значення за замовчуванням
 unarchive: Розархівувати
 unarchive_confirm: Ви впевнені, що хочете розархівувати цей елемент?
+nested_files_folders_will_be_moved: Вкладені файли і папки будуть переміщені на один рівень вище.
+unknown_validation_errors: 'Виявлено помилки валідації для наступних прихованих полів:'
 validationError:
   eq: Значення повинно бути {valid}
   neq: Значення не може бути {invalid}
@@ -104,7 +116,41 @@ validationError:
   ncontains: Значення не може містити {substring}
   gt: Значення має бути більше {valid}
   gte: Значення має бути більше або дорівнювати {valid}
+  lt: Значення має бути менше {valid}
+  lte: Значення має бути більше або дорівнювати {valid}
+  empty: Значення повинно бути порожнім
+  nempty: Значення не може бути порожнім
+  null: Значення повинне бути null
+  nnull: Значення не може бути null
+  required: Значення є обов'язковим
+  unique: Значення повинно бути унікальним
+  regex: Значення має некоректний формат
+all_access: Повний доступ
+no_access: Немає доступу
+nullable: Дозволити NULL значення
+allow_null_value: Дозволити NULL значення
+allow_multiple: Дозволити кілька
+allow_multiple_to_be_open: Можна відкрити декілька
+field_standard: Стандартний
+field_presentation: Подання та Аліаси
+field_file: Один файл
+field_files: Кілька файлів
+field_m2o: Зв’язок M2O
+field_m2a: Зв’язок M2A
+field_o2m: Зв’язок 02M
+field_m2m: Зв’язок M2M
+field_translations: Переклади
+field_group: Група полів
+item_permissions: Дозволи елемента
+field_permissions: Дозволи Поля
+field_validation: Валідація Поля
+field_presets: Пресети Полів
+delete_field: Видалити поле
 language: Мова
+global: Глобальний
+camera: Камера
+show_zero: Показати нуль
+sum: Сума
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі
 date: Дата
@@ -171,6 +217,7 @@ status: Статус
 remove: Видалити
 errors:
   ROUTE_NOT_FOUND: Не знайдено
+  NOT_NULL_VIOLATION: Значення не може бути null
 create_bookmark: Створити закладку
 bookmarks: Закладки
 back: Назад
@@ -190,6 +237,7 @@ operators:
   ncontains: Не містить
   empty: Порожньо
 loading: Завантаження...
+value_unique: Значення повинно бути унікальним
 no_results: Нічого не знайдено
 role: Роль
 user: Користувач

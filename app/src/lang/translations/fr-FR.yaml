@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutes
+hours: Heures
 month: Mois
 year: Année
 select_all: Tout sélectionner

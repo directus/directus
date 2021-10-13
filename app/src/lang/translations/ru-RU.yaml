@@ -326,6 +326,7 @@ date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Минуты
 month: Месяц
 year: Год
 select_all: Выбрать Все
@@ -1512,8 +1513,6 @@ layouts:
     invalid_geometry: Некорректная геометрия
     auto_location_filter: Всегда фильтровать данные к границам отображения
     search_this_area: Искать в этой области
-    clear_data_filter: Очистить фильтр данных
-    clear_location_filter: Очистить фильтр местоположения
 panels:
   metric:
     name: Метрика

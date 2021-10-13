@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'D MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minuty
+hours: Godziny
 month: Miesiąc
 year: Rok
 select_all: Wybierz wszystkie
@@ -448,6 +450,7 @@ documentation: Dokumentacja
 sidebar: Pasek boczny
 duration: Czas trwania
 charset: Zestaw znaków
+second: sekunda
 file_moved: Plik przeniesiony
 collection_created: Utworzono kolekcję
 modified_on: Modyfikowane Dnia
@@ -807,10 +810,12 @@ system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
 directus_collection:
   directus_activity: Dzienniki rozliczalności dla wszystkich wydarzeń
   directus_collections: Dodatkowa konfiguracja kolekcji i metadane
+  directus_dashboards: Panel główny w module Insights
   directus_fields: Dodatkowa konfiguracja pola i metadane
   directus_files: Metadane dla wszystkich zarządzanych zasobów plików
   directus_folders: Dostarcza wirtualne katalogi dla plików
   directus_migrations: Jaką wersję bazy danych używasz
+  directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
@@ -1513,6 +1518,7 @@ layouts:
     search_this_area: Przeszukaj ten obszar
     clear_data_filter: Wyczyść filtr danych
     clear_location_filter: Wyczyść filtr lokalizacji
+    no_results_here: Brak wyników w tym obszarze
 panels:
   metric:
     name: Metryczny
