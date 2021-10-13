@@ -237,7 +237,7 @@ export default defineComponent({
 				defaultOptions,
 				{
 					lineNumbers: props.lineNumber,
-					readOnly: false,
+					readOnly: props.disabled ? 'nocursor' : false,
 					mode: props.language,
 					placeholder: props.placeholder,
 				},
