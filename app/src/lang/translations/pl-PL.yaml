@@ -1360,7 +1360,6 @@ interfaces:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
     toggle_split_view: Przełącz widok dzielony
-    language_field: Pole językowe
   list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
     recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
@@ -1397,6 +1396,8 @@ interfaces:
     start_open: Rozpocznij otwarte
     start_closed: Rozpocznij zamknięte
 displays:
+  translations:
+    translations: Tłumaczenia
   boolean:
     boolean: Wartość logiczna
     description: Wyświetlaj włącz/wyłącz
