@@ -1,5 +1,4 @@
 import { Component } from 'vue';
-import { Item } from './items';
 import { Filter } from './filter';
 
 export interface LayoutConfig<Options = any, Query = any> {
