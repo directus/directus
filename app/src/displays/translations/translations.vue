@@ -1,16 +1,13 @@
 <template>
 	<value-null v-if="!junctionCollection.collection" />
-	<v-menu show-arrow :disabled="value.length === 0">
+	<v-menu v-else show-arrow :disabled="value.length === 0">
 		<template #activator="{ toggle }">
-			<span class="toggle" @click.stop="toggle">
-				<span class="label">
-					<render-template
-						:template="internalTemplate"
-						:item="displayItem"
-						:collection="junctionCollection.collection"
-					/>
-				</span>
-			</span>
+			<render-template
+				:template="internalTemplate"
+				:item="displayItem"
+				:collection="junctionCollection.collection"
+				@click.stop="toggle"
+			/>
 		</template>
 
 		<v-list class="links">
@@ -112,8 +109,8 @@ export default defineComponent({
 			)
 		);
 
-		const translations = computed(() =>
-			props.value.map((item) => {
+		const translations = computed(() => {
+			return props.value.map((item) => {
 				const filledFields = writableFields.value.filter((field) => {
 					return field.field in item && notEmpty(item?.[field.field]);
 				}).length;
@@ -124,8 +121,8 @@ export default defineComponent({
 					progress: Math.round((filledFields / writableFields.value.length) * 100),
 					item,
 				};
-			})
-		);
+			});
+		});
 
 		return { primaryKeyField, internalTemplate, junctionCollection, displayItem, translations };
 	},

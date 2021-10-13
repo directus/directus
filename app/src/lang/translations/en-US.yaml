@@ -1376,7 +1376,7 @@ interfaces:
     display_template: Display Template
     no_collection: No Collection
     toggle_split_view: Toggle Split View
-    language_field: Language Field
+    language_field: Language Indicator Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -1417,9 +1417,9 @@ displays:
     translations: Translations
     description: Preview translations
     enable: Enable
-    user_language: Use current user language
+    user_language: Use Current User Language
     default_language: Default Language
-    language_field: Language Field
+    language_field: Language Indicator Field
   boolean:
     boolean: Boolean
     description: Display on and off states

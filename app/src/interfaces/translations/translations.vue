@@ -235,7 +235,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${languagesCollection.value.collection}`, {
+					const response = await api.get<any>(`/items/${languagesCollection.value.collection}`, {
 						params: {
 							fields: Array.from(fields),
 							limit: -1,
@@ -246,12 +246,11 @@ export default defineComponent({
 					languages.value = response.data.data;
 
 					if (!firstLang.value) {
-						const languages = response.data.data;
-						const userLang = languages?.find(
+						const userLang = response.data.data?.find(
 							(lang) => lang[languagesPrimaryKeyField.value] === userStore.currentUser.language
 						)?.[languagesPrimaryKeyField.value];
 
-						firstLang.value = userLang ?? languages?.[0]?.[languagesPrimaryKeyField.value];
+						firstLang.value = userLang || response.data.data?.[0]?.[languagesPrimaryKeyField.value.field];
 					}
 
 					if (!secondLang.value) {

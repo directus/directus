@@ -14,7 +14,6 @@
 import { useI18n } from 'vue-i18n';
 import { Field, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed, toRefs } from 'vue';
-import { useFieldsStore } from '@/stores/';
 import useRelation from '@/composables/use-m2m';
 
 export default defineComponent({

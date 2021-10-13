@@ -15,7 +15,7 @@ export default defineDisplay({
 	name: '$t:displays.translations.translations',
 	description: '$t:displays.translations.description',
 	icon: 'translate',
-	handler: DisplayTranslations,
+	component: DisplayTranslations,
 	options: options,
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	groups: ['m2m'],
