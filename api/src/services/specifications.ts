@@ -15,7 +15,7 @@ import {
 import { version } from '../../package.json';
 import getDatabase from '../database';
 import env from '../env';
-import { AbstractServiceOptions, Collection, FieldOverview, Relation, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Collection, Relation, SchemaOverview } from '../types';
 import { Accountability, Field, Type, Permission } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
@@ -50,9 +50,10 @@ export class SpecificationService {
 			collectionsService: this.collectionsService,
 			relationsService: this.relationsService,
 		});
-
 		this.graphql = new GraphQLSpecsService(options);
-		this.typescript = new TypescriptSpecsService(options);
+		this.typescript = new TypescriptSpecsService(options, {
+			fieldsService: this.fieldsService,
+		});
 	}
 }
 
@@ -587,45 +588,64 @@ class TypescriptSpecsService implements SpecificationSubService {
 	knex: Knex;
 	schema: SchemaOverview;
 
-	constructor(options: AbstractServiceOptions) {
+	fieldsService: FieldsService;
+
+	constructor(
+		options: AbstractServiceOptions,
+		{
+			fieldsService,
+		}: {
+			fieldsService: FieldsService;
+		}
+	) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
+
+		this.fieldsService = fieldsService;
 	}
 
 	async generate() {
+		const collections = await this.getCollections();
 		return (
-			Object.values(this.schema.collections)
-				.map((collection) =>
-					this.generateCollectionType(
-						this.tryGetPascalName(collection.collection, Object.keys(this.schema.collections)),
-						collection.fields
-					)
-				)
-				.join('\n\n') +
+			(await Promise.all(collections.map(async (collection) => await this.generateCollectionType(collection)))).join(
+				'\n\n'
+			) +
 			'\n\n' +
-			this.generateCustomDirectusTypes(Object.keys(this.schema.collections))
+			this.generateCustomDirectusTypes(collections)
 		);
 	}
 
-	generateCollectionType(
-		collectionName: string,
-		fields: {
-			[name: string]: FieldOverview;
-		}
-	) {
-		let collectionType = `export type ${collectionName} = {\n`;
-		collectionType += Object.values(fields)
-			.map((x) => `  ${x.field}${x.nullable ? '?' : ''}: ${this.getType(x.type)};`)
+	async getCollections() {
+		return (
+			await Promise.all(
+				Object.values(this.schema.collections).map(async (collection) => {
+					const fields = (await this.fieldsService.readAll(collection.collection)).filter(
+						(field) => !field.meta?.system
+					);
+					return {
+						name: collection.collection,
+						pascalName: this.tryGetPascalName(collection.collection, Object.keys(this.schema.collections)),
+						fields,
+					};
+				})
+			)
+		).filter((collection) => collection.fields.length > 0);
+	}
+
+	async generateCollectionType(collection: { name: string; pascalName: string; fields: Field[] }) {
+		let collectionType = `export type ${collection.pascalName} = {\n`;
+		collectionType += Object.values(collection.fields)
+			.map((field) => `  ${field.field}${field.meta?.required ? '' : '?'}: ${this.getType(field.type)};`)
 			.join('\n');
 		collectionType += '\n}';
 		return collectionType;
 	}
 
-	generateCustomDirectusTypes(fields: string[]) {
+	generateCustomDirectusTypes(collections: { name: string; pascalName: string; fields: Field[] }[]) {
 		let customDirectusTypes = `export type CustomDirectusTypes = {\n`;
-		customDirectusTypes += fields
-			.map((snakeCaseName) => `  ${snakeCaseName}: ${this.tryGetPascalName(snakeCaseName, fields)};`)
+		customDirectusTypes += collections
+			.map((collection) => `  ${collection.name}: ${collection.pascalName};`)
 			.join('\n');
 		customDirectusTypes += '\n}';
 		return customDirectusTypes;
