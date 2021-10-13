@@ -1167,6 +1167,8 @@ interfaces:
   input-autocomplete-api:
     results_path: Ruta de Resultados
 displays:
+  translations:
+    translations: Traducciones
   boolean:
     boolean: Booleano
     description: Presentar estados Activo e Inactivo
