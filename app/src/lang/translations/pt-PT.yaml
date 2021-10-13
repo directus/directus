@@ -685,6 +685,8 @@ interfaces:
   user:
     user: Utilizador
 displays:
+  translations:
+    translations: Traduções
   boolean:
     boolean: Boleano
   collection:
