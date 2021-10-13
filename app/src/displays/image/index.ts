@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.image.description',
 	types: ['uuid'],
 	icon: 'insert_photo',
-	handler: DisplayImage,
+	component: DisplayImage,
 	options: [
 		{
 			field: 'circle',

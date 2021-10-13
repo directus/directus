@@ -1,17 +1,19 @@
 import { Component } from 'vue';
-import { AppFilter } from './presets';
+import { Item } from './items';
+import { Filter } from './filter';
 
 export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
 	name: string;
 	icon: string;
 	component: Component;
-	smallHeader?: boolean;
+
 	slots: {
 		options: Component;
 		sidebar: Component;
 		actions: Component;
 	};
+	smallHeader?: boolean;
 	setup: (props: LayoutProps<Options, Query>, ctx: LayoutContext) => Record<string, unknown>;
 }
 
@@ -20,18 +22,18 @@ export interface LayoutProps<Options = any, Query = any> {
 	selection: (number | string)[];
 	layoutOptions: Options;
 	layoutQuery: Query;
-	filters: AppFilter[];
-	searchQuery: string | null;
+	filterUser: Filter | null;
+	filterSystem: Filter | null;
+	filter: Filter | null;
+	search: string | null;
 	selectMode: boolean;
 	readonly: boolean;
 	resetPreset?: () => Promise<void>;
+	clearFilters?: () => void;
 }
 
 interface LayoutContext {
-	emit: (
-		event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery' | 'update:filters' | 'update:searchQuery',
-		...args: any[]
-	) => void;
+	emit: (event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery', ...args: any[]) => void;
 }
 
 export type LayoutState<T, Options, Query> = {

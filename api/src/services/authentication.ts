@@ -198,7 +198,7 @@ export class AuthenticationService {
 
 		if (this.accountability) {
 			await this.activityService.createOne({
-				action: Action.AUTHENTICATE,
+				action: Action.LOGIN,
 				user: user.id,
 				ip: this.accountability.ip,
 				user_agent: this.accountability.userAgent,

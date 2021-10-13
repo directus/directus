@@ -60,7 +60,7 @@ class KnexSpatial {
 	}
 	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
-		return this.knex.raw('intersects(??, ?)', [key, geometry]);
+		return this.knex.raw('st_intersects(??, ?)', [key, geometry]);
 	}
 	intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		return this.isTrue(this._intersects_bbox(key, geojson));

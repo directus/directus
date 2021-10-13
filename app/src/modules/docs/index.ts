@@ -11,15 +11,20 @@ export default defineModule({
 	routes: [
 		{
 			path: '',
-			redirect: '/docs/getting-started/introduction/',
+			component: StaticDocs,
+			children: [
+				{
+					path: '',
+					redirect: '/docs/getting-started/introduction/',
+				},
+				...getRoutes(docs),
+			],
 		},
-		...getRoutes(docs),
 		{
 			path: ':_(.+)+',
 			component: NotFound,
 		},
 	],
-	order: 30,
 });
 
 function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
@@ -30,15 +35,12 @@ function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
 			updatedRoutes.push({
 				name: `docs-${route.path.replace('/', '-')}`,
 				path: route.path,
-				component: StaticDocs,
-				meta: {
-					import: route.import,
-				},
+				component: route.import,
 			});
 		} else {
 			updatedRoutes.push({
 				path: route.path,
-				redirect: `/docs${route.children[0].path}`,
+				redirect: `/docs/${route.children[0].path}`,
 			});
 
 			updatedRoutes.push(...getRoutes(route.children));

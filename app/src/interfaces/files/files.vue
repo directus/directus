@@ -83,7 +83,6 @@
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
 			:selection="[]"
-			:filters="selectionFilters"
 			multiple
 			@input="stageSelection"
 		/>
@@ -210,7 +209,7 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
 			useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
+		const { stageSelection, selectModalActive } = useSelection(items, relationInfo, emitter);
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
@@ -238,7 +237,6 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			deleteItem,
-			selectionFilters,
 			items,
 			relationInfo,
 			relatedPrimaryKey,

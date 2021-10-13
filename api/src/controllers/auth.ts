@@ -295,7 +295,7 @@ router.get(
 
 			// Workaround to use the default local auth provider to validate
 			// the email and login without a password.
-			authResponse = await authenticationService.login(undefined, { identifier: email });
+			authResponse = await authenticationService.login(DEFAULT_AUTH_PROVIDER, { email });
 		} catch (error: any) {
 			emitStatus('fail');
 

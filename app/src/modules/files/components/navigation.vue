@@ -8,7 +8,14 @@
 
 		<div class="folders">
 			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
-				<v-list-group to="/files" value="root" scope="files-navigation" exact disable-groupable-parent>
+				<v-list-group
+					to="/files"
+					:active="currentFolder === null"
+					value="root"
+					scope="files-navigation"
+					exact
+					disable-groupable-parent
+				>
 					<template #activator>
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />

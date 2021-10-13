@@ -6,8 +6,10 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="layoutFilters"
-		v-model:search-query="searchQuery"
+		:filter="mergeFilters(filter, folderTypeFilter)"
+		:filter-user="filter"
+		:filter-system="folderTypeFilter"
+		:search="search"
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
@@ -27,7 +29,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
@@ -114,7 +116,17 @@
 
 			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
+					<v-info v-if="!filter && !search" :title="t('file_count', 0)" icon="folder" center>
+						{{ t('no_files_copy') }}
+
+						<template #append>
+							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+								{{ t('add_file') }}
+							</v-button>
+						</template>
+					</v-info>
+
+					<v-info v-else :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
 
 						<template #append>
@@ -153,6 +165,11 @@
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<export-sidebar-detail
+					collection="directus_files"
+					:filter="mergeFilters(filter, folderTypeFilter)"
+					:search="search"
+				/>
 			</template>
 
 			<template v-if="showDropEffect">
@@ -171,7 +188,6 @@ import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextT
 import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
 import usePreset from '@/composables/use-preset';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
 import SearchInput from '@/views/private/components/search-input';
@@ -186,6 +202,8 @@ import { useLayout } from '@/composables/use-layout';
 import uploadFiles from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';
+import { Filter } from '@directus/shared/types';
+import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {
 	[field: string]: any;
@@ -195,7 +213,6 @@ export default defineComponent({
 	name: 'FilesCollection',
 	components: {
 		FilesNavigation,
-		FilterSidebarDetail,
 		LayoutSidebarDetail,
 		AddFolder,
 		SearchInput,
@@ -226,68 +243,56 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_files'));
+		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const filtersWithFolderAndType = computed(() => {
-			const filtersParsed: any[] = [
-				{
-					locked: true,
-					field: 'type',
-					operator: 'nnull',
-					value: 1,
-				},
-			];
+		const folderTypeFilter = computed(() => {
+			const filterParsed: Filter = {
+				_and: [
+					{
+						type: {
+							_nnull: true,
+						},
+					},
+				],
+			};
 
 			if (props.special === null) {
 				if (props.folder !== null) {
-					filtersParsed.push({
-						locked: true,
-						operator: 'eq',
-						field: 'folder',
-						value: props.folder,
+					filterParsed._and.push({
+						folder: {
+							_eq: props.folder,
+						},
 					});
 				} else {
-					filtersParsed.push({
-						locked: true,
-						operator: 'null',
-						field: 'folder',
-						value: true,
+					filterParsed._and.push({
+						folder: {
+							_null: true,
+						},
 					});
 				}
 			}
 
 			if (props.special === 'mine' && userStore.currentUser) {
-				filtersParsed.push({
-					locked: true,
-					operator: 'eq',
-					field: 'uploaded_by',
-					value: userStore.currentUser.id,
+				filterParsed._and.push({
+					uploaded_by: {
+						_eq: userStore.currentUser.id,
+					},
 				});
 			}
 
 			if (props.special === 'recent') {
-				filtersParsed.push({
-					locked: true,
-					operator: 'gt',
-					field: 'uploaded_on',
-					value: subDays(new Date(), 5).toISOString(),
+				filterParsed._and.push({
+					uploaded_on: {
+						_gt: subDays(new Date(), 5).toISOString(),
+					},
 				});
 			}
 
-			return filtersParsed;
-		});
-
-		const layoutFilters = computed<any[]>({
-			get() {
-				return [...filters.value, ...filtersWithFolderAndType.value];
-			},
-			set(newFilters) {
-				filters.value = newFilters;
-			},
+			return filterParsed;
 		});
 
 		const { layoutWrapper } = useLayout(layout);
@@ -312,13 +317,12 @@ export default defineComponent({
 			title,
 			layoutRef,
 			layoutWrapper,
-			layoutFilters,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
-			filtersWithFolderAndType,
-			searchQuery,
+			folderTypeFilter,
+			search,
 			moveToDialogActive,
 			moveToFolder,
 			moving,
@@ -340,6 +344,8 @@ export default defineComponent({
 			batchDelete,
 			deleteError,
 			batchEditActive,
+			filter,
+			mergeFilters,
 		};
 
 		function useBatch() {
@@ -455,8 +461,8 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
-			searchQuery.value = null;
+			filter.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {

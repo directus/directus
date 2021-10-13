@@ -93,7 +93,9 @@ export default defineComponent({
 		});
 
 		const attributionControl = new AttributionControl({ compact: true });
-		const navigationControl = new NavigationControl();
+		const navigationControl = new NavigationControl({
+			showCompass: false,
+		});
 		const geolocateControl = new GeolocateControl();
 		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
 			emit('fitdata');
@@ -120,6 +122,7 @@ export default defineComponent({
 				container: 'map-container',
 				style: style.value,
 				attributionControl: false,
+				dragRotate: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -250,6 +253,7 @@ export default defineComponent({
 			newSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: true });
 			});
+			boxSelectControl.showUnselect(newSelection?.length);
 		}
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
@@ -475,6 +479,8 @@ export default defineComponent({
 }
 
 .mapboxgl-point-popup {
+	box-shadow: 10px 10px 10px solid red;
+
 	&.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
 		border-right-color: var(--background-normal);
 	}
@@ -498,12 +504,11 @@ export default defineComponent({
 		font-family: var(--family-sans-serif);
 		background-color: var(--background-normal);
 		border-radius: var(--border-radius);
+		box-shadow: var(--card-shadow);
 		pointer-events: none;
 	}
 }
-</style>
 
-<style lang="scss">
 #map-container.hover .mapboxgl-canvas-container {
 	cursor: pointer !important;
 }

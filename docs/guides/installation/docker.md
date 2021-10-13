@@ -5,15 +5,17 @@ Directus is published to both [DockerHub](https://hub.docker.com/r/directus/dire
 use the Directus image from DockerHub, run:
 
 ```bash
-docker run -p 8055:8055 directus/directus
+# Make sure to change sensitive values (KEY, SECRET, ...) in production
+docker run -p 8055:8055 -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 directus/directus
 ```
 
 ### Installing Specific Versions
 
-Each released version is available under its own tag (e.g. 9.0.0-rc.85). To use a specific version of Directus, run:
+Each released version is available under its own tag (e.g. 9.0.0-rc.96). To use a specific version of Directus, run:
 
 ```bash
-docker run -p 8055:8055 directus/directus:9.0.0-rc.85
+# Make sure to change sensitive values (KEY, SECRET, ...) in production
+docker run -p 8055:8055 -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 directus/directus:9.0.0-rc.96
 ```
 
 ::: warning Change In Naming of Docker Tags
