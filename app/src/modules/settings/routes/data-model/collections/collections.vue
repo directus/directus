@@ -52,7 +52,6 @@
 							:collections="collections"
 							@editCollection="editCollection = $event"
 							@setNestedSort="onSort"
-							@toggleCollapsed="toggleCollapsed"
 						/>
 					</template>
 				</draggable>
@@ -170,33 +169,8 @@ export default defineComponent({
 			systemCollections,
 			onSort,
 			rootCollections,
-			toggleCollapsed,
 			editCollection,
 		};
-
-		async function toggleCollapsed({
-			collectionKey,
-			collapse,
-		}: {
-			collectionKey: string;
-			collapse: 'open' | 'closed';
-		}) {
-			collectionsStore.collections = collectionsStore.collections.map((collection) => {
-				if (collection.collection === collectionKey) {
-					return merge({}, collection, { meta: { collapse } });
-				}
-
-				return collection;
-			});
-
-			try {
-				await api.patch(`/collections/${collectionKey}`, {
-					meta: { collapse },
-				});
-			} catch (err) {
-				unexpectedError(err);
-			}
-		}
 
 		async function onSort(updates: Collection[], removeGroup = false) {
 			const updatesWithSortValue = updates.map((collection, index) =>

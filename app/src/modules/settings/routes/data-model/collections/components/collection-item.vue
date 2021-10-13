@@ -31,7 +31,6 @@
 					:collections="collections"
 					@editCollection="$emit('editCollection', $event)"
 					@setNestedSort="$emit('setNestedSort', $event)"
-					@toggleCollapsed="$emit('toggleCollapsed', $event)"
 				/>
 			</template>
 		</draggable>
@@ -58,7 +57,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['setNestedSort', 'toggleCollapsed', 'editCollection'],
+	emits: ['setNestedSort', 'editCollection'],
 	setup(props, { emit }) {
 		const router = useRouter();
 
@@ -66,9 +65,7 @@ export default defineComponent({
 			props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
 		);
 
-		const collapsed = computed(() => props.collection.meta?.collapse === 'closed');
-
-		return { collapsed, openCollection, onGroupSortChange, nestedCollections };
+		return { openCollection, onGroupSortChange, nestedCollections };
 
 		function openCollection(collection: Collection) {
 			if (collection.schema) {
@@ -121,9 +118,5 @@ export default defineComponent({
 .hidden {
 	--v-list-item-color: var(--foreground-subdued);
 	--v-icon-color: var(--foreground-subdued);
-}
-
-.toggle-collapse.collapsed {
-	transform: rotate(90deg);
 }
 </style>
