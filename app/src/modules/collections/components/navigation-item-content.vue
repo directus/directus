@@ -2,7 +2,7 @@
 	<v-list-item-icon>
 		<v-icon :name="icon ?? 'label'" :color="color" />
 	</v-list-item-icon>
-	<v-list-item-content>{{ name }}</v-list-item-content>
+	<v-list-item-content><v-text-overflow :text="name" /></v-list-item-content>
 </template>
 
 <script lang="ts">

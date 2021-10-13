@@ -306,7 +306,7 @@ body {
 
 		.v-list.nav.dense {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: 24px;
+				--v-list-item-min-height: 32px;
 			}
 		}
 	}

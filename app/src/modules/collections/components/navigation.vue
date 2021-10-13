@@ -6,14 +6,31 @@
 		nav
 		:mandatory="false"
 		:dense="dense"
+		@contextmenu.prevent.stop="activateContextMenu"
 	>
-		<navigation-item v-for="collection in rootItems" :key="collection.collection" :collection="collection" />
+		<navigation-item
+			v-for="collection in rootItems"
+			:key="collection.collection"
+			:show-hidden="showHidden"
+			:collection="collection"
+		/>
+
+		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+			<v-list-item clickable @click="showHidden = !showHidden">
+				<v-list-item-icon>
+					<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
+				</v-list-item-icon>
+				<v-list-item-content>
+					<v-text-overflow :text="showHidden ? t('hide_hidden_collections') : t('show_hidden_collections')" />
+				</v-list-item-content>
+			</v-list-item>
+		</v-menu>
 	</v-list>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useNavigation } from '../composables/use-navigation';
 import { useCollectionsStore } from '@/stores/collections';
 import { orderBy, isNil } from 'lodash';
@@ -26,6 +43,9 @@ export default defineComponent({
 		const { activeGroups, showHidden } = useNavigation();
 		const collectionsStore = useCollectionsStore();
 
+		const contextMenu = ref();
+		const contextMenuTarget = ref<undefined | string>();
+
 		const rootItems = computed(() => {
 			return orderBy(
 				collectionsStore.visibleCollections.filter((collection) => {
@@ -37,7 +57,12 @@ export default defineComponent({
 
 		const dense = computed(() => collectionsStore.visibleCollections.length > 5);
 
-		return { t, activeGroups, showHidden, rootItems, dense };
+		return { t, activeGroups, showHidden, rootItems, dense, activateContextMenu, contextMenu, contextMenuTarget };
+
+		function activateContextMenu(event: PointerEvent, target?: string) {
+			contextMenuTarget.value = target;
+			contextMenu.value.activate(event);
+		}
 	},
 });
 </script>
