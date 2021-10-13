@@ -327,6 +327,7 @@ date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minutes
+hours: Heures
 month: Mois
 year: Année
 select_all: Tout sélectionner
@@ -1513,6 +1514,9 @@ layouts:
     invalid_geometry: Géométrie invalide
     auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
+    clear_data_filter: Réinitialiser le filtre
+    clear_location_filter: Réinitialiser le filtre de localisation
+    no_results_here: Aucun résultat dans cette zone
 panels:
   metric:
     name: Indicateurs
