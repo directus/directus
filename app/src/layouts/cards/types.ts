@@ -8,8 +8,8 @@ export type LayoutOptions = {
 };
 
 export type LayoutQuery = {
-	fields?: string[];
-	sort?: string[];
-	limit?: number;
-	page?: number;
+	fields: string[];
+	sort: string[];
+	limit: number;
+	page: number;
 };

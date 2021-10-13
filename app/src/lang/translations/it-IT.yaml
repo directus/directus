@@ -551,10 +551,10 @@ advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
 change_advanced_filter_operator: Cambia Operatore
 operators:
-  eq: Uguale
-  neq: Non è uguale
-  lt: Meno di
-  gt: Più grande di
+  eq: Uguale a
+  neq: Diverso da
+  lt: Minore di
+  gt: Maggiore di
   lte: Minore o uguale a
   gte: Maggiore o uguale a
   in: È uno di
@@ -567,8 +567,8 @@ operators:
   nstarts_with: Non inizia con
   ends_with: Finisce con
   nends_with: Non finisce con
-  between: È compresa tra
-  nbetween: Non è compresa tra
+  between: È compreso tra
+  nbetween: Non è compreso tra
   empty: È vuoto
   nempty: Non è vuoto
   all: Contiene queste chiavi
@@ -621,7 +621,7 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
-create: Creazione
+create: Creare
 on_create: Alla creazione
 on_update: Alla modifica
 read: Lettura
@@ -983,7 +983,7 @@ field_options:
     overrides_divider_title: Personalizzazioni App
   directus_activity:
     login: Accedi
-    create: Creazione
+    create: Creare
     update: Modifica
     delete: Cancellazione
   directus_collections:
@@ -1049,7 +1049,7 @@ field_options:
     status_options_inactive: Disattivato
     data_label: Invia dati evento
     triggers_divider: Trigger
-    actions_create: Creazione
+    actions_create: Creare
     actions_update: Modifica
     actions_delete: Cancellazione
     actions_login: Accedi

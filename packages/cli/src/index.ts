@@ -40,7 +40,7 @@ function hasTsNode(): boolean {
 	return false;
 }
 
-export default async function <T extends any>(argv: string[]): Promise<CommandResult<T>> {
+export default async function <T>(argv: string[]): Promise<CommandResult<T>> {
 	// create a runtime
 	const brand = 'directusctl';
 	const runtime = build(brand)

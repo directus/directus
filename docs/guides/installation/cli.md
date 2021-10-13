@@ -7,21 +7,25 @@ we aim to support the current LTS release (and newer).
 
 To run Directus, you currently need Node 12.20 or newer, and one of the following databases:
 
-| Database              | Version |
-| --------------------- | ------- |
-| PostgreSQL            | 10+     |
-| MySQL                 | 5.7.8+  |
-| SQLite                | 3+      |
-| MS-SQL Server         | 13.0+   |
-| OracleDB<sup>\*</sup> | 19+     |
-| MariaDB               | 10.2+   |
+| Database                              | Version     |
+| ------------------------------------- | ----------- |
+| PostgreSQL                            | 10+         |
+| MySQL <sup>[1]</sup>                  | 5.7.8+ / 8+ |
+| SQLite                                | 3+          |
+| MS SQL Server                         | 13+         |
+| MariaDB <sup>[2]</sup>                | 10.2.7+     |
+| OracleDB<sup>[2]</sup> <sup>[3]</sup> | 19+         |
 
-<sup>\*</sup> Make sure to install `node-oracledb` and it's system dependencies when using OracleDB
+<sup>[1]</sup> MySQL 8+ requires
+[mysql_native_password](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors)
+to be enabled\
+<sup>[2]</sup> Older versions may work, but aren't officially supported. Use at your own risk. \
+<sup>[3]</sup> Make sure to install `node-oracledb` and it's system dependencies when using OracleDB
 
 ::: tip Variants
 
 In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), **AWS
-Redshift** (PostgreSQL), and **MariaDB**.
+Redshift** (PostgreSQL), **Azure SQL** (MS SQL).
 
 :::
 

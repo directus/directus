@@ -96,9 +96,10 @@ import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { get } from 'lodash';
-import { FieldFilter, Filter, FilterOperator, LogicalFilterAND, LogicalFilterOR } from '@directus/shared/types';
+import { FieldFilter, Filter, FieldFilterOperator, LogicalFilterAND, LogicalFilterOR } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 import { fieldToFilter, getField, getNodeName, getComparator } from './utils';
+import { toArray } from '@directus/shared/utils';
 
 type FilterInfo =
 	| {
@@ -234,29 +235,38 @@ export default defineComponent({
 			}
 		}
 
-		function updateComparator(index: number, newVal: FilterOperator) {
+		function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			const nodeInfo = filterInfo.value[index];
 			if (nodeInfo.isField === false) return;
 
 			const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-			const value = get(nodeInfo.node, valuePath);
+			let value = get(nodeInfo.node, valuePath);
 
-			if (['_in', '_nin'].includes(newVal)) {
-				if (Array.isArray(value) === false) update([value]);
-			} else if (['_between', '_nbetween'].includes(newVal)) {
-				if (Array.isArray(value) && value.length >= 2) update([value[0], value[1]]);
-				else update([null, null]);
-			} else if (Array.isArray(value) && value.length > 0) {
-				update(value[0]);
-			} else {
-				update(value);
+			switch (operator) {
+				case '_in':
+				case '_nin':
+					update(toArray(value) || []);
+					break;
+				case '_between':
+				case '_nbetween':
+					update((toArray(value) || []).slice(0, 2));
+					break;
+				case '_null':
+				case '_nnull':
+				case '_empty':
+				case '_nempty':
+					update(true);
+					break;
+				default:
+					update(Array.isArray(value) ? value[0] : value);
+					break;
 			}
 
 			function update(value: any) {
 				if (nodeInfo.isField === false) return;
 
 				filterSync.value = filterSync.value.map((filter, filterIndex) => {
-					if (filterIndex === index) return fieldToFilter(nodeInfo.field, newVal, value);
+					if (filterIndex === index) return fieldToFilter(nodeInfo.field, operator, value);
 					return filter;
 				});
 			}
@@ -310,7 +320,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	width: fit-content;
-	margin-right: 12px;
+	margin-right: 18px;
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;

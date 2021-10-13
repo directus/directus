@@ -48,37 +48,42 @@
 
 ## Filter Operators
 
-| Operator        | Description                           |
-| --------------- | ------------------------------------- |
-| `_eq`           | Equal to                              |
-| `_neq`          | Not equal to                          |
-| `_lt`           | Less than                             |
-| `_lte`          | Less than or equal to                 |
-| `_gt`           | Greater than                          |
-| `_gte`          | Greater than or equal to              |
-| `_in`           | Matches any of the values             |
-| `_nin`          | Doesn't match any of the values       |
-| `_null`         | Is `null`                             |
-| `_nnull`        | Is not `null`                         |
-| `_contains`     | Contains the substring                |
-| `_ncontains`    | Doesn't contain the substring         |
-| `_starts_with`  | Starts with                           |
-| `_nstarts_with` | Doesn't start with                    |
-| `_ends_with`    | Ends with                             |
-| `_nends_with`   | Doesn't end with                      |
-| `_between`      | Is between two values (inclusive)     |
-| `_nbetween`     | Is not between two values (inclusive) |
-| `_empty`        | Is empty (`null` or falsy)            |
-| `_nempty`       | Is not empty (`null` or falsy)        |
+| Operator                           | Description                            |
+| ---------------------------------- | -------------------------------------- |
+| `_eq`                              | Equal to                               |
+| `_neq`                             | Not equal to                           |
+| `_lt`                              | Less than                              |
+| `_lte`                             | Less than or equal to                  |
+| `_gt`                              | Greater than                           |
+| `_gte`                             | Greater than or equal to               |
+| `_in`                              | Matches any of the values              |
+| `_nin`                             | Doesn't match any of the values        |
+| `_null`                            | Is `null`                              |
+| `_nnull`                           | Is not `null`                          |
+| `_contains`                        | Contains the substring                 |
+| `_ncontains`                       | Doesn't contain the substring          |
+| `_starts_with`                     | Starts with                            |
+| `_nstarts_with`                    | Doesn't start with                     |
+| `_ends_with`                       | Ends with                              |
+| `_nends_with`                      | Doesn't end with                       |
+| `_between`                         | Is between two values (inclusive)      |
+| `_nbetween`                        | Is not between two values (inclusive)  |
+| `_empty`                           | Is empty (`null` or falsy)             |
+| `_nempty`                          | Is not empty (`null` or falsy)         |
+| `_intersects` <sup>[1]</sup>       | Value intersects a given point         |
+| `_nintersects` <sup>[1]</sup>      | Value does not intersect a given point |
+| `_intersects_bbox` <sup>[1]</sup>  | Value is in a bounding box             |
+| `_nintersects_bbox` <sup>[1]</sup> | Value is not in a bounding box         |
 
 The following operators are **only available in validation permissions**:
 
 | Operator                | Description               |
 | ----------------------- | ------------------------- |
 | `_submitted`            | Field has to be submitted |
-| `_regex` <sup>[1]</sup> | Field has to match regex  |
+| `_regex` <sup>[2]</sup> | Field has to match regex  |
 
-<sup>[1]</sup> JavaScript "flavor" regex. Make sure to escape backslashes.
+<sup>[1]</sup> Only available on Geometry types\
+<sup>[2]</sup> JavaScript "flavor" regex. Make sure to escape backslashes.
 
 ## Relational
 

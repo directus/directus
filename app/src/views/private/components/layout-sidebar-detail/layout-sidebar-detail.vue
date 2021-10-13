@@ -56,6 +56,7 @@ export default defineComponent({
 
 :deep(.layout-options) {
 	--form-vertical-gap: 24px;
+
 	@include form-grid;
 }
 
