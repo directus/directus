@@ -24,7 +24,7 @@ import getASTFromQuery from '../utils/get-ast-from-query';
 import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
-import { ActivityService, RevisionsService } from './internal';
+import { ActivityService, RevisionsService } from './index';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
