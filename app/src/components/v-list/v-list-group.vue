@@ -12,7 +12,7 @@
 			@click="onClick"
 		>
 			<v-list-item-icon
-				v-if="$slots.default && arrowPlacement === 'before'"
+				v-if="$slots.default && arrowPlacement && arrowPlacement === 'before'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
@@ -22,7 +22,7 @@
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon
-				v-if="$slots.default && arrowPlacement === 'after'"
+				v-if="$slots.default && arrowPlacement && arrowPlacement === 'after'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
@@ -87,9 +87,9 @@ export default defineComponent({
 			default: false,
 		},
 		arrowPlacement: {
-			type: String,
+			type: [String, Boolean],
 			default: 'after',
-			validator: (val: string) => ['before', 'after'].includes(val),
+			validator: (val: string | boolean) => ['before', 'after', false].includes(val),
 		},
 	},
 	emits: ['click'],

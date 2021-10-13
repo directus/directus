@@ -1,5 +1,12 @@
 <template>
-	<v-list-group v-if="isGroup" :to="to" scope="collections-navigation" :value="collection.collection" query>
+	<v-list-group
+		v-if="isGroup"
+		:to="to"
+		scope="collections-navigation"
+		:value="collection.collection"
+		query
+		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
+	>
 		<template #activator>
 			<navigation-item-content :name="collection.name" :icon="collection.meta?.icon" :color="collection.meta?.color" />
 		</template>

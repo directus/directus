@@ -1,6 +1,6 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { Collection as CollectionRaw } from '@directus/shared/types';
+import { Collection as CollectionRaw, DeepPartial } from '@directus/shared/types';
 import { Collection } from '@/types';
 import { getCollectionType } from '@directus/shared/utils';
 import { notEmpty } from '@/utils/is-empty/';
@@ -98,7 +98,7 @@ export const useCollectionsStore = defineStore({
 		async dehydrate() {
 			this.$reset();
 		},
-		async updateCollection(collection: string, updates: Partial<Collection>) {
+		async updateCollection(collection: string, updates: DeepPartial<Collection>) {
 			try {
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();

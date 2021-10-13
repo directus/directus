@@ -12,6 +12,14 @@
 				/>
 				<span>{{ collection.name }}</span>
 			</div>
+			<v-progress-circular v-if="nestedCollections.length && collapseLoading" small indeterminate />
+			<v-icon
+				v-else-if="nestedCollections.length"
+				v-tooltip="collapseTooltip"
+				:name="collapseIcon"
+				clickable
+				@click="toggleCollapse"
+			/>
 			<collection-options :collection="collection" />
 		</v-list-item>
 
@@ -38,11 +46,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import CollectionOptions from './collection-options.vue';
 import { Collection } from '@/types';
 import { useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
+import { useCollectionsStore } from '@/stores';
+import { DeepPartial } from '@directus/shared/types';
+import { useI18n } from 'vue-i18n';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	name: 'CollectionItem',
@@ -59,13 +71,78 @@ export default defineComponent({
 	},
 	emits: ['setNestedSort', 'editCollection'],
 	setup(props, { emit }) {
+		const collectionsStore = useCollectionsStore();
 		const router = useRouter();
+		const { t } = useI18n();
 
 		const nestedCollections = computed(() =>
 			props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
 		);
 
-		return { openCollection, onGroupSortChange, nestedCollections };
+		const collapseIcon = computed(() => {
+			switch (props.collection.meta?.collapse) {
+				case 'open':
+					return 'folder_open';
+				case 'closed':
+					return 'folder';
+				case 'locked':
+					return 'lock';
+			}
+
+			return undefined;
+		});
+
+		const collapseTooltip = computed(() => {
+			switch (props.collection.meta?.collapse) {
+				case 'open':
+					return t('start_open');
+				case 'closed':
+					return t('start_collapsed');
+				case 'locked':
+					return t('always_open');
+			}
+
+			return undefined;
+		});
+
+		const collapseLoading = ref(false);
+
+		return {
+			collapseIcon,
+			openCollection,
+			onGroupSortChange,
+			nestedCollections,
+			update,
+			toggleCollapse,
+			collapseTooltip,
+			collapseLoading,
+		};
+
+		async function toggleCollapse() {
+			if (collapseLoading.value === true) return;
+
+			collapseLoading.value = true;
+
+			let newCollapse: 'open' | 'closed' | 'locked' = 'open';
+
+			if (props.collection.meta?.collapse === 'open') {
+				newCollapse = 'closed';
+			} else if (props.collection.meta?.collapse === 'closed') {
+				newCollapse = 'locked';
+			}
+
+			try {
+				await update({ meta: { collapse: newCollapse } });
+			} catch (err) {
+				unexpectedError(err);
+			} finally {
+				collapseLoading.value = false;
+			}
+		}
+
+		async function update(updates: DeepPartial<Collection>) {
+			await collectionsStore.updateCollection(props.collection.collection, updates);
+		}
 
 		function openCollection(collection: Collection) {
 			if (collection.schema) {
