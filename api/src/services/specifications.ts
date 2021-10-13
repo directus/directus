@@ -636,7 +636,7 @@ class TypescriptSpecsService implements SpecificationSubService {
 	async generateCollectionType(collection: { name: string; pascalName: string; fields: Field[] }) {
 		let collectionType = `export type ${collection.pascalName} = {\n`;
 		collectionType += Object.values(collection.fields)
-			.map((field) => `  ${field.field}${field.meta?.required ? '' : '?'}: ${this.getType(field.type)};`)
+			.map((field) => `  ${field.field}${field.schema?.is_nullable ? '?' : ''}: ${this.getType(field.type)};`)
 			.join('\n');
 		collectionType += '\n}';
 		return collectionType;
