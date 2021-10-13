@@ -292,8 +292,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	function setItemValueToResponse(response: AxiosResponse) {
-		if (response.data.data.collection?.startsWith('directus_') && 'meta' in response.data.data) {
-			response.data.data.meta = translate(response.data.data.meta);
+		if (response.data.data.collection?.startsWith('directus_')) {
+			response.data.data = translate(response.data.data);
 		}
 		if (isBatch.value === false) {
 			item.value = response.data.data;
