@@ -906,11 +906,10 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    basemaps: Fond de cartes
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
-    mapbox_key: Clé d'accès Mapbox
+    mapbox_key: Jeton d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     additional_transforms: Transformations supplémentaires
@@ -1359,7 +1358,6 @@ interfaces:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue spatiale
-    language_field: Champ de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
     recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
@@ -1396,6 +1394,8 @@ interfaces:
     start_open: Démarrer Ouverture
     start_closed: Commencer réduit
 displays:
+  translations:
+    translations: Traductions
   boolean:
     boolean: Booléen
     description: Afficher les états sélectionnés et désélectionnés
@@ -1503,20 +1503,20 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
-    basemap: Fond de carte
-    layers: Couches
+    basemap: Carte de base
+    layers: Afficher...
     edit_custom_layers: Modifier la couche
     cluster_options: Options de regroupement
-    cluster: Regrouper les données
-    cluster_radius: Rayon de regroupement
-    cluster_minpoints: Taille minimale des clusters
-    cluster_maxzoom: Zoom maximum pour le regroupement
+    cluster: Activer le clustering
+    cluster_radius: Rayon de grappe
+    cluster_minpoints: Taille minimale du cluster
+    cluster_maxzoom: Zoom maximum pour la grappe
     field: Géométrie
     invalid_geometry: Géométrie invalide
+    auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
-    auto_location_filter: Toujours filter les données selon l'emprise
-    clear_data_filter: Enlever les filtres avancés
-    clear_location_filter: Enlever le filtre géographique
+    clear_data_filter: Réinitialiser le filtre
+    clear_location_filter: Réinitialiser le filtre de localisation
     no_results_here: Aucun résultat dans cette zone
 panels:
   metric:
