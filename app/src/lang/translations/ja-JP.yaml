@@ -483,6 +483,8 @@ interfaces:
   user:
     user: ユーザー
 displays:
+  translations:
+    translations: 翻訳
   boolean:
     boolean: 真偽値
   color:
