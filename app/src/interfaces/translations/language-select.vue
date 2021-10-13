@@ -16,7 +16,12 @@
 					{{ item.text }}
 				</div>
 				<div class="end">
-					<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
+					<v-progress-linear
+						v-tooltip="`${Math.round((item.current / item.max) * 100)}%`"
+						:value="item.progress"
+						rounded
+						colorful
+					/>
 				</div>
 			</v-list-item>
 		</v-list>

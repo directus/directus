@@ -20,6 +20,11 @@
 	</template>
 
 	<div class="field">
+		<div class="type-label">{{ t('display_template') }}</div>
+		<v-field-template v-model="displayTemplateWritable" :collection="collection" />
+	</div>
+
+	<div class="field">
 		<v-checkbox
 			v-model="autoLocationFilterWritable"
 			:label="t('layouts.map.auto_location_filter')"
@@ -48,6 +53,10 @@ import { useSync } from '@directus/shared/composables';
 export default defineComponent({
 	inheritAttrs: false,
 	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
 		geometryFields: {
 			type: Array as PropType<Item[]>,
 			required: true,
@@ -84,6 +93,10 @@ export default defineComponent({
 			type: Array as PropType<any[]>,
 			default: undefined,
 		},
+		displayTemplate: {
+			type: String as string | undefined,
+			default: undefined,
+		},
 	},
 	emits: [
 		'update:geometryField',
@@ -102,6 +115,7 @@ export default defineComponent({
 		const clusterDataWritable = useSync(props, 'clusterData', emit);
 		const customLayerDrawerOpenWritable = useSync(props, 'customLayerDrawerOpen', emit);
 		const customLayersWritable = useSync(props, 'customLayers', emit);
+		const displayTemplateWritable = useSync(props, 'displayTemplate', emit);
 
 		const basemaps = getBasemapSources();
 		const { basemap } = toRefs(appStore);
@@ -113,6 +127,7 @@ export default defineComponent({
 			clusterDataWritable,
 			customLayerDrawerOpenWritable,
 			customLayersWritable,
+			displayTemplateWritable,
 			basemaps,
 			basemap,
 		};

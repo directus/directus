@@ -22,10 +22,15 @@ export type FilterOperator =
 
 export type ClientFilterOperator = FilterOperator | 'starts_with' | 'nstarts_with' | 'ends_with' | 'nends_with';
 
-export type Filter = FieldFilter & {
-	_and?: FieldFilter[];
-	_or?: FieldFilter[];
+export type LogicalFilterOR = {
+	_or: (Filter | FieldFilter)[];
 };
+
+export type LogicalFilterAND = {
+	_and: (Filter | FieldFilter)[];
+};
+
+export type Filter = LogicalFilterOR | LogicalFilterAND | FieldFilter;
 
 export type FieldFilter = {
 	[field: string]: FieldFilterOperator | FieldValidationOperator | FieldFilter;

@@ -49,11 +49,11 @@ import ms from 'ms';
 import { getCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { BaseException } from '@directus/shared/exceptions';
-import { listExtensions } from '../extensions';
-import { Accountability } from '@directus/shared/types';
-import { AbstractServiceOptions, Action, Aggregate, GraphQLParams, Item, Query, SchemaOverview } from '../types';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
+import { getExtensionManager } from '../extensions';
+import { Accountability, Query, Aggregate } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, GraphQLParams, Item, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
@@ -72,10 +72,12 @@ import { RolesService } from './roles';
 import { ServerService } from './server';
 import { SettingsService } from './settings';
 import { SpecificationService } from './specifications';
+import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 import { generateHash } from '../utils/generate-hash';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -877,6 +879,13 @@ export class GraphQLService {
 					type: [AggregatedFunctions[collection.collection]],
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
+						filter: ReadableCollectionFilterTypes[collection.collection],
+						search: {
+							type: GraphQLString,
+						},
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
@@ -1411,7 +1420,7 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
-		const replaceFuncs = (filter?: Filter): undefined | Filter => {
+		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
 			if (!filter) return filter;
 
 			return replaceFuncDeep(filter);
@@ -1658,12 +1667,16 @@ export class GraphQLService {
 						modules: new GraphQLList(GraphQLString),
 					},
 				}),
-				resolve: async () => ({
-					interfaces: listExtensions('interface'),
-					displays: listExtensions('display'),
-					layouts: listExtensions('layout'),
-					modules: listExtensions('module'),
-				}),
+				resolve: async () => {
+					const extensionManager = getExtensionManager();
+
+					return {
+						interfaces: extensionManager.listExtensions('interface'),
+						displays: extensionManager.listExtensions('display'),
+						layouts: extensionManager.listExtensions('layout'),
+						modules: extensionManager.listExtensions('module'),
+					};
+				},
 			},
 			server_specs_oas: {
 				type: GraphQLJSON,
@@ -1752,11 +1765,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const result = await authenticationService.authenticate({
-						...args,
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-					});
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
@@ -1888,7 +1897,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1909,7 +1918,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1925,15 +1934,11 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const authService = new AuthenticationService({
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-					const otpValid = await authService.verifyOTP(this.accountability.user, args.otp);
+					const otpValid = await service.verifyOTP(this.accountability.user, args.otp);
 					if (otpValid === false) {
 						throw new InvalidPayloadException(`"otp" is invalid`);
 					}

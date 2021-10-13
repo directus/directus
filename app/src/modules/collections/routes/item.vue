@@ -153,7 +153,7 @@
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
-			:primary-key="primaryKey || '+'"
+			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 		/>
 
@@ -444,7 +444,6 @@ export default defineComponent({
 				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 				}

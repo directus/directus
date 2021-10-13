@@ -1,4 +1,4 @@
-import { getFieldsFromTemplate } from '.';
+import { getFieldsFromTemplate } from './get-fields-from-template';
 
 describe('getFieldsFromTemplate', () => {
 	it('returns an empty array when passed null', () => {

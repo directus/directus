@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { FormField } from '@/components/v-form/types';
 import { getInterfaces } from '@/interfaces';
 import { Field, InterfaceConfig } from '@directus/shared/types';
@@ -56,7 +54,7 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 			return systemFake === false;
 		});
 
-		formFields = orderBy(formFields, 'meta.sort');
+		formFields = orderBy(formFields, ['meta.sort', 'meta.id']);
 
 		formFields = translate(formFields);
 

@@ -22,8 +22,8 @@
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false">
-			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
+		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value, 1)">
+			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
 </template>
@@ -31,9 +31,9 @@
 <script lang="ts">
 import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
 import FieldListItem from './field-list-item.vue';
-import useFieldTree from '@/composables/use-field-tree';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -56,7 +56,7 @@ export default defineComponent({
 		},
 		depth: {
 			type: Number,
-			default: 2,
+			default: undefined,
 		},
 		placeholder: {
 			type: String,
@@ -74,7 +74,7 @@ export default defineComponent({
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
-		const { tree } = useFieldTree(collection, true, inject);
+		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
 		watch(() => props.modelValue, setContent, { immediate: true });
 
@@ -91,7 +91,7 @@ export default defineComponent({
 			}
 		});
 
-		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive, onSelect };
+		return { menuActive, treeList, addField, onInput, contentEl, onClick, loadFieldRelations, onKeyDown };
 
 		function onInput() {
 			if (!contentEl.value) return;
@@ -167,7 +167,7 @@ export default defineComponent({
 		function addField(fieldKey: string) {
 			if (!contentEl.value) return;
 
-			const field = findTree(tree.value, fieldKey.split('.'));
+			const field = findTree(treeList.value, fieldKey.split('.'));
 
 			if (!field) return;
 
@@ -277,11 +277,11 @@ export default defineComponent({
 							return `<span class="text">${part}</span>`;
 						}
 						const fieldKey = part.replace(/({|})/g, '').trim();
-						const field = findTree(tree.value, fieldKey.split('.'));
+						const field = findTree(treeList.value, fieldKey.split('.'));
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${fieldKey}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}" disabled="${props.disabled}">${field.name}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;
@@ -323,7 +323,7 @@ export default defineComponent({
 	user-select: none;
 }
 
-:deep(button:hover) {
+:deep(button:not(:disabled):hover) {
 	color: var(--white);
 	background-color: var(--danger);
 }

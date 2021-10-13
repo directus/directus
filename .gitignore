@@ -14,7 +14,8 @@ dist
 .nyc_output
 .history
 /.idea/
-app/public/img/docs/*
 *.tsbuildinfo
 .e2e-containers.json
 coverage
+schema.yaml
+schema.json

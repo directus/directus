@@ -123,7 +123,7 @@ export default defineComponent({
 			default: false,
 		},
 		group: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 		badge: {
@@ -280,7 +280,7 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.id)));
+			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.field)));
 
 			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
 
@@ -294,14 +294,14 @@ export default defineComponent({
 				);
 			}
 
-			function getFieldsForGroup(group: null | number): Field[] {
+			function getFieldsForGroup(group: null | string): Field[] {
 				const fieldsInGroup: Field[] = fieldsParsed.value.filter(
 					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
 				);
 
 				for (const field of fieldsInGroup) {
 					if (field.meta?.special?.includes('group')) {
-						fieldsInGroup.push(...getFieldsForGroup(field.meta!.id));
+						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field));
 					}
 				}
 

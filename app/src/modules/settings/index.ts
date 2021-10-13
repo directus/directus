@@ -177,6 +177,4 @@ export default defineModule({
 	preRegisterCheck: (user) => {
 		return user.role.admin_access === true;
 	},
-	order: Infinity,
-	persistent: true,
 });

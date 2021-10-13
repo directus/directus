@@ -49,7 +49,7 @@
 <script lang="ts">
 import LanguageSelect from './language-select.vue';
 import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } from 'vue';
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { useFieldsStore, useRelationsStore, useUserStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
@@ -89,6 +89,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
+		const userStore = useUserStore();
 
 		const { width } = useWindowSize();
 
@@ -245,7 +246,12 @@ export default defineComponent({
 					languages.value = response.data.data;
 
 					if (!firstLang.value) {
-						firstLang.value = response.data.data?.[0]?.[languagesPrimaryKeyField.value.field];
+						const languages = response.data.data;
+						const userLang = languages?.find(
+							(lang) => lang[languagesPrimaryKeyField.value] === userStore.currentUser.language
+						)?.[languagesPrimaryKeyField.value];
+
+						firstLang.value = userLang ?? languages?.[0]?.[languagesPrimaryKeyField.value];
 					}
 
 					if (!secondLang.value) {

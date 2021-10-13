@@ -19,6 +19,8 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Predefinito
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
@@ -28,6 +30,7 @@ tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
+item_creation: Creazione elemento
 item_revision: Revisione elemento
 enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
@@ -149,6 +152,7 @@ fields_for_role: 'Campi che il ruolo {role} può {action}.'
 validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
+revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
@@ -284,6 +288,7 @@ revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 private_user: Utenti privati
+creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
 updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
@@ -546,10 +551,10 @@ advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
 change_advanced_filter_operator: Cambia Operatore
 operators:
-  eq: Uguale
-  neq: Non è uguale
-  lt: Meno di
-  gt: Più grande di
+  eq: Uguale a
+  neq: Diverso da
+  lt: Minore di
+  gt: Maggiore di
   lte: Minore o uguale a
   gte: Maggiore o uguale a
   in: È uno di
@@ -562,8 +567,8 @@ operators:
   nstarts_with: Non inizia con
   ends_with: Finisce con
   nends_with: Non finisce con
-  between: È compresa tra
-  nbetween: Non è compresa tra
+  between: È compreso tra
+  nbetween: Non è compreso tra
   empty: È vuoto
   nempty: Non è vuoto
   all: Contiene queste chiavi
@@ -616,7 +621,7 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
-create: Creazione
+create: Creare
 on_create: Alla creazione
 on_update: Alla modifica
 read: Lettura
@@ -831,6 +836,7 @@ fields:
     collection: Raccolta
     icon: Icona
     note: Nota
+    color: Colore
     display_template: Display Template
     hidden: Nascosto
     singleton: Singleton
@@ -898,6 +904,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Mappe base
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Stile Mapbox
@@ -968,6 +975,7 @@ field_options:
     transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
     mapbox_key: Access Token di Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Mappe base
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Stile Mapbox
@@ -975,7 +983,7 @@ field_options:
     overrides_divider_title: Personalizzazioni App
   directus_activity:
     login: Accedi
-    create: Creazione
+    create: Creare
     update: Modifica
     delete: Cancellazione
   directus_collections:
@@ -1041,7 +1049,7 @@ field_options:
     status_options_inactive: Disattivato
     data_label: Invia dati evento
     triggers_divider: Trigger
-    actions_create: Creazione
+    actions_create: Creare
     actions_update: Modifica
     actions_delete: Cancellazione
     actions_login: Accedi
@@ -1076,7 +1084,7 @@ delete_field_are_you_sure: >-
   Sei sicuro di voler cancellare il campo "{field}"? Questa azione non può essere annullata.
 description: Descrizione
 done: Fatto
-duplicate: Duplicare
+duplicate: Duplica
 limit: Limite
 email: E-mail
 embed: Embed
@@ -1126,9 +1134,23 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
+  filter:
+    name: Filtro
+    description: Configura un oggetto filtro.
+    add_filter: Aggiungi Filtro
+    add_group: Gruppo And / Or
+    add_value: Aggiungi valore
+    all: Tutti
+    any: Qualsiasi
+    and: e
+    of_the_following: dei seguenti
+    no_rules: Nessuna regola configurata
+    change_value: Clicca per cambiare il valore
+    placeholder: Trascina qui le regole
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion

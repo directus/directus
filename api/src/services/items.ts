@@ -6,22 +6,11 @@ import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import logger from '../logger';
-import { Accountability } from '@directus/shared/types';
-import {
-	AbstractService,
-	AbstractServiceOptions,
-	Action,
-	Item as AnyItem,
-	PermissionsAction,
-	PrimaryKey,
-	Query,
-	SchemaOverview,
-} from '../types';
+import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
+import { AbstractService, AbstractServiceOptions, Action, Item as AnyItem, PrimaryKey, SchemaOverview } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
 
@@ -64,6 +53,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.cache = getCache().cache;
 
 		return this;
+	}
+
+	async getKeysByQuery(query: Query): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const readQuery = cloneDeep(query);
+		readQuery.fields = [primaryKeyField];
+
+		// Allow unauthenticated access
+		const itemsService = new ItemsService(this.collection, {
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		// We read the IDs of the items based on the query, and then run `updateMany`. `updateMany` does it's own
+		// permissions check for the keys, so we don't have to make this an authenticated read
+		const items = await itemsService.readByQuery(readQuery);
+		return items.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 	}
 
 	/**
@@ -230,7 +236,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 
 			for (const payload of data) {
-				const primaryKey = await service.createOne(payload, { autoPurgeCache: false });
+				const primaryKey = await service.createOne(payload, { ...(opts || {}), autoPurgeCache: false });
 				primaryKeys.push(primaryKey);
 			}
 
@@ -349,24 +355,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update multiple items by query
 	 */
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-		const readQuery = cloneDeep(query);
-		readQuery.fields = [primaryKeyField];
-
-		// Not authenticated:
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		// We read the IDs of the items based on the query, and then run `updateMany`. `updateMany` does it's own
-		// permissions check for the keys, so we don't have to make this an authenticated read
-		const itemsToUpdate = await itemsService.readByQuery(readQuery);
-		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
-
-		if (keys.length === 0) return [];
-
-		return await this.updateMany(keys, data, opts);
+		const keys = await this.getKeysByQuery(query);
+		return keys.length ? await this.updateMany(keys, data, opts) : [];
 	}
 
 	/**
@@ -378,7 +368,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Update many items by query
+	 * Update many items by primary key
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
@@ -597,22 +587,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Delete multiple items by query
 	 */
 	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-		const readQuery = cloneDeep(query);
-		readQuery.fields = [primaryKeyField];
-
-		// Not authenticated:
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const itemsToDelete = await itemsService.readByQuery(readQuery);
-		const keys: PrimaryKey[] = itemsToDelete.map((item: AnyItem) => item[primaryKeyField]);
-
-		if (keys.length === 0) return [];
-
-		return await this.deleteMany(keys, opts);
+		const keys = await this.getKeysByQuery(query);
+		return keys.length ? await this.deleteMany(keys, opts) : [];
 	}
 
 	/**
@@ -740,118 +716,5 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		return await this.createOne(data, opts);
-	}
-
-	/**
-	 * @deprecated Use createOne or createMany instead
-	 */
-	async create(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
-		);
-
-		if (Array.isArray(data)) return this.createMany(data, opts);
-		return this.createOne(data, opts);
-	}
-
-	/**
-	 * @deprecated Use `readOne` or `readMany` instead
-	 */
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
-		logger.warn(
-			'ItemsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
-		);
-
-		if (Array.isArray(key)) {
-			return this.readMany(key, query, { permissionsAction: action });
-		} else {
-			return this.readOne(key, query, { permissionsAction: action });
-		}
-	}
-
-	/**
-	 * @deprecated Use `updateOne` or `updateMany` instead
-	 */
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
-		key?: PrimaryKey | PrimaryKey[]
-	): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.update is deprecated and will be removed before v9.0.0. Use updateOne or updateMany instead.'
-		);
-
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-
-		if (key) {
-			data = Array.isArray(data) ? data[0] : data;
-			if (Array.isArray(key)) return await this.updateMany(key, data);
-			else return await this.updateOne(key, data);
-		}
-
-		const keys: PrimaryKey[] = [];
-
-		await this.knex.transaction(async (trx) => {
-			const itemsService = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			const payloads = toArray(data);
-
-			for (const single of payloads as Partial<Item>[]) {
-				const payload = clone(single);
-				const key = payload[primaryKeyField];
-
-				if (!key) {
-					throw new InvalidPayloadException('Primary key is missing in update payload.');
-				}
-
-				keys.push(key);
-
-				await itemsService.updateOne(key, payload);
-			}
-		});
-
-		return keys;
-	}
-
-	/**
-	 * @deprecated Use `upsertOne` or `upsertMany` instead
-	 */
-	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	upsert(data: Partial<Item>): Promise<PrimaryKey>;
-	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.upsert is deprecated and will be removed before v9.0.0. Use upsertOne or upsertMany instead.'
-		);
-
-		if (Array.isArray(data)) return await this.upsertMany(data);
-		return await this.upsertOne(data);
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
-		);
-
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		else return await this.deleteOne(key);
 	}
 }

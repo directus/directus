@@ -1,18 +1,13 @@
 import Joi from 'joi';
 import { isPlainObject } from 'lodash';
 import { InvalidQueryException } from '../exceptions';
-import { Query } from '../types';
+import { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
 	group: Joi.array().items(Joi.string()),
-	sort: Joi.array().items(
-		Joi.object({
-			column: Joi.string(),
-			order: Joi.string().valid('asc', 'desc'),
-		})
-	),
+	sort: Joi.array().items(Joi.string()),
 	filter: Joi.object({}).unknown(),
 	limit: Joi.number(),
 	offset: Joi.number(),

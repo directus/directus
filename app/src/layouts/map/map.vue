@@ -14,7 +14,7 @@
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
-			@fitdata="clearLocationFilter"
+			@fitdata="fitGeoJSONBounds"
 		/>
 
 		<v-button
@@ -47,20 +47,17 @@
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 			<v-info
-				v-else-if="itemCount === 0 && (searchQuery || activeFilterCount > 0 || !locationFilterOutdated)"
+				v-else-if="!loading && !itemCount && !locationFilterOutdated && (search || filter || locationFilter)"
 				icon="search"
 				center
-				:title="t('no_results_here')"
+				:title="t('layouts.map.no_results_here')"
 			>
 				<template #append>
 					<v-card-actions>
-						<v-button
-							:disabled="!searchQuery && !filters.filter((f) => f.key !== 'location-filter').length"
-							@click="clearDataFilters"
-						>
-							{{ t('clear_data_filters') }}
+						<v-button :disabled="!search && !filter" @click="clearDataFilters">
+							{{ t('layouts.map.clear_data_filter') }}
 						</v-button>
-						<v-button :disabled="locationFilterOutdated" @click="clearLocationFilter">
+						<v-button :disabled="!locationFilter" @click="clearLocationFilter">
 							{{ t('layouts.map.clear_location_filter') }}
 						</v-button>
 					</v-card-actions>
@@ -128,7 +125,7 @@ export default defineComponent({
 			type: Array as PropType<Item[]>,
 			default: () => [],
 		},
-		searchQuery: {
+		search: {
 			type: String as PropType<string | null>,
 			default: null,
 		},
@@ -192,10 +189,6 @@ export default defineComponent({
 			type: Number,
 			default: null,
 		},
-		activeFilterCount: {
-			type: Number,
-			required: true,
-		},
 		totalPages: {
 			type: Number,
 			required: true,
@@ -212,16 +205,16 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			required: true,
-		},
 		autoLocationFilter: {
 			type: Boolean,
 			default: undefined,
 		},
 		locationFilterOutdated: {
 			type: Boolean,
+			required: true,
+		},
+		fitGeoJSONBounds: {
+			type: Function as PropType<() => void>,
 			required: true,
 		},
 		updateLocationFilter: {
@@ -240,8 +233,16 @@ export default defineComponent({
 			type: Boolean,
 			required: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
+		locationFilter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
-	emits: ['update:cameraOptions', 'update:limit'],
+	emits: ['update:cameraOptions', 'update:limit', 'update:locationFilterOutdated'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 

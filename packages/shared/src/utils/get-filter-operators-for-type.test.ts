@@ -1,4 +1,4 @@
-import { getFilterOperatorsForType } from '.';
+import { getFilterOperatorsForType } from './get-filter-operators-for-type';
 import { TYPES } from '../constants/fields';
 
 describe('', () => {
@@ -54,12 +54,8 @@ describe('', () => {
 			'lte',
 			'gt',
 			'gte',
-			'contains',
-			'ncontains',
 			'between',
 			'nbetween',
-			'empty',
-			'nempty',
 			'null',
 			'nnull',
 			'in',
@@ -85,7 +81,7 @@ describe('', () => {
 	});
 
 	it('returns the filter operators for json', () => {
-		expect(getFilterOperatorsForType(TYPES[8])).toStrictEqual(['eq', 'neq', 'null', 'nnull', 'in', 'nin']);
+		expect(getFilterOperatorsForType(TYPES[8])).toStrictEqual(['null', 'nnull']);
 	});
 
 	it('returns the filter operators for binary', () => {
@@ -100,6 +96,8 @@ describe('', () => {
 			'neq',
 			'empty',
 			'nempty',
+			'null',
+			'nnull',
 			'in',
 			'nin',
 		]);
@@ -107,8 +105,8 @@ describe('', () => {
 
 	it('returns the filter operators for geometry', () => {
 		expect(getFilterOperatorsForType(TYPES[17])).toStrictEqual([
-			'eq',
-			'neq',
+			'null',
+			'nnull',
 			'intersects',
 			'nintersects',
 			'intersects_bbox',
