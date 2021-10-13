@@ -61,7 +61,7 @@
 		"stylelint-order": "4.1.0",
 		"stylelint-scss": "3.21.0",
 		"supertest": "6.1.6",
-		"tedious": "13.1.0",
+		"tedious": "13.0.0",
 		"ts-jest": "27.0.5",
 		"ts-node": "10.3.0"
 	},
