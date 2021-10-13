@@ -10,7 +10,7 @@
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<span class="collection-name">{{ collection.name }}</span>
+				<span>{{ collection.name }}</span>
 			</div>
 			<collection-options :collection="collection" />
 		</v-list-item>
@@ -103,7 +103,10 @@ export default defineComponent({
 }
 
 .collection-name {
+	display: flex;
 	flex-grow: 1;
+	align-items: center;
+	height: 100%;
 	font-family: var(--family-monospace);
 }
 
