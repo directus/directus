@@ -6,13 +6,11 @@ import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import logger from '../logger';
 import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
 import { AbstractService, AbstractServiceOptions, Action, Item as AnyItem, PrimaryKey, SchemaOverview } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
 

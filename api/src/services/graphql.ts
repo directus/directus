@@ -879,6 +879,13 @@ export class GraphQLService {
 					type: [AggregatedFunctions[collection.collection]],
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
+						filter: ReadableCollectionFilterTypes[collection.collection],
+						search: {
+							type: GraphQLString,
+						},
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);

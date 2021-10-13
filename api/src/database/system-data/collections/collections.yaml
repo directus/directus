@@ -58,4 +58,6 @@ data:
   - collection: directus_webhooks
     note: $t:directus_collection.directus_webhooks
   - collection: directus_dashboards
+    note: $t:directus_collection.directus_dashboards
   - collection: directus_panels
+    note: $t:directus_collection.directus_panels

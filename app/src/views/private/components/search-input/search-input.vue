@@ -123,8 +123,9 @@ export default defineComponent({
 			filterBorder,
 		};
 
-		function onClickOutside(e: { path: HTMLElement[] }) {
-			if (e.path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
+		function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
+			const path = e.path || e.composedPath!();
+			if (path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
 
 			return true;
 		}

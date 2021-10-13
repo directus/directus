@@ -134,7 +134,6 @@ export default defineComponent({
 			emitValue,
 			stageSelection,
 			selectDrawer,
-			selectionFilters,
 			addNewActive,
 			addNew,
 		};
