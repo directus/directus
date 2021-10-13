@@ -1225,6 +1225,8 @@ interfaces:
     start_open: Comença obert
     start_closed: Comená tancat
 displays:
+  translations:
+    translations: Traduccions
   boolean:
     boolean: Boolean
     description: Mostra els estats Activat i desactivat
