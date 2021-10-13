@@ -35,7 +35,7 @@
 				</template>
 			</v-info>
 
-			<v-list v-else>
+			<v-list v-else class="draggable-list">
 				<draggable
 					:force-fallback="true"
 					:model-value="rootCollections"
@@ -260,14 +260,14 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 }
 
-:deep(.sortable-ghost) {
+.draggable-list :deep(.sortable-ghost) {
 	.v-list-item {
 		--v-list-item-background-color: var(--primary-alt);
 		--v-list-item-border-color: var(--primary);
 		--v-list-item-background-color-hover: var(--primary-alt);
 		--v-list-item-border-color-hover: var(--primary);
 
-		* {
+		> * {
 			opacity: 0;
 		}
 	}
