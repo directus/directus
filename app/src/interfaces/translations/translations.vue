@@ -52,12 +52,12 @@ import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } f
 import { useFieldsStore, useRelationsStore, useUserStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
-import { Relation } from '@directus/shared/types';
 import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { cloneDeep, isEqual, assign } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
 import { useWindowSize } from '@/composables/use-window-size';
+import useRelation from '@/composables/use-m2m';
 
 export default defineComponent({
 	components: { LanguageSelect },
@@ -85,7 +85,7 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
-		const { collection } = toRefs(props);
+		const { collection, field } = toRefs(props);
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
@@ -108,15 +108,18 @@ export default defineComponent({
 		});
 
 		const {
-			relationsForField,
-			translationsRelation,
-			translationsCollection,
-			translationsPrimaryKeyField,
-			languagesRelation,
-			languagesCollection,
-			languagesPrimaryKeyField,
-			translationsLanguageField,
-		} = useRelations();
+			junction: translationsRelation,
+			junctionCollection: translationsCollection,
+			junctionPrimaryKeyField: translationsPrimaryKeyField,
+			relation: languagesRelation,
+			relationCollection: languagesCollection,
+			relationPrimaryKeyField: languagesPrimaryKeyField,
+		} = useRelation(collection, field);
+
+		const translationsLanguageField = computed(() => {
+			if (!languagesRelation.value) return null;
+			return languagesRelation.value.field;
+		});
 
 		const { languageOptions, loading: languagesLoading } = useLanguages();
 		const {
@@ -131,7 +134,7 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (translationsCollection.value === null) return [];
-			return fieldsStore.getFieldsForCollection(translationsCollection.value);
+			return fieldsStore.getFieldsForCollection(translationsCollection.value.collection);
 		});
 
 		const splitViewAvailable = computed(() => {
@@ -150,7 +153,6 @@ export default defineComponent({
 			t,
 			languageOptions,
 			fields,
-			relationsForField,
 			translationsRelation,
 			translationsCollection,
 			translationsPrimaryKeyField,
@@ -170,63 +172,6 @@ export default defineComponent({
 			languagesLoading,
 			valuesLoading,
 		};
-
-		function useRelations() {
-			const relationsForField = computed<Relation[]>(() => {
-				return relationsStore.getRelationsForField(props.collection, props.field);
-			});
-
-			const translationsRelation = computed(() => {
-				if (!relationsForField.value) return null;
-				return (
-					relationsForField.value.find(
-						(relation: Relation) =>
-							relation.related_collection === props.collection && relation.meta?.one_field === props.field
-					) || null
-				);
-			});
-
-			const translationsCollection = computed(() => {
-				if (!translationsRelation.value) return null;
-				return translationsRelation.value.collection;
-			});
-
-			const translationsPrimaryKeyField = computed<string | null>(() => {
-				if (!translationsRelation.value) return null;
-				return fieldsStore.getPrimaryKeyFieldForCollection(translationsRelation.value.collection).field;
-			});
-
-			const languagesRelation = computed(() => {
-				if (!relationsForField.value) return null;
-				return relationsForField.value.find((relation: Relation) => relation !== translationsRelation.value) || null;
-			});
-
-			const languagesCollection = computed(() => {
-				if (!languagesRelation.value) return null;
-				return languagesRelation.value.related_collection;
-			});
-
-			const languagesPrimaryKeyField = computed<string | null>(() => {
-				if (!languagesRelation.value || !languagesRelation.value.related_collection) return null;
-				return fieldsStore.getPrimaryKeyFieldForCollection(languagesRelation.value.related_collection).field;
-			});
-
-			const translationsLanguageField = computed(() => {
-				if (!languagesRelation.value) return null;
-				return languagesRelation.value.field;
-			});
-
-			return {
-				relationsForField,
-				translationsRelation,
-				translationsCollection,
-				translationsPrimaryKeyField,
-				languagesRelation,
-				languagesCollection,
-				languagesPrimaryKeyField,
-				translationsLanguageField,
-			};
-		}
 
 		function useLanguages() {
 			const languages = ref<Record<string, any>[]>([]);
@@ -249,7 +194,7 @@ export default defineComponent({
 				return languages.value.map((language) => {
 					if (languagesPrimaryKeyField.value === null) return language;
 
-					const langCode = language[languagesPrimaryKeyField.value];
+					const langCode = language[languagesPrimaryKeyField.value.field];
 
 					const initialValue = items.value.find((item) => item[langField] === langCode) ?? {};
 
@@ -264,10 +209,10 @@ export default defineComponent({
 					}).length;
 
 					return {
-						text: language[props.languageField ?? languagesPrimaryKeyField.value],
+						text: language[props.languageField ?? languagesPrimaryKeyField.value.field],
 						value: langCode,
 						edited: edits !== undefined,
-						progress: (filledFields / totalFields) * 100,
+						progress: Math.round((filledFields / totalFields) * 100),
 						max: totalFields,
 						current: filledFields,
 					};
@@ -285,12 +230,12 @@ export default defineComponent({
 					fields.add(props.languageField);
 				}
 
-				fields.add(languagesPrimaryKeyField.value);
+				fields.add(languagesPrimaryKeyField.value.field);
 
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${languagesCollection.value}`, {
+					const response = await api.get<any>(`/items/${languagesCollection.value.collection}`, {
 						params: {
 							fields: Array.from(fields),
 							limit: -1,
@@ -301,16 +246,15 @@ export default defineComponent({
 					languages.value = response.data.data;
 
 					if (!firstLang.value) {
-						const languages = response.data.data;
-						const userLang = languages?.find(
+						const userLang = response.data.data?.find(
 							(lang) => lang[languagesPrimaryKeyField.value] === userStore.currentUser.language
 						)?.[languagesPrimaryKeyField.value];
 
-						firstLang.value = userLang ?? languages?.[0]?.[languagesPrimaryKeyField.value];
+						firstLang.value = userLang || response.data.data?.[0]?.[languagesPrimaryKeyField.value.field];
 					}
 
 					if (!secondLang.value) {
-						secondLang.value = response.data.data?.[1]?.[languagesPrimaryKeyField.value];
+						secondLang.value = response.data.data?.[1]?.[languagesPrimaryKeyField.value.field];
 					}
 				} catch (err: any) {
 					unexpectedError(err);
@@ -350,9 +294,9 @@ export default defineComponent({
 			);
 
 			const value = computed(() => {
-				const pkField = translationsPrimaryKeyField.value;
+				const pkField = translationsPrimaryKeyField.value?.field;
 
-				if (pkField === null) return [];
+				if (!pkField) return [];
 
 				const value = [...items.value.map((item) => item[pkField])] as (number | string | Record<string, any>)[];
 
@@ -398,7 +342,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${translationsCollection.value}`, {
+					const response = await api.get(`/items/${translationsCollection.value.collection}`, {
 						params: {
 							fields: '*',
 							limit: -1,
@@ -420,14 +364,14 @@ export default defineComponent({
 			}
 
 			function updateValue(edits: Record<string, any>, lang: string) {
-				const pkField = translationsPrimaryKeyField.value;
+				const pkField = translationsPrimaryKeyField.value?.field;
 				const langField = translationsLanguageField.value;
 
 				const existing = getExistingValue(lang);
 
 				const values = assign({}, existing, edits);
 
-				if (pkField === null || langField === null) return;
+				if (!pkField || !langField) return;
 
 				let copyValue = cloneDeep(value.value ?? []);
 

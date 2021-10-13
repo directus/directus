@@ -20,6 +20,8 @@ type UsableRelation = {
 	relationInfo: ComputedRef<RelationInfo>;
 	junctionPrimaryKeyField: ComputedRef<Field | null>;
 	relationPrimaryKeyField: ComputedRef<Field | null>;
+	junctionFields: ComputedRef<Field[]>;
+	relationFields: ComputedRef<Field[]>;
 };
 
 export default function useRelation(collection: Ref<string>, field: Ref<string>): UsableRelation {
@@ -53,8 +55,12 @@ export default function useRelation(collection: Ref<string>, field: Ref<string>)
 		return collectionsStore.getCollection(relation.value.related_collection!)!;
 	});
 
-	const { primaryKeyField: junctionPrimaryKeyField } = useCollection(junctionCollection.value.collection);
-	const { primaryKeyField: relationPrimaryKeyField } = useCollection(relationCollection.value.collection);
+	const { primaryKeyField: junctionPrimaryKeyField, fields: junctionFields } = useCollection(
+		junctionCollection.value.collection
+	);
+	const { primaryKeyField: relationPrimaryKeyField, fields: relationFields } = useCollection(
+		relationCollection.value.collection
+	);
 
 	const relationInfo = computed(() => {
 		return {
@@ -75,5 +81,7 @@ export default function useRelation(collection: Ref<string>, field: Ref<string>)
 		relationInfo,
 		junctionPrimaryKeyField,
 		relationPrimaryKeyField,
+		junctionFields,
+		relationFields,
 	};
 }
