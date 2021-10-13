@@ -1348,7 +1348,6 @@ interfaces:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
     toggle_split_view: Osztott nézet váltása
-    language_field: Nyelv mező
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
     recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
@@ -1384,6 +1383,8 @@ interfaces:
     start_open: Indíts nyitva!
     start_closed: Indíts zárva!
 displays:
+  translations:
+    translations: Fordítások
   boolean:
     boolean: Logikai
     description: Be- és kikapcsolt állapotok megjelenítése
