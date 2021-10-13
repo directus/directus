@@ -1091,6 +1091,8 @@ interfaces:
     trigger: Laukaisija
     rate: Rajoita
 displays:
+  translations:
+    translations: Käännökset
   boolean:
     boolean: Totuusarvo
     description: Näytä päällä- ja pois-tilat
