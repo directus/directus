@@ -905,6 +905,8 @@ interfaces:
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
 displays:
+  translations:
+    translations: Vertimai
   boolean:
     boolean: Loginis
     description: Rodyti įjungimo/išjungimo būsenas
