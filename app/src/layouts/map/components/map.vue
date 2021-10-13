@@ -177,9 +177,9 @@ export default defineComponent({
 		}
 
 		function fitBounds() {
-			const bbox = props.data.bbox as LngLatBoundsLike;
+			const bbox = props.data.bbox?.map((x) => x % 90);
 			if (map && bbox) {
-				map.fitBounds(bbox, {
+				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 100,
 					speed: 1.3,
 					maxZoom: 14,

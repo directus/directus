@@ -59,7 +59,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { size, icon, imageSource, title, subtitle, imageFit } = useLayoutOptions();
 		const { sort, limit, page, fields } = useLayoutQuery();
-		watch([collection, search, limit, sort], () => (page.value = 1));
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
 			sort,
@@ -143,10 +142,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function toPage(newPage: number) {
 			page.value = newPage;
-			mainElement.value?.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
 		}
 
 		function useLayoutOptions() {
@@ -179,6 +174,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
 			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort.value);
+
+			watch(
+				() => page.value,
+				() => {
+					mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' });
+				}
+			);
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value || !props.collection) return [];
