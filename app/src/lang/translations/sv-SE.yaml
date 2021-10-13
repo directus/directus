@@ -946,6 +946,8 @@ interfaces:
       dropdown: Rullgardinsmeny
       modal: Popup
 displays:
+  translations:
+    translations: Översättningar
   boolean:
     boolean: Boolean
     description: Visa på och av lägen
