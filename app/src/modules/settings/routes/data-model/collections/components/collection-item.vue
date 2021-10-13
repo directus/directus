@@ -86,7 +86,7 @@ export default defineComponent({
 				case 'closed':
 					return 'folder';
 				case 'locked':
-					return 'lock';
+					return 'folder_lock';
 			}
 
 			return undefined;
