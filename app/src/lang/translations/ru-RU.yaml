@@ -1357,7 +1357,6 @@ interfaces:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
     toggle_split_view: Переключить Раздельный Вид
-    language_field: Поле Языка
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Дерево можно выбрать для рекурсивных отношений
@@ -1394,6 +1393,8 @@ interfaces:
     start_open: Раскрыта
     start_closed: Свёрнута
 displays:
+  translations:
+    translations: Переводы
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл
