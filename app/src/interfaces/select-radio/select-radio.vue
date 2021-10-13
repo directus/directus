@@ -49,6 +49,10 @@ type Option = {
 
 export default defineComponent({
 	props: {
+		type: {
+			type: String as PropType<'string' | 'bigInteger' | 'integer' | 'float' | 'decimal'>,
+			default: null,
+		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -83,7 +87,7 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup(props, { emit, attrs }) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const { choices, value } = toRefs(props);
@@ -107,10 +111,10 @@ export default defineComponent({
 			return 'grid-1';
 		});
 
-		const valueType = ['bigInteger', 'integer', 'float', 'decimal'].includes(attrs.type) ? 'number' : 'text';
+		const valueType = ['bigInteger', 'integer', 'float', 'decimal'].includes(props.type) ? 'number' : 'text';
 
 		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, (value) => {
-			emit('input', valueType === 'number' ? parseInt(value, 10) || null : value);
+			emit('input', valueType === 'number' ? (!value || isNaN(Number(value)) ? null : Number(value)) : value);
 		});
 
 		const customIcon = computed(() => {

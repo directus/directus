@@ -34,7 +34,9 @@ export function useCustomSelection(
 		// Check if set value is one of the existing keys
 		const values = items.value.map((item) => item.value);
 		return (
-			currentValue.value !== null && currentValue.value.length > 0 && values.includes(currentValue.value) === false
+			currentValue.value !== null &&
+			currentValue.value.toString().length > 0 &&
+			values.includes(currentValue.value) === false
 		);
 	});
 

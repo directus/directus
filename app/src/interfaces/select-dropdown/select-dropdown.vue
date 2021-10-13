@@ -31,6 +31,10 @@ type Option = {
 
 export default defineComponent({
 	props: {
+		type: {
+			type: String as PropType<'string' | 'bigInteger' | 'integer' | 'float' | 'decimal'>,
+			default: null,
+		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -61,18 +65,14 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup(props, { emit, attrs }) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
-		const valueType = ['bigInteger', 'integer', 'float', 'decimal'].includes(attrs.type) ? 'number' : 'text';
+		const valueType = ['bigInteger', 'integer', 'float', 'decimal'].includes(props.type) ? 'number' : 'text';
 
 		return { t, emitter };
 
 		function emitter(value) {
-			if (valueType === 'number') {
-				emit('input', parseInt(value, 10) || null);
-			} else {
-				emit('input', value);
-			}
+			emit('input', valueType === 'number' ? (!value || isNaN(Number(value)) ? null : Number(value)) : value);
 		}
 	},
 });
