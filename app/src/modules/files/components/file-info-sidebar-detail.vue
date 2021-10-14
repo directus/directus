@@ -129,7 +129,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
-import bytes from 'bytes';
+import formatFilesize from '@/utils/format-filesize';
 import localizedFormat from '@/utils/localized-format';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -154,7 +154,7 @@ export default defineComponent({
 			if (!props.file) return null;
 			if (!props.file.filesize) return null;
 
-			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: locale.value.split('-')[0] }
+			return formatFilesize(props.file.filesize); // { locale: locale.value.split('-')[0] }
 		});
 
 		const { creationDate, modificationDate } = useDates();
