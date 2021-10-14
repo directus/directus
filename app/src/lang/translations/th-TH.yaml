@@ -399,6 +399,9 @@ copy: คัดลอก
 inactive: ไม่ใช้งาน
 users: ผู้ใช้
 activity: กิจกรรม
+action: ดำเนินการ
+ip_address: หมายเลขไอพี
+user_agent: ตัวแทนของผู้ใช้
 webhooks: Webhooks
 field_width: ความกว้างของฟิลด์
 add_filter: เพิ่มตัวกรอง
@@ -846,8 +849,10 @@ field_options:
     collection_setup: การตั้งค่าคอลเลกชัน
     singleton: ทำเสมือนว่ามีออปเจ็คเดียว
     language: ภาษา
+    translation: แปลภาษา
+    collection_name: ชื่อคอลเลกชัน
     archive_divider: เก็บถาวร
-    divider: เรียง
+    sort_divider: เรียง
   directus_roles:
     fields:
       icon_name: ไอคอน
