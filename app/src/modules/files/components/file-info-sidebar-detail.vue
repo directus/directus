@@ -154,7 +154,7 @@ export default defineComponent({
 			if (!props.file) return null;
 			if (!props.file.filesize) return null;
 
-			return formatFilesize(props.file.filesize, false); // { locale: locale.value.split('-')[0] }
+			return formatFilesize(props.file.filesize); // { locale: locale.value.split('-')[0] }
 		});
 
 		const { creationDate, modificationDate } = useDates();

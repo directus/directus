@@ -6,7 +6,7 @@ export default defineDisplay({
 	name: '$t:displays.filesize.filesize',
 	description: '$t:displays.filesize.description',
 	icon: 'description',
-	component: ({ value }: { value: number }) => formatFilesize(value, false),
+	component: ({ value }: { value: number }) => formatFilesize(value),
 	options: [],
 	types: ['integer'],
 });
