@@ -62,7 +62,7 @@
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",
 		"rollup-plugin-typescript2": "0.30.0",
-		"ts-jest": "27.0.5",
+		"ts-jest": "27.0.6",
 		"ts-node": "10.3.0",
 		"typescript": "4.4.4"
 	},
