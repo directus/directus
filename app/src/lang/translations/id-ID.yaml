@@ -374,6 +374,9 @@ no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini un
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
+action: Aksi
+ip_address: Alamat IP
+user_agent: Agen pengguna
 webhooks: Webhooks
 field_width: Lebar Bidang
 add_filter: Tambah Filter
@@ -564,7 +567,7 @@ field_options:
   directus_collections:
     language: Bahasa
     archive_divider: Arsip
-    divider: Sortir
+    sort_divider: Sortir
   directus_roles:
     fields:
       icon_name: Ikon
