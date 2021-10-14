@@ -435,6 +435,9 @@ no_other_dashboards_copy: Non hai altre bacheche per ora.
 inactive: Disattivato
 users: Utenti
 activity: Attività
+action: Azioni
+ip_address: Indirizzo IP
+user_agent: User agent
 webhooks: Webhooks
 decimals: Decimali
 value_decimals: Valore decimali
@@ -999,13 +1002,14 @@ field_options:
     hidden_label: Nascondi nell'app
     singleton: Tratta come oggetto singolo
     language: Lingua
-    translation: Inserisci una traduzione...
+    translation: Traduzione
+    collection_name: Nome della Raccolta
     archive_divider: Archivio
-    archive_field: Scegli un campo...
+    archive_field_placeholder: Scegli un campo...
     archive_app_filter: Abilita filtro archiviati in app
     archive_value: Valore impostato all'archiviazione...
     unarchive_value: Valore impostato al ripristino...
-    divider: Ordinamento
+    sort_divider: Ordinamento
     sort_field: Scegli un campo...
     accountability_divider: Autorizzazioni
   directus_files:
