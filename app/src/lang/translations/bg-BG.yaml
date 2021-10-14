@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Минути
+hours: Часа
 month: Месец
 year: Година
 select_all: Избиране на всичко
