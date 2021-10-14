@@ -435,6 +435,9 @@ no_other_dashboards_copy: Nie masz jeszcze żadnych innych Panelów.
 inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
+action: Czynność
+ip_address: Adres IP
+user_agent: User agent
 webhooks: Webhooki
 decimals: Dziesiętne
 value_decimals: Wartość dziesiętna
@@ -997,13 +1000,14 @@ field_options:
     hidden_label: Ukryj w aplikacji
     singleton: Traktuj jako pojedynczy obiekt
     language: Język
-    translation: Wprowadź tłumaczenie...
+    translation: Tłumaczenia
+    collection_name: Nazwa kolekcji
     archive_divider: Archiwum
-    archive_field: Wybierz pole...
+    archive_field_placeholder: Wybierz pole...
     archive_app_filter: Włącz filtr archiwum aplikacji
     archive_value: Wartość ustawiona podczas archiwizacji...
     unarchive_value: Wartość ustawiona podczas usuwania archiwizacji...
-    divider: Sortuj
+    sort_divider: Sortuj
     sort_field: Wybierz pole...
     accountability_divider: Odpowiedzialność
   directus_files:
