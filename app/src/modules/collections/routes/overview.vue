@@ -46,7 +46,8 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
+import { HeaderRaw } from '@/components/v-table/types';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import useNavigation, { NavItem } from '../composables/use-navigation';
@@ -67,7 +68,7 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 
-		const tableHeaders = [
+		const tableHeaders = ref<HeaderRaw[]>([
 			{
 				text: '',
 				value: 'icon',
@@ -84,7 +85,7 @@ export default defineComponent({
 				value: 'note',
 				width: 360,
 			},
-		];
+		]);
 
 		const { navItems } = useNavigation();
 
