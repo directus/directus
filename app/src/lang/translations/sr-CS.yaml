@@ -375,6 +375,9 @@ active: Aktivan
 copy: Kopiraj
 users: Korisnici
 activity: Aktivnost
+action: Akcija
+ip_address: IP adresa
+user_agent: Korisnički Agent
 webhooks: Webhooks
 field_width: Širina Polja
 add_filter: Dodaj Filter
@@ -805,8 +808,10 @@ field_options:
     collection_setup: Podešavanje Kolekcije
     singleton: Tretiraj kao jedinstven objekat
     language: Jezik
+    translation: Prevodi
+    collection_name: Ime Kolekcije
     archive_divider: Arhiviraj
-    divider: Sortiranje
+    sort_divider: Sortiranje
   directus_roles:
     fields:
       icon_name: Ikonica
