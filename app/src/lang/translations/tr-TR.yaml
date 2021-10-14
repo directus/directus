@@ -360,6 +360,9 @@ active: Aktif
 copy: Kopyala
 users: Kullanıcılar
 activity: Aktivite
+action: İşlem
+ip_address: IP Adresi
+user_agent: Kullanıcı Aracısı
 webhooks: Ağ Kancaları
 field_width: Alan Genişliği
 add_filter: Filtre Ekle
@@ -642,8 +645,10 @@ field_options:
     update: Güncelle
   directus_collections:
     language: Dil
+    translation: Çeviri
+    collection_name: Koleksiyon Adı
     archive_divider: Arşiv
-    divider: Sırala
+    sort_divider: Sırala
   directus_roles:
     fields:
       icon_name: İkon
