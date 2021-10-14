@@ -364,6 +364,9 @@ select_a_collection: Selecione uma coleção
 active: Ativar
 users: Utilizadores
 activity: Atividade
+action: Ação
+ip_address: Endereço IP
+user_agent: User Agent
 webhooks: Webhooks
 field_width: Largura do campo
 add_filter: Adicionar filtro
@@ -618,8 +621,9 @@ field_options:
     do_not_track_anything: Não rastrear nada
     collection_setup: Configuração da coleção
     language: Idioma
+    collection_name: Nome da coleção
     archive_divider: Arquivar
-    divider: Ordenar
+    sort_divider: Ordenar
   directus_roles:
     fields:
       name_name: Nome
