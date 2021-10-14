@@ -665,7 +665,7 @@ class TypescriptSpecsService implements SpecificationSubService {
 				equalNames += 1;
 			}
 		});
-		return equalNames < 2 ? pascalName : snakeName;
+		return equalNames < 2 && pascalName !== 'CustomDirectusTypes' ? pascalName : snakeName;
 	}
 
 	getPascalName(snakeName: string) {
