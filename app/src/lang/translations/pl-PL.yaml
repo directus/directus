@@ -362,6 +362,7 @@ zoom: Powiększ
 download: Pobierz
 open: Otwórz
 open_in_new_window: Otwórz w nowym oknie
+open_folder: Otwórz folder "{folder}"
 foreground_color: Kolor pierwszego planu
 background_color: Kolor tła
 upload_from_device: Prześlij plik z urządzenia
@@ -435,6 +436,7 @@ no_other_dashboards_copy: Nie masz jeszcze żadnych innych Panelów.
 inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
+activity_item: Element Aktywności
 action: Czynność
 ip_address: Adres IP
 user_agent: User agent
@@ -904,6 +906,8 @@ fields:
     role: Rola
     token: Token
     token_placeholder: Wprowadź bezpieczny token dostępu...
+    provider: Dostawca
+    external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
   directus_settings:
@@ -1001,8 +1005,12 @@ field_options:
     singleton: Traktuj jako pojedynczy obiekt
     language: Język
     translation: Tłumaczenia
+    translation_placeholder: Wprowadź tłumaczenie...
     collection_name: Nazwa kolekcji
+    singular_unit: Pojedyncza jednostka
+    plural_unit: Liczba mnoga
     archive_divider: Archiwum
+    archive_field: Pole archiwum
     archive_field_placeholder: Wybierz pole...
     archive_app_filter: Włącz filtr archiwum aplikacji
     archive_value: Wartość ustawiona podczas archiwizacji...
@@ -1010,6 +1018,8 @@ field_options:
     sort_divider: Sortuj
     sort_field: Wybierz pole...
     accountability_divider: Odpowiedzialność
+    duplication_divider: Duplikacja
+    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     title: Unikalny tytuł...
     description: Opcjonalny opis...
@@ -1138,6 +1148,7 @@ sort_desc: Sortuj malejąco
 template: Szablon
 require_value_to_be_set: Wymagaj ustawienia wartości
 translation: Tłumaczenia
+translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
@@ -1364,6 +1375,7 @@ interfaces:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
     toggle_split_view: Przełącz widok dzielony
+    language_field: Pole identyfikacji języka
   list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
     recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
@@ -1402,6 +1414,11 @@ interfaces:
 displays:
   translations:
     translations: Tłumaczenia
+    description: Podgląd tłumaczeń
+    enable: Włącz
+    user_language: Użyj bieżącego języka użytkownika
+    default_language: Domyślny język
+    language_field: Pole wskaźnika języka
   boolean:
     boolean: Wartość logiczna
     description: Wyświetlaj włącz/wyłącz
