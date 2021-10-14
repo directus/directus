@@ -375,6 +375,9 @@ active: Aktiivinen
 copy: Kopioi
 users: Käyttäjät
 activity: Tapahtuma
+action: Toiminto
+ip_address: IP-osoite
+user_agent: Asiakasohjelma
 webhooks: Webhookit
 field_width: Kentän leveys
 add_filter: Lisää suodatin
@@ -803,8 +806,10 @@ field_options:
     collection_setup: Kokoelman asetukset
     singleton: Käsittele yhtenä objektina
     language: Kieli
+    translation: Käännös
+    collection_name: Kokoelman nimi
     archive_divider: Arkistoi
-    divider: Järjestä
+    sort_divider: Järjestä
   directus_roles:
     fields:
       icon_name: Kuvake
