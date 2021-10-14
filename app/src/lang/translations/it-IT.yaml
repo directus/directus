@@ -436,6 +436,7 @@ no_other_dashboards_copy: Non hai altre bacheche per ora.
 inactive: Disattivato
 users: Utenti
 activity: Attività
+activity_item: Elemento attività
 action: Azioni
 ip_address: Indirizzo IP
 user_agent: User agent
@@ -834,7 +835,7 @@ fields:
     item: Chiave primaria elemento
     action: Azioni
     collection: Raccolta
-    timestamp: Azione il
+    timestamp: Azione su
     user: Azione di
     comment: Commento
     user_agent: User agent
@@ -1008,6 +1009,8 @@ field_options:
     translation: Traduzione
     translation_placeholder: Inserisci una traduzione...
     collection_name: Nome della Raccolta
+    singular_unit: Singolare
+    plural_unit: Plurale
     archive_divider: Archivio
     archive_field: Campo archiviazione
     archive_field_placeholder: Scegli un campo...
@@ -1150,6 +1153,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
