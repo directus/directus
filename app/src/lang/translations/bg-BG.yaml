@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Минути
+hours: Часа
 month: Месец
 year: Година
 select_all: Избиране на всичко
@@ -808,10 +810,12 @@ system_fields_locked: Системните полета са заключени 
 directus_collection:
   directus_activity: Профилирани логове за всички събития
   directus_collections: Допълнителна кофигурация и данни
+  directus_dashboards: Табла в модула за задълбочен анализ
   directus_fields: Допълнителна кофигурация и данни
   directus_files: Мета данни за всички файлове
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
+  directus_panels: Панели в таблото на задълбочения анализ
   directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
   directus_relations: Релационни настройки и мета данни
@@ -1356,6 +1360,7 @@ interfaces:
     display_template: Шаблон при показване
     no_collection: Няма колекция
     toggle_split_view: Превключване на разделен режим
+    language_field: Поле за език
   list-o2m-tree-view:
     description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
     recursive_only: Дървовидния интерфейс, работи само за рекурсивни релации.
@@ -1394,6 +1399,11 @@ interfaces:
 displays:
   translations:
     translations: Преводи
+    description: Преглед на преводите
+    enable: Включване
+    user_language: Използване на езика на потребителя
+    default_language: Език по подразбиране
+    language_field: Поле за език
   boolean:
     boolean: Булев
     description: Показване на активно и неактивно състояние
@@ -1513,6 +1523,9 @@ layouts:
     invalid_geometry: Невалидна геометрия
     auto_location_filter: Филтриране на данните спрямо границите
     search_this_area: Търсене в тази зона
+    clear_data_filter: Изчистване на филтрирането
+    clear_location_filter: Изчистване на филтрирането
+    no_results_here: Няма резултати в тази зона
 panels:
   metric:
     name: Метричен Индикатор
