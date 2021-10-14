@@ -148,6 +148,7 @@
 
 		<v-form
 			ref="form"
+			:key="collection"
 			v-model="edits"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
