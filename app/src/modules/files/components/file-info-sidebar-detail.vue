@@ -75,7 +75,7 @@
 				<dt>{{ t('folder') }}</dt>
 				<dd>
 					<router-link :to="folderLink">
-						{{ t('open') }} "{{ folder ? folder.name : t('file_library') }}" {{ t('folder') }}
+						{{ t('open_folder', { folder: folder ? folder.name : t('file_library') }) }}
 					</router-link>
 				</dd>
 			</div>
