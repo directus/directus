@@ -239,7 +239,7 @@ export default defineComponent({
 						params: {
 							fields: Array.from(fields),
 							limit: -1,
-							sort: props.languageField ?? languagesPrimaryKeyField.value,
+							sort: props.languageField ?? languagesPrimaryKeyField.value.field,
 						},
 					});
 
@@ -247,8 +247,8 @@ export default defineComponent({
 
 					if (!firstLang.value) {
 						const userLang = response.data.data?.find(
-							(lang) => lang[languagesPrimaryKeyField.value] === userStore.currentUser.language
-						)?.[languagesPrimaryKeyField.value];
+							(lang) => lang[languagesPrimaryKeyField.value.field] === userStore.currentUser.language
+						)?.[languagesPrimaryKeyField.value.field];
 
 						firstLang.value = userLang || response.data.data?.[0]?.[languagesPrimaryKeyField.value.field];
 					}
