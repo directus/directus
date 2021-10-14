@@ -24,6 +24,8 @@ auto_generate: Automaticky generovať
 add_note: Pridať užitočnú poznámku pre užívateľov...
 comments: Komentáre
 activity: Aktivita
+ip_address: IP adresa
+user_agent: Užívateľský agent
 bookmarks: Záložky
 back: Späť
 role: Rola

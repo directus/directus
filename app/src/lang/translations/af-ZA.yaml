@@ -36,6 +36,9 @@ comments: Kommentaar
 create_collection: Skep Versameling
 users: Gebruikers
 activity: Aktiwiteit
+action: Aksie
+ip_address: IP Adres
+user_agent: Gebruiker Agent
 duration: Tydsduur
 status: Status
 bookmarks: Boekmerke

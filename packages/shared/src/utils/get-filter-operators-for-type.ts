@@ -27,16 +27,19 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		// JSON
 		// UUID
 		case 'uuid':
-		case 'json':
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
+		case 'json':
+			return ['null', 'nnull'];
 
 		// Boolean
 		case 'boolean':
 			return ['eq', 'neq', 'null', 'nnull'];
 
 		// Numbers
+		case 'bigInteger':
 		case 'integer':
 		case 'decimal':
+		case 'float':
 			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
 
 		// Datetime
@@ -61,7 +64,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 			];
 
 		case 'geometry':
-			return ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
+			return ['null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
 
 		default:
 			return [

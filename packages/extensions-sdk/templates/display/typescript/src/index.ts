@@ -4,9 +4,9 @@ import DisplayComponent from './display.vue';
 export default defineDisplay({
 	id: 'custom',
 	name: 'Custom',
-	description: 'This is my custom display!',
 	icon: 'box',
+	description: 'This is my custom display!',
 	component: DisplayComponent,
-	types: ['string'],
 	options: null,
+	types: ['string'],
 });

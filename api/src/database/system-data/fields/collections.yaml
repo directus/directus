@@ -62,7 +62,7 @@ fields:
       template: '{{ translation }} ({{ language }})'
       fields:
         - field: language
-          name: Language
+          name: $t:field_options.directus_collections.translation
           type: string
           schema:
             default_value: en-US
@@ -70,29 +70,29 @@ fields:
             interface: system-language
             width: half
         - field: translation
-          name: Collection Name
+          name: $t:field_options.directus_collections.collection_name
           type: string
           meta:
             interface: input
             width: half
             options:
-              placeholder: Enter a translation...
+              placeholder: $t:field_options.directus_collections.translation_placeholder
         - field: singular
-          name: Singular Unit
+          name: $t:field_options.directus_collections.singular_unit
           type: string
           meta:
             interface: input
             width: half
             options:
-              placeholder: Enter a translation...
+              placeholder: $t:field_options.directus_collections.translation_placeholder
         - field: plural
-          name: Plural Unit
+          name: $t:field_options.directus_collections.plural_unit
           type: string
           meta:
             interface: input
             width: half
             options:
-              placeholder: Enter a translation...
+              placeholder: $t:field_options.directus_collections.translation_placeholder
     width: full
 
   - field: archive_divider
@@ -110,7 +110,7 @@ fields:
     options:
       collectionField: collection
       allowNone: true
-      placeholder: $t:field_options.directus_collections.archive_field
+      placeholder: $t:field_options.directus_collections.archive_field_placeholder
     width: half
 
   - field: archive_app_filter
@@ -143,7 +143,7 @@ fields:
     interface: presentation-divider
     options:
       icon: sort
-      title: $t:field_options.directus_collections.divider
+      title: $t:field_options.directus_collections.sort_divider
     width: full
 
   - field: sort_field
@@ -172,11 +172,11 @@ fields:
     interface: select-dropdown
     options:
       choices:
-        - text: '$t:field_options.directus_collections.track_activity_revisions'
+        - text: $t:field_options.directus_collections.track_activity_revisions
           value: all
-        - text: '$t:field_options.directus_collections.only_track_activity'
+        - text: $t:field_options.directus_collections.only_track_activity
           value: activity
-        - text: '$t:field_options.directus_collections.do_not_track_anything'
+        - text: $t:field_options.directus_collections.do_not_track_anything
           value: null
     width: half
 
@@ -187,7 +187,7 @@ fields:
     interface: presentation-divider
     options:
       icon: content_copy
-      title: Duplication
+      title: $t:field_options.directus_collections.duplication_divider
 
   - field: item_duplication_fields
     special:

@@ -225,7 +225,6 @@ export const useFieldsStore = defineStore({
 		},
 		getPrimaryKeyFieldForCollection(collection: string): Field {
 			/** @NOTE it's safe to assume every collection has a primary key */
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const primaryKeyField = this.fields.find(
 				(field) => field.collection === collection && field.schema?.is_primary_key === true
 			)!;
@@ -235,7 +234,7 @@ export const useFieldsStore = defineStore({
 		getFieldsForCollection(collection: string): Field[] {
 			return orderBy(
 				this.fields.filter((field) => field.collection === collection),
-				(collection) => (collection.meta?.sort ? Number(collection.meta?.sort) : null)
+				[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)]
 			);
 		},
 		getFieldsForCollectionAlphabetical(collection: string): Field[] {

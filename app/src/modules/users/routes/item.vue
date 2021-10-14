@@ -393,7 +393,6 @@ export default defineComponent({
 				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem.id;
 					router.replace(`/users/${newPrimaryKey}`);
 				}

@@ -1,6 +1,5 @@
-/** @TODO once Oracle is officially supported, enable it here  add 'sqlite3' */
-
-export const allVendors = ['mssql', 'mysql', 'postgres', /* 'oracle', */ 'maria' /*'sqlite3'*/];
+/** @TODO once Oracle is officially supported, enable it here */
+export const allVendors = ['mssql', 'mysql', 'postgres', /* 'oracle', */ 'maria' /*, 'sqlite3'*/];
 
 export function getDBsToTest(): string[] {
 	const testVendors = process.env.TEST_DB || '*';

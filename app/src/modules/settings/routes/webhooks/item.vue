@@ -1,6 +1,8 @@
 <template>
 	<private-view :title="title">
-		<template #headline>{{ t('settings_webhooks') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_webhooks'), to: '/settings/webhooks' }]" />
+		</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">

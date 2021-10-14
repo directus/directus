@@ -30,7 +30,7 @@ function generateIndex(tree) {
 					path.posix.basename(child.path, child.extension)
 				);
 
-				return `{name:'${baseName}',path:'${basePath}',import:()=>import('../${child.path}?raw')}`;
+				return `{name:'${baseName}',path:'${basePath}',import:()=>import('../${child.path}')}`;
 			} else if (child.type === 'directory') {
 				const children = generateIndex(child.children);
 
