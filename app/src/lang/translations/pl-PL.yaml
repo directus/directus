@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'D MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minuty
+hours: Godziny
 month: Miesiąc
 year: Rok
 select_all: Wybierz wszystkie
@@ -360,6 +362,7 @@ zoom: Powiększ
 download: Pobierz
 open: Otwórz
 open_in_new_window: Otwórz w nowym oknie
+open_folder: Otwórz folder "{folder}"
 foreground_color: Kolor pierwszego planu
 background_color: Kolor tła
 upload_from_device: Prześlij plik z urządzenia
@@ -433,6 +436,10 @@ no_other_dashboards_copy: Nie masz jeszcze żadnych innych Panelów.
 inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
+activity_item: Element Aktywności
+action: Czynność
+ip_address: Adres IP
+user_agent: User agent
 webhooks: Webhooki
 decimals: Dziesiętne
 value_decimals: Wartość dziesiętna
@@ -448,6 +455,7 @@ documentation: Dokumentacja
 sidebar: Pasek boczny
 duration: Czas trwania
 charset: Zestaw znaków
+second: sekunda
 file_moved: Plik przeniesiony
 collection_created: Utworzono kolekcję
 modified_on: Modyfikowane Dnia
@@ -807,10 +815,12 @@ system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
 directus_collection:
   directus_activity: Dzienniki rozliczalności dla wszystkich wydarzeń
   directus_collections: Dodatkowa konfiguracja kolekcji i metadane
+  directus_dashboards: Panel główny w module Insights
   directus_fields: Dodatkowa konfiguracja pola i metadane
   directus_files: Metadane dla wszystkich zarządzanych zasobów plików
   directus_folders: Dostarcza wirtualne katalogi dla plików
   directus_migrations: Jaką wersję bazy danych używasz
+  directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
@@ -896,6 +906,8 @@ fields:
     role: Rola
     token: Token
     token_placeholder: Wprowadź bezpieczny token dostępu...
+    provider: Dostawca
+    external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
   directus_settings:
@@ -992,15 +1004,22 @@ field_options:
     hidden_label: Ukryj w aplikacji
     singleton: Traktuj jako pojedynczy obiekt
     language: Język
-    translation: Wprowadź tłumaczenie...
+    translation: Tłumaczenia
+    translation_placeholder: Wprowadź tłumaczenie...
+    collection_name: Nazwa kolekcji
+    singular_unit: Pojedyncza jednostka
+    plural_unit: Liczba mnoga
     archive_divider: Archiwum
-    archive_field: Wybierz pole...
+    archive_field: Pole archiwum
+    archive_field_placeholder: Wybierz pole...
     archive_app_filter: Włącz filtr archiwum aplikacji
     archive_value: Wartość ustawiona podczas archiwizacji...
     unarchive_value: Wartość ustawiona podczas usuwania archiwizacji...
-    divider: Sortuj
+    sort_divider: Sortuj
     sort_field: Wybierz pole...
     accountability_divider: Odpowiedzialność
+    duplication_divider: Duplikacja
+    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     title: Unikalny tytuł...
     description: Opcjonalny opis...
@@ -1129,6 +1148,7 @@ sort_desc: Sortuj malejąco
 template: Szablon
 require_value_to_be_set: Wymagaj ustawienia wartości
 translation: Tłumaczenia
+translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
@@ -1355,7 +1375,7 @@ interfaces:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
     toggle_split_view: Przełącz widok dzielony
-    language_field: Pole językowe
+    language_field: Pole identyfikacji języka
   list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
     recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
@@ -1392,6 +1412,13 @@ interfaces:
     start_open: Rozpocznij otwarte
     start_closed: Rozpocznij zamknięte
 displays:
+  translations:
+    translations: Tłumaczenia
+    description: Podgląd tłumaczeń
+    enable: Włącz
+    user_language: Użyj bieżącego języka użytkownika
+    default_language: Domyślny język
+    language_field: Pole wskaźnika języka
   boolean:
     boolean: Wartość logiczna
     description: Wyświetlaj włącz/wyłącz
@@ -1513,6 +1540,7 @@ layouts:
     search_this_area: Przeszukaj ten obszar
     clear_data_filter: Wyczyść filtr danych
     clear_location_filter: Wyczyść filtr lokalizacji
+    no_results_here: Brak wyników w tym obszarze
 panels:
   metric:
     name: Metryczny

@@ -70,6 +70,9 @@ comments: Коментари
 create_collection: Креирајте колекцију
 users: Корисници
 activity: Активност
+action: Акција
+ip_address: ИП адреса
+user_agent: Кориснички агент
 duration: Трајање
 status: Стање
 bookmarks: Сачуване странице

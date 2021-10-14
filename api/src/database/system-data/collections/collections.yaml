@@ -13,6 +13,7 @@ defaults:
 data:
   - collection: directus_activity
     note: $t:directus_collection.directus_activity
+    accountability: null
   - collection: directus_collections
     icon: list_alt
     note: $t:directus_collection.directus_collections
@@ -40,6 +41,7 @@ data:
     note: $t:directus_collection.directus_relations
   - collection: directus_revisions
     note: $t:directus_collection.directus_revisions
+    accountability: null
   - collection: directus_roles
     icon: supervised_user_circle
     note: $t:directus_collection.directus_roles

@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import { computed, ComputedRef, Ref, ref } from 'vue';
-import { RelationInfo } from './use-relation';
+import { RelationInfo } from '@/composables/use-m2m';
 
 type UsableSelection = {
 	stageSelection: (newSelection: (number | string)[]) => void;

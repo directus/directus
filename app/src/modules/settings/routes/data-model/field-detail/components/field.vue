@@ -52,7 +52,7 @@
 								interface: 'input',
 								width: 'half',
 								options: {
-									placeholder: 'Enter a translation...',
+									placeholder: t('translation_placeholder'),
 								},
 							},
 						},

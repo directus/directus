@@ -45,7 +45,8 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
+import { HeaderRaw } from '@/components/v-table/types';
 import CollectionsNavigation from '../components/navigation.vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
@@ -63,7 +64,7 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 
-		const tableHeaders = [
+		const tableHeaders = ref<HeaderRaw[]>([
 			{
 				text: '',
 				value: 'icon',
@@ -80,7 +81,7 @@ export default defineComponent({
 				value: 'note',
 				width: 360,
 			},
-		];
+		]);
 
 		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
