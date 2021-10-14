@@ -387,6 +387,9 @@ active: Actief
 copy: Kopieer
 users: Gebruikers
 activity: Activiteit
+action: Actie
+ip_address: IP Adres
+user_agent: User Agent
 webhooks: Webhooks
 field_width: Veld breedte
 add_filter: Filter toevoegen
@@ -823,8 +826,10 @@ field_options:
     collection_setup: Collectie setup
     singleton: Behandel als één object
     language: Taal
+    translation: Vertaling
+    collection_name: Collectie naam
     archive_divider: Archiveren
-    divider: Sorteren
+    sort_divider: Sorteren
   directus_roles:
     fields:
       icon_name: Icoon

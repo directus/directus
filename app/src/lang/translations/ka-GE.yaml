@@ -29,6 +29,9 @@ owner: მფლობელი
 comments: კომენტარები
 create_collection: შექმენით კოლექცია
 users: მომხმარებლები
+action: მოქმედება
+ip_address: IP მისამართი
+user_agent: მომხმარებლის აგენტი
 duration: ხანგრძლივობა
 status: სტატუსი
 back: უკან დაბრუნება

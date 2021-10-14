@@ -428,6 +428,9 @@ no_other_dashboards_copy: Önnek még nincs másik irányítópultja.
 inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
+action: Művelet
+ip_address: IP cím
+user_agent: Felhasználói ügynök
 webhooks: Webhookok
 decimals: Decimálisok
 min_value: Min. érték
@@ -987,13 +990,14 @@ field_options:
     hidden_label: Legyen rejtett az alkalmazásban
     singleton: Egyetlen objektumként kezelendő
     language: Nyelv
-    translation: Fordítás megadása...
+    translation: Fordítás
+    collection_name: Gyűjtemény neve
     archive_divider: Archiválás
-    archive_field: Mező kiválasztása...
+    archive_field_placeholder: Mező kiválasztása...
     archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
     archive_value: Archiváláskor beállított érték...
     unarchive_value: Az archiválás visszavonásakor beállított érték...
-    divider: Rendezés
+    sort_divider: Rendezés
     sort_field: Mező kiválasztása...
   directus_files:
     title: Egy egyedi cím...

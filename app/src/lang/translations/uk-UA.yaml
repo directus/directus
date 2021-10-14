@@ -208,6 +208,9 @@ csv: CSV
 create_collection: Створити колекцію
 users: Користувачі
 activity: Активність
+action: Дія
+ip_address: IP адреса
+user_agent: Ідентифікатор браузера
 webhooks: Вебхуки
 field_width: Ширина поля
 user_directory: Директорія користувачів
@@ -336,6 +339,7 @@ field_options:
     update: Оновити
   directus_collections:
     language: Мова
+    translation: Переклад
     archive_divider: Архів
   directus_roles:
     fields:

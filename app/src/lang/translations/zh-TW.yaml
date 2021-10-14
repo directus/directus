@@ -288,6 +288,9 @@ select_a_collection: 選擇一個集合
 copy: 複製
 users: 用戶
 activity: 活動
+action: 操作
+ip_address: IP位址
+user_agent: 代理用戶
 webhooks: Webhooks
 field_width: 欄位寬度
 add_filter: 新增篩選器
@@ -550,8 +553,10 @@ field_options:
     update: 更新
   directus_collections:
     language: 語言
+    translation: 翻譯
+    collection_name: 集合名稱
     archive_divider: 封存
-    divider: 排序
+    sort_divider: 排序
   directus_roles:
     fields:
       icon_name: 圖示

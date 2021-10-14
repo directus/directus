@@ -397,6 +397,9 @@ copy: Kopiraj
 inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
+action: Dejanje
+ip_address: IP naslov
+user_agent: Brskalnik
 webhooks: Prožilci
 field_width: Širina polja
 add_filter: Dodaj filter
@@ -887,13 +890,14 @@ field_options:
     hidden_label: Skrij v aplikaciji
     singleton: Obravnavaj kot en objekt
     language: Jezik
-    translation: Vnesite prevod ...
+    translation: Prevod
+    collection_name: Ime zbirke
     archive_divider: Arhiviraj
-    archive_field: Izberite polje ...
+    archive_field_placeholder: Izberite polje ...
     archive_app_filter: Omogoči aplikacijski arhivski filter
     archive_value: Nastavljena vrednost pri arhiviranju ...
     unarchive_value: Nastavljena vrednost pri dearhiviranju ...
-    divider: Razvrsti
+    sort_divider: Razvrsti
     sort_field: Izberite polje ...
     accountability_divider: Odgovornost
   directus_files:

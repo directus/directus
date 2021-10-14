@@ -200,6 +200,8 @@ no_collections_copy_admin: まだコレクションを作成していません�
 copy: コピー
 users: ユーザー
 activity: 操作履歴
+ip_address: IPアドレス
+user_agent: ユーザーエージェント
 webhooks: Webhook
 field_width: 入力欄幅
 user_directory: ユーザーディレクトリ
@@ -394,8 +396,9 @@ field_options:
     collection_setup: コレクションの作成
     singleton: シングルオブジェクトに設定する
     language: 言語
+    translation: 翻訳
     archive_divider: アーカイブ
-    divider: 並べ替え
+    sort_divider: 並べ替え
   directus_roles:
     fields:
       icon_name: アイコン

@@ -429,6 +429,9 @@ no_other_dashboards_copy: Aún no tienes un Panel.
 inactive: Inactivo
 users: Usuarios
 activity: Actividad
+action: Acción
+ip_address: Dirección IP
+user_agent: Agente de Usuario (Navegador)
 webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
@@ -882,8 +885,10 @@ field_options:
     collection_setup: Configuración de Colección
     singleton: Tratar como un sólo objeto
     language: Idioma
+    translation: Traducción
+    collection_name: Nombre de Colección
     archive_divider: Archivar
-    divider: Ordenar
+    sort_divider: Ordenar
   directus_roles:
     fields:
       icon_name: Ícono

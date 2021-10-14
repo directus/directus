@@ -356,6 +356,9 @@ active: Kích hoạt
 copy: Sao chép
 users: Tài khoản
 activity: Hoạt động
+action: Hành động
+ip_address: Địa chỉ IP
+user_agent: Tài khoản người dùng
 webhooks: Webhooks
 field_width: Độ rộng trường
 add_filter: Thêm bộ lọc
@@ -617,8 +620,9 @@ field_options:
     update: Cập nhật
   directus_collections:
     language: Ngôn ngữ
+    translation: Bản dịch
     archive_divider: Lưu trữ
-    divider: Sắp xếp
+    sort_divider: Sắp xếp
   directus_roles:
     fields:
       icon_name: Biểu tượng

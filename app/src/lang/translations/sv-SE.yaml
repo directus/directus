@@ -364,6 +364,9 @@ active: Aktiv
 copy: Kopiera
 users: Användare
 activity: Händelser
+action: Åtgärd
+ip_address: IP-adress
+user_agent: Användaragent
 webhooks: Webhooks
 field_width: Fältbredd
 add_filter: Lägg till filter
@@ -779,8 +782,10 @@ field_options:
     collection_setup: Konfiguration av kollektion
     singleton: Behandla som ett enskilt objekt
     language: Språk
+    translation: Översättning
+    collection_name: Namn kollektion
     archive_divider: Arkivera
-    divider: Sortera
+    sort_divider: Sortera
   directus_roles:
     fields:
       icon_name: Ikon

@@ -396,6 +396,9 @@ copy: Copia
 inactive: Inactiva
 users: Usuaris
 activity: Activitat
+action: Acció
+ip_address: Adreça IP
+user_agent: Agent de l'usuari
 webhooks: Webhooks
 field_width: Amplada del camp
 add_filter: Afegeix un filtre
@@ -864,8 +867,10 @@ field_options:
     collection_setup: Configuració de la col·lecció
     singleton: Tracta com un objecte únic
     language: Idioma
+    translation: Traducció
+    collection_name: Nom de la col·lecció
     archive_divider: Arxiu
-    divider: Ordre
+    sort_divider: Ordre
   directus_roles:
     fields:
       icon_name: Icona

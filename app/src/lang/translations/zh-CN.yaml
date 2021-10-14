@@ -433,6 +433,9 @@ no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
 users: 用户
 activity: 活动
+action: 操作
+ip_address: IP 地址
+user_agent: 用户代理（User Agent）
 webhooks: Webhook
 decimals: 小数
 value_decimals: 小数的值
@@ -993,13 +996,14 @@ field_options:
     hidden_label: 在管理菜单中隐藏
     singleton: 视为单个对象
     language: 语言
-    translation: 请输入翻译...
+    translation: 翻译
+    collection_name: 模型名称
     archive_divider: 存档
-    archive_field: 选择字段...
+    archive_field_placeholder: 选择字段...
     archive_app_filter: 启用归档功能
     archive_value: 归档时设定的值...
     unarchive_value: 解除归档时设定的值...
-    divider: 排序
+    sort_divider: 排序
     sort_field: 选择字段...
     accountability_divider: 访问控制
   directus_files:

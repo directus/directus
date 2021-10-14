@@ -376,6 +376,9 @@ active: aktiivne
 copy: Kopeeri
 users: Kasutajad
 activity: Tegevus
+action: Tegevus
+ip_address: IP aadress
+user_agent: Kasutaja agent
 webhooks: Webhooks
 field_width: Välja laius
 add_filter: Lisa filter
@@ -807,8 +810,10 @@ field_options:
     collection_setup: Andmekogu seadistus
     singleton: Käsitle üksiku objektina
     language: Keel
+    translation: Tõlge
+    collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
-    divider: Sorteeri
+    sort_divider: Sorteeri
   directus_roles:
     fields:
       icon_name: Ikoon

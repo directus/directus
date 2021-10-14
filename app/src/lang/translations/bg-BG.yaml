@@ -435,6 +435,9 @@ no_other_dashboards_copy: Все още нямате други табла.
 inactive: Неактивен
 users: Потребители
 activity: Активности
+action: Действие
+ip_address: IP адрес
+user_agent: Потребителски агент
 webhooks: Уеб-куки
 decimals: Десетични знаци
 value_decimals: Десетични знаци
@@ -997,13 +1000,14 @@ field_options:
     hidden_label: Скриване в приложението
     singleton: Използване като единствен запис
     language: Език
-    translation: Въвеждане на превод...
+    translation: Превод
+    collection_name: Име на колекцията
     archive_divider: Архивиране
-    archive_field: Избор на поле...
+    archive_field_placeholder: Избор на поле...
     archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
-    divider: Сортиране
+    sort_divider: Сортиране
     sort_field: Избор на поле...
     accountability_divider: Профилиране
   directus_files:

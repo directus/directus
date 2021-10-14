@@ -434,6 +434,9 @@ no_other_dashboards_copy: У вас пока нет других Досок.
 inactive: Неактивный
 users: Пользователи
 activity: Активность
+action: Действие
+ip_address: IP-адрес
+user_agent: Пользовательский агент
 webhooks: Веб-хуки
 decimals: Десятичные
 value_decimals: Значение (десятичное)
@@ -996,13 +999,14 @@ field_options:
     hidden_label: Скрыть в приложении
     singleton: Считать одним объектом
     language: Язык
-    translation: Введите перевод...
+    translation: Перевод
+    collection_name: Название Коллекции
     archive_divider: Архив
-    archive_field: Выберите поле...
+    archive_field_placeholder: Выберите поле...
     archive_app_filter: Включить фильтр архива приложения
     archive_value: Значение, установленное при архивировании...
     unarchive_value: Значение, установленное при разархивировании...
-    divider: Сортировать
+    sort_divider: Сортировать
     sort_field: Выберите поле...
     accountability_divider: Подотчетность
   directus_files:
