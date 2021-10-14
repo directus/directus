@@ -493,7 +493,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						schema: this.schema,
 					});
 
-					const revision = await revisionsService.createMany(
+					const revisionIDs = await revisionsService.createMany(
 						await Promise.all(
 							activity.map(async (activity, index) => ({
 								activity: activity,
@@ -506,21 +506,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						)
 					);
 
-					revision.forEach(async (revision, index) => {
+					for (let i = 0; i < revisionIDs.length; i++) {
+						const revisionID = revisionIDs[i];
+
 						if (opts?.onRevisionCreate) {
-							opts.onRevisionCreate(revision);
+							opts.onRevisionCreate(revisionID);
 						}
 
-						if (index === 0) {
+						if (i === 0) {
 							// In case of a nested relational creation/update in a updateMany, the nested m2o/a2o
 							// creation is only done once. We treat the first updated item as the "main" update,
 							// with all other revisions on the current level as regular "flat" updates, and
 							// nested revisions as children of this first "root" item.
 							if (childrenRevisions.length > 0) {
-								await revisionsService.updateMany(childrenRevisions, { parent: revision });
+								await revisionsService.updateMany(childrenRevisions, { parent: revisionID });
 							}
 						}
-					});
+					}
 				}
 			}
 		});
