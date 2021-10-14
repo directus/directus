@@ -368,6 +368,7 @@ zoom: Zoom
 download: Download
 open: Open
 open_in_new_window: Open in New Window
+open_folder: Open "{folder}" folder
 foreground_color: Foreground Color
 background_color: Background Color
 upload_from_device: Upload File from Device
@@ -441,6 +442,10 @@ no_other_dashboards_copy: You don't have any other Dashboards yet.
 inactive: Inactive
 users: Users
 activity: Activity
+activity_item: Activity Item
+action: Action
+ip_address: IP Address
+user_agent: User Agent
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -914,6 +919,8 @@ fields:
     role: Role
     token: Token
     token_placeholder: Enter a secure access token...
+    provider: Provider
+    external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
   directus_settings:
@@ -1012,15 +1019,22 @@ field_options:
     hidden_label: Hide within the App
     singleton: Treat as single object
     language: Language
-    translation: Enter a translation...
+    translation: Translation
+    translation_placeholder: Enter a translation...
+    collection_name: Collection Name
+    singular_unit: Singular Unit
+    plural_unit: Plural Unit
     archive_divider: Archive
-    archive_field: Choose a field...
+    archive_field: Archive Field
+    archive_field_placeholder: Choose a field...
     archive_app_filter: Enable App Archive Filter
     archive_value: Value set when archiving...
     unarchive_value: Value set when unarchiving...
-    divider: Sort
+    sort_divider: Sort
     sort_field: Choose a field...
     accountability_divider: Accountability
+    duplication_divider: Duplication
+    item_duplication_fields: Item Duplication Fields
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1149,6 +1163,7 @@ sort_desc: Sort Descending
 template: Template
 require_value_to_be_set: Require value to be set
 translation: Translation
+translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 weeks: {}
