@@ -407,6 +407,9 @@ copy: نسخ
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+action: الإجراء
+ip_address: عنوان IP
+user_agent: وكيل المستخدم
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
 add_filter: إضافة فلتر
@@ -793,8 +796,10 @@ field_options:
     collection_setup: لا توجد مجموعات الإعداد
     singleton: معاملته ككائن واحد
     language: لغة
+    translation: الترجمة
+    collection_name: اسم المجموعة
     archive_divider: أرشفة
-    divider: رتب
+    sort_divider: رتب
   directus_roles:
     fields:
       icon_name: أيقونة
