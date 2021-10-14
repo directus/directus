@@ -10,7 +10,7 @@
 	<input
 		v-else-if="is === 'interface-input'"
 		ref="inputEl"
-		type="search"
+		type="text"
 		:pattern="inputPattern"
 		:value="value"
 		:style="{ width }"
