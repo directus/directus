@@ -730,6 +730,8 @@ interfaces:
     modes:
       dropdown: Tuỳ chọn dạng thả xuống
 displays:
+  translations:
+    translations: Các Bản Dịch
   boolean:
     boolean: Boolean
     icon_on: Biểu tượng của trạng thái Bật

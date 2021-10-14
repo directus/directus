@@ -1011,6 +1011,8 @@ interfaces:
   input-autocomplete-api:
     rate: معدل
 displays:
+  translations:
+    translations: الترجمة
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل

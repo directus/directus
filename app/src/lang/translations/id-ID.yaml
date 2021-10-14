@@ -661,6 +661,8 @@ interfaces:
     modes:
       dropdown: Dropwdown
 displays:
+  translations:
+    translations: Terjemahan
   boolean:
     boolean: Boolean
   collection:

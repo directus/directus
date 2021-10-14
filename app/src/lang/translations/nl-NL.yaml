@@ -1038,6 +1038,8 @@ interfaces:
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
 displays:
+  translations:
+    translations: Vertalingen
   boolean:
     boolean: Boolean
     description: Toon aan/uit status

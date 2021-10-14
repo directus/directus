@@ -1348,7 +1348,6 @@ interfaces:
     display_template: 显示模板
     no_collection: 暂无模型
     toggle_split_view: 切换视图
-    language_field: 语言字段
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -1385,6 +1384,8 @@ interfaces:
     start_open: 默认打开
     start_closed: 默认收起
 displays:
+  translations:
+    translations: 翻译
   boolean:
     boolean: Boolean
     description: 显示开启或关闭状态

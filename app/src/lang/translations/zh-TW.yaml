@@ -687,6 +687,8 @@ interfaces:
       auto: 自動
       dropdown: 下拉選單
 displays:
+  translations:
+    translations: 翻譯
   boolean:
     description: 顯示開關狀態
   collection:

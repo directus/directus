@@ -1358,7 +1358,6 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
-    language_field: Sprachfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1395,6 +1394,8 @@ interfaces:
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
 displays:
+  translations:
+    translations: Übersetzungen
   boolean:
     boolean: Boolean
     description: Ein-/Aus-Status anzeigen

@@ -1275,6 +1275,8 @@ interfaces:
     start_open: Začni odprto
     start_closed: Začni zaprto
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Pokaži prižgano / ugasnjeno stanje

@@ -1101,6 +1101,8 @@ interfaces:
     trigger: Päästik
     rate: Hinnang
 displays:
+  translations:
+    translations: Tõlked
   boolean:
     boolean: Boolean
     description: Näita sees/väljas seisu
