@@ -362,6 +362,7 @@ zoom: Zoom
 download: Scarica
 open: Apri
 open_in_new_window: Apri in una Nuova Finestra
+open_folder: Apri la cartella "{folder}"
 foreground_color: Colore di primo piano
 background_color: Colore dello sfondo
 upload_from_device: Carica File dal Dispositivo
@@ -904,6 +905,8 @@ fields:
     role: Ruolo
     token: Token
     token_placeholder: Inserisci un token di accesso sicuro...
+    provider: Provider
+    external_identifier: Identificatore esterno
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
   directus_settings:
@@ -1003,8 +1006,10 @@ field_options:
     singleton: Tratta come oggetto singolo
     language: Lingua
     translation: Traduzione
+    translation_placeholder: Inserisci una traduzione...
     collection_name: Nome della Raccolta
     archive_divider: Archivio
+    archive_field: Campo archiviazione
     archive_field_placeholder: Scegli un campo...
     archive_app_filter: Abilita filtro archiviati in app
     archive_value: Valore impostato all'archiviazione...
@@ -1012,6 +1017,8 @@ field_options:
     sort_divider: Ordinamento
     sort_field: Scegli un campo...
     accountability_divider: Autorizzazioni
+    duplication_divider: Duplicazione
+    item_duplication_fields: Campi coinvolti nella duplicazione
   directus_files:
     title: Un titolo unico...
     description: Una descrizione opzionale...
@@ -1140,6 +1147,7 @@ sort_desc: Ordinamento Decrescente
 template: Template
 require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
+translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
 report_error: Segnala l'errore
@@ -1366,6 +1374,7 @@ interfaces:
     display_template: Display Template
     no_collection: Nessuna Raccolta
     toggle_split_view: Attiva/disattiva la Split View
+    language_field: Campo indicatore della lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
@@ -1404,6 +1413,11 @@ interfaces:
 displays:
   translations:
     translations: Traduzioni
+    description: Anteprima delle traduzioni
+    enable: Attivato
+    user_language: Usa la lingua dell'utente corrente
+    default_language: Lingua predefinita
+    language_field: Campo indicatore della lingua
   boolean:
     boolean: Boolean
     description: Mostra gli stati attivato e disattivato
