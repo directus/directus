@@ -435,6 +435,9 @@ no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
+action: Action
+ip_address: Adresse IP
+user_agent: Agent utilisateur
 webhooks: Webhooks
 decimals: Décimales
 value_decimals: Valeur décimales
@@ -995,13 +998,14 @@ field_options:
     hidden_label: Cacher dans l'application
     singleton: Est un objet unique
     language: Langue
-    translation: Entrez une nouvelle traduction...
+    translation: Traduction
+    collection_name: Nom de la Collection
     archive_divider: Archiver
-    archive_field: Choisissez un champ...
+    archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Activer le filtre des archives d'applications
     archive_value: Valeur définie lors de l'archivage...
     unarchive_value: Valeur définie lors de la désarchivage...
-    divider: Trier
+    sort_divider: Trier
     sort_field: Choisissez un champ...
     accountability_divider: Responsabilité
   directus_files:
