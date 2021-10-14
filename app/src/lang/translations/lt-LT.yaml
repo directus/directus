@@ -369,6 +369,9 @@ active: Aktyvus
 copy: Kopijuoti
 users: Vartotojai
 activity: Veiksmas
+action: Veiksmas
+ip_address: IP adresas
+user_agent: Naršyklė
 webhooks: '„Webhook“''ai'
 field_width: Laukelio plotis
 add_filter: Pridėti filtrą
@@ -743,8 +746,10 @@ field_options:
     collection_setup: Kolekcijos konfigūracija
     singleton: Laikyti vienu objektu
     language: Kalba
+    translation: Vertimas
+    collection_name: Kolekcijos pavadinimas
     archive_divider: Archyvuoti
-    divider: Rūšiuoti
+    sort_divider: Rūšiuoti
   directus_roles:
     fields:
       icon_name: Ikona
