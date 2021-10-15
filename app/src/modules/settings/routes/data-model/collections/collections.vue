@@ -78,6 +78,16 @@
 					<collection-options :collection="collection" />
 				</v-list-item>
 			</v-list>
+
+			<v-detail v-if="collections.length > 0" :label="t('system_collections')">
+				<collection-item
+					v-for="collection of systemCollections"
+					:key="collection.collection"
+					:collection="collection"
+					:collections="systemCollections"
+					disable-drag
+				/>
+			</v-detail>
 		</div>
 
 		<router-view name="add" />
