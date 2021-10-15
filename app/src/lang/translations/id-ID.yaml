@@ -36,7 +36,6 @@ enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentica
 add_field: Tambah Kolom
 role_name: Nama Peran
 branch: Cabang
-db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
 edited: Nilai Diedit
 required: Diperlukan
