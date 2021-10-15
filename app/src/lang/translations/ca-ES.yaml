@@ -43,7 +43,6 @@ leaf: Fulla
 indeterminate: Indeterminat
 exclusive: Exclusiu
 children: Fills
-db_only_click_to_configure: 'Base de dades només: Feu clic per configurar '
 show_archived_items: Mostra els elements arxivats
 edited: Valor editat
 required: Requerit
@@ -906,6 +905,7 @@ generate_and_save_uuid: Genera i Desa UUID
 save_current_user_id: Desa el ID d'usuari actual
 save_current_user_role: Desa el rol d'usuari actual
 save_current_datetime: Desa la Data/Hora actual
+start_open: Comença obert
 block: Block
 inline: Inline
 comment: Comentari
