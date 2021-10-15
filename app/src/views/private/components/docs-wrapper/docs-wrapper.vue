@@ -17,7 +17,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const route = useRoute();
 
-		const mainElement = inject<Ref<Element>>('main-element');
+		const mainElement = inject<Ref<Element | undefined>>('main-element');
 
 		const pageClass = computed(() => props.frontmatter?.pageClass);
 
@@ -31,7 +31,7 @@ export default defineComponent({
 		);
 
 		onMounted(() => {
-			if (route.hash && mainElement) {
+			if (route.hash && mainElement?.value) {
 				const linkedEl = document.querySelector(route.hash) as HTMLElement;
 
 				if (linkedEl) {

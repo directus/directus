@@ -28,8 +28,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: MapLayout,
 	slots: {
 		options: MapOptions,
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		sidebar: () => {},
+		sidebar: () => undefined,
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
@@ -229,7 +228,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function onQueryChange() {
 			shouldUpdateCamera.value = true;
 			geojsonLoading.value = false;
-			page.value = 1;
 		}
 
 		function updateGeojson() {

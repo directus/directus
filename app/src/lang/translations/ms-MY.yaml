@@ -98,6 +98,8 @@ item_count: 'Tiada Benda | Satu Benda | {count} Benda'
 create_collection: Cipta Koleksi
 users: Pengguna-pengguna
 activity: Aktiviti
+action: Tindakan
+ip_address: Alamat IP
 user_directory: Direktori pengguna
 duration: Durasi
 status: Status

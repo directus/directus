@@ -433,6 +433,9 @@ no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
+action: Aktion
+ip_address: IP Adresse
+user_agent: Benutzer-Agent
 webhooks: Webhooks
 decimals: Dezimalstellen
 value_decimals: Wert Dezimalstellen
@@ -995,13 +998,14 @@ field_options:
     hidden_label: Innerhalb der App verstecken
     singleton: Als einzelnes Objekt behandeln
     language: Sprache
-    translation: Übersetzung eingeben...
+    translation: Übersetzung
+    collection_name: Sammlungsname
     archive_divider: Archivieren
-    archive_field: Wählen Sie ein Feld...
+    archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
-    divider: Sortieren
+    sort_divider: Sortieren
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
   directus_files:
@@ -1134,7 +1138,6 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1359,7 +1362,6 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
-    language_field: Sprachfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1396,6 +1398,8 @@ interfaces:
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
 displays:
+  translations:
+    translations: Übersetzungen
   boolean:
     boolean: Boolean
     description: Ein-/Aus-Status anzeigen
@@ -1515,8 +1519,6 @@ layouts:
     invalid_geometry: Ungültige Geometrie
     auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
     search_this_area: Diesen Bereich durchsuchen
-    clear_data_filter: Datenfilter löschen
-    clear_location_filter: Standortfilter löschen
 panels:
   metric:
     name: Metrik

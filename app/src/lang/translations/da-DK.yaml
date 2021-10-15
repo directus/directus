@@ -240,6 +240,9 @@ item_count: 'Ingen Elementer | Et Element | {count} Elementer'
 create_collection: Opret samling
 users: Brugere
 activity: Aktivitet
+action: Handling
+ip_address: IP adresse
+user_agent: Brugeragent
 webhooks: Webhooks
 field_width: Felt Bredde
 user_directory: Bruger Mappe
@@ -363,6 +366,7 @@ field_options:
     update: Opdater
   directus_collections:
     language: Sprog
+    translation: Oversættelse
     archive_divider: Arkiver
   directus_roles:
     fields:

@@ -10,7 +10,7 @@
 	<input
 		v-else-if="is === 'interface-input'"
 		ref="inputEl"
-		type="search"
+		type="text"
 		:pattern="inputPattern"
 		:value="value"
 		:style="{ width }"
@@ -111,7 +111,9 @@ export default defineComponent({
 			if (val === '') {
 				emit('input', null);
 			} else {
-				emit('input', val);
+				if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
+					emit('input', val);
+				}
 			}
 		}
 	},
