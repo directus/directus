@@ -222,11 +222,7 @@ export default defineComponent({
 
 		watch(
 			() => props.page,
-			() => {
-				if (mainElement?.value) {
-					mainElement.value.scrollTo({ top: 0, behavior: 'smooth' });
-				}
-			}
+			() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
 		);
 
 		watch(width, () => {
