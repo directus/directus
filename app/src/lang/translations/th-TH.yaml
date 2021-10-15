@@ -42,7 +42,6 @@ indeterminate: คลุมเครือ
 edit_collection: แก้ไขคอลเลกชัน
 exclusive: เฉพาะ
 children: ลูก
-db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
 show_archived_items: แสดงรายการเก็บถาวร
 edited: ค่าที่ถูกแก้ไข
 required: จำเป็นต้องระบุ
