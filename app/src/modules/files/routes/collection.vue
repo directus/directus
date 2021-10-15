@@ -371,10 +371,11 @@ export default defineComponent({
 					await refresh();
 
 					selection.value = [];
-					confirmDelete.value = false;
 				} catch (err: any) {
+					unexpectedError(err);
 					error.value = err;
 				} finally {
+					confirmDelete.value = false;
 					deleting.value = false;
 				}
 			}
