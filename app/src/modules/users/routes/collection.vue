@@ -160,7 +160,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
@@ -168,6 +168,7 @@ import api from '@/api';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
@@ -241,6 +242,13 @@ export default defineComponent({
 		const { layoutWrapper } = useLayout(layout);
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+
+		onBeforeRouteLeave(() => {
+			selection.value = [];
+		});
+		onBeforeRouteUpdate(() => {
+			selection.value = [];
+		});
 
 		return {
 			t,
@@ -332,10 +340,6 @@ export default defineComponent({
 			const title = computed(() => {
 				if (!props.role) return t('user_directory');
 				return roles.value?.find((role: Role) => role.id === props.role)?.name;
-			});
-
-			watch(breadcrumb, () => {
-				selection.value = [];
 			});
 
 			return { breadcrumb, title };
