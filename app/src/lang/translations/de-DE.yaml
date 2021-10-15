@@ -795,7 +795,7 @@ page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erste
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
-page_help_insights_overview: '**Insights** — Liste der Dashboards, auf welche Sie Zugriff haben.'
+page_help_insights_overview: '**Einblicke** — Liste der Dashboards, auf welche Sie Zugriff haben.'
 page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
@@ -815,12 +815,12 @@ system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet we
 directus_collection:
   directus_activity: Verantwortungsprotokoll für alle Ereignisse
   directus_collections: Weitere Konfiguration und Metadaten
-  directus_dashboards: Dashboards innerhalb des Insights Moduls
+  directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
-  directus_panels: Individuelle Paneele in Insights-Dashboards
+  directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
