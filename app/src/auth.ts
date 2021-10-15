@@ -45,6 +45,7 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 let refreshTimeout: any;
 let idle = false;
 let isRefreshing = false;
+let firstRefresh = true;
 
 // Prevent the auto-refresh when the app isn't in use
 idleTracker.on('idle', () => {
@@ -73,8 +74,10 @@ idleTracker.on('show', () => {
 });
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+	// Allow refresh during initial page load
+	if (firstRefresh) firstRefresh = false;
 	// Skip if not logged in
-	if (!api.defaults.headers?.['Authorization']) return;
+	else if (!api.defaults.headers?.['Authorization']) return;
 
 	// Prevent concurrent refreshes
 	if (isRefreshing) return;
