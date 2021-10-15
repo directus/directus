@@ -13,8 +13,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { Field, Relation } from '@directus/shared/types';
-import { defineComponent, PropType, computed } from 'vue';
-import { useFieldsStore } from '@/stores/';
+import { defineComponent, PropType, computed, toRefs } from 'vue';
+import useRelation from '@/composables/use-m2m';
 
 export default defineComponent({
 	props: {
@@ -38,8 +38,9 @@ export default defineComponent({
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+		const { collection } = toRefs(props);
 
-		const fieldsStore = useFieldsStore();
+		const field = computed(() => props.fieldData.field);
 
 		const languageField = computed({
 			get() {
@@ -53,34 +54,10 @@ export default defineComponent({
 			},
 		});
 
-		const translationsRelation = computed(() => {
-			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
-			const { field } = props.fieldData;
-			return (
-				props.relations.find(
-					(relation) => relation.related_collection === props.collection && relation.meta?.one_field === field
-				) ?? null
-			);
-		});
-
-		const languageRelation = computed(() => {
-			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
-			if (!translationsRelation.value) return null;
-			return (
-				props.relations.find(
-					(relation) =>
-						relation.collection === translationsRelation.value?.collection &&
-						relation.meta?.junction_field === translationsRelation.value?.field
-				) ?? null
-			);
-		});
-
-		const languageCollection = computed(() => languageRelation.value?.related_collection ?? null);
-
-		const languageCollectionFields = computed(() => {
-			if (!languageCollection.value) return [];
-			return fieldsStore.getFieldsForCollection(languageCollection.value);
-		});
+		const { relationCollection: languageCollection, relationFields: languageCollectionFields } = useRelation(
+			collection,
+			field
+		);
 
 		return {
 			t,

@@ -225,7 +225,6 @@ export const useFieldsStore = defineStore({
 		},
 		getPrimaryKeyFieldForCollection(collection: string): Field {
 			/** @NOTE it's safe to assume every collection has a primary key */
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const primaryKeyField = this.fields.find(
 				(field) => field.collection === collection && field.schema?.is_primary_key === true
 			)!;

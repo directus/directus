@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-
 import { Knex } from 'knex';
 import { AuthDriverOptions, SchemaOverview, User, SessionData } from '../types';
 

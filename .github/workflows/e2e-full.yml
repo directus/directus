@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        db: ['mssql', 'mysql', 'postgres', 'maria', 'sqlite3']
+        db: ['mssql', 'mysql', 'postgres', 'maria'] #sqlite
         # node-version: ['12-alpine', '14-alpine', '16-alpine']
         node-version: ['16-alpine']
     env:
@@ -33,6 +33,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
+          cache: npm
       - name: restore node_modules cache
         uses: actions/cache@v2
         with:

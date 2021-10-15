@@ -148,6 +148,7 @@
 
 		<v-form
 			ref="form"
+			:key="collection"
 			v-model="edits"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
@@ -444,7 +445,6 @@ export default defineComponent({
 				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 				}

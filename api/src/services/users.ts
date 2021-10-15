@@ -1,12 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { clone, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import logger from '../logger';
 import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview } from '../types';
 import { Query } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';

@@ -22,7 +22,7 @@ System events are referenced with the format:
 ```
 <scope>.<action>(.<before>)
 // eg: items.create
-// eg: files.create
+// eg: files.upload
 // eg: collections.*
 // eg: users.update.before
 ```

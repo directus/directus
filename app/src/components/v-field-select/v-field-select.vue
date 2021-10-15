@@ -67,7 +67,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		depth: Number,
+		depth: {
+			type: Number,
+			default: undefined,
+		},
 		inject: {
 			type: Object as PropType<{ fields: Field[]; collections: Collection[]; relations: Relation[] } | null>,
 			default: () => ({ fields: [], collections: [], relations: [] }),
