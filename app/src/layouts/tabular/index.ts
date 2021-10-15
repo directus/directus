@@ -146,9 +146,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				primaryKeyField.value ? [primaryKeyField.value?.field] : []
 			);
 
-			const fields = syncRefProperty(
-				layoutQuery,
-				'fields',
+			const fields = syncRefProperty(layoutQuery, 'fields', () =>
 				fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
 					.slice(0, 4)
