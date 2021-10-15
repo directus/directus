@@ -2,7 +2,6 @@ import api from '@/api';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { useAppStore } from '@/stores';
-import { debounce } from 'lodash';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 
@@ -14,12 +13,16 @@ export type LoginCredentials = {
 export async function login(credentials: LoginCredentials): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post(`/auth/login`, {
+	const response = await api.post<any>(`/auth/login`, {
 		...credentials,
 		mode: 'cookie',
 	});
 
 	const accessToken = response.data.data.access_token;
+
+	if (!api.defaults.headers) {
+		api.defaults.headers = {};
+	}
 
 	// Add the header to the API handler for every request
 	api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -30,9 +33,10 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 	// for tokens that last > 24 days. Ref #4054
 	if (response.data.data.expires <= 2100000000) {
-		setTimeout(() => refresh(), response.data.data.expires - 10000);
+		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
+	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 	appStore.authenticated = true;
 
 	await hydrate();
@@ -40,6 +44,7 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 
 let refreshTimeout: any;
 let idle = false;
+let isRefreshing = false;
 
 // Prevent the auto-refresh when the app isn't in use
 idleTracker.on('idle', () => {
@@ -53,34 +58,38 @@ idleTracker.on('hide', () => {
 });
 
 // Restart the autorefresh process when the app is used (again)
-idleTracker.on(
-	'active',
-	debounce(() => {
-		if (idle === true) {
-			refresh();
-			idle = false;
-		}
-	}, 1000)
-);
+idleTracker.on('active', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
 
-idleTracker.on(
-	'show',
-	debounce(() => {
-		if (idle === true) {
-			refresh();
-			idle = false;
-		}
-	}, 1000)
-);
+idleTracker.on('show', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+	// Skip if not logged in
+	if (!api.defaults.headers?.['Authorization']) return;
+
+	// Prevent concurrent refreshes
+	if (isRefreshing) return;
+
+	isRefreshing = true;
+
 	const appStore = useAppStore();
 
-	try {
-		// Delete the token header if it still exists
-		delete api.defaults.headers.Authorization;
+	// Skip refresh if access token is still fresh
+	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
+		return;
+	}
 
-		const response = await api.post('/auth/refresh');
+	try {
+		const response = await api.post<any>('/auth/refresh', { headers: { Authorization: undefined } });
 
 		const accessToken = response.data.data.access_token;
 
@@ -88,7 +97,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
-		// logged in without any noticable hickups or delays
+		// logged in without any notable hiccups or delays
 		if (refreshTimeout) clearTimeout(refreshTimeout);
 
 		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
@@ -96,11 +105,15 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		if (response.data.data.expires <= 2100000000) {
 			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		}
+
+		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 		appStore.authenticated = true;
 
 		return accessToken;
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
+	} finally {
+		isRefreshing = false;
 	}
 }
 
@@ -125,7 +138,9 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	delete api.defaults.headers.Authorization;
+	delete api.defaults.headers?.Authorization;
+
+	clearTimeout(refreshTimeout);
 
 	const options = { ...defaultOptions, ...optionsRaw };
 

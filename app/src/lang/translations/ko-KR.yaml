@@ -137,6 +137,8 @@ interfaces:
   system-interface:
     interface: 인터페이스
 displays:
+  translations:
+    translations: 번역
   datetime:
     format: 형식
   labels:

@@ -3,7 +3,7 @@ import { GeometryFormat } from '@directus/shared/types';
 
 export type LayoutQuery = {
 	fields: string[];
-	sort: string;
+	sort: string[];
 	limit: number;
 	page: number;
 };
@@ -16,4 +16,5 @@ export type LayoutOptions = {
 	autoLocationFilter?: boolean;
 	clusterData?: boolean;
 	animateOptions?: any;
+	displayTemplate?: string;
 };

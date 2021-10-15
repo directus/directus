@@ -15,18 +15,26 @@ export function validateExtensionManifest(
 		return false;
 	}
 
-	if (
-		extensionOptions.type === undefined ||
-		extensionOptions.path === undefined ||
-		extensionOptions.source === undefined ||
-		extensionOptions.host === undefined ||
-		extensionOptions.hidden === undefined
-	) {
+	if (extensionOptions.type === undefined) {
 		return false;
 	}
 
 	if (!isExtensionPackage(extensionOptions.type)) {
 		return false;
+	}
+
+	if (extensionOptions.type !== 'pack') {
+		if (
+			extensionOptions.path === undefined ||
+			extensionOptions.source === undefined ||
+			extensionOptions.host === undefined
+		) {
+			return false;
+		}
+	} else {
+		if (extensionOptions.host === undefined) {
+			return false;
+		}
 	}
 
 	return true;

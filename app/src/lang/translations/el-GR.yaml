@@ -134,6 +134,9 @@ comments: Σχόλια
 create_collection: Δημιουργία Συλλογής
 users: Χρήστες
 activity: Δραστηριότητα
+action: Ενέργεια
+ip_address: Διεύθυνση IP
+user_agent: Πράκτορας χρήστη
 field_width: Πλάτος πεδίου
 duration: Διάρκεια
 status: Κατάσταση
@@ -231,6 +234,7 @@ field_options:
     create: Δημιουργία
     update: Ενημέρωση
   directus_collections:
+    translation: Μετάφραση
     archive_divider: Αρχειοθέτηση
   directus_roles:
     fields:
@@ -269,6 +273,8 @@ settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
 interfaces:
+  filter:
+    all: Όλα
   presentation-links:
     primary: Κυρίως
   system-collection:

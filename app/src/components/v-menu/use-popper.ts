@@ -12,7 +12,9 @@ import { onUnmounted, ref, Ref, watch } from 'vue';
 export function usePopper(
 	reference: Ref<HTMLElement | null>,
 	popper: Ref<HTMLElement | null>,
-	options: Readonly<Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean }>>>
+	options: Readonly<
+		Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean; offsetY: number; offsetX: number }>>
+	>
 ): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
 	const styles = ref({});
@@ -44,14 +46,12 @@ export function usePopper(
 
 	function start() {
 		return new Promise((resolve) => {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
 				placement: options.value.attached ? 'bottom-start' : options.value.placement,
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
 			popperInstance.value.forceUpdate();
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			observer.observe(popper.value!, {
 				attributes: false,
 				childList: true,
@@ -72,7 +72,7 @@ export function usePopper(
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, 0] : [0, 8],
+					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? 8],
 				},
 			},
 			{

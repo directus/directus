@@ -347,7 +347,7 @@ cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
 import_label: Importieren
-file_details: Dateiinformationen
+file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
@@ -433,6 +433,9 @@ no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
+action: Aktion
+ip_address: IP Adresse
+user_agent: Benutzer-Agent
 webhooks: Webhooks
 decimals: Dezimalstellen
 value_decimals: Wert Dezimalstellen
@@ -540,7 +543,7 @@ font: Schriftart
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
-divider: Divider
+divider: Trenner
 color: Farbe
 circle: Kreis
 empty_item: Leeres Element
@@ -769,7 +772,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
-  **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
 page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
@@ -829,7 +832,7 @@ fields:
     timestamp: Aktion am
     user: Aktion von
     comment: Kommentar
-    user_agent: User Agent
+    user_agent: Benutzer-Agent
     ip: IP Adresse
     revisions: Revisionen
   directus_collections:
@@ -904,6 +907,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -974,6 +978,7 @@ field_options:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -993,15 +998,16 @@ field_options:
     hidden_label: Innerhalb der App verstecken
     singleton: Als einzelnes Objekt behandeln
     language: Sprache
-    translation: Übersetzung eingeben...
+    translation: Übersetzung
+    collection_name: Sammlungsname
     archive_divider: Archivieren
-    archive_field: Wählen Sie ein Feld...
+    archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
-    divider: Sortieren
+    sort_divider: Sortieren
     sort_field: Wählen Sie ein Feld...
-    accountability_divider: Verantwortung
+    accountability_divider: Verantwortlichkeit
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1089,7 +1095,7 @@ embed: Einbetten
 fallback_icon: Fallback-Symbol
 field: Feld | Felder
 file: Datei
-file_library: Datei-Browser
+file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 icon: Symbol
@@ -1123,7 +1129,7 @@ settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
-something_went_wrong: Irgendwas ist schief gelaufen...
+something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
@@ -1132,10 +1138,22 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Ein Filterobjekt konfigurieren.
+    add_filter: Filter hinzufügen
+    add_group: Und / Oder Gruppe
+    add_value: Wert hinzufügen
+    all: Alle
+    any: Irgendeiner
+    and: und
+    of_the_following: der folgenden
+    no_rules: Keine konfigurierten Regeln
+    change_value: Klicken um Wert zu ändern
+    placeholder: Regeln hierher ziehen
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
@@ -1200,7 +1218,7 @@ interfaces:
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
   presentation-divider:
-    divider: Divider
+    divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
     inline_title: Inline-Titel
@@ -1288,7 +1306,7 @@ interfaces:
     folder: Ordner
     description: Ordner auswählen
     field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
-    root_name: Root-Ordner für Dateien
+    root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
     radio-buttons: Radio Buttons
@@ -1344,7 +1362,6 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
-    language_field: Sprachfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1368,7 +1385,7 @@ interfaces:
     results_path: Pfad Ergebnis
     value_path: Wertpfad
     trigger: Trigger
-    rate: Rate
+    rate: Frequenz
   group-raw:
     name: Rohgruppe
     description: Felder so anzeigen wie sie sind
@@ -1381,6 +1398,8 @@ interfaces:
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
 displays:
+  translations:
+    translations: Übersetzungen
   boolean:
     boolean: Boolean
     description: Ein-/Aus-Status anzeigen
@@ -1500,8 +1519,6 @@ layouts:
     invalid_geometry: Ungültige Geometrie
     auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
     search_this_area: Diesen Bereich durchsuchen
-    clear_data_filter: Datenfilter löschen
-    clear_location_filter: Standortfilter löschen
 panels:
   metric:
     name: Metrik

@@ -291,6 +291,8 @@ select_a_collection: Velg en Kolleksjon
 active: Aktiv
 users: Brukere
 activity: Aktivitet
+ip_address: IP-addresse
+user_agent: Brukeragent
 webhooks: Webhooks
 field_width: Feltbredde
 add_filter: Legg til filter
@@ -421,7 +423,7 @@ field_options:
   directus_collections:
     language: Språk
     archive_divider: Arkiv
-    divider: Sorter
+    sort_divider: Sorter
   directus_roles:
     fields:
       icon_name: Ikon
@@ -470,6 +472,9 @@ sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
+  filter:
+    add_filter: Legg til filter
+    all: Alle
   presentation-links:
     primary: Primær
   system-collection:
@@ -494,6 +499,8 @@ interfaces:
   boolean:
     label_default: Aktivert
 displays:
+  translations:
+    translations: Oversettelser
   boolean:
     boolean: Sann/usann
   collection:

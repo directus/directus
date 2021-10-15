@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Минути
+hours: Часа
 month: Месец
 year: Година
 select_all: Избиране на всичко
@@ -433,6 +435,9 @@ no_other_dashboards_copy: Все още нямате други табла.
 inactive: Неактивен
 users: Потребители
 activity: Активности
+action: Действие
+ip_address: IP адрес
+user_agent: Потребителски агент
 webhooks: Уеб-куки
 decimals: Десетични знаци
 value_decimals: Десетични знаци
@@ -808,10 +813,12 @@ system_fields_locked: Системните полета са заключени 
 directus_collection:
   directus_activity: Профилирани логове за всички събития
   directus_collections: Допълнителна кофигурация и данни
+  directus_dashboards: Табла в модула за задълбочен анализ
   directus_fields: Допълнителна кофигурация и данни
   directus_files: Мета данни за всички файлове
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
+  directus_panels: Панели в таблото на задълбочения анализ
   directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
   directus_relations: Релационни настройки и мета данни
@@ -904,6 +911,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
@@ -972,6 +980,7 @@ field_options:
     additional_transforms: Допълнителни трансформации
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Токен за mapbox
+    basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
@@ -991,13 +1000,14 @@ field_options:
     hidden_label: Скриване в приложението
     singleton: Използване като единствен запис
     language: Език
-    translation: Въвеждане на превод...
+    translation: Превод
+    collection_name: Име на колекцията
     archive_divider: Архивиране
-    archive_field: Избор на поле...
+    archive_field_placeholder: Избор на поле...
     archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
-    divider: Сортиране
+    sort_divider: Сортиране
     sort_field: Избор на поле...
     accountability_divider: Профилиране
   directus_files:
@@ -1133,6 +1143,19 @@ view_project: Преглед на проект
 report_error: Докладване на грешка
 start: Начало
 interfaces:
+  filter:
+    name: Филтър
+    description: Конфигуриране на обект използван за филтриране
+    add_filter: Добавяне на филтър
+    add_group: И/или група
+    add_value: Добавяне на стойност
+    all: Всичко
+    any: Който и да е
+    and: и
+    of_the_following: от следните
+    no_rules: Няма зададени правила
+    change_value: Кликнете за промяна
+    placeholder: Привлачете правилата тук
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон
@@ -1365,7 +1388,7 @@ interfaces:
     results_path: Път до резултатите
     value_path: Път до стойността
     trigger: Задействане
-    rate: Оценка
+    rate: Скорост
   group-raw:
     name: Обикновена група
     description: Показване на полетата, както са си
@@ -1378,6 +1401,13 @@ interfaces:
     start_open: Отворена в началото
     start_closed: Затворена в началото
 displays:
+  translations:
+    translations: Преводи
+    description: Преглед на преводите
+    enable: Включване
+    user_language: Използване на езика на потребителя
+    default_language: Език по подразбиране
+    language_field: Поле за език
   boolean:
     boolean: Булев
     description: Показване на активно и неактивно състояние
@@ -1498,7 +1528,8 @@ layouts:
     auto_location_filter: Филтриране на данните спрямо границите
     search_this_area: Търсене в тази зона
     clear_data_filter: Изчистване на филтрирането
-    clear_location_filter: Изчистване на локацията
+    clear_location_filter: Изчистване на филтрирането
+    no_results_here: Няма резултати в тази зона
 panels:
   metric:
     name: Метричен Индикатор

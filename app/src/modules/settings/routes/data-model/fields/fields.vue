@@ -1,6 +1,8 @@
 <template>
 	<private-view :title="collectionInfo && collectionInfo.name">
-		<template #headline>{{ t('settings_data_model') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
 				<v-icon name="arrow_back" />
@@ -142,7 +144,10 @@ export default defineComponent({
 			collection
 		);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const hasEdits = computed<boolean>(() => {
+			if (!edits.value.meta) return false;
+			return Object.keys(edits.value.meta).length > 0;
+		});
 
 		useShortcut('meta+s', () => {
 			if (hasEdits.value) saveAndStay();

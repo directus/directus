@@ -1,147 +1,46 @@
 <template>
-	<!-- eslint-disable-next-line vue/no-v-html -->
-	<div class="md" :class="pageClass" @click="onClick" v-html="html" />
+	<div class="md" :class="pageClass"><slot /></div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUpdated, inject } from 'vue';
-
-import MarkdownIt from 'markdown-it';
-import markdownItTableOfContents from 'markdown-it-table-of-contents';
-import markdownItAnchor from 'markdown-it-anchor';
-import markdownItContainer from 'markdown-it-container';
-import fm from 'front-matter';
-
-import hljs from 'highlight.js';
-import hljsGraphQL from '@/utils/hljs-graphql';
-
-import { getRootPath } from '@/utils/get-root-path';
-
-import { useRoute, useRouter } from 'vue-router';
-
-hljs.registerLanguage('graphql', hljsGraphQL);
-
-const md = new MarkdownIt({
-	html: true,
-	highlight(str, lang) {
-		if (lang && hljs.getLanguage(lang)) {
-			try {
-				return hljs.highlight(str, { language: lang }).value;
-			} catch (err: any) {
-				// eslint-disable-next-line no-console
-				console.warn('There was an error highlighting in Markdown');
-				// eslint-disable-next-line no-console
-				console.error(err);
-			}
-		}
-
-		return '';
-	},
-});
-
-md.use(markdownItTableOfContents, { includeLevel: [2] });
-md.use(markdownItAnchor, { permalink: true, permalinkSymbol: '#' });
-
-function hintRenderer(type: string) {
-	return (tokens: any[], idx: number) => {
-		const token = tokens[idx];
-		let title = token.info.trim().slice(type.length).trim() || '';
-
-		if (title) title = `<div class="hint-title">${title}</div>`;
-
-		if (token.nesting === 1) {
-			return `<div class="${type} hint">${title}\n`;
-		} else {
-			return '</div>\n';
-		}
-	};
-}
-
-md.use(markdownItContainer, 'tip', { render: hintRenderer('tip') });
-md.use(markdownItContainer, 'warning', { render: hintRenderer('warning') });
-md.use(markdownItContainer, 'danger', { render: hintRenderer('danger') });
+import { computed, defineComponent, inject, onMounted, Ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
-	setup(props, { slots }) {
-		const router = useRouter();
+	props: {
+		frontmatter: {
+			type: Object,
+			required: true,
+		},
+	},
+	emits: ['update:title', 'update:modularExtension'],
+	setup(props, { emit }) {
 		const route = useRoute();
 
-		const html = ref('');
-		const pageClass = ref<string>();
+		const mainElement = inject<Ref<Element>>('main-element');
 
-		onMounted(generateHTML);
-		onUpdated(generateHTML);
+		const pageClass = computed(() => props.frontmatter?.pageClass);
 
-		return { html, onClick, pageClass };
+		watch(
+			() => props.frontmatter,
+			() => {
+				emit('update:title', props.frontmatter.title);
+				emit('update:modularExtension', props.frontmatter.modularExtension);
+			},
+			{ immediate: true }
+		);
 
-		function generateHTML() {
-			const source = slots.default?.()[0].children;
-
-			if (!source || typeof source !== 'string') {
-				html.value = '';
-				return;
-			}
-
-			const { attributes, body } = fm<{ pageClass?: string }>(source);
-
-			let markdown = body;
-
-			const rawImages = body.matchAll(/!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g) ?? [];
-			const rootPath = getRootPath();
-
-			for (const rawImage of rawImages) {
-				const filenameParts = rawImage.groups!.filename.split('/');
-
-				while (filenameParts.includes('assets')) {
-					filenameParts.shift();
-				}
-
-				const newFilename = `${rootPath}admin/img/docs/${filenameParts.join('/')}`;
-				const newImage = rawImage[0].replace(rawImage.groups!.filename, newFilename);
-				markdown = markdown.replace(rawImage[0], newImage);
-			}
-
-			pageClass.value = attributes?.pageClass;
-
-			const htmlString = md.render(markdown);
-
-			html.value = htmlString;
-
-			// The Markdown is fetched async on page transition, which means the # link already exists before the markdown does
-			// This will force the main el to scroll down to the targetted element on updates of the content
-			const mainElement = inject('main-element', ref<Element | null>(null));
-
-			if (route.hash) {
+		onMounted(() => {
+			if (route.hash && mainElement) {
 				const linkedEl = document.querySelector(route.hash) as HTMLElement;
 
 				if (linkedEl) {
-					mainElement.value?.scrollTo({ top: linkedEl.offsetTop - 100 });
+					mainElement.value.scrollTo({ top: linkedEl.offsetTop - 100 });
 				}
 			}
-		}
+		});
 
-		function onClick(event: MouseEvent) {
-			if (
-				event.target &&
-				(event.target as HTMLElement).tagName.toLowerCase() === 'a' &&
-				(event.target as HTMLAnchorElement).href
-			) {
-				const link = (event.target as HTMLAnchorElement).getAttribute('href')!;
-
-				if (link.startsWith('http') || link.startsWith('#')) return;
-
-				event.preventDefault();
-
-				const parts = link.split('#');
-
-				parts[0] = parts[0].endsWith('/') ? parts[0].slice(0, -1) : parts[0];
-
-				router.push({
-					path: `/docs${parts[0]}`,
-					hash: `#${parts[1]}`,
-				});
-			}
-		}
+		return { pageClass };
 	},
 });
 </script>

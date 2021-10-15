@@ -31,7 +31,7 @@ import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, va
 import { emitAsyncSafe } from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
-import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
+import { getExtensionManager } from './extensions';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import cache from './middleware/cache';
@@ -74,13 +74,11 @@ export default async function createApp(): Promise<express.Application> {
 
 	await flushCaches();
 
-	await initializeExtensions();
+	const extensionManager = getExtensionManager();
 
-	registerExtensionHooks();
+	await extensionManager.initialize();
 
 	const app = express();
-
-	const customRouter = express.Router();
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
@@ -192,11 +190,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 
-	app.use(customRouter);
-
-	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });
-	registerExtensionEndpoints(customRouter);
+	app.use(extensionManager.getEndpointRouter());
 	await emitAsyncSafe('routes.custom.init.after', { app });
 
 	app.use(notFoundHandler);

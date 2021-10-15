@@ -1,7 +1,7 @@
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import logger from '../logger';
 import { ItemsService, QueryOptions } from '../services/items';
-import { AbstractServiceOptions, Item, PermissionsAction, PrimaryKey, Query } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey } from '../types';
+import { Query, PermissionsAction } from '@directus/shared/types';
 import { filterItems } from '../utils/filter-items';
 
 export class PermissionsService extends ItemsService {
@@ -67,23 +67,5 @@ export class PermissionsService extends ItemsService {
 		}
 
 		return result;
-	}
-
-	/**
-	 * @deprecated Use `readOne` or `readMany` instead
-	 */
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
-		logger.warn(
-			'PermissionsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
-		);
-
-		if (Array.isArray(key)) return await this.readMany(key, query, { permissionsAction: action });
-		return await this.readOne(key, query, { permissionsAction: action });
 	}
 }

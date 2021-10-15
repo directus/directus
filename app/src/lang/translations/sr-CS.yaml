@@ -375,6 +375,9 @@ active: Aktivan
 copy: Kopiraj
 users: Korisnici
 activity: Aktivnost
+action: Akcija
+ip_address: IP adresa
+user_agent: Korisnički Agent
 webhooks: Webhooks
 field_width: Širina Polja
 add_filter: Dodaj Filter
@@ -805,8 +808,10 @@ field_options:
     collection_setup: Podešavanje Kolekcije
     singleton: Tretiraj kao jedinstven objekat
     language: Jezik
+    translation: Prevodi
+    collection_name: Ime Kolekcije
     archive_divider: Arhiviraj
-    divider: Sortiranje
+    sort_divider: Sortiranje
   directus_roles:
     fields:
       icon_name: Ikonica
@@ -897,6 +902,9 @@ value: Vrijednost
 view_project: Pregledaj Projekat
 report_error: Prijavi Grešku
 interfaces:
+  filter:
+    add_filter: Dodaj Filter
+    all: Svi
   presentation-links:
     presentation-links: Linkovi dugmeta
     links: Linkovi
@@ -1095,6 +1103,8 @@ interfaces:
     trigger: Okidač
     rate: Ocjena
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Prikaži uključena i isključena stanja

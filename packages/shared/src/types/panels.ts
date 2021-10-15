@@ -7,8 +7,9 @@ export interface PanelConfig {
 	name: string;
 	icon: string;
 	description?: string;
+
 	component: Component;
-	options: DeepPartial<Field>[] | Component;
+	options: DeepPartial<Field>[] | Component | null;
 	minWidth: number;
 	minHeight: number;
 }

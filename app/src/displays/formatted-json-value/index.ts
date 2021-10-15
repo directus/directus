@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.formatted-json-value.description',
 	types: ['json', 'geometry'],
 	icon: 'settings_ethernet',
-	handler: DisplayJsonValue,
+	component: DisplayJsonValue,
 	options: [
 		{
 			field: 'format',
