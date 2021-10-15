@@ -1,7 +1,7 @@
 <template>
 	<div class="repeater">
 		<v-notice v-if="!value || value.length === 0">
-			{{ t('no_items') }}
+			{{ placeholder }}
 		</v-notice>
 
 		<v-list v-if="value && value.length > 0">
@@ -117,6 +117,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			default: null,
+		},
+		placeholder: {
+			type: String,
+			default: () => i18n.global.t('no_items'),
 		},
 	},
 	emits: ['input'],

@@ -21,6 +21,40 @@
 					<interface-select-icon width="half" :value="values.icon" @input="values.icon = $event" />
 					<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
 					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
+					<interface-list
+						width="full"
+						class="full"
+						:value="values.translations"
+						:placeholder="t('no_translations')"
+						template="{{ translation }} ({{ language }})"
+						:fields="[
+							{
+								field: 'language',
+								name: '$t:language',
+								type: 'string',
+								schema: {
+									default_value: 'en-US',
+								},
+								meta: {
+									interface: 'system-language',
+									width: 'half',
+								},
+							},
+							{
+								field: 'translation',
+								name: '$t:field_options.directus_collections.collection_name',
+								type: 'string',
+								meta: {
+									interface: 'input',
+									width: 'half',
+									options: {
+										placeholder: '$t:field_options.directus_collections.translation_placeholder',
+									},
+								},
+							},
+						]"
+						@input="values.translations = $event"
+					/>
 				</div>
 			</v-card-text>
 
@@ -43,7 +77,7 @@ import { defineComponent, ref, reactive, PropType, watch } from 'vue';
 import { useCollectionsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
-import { CollectionMeta } from '@directus/shared/types';
+import { Collection } from '@/types';
 
 export default defineComponent({
 	name: 'CollectionDialog',
@@ -53,7 +87,7 @@ export default defineComponent({
 			default: false,
 		},
 		collection: {
-			type: Object as PropType<CollectionMeta>,
+			type: Object as PropType<Collection>,
 			default: null,
 		},
 	},
@@ -66,8 +100,9 @@ export default defineComponent({
 		const values = reactive({
 			collection: props.collection?.collection ?? null,
 			icon: props.collection?.icon ?? 'folder',
-			note: props.collection?.note ?? null,
+			note: props.collection?.meta?.note ?? null,
 			color: props.collection?.color ?? null,
+			translations: props.collection?.meta?.translations ?? null,
 		});
 
 		watch(
@@ -76,8 +111,9 @@ export default defineComponent({
 				if (isEqual(newValue, oldValue) === false) {
 					values.collection = props.collection?.collection ?? null;
 					values.icon = props.collection?.icon ?? 'folder';
-					values.note = props.collection?.note ?? null;
+					values.note = props.collection?.meta?.note ?? null;
 					values.color = props.collection?.color ?? null;
+					values.translations = props.collection?.meta?.translations ?? null;
 				}
 			}
 		);
