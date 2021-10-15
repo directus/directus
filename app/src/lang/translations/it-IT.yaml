@@ -835,8 +835,8 @@ fields:
     item: Chiave primaria elemento
     action: Azioni
     collection: Raccolta
-    timestamp: Azione su
-    user: Azione di
+    timestamp: Data e ora
+    user: Autore
     comment: Commento
     user_agent: User agent
     ip: Indirizzo IP
@@ -1133,7 +1133,7 @@ reset: Resetta
 reset_password: Resetta la password
 revisions: Revisioni
 revert: Ripristina
-save: Salvare
+save: Salva
 schema: Schema
 search: Ricerca
 select_existing: Seleziona Esistente

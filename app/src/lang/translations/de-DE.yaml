@@ -326,6 +326,8 @@ date-fns_time_no_seconds: 'H:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Minuten
+hours: Stunden
 month: Monat
 year: Jahr
 select_all: Alle auswählen
@@ -360,6 +362,7 @@ zoom: Zoom
 download: Herunterladen
 open: Öffnen
 open_in_new_window: In neuem Fenster öffnen
+open_folder: Öffne den "{folder}" Ordner
 foreground_color: Vordergrundfarbe
 background_color: Hintergrundfarbe
 upload_from_device: Datei vom Gerät hochladen
@@ -433,6 +436,7 @@ no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
+activity_item: Aktivitäten-Element
 action: Aktion
 ip_address: IP Adresse
 user_agent: Benutzer-Agent
@@ -791,7 +795,7 @@ page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erste
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
-page_help_insights_overview: '**Insights** — Liste der Dashboards, auf welche Sie Zugriff haben.'
+page_help_insights_overview: '**Einblicke** — Liste der Dashboards, auf welche Sie Zugriff haben.'
 page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
@@ -811,10 +815,12 @@ system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet we
 directus_collection:
   directus_activity: Verantwortungsprotokoll für alle Ereignisse
   directus_collections: Weitere Konfiguration und Metadaten
+  directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
+  directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
@@ -900,6 +906,8 @@ fields:
     role: Rolle
     token: Token
     token_placeholder: Einen sicheren Zugangs-Token eingeben...
+    provider: Anbieter
+    external_identifier: Externer Identifikator
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
@@ -999,8 +1007,12 @@ field_options:
     singleton: Als einzelnes Objekt behandeln
     language: Sprache
     translation: Übersetzung
+    translation_placeholder: Geben Sie eine Übersetzung ein...
     collection_name: Sammlungsname
+    singular_unit: Einzahl-Einheit
+    plural_unit: Mehrzahl-Einheit
     archive_divider: Archivieren
+    archive_field: Archivfeld
     archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
@@ -1008,6 +1020,8 @@ field_options:
     sort_divider: Sortieren
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
+    duplication_divider: Duplikation
+    item_duplication_fields: Artikel Duplikationsfelder
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1136,8 +1150,10 @@ sort_desc: Absteigend sortieren
 template: Vorlage
 require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
+translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1362,6 +1378,7 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
+    language_field: Sprachindikatorfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1400,6 +1417,11 @@ interfaces:
 displays:
   translations:
     translations: Übersetzungen
+    description: Vorschau der Übersetzungen
+    enable: Aktivieren
+    user_language: Aktuelle Benutzersprache verwenden
+    default_language: Standardsprache
+    language_field: Sprachindikatorfeld
   boolean:
     boolean: Boolean
     description: Ein-/Aus-Status anzeigen
@@ -1519,6 +1541,9 @@ layouts:
     invalid_geometry: Ungültige Geometrie
     auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
     search_this_area: Diesen Bereich durchsuchen
+    clear_data_filter: Datenfilter löschen
+    clear_location_filter: Standortfilter löschen
+    no_results_here: Keine Ergebnisse in diesem Bereich
 panels:
   metric:
     name: Metrik

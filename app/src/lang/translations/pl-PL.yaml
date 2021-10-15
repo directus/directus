@@ -643,7 +643,7 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
-insights: Spostrzeżenia (beta)
+insights: Insights (beta)
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -795,7 +795,7 @@ page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do twor
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
-page_help_insights_overview: '**Spostrzeżenia** - Lista pulpitów, do których masz dostęp.'
+page_help_insights_overview: '**Insights** - Lista pulpitów, do których masz dostęp.'
 page_help_insights_dashboard: '**Pulpit** - Obszar roboczy do zarządzania jednym lub kilkoma panelami'
 activity_feed: Kanał aktywności
 add_new: Dodaj nowy
@@ -1044,7 +1044,7 @@ field_options:
         group_placeholder: Oznacz tę grupę...
         type_name: Typ
         choices_always: Zawsze otwarte
-        choices_start_open: Rozpocznij otwarte
+        choices_start_open: Rozpocznij rozwinięty
         choices_start_collapsed: Rozpocznij zwinięty
     collections_name: Kolekcje
     collections_addLabel: Dodaj kolekcję...
@@ -1409,7 +1409,7 @@ interfaces:
     show_header: Pokaż nagłówek grupy
     header_icon: Ikona nagłówka
     header_color: Kolor nagłówka
-    start_open: Rozpocznij otwarte
+    start_open: Rozpocznij rozwinięty
     start_closed: Rozpocznij zamknięte
 displays:
   translations:
