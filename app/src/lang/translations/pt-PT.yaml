@@ -18,7 +18,6 @@ leaf: Folha
 indeterminate: Indeterminado
 exclusive: Exclusivo
 children: Crianças
-db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
 show_archived_items: Mostrar documentos arquivados
 edited: Valor alterado
 required: Obrigatório
