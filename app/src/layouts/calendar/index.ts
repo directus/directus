@@ -62,20 +62,13 @@ export default defineLayout<LayoutOptions>({
 				_and: [
 					{
 						[startDateField.value]: {
-							_gte: formatISO(calendar.value.view.currentStart),
-						},
-					},
-					{
-						[startDateField.value]: {
-							_lte: formatISO(calendar.value.view.currentEnd),
+							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
 						},
 					},
 				],
 			};
 
-			if (filter.value) {
-				calendarFilter._and.push(filter.value);
-			}
+			if (filter.value) calendarFilter._and.push(filter.value);
 
 			return calendarFilter;
 		});
