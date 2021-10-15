@@ -377,6 +377,7 @@ export default defineComponent({
 
 		const archiveFilter = computed(() => {
 			if (!currentCollection.value?.meta) return null;
+			if (!currentCollection.value?.meta?.archive_app_filter) return null;
 
 			const field = currentCollection.value.meta.archive_field;
 
