@@ -142,7 +142,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function useItemOptions() {
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
-			const sort = syncRefProperty(layoutQuery, 'sort', primaryKeyField.value ? [primaryKeyField.value?.field] : []);
+			const sort = syncRefProperty(layoutQuery, 'sort', () =>
+				primaryKeyField.value ? [primaryKeyField.value?.field] : []
+			);
+
 			const fields = syncRefProperty(
 				layoutQuery,
 				'fields',
