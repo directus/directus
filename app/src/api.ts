@@ -37,7 +37,13 @@ export const onRequest = (config: AxiosRequestConfig): Promise<RequestConfig> =>
 	};
 
 	return new Promise((resolve) => {
-		queue.add(() => resolve(requestConfig));
+		if (config.url && config.url === '/auth/refresh') {
+			queue.pause();
+			resolve(requestConfig);
+			queue.start();
+		} else {
+			queue.add(() => resolve(requestConfig));
+		}
 	});
 };
 
