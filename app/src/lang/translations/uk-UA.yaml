@@ -50,7 +50,6 @@ indeterminate: Не вдалось визначити
 edit_collection: Редагувати збірку
 exclusive: Винятково
 children: Дочірні елементи
-db_only_click_to_configure: 'Можливе використання лише бази даних: натисніть для налаштування '
 show_archived_items: Показати архівні елементи
 edited: Значення відредаговано
 required: Обов'язкове
