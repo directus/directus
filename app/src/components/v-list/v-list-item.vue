@@ -82,6 +82,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		scope: {
+			type: String,
+			default: 'v-list',
+		},
 	},
 	emits: ['click'],
 	setup(props, { emit }) {
@@ -97,6 +101,7 @@ export default defineComponent({
 
 		useGroupable({
 			value: props.value,
+			group: props.scope,
 		});
 
 		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
