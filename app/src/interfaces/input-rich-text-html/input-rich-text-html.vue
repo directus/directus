@@ -191,7 +191,7 @@ export default defineComponent({
 			default: '',
 		},
 		toolbar: {
-			type: Array as PropType<string[]>,
+			type: Array as PropType<string[] | null>,
 			default: () => [
 				'bold',
 				'italic',
@@ -315,7 +315,7 @@ export default defineComponent({
 				styleFormats = props.customFormats;
 			}
 
-			let toolbarString = props.toolbar
+			let toolbarString = (props.toolbar ?? [])
 				.map((t) =>
 					t
 						.replace(/^link$/g, 'customLink')

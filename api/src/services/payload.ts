@@ -411,12 +411,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -479,12 +479,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -580,7 +580,7 @@ export class PayloadService {
 
 				savedPrimaryKeys.push(
 					...(await itemsService.upsertMany(recordsToUpsert, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					}))
 				);
 
@@ -610,7 +610,7 @@ export class PayloadService {
 						query,
 						{ [relation.field]: null },
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -628,7 +628,7 @@ export class PayloadService {
 							[relation.field]: parent || payload[currentPrimaryKeyField],
 						})),
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -644,7 +644,7 @@ export class PayloadService {
 								[relation.field]: parent || payload[currentPrimaryKeyField],
 							},
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}
@@ -675,7 +675,7 @@ export class PayloadService {
 							query,
 							{ [relation.field]: null },
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}

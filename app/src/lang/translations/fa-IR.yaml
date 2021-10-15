@@ -222,6 +222,8 @@ interfaces:
   system-folder:
     folder: Folder
 displays:
+  translations:
+    translations: ترجمه‌ها
   boolean:
     boolean: بولین
   labels:

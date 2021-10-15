@@ -174,6 +174,7 @@ import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Role } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
@@ -301,6 +302,7 @@ export default defineComponent({
 					confirmDelete.value = false;
 				} catch (err: any) {
 					error.value = err;
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}
