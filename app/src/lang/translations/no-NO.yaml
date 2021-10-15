@@ -9,7 +9,6 @@ field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
 add_field: Legg til felt
 role_name: Rollenavn
-db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
 show_archived_items: Vis arkiverte elementer
 edited: Verdi endret
 required: Påkrevd
