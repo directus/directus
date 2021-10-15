@@ -404,6 +404,7 @@ export default defineComponent({
 				router.push(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
+				confirmDelete.value = false;
 			}
 		}
 

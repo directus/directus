@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, watch, PropType, ref } from 'vue';
+import { defineComponent, watch, PropType, ref, inject, Ref } from 'vue';
 
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
@@ -214,9 +214,16 @@ export default defineComponent({
 		const sizeWritable = useSync(props, 'size', emit);
 		const sortWritable = useSync(props, 'sort', emit);
 
+		const mainElement = inject<Ref<Element | undefined>>('main-element');
+
 		const layoutElement = ref<HTMLElement>();
 
 		const { width } = useElementSize(layoutElement);
+
+		watch(
+			() => props.page,
+			() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
+		);
 
 		watch(width, () => {
 			emit('update:width', width.value);

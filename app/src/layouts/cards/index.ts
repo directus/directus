@@ -4,7 +4,7 @@ import CardsOptions from './options.vue';
 import CardsActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { toRefs, inject, computed, ref, watch } from 'vue';
+import { toRefs, computed, ref } from 'vue';
 import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -30,8 +30,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { t, n } = useI18n();
 
 		const relationsStore = useRelationsStore();
-
-		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -174,13 +172,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
 			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort.value);
-
-			watch(
-				() => page.value,
-				() => {
-					mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' });
-				}
-			);
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value || !props.collection) return [];

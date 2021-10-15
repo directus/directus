@@ -57,14 +57,14 @@
 		"simple-git-hooks": "2.6.1",
 		"sqlite3": "5.0.2",
 		"stylelint": "13.13.1",
-		"stylelint-config-prettier": "9.0.2",
+		"stylelint-config-prettier": "9.0.3",
 		"stylelint-config-rational-order": "0.1.2",
 		"stylelint-config-standard": "22.0.0",
 		"stylelint-order": "4.1.0",
 		"stylelint-scss": "3.21.0",
 		"supertest": "6.1.6",
 		"tedious": "14.0.0",
-		"ts-jest": "27.0.5",
+		"ts-jest": "27.0.6",
 		"ts-node": "10.3.0"
 	},
 	"simple-git-hooks": {
