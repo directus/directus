@@ -193,7 +193,7 @@ import AddFolder from '../components/add-folder.vue';
 import SearchInput from '@/views/private/components/search-input';
 import FolderPicker from '../components/folder-picker.vue';
 import emitter, { Events } from '@/events';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
 import useFolders, { Folder } from '@/composables/use-folders';
@@ -301,6 +301,13 @@ export default defineComponent({
 
 		onMounted(() => emitter.on(Events.upload, refresh));
 		onUnmounted(() => emitter.off(Events.upload, refresh));
+
+		onBeforeRouteLeave(() => {
+			selection.value = [];
+		});
+		onBeforeRouteUpdate(() => {
+			selection.value = [];
+		});
 
 		const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
