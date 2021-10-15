@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, toRefs } from 'vue';
 import { useNavigation } from '../composables/use-navigation';
 import { useCollectionsStore } from '@/stores/collections';
 import { orderBy, isNil } from 'lodash';
@@ -38,9 +38,17 @@ import NavigationItem from './navigation-item.vue';
 
 export default defineComponent({
 	components: { NavigationItem },
-	setup() {
+	props: {
+		currentCollection: {
+			type: String,
+			required: true,
+		},
+	},
+	setup(props) {
 		const { t } = useI18n();
-		const { activeGroups, showHidden } = useNavigation();
+		const { currentCollection } = toRefs(props);
+		const { activeGroups, showHidden } = useNavigation(currentCollection);
+
 		const collectionsStore = useCollectionsStore();
 
 		const contextMenu = ref();

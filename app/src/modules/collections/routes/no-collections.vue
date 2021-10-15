@@ -10,26 +10,15 @@
 			<collections-navigation />
 		</template>
 
-		<v-table
-			v-if="navItems.length > 0"
-			v-model:headers="tableHeaders"
-			:items="navItems"
-			show-resize
-			fixed-header
-			@click:row="navigateToCollection"
-		>
-			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon" :color="item.color" />
-			</template>
-		</v-table>
-
-		<v-info v-else icon="box" :title="t('no_collections')" center>
+		<v-info icon="box" :title="t('no_collections')" center>
 			<template v-if="isAdmin">
 				{{ t('no_collections_copy_admin') }}
 			</template>
+
 			<template v-else>
 				{{ t('no_collections_copy') }}
 			</template>
+
 			<template v-if="isAdmin" #append>
 				<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
@@ -46,9 +35,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
-import { HeaderRaw } from '@/components/v-table/types';
 import CollectionsNavigation from '../components/navigation.vue';
-import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 
 export default defineComponent({
@@ -60,32 +47,11 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		const router = useRouter();
-
 		const userStore = useUserStore();
-
-		const tableHeaders = ref<HeaderRaw[]>([
-			{
-				text: '',
-				value: 'icon',
-				width: 42,
-				sortable: false,
-			},
-			{
-				text: t('name'),
-				value: 'name',
-				width: 240,
-			},
-			{
-				text: t('note'),
-				value: 'note',
-				width: 360,
-			},
-		]);
 
 		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
-		return { t, tableHeaders, isAdmin, navItems: [] };
+		return { t, isAdmin };
 	},
 });
 </script>

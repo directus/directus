@@ -177,7 +177,7 @@
 			</template>
 
 			<template #navigation>
-				<collections-navigation />
+				<collections-navigation :current-collection="collection" />
 			</template>
 
 			<v-info

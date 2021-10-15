@@ -13,7 +13,7 @@
 					<v-input
 						v-model="values.collection"
 						:disabled="!!collection"
-						class="full"
+						class="full collection-key"
 						db-safe
 						autofocus
 						:placeholder="t('folder_key')"
@@ -41,7 +41,6 @@ import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineComponent, ref, reactive, PropType, watch } from 'vue';
 import { useCollectionsStore } from '@/stores';
-import { router } from '@/router';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { CollectionMeta } from '@directus/shared/types';
@@ -123,5 +122,9 @@ export default defineComponent({
 
 .full {
 	grid-column: 1 / span 2;
+}
+
+.collection-key {
+	--v-input-font-family: var(--family-monospace);
 }
 </style>
