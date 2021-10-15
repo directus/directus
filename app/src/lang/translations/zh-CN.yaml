@@ -50,7 +50,6 @@ indeterminate: 不确定的状态
 edit_collection: 编辑模型
 exclusive: 唯一的
 children: 子页面
-db_only_click_to_configure: '仅限数据库：点击配置 '
 show_archived_items: 显示存档项目
 edited: 已编辑的值
 required: 必填
@@ -1062,6 +1061,9 @@ generate_and_save_uuid: 生成并保存 UUID
 save_current_user_id: 保存当前用户 ID
 save_current_user_role: 保存当前用户角色
 save_current_datetime: 保存当前日期/时间
+always_open: 总是展开
+start_open: 默认打开
+start_collapsed: 默认收起
 block: 阻止
 inline: 内联
 comment: 注释

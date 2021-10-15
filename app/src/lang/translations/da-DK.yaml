@@ -36,7 +36,6 @@ add_field: Tilføj Felt
 role_name: Rollenavn
 exclusive: Eksklusiv
 children: Underordnede
-db_only_click_to_configure: 'Kun i databasen: Klik for at konfigurere '
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
 required: Påkrævet

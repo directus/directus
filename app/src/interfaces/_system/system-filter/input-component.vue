@@ -17,6 +17,15 @@
 		placeholder="--"
 		@input="emitValueDebounced($event.target.value)"
 	/>
+	<v-select
+		v-else-if="is === 'select'"
+		inline
+		:items="choices"
+		:model-value="value"
+		allow-other
+		:placeholder="t('select')"
+		@update:model-value="emitValueDebounced($event)"
+	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
 			<v-icon
@@ -45,6 +54,12 @@ import { debounce } from 'lodash';
 import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+type Choice = {
+	text: string;
+	value: string | number;
+	children?: Choice[];
+};
+
 export default defineComponent({
 	props: {
 		is: {
@@ -62,6 +77,10 @@ export default defineComponent({
 		focus: {
 			type: Boolean,
 			default: true,
+		},
+		choices: {
+			type: Array as PropType<Choice[]>,
+			default: () => [],
 		},
 	},
 	emits: ['input'],

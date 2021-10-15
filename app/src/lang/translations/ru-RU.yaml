@@ -50,7 +50,6 @@ indeterminate: Неопределенный
 edit_collection: Изменить коллекцию
 exclusive: Эксклюзивный
 children: Дочерние элементы
-db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать элементы в архиве
 edited: Значение изменено
 required: Необходимые
@@ -1065,6 +1064,9 @@ generate_and_save_uuid: Создать и Сохранить UUID
 save_current_user_id: Сохранить ID Текущего Пользователя
 save_current_user_role: Сохранить Роль Текущего Пользователя
 save_current_datetime: Сохранить Текущую Дату/Время
+always_open: Всегда открыто
+start_open: Раскрыта
+start_collapsed: Начать свернутым
 block: Блокировать
 inline: Строчный
 comment: Комментарий

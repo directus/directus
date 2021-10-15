@@ -21,8 +21,8 @@
 			:small-header="currentLayout?.smallHeader"
 		>
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="currentCollection.icon" :color="currentCollection.color" />
+				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
+					<v-icon :name="archive ? 'archive' : currentCollection.icon" :color="currentCollection.color" />
 				</v-button>
 			</template>
 
@@ -146,7 +146,7 @@
 							<v-button secondary @click="confirmArchive = false">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button kind="warning" :loading="archiving" @click="archive">
+							<v-button kind="warning" :loading="archiving" @click="archiveItems">
 								{{ t('archive') }}
 							</v-button>
 						</v-card-actions>
@@ -177,8 +177,7 @@
 			</template>
 
 			<template #navigation>
-				<collections-navigation-search />
-				<collections-navigation />
+				<collections-navigation :current-collection="collection" />
 			</template>
 
 			<v-info
@@ -264,7 +263,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
 import CollectionsNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
@@ -290,7 +288,6 @@ export default defineComponent({
 	name: 'CollectionsCollection',
 	components: {
 		CollectionsNavigation,
-		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		LayoutSidebarDetail,
 		SearchInput,
@@ -308,7 +305,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		showArchive: {
+		archive: {
 			type: Boolean,
 			default: false,
 		},
@@ -356,7 +353,7 @@ export default defineComponent({
 			deleting,
 			batchDelete,
 			confirmArchive,
-			archive,
+			archive: archiveItems,
 			archiving,
 			error: deleteError,
 			batchEditActive,
@@ -380,6 +377,7 @@ export default defineComponent({
 
 		const archiveFilter = computed(() => {
 			if (!currentCollection.value?.meta) return null;
+			if (!currentCollection.value?.meta?.archive_app_filter) return null;
 
 			const field = currentCollection.value.meta.archive_field;
 
@@ -389,7 +387,7 @@ export default defineComponent({
 			if (archiveValue === 'true') archiveValue = true;
 			if (archiveValue === 'false') archiveValue = false;
 
-			if (props.showArchive) {
+			if (props.archive) {
 				return {
 					[field]: {
 						_eq: archiveValue,
@@ -432,7 +430,7 @@ export default defineComponent({
 			breadcrumb,
 			clearFilters,
 			confirmArchive,
-			archive,
+			archiveItems,
 			archiving,
 			batchEditAllowed,
 			batchArchiveAllowed,
@@ -489,7 +487,7 @@ export default defineComponent({
 
 			const error = ref<any>(null);
 
-			return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archive, error };
+			return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archiveItems, error };
 
 			async function batchDelete() {
 				deleting.value = true;
@@ -512,7 +510,7 @@ export default defineComponent({
 				}
 			}
 
-			async function archive() {
+			async function archiveItems() {
 				if (!currentCollection.value?.meta?.archive_field) return;
 
 				archiving.value = true;
@@ -673,6 +671,11 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.header-icon.archive {
+	--v-button-color-disabled: var(--warning);
+	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .layout {

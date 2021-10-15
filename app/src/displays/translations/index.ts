@@ -17,8 +17,8 @@ export default defineDisplay({
 	icon: 'translate',
 	component: DisplayTranslations,
 	options: options,
-	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	groups: ['m2m'],
+	types: ['alias'],
+	groups: ['translations'],
 	fields: (options: Options | null, { field, collection }) => {
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();

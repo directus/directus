@@ -8,4 +8,5 @@ export default defineDisplay({
 	component: ({ value }) => String(value),
 	options: [],
 	types: TYPES,
+	groups: ['file', 'files', 'group', 'm2a', 'm2m', 'm2o', 'o2m', 'presentation', 'standard', 'translations'],
 });

@@ -57,6 +57,7 @@ export default defineLayout<LayoutOptions>({
 
 		const filterWithCalendarView = computed(() => {
 			if (!calendar.value || !startDateField.value) return filter.value;
+
 			const calendarFilter: Filter = {
 				_and: [
 					{
@@ -66,6 +67,7 @@ export default defineLayout<LayoutOptions>({
 					},
 				],
 			};
+
 			if (filter.value) calendarFilter._and.push(filter.value);
 
 			return calendarFilter;

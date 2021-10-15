@@ -5,13 +5,14 @@
 			:active="active"
 			:to="to"
 			:exact="exact"
+			:query="query"
 			:disabled="disabled"
 			:dense="dense"
 			clickable
 			@click="onClick"
 		>
 			<v-list-item-icon
-				v-if="$slots.default && arrowPlacement === 'before'"
+				v-if="$slots.default && arrowPlacement && arrowPlacement === 'before'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
@@ -21,7 +22,7 @@
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon
-				v-if="$slots.default && arrowPlacement === 'after'"
+				v-if="$slots.default && arrowPlacement && arrowPlacement === 'after'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
@@ -51,9 +52,13 @@ export default defineComponent({
 		},
 		active: {
 			type: Boolean,
-			default: false,
+			default: undefined,
 		},
 		exact: {
+			type: Boolean,
+			default: false,
+		},
+		query: {
 			type: Boolean,
 			default: false,
 		},
@@ -82,9 +87,9 @@ export default defineComponent({
 			default: false,
 		},
 		arrowPlacement: {
-			type: String,
+			type: [String, Boolean],
 			default: 'after',
-			validator: (val: string) => ['before', 'after'].includes(val),
+			validator: (val: string | boolean) => ['before', 'after', false].includes(val),
 		},
 	},
 	emits: ['click'],
@@ -133,7 +138,7 @@ export default defineComponent({
 	}
 
 	.items {
-		padding-left: 16px;
+		padding-left: 18px;
 		list-style: none;
 	}
 }

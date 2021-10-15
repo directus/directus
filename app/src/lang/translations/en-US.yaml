@@ -51,7 +51,7 @@ indeterminate: Indeterminate
 edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
-db_only_click_to_configure: 'Database Only: Click to Configure '
+db_only_click_to_configure: 'Database Only: Click to Configure'
 show_archived_items: Show Archived Items
 edited: Value Edited
 required: Required
@@ -257,6 +257,7 @@ invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations
+no_translations: No Translations
 note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
@@ -531,6 +532,8 @@ all_users: All Users
 delete_collection: Delete Collection
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
+make_collection_visible: Make Collection Visible
+make_collection_hidden: Make Collection Hidden
 start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
@@ -621,7 +624,9 @@ all_files: All Files
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
+edit_folder: Edit Folder
 folder_name: Folder Name...
+folder_key: Folder Key...
 add_file: Add File
 replace_file: Replace File
 no_results: No Results
@@ -1091,6 +1096,9 @@ generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
 save_current_user_role: Save Current User Role
 save_current_datetime: Save Current Date/Time
+always_open: Always Open
+start_open: Start Open
+start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment

@@ -62,7 +62,7 @@ fields:
       template: '{{ translation }} ({{ language }})'
       fields:
         - field: language
-          name: $t:field_options.directus_collections.translation
+          name: $t:language
           type: string
           schema:
             default_value: en-US
@@ -195,3 +195,12 @@ fields:
     interface: system-field-tree
     options:
       collectionField: collection
+
+  - field: sort
+    hidden: true
+
+  - field: group
+    hidden: true
+
+  - field: collapse
+    hidden: true
