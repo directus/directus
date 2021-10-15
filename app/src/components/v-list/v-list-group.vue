@@ -72,7 +72,7 @@ export default defineComponent({
 		},
 		scope: {
 			type: String,
-			default: undefined,
+			default: 'v-list',
 		},
 		value: {
 			type: [String, Number],
