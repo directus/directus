@@ -7,8 +7,8 @@ import { createArtist, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
-	const userID = uuid();
-	const roleID = uuid();
+	const userId = uuid();
+	const roleId = uuid();
 
 	beforeEach(async () => {
 		const vendors = getDBsToTest();
@@ -16,9 +16,8 @@ describe('/items', () => {
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 			const database = databases.get(vendor);
-
 			await database!('directus_roles').insert({
-				id: roleID,
+				id: roleId,
 				name: 'test',
 				icon: 'verified',
 				admin_access: true,
@@ -26,13 +25,13 @@ describe('/items', () => {
 			});
 
 			await database!('directus_users').insert({
-				id: userID,
+				id: userId,
 				status: 'active',
 				email: 'test@example.com',
 				password: 'password',
 				first_name: 'Admin',
 				last_name: 'User',
-				role: roleID,
+				role: roleId,
 				token: 'test_token',
 			});
 
@@ -43,35 +42,59 @@ describe('/items', () => {
 				{
 					collection: 'artists',
 				},
+				{
+					collection: 'events',
+				},
+				{
+					collection: 'tours',
+				},
+				{
+					collection: 'organizers',
+				},
 			]);
 
 			if ((await database!.schema.hasTable('artists')) === false) {
 				await database!.schema.createTable('artists', (table) => {
-					table.uuid('id').primary();
+					table.increments('id').primary();
 					table.string('name');
 					table.json('members');
 				});
 			}
 
-			await database!('directus_relations').insert({
-				many_collection: 'artists',
-				many_field: 'favorite_artist',
-				one_collection: 'users',
-				one_field: 'favorite_artist',
-			});
+			if ((await database!.schema.hasTable('users')) === false) {
+				await database!.schema.createTable('users', (table) => {
+					table.increments('id');
+					table.string('name');
+					table.date('birthday');
+					table.string('search_radius');
+					table.time('earliest_events_to_show');
+					table.time('latest_events_to_show');
+					table.string('password');
+					table.integer('shows_attended');
+					table.integer('favorite_artist').unsigned().references('id').inTable('artists');
+				});
+			}
 		}
 	});
 
 	afterEach(async () => {
 		for (const [vendor, connection] of databases) {
 			const database = databases.get(vendor)!;
-			await database('directus_users').where('id', userID).del();
-			await database('directus_roles').where('id', roleID).del();
+			await database('directus_users').where('id', userId).del();
+			await database('directus_roles').where('id', roleId).del();
 			await database('directus_collections').where('collection', 'users').del();
 			await database('directus_collections').where('collection', 'artists').del();
+			await database('directus_collections').where('collection', 'events').del();
+			await database('directus_collections').where('collection', 'tours').del();
+			await database('directus_collections').where('collection', 'organizers').del();
 
+			await database.schema.dropTableIfExists('artists_events');
+			await database.schema.dropTableIfExists('tours_components');
 			await database.schema.dropTableIfExists('users');
 			await database.schema.dropTableIfExists('artists');
+			await database.schema.dropTableIfExists('events');
+			await database.schema.dropTableIfExists('tours');
+			await database.schema.dropTableIfExists('organizers');
 
 			connection.destroy();
 		}
@@ -99,19 +122,17 @@ describe('/items', () => {
 			await databases.get(vendor)!('artists').insert(artist);
 
 			const response = await request(url)
-				.get(`/items/artists/${artist.id}`)
+				.get(`/items/artists/1`)
 				.set('Authorization', 'Bearer test_token')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			if (vendor === 'mssql') {
-				artist.id = artist.id.toUpperCase();
-				expect(response.body.data).toStrictEqual(artist);
-			} else if (vendor === 'postgres') {
+			artist.id = 1;
+			if (vendor === 'postgres') {
 				artist.members = JSON.parse(artist.members);
 				expect(response.body.data).toStrictEqual(artist);
 			} else {
-				expect(response.body.data.members).toStrictEqual(artist.members);
+				expect(response.body.data).toStrictEqual(artist);
 			}
 		});
 	});

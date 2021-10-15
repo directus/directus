@@ -3,7 +3,7 @@ import { music, internet, name, finance, random, datatype, lorem, address, time,
 import { Knex } from 'knex';
 
 type User = {
-	id: string;
+	id?: number;
 	name: string;
 	birthday: Date;
 	search_radius: string;
@@ -15,7 +15,7 @@ type User = {
 };
 
 type Artist = {
-	id: string;
+	id?: number;
 	name: string;
 	members: string;
 };
@@ -72,10 +72,8 @@ export const seedTable = async function (
 };
 
 export const createArtist = (): Artist => ({
-	id: uuid(),
 	name: internet.userName(),
-	// eslint-disable-next-line prettier/prettier
-	members: JSON.stringify({role: internet.userName})
+	members: JSON.stringify({ role: internet.userName }),
 });
 
 export const createEvent = (): Event => ({
@@ -102,7 +100,6 @@ export const createTour = (): Tour => ({
 
 export const createUser = (): User => ({
 	birthday: helpers.contextualCard().dob,
-	id: uuid(),
 	name: `${name.firstName()} ${name.lastName()}`,
 	search_radius: 'string',
 	earliest_events_to_show: time.recent(),
