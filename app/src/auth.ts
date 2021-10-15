@@ -13,12 +13,16 @@ export type LoginCredentials = {
 export async function login(credentials: LoginCredentials): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post(`/auth/login`, {
+	const response = await api.post<any>(`/auth/login`, {
 		...credentials,
 		mode: 'cookie',
 	});
 
 	const accessToken = response.data.data.access_token;
+
+	if (!api.defaults.headers) {
+		api.defaults.headers = {};
+	}
 
 	// Add the header to the API handler for every request
 	api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -70,14 +74,12 @@ idleTracker.on('show', () => {
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
 	// Skip if not logged in
-	if (!api.defaults.headers['Authorization']) return;
+	if (!api.defaults.headers?.['Authorization']) return;
 
 	// Prevent concurrent refreshes
-	if (isRefreshing) {
-		return;
-	} else {
-		isRefreshing = true;
-	}
+	if (isRefreshing) return;
+
+	isRefreshing = true;
 
 	const appStore = useAppStore();
 
@@ -87,7 +89,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	}
 
 	try {
-		const response = await api.post('/auth/refresh', { headers: { Authorization: undefined } });
+		const response = await api.post<any>('/auth/refresh', { headers: { Authorization: undefined } });
 
 		const accessToken = response.data.data.access_token;
 
@@ -95,7 +97,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
-		// logged in without any noticable hickups or delays
+		// logged in without any notable hiccups or delays
 		if (refreshTimeout) clearTimeout(refreshTimeout);
 
 		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
@@ -136,7 +138,7 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	delete api.defaults.headers.Authorization;
+	delete api.defaults.headers?.Authorization;
 
 	clearTimeout(refreshTimeout);
 
