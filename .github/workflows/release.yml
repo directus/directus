@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
@@ -36,7 +36,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16.x'
+          node-version: "16.x"
+          cache: npm
 
       # See https://github.com/npm/cli/issues/3637
       - run: npm i -g npm@7.20.2
@@ -49,7 +50,7 @@ jobs:
       - name: Cache build artifacts
         uses: actions/cache@v2
         with:
-          path: '**/dist'
+          path: "**/dist"
           key: build-artifacts-${{ github.sha }}
 
   publish-npm:
@@ -60,13 +61,14 @@ jobs:
       - name: Restore build artifacts
         uses: actions/cache@v2
         with:
-          path: '**/dist'
+          path: "**/dist"
           key: build-artifacts-${{ github.sha }}
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
 
       # See https://github.com/npm/cli/issues/3637
       - run: npm i -g npm@7.20.2
@@ -86,7 +88,7 @@ jobs:
       - name: Restore build artifacts
         uses: actions/cache@v2
         with:
-          path: '**/dist'
+          path: "**/dist"
           key: build-artifacts-${{ github.sha }}
 
       - name: Set up QEMU
@@ -137,14 +139,13 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: './docker/Dockerfile'
+          file: "./docker/Dockerfile"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-
         # Temp fix
         # https://github.com/docker/build-push-action/issues/252
         # https://github.com/moby/buildkit/issues/1896

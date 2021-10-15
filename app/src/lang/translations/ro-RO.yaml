@@ -87,6 +87,9 @@ comments: Comentarii
 create_collection: Creează Colecție
 users: Utilizatori
 activity: Activitate
+action: Acţiune
+ip_address: Adresă IP
+user_agent: User Agent
 duration: Durată
 status: Stare
 bookmarks: Semne de carte

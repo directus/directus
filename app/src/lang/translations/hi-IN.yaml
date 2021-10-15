@@ -248,7 +248,7 @@ field_options:
   directus_collections:
     language: भाषा
     archive_divider: आर्काइव
-    divider: सॉर्ट
+    sort_divider: सॉर्ट
   directus_roles:
     fields:
       name_name: नाम
