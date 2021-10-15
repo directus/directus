@@ -7,6 +7,8 @@
 
 ## Admin
 
+## Alias
+
 ## API
 
 ## App
@@ -18,6 +20,8 @@ App is written in [Vue.js](https://vuejs.org).
 
 ## Collections
 
+Collections are containers for specific groupings of Items. Each collection represents a **table** in your database.
+
 ## Dashboards
 
 ## Database
@@ -28,6 +32,9 @@ App is written in [Vue.js](https://vuejs.org).
 
 ## Fields
 
+Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents
+a **column** in your database.
+
 ## Files & Assets
 
 ## Interfaces
@@ -36,6 +43,8 @@ App is written in [Vue.js](https://vuejs.org).
 
 Item are objects within a Collection which contain values for one or more fields. Each collection represents a
 **record** in your database.
+
+## Junction Collections
 
 ## Layouts
 
@@ -58,6 +67,14 @@ platform
 
 Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
 platform.
+
+## Title Formatter
+
+Special Casing — If you are trying to update the specific casing (uppercase/lowercase) for a word (eg: `Dna` to `DNA`)
+you will want to add the edge-case to the
+[Format Title package](https://github.com/directus/directus/tree/main/packages/format-title/src). If you feel the case
+passes our [80/20 rule](https://docs.directus.io/contributing/introduction/#feature-requests) you should submit a Pull
+Request to the codebase, otherwise you can update this in your instance.
 
 ## Translations
 

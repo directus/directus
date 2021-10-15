@@ -102,8 +102,8 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
-						path: '/app/introduction',
-						title: 'Introduction',
+						path: '/app/overview',
+						title: 'Overview',
 					},
 					{
 						type: 'page',
@@ -160,8 +160,8 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
-						path: '/configuration/introduction',
-						title: 'Introduction',
+						path: '/configuration/overview',
+						title: 'Overview',
 					},
 					{
 						type: 'page',
@@ -218,12 +218,20 @@ module.exports = {
 					{
 						type: 'page',
 						path: '/configuration/project-settings',
-						title: 'Project Settings*',
+						title: 'Project Settings',
 					},
 					{
 						type: 'page',
 						path: '/configuration/data-model',
 						title: 'Data Model',
+						collapsable: false,
+						children: [
+							{
+								type: 'page',
+								path: '/configuration/relationships',
+								title: 'Relationships',
+							},
+						]
 					},
 					{
 						type: 'page',

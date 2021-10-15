@@ -1,16 +1,9 @@
 # Project Settings
 
-> TK
+> This is where you can adjust all of the **global** settings for your project. Changes saved here are instantly
+> reflected throughout the platform.
 
-All project configuration is handled by the `.env` file within the `/api` directory. This file accepts a number of
-environment variables, each is explained in the following reference:
-
-- [Environment Variables](/reference/environment-variables)
-
-## Adjusting Project Settings
-
-1. Navigate to **Settings > Project Settings**
-2. Configure any of the following **branding fields**
+## Branding
 
 - **Project Name** — The name used at the top of the [Navigation Bar](/concepts/application/#_2-navigation-bar) and on
   the login/public pages
@@ -20,15 +13,17 @@ environment variables, each is explained in the following reference:
 - **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/concepts/application/#_1-module-bar) and on the
   login/public pages. The image is _inset_ within the 64x64 pixel square filled with the Project Color, so we recommend
   using a SVG or PNG logo with transparency to avoid a "boxy" look.
+- **CSS Overrides** — Allows for adding CSS rules to override the App's default styling. Be aware that the App's core
+  code, and therefore its DOM selectors, can change at any time. These updates are not considered a breaking change.
 
 ::: tip Browser FavIcon & Title
 
-The Project Color is also used to set a dynamic favicon, and the Project Name is used in the browser's page title. This
-makes it easier to identify different Directus projects in the browser.
+The Project Color is also used to set a dynamic favicon and the Project Name is used in the browser's page title, making
+it easier to identify different Directus projects.
 
 :::
 
-### Public Pages
+## Public Pages
 
 In addition to the above global Project Settings, you can also apply the following styling to tailor your project's
 [public pages](/guides/projects/#public-pages).
@@ -39,7 +34,7 @@ In addition to the above global Project Settings, you can also apply the followi
 - **Public Note** — A helpful note displayed at the bottom of the public page's right-pane; supports markdown for
   rich-text formatting
 
-### Security
+## Security
 
 - **Auth Password Policy** — Allows setting a policy requirement for all user's passwords, with the following options:
   - None — Not recommended
@@ -48,25 +43,32 @@ In addition to the above global Project Settings, you can also apply the followi
 - **Auth Login Attempts** — Sets the number of failed login attempts allowed before a user's account is locked. Once
   locked, an Admin user is required to unlock the account.
 
-### Files & Thumbnails
+## Files & Thumbnails
 
-#### Creating a Thumbnail Preset
+- **Storage Asset Presets** — Allows setting specific image transformations to simplify requests or limit usage.
+  - Key — A unique identifier allowing faster and easier image transformation requests
+  - Fit — Contain (preserve aspect ratio), Cover (force exact size), Fit Inside, or Fit Outside
+  - Width — The width of the image
+  - Height — The height of the image
+  - Quality — The compression or quality of the image
+  - Without Enlargement — When enabled, images won't be upscaled
+  - Format — Allows changing the output format to: JPG, PNG, WebP, or TIFF
+  - Transforms — Allows adding additional transformations using [Sharp](https://sharp.pixelplumbing.com/api-constructor)
+- **Storage Asset Transform** — For enabling, disabling, or limiting image transformations
+- **Storage Default Folder** — Sets the default folder where new assets are added. This does not affect existing files.
+  Be aware that fields may override this value.
 
-1. Navigate to **Settings > Project Settings**
-2. Scroll to the **Storage Asset Presets** field
-3. Click **Add a New Item**
-4. Enter a unique **Key** for the preset
-5. Enter the **Fit**, **Width**, **Height**, and **Quality** for the preset
-6. Click the **Save** action button in the header
+## Mapping
 
-### App Overrides
+- **Mapbox Access Token** — Create a [Mapbox Access Token](https://docs.mapbox.com/help/glossary/access-token/) and
+  enter it here to improve the platform's mapping experience.
+- **Basemaps** — Allows overriding the Mapbox defaults with custom tiles
 
-See [Styles > Custom CSS](/guides/styles/#custom-css)
+## Module Bar
 
-### Modules
+Allows the following customization of links displayed in the module bar. Show or hide modules by toggling the checkbox,
+reorder links by dragging on the sort handle, or create new custom links with these fields:
 
-- **Module Bar** — Allows the customisation of links displayed in the module bar:
-  - Module Visibility — Show or hide modules by toggling the checkbox.
-  - Link Reordering — Reorder links by dragging on the sort handle.
-  - Link Creation — URLs should start with a `/` for links within the
-    [Directus App](/concepts/application/#the-directus-application).
+- **Name** — The title of the module link, also shown in a tooltip on hover
+- **Icon** — Choose an icon for the module button
+- **URL** — Should start with a `/` for links within the [Directus App](/concepts/application/#the-directus-application)

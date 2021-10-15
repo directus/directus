@@ -67,8 +67,6 @@ undone. Please proceed with caution.
 
 :::
 
----
-
 ## Creating a Role
 
 1. Navigate to **Settings > Roles & Permissions**
@@ -90,79 +88,6 @@ undone. Please proceed with caution.
 - **Users in Role** — A list of all users within this role
 - **Module Navigation** — Overrides the visible modules
 - **Collection Navigation** — Overrides the collection module's navigation
-
-### Customizing the Module Navigation
-
-The options in the [Module Bar](/concepts/application/#_1-module-bar) can be overridden with custom options per role.
-When this setting is empty, the default modules are used.
-
-1. Navigate to **Settings > Roles & Permissions > [Role Name]**
-2. Scroll to the **Module Navigation** field
-3. Click the **Add a new item** button to add a module
-4. Choose an **Icon** to display for the module
-5. Choose a **Name** for the module
-6. Enter a relative (App) or absolute (external) **link** for the module
-7. Use the drag handles to **drag-and-drop** the modules into the desired order
-
-If you are looking to replicate the default modules, paste the following configuration into the Module Navigation field
-using the Raw Value field label option.
-
-```json
-[
-	{
-		"icon": "box",
-		"name": "Collections",
-		"link": "/collections"
-	},
-	{
-		"icon": "people_alt",
-		"name": "User Directory",
-		"link": "/users"
-	},
-	{
-		"icon": "folder",
-		"name": "File Library",
-		"link": "/files"
-	},
-	{
-		"icon": "info",
-		"name": "Documentation",
-		"link": "/docs"
-	}
-]
-```
-
-::: warning Settings Module
-
-The settings module is not controlled by this configuration. It is always added to the end of the list for any user's
-with Admin Access.
-
-:::
-
-::: tip Customizing Existing Modules
-
-You can enter the link to an existing module to customize its name or icon. For example, you can use `/collections` to
-override the Collections module.
-
-:::
-
-### Customizing the Collection Navigation
-
-The collections in the [Navigation Bar](/concepts/application/#_2-navigation-bar) can be overridden with custom options
-per role. When this setting is empty, all collections that the user has permission to see are shown alphabetically in a
-single, unlabeled group.
-
-1. Navigate to **Settings > Roles & Permissions > [Role Name]**
-2. Scroll to the **Collection Navigation** field
-3. Click the **Add New Group** button to add a Grouping
-4. Enter a **Group Name**, or leave it empty to simply show a divider
-5. Choose if the group's **Accordion** will be...
-   - Always Open (Default)
-   - Start Open
-   - Start Collapsed
-6. Click the **Add New Collection** button to add a Collection
-7. Choose a **Collection** from the dropdown
-8. Use the drag handles to **drag-and-drop** the groups/collections into the desired order
 
 ## Deleting a Role
 
@@ -191,14 +116,7 @@ Public access permissions.
 
 :::
 
----
-
-## Configuring Public Permissions
-
-Public permissions are managed the same as [normal role permissions](#configuring-role-permissions), however they are
-done through the Public Role.
-
-## Configuring Role Permissions
+## Configuring Permissions
 
 Directus possesses an extremely granular, yet easy to configure, permissions system. When creating a new role,
 permissions are disabled for all project collections by default — allowing you to give explicit access to only what is
@@ -248,11 +166,10 @@ App's soft-delete and manual sorting features.
 
 ### Update (Custom Access)
 
-5. **Item Permissions** control which items can be updated, as defined by the [Filter Rules](/reference/filter-rules))
-   entered.
+5. **Item Permissions** control which items can be updated, as defined by [Filter Rules](/reference/filter-rules).
 6. **Field Permissions** control which fields can be updated. Fields are individually toggled.
-7. **Field Validation** define the rules for field values on update, as defined by the
-   [Filter Rules](/reference/filter-rules) entered.
+7. **Field Validation** define the rules for field values on update, as defined by
+   [Filter Rules](/reference/filter-rules).
 8. **Field Presets** control the field defaults when updating an item
 
 ### Delete (Custom Access)
@@ -260,35 +177,37 @@ App's soft-delete and manual sorting features.
 5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules/))
    entered.
 
-## Configuring System Permissions
+---
 
-In addition to setting permissions for your project's collections, you can also tailor the permissions for system
+### Configuring Public Permissions
+
+The Public permissions control what project data is accessible without authentication. This is managed via the Public
+"role", which is included in the system by default and can not be deleted.
+
+### Configuring System Permissions
+
+In addition to permissions for _your_ custom collections, you can also customize the permissions for _system_
 collections. It is important to note that when [App Access](/guides/roles/#configuring-a-role) is enabled for a role,
 Directus will automatically add permission for the necessary system collections. To edit system permissions, simply
-click the "System Collections" toggle, and then edit permissions using the same steps as with project collections.
+click "System Collections" at the bottom of the permissions configuration.
 
-::: tip Resetting System Permissions
+There are two pre-configured options you can use for resetting the role's system permissions and ensure proper App
+access. To access these, click "System Collections" to expand, and then click one of the buttons at the bottom of the
+listing.
 
-To reset the role's system permissions for proper App access, expand the system collections and then click "Reset System
-Permissions" at the bottom of the listing.
-
-:::
+- **App Access Minimum** — The minimum permissions required to properly access the App
+- **Recommended Defaults** — More permissive but balanced for a better App user experience
 
 ## Configuring Workflows
 
 Workflows are a way to add structured stages to the flow of content authoring. They are primarily defined through the
 permissions for a Collection, but can be further enhanced via email notifications, custom interfaces, and automation.
-Directus supports endlessly configurable workflows, so we will only cover one example below.
+Directus supports endlessly configurable workflows, so we will only cover one simple example below.
 
-Let's assume you would like to create a structured workflow for an **Articles** collection. The first step is to
-[Create a Field](/guides/fields/#creating-a-field) that can track the article "status" — we'll call it **Status**, but
-it can be named anything.
-
-Now you can configure your permissions based on the possible values of that Status field. In this case, those values
-will be various content stages, such as `draft`, `review`, `approved`, and `published`.
-
-Next, you will want to create different Roles to scope each stage of the workflow. Let's keep this simple and assume
-there are only two roles called `author` and `manager`.
-
-Finally, we would configure the permissions for these roles such that they are properly restricted to create content and
-update the status.
+1. To create a structured workflow for **Articles**, the first step is [Creating a Field](#) to track the article
+   "status" — we'll call it **Status**, but it can be named anything.
+2. Next, create different Roles for each stage of the workflow, such as `author` and `manager`.
+3. Finally, configure the Role permissions based on the possible values of that Status field, such as `draft`, `review`,
+   `approved`, and `published`, so that they are properly restricted to create content and update the status.
+   - The Author can create content, but only save a status of `draft` or `review`.
+   - The Manager has additional permissions that allow them to save statuses of `approved` or `published`.

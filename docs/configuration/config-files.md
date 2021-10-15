@@ -1,5 +1,7 @@
 # Configuration Files
 
+> All project configuration is handled by the `/api/.env` file, which accepts the environment variables explained below.
+
 [[toc]]
 
 ## Cache
@@ -54,10 +56,10 @@ possible to cache assets for way longer than you would with the actual content.
 ASSETS_CACHE_TTL="7d"
 ```
 
-## oAuth (Single Sign-On (SSO) / OpenID)
+## OAuth, Single Sign-On (SSO), & OpenID
 
-Directus' oAuth integration provides a powerful alternative way to authenticate into your project. Directus will ask you
-to login on the external service, and if your user exists in Directus, you'll be logged in automatically.
+The Directus OAuth integration provides a powerful alternative way to authenticate into your project. Directus will ask
+you to login on the external service, and if your user exists in Directus, you'll be logged in automatically.
 
 Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the oAuth flow. This means that
 there's hundreds of services that are supported out of the box. For example, enabling logging in through GitHub is as
