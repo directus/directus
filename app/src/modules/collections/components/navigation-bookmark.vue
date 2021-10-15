@@ -1,12 +1,15 @@
 <template>
-	<v-list-item :to="bookmark.to" query class="bookmark" @contextmenu.prevent.stop="activateContextMenu">
+	<v-list-item
+		:to="`/collections/${bookmark.collection}?bookmark=${bookmark.id}`"
+		query
+		class="bookmark"
+		clickable
+		@contextmenu.prevent.stop="activateContextMenu"
+	>
 		<v-list-item-icon><v-icon name="bookmark_outline" /></v-list-item-icon>
 		<v-list-item-content>
 			<v-text-overflow :text="bookmark.bookmark" />
 		</v-list-item-content>
-		<v-list-item-icon v-if="bookmark.scope !== 'user'" class="bookmark-scope">
-			<v-icon :name="bookmark.scope === 'role' ? 'people' : 'public'" />
-		</v-list-item-icon>
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
@@ -167,17 +170,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.bookmark-scope {
-	--v-icon-color: var(--foreground-subdued);
-
-	opacity: 0;
-	transition: opacity var(--fast) var(--transition);
-}
-
-.bookmark:hover .bookmark-scope {
-	opacity: 1;
-}
-
 .danger {
 	--v-list-item-color: var(--danger);
 	--v-list-item-icon-color: var(--danger);

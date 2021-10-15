@@ -84,7 +84,8 @@ import { useI18n } from 'vue-i18n';
 import { ComponentPublicInstance, defineComponent, PropType, ref, inject, Ref, watch } from 'vue';
 import { useSync } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import { Field, Item, Collection, Filter } from '@directus/shared/types';
+import { Collection } from '@/types';
+import { Field, Item, Filter } from '@directus/shared/types';
 import { HeaderRaw } from '@/components/v-table/types';
 
 export default defineComponent({

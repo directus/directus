@@ -1,6 +1,8 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { Collection, CollectionRaw } from '@directus/shared/types';
+import { Collection as CollectionRaw, DeepPartial } from '@directus/shared/types';
+import { Collection } from '@/types';
+import { getCollectionType } from '@directus/shared/utils';
 import { notEmpty } from '@/utils/is-empty/';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -38,7 +40,7 @@ export const useCollectionsStore = defineStore({
 	},
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/collections`, { params: { limit: -1 } });
+			const response = await api.get<any>(`/collections`, { params: { limit: -1 } });
 
 			const collections: CollectionRaw[] = response.data.data;
 
@@ -46,6 +48,7 @@ export const useCollectionsStore = defineStore({
 				const icon = collection.meta?.icon || 'label';
 				const color = collection.meta?.color;
 				const name = formatTitle(collection.collection);
+				const type = getCollectionType(collection);
 
 				if (collection.meta && notEmpty(collection.meta.translations)) {
 					for (let i = 0; i < collection.meta.translations.length; i++) {
@@ -68,6 +71,7 @@ export const useCollectionsStore = defineStore({
 				return {
 					...collection,
 					name,
+					type,
 					icon,
 					color,
 				};
@@ -94,7 +98,7 @@ export const useCollectionsStore = defineStore({
 		async dehydrate() {
 			this.$reset();
 		},
-		async updateCollection(collection: string, updates: Partial<Collection>) {
+		async updateCollection(collection: string, updates: DeepPartial<Collection>) {
 			try {
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();

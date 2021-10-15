@@ -1,5 +1,5 @@
 <template>
-	<v-list large>
+	<v-list nav>
 		<v-list-item clickable :active="!filterField" @click="clearNavFilter">
 			<v-list-item-icon>
 				<v-icon name="access_time" />

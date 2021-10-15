@@ -60,11 +60,18 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ButtonControl } from '@/utils/geometry/controls';
 import { Geometry } from 'geojson';
 import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } from '@/utils/geometry';
-import { GeoJSONParser, GeoJSONSerializer, SimpleGeometry, MultiGeometry } from '@directus/shared/types';
+import {
+	Field,
+	GeometryType,
+	GeometryFormat,
+	GeoJSONParser,
+	GeoJSONSerializer,
+	SimpleGeometry,
+	MultiGeometry,
+} from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
-import { Field, GeometryType, GeometryFormat } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
 import { useAppStore } from '@/stores';
