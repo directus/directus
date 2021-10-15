@@ -31,7 +31,6 @@ enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirm
 add_field: Alan Ekle
 role_name: Rol Adı
 edit_collection: Koleksiyonu düzenle
-db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
 edited: Değer Düzenlendi
 required: Gerekli

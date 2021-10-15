@@ -36,7 +36,6 @@ leaf: Lapas
 indeterminate: Neapibrėžta
 exclusive: Išskirtinis
 children: Vaikai
-db_only_click_to_configure: 'Tik duomenų bazė: spausti, kad konfigūruoti '
 show_archived_items: Rodyti archyvuotus elementus
 edited: Vertė redaguota
 required: Privalomas

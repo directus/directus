@@ -30,7 +30,6 @@ field_name_translations: 欄位名稱翻譯
 enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
 add_field: 增加欄位
 role_name: 角色名稱
-db_only_click_to_configure: '僅數據庫：單擊進行配置 '
 show_archived_items: 顯示已封存的項目
 required: 必填
 requires_value: 需要值

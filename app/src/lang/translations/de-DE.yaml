@@ -50,7 +50,6 @@ indeterminate: Unbestimmt
 edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
-db_only_click_to_configure: 'Nur in der Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 edited: Bearbeiteter Wert
 required: Erforderlich
@@ -1078,6 +1077,9 @@ generate_and_save_uuid: UUID generieren und speichern
 save_current_user_id: Aktuelle Benutzer-ID speichern
 save_current_user_role: Aktuelle Benutzerrolle speichern
 save_current_datetime: Aktuelles Datum/Zeit speichern
+always_open: Immer geöffnet
+start_open: Geöffnet starten
+start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
@@ -1153,7 +1155,6 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:

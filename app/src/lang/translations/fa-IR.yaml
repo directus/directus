@@ -24,7 +24,6 @@ indeterminate: نامشخص
 edit_collection: ویرایش مجموعه
 exclusive: انحصاری
 children: همراه با کودک
-db_only_click_to_configure: 'فقط پایگاه داده: برای پیکربندی کلیک کنید '
 show_archived_items: نشان دادن یادداشت‌های بایگانی شده
 edited: ارزش ویرایش شد
 required: الزامی

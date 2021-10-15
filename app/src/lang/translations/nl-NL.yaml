@@ -39,7 +39,6 @@ leaf: Blad
 indeterminate: Onbepaald
 exclusive: Exclusief
 children: Onderliggende
-db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
 show_archived_items: Toon Gearchiveerde Items
 edited: Waarde bewerkt
 required: Vereist

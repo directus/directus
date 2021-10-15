@@ -50,7 +50,6 @@ indeterminate: Nieokreślony
 edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
-db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
 show_archived_items: Pokaż zarchiwizowane elementy
 edited: Wartość zmieniona
 required: Wymagane
@@ -1076,6 +1075,9 @@ generate_and_save_uuid: Generuj i zapisz UUID
 save_current_user_id: Zapisz bieżący identyfikator użytkownika
 save_current_user_role: Zapisz bieżącą rolę użytkownika
 save_current_datetime: Zapisz bieżącą datę/czas
+always_open: Zawsze otwarte
+start_open: Rozpocznij rozwinięty
+start_collapsed: Rozpocznij zwinięty
 block: Zablokuj
 inline: W lini
 comment: Komentarz
