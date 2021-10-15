@@ -41,7 +41,7 @@ export default defineComponent({
 	props: {
 		currentCollection: {
 			type: String,
-			required: true,
+			default: null,
 		},
 	},
 	setup(props) {
