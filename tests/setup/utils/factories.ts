@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { music, internet, name, finance, random, datatype, lorem, address, time, helpers } from 'faker';
+import { music, internet, name, finance, random, datatype, lorem, address } from 'faker';
 import { Knex } from 'knex';
 
 type User = {
@@ -7,11 +7,11 @@ type User = {
 	name: string;
 	birthday: Date;
 	search_radius: string;
-	earliest_events_to_show: number;
-	latest_events_to_show: number;
+	earliest_events_to_show: string;
+	latest_events_to_show: string;
 	password: string;
 	shows_attended: number;
-	artist_id?: string;
+	favorite_artist?: number;
 };
 
 type Artist = {
@@ -48,17 +48,13 @@ type JoinTable = {
 	[key: string]: any;
 };
 
-type Item = User | Artist | Tour | Organizer | Event | JoinTable | (() => Artist);
-
-function randomDate(start: Date, end: Date) {
-	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
+type Item = User | Artist | Tour | Organizer | Event | JoinTable;
 
 export const seedTable = async function (
 	knex: Knex<any, unknown>,
 	count: number,
 	table: string,
-	factory: Item
+	factory: Item | (() => Item)
 ): Promise<void> {
 	if (typeof factory === 'object') {
 		await knex(table).insert(factory);
@@ -81,8 +77,8 @@ export const createEvent = (): Event => ({
 	cost: random.float(),
 	description: lorem.paragraphs(2),
 	location: address.streetAddress(),
-	created_at: randomDate(new Date(1030436120350), new Date(1633466120350)),
-	time: randomDate(new Date(1030436120350), new Date(1633466120350)),
+	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
+	time: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	tags: `tags
 ${music.genre}
 ${music.genre}
@@ -99,11 +95,20 @@ export const createTour = (): Tour => ({
 });
 
 export const createUser = (): User => ({
-	birthday: helpers.contextualCard().dob,
+	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	name: `${name.firstName()} ${name.lastName()}`,
 	search_radius: 'string',
-	earliest_events_to_show: time.recent(),
-	latest_events_to_show: time.recent(),
+	earliest_events_to_show: randomTime(),
+	latest_events_to_show: randomTime(),
 	password: 'string',
 	shows_attended: datatype.number(),
 });
+
+function randomDateTime(start: Date, end: Date) {
+	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+function randomTime() {
+	const dateTime = randomDateTime(new Date(1030436120350), new Date(1633466120350)).toUTCString();
+	return dateTime.substring(17, 25);
+}

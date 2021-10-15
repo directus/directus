@@ -3,7 +3,7 @@ import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
-import { createArtist, seedTable } from '../setup/utils/factories';
+import { createArtist, createUser, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -113,6 +113,31 @@ describe('/items', () => {
 
 			expect(response.body.data.length).toBe(100);
 			expect(Object.keys(response.body.data[0]).sort()).toStrictEqual(['id', 'members', 'name']);
+		});
+		it.each(getDBsToTest())(`%p retrieves a user's favorite artist`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const artist = createArtist();
+			const user = createUser();
+			user.favorite_artist = 1;
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+			await seedTable(databases.get(vendor)!, 1, 'users', user);
+			artist.id = 1;
+
+			const response = await request(url)
+				.get('/items/users/1?fields=favorite_artist.*')
+				.set('Authorization', 'Bearer test_token')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			if (vendor === 'postgres') {
+				artist.members = JSON.parse(artist.members);
+				const returnedUser = { favorite_artist: artist };
+
+				expect(response.body.data).toStrictEqual(returnedUser);
+			} else {
+				const returnedUser = { favorite_artist: artist };
+				expect(await response.body.data).toStrictEqual(returnedUser);
+			}
 		});
 	});
 	describe('/:collection/:id', () => {
