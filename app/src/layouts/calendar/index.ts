@@ -57,7 +57,7 @@ export default defineLayout<LayoutOptions>({
 
 		const filterWithCalendarView = computed(() => {
 			if (!calendar.value || !startDateField.value) return filter.value;
-			const newFilter: any = {
+			const calendarFilter: Filter = {
 				_and: [
 					{
 						[startDateField.value]: {
@@ -66,9 +66,9 @@ export default defineLayout<LayoutOptions>({
 					},
 				],
 			};
-			if (filter.value) newFilter._and.push(filter.value);
+			if (filter.value) calendarFilter._and.push(filter.value);
 
-			return newFilter as Filter;
+			return calendarFilter;
 		});
 
 		const template = computed({
