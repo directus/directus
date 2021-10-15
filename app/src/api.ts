@@ -104,7 +104,7 @@ api.interceptors.response.use(onResponse, onError);
 export default api;
 
 export function getToken(): string | null {
-	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+	return api.defaults.headers.common['Authorization']?.split(' ')[1] || null;
 }
 
 export function addTokenToURL(url: string, token?: string): string {
