@@ -6,6 +6,7 @@
 		:value="collection.collection"
 		query
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
+		@contextmenu="activateContextMenu"
 	>
 		<template #activator>
 			<navigation-item-content
@@ -31,6 +32,7 @@
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 		query
+		@contextmenu="activateContextMenu"
 	>
 		<navigation-item-content
 			:search="search"
@@ -39,15 +41,29 @@
 			:color="collection.meta?.color"
 		/>
 	</v-list-item>
+
+	<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+		<v-list>
+			<v-list-item clickable :to="`/collections/${collection.collection}?archive`" exact query>
+				<v-list-item-icon>
+					<v-icon name="archive" outline />
+				</v-list-item-icon>
+				<v-list-item-content>
+					<v-text-overflow :text="t('show_archived_items')" />
+				</v-list-item-content>
+			</v-list-item>
+		</v-list>
+	</v-menu>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { Collection } from '@/types';
 import { Preset } from '@directus/shared/types';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import NavigationItemContent from './navigation-item-content.vue';
 import NavigationBookmark from './navigation-bookmark.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'NavigationItem',
@@ -67,12 +83,20 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
 
 		const childCollections = computed(() => getChildCollections(props.collection));
 
 		const childBookmarks = computed(() => getChildBookmarks(props.collection));
+
+		const contextMenu = ref();
+
+		const hasArchive = computed(
+			() => props.collection.meta?.archive_field && props.collection.meta?.archive_app_filter
+		);
 
 		const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
 
@@ -105,7 +129,17 @@ export default defineComponent({
 			}
 		});
 
-		return { childCollections, childBookmarks, isGroup, to, matchesSearch };
+		return {
+			childCollections,
+			childBookmarks,
+			isGroup,
+			to,
+			matchesSearch,
+			contextMenu,
+			activateContextMenu,
+			t,
+			hasArchive,
+		};
 
 		function getChildCollections(collection: Collection) {
 			let collections = collectionsStore.collections.filter(
@@ -121,6 +155,14 @@ export default defineComponent({
 
 		function getChildBookmarks(collection: Collection) {
 			return presetsStore.bookmarks.filter((bookmark) => bookmark.collection === collection.collection);
+		}
+
+		function activateContextMenu(event: PointerEvent) {
+			if (hasArchive.value) {
+				contextMenu.value.activate(event);
+				event.stopPropagation();
+				event.preventDefault();
+			}
 		}
 	},
 });

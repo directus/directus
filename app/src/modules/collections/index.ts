@@ -122,6 +122,7 @@ export default defineModule({
 					props: (route) => ({
 						collection: route.params.collection,
 						bookmark: route.query.bookmark,
+						archive: 'archive' in route.query,
 					}),
 					beforeEnter: checkForSystem,
 				},
