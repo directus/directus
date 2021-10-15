@@ -74,9 +74,8 @@ idleTracker.on('show', () => {
 });
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
-	if (firstRefresh) {
-		firstRefresh = false;
-	}
+	// Allow refresh during initial page load
+	if (firstRefresh) firstRefresh = false;
 	// Skip if not logged in
 	else if (!api.defaults.headers?.['Authorization']) return;
 
