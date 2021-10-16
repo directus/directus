@@ -57,7 +57,7 @@
 				</draggable>
 			</v-list>
 
-			<v-list>
+			<v-list class="db-only">
 				<v-list-item
 					v-for="collection of tableCollections"
 					:key="collection.collection"
@@ -262,5 +262,9 @@ export default defineComponent({
 	--v-button-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
+}
+
+.db-only {
+	margin-bottom: 16px;
 }
 </style>
