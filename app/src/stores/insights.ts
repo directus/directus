@@ -1,8 +1,7 @@
 import { Dashboard } from '../types';
 import api from '@/api';
 import { defineStore } from 'pinia';
-import { useUserStore } from '@/stores';
-import { isAllowed } from '../utils/is-allowed';
+import { useUserStore, usePermissionsStore } from '@/stores';
 
 export const useInsightsStore = defineStore({
 	id: 'insightsStore',
@@ -12,12 +11,13 @@ export const useInsightsStore = defineStore({
 	actions: {
 		async hydrate() {
 			const userStore = useUserStore();
+			const permissionsStore = usePermissionsStore();
 
-			if (userStore.isAdmin !== true && !isAllowed('directus_dashboards', 'read', null)) {
+			if (userStore.isAdmin !== true && !permissionsStore.hasPermission('directus_dashboards', 'read')) {
 				this.dashboards = [];
 			} else {
 				try {
-					const response = await api.get('/dashboards', {
+					const response = await api.get<any>('/dashboards', {
 						params: { limit: -1, fields: ['*', 'panels.*'], sort: ['name'] },
 					});
 

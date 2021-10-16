@@ -30,7 +30,6 @@ field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
 role_name: Roolin nimi
-db_only_click_to_configure: 'Vain tietokanta: Klikkaa määrittääksesi '
 show_archived_items: Näytä arkistoidut kohteet
 edited: Arvoa muokattu
 required: Vaadittu

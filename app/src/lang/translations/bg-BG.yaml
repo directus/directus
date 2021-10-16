@@ -50,7 +50,6 @@ indeterminate: Неопределен
 edit_collection: Редактиране на колекция
 exclusive: Изключително
 children: Дъщерен
-db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
 edited: Стойността е редактирана
 required: Задължително
@@ -1066,6 +1065,9 @@ generate_and_save_uuid: Генериране и запазване на UUID
 save_current_user_id: Запазване на ID на текущия потребител
 save_current_user_role: Запазване на ролята на текущия потребител
 save_current_datetime: Запазване на текущия дата/час
+always_open: Винаги отворена
+start_open: Отворена в началото
+start_collapsed: Затворена в началото
 block: Блок
 inline: Вложен
 comment: Коментиране

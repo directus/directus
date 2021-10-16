@@ -36,6 +36,7 @@ import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
 import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
 import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
+import CustomIconFolderLock from './custom-icons/folder_lock.vue';
 import CustomIconLogout from './custom-icons/logout.vue';
 
 library.add(fab);
@@ -57,6 +58,7 @@ const customIcons: string[] = [
 	'flip_horizontal',
 	'flip_vertical',
 	'folder_move',
+	'folder_lock',
 	'logout',
 ];
 
@@ -537,6 +539,7 @@ export default defineComponent({
 		CustomIconFlipHorizontal,
 		CustomIconFlipVertical,
 		CustomIconFolderMove,
+		CustomIconFolderLock,
 		CustomIconLogout,
 		FontAwesomeIcon,
 	},

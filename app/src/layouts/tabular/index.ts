@@ -4,7 +4,7 @@ import TabularOptions from './options.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { ref, computed, inject, watch, toRefs } from 'vue';
+import { ref, computed, watch, toRefs } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@directus/shared/types';
@@ -33,8 +33,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { t, n } = useI18n();
 
 		const router = useRouter();
-
-		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -144,10 +142,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function useItemOptions() {
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
-			const sort = syncRefProperty(layoutQuery, 'sort', primaryKeyField.value ? [primaryKeyField.value?.field] : []);
-			const fields = syncRefProperty(
-				layoutQuery,
-				'fields',
+			const sort = syncRefProperty(layoutQuery, 'sort', () =>
+				primaryKeyField.value ? [primaryKeyField.value?.field] : []
+			);
+
+			const fields = syncRefProperty(layoutQuery, 'fields', () =>
 				fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
 					.slice(0, 4)
@@ -159,13 +158,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (!props.collection) return [];
 				return adjustFieldsForDisplays(fields.value, props.collection);
 			});
-
-			watch(
-				() => page.value,
-				() => {
-					mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' });
-				}
-			);
 
 			return { sort, limit, page, fields, fieldsWithRelational };
 		}

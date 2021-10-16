@@ -50,7 +50,6 @@ indeterminate: Indeterminado
 edit_collection: Editar Colección
 exclusive: Exclusivo
 children: Subsecciones
-db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
 edited: Valor Editado
 required: Requerido

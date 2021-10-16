@@ -31,7 +31,6 @@ field_name_translations: Väljade tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
 add_field: Lisa väli
 role_name: Rolli nimi
-db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 edited: Muudetud väärtus
 required: Nõutud

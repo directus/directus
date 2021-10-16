@@ -9,6 +9,14 @@
 		</template>
 
 		<template #actions>
+			<collection-dialog v-model="collectionDialogActive">
+				<template #activator="{ on }">
+					<v-button v-tooltip.bottom="t('create_folder')" rounded icon class="add-folder" @click="on">
+						<v-icon name="create_new_folder" />
+					</v-button>
+				</template>
+			</collection-dialog>
+
 			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
 				<v-icon name="add" />
 			</v-button>
@@ -19,7 +27,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="items.length === 0" type="warning" icon="box" :title="t('no_collections')" center>
+			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')" center>
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -27,60 +35,59 @@
 				</template>
 			</v-info>
 
-			<v-table
-				v-else
-				v-model:headers="tableHeaders"
-				:items="items"
-				show-resize
-				fixed-header
-				item-key="collection"
-				@click:row="openCollection"
-			>
-				<template #[`item.icon`]="{ item }">
-					<v-icon
-						class="icon"
-						:class="{
-							hidden: (item.meta && item.meta.hidden) || false,
-							system: item.collection.startsWith('directus_'),
-							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
-						}"
-						:name="item.icon"
-						:color="item.color"
-					/>
-				</template>
+			<v-list v-else class="draggable-list">
+				<draggable
+					:force-fallback="true"
+					:model-value="rootCollections"
+					:group="{ name: 'collections' }"
+					:swap-threshold="0.3"
+					class="root-drag-container"
+					item-key="collection"
+					handle=".drag-handle"
+					@update:model-value="onSort($event, true)"
+				>
+					<template #item="{ element }">
+						<collection-item
+							:collection="element"
+							:collections="collections"
+							@editCollection="editCollection = $event"
+							@setNestedSort="onSort"
+						/>
+					</template>
+				</draggable>
+			</v-list>
 
-				<template #[`item.name`]="{ item }">
-					<v-text-overflow
-						class="collection"
-						:class="{
-							hidden: (item.meta && item.meta.hidden) || false,
-							system: item.collection.startsWith('directus_'),
-							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
-						}"
-						:text="item.collection"
-					/>
-				</template>
+			<v-list>
+				<v-list-item
+					v-for="collection of tableCollections"
+					:key="collection.collection"
+					v-tooltip="t('db_only_click_to_configure')"
+					class="collection-row hidden"
+					block
+					clickable
+				>
+					<v-list-item-icon>
+						<v-icon name="add" />
+					</v-list-item-icon>
 
-				<template #[`item.note`]="{ item }">
-					<span v-if="item.meta === null" class="note">
-						{{ t('db_only_click_to_configure') }}
-					</span>
-					<span v-else class="note">
-						{{ item.meta.note }}
-					</span>
-				</template>
+					<div class="collection-name" @click="openCollection(collection)">
+						<v-icon class="collection-icon" name="dns" />
+						<span class="collection-name">{{ collection.name }}</span>
+					</div>
 
-				<template #item-append="{ item }">
-					<v-icon
-						v-if="!item.meta && item.collection.startsWith('directus_') === false"
-						v-tooltip="t('db_only_click_to_configure')"
-						small
-						class="no-meta"
-						name="report_problem"
-					/>
-					<collection-options v-if="item.collection.startsWith('directus_') === false" :collection="item" />
-				</template>
-			</v-table>
+					<collection-options :collection="collection" />
+				</v-list-item>
+			</v-list>
+
+			<v-detail v-if="collections.length > 0" :label="t('system_collections')">
+				<collection-item
+					v-for="collection of systemCollections"
+					:key="collection.collection"
+					:collection="collection"
+					:collections="systemCollections"
+					disable-drag
+				/>
+			</v-detail>
 		</div>
 
 		<router-view name="add" />
@@ -89,169 +96,130 @@
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
-			<collections-filter v-model="activeTypes" />
 		</template>
+
+		<collection-dialog
+			:model-value="!!editCollection"
+			:collection="editCollection"
+			@update:model-value="editCollection = null"
+		/>
 	</private-view>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
-import { HeaderRaw } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
-import { Collection } from '@directus/shared/types';
-import { useRouter } from 'vue-router';
-import { sortBy } from 'lodash';
+import { Collection } from '@/types';
 import CollectionOptions from './components/collection-options.vue';
-import CollectionsFilter from './components/collections-filter.vue';
+import { sortBy, merge } from 'lodash';
+import CollectionItem from './components/collection-item.vue';
 import { translate } from '@/utils/translate-object-values';
-
-const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
+import Draggable from 'vuedraggable';
+import { unexpectedError } from '@/utils/unexpected-error';
+import api from '@/api';
+import CollectionDialog from './components/collection-dialog.vue';
 
 export default defineComponent({
-	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
+	components: { SettingsNavigation, CollectionItem, CollectionOptions, Draggable, CollectionDialog },
 	setup() {
 		const { t } = useI18n();
 
-		const router = useRouter();
+		const collectionDialogActive = ref(false);
+		const editCollection = ref<Collection>();
 
 		const collectionsStore = useCollectionsStore();
 
-		const tableHeaders = ref<HeaderRaw[]>([
-			{
-				text: '',
-				value: 'icon',
-				width: 42,
-				sortable: false,
-			},
-			{
-				text: t('name'),
-				value: 'name',
-				width: 240,
-			},
-			{
-				text: t('note'),
-				value: 'note',
-				width: 360,
-			},
-		]);
-
-		function openCollection({ collection }: Collection) {
-			router.push(`/settings/data-model/${collection}`);
-		}
-
-		const { items } = useItems();
-
-		return { t, tableHeaders, items, openCollection, activeTypes };
-
-		function useItems() {
-			const visible = computed(() => {
-				return sortBy(
+		const collections = computed(() => {
+			return translate(
+				sortBy(
 					collectionsStore.collections.filter(
-						(collection) => collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
+						(collection) => collection.collection.startsWith('directus_') === false && collection.meta
 					),
-					'collection'
-				);
-			});
+					['meta.sort', 'collection']
+				)
+			);
+		});
 
-			const hidden = computed(() => {
-				return sortBy(
-					collectionsStore.collections
-						.filter(
-							(collection) =>
-								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
-						)
-						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
-					'collection'
-				);
-			});
+		const rootCollections = computed(() => {
+			return collections.value.filter((collection) => !collection.meta?.group);
+		});
 
-			const system = computed(() => {
-				return sortBy(
+		const tableCollections = computed(() => {
+			return translate(
+				sortBy(
+					collectionsStore.collections.filter(
+						(collection) =>
+							collection.collection.startsWith('directus_') === false &&
+							!!collection.meta === false &&
+							collection.schema
+					),
+					['meta.sort', 'collection']
+				)
+			);
+		});
+
+		const systemCollections = computed(() => {
+			return translate(
+				sortBy(
 					collectionsStore.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === true)
 						.map((collection) => ({ ...collection, icon: 'settings' })),
 					'collection'
+				)
+			);
+		});
+
+		return {
+			collectionDialogActive,
+			t,
+			collections,
+			tableCollections,
+			systemCollections,
+			onSort,
+			rootCollections,
+			editCollection,
+		};
+
+		async function onSort(updates: Collection[], removeGroup = false) {
+			const updatesWithSortValue = updates.map((collection, index) =>
+				merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } })
+			);
+
+			collectionsStore.collections = collectionsStore.collections.map((collection) => {
+				const updatedValues = updatesWithSortValue.find(
+					(updatedCollection) => updatedCollection.collection === collection.collection
 				);
+
+				return updatedValues ? merge({}, collection, updatedValues) : collection;
 			});
 
-			const unmanaged = computed(() => {
-				return sortBy(
-					collectionsStore.collections
-						.filter((collection) => collection.collection.startsWith('directus_') === false)
-						.filter((collection) => collection.meta === null)
-						.map((collection) => ({ ...collection, icon: 'dns' })),
-					'collection'
+			try {
+				await Promise.all(
+					updatesWithSortValue.map((collection) =>
+						api.patch(`/collections/${collection.collection}`, {
+							meta: { sort: collection.meta.sort, group: collection.meta.group },
+						})
+					)
 				);
-			});
-
-			const items = computed(() => {
-				const items = [];
-
-				if (activeTypes.value.includes('visible')) {
-					items.push(visible.value);
-				}
-
-				if (activeTypes.value.includes('unmanaged')) {
-					items.push(unmanaged.value);
-				}
-
-				if (activeTypes.value.includes('hidden')) {
-					items.push(hidden.value);
-				}
-
-				if (activeTypes.value.includes('system')) {
-					items.push(translate(system.value));
-				}
-
-				return items.flat();
-			});
-
-			return { items };
+			} catch (err) {
+				unexpectedError(err);
+			}
 		}
 	},
 });
 </script>
 
-<style scoped>
-.icon :deep(i) {
-	vertical-align: baseline;
-}
-
-.icon.hidden :deep(i) {
-	color: var(--foreground-subdued);
-}
-
-.icon.system :deep(i) {
-	color: var(--primary);
-}
-
-.collection {
-	font-family: var(--family-monospace);
-}
-
-.hidden {
-	color: var(--foreground-subdued);
-}
-
-.system {
-	color: var(--primary);
-}
-
-.note {
-	color: var(--foreground-subdued);
-}
-
+<style scoped lang="scss">
 .padding-box {
 	padding: var(--content-padding);
 	padding-top: 0;
 }
 
-.v-table {
-	--v-table-sticky-offset-top: 64px;
-
-	display: contents;
+.root-drag-container {
+	padding: 8px 0;
+	overflow: hidden;
 }
 
 .header-icon {
@@ -259,9 +227,40 @@ export default defineComponent({
 	--v-button-background-color-disabled: var(--warning-10);
 }
 
-.no-meta {
-	--v-icon-color: var(--warning);
+.collection-item.hidden {
+	--v-list-item-color: var(--foreground-subdued);
+}
 
-	margin-right: 4px;
+.collection-name {
+	flex-grow: 1;
+	font-family: var(--family-monospace);
+}
+
+.collection-icon {
+	margin-right: 8px;
+}
+
+.hidden .collection-name {
+	color: var(--foreground-subdued);
+}
+
+.draggable-list :deep(.sortable-ghost) {
+	.v-list-item {
+		--v-list-item-background-color: var(--primary-alt);
+		--v-list-item-border-color: var(--primary);
+		--v-list-item-background-color-hover: var(--primary-alt);
+		--v-list-item-border-color-hover: var(--primary);
+
+		> * {
+			opacity: 0;
+		}
+	}
+}
+
+.add-folder {
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 </style>

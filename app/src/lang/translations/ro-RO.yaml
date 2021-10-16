@@ -30,7 +30,6 @@ field_name_translations: Traducerile numelui câmpului
 enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
 add_field: Adaugă câmp
 role_name: Nume de rol
-db_only_click_to_configure: 'Doar baza de date: Apăsaţi pentru a configura '
 show_archived_items: Arată elementele arhivate
 required: Necesar
 requires_value: Necesită valoare

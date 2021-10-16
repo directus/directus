@@ -30,7 +30,6 @@ field_name_translations: Översättningar fältnamn
 enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
 add_field: Lägg till fält
 role_name: Rollens namn
-db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
 show_archived_items: Visa arkiverade objekt
 edited: Redigerat värde
 required: Obligatoriskt
