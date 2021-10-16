@@ -3,7 +3,7 @@ exports.seed = function (knex) {
 		{ id: 1, collection: 'artists' },
 		{ id: 2, collection: 'events' },
 		{ id: 3, collection: 'guests' },
-		{ id: 1, collection: 'tours' },
-		{ id: 2, collection: 'organizers' },
+		{ id: 4, collection: 'tours' },
+		{ id: 5, collection: 'organizers' },
 	]);
 };

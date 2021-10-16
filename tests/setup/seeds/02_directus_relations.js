@@ -22,14 +22,14 @@ exports.seed = function (knex) {
 			one_field: 'events_id',
 		},
 		{
-			id: 2,
+			id: 4,
 			many_collection: 'guests',
 			many_field: 'id',
 			one_collection: 'guests_events',
 			one_field: 'guests_id',
 		},
 		{
-			id: 3,
+			id: 5,
 			many_collection: 'events',
 			many_field: 'id',
 			one_collection: 'guests_events',

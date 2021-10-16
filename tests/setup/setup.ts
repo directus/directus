@@ -274,13 +274,16 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 			},
 		},
 		{
-			title: 'Migrate databases',
+			title: 'Migrate and seed databases',
 			task: async () => {
 				return new Listr(
 					global.knexInstances.map(({ vendor, knex }) => {
 						return {
 							title: config.names[vendor]!,
-							task: async () => await migrate(vendor, knex, 'up'),
+							task: async () => {
+								await migrate(vendor, knex, 'up');
+								await knex.seed.run();
+							},
 						};
 					}),
 					{ concurrent: true }

@@ -22,8 +22,8 @@ export const processID = generateID();
 
 export const CONTAINER_PERSISTENCE_FILE = '.e2e-containers.json';
 
-const migrationsDir = './setup/migrations';
-const seedsDir = './setup/seeds';
+const migrationsDir = './tests/setup/migrations';
+const seedsDir = './tests/setup/seeds';
 
 const config: Config = {
 	containerConfig: {
