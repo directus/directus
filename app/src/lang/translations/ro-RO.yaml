@@ -20,16 +20,34 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Avatar
+default_provider: Implicit
+published: Publicat
+draft: Ciornă
+archived: Arhivat
+modules: Module
+module_bar: Bară module
 edit_field: Editează câmp
+conditions: Condiții
+maps: Hărţi
+item_creation: Creare articol
 item_revision: Revizuire element
+enter_a_name: Introduceți un nume...
 duplicate_field: Duplicare câmp
 half_width: Jumătate de lăţime
 full_width: Lăţime totală
+group: Grup
+and: Şi
+or: Sau
 fill_width: Umple lăţime
 field_name_translations: Traducerile numelui câmpului
 enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
 add_field: Adaugă câmp
 role_name: Nume de rol
+branch: Ramură
+leaf: Frunză
+edit_collection: Editează colecția
+exclusive: Exclusiv
+children: Copii
 show_archived_items: Arată elementele arhivate
 required: Necesar
 requires_value: Necesită valoare
