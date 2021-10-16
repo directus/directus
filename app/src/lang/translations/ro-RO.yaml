@@ -48,8 +48,11 @@ leaf: Frunză
 edit_collection: Editează colecția
 exclusive: Exclusiv
 children: Copii
+db_only_click_to_configure: 'Doar baza de date: apăsați pentru configurare'
 show_archived_items: Arată elementele arhivate
+edited: Valoare editată
 required: Necesar
+required_for_app_access: Necesar pentru acces aplicaţie
 requires_value: Necesită valoare
 create_preset: Creează presetare
 create_role: Creează Rol
