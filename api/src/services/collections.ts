@@ -238,7 +238,7 @@ export class CollectionsService {
 			}
 		}
 
-		return collections;
+		return collections.filter((collection) => env.DB_EXCLUDE_TABLES.includes(collection.collection) === false);
 	}
 
 	/**
