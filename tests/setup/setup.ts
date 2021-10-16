@@ -11,7 +11,6 @@ import path from 'path';
 import { GlobalConfigTsJest } from 'ts-jest/dist/types';
 import { writeFileSync } from 'fs';
 import global from './global';
-import migrate from './migrations/run-migrations';
 
 const docker = new Dockerode();
 let started = false;
@@ -214,24 +213,20 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 				);
 			},
 		},
-		/*
-		 * Commented out because I don't think I want to close this
-		 * until after migrations run. Could move it down the line but...
-		 */
-		// {
-		// 	title: 'Close Knex instances',
-		// 	task: () => {
-		// 		return new Listr(
-		// 			global.knexInstances.map(({ vendor, knex }) => {
-		// 				return {
-		// 					title: config.names[vendor]!,
-		// 					task: async () => await knex.destroy(),
-		// 				};
-		// 			}),
-		// 			{ concurrent: true }
-		// 		);
-		// 	},
-		// },
+		{
+			title: 'Close Knex instances',
+			task: () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor, knex }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => await knex.destroy(),
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
+		},
 		{
 			title: 'Start Directus Docker containers',
 			task: () => {
@@ -277,12 +272,14 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 			title: 'Migrate and seed databases',
 			task: async () => {
 				return new Listr(
-					global.knexInstances.map(({ vendor, knex }) => {
+					global.knexInstances.map(({ vendor }) => {
 						return {
 							title: config.names[vendor]!,
 							task: async () => {
-								await migrate(vendor, knex, 'up');
-								await knex.seed.run();
+								const database = knex(config.knexConfig[vendor]!);
+								await database.migrate.up();
+								console.log('seed time');
+								await database.seed.run();
 							},
 						};
 					}),
