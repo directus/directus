@@ -182,6 +182,7 @@ export class PayloadService {
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}
 	}
