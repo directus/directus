@@ -22,6 +22,8 @@ export const processID = generateID();
 
 export const CONTAINER_PERSISTENCE_FILE = '.e2e-containers.json';
 
+const migrationsFolder = './setup/migrations';
+
 const config: Config = {
 	containerConfig: {
 		postgres: {
@@ -96,6 +98,9 @@ const config: Config = {
 				database: 'directus',
 			},
 			waitTestSQL: 'SELECT 1',
+			migrations: {
+				directory: migrationsFolder,
+			},
 		},
 		mysql: {
 			client: 'mysql',
@@ -107,6 +112,9 @@ const config: Config = {
 				database: 'directus',
 			},
 			waitTestSQL: 'SELECT 1',
+			migrations: {
+				directory: migrationsFolder,
+			},
 		},
 		maria: {
 			client: 'mysql',
@@ -118,6 +126,9 @@ const config: Config = {
 				database: 'directus',
 			},
 			waitTestSQL: 'SELECT 1',
+			migrations: {
+				directory: migrationsFolder,
+			},
 		},
 		mssql: {
 			client: 'mssql',
@@ -129,6 +140,9 @@ const config: Config = {
 				database: 'model',
 			},
 			waitTestSQL: 'SELECT 1',
+			migrations: {
+				directory: migrationsFolder,
+			},
 		},
 		oracle: {
 			client: 'oracledb',
@@ -138,6 +152,9 @@ const config: Config = {
 				connectString: 'localhost:6004/XE',
 			},
 			waitTestSQL: 'SELECT 1 FROM DUAL',
+			migrations: {
+				directory: migrationsFolder,
+			},
 		},
 		sqlite3: {
 			client: 'sqlite3',
@@ -145,6 +162,9 @@ const config: Config = {
 				filename: './data.db',
 			},
 			waitTestSQL: 'SELECT 1',
+			migrations: {
+				directory: migrationsFolder,
+			},
 		},
 	},
 	ports: {
