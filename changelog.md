@@ -2,6 +2,40 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.98 (October 15, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#8623](https://github.com/directus/directus/pull/8623) Add improved collection organization setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :rocket: Improvements
+
+- **App**
+  - [#8850](https://github.com/directus/directus/pull/8850) Fix refresh problems on background outdated tabs ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8472](https://github.com/directus/directus/pull/8472) Clear user's selection upon navigation ([@licitdev](https://github.com/licitdev))
+- **API**
+  - [#8843](https://github.com/directus/directus/pull/8843) Update calendar fix with _between ([@GrefriT](https://github.com/GrefriT))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#8849](https://github.com/directus/directus/pull/8849) Preload tree for display template properly ([@Nitwel](https://github.com/Nitwel))
+  - [#8848](https://github.com/directus/directus/pull/8848) Fix scoping of v-list-group to the same as v-list ([@Nitwel](https://github.com/Nitwel))
+  - [#8847](https://github.com/directus/directus/pull/8847) Fix dashboards for non-admin users ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8844](https://github.com/directus/directus/pull/8844) Fix translations display shown in m2m ([@Nitwel](https://github.com/Nitwel))
+  - [#8841](https://github.com/directus/directus/pull/8841) Fix default sort value ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8840](https://github.com/directus/directus/pull/8840) Fix calendar layout filter ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8839](https://github.com/directus/directus/pull/8839) Fix choices not showing up in filter ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8826](https://github.com/directus/directus/pull/8826) Fix table and cards layout scroll to top if page changes ([@nickrum](https://github.com/nickrum))
+  - [#8825](https://github.com/directus/directus/pull/8825) Show deletion error in File Library view ([@azrikahar](https://github.com/azrikahar))
+  - [#8809](https://github.com/directus/directus/pull/8809) Fix broken access token refresh on page load ([@licitdev](https://github.com/licitdev))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#8827](https://github.com/directus/directus/pull/8827) Pause API queue when refreshing auth ([@licitdev](https://github.com/licitdev))
+
 ## v9.0.0-rc.97 (October 14, 2021)
 
 ### :sparkles: New Features
