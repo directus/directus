@@ -22,7 +22,8 @@ export const processID = generateID();
 
 export const CONTAINER_PERSISTENCE_FILE = '.e2e-containers.json';
 
-const migrationsFolder = './setup/migrations';
+const migrationsDir = './setup/migrations';
+const seedsDir = './setup/seeds';
 
 const config: Config = {
 	containerConfig: {
@@ -99,7 +100,10 @@ const config: Config = {
 			},
 			waitTestSQL: 'SELECT 1',
 			migrations: {
-				directory: migrationsFolder,
+				directory: migrationsDir,
+			},
+			seeds: {
+				directory: seedsDir,
 			},
 		},
 		mysql: {
@@ -113,7 +117,10 @@ const config: Config = {
 			},
 			waitTestSQL: 'SELECT 1',
 			migrations: {
-				directory: migrationsFolder,
+				directory: migrationsDir,
+			},
+			seeds: {
+				directory: seedsDir,
 			},
 		},
 		maria: {
@@ -127,7 +134,10 @@ const config: Config = {
 			},
 			waitTestSQL: 'SELECT 1',
 			migrations: {
-				directory: migrationsFolder,
+				directory: migrationsDir,
+			},
+			seeds: {
+				directory: seedsDir,
 			},
 		},
 		mssql: {
@@ -141,7 +151,10 @@ const config: Config = {
 			},
 			waitTestSQL: 'SELECT 1',
 			migrations: {
-				directory: migrationsFolder,
+				directory: migrationsDir,
+			},
+			seeds: {
+				directory: seedsDir,
 			},
 		},
 		oracle: {
@@ -153,7 +166,10 @@ const config: Config = {
 			},
 			waitTestSQL: 'SELECT 1 FROM DUAL',
 			migrations: {
-				directory: migrationsFolder,
+				directory: migrationsDir,
+			},
+			seeds: {
+				directory: seedsDir,
 			},
 		},
 		sqlite3: {
@@ -163,7 +179,10 @@ const config: Config = {
 			},
 			waitTestSQL: 'SELECT 1',
 			migrations: {
-				directory: migrationsFolder,
+				directory: migrationsDir,
+			},
+			seeds: {
+				directory: seedsDir,
 			},
 		},
 	},
