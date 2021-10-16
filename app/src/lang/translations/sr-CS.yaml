@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Avatar
+published: Objavljeno
 edit_field: Izmijeni
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
