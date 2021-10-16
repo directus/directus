@@ -14,6 +14,7 @@
 - **URL** — The URL to send the request to
 - **Status** — Whether the webhook is active (enabled) or inactive (disabled)
 - **Data** — Whether the event's data should be sent along with the request
+- **Request Headers** — Custom headers that will be added to the webhook request
 - **Trigger Actions** — The specific actions that will trigger the event
 - **Trigger Collections** — The specific collections for which the above actions will trigger events
 
