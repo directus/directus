@@ -365,6 +365,9 @@ export class CollectionsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
+			// Make sure this collection isn't used as a group in any other collections
+			await trx('directus_collections').update({ group: null }).where({ group: collectionKey });
+
 			if (collectionToBeDeleted!.meta) {
 				const collectionItemsService = new ItemsService('directus_collections', {
 					knex: trx,
