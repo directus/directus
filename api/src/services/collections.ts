@@ -238,7 +238,11 @@ export class CollectionsService {
 			}
 		}
 
-		return collections.filter((collection) => env.DB_EXCLUDE_TABLES.includes(collection.collection) === false);
+		if (env.DB_EXCLUDE_TABLES) {
+			return collections.filter((collection) => env.DB_EXCLUDE_TABLES.includes(collection.collection) === false);
+		}
+
+		return collections;
 	}
 
 	/**
