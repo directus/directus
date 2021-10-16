@@ -25,13 +25,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
-		if (
-			!issuerUrl ||
-			!clientId ||
-			!clientSecret ||
-			!additionalConfig.provider ||
-			(additionalConfig.allowPublicRegistration && !additionalConfig.defaultRoleId)
-		) {
+		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig.provider) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 

@@ -25,15 +25,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
 
-		if (
-			!authorizeUrl ||
-			!accessUrl ||
-			!profileUrl ||
-			!clientId ||
-			!clientSecret ||
-			!additionalConfig.provider ||
-			(additionalConfig.allowPublicRegistration && !additionalConfig.defaultRoleId)
-		) {
+		if (!authorizeUrl || !accessUrl || !profileUrl || !clientId || !clientSecret || !additionalConfig.provider) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 

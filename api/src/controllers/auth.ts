@@ -6,7 +6,6 @@ import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import { getAuthProviders } from '../utils/get-auth-providers';
-import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
 import { createLocalAuthRouter, createOAuth2AuthRouter, createOpenIDAuthRouter } from '../auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
