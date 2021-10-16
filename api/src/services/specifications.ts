@@ -643,7 +643,12 @@ class TypescriptSpecsService implements SpecificationSubService {
 	}
 
 	generateCustomDirectusTypes(collections: { name: string; pascalName: string; fields: Field[] }[]) {
-		let customDirectusTypes = `export type CustomDirectusTypes = {\n`;
+		const customDirectusTypesName = collections
+			.map((collection) => collection.pascalName)
+			.includes('CustomDirectusTypes')
+			? '_CustomDirectusTypes'
+			: 'CustomDirectusTypes';
+		let customDirectusTypes = `export type ${customDirectusTypesName} = {\n`;
 		customDirectusTypes += collections
 			.map((collection) => `  ${collection.name}: ${collection.pascalName};`)
 			.join('\n');
