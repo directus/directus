@@ -19,7 +19,7 @@ exports.up = function (knex) {
 		table.timestamp('created_at');
 		table.float('cost');
 		table.text('description');
-		table.string('location'); // insert geoPoint
+		table.specificType('location', 'geometry(point, 4326)');
 		table.text('tags'); // insert csv content
 		table.time('time');
 	});
@@ -35,14 +35,6 @@ exports.up = function (knex) {
 		table.increments('id').primary();
 		table.string('company_name');
 	});
-	// Is this ok for the schema? No, seed file.
-	knex('directus_collection').insert([
-		{ collection: 'artists' },
-		{ collection: 'guests' },
-		{ collection: 'events' },
-		{ collection: 'tours' },
-		{ collection: 'organizers' },
-	]);
 };
 
 exports.down = function (knex) {
@@ -51,10 +43,4 @@ exports.down = function (knex) {
 	knex.schema.dropTable('events');
 	knex.schema.dropTable('organizers');
 	knex.schema.dropTable('tours');
-	// What about this? Should these go outside migrations? It just seems convenient. No, seed file.
-	knex('directus_collection').select('*').where('collection', 'artists').del();
-	knex('directus_collection').select('*').where('collection', 'events').del();
-	knex('directus_collection').select('*').where('collection', 'organizers').del();
-	knex('directus_collection').select('*').where('collection', 'tours').del();
-	knex('directus_collection').select('*').where('collection', 'guests').del();
 };

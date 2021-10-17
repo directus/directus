@@ -8,7 +8,6 @@ use. These include:
 
 - events:
 
-  - 'location' insert geoPoint
   - 'tags' insert csv content
 
 - users:
