@@ -21,6 +21,7 @@ import { defineComponent, ref, watch, toRefs } from 'vue';
 import { AuthProvider } from '@/types';
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { getRootPath } from '@/utils/get-root-path';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	props: {
@@ -40,8 +41,8 @@ export default defineComponent({
 			ssoProviders.value = providers.value
 				.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
 				.map((provider: AuthProvider) => ({
-					name: provider.name,
-					link: `${getRootPath()}auth/login/${provider.name.toLowerCase()}?redirect=${window.location.href}`,
+					name: formatTitle(provider.name),
+					link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href}`,
 					icon: provider.icon ?? 'account_circle',
 				}));
 		});
