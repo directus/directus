@@ -5,7 +5,7 @@ exports.up = function (knex) {
 		table.json('members');
 	});
 	knex.schema.createTable('guests', (table) => {
-		table.increments('id');
+		table.uuid('id').primary();
 		table.string('name');
 		table.date('birthday');
 		table.string('search_radius'); //insert geoPoly
