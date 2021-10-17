@@ -24,7 +24,7 @@ export default {
 	name: 'Custom',
 	description: 'This is my custom display!',
 	icon: 'box',
-	handler: DisplayComponent,
+	component: DisplayComponent,
 	types: ['string'],
 };
 ```
@@ -33,7 +33,7 @@ export default {
 - `name` — The human-readable name for this display.
 - `description` — A short description (<80 characters) of this display shown in the App.
 - `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
-- `handler` — A function, or reference to your Vue component.
+- `component` — A reference to your Vue component.
 - `types` — A CSV of supported [types](/concepts/types/).
 
 ::: tip
@@ -70,8 +70,8 @@ The props you can use in an display are:
 
 ---
 
-Alternatively, you can specify a function for the handler. This allows you to make simple displays that don't need a
-full component rendered:
+Instead of defining the component inside a Vue SFC file, you can use a functional component. This allows you to make
+simple displays that don't need a full component rendered:
 
 ```js
 export default {
@@ -79,7 +79,7 @@ export default {
 	name: 'Custom',
 	description: 'This is my custom display!',
 	icon: 'box',
-	handler: function (value) {
+	component: function ({ value }) {
 		return value.toLowerCase();
 	},
 	types: ['string'],

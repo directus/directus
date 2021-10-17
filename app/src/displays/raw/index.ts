@@ -5,7 +5,8 @@ export default defineDisplay({
 	id: 'raw',
 	name: '$t:displays.raw.raw',
 	icon: 'code',
-	handler: (value) => value,
+	component: ({ value }) => String(value),
 	options: [],
 	types: TYPES,
+	groups: ['file', 'files', 'group', 'm2a', 'm2m', 'm2o', 'o2m', 'presentation', 'standard', 'translations'],
 });

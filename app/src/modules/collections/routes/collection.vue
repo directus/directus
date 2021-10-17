@@ -6,10 +6,13 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="filters"
-		v-model:search-query="searchQuery"
+		:filter-user="filter"
+		:filter-system="archiveFilter"
+		:filter="mergeFilters(filter, archiveFilter)"
+		:search="search"
 		:collection="collection"
 		:reset-preset="resetPreset"
+		:clear-filters="clearFilters"
 	>
 		<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
 		<private-view
@@ -18,8 +21,8 @@
 			:small-header="currentLayout?.smallHeader"
 		>
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="currentCollection.icon" :color="currentCollection.color" />
+				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
+					<v-icon :name="archive ? 'archive' : currentCollection.icon" :color="currentCollection.color" />
 				</v-button>
 			</template>
 
@@ -88,7 +91,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -143,7 +146,7 @@
 							<v-button secondary @click="confirmArchive = false">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button kind="warning" :loading="archiving" @click="archive">
+							<v-button kind="warning" :loading="archiving" @click="archiveItems">
 								{{ t('archive') }}
 							</v-button>
 						</v-card-actions>
@@ -174,8 +177,7 @@
 			</template>
 
 			<template #navigation>
-				<collections-navigation-search />
-				<collections-navigation />
+				<collections-navigation :current-collection="collection" />
 			</template>
 
 			<v-info
@@ -235,6 +237,11 @@
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
+				<export-sidebar-detail
+					:collection="collection"
+					:filter="mergeFilters(filter, archiveFilter)"
+					:search="search"
+				/>
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -256,7 +263,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
 import CollectionsNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
@@ -272,6 +278,7 @@ import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
+import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {
 	[field: string]: any;
@@ -281,7 +288,6 @@ export default defineComponent({
 	name: 'CollectionsCollection',
 	components: {
 		CollectionsNavigation,
-		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		LayoutSidebarDetail,
 		SearchInput,
@@ -298,6 +304,10 @@ export default defineComponent({
 		bookmark: {
 			type: String,
 			default: null,
+		},
+		archive: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -322,8 +332,8 @@ export default defineComponent({
 			layout,
 			layoutOptions,
 			layoutQuery,
-			filters,
-			searchQuery,
+			filter,
+			search,
 			savePreset,
 			bookmarkExists,
 			saveCurrentAsBookmark,
@@ -343,7 +353,7 @@ export default defineComponent({
 			deleting,
 			batchDelete,
 			confirmArchive,
-			archive,
+			archive: archiveItems,
 			archiving,
 			error: deleteError,
 			batchEditActive,
@@ -365,6 +375,33 @@ export default defineComponent({
 
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
+		const archiveFilter = computed(() => {
+			if (!currentCollection.value?.meta) return null;
+			if (!currentCollection.value?.meta?.archive_app_filter) return null;
+
+			const field = currentCollection.value.meta.archive_field;
+
+			if (!field) return filter.value;
+
+			let archiveValue: any = currentCollection.value.meta.archive_value;
+			if (archiveValue === 'true') archiveValue = true;
+			if (archiveValue === 'false') archiveValue = false;
+
+			if (props.archive) {
+				return {
+					[field]: {
+						_eq: archiveValue,
+					},
+				};
+			} else {
+				return {
+					[field]: {
+						_neq: archiveValue,
+					},
+				};
+			}
+		});
+
 		return {
 			t,
 			addNewLink,
@@ -373,14 +410,14 @@ export default defineComponent({
 			confirmDelete,
 			currentCollection,
 			deleting,
-			filters,
+			filter,
 			layoutRef,
 			layoutWrapper,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
+			search,
 			savePreset,
 			bookmarkExists,
 			currentCollectionLink,
@@ -393,7 +430,7 @@ export default defineComponent({
 			breadcrumb,
 			clearFilters,
 			confirmArchive,
-			archive,
+			archiveItems,
 			archiving,
 			batchEditAllowed,
 			batchArchiveAllowed,
@@ -408,6 +445,8 @@ export default defineComponent({
 			refresh,
 			refreshInterval,
 			currentLayout,
+			archiveFilter,
+			mergeFilters,
 		};
 
 		async function refresh() {
@@ -448,7 +487,7 @@ export default defineComponent({
 
 			const error = ref<any>(null);
 
-			return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archive, error };
+			return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archiveItems, error };
 
 			async function batchDelete() {
 				deleting.value = true;
@@ -471,16 +510,20 @@ export default defineComponent({
 				}
 			}
 
-			async function archive() {
+			async function archiveItems() {
 				if (!currentCollection.value?.meta?.archive_field) return;
 
 				archiving.value = true;
+
+				let archiveValue: any = currentCollection.value.meta.archive_value;
+				if (archiveValue === 'true') archiveValue = true;
+				if (archiveValue === 'false') archiveValue = false;
 
 				try {
 					await api.patch(`/items/${props.collection}`, {
 						keys: selection.value,
 						data: {
-							[currentCollection.value.meta.archive_field]: currentCollection.value.meta.archive_value,
+							[currentCollection.value.meta.archive_field]: archiveValue,
 						},
 					});
 
@@ -543,8 +586,8 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
-			searchQuery.value = null;
+			filter.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {
@@ -628,6 +671,11 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.header-icon.archive {
+	--v-button-color-disabled: var(--warning);
+	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .layout {

@@ -1,7 +1,7 @@
 <template>
 	<div class="repeater">
 		<v-notice v-if="!value || value.length === 0">
-			{{ t('no_items') }}
+			{{ placeholder }}
 		</v-notice>
 
 		<v-list v-if="value && value.length > 0">
@@ -100,7 +100,7 @@ export default defineComponent({
 		},
 		addLabel: {
 			type: String,
-			default: i18n.global.t('create_new'),
+			default: () => i18n.global.t('create_new'),
 		},
 		limit: {
 			type: Number,
@@ -112,11 +112,15 @@ export default defineComponent({
 		},
 		headerPlaceholder: {
 			type: String,
-			default: i18n.global.t('empty_item'),
+			default: () => i18n.global.t('empty_item'),
 		},
 		collection: {
 			type: String,
 			default: null,
+		},
+		placeholder: {
+			type: String,
+			default: () => i18n.global.t('no_items'),
 		},
 	},
 	emits: ['input'],
@@ -157,7 +161,7 @@ export default defineComponent({
 			props.fields?.map((field) => {
 				return {
 					...field,
-					name: formatTitle(field.field!),
+					name: field.name ?? formatTitle(field.field!),
 				};
 			})
 		);
@@ -249,7 +253,6 @@ export default defineComponent({
 			const newDefaults: any = {};
 
 			props.fields.forEach((field) => {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
 

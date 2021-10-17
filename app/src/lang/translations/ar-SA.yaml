@@ -20,10 +20,19 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: الصورةالرمزية
+default_provider: الإفتراضي
+published: تم نشره
+draft: مسوّدة
+archived: مؤرشف
+modules: الوحدات
+module_bar: شريط الوحدة
+tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 maps: الخرائط
+item_creation: إنشاء عنصر
 item_revision: التعديلات على العنصر
+enter_a_name: أدخل اسم...
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
@@ -41,15 +50,16 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
-db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
 show_archived_items: أظهر العناصر المؤرشفة
 edited: تم تعديل القيمة
 required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
 requires_value: قيمة مطلوبة
 create_preset: إنشاء إعدادات مسبقة
+create_panel: إنشاء لوحة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
+delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
 invite: دعوة
@@ -141,7 +151,9 @@ fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: بسم الله الرحمن الرحيم.
+revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
+revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
+changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -150,9 +162,12 @@ field_create_success: 'حقل تم إنشاؤه: "{field}"'
 field_update_success: 'حقل تم إنشاؤه: "{field}"'
 duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+aggregate_function: وظائف المجاميع
+aggregate_precision: وظائف التدقيق
 global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
+show_zero: إظهار صفر
 exposure: التعرض
 shutter: الغالق
 iso: ISO
@@ -391,6 +406,9 @@ copy: نسخ
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+action: الإجراء
+ip_address: عنوان IP
+user_agent: وكيل المستخدم
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
 add_filter: إضافة فلتر
@@ -478,6 +496,7 @@ visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
 show_hidden_collections: أظهر المجموعات المخفية
 hide_hidden_collections: اخفي المجموعات المخفية
+show_header: إظهار العناوين الرأسية
 unmanaged_collections: مجموعات غير مهيأة
 system_collections: مجموعات النظام
 placeholder: مكان محجوز
@@ -572,6 +591,7 @@ read: قراءة
 update: تحديث
 select_fields: حدد حقول
 format_text: تنسيق النص
+toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
@@ -775,8 +795,10 @@ field_options:
     collection_setup: لا توجد مجموعات الإعداد
     singleton: معاملته ككائن واحد
     language: لغة
+    translation: الترجمة
+    collection_name: اسم المجموعة
     archive_divider: أرشفة
-    divider: رتب
+    sort_divider: رتب
   directus_roles:
     fields:
       icon_name: أيقونة
@@ -859,6 +881,10 @@ value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
 interfaces:
+  filter:
+    add_filter: إضافة فلتر
+    all: الجميع
+    any: أي
   presentation-links:
     links: روابط
     primary: الأساسي
@@ -968,6 +994,7 @@ interfaces:
   input-multiline:
     description: أدخل النص المتعدد الأسطر
   boolean:
+    toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
     label_default: تمكين
   translations:
@@ -988,6 +1015,8 @@ interfaces:
   input-autocomplete-api:
     rate: معدل
 displays:
+  translations:
+    translations: الترجمة
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل

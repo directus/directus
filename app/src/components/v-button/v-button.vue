@@ -3,7 +3,6 @@
 		<slot name="prepend-outer" />
 		<component
 			:is="component"
-			:ref="component === 'a' ? 'noopener noreferer' : undefined"
 			v-focus="autofocus"
 			:download="download"
 			class="button"
@@ -27,6 +26,7 @@
 			:to="to !== '' ? to : undefined"
 			:href="href"
 			:target="component === 'a' ? '_blank' : undefined"
+			:rel="component === 'a' ? 'noopener noreferrer' : undefined"
 			@click="onClick"
 		>
 			<span class="content" :class="{ invisible: loading }">
@@ -300,6 +300,7 @@ export default defineComponent({
 	transition-property: background-color border;
 }
 
+.button:focus,
 .button:hover {
 	color: var(--v-button-color-hover);
 	background-color: var(--v-button-background-color-hover);
@@ -339,6 +340,7 @@ export default defineComponent({
 	background-color: transparent;
 }
 
+.outlined:not(.active):focus,
 .outlined:not(.active):hover {
 	color: var(--v-button-background-color-hover);
 	background-color: transparent;
