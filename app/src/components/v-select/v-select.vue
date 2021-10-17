@@ -21,6 +21,8 @@
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:active="active"
+					:solid="solid"
+					v-bind="sizePropValues"
 					@click="toggle"
 				>
 					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
@@ -125,6 +127,7 @@ import SelectListItemGroup from './select-list-item-group.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
 import { Placement } from '@popperjs/core';
+import { sizeProps, useSizePropValues } from '@/composables/size-class';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
@@ -208,6 +211,11 @@ export default defineComponent({
 			type: String as PropType<Placement>,
 			default: 'bottom',
 		},
+		solid: {
+			type: Boolean,
+			default: false,
+		},
+		...sizeProps,
 	},
 	emits: ['update:modelValue', 'group-toggle'],
 	setup(props, { emit }) {
@@ -225,7 +233,19 @@ export default defineComponent({
 			(value) => emit('update:modelValue', value)
 		);
 
-		return { t, internalItems, displayValue, otherValue, usesOtherValue, otherValues, addOtherValue, setOtherValue };
+		const sizePropValues = useSizePropValues(props);
+
+		return {
+			t,
+			internalItems,
+			displayValue,
+			otherValue,
+			usesOtherValue,
+			otherValues,
+			addOtherValue,
+			setOtherValue,
+			sizePropValues,
+		};
 
 		function useItems() {
 			const internalItems = computed(() => {

@@ -6,14 +6,16 @@ import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 
 export type LoginCredentials = {
-	email: string;
+	identifier?: string;
+	email?: string;
 	password: string;
+	otp?: string;
 };
 
-export async function login(credentials: LoginCredentials): Promise<void> {
+export async function login(credentials: LoginCredentials, provider?: string): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post<any>(`/auth/login`, {
+	const response = await api.post<any>(provider ? `/auth/login/${provider}` : '/auth/login', {
 		...credentials,
 		mode: 'cookie',
 	});

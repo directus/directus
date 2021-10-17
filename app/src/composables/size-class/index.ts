@@ -1,4 +1,4 @@
-import useSizeClass, { sizeProps } from './size-class';
+import useSizeClass, { sizeProps, useSizePropValues } from './size-class';
 
-export { sizeProps, useSizeClass };
+export { sizeProps, useSizeClass, useSizePropValues };
 export default useSizeClass;

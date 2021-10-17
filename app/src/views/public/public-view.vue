@@ -252,6 +252,10 @@ export default defineComponent({
 	&.branded :deep(.v-input) {
 		--v-input-border-color-focus: var(--foreground-normal);
 	}
+
+	&.branded :deep(.v-input.solid) {
+		--v-input-border-color-focus: var(--foreground-subdued);
+	}
 }
 
 .scale-enter-active,
