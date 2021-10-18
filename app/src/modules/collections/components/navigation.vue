@@ -1,5 +1,5 @@
 <template>
-	<div class="collections-navigation">
+	<div class="collections-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
 			<v-input v-model="search" type="search" :placeholder="t('search_collection')" />
 		</div>
@@ -64,8 +64,9 @@ export default defineComponent({
 		const contextMenuTarget = ref<undefined | string>();
 
 		const rootItems = computed(() => {
+			const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
 			return orderBy(
-				collectionsStore.visibleCollections.filter((collection) => {
+				shownCollections.filter((collection) => {
 					return isNil(collection?.meta?.group);
 				}),
 				['meta.sort', 'collection']
@@ -110,8 +111,16 @@ export default defineComponent({
 	}
 }
 
+.collections-navigation-wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
 .collections-navigation {
 	--v-list-min-height: calc(100% - 64px);
+
+	flex-grow: 1;
 
 	.v-detail {
 		:deep(.v-divider) {

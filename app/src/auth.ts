@@ -78,14 +78,17 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	// Prevent concurrent refreshes
 	if (isRefreshing) return;
 
-	isRefreshing = true;
-
 	const appStore = useAppStore();
 
 	// Skip refresh if access token is still fresh
 	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
+		// Set a fresh timeout as it is cleared by idleTracker's idle or hide event
+		clearTimeout(refreshTimeout);
+		refreshTimeout = setTimeout(() => refresh(), appStore.accessTokenExpiry - 10000 - Date.now());
 		return;
 	}
+
+	isRefreshing = true;
 
 	try {
 		const response = await api.post<any>('/auth/refresh', undefined, {
@@ -103,7 +106,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
 		// logged in without any notable hiccups or delays
-		if (refreshTimeout) clearTimeout(refreshTimeout);
+		clearTimeout(refreshTimeout);
 
 		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 		// for tokens that last > 24 days. Ref #4054
