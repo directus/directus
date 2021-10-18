@@ -27,5 +27,17 @@ $color-mapping: (
 	'danger': $red,
 );
 
-// Percentage step for color variants
-$variant-step: 5;
+// Suffix -> Percentage mapping
+$step-mapping: (
+	'alt': 10,
+	'10': 10,
+	'25': 25,
+	'50': 50,
+	'75': 75,
+	// Special case, 'none' will result in no suffix
+	'none': 100,
+	'125': -75,
+	'150': -50,
+	'175': -25,
+	'190': -10,
+);
