@@ -1284,9 +1284,6 @@ interfaces:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
     zoom: Zoom
-    geometry_type: Type de géométrie
-    geometry_format: Format géométrique
-    default_view: Vue par défaut
     invalid_options: Options non valides
     invalid_format: Format invalide ({format})
     unexpected_geometry: '{expected} attendu, reçu {got}.'
@@ -1513,13 +1510,11 @@ layouts:
     layers: Afficher...
     edit_custom_layers: Modifier la couche
     cluster_options: Options de regroupement
-    cluster: Activer le clustering
     cluster_radius: Rayon de grappe
     cluster_minpoints: Taille minimale du cluster
     cluster_maxzoom: Zoom maximum pour la grappe
     field: Géométrie
     invalid_geometry: Géométrie invalide
-    auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
     clear_data_filter: Réinitialiser le filtre
     clear_location_filter: Réinitialiser le filtre de localisation
