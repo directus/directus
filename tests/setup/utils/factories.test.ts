@@ -69,7 +69,7 @@ describe('seeding databases', () => {
 			expect(await seedTable(database, 5, 'artists', createArtist)).toBe(undefined);
 		});
 		it('to insert the correct number of artists', async () => {
-			expect(await seedTable(database, 1600, 'artists', createArtist)).toBe(undefined);
+			expect(await seedTable(database, 1675, 'artists', createArtist)).toBe(undefined);
 
 			const count = await database('artists').count('*', { as: 'artists' });
 			if (typeof count[0]?.artists === 'string') expect(parseInt(count[0]?.artists)).toBeGreaterThanOrEqual(1600);
@@ -91,7 +91,7 @@ describe('seeding databases', () => {
 		describe('createArtist', () => {
 			it('%p returns an artist object of column names and values', async () => {
 				const options = { select: ['*'], where: ['id', 1] };
-				expect(await seedTable(database, 5, 'artists', createArtist(), options)).toMatchObject([
+				expect(await seedTable(database, 5, 'artists', createArtist, options)).toMatchObject([
 					{
 						name: expect.any(String),
 						members: { role: expect.any(String) },

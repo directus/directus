@@ -88,7 +88,7 @@ export const seedTable = async function (
 				}
 				row[table] = row[table]! + 1;
 			}
-			if (count - row[table]! <= 200) {
+			if (count - row[table]! < 200) {
 				await database.batchInsert(table, fakeRows, 200);
 				fakeRows = [];
 			}
