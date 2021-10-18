@@ -142,20 +142,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User): Promise<SessionData> {
-		return this.refresh(user);
+	async login(user: User, sessionData: SessionData): Promise<SessionData> {
+		return this.refresh(user, sessionData);
 	}
 
-	async refresh(user: User): Promise<SessionData> {
+	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
 		const authData = (user.auth_data && JSON.parse(user.auth_data)) as AuthData;
 
 		if (!authData?.refreshToken) {
-			return null;
+			return sessionData;
 		}
 
 		try {
-			await this.client.refresh(authData.refreshToken);
-			return null;
+			const tokenSet = await this.client.refresh(authData.refreshToken);
+			return { accessToken: tokenSet.access_token };
 		} catch (e) {
 			throw handleError(e);
 		}
