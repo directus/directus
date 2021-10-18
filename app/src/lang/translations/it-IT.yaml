@@ -50,7 +50,6 @@ indeterminate: Indeterminato
 edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
-db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra gli elementi archiviati
 edited: Valore Modificato
 required: Obbligatorio
@@ -835,8 +834,8 @@ fields:
     item: Chiave primaria elemento
     action: Azioni
     collection: Raccolta
-    timestamp: Azione su
-    user: Azione di
+    timestamp: Data e ora
+    user: Autore
     comment: Commento
     user_agent: User agent
     ip: Indirizzo IP
@@ -1078,6 +1077,9 @@ generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
 save_current_user_role: Salva Ruolo Utente Attuale
 save_current_datetime: Salva Data/Ora Attuale
+always_open: Sempre aperto
+start_open: Inizia aperto
+start_collapsed: Inizia chiuse
 block: Blocco
 inline: In linea
 comment: Commento
@@ -1133,7 +1135,7 @@ reset: Resetta
 reset_password: Resetta la password
 revisions: Revisioni
 revert: Ripristina
-save: Salvare
+save: Salva
 schema: Schema
 search: Ricerca
 select_existing: Seleziona Esistente
@@ -1153,7 +1155,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:

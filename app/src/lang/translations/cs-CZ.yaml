@@ -47,7 +47,6 @@ indeterminate: Neurčitý
 edit_collection: Upravit kolekci
 exclusive: Exkluzivní
 children: Potomci
-db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
 required: Povinné

@@ -10,7 +10,8 @@
 			disabled,
 			dashed,
 			block,
-			large,
+			nav,
+			clickable,
 		}"
 		:href="href"
 		:download="download"
@@ -77,9 +78,13 @@ export default defineComponent({
 			type: [String, Number],
 			default: undefined,
 		},
-		large: {
+		nav: {
 			type: Boolean,
 			default: false,
+		},
+		scope: {
+			type: String,
+			default: 'v-list',
 		},
 	},
 	emits: ['click'],
@@ -96,6 +101,7 @@ export default defineComponent({
 
 		useGroupable({
 			value: props.value,
+			group: props.scope,
 		});
 
 		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
@@ -128,13 +134,13 @@ export default defineComponent({
 
 <style>
 body {
-	--v-list-item-padding-large: 0 8px;
+	--v-list-item-padding-nav: 0 8px;
 	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-large: 2px 0;
+	--v-list-item-margin-nav: 2px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
-	--v-list-item-min-height-large: 36px;
+	--v-list-item-min-height-nav: 36px;
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
@@ -256,7 +262,7 @@ body {
 			flex-grow: 1;
 		}
 
-		&:hover {
+		&.clickable:hover {
 			background-color: var(--v-list-item-background-color-hover);
 			border: var(--border-width) solid var(--v-list-item-border-color-hover);
 		}
@@ -280,13 +286,13 @@ body {
 	}
 
 	@at-root {
-		.v-list.large {
+		.v-list.nav {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: var(--v-list-item-min-height-large);
+				--v-list-item-min-height: var(--v-list-item-min-height-nav);
 				--v-list-item-border-radius: 4px;
 
-				margin: var(--v-list-item-margin-large);
-				padding: var(--v-list-item-padding-large);
+				margin: var(--v-list-item-margin-nav);
+				padding: var(--v-list-item-padding-nav);
 
 				&:first-child {
 					margin-top: 0;
@@ -300,6 +306,12 @@ body {
 					margin-top: 0;
 					margin-bottom: 0;
 				}
+			}
+		}
+
+		.v-list.nav.dense {
+			#{$this}:not(.dense) {
+				--v-list-item-min-height: 32px;
 			}
 		}
 	}

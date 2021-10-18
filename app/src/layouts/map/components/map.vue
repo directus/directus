@@ -84,7 +84,7 @@ export default defineComponent({
 			closeOnClick: false,
 			className: 'mapboxgl-point-popup',
 			maxWidth: 'unset',
-			offset: 20,
+			offset: 10,
 		});
 
 		const attributionControl = new AttributionControl({ compact: true });
@@ -415,7 +415,7 @@ export default defineComponent({
 	font-size: inherit !important;
 	font-family: inherit !important;
 	line-height: inherit !important;
-	background-color: var(--background-subdued);
+	background-color: var(--background-page);
 
 	&,
 	&.suggestions {
@@ -474,8 +474,6 @@ export default defineComponent({
 }
 
 .mapboxgl-point-popup {
-	box-shadow: 10px 10px 10px solid red;
-
 	&.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
 		border-right-color: var(--background-normal);
 	}

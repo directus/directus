@@ -22,7 +22,6 @@ leaf: पत्ता
 edit_collection: कलेक्शन संपादित करें
 exclusive: विशेष
 children: बच्चे
-db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें '
 show_archived_items: आर्काइव आइटम दिखाएं
 edited: डेटा संपादित
 required: आवश्यक

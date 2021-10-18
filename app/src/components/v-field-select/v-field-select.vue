@@ -45,7 +45,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, ref, PropType, computed } from 'vue';
 import FieldListItem from '../v-field-template/field-list-item.vue';
-import { Field, Collection, Relation } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
+import { Collection } from '@/types';
 import Draggable from 'vuedraggable';
 import { useCollection } from '@directus/shared/composables';
 import { FieldTree } from '../v-field-template/types';

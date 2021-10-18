@@ -26,7 +26,6 @@ full_width: 最大幅
 field_name_translations: 項目名の翻訳を追加する
 add_field: フィールドの追加
 role_name: 権限名
-db_only_click_to_configure: 'データベースのみ: クリックして設定する '
 required: 必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成

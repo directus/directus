@@ -1,5 +1,5 @@
 <template>
-	<ul class="v-list" :class="{ large }">
+	<ul class="v-list" :class="{ nav, dense }">
 		<slot />
 	</ul>
 </template>
@@ -14,7 +14,11 @@ export default defineComponent({
 			type: Array as PropType<(number | string)[]>,
 			default: null,
 		},
-		large: {
+		nav: {
+			type: Boolean,
+			default: false,
+		},
+		dense: {
 			type: Boolean,
 			default: false,
 		},
@@ -26,10 +30,15 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		scope: {
+			type: String,
+			default: 'v-list',
+		},
 	},
 	emits: ['update:modelValue', 'toggle'],
 	setup(props, { emit }) {
 		const { modelValue, multiple, mandatory } = toRefs(props);
+
 		useGroupableParent(
 			{
 				selection: modelValue,
@@ -43,7 +52,8 @@ export default defineComponent({
 			{
 				mandatory,
 				multiple,
-			}
+			},
+			props.scope
 		);
 
 		return {};
@@ -81,7 +91,7 @@ export default defineComponent({
 	border-radius: var(--v-list-border-radius);
 }
 
-.large {
+.nav {
 	--v-list-padding: 12px;
 }
 
@@ -89,8 +99,4 @@ export default defineComponent({
 	max-width: calc(100% - 16px);
 	margin: 8px;
 }
-
-/* :slotted(*) {
-	pointer-events: all;
-} */
 </style>
