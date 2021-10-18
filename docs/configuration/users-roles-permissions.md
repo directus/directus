@@ -32,10 +32,12 @@ their account.
 The User Detail is only editable by the current user and admins, and the following fields are only available to admins:
 
 - **Status** — Determines if an account is able to access the platform or not. Only the `active` state is able to
-  authenticate, all others are simply descriptive inactive states. - **Draft** — An incomplete user; no App/API access -
-  **Invited** — Has a pending invite to the project; no App/API access until accepted - **Active** — The only status
-  that has proper access to the App and API - **Suspended** — A user that has been temporarily disabled; no App/API
-  access - **Archived** — A soft-deleted user; no App/API access
+  authenticate, all others are simply descriptive inactive states.
+  - **Draft** — An incomplete user; no App/API access
+  - **Invited** — Has a pending invite to the project; no App/API access until accepted
+  - **Active** — The only status that has proper access to the App and API
+  - **Suspended** — A user that has been temporarily disabled; no App/API access
+  - **Archived** — A soft-deleted user; no App/API access
 - **Role** — The user's role determines their permissions and access
 - **Token** — A user's token is an alternate way to [authenticate into the API](/reference/api/authentication) using a
   static string. When NULL, the token is disabled. When enabled, ensure that a secure string is used.

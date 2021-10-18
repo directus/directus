@@ -15,11 +15,20 @@
 - **Name** — If left blank, this preset will act as a Default for the collection/layout; if given a name, it will be
   shown as a bookmark
 
-After you have completed the form, the layout preview will be populated with live data. You can now tailor the layout as
-desired by updating the preview or the filter component in the page sidebar.
+After you have completed the form, the layout preview will be populated with live data. **You can now tailor the layout
+as desired by updating the preview or the filter component in the page sidebar.**
 
-Each preset saves all of the information needed to recreate a view of the collection/layou, including: the full-text
-search query, any advanced filters added, sort field, sort direction, and all other specific layout options.
+Each preset saves all of the information needed to recreate a view of the collection/layout, including:
+
+- **Collection** — The collection of the preset
+- **Layout** — The Layout the preset applies to
+- **Layout Query** — Order direction, order field, pagination, etc
+- **Layout Options** — The configuration of all layout options
+- **Search** — Any fulltext search query applied
+- **Filters** — Any advanced fitlers applied
+- **User** — Optional; scopes to a specific user
+- **Role** — Optional; scopes to a specific role
+- **Bookmark Name** — Optional; determines if the preset is a bookmark
 
 ::: tip Defaults vs Bookmarks
 

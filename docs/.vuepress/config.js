@@ -251,16 +251,21 @@ module.exports = {
 					{
 						type: 'divider',
 					},
-					{
-						type: 'page',
-						path: '/configuration/security',
-						title: 'Security*',
-					},
-					{
-						type: 'page',
-						path: '/configuration/localization',
-						title: 'Localization*',
-					},
+					// {
+					// 	type: 'page',
+					// 	path: '/configuration/security',
+					// 	title: 'Security*',
+					// },
+					// {
+					// 	type: 'page',
+					// 	path: '/configuration/localization',
+					// 	title: 'Localization*',
+					// },
+					// {
+					// 	type: 'page',
+					// 	path: '/configuration/faq',
+					// 	title: 'Frequently Asked Questions*',
+					// },
 					{
 						type: 'page',
 						path: '/configuration/filter-rules',
