@@ -8,7 +8,7 @@ exports.up = function (knex) {
 		table.uuid('id').primary();
 		table.string('name');
 		table.date('birthday');
-		table.string('search_radius'); //insert geoPoly
+		table.specificType('search_radius', 'geometry(search_radius, 4326)');
 		table.time('earliest_events_to_show');
 		table.time('latest_events_to_show');
 		table.string('password');
@@ -26,10 +26,10 @@ exports.up = function (knex) {
 	knex.schema.createTable('tours', (table) => {
 		table.increments('id').primary();
 		table.bigInteger('revenueEstimated');
-		table.string('route'); // insert geoLine
-		table.string('map_of_stops'); // insert geoMultiPoint
-		table.string('area_of_reach'); // insert geoMultiPoly
-		table.string('revenue_of_shows_by_month'); // insert multilineString
+		table.specificType('route', 'geometry(linestring, 4326)');
+		table.specificType('map_of_stops', 'geometry(multipoint, 4326)');
+		table.specificType('area_of_reach', 'geometry(multipolygon, 4326)');
+		table.specificType('revenue_of_shows_by_month', 'geometry(mutlinestring, 4326'); // insert multilineString
 	});
 	knex.schema.createTable('organizers', (table) => {
 		table.increments('id').primary();
