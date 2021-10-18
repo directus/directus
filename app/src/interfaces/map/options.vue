@@ -1,16 +1,11 @@
 <template>
 	<div class="form-grid">
-		<div class="field half-left">
-			<div class="type-label">{{ t('interfaces.map.geometry_format') }}</div>
-			<v-input v-model="geometryFormat" :disabled="true" :value="t(`interfaces.map.${compatibleFormat}`)" />
-		</div>
-		<div class="field half-right">
+		<div v-if="!nativeGeometryType && geometryFormat !== 'lnglat'" class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
 				:placeholder="t('any')"
 				:show-deselect="true"
-				:disabled="!!nativeGeometryType || geometryFormat == 'lnglat'"
 				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>
@@ -54,18 +49,16 @@ export default defineComponent({
 
 		const isGeometry = props.fieldData.type == 'geometry';
 		const nativeGeometryType = isGeometry ? (props.fieldData!.schema!.geometry_type as GeometryType) : undefined;
-		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
-
-		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
+		const geometryFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
 		const geometryType = ref<GeometryType>(
 			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
 		);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
 		watch(
-			[geometryFormat, geometryType, defaultView],
+			[geometryType, defaultView],
 			() => {
-				const type = geometryFormat.value == 'lnglat' ? 'Point' : geometryType;
+				const type = geometryFormat == 'lnglat' ? 'Point' : geometryType;
 				emit('input', { defaultView, geometryFormat, geometryType: type });
 			},
 			{ immediate: true }
@@ -108,7 +101,6 @@ export default defineComponent({
 			t,
 			isGeometry,
 			nativeGeometryType,
-			compatibleFormat,
 			geometryFormat,
 			GEOMETRY_TYPES,
 			geometryType,
