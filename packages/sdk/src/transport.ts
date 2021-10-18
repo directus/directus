@@ -1,5 +1,7 @@
 import { ItemMetadata } from './items.js';
 
+export type TransportRefreshHandler = () => Promise<void>;
+
 export type TransportErrorDescription = {
 	message?: string;
 	extensions?: Record<string, any> & {

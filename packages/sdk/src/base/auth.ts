@@ -2,7 +2,7 @@ import { AuthCredentials, AuthLoginOptions, AuthRefreshOptions, AuthResult, Auth
 import { PasswordsHandler } from '../handlers/passwords.js';
 import { IStorage } from '../storage.js';
 import { ITransport } from '../transport.js';
-import { Debouncer } from '../utils.js';
+import { Debouncer } from '../utils/debouncer.js';
 
 export type AuthOptions = {
 	mode?: 'json' | 'cookie';

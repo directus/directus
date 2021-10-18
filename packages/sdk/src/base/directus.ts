@@ -19,7 +19,7 @@ import {
 import { IItems } from '../items.js';
 import { ITransport } from '../transport.js';
 import { ItemsHandler } from './items.js';
-import { AxiosTransport } from './transport/index.js';
+import { FetchTransport } from './transport/index.js';
 import { Auth } from './auth.js';
 import { IStorage } from '../storage.js';
 import { LocalStorage, MemoryStorage } from './storage/index.js';
@@ -35,8 +35,11 @@ export type DirectusOptions = {
 };
 
 export class Directus<T extends TypeMap> implements IDirectus<T> {
-	private _auth: IAuth;
+	private _url: string;
 	private _transport: ITransport;
+	private _defaultTransport?: FetchTransport;
+	private _auth: IAuth;
+	private _defaultAuth?: Auth;
 	private _storage: IStorage;
 	private _activity?: ActivityHandler<TypeOf<T, 'directus_activity'>>;
 	private _collections?: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
@@ -63,13 +66,10 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
+		this._url = url;
 		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
-		this._transport =
-			options?.transport ||
-			new AxiosTransport(url, this._storage, async () => {
-				await this._auth.refresh();
-			});
-		this._auth = options?.auth || new Auth(this._transport, this._storage);
+		this._transport = options?.transport || this.defaultTransport;
+		this._auth = options?.auth || this.defaultAuth;
 		this._items = {};
 		this._singletons = {};
 	}
@@ -148,6 +148,19 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 
 	get graphql(): GraphQLHandler {
 		return this._graphql || (this._graphql = new GraphQLHandler(this.transport));
+	}
+
+	get defaultTransport(): FetchTransport {
+		return (
+			this._defaultTransport ||
+			(this._defaultTransport = new FetchTransport(this._url, this._storage, async () => {
+				await this._auth.refresh();
+			}))
+		);
+	}
+
+	get defaultAuth(): Auth {
+		return this._defaultAuth || (this._defaultAuth = new Auth(this._transport, this._storage));
 	}
 
 	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I> {
