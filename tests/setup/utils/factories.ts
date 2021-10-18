@@ -27,6 +27,7 @@ type Tour = {
 	map_of_stops: string;
 	area_of_reach: string;
 	revenue_estimated: bigint;
+	revenue_of_shows_per_month: string;
 };
 
 type Organizer = {
@@ -137,6 +138,7 @@ export const createTour = (): Tour => ({
 	map_of_stops: getRandomGeoMultiPoint(),
 	area_of_reach: getRandomGeoMultiPolygon(),
 	revenue_estimated: BigInt(getRandomInt(Number.MAX_SAFE_INTEGER)),
+	revenue_of_shows_per_month: getRandomGeoMultiLineString(),
 });
 
 export const createGuest = (): Guest => ({
@@ -168,17 +170,27 @@ function randomTime() {
 
 function getRandomGeoPoint() {
 	const location = address.nearbyGPSCoordinate();
-	return `POINT(${location[0]} ${location[1]})`;
+	return `SRID=4326;POINT(${location[0]} ${location[1]})`;
 }
 function getRandomGeoMultiPoint() {
 	const location = address.nearbyGPSCoordinate();
-	return `POINT(${location[0]} ${location[1]})`;
+	const location2 = address.nearbyGPSCoordinate();
+
+	return `SRID=4326;MULTIPOINT(${location[0]} ${location[1]},${location2[0]} ${location2[1]})`;
 }
 function getRandomGeoLineString() {
 	const location = address.nearbyGPSCoordinate();
 	const location2 = address.nearbyGPSCoordinate();
 
-	return `LINESTRING(${location[0]} ${location[1]},${location2[0]} ${location2[1]})`;
+	return `SRID=4326;LINESTRING(${location[0]} ${location[1]},${location2[0]} ${location2[1]})`;
+}
+function getRandomGeoMultiLineString() {
+	const location = address.nearbyGPSCoordinate();
+	const location2 = address.nearbyGPSCoordinate();
+	const location3 = address.nearbyGPSCoordinate();
+	const location4 = address.nearbyGPSCoordinate();
+	const location5 = address.nearbyGPSCoordinate();
+	return `SRID=4326;MULTILINESTRING((${location[0]} ${location[1]},${location2[0]} ${location2[1]}),(${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
 }
 
 function getRandomGeoPolygon() {
@@ -188,7 +200,7 @@ function getRandomGeoPolygon() {
 	const location4 = address.nearbyGPSCoordinate();
 	const location5 = address.nearbyGPSCoordinate();
 
-	return `POLYGON((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
+	return `SRID=4326;POLYGON((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
 }
 function getRandomGeoMultiPolygon() {
 	const location = address.nearbyGPSCoordinate();
@@ -196,8 +208,7 @@ function getRandomGeoMultiPolygon() {
 	const location3 = address.nearbyGPSCoordinate();
 	const location4 = address.nearbyGPSCoordinate();
 	const location5 = address.nearbyGPSCoordinate();
-
-	return `POLYGON((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
+	return `SRID=4326;MULTIPOLYGON(((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]})),((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]})))`;
 }
 
 function getRandomString(length: number) {
