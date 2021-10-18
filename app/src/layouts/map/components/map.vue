@@ -424,8 +424,26 @@ export default defineComponent({
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
 	min-height: 24px;
-	color: var(--foreground-normal);
-	background: var(--background-subdued) !important;
+	color: var(--foreground-subdued);
+	background: var(--background-input) !important;
+	box-shadow: var(--card-shadow);
+
+	button {
+		opacity: 0.25;
+		transition: opacity var(--fast) var(--transition);
+	}
+
+	&:hover {
+		button {
+			opacity: 0.75;
+		}
+	}
+
+	.maplibregl-ctrl-attrib-inner,
+	.mapboxgl-ctrl-attrib-inner {
+		font-size: 12px;
+		line-height: 20px;
+	}
 }
 
 .mapboxgl-ctrl-geocoder {
