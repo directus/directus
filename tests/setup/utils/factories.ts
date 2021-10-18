@@ -134,8 +134,8 @@ ${music.genre()}
 
 export const createTour = (): Tour => ({
 	route: getRandomGeoLineString(),
-	map_of_stops: 'string',
-	area_of_reach: getRandomGeoPolygon(),
+	map_of_stops: getRandomGeoMultiPoint(),
+	area_of_reach: getRandomGeoMultiPolygon(),
 	revenue_estimated: BigInt(getRandomInt(Number.MAX_SAFE_INTEGER)),
 });
 
@@ -143,13 +143,16 @@ export const createGuest = (): Guest => ({
 	id: uuid(),
 	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	name: `${name.firstName()} ${name.lastName()}`,
-	search_radius: 'string',
+	search_radius: getRandomGeoPolygon(),
 	earliest_events_to_show: randomTime(),
 	latest_events_to_show: randomTime(),
-	password: 'string',
+	password: getRandomString(32),
 	shows_attended: datatype.number(),
 });
 
+export const createOrganizer = (): Organizer => ({
+	name: `${name.firstName()} ${name.lastName()}`,
+});
 function getRandomInt(max: number) {
 	return Math.floor(Math.random() * max);
 }
@@ -164,6 +167,10 @@ function randomTime() {
 }
 
 function getRandomGeoPoint() {
+	const location = address.nearbyGPSCoordinate();
+	return `POINT(${location[0]} ${location[1]})`;
+}
+function getRandomGeoMultiPoint() {
 	const location = address.nearbyGPSCoordinate();
 	return `POINT(${location[0]} ${location[1]})`;
 }
@@ -182,4 +189,22 @@ function getRandomGeoPolygon() {
 	const location5 = address.nearbyGPSCoordinate();
 
 	return `POLYGON((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
+}
+function getRandomGeoMultiPolygon() {
+	const location = address.nearbyGPSCoordinate();
+	const location2 = address.nearbyGPSCoordinate();
+	const location3 = address.nearbyGPSCoordinate();
+	const location4 = address.nearbyGPSCoordinate();
+	const location5 = address.nearbyGPSCoordinate();
+
+	return `POLYGON((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
+}
+
+function getRandomString(length: number) {
+	const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let result = '';
+	for (let i = 0; i < length; i++) {
+		result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+	}
+	return result;
 }

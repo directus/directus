@@ -1,4 +1,4 @@
-import { createArtist, createEvent, createTour, createGuest, seedTable } from './factories';
+import { createArtist, createEvent, createTour, createGuest, seedTable, createOrganizer } from './factories';
 import knex, { Knex } from 'knex';
 import config from '../../config';
 import { getDBsToTest } from '../../get-dbs-to-test';
@@ -35,7 +35,13 @@ describe('Item factories', () => {
 			});
 		});
 	});
-
+	describe('createOrganizer', () => {
+		it('returns an object of column names and values', () => {
+			expect(createOrganizer()).toMatchObject({
+				name: expect.any(String),
+			});
+		});
+	});
 	describe('createTour', () => {
 		it('revenue_estimated to be the correct type', () => {
 			expect(typeof createTour().revenue_estimated).toBe('bigint');
@@ -106,11 +112,11 @@ describe('seeding databases', () => {
 		describe('createArtist', () => {
 			it.each(getDBsToTest())('%p returns an artist object of column names and values', async (vendor) => {
 				const database = databases.get(vendor);
-
-				const options = { select: ['*'], where: ['id', 1] };
-				expect(await seedTable(database!, 5, 'artists', createArtist, options)).toMatchObject([
+				const artist = createArtist();
+				const options = { select: ['*'], where: ['name', artist.name] };
+				expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
 					{
-						name: expect.any(String),
+						name: artist.name,
 					},
 				]);
 			});
@@ -140,6 +146,7 @@ describe('seeding databases', () => {
 			// 	expect(await seedTable(database, 5, 'guests', createGuest(), options)).toMatchObject([
 			// 		{
 			// 			name: expect.any(String),
+			// 			birthday: expect.any(Date),
 			// 		},
 			// 	]);
 			// });
@@ -150,6 +157,20 @@ describe('seeding databases', () => {
 			// 			const database = databases.get(vendor);
 			// const options = { select: ['*'], where: ["id", 1] };
 			// 	expect(await seedTable(database, 5, 'tours', createTours(), options)).toMatchObject([
+			// 		{
+			// 			name: expect.any(String),
+			// 			route: expect.any(String)
+			// 			map_of_stops: expect.any(String)
+			// 			area_of_reach: expect.any(String)
+			// 		},
+			// 	]);
+			// });
+		});
+		describe('createTour', () => {
+			// it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
+			// 			const database = databases.get(vendor);
+			// const options = { select: ['*'], where: ["id", 1] };
+			// 	expect(await seedTable(database, 5, 'tours', createOrganizer(), options)).toMatchObject([
 			// 		{
 			// 			name: expect.any(String),
 			// 		},
