@@ -1,0 +1,31 @@
+// Main palette
+$purple: #9e8de4;
+$blue: #68b0f4;
+$green: #00c897;
+$yellow: #ffb300;
+$orange: #ee9746;
+$red: #e35169;
+
+// Mixing colors
+$background-page-light: #fff;
+$background-normal-light: #fff;
+$background-page-dark: #2e3c43;
+$background-normal-dark: #2e3c43;
+
+// Color variant names -> Color to map to said name
+$color-mapping: (
+	'purple': $purple,
+	'blue': $blue,
+	'green': $green,
+	'yellow': $yellow,
+	'orange': $orange,
+	'red': $red,
+	'primary': $green,
+	'secondary': $blue,
+	'success': $green,
+	'warning': $yellow,
+	'danger': $red,
+);
+
+// Percentage step for color variants
+$variant-step: 5;
