@@ -59,8 +59,9 @@ type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
  */
 
 type SeedOptions = {
-	select: string[];
-	where: any[];
+	select?: string[];
+	where?: any[];
+	raw?: string;
 };
 
 export type JoinTableOptions = {
@@ -73,7 +74,7 @@ export const seedTable = async function (
 	table: string,
 	factory: Item | (() => Item),
 	options?: SeedOptions
-): Promise<void | any[]> {
+): Promise<void | any[] | any> {
 	const row: Record<string, number> = {};
 	if (typeof factory === 'object') {
 		await database(table).insert(factory);
@@ -109,9 +110,10 @@ export const seedTable = async function (
 		}
 	}
 	if (options) {
-		const { select, where } = options;
-		if (where.length > 0) return await database(table).select(select).where(where[0], where[1]);
-		return await database(table).select(select);
+		const { select, where, raw } = options;
+		if (raw) return await database.schema.raw(raw!);
+		else if (where && select) return await database(table).select(select).where(where[0], where[1]);
+		else return await database(table).select(select!);
 	}
 };
 

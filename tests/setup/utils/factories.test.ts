@@ -88,24 +88,55 @@ describe('seeding databases', () => {
 			const count = await database!('artists').count('*', { as: 'artists' });
 			if (typeof count[0]?.artists === 'string') expect(parseInt(count[0]?.artists)).toBeGreaterThanOrEqual(1600);
 		});
-		it.each(getDBsToTest())('%p returns the query based on passed in options', async (vendor) => {
+		it.each(getDBsToTest())('%p has a response based on passed in options select and where', async (vendor) => {
 			const database = databases.get(vendor);
 
-			const options = { select: ['name', 'members'], where: ['name', 'testing123'] };
+			const options = { select: ['name', 'members'], where: ['name', 'Tommy Cash'] };
 
 			expect(
 				await seedTable(
 					database!,
 					1,
 					'artists',
-					{ name: 'testing123', members: JSON.stringify({ role: 'terry' }) },
+					{ name: 'Tommy Cash', members: JSON.stringify({ synths: 'Terry' }) },
 					options
 				)
 			).toMatchObject([
 				{
-					name: 'testing123',
+					name: 'Tommy Cash',
 				},
 			]);
+		});
+		it.each(getDBsToTest())('%p has a response based on passed in options raw', async (vendor) => {
+			const database = databases.get(vendor);
+
+			const options = { raw: `SELECT name from artists WHERE name='Johnny Cash';` };
+			const response: any = await seedTable(
+				database!,
+				1,
+				'artists',
+				{ name: 'Johnny Cash', members: JSON.stringify({ guitar: 'Terry' }) },
+				options
+			);
+			if (vendor === 'postgres') {
+				expect(response.rows[0]).toStrictEqual({
+					name: 'Johnny Cash',
+				});
+			}
+			if (vendor === 'mssql') {
+				expect(response).toStrictEqual([
+					{
+						name: 'Johnny Cash',
+					},
+				]);
+			}
+			if (vendor === 'mysql' || vendor === 'maria') {
+				expect(response[0]).toMatchObject([
+					{
+						name: 'Johnny Cash',
+					},
+				]);
+			}
 		});
 	});
 	describe('inserting factories', () => {
