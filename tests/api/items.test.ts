@@ -3,14 +3,14 @@ import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
-import { createArtist, createUser, seedTable } from '../setup/utils/factories';
+import { createArtist, createGuest, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
 	const userId = uuid();
 	const roleId = uuid();
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const vendors = getDBsToTest();
 
 		for (const vendor of vendors) {
@@ -37,7 +37,7 @@ describe('/items', () => {
 
 			await database!('directus_collections').insert([
 				{
-					collection: 'users',
+					collection: 'guests',
 				},
 				{
 					collection: 'artists',
@@ -61,8 +61,8 @@ describe('/items', () => {
 				});
 			}
 
-			if ((await database!.schema.hasTable('users')) === false) {
-				await database!.schema.createTable('users', (table) => {
+			if ((await database!.schema.hasTable('guests')) === false) {
+				await database!.schema.createTable('guests', (table) => {
 					table.increments('id');
 					table.string('name');
 					table.date('birthday');
@@ -77,12 +77,12 @@ describe('/items', () => {
 		}
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
 			const database = databases.get(vendor)!;
 			await database('directus_users').where('id', userId).del();
 			await database('directus_roles').where('id', roleId).del();
-			await database('directus_collections').where('collection', 'users').del();
+			await database('directus_collections').where('collection', 'guests').del();
 			await database('directus_collections').where('collection', 'artists').del();
 			await database('directus_collections').where('collection', 'events').del();
 			await database('directus_collections').where('collection', 'tours').del();
@@ -90,7 +90,7 @@ describe('/items', () => {
 
 			await database.schema.dropTableIfExists('artists_events');
 			await database.schema.dropTableIfExists('tours_components');
-			await database.schema.dropTableIfExists('users');
+			await database.schema.dropTableIfExists('guests');
 			await database.schema.dropTableIfExists('artists');
 			await database.schema.dropTableIfExists('events');
 			await database.schema.dropTableIfExists('tours');
@@ -114,37 +114,12 @@ describe('/items', () => {
 			expect(response.body.data.length).toBe(100);
 			expect(Object.keys(response.body.data[0]).sort()).toStrictEqual(['id', 'members', 'name']);
 		});
-		it.each(getDBsToTest())(`%p retrieves a user's favorite artist`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			const artist = createArtist();
-			const user = createUser();
-			user.favorite_artist = 1;
-			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
-			await seedTable(databases.get(vendor)!, 1, 'users', user);
-			artist.id = 1;
-
-			const response = await request(url)
-				.get('/items/users/1?fields=favorite_artist.*')
-				.set('Authorization', 'Bearer test_token')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
-
-			if (vendor === 'postgres') {
-				artist.members = JSON.parse(artist.members);
-				const returnedUser = { favorite_artist: artist };
-
-				expect(response.body.data).toStrictEqual(returnedUser);
-			} else {
-				const returnedUser = { favorite_artist: artist };
-				expect(await response.body.data).toStrictEqual(returnedUser);
-			}
-		});
 	});
+
 	describe('/:collection/:id', () => {
-		it.each(getDBsToTest())('%p retrieves one item', async (vendor) => {
+		it.each(getDBsToTest())('%p retrieves one artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const artist = createArtist();
-			await databases.get(vendor)!('artists').insert(artist);
+			seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
 
 			const response = await request(url)
 				.get(`/items/artists/1`)
@@ -152,13 +127,24 @@ describe('/items', () => {
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
+			expect(response.body.data).toMatchObject({ name: expect.any(String) });
+		});
+		it.each(getDBsToTest())(`%p retrieves a guest's favorite artist`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const artist = createArtist();
+			const guest = createGuest();
+			guest.favorite_artist = 1;
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+			await seedTable(databases.get(vendor)!, 1, 'guests', guest);
 			artist.id = 1;
-			if (vendor === 'postgres') {
-				artist.members = JSON.parse(artist.members);
-				expect(response.body.data).toStrictEqual(artist);
-			} else {
-				expect(response.body.data).toStrictEqual(artist);
-			}
+
+			const response = await request(url)
+				.get('/items/guests/1?fields=favorite_artist.*')
+				.set('Authorization', 'Bearer test_token')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(await response.body.data).toMatchObject({ favorite_artist: { name: expect.any(String) } });
 		});
 	});
 });

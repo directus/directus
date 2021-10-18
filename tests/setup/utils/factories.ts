@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { music, internet, name, finance, random, datatype, lorem, address } from 'faker';
 import { Knex } from 'knex';
 
-type User = {
+type Guest = {
 	id?: number;
 	name: string;
 	birthday: Date;
@@ -48,7 +48,7 @@ type JoinTable = {
 	[key: string]: any;
 };
 
-type Item = User | Artist | Tour | Organizer | Event | JoinTable;
+type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
 
 export const seedTable = async function (
 	knex: Knex<any, unknown>,
@@ -94,7 +94,7 @@ export const createTour = (): Tour => ({
 	revenue_estimated: BigInt(finance.amount(Number.MAX_SAFE_INTEGER)),
 });
 
-export const createUser = (): User => ({
+export const createGuest = (): Guest => ({
 	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	name: `${name.firstName()} ${name.lastName()}`,
 	search_radius: 'string',
