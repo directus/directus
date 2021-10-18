@@ -1274,9 +1274,6 @@ interfaces:
     map: Térkép
     description: Hely megadása térképen
     zoom: Nagyítás
-    geometry_type: Geometria típusa
-    geometry_format: Geometria formátuma
-    default_view: Alapértelmezett nézet
     invalid_options: Érvénytelen opciók
     invalid_format: Érvénytelen formátum ({format})
     unexpected_geometry: 'Elvárt: {expected}, kapott: {got}.'
@@ -1502,13 +1499,11 @@ layouts:
     layers: Rétegek
     edit_custom_layers: Rétegek szerkesztése
     cluster_options: Klaszterezés beállításai
-    cluster: Klaszterezés aktiválása
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
     field: Geometria
     invalid_geometry: Érvénytelen geometria
-    auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
     search_this_area: Keresés ezen a területen
 panels:
   metric:
