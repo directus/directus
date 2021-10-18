@@ -423,6 +423,9 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 							hidden: true,
 							icon: 'import_export',
 						},
+						schema: {
+							name: junctionCollection,
+						},
 						fields: [
 							{
 								field: 'id',
@@ -855,6 +858,9 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 						meta: {
 							hidden: true,
 							icon: 'import_export',
+						},
+						schema: {
+							name: junctionCollection,
 						},
 						fields: [
 							{
