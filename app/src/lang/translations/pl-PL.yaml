@@ -1297,9 +1297,6 @@ interfaces:
     map: Mapa
     description: Wybierz lokalizację na mapie
     zoom: Powiększ
-    geometry_type: Typ geometrii
-    geometry_format: Format geometrii
-    default_view: Widok domyślny
     invalid_options: Nieprawidłowe opcje
     invalid_format: Nieprawidłowy format ({format})
     unexpected_geometry: Oczekiwano {expected}, otrzymano {got}.
@@ -1532,13 +1529,11 @@ layouts:
     layers: Warstwy
     edit_custom_layers: Edytuj warstwy
     cluster_options: Opcje klastrowania
-    cluster: Aktywuj klastrowanie
     cluster_radius: Promień klastra
     cluster_minpoints: Minimalny rozmiar klastra
     cluster_maxzoom: Maksymalne powiększenie klastrów
     field: Geometria
     invalid_geometry: Nieprawidłowa geometria
-    auto_location_filter: Zawsze filtruj dane do wyświetlania granic
     search_this_area: Przeszukaj ten obszar
     clear_data_filter: Wyczyść filtr danych
     clear_location_filter: Wyczyść filtr lokalizacji
