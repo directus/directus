@@ -1299,9 +1299,6 @@ interfaces:
     map: Karte
     description: Ort auf der Karte wählen
     zoom: Zoom
-    geometry_type: Geometrie-Typ
-    geometry_format: Geometrie-Format
-    default_view: Standardansicht
     invalid_options: Ungültige Optionen
     invalid_format: Ungültiges Format ({format})
     unexpected_geometry: Erwartete {expected}, erhielt {got}.
@@ -1534,13 +1531,11 @@ layouts:
     layers: Ebenen
     edit_custom_layers: Ebenen bearbeiten
     cluster_options: Clustering-Optionen
-    cluster: Clustering aktivieren
     cluster_radius: Cluster-Radius
     cluster_minpoints: Minimale Punkte Clustering
     cluster_maxzoom: Maximaler Zoom für Clustering
     field: Dimensionen
     invalid_geometry: Ungültige Geometrie
-    auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
     search_this_area: Diesen Bereich durchsuchen
     clear_data_filter: Datenfilter löschen
     clear_location_filter: Standortfilter löschen
