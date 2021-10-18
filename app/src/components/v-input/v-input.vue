@@ -243,7 +243,7 @@ export default defineComponent({
 			} else {
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
-					value = slugify(value, { separator: props.slugSeparator });
+					value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
 					if (endsWithSpace) value += props.slugSeparator;
 				}
 
