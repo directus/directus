@@ -1303,9 +1303,6 @@ interfaces:
     map: Географска карта
     description: Избор на местоположение по картата
     zoom: Мащабиране
-    geometry_type: Тип
-    geometry_format: Формат
-    default_view: Изглед по подразбиране
     invalid_options: Невалидни опции
     invalid_format: Невалиден формат ({format})
     unexpected_geometry: Очаква се {expected}, но има {got}.
@@ -1538,13 +1535,11 @@ layouts:
     layers: Слоеве
     edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
-    cluster: Активиране на групирането
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
     field: Геометрия
     invalid_geometry: Невалидна геометрия
-    auto_location_filter: Филтриране на данните спрямо границите
     search_this_area: Търсене в тази зона
     clear_data_filter: Изчистване на филтрирането
     clear_location_filter: Изчистване на филтрирането
