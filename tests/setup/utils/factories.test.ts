@@ -1,12 +1,4 @@
-import {
-	createJoinTable,
-	JoinTableOptions,
-	createArtist,
-	createEvent,
-	createTour,
-	createGuest,
-	seedTable,
-} from './factories';
+import { createArtist, createEvent, createTour, createGuest, seedTable } from './factories';
 import knex, { Knex } from 'knex';
 
 describe('seedTable', () => {
@@ -53,41 +45,36 @@ describe('seedTable', () => {
 	});
 });
 
-describe('createJoinTable', () => {
-	it('returns an object of column names and values', () => {
-		const options: JoinTableOptions[] = [{ artist_id: 1 }, { item: 'uuid_here' }, { collection: 'artists' }];
-		expect(createJoinTable(options)).toStrictEqual({ artist_id: 1, item: 'uuid_here', collection: 'artists' });
-	});
-});
-
-describe('createArtist', () => {
-	it('returns an object of column names and values', () => {
-		expect(createArtist()).toMatchObject({ name: expect.any(String), members: expect.any(String) });
-	});
-});
-
-describe('createEvent', () => {
-	it('returns an object of column names and values', () => {
-		expect(createEvent()).toMatchObject({
-			cost: expect.any(Number),
-			created_at: expect.any(Date),
-			location: expect.any(String),
+describe('Item factories', () => {
+	describe('createArtist', () => {
+		it('returns an object of column names and values', () => {
+			expect(createArtist()).toMatchObject({ name: expect.any(String), members: expect.any(String) });
 		});
 	});
-});
 
-describe('createGuest', () => {
-	it('returns an object of column names and values', () => {
-		expect(createGuest()).toMatchObject({
-			id: expect.any(String),
-			birthday: expect.any(Date),
-			shows_attended: expect.any(Number),
+	describe('createEvent', () => {
+		it('returns an object of column names and values', () => {
+			expect(createEvent()).toMatchObject({
+				cost: expect.any(Number),
+				created_at: expect.any(Date),
+				location: expect.any(String),
+			});
 		});
 	});
-});
 
-describe('createTour', () => {
-	it('returns an object of column names and values', () => {
-		expect(typeof createTour().revenue_estimated).toBe('bigint');
+	describe('createGuest', () => {
+		it('returns an object of column names and values', () => {
+			expect(createGuest()).toMatchObject({
+				id: expect.any(String),
+				birthday: expect.any(Date),
+				shows_attended: expect.any(Number),
+			});
+		});
+	});
+
+	describe('createTour', () => {
+		it('returns an object of column names and values', () => {
+			expect(typeof createTour().revenue_estimated).toBe('bigint');
+		});
 	});
 });

@@ -150,16 +150,6 @@ export const createGuest = (): Guest => ({
 	shows_attended: datatype.number(),
 });
 
-export const createJoinTable = (options: Record<string, string | number>[]): JoinTable => {
-	const row: Record<string, string | number> = {};
-	options.forEach((column) => {
-		for (const [columnName, value] of Object.entries(column)) {
-			row[columnName] = value;
-		}
-	});
-	return row;
-};
-
 function getRandomInt(max: number) {
 	return Math.floor(Math.random() * max);
 }
