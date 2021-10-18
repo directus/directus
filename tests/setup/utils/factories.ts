@@ -157,6 +157,15 @@ export const createGuest = (): Guest => ({
 export const createOrganizer = (): Organizer => ({
 	name: `${name.firstName()} ${name.lastName()}`,
 });
+
+export const createMany = (factory: () => Item, count: number) => {
+	const items: Item[] = [];
+	for (let rows = 0; rows < count; rows++) {
+		items.push(factory());
+	}
+	return items;
+};
+
 function getRandomInt(max: number) {
 	return Math.floor(Math.random() * max);
 }

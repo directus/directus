@@ -1,4 +1,12 @@
-import { createArtist, createEvent, createTour, createGuest, seedTable, createOrganizer } from './factories';
+import {
+	createArtist,
+	createEvent,
+	createTour,
+	createGuest,
+	seedTable,
+	createOrganizer,
+	createMany,
+} from './factories';
 import knex, { Knex } from 'knex';
 import config from '../../config';
 import { getDBsToTest } from '../../get-dbs-to-test';
@@ -45,6 +53,13 @@ describe('Item factories', () => {
 	describe('createTour', () => {
 		it('revenue_estimated to be the correct type', () => {
 			expect(typeof createTour().revenue_estimated).toBe('bigint');
+		});
+	});
+	describe('createMany', () => {
+		it.only('returns an array of Artists', () => {
+			const artists = createMany(createArtist, 4);
+			expect(artists[0]).toMatchObject({ name: expect.any(String) });
+			expect(artists.length).toBe(4);
 		});
 	});
 });
