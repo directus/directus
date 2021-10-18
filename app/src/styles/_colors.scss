@@ -7,10 +7,10 @@ $orange: #ee9746;
 $red: #e35169;
 
 // Mixing colors
-$background-page-light: #fff;
-$background-normal-light: #fff;
-$background-page-dark: #2e3c43;
-$background-normal-dark: #2e3c43;
+$light-theme-tint: #fff;
+$light-theme-shade: #2e3c43;
+$dark-theme-tint: #fff;
+$dark-theme-shade: #2e3c43;
 
 // Color variant names -> Color to map to said name
 $color-mapping: (

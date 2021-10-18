@@ -30,7 +30,7 @@
 	// Generate all variant variables from $color-mapping list
 	@each $identifier, $color in $color-mapping {
 		// include alt variants for backwards compatibility
-		--#{$identifier}-alt: #{mix($background-page-light, $color, 90)};
+		--#{$identifier}-alt: #{mix($light-theme-tint, $color, 90)};
 
 		// Light variants
 		// loop from 1 to 99
@@ -38,7 +38,7 @@
 			// if the current value is divisible by the step variable
 			@if $i % $variant-step == 0 {
 				// create variable, mix colors
-				--#{$identifier}-#{$i}: #{mix($background-page-light, $color, 100 - $i)};
+				--#{$identifier}-#{$i}: #{mix($light-theme-tint, $color, 100 - $i)};
 			}
 		}
 
@@ -51,7 +51,7 @@
 			// if the current value is divisible by the step variable
 			@if $i % $variant-step == 0 {
 				// create variable, mix colors
-				--#{$identifier}-#{100 + $i}: #{mix($background-normal-dark, $color, $i)};
+				--#{$identifier}-#{100 + $i}: #{mix($light-theme-shade, $color, $i)};
 			}
 		}
 	}
