@@ -1319,9 +1319,9 @@ interfaces:
     map: Map
     description: Select a location on a map
     zoom: Zoom
-    geometry_type: Geometry type
-    geometry_format: Geometry format
-    default_view: Default view
+    geometry_type: Geometry Type
+    geometry_format: Geometry Format
+    default_view: Default View
     invalid_options: Invalid options
     invalid_format: Invalid format ({format})
     unexpected_geometry: Expected {expected}, got {got}.
@@ -1555,13 +1555,13 @@ layouts:
     layers: Layers
     edit_custom_layers: Edit Layers
     cluster_options: Clustering options
-    cluster: Activate clustering
+    cluster: Cluster Nearby Data
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
     field: Geometry
     invalid_geometry: Invalid geometry
-    auto_location_filter: Always filter data to view bounds
+    auto_location_filter: Auto-Filter within View
     search_this_area: Search this area
     clear_data_filter: Clear data filter
     clear_location_filter: Clear location filter
