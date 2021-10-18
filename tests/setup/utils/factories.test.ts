@@ -8,7 +8,7 @@ describe('Item factories', () => {
 		it('returns an artist object of column names and values', () => {
 			expect(createArtist()).toMatchObject({
 				name: expect.any(String),
-				members: { role: expect.any(String) },
+				members: expect.any(String),
 			});
 		});
 	});
@@ -88,11 +88,16 @@ describe('seeding databases', () => {
 			const options = { select: ['name', 'members'], where: ['name', 'testing123'] };
 
 			expect(
-				await seedTable(database!, 1, 'artists', { name: 'testing123', members: { role: 'terry' } }, options)
+				await seedTable(
+					database!,
+					1,
+					'artists',
+					{ name: 'testing123', members: JSON.stringify({ role: 'terry' }) },
+					options
+				)
 			).toMatchObject([
 				{
-					name: expect.any(String),
-					members: { role: expect.any(String) },
+					name: 'testing123',
 				},
 			]);
 		});
@@ -106,7 +111,6 @@ describe('seeding databases', () => {
 				expect(await seedTable(database!, 5, 'artists', createArtist, options)).toMatchObject([
 					{
 						name: expect.any(String),
-						members: { role: expect.any(String) },
 					},
 				]);
 			});
