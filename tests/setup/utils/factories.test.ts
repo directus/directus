@@ -72,7 +72,7 @@ describe('seeding databases', () => {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 			const database = databases.get(vendor);
 			await database!('artists').truncate();
-			database!.destroy();
+			await database!.destroy();
 		}
 	});
 	describe('seedTable', () => {
@@ -83,10 +83,10 @@ describe('seeding databases', () => {
 		it.each(getDBsToTest())('%p to insert the correct number of artists', async (vendor) => {
 			const database = databases.get(vendor);
 
-			expect(await seedTable(database!, 1675, 'artists', createArtist)).toBe(undefined);
+			expect(await seedTable(database!, 1606, 'artists', createArtist)).toBe(undefined);
 
 			const count = await database!('artists').count('*', { as: 'artists' });
-			if (typeof count[0]?.artists === 'string') expect(parseInt(count[0]?.artists)).toBeGreaterThanOrEqual(1600);
+			if (typeof count[0]?.artists === 'string') expect(parseInt(count[0]?.artists)).toBeGreaterThanOrEqual(1606);
 		});
 		it.each(getDBsToTest())('%p has a response based on passed in options select and where', async (vendor) => {
 			const database = databases.get(vendor);
