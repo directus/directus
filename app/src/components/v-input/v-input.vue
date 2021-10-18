@@ -179,7 +179,17 @@ export default defineComponent({
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
 			const key = event.key.toLowerCase();
-			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'tab'];
+			const systemKeys = [
+				'meta',
+				'shift',
+				'alt',
+				'backspace',
+				'tab',
+				'arrowup',
+				'arrowdown',
+				'arrowleft',
+				'arrowright',
+			];
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.slug === true) {
