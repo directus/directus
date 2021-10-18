@@ -227,6 +227,7 @@ show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
 confirm_revert_body: Dette vil vende elementet tilbage til den valgte tilstand.
+display: Vis
 settings_update_success: Indstillinger opdateret
 title: Titel
 revision_delta_created: Oprettet
@@ -237,6 +238,7 @@ revision_delta_reverted: Omvendt
 revision_delta_other: Revision
 revision_delta_by: '{date} af {user}'
 private_user: Privat Bruger
+creation_preview: Forhåndsvisning Af Oprettelse
 revision_preview: Revision Forhåndsvisning
 updates_made: Opdateringer Lavet
 leave_comment: Skriv en kommentar...
@@ -245,12 +247,35 @@ item_create_success: Element oprettet | Elementer oprettet
 item_update_success: Element opdateret | Elementer opdateret
 this_collection: Denne Samling
 related_collection: Relateret Samling
+related_collections: Relaterede Samlinger
+translations_collection: Oversættelse Samling
+languages_collection: Sprog Samling
 export_data: Eksporter data
 format: Format
+use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
+export_collection: 'Eksporter {collection}'
 last_page: Sidste side
+last_access: Seneste Adgang
+fill_template: Udfyld med skabelonværdi
+a_unique_table_name: Et unikt bordnavn...
+a_unique_column_name: Et unikt kolonnenavn...
+enable_custom_values: Aktivér tilpasset rute
 submit: Send
+move_to_folder: Flyt til mappe
+move: Flyt
 system: System
+add_field_related: Tilføj felt til relateret samling
+interface_label: Grænseflade
+today: Idag
+yesterday: Igår
 delete_comment: Slet kommentar
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'tt:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: Minutter
+hours: Timer
 month: Måned
 year: År
 select_all: Vælg alle
@@ -272,13 +297,34 @@ cancel_crop: Annuller beskæring
 original: Original
 url: URL
 import_label: Importér
+file_details: Fil Detaljer
 dimensions: Dimensioner
+size: Størrelse
 created: Oprettet
 modified: Ændret
 checksum: Kontrolsum
 owner: Ejer
+edited_by: Redigeret af
+folder: Mappe
+zoom: Zoom
 download: Download
+open: Åbn
+open_in_new_window: Åbn i nyt vindue
+open_folder: Åbn "{folder}" mappe
+foreground_color: Forgrundsfarve
+background_color: Baggrunds Farve
+upload_from_device: Upload fil fra enhed
+choose_from_library: Vælg fil fra bibliotek
+import_from_url: Importér fil fra URL
+replace_from_device: Erstat fil fra enhed
+replace_from_library: Erstat fil fra enhed
+no_file_selected: Ingen Fil Valgt
+download_file: Download Fil
+collection_key: Samlings Nøgle
 name: Navn
+primary_key_field: Primær Nøglefelt
+type: Type
+creating_new_collection: Opretter Ny Samling
 created_by: Oprettet af
 created_on: Oprettet d.
 save_and_stay: Gem og bliv
@@ -287,16 +333,30 @@ comments: Kommentarer
 request_feature: Anmod om funktion
 item_count: 'Ingen Elementer | Et Element | {count} Elementer'
 create_collection: Opret samling
+no_other_dashboards_copy: Du har endnu ikke andre Dashboarder.
+inactive: Inaktiv
 users: Brugere
 activity: Aktivitet
+activity_item: Aktivitet Element
 action: Handling
 ip_address: IP adresse
 user_agent: Brugeragent
 webhooks: Webhooks
+value_decimals: Værdi Decimaler
+min_value: Min Værdi
+max_value: Max Værdi
+automatic: Automatisk
 field_width: Felt Bredde
+add_filter: Tilføj Filter
+upper_limit: Øvre grænse...
+lower_limit: Nedre grænse...
 user_directory: Bruger Mappe
 duration: Varighed
+file_moved: Fil Flyttet
+collection_created: Samling Oprettet
 modified_on: Ændringsdato
+card_size: Kort Størrelse
+sort_field: Sortér Felt
 status: Status
 remove: Fjern
 errors:
@@ -327,6 +387,8 @@ select_fields: Vælg felter
 width: Bredde
 height: Højde
 wysiwyg_options:
+  forecolor: Forgrundsfarve
+  backcolor: Baggrunds Farve
   codeblock: Kode
   remove: Fjern
   selectall: Vælg alle
@@ -364,6 +426,7 @@ fields:
     note: Kommentar
     color: Farve
     hidden: Skjult
+    sort_field: Sortér Felt
   directus_files:
     title: Titel
     description: Beskrivelse
@@ -376,6 +439,7 @@ fields:
     created_by: Oprettet af
     embed: Indlejr
     uploaded_by: Uploadet af
+    folder: Mappe
     width: Bredde
     uploaded_on: Uploadet d.
     height: Højde
@@ -396,6 +460,7 @@ fields:
     status: Status
     role: Rolle
     last_page: Sidste side
+    last_access: Seneste Adgang
   directus_settings:
     project_name: Projektnavn
   directus_fields:
@@ -421,8 +486,12 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Navn
+    collection_list:
+      fields:
+        type_name: Type
     collections_name: Samlinger
   directus_webhooks:
+    status_options_inactive: Inaktiv
     actions_create: Opret
     actions_update: Opdater
 comment: Kommenter
@@ -469,6 +538,7 @@ translation: Oversættelse
 value: Værdi
 interfaces:
   filter:
+    add_filter: Tilføj Filter
     all: Alle
   presentation-links:
     primary: Primær
@@ -488,6 +558,10 @@ interfaces:
     files: Filer
   select-icon:
     icon: Ikon
+  map:
+    zoom: Zoom
+  system-folder:
+    folder: Mappe
   tags:
     tags: Tags
 displays:
