@@ -104,6 +104,14 @@ export const createGuest = (): Guest => ({
 	shows_attended: datatype.number(),
 });
 
+export const createMany = (factory: () => Item, count: number) => {
+	const items: Item[] = [];
+	for (let rows = 0; rows < count; rows++) {
+		items.push(factory());
+	}
+	return items;
+};
+
 function randomDateTime(start: Date, end: Date) {
 	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }

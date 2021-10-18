@@ -4,7 +4,7 @@ import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
-import { createArtist, createGuest, seedTable } from '../setup/utils/factories';
+import { createArtist, createGuest, createMany, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -196,7 +196,7 @@ describe('/items', () => {
 	});
 
 	describe('/:collection POST', () => {
-		it.only.each(getDBsToTest())('%p creates one artist', async (vendor) => {
+		it.each(getDBsToTest())('%p creates one artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			const body = createArtist();
 			const response: any = await axios.post(`${url}/items/artists`, body, {
@@ -205,6 +205,16 @@ describe('/items', () => {
 				},
 			});
 			expect(response.data.data).toMatchObject({ name: body.name });
+		});
+		it.each(getDBsToTest())('%p creates 45 artists', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const body = createMany(createArtist, 45);
+			const response: any = await axios.post(`${url}/items/artists`, body, {
+				headers: {
+					Authorization: 'Bearer test_token',
+				},
+			});
+			expect(response.data.data.length).toBe(body.length);
 		});
 	});
 });
