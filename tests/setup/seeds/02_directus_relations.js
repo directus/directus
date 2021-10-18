@@ -1,10 +1,9 @@
 exports.seed = function (knex) {
 	return knex('directus_relations').insert([
 		{
-			many_collection: 'artists',
-			many_field: 'id',
-			one_collection: 'guests',
-			one_field: 'favorite_artists',
+			many_collection: 'guests',
+			many_field: 'favorite_artists',
+			one_collection: 'artists',
 		},
 		{
 			many_collection: 'artists',
