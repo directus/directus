@@ -19,6 +19,7 @@ describe('utils', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		const str = await sdk.utils.random.string(32);
 
 		expect(str).toBe('01234567890123456789012345678901');
@@ -36,6 +37,7 @@ describe('utils', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
 		expect(hash?.substr(0, 7)).toBe('$argon2');
@@ -53,6 +55,7 @@ describe('utils', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
 		expect(hash?.substr(0, 7)).toBe('$argon2');
@@ -79,12 +82,14 @@ describe('utils', function () {
 			.reply(204);
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.utils.sort('posts', 10, 5);
 	});
 
 	test(`revert`, async (url, nock) => {
 		nock().post('/utils/revert/555').reply(204);
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.utils.revert(555);
 	});
 });

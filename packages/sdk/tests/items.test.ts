@@ -89,7 +89,8 @@ describe('items', function () {
 		nock()
 			.get('/items/posts')
 			.query({
-				'fields[]': ['id', 'title'],
+				'fields[0]': 'id',
+				'fields[1]': 'title',
 			})
 			.reply(200, {
 				data: [

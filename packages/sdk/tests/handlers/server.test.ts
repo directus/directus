@@ -10,6 +10,7 @@ describe('server', function () {
 		nock().get('/server/ping').reply(200, 'pong', { 'Content-Type': 'text/plain' });
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		const str = await sdk.server.ping();
 
 		expect(str).toBe('pong');
@@ -19,6 +20,7 @@ describe('server', function () {
 		const scope = nock().get('/server/info').reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.server.info();
 
 		expect(scope.pendingMocks().length).toBe(0);

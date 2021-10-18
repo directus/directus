@@ -10,6 +10,7 @@ describe('profile', function () {
 		const scope = nock().get('/users/me').reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.users.me.read();
 
 		expect(scope.pendingMocks().length).toBe(0);
@@ -24,6 +25,7 @@ describe('profile', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.users.me.update({
 			email: 'other@email.com',
 			untyped_field: 12345,

@@ -15,6 +15,7 @@ describe('password', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.auth.password.request('admin@example.com', 'http://some_url.com');
 
 		expect(scope.pendingMocks().length).toBe(0);
@@ -29,6 +30,7 @@ describe('password', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.auth.password.reset('token', 'newpassword');
 
 		expect(scope.pendingMocks().length).toBe(0);

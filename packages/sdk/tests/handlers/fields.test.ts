@@ -12,6 +12,7 @@ describe('fields', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.fields.updateOne('posts', 'title', {
 			meta: {
 				required: true,

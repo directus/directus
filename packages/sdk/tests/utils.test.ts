@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { Debouncer } from '../src/utils';
+import { Debouncer } from '../src/utils/debouncer';
 import { timers } from './utils';
 
 describe('debouncer', function () {

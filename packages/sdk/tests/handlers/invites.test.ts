@@ -15,6 +15,7 @@ describe('invites', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.users.invites.send('admin@example.com', '1e098175-6258-48d6-ad88-d24cae2abe15');
 
 		expect(scope.pendingMocks().length).toBe(0);
@@ -29,6 +30,7 @@ describe('invites', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.users.invites.accept('token', 'password1234');
 
 		expect(scope.pendingMocks().length).toBe(0);

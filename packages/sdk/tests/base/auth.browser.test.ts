@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
+import { Auth, FetchTransport, Directus, MemoryStorage } from '../../src';
 import { test, timers } from '../utils';
 
 describe('auth (browser)', function () {
@@ -16,7 +16,7 @@ describe('auth (browser)', function () {
 
 	test(`sets default auth mode to cookie`, async (url) => {
 		const storage = new MemoryStorage();
-		const transport = new AxiosTransport(url, storage);
+		const transport = new FetchTransport(url, storage);
 		const auth = new Auth(transport, storage);
 		expect(auth.options.mode).toBe('cookie');
 	});
@@ -33,6 +33,7 @@ describe('auth (browser)', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.auth.login({
 			email: 'wolfulus@gmail.com',
 			password: 'password',
@@ -73,6 +74,7 @@ describe('auth (browser)', function () {
 
 		await timers(async ({ tick, flush }) => {
 			const sdk = new Directus(url);
+			await sdk.defaultTransport.setupPlatformFetch();
 
 			const loginPromise = sdk.auth.login(
 				{
@@ -135,6 +137,7 @@ describe('auth (browser)', function () {
 		});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.auth.login({
 			email: 'wolfulus@gmail.com',
 			password: 'password',

@@ -1,14 +1,24 @@
-import nock, { back, BackMode } from 'nock';
+import * as Nock from 'nock';
 import { setImmediate, setTimeout, clearImmediate } from 'timers';
 import argon2 from 'argon2';
+import path from 'path';
+import unfetch from 'unfetch';
+import { fileURLToPath } from 'url';
+import { jest } from '@jest/globals';
 
 export const URL = process.env.TEST_URL || 'http://localhost';
 export const MODE = process.env.TEST_MODE || 'dryrun';
 
-back.fixtures = `${__dirname}/fixtures`;
-back.setMode(MODE as BackMode);
+const nock = Nock.default;
+const back = nock.back;
 
-export type Test = (url: string, nock: () => nock.Scope) => Promise<void>;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+back.fixtures = `${__dirname}/fixtures`;
+back.setMode(MODE as Nock.BackMode);
+
+export type Test = (url: string, nock: () => Nock.Scope) => Promise<void>;
 
 export type TestSettings = {
 	url?: string;
@@ -17,6 +27,8 @@ export type TestSettings = {
 
 export function test(name: string, test: Test, settings?: TestSettings): void {
 	it(name, async () => {
+		if (typeof window !== 'undefined') window.fetch = unfetch as any as typeof fetch;
+
 		nock.cleanAll();
 
 		const scope = () => nock(settings?.url || URL);

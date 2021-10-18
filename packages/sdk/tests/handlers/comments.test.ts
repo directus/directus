@@ -23,6 +23,7 @@ describe('comments', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		const item = await sdk.activity.comments.create({
 			collection: 'posts',
 			item: '1',
@@ -48,6 +49,7 @@ describe('comments', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		const item = await sdk.activity.comments.update(5, 'Awesome content!');
 
 		expect(item.comment).toBe('Awesome content!');
@@ -57,6 +59,7 @@ describe('comments', function () {
 		const scope = nock().delete('/activity/comment/5').reply(204);
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.activity.comments.delete(5);
 
 		expect(scope.pendingMocks().length).toBe(0);

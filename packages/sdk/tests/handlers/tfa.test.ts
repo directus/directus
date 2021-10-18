@@ -19,6 +19,7 @@ describe('tfa', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		const data = await sdk.users.me.tfa.generate('password1234');
 
 		expect(scope.pendingMocks().length).toBe(0);
@@ -36,6 +37,7 @@ describe('tfa', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.users.me.tfa.enable('supersecret', '123456');
 
 		expect(scope.pendingMocks().length).toBe(0);
@@ -49,6 +51,7 @@ describe('tfa', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.users.me.tfa.disable('12345');
 
 		expect(scope.pendingMocks().length).toBe(0);

@@ -15,6 +15,7 @@ describe('auth', function () {
 			.reply(203);
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.auth.static('token');
 	});
 
@@ -31,6 +32,7 @@ describe('auth', function () {
 			});
 
 		const sdk = new Directus(url);
+await sdk.defaultTransport.setupPlatformFetch();
 		try {
 			await sdk.auth.login(
 				{
@@ -60,6 +62,7 @@ describe('auth', function () {
 			.reply(203);
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.auth.static('token');
 
 		expect(sdk.auth.token);
@@ -80,6 +83,7 @@ describe('auth', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		try {
 			await sdk.auth.login({
 				email: 'invalid@email.com',
@@ -111,6 +115,7 @@ describe('auth', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		try {
 			await sdk.auth.static('token');
 			fail('Should have thrown due to error response');

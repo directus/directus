@@ -4,7 +4,7 @@
 
 import { Auth } from '../../src/base/auth';
 import { ItemsHandler } from '../../src/base/items';
-import { AxiosTransport } from '../../src/base/transport/axios-transport';
+import { FetchTransport } from '../../src/base/transport/fetch-transport';
 import { Directus } from '../../src/base';
 import {
 	ActivityHandler,
@@ -36,7 +36,7 @@ describe('sdk', function () {
 	});
 
 	it('has transport', function () {
-		expect(sdk.transport).toBeInstanceOf(AxiosTransport);
+		expect(sdk.transport).toBeInstanceOf(FetchTransport);
 	});
 
 	it('has activity instance', function () {
@@ -137,6 +137,7 @@ describe('sdk', function () {
 		`;
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 
 		const response = await sdk.graphql.items(query);
 
@@ -167,6 +168,7 @@ describe('sdk', function () {
 		`;
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 
 		const response = await sdk.graphql.system(query);
 

@@ -2,13 +2,13 @@
  * @jest-environment node
  */
 
-import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
+import { Auth, FetchTransport, Directus, MemoryStorage } from '../../src';
 import { test, timers } from '../utils';
 
 describe('auth (node)', function () {
 	test(`sets default auth mode to json`, async (url) => {
 		const storage = new MemoryStorage();
-		const transport = new AxiosTransport(url, storage);
+		const transport = new FetchTransport(url, storage);
 		const auth = new Auth(transport, storage);
 		expect(auth.options.mode).toBe('json');
 	});
@@ -25,6 +25,7 @@ describe('auth (node)', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 		await sdk.auth.login({
 			email: 'wolfulus@gmail.com',
 			password: 'password',
@@ -62,6 +63,7 @@ describe('auth (node)', function () {
 
 		await timers(async ({ tick, flush }) => {
 			const sdk = new Directus(url);
+			await sdk.defaultTransport.setupPlatformFetch();
 
 			const loginPromise = sdk.auth.login(
 				{
@@ -128,6 +130,7 @@ describe('auth (node)', function () {
 			});
 
 		const sdk = new Directus(url);
+		await sdk.defaultTransport.setupPlatformFetch();
 
 		await sdk.auth.login({
 			email: 'wolfulus@gmail.com',
