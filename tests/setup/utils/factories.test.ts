@@ -56,7 +56,7 @@ describe('Item factories', () => {
 		});
 	});
 	describe('createMany', () => {
-		it.only('returns an array of Artists', () => {
+		it('returns an array of Artists', () => {
 			const artists = createMany(createArtist, 4);
 			expect(artists[0]).toMatchObject({ name: expect.any(String) });
 			expect(artists.length).toBe(4);
