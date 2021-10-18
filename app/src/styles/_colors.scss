@@ -1,3 +1,5 @@
+@import 'themes/mixins/generate-colors';
+
 // Main palette
 $purple: #9e8de4;
 $blue: #68b0f4;
@@ -27,9 +29,10 @@ $color-mapping: (
 	'danger': $red,
 );
 
-// Suffix -> Percentage mapping
+// Suffix -> Percentage mapping (Percentage of main color)
+// Negative numbers will use secondary color for mixture.
+// The percentage will be equal to the absolute value of the number.
 $step-mapping: (
-	'alt': 10,
 	'10': 10,
 	'25': 25,
 	'50': 50,
