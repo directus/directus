@@ -1,5 +1,5 @@
 <template>
-	<div class="collections-navigation">
+	<div class="collections-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
 			<v-input v-model="search" type="search" :placeholder="t('search_collection')" />
 		</div>
@@ -108,6 +108,10 @@ export default defineComponent({
 		--v-button-background-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--primary);
 	}
+}
+
+.collections-navigation-wrapper {
+	height: 100%;
 }
 
 .collections-navigation {
