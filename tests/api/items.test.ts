@@ -129,28 +129,52 @@ describe('/items', () => {
 
 			expect(response.body.data).toMatchObject({ name: expect.any(String) });
 		});
-		it.each(getDBsToTest())('%p returns an error when an invalid id used', async (vendor) => {
+		it.each(getDBsToTest())('%p returns an error when an invalid id is used', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
+
 			const response = await axios
 				.get(`${url}/items/artists/invalid_id`, {
 					headers: {
 						Authorization: 'Bearer test_token',
-						'Content-Type': 'applicationjson',
+						'Content-Type': 'application/json',
 					},
 				})
 				.catch((error: any) => {
 					return error;
 				});
+
 			if (vendor === 'mssql' || vendor === 'postgres') {
+				expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
 				expect(response.response.status).toBe(500);
 				expect(response.response.statusText).toBe('Internal Server Error');
 				expect(response.message).toBe('Request failed with status code 500');
 			} else if (vendor === 'mysql' || vendor === 'maria') {
+				expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
 				expect(response.response.status).toBe(403);
 				expect(response.response.statusText).toBe('Forbidden');
 				expect(response.message).toBe('Request failed with status code 403');
 			}
+		});
+		it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
+
+			const response = await axios
+				.get(`${url}/items/invalid_table/1`, {
+					headers: {
+						Authorization: 'Bearer test_token',
+						'Content-Type': 'application/json',
+					},
+				})
+				.catch((error: any) => {
+					return error;
+				});
+
+			expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+			expect(response.response.status).toBe(403);
+			expect(response.response.statusText).toBe('Forbidden');
+			expect(response.message).toBe('Request failed with status code 403');
 		});
 		it.each(getDBsToTest())(`%p retrieves a guest's favorite artist`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
