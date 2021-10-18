@@ -64,8 +64,9 @@ export default defineComponent({
 		const contextMenuTarget = ref<undefined | string>();
 
 		const rootItems = computed(() => {
+			const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
 			return orderBy(
-				collectionsStore.visibleCollections.filter((collection) => {
+				shownCollections.filter((collection) => {
 					return isNil(collection?.meta?.group);
 				}),
 				['meta.sort', 'collection']

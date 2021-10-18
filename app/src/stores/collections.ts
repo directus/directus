@@ -23,10 +23,8 @@ export const useCollectionsStore = defineStore({
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== true);
 		},
-		hiddenCollections(): Collection[] {
-			return this.collections
-				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter((collection) => collection.meta?.hidden !== false);
+		allCollections(): Collection[] {
+			return this.collections.filter(({ collection }) => collection.startsWith('directus_') === false);
 		},
 		crudSafeSystemCollections(): Collection[] {
 			return orderBy(
