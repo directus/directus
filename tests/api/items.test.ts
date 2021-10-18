@@ -101,21 +101,6 @@ describe('/items', () => {
 		}
 	});
 
-	describe('/:collection GET', () => {
-		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			seedTable(databases.get(vendor)!, 100, 'artists', createArtist);
-			const response = await request(url)
-				.get('/items/artists')
-				.set('Authorization', 'Bearer test_token')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
-
-			expect(response.body.data.length).toBe(100);
-			expect(Object.keys(response.body.data[0]).sort()).toStrictEqual(['id', 'members', 'name']);
-		});
-	});
-
 	describe('/:collection/:id', () => {
 		it.each(getDBsToTest())('%p retrieves one artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
@@ -192,6 +177,34 @@ describe('/items', () => {
 				.expect(200);
 
 			expect(await response.body.data).toMatchObject({ favorite_artist: { name: expect.any(String) } });
+		});
+	});
+
+	describe('/:collection GET', () => {
+		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			seedTable(databases.get(vendor)!, 100, 'artists', createArtist);
+			const response = await request(url)
+				.get('/items/artists')
+				.set('Authorization', 'Bearer test_token')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(response.body.data.length).toBe(100);
+			expect(Object.keys(response.body.data[0]).sort()).toStrictEqual(['id', 'members', 'name']);
+		});
+	});
+
+	describe('/:collection POST', () => {
+		it.only.each(getDBsToTest())('%p creates one artist', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const body = createArtist();
+			const response: any = await axios.post(`${url}/items/artists`, body, {
+				headers: {
+					Authorization: 'Bearer test_token',
+				},
+			});
+			expect(response.data.data).toMatchObject({ name: body.name });
 		});
 	});
 });
