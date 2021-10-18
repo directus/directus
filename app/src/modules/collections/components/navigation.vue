@@ -112,11 +112,15 @@ export default defineComponent({
 }
 
 .collections-navigation-wrapper {
-	height: 100%;
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
 }
 
 .collections-navigation {
 	--v-list-min-height: calc(100% - 64px);
+
+	flex-grow: 1;
 
 	.v-detail {
 		:deep(.v-divider) {
