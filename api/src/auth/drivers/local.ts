@@ -36,9 +36,7 @@ export class LocalAuthDriver extends AuthDriver {
 	}
 
 	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
-		if (payload.password) {
-			await this.verify(user, payload.password);
-		}
+		await this.verify(user, payload.password);
 		return null;
 	}
 }
