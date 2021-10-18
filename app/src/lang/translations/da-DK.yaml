@@ -20,9 +20,19 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Profilbillede
+default_provider: Standard
+published: Publiceret
+draft: Kladde
+archived: Arkiveret
+modules: Moduler
+module_bar: Modul Bar
+tile_size: Tile Size
 edit_field: Rediger Felt
 conditions: Betingelser
+maps: Kort
+item_creation: Element Oprettelse
 item_revision: Genstandsrevision
+enter_a_name: Indtast et navn...
 duplicate_field: Dupliker Felt
 half_width: Halv Bredde
 full_width: Fuld Bredde
@@ -34,16 +44,23 @@ field_name_translations: Oversættelse af feltnavn
 enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
 add_field: Tilføj Felt
 role_name: Rollenavn
+branch: Gren
+leaf: Bladtræ
+indeterminate: Ubestemt
+edit_collection: Rediger Samling
 exclusive: Eksklusiv
 children: Underordnede
+db_only_click_to_configure: 'Kun database: Klik for at indstille'
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
 required: Påkrævet
 required_for_app_access: Påkrævet for App adgang
 requires_value: Påkrævet værdi
 create_preset: Opret forudindstilling
+create_panel: Opret Panel
 create_role: Opret Rolle
 create_user: Opret bruger
+delete_panel: Slet Panel
 create_webhook: Opret Webhook
 invite_users: Inviter brugere
 invite: Inviter
@@ -118,10 +135,14 @@ allow_multiple_to_be_open: Tillad åbning af flere
 enter_value_to_replace_nulls: Indtast venligst en ny værdi for at erstatte eventuelle NULL'er, der er i øjeblikket i dette felt.
 field_standard: Standard
 field_presentation: Presentation & Aliases
+field_file: Enkelt Fil
+field_files: Flere Filer
 field_m2o: M2O Forhold
 field_m2a: M2A Forhold
 field_o2m: O2M Forhold
 field_m2m: M2M Forhold
+field_translations: Oversættelser
+field_group: Felt Gruppe
 item_permissions: Element Tilladelser
 field_permissions: Felt Tilladelser
 field_validation: Felt Validering
@@ -131,6 +152,10 @@ fields_for_role: 'Felter {role} Rollen kan {action}.'
 validation_for_role: 'Felt {action} reglerne for {role} Rollen skal adlyde.'
 presets_for_role: 'Feltets værdi er standard for {role} Rollen.'
 presentation_and_aliases: Presentation & Aliases
+revision_post_create: Her er hvordan dette element så ud, da det blev oprettet.
+revision_post_update: Her er hvad dette element så ud efter opdateringen.
+changes_made: Nedenfor er de specifikke ændringer i denne revision.
+no_relational_data: Husk på, at relationsdata ikke er inkluderet her.
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
 delete_field: Slet Felt
@@ -139,9 +164,22 @@ field_create_success: 'Oprettet Felt: "{field}"'
 field_update_success: 'Opdateret Felt: "{field}"'
 duplicate_where_to: Hvor vil du kopiere dette felt til?
 language: Sprog
+aggregate_function: Samlet Funktion
+aggregate_precision: Aggregeret Præcision
+group_aggregation: Gruppe Sammenlægning
+group_precision: Gruppe Præcision
 global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
+show_zero: Vis Nul
+sum: Sum
+sum_distinct: Sum Distinkt
+avg: Gennemsnit
+avg_distinct: Gennemsnitlig Afstand
+count: Antal
+count_distinct: Tæl Distinkt
+min: Min
+max: Max
 exposure: Eksponering
 shutter: Lukker
 iso: ISO
@@ -159,7 +197,18 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Dato
+datetime: DatoTid
+precision: Præcision
+decimal: Decimal
+float: Flydende
+integer: Heltal
+json: JSON
+xml: XML
+string: Streng
 text: Tekst
+time: Tid
+timestamp: Tidsstempel
+uuid: UUID
 auto_generate: Auto- Generér
 new_field: 'Nyt felt'
 add_note: Tilføj en nyttig note til brugere...
@@ -177,6 +226,7 @@ notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
+confirm_revert_body: Dette vil vende elementet tilbage til den valgte tilstand.
 settings_update_success: Indstillinger opdateret
 title: Titel
 revision_delta_created: Oprettet
