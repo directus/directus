@@ -84,7 +84,7 @@ export default defineComponent({
 			closeOnClick: false,
 			className: 'mapboxgl-point-popup',
 			maxWidth: 'unset',
-			offset: 10,
+			offset: 12,
 		});
 
 		const attributionControl = new AttributionControl({ compact: true });
@@ -335,8 +335,9 @@ export default defineComponent({
 	button {
 		width: 36px;
 		height: 36px;
-		background: var(--background-subdued) !important;
+		background: var(--background-input) !important;
 		border: none !important;
+		transition: background-color var(--fast) var(--transition);
 
 		span {
 			display: none !important;
@@ -369,6 +370,22 @@ export default defineComponent({
 		font-variant: normal;
 		text-rendering: auto;
 		-webkit-font-smoothing: antialiased;
+	}
+}
+
+.mapboxgl-user-location-dot,
+.maplibregl-user-location-dot {
+	width: 12px;
+	height: 12px;
+
+	&::before {
+		width: 12px;
+		height: 12px;
+	}
+
+	&::after {
+		width: 16px;
+		height: 16px;
 	}
 }
 
@@ -474,28 +491,18 @@ export default defineComponent({
 }
 
 .mapboxgl-point-popup {
-	&.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
-		border-right-color: var(--background-normal);
-	}
-
-	&.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
-		border-bottom-color: var(--background-normal);
-	}
-
-	&.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-		border-top-color: var(--background-normal);
-	}
-
-	&.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
-		border-left-color: var(--background-normal);
+	.maplibregl-popup-tip,
+	.mapboxgl-popup-tip {
+		display: none;
 	}
 
 	.mapboxgl-popup-content {
+		padding: 6px 10px 6px;
 		color: var(--foreground-normal-alt);
 		font-weight: 500;
 		font-size: 14px;
 		font-family: var(--family-sans-serif);
-		background-color: var(--background-normal);
+		background-color: var(--background-page);
 		border-radius: var(--border-radius);
 		box-shadow: var(--card-shadow);
 		pointer-events: none;

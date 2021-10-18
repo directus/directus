@@ -311,6 +311,7 @@ export default defineComponent({
 	position: absolute;
 	top: 10px;
 	left: 50%;
+	box-shadow: var(--card-shadow);
 	transform: translate(-50%, 0%);
 }
 
