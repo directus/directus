@@ -277,7 +277,13 @@ export default defineComponent({
 							return `<span class="text">${part}</span>`;
 						}
 						const fieldKey = part.replace(/({|})/g, '').trim();
-						const field = findTree(treeList.value, fieldKey.split('.'));
+						const fieldPath = fieldKey.split('.');
+
+						for (let i = 0; i < fieldPath.length; i++) {
+							loadFieldRelations(fieldPath.slice(0, i).join('.'));
+						}
+
+						const field = findTree(treeList.value, fieldPath);
 
 						if (!field) return '';
 

@@ -83,7 +83,7 @@ export default defineComponent({
 			const url = getRootPath() + endpoint;
 
 			let params: Record<string, unknown> = {
-				access_token: api.defaults.headers?.Authorization.substring(7),
+				access_token: api.defaults.headers.common['Authorization'].substring(7),
 				export: format.value || 'json',
 			};
 

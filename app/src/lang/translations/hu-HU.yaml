@@ -50,7 +50,6 @@ indeterminate: Meghatározatlan
 edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
-db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához '
 show_archived_items: Archivált elemek megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
@@ -1054,6 +1053,9 @@ generate_and_save_uuid: UUID generálása és mentése
 save_current_user_id: Jelenlegi felhasználói azonosító mentése
 save_current_user_role: Jelenlegi felhasználói szerepkör mentése
 save_current_datetime: Aktuális dátum/idő mentése
+always_open: Mindig nyitva
+start_open: Indíts nyitva!
+start_collapsed: Kezdetben összecsukva
 block: Blokk
 inline: Inline
 comment: Hozzászólás

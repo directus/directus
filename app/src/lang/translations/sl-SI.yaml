@@ -44,7 +44,6 @@ indeterminate: Nedoločeno
 edit_collection: Uredi zbirko
 exclusive: Ekskluzivno
 children: Podrejeni
-db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
 show_archived_items: Prikaži arhivirane opombe
 edited: Urejena vrednost
 required: Zahtevano
@@ -955,6 +954,9 @@ generate_and_save_uuid: Ustvari in shrani UUID
 save_current_user_id: Shrani ID uporabnika
 save_current_user_role: Shrani vlogo uporabnika
 save_current_datetime: Shrani datum in uro
+always_open: Vedno odprto
+start_open: Začni odprto
+start_collapsed: Začni zaprto
 block: Blokiraj
 inline: V vrstici
 comment: Komentar

@@ -20,12 +20,8 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 
 	const accessToken = response.data.data.access_token;
 
-	if (!api.defaults.headers) {
-		api.defaults.headers = {};
-	}
-
 	// Add the header to the API handler for every request
-	api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+	api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
 	// Refresh the token 10 seconds before the access token expires. This means the user will stay
 	// logged in without any noticable hickups or delays
@@ -77,31 +73,40 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	// Allow refresh during initial page load
 	if (firstRefresh) firstRefresh = false;
 	// Skip if not logged in
-	else if (!api.defaults.headers?.['Authorization']) return;
+	else if (!api.defaults.headers.common['Authorization']) return;
 
 	// Prevent concurrent refreshes
 	if (isRefreshing) return;
-
-	isRefreshing = true;
 
 	const appStore = useAppStore();
 
 	// Skip refresh if access token is still fresh
 	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
+		// Set a fresh timeout as it is cleared by idleTracker's idle or hide event
+		clearTimeout(refreshTimeout);
+		refreshTimeout = setTimeout(() => refresh(), appStore.accessTokenExpiry - 10000 - Date.now());
 		return;
 	}
 
+	isRefreshing = true;
+
 	try {
-		const response = await api.post<any>('/auth/refresh', { headers: { Authorization: undefined } });
+		const response = await api.post<any>('/auth/refresh', undefined, {
+			transformRequest(data, headers) {
+				// This seems wrongly typed in Axios itself..
+				delete (headers?.common as unknown as Record<string, string>)?.['Authorization'];
+				return data;
+			},
+		});
 
 		const accessToken = response.data.data.access_token;
 
 		// Add the header to the API handler for every request
-		api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+		api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
 		// logged in without any notable hiccups or delays
-		if (refreshTimeout) clearTimeout(refreshTimeout);
+		clearTimeout(refreshTimeout);
 
 		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 		// for tokens that last > 24 days. Ref #4054
@@ -141,7 +146,7 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	delete api.defaults.headers?.Authorization;
+	delete api.defaults.headers.common['Authorization'];
 
 	clearTimeout(refreshTimeout);
 

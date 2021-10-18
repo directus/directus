@@ -71,7 +71,7 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 		return displays.value
 			.filter((inter: DisplayConfig) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
-				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
+				const matchesLocalType = (inter.groups || ['standard']).includes(type);
 
 				return matchesType && matchesLocalType;
 			})
@@ -422,6 +422,9 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 						meta: {
 							hidden: true,
 							icon: 'import_export',
+						},
+						schema: {
+							name: junctionCollection,
 						},
 						fields: [
 							{
@@ -855,6 +858,9 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 						meta: {
 							hidden: true,
 							icon: 'import_export',
+						},
+						schema: {
+							name: junctionCollection,
 						},
 						fields: [
 							{

@@ -18,7 +18,7 @@ export default defineDisplay({
 	component: DisplayRelatedValues,
 	options: options,
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	groups: ['m2m', 'm2o', 'o2m'],
+	groups: ['m2m', 'm2o', 'o2m', 'translations', 'm2a'],
 	fields: (options: Options | null, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
 		const fieldsStore = useFieldsStore();
