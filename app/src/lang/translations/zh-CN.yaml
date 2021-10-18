@@ -1274,9 +1274,6 @@ interfaces:
     map: 地图
     description: 选择地图上的位置
     zoom: 缩放
-    geometry_type: 几何类型
-    geometry_format: 几何格式
-    default_view: 默认视图
     invalid_options: 无效选项
     invalid_format: 无效格式 ({format})
     unexpected_geometry: 需要 {expected}，但收到 {got}。
@@ -1503,13 +1500,11 @@ layouts:
     layers: 图层
     edit_custom_layers: 编辑图层
     cluster_options: 集群选项
-    cluster: 开启集群中
     cluster_radius: 集群半径
     cluster_minpoints: 集群最小尺寸
     cluster_maxzoom: 集群的最大缩放
     field: 几何
     invalid_geometry: 无效几何图形
-    auto_location_filter: 总是筛选数据以查看边框
     search_this_area: 搜索此区域
 panels:
   metric:
