@@ -18,7 +18,7 @@ type Guest = {
 type Artist = {
 	id?: number;
 	name: string;
-	members: string;
+	members: Record<string, string>;
 };
 
 type Tour = {
@@ -77,19 +77,19 @@ export const seedTable = async function (
 	if (typeof factory === 'object') {
 		await database(table).insert(factory);
 		row[table] = row[table]! + 1;
-	} else if (count >= 262) {
+	} else if (count >= 200) {
 		try {
 			let fakeRows: any[] = [];
 			for (let i = 0; i < count; i++) {
 				fakeRows.push(factory());
-				if (i % 262 === 0) {
-					await database.batchInsert(table, fakeRows, 262);
+				if (i % 200 === 0) {
+					await database.batchInsert(table, fakeRows, 200);
 					fakeRows = [];
 				}
 				row[table] = row[table]! + 1;
 			}
-			if (count - row[table]! < 262) {
-				await database.batchInsert(table, fakeRows, 262);
+			if (count - row[table]! <= 200) {
+				await database.batchInsert(table, fakeRows, 200);
 				fakeRows = [];
 			}
 		} catch (error: any) {
@@ -100,7 +100,6 @@ export const seedTable = async function (
 			const fakeRows = [];
 			for (let i = 0; i < count; i++) {
 				fakeRows.push(factory());
-				console.log(`${i} ${table}`);
 				row[table] = row[table]! + 1;
 			}
 			await database(table).insert(fakeRows);
@@ -110,13 +109,14 @@ export const seedTable = async function (
 	}
 	if (options) {
 		const { select, where } = options;
-		return await database(table).select(select).where(where[0], where[1]);
+		if (where.length > 0) return await database(table).select(select).where(where[0], where[1]);
+		return await database(table).select(select);
 	}
 };
 
 export const createArtist = (): Artist => ({
 	name: internet.userName(),
-	members: JSON.stringify({ role: internet.userName }),
+	members: { role: internet.userName() },
 });
 
 export const createEvent = (): Event => ({
@@ -126,9 +126,9 @@ export const createEvent = (): Event => ({
 	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	time: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	tags: `tags
-${music.genre}
-${music.genre}
-${music.genre}
+${music.genre()}
+${music.genre()}
+${music.genre()}
 `,
 });
 
