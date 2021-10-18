@@ -1,3 +1,4 @@
+import axios from 'axios';
 import request from 'supertest';
 import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
@@ -104,7 +105,6 @@ describe('/items', () => {
 		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			seedTable(databases.get(vendor)!, 100, 'artists', createArtist);
-
 			const response = await request(url)
 				.get('/items/artists')
 				.set('Authorization', 'Bearer test_token')
@@ -128,6 +128,29 @@ describe('/items', () => {
 				.expect(200);
 
 			expect(response.body.data).toMatchObject({ name: expect.any(String) });
+		});
+		it.each(getDBsToTest())('%p returns an error when an invalid id used', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
+			const response = await axios
+				.get(`${url}/items/artists/invalid_id`, {
+					headers: {
+						Authorization: 'Bearer test_token',
+						'Content-Type': 'applicationjson',
+					},
+				})
+				.catch((error: any) => {
+					return error;
+				});
+			if (vendor === 'mssql' || vendor === 'postgres') {
+				expect(response.response.status).toBe(500);
+				expect(response.response.statusText).toBe('Internal Server Error');
+				expect(response.message).toBe('Request failed with status code 500');
+			} else if (vendor === 'mysql' || vendor === 'maria') {
+				expect(response.response.status).toBe(403);
+				expect(response.response.statusText).toBe('Forbidden');
+				expect(response.message).toBe('Request failed with status code 403');
+			}
 		});
 		it.each(getDBsToTest())(`%p retrieves a guest's favorite artist`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
