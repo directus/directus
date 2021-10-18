@@ -34,8 +34,10 @@ $step-mapping: (
 	'25': 25,
 	'50': 50,
 	'75': 75,
+	'90': 90,
 	// Special case, 'none' will result in no suffix
 	'none': 100,
+	'110': -90,
 	'125': -75,
 	'150': -50,
 	'175': -25,
