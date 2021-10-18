@@ -166,7 +166,7 @@ export class PayloadService {
 			});
 		}
 
-		if (action == 'read') {
+		if (action === 'read') {
 			this.processAggregates(processedPayload);
 		}
 
