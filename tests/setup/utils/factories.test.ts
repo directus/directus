@@ -167,24 +167,25 @@ describe('seeding databases', () => {
 				const options = { select: ['*'], where: ['name', artist.name] };
 				if (vendor === 'postgres' && typeof artist.members === 'string') {
 					artist.members = JSON.parse(artist.members);
-					expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
-						{
-							name: artist.name,
-							members: { guitar: 'Tom' },
-						},
-					]);
-				} else if (vendor === 'mssql' || vendor === 'maria') {
+
 					expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
 						{
 							name: artist.name,
 							members: artist.members,
 						},
 					]);
+				} else if (vendor === 'mysql' && typeof artist.members === 'string') {
+					expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
+						{
+							name: artist.name,
+							members: `{"guitar": "${JSON.parse(artist.members).guitar}"}`,
+						},
+					]);
 				} else {
 					expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
 						{
 							name: artist.name,
-							members: '{"guitar": "Tom"}',
+							members: artist.members,
 						},
 					]);
 				}

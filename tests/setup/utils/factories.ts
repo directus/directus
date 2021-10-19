@@ -129,7 +129,7 @@ export const seedTable = async function (
 
 export const createArtist = (): Artist => ({
 	name: internet.userName(),
-	members: JSON.stringify({ guitar: 'Tom' }),
+	members: JSON.stringify({ guitar: internet.userName() }),
 });
 
 export const createEvent = (): Event => ({
