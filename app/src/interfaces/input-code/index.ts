@@ -34,6 +34,7 @@ export default defineInterface({
 	icon: 'code',
 	component: InterfaceCode,
 	types: ['string', 'json', 'text', 'geometry'],
+	group: 'standard',
 	options: [
 		{
 			field: 'language',

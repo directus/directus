@@ -11,10 +11,13 @@ export interface InterfaceConfig {
 	component: Component;
 	options: DeepPartial<Field>[] | Component | null;
 	types: readonly Type[];
-	groups?: readonly LocalType[];
+	localTypes?: readonly LocalType[];
+	group?: 'standard' | 'selection' | 'relational' | 'presentation' | 'presentation' | 'group' | 'other';
+	order?: number;
 	relational?: boolean;
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 	system?: boolean;
 	recommendedDisplays?: string[];
+	preview?: string;
 }

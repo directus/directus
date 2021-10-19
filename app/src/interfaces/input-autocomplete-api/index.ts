@@ -8,7 +8,8 @@ export default defineInterface({
 	icon: 'find_in_page',
 	component: InterfaceInputAutocompleteAPI,
 	types: ['string', 'text'],
-	groups: ['standard'],
+	localTypes: ['standard'],
+	group: 'standard',
 	recommendedDisplays: ['formatted-value'],
 	options: [
 		{

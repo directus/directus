@@ -10,7 +10,8 @@ export default defineInterface({
 	component: InterfaceFiles,
 	relational: true,
 	types: ['alias'],
-	groups: ['files'],
+	localTypes: ['files'],
+	group: 'relational',
 	options: Options,
 	recommendedDisplays: ['related-values'],
 });

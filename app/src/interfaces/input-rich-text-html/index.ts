@@ -10,6 +10,7 @@ export default defineInterface({
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG,
 	types: ['text'],
+	group: 'standard',
 	options: [
 		{
 			field: 'toolbar',

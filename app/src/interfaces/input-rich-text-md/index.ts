@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'functions',
 	component: InterfaceInputRichTextMD,
 	types: ['text'],
+	group: 'standard',
 	options: [
 		{
 			field: 'placeholder',

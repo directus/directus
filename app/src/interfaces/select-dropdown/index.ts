@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceSelectDropdown,
 	types: ['string'],
+	group: 'selection',
 	options: [
 		{
 			field: 'choices',

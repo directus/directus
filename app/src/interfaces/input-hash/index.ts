@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'fingerprint',
 	component: InterfaceInputHash,
 	types: ['hash'],
+	group: 'other',
 	options: [
 		{
 			field: 'placeholder',

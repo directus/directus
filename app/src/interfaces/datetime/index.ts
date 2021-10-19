@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'today',
 	component: InterfaceDateTime,
 	types: ['dateTime', 'date', 'time', 'timestamp'],
+	group: 'selection',
 	options: [
 		{
 			field: 'includeSeconds',

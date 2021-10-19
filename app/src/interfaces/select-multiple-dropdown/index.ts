@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceSelectMultipleDropdown,
 	types: ['json', 'csv'],
+	group: 'selection',
 	options: [
 		{
 			field: 'choices',

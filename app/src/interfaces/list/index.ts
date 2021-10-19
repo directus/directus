@@ -9,5 +9,6 @@ export default defineInterface({
 	icon: 'replay',
 	component: InterfaceList,
 	types: ['json'],
+	group: 'selection',
 	options: RepeaterOptions,
 });

@@ -10,7 +10,8 @@ export default defineInterface({
 	component: InterfaceSelectDropdownM2O,
 	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
 	relational: true,
-	groups: ['m2o'],
+	localTypes: ['m2o'],
+	group: 'selection',
 	options: Options,
 	recommendedDisplays: ['related-values'],
 });

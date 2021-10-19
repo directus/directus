@@ -9,6 +9,7 @@ export default defineInterface({
 	component: InterfaceSelectRadio,
 	types: ['string'],
 	recommendedDisplays: ['badge'],
+	group: 'selection',
 	options: [
 		{
 			field: 'choices',

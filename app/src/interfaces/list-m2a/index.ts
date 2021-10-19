@@ -8,7 +8,8 @@ export default defineInterface({
 	component: InterfaceListM2A,
 	relational: true,
 	types: ['alias'],
-	groups: ['m2a'],
+	localTypes: ['m2a'],
+	group: 'relational',
 	options: [
 		{
 			field: 'enableSelect',

@@ -7,6 +7,7 @@ export default defineInterface({
 	name: '$t:translations',
 	icon: 'replay',
 	types: ['alias'],
+	group: 'relational',
 	relational: true,
 	component: InterfaceTranslations,
 	options: TranslationsOptions,
