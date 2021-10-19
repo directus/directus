@@ -198,55 +198,59 @@ describe('/items', () => {
 	});
 
 	describe('/:collection POST', () => {
-		it.each(getDBsToTest())('%p creates one artist', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			const body = createArtist();
-			const response: any = await axios.post(`${url}/items/artists`, body, {
-				headers: {
-					Authorization: 'Bearer test_token',
-					'Content-Type': 'application/json',
-				},
+		describe('createOne', () => {
+			it.each(getDBsToTest())('%p creates one artist', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const body = createArtist();
+				const response: any = await axios.post(`${url}/items/artists`, body, {
+					headers: {
+						Authorization: 'Bearer test_token',
+						'Content-Type': 'application/json',
+					},
+				});
+				expect(response.data.data).toMatchObject({ name: body.name });
 			});
-			expect(response.data.data).toMatchObject({ name: body.name });
-		});
-		it.each(getDBsToTest())('%p creates one guest with a favorite_artist', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			const artist = createArtist();
-			const body = createGuest();
-			body.favorite_artist = artist;
+			it.each(getDBsToTest())('%p creates one guest with a favorite_artist', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const artist = createArtist();
+				const body = createGuest();
+				body.favorite_artist = artist;
 
-			const response: any = await axios.post(`${url}/items/guests`, body, {
-				headers: {
-					Authorization: 'Bearer test_token',
-					'Content-Type': 'application/json',
-				},
+				const response: any = await axios.post(`${url}/items/guests`, body, {
+					headers: {
+						Authorization: 'Bearer test_token',
+						'Content-Type': 'application/json',
+					},
+				});
+				expect(response.data.data).toMatchObject({ name: body.name, favorite_artist: expect.any(Number) });
 			});
-			expect(response.data.data).toMatchObject({ name: body.name, favorite_artist: expect.any(Number) });
 		});
-		it.each(getDBsToTest())('%p creates 5 artists', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			const body = createMany(createArtist, 5);
-			const response: any = await axios.post(`${url}/items/artists`, body, {
-				headers: {
-					Authorization: 'Bearer test_token',
-					'Content-Type': 'application/json',
-				},
+		describe('createMany', () => {
+			it.each(getDBsToTest())('%p creates 5 artists', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const body = createMany(createArtist, 5);
+				const response: any = await axios.post(`${url}/items/artists`, body, {
+					headers: {
+						Authorization: 'Bearer test_token',
+						'Content-Type': 'application/json',
+					},
+				});
+				expect(response.data.data.length).toBe(body.length);
 			});
-			expect(response.data.data.length).toBe(body.length);
-		});
-		it.each(getDBsToTest())('%p creates 5  users with favorite artists', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			await seedTable(databases.get(vendor)!, 5, 'artists', createArtist);
+			it.each(getDBsToTest())('%p creates 5  users with favorite artists', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				await seedTable(databases.get(vendor)!, 5, 'artists', createArtist);
 
-			const body = createMany(createGuest, 5, { favorite_artist: 5 });
+				const body = createMany(createGuest, 5, { favorite_artist: 5 });
 
-			const response: any = await axios.post(`${url}/items/guests`, body, {
-				headers: {
-					Authorization: 'Bearer test_token',
-					'Content-Type': 'application/json',
-				},
+				const response: any = await axios.post(`${url}/items/guests`, body, {
+					headers: {
+						Authorization: 'Bearer test_token',
+						'Content-Type': 'application/json',
+					},
+				});
+				expect(response.data.data.length).toBe(body.length);
 			});
-			expect(response.data.data.length).toBe(body.length);
 		});
 		describe('Error handling', () => {
 			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
