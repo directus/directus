@@ -161,15 +161,33 @@ describe('seeding databases', () => {
 	});
 	describe('inserting factories', () => {
 		describe('createArtist', () => {
-			it.each(getDBsToTest())('%p returns an artist object of column names and values', async (vendor) => {
+			it.only.each(getDBsToTest())('%p returns an artist object of column names and values', async (vendor) => {
 				const database = databases.get(vendor);
 				const artist = createArtist();
 				const options = { select: ['*'], where: ['name', artist.name] };
-				expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
-					{
-						name: artist.name,
-					},
-				]);
+				if (vendor === 'postgres' && typeof artist.members === 'string') {
+					artist.members = JSON.parse(artist.members);
+					expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
+						{
+							name: artist.name,
+							members: { guitar: 'Tom' },
+						},
+					]);
+				} else if (vendor === 'mssql' || vendor === 'maria') {
+					expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
+						{
+							name: artist.name,
+							members: artist.members,
+						},
+					]);
+				} else {
+					expect(await seedTable(database!, 5, 'artists', artist, options)).toMatchObject([
+						{
+							name: artist.name,
+							members: '{"guitar": "Tom"}',
+						},
+					]);
+				}
 			});
 		});
 

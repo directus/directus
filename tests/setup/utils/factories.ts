@@ -18,7 +18,7 @@ type Guest = {
 type Artist = {
 	id?: number;
 	name: string;
-	members: string;
+	members: string | Record<string, any>;
 };
 
 type Tour = {
@@ -129,7 +129,7 @@ export const seedTable = async function (
 
 export const createArtist = (): Artist => ({
 	name: internet.userName(),
-	members: JSON.stringify({ role: internet.userName() }),
+	members: JSON.stringify({ guitar: 'Tom' }),
 });
 
 export const createEvent = (): Event => ({
