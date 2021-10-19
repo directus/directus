@@ -26,7 +26,7 @@ export type Settings = {
 	public_note: string | null;
 	auth_login_attempts: number;
 	auth_password_policy: string | null;
-	password_does_not_meet_policy_requirements_error_message: string | null;
+	invalid_password_message: string | null;
 	storage_asset_transform: string;
 	storage_asset_presets:
 		| {

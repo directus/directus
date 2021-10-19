@@ -42,7 +42,7 @@ export class ServerService {
 				'public_foreground',
 				'public_background',
 				'public_note',
-				'password_does_not_meet_policy_requirements_error_message',
+				'invalid_password_message',
 				'custom_css',
 			],
 		});

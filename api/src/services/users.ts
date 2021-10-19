@@ -82,10 +82,9 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		const { password_does_not_meet_policy_requirements_error_message: policyFailedValidationErrorMessage } =
-			await settingsService.readSingleton({
-				fields: ['password_does_not_meet_policy_requirements_error_message'],
-			});
+		const { invalid_password_message: passwordFailedValidationErrorMessage } = await settingsService.readSingleton({
+			fields: ['invalid_password_message'],
+		});
 
 		if (policyRegExString) {
 			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
@@ -93,7 +92,7 @@ export class UsersService extends ItemsService {
 
 			for (const password of passwords) {
 				if (regex.test(password) === false) {
-					throw new PasswordPolicyValidationException(policyFailedValidationErrorMessage);
+					throw new PasswordPolicyValidationException(passwordFailedValidationErrorMessage);
 				}
 			}
 		}

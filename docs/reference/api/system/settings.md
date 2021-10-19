@@ -56,7 +56,7 @@ How often a user is allowed to try to login. After which times the user will be 
 `auth_password_policy` **RegEx**\
 What regex passwords must pass in order to be valid.
 
-`password_does_not_meet_policy_requirements_error_message` **string**\
+`invalid_password_message` **string**\
 An error message displayed to users when they try to create a password that does not meet the `auth_password_policy`
 
 `storage_asset_transform` **string**\

@@ -75,7 +75,7 @@ export type SettingType = SystemType<{
 	auth_login_attempts: number;
 	auth_password_policy: string | null;
 	custom_css: string | null;
-	password_does_not_meet_policy_requirements_error_message: string | null;
+	invalid_password_message: string | null;
 	project_color: string | null;
 	project_logo: string | null;
 	project_name: string;

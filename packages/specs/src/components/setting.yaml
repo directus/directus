@@ -47,7 +47,7 @@ properties:
     description: Authentication password policy.
     type: string
     nullable: true
-  password_does_not_meet_policy_requirements_error_message:
+  invalid_password_message:
     description:
       Error message displayed when the user attempts to set a password that does not meet the auth_password_policy
     type: string

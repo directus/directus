@@ -45,8 +45,8 @@ export default defineComponent({
 		const serverStore = useServerStore();
 
 		const passwordValidationFailureErrorMessage = computed(() => {
-			const defaultErrorMessage = "Password doesn't fulfill password policy requirements";
-			return serverStore.info?.project?.password_does_not_meet_policy_requirements_error_message || defaultErrorMessage;
+			const defaultErrorMessage = 'Password does not fulfill password policy requirements';
+			return serverStore.info?.project?.invalid_password_message || defaultErrorMessage;
 		});
 
 		const { t } = useI18n();
