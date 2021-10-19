@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
-import { FailedValidationException } from '@directus/shared/exceptions';
+import { PasswordPolicyValidationException } from '../exceptions/password-does-not-meet-policy-requirements';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview } from '../types';
@@ -82,20 +82,18 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
+		const { password_does_not_meet_policy_requirements_error_message: policyFailedValidationErrorMessage } =
+			await settingsService.readSingleton({
+				fields: ['password_does_not_meet_policy_requirements_error_message'],
+			});
+
 		if (policyRegExString) {
 			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
 			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
 
 			for (const password of passwords) {
 				if (regex.test(password) === false) {
-					throw new FailedValidationException({
-						message: `Provided password doesn't match password policy`,
-						path: ['password'],
-						type: 'custom.pattern.base',
-						context: {
-							value: password,
-						},
-					});
+					throw new PasswordPolicyValidationException(policyFailedValidationErrorMessage);
 				}
 			}
 		}

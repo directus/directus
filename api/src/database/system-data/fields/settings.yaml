@@ -100,6 +100,13 @@ fields:
       placeholder: $t:unlimited
     width: half
 
+  - field: password_does_not_meet_policy_requirements_error_message
+    interface: input
+    options:
+      placeholder: Doesn't fulfill password policy requirements
+    note: $t:field_options.directus_settings.password_does_not_meet_policy_requirements_error_message_note
+    width: full
+
   - field: files_divider
     interface: presentation-divider
     options:

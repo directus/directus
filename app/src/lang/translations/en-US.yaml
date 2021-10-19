@@ -994,6 +994,7 @@ field_options:
       none_text: None – Not Recommended
       weak_text: Weak – Minimum 8 Characters
       strong_text: Strong – Upper / Lowercase / Numbers / Special
+    password_does_not_meet_policy_requirements_error_message_note: An error message displayed to users when they try to create a password that does not meet the Auth Password Policy
     storage_asset_presets:
       fit:
         contain_text: Contain (preserve aspect ratio)

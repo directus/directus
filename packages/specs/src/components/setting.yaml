@@ -47,6 +47,12 @@ properties:
     description: Authentication password policy.
     type: string
     nullable: true
+  password_does_not_meet_policy_requirements_error_message:
+    description:
+      Error message displayed when the user attempts to set a password that does not meet the auth_password_policy
+    type: string
+    example: Password does not fulfill password policy requirements
+    nullable: true
   storage_default_folder:
     description: Default folder to place files
     type: string

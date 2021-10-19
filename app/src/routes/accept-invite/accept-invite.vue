@@ -17,7 +17,7 @@
 			<v-notice v-if="done" type="success">{{ t('account_created_successfully') }}</v-notice>
 
 			<v-notice v-if="error" type="danger">
-				{{ errorFormatted }}
+				{{ passwordValidationFailureErrorMessage }}
 			</v-notice>
 
 			<v-button v-if="!done" type="submit" :loading="creating" large>{{ t('create') }}</v-button>
@@ -32,6 +32,7 @@
 </template>
 
 <script lang="ts">
+import { useServerStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
@@ -41,6 +42,13 @@ import jwtPayload from '@/utils/jwt-payload';
 
 export default defineComponent({
 	setup() {
+		const serverStore = useServerStore();
+
+		const passwordValidationFailureErrorMessage = computed(() => {
+			const defaultErrorMessage = "Password doesn't fulfill password policy requirements";
+			return serverStore.info?.project?.password_does_not_meet_policy_requirements_error_message || defaultErrorMessage;
+		});
+
 		const { t } = useI18n();
 
 		const route = useRoute();
@@ -53,18 +61,11 @@ export default defineComponent({
 		const error = ref<RequestError | null>(null);
 		const done = ref(false);
 
-		const errorFormatted = computed(() => {
-			if (error.value) {
-				return translateAPIError(error.value);
-			}
-			return null;
-		});
-
 		const signInLink = computed(() => `/login`);
 
 		const email = computed(() => jwtPayload(acceptToken.value).email);
 
-		return { t, creating, error, done, password, onSubmit, signInLink, errorFormatted, email };
+		return { t, creating, error, done, password, onSubmit, signInLink, passwordValidationFailureErrorMessage, email };
 
 		async function onSubmit() {
 			creating.value = true;
