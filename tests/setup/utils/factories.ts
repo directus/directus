@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { music, internet, name, finance, random, datatype, lorem, address } from 'faker';
+import { music, internet, name, finance, datatype, lorem, address } from 'faker';
 import { Knex } from 'knex';
 
 type Guest = {
@@ -48,6 +48,16 @@ type JoinTable = {
 	[key: string]: any;
 };
 
+/* CreateManyOptions:
+ * {column: countOfRelation}
+ * EX: {favorites_artists: 45}
+ * used for tying together relations randomly
+ */
+
+type CreateManyOptions = {
+	[column: string]: number;
+};
+
 type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
 
 export const seedTable = async function (
@@ -74,7 +84,7 @@ export const createArtist = (): Artist => ({
 
 export const createEvent = (): Event => ({
 	id: uuid(),
-	cost: random.float(),
+	cost: datatype.float(),
 	description: lorem.paragraphs(2),
 	location: address.streetAddress(),
 	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
@@ -104,8 +114,18 @@ export const createGuest = (): Guest => ({
 	shows_attended: datatype.number(),
 });
 
-export const createMany = (factory: () => Item, count: number) => {
+export const createMany = (factory: () => Item, count: number, options?: CreateManyOptions) => {
 	const items: Item[] = [];
+	if (options) {
+		for (let rows = 0; rows < count; rows++) {
+			const item: any = factory();
+			for (const [column, max] of Object.entries(options)) {
+				item[column] = getRandomInt(max);
+			}
+			items.push(item);
+		}
+		return items;
+	}
 	for (let rows = 0; rows < count; rows++) {
 		items.push(factory());
 	}
@@ -119,4 +139,12 @@ function randomDateTime(start: Date, end: Date) {
 function randomTime() {
 	const dateTime = randomDateTime(new Date(1030436120350), new Date(1633466120350)).toUTCString();
 	return dateTime.substring(17, 25);
+}
+
+function getRandomInt(max: number) {
+	let int = 0;
+	while (int <= 0) {
+		int = Math.floor(Math.random() * max);
+	}
+	return int;
 }

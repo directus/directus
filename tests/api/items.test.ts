@@ -209,7 +209,7 @@ describe('/items', () => {
 			});
 			expect(response.data.data).toMatchObject({ name: body.name });
 		});
-		it.only.each(getDBsToTest())('%p creates one guest with a favorite_artist', async (vendor) => {
+		it.each(getDBsToTest())('%p creates one guest with a favorite_artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			const artist = createArtist();
 			const body = createGuest();
@@ -223,10 +223,24 @@ describe('/items', () => {
 			});
 			expect(response.data.data).toMatchObject({ name: body.name, favorite_artist: expect.any(Number) });
 		});
-		it.each(getDBsToTest())('%p creates 45 artists', async (vendor) => {
+		it.each(getDBsToTest())('%p creates 5 artists', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const body = createMany(createArtist, 45);
+			const body = createMany(createArtist, 5);
 			const response: any = await axios.post(`${url}/items/artists`, body, {
+				headers: {
+					Authorization: 'Bearer test_token',
+					'Content-Type': 'application/json',
+				},
+			});
+			expect(response.data.data.length).toBe(body.length);
+		});
+		it.each(getDBsToTest())('%p creates 5  users with favorite artists', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			await seedTable(databases.get(vendor)!, 5, 'artists', createArtist);
+
+			const body = createMany(createGuest, 5, { favorite_artist: 5 });
+
+			const response: any = await axios.post(`${url}/items/guests`, body, {
 				headers: {
 					Authorization: 'Bearer test_token',
 					'Content-Type': 'application/json',
