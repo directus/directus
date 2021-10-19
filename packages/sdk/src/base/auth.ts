@@ -27,7 +27,6 @@ export class Auth implements IAuth {
 		// Setting options
 		this.options = options || {};
 		this.options.mode = options?.mode || (typeof window !== 'undefined' ? 'cookie' : 'json');
-		// TODO: prevent cookie mode in node
 		this.options.refreshOptions = options?.refreshOptions || {
 			autoRefresh: true,
 			autoRefreshLeadTime: DefaultLeadTime,
@@ -36,7 +35,7 @@ export class Auth implements IAuth {
 		this.options.refreshOptions.autoRefreshLeadTime = options?.refreshOptions?.autoRefreshLeadTime ?? DefaultLeadTime;
 
 		if (this.options.refreshOptions.autoRefreshLeadTime < 0) {
-			throw new Error("Option 'autoRefreshLeadTime' cannot be a negative number"); // Is this the proper way to handle config errors?
+			throw new Error("Option 'autoRefreshLeadTime' cannot be a negative number");
 		}
 		this.transport = transport;
 		this.storage = storage;
@@ -114,7 +113,6 @@ export class Auth implements IAuth {
 		}
 
 		let remaining = expiresAt - this.options.refreshOptions!.autoRefreshLeadTime! - Date.now();
-		// TODO: how to deal with the unlikely edge case that LeadTime > token TTL; creates infinite refresh loop (why doesn't debouncer catch this?)
 		if (remaining < 0) {
 			// It's already expired, try a refresh
 			if (expiresAt < Date.now()) {
@@ -137,10 +135,7 @@ export class Auth implements IAuth {
 		return await this.refresher.debounce(force);
 	}
 
-	async login(credentials: AuthCredentials, refreshOptions?: Partial<AuthAutoRefreshOptions>): Promise<AuthResult> {
-		// why does login take its own refresh options object so you can change the global login options on repeat logins?
-		refreshOptions = refreshOptions || {};
-
+	async login(credentials: AuthCredentials): Promise<AuthResult> {
 		// Shouldn't be sending any credentials on login
 		this.storage.auth_token = null;
 		this.storage.auth_expires_at = null;
@@ -151,7 +146,7 @@ export class Auth implements IAuth {
 		});
 
 		this.updateStorage(response.data!);
-		this.updateRefresher(refreshOptions);
+		this.updateRefresher();
 
 		return {
 			access_token: response.data!.access_token,

@@ -130,7 +130,7 @@ If you plan on using multiple SDK instances at once, keep in mind that they will
 This can lead to unpredictable behaviors, and is especially common when writing tests.
 
 For example, one SDK instance executes `login()` and writes the resulting `access_token` into the Storage. Then another
-SDK instance does the same thing, and **overwrites** the previous value. `access_token`. The first SDK instance now has
+SDK instance does the same thing, and **overwrites** the previous `access_token` value. The first SDK instance now has
 the access rights of the second, which can mess up your tests. Adding prefixes to your Storage instances would solve
 this error:
 
@@ -619,22 +619,20 @@ throw an error if the refresh fails.
 If you wish to control the automatic refresh of the token yourself for whatever reason, here is an example of how you
 might do so:
 
-````js
-
-const directus = new Directus('https://api.example.com')
+```js
+const directus = new Directus('https://api.example.com');
 const response = await directus.login({
-		email: 'admin@example.com',
-		password: 'd1r3ctu5',
-	},);
+	email: 'admin@example.com',
+	password: 'd1r3ctu5',
+});
 
-	const accessToken = response.data.data.access_token;
+const accessToken = response.data.data.access_token;
 
-	// Store the access token somewhere to use in auth headers, like
-	// request.headers['Authorization'] = `Bearer ${accessToken}`;
+// Store the access token somewhere to use in auth headers, like
+// request.headers['Authorization'] = `Bearer ${accessToken}`;
 
-	// Refresh the token 10 seconds before the access token expires.
-	setTimeout(() => directus.auth.refresh(), response.data.data.expires - 10000);
-
+// Refresh the token 10 seconds before the access token expires.
+setTimeout(() => directus.auth.refresh(), response.data.data.expires - 10000);
 ```
 
 ### Logout
@@ -962,4 +960,7 @@ me.level = 42;
 // Error TS2322: Type "string" is not assignable to type "number".
 me.experience = 'high';
 ```
-````
+
+```
+
+```

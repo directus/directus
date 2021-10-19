@@ -24,7 +24,7 @@ export interface IAuth {
 	readonly password: PasswordsHandler;
 	readonly expiringSoon: boolean;
 
-	login(credentials: AuthCredentials, refreshOptions?: AuthAutoRefreshOptions): Promise<AuthResult>;
+	login(credentials: AuthCredentials): Promise<AuthResult>;
 	refresh(force?: boolean): Promise<AuthResult | false>;
 	static(token: AuthToken): Promise<boolean>;
 	logout(): Promise<void>;
