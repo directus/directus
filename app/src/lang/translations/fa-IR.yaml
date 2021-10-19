@@ -1,5 +1,30 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: آواتار
+default_provider: پیش‌فرض
 published: منتشر شد
+draft: پیش‌نویس
+archived: بایگانی‌شده
+modules: ماژول‌ها
 module_bar: ماژول
 tile_size: اندازه آجر
 edit_field: ویرایش فیلد
@@ -30,8 +55,10 @@ required: الزامی
 required_for_app_access: برای دسترسی به برنامه مورد نیاز است
 requires_value: مقدار موردنیاز
 create_preset: ایجاد ایستگاه از پیش تنظیم شده
+create_panel: ایجاد پنل
 create_role: افزودن نقش
 create_user: ایجاد کاربر
+delete_panel: حذف پنل
 create_webhook: به روزرسانی webhook
 invite_users: دعوت کاربران
 invite: دعوت
@@ -47,6 +74,26 @@ delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
 reset_bookmark: بازنشانی نشانک
+rename_bookmark: تغییر نام نشانک
+update_bookmark: به روز کردن نشانک
+delete_bookmark: حذف نشانک
+delete_bookmark_copy: >-
+  آیا مطمئن هستید که می‌خواهید «{bookmark}» را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+logoutReason:
+  SIGN_OUT: از حساب خارج شده
+  SESSION_EXPIRED: نشست به پایان رسیده
+public_label: عمومی
+public_description: داده API موجود را بدون احراز هویت کنترل می‌کند.
+not_allowed: مجاز نیست
+directus_version: نسخه دایرکتوس
+node_version: نسخه نود
+node_uptime: زمان به کار نود
+os_type: نوع سیستم عامل
+os_version: نسخه سیستم عامل
+os_uptime: زمان به کار سیستم عامل
+os_totalmem: حافظه سیستم عامل
+archive: بایگانی
+archive_confirm: از بایگانی شدن این مورد مطمئنید؟
 nullable: قابل خواندن
 allow_null_value: مقدار NULL را مجاز کنید
 allow_multiple: امکان چندین انتخاب
@@ -204,6 +251,7 @@ fields:
 field_options:
   directus_collections:
     language: زبان
+    archive_divider: بایگانی
   directus_roles:
     fields:
       name_name: نام
