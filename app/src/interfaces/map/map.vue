@@ -456,7 +456,7 @@ export default defineComponent({
 
 	.v-info {
 		padding: 20px;
-		background-color: var(--background-subdued);
+		background-color: var(--background-input);
 		border-radius: var(--border-radius);
 		box-shadow: var(--card-shadow);
 	}

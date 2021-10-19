@@ -1,7 +1,7 @@
 import { AnyLayer, Expression } from 'maplibre-gl';
 
 const baseColor = '#00c897';
-const selectColor = '#FFA500';
+const selectColor = '#17826d';
 const fill: Expression = ['case', ['boolean', ['feature-state', 'selected'], false], selectColor, baseColor];
 const outline: Expression = [
 	'case',
@@ -50,7 +50,7 @@ export const layers: AnyLayer[] = [
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
 		layout: {},
 		paint: {
-			'circle-radius': 5,
+			'circle-radius': 4,
 			'circle-color': fill,
 			'circle-stroke-color': outline,
 			'circle-stroke-width': 3,
