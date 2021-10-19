@@ -121,6 +121,13 @@ validationError:
   empty: مقدار باید خالی باشد
   nempty: مقدار نمی تواند خالی باشد
   null: مقدار باید خالی باشد
+  nnull: مقدار نمی تواند خالی (نال) باشد
+  required: مقدار الزامی است
+  unique: مقدار باید یکتا باشد
+  regex: این مقدار، فرمت صحیحی ندارد
+all_access: دسترسی کامل
+no_access: بدون دسترسی
+use_custom: استفاده از حالت سفارشی
 nullable: قابل خواندن
 allow_null_value: مقدار NULL را مجاز کنید
 allow_multiple: امکان چندین انتخاب
@@ -254,6 +261,9 @@ creating_collection_system: هر یک از این زمینه های اختیار
 auto_increment_integer: عدد صحیح افزایش خودکار
 generated_uuid: UUID تولید شده
 manual_string: رشته به صورت دستی وارد شده است
+errors:
+  NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
+value_unique: مقدار باید یکتا باشد
 wysiwyg_options:
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
