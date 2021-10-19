@@ -27,18 +27,13 @@ interface RequiredProps {
 }
 
 export default function useSizeClass<T>(props: T & RequiredProps): ComputedRef<string | null> {
-	return computed<string | null>(() => {
+	const sizeClass = computed<string | null>(() => {
 		if (props.xSmall) return 'x-small';
 		if (props.small) return 'small';
 		if (props.large) return 'large';
 		if (props.xLarge) return 'x-large';
 		return null;
 	});
-}
 
-export function useSizePropValues<T>(props: T & RequiredProps): ComputedRef<RequiredProps> {
-	return computed<string | null>(() => {
-		const { xSmall, small, large, xLarge } = props;
-		return { xSmall, small, large, xLarge };
-	});
+	return sizeClass;
 }

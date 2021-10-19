@@ -38,7 +38,7 @@ export default defineComponent({
 	props: {
 		provider: {
 			type: String,
-			default: null,
+			required: true,
 		},
 	},
 	setup(props) {
@@ -107,7 +107,7 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials, props.provider);
+				await login(credentials, provider.value);
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;

@@ -1,5 +1,13 @@
 import { Router } from 'express';
-import ldap, { Client, Error, SearchCallbackResponse, SearchEntry } from 'ldapjs';
+import ldap, {
+	Client,
+	Error,
+	SearchCallbackResponse,
+	SearchEntry,
+	InappropriateAuthenticationError,
+	InvalidCredentialsError,
+	InsufficientAccessRightsError,
+} from 'ldapjs';
 import ms from 'ms';
 import Joi from 'joi';
 import { AuthDriver } from '../auth';
@@ -14,12 +22,18 @@ import { AuthenticationService, UsersService } from '../../services';
 import asyncHandler from '../../utils/async-handler';
 import env from '../../env';
 import { respond } from '../../middleware/respond';
+import logger from '../../logger';
 
 interface UserInfo {
 	firstName?: string;
 	lastName?: string;
 	email?: string;
+	userAccountControl?: number;
 }
+
+// 0x2: ACCOUNTDISABLE
+// 0x800000: PASSWORD_EXPIRED
+const INVALID_ACCESS_FLAGS = 0x800002;
 
 export class LDAPAuthDriver extends AuthDriver {
 	bindClient: Promise<Client>;
@@ -45,17 +59,18 @@ export class LDAPAuthDriver extends AuthDriver {
 			const client = ldap.createClient({ url: additionalConfig.clientUrl, reconnect: true, ...clientConfig });
 
 			client.on('error', (err: Error) => {
-				reject(
-					new ServiceUnavailableException('Service returned unexpected error', {
-						service: 'ldap',
-						message: err.message,
-					})
-				);
+				logger.error('Unhandled error', err);
 			});
 
 			client.bind(bindDn, bindPassword, (err: Error | null) => {
 				if (err) {
-					reject(new InvalidCredentialsException());
+					const error = handleError(err);
+
+					if (error instanceof InvalidCredentialsException) {
+						reject(new InvalidConfigException('Invalid bind user', { provider: additionalConfig.provider }));
+					} else {
+						reject(error);
+					}
 					return;
 				}
 				resolve(client);
@@ -80,12 +95,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
-						reject(
-							new ServiceUnavailableException('Failed to fetch userDn', {
-								service: 'ldap',
-								message: err.message,
-							})
-						);
+						reject(handleError(err));
 						return;
 					}
 
@@ -95,12 +105,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					});
 
 					res.on('error', (err: Error) => {
-						reject(
-							new ServiceUnavailableException('Failed to fetch userDn', {
-								service: 'ldap',
-								message: err.message,
-							})
-						);
+						reject(handleError(err));
 					});
 
 					res.on('end', () => {
@@ -118,33 +123,28 @@ export class LDAPAuthDriver extends AuthDriver {
 			// Fetch user info in LDAP by domain component
 			client.search(
 				userDn,
-				{ attributes: ['givenName', 'sn', 'mail'] },
+				{ attributes: ['givenName', 'sn', 'mail', 'userAccountControl'] },
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
-						reject(
-							new ServiceUnavailableException('Failed to fetch user info', {
-								service: 'ldap',
-								message: err.message,
-							})
-						);
+						reject(handleError(err));
 						return;
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						resolve({
+						const user = {
 							firstName: typeof object.givenName === 'object' ? object.givenName[0] : object.givenName,
 							lastName: typeof object.sn === 'object' ? object.sn[0] : object.sn,
 							email: typeof object.mail === 'object' ? object.mail[0] : object.mail,
-						});
+							userAccountControl:
+								typeof object.userAccountControl === 'object'
+									? Number(object.userAccountControl[0])
+									: Number(object.userAccountControl),
+						};
+						resolve(user);
 					});
 
 					res.on('error', (err: Error) => {
-						reject(
-							new ServiceUnavailableException('Failed to fetch user info', {
-								service: 'ldap',
-								message: err.message,
-							})
-						);
+						reject(handleError(err));
 					});
 
 					res.on('end', () => {
@@ -177,12 +177,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
-						reject(
-							new ServiceUnavailableException('Failed to fetch user groups', {
-								service: 'ldap',
-								message: err.message,
-							})
-						);
+						reject(handleError(err));
 						return;
 					}
 
@@ -195,12 +190,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					});
 
 					res.on('error', (err: Error) => {
-						reject(
-							new ServiceUnavailableException('Failed to fetch user groups', {
-								service: 'ldap',
-								message: err.message,
-							})
-						);
+						reject(handleError(err));
 					});
 
 					res.on('end', () => {
@@ -240,11 +230,12 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const userInfo = await this.fetchUserInfo(userDn);
 		const userGroups = await this.fetchUserGroups(userDn);
-		let userRole;
 
 		if (!userInfo) {
 			throw new InvalidCredentialsException();
 		}
+
+		let userRole;
 
 		if (userGroups.length) {
 			userRole = await this.knex
@@ -283,18 +274,13 @@ export class LDAPAuthDriver extends AuthDriver {
 			});
 
 			client.on('error', (err: Error) => {
-				reject(
-					new ServiceUnavailableException('Service returned unexpected error', {
-						service: 'ldap',
-						message: err.message,
-					})
-				);
+				reject(handleError(err));
 			});
 
 			client.bind(user.external_identifier!, password, (err: Error | null) => {
 				client.destroy();
 				if (err) {
-					reject(new InvalidCredentialsException());
+					reject(handleError(err));
 					return;
 				}
 				resolve();
@@ -306,7 +292,30 @@ export class LDAPAuthDriver extends AuthDriver {
 		await this.verify(user, payload.password);
 		return null;
 	}
+
+	async refresh(user: User): Promise<SessionData> {
+		const userInfo = await this.fetchUserInfo(user.external_identifier!);
+
+		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCESS_FLAGS) {
+			throw new InvalidCredentialsException();
+		}
+		return null;
+	}
 }
+
+const handleError = (err: Error) => {
+	if (
+		err instanceof InappropriateAuthenticationError ||
+		err instanceof InvalidCredentialsError ||
+		err instanceof InsufficientAccessRightsError
+	) {
+		return new InvalidCredentialsException();
+	}
+	return new ServiceUnavailableException('Service returned unexpected error', {
+		service: 'ldap',
+		message: err.message,
+	});
+};
 
 export function createLDAPAuthRouter(provider: string): Router {
 	const router = Router();

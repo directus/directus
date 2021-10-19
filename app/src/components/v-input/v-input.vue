@@ -57,7 +57,6 @@
 import { defineComponent, computed, ref } from 'vue';
 import { omit } from 'lodash';
 import slugify from '@sindresorhus/slugify';
-import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -143,11 +142,14 @@ export default defineComponent({
 			type: String,
 			default: 'off',
 		},
+		small: {
+			type: Boolean,
+			default: false,
+		},
 		solid: {
 			type: Boolean,
 			default: false,
 		},
-		...sizeProps,
 	},
 	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
 	setup(props, { emit, attrs }) {
@@ -164,14 +166,13 @@ export default defineComponent({
 		}));
 		const attributes = computed(() => omit(attrs, ['class']));
 
-		const sizeClass = useSizeClass(props);
 		const classes = computed(() => [
-			sizeClass.value,
 			{
 				'full-width': props.fullWidth,
 				'has-click': props.clickable,
 				disabled: props.disabled,
-				solid: props.solid,
+				small: props.small,
+				solid: props.solid && !props.disabled,
 			},
 			...((attrs.class || '') as string).split(' '),
 		]);
@@ -437,6 +438,11 @@ body {
 		}
 	}
 
+	&.small {
+		--input-padding: 8px;
+		--input-height: 36px;
+	}
+
 	&.solid {
 		--v-input-background-color: var(--background-normal);
 		--v-input-border-color-focus: var(--foreground-subdued);
@@ -444,24 +450,6 @@ body {
 		--background-input: var(--background-normal);
 		--border-normal: var(--background-normal);
 		--border-normal-alt: var(--background-normal-alt);
-	}
-
-	&.x-small {
-		--input-padding: 8px;
-		--input-height: 36px;
-	}
-
-	&.small {
-		--input-padding: 12px;
-		--input-height: 52px;
-	}
-
-	&.large {
-		--input-height: 68px;
-	}
-
-	&.x-large {
-		--input-height: 76px;
 	}
 
 	&.full-width {

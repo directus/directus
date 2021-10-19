@@ -70,4 +70,6 @@ export const MODULE_BAR_DEFAULT = [
 	},
 ];
 
+export const DEFAULT_AUTH_PROVIDER = 'default';
+
 export const AUTH_SSO_DRIVERS = ['oauth2', 'openid'];

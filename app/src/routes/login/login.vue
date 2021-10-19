@@ -2,8 +2,8 @@
 	<public-view>
 		<div class="header">
 			<h1 class="type-title">{{ t('sign_in') }}</h1>
-			<div v-if="providerOptions.length > 1" class="provider-select">
-				<v-select v-model="providerSelect" :items="providerOptions" x-small solid />
+			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
+				<v-select v-model="providerSelect" :items="providerOptions" small solid />
 			</div>
 		</div>
 
@@ -13,7 +13,7 @@
 
 		<login-form v-else :provider="provider" />
 
-		<sso-links :providers="providers" />
+		<sso-links v-if="!authenticated" :providers="providers" />
 
 		<template v-if="authenticated" #notice>
 			<v-icon name="lock_open" left />
@@ -40,6 +40,7 @@ import { LogoutReason } from '@/auth';
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
+import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 
 export default defineComponent({
 	components: { LoginForm, LdapForm, ContinueAs, SsoLinks },
@@ -55,7 +56,7 @@ export default defineComponent({
 		const appStore = useAppStore();
 
 		const providers = ref([]);
-		const provider = ref('default');
+		const provider = ref(DEFAULT_AUTH_PROVIDER);
 		const providerOptions = ref([]);
 		const driver = ref('local');
 
@@ -77,7 +78,7 @@ export default defineComponent({
 			providerOptions.value = providers.value
 				.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
 				.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
-			providerOptions.value.unshift({ text: t('default'), value: 'local' });
+			providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
 		});
 
 		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver };
