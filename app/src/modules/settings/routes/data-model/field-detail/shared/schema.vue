@@ -181,81 +181,7 @@ import { defineComponent, computed } from 'vue';
 import { state } from '../store';
 import { GEOMETRY_TYPES } from '@directus/shared/constants';
 import { translate } from '@/utils/translate-object-values';
-
-import { Type } from '@directus/shared/types';
-import { TranslateResult } from 'vue-i18n';
-
-export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } | { divider: true }> = [
-	{
-		text: '$t:string',
-		value: 'string',
-	},
-	{
-		text: '$t:text',
-		value: 'text',
-	},
-	{ divider: true },
-	{
-		text: '$t:boolean',
-		value: 'boolean',
-	},
-	{ divider: true },
-	{
-		text: '$t:integer',
-		value: 'integer',
-	},
-	{
-		text: '$t:bigInteger',
-		value: 'bigInteger',
-	},
-	{
-		text: '$t:float',
-		value: 'float',
-	},
-	{
-		text: '$t:decimal',
-		value: 'decimal',
-	},
-	{ divider: true },
-	{
-		text: '$t:geometry',
-		value: 'geometry',
-	},
-	{ divider: true },
-	{
-		text: '$t:timestamp',
-		value: 'timestamp',
-	},
-	{
-		text: '$t:datetime',
-		value: 'dateTime',
-	},
-	{
-		text: '$t:date',
-		value: 'date',
-	},
-	{
-		text: '$t:time',
-		value: 'time',
-	},
-	{ divider: true },
-	{
-		text: '$t:json',
-		value: 'json',
-	},
-	{
-		text: '$t:csv',
-		value: 'csv',
-	},
-	{
-		text: '$t:uuid',
-		value: 'uuid',
-	},
-	{
-		text: '$t:hash',
-		value: 'hash',
-	},
-];
+import { FIELD_TYPES_SELECT } from '@/constants';
 
 export default defineComponent({
 	props: {
@@ -271,7 +197,7 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const typesWithLabels = computed(() => translate(fieldTypes));
+		const typesWithLabels = computed(() => translate(FIELD_TYPES_SELECT));
 
 		const typeDisabled = computed(() => {
 			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(props.type);

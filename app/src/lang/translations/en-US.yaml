@@ -688,6 +688,12 @@ source: Source
 url_placeholder: Enter an url...
 display_text: Display Text
 display_text_placeholder: Enter a display text...
+interface_group_text_and_numbers: Text & Numbers
+interface_group_selection: Selection
+interface_group_relational: Relational
+interface_group_presentation: Presentation
+interface_group_groups: Groups
+interface_group_other: Other
 tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited

@@ -22,37 +22,9 @@
 			</template>
 		</draggable>
 
-		<v-menu attached>
-			<template #activator="{ toggle, active }">
-				<v-button
-					class="add-field"
-					align="left"
-					:dashed="!active"
-					:class="{ active }"
-					outlined
-					large
-					full-width
-					@click="toggle"
-				>
-					<v-icon name="add" />
-					{{ t('create_field') }}
-				</v-button>
-			</template>
-
-			<v-list>
-				<template v-for="(option, index) in addOptions" :key="index">
-					<v-divider v-if="option.divider === true" />
-					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
-						<v-list-item-icon>
-							<v-icon :name="option.icon" />
-						</v-list-item-icon>
-						<v-list-item-content>
-							{{ option.text }}
-						</v-list-item-content>
-					</v-list-item>
-				</template>
-			</v-list>
-		</v-menu>
+		<v-button full-width :to="`/settings/data-model/${collection}/+`">
+			{{ t('create_field') }}
+		</v-button>
 	</div>
 </template>
 
