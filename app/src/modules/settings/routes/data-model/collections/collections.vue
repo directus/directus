@@ -27,7 +27,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')" center>
+			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -79,7 +79,7 @@
 				</v-list-item>
 			</v-list>
 
-			<v-detail v-if="collections.length > 0" :label="t('system_collections')">
+			<v-detail :label="t('system_collections')">
 				<collection-item
 					v-for="collection of systemCollections"
 					:key="collection.collection"
@@ -215,6 +215,10 @@ export default defineComponent({
 .padding-box {
 	padding: var(--content-padding);
 	padding-top: 0;
+}
+
+.v-info {
+	padding: var(--content-padding) 0;
 }
 
 .root-drag-container {
