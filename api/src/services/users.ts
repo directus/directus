@@ -82,9 +82,13 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		const { invalid_password_message: passwordFailedValidationErrorMessage } = await settingsService.readSingleton({
-			fields: ['invalid_password_message'],
-		});
+		const { invalid_password_message: customPasswordFailedValidationErrorMessage } =
+			await settingsService.readSingleton({
+				fields: ['invalid_password_message'],
+			});
+
+		const passwordFailedValidationErrorMessage =
+			customPasswordFailedValidationErrorMessage || 'Password does not fulfill policy requirements.';
 
 		if (policyRegExString) {
 			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
