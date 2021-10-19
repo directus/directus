@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectMultipleCheckboxes from './select-multiple-checkbox.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'select-multiple-checkbox',
@@ -9,6 +10,7 @@ export default defineInterface({
 	description: '$t:interfaces.select-multiple-checkbox.description',
 	types: ['json', 'csv'],
 	group: 'selection',
+	preview: PreviewSVG,
 	options: [
 		{
 			field: 'choices',

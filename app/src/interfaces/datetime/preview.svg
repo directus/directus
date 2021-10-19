@@ -1,0 +1,55 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<g filter="url(#preview-svg-filter-datetime)">
+		<rect x="29" y="10" width="98" height="77" rx="6" fill="var(--background-page)" />
+		<rect x="30" y="11" width="96" height="75" rx="5" stroke="var(--primary)" stroke-width="2" />
+	</g>
+	<rect x="39" y="20" width="30" height="5.03704" rx="2" fill="var(--primary)" />
+	<rect x="39" y="41" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="39" y="51" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="39" y="61" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="39" y="71" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="51" y="41" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="51" y="61" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="51" y="71" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="87" y="71" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.1" />
+	<rect x="63" y="31" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="39" y="31" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.1" />
+	<rect x="63" y="41" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="63" y="51" width="6" height="6" rx="2" fill="var(--primary)" />
+	<rect x="63" y="61" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="63" y="71" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="99" y="71" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.1" />
+	<rect x="75" y="31" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="51" y="31" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.1" />
+	<rect x="75" y="41" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="75" y="51" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="75" y="61" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="75" y="71" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="111" y="71" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.1" />
+	<rect x="87" y="31" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="87" y="41" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="87" y="51" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="87" y="61" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="99" y="31" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="99" y="41" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="99" y="51" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="99" y="61" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="111" y="31" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="111" y="41" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="111" y="51" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="111" y="61" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="51" y="51" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<defs>
+		<filter id="preview-svg-filter-datetime" x="21" y="2" width="114" height="93" filterUnits="userSpaceOnUse"
+			color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+				result="hardAlpha" />
+			<feOffset />
+			<feGaussianBlur stdDeviation="4" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.784314 0 0 0 0 0.592157 0 0 0 0.5 0" />
+			<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+			<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+		</filter>
+	</defs>
+</svg>

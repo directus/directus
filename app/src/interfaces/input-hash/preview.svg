@@ -1,12 +1,12 @@
 <svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<g filter="url(#preview-svg-filter-input)">
+	<g filter="url(#preview-svg-filter-input-hash)">
 		<rect x="18" y="35" width="120" height="26" rx="6" fill="var(--background-page)" />
 		<rect x="19" y="36" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2" />
 	</g>
 	<rect x="28" y="45" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
 	<rect x="82" y="45" width="20" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
 	<defs>
-		<filter id="preview-svg-filter-input" x="10" y="27" width="136" height="42" filterUnits="userSpaceOnUse"
+		<filter id="preview-svg-filter-input-hash" x="10" y="27" width="136" height="42" filterUnits="userSpaceOnUse"
 			color-interpolation-filters="sRGB">
 			<feFlood flood-opacity="0" result="BackgroundImageFix" />
 			<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"

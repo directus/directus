@@ -1,0 +1,28 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<rect x="18" y="17.0371" width="120" height="62" rx="6" fill="var(--background-page)" />
+	<rect x="19" y="18.0371" width="118" height="60" rx="5" stroke="var(--primary)" stroke-opacity="0.25"
+		stroke-width="2" />
+	<rect x="28" y="51" width="40" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="28" y="63" width="60" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<g filter="url(#preview-svg-filter-select-dropdown)">
+		<rect x="18" y="17" width="120" height="26" rx="6" fill="var(--background-page)" />
+		<rect x="19" y="18" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2" />
+	</g>
+	<rect x="28" y="27" width="70" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<path
+		d="M120.966 28C120.609 28 120.431 28.4309 120.683 28.6828L123.717 31.7172C123.873 31.8734 124.127 31.8734 124.283 31.7172L127.317 28.6828C127.569 28.4309 127.391 28 127.034 28H120.966Z"
+		fill="var(--primary)" />
+	<defs>
+		<filter id="preview-svg-filter-select-dropdown" x="10" y="9" width="136" height="42" filterUnits="userSpaceOnUse"
+			color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+				result="hardAlpha" />
+			<feOffset />
+			<feGaussianBlur stdDeviation="4" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.784314 0 0 0 0 0.592157 0 0 0 0.5 0" />
+			<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+			<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+		</filter>
+	</defs>
+</svg>

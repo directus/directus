@@ -1,6 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 import Options from './options.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'select-dropdown-m2o',
@@ -14,4 +15,5 @@ export default defineInterface({
 	group: 'selection',
 	options: Options,
 	recommendedDisplays: ['related-values'],
+	preview: PreviewSVG,
 });

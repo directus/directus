@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceInputHash from './input-hash.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'input-hash',
@@ -9,6 +10,7 @@ export default defineInterface({
 	component: InterfaceInputHash,
 	types: ['hash'],
 	group: 'other',
+	preview: PreviewSVG,
 	options: [
 		{
 			field: 'placeholder',

@@ -1,6 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceListM2M from './list-m2m.vue';
 import Options from './options.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'list-m2m',
@@ -14,4 +15,5 @@ export default defineInterface({
 	group: 'relational',
 	options: Options,
 	recommendedDisplays: ['related-values'],
+	preview: PreviewSVG,
 });

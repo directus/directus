@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceDateTime from './datetime.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'datetime',
@@ -36,4 +37,5 @@ export default defineInterface({
 		},
 	],
 	recommendedDisplays: ['datetime'],
+	preview: PreviewSVG,
 });

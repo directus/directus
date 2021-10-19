@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationNotice from './presentation-notice.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'presentation-notice',
@@ -56,4 +57,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });
