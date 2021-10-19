@@ -21,8 +21,8 @@ fields:
           foreground: 'var(--primary)'
           background: 'var(--primary-25)'
         - value: GET
-          foreground: 'var(--blue)'
-          background: 'var(--blue-25)'
+          foreground: 'var(--secondary)'
+          background: 'var(--seconary-25)'
       format: false
     options:
       choices:

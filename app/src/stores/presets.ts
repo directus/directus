@@ -96,7 +96,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'tabular',
 		layout_query: {
 			tabular: {
-				fields: ['status', 'method', 'name', 'url', 'collections', 'actions'],
+				fields: ['status', 'method', 'name', 'collections', 'actions'],
 			},
 		},
 		layout_options: {
@@ -105,7 +105,6 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 					status: 32,
 					method: 100,
 					name: 210,
-					url: 400,
 					collections: 240,
 					actions: 210,
 				},
