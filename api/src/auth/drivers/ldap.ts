@@ -49,6 +49,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			!bindDn ||
 			!bindPassword ||
 			!additionalConfig.userDn ||
+			!additionalConfig.provider ||
 			(!additionalConfig.clientUrl && !additionalConfig.client?.socketPath)
 		) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
