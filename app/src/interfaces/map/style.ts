@@ -1,11 +1,16 @@
+const black = '#000000';
+const white = '#ffffff';
+const green = '#00c897';
+const orange = '#ee9746';
+
 export default [
 	{
 		id: 'directus-polygon-fill-inactive',
 		type: 'fill',
 		filter: ['all', ['==', 'active', 'false'], ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
 		paint: {
-			'fill-color': '#00c897',
-			'fill-outline-color': '#00c897',
+			'fill-color': green,
+			'fill-outline-color': green,
 			'fill-opacity': 0.1,
 		},
 	},
@@ -14,8 +19,8 @@ export default [
 		type: 'fill',
 		filter: ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
 		paint: {
-			'fill-color': '#fbb03b',
-			'fill-outline-color': '#fbb03b',
+			'fill-color': orange,
+			'fill-outline-color': orange,
 			'fill-opacity': 0.1,
 		},
 	},
@@ -25,7 +30,7 @@ export default [
 		filter: ['all', ['==', '$type', 'Point'], ['==', 'meta', 'midpoint']],
 		paint: {
 			'circle-radius': 3,
-			'circle-color': '#fbb03b',
+			'circle-color': orange,
 		},
 	},
 	{
@@ -37,7 +42,7 @@ export default [
 			'line-join': 'round',
 		},
 		paint: {
-			'line-color': '#00c897',
+			'line-color': green,
 			'line-width': 2,
 		},
 	},
@@ -50,7 +55,7 @@ export default [
 			'line-join': 'round',
 		},
 		paint: {
-			'line-color': '#fbb03b',
+			'line-color': orange,
 			'line-dasharray': [0.2, 2],
 			'line-width': 2,
 		},
@@ -64,7 +69,7 @@ export default [
 			'line-join': 'round',
 		},
 		paint: {
-			'line-color': '#00c897',
+			'line-color': green,
 			'line-width': 2,
 		},
 	},
@@ -77,7 +82,7 @@ export default [
 			'line-join': 'round',
 		},
 		paint: {
-			'line-color': '#fbb03b',
+			'line-color': orange,
 			'line-dasharray': [0.2, 2],
 			'line-width': 2,
 		},
@@ -97,7 +102,19 @@ export default [
 		filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point'], ['!=', 'mode', 'static']],
 		paint: {
 			'circle-radius': 3,
-			'circle-color': '#fbb03b',
+			'circle-color': orange,
+		},
+	},
+	{
+		id: 'directus-point-shadow',
+		filter: ['all', ['==', '$type', 'Point'], ['==', 'meta', 'feature'], ['!=', 'meta', 'midpoint']],
+		type: 'circle',
+		layout: {},
+		paint: {
+			'circle-radius': 10,
+			'circle-blur': 1,
+			'circle-opacity': 0.9,
+			'circle-color': black,
 		},
 	},
 	{
@@ -109,16 +126,13 @@ export default [
 			['==', 'meta', 'feature'],
 			['!=', 'meta', 'midpoint'],
 		],
-		type: 'symbol',
-		layout: {
-			'icon-image': 'place',
-			'icon-anchor': 'bottom',
-			'icon-allow-overlap': true,
-			'icon-size': 0.5,
-			'icon-offset': [0, 3],
-		},
+		type: 'circle',
+		layout: {},
 		paint: {
-			'icon-color': '#00c897',
+			'circle-radius': 6,
+			'circle-color': green,
+			'circle-stroke-color': white,
+			'circle-stroke-width': 2,
 		},
 	},
 	{
@@ -130,21 +144,18 @@ export default [
 			['==', 'meta', 'feature'],
 			['!=', 'meta', 'midpoint'],
 		],
-		type: 'symbol',
-		layout: {
-			'icon-image': 'place',
-			'icon-anchor': 'bottom',
-			'icon-allow-overlap': true,
-			'icon-size': 0.5,
-			'icon-offset': [0, 3],
-		},
+		type: 'circle',
+		layout: {},
 		paint: {
-			'icon-color': '#fbb03b',
+			'circle-radius': 6,
+			'circle-color': orange,
+			'circle-stroke-color': white,
+			'circle-stroke-width': 2,
 		},
 	},
 	{
 		id: 'directus-point-static',
-		type: 'symbol',
+		type: 'circle',
 		filter: [
 			'all',
 			['==', '$type', 'Point'],
@@ -152,15 +163,12 @@ export default [
 			['==', 'meta', 'feature'],
 			['!=', 'meta', 'midpoint'],
 		],
-		layout: {
-			'icon-image': 'place',
-			'icon-anchor': 'bottom',
-			'icon-allow-overlap': true,
-			'icon-size': 0.5,
-			'icon-offset': [0, 3],
-		},
+		layout: {},
 		paint: {
-			'icon-color': '#404040',
+			'circle-radius': 6,
+			'circle-color': '#404040',
+			'circle-stroke-color': '#101010',
+			'circle-stroke-width': 2,
 		},
 	},
 	{

@@ -15,7 +15,12 @@
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
 			@fitdata="fitGeoJSONBounds"
+			@setpopup="updatePopup"
 		/>
+
+		<div v-if="popupItem" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }">
+			<render-template :template="template" :item="popupItem" :collection="collection" />
+		</div>
 
 		<v-button
 			v-if="isGeometryFieldNative && !autoLocationFilter && locationFilterOutdatedWritable"
@@ -121,6 +126,10 @@ export default defineComponent({
 	components: { MapComponent },
 	inheritAttrs: false,
 	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
 		selection: {
 			type: Array as PropType<Item[]>,
 			default: () => [],
@@ -241,6 +250,22 @@ export default defineComponent({
 			type: Object as PropType<Filter>,
 			default: null,
 		},
+		template: {
+			type: String,
+			default: () => undefined,
+		},
+		popupItem: {
+			type: [String, Number],
+			default: () => undefined,
+		},
+		popupPosition: {
+			type: Object,
+			default: () => undefined,
+		},
+		updatePopup: {
+			type: Function,
+			required: true,
+		},
 	},
 	emits: ['update:cameraOptions', 'update:limit', 'update:locationFilterOutdated'],
 	setup(props, { emit }) {
@@ -263,8 +288,8 @@ export default defineComponent({
 	height: 36px;
 	padding: 10px;
 	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
-	border: var(--border-width) solid var(--background-subdued);
+	background-color: var(--background-page);
+	border: var(--border-width) solid var(--background-page);
 	border-radius: var(--border-radius);
 
 	span {
@@ -276,9 +301,23 @@ export default defineComponent({
 		color: var(--foreground-normal);
 	}
 }
-</style>
 
-<style lang="scss">
+.popup {
+	position: fixed;
+	z-index: 1;
+	max-width: 80%;
+	padding: 6px 10px 6px;
+	color: var(--foreground-normal-alt);
+	font-weight: 500;
+	font-size: 14px;
+	font-family: var(--family-sans-serif);
+	background-color: var(--background-page);
+	border-radius: var(--border-radius);
+	box-shadow: var(--card-shadow);
+	pointer-events: none;
+	translate: -50% calc(-100% - 12px);
+}
+
 .layout-map .mapboxgl-map .mapboxgl-canvas-container {
 	transition: opacity 0.2s;
 }
@@ -296,7 +335,7 @@ export default defineComponent({
 .layout-map {
 	position: relative;
 	width: 100%;
-	height: calc(100% - 65px);
+	height: calc(100% - 61px);
 }
 
 .center {
