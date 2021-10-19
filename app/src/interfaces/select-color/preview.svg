@@ -1,32 +1,17 @@
-<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<rect x="18" y="21" width="120" height="54" rx="6" fill="var(--background-page)" />
-	<rect x="19" y="22" width="118" height="52" rx="5" stroke="var(--primary)" stroke-opacity="0.25" stroke-width="2" />
-	<g filter="url(#preview-svg-filter-select-color)">
-		<rect x="18" y="21" width="120" height="26" rx="6" fill="var(--background-page)" />
-		<rect x="19" y="22" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2" />
-	</g>
-	<rect x="46" y="31" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
+	<rect x="19" y="22" width="118" height="52" rx="5" stroke="var(--primary)" stroke-opacity=".25" stroke-width="2" />
+	<rect x="18" y="21" width="120" height="26" rx="6" fill="var(--background-page)" class="glow" />
+	<rect x="19" y="22" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2" />
+	<rect x="46" y="31" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
 	<circle cx="33" cy="34" r="7" fill="var(--primary)" />
 	<circle cx="33" cy="60" r="7" fill="var(--primary)" />
-	<circle cx="51" cy="60" r="7" fill="var(--primary)" fill-opacity="0.75" />
-	<circle cx="69" cy="60" r="7" fill="var(--primary)" fill-opacity="0.5" />
-	<circle cx="87" cy="60" r="7" fill="var(--primary)" fill-opacity="0.25" />
-	<circle cx="105" cy="60" r="7" fill="var(--primary)" fill-opacity="0.1" />
-	<circle cx="123" cy="60" r="6" stroke="var(--primary)" stroke-opacity="0.1" stroke-width="2" />
+	<circle cx="51" cy="60" r="7" fill="var(--primary)" fill-opacity=".75" />
+	<circle cx="69" cy="60" r="7" fill="var(--primary)" fill-opacity=".5" />
+	<circle cx="87" cy="60" r="7" fill="var(--primary)" fill-opacity=".25" />
+	<circle cx="105" cy="60" r="7" fill="var(--primary)" fill-opacity=".1" />
+	<circle cx="123" cy="60" r="6" stroke="var(--primary)" stroke-opacity=".1" stroke-width="2" />
 	<path
-		d="M123 39.8242C119.773 39.8242 117.176 37.2266 117.176 34C117.176 30.7734 119.773 28.1758 123 28.1758C126.227 28.1758 128.824 30.5273 128.824 33.4258C128.824 35.3398 127.266 36.9258 125.324 36.9258H124.312C124.148 36.9258 124.012 37.0352 124.012 37.1992C124.012 37.2812 124.039 37.3359 124.094 37.3906C124.312 37.6641 124.449 38.0195 124.449 38.375C124.449 39.168 123.793 39.8242 123 39.8242ZM123 29.3242C120.43 29.3242 118.324 31.4297 118.324 34C118.324 36.5703 120.43 38.6758 123 38.6758C123.164 38.6758 123.301 38.5391 123.301 38.375C123.301 38.293 123.246 38.2109 123.219 38.1836C122.973 37.9102 122.836 37.5547 122.836 37.1992C122.836 36.4062 123.492 35.75 124.312 35.75H125.324C126.609 35.75 127.676 34.7109 127.676 33.4258C127.676 31.1562 125.57 29.3242 123 29.3242ZM118.926 33.6992C118.926 33.2344 119.309 32.8242 119.801 32.8242C120.266 32.8242 120.676 33.2344 120.676 33.6992C120.676 34.1914 120.266 34.5742 119.801 34.5742C119.309 34.5742 118.926 34.1914 118.926 33.6992ZM120.676 31.375C120.676 30.8828 121.059 30.5 121.551 30.5C122.016 30.5 122.426 30.8828 122.426 31.375C122.426 31.8672 122.016 32.25 121.551 32.25C121.059 32.25 120.676 31.8672 120.676 31.375ZM123.574 31.375C123.574 30.8828 123.984 30.5 124.449 30.5C124.941 30.5 125.324 30.8828 125.324 31.375C125.324 31.8672 124.941 32.25 124.449 32.25C123.984 32.25 123.574 31.8672 123.574 31.375ZM125.324 33.6992C125.324 33.2344 125.734 32.8242 126.199 32.8242C126.691 32.8242 127.074 33.2344 127.074 33.6992C127.074 34.1914 126.691 34.5742 126.199 34.5742C125.734 34.5742 125.324 34.1914 125.324 33.6992Z"
+		d="M123 39.824A5.811 5.811 0 01117.176 34 5.811 5.811 0 01123 28.176c3.227 0 5.824 2.351 5.824 5.25 0 1.914-1.558 3.5-3.5 3.5h-1.012c-.164 0-.3.11-.3.273 0 .082.027.137.082.192.218.273.355.629.355.984 0 .793-.656 1.45-1.449 1.45zm0-10.5c-2.57 0-4.676 2.106-4.676 4.676 0 2.57 2.106 4.676 4.676 4.676a.304.304 0 00.301-.301.314.314 0 00-.082-.191 1.484 1.484 0 01-.383-.985c0-.793.656-1.449 1.476-1.449h1.012c1.285 0 2.352-1.04 2.352-2.324 0-2.27-2.106-4.102-4.676-4.102zm-4.074 4.375c0-.465.383-.875.875-.875a.9.9 0 01.875.875.88.88 0 01-.875.875.864.864 0 01-.875-.875zm1.75-2.324c0-.492.383-.875.875-.875a.88.88 0 01.875.875.88.88 0 01-.875.875.864.864 0 01-.875-.875zm2.898 0a.88.88 0 01.875-.875c.492 0 .875.383.875.875a.864.864 0 01-.875.875.88.88 0 01-.875-.875zm1.75 2.324a.9.9 0 01.875-.875c.492 0 .875.41.875.875a.864.864 0 01-.875.875.88.88 0 01-.875-.875z"
 		fill="var(--primary)" />
-	<defs>
-		<filter id="preview-svg-filter-select-color" x="10" y="13" width="136" height="42" filterUnits="userSpaceOnUse"
-			color-interpolation-filters="sRGB">
-			<feFlood flood-opacity="0" result="BackgroundImageFix" />
-			<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-				result="hardAlpha" />
-			<feOffset />
-			<feGaussianBlur stdDeviation="4" />
-			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0.784314 0 0 0 0 0.592157 0 0 0 0.5 0" />
-			<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
-			<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
-		</filter>
-	</defs>
 </svg>

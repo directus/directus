@@ -11,7 +11,13 @@
 				<h2>{{ group.name }}</h2>
 
 				<div class="grid">
-					<div v-for="inter of group.interfaces" :key="inter.id" class="interface">
+					<button
+						v-for="inter of group.interfaces"
+						:key="inter.id"
+						class="interface"
+						:class="{ active: chosenInterface === inter.id }"
+						@click="chosenInterface = inter.id"
+					>
 						<div class="preview">
 							<template v-if="inter.preview">
 								<span v-if="isSVG(inter.preview)" v-html="inter.preview" />
@@ -21,7 +27,7 @@
 							<v-icon v-else large :name="inter.icon" />
 						</div>
 						<v-text-overflow :text="inter.name" class="name" />
-					</div>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -35,6 +41,8 @@ import { Collection } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { getInterfaces } from '@/interfaces';
 import { orderBy } from 'lodash';
+import { useFieldDetailStore } from '../store';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineComponent({
 	emits: ['cancel'],
@@ -51,6 +59,8 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 		const isOpen = useDialogRoute();
+
+		const fieldDetail = useFieldDetailStore();
 
 		const { interfaces } = getInterfaces();
 
@@ -94,7 +104,22 @@ export default defineComponent({
 			},
 		]);
 
-		return { isOpen, t, interfaces, groups, isSVG };
+		const chosenInterface = computed({
+			get() {
+				return fieldDetail.field.meta?.interface ?? null;
+			},
+			set(newInterface: string | null) {
+				fieldDetail.$patch({
+					field: {
+						meta: {
+							interface: newInterface,
+						},
+					},
+				});
+			},
+		});
+
+		return { isOpen, t, interfaces, groups, isSVG, syncRefProperty, chosenInterface };
 
 		function isSVG(path: string) {
 			return path.startsWith('<svg');
@@ -130,6 +155,7 @@ export default defineComponent({
 .interface {
 	min-height: 100px;
 	overflow: hidden;
+	text-align: left;
 }
 
 .preview {
@@ -143,6 +169,8 @@ export default defineComponent({
 	margin-bottom: 8px;
 	border: var(--border-width) solid var(--border-subdued);
 	border-radius: var(--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, border-color;
 }
 
 .preview img {
@@ -160,8 +188,21 @@ export default defineComponent({
 	height: 100%;
 }
 
+.preview :deep(svg) .glow {
+	filter: drop-shadow(0 0 8px var(--primary-50));
+}
+
 .preview .v-icon {
 	text-shadow: 4px 0px 8px var(--primary-25), -4px 0px 8px var(--primary-25), 0px 4px 8px var(--primary-25),
 		0px -4px 8px var(--primary-25);
+}
+
+.interface:hover .preview {
+	border-color: var(--border-normal);
+}
+
+.interface.active .preview {
+	border-color: var(--primary);
+	background-color: var(--primary-alt);
 }
 </style>
