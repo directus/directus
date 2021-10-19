@@ -16,7 +16,13 @@ fields:
     display_options:
       defaultForeground: 'var(--foreground-normal)'
       defaultBackground: 'var(--background-normal-alt)'
-      choices: null
+      choices:
+        - value: POST
+          foreground: 'var(--primary)'
+          background: 'var(--primary-25)'
+        - value: GET
+          foreground: 'var(--secondary)'
+          background: 'var(--secondary-25)'
       format: false
     options:
       choices:

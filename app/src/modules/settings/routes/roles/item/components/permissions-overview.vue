@@ -97,7 +97,9 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
+			collectionsStore.collections.filter(
+				(collection) => collection.collection.startsWith('directus_') === false && collection.schema
+			)
 		);
 
 		const systemCollections = computed(() =>
