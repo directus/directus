@@ -161,7 +161,7 @@ describe('seeding databases', () => {
 	});
 	describe('inserting factories', () => {
 		describe('createArtist', () => {
-			it.only.each(getDBsToTest())('%p returns an artist object of column names and values', async (vendor) => {
+			it.each(getDBsToTest())('%p returns an artist object of column names and values', async (vendor) => {
 				const database = databases.get(vendor);
 				const artist = createArtist();
 				const options = { select: ['*'], where: ['name', artist.name] };
