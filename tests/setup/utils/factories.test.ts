@@ -61,6 +61,11 @@ describe('Item factories', () => {
 			expect(artists[0]).toMatchObject({ name: expect.any(String) });
 			expect(artists.length).toBe(4);
 		});
+		it('returns an array of Guests with a favorite_artist when passed in options', () => {
+			const guests = createMany(createGuest, 4, { favorite_artist: 7 });
+			expect(guests[0]).toMatchObject({ name: expect.any(String), favorite_artist: expect.any(Number) });
+			expect(guests.length).toBe(4);
+		});
 	});
 });
 
@@ -213,6 +218,17 @@ describe('seeding databases', () => {
 			// });
 		});
 		describe('createTour', () => {
+			// it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
+			// 			const database = databases.get(vendor);
+			// const options = { select: ['*'], where: ["id", 1] };
+			// 	expect(await seedTable(database, 5, 'tours', createOrganizer(), options)).toMatchObject([
+			// 		{
+			// 			name: expect.any(String),
+			// 		},
+			// 	]);
+			// });
+		});
+		describe('createMany', () => {
 			// it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
 			// 			const database = databases.get(vendor);
 			// const options = { select: ['*'], where: ["id", 1] };

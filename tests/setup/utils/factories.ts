@@ -64,6 +64,16 @@ type SeedOptions = {
 	raw?: string;
 };
 
+/* CreateManyOptions:
+ * {column: countOfRelation}
+ * EX: {favorites_artists: 45}
+ * used for tying together relations randomly
+ */
+
+type CreateManyOptions = {
+	[column: string]: number;
+};
+
 export type JoinTableOptions = {
 	[key: string]: string | number;
 };
@@ -158,8 +168,18 @@ export const createOrganizer = (): Organizer => ({
 	name: `${name.firstName()} ${name.lastName()}`,
 });
 
-export const createMany = (factory: () => Item, count: number) => {
+export const createMany = (factory: () => Item, count: number, options?: CreateManyOptions) => {
 	const items: Item[] = [];
+	if (options) {
+		for (let rows = 0; rows < count; rows++) {
+			const item: any = factory();
+			for (const [column, max] of Object.entries(options)) {
+				item[column] = getRandomInt(max);
+			}
+			items.push(item);
+		}
+		return items;
+	}
 	for (let rows = 0; rows < count; rows++) {
 		items.push(factory());
 	}
