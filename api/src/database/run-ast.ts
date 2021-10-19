@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, pick, uniq } from 'lodash';
+import { clone, cloneDeep, pick, uniq, merge } from 'lodash';
 import { PayloadService } from '../services/payload';
 import { Item, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
@@ -69,7 +69,21 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query, options?.nested);
+		let dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query, options?.nested);
+		if (query.union) {
+			const [field, keys] = query.union;
+			if (keys.length) {
+				const queries = keys.map((key) => {
+					return knex.select('*').from(
+						dbQuery
+							.clone()
+							.andWhere({ [field]: key })
+							.as('foo')
+					);
+				});
+				dbQuery = knex.unionAll(queries);
+			}
+		}
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -217,7 +231,7 @@ function getDBQuery(
 	// Nested collection sets are retrieved as a batch request (select w/ a filter)
 	// "in", so we shouldn't limit that query, as it's a single request for all
 	// nested items, instead of a query per row
-	if (queryCopy.limit === -1 || nested) {
+	if (queryCopy.limit === -1) {
 		delete queryCopy.limit;
 	}
 
@@ -237,15 +251,14 @@ function applyParentFilters(
 		if (!nestedNode.relation) continue;
 
 		if (nestedNode.type === 'm2o') {
-			nestedNode.query = {
-				...nestedNode.query,
-				filter: {
-					...(nestedNode.query.filter || {}),
-					[schema.collections[nestedNode.relation.related_collection!].primary]: {
-						_in: uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id),
-					},
-				},
-			};
+			const foreignField = schema.collections[nestedNode.relation.related_collection!].primary;
+			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id);
+			const limit = nestedNode.query.limit;
+			if (limit === -1) {
+				merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
+			} else {
+				nestedNode.query.union = [foreignField, foreignIds];
+			}
 		} else if (nestedNode.type === 'o2m') {
 			const relatedM2OisFetched = !!nestedNode.children.find((child) => {
 				return child.type === 'field' && child.name === nestedNode.relation.field;
@@ -267,15 +280,14 @@ function applyParentFilters(
 				});
 			}
 
-			nestedNode.query = {
-				...nestedNode.query,
-				filter: {
-					...(nestedNode.query.filter || {}),
-					[nestedNode.relation.field]: {
-						_in: uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id),
-					},
-				},
-			};
+			const foreignField = nestedNode.relation.field;
+			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id);
+			const limit = nestedNode.query.limit;
+			if (limit === -1) {
+				merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
+			} else {
+				nestedNode.query.union = [foreignField, foreignIds];
+			}
 		} else if (nestedNode.type === 'm2a') {
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
@@ -286,19 +298,14 @@ function applyParentFilters(
 			}
 
 			for (const relatedCollection of nestedNode.names) {
-				nestedNode.query[relatedCollection] = {
-					...nestedNode.query[relatedCollection],
-					filter: {
-						_and: [
-							nestedNode.query[relatedCollection].filter ?? {},
-							{
-								[nestedNode.relatedKey[relatedCollection]]: {
-									_in: uniq(keysPerCollection[relatedCollection]),
-								},
-							},
-						].filter((f) => f),
-					},
-				};
+				const foreignField = nestedNode.relatedKey[relatedCollection];
+				const foreignIds = uniq(keysPerCollection[relatedCollection]);
+				const limit = nestedNode.query[relatedCollection].limit;
+				if (limit === -1) {
+					merge(nestedNode, { query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } } });
+				} else {
+					nestedNode.query[relatedCollection].union = [foreignField, foreignIds];
+				}
 			}
 		}
 	}
@@ -329,7 +336,7 @@ function mergeWithParentItems(
 		}
 	} else if (nestedNode.type === 'o2m') {
 		for (const parentItem of parentItems) {
-			let itemChildren = nestedItems
+			const itemChildren = nestedItems
 				.filter((nestedItem) => {
 					if (nestedItem === null) return false;
 					if (Array.isArray(nestedItem[nestedNode.relation.field])) return true;
@@ -362,11 +369,6 @@ function mergeWithParentItems(
 						return a[column] < b[column] ? 1 : -1;
 					}
 				});
-
-			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
-			if (nested && nestedNode.query.limit !== -1) {
-				itemChildren = itemChildren.slice(0, nestedNode.query.limit ?? 100);
-			}
 
 			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
