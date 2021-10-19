@@ -121,7 +121,6 @@ describe('/items', () => {
 			guest.favorite_artist = 1;
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 			await seedTable(databases.get(vendor)!, 1, 'guests', guest);
-			artist.id = 1;
 
 			const response = await request(url)
 				.get('/items/guests/1?fields=favorite_artist.*')
@@ -209,6 +208,20 @@ describe('/items', () => {
 				},
 			});
 			expect(response.data.data).toMatchObject({ name: body.name });
+		});
+		it.only.each(getDBsToTest())('%p creates one guest with a favorite_artist', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const artist = createArtist();
+			const body = createGuest();
+			body.favorite_artist = artist;
+
+			const response: any = await axios.post(`${url}/items/guests`, body, {
+				headers: {
+					Authorization: 'Bearer test_token',
+					'Content-Type': 'application/json',
+				},
+			});
+			expect(response.data.data).toMatchObject({ name: body.name, favorite_artist: expect.any(Number) });
 		});
 		it.each(getDBsToTest())('%p creates 45 artists', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;

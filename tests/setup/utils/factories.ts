@@ -11,7 +11,7 @@ type Guest = {
 	latest_events_to_show: string;
 	password: string;
 	shows_attended: number;
-	favorite_artist?: number;
+	favorite_artist?: number | Artist;
 };
 
 type Artist = {
