@@ -125,6 +125,34 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 		if (!updates.relations?.m2o) updates.relations = { m2o: {} };
 		updates.relations.m2o!.field = updates.field.field;
 	},
+	generateRelatedCollection(updates) {
+		const relatedCollection = updates.relations?.m2o?.related_collection;
+		if (!relatedCollection) return;
+		if (!updates.collections) updates.collections = { related: undefined };
+
+		const collectionsStore = useCollectionsStore();
+
+		const exists = !!collectionsStore.getCollection(relatedCollection);
+
+		if (exists === false) {
+			updates.collections.related = {
+				collection: relatedCollection,
+				fields: [
+					{
+						field: 'id',
+						type: 'integer',
+						schema: {
+							has_auto_increment: true,
+							is_primary_key: true,
+						},
+						meta: {
+							hidden: true,
+						},
+					},
+				],
+			};
+		}
+	},
 };
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
@@ -207,6 +235,10 @@ export const useFieldDetailStore = defineStore({
 				if (getCurrent('localType') === 'm2o') {
 					m2o.updateRelation(updates, this);
 				}
+			}
+
+			if (hasChanged('relations.m2o.related_collection')) {
+				m2o.generateRelatedCollection(updates, this);
 			}
 
 			this.$patch(updates);
