@@ -10,8 +10,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
 import api from '@/api';
 
-type InjectTempId<T> = T & { _id: string };
-
 const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 	setLocalTypeForInterface(updates) {
 		if (!updates.field?.meta?.interface) return;
@@ -23,7 +21,7 @@ const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 		if (!chosenInterface) return;
 
 		const localType = chosenInterface?.localTypes?.[0] ?? 'standard';
-		set(updates, 'flags.localType', localType);
+		set(updates, 'localType', localType);
 	},
 	setTypeForInterface(updates, state: State) {
 		if (!updates.field?.meta?.interface) return;
@@ -97,33 +95,35 @@ const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 		}
 	},
 	resetRelations(updates) {
-		updates.relations = [];
+		if (!updates.relations) updates.relations = {};
+		updates.relations.m2a = undefined;
+		updates.relations.m2o = undefined;
+		updates.relations.o2m = undefined;
 	},
 };
 
 const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 	prepareRelation(updates, state) {
 		// Add if existing
-		updates.relations = [
-			{
-				collection: state.collection,
-				field: '',
-				related_collection: '',
-				meta: {
-					sort_field: null,
-				},
-				schema: {
-					on_delete: 'SET NULL',
-				},
+		if (!updates.relations) updates.relations = {};
+
+		updates.relations.m2o = {
+			collection: state.collection,
+			field: state.field.field,
+			related_collection: '',
+			meta: {
+				sort_field: null,
 			},
-		];
+			schema: {
+				on_delete: 'SET NULL',
+			},
+		};
 	},
-	updateRelation(updates, state) {
+	updateRelation(updates) {
 		if (!updates.field?.field) return;
 
-		if (!updates.relations) updates.relations = state.relations;
-
-		updates.relations[0].field = updates.field.field;
+		if (!updates.relations?.m2o) updates.relations = { m2o: {} };
+		updates.relations.m2o!.field = updates.field.field;
 	},
 };
 
@@ -154,20 +154,30 @@ export const useFieldDetailStore = defineStore({
 			meta: undefined,
 		} as DeepPartial<Field>,
 
-		// Any new relations/collections/fields that need to be upserted
-		relations: [] as DeepPartial<InjectTempId<Relation>>[],
-		collections: [] as DeepPartial<InjectTempId<Collection>>[],
-		fields: [] as DeepPartial<InjectTempId<Field>>[],
+		// Relations that will be upserted as part of this change
+		relations: {
+			m2o: undefined as DeepPartial<Relation> | undefined,
+			o2m: undefined as DeepPartial<Relation> | undefined,
+			m2a: undefined as DeepPartial<Relation> | undefined,
+		},
+
+		// Collections that will be upserted as part of this change
+		collections: {
+			junction: undefined as DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined,
+			related: undefined as DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined,
+		},
+
+		// Fields that will be upserted as part of this change
+		fields: {
+			corresponding: undefined as DeepPartial<Field> | undefined,
+		},
 
 		// Any items that need to be injected into any collection
 		items: {} as Record<string, Record<string, any>[]>,
 
 		// Various flags that alter the operations of watchers and getters
-		flags: {
-			localType: 'standard' as typeof LOCAL_TYPES[number],
-			autoGenerateJunctionRelation: true,
-		},
-
+		localType: 'standard' as typeof LOCAL_TYPES[number],
+		autoGenerateJunctionRelation: true,
 		saving: false,
 	}),
 	actions: {
@@ -184,17 +194,17 @@ export const useFieldDetailStore = defineStore({
 				global.setSpecialForType(updates, this);
 			}
 
-			if (hasChanged('flags.localType')) {
+			if (hasChanged('localType')) {
 				global.setSpecialForLocalType(updates, this);
 				global.resetRelations(updates, this);
 
-				if (getCurrent('flags.localType') === 'm2o') {
+				if (getCurrent('localType') === 'm2o') {
 					m2o.prepareRelation(updates, this);
 				}
 			}
 
 			if (hasChanged('field.field')) {
-				if (getCurrent('flags.localType') === 'm2o') {
+				if (getCurrent('localType') === 'm2o') {
 					m2o.updateRelation(updates, this);
 				}
 			}
@@ -244,7 +254,7 @@ export const useFieldDetailStore = defineStore({
 					if (inter.system === true) return false;
 
 					const matchesType = inter.types.includes(this.field.type || 'alias');
-					const matchesLocalType = (inter.localTypes || ['standard']).includes(this.flags.localType);
+					const matchesLocalType = (inter.localTypes || ['standard']).includes(this.localType);
 
 					return matchesType && matchesLocalType;
 				}),
@@ -257,7 +267,7 @@ export const useFieldDetailStore = defineStore({
 			return orderBy(
 				displays.value.filter((inter: DisplayConfig) => {
 					const matchesType = inter.types.includes(this.field.type || 'alias');
-					const matchesLocalType = (inter.localTypes || ['standard']).includes(this.flags.localType);
+					const matchesLocalType = (inter.localTypes || ['standard']).includes(this.localType);
 
 					return matchesType && matchesLocalType;
 				}),

@@ -1,7 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
-import Options from './options.vue';
 import PreviewSVG from './preview.svg?raw';
+import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'select-dropdown-m2o',
@@ -13,7 +13,22 @@ export default defineInterface({
 	relational: true,
 	localTypes: ['m2o'],
 	group: 'selection',
-	options: Options,
+	options: ({ relations }: ExtensionsOptionsContext) => {
+		const collection = relations.m2o?.related_collection;
+
+		return [
+			{
+				field: 'template',
+				name: '$t:interfaces.select-dropdown-m2o.display_template',
+				meta: {
+					interface: 'system-display-template',
+					options: {
+						collectionName: collection,
+					},
+				},
+			},
+		];
+	},
 	recommendedDisplays: ['related-values'],
 	preview: PreviewSVG,
 });

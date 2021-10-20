@@ -44,6 +44,8 @@
 				</div>
 			</div>
 
+			<relationship-configuration :local-type="localType" />
+
 			<extension-options type="interface" :extension="chosenInterface" />
 
 			<v-button class="save" full-width :disabled="!readyToSave" @click="$emit('save')" :loading="saving">
@@ -60,9 +62,10 @@ import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
+import RelationshipConfiguration from './relationship-configuration.vue';
 
 export default defineComponent({
-	components: { ExtensionOptions },
+	components: { ExtensionOptions, RelationshipConfiguration },
 	props: {
 		row: {
 			type: Number,
@@ -77,7 +80,7 @@ export default defineComponent({
 	setup(props) {
 		const fieldDetail = useFieldDetailStore();
 
-		const { readyToSave, saving } = storeToRefs(fieldDetail);
+		const { readyToSave, saving, localType } = storeToRefs(fieldDetail);
 
 		const { t } = useI18n();
 
@@ -100,7 +103,7 @@ export default defineComponent({
 		const required = syncFieldDetailStoreProperty('field.meta.required');
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 
-		return { key, t, type, typeOptions, defaultValue, required, note, readyToSave, saving };
+		return { key, t, type, typeOptions, defaultValue, required, note, readyToSave, saving, localType };
 	},
 });
 </script>

@@ -74,13 +74,21 @@ export type ApiExtensionContext = {
 export type ExtensionsOptionsContext = {
 	collection: string;
 	field: DeepPartial<Field>;
-	relations: DeepPartial<Relation>[];
-	collections: DeepPartial<Collection>[];
-	fields: DeepPartial<Field>[];
-	items: Record<string, Record<string, any>[]>;
-	flags: {
-		localType: typeof LOCAL_TYPES[number];
-		autoGenerateJunctionRelation: boolean;
+	relations: {
+		m2o: DeepPartial<Relation> | undefined;
+		m2a: DeepPartial<Relation> | undefined;
+		o2m: DeepPartial<Relation> | undefined;
 	};
+	collections: {
+		junction: DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined;
+		related: DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined;
+	};
+	fields: {
+		corresponding: DeepPartial<Field> | undefined;
+	};
+	items: Record<string, Record<string, any>[]>;
+
+	localType: typeof LOCAL_TYPES[number];
+	autoGenerateJunctionRelation: boolean;
 	saving: boolean;
 };
