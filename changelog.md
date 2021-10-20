@@ -2,122 +2,327 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
-## v9.0.0-rc.96 (October 7, 2021)
-
-### :warning: Potential Breaking Changes
-
-* Custom displays's handler function was renamed to `component` to be consistent with the other app extensions
-* If you're upgrading from 95, and had some troubles with migrating due to "group" on directus_fields (https://github.com/directus/directus/issues/8369) on that version, please remove row `20210927A` from `directus_migrations` and re-run the migrations.
+## v9.0.0-rc.98 (October 15, 2021)
 
 ### :sparkles: New Features
 
 - **App**
-  - [#8570](https://github.com/directus/directus/pull/8570) Add new advanced filters experience ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8623](https://github.com/directus/directus/pull/8623) Add improved collection organization setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :rocket: Improvements
+
+- **App**
+  - [#8850](https://github.com/directus/directus/pull/8850) Fix refresh problems on background outdated tabs ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8472](https://github.com/directus/directus/pull/8472) Clear user's selection upon navigation ([@licitdev](https://github.com/licitdev))
+- **API**
+  - [#8843](https://github.com/directus/directus/pull/8843) Update calendar fix with _between ([@GrefriT](https://github.com/GrefriT))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#8849](https://github.com/directus/directus/pull/8849) Preload tree for display template properly ([@Nitwel](https://github.com/Nitwel))
+  - [#8848](https://github.com/directus/directus/pull/8848) Fix scoping of v-list-group to the same as v-list ([@Nitwel](https://github.com/Nitwel))
+  - [#8847](https://github.com/directus/directus/pull/8847) Fix dashboards for non-admin users ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8844](https://github.com/directus/directus/pull/8844) Fix translations display shown in m2m ([@Nitwel](https://github.com/Nitwel))
+  - [#8841](https://github.com/directus/directus/pull/8841) Fix default sort value ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8840](https://github.com/directus/directus/pull/8840) Fix calendar layout filter ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8839](https://github.com/directus/directus/pull/8839) Fix choices not showing up in filter ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8826](https://github.com/directus/directus/pull/8826) Fix table and cards layout scroll to top if page changes ([@nickrum](https://github.com/nickrum))
+  - [#8825](https://github.com/directus/directus/pull/8825) Show deletion error in File Library view ([@azrikahar](https://github.com/azrikahar))
+  - [#8809](https://github.com/directus/directus/pull/8809) Fix broken access token refresh on page load ([@licitdev](https://github.com/licitdev))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#8827](https://github.com/directus/directus/pull/8827) Pause API queue when refreshing auth ([@licitdev](https://github.com/licitdev))
+
+## v9.0.0-rc.97 (October 14, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#8264](https://github.com/directus/directus/pull/8264) Add translations display ([@Nitwel](https://github.com/Nitwel))
+
+### :rocket: Improvements
+
+- **App**
+  - [#8786](https://github.com/directus/directus/pull/8786) Format filesize for display & file info sidebar ([@azrikahar](https://github.com/azrikahar))
+  - [#8712](https://github.com/directus/directus/pull/8712) Add datetime placeholder ([@tstedjb04](https://github.com/tstedjb04))
+  - [#8711](https://github.com/directus/directus/pull/8711) Adjust "Report Bug" link to the new issue template ([@paescuj](https://github.com/paescuj))
+  - [#8684](https://github.com/directus/directus/pull/8684) Add descriptions for Directus Panels and Dashboards ([@DanielKrasny](https://github.com/DanielKrasny))
+  - [#8642](https://github.com/directus/directus/pull/8642) Fix rel attribute of external links ([@nickrum](https://github.com/nickrum))
+  - [#8631](https://github.com/directus/directus/pull/8631) Debounce search & filter inputs ([@azrikahar](https://github.com/azrikahar))
+  - [#8628](https://github.com/directus/directus/pull/8628)  Map layout and interface improvements ([@Oreilles](https://github.com/Oreilles))
+  - [#8610](https://github.com/directus/directus/pull/8610) Map layout and interface improvements ([@Oreilles](https://github.com/Oreilles))
+- **API**
+  - [#8729](https://github.com/directus/directus/pull/8729) Add missing arguments in aggregated resolver ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8684](https://github.com/directus/directus/pull/8684) Add descriptions for Directus Panels and Dashboards ([@DanielKrasny](https://github.com/DanielKrasny))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#8795](https://github.com/directus/directus/pull/8795) Don't use type=search for filter input ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8790](https://github.com/directus/directus/pull/8790) Fix translations interface when no langPk field is selected ([@Nitwel](https://github.com/Nitwel))
+  - [#8782](https://github.com/directus/directus/pull/8782) Fix column resizing for collections overview ([@azrikahar](https://github.com/azrikahar))
+  - [#8781](https://github.com/directus/directus/pull/8781) add key to v-form in collections ([@azrikahar](https://github.com/azrikahar))
+  - [#8766](https://github.com/directus/directus/pull/8766) Fix layouts stuck at page 1 with filters ([@Oreilles](https://github.com/Oreilles))
+  - [#8761](https://github.com/directus/directus/pull/8761) Fix disabled state of code input ([@smilledge](https://github.com/smilledge))
+  - [#8756](https://github.com/directus/directus/pull/8756) remove obsolete selectionFilters in O2M tree view ([@azrikahar](https://github.com/azrikahar))
+  - [#8747](https://github.com/directus/directus/pull/8747) Also fix cards layout pagination. ([@Oreilles](https://github.com/Oreilles))
+  - [#8739](https://github.com/directus/directus/pull/8739) Fixed tabular layout stuck at page 1 ([@Oreilles](https://github.com/Oreilles))
+  - [#8696](https://github.com/directus/directus/pull/8696) Bug fixes in the new filter interface ([@Oreilles](https://github.com/Oreilles))
+  - [#8695](https://github.com/directus/directus/pull/8695) Translation fixes ([@paescuj](https://github.com/paescuj))
+  - [#8664](https://github.com/directus/directus/pull/8664) Fix activity layout filter ([@nickrum](https://github.com/nickrum))
+  - [#8654](https://github.com/directus/directus/pull/8654) Fix layout preview being empty when editing preview ([@nickrum](https://github.com/nickrum))
+  - [#8629](https://github.com/directus/directus/pull/8629) fix validation not updated/saved ([@azrikahar](https://github.com/azrikahar))
+  - [#8452](https://github.com/directus/directus/pull/8452) Reduce the refresh of access token while still fresh ([@licitdev](https://github.com/licitdev))
+- **API**
+  - [#8707](https://github.com/directus/directus/pull/8707) Fix group cleanup on deletion for directus_fields ([@azrikahar](https://github.com/azrikahar))
+  - [#8695](https://github.com/directus/directus/pull/8695) Translation fixes ([@paescuj](https://github.com/paescuj))
+  - [#8640](https://github.com/directus/directus/pull/8640) Fix creation of primary key field when it is uuid ([@alejandro-tss](https://github.com/alejandro-tss))
+  - [#8485](https://github.com/directus/directus/pull/8485) Use ActivityService/RevisionsService to save accountability records ([@paescuj](https://github.com/paescuj))
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#8791](https://github.com/directus/directus/pull/8791) Remove unused vue cli dependencies ([@nickrum](https://github.com/nickrum))
+  - [#8733](https://github.com/directus/directus/pull/8733) Add GitHub action workflow to automate author assignment on pull requests ([@paescuj](https://github.com/paescuj))
+- **App**
+  - [#8743](https://github.com/directus/directus/pull/8743) Transpile docs to vue components at build time ([@nickrum](https://github.com/nickrum))
+  - [#8718](https://github.com/directus/directus/pull/8718) Fix eslint warnings and cleanup unused disable-directives ([@paescuj](https://github.com/paescuj))
+- **Extensions**
+  - [#8721](https://github.com/directus/directus/pull/8721) Use Composition API in extension templates ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#8718](https://github.com/directus/directus/pull/8718) Fix eslint warnings and cleanup unused disable-directives ([@paescuj](https://github.com/paescuj))
+  - :warning: [#8670](https://github.com/directus/directus/pull/8670) Remove deprecated code ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :memo: Documentation
+
+- [#8783](https://github.com/directus/directus/pull/8783) Docs: replace 'files.create' by 'files.upload' ([@joselcvarela](https://github.com/joselcvarela))
+- [#8742](https://github.com/directus/directus/pull/8742) Add missing geo type filters ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :package: Dependency Updates
+
+- [#8803](https://github.com/directus/directus/pull/8803) Update dependency ts-jest to v27.0.6 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8802](https://github.com/directus/directus/pull/8802) Update dependency stylelint-config-prettier to v9.0.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8800](https://github.com/directus/directus/pull/8800) Update dependency vue-router to v4.0.12 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8776](https://github.com/directus/directus/pull/8776) Update dependency sass to v1.43.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8775](https://github.com/directus/directus/pull/8775) Update dependency nanoid to v3.1.30 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8749](https://github.com/directus/directus/pull/8749) Update dependency typescript to v4.4.4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8744](https://github.com/directus/directus/pull/8744) Update dependency axios to v0.23.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8741](https://github.com/directus/directus/pull/8741) Update dependency @types/dockerode to v3.3.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8740](https://github.com/directus/directus/pull/8740) Update dependency pinia to v2.0.0-rc.13 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8724](https://github.com/directus/directus/pull/8724) Update dependency codemirror to v5.63.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8705](https://github.com/directus/directus/pull/8705) Update dependency @types/codemirror to v5.60.5 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8703](https://github.com/directus/directus/pull/8703) Update dependency stylelint-config-prettier to v9 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8700](https://github.com/directus/directus/pull/8700) Update dependency ts-node to v10.3.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8698](https://github.com/directus/directus/pull/8698) Update dependency vite to v2.6.7 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8688](https://github.com/directus/directus/pull/8688) Update dependency tinymce to v5.10.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8685](https://github.com/directus/directus/pull/8685) Update dependency apexcharts to v3.29.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8681](https://github.com/directus/directus/pull/8681) Update dependency eslint to v8 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8674](https://github.com/directus/directus/pull/8674) Update dependency lint-staged to v11.2.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8673](https://github.com/directus/directus/pull/8673) Update dependency vue to v3.2.20 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8667](https://github.com/directus/directus/pull/8667) Update dependency @vue/compiler-sfc to v3.2.20 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8656](https://github.com/directus/directus/pull/8656) Update jest monorepo to v27.2.5 ([@renovate[bot]](https://github.com/apps/renovate))
+
+## v9.0.0-rc.96 (October 7, 2021)
+
+### :warning: Potential Breaking Changes
+
+- Custom displays's handler function was renamed to `component` to be consistent with the other app extensions
+- If you're upgrading from 95, and had some troubles with migrating due to "group" on directus_fields
+  (https://github.com/directus/directus/issues/8369) on that version, please remove row `20210927A` from
+  `directus_migrations` and re-run the migrations.
+
+### :sparkles: New Features
+
+- **App**
+  - [#8570](https://github.com/directus/directus/pull/8570) Add new advanced filters experience
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7492](https://github.com/directus/directus/pull/7492) Add Filter interface ([@Nitwel](https://github.com/Nitwel))
 
 ### :rocket: Improvements
 
 - **App**
-  - [#8614](https://github.com/directus/directus/pull/8614) Show file-image actions button upon focus; Use hover style for focuse… ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
-  - [#8598](https://github.com/directus/directus/pull/8598) added robots.txt in order to disallow any indexing by search engines ([@sensedrive](https://github.com/sensedrive))
-  - [#8566](https://github.com/directus/directus/pull/8566) smaller and bolder breadcrumb ([@benhaynes](https://github.com/benhaynes))
-  - [#8564](https://github.com/directus/directus/pull/8564) update orange colors ([@benhaynes](https://github.com/benhaynes))
-  - [#8554](https://github.com/directus/directus/pull/8554) autofocus input for Import from URL dialog ([@azrikahar](https://github.com/azrikahar))
-  - [#8468](https://github.com/directus/directus/pull/8468) Removed unused properties from ModuleConfig ([@nickrum](https://github.com/nickrum))
-  - [#8388](https://github.com/directus/directus/pull/8388) Remove invalid CSS from presets item view ([@licitdev](https://github.com/licitdev))
-  - [#8108](https://github.com/directus/directus/pull/8108) Add save and delete shortcuts ([@Nitwel](https://github.com/Nitwel))
-  - [#7546](https://github.com/directus/directus/pull/7546) Use display template for button links ([@Nitwel](https://github.com/Nitwel))
+  - [#8614](https://github.com/directus/directus/pull/8614) Show file-image actions button upon focus; Use hover style
+    for focuse… ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#8598](https://github.com/directus/directus/pull/8598) added robots.txt in order to disallow any indexing by search
+    engines ([@sensedrive](https://github.com/sensedrive))
+  - [#8566](https://github.com/directus/directus/pull/8566) smaller and bolder breadcrumb
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#8564](https://github.com/directus/directus/pull/8564) update orange colors
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#8554](https://github.com/directus/directus/pull/8554) autofocus input for Import from URL dialog
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8468](https://github.com/directus/directus/pull/8468) Removed unused properties from ModuleConfig
+    ([@nickrum](https://github.com/nickrum))
+  - [#8388](https://github.com/directus/directus/pull/8388) Remove invalid CSS from presets item view
+    ([@licitdev](https://github.com/licitdev))
+  - [#8108](https://github.com/directus/directus/pull/8108) Add save and delete shortcuts
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7546](https://github.com/directus/directus/pull/7546) Use display template for button links
+    ([@Nitwel](https://github.com/Nitwel))
 - **API**
-  - [#8597](https://github.com/directus/directus/pull/8597) Check for duplicate migration keys ([@heyarne](https://github.com/heyarne))
-  - [#8397](https://github.com/directus/directus/pull/8397) Refactor action value from authenticate to login in directus_activity ([@licitdev](https://github.com/licitdev))
-  - [#8041](https://github.com/directus/directus/pull/8041) Convert to object default json value ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8597](https://github.com/directus/directus/pull/8597) Check for duplicate migration keys
+    ([@heyarne](https://github.com/heyarne))
+  - [#8397](https://github.com/directus/directus/pull/8397) Refactor action value from authenticate to login in
+    directus_activity ([@licitdev](https://github.com/licitdev))
+  - [#8041](https://github.com/directus/directus/pull/8041) Convert to object default json value
+    ([@joselcvarela](https://github.com/joselcvarela))
 - **Extensions**
-  - [#8593](https://github.com/directus/directus/pull/8593) Make directus:extension.hidden optional ([@nickrum](https://github.com/nickrum))
+  - [#8593](https://github.com/directus/directus/pull/8593) Make directus:extension.hidden optional
+    ([@nickrum](https://github.com/nickrum))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#8603](https://github.com/directus/directus/pull/8603) Ignore WYSIWYG change on first load ([@azrikahar](https://github.com/azrikahar))
-  - [#8602](https://github.com/directus/directus/pull/8602) fix orderBy to prioritize system fields first ([@azrikahar](https://github.com/azrikahar))
-  - [#8567](https://github.com/directus/directus/pull/8567) Fix data model edits tracking ([@licitdev](https://github.com/licitdev))
-  - [#8533](https://github.com/directus/directus/pull/8533) Add permission check during hydration of insights store ([@licitdev](https://github.com/licitdev))
-  - [#8528](https://github.com/directus/directus/pull/8528) Set integer type on tileSize ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
-  - [#8513](https://github.com/directus/directus/pull/8513) Add empty object check for permissions ([@licitdev](https://github.com/licitdev))
-  - [#8509](https://github.com/directus/directus/pull/8509) Add revert event handling in users module ([@licitdev](https://github.com/licitdev))
-  - [#8504](https://github.com/directus/directus/pull/8504) Hide revision's revert button for created entries ([@licitdev](https://github.com/licitdev))
-  - [#8379](https://github.com/directus/directus/pull/8379) Fix marginTop not implemented in presentation divider ([@licitdev](https://github.com/licitdev))
-  - [#8373](https://github.com/directus/directus/pull/8373) Add discard confirmation prompt for project settings ([@licitdev](https://github.com/licitdev))
-  - [#8365](https://github.com/directus/directus/pull/8365) Fix relative link routing in button links ([@licitdev](https://github.com/licitdev))
+  - [#8603](https://github.com/directus/directus/pull/8603) Ignore WYSIWYG change on first load
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8602](https://github.com/directus/directus/pull/8602) fix orderBy to prioritize system fields first
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8567](https://github.com/directus/directus/pull/8567) Fix data model edits tracking
+    ([@licitdev](https://github.com/licitdev))
+  - [#8533](https://github.com/directus/directus/pull/8533) Add permission check during hydration of insights store
+    ([@licitdev](https://github.com/licitdev))
+  - [#8528](https://github.com/directus/directus/pull/8528) Set integer type on tileSize
+    ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#8513](https://github.com/directus/directus/pull/8513) Add empty object check for permissions
+    ([@licitdev](https://github.com/licitdev))
+  - [#8509](https://github.com/directus/directus/pull/8509) Add revert event handling in users module
+    ([@licitdev](https://github.com/licitdev))
+  - [#8504](https://github.com/directus/directus/pull/8504) Hide revision's revert button for created entries
+    ([@licitdev](https://github.com/licitdev))
+  - [#8379](https://github.com/directus/directus/pull/8379) Fix marginTop not implemented in presentation divider
+    ([@licitdev](https://github.com/licitdev))
+  - [#8373](https://github.com/directus/directus/pull/8373) Add discard confirmation prompt for project settings
+    ([@licitdev](https://github.com/licitdev))
+  - [#8365](https://github.com/directus/directus/pull/8365) Fix relative link routing in button links
+    ([@licitdev](https://github.com/licitdev))
 - **drive**
-  - [#8601](https://github.com/directus/directus/pull/8601) Turn GCS credentials from camelCase to snake_case ([@azrikahar](https://github.com/azrikahar))
+  - [#8601](https://github.com/directus/directus/pull/8601) Turn GCS credentials from camelCase to snake_case
+    ([@azrikahar](https://github.com/azrikahar))
 - **API**
-  - [#8575](https://github.com/directus/directus/pull/8575) Fix field permissions check in aggregate ([@azrikahar](https://github.com/azrikahar))
-  - [#8553](https://github.com/directus/directus/pull/8553) pass MutationOptions to createOne ([@azrikahar](https://github.com/azrikahar))
-  - [#8526](https://github.com/directus/directus/pull/8526) Fix password exception crashing server ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#8490](https://github.com/directus/directus/pull/8490) Disable Cron hooks when only the CLI is running ([@nickrum](https://github.com/nickrum))
-  - [#8423](https://github.com/directus/directus/pull/8423) Fix sanitize aggregate on parse objects ([@joselcvarela](https://github.com/joselcvarela))
-  - [#8404](https://github.com/directus/directus/pull/8404) Fix group migration on MySQL ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8399](https://github.com/directus/directus/pull/8399) Fix email migration for MS SQL ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8391](https://github.com/directus/directus/pull/8391) Add defaults for null fields in permissions ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8389](https://github.com/directus/directus/pull/8389) Send correct payload to auth provider for oauth ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#8375](https://github.com/directus/directus/pull/8375) fix "add conditions to fields" migration ([@azrikahar](https://github.com/azrikahar))
+  - [#8575](https://github.com/directus/directus/pull/8575) Fix field permissions check in aggregate
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8553](https://github.com/directus/directus/pull/8553) pass MutationOptions to createOne
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8526](https://github.com/directus/directus/pull/8526) Fix password exception crashing server
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#8490](https://github.com/directus/directus/pull/8490) Disable Cron hooks when only the CLI is running
+    ([@nickrum](https://github.com/nickrum))
+  - [#8423](https://github.com/directus/directus/pull/8423) Fix sanitize aggregate on parse objects
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8404](https://github.com/directus/directus/pull/8404) Fix group migration on MySQL
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8399](https://github.com/directus/directus/pull/8399) Fix email migration for MS SQL
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8391](https://github.com/directus/directus/pull/8391) Add defaults for null fields in permissions
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8389](https://github.com/directus/directus/pull/8389) Send correct payload to auth provider for oauth
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#8375](https://github.com/directus/directus/pull/8375) fix "add conditions to fields" migration
+    ([@azrikahar](https://github.com/azrikahar))
 
 ### :sponge: Optimizations
 
 - **Misc.**
-  - [#8616](https://github.com/directus/directus/pull/8616) Update the Dockerfile link in readme ([@nickrum](https://github.com/nickrum))
-  - [#8599](https://github.com/directus/directus/pull/8599) Add .nvmrc to improve dev flow for nvm users ([@sensedrive](https://github.com/sensedrive))
-  - [#8590](https://github.com/directus/directus/pull/8590) Recommend npm init directus-project to create a project ([@nickrum](https://github.com/nickrum))
-  - [#8489](https://github.com/directus/directus/pull/8489) Allow unused vars starting with underscore ([@paescuj](https://github.com/paescuj))
-  - [#8469](https://github.com/directus/directus/pull/8469) e2e test improvement ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8616](https://github.com/directus/directus/pull/8616) Update the Dockerfile link in readme
+    ([@nickrum](https://github.com/nickrum))
+  - [#8599](https://github.com/directus/directus/pull/8599) Add .nvmrc to improve dev flow for nvm users
+    ([@sensedrive](https://github.com/sensedrive))
+  - [#8590](https://github.com/directus/directus/pull/8590) Recommend npm init directus-project to create a project
+    ([@nickrum](https://github.com/nickrum))
+  - [#8489](https://github.com/directus/directus/pull/8489) Allow unused vars starting with underscore
+    ([@paescuj](https://github.com/paescuj))
+  - [#8469](https://github.com/directus/directus/pull/8469) e2e test improvement
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **API**
-  - [#8478](https://github.com/directus/directus/pull/8478) Move extension management into a class ([@nickrum](https://github.com/nickrum))
-  - [#8383](https://github.com/directus/directus/pull/8383) Remove duplicate directus_migrations collection ([@nickrum](https://github.com/nickrum))
+  - [#8478](https://github.com/directus/directus/pull/8478) Move extension management into a class
+    ([@nickrum](https://github.com/nickrum))
+  - [#8383](https://github.com/directus/directus/pull/8383) Remove duplicate directus_migrations collection
+    ([@nickrum](https://github.com/nickrum))
 - **App**
-  - :warning: [#8475](https://github.com/directus/directus/pull/8475) Drop support for display handler functions in favor of functional components and make the routes module config required ([@nickrum](https://github.com/nickrum))
-  - [#8474](https://github.com/directus/directus/pull/8474) Fix types of mime package ([@nickrum](https://github.com/nickrum))
-  - [#8382](https://github.com/directus/directus/pull/8382) Fix popper modifier validation error ([@nickrum](https://github.com/nickrum))
+  - :warning: [#8475](https://github.com/directus/directus/pull/8475) Drop support for display handler functions in
+    favor of functional components and make the routes module config required ([@nickrum](https://github.com/nickrum))
+  - [#8474](https://github.com/directus/directus/pull/8474) Fix types of mime package
+    ([@nickrum](https://github.com/nickrum))
+  - [#8382](https://github.com/directus/directus/pull/8382) Fix popper modifier validation error
+    ([@nickrum](https://github.com/nickrum))
 - **Extensions**
-  - :warning: [#8475](https://github.com/directus/directus/pull/8475) Drop support for display handler functions in favor of functional components and make the routes module config required ([@nickrum](https://github.com/nickrum))
+  - :warning: [#8475](https://github.com/directus/directus/pull/8475) Drop support for display handler functions in
+    favor of functional components and make the routes module config required ([@nickrum](https://github.com/nickrum))
 
 ### :memo: Documentation
 
-- [#8590](https://github.com/directus/directus/pull/8590) Recommend npm init directus-project to create a project ([@nickrum](https://github.com/nickrum))
+- [#8590](https://github.com/directus/directus/pull/8590) Recommend npm init directus-project to create a project
+  ([@nickrum](https://github.com/nickrum))
 
 ### :package: Dependency Updates
 
-- [#8622](https://github.com/directus/directus/pull/8622) Update dependency @types/markdown-it to v12.2.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8608](https://github.com/directus/directus/pull/8608) Update dependency vite to v2.6.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8605](https://github.com/directus/directus/pull/8605) Update dependency pinia to v2.0.0-rc.12 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8594](https://github.com/directus/directus/pull/8594) Update dependency vue-i18n to v9.1.9 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8591](https://github.com/directus/directus/pull/8591) Update dependency tedious to v13.1.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8585](https://github.com/directus/directus/pull/8585) Update dependency eslint-plugin-vue to v7.19.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8573](https://github.com/directus/directus/pull/8573) Update dependency nanoid to v3.1.29 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8571](https://github.com/directus/directus/pull/8571) Update dependency @types/markdown-it to v12.2.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8558](https://github.com/directus/directus/pull/8558) Update dependency vite to v2.6.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8557](https://github.com/directus/directus/pull/8557) Update dependency @vitejs/plugin-vue to v1.9.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8551](https://github.com/directus/directus/pull/8551) Update dependency eslint-plugin-vue to v7.19.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8548](https://github.com/directus/directus/pull/8548) Update typescript-eslint monorepo to v4.33.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8547](https://github.com/directus/directus/pull/8547) Update dependency npm to v7.24.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8532](https://github.com/directus/directus/pull/8532) Update dependency slugify to v1.6.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8530](https://github.com/directus/directus/pull/8530) Update dependency lint-staged to v11.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8525](https://github.com/directus/directus/pull/8525) Update dependency vue-i18n to v9.1.8 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8515](https://github.com/directus/directus/pull/8515) Update dependency pinia to v2.0.0-rc.11 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8500](https://github.com/directus/directus/pull/8500) Update dependency @types/codemirror to v5.60.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8496](https://github.com/directus/directus/pull/8496) Update dependency @types/node-cron to v2.0.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8494](https://github.com/directus/directus/pull/8494) Update dependency @rollup/plugin-commonjs to v21 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8484](https://github.com/directus/directus/pull/8484) Update dependency rollup to v2.58.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8466](https://github.com/directus/directus/pull/8466) Update dependency vite to v2.6.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8455](https://github.com/directus/directus/pull/8455) Update dependency @popperjs/core to v2.10.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8453](https://github.com/directus/directus/pull/8453) Update dependency pinia to v2.0.0-rc.10 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8436](https://github.com/directus/directus/pull/8436) Update dependency vite to v2.6.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8430](https://github.com/directus/directus/pull/8430) Update dependency vite to v2.6.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8429](https://github.com/directus/directus/pull/8429) Update dependency codemirror to v5.63.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8426](https://github.com/directus/directus/pull/8426) Update jest monorepo to v27.2.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8414](https://github.com/directus/directus/pull/8414) Update dependency tedious to v13 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8405](https://github.com/directus/directus/pull/8405) Pin dependency tmp to v0.0.33 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8403](https://github.com/directus/directus/pull/8403) Update dependency @types/dompurify to v2.3.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8380](https://github.com/directus/directus/pull/8380) Update jest monorepo to v27.2.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8622](https://github.com/directus/directus/pull/8622) Update dependency @types/markdown-it to v12.2.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8608](https://github.com/directus/directus/pull/8608) Update dependency vite to v2.6.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8605](https://github.com/directus/directus/pull/8605) Update dependency pinia to v2.0.0-rc.12
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8594](https://github.com/directus/directus/pull/8594) Update dependency vue-i18n to v9.1.9
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8591](https://github.com/directus/directus/pull/8591) Update dependency tedious to v13.1.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8585](https://github.com/directus/directus/pull/8585) Update dependency eslint-plugin-vue to v7.19.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8573](https://github.com/directus/directus/pull/8573) Update dependency nanoid to v3.1.29
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8571](https://github.com/directus/directus/pull/8571) Update dependency @types/markdown-it to v12.2.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8558](https://github.com/directus/directus/pull/8558) Update dependency vite to v2.6.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8557](https://github.com/directus/directus/pull/8557) Update dependency @vitejs/plugin-vue to v1.9.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8551](https://github.com/directus/directus/pull/8551) Update dependency eslint-plugin-vue to v7.19.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8548](https://github.com/directus/directus/pull/8548) Update typescript-eslint monorepo to v4.33.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8547](https://github.com/directus/directus/pull/8547) Update dependency npm to v7.24.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8532](https://github.com/directus/directus/pull/8532) Update dependency slugify to v1.6.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8530](https://github.com/directus/directus/pull/8530) Update dependency lint-staged to v11.2.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8525](https://github.com/directus/directus/pull/8525) Update dependency vue-i18n to v9.1.8
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8515](https://github.com/directus/directus/pull/8515) Update dependency pinia to v2.0.0-rc.11
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8500](https://github.com/directus/directus/pull/8500) Update dependency @types/codemirror to v5.60.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8496](https://github.com/directus/directus/pull/8496) Update dependency @types/node-cron to v2.0.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8494](https://github.com/directus/directus/pull/8494) Update dependency @rollup/plugin-commonjs to v21
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8484](https://github.com/directus/directus/pull/8484) Update dependency rollup to v2.58.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8466](https://github.com/directus/directus/pull/8466) Update dependency vite to v2.6.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8455](https://github.com/directus/directus/pull/8455) Update dependency @popperjs/core to v2.10.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8453](https://github.com/directus/directus/pull/8453) Update dependency pinia to v2.0.0-rc.10
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8436](https://github.com/directus/directus/pull/8436) Update dependency vite to v2.6.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8430](https://github.com/directus/directus/pull/8430) Update dependency vite to v2.6.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8429](https://github.com/directus/directus/pull/8429) Update dependency codemirror to v5.63.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8426](https://github.com/directus/directus/pull/8426) Update jest monorepo to v27.2.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8414](https://github.com/directus/directus/pull/8414) Update dependency tedious to v13
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8405](https://github.com/directus/directus/pull/8405) Pin dependency tmp to v0.0.33
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8403](https://github.com/directus/directus/pull/8403) Update dependency @types/dompurify to v2.3.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8380](https://github.com/directus/directus/pull/8380) Update jest monorepo to v27.2.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 Directus refs/tags/v9.0.0-rc.96
 

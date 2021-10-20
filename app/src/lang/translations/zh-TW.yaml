@@ -30,7 +30,6 @@ field_name_translations: 欄位名稱翻譯
 enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
 add_field: 增加欄位
 role_name: 角色名稱
-db_only_click_to_configure: '僅數據庫：單擊進行配置 '
 show_archived_items: 顯示已封存的項目
 required: 必填
 requires_value: 需要值
@@ -288,6 +287,9 @@ select_a_collection: 選擇一個集合
 copy: 複製
 users: 用戶
 activity: 活動
+action: 操作
+ip_address: IP位址
+user_agent: 代理用戶
 webhooks: Webhooks
 field_width: 欄位寬度
 add_filter: 新增篩選器
@@ -550,8 +552,10 @@ field_options:
     update: 更新
   directus_collections:
     language: 語言
+    translation: 翻譯
+    collection_name: 集合名稱
     archive_divider: 封存
-    divider: 排序
+    sort_divider: 排序
   directus_roles:
     fields:
       icon_name: 圖示
@@ -687,6 +691,8 @@ interfaces:
       auto: 自動
       dropdown: 下拉選單
 displays:
+  translations:
+    translations: 翻譯
   boolean:
     description: 顯示開關狀態
   collection:

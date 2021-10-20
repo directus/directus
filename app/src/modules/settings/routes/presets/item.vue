@@ -68,12 +68,7 @@
 				<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
 
 				<div class="layout">
-					<component
-						:is="`layout-${values.layout}`"
-						v-if="values.layout && values.collection"
-						v-bind="layoutState"
-						:collection="values.collection"
-					>
+					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
 						<template #no-results>
 							<v-info :title="t('no_results')" icon="search" center>
 								{{ t('no_results_copy') }}
@@ -354,7 +349,6 @@ export default defineComponent({
 				}
 
 				const value: FormattedPreset = {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					id: preset.value.id!,
 					collection: preset.value.collection,
 					layout: preset.value.layout,
@@ -599,6 +593,7 @@ export default defineComponent({
 
 :deep(.layout-options) {
 	--form-vertical-gap: 24px;
+
 	@include form-grid;
 }
 

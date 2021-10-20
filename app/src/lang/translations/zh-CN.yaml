@@ -50,7 +50,6 @@ indeterminate: 不确定的状态
 edit_collection: 编辑模型
 exclusive: 唯一的
 children: 子页面
-db_only_click_to_configure: '仅限数据库：点击配置 '
 show_archived_items: 显示存档项目
 edited: 已编辑的值
 required: 必填
@@ -433,6 +432,9 @@ no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
 users: 用户
 activity: 活动
+action: 操作
+ip_address: IP 地址
+user_agent: 用户代理（User Agent）
 webhooks: Webhook
 decimals: 小数
 value_decimals: 小数的值
@@ -993,13 +995,14 @@ field_options:
     hidden_label: 在管理菜单中隐藏
     singleton: 视为单个对象
     language: 语言
-    translation: 请输入翻译...
+    translation: 翻译
+    collection_name: 模型名称
     archive_divider: 存档
-    archive_field: 选择字段...
+    archive_field_placeholder: 选择字段...
     archive_app_filter: 启用归档功能
     archive_value: 归档时设定的值...
     unarchive_value: 解除归档时设定的值...
-    divider: 排序
+    sort_divider: 排序
     sort_field: 选择字段...
     accountability_divider: 访问控制
   directus_files:
@@ -1058,6 +1061,9 @@ generate_and_save_uuid: 生成并保存 UUID
 save_current_user_id: 保存当前用户 ID
 save_current_user_role: 保存当前用户角色
 save_current_datetime: 保存当前日期/时间
+always_open: 总是展开
+start_open: 默认打开
+start_collapsed: 默认收起
 block: 阻止
 inline: 内联
 comment: 注释
@@ -1348,7 +1354,6 @@ interfaces:
     display_template: 显示模板
     no_collection: 暂无模型
     toggle_split_view: 切换视图
-    language_field: 语言字段
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -1385,6 +1390,8 @@ interfaces:
     start_open: 默认打开
     start_closed: 默认收起
 displays:
+  translations:
+    translations: 翻译
   boolean:
     boolean: Boolean
     description: 显示开启或关闭状态
@@ -1504,8 +1511,6 @@ layouts:
     invalid_geometry: 无效几何图形
     auto_location_filter: 总是筛选数据以查看边框
     search_this_area: 搜索此区域
-    clear_data_filter: 清除过滤器
-    clear_location_filter: 清除过滤器
 panels:
   metric:
     name: 公制

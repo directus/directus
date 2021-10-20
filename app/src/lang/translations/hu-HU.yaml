@@ -50,7 +50,6 @@ indeterminate: Meghatározatlan
 edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
-db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához '
 show_archived_items: Archivált elemek megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
@@ -428,6 +427,9 @@ no_other_dashboards_copy: Önnek még nincs másik irányítópultja.
 inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
+action: Művelet
+ip_address: IP cím
+user_agent: Felhasználói ügynök
 webhooks: Webhookok
 decimals: Decimálisok
 min_value: Min. érték
@@ -987,13 +989,14 @@ field_options:
     hidden_label: Legyen rejtett az alkalmazásban
     singleton: Egyetlen objektumként kezelendő
     language: Nyelv
-    translation: Fordítás megadása...
+    translation: Fordítás
+    collection_name: Gyűjtemény neve
     archive_divider: Archiválás
-    archive_field: Mező kiválasztása...
+    archive_field_placeholder: Mező kiválasztása...
     archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
     archive_value: Archiváláskor beállított érték...
     unarchive_value: Az archiválás visszavonásakor beállított érték...
-    divider: Rendezés
+    sort_divider: Rendezés
     sort_field: Mező kiválasztása...
   directus_files:
     title: Egy egyedi cím...
@@ -1050,6 +1053,9 @@ generate_and_save_uuid: UUID generálása és mentése
 save_current_user_id: Jelenlegi felhasználói azonosító mentése
 save_current_user_role: Jelenlegi felhasználói szerepkör mentése
 save_current_datetime: Aktuális dátum/idő mentése
+always_open: Mindig nyitva
+start_open: Indíts nyitva!
+start_collapsed: Kezdetben összecsukva
 block: Blokk
 inline: Inline
 comment: Hozzászólás
@@ -1348,7 +1354,6 @@ interfaces:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
     toggle_split_view: Osztott nézet váltása
-    language_field: Nyelv mező
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
     recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
@@ -1384,6 +1389,8 @@ interfaces:
     start_open: Indíts nyitva!
     start_closed: Indíts zárva!
 displays:
+  translations:
+    translations: Fordítások
   boolean:
     boolean: Logikai
     description: Be- és kikapcsolt állapotok megjelenítése
@@ -1503,8 +1510,6 @@ layouts:
     invalid_geometry: Érvénytelen geometria
     auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
     search_this_area: Keresés ezen a területen
-    clear_data_filter: Adatszűrő törlése
-    clear_location_filter: Lokalizációs szűrő törlése
 panels:
   metric:
     name: Metrikus

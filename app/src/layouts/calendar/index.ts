@@ -58,21 +58,19 @@ export default defineLayout<LayoutOptions>({
 		const filterWithCalendarView = computed(() => {
 			if (!calendar.value || !startDateField.value) return filter.value;
 
-			return {
+			const calendarFilter: Filter = {
 				_and: [
-					filter.value,
 					{
 						[startDateField.value]: {
-							_gte: formatISO(calendar.value.view.currentStart),
-						},
-					},
-					{
-						[startDateField.value]: {
-							_lte: formatISO(calendar.value.view.currentEnd),
+							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
 						},
 					},
 				],
-			} as Filter;
+			};
+
+			if (filter.value) calendarFilter._and.push(filter.value);
+
+			return calendarFilter;
 		});
 
 		const template = computed({

@@ -31,7 +31,6 @@ enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirm
 add_field: Alan Ekle
 role_name: Rol Adı
 edit_collection: Koleksiyonu düzenle
-db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
 edited: Değer Düzenlendi
 required: Gerekli
@@ -360,6 +359,9 @@ active: Aktif
 copy: Kopyala
 users: Kullanıcılar
 activity: Aktivite
+action: İşlem
+ip_address: IP Adresi
+user_agent: Kullanıcı Aracısı
 webhooks: Ağ Kancaları
 field_width: Alan Genişliği
 add_filter: Filtre Ekle
@@ -642,8 +644,10 @@ field_options:
     update: Güncelle
   directus_collections:
     language: Dil
+    translation: Çeviri
+    collection_name: Koleksiyon Adı
     archive_divider: Arşiv
-    divider: Sırala
+    sort_divider: Sırala
   directus_roles:
     fields:
       icon_name: İkon
@@ -774,6 +778,8 @@ interfaces:
       auto: Otomatik
       dropdown: Açılır Liste
 displays:
+  translations:
+    translations: Çeviriler
   boolean:
     boolean: Evet/Hayır
   collection:

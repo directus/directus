@@ -50,7 +50,6 @@ indeterminate: Indeterminado
 edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
-db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
 show_archived_items: Mostrar itens arquivados
 edited: Valor editado
 required: Obrigatório
@@ -417,6 +416,9 @@ copy_to: Copiar para...
 inactive: Inativo
 users: Usuários
 activity: Atividade
+action: Ação
+ip_address: Endereço de IP
+user_agent: Agente de Usuário
 webhooks: Webhooks
 value_decimals: Valores decimais
 min_value: Valor mínimo
@@ -897,8 +899,10 @@ field_options:
     collection_setup: Configurando coleção
     singleton: Tratar como objeto único
     language: Idioma
+    translation: Tradução
+    collection_name: Nome da coleção
     archive_divider: Arquivar
-    divider: Ordenar
+    sort_divider: Ordenar
   directus_roles:
     fields:
       icon_name: Ícone
@@ -1234,6 +1238,8 @@ interfaces:
     trigger: Acionar
     rate: Avaliar
 displays:
+  translations:
+    translations: Traduções
   boolean:
     boolean: Boolean
     description: Exibir estados ativados e desativados

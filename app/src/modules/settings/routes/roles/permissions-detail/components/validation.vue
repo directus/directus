@@ -38,7 +38,7 @@ export default defineComponent({
 
 		const fields = computed(() => [
 			{
-				field: 'permissions',
+				field: 'validation',
 				name: t('rule'),
 				type: 'json',
 				meta: {

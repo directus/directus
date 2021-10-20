@@ -168,12 +168,14 @@ import api from '@/api';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Role } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
@@ -241,6 +243,13 @@ export default defineComponent({
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
+		onBeforeRouteLeave(() => {
+			selection.value = [];
+		});
+		onBeforeRouteUpdate(() => {
+			selection.value = [];
+		});
+
 		return {
 			t,
 			canInviteUsers,
@@ -301,6 +310,7 @@ export default defineComponent({
 					confirmDelete.value = false;
 				} catch (err: any) {
 					error.value = err;
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}

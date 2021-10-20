@@ -47,7 +47,6 @@ indeterminate: Neurčitý
 edit_collection: Upravit kolekci
 exclusive: Exkluzivní
 children: Potomci
-db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
 required: Povinné
@@ -223,6 +222,9 @@ create_collection: Vytvořit kategorii
 copy: Kopírovat
 users: Uživatelé
 activity: Aktivita
+action: Akce
+ip_address: IP adresa
+user_agent: Uživatelský agent
 webhooks: Webhooky
 field_width: Šířka pole
 user_directory: Uživatelé
@@ -368,6 +370,7 @@ field_options:
     update: Úpravy
   directus_collections:
     language: Jazyk
+    translation: Překlad
     archive_divider: Archivovat
   directus_roles:
     fields:

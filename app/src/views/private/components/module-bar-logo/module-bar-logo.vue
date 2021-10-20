@@ -1,10 +1,10 @@
 <template>
 	<component
 		:is="url ? 'a' : 'div'"
-		ref="noopener noreferer"
 		v-tooltip.right="urlTooltip"
 		:href="url"
-		target="_blank"
+		:target="url ? '_blank' : undefined"
+		:rel="url ? 'noopener noreferrer' : undefined"
 		class="module-bar-logo"
 		:class="{ loading: showLoader }"
 	>

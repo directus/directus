@@ -50,7 +50,6 @@ indeterminate: Indéterminé
 edit_collection: Modifier la collection
 exclusive: Exclusif
 children: Les enfants
-db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
 required: Obligatoire
@@ -326,6 +325,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutes
+hours: Heures
 month: Mois
 year: Année
 select_all: Tout sélectionner
@@ -433,6 +434,9 @@ no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
+action: Action
+ip_address: Adresse IP
+user_agent: Agent utilisateur
 webhooks: Webhooks
 decimals: Décimales
 value_decimals: Valeur décimales
@@ -993,13 +997,14 @@ field_options:
     hidden_label: Cacher dans l'application
     singleton: Est un objet unique
     language: Langue
-    translation: Entrez une nouvelle traduction...
+    translation: Traduction
+    collection_name: Nom de la Collection
     archive_divider: Archiver
-    archive_field: Choisissez un champ...
+    archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Activer le filtre des archives d'applications
     archive_value: Valeur définie lors de l'archivage...
     unarchive_value: Valeur définie lors de la désarchivage...
-    divider: Trier
+    sort_divider: Trier
     sort_field: Choisissez un champ...
     accountability_divider: Responsabilité
   directus_files:
@@ -1058,6 +1063,9 @@ generate_and_save_uuid: Générer et Enregistrer l'UUID
 save_current_user_id: Enregistrer l'ID de l'utilisateur actuel
 save_current_user_role: Enregistrer le rôle utilisateur actuel
 save_current_datetime: Enregistrer la date/heure actuelle
+always_open: Toujours ouvert
+start_open: Démarrer Ouverture
+start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
 comment: Commentaire
@@ -1356,7 +1364,6 @@ interfaces:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue spatiale
-    language_field: Champ de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
     recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
@@ -1393,6 +1400,8 @@ interfaces:
     start_open: Démarrer Ouverture
     start_closed: Commencer réduit
 displays:
+  translations:
+    translations: Traductions
   boolean:
     boolean: Booléen
     description: Afficher les états sélectionnés et désélectionnés
@@ -1513,7 +1522,8 @@ layouts:
     auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
     clear_data_filter: Réinitialiser le filtre
-    clear_location_filter: Éliminer le filtre de coupon
+    clear_location_filter: Réinitialiser le filtre de localisation
+    no_results_here: Aucun résultat dans cette zone
 panels:
   metric:
     name: Indicateurs

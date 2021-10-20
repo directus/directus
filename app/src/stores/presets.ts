@@ -91,6 +91,26 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 			},
 		},
 	},
+	directus_webhooks: {
+		collection: 'directus_webhooks',
+		layout: 'tabular',
+		layout_query: {
+			tabular: {
+				fields: ['status', 'method', 'name', 'collections', 'actions'],
+			},
+		},
+		layout_options: {
+			tabular: {
+				widths: {
+					status: 32,
+					method: 100,
+					name: 210,
+					collections: 240,
+					actions: 210,
+				},
+			},
+		},
+	},
 };
 
 const currentUpdate: Record<number, string> = {};
@@ -100,6 +120,11 @@ export const usePresetsStore = defineStore({
 	state: () => ({
 		collectionPresets: [] as Preset[],
 	}),
+	getters: {
+		bookmarks(): Preset[] {
+			return this.collectionPresets.filter((preset) => preset.bookmark !== null);
+		},
+	},
 	actions: {
 		async hydrate() {
 			// Hydrate is only called for logged in users, therefore, currentUser exists

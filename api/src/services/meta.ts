@@ -17,6 +17,7 @@ export class MetaService {
 		this.schema = options.schema;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async getMetaForQuery(collection: string, query: any): Promise<Record<string, any> | undefined> {
 		if (!query || !query.meta) return;
 

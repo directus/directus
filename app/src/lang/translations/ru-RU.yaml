@@ -50,7 +50,6 @@ indeterminate: Неопределенный
 edit_collection: Изменить коллекцию
 exclusive: Эксклюзивный
 children: Дочерние элементы
-db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать элементы в архиве
 edited: Значение изменено
 required: Необходимые
@@ -326,6 +325,7 @@ date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Минуты
 month: Месяц
 year: Год
 select_all: Выбрать Все
@@ -433,6 +433,9 @@ no_other_dashboards_copy: У вас пока нет других Досок.
 inactive: Неактивный
 users: Пользователи
 activity: Активность
+action: Действие
+ip_address: IP-адрес
+user_agent: Пользовательский агент
 webhooks: Веб-хуки
 decimals: Десятичные
 value_decimals: Значение (десятичное)
@@ -995,13 +998,14 @@ field_options:
     hidden_label: Скрыть в приложении
     singleton: Считать одним объектом
     language: Язык
-    translation: Введите перевод...
+    translation: Перевод
+    collection_name: Название Коллекции
     archive_divider: Архив
-    archive_field: Выберите поле...
+    archive_field_placeholder: Выберите поле...
     archive_app_filter: Включить фильтр архива приложения
     archive_value: Значение, установленное при архивировании...
     unarchive_value: Значение, установленное при разархивировании...
-    divider: Сортировать
+    sort_divider: Сортировать
     sort_field: Выберите поле...
     accountability_divider: Подотчетность
   directus_files:
@@ -1060,6 +1064,9 @@ generate_and_save_uuid: Создать и Сохранить UUID
 save_current_user_id: Сохранить ID Текущего Пользователя
 save_current_user_role: Сохранить Роль Текущего Пользователя
 save_current_datetime: Сохранить Текущую Дату/Время
+always_open: Всегда открыто
+start_open: Раскрыта
+start_collapsed: Начать свернутым
 block: Блокировать
 inline: Строчный
 comment: Комментарий
@@ -1356,7 +1363,6 @@ interfaces:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
     toggle_split_view: Переключить Раздельный Вид
-    language_field: Поле Языка
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Дерево можно выбрать для рекурсивных отношений
@@ -1393,6 +1399,8 @@ interfaces:
     start_open: Раскрыта
     start_closed: Свёрнута
 displays:
+  translations:
+    translations: Переводы
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл
@@ -1512,8 +1520,6 @@ layouts:
     invalid_geometry: Некорректная геометрия
     auto_location_filter: Всегда фильтровать данные к границам отображения
     search_this_area: Искать в этой области
-    clear_data_filter: Очистить фильтр данных
-    clear_location_filter: Очистить фильтр местоположения
 panels:
   metric:
     name: Метрика

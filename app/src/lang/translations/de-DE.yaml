@@ -50,7 +50,6 @@ indeterminate: Unbestimmt
 edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
-db_only_click_to_configure: 'Nur in der Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 edited: Bearbeiteter Wert
 required: Erforderlich
@@ -326,6 +325,8 @@ date-fns_time_no_seconds: 'H:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Minuten
+hours: Stunden
 month: Monat
 year: Jahr
 select_all: Alle auswählen
@@ -347,7 +348,7 @@ cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
 import_label: Importieren
-file_details: Dateiinformationen
+file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
@@ -360,6 +361,7 @@ zoom: Zoom
 download: Herunterladen
 open: Öffnen
 open_in_new_window: In neuem Fenster öffnen
+open_folder: Öffne den "{folder}" Ordner
 foreground_color: Vordergrundfarbe
 background_color: Hintergrundfarbe
 upload_from_device: Datei vom Gerät hochladen
@@ -433,6 +435,10 @@ no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
+activity_item: Aktivitäten-Element
+action: Aktion
+ip_address: IP Adresse
+user_agent: Benutzer-Agent
 webhooks: Webhooks
 decimals: Dezimalstellen
 value_decimals: Wert Dezimalstellen
@@ -540,7 +546,7 @@ font: Schriftart
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
-divider: Divider
+divider: Trenner
 color: Farbe
 circle: Kreis
 empty_item: Leeres Element
@@ -769,7 +775,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
-  **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
 page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
@@ -788,7 +794,7 @@ page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erste
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
-page_help_insights_overview: '**Insights** — Liste der Dashboards, auf welche Sie Zugriff haben.'
+page_help_insights_overview: '**Einblicke** — Liste der Dashboards, auf welche Sie Zugriff haben.'
 page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
@@ -808,10 +814,12 @@ system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet we
 directus_collection:
   directus_activity: Verantwortungsprotokoll für alle Ereignisse
   directus_collections: Weitere Konfiguration und Metadaten
+  directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
+  directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
@@ -897,6 +905,8 @@ fields:
     role: Rolle
     token: Token
     token_placeholder: Einen sicheren Zugangs-Token eingeben...
+    provider: Anbieter
+    external_identifier: Externer Identifikator
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
@@ -995,15 +1005,22 @@ field_options:
     hidden_label: Innerhalb der App verstecken
     singleton: Als einzelnes Objekt behandeln
     language: Sprache
-    translation: Übersetzung eingeben...
+    translation: Übersetzung
+    translation_placeholder: Geben Sie eine Übersetzung ein...
+    collection_name: Sammlungsname
+    singular_unit: Einzahl-Einheit
+    plural_unit: Mehrzahl-Einheit
     archive_divider: Archivieren
-    archive_field: Wählen Sie ein Feld...
+    archive_field: Archivfeld
+    archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
-    divider: Sortieren
+    sort_divider: Sortieren
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
+    duplication_divider: Duplikation
+    item_duplication_fields: Artikel Duplikationsfelder
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1060,6 +1077,9 @@ generate_and_save_uuid: UUID generieren und speichern
 save_current_user_id: Aktuelle Benutzer-ID speichern
 save_current_user_role: Aktuelle Benutzerrolle speichern
 save_current_datetime: Aktuelles Datum/Zeit speichern
+always_open: Immer geöffnet
+start_open: Geöffnet starten
+start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
@@ -1125,16 +1145,16 @@ settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
-something_went_wrong: Irgendwas ist schief gelaufen...
+something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
 require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
+translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1145,7 +1165,7 @@ interfaces:
     add_group: Und / Oder Gruppe
     add_value: Wert hinzufügen
     all: Alle
-    any: Irgendein
+    any: Irgendeiner
     and: und
     of_the_following: der folgenden
     no_rules: Keine konfigurierten Regeln
@@ -1215,7 +1235,7 @@ interfaces:
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
   presentation-divider:
-    divider: Divider
+    divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
     inline_title: Inline-Titel
@@ -1303,7 +1323,7 @@ interfaces:
     folder: Ordner
     description: Ordner auswählen
     field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
-    root_name: Root-Ordner für Dateien
+    root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
     radio-buttons: Radio Buttons
@@ -1359,7 +1379,7 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
-    language_field: Sprachfeld
+    language_field: Sprachindikatorfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1383,7 +1403,7 @@ interfaces:
     results_path: Pfad Ergebnis
     value_path: Wertpfad
     trigger: Trigger
-    rate: Rate
+    rate: Frequenz
   group-raw:
     name: Rohgruppe
     description: Felder so anzeigen wie sie sind
@@ -1396,6 +1416,13 @@ interfaces:
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
 displays:
+  translations:
+    translations: Übersetzungen
+    description: Vorschau der Übersetzungen
+    enable: Aktivieren
+    user_language: Aktuelle Benutzersprache verwenden
+    default_language: Standardsprache
+    language_field: Sprachindikatorfeld
   boolean:
     boolean: Boolean
     description: Ein-/Aus-Status anzeigen
@@ -1517,6 +1544,7 @@ layouts:
     search_this_area: Diesen Bereich durchsuchen
     clear_data_filter: Datenfilter löschen
     clear_location_filter: Standortfilter löschen
+    no_results_here: Keine Ergebnisse in diesem Bereich
 panels:
   metric:
     name: Metrik

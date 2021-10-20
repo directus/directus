@@ -215,7 +215,7 @@ Request to the codebase, otherwise you can update this in your instance.
 ## Duplicating a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the **More Options** icon for the field you want to delete
+2. Click the **More Options** icon for the field you want to duplicate
 3. Click the **Duplicate Field** option
 
 ::: warning Relational and Primary Key Fields

@@ -1,7 +1,7 @@
 import { AnyLayer, Expression } from 'maplibre-gl';
 
-const baseColor = '#09f';
-const selectColor = '#FFA500';
+const baseColor = '#00c897';
+const selectColor = '#17826d';
 const fill: Expression = ['case', ['boolean', ['feature-state', 'selected'], false], selectColor, baseColor];
 const outline: Expression = [
 	'case',
@@ -50,7 +50,7 @@ export const layers: AnyLayer[] = [
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
 		layout: {},
 		paint: {
-			'circle-radius': 5,
+			'circle-radius': 4,
 			'circle-color': fill,
 			'circle-stroke-color': outline,
 			'circle-stroke-width': 3,
@@ -62,8 +62,9 @@ export const layers: AnyLayer[] = [
 		source: '__directus',
 		filter: ['has', 'point_count'],
 		paint: {
-			'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
 			'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+			'circle-color': ['step', ['get', 'point_count'], '#7fe3ca', 100, '#fde2a7', 750, '#f0a7b3'],
+			'circle-opacity': 0.7,
 		},
 	},
 	{
@@ -75,6 +76,11 @@ export const layers: AnyLayer[] = [
 			'text-field': '{point_count_abbreviated}',
 			'text-font': ['Open Sans Semibold'],
 			'text-size': ['step', ['get', 'point_count'], 15, 100, 17, 750, 19],
+		},
+		paint: {
+			// 'text-color': ['step', ['get', 'point_count'], '#0ba582', 100, '#c8a34c', 750, '#b64c5f'],
+			// 'text-color': ['step', ['get', 'point_count'], '#17826d', 100, '#948049', 750, '#b64c5f'],
+			'text-opacity': 0.85,
 		},
 	},
 ];
