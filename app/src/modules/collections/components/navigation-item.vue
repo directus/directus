@@ -18,9 +18,9 @@
 		</template>
 
 		<navigation-item
-			v-for="collection in childCollections"
-			:key="collection.collection"
-			:collection="collection"
+			v-for="childCollection in childCollections"
+			:key="childCollection.collection"
+			:collection="childCollection"
 			:search="search"
 		/>
 		<navigation-bookmark v-for="bookmark in childBookmarks" :key="bookmark.id" :bookmark="bookmark" />

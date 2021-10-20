@@ -4,7 +4,7 @@ import MapOptions from './options.vue';
 import MapActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref, watch, Ref } from 'vue';
+import { toRefs, computed, ref, watch } from 'vue';
 
 import { toGeoJSON } from '@/utils/geometry';
 import { layers } from './style';
