@@ -269,6 +269,24 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 			},
 		},
 		{
+			title: 'Migrate and seed databases',
+			task: async () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => {
+								const database = knex(config.knexConfig[vendor]!);
+								await database.migrate.up();
+								await database.seed.run();
+							},
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
+		},
+		{
 			skip: () => !jestConfig.watch,
 			title: 'Persist container info',
 			task: () => {
