@@ -79,7 +79,7 @@ import { useAppStore } from '@/stores';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 const MARKER_ICON_URL =
-	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/2x/baseline_place_black_24dp.png';
+	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/48dp/2x/baseline_place_black_48dp.png';
 
 export default defineComponent({
 	props: {
@@ -456,7 +456,7 @@ export default defineComponent({
 
 	.v-info {
 		padding: 20px;
-		background-color: var(--background-subdued);
+		background-color: var(--background-input);
 		border-radius: var(--border-radius);
 		box-shadow: var(--card-shadow);
 	}

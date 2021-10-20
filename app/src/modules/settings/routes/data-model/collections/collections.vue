@@ -27,7 +27,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')" center>
+			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -57,7 +57,7 @@
 				</draggable>
 			</v-list>
 
-			<v-list>
+			<v-list class="db-only">
 				<v-list-item
 					v-for="collection of tableCollections"
 					:key="collection.collection"
@@ -79,7 +79,7 @@
 				</v-list-item>
 			</v-list>
 
-			<v-detail v-if="collections.length > 0" :label="t('system_collections')">
+			<v-detail :label="t('system_collections')">
 				<collection-item
 					v-for="collection of systemCollections"
 					:key="collection.collection"
@@ -217,6 +217,10 @@ export default defineComponent({
 	padding-top: 0;
 }
 
+.v-info {
+	padding: var(--content-padding) 0;
+}
+
 .root-drag-container {
 	padding: 8px 0;
 	overflow: hidden;
@@ -262,5 +266,9 @@ export default defineComponent({
 	--v-button-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
+}
+
+.db-only {
+	margin-bottom: 16px;
 }
 </style>

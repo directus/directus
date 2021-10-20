@@ -3,8 +3,14 @@ name: "CodeQL"
 on:
   push:
     branches: [ main ]
+    # Don't run on translation updates
+    paths-ignore:
+     - 'app/src/lang/translations/*.yaml'
   pull_request:
     branches: [ main ]
+    # Don't run on translation updates
+    paths-ignore:
+     - 'app/src/lang/translations/*.yaml'
   schedule:
     - cron: '42 23 * * 5'
 
