@@ -150,6 +150,8 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 						},
 					},
 				],
+				meta: {},
+				schema: {},
 			};
 		}
 	},
@@ -280,9 +282,24 @@ export const useFieldDetailStore = defineStore({
 			this.saving = true;
 
 			try {
-				// if (update) { } else {
+				// TODO add update
+
 				await api.post(`/fields/${this.collection}`, this.field);
-				// }
+
+				for (const [_type, value] of Object.entries(this.collections)) {
+					if (!value) continue;
+					await api.post('/collections', value);
+				}
+
+				for (const [_type, value] of Object.entries(this.relations)) {
+					if (!value) continue;
+					await api.post('/relations', value);
+				}
+
+				for (const [_type, value] of Object.entries(this.fields)) {
+					if (!value) continue;
+					await api.post(`/fields/${value.collection}`, value);
+				}
 
 				await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), relationsStore.hydrate()]);
 			} catch (err: any) {

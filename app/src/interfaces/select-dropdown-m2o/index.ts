@@ -12,7 +12,7 @@ export default defineInterface({
 	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
 	relational: true,
 	localTypes: ['m2o'],
-	group: 'selection',
+	group: 'relational',
 	options: ({ relations }: ExtensionsOptionsContext) => {
 		const collection = relations.m2o?.related_collection;
 
