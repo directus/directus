@@ -1,7 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceListO2M from './list-o2m.vue';
-import Options from './options.vue';
 import PreviewSVG from './preview.svg?raw';
+import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'list-o2m',
@@ -13,7 +13,51 @@ export default defineInterface({
 	localTypes: ['o2m'],
 	group: 'relational',
 	relational: true,
-	options: Options,
+	options: ({ relations }: ExtensionsOptionsContext) => {
+		const collection = relations.m2o?.related_collection;
+
+		return [
+			{
+				field: 'template',
+				name: '$t:display_template',
+				meta: {
+					interface: 'system-display-template',
+					options: {
+						collectionName: collection,
+					},
+					width: 'full',
+				},
+			},
+			{
+				field: 'enableCreate',
+				name: '$t:creating_items',
+				schema: {
+					default_value: true,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:enable_create_button',
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'enableSelect',
+				name: '$t:selecting_items',
+				schema: {
+					default_value: true,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:enable_select_button',
+					},
+					width: 'half',
+				},
+			},
+		];
+	},
 	recommendedDisplays: ['related-values'],
 	preview: PreviewSVG,
 });
