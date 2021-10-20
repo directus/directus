@@ -1,17 +1,17 @@
 /* eslint-disable no-console */
-import { v4 as uuid } from 'uuid';
+// import { v4 as uuid } from 'uuid';
 import { music, internet, name, datatype, lorem /*, address */ } from 'faker';
 import { Knex } from 'knex';
 
 type Guest = {
-	id?: string;
+	id?: string | number;
 	name: string;
 	birthday: Date;
-	earliest_events_to_show: string;
-	latest_events_to_show: string;
+	earliest_events_to_show: Date | string;
+	latest_events_to_show: Date | string;
 	password: string;
 	shows_attended: number;
-	favorite_artist?: number;
+	favorite_artist?: number | Artist;
 };
 
 type Artist = {
@@ -134,7 +134,7 @@ export const createTour = (): Tour => ({
 });
 
 export const createGuest = (): Guest => ({
-	id: uuid(),
+	// id: uuid(),
 	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	name: `${name.firstName()} ${name.lastName()}`,
 	earliest_events_to_show: randomTime(),
