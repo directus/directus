@@ -787,6 +787,8 @@ page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprett
 page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
 page_help_users_item: >-
   **Brugeroplysninger** — Administrer dine kontooplysninger eller se andre brugeres detaljer.
+page_help_insights_overview: '**Insights** — Liste over dashboards du har adgang til.'
+page_help_insights_dashboard: '**Dashboard** — Arbejdsrum til håndtering af et eller flere paneler'
 activity_feed: Aktivitetsfeed
 add_new: Tilføj Ny
 create_new: Opret Ny
@@ -896,6 +898,10 @@ fields:
     last_page: Sidste side
     last_access: Seneste Adgang
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
     transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
     additional_transforms: Yderligere Transformationer
     project_name: Projektnavn
@@ -928,16 +934,19 @@ fields:
     ip_access: Ip Adgang
     enforce_tfa: Kræv 2FA
     users: Brugere i Rolle
+    collection_list: Samling Navigation
   directus_webhooks:
     name: Navn
     method: Metode
     status: Status
+    data: Data
     data_label: Send Begivenhedsdata
     triggers: Udløsere
     actions: Handlinger
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
+    project_logo_note: Login- & Logo Baggrund
     public_note_placeholder: En kort, offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
@@ -1101,15 +1110,37 @@ template: Skabelon
 translation: Oversættelse
 translation_placeholder: Indtast en oversættelse...
 value: Værdi
+report_error: Fejl I Rapport
 interfaces:
   filter:
     name: Filtrer
+    description: Indstil et filterobjekt.
     add_filter: Tilføj Filter
+    add_group: Og / Eller gruppe
+    add_value: Tilføj Værdi
     all: Alle
     any: Alle
+    and: og
+    of_the_following: af følgende
+    no_rules: Ingen konfigurerede regler
+    change_value: Klik for at ændre værdi
+    placeholder: Træk regler her
+  group-accordion:
+    description: Vis felter eller grupper som harmonika sektioner
+    all_closed: Alle Lukkede
+    max_one_section_open: Maks. 1 Sektion Åben
   presentation-links:
+    presentation-links: Knap Links
+    description: Konfigurerbare linkknapper til at starte dynamiske URL'er
+    style: Stil
     primary: Primær
+    button: Knapper
+    error: Kan ikke udføre handling
   select-multiple-checkbox:
+    checkboxes: Afkrydsningsfelter
+    description: Vælg mellem flere indstillinger via afkrydsningsfelter
+    allow_other: Tillad Andre
+    show_more: 'Vis {count} mere'
     items_shown: Vist Elementer
   select-multiple-checkbox-tree:
     name: Afkrydsningsfelter (Træ)
@@ -1155,6 +1186,7 @@ interfaces:
     title_placeholder: Indtast en titel...
     inline_title: Indlejret Titel
     inline_title_label: Vis titel inde i linien
+    margin_top: Margen Top
     margin_top_label: Forøg Top Margen
   select-dropdown:
     description: Vælg en værdi fra en rullemenu
@@ -1176,6 +1208,7 @@ interfaces:
   input-hash:
     hash: Hash
     description: Indtast en værdi der skal hashes
+    masked: Maskeret
     masked_label: Skjul de sande værdier
   select-icon:
     icon: Ikon
@@ -1186,8 +1219,25 @@ interfaces:
     description: Vælg eller upload et billede
   system-interface:
     interface: Grænseflade
+    description: Vælg en eksisterende grænseflade
+    placeholder: Vælg en grænseflade...
+  system-interface-options:
+    interface-options: Grænsefladeindstillinger
+    description: En modal til valg af indstillinger for en grænseflade
+  list-m2m:
+    many-to-many: Mange til mange
+    description: Vælg flere relaterede forbindelseselementer
   select-dropdown-m2o:
+    many-to-one: Mange til One
+    description: Vælg et enkelt relateret element
     display_template: Vis Skabelon
+  input-rich-text-md:
+    description: Indtast og vis markdown
+    customSyntax: Brugerdefinerede Blokke
+    customSyntax_label: Tilføj brugerdefinerede syntakstyper
+    customSyntax_add: Tilføj brugerdefineret syntaks
+    box: Blokér / Inline
+    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   map:
     zoom: Zoom
   system-folder:
@@ -1196,18 +1246,64 @@ interfaces:
     field_name_placeholder: Indtast feltnavn...
   tags:
     tags: Tags
+    underscore: Erstat med understregning
+    remove: Fjern blanke tegn
+    uppercase: Konvertér Store Bogstaver
+    auto_formatter: Brug Titel Auto-Formatter
+    alphabetize_label: Gennemtving Alfabetisk Ordre
+    add_tags: Tilføj tags...
+  input:
+    description: Indtast en værdi manuelt
+    trim: Beskær
+    trim_label: Trim start og slut
+    mask: Maskeret
+    mask_label: Skjul den reelle værdi
+    clear: Ryddet Værdi
+    clear_label: Gem som tom streng
+    minimum_value: Minimum Værdi
+    maximum_value: Maksimal Værdi
+    step_interval: Trin Interval
+    slug_label: Gør den angivne værdi URL sikker
+  input-multiline:
+    description: Indtast tekst med flere linjer
   boolean:
     toggle: Skift
+    description: Skift mellem tænd og sluk
+    label_placeholder: Indtast en etiket...
     label_default: Aktiveret
   translations:
     display_template: Vis Skabelon
+    no_collection: Ingen Samling
+    language_field: Sprog Indikator Felt
+  list-o2m-tree-view:
+    description: Trævisning for indlejrede rekursive en-til-mange elementer
+    recursive_only: Trævisningsgrænsefladen virker kun for rekursive relationer.
   user:
     user: Bruger
+    description: Vælg en eksisterende directus bruger
+    select_mode: Vælg Tilstand
     modes:
       dropdown: Rulleliste
+  input-rich-text-html:
+    description: En rich-tekst editor skriver HTML-indhold
+    toolbar: Værktøjslinje
+    custom_formats: Brugerdefinerede Formater
+    options_override: Tilsidesæt
+  input-autocomplete-api:
+    description: En søgetype foran for eksterne API-værdier.
+    results_path: Sti Til Resultater
+    rate: Sats
+  group-raw:
+    name: Rå Gruppe
+    description: Vis felterne som-is
+  group-detail:
+    name: Detaljegruppe
+    description: Vis felterne som en sammenklappelig sektion
+    show_header: Vis Gruppeoverskrift
 displays:
   translations:
     translations: Oversættelser
+    language_field: Sprog Indikator Felt
   boolean:
     boolean: Boolean
     icon_on: Ikon Til
@@ -1223,28 +1319,56 @@ displays:
     file: Fil
   icon:
     icon: Ikon
+    filled_label: Brug den fyldte variant
   image:
+    image: Billede
+    description: Vis en lille billedforhåndsvisning
     circle: Cirkel
+    circle_label: Vis som en cirkel
   labels:
+    labels: Etiketter
+    description: Vis enten en enkelt eller en liste over etiketter
+    default_background: Standard Baggrund
+    format_label: Formatér hver etiket
+    show_as_dot: Vis Som Dot
     choices_value_placeholder: Indtast en værdi...
+    choices_text_placeholder: Indtast en tekst...
+  mime-type:
+    extension_only_label: Vis kun filendelsen
+  rating:
+    rating: Bedømmelse
+    description: Visualiser et tal som stjerner i forhold til max-værdien
+    simple_label: Vis stjerner i et enkelt format
+  related-values:
+    related-values: Relaterede Værdier
+    description: Vis relative værdier
   user:
     user: Bruger
+    description: Vis en directus bruger
     avatar: Profilbillede
     name: Navn
     both: Begge
+    circle_label: Vis bruger i en cirkel
 layouts:
   cards:
     cards: Kort
     image_source: Billedkilde
+    contain: Indeholder
     title: Titel
     subtitle: Undertitel
   tabular:
     tabular: Tabel
+    fields: Felter
     spacing: Afstand
     comfortable: Behageligt
     compact: Kompakt
     cozy: Hyggelig
+  calendar:
+    calendar: Kalender
+    start_date_field: Start Dato Felt
+    end_date_field: Slut Dato Felt
   map:
+    map: Kort
     field: Geometri
 panels:
   label:
