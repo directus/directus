@@ -21,6 +21,3 @@ jobs:
           UPDATE_LABELS: ''
           MERGE_METHOD: squash
           MERGE_COMMIT_MESSAGE: '{pullRequest.title} (#{pullRequest.number})'
-          # Wait for a maximum of 6 minutes for the checks to be completed
-          MERGE_RETRIES: '36'
-          MERGE_RETRY_SLEEP: '10000'
