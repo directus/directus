@@ -188,6 +188,10 @@ export default defineComponent({
 	text-align: left;
 }
 
+.interface[disabled] {
+	cursor: default;
+}
+
 .preview {
 	--v-icon-color: var(--background-page);
 

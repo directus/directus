@@ -23,7 +23,8 @@
 						{{ t('default_value') }}
 					</div>
 
-					<v-input class="monospace" v-model="defaultValue" placeholder="NULL" />
+					<v-checkbox block v-if="type === 'boolean'" v-model="defaultValue" :label="t('enabled')" />
+					<v-input v-else class="monospace" v-model="defaultValue" placeholder="NULL" />
 				</div>
 
 				<div class="field half-right">

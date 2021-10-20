@@ -90,8 +90,14 @@ export default defineComponent({
 				return get(fieldDetail, path);
 			},
 			set(val: any) {
-				const path = props.type === 'interface' ? 'field.meta.options' : 'field.meta.display_options';
-				fieldDetail.update(set({}, path, val));
+				const key = props.type === 'interface' ? 'options' : 'display_options';
+
+				fieldDetail.$patch((state) => {
+					state.field.meta = {
+						...state.field.meta,
+						[key]: val,
+					};
+				});
 			},
 		});
 

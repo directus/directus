@@ -31,7 +31,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: [Boolean, Array],
-			default: false,
+			default: null,
 		},
 		label: {
 			type: String,
@@ -86,6 +86,8 @@ export default defineComponent({
 
 		const icon = computed<string>(() => {
 			if (props.indeterminate === true) return props.iconIndeterminate;
+			if (props.checked === null && props.modelValue === null) return props.iconIndeterminate;
+
 			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 

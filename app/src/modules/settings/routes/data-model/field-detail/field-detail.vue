@@ -62,9 +62,9 @@ export default defineComponent({
 
 		return { simple, cancel, collectionInfo, t, title, save };
 
-		function cancel() {
+		async function cancel() {
+			await router.push(`/settings/data-model/${props.collection}`);
 			fieldDetail.$reset();
-			router.push(`/settings/data-model/${props.collection}`);
 		}
 
 		async function save() {

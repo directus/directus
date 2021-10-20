@@ -54,7 +54,7 @@ export const useFieldDetailStore = defineStore({
 		saving: false,
 	}),
 	actions: {
-		update(updates: Record<string, any>) {
+		update(updates: DeepPartial<typeof this.$state>) {
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);
 
 			if (hasChanged('field.meta.interface')) {
@@ -62,10 +62,13 @@ export const useFieldDetailStore = defineStore({
 				setTypeForInterface(updates, this);
 			}
 
-			// TODO remove this in favor of actual "setSchemaFortype" or whatever
-			set(updates, 'field.schema', {});
+			if (hasChanged('field.type')) {
+				setSpecialForType(updates, this);
+			}
 
-			// TODO add remaining magic
+			if (hasChanged('flags.localType')) {
+				setSpecialForLocalType(updates, this);
+			}
 
 			this.$patch(updates);
 		},
@@ -100,7 +103,6 @@ export const useFieldDetailStore = defineStore({
 			const requiredProperties = ['field.field', 'collection'];
 
 			return requiredProperties.every((path) => {
-				console.log(get(state, path));
 				return has(state, path) && isEmpty(get(state, path)) === false;
 			});
 		},
@@ -168,4 +170,69 @@ function setTypeForInterface(updates: StateUpdates, state: State) {
 
 	const defaultType = chosenInterface?.types[0];
 	set(updates, 'field.type', defaultType);
+}
+
+/**
+ * Make sure any special flags are set for the current type
+ */
+function setSpecialForType(updates: StateUpdates, _state: State) {
+	const type = updates.field?.type;
+
+	if (!type) return;
+
+	switch (type) {
+		case 'uuid':
+			set(updates, 'field.meta.special', ['uuid']);
+			break;
+		case 'hash':
+			set(updates, 'field.meta.special', ['hash']);
+			break;
+		case 'json':
+			set(updates, 'field.meta.special', ['json']);
+			break;
+		case 'csv':
+			set(updates, 'field.meta.special', ['csv']);
+			break;
+		case 'boolean':
+			set(updates, 'field.meta.special', ['boolean']);
+			break;
+		case 'geometry':
+			set(updates, 'field.meta.special', ['geometry']);
+			break;
+		default:
+			set(updates, 'field.meta.special', null);
+	}
+}
+
+/**
+ * Make sure that special matches group/presentation local types
+ */
+function setSpecialForLocalType(updates: StateUpdates, _state: State) {
+	if (updates?.flags?.localType === 'o2m') {
+		set(updates, 'field.meta.special', ['o2m']);
+	}
+
+	if (updates?.flags?.localType === 'm2m') {
+		set(updates, 'field.meta.special', ['m2m']);
+	}
+
+	if (updates?.flags?.localType === 'm2a') {
+		set(updates, 'field.meta.special', ['m2a']);
+	}
+
+	if (updates?.flags?.localType === 'm2o') {
+		set(updates, 'field.meta.special', ['m2o']);
+	}
+
+	if (updates?.flags?.localType === 'translations') {
+		set(updates, 'field.meta.special', ['translations']);
+	}
+
+	if (updates?.flags?.localType === 'presentation') {
+		set(updates, 'field.meta.special', ['alias', 'no-data']);
+	}
+
+	if (updates?.flags?.localType === 'group') {
+		set(updates, 'field.meta.special', ['alias', 'no-data', 'group']);
+	}
 }
