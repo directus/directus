@@ -319,6 +319,20 @@ allowing more complete user registrations.
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                              | --                     |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                          | `account_circle`       |
 
+### LDAP (`ldap`)
+
+| Variable                          | Description                                        | Default Value |
+| --------------------------------- | -------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                               | --            |
+| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.       | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                | --            |
+| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                   | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                    | `cn`          |
+| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                  | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group. | `member`      |
+
+<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+
 ## Extensions
 
 | Variable          | Description                           | Default Value  |

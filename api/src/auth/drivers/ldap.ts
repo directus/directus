@@ -173,7 +173,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				groupDn,
 				{
 					attributes: ['cn'],
-					filter: `(${groupAttribute}=${userDn})`,
+					filter: `(${groupAttribute ?? 'member'}=${userDn})`,
 					scope: 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
