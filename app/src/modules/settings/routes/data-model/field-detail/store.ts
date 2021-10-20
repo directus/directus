@@ -123,7 +123,7 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 		if (!updates.field?.field) return;
 
 		if (!updates.relations?.m2o) updates.relations = { m2o: {} };
-		updates.relations.m2o!.field = updates.field.field;
+		set(updates, 'relations.m2o.field', updates.field.field);
 	},
 	generateRelatedCollection(updates) {
 		const relatedCollection = updates.relations?.m2o?.related_collection;
@@ -151,6 +151,29 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 					},
 				],
 			};
+		}
+	},
+	preventCircularConstraint(updates, state) {
+		const relatedCollection = updates.relations?.m2o?.related_collection;
+		if (!relatedCollection) return;
+		if (!updates.relations) updates.relations = {};
+
+		if (relatedCollection === state.collection) {
+			set(updates, 'relations.m2o.schema.on_delete', 'NO ACTION');
+		}
+	},
+	setTypeToRelatedPrimaryKey(updates, state) {
+		const relatedCollection = updates.relations?.m2o?.related_collection;
+		if (!relatedCollection) return;
+
+		const fieldsStore = useFieldsStore();
+
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
+
+		if (primaryKeyField) {
+			set(updates, 'field.type', primaryKeyField.type);
+		} else if (state.collections.related?.fields?.[0]?.type) {
+			set(updates, 'field.type', state.collections.related.fields[0].type);
 		}
 	},
 };
@@ -239,6 +262,8 @@ export const useFieldDetailStore = defineStore({
 
 			if (hasChanged('relations.m2o.related_collection')) {
 				m2o.generateRelatedCollection(updates, this);
+				m2o.preventCircularConstraint(updates, this);
+				m2o.setTypeToRelatedPrimaryKey(updates, this);
 			}
 
 			this.$patch(updates);

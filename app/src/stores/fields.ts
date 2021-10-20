@@ -223,13 +223,12 @@ export const useFieldsStore = defineStore({
 				unexpectedError(err);
 			}
 		},
-		getPrimaryKeyFieldForCollection(collection: string): Field {
-			/** @NOTE it's safe to assume every collection has a primary key */
+		getPrimaryKeyFieldForCollection(collection: string): Field | null {
 			const primaryKeyField = this.fields.find(
 				(field) => field.collection === collection && field.schema?.is_primary_key === true
-			)!;
+			);
 
-			return primaryKeyField;
+			return primaryKeyField ?? null;
 		},
 		getFieldsForCollection(collection: string): Field[] {
 			return orderBy(
