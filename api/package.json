@@ -166,7 +166,7 @@
 		"@types/async": "3.2.8",
 		"@types/atob": "2.1.2",
 		"@types/body-parser": "1.19.1",
-		"@types/busboy": "0.2.4",
+		"@types/busboy": "0.3.0",
 		"@types/cookie-parser": "1.4.2",
 		"@types/cors": "2.8.12",
 		"@types/deep-diff": "1.0.1",
