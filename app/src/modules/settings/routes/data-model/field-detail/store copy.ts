@@ -280,44 +280,44 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 	}
 
 	function useO2M() {
-		delete state.fieldData.schema;
-		state.fieldData.type = 'alias';
+		// delete state.fieldData.schema;
+		// state.fieldData.type = 'alias';
 
 		const syncNewCollectionsO2M = throttle(([collectionName, fieldName, sortField]) => {
-			state.newCollections = state.newCollections.filter((col: any) => ['related'].includes(col.$type) === false);
-			state.newFields = state.newFields.filter((field) => ['manyRelated', 'sort'].includes(field.$type!) === false);
+			// state.newCollections = state.newCollections.filter((col: any) => ['related'].includes(col.$type) === false);
+			// state.newFields = state.newFields.filter((field) => ['manyRelated', 'sort'].includes(field.$type!) === false);
 
-			if (collectionName && collectionExists(collectionName) === false) {
-				state.newCollections.push({
-					$type: 'related',
-					collection: collectionName,
-					fields: [
-						{
-							field: 'id',
-							type: 'integer',
-							schema: {
-								has_auto_increment: true,
-								is_primary_key: true,
-							},
-							meta: {
-								hidden: true,
-							},
-						},
-					],
-				});
-			}
+			// if (collectionName && collectionExists(collectionName) === false) {
+			// 	state.newCollections.push({
+			// 		$type: 'related',
+			// 		collection: collectionName,
+			// 		fields: [
+			// 			{
+			// 				field: 'id',
+			// 				type: 'integer',
+			// 				schema: {
+			// 					has_auto_increment: true,
+			// 					is_primary_key: true,
+			// 				},
+			// 				meta: {
+			// 					hidden: true,
+			// 				},
+			// 			},
+			// 		],
+			// 	});
+			// }
 
-			if (fieldName && fieldExists(collectionName, fieldName) === false) {
-				state.newFields.push({
-					$type: 'manyRelated',
-					collection: collectionName,
-					field: fieldName,
-					type: collectionExists(collection)
-						? fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type
-						: 'integer',
-					schema: {},
-				});
-			}
+			// if (fieldName && fieldExists(collectionName, fieldName) === false) {
+			// 	state.newFields.push({
+			// 		$type: 'manyRelated',
+			// 		collection: collectionName,
+			// 		field: fieldName,
+			// 		type: collectionExists(collection)
+			// 			? fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type
+			// 			: 'integer',
+			// 		schema: {},
+			// 	});
+			// }
 
 			if (sortField && fieldExists(collectionName, sortField) === false) {
 				state.newFields.push({
@@ -333,73 +333,73 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 			}
 		}, 50);
 
-		if (!isExisting) {
-			state.fieldData.meta = {
-				...(state.fieldData.meta || {}),
-				special: ['o2m'],
-			};
+		// if (!isExisting) {
+		// 	state.fieldData.meta = {
+		// 		...(state.fieldData.meta || {}),
+		// 		special: ['o2m'],
+		// 	};
 
-			state.relations = [
-				{
-					collection: '',
-					field: '',
-					related_collection: collection,
-					meta: {
-						one_field: state.fieldData.field,
-						sort_field: null,
-						one_deselect_action: 'nullify',
-					},
-					schema: {
-						on_delete: 'SET NULL',
-					},
-				},
-			];
-		}
+		// 	state.relations = [
+		// 		{
+		// 			collection: '',
+		// 			field: '',
+		// 			related_collection: collection,
+		// 			meta: {
+		// 				one_field: state.fieldData.field,
+		// 				sort_field: null,
+		// 				one_deselect_action: 'nullify',
+		// 			},
+		// 			schema: {
+		// 				on_delete: 'SET NULL',
+		// 			},
+		// 		},
+		// 	];
+		// }
 
-		watch(
-			() => state.relations[0].collection,
-			() => {
-				if (state.relations[0].collection === state.relations[0].related_collection) {
-					state.relations[0].schema = {
-						...state.relations[0].schema,
-						on_delete: 'NO ACTION',
-					};
-				}
-			}
-		);
+		// watch(
+		// 	() => state.relations[0].collection,
+		// 	() => {
+		// 		if (state.relations[0].collection === state.relations[0].related_collection) {
+		// 			state.relations[0].schema = {
+		// 				...state.relations[0].schema,
+		// 				on_delete: 'NO ACTION',
+		// 			};
+		// 		}
+		// 	}
+		// );
 
-		watch(
-			() => state.fieldData.field,
-			() => {
-				state.relations[0].meta = {
-					...(state.relations[0].meta || {}),
-					one_field: state.fieldData.field,
-				};
-			}
-		);
+		// watch(
+		// 	() => state.fieldData.field,
+		// 	() => {
+		// 		state.relations[0].meta = {
+		// 			...(state.relations[0].meta || {}),
+		// 			one_field: state.fieldData.field,
+		// 		};
+		// 	}
+		// );
 
-		watch(
-			[() => state.relations[0].collection, () => state.relations[0].field, () => state.relations[0].meta?.sort_field],
-			([collectionName, fieldName, sortField]) => {
-				syncNewCollectionsO2M([collectionName, fieldName, sortField]);
-				syncOnDeleteTrigger(collectionName, fieldName);
-			}
-		);
+		// watch(
+		// 	[() => state.relations[0].collection, () => state.relations[0].field, () => state.relations[0].meta?.sort_field],
+		// 	([collectionName, fieldName, sortField]) => {
+		// 		syncNewCollectionsO2M([collectionName, fieldName, sortField]);
+		// 		syncOnDeleteTrigger(collectionName, fieldName);
+		// 	}
+		// );
 
 		/**
 		 * Syncs the on_delete value of the existing relationship with the new o2m one, so you don't
 		 * accidentally override it
-		 */
-		function syncOnDeleteTrigger(collection?: string | null, field?: string | null) {
-			if (!collection || !field) return;
+		//  */
+		// function syncOnDeleteTrigger(collection?: string | null, field?: string | null) {
+		// 	if (!collection || !field) return;
 
-			const existingRelation = relationsStore.getRelationForField(collection, field) || {};
-			if (!existingRelation) return;
+		// 	const existingRelation = relationsStore.getRelationForField(collection, field) || {};
+		// 	if (!existingRelation) return;
 
-			state.relations[0].schema = {
-				on_delete: existingRelation.schema?.on_delete || 'SET NULL',
-			};
-		}
+		// 	state.relations[0].schema = {
+		// 		on_delete: existingRelation.schema?.on_delete || 'SET NULL',
+		// 	};
+		// }
 	}
 
 	function useM2M() {
@@ -1064,51 +1064,51 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 		};
 	}
 
-	function useStandard() {
-		watch(
-			() => state.fieldData.type,
-			() => {
-				state.fieldData.meta = {
-					...(state.fieldData.meta || {}),
-					interface: null,
-					options: null,
-					display: null,
-					display_options: null,
-					special: null,
-				};
+	// function useStandard() {
+	// 	watch(
+	// 		() => state.fieldData.type,
+	// 		() => {
+	// 			state.fieldData.meta = {
+	// 				...(state.fieldData.meta || {}),
+	// 				interface: null,
+	// 				options: null,
+	// 				display: null,
+	// 				display_options: null,
+	// 				special: null,
+	// 			};
 
-				state.fieldData.schema = {
-					...(state.fieldData.schema || {}),
-					default_value: undefined,
-					max_length: undefined,
-					is_nullable: true,
-					geometry_type: undefined,
-				};
+	// 			state.fieldData.schema = {
+	// 				...(state.fieldData.schema || {}),
+	// 				default_value: undefined,
+	// 				max_length: undefined,
+	// 				is_nullable: true,
+	// 				geometry_type: undefined,
+	// 			};
 
-				switch (state.fieldData.type) {
-					case 'uuid':
-						state.fieldData.meta.special = ['uuid'];
-						break;
-					case 'hash':
-						state.fieldData.meta.special = ['hash'];
-						break;
-					case 'json':
-						state.fieldData.meta.special = ['json'];
-						break;
-					case 'csv':
-						state.fieldData.meta.special = ['csv'];
-						break;
-					case 'boolean':
-						state.fieldData.meta.special = ['boolean'];
-						state.fieldData.schema.default_value = false;
-						state.fieldData.schema.is_nullable = false;
-						break;
-					case 'geometry':
-						state.fieldData.meta.special = ['geometry'];
-						break;
-				}
-			}
-		);
+	// 			switch (state.fieldData.type) {
+	// 				case 'uuid':
+	// 					state.fieldData.meta.special = ['uuid'];
+	// 					break;
+	// 				case 'hash':
+	// 					state.fieldData.meta.special = ['hash'];
+	// 					break;
+	// 				case 'json':
+	// 					state.fieldData.meta.special = ['json'];
+	// 					break;
+	// 				case 'csv':
+	// 					state.fieldData.meta.special = ['csv'];
+	// 					break;
+	// 				case 'boolean':
+	// 					state.fieldData.meta.special = ['boolean'];
+	// 					state.fieldData.schema.default_value = false;
+	// 					state.fieldData.schema.is_nullable = false;
+	// 					break;
+	// 				case 'geometry':
+	// 					state.fieldData.meta.special = ['geometry'];
+	// 					break;
+	// 			}
+	// 		}
+	// 	);
 	}
 
 	function collectionExists(collection: string) {

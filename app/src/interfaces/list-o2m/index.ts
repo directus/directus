@@ -14,7 +14,7 @@ export default defineInterface({
 	group: 'relational',
 	relational: true,
 	options: ({ relations }: ExtensionsOptionsContext) => {
-		const collection = relations.m2o?.related_collection;
+		const collection = relations.o2m?.collection;
 
 		return [
 			{

@@ -66,31 +66,31 @@ const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 		}
 	},
 	setSpecialForLocalType(updates) {
-		if (updates?.flags?.localType === 'o2m') {
+		if (updates?.localType === 'o2m') {
 			set(updates, 'field.meta.special', ['o2m']);
 		}
 
-		if (updates?.flags?.localType === 'm2m') {
+		if (updates?.localType === 'm2m') {
 			set(updates, 'field.meta.special', ['m2m']);
 		}
 
-		if (updates?.flags?.localType === 'm2a') {
+		if (updates?.localType === 'm2a') {
 			set(updates, 'field.meta.special', ['m2a']);
 		}
 
-		if (updates?.flags?.localType === 'm2o') {
+		if (updates?.localType === 'm2o') {
 			set(updates, 'field.meta.special', ['m2o']);
 		}
 
-		if (updates?.flags?.localType === 'translations') {
+		if (updates?.localType === 'translations') {
 			set(updates, 'field.meta.special', ['translations']);
 		}
 
-		if (updates?.flags?.localType === 'presentation') {
+		if (updates?.localType === 'presentation') {
 			set(updates, 'field.meta.special', ['alias', 'no-data']);
 		}
 
-		if (updates?.flags?.localType === 'group') {
+		if (updates?.localType === 'group') {
 			set(updates, 'field.meta.special', ['alias', 'no-data', 'group']);
 		}
 	},
@@ -110,7 +110,7 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 		updates.relations.m2o = {
 			collection: state.collection,
 			field: state.field.field,
-			related_collection: '',
+			related_collection: undefined,
 			meta: {
 				sort_field: null,
 			},
@@ -119,7 +119,7 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 			},
 		};
 	},
-	updateRelation(updates) {
+	updateRelationField(updates) {
 		if (!updates.field?.field) return;
 
 		if (!updates.relations?.m2o) updates.relations = { m2o: {} };
@@ -128,7 +128,7 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 	generateRelatedCollection(updates) {
 		const relatedCollection = updates.relations?.m2o?.related_collection;
 		if (!relatedCollection) return;
-		if (!updates.collections) updates.collections = { related: undefined };
+		if (!updates.collections?.related) updates.collections = { related: undefined };
 
 		const collectionsStore = useCollectionsStore();
 
@@ -176,6 +176,128 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 			set(updates, 'field.type', primaryKeyField.type);
 		} else if (state.collections.related?.fields?.[0]?.type) {
 			set(updates, 'field.type', state.collections.related.fields[0].type);
+		}
+	},
+};
+
+const o2m: Record<string, (updates: StateUpdates, state: State) => void> = {
+	removeSchema(updates) {
+		set(updates, 'field.schema', undefined);
+	},
+	setTypeToAlias(updates) {
+		set(updates, 'field.type', 'alias');
+	},
+	prepareRelation(updates, state) {
+		if (!updates.relations) updates.relations = {};
+
+		updates.relations.o2m = {
+			collection: undefined,
+			field: undefined,
+			related_collection: state.collection,
+			meta: {
+				one_field: updates.field?.field ?? state.field.field,
+				sort_field: null,
+				one_deselect_action: 'nullify',
+			},
+			schema: {
+				on_delete: 'SET NULL',
+			},
+		};
+	},
+	preventCircularConstraint(updates, state) {
+		const collection = updates.relations?.o2m?.collection;
+		if (!collection) return;
+		if (!updates.relations) updates.relations = {};
+
+		if (collection === state.collection) {
+			set(updates, 'relations.o2m.schema.on_delete', 'NO ACTION');
+		}
+	},
+	updateRelationField(updates) {
+		if (!updates.field?.field) return;
+
+		if (!updates.relations?.o2m) updates.relations = { o2m: {} };
+		set(updates, 'relations.o2m.meta.one_field', updates.field.field);
+	},
+	useExistingRelationValues(updates) {
+		if (!updates.relations) updates.relations = {};
+		const relationsStore = useRelationsStore();
+
+		const collection = updates.relations.o2m?.collection;
+		const field = updates.relations.o2m?.field;
+
+		if (collection && field) {
+			const existingRelation = relationsStore.getRelationForField(collection, field);
+
+			if (existingRelation) {
+				set(updates, 'relations.o2m.schema.on_delete', existingRelation.schema?.on_delete);
+				return;
+			}
+		}
+	},
+	generateRelatedCollection(updates) {
+		const collection = updates.relations?.o2m?.collection;
+		if (!collection) return;
+
+		const collectionsStore = useCollectionsStore();
+
+		const exists = !!collectionsStore.getCollection(collection);
+
+		if (!updates.collections?.related) updates.collections = { related: undefined };
+
+		if (exists === false) {
+			updates.collections.related = {
+				collection: collection,
+				fields: [
+					{
+						field: 'id',
+						type: 'integer',
+						schema: {
+							has_auto_increment: true,
+							is_primary_key: true,
+						},
+						meta: {
+							hidden: true,
+						},
+					},
+				],
+				meta: {},
+				schema: {},
+			};
+		}
+	},
+	generateRelatedField(updates, state) {
+		const fieldsStore = useFieldsStore();
+		const collection = updates.relations?.o2m?.collection ?? state.relations.o2m?.collection;
+		if (!collection) return;
+
+		const currentCollectionPrimaryKeyFieldType = state.collection
+			? fieldsStore.getPrimaryKeyFieldForCollection(state.collection)?.type ?? 'integer'
+			: 'integer';
+
+		const field = updates.relations?.o2m?.field;
+
+		if (!field) return;
+
+		const exists = !!fieldsStore.getField(collection, field);
+
+		if (!updates.fields?.corresponding) updates.fields = { corresponding: undefined };
+
+		if (exists === false) {
+			updates.fields.corresponding = {
+				collection: collection,
+				field: field,
+				type: currentCollectionPrimaryKeyFieldType,
+				schema: {},
+			};
+		}
+	},
+	updateGeneratedRelatedField(updates, state) {
+		const collection = updates.relations?.o2m?.collection;
+		if (!collection) return;
+
+		if (state.fields.corresponding) {
+			set(updates, 'fields.corresponding.collection', collection);
 		}
 	},
 };
@@ -248,17 +370,27 @@ export const useFieldDetailStore = defineStore({
 			}
 
 			if (hasChanged('localType')) {
-				global.setSpecialForLocalType(updates, this);
 				global.resetRelations(updates, this);
+				global.setSpecialForLocalType(updates, this);
 
 				if (getCurrent('localType') === 'm2o') {
 					m2o.prepareRelation(updates, this);
+				}
+
+				if (getCurrent('localType') === 'o2m') {
+					o2m.removeSchema(updates, this);
+					o2m.setTypeToAlias(updates, this);
+					o2m.prepareRelation(updates, this);
 				}
 			}
 
 			if (hasChanged('field.field')) {
 				if (getCurrent('localType') === 'm2o') {
-					m2o.updateRelation(updates, this);
+					m2o.updateRelationField(updates, this);
+				}
+
+				if (getCurrent('localType') === 'o2m') {
+					o2m.updateRelationField(updates, this);
 				}
 			}
 
@@ -266,6 +398,17 @@ export const useFieldDetailStore = defineStore({
 				m2o.generateRelatedCollection(updates, this);
 				m2o.preventCircularConstraint(updates, this);
 				m2o.setTypeToRelatedPrimaryKey(updates, this);
+			}
+
+			if (hasChanged('relations.o2m.collection')) {
+				o2m.generateRelatedCollection(updates, this);
+				o2m.preventCircularConstraint(updates, this);
+				o2m.updateGeneratedRelatedField(updates, this);
+			}
+
+			if (hasChanged('relations.o2m.field')) {
+				o2m.useExistingRelationValues(updates, this);
+				o2m.generateRelatedField(updates, this);
 			}
 
 			this.$patch(updates);
