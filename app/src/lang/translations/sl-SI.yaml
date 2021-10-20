@@ -44,7 +44,6 @@ indeterminate: Nedoločeno
 edit_collection: Uredi zbirko
 exclusive: Ekskluzivno
 children: Podrejeni
-db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
 show_archived_items: Prikaži arhivirane opombe
 edited: Urejena vrednost
 required: Zahtevano
@@ -397,6 +396,9 @@ copy: Kopiraj
 inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
+action: Dejanje
+ip_address: IP naslov
+user_agent: Brskalnik
 webhooks: Prožilci
 field_width: Širina polja
 add_filter: Dodaj filter
@@ -887,13 +889,14 @@ field_options:
     hidden_label: Skrij v aplikaciji
     singleton: Obravnavaj kot en objekt
     language: Jezik
-    translation: Vnesite prevod ...
+    translation: Prevod
+    collection_name: Ime zbirke
     archive_divider: Arhiviraj
-    archive_field: Izberite polje ...
+    archive_field_placeholder: Izberite polje ...
     archive_app_filter: Omogoči aplikacijski arhivski filter
     archive_value: Nastavljena vrednost pri arhiviranju ...
     unarchive_value: Nastavljena vrednost pri dearhiviranju ...
-    divider: Razvrsti
+    sort_divider: Razvrsti
     sort_field: Izberite polje ...
     accountability_divider: Odgovornost
   directus_files:
@@ -951,6 +954,9 @@ generate_and_save_uuid: Ustvari in shrani UUID
 save_current_user_id: Shrani ID uporabnika
 save_current_user_role: Shrani vlogo uporabnika
 save_current_datetime: Shrani datum in uro
+always_open: Vedno odprto
+start_open: Začni odprto
+start_collapsed: Začni zaprto
 block: Blokiraj
 inline: V vrstici
 comment: Komentar
@@ -1275,6 +1281,8 @@ interfaces:
     start_open: Začni odprto
     start_closed: Začni zaprto
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Pokaži prižgano / ugasnjeno stanje

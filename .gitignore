@@ -14,10 +14,10 @@ dist
 .nyc_output
 .history
 /.idea/
-app/public/img/docs/*
 *.tsbuildinfo
 .e2e-containers.json
 coverage
+TODO
 schema.yaml
 schema.json
 /.vs/Directus/config/applicationhost.config

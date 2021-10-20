@@ -36,7 +36,7 @@ running directus with iisnode
       <rewrite>
         <rules>
           <rule name="root">
-            <match url="*" />
+            <match url="(.*)" />
             <action type="Rewrite" url="index.js" />
           </rule>
         </rules>

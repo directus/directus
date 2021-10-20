@@ -1,11 +1,10 @@
 import { defineLayout } from '@directus/shared/utils';
 import TabularLayout from './tabular.vue';
 import TabularOptions from './options.vue';
-import TabularSidebar from './sidebar.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { ref, computed, inject, watch, toRefs } from 'vue';
+import { ref, computed, watch, toRefs } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@directus/shared/types';
@@ -18,6 +17,7 @@ import hideDragImage from '@/utils/hide-drag-image';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -26,7 +26,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: TabularLayout,
 	slots: {
 		options: TabularOptions,
-		sidebar: TabularSidebar,
+		sidebar: () => undefined,
 		actions: TabularActions,
 	},
 	setup(props, { emit }) {
@@ -34,15 +34,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const router = useRouter();
 
-		const mainElement = inject('main-element', ref<Element | null>(null));
-
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter, filterUser, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
@@ -55,8 +51,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				limit,
 				page,
 				fields: fieldsWithRelational,
-				filters: filters,
-				searchQuery: searchQuery,
+				filter,
+				search,
 			}
 		);
 
@@ -64,32 +60,27 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			useTable();
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
 				if (itemCount.value === 1) {
 					return t('one_filtered_item');
 				}
+
 				return t('start_end_of_count_filtered_items', {
 					start: n((+page.value - 1) * limit.value + 1),
 					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
 					count: n(itemCount.value || 0),
 				});
 			}
+
 			if (itemCount.value === 1) {
 				return t('one_item');
 			}
+
 			return t('start_end_of_count_items', {
 				start: n((+page.value - 1) * limit.value + 1),
 				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
 				count: n(itemCount.value || 0),
 			});
-		});
-
-		const activeFilterCount = computed(() => {
-			let count = filters.value.filter((filter) => !filter.locked).length;
-
-			if (searchQuery.value && searchQuery.value.length > 0) count++;
-
-			return count;
 		});
 
 		const availableFields = computed(() => {
@@ -121,11 +112,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sortField,
 			changeManualSort,
 			hideDragImage,
-			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
 			selectAll,
 			availableFields,
+			filter,
+			search,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -139,10 +131,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function toPage(newPage: number) {
 			page.value = newPage;
-			mainElement.value?.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
 		}
 
 		function selectAll() {
@@ -152,77 +140,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useItemOptions() {
-			const page = computed({
-				get() {
-					return layoutQuery.value?.page || 1;
-				},
-				set(newPage: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: newPage,
-					};
-				},
-			});
+			const page = syncRefProperty(layoutQuery, 'page', 1);
+			const limit = syncRefProperty(layoutQuery, 'limit', 25);
+			const sort = syncRefProperty(layoutQuery, 'sort', () =>
+				primaryKeyField.value ? [primaryKeyField.value?.field] : []
+			);
 
-			const sort = computed({
-				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
-				},
-				set(newSort: string) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: 1,
-						sort: newSort,
-					};
-				},
-			});
-
-			const limit = computed({
-				get() {
-					return layoutQuery.value?.limit || 25;
-				},
-				set(newLimit: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: 1,
-						limit: newLimit,
-					};
-				},
-			});
-
-			const fields = computed({
-				get() {
-					if (layoutQuery.value?.fields) {
-						// This shouldn't be the case, but double check just in case it's stored
-						// differently in the DB from previous versions
-						if (typeof layoutQuery.value.fields === 'string') {
-							return (layoutQuery.value.fields as string).split(',');
-						}
-
-						if (Array.isArray(layoutQuery.value.fields)) return layoutQuery.value.fields;
-					}
-
-					const fields =
-						layoutQuery.value?.fields ||
-						fieldsInCollection.value
-							.filter((field: Field) => !!field.meta?.hidden === false)
-							.slice(0, 4)
-							.sort((a: Field, b: Field) => {
-								if (a.field < b.field) return -1;
-								else if (a.field > b.field) return 1;
-								else return 1;
-							})
-							.map(({ field }: Field) => field);
-
-					return fields;
-				},
-				set(newFields: string[]) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						fields: newFields,
-					};
-				},
-			});
+			const fields = syncRefProperty(layoutQuery, 'fields', () =>
+				fieldsInCollection.value
+					.filter((field: Field) => !field.meta?.hidden)
+					.slice(0, 4)
+					.map(({ field }: Field) => field)
+					.sort()
+			);
 
 			const fieldsWithRelational = computed(() => {
 				if (!props.collection) return [];
@@ -234,10 +164,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value?.startsWith('-')) {
-					return { by: sort.value.substring(1), desc: true };
+				if (sort.value?.[0].startsWith('-')) {
+					return { by: sort.value[0].substring(1), desc: true };
 				} else {
-					return { by: sort.value, desc: false };
+					return { by: sort.value[0], desc: false };
 				}
 			});
 
@@ -251,10 +181,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			);
 
 			const saveWidthsTolayoutOptions = debounce(() => {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
+				layoutOptions.value = Object.assign({}, layoutOptions.value, {
 					widths: localWidths.value,
-				};
+				});
 			}, 350);
 
 			const activeFields = computed<Field[]>({
@@ -303,17 +232,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			const tableSpacing = computed({
-				get() {
-					return layoutOptions.value?.spacing || 'cozy';
-				},
-				set(newSpacing: 'compact' | 'cozy' | 'comfortable') {
-					layoutOptions.value = {
-						...(layoutOptions.value || {}),
-						spacing: newSpacing,
-					};
-				},
-			});
+			const tableSpacing = syncRefProperty(layoutOptions, 'spacing', 'cozy');
 
 			const tableRowHeight = computed<number>(() => {
 				switch (tableSpacing.value) {
@@ -356,20 +275,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			function onSortChange(newSort: { by: string; desc: boolean }) {
 				let sortString = newSort.by;
-				if (newSort.desc === true) sortString = '-' + sortString;
-
-				sort.value = sortString;
+				if (newSort.desc === true) {
+					sortString = '-' + sortString;
+				}
+				sort.value = [sortString];
 			}
 
 			function getFieldDisplay(fieldKey: string) {
 				const field = fieldsInCollection.value.find((field: Field) => field.field === fieldKey);
 
-				if (field === undefined) return null;
-				if (!field.meta?.display) return null;
+				if (!field?.meta?.display) return null;
 
 				return {
-					display: field.meta?.display,
-					options: field.meta?.display_options,
+					display: field.meta.display,
+					options: field.meta.display_options,
 				};
 			}
 		}

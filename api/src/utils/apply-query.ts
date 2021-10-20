@@ -3,7 +3,8 @@ import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Aggregate, Filter, Query, Relation, SchemaOverview } from '../types';
+import { Relation, SchemaOverview } from '../types';
+import { Aggregate, Filter, Query } from '@directus/shared/types';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
@@ -24,10 +25,20 @@ export default function applyQuery(
 ): void {
 	if (query.sort) {
 		dbQuery.orderBy(
-			query.sort.map((sort) => ({
-				...sort,
-				column: getColumn(knex, collection, sort.column, false) as any,
-			}))
+			query.sort.map((sortField) => {
+				let column = sortField;
+				let order: 'asc' | 'desc' = 'asc';
+
+				if (sortField.startsWith('-')) {
+					column = column.substring(1);
+					order = 'desc';
+				}
+
+				return {
+					order,
+					column: getColumn(knex, collection, column, false) as any,
+				};
+			})
 		);
 	}
 

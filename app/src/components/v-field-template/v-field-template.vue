@@ -54,7 +54,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		depth: Number,
+		depth: {
+			type: Number,
+			default: undefined,
+		},
 		placeholder: {
 			type: String,
 			default: null,
@@ -274,7 +277,13 @@ export default defineComponent({
 							return `<span class="text">${part}</span>`;
 						}
 						const fieldKey = part.replace(/({|})/g, '').trim();
-						const field = findTree(treeList.value, fieldKey.split('.'));
+						const fieldPath = fieldKey.split('.');
+
+						for (let i = 0; i < fieldPath.length; i++) {
+							loadFieldRelations(fieldPath.slice(0, i).join('.'));
+						}
+
+						const field = findTree(treeList.value, fieldPath);
 
 						if (!field) return '';
 

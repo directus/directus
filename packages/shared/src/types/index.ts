@@ -15,6 +15,7 @@ export * from './modules';
 export * from './panels';
 export * from './permissions';
 export * from './presets';
+export * from './query';
 export * from './relations';
 export * from './settings';
 export * from './users';

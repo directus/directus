@@ -50,7 +50,6 @@ indeterminate: Indéterminé
 edit_collection: Modifier la collection
 exclusive: Exclusif
 children: Les enfants
-db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
 required: Obligatoire
@@ -326,6 +325,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutes
+hours: Heures
 month: Mois
 year: Année
 select_all: Tout sélectionner
@@ -433,6 +434,9 @@ no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
+action: Action
+ip_address: Adresse IP
+user_agent: Agent utilisateur
 webhooks: Webhooks
 decimals: Décimales
 value_decimals: Valeur décimales
@@ -644,7 +648,21 @@ panel_header: En-tête de panneau
 panel_name_placeholder: Nommez ce panneau...
 panel_note_placeholder: Détails facultatifs sur ce panneau...
 panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
+dashboard_delete_confirm: Êtes-vous sûr de vouloir supprimer ce membre ? Cette action ne peut pas être annulée.
+edit_dashboard: Modifier le tableau de bord
+delete_dashboard: Supprimer
+visible: Visible
+prefix_placeholder: Texte avant la valeur...
+suffix_placeholder: Texte avant la valeur...
+decimals_placeholder: Nombre de décimales
+no_dashboards: Tableaux de bord
+no_dashboards_copy: Tu n'as pas encore de rapport.
+no_data: Pas de donnée
+create_dashboard: Créer Dashboard
+dashboard_name: Nom du Dashboard
 full_screen: Plein écran
+edit_panels: Modifier pièce
+fit_to_screen: Ajuster à l'écran
 image_url: Url de l’image
 alt_text: Texte alternatif
 media: Média
@@ -741,7 +759,11 @@ layout_setup: Configuration de la mise en page
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
+discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
+show_x_axis: Montrer &Axes 3D
+show_y_axis: Montrer &Axes 3D
 keep_editing: Continuer l’édition
+page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
   **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_collections_item: >-
@@ -770,6 +792,8 @@ page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
+page_help_insights_overview: '**Aperçus** — Liste des tableaux de bord auxquels vous avez accès.'
+page_help_insights_dashboard: '**Tableau de bord** — Espace de travail pour gérer un ou plusieurs panneaux'
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Nouveau
@@ -973,13 +997,14 @@ field_options:
     hidden_label: Cacher dans l'application
     singleton: Est un objet unique
     language: Langue
-    translation: Entrez une nouvelle traduction...
+    translation: Traduction
+    collection_name: Nom de la Collection
     archive_divider: Archiver
-    archive_field: Choisissez un champ...
+    archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Activer le filtre des archives d'applications
     archive_value: Valeur définie lors de l'archivage...
     unarchive_value: Valeur définie lors de la désarchivage...
-    divider: Trier
+    sort_divider: Trier
     sort_field: Choisissez un champ...
     accountability_divider: Responsabilité
   directus_files:
@@ -1006,6 +1031,7 @@ field_options:
         group_placeholder: Étiquetez ce groupe...
         type_name: Type
         choices_always: Toujours ouvert
+        choices_start_open: Démarrer Ouverture
         choices_start_collapsed: Commencer à réduire
     collections_name: Collections
     collections_addLabel: Ajouter une collection...
@@ -1037,6 +1063,9 @@ generate_and_save_uuid: Générer et Enregistrer l'UUID
 save_current_user_id: Enregistrer l'ID de l'utilisateur actuel
 save_current_user_role: Enregistrer le rôle utilisateur actuel
 save_current_datetime: Enregistrer la date/heure actuelle
+always_open: Toujours ouvert
+start_open: Démarrer Ouverture
+start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
 comment: Commentaire
@@ -1116,9 +1145,17 @@ start: Début
 interfaces:
   filter:
     name: Filtre
+    description: Configurer un objet filtre.
     add_filter: Ajouter un filtre
+    add_group: Et / ou groupe
+    add_value: Ajouter une valeur
     all: Tout
     any: N'importe quel
+    and: et
+    of_the_following: parmi les suivants
+    no_rules: Configurer les règles
+    change_value: Cliquez pour modifier le nom
+    placeholder: Glisser les fichiers ici
   group-accordion:
     name: Accordéon
     description: Afficher les champs ou les groupes en tant que sections d'accordéon
@@ -1326,6 +1363,7 @@ interfaces:
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
+    toggle_split_view: Basculer en vue spatiale
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
     recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
@@ -1356,8 +1394,14 @@ interfaces:
   group-detail:
     name: Détail du groupe
     description: Rendre les champs comme une section pliable
+    show_header: En-tête de groupe
+    header_icon: Icônes de l'en-tête 
     header_color: Couleur d'en-tête
+    start_open: Démarrer Ouverture
+    start_closed: Commencer réduit
 displays:
+  translations:
+    translations: Traductions
   boolean:
     boolean: Booléen
     description: Afficher les états sélectionnés et désélectionnés
@@ -1465,8 +1509,34 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
+    basemap: Carte de base
+    layers: Afficher...
+    edit_custom_layers: Modifier la couche
+    cluster_options: Options de regroupement
+    cluster: Activer le clustering
+    cluster_radius: Rayon de grappe
+    cluster_minpoints: Taille minimale du cluster
+    cluster_maxzoom: Zoom maximum pour la grappe
     field: Géométrie
+    invalid_geometry: Géométrie invalide
+    auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
+    clear_data_filter: Réinitialiser le filtre
+    clear_location_filter: Réinitialiser le filtre de localisation
+    no_results_here: Aucun résultat dans cette zone
 panels:
+  metric:
+    name: Indicateurs
+    description: Afficher une seule valeur basée sur une requête
+    field: Champ
+  time_series:
+    name: Séries de temps
+    description: Rendre un graphique de ligne basé sur les valeurs au fil du temps
+    date_field: Champ date
+    value_field: Type de champ
   label:
     name: Étiquette
+    description: Afficher le texte de base
+  list:
+    name: Liste
+    description: Filtrer et lister les champs d'une collection

@@ -17,7 +17,13 @@
 			].includes(getComparator(field))
 		"
 	>
-		<input-component :is="interfaceType" :type="fieldInfo.type" :value="value" @input="value = $event" />
+		<input-component
+			:is="interfaceType"
+			:choices="fieldInfo.meta?.options?.choices"
+			:type="fieldInfo.type"
+			:value="value"
+			@input="value = $event"
+		/>
 	</template>
 
 	<div
@@ -26,14 +32,33 @@
 		:class="{ moveComma: interfaceType === 'interface-input' }"
 	>
 		<div v-for="(val, index) in value" :key="index" class="value">
-			<input-component :is="interfaceType" :type="fieldInfo.type" :value="val" @input="setValueAt(index, $event)" />
+			<input-component
+				:is="interfaceType"
+				:type="fieldInfo.type"
+				:value="val"
+				:focus="false"
+				:choices="fieldInfo.meta?.options?.choices"
+				@input="setValueAt(index, $event)"
+			/>
 		</div>
 	</div>
 
 	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))" class="between">
-		<input-component :is="interfaceType" :type="fieldInfo.type" :value="value[0]" @input="setValueAt(0, $event)" />
+		<input-component
+			:is="interfaceType"
+			:choices="fieldInfo.meta?.options?.choices"
+			:type="fieldInfo.type"
+			:value="value[0]"
+			@input="setValueAt(0, $event)"
+		/>
 		<div class="and">{{ t('interfaces.filter.and') }}</div>
-		<input-component :is="interfaceType" :type="fieldInfo.type" :value="value[1]" @input="setValueAt(1, $event)" />
+		<input-component
+			:is="interfaceType"
+			:choices="fieldInfo.meta?.options?.choices"
+			:type="fieldInfo.type"
+			:value="value[1]"
+			@input="setValueAt(1, $event)"
+		/>
 	</template>
 </template>
 
@@ -68,6 +93,8 @@ export default defineComponent({
 		});
 
 		const interfaceType = computed(() => {
+			if (fieldInfo.value?.meta?.options?.choices) return 'select';
+
 			const types: Record<string, string> = {
 				bigInteger: 'input',
 				binary: 'input',

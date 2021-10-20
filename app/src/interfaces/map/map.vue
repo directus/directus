@@ -60,11 +60,18 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ButtonControl } from '@/utils/geometry/controls';
 import { Geometry } from 'geojson';
 import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } from '@/utils/geometry';
-import { GeoJSONParser, GeoJSONSerializer, SimpleGeometry, MultiGeometry } from '@directus/shared/types';
+import {
+	Field,
+	GeometryType,
+	GeometryFormat,
+	GeoJSONParser,
+	GeoJSONSerializer,
+	SimpleGeometry,
+	MultiGeometry,
+} from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
-import { Field, GeometryType, GeometryFormat } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
 import { useAppStore } from '@/stores';
@@ -72,7 +79,7 @@ import { useAppStore } from '@/stores';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 const MARKER_ICON_URL =
-	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/2x/baseline_place_black_24dp.png';
+	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/48dp/2x/baseline_place_black_48dp.png';
 
 export default defineComponent({
 	props: {
@@ -145,16 +152,15 @@ export default defineComponent({
 		const controls = {
 			draw: new MapboxDraw(getDrawOptions(geometryType)),
 			fitData: new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds),
-			navigation: new NavigationControl(),
+			navigation: new NavigationControl({
+				showCompass: false,
+			}),
 			geolocate: new GeolocateControl(),
 		};
 
 		onMounted(() => {
-			setupMap();
-		});
-
-		onUnmounted(() => {
-			map.remove();
+			const cleanup = setupMap();
+			onUnmounted(cleanup);
 		});
 
 		return {
@@ -168,11 +174,12 @@ export default defineComponent({
 			basemap,
 		};
 
-		function setupMap() {
+		function setupMap(): () => void {
 			map = new Map({
 				container: container.value!,
 				style: style.value,
 				attributionControl: false,
+				dragRotate: false,
 				logoPosition: 'bottom-right',
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
@@ -200,6 +207,7 @@ export default defineComponent({
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
 				map.on('draw.modechange', handleDrawModeChange);
+				window.addEventListener('keydown', handleKeyDown);
 			});
 
 			watch(
@@ -247,6 +255,11 @@ export default defineComponent({
 					loadValueFromProps();
 				}
 			);
+
+			return () => {
+				window.removeEventListener('keydown', handleKeyDown);
+				map.remove();
+			};
 		}
 
 		function resetValue(hard: boolean) {
@@ -383,6 +396,12 @@ export default defineComponent({
 				emit('input', serialize(currentGeometry));
 			}
 		}
+
+		function handleKeyDown(event) {
+			if ([8, 46].includes(event.keyCode)) {
+				controls.draw.trash();
+			}
+		}
 	},
 });
 </script>
@@ -437,7 +456,7 @@ export default defineComponent({
 
 	.v-info {
 		padding: 20px;
-		background-color: var(--background-subdued);
+		background-color: var(--background-input);
 		border-radius: var(--border-radius);
 		box-shadow: var(--card-shadow);
 	}
