@@ -33,7 +33,7 @@
 						<field-configuration
 							v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
 							:row="configRow"
-							:interface="chosenInterface"
+							:chosen-interface="chosenInterface"
 							@save="$emit('save')"
 						/>
 					</transition-expand>

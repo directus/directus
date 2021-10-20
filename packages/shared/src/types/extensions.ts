@@ -10,6 +10,8 @@ import {
 	EXTENSION_TYPES,
 } from '../constants';
 import { Accountability } from './accountability';
+import { Collection, Field, Relation, DeepPartial } from '.';
+import { LOCAL_TYPES } from '../constants';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -67,4 +69,18 @@ export type ApiExtensionContext = {
 	env: Record<string, any>;
 	logger: Logger;
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
+};
+
+export type ExtensionsOptionsContext = {
+	collection: string;
+	field: DeepPartial<Field>;
+	relations: DeepPartial<Relation>[];
+	collections: DeepPartial<Collection>[];
+	fields: DeepPartial<Field>[];
+	items: Record<string, Record<string, any>[]>;
+	flags: {
+		localType: typeof LOCAL_TYPES[number];
+		autoGenerateJunctionRelation: boolean;
+	};
+	saving: boolean;
 };

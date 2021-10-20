@@ -43,6 +43,8 @@
 				</div>
 			</div>
 
+			<extension-options type="interface" :extension="chosenInterface" />
+
 			<v-button class="save" full-width :disabled="!readyToSave" @click="$emit('save')" :loading="saving">
 				{{ t('save') }}
 			</v-button>
@@ -51,19 +53,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
+import ExtensionOptions from '../shared/extension-options.vue';
 
 export default defineComponent({
+	components: { ExtensionOptions },
 	props: {
 		row: {
 			type: Number,
 			default: null,
 		},
-		interface: {
+		chosenInterface: {
 			type: String,
 			required: true,
 		},
@@ -78,7 +82,7 @@ export default defineComponent({
 
 		const { interfaces } = getInterfaces();
 
-		const chosenInterface = computed(() => interfaces.value.find((inter) => inter.id === props.interface));
+		const chosenInterface = computed(() => interfaces.value.find((inter) => inter.id === props.chosenInterface));
 
 		const typeOptions = computed(() => {
 			if (!chosenInterface.value) return [];
@@ -119,6 +123,8 @@ export default defineComponent({
 	--form-vertical-gap: 20px;
 
 	@include form-grid;
+
+	margin-bottom: 20px;
 }
 
 .monospace {
