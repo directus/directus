@@ -92,7 +92,7 @@ Directus will ask you to login on the external service, and return authenticated
 service.
 
 Directus supports hundereds of OAuth 2.0 and OpenID services, but requires some configuration to authenticate
-users correctly. For example, enabling logging in through GitHub requires as creating an
+users correctly. For example, enabling logging in through GitHub requires creating an
 [OAuth 2.0 app in GitHub](https://github.com/settings/developers) and adding the following configuration to Directus:
 
 ```
