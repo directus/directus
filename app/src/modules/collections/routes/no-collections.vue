@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import { useUserStore } from '@/stores';
 
