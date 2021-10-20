@@ -1,13 +1,12 @@
 /* eslint-disable no-console */
 import { v4 as uuid } from 'uuid';
-import { music, internet, name, datatype, lorem, address } from 'faker';
+import { music, internet, name, datatype, lorem /*, address */ } from 'faker';
 import { Knex } from 'knex';
 
 type Guest = {
 	id?: string;
 	name: string;
 	birthday: Date;
-	search_radius: string;
 	earliest_events_to_show: string;
 	latest_events_to_show: string;
 	password: string;
@@ -23,34 +22,24 @@ type Artist = {
 
 type Tour = {
 	id?: number;
-	route: string;
-	map_of_stops: string;
-	area_of_reach: string;
-	revenue_estimated: bigint;
-	revenue_of_shows_per_month: string;
+	revenue: bigint;
 };
 
 type Organizer = {
 	id?: number;
-	name: string;
+	company_name: string;
 };
 
 type Event = {
 	id?: number;
-	time: Date;
+	time: string;
 	description: string;
 	cost: number;
-	location: string;
 	created_at: Date;
 	tags: string;
 };
 
-type JoinTable = {
-	id?: string;
-	[key: string]: any;
-};
-
-type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
+type Item = Guest | Artist | Tour | Organizer | Event;
 
 /*
  * Options Example: Artist
@@ -72,10 +61,6 @@ type SeedOptions = {
 
 type CreateManyOptions = {
 	[column: string]: number;
-};
-
-export type JoinTableOptions = {
-	[key: string]: string | number;
 };
 
 export const seedTable = async function (
@@ -135,9 +120,8 @@ export const createArtist = (): Artist => ({
 export const createEvent = (): Event => ({
 	cost: datatype.float(),
 	description: lorem.paragraphs(2),
-	location: getRandomGeoPoint(),
 	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
-	time: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
+	time: randomTime(),
 	tags: `tags
 ${music.genre()}
 ${music.genre()}
@@ -146,18 +130,13 @@ ${music.genre()}
 });
 
 export const createTour = (): Tour => ({
-	route: getRandomGeoLineString(),
-	map_of_stops: getRandomGeoMultiPoint(),
-	area_of_reach: getRandomGeoMultiPolygon(),
-	revenue_estimated: BigInt(getRandomInt(Number.MAX_SAFE_INTEGER)),
-	revenue_of_shows_per_month: getRandomGeoMultiLineString(),
+	revenue: BigInt(getRandomInt(Number.MAX_SAFE_INTEGER)),
 });
 
 export const createGuest = (): Guest => ({
 	id: uuid(),
 	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	name: `${name.firstName()} ${name.lastName()}`,
-	search_radius: getRandomGeoPolygon(),
 	earliest_events_to_show: randomTime(),
 	latest_events_to_show: randomTime(),
 	password: getRandomString(32),
@@ -165,7 +144,7 @@ export const createGuest = (): Guest => ({
 });
 
 export const createOrganizer = (): Organizer => ({
-	name: `${name.firstName()} ${name.lastName()}`,
+	company_name: `${name.firstName()} ${name.lastName()}`,
 });
 
 export const createMany = (factory: () => Item, count: number, options?: CreateManyOptions) => {
@@ -197,49 +176,6 @@ function randomDateTime(start: Date, end: Date) {
 function randomTime() {
 	const dateTime = randomDateTime(new Date(1030436120350), new Date(1633466120350)).toUTCString();
 	return dateTime.substring(17, 25);
-}
-
-function getRandomGeoPoint() {
-	const location = address.nearbyGPSCoordinate();
-	return `SRID=4326;POINT(${location[0]} ${location[1]})`;
-}
-function getRandomGeoMultiPoint() {
-	const location = address.nearbyGPSCoordinate();
-	const location2 = address.nearbyGPSCoordinate();
-
-	return `SRID=4326;MULTIPOINT(${location[0]} ${location[1]},${location2[0]} ${location2[1]})`;
-}
-function getRandomGeoLineString() {
-	const location = address.nearbyGPSCoordinate();
-	const location2 = address.nearbyGPSCoordinate();
-
-	return `SRID=4326;LINESTRING(${location[0]} ${location[1]},${location2[0]} ${location2[1]})`;
-}
-function getRandomGeoMultiLineString() {
-	const location = address.nearbyGPSCoordinate();
-	const location2 = address.nearbyGPSCoordinate();
-	const location3 = address.nearbyGPSCoordinate();
-	const location4 = address.nearbyGPSCoordinate();
-	const location5 = address.nearbyGPSCoordinate();
-	return `SRID=4326;MULTILINESTRING((${location[0]} ${location[1]},${location2[0]} ${location2[1]}),(${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
-}
-
-function getRandomGeoPolygon() {
-	const location = address.nearbyGPSCoordinate();
-	const location2 = address.nearbyGPSCoordinate();
-	const location3 = address.nearbyGPSCoordinate();
-	const location4 = address.nearbyGPSCoordinate();
-	const location5 = address.nearbyGPSCoordinate();
-
-	return `SRID=4326;POLYGON((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]}))`;
-}
-function getRandomGeoMultiPolygon() {
-	const location = address.nearbyGPSCoordinate();
-	const location2 = address.nearbyGPSCoordinate();
-	const location3 = address.nearbyGPSCoordinate();
-	const location4 = address.nearbyGPSCoordinate();
-	const location5 = address.nearbyGPSCoordinate();
-	return `SRID=4326;MULTIPOLYGON(((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]})),((${location[0]} ${location[1]},${location2[0]} ${location2[1]},${location3[0]} ${location3[1]},${location4[0]} ${location4[1]},${location5[0]} ${location5[1]})))`;
 }
 
 function getRandomString(length: number) {

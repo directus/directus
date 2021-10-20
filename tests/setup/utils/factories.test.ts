@@ -26,10 +26,9 @@ describe('Item factories', () => {
 			expect(createEvent()).toMatchObject({
 				cost: expect.any(Number),
 				created_at: expect.any(Date),
-				location: expect.any(String),
 				description: expect.any(String),
 				tags: expect.any(String),
-				time: expect.any(Date),
+				time: expect.any(String),
 			});
 		});
 	});
@@ -46,13 +45,13 @@ describe('Item factories', () => {
 	describe('createOrganizer', () => {
 		it('returns an object of column names and values', () => {
 			expect(createOrganizer()).toMatchObject({
-				name: expect.any(String),
+				company_name: expect.any(String),
 			});
 		});
 	});
 	describe('createTour', () => {
-		it('revenue_estimated to be the correct type', () => {
-			expect(typeof createTour().revenue_estimated).toBe('bigint');
+		it('revenue to be the correct type', () => {
+			expect(typeof createTour().revenue).toBe('bigint');
 		});
 	});
 	describe('createMany', () => {
@@ -76,13 +75,6 @@ describe('seeding databases', () => {
 
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
-			const database = databases.get(vendor);
-
-			await database!.schema.createTableIfNotExists('artists', (table: any) => {
-				table.increments('id');
-				table.string('name');
-				table.json('members');
-			});
 		}
 	});
 	afterAll(async () => {
@@ -193,60 +185,92 @@ describe('seeding databases', () => {
 		});
 
 		describe('createEvent', () => {
-			// it.each(getDBsToTest())('%p returns an event object of column names and values', async (vendor) => {
-			// const database = databases.get(vendor);
-			// const options = { select: ['*'], where: ['id', 1] };
-			// expect(await seedTable(database!, 5, 'events', createEvent(), options)).toMatchObject([
-			// 	{
-			// 		cost: expect.any(Number),
-			// 		created_at: expect.any(Date),
-			// 		location: expect.any(String),
-			// 		description: expect.any(String),
-			// 		tags: expect.any(String),
-			// 		time: expect.any(Date),
-			// 	},
-			// ]);
-			// });
+			it.each(getDBsToTest())('%p returns an event object of column names and values', async (vendor) => {
+				const database = databases.get(vendor)!;
+				const options = { select: ['*'], where: ['id', 1] };
+				if (vendor === 'mssql') {
+					expect(await seedTable(database, 1, 'events', createEvent, options)).toMatchObject([
+						{
+							cost: expect.any(Number),
+							created_at: expect.any(Date),
+							description: expect.any(String),
+							tags: expect.any(String),
+							time: expect.any(Date),
+						},
+					]);
+				} else {
+					expect(await seedTable(database, 1, 'events', createEvent, options)).toMatchObject([
+						{
+							cost: expect.any(Number),
+							created_at: expect.any(Date),
+							description: expect.any(String),
+							tags: expect.any(String),
+							time: expect.any(String),
+						},
+					]);
+				}
+			});
 		});
 
 		describe('createGuest', () => {
-			// it.each(getDBsToTest())('%p returns an guest object of column names and values', async (vendor) => {
-			// 			const database = databases.get(vendor);
-			// const options = { select: ['*'], where: ["id", 1] };
-			// 	expect(await seedTable(database, 5, 'guests', createGuest(), options)).toMatchObject([
-			// 		{
-			// 			name: expect.any(String),
-			// 			birthday: expect.any(Date),
-			// 		},
-			// 	]);
-			// });
+			it.each(getDBsToTest())('%p returns an guest object of column names and values', async (vendor) => {
+				const database = databases.get(vendor)!;
+				const guest = createGuest();
+				const options = { select: ['*'], where: ['id', guest.id] };
+				const insertedGuest = await seedTable(database, 1, 'guests', guest, options);
+				if (vendor === 'mssql') {
+					expect(insertedGuest).toMatchObject([
+						{
+							name: guest.name,
+							birthday: expect.any(Date),
+							earliest_events_to_show: expect.any(Date),
+							latest_events_to_show: expect.any(Date),
+							password: guest.password,
+							shows_attended: guest.shows_attended,
+						},
+					]);
+				} else {
+					expect(insertedGuest).toMatchObject([
+						{
+							earliest_events_to_show: expect.any(String),
+							latest_events_to_show: expect.any(String),
+						},
+					]);
+				}
+			});
 		});
 
 		describe('createTour', () => {
-			// it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
-			// 			const database = databases.get(vendor);
-			// const options = { select: ['*'], where: ["id", 1] };
-			// 	expect(await seedTable(database, 5, 'tours', createTours(), options)).toMatchObject([
-			// 		{
-			// 			name: expect.any(String),
-			// 			route: expect.any(String)
-			// 			map_of_stops: expect.any(String)
-			// 			area_of_reach: expect.any(String)
-			// 		},
-			// 	]);
-			// });
+			it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
+				const database = databases.get(vendor)!;
+				const tour = createTour();
+				const options = { select: ['*'], where: ['revenue', tour.revenue] };
+				const insertedTour = await seedTable(database, 1, 'tours', tour, options);
+
+				if (vendor === 'mysql' || vendor === 'maria') {
+					expect(insertedTour[0].revenue.toString()).toBe(tour.revenue.toString());
+				} else {
+					expect(insertedTour).toMatchObject([
+						{
+							revenue: tour.revenue.toString(),
+						},
+					]);
+				}
+			});
 		});
-		describe('createTour', () => {
-			// it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
-			// 			const database = databases.get(vendor);
-			// const options = { select: ['*'], where: ["id", 1] };
-			// 	expect(await seedTable(database, 5, 'tours', createOrganizer(), options)).toMatchObject([
-			// 		{
-			// 			name: expect.any(String),
-			// 		},
-			// 	]);
-			// });
+
+		describe('createOrganizer', () => {
+			it.each(getDBsToTest())('%p returns an organizer object of column names and values', async (vendor) => {
+				const database = databases.get(vendor)!;
+				const options = { select: ['*'], where: ['id', 1] };
+				expect(await seedTable(database, 5, 'organizers', createOrganizer(), options)).toMatchObject([
+					{
+						company_name: expect.any(String),
+					},
+				]);
+			});
 		});
+
 		describe('createMany', () => {
 			// it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
 			// 			const database = databases.get(vendor);
