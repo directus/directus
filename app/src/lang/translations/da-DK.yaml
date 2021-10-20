@@ -210,22 +210,34 @@ text: Tekst
 time: Tid
 timestamp: Tidsstempel
 uuid: UUID
+hash: Hash
 geometry: Geometri
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret Oversættelser
 auto_refresh: Opdater Automatisk
 refresh_interval: Opdater Interval
 no_refresh: Genindlæs ikke
+refresh_interval_seconds: Genopfrisk Straks Hvert sekund - Hver {seconds} Sekunder
+refresh_interval_minutes: Hvert minut Hvert {minutes} minut
 auto_generate: Auto- Generér
+this_will_auto_setup_fields_relations: Dette vil automatisk opsætte alle obligatoriske felter og relationer.
 click_here: Klik her
+to_manually_setup_translations: for manuelt at opsætte oversættelser.
+click_to_manage_translated_fields: >-
+  Der er endnu ingen oversatte felter. Klik her for at oprette dem. ● Der er et oversatte felt. Klik her for at administrere den. ● Der er {count} oversatte felter. Klik her for at administrere dem.
 fields_group: Felter Gruppe
 no_collections_found: Ingen samlinger fundet.
+new_data_alert: 'Følgende oprettes inden for din datamodel:'
 search_collection: Søg Samling...
 new_field: 'Nyt felt'
 new_collection: 'Ny Samling'
+add_m2o_to_collection: 'Tilføj Many-to-One til "{collection}"'
+add_o2m_to_collection: 'Tilføj En-til-mange til "{collection}"'
 choose_a_type: Vælg en type...
+determined_by_relationship: Bestemt af forhold
 add_note: Tilføj en nyttig note til brugere...
 add_link: Tilføj Link
+custom_link: Tilpasset Link
 default_value: Standardværdi
 standard_field: Standard Felt
 single_file: Enkelt Fil
@@ -241,6 +253,7 @@ translations: Oversættelser
 no_translations: Ingen Oversættelser
 note: Kommentar
 enter_a_value: Indtast en værdi...
+enter_a_placeholder: Indtast en pladsholder...
 length: Længde
 readonly: Skrivebeskyttet
 unique: Unik
@@ -250,15 +263,18 @@ primary_key: Primærnøgle
 foreign_key: Fremmed Nøgle
 finish_setup: Afslut Opsætning
 dismiss: Afvis
+raw_value: Rå værdi
 edit_raw_value: Rediger Rå Værdi
 enter_raw_value: Indtast rå værdi...
 clear_value: Nulstil værdi
+clear_changes: Ryd Ændringer
 reset_to_default: Nulstil til standard
 undo_changes: Fortryd ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
+confirm_revert: Bekræft Tilbagefør
 confirm_revert_body: Dette vil vende elementet tilbage til den valgte tilstand.
 display: Vis
 settings_update_success: Indstillinger opdateret
@@ -362,6 +378,11 @@ type: Type
 creating_new_collection: Opretter Ny Samling
 created_by: Oprettet af
 created_on: Oprettet d.
+creating_collection_info: Navngiv samlingen og opsæt dens unikke “nøgle” felt...
+creating_collection_system: Aktivér og omdøb alle disse valgfrie felter.
+auto_increment_integer: Auto-stigende heltal
+generated_uuid: Genereret UUID
+manual_string: Manuelt indtastet streng
 save_and_create_new: Gem og opret ny
 save_and_stay: Gem og bliv
 save_as_copy: Gem som kopi
@@ -377,17 +398,30 @@ select_item: Vælg Element
 no_items: Ingen elementer
 search_items: Søg efter emner...
 disabled: Deaktiveret
+information: Information
 report_bug: Rapportér Fejl
 request_feature: Anmod om funktion
+interface_not_found: 'Interface "{interface}" blev ikke fundet.'
 reset_interface: Nulstil Grænseflade
+display_not_found: 'Visning "{display}" ikke fundet.'
+reset_display: Nulstil Visning
 item_count: 'Ingen Elementer | Et Element | {count} Elementer'
 no_items_copy: Der er endnu ingen elementer i denne samling.
+file_count: 'Ingen Filer, én Fil, {count} Filer'
 no_files_copy: Der er ingen filer her.
+user_count: 'Ingen brugere: Én bruger, {count} brugere'
 no_users_copy: Der er endnu ingen brugere i denne rolle.
+webhooks_count: 'Ingen Webhooks ● One Webhook ● {count} Webhooks'
+no_webhooks_copy: Ingen webhooks er konfigureret endnu. Kom i gang ved at oprette en nedenfor.
+all_items: Alle Punkter
 any: Alle
 no_collections: Ingen Samlinger
 create_collection: Opret samling
+no_collections_copy_admin: Du har endnu ikke nogen samlinger. Klik på knappen nedenfor for at komme i gang.
+no_collections_copy: Du har endnu ikke nogen samlinger. Kontakt venligst din systemadministrator.
 relationship_not_setup: Forholdet er ikke konfigureret korrekt
+display_template_not_setup: Visningsskabelonen er forkert konfigureret
+collection_field_not_setup: Indstillingen for samlingsfelt er forkert konfigureret
 select_a_collection: Vælg en samling
 select_a_field: Vælg et felt
 active: Aktiv
@@ -413,6 +447,7 @@ add_filter: Tilføj Filter
 upper_limit: Øvre grænse...
 lower_limit: Nedre grænse...
 user_directory: Bruger Mappe
+documentation: Dokumentation
 duration: Varighed
 file_moved: Fil Flyttet
 collection_created: Samling Oprettet
@@ -424,24 +459,32 @@ sort: Sortér
 status: Status
 remove: Fjern
 toggle_manual_sorting: Skift Manuel Sortering
+bookmark_doesnt_exist: Bogmærke Eksisterer Ikke
+bookmark_doesnt_exist_copy: Bogmærket, du forsøger at åbne, kunne ikke findes.
+bookmark_doesnt_exist_cta: Tilbage til afhentning
 select_an_item: Vælg et element...
 edit: Rediger
 enabled: Aktiveret
 disable_tfa: Deaktivér 2FA
+tfa_scan_code: Scan koden i din autentificeringsapp for at afslutte opsætningen af 2FA
+enter_otp_to_disable_tfa: Indtast OTP for at deaktivere 2FA
 create_account: Opret Konto
 account_created_successfully: Konto Oprettet
 auto_fill: Udfyld Automatisk
+corresponding_field: Tilsvarende Felt
 errors:
   COLLECTION_NOT_FOUND: "Samlingen findes ikke"
   FIELD_NOT_FOUND: Felt ikke fundet
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Forkert brugernavn eller adgangskode
   INVALID_OTP: Forkert engangskodeord
+  INVALID_PAYLOAD: Invalid payload
   INVALID_QUERY: Ugyldig forespørgsel
   ITEM_LIMIT_REACHED: Element grænse nået
   ITEM_NOT_FOUND: Element ikke fundet
   ROUTE_NOT_FOUND: Ikke fundet
   RECORD_NOT_UNIQUE: Duplikeret værdi detekteret
+  USER_SUSPENDED: Bruger Suspenderet
   INTERNAL_SERVER_ERROR: Uventet Fejl
   NOT_NULL_VIOLATION: Værdien kan ikke være null
   UNKNOWN: Uventet Fejl
@@ -476,6 +519,7 @@ operators:
   lte: Mindre end eller lig med
   gte: Større end eller lig med
   in: Er en af
+  nnull: Er ikke nul
   contains: Indeholder
   ncontains: Indeholder ikke
   starts_with: Starter med
@@ -486,7 +530,15 @@ operators:
   nbetween: Er ikke mellem
   empty: Er tom
   nempty: Er ikke tom
+  all: Indeholder disse nøgler
+  has: Indeholder nogle af disse nøgler
+  intersects: Intersekter
+  nintersects: Skærer ikke
+  intersects_bbox: Grænsefelt til skæring
+  nintersects_bbox: Grænsefeltet skærer ikke op
 loading: Indlæser...
+item: Vare
+items: Varer
 value_unique: Værdien skal være unik
 per_page: Pr. Side
 all_files: Alle Filer
@@ -792,6 +844,7 @@ interfaces:
   datetime:
     datetime: Datotid
   system-display-template:
+    collection_field_not_setup: Indstillingen for samlingsfelt er forkert konfigureret
     select_a_collection: Vælg en samling
   presentation-divider:
     divider: Opdeler
@@ -801,6 +854,8 @@ interfaces:
     file: Fil
   files:
     files: Filer
+  input-hash:
+    hash: Hash
   select-icon:
     icon: Ikon
   map:
