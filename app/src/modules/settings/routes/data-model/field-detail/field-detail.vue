@@ -1,6 +1,6 @@
 <template>
-	<field-detail-simple v-if="simple" :collection="collectionInfo" :title="title" @cancel="cancel" />
-	<field-detail-full v-else :collection="collectionInfo" :title="title" @cancel="cancel" />
+	<field-detail-simple v-if="simple" :collection="collectionInfo" :title="title" @cancel="cancel" @save="save" />
+	<field-detail-full v-else :collection="collectionInfo" :title="title" @cancel="cancel" @save="save" />
 </template>
 
 <script lang="ts">
@@ -35,6 +35,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const fieldDetail = useFieldDetailStore();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const router = useRouter();
@@ -42,10 +43,6 @@ export default defineComponent({
 
 		const collectionInfo = computed(() => {
 			return collectionsStore.getCollection(collection.value);
-		});
-
-		onUnmounted(() => {
-			fieldDetail.$reset();
 		});
 
 		const simple = computed(() => {
@@ -63,10 +60,15 @@ export default defineComponent({
 			}
 		});
 
-		return { simple, cancel, collectionInfo, t, title };
+		return { simple, cancel, collectionInfo, t, title, save };
 
 		function cancel() {
 			fieldDetail.$reset();
+			router.push(`/settings/data-model/${props.collection}`);
+		}
+
+		async function save() {
+			await fieldDetail.save();
 			router.push(`/settings/data-model/${props.collection}`);
 		}
 	},

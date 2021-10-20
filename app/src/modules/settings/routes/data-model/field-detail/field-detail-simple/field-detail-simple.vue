@@ -16,7 +16,7 @@
 						:key="inter.id"
 						class="interface"
 						:class="{ active: chosenInterface === inter.id }"
-						@click="chosenInterface = inter.id"
+						@click="chosenInterface = chosenInterface === inter.id ? null : inter.id"
 					>
 						<div class="preview">
 							<template v-if="inter.preview">
@@ -28,6 +28,15 @@
 						</div>
 						<v-text-overflow :text="inter.name" class="name" />
 					</button>
+
+					<transition-expand>
+						<field-configuration
+							v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
+							:row="configRow"
+							:interface="chosenInterface"
+							@save="$emit('save')"
+						/>
+					</transition-expand>
 				</div>
 			</div>
 		</div>
@@ -35,17 +44,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, toRefs, watch } from 'vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { Collection } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { getInterfaces } from '@/interfaces';
 import { orderBy } from 'lodash';
-import { useFieldDetailStore } from '../store';
+import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { syncRefProperty } from '@/utils/sync-ref-property';
+import FieldConfiguration from './field-configuration.vue';
 
 export default defineComponent({
-	emits: ['cancel'],
+	components: { FieldConfiguration },
 	props: {
 		collection: {
 			type: Object as PropType<Collection>,
@@ -56,11 +66,15 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup() {
+	emits: ['cancel', 'save'],
+	setup(props) {
+		const { collection } = toRefs(props);
+
 		const { t } = useI18n();
 		const isOpen = useDialogRoute();
 
 		const fieldDetail = useFieldDetailStore();
+		watch(collection, () => fieldDetail.update({ collection: collection.value.collection }), { immediate: true });
 
 		const { interfaces } = getInterfaces();
 
@@ -104,22 +118,25 @@ export default defineComponent({
 			},
 		]);
 
-		const chosenInterface = computed({
-			get() {
-				return fieldDetail.field.meta?.interface ?? null;
-			},
-			set(newInterface: string | null) {
-				fieldDetail.$patch({
-					field: {
-						meta: {
-							interface: newInterface,
-						},
-					},
-				});
-			},
+		const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
+
+		const configRow = computed(() => {
+			if (!chosenInterface.value) return null;
+
+			let indexInGroup: number | null = null;
+
+			groups.value.forEach((group) => {
+				const index = group.interfaces.findIndex((inter) => inter.id === chosenInterface.value);
+				if (index !== -1) indexInGroup = index;
+			});
+
+			if (indexInGroup === null) return null;
+
+			// TODO different amounts responsively
+			return Math.ceil((indexInGroup + 1) / 4) + 1;
 		});
 
-		return { isOpen, t, interfaces, groups, isSVG, syncRefProperty, chosenInterface };
+		return { isOpen, t, interfaces, groups, isSVG, syncRefProperty, chosenInterface, configRow };
 
 		function isSVG(path: string) {
 			return path.startsWith('<svg');
