@@ -16,7 +16,8 @@
 						:key="inter.id"
 						class="interface"
 						:class="{ active: chosenInterface === inter.id }"
-						@click="chosenInterface = chosenInterface === inter.id ? null : inter.id"
+						:disabled="chosenInterface && chosenInterface !== inter.id"
+						@click="toggleInterface(inter.id)"
 					>
 						<div class="preview">
 							<template v-if="inter.preview">
@@ -136,10 +137,22 @@ export default defineComponent({
 			return Math.ceil((indexInGroup + 1) / 4) + 1;
 		});
 
-		return { isOpen, t, interfaces, groups, isSVG, syncRefProperty, chosenInterface, configRow };
+		return { isOpen, t, interfaces, groups, isSVG, syncRefProperty, chosenInterface, configRow, toggleInterface };
 
 		function isSVG(path: string) {
 			return path.startsWith('<svg');
+		}
+
+		function toggleInterface(id: string) {
+			if (!chosenInterface.value) {
+				chosenInterface.value = id;
+				return;
+			}
+
+			if (chosenInterface.value === id) {
+				chosenInterface.value = null;
+				return;
+			}
 		}
 	},
 });
@@ -221,5 +234,11 @@ export default defineComponent({
 .interface.active .preview {
 	border-color: var(--primary);
 	background-color: var(--primary-alt);
+}
+
+.interface[disabled] .preview {
+	border-color: var(--border-subdued);
+	background-color: var(--background-subdued);
+	filter: grayscale(1);
 }
 </style>

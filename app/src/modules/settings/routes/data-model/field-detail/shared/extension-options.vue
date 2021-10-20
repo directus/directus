@@ -31,6 +31,7 @@ import { getDisplays } from '@/displays';
 import { useFieldDetailStore } from '../store';
 import { get, set } from 'lodash';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -45,6 +46,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const fieldDetail = useFieldDetailStore();
+
+		const { t } = useI18n();
 
 		const { collection, field, relations, fields, collections } = storeToRefs(fieldDetail);
 
@@ -102,6 +105,7 @@ export default defineComponent({
 			relations,
 			fields,
 			collections,
+			t,
 		};
 	},
 });
