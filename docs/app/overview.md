@@ -15,13 +15,12 @@ The leftmost section of the App is the module bar, which includes the:
 - **Module Navigation** — Allows navigating between the different modules your user has access to. Customizing the
   Module Navigation is done within the [Role's configuration](/guides/roles/#configuring-a-role), but the default module
   list includes:
-  - [Content](#collections)
-  - [User Directory](#user-directory)
-  - [File Library](#file-library)
-  - [Insights](#insights)
-  - [App Guide](#documentation)
-  - [Settings](#settings) (Admin Roles Only)
-  - [Any Custom Modules](/concepts/modules/) (Only if Configured)
+  - [Content](#) — The primary way to view and interact with database content
+  - [User Directory](#) — A dedicated section for the platform's system Users
+  - [File Library](#) — An aggregate of all files uploaded and managed within the platform
+  - [Insights](#insights) — Access to infinitely customizable data dashboards
+  - [App Guide](#) — A tailored, in-app portal for the platform's concepts, guides, and reference
+  - [Settings](#) — An admin-only section for configuring the project and system settings
 - **Current User Menu** — This component displays the authenticated user's name and avatar.
   - Sign Out — Hovering over the User Menu exposes the button to log out of the platform.
 

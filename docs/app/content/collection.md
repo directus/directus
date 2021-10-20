@@ -62,7 +62,37 @@ used to return data in a custom order.
 2. Navigate to the collection of the items you want to browse
 3. Click "Layout Options" in the page sidebar
 4. Choose the desired "Layout" you want to use
-5. Configure any other layout options that come after the layout dropdown
+5. Configure any other layout options
+
+### Table Layout
+
+Supports all forms of data, and is therefore the default within the Content module. It includes the following
+features/options:
+
+- Toggle & Reorder Field Columns (Option)
+- Row Spacing (Option)
+- Manual Item Ordering
+- Column Sort
+- Column Resizing
+- Select All
+
+### Card Layout
+
+This tiled layout is ideal for collections that prioritize an image, and is the default for both the
+[User Directory](/guides/users/) and [File Library](/guides/files/). It includes the following features/options:
+
+- Image Source (Option)
+- Title (Option)
+- Subtitle (Option)
+- Image Fit (Option)
+- Fallback Icon (Option)
+- Card Size
+- Sort Field & Direction
+- Select All
+
+### Calendar Layout
+
+### Map Layout
 
 ## Searching Items
 

@@ -186,6 +186,13 @@ App's soft-delete and manual sorting features.
 The Public permissions control what project data is accessible without authentication. This is managed via the Public
 "role", which is included in the system by default and can not be deleted.
 
+::: warning Private by Default
+
+All of the data within the platform is private by default. Permissions for the public role can be granted on a
+case-by-case basis by administrators.
+
+:::
+
 ### Configuring System Permissions
 
 In addition to permissions for _your_ custom collections, you can also customize the permissions for _system_

@@ -22,8 +22,8 @@ in the navigation bar and a listing on the main page.
 
 ## Editing a Panel
 
-## Resizing a Panel
+- Resizing
 
-## Copying a Panel
+## Duplicating a Panel
 
 ## Deleting a Panel

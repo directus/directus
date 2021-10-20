@@ -5,7 +5,7 @@ module.exports = {
 	ga: 'UA-24637628-7',
 	head: [
 		['link', { rel: 'manifest', href: '/manifest.json' }],
-		['link', { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#2CCDA6' }],
+		['link', { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#00C897' }],
 		['link', { rel: 'shortcut icon', type: 'image/svg+xml', href: '/favicon.svg' }],
 		[
 			'link',
@@ -35,9 +35,9 @@ module.exports = {
 			},
 		],
 		['meta', { name: 'application-name', content: 'Directus Docs' }],
-		['meta', { name: 'theme-color', content: '#2CCDA6' }],
+		['meta', { name: 'theme-color', content: '#00C897' }],
 		['meta', { name: 'apple-mobile-web-app-title', content: 'Directus Docs' }],
-		['meta', { name: 'msapplication-TileColor', content: '#2CCDA6' }],
+		['meta', { name: 'msapplication-TileColor', content: '#00C897' }],
 		['meta', { name: 'msapplication-config', content: '/browserconfig.xml' }],
 	],
 	themeConfig: {
@@ -148,11 +148,6 @@ module.exports = {
 						path: '/app/settings',
 						title: 'Settings',
 					},
-					{
-						type: 'page',
-						path: '/app/activity-log',
-						title: 'Activity Log',
-					},
 				],
 			},
 			{
@@ -249,6 +244,11 @@ module.exports = {
 						title: 'Webhooks',
 					},
 					{
+						type: 'page',
+						path: '/configuration/activity-log',
+						title: 'Activity Log',
+					},
+					{
 						type: 'divider',
 					},
 					// {
@@ -303,7 +303,7 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/reference/api/assets',
+						path: '/reference/api/files',
 						title: 'Files',
 					},
 					{
@@ -313,11 +313,6 @@ module.exports = {
 						type: 'page',
 						path: '/reference/api/system/activity',
 						title: 'Activity',
-					},
-					{
-						type: 'page',
-						path: '/reference/api/system/authentication',
-						title: 'Authentication***',
 					},
 					{
 						type: 'page',
@@ -333,11 +328,6 @@ module.exports = {
 						type: 'page',
 						path: '/reference/api/system/fields',
 						title: 'Fields',
-					},
-					{
-						type: 'page',
-						path: '/reference/api/system/files',
-						title: 'Files***',
 					},
 					{
 						type: 'page',

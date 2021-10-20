@@ -27,6 +27,16 @@ ability for administrators to add additional custom fields. This page has the sa
 - **Filename (Disk)** — LOCKED, this is the actual name of the file in storage
 - **Filename (Download)** — This allows you to set the name of the file when it is downloaded
 
+The file sidebar also includes the following details:
+
+- **Type** — The MIME type of the file, displayed in the App as a formatted media type
+- **Dimensions** — (Images Only) The width and height of the image in pixels
+- **Size** — The file-size the asset takes up within the storage adapter
+- **Created** — The timestamp of when the file was uploaded to the project
+- **Owner** — The Directus user that uploaded the file to the project
+- **Folder** — The current parent folder that contains the file
+- **Metadata** — Metadata JSON dump of the file's EXIF, IPTC, and ICC information
+
 #### Action Buttons
 
 - **Save** — Saves any edits made to the page

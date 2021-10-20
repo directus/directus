@@ -9,6 +9,10 @@
 
 ## Alias
 
+[Fields](#fields) that do not map directly to an actual database column are called "alias" fields. For example,
+presentation fields (such as dividers and groups) and certain relational types that display data stored elsewhere (such
+as [One-to-Many (O2M)](#) and [Many-to-Many (M2M)](#)).
+
 ## API
 
 ## App
@@ -92,34 +96,122 @@ formatting styles, or anything else.
 
 - [Creating a Custom Display](/guides/displays)
 
+## Environments
+
+Environments (eg: dev, staging, prod) are tracked as separate Project instances. You can then use schema/content
+migrations to promote data between them.
+
 ## Extensions
 
 ## Fields
 
 Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents
-a **column** in your database.
+a **column** in your database. For example, an `articles` [Collection](#collections) might have `title`, `body`,
+`author`, and `date_published` field. Fields mirror the characteristics of their associated column, including its
+`name`, `type`, `default`, `length`, `allow_null`, etc.
+
+### Relevant Guides
+
+- [Creating a Field](/guides/fields/#creating-a-field)
+- [Duplicating Fields](/guides/fields/#duplicating-a-field)
+- [Adjusting Field Layout](/guides/fields/#adjusting-field-layout)
+- [Deleting Fields](/guides/fields/#deleting-a-field)
 
 ## Files & Assets
 
 ## Interfaces
+
+Interfaces determine how you view or interact with a field. In most cases, they offer some sort of input tailored to
+managing data of a specific type, but can also be used exclusively for presentation. Examples include text inputs,
+toggles, WYSIWYG editors, dropdowns, sliders, image galleries, and more.
+
+In addition to the many core interfaces included out-of-the-box, _custom_ interfaces allow for creating more tailored or
+proprietary options, such as seating charts, QR codes, or Stripe customer info.
+
+### Relevant Guides
+
+- [Creating a Custom Interface](#)
 
 ## Items
 
 Item are objects within a Collection which contain values for one or more fields. Each collection represents a
 **record** in your database.
 
+Items are the primary building blocks of your project content. Similar to a "row" within a spreadsheet, all data within
+the platform is accessed via these "atomic" data units. Items themselves are fairly straightforward, however their real
+power comes from the complexity that begins to form when items are relationally connected to each other.
+
+Items are referenced (both individually and relationally) by their unique [primary key](#).
+
+#### Relevant Guides
+
+- [Creating an Item](/guides/items/#creating-an-item)
+- [Archiving an Item](/guides/items/#archiving-an-item)
+- [Reordering Items](/guides/items/#reordering-items)
+- [Deleting an Item](/guides/items/#deleting-an-item)
+
 ## Junction Collections
 
 ## Layouts
 
+Layouts determine how you view or interact with a Collection. In most cases, they offer a way to browse items based on a
+specific type of data, but can also be used to visualize or interact with data. Directus includes several Layout options
+out-of-the-box, each with different features and configuration options.
+
+- **Table** — Works with any type of data, showing items as rows and their fields as columns.
+- **Cards** — Ideal for image data, this layout shows items as a grid of image cards.
+- **Calendar** — Ideal for "temporal" data that is sorted by date or datetime.
+- **Map** — Ideal for "geospatial" data that is shown on a world map.
+
+In addition to these core layouts, custom layouts allow for creating more tailored or proprietary ways to experience
+data within the App, such as Gantt charts, seating maps, or spreadsheets.
+
+### Relevant Guides
+
+- [Creating a Custom Layout](/guides/layouts)
+
 ## Modules
+
+Modules are the highest and broadest level of organization within the App. There are several modules included
+out-of-the-box, however you can also add your own.
+
+The [Module Bar](/concepts/application/#_1-module-bar) lists all available Modules and allows you to switch between
+them. Each module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality
+within the App can be bucketed into one of the following modules:
+
+- [Content](#) — The primary way to view and interact with database content
+- [User Directory](#) — A dedicated section for the platform's system Users
+- [File Library](#) — An aggregate of all files uploaded and managed within the platform
+- [Insights](#insights) — Access to infinitely customizable data dashboards
+- [App Guide](#) — A tailored, in-app portal for the platform's concepts, guides, and reference
+- [Settings](#) — An admin-only section for configuring the project and system settings
+
+In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
+experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (eg: a Stripe
+Payments Console).
+
+### Relevant Guides
+
+- [Creating a Custom Module](#)
+
+## Multitenancy
+
+Multitenancy is an architecture that allows multiple tenants (eg: customers) to be managed by the platform. There are
+two main ways to achieve multitenancy:
+
+- **Project Scoping** — Creating a super-admin layer that provisions new tenant projects has been made easier by the
+  Cloud-native model of Directus 9+. This method involves developing custom code that can dynamically spin up/down
+  projects, but is also the most flexible, supporting scoped extensions and differentiated project settings.
+- **Role Scoping** — In this method, you create one Role per tenant, and configure their permissions to properly scope
+  them within a single project. This direction allows for tenants to share a single schema using _item_ scoped
+  permissions, or different schemas by using _collection_ scoped permissions.
 
 ## Panels
 
 ## Permissions
 
-Permissions are attached directly to a Role, defining what Users can create, read, update, and delete within the
-platform
+Permissions are attached directly to a Role, defining what a user can can create, read, update, and delete within the
+platform. Extremely granular, these filter-based permissions control access for the entire system.
 
 ## Presets
 
@@ -131,16 +223,58 @@ define bookmarks that can be used to quickly recall specific datasets.
 - [Creating a Preset](/guides/presets/#creating-a-preset)
 - [Deleting a Preset](/guides/presets/#deleting-a-preset)
 
+## Primary Key
+
 ## Projects
+
+A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
+file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
+
+- [Creating a Project](#)
+- [Configuring a Project](#)
+- [Adjusting Project Settings](#)
+- [Upgrading a Project](#)
+- [Backing-up a Project](#)
+- [Migrating a Project](#)
+- [Deleting a Project](#)
 
 ## Relationships
 
 ## Revisions
 
+Revisions are created whenever an Item is updated. These alternate versions are tracked so that previous states can be
+recovered. Every change made to items in Directus is stored as a complete versioned snapshot and a set of specific
+changes made (the delta). The revisions system is tightly coupled to the activity logs system, with each revision linked
+to the activity event where it was created.
+
 ## Roles
 
 Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
-platform.
+platform. You can create an unlimited number of roles, so organize your users in whatever way feels most appropriate.
+
+During the installation process, Directus automatically creates an "Administrators" Role, which is used to provide the
+initial admin user with full platform access. However this is just a _normal_ role, and so it can still be updated,
+renamed, or even deleted. Keep in mind that your project must maintain at least one role with Admin Access at all times.
+
+There is also a "Public" role that determines access for unauthenticated access.
+
+### Relevant Guides
+
+- [Creating a Role](/guides/roles/#creating-a-role)
+- [Configuring a Role](/guides/roles/#configuring-a-role)
+- [Configuring Role Permissions](/guides/permissions/#configuring-role-permissions)
+- [Configuring System Permissions](/guides/permissions/#configuring-system-permissions)
+- [Deleting a Role](/guides/roles/#deleting-a-role)
+
+## Storage Adapters
+
+Storage adapters allow project files to be stored in different locations or services. By default, Directus includes the
+following drivers:
+
+- **Local Filesystem** — The default, any filesystem location or network-attached storage
+- **S3 or Equivalent** — Including AWS S3, DigitalOcean Spaces, Alibaba OSS, and others
+- **Google Cloud Storage** — A RESTful web service on the Google Cloud Platform
+- **Azure Blob Storage** — Azure storage account containers
 
 ## Title Formatter
 
@@ -152,7 +286,46 @@ Request to the codebase, otherwise you can update this in your instance.
 
 ## Translations
 
+The platform supports internationalization across its entire Admin App. Many languages are currently supported, with
+more being added all the time. Anyone can add or refine any languages through the integration with
+[CrowdIn](https://locales.directus.io/).
+
+In addition to the App itself being multilingual, the platform allows translating your schema too. By default,
+collections and field names come from the database's naming, but you can override this in different languages.
+
+The platform also includes different ways to manage multilingual content. The built-in translation interface supports
+authoring content in any number of languages, side-by-side reference editing, and mixing in language agnostic content
+(such as dates or toggles).
+
 ## Types
+
+The "type" defines how field content is stored in the database and how it is returned by the API. Often called a
+data-type, these are important in ensuring field values are saved in a standardized format. Changing a field's type can
+cause data loss, so types are locked within the platform after a field is created.
+
+### Data Type Superset
+
+Directus uses its built-in database abstraction to properly support all the different SQL vendors. However, these
+vendors do not share support for the same datatypes, instead, each SQL vendor maintains their own list. To standardize
+all of these differences, Directus has a single _superset_ of types that map to the vendor-specific ones.
+
+- **String** — A shorter set of characters with a configurable max length
+- **Text** — A longer set of characters with no real-world max length
+- **Boolean** — A True or False value
+- **Binary** — The data of a binary file
+- **Integer** — A number without a decimal point
+- **Big Integer** — A larger number without a decimal point
+- **Float** — A less exact number with a floating decimal point
+- **Decimal** — A higher precision, exact decimal number often used in finances
+- **Timestamp** — A date, time, and timezone saved in ISO 8601 format
+- **DateTime** — A date and time saved in the database vendor's format
+- **Date** — A date saved in the database vendor's format
+- **Time** — A time saved in the database vendor's format
+- **JSON** — A value nested in JavaScript Object Notation
+- **CSV** — A comma-separated value, returned as an array of strings
+- **UUID** — A universally unique identifier saved in UUIDv4 format
+- **Hash** — A string hashed using argon2 cryptographic hash algorithm
+- **Alias** — For fields that do not have a database column [Learn More](#)
 
 ## Users
 

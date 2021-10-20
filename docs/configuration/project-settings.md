@@ -45,6 +45,13 @@ In addition to the above global Project Settings, you can also apply the followi
 
 ## Files & Thumbnails
 
+The platform's file middleware allows for cropping and transforming image assets on the fly. This means you can simply
+request an original image, include any desired transformation parameters, and you'll be served the new asset as a
+response.
+
+To impede malicious users from consuming your storage by requesting a large number of random sizes, you can use the
+following options to limit what transformations are possible.
+
 - **Storage Asset Presets** — Allows setting specific image transformations to simplify requests or limit usage.
   - Key — A unique identifier allowing faster and easier image transformation requests
   - Fit — Contain (preserve aspect ratio), Cover (force exact size), Fit Inside, or Fit Outside
