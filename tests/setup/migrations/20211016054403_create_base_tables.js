@@ -5,9 +5,10 @@ exports.up = async function (knex) {
 		table.json('members');
 	});
 	await knex.schema.createTable('guests', (table) => {
-		table.uuid('id').primary();
+		table.increments('id');
 		table.string('name');
 		table.date('birthday');
+		table.string('search_radius');
 		table.time('earliest_events_to_show');
 		table.time('latest_events_to_show');
 		table.string('password');
