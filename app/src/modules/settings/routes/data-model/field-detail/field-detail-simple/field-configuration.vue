@@ -116,12 +116,12 @@ export default defineComponent({
 
 // Extra bouding box ensures transition animation behaves properly
 .setup {
+	--form-vertical-gap: 20px;
+
 	margin: 34px;
 }
 
 .schema {
-	--form-vertical-gap: 20px;
-
 	@include form-grid;
 
 	margin-bottom: 20px;

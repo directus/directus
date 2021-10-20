@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!extensionInfo.options || optionsFields.length === 0">
+	<v-notice v-if="usesCustomComponent === false && optionsFields.length === 0">
 		{{ t('no_options_available') }}
 	</v-notice>
 
@@ -110,9 +110,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.extension-options {
-	--form-vertical-gap: 20px;
-}
-</style>
