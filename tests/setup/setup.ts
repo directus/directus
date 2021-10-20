@@ -280,7 +280,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 							title: config.names[vendor]!,
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
-								await database.migrate.up();
+								await database.migrate.latest();
 								await database.seed.run();
 							},
 						};

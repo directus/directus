@@ -3,100 +3,21 @@ import request from 'supertest';
 import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
-import { v4 as uuid } from 'uuid';
 import { createArtist, createGuest, createMany, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
-	const userId = uuid();
-	const roleId = uuid();
 
 	beforeAll(async () => {
 		const vendors = getDBsToTest();
 
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
-			const database = databases.get(vendor);
-			await database!('directus_roles').insert({
-				id: roleId,
-				name: 'test',
-				icon: 'verified',
-				admin_access: true,
-				description: 'test admin role',
-			});
-
-			await database!('directus_users').insert({
-				id: userId,
-				status: 'active',
-				email: 'test@example.com',
-				password: 'password',
-				first_name: 'Admin',
-				last_name: 'User',
-				role: roleId,
-				token: 'test_token',
-			});
-
-			await database!('directus_collections').insert([
-				{
-					collection: 'guests',
-				},
-				{
-					collection: 'artists',
-				},
-				{
-					collection: 'events',
-				},
-				{
-					collection: 'tours',
-				},
-				{
-					collection: 'organizers',
-				},
-			]);
-
-			if ((await database!.schema.hasTable('artists')) === false) {
-				await database!.schema.createTable('artists', (table) => {
-					table.increments('id').primary();
-					table.string('name');
-					table.json('members');
-				});
-			}
-
-			if ((await database!.schema.hasTable('guests')) === false) {
-				await database!.schema.createTable('guests', (table) => {
-					table.increments('id');
-					table.string('name');
-					table.date('birthday');
-					table.string('search_radius');
-					table.time('earliest_events_to_show');
-					table.time('latest_events_to_show');
-					table.string('password');
-					table.integer('shows_attended');
-					table.integer('favorite_artist').unsigned().references('id').inTable('artists');
-				});
-			}
 		}
 	});
 
 	afterAll(async () => {
-		for (const [vendor, connection] of databases) {
-			const database = databases.get(vendor)!;
-			await database('directus_users').where('id', userId).del();
-			await database('directus_roles').where('id', roleId).del();
-			await database('directus_collections').where('collection', 'guests').del();
-			await database('directus_collections').where('collection', 'artists').del();
-			await database('directus_collections').where('collection', 'events').del();
-			await database('directus_collections').where('collection', 'tours').del();
-			await database('directus_collections').where('collection', 'organizers').del();
-
-			await database.schema.dropTableIfExists('artists_events');
-			await database.schema.dropTableIfExists('tours_components');
-			await database.schema.dropTableIfExists('guests');
-			await database.schema.dropTableIfExists('artists');
-			await database.schema.dropTableIfExists('events');
-			await database.schema.dropTableIfExists('tours');
-			await database.schema.dropTableIfExists('organizers');
-
+		for (const [_vendor, connection] of databases) {
 			connection.destroy();
 		}
 	});
@@ -108,7 +29,7 @@ describe('/items', () => {
 
 			const response = await request(url)
 				.get(`/items/artists/1`)
-				.set('Authorization', 'Bearer test_token')
+				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
@@ -118,13 +39,19 @@ describe('/items', () => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			const artist = createArtist();
 			const guest = createGuest();
-			guest.favorite_artist = 1;
-			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
-			await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
+				select: ['id'],
+				where: ['name', artist.name],
+			});
+			guest.favorite_artist = insertedArtist[0].id;
+			const insertedGuest = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
+				select: ['id'],
+				where: ['name', guest.name],
+			});
 
 			const response = await request(url)
-				.get('/items/guests/1?fields=favorite_artist.*')
-				.set('Authorization', 'Bearer test_token')
+				.get(`/items/guests/${insertedGuest[0].id}?fields=favorite_artist.*`)
+				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
@@ -139,7 +66,7 @@ describe('/items', () => {
 				const response = await axios
 					.get(`${url}/items/artists/invalid_id`, {
 						headers: {
-							Authorization: 'Bearer test_token',
+							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
 						},
 					})
@@ -166,7 +93,7 @@ describe('/items', () => {
 				const response = await axios
 					.get(`${url}/items/invalid_table/1`, {
 						headers: {
-							Authorization: 'Bearer test_token',
+							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
 						},
 					})
@@ -188,7 +115,7 @@ describe('/items', () => {
 			seedTable(databases.get(vendor)!, 100, 'artists', createArtist);
 			const response = await request(url)
 				.get('/items/artists')
-				.set('Authorization', 'Bearer test_token')
+				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
@@ -204,7 +131,7 @@ describe('/items', () => {
 				const body = createArtist();
 				const response: any = await axios.post(`${url}/items/artists`, body, {
 					headers: {
-						Authorization: 'Bearer test_token',
+						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
 					},
 				});
@@ -218,7 +145,7 @@ describe('/items', () => {
 
 				const response: any = await axios.post(`${url}/items/guests`, body, {
 					headers: {
-						Authorization: 'Bearer test_token',
+						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
 					},
 				});
@@ -231,21 +158,7 @@ describe('/items', () => {
 				const body = createMany(createArtist, 5);
 				const response: any = await axios.post(`${url}/items/artists`, body, {
 					headers: {
-						Authorization: 'Bearer test_token',
-						'Content-Type': 'application/json',
-					},
-				});
-				expect(response.data.data.length).toBe(body.length);
-			});
-			it.each(getDBsToTest())('%p creates 5  users with favorite artists', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
-				await seedTable(databases.get(vendor)!, 5, 'artists', createArtist);
-
-				const body = createMany(createGuest, 5, { favorite_artist: 5 });
-
-				const response: any = await axios.post(`${url}/items/guests`, body, {
-					headers: {
-						Authorization: 'Bearer test_token',
+						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
 					},
 				});
@@ -259,7 +172,7 @@ describe('/items', () => {
 				const response = await axios
 					.post(`${url}/items/invalid_table`, body, {
 						headers: {
-							Authorization: 'Bearer test_token',
+							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
 						},
 					})
