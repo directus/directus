@@ -233,6 +233,7 @@ new_field: 'Nyt felt'
 new_collection: 'Ny Samling'
 add_m2o_to_collection: 'Tilføj Many-to-One til "{collection}"'
 add_o2m_to_collection: 'Tilføj En-til-mange til "{collection}"'
+add_m2m_to_collection: 'Tilføj Many-to-Mange til "{collection}"'
 choose_a_type: Vælg en type...
 determined_by_relationship: Bestemt af forhold
 add_note: Tilføj en nyttig note til brugere...
@@ -255,6 +256,7 @@ note: Kommentar
 enter_a_value: Indtast en værdi...
 enter_a_placeholder: Indtast en pladsholder...
 length: Længde
+precision_scale: Præcision & Skala
 readonly: Skrivebeskyttet
 unique: Unik
 updated_on: Opdateret Den
@@ -405,6 +407,7 @@ interface_not_found: 'Interface "{interface}" blev ikke fundet.'
 reset_interface: Nulstil Grænseflade
 display_not_found: 'Visning "{display}" ikke fundet.'
 reset_display: Nulstil Visning
+list-m2a: Bygger (M2A)
 item_count: 'Ingen Elementer | Et Element | {count} Elementer'
 no_items_copy: Der er endnu ingen elementer i denne samling.
 file_count: 'Ingen Filer, én Fil, {count} Filer'
@@ -485,40 +488,78 @@ errors:
   ROUTE_NOT_FOUND: Ikke fundet
   RECORD_NOT_UNIQUE: Duplikeret værdi detekteret
   USER_SUSPENDED: Bruger Suspenderet
+  CONTAINS_NULL_VALUES: Feltet indeholder null værdier
+  UNPROCESSABLE_ENTITY: Ubehandlelig enhed
   INTERNAL_SERVER_ERROR: Uventet Fejl
   NOT_NULL_VIOLATION: Værdien kan ikke være null
+  ILLEGAL_ASSET_TRANSFORMATION: Billedkilde for stor til forhåndsvisning
   UNKNOWN: Uventet Fejl
 security: Sikkerhed
+value_hashed: Værdi Sikker Hashed
+bookmark_name: Bogmærke navn...
 create_bookmark: Opret Bogmærke
 edit_bookmark: Rediger Bogmærke
 bookmarks: Foretrukne
 presets: Forudindstillinger
 unexpected_error: Uventet Fejl
 unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
+copy_details: Kopiér Detaljer
 no_app_access: Ingen App Adgang
+no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.
+password_reset_sent: Vi har sendt dig et sikkert link til at nulstille din adgangskode
+password_reset_successful: Adgangskode nulstillet
 back: Tilbage
+filter: Filtrer
+editing_image: Redigerer Billede
+square: Kvadrat
+flip_horizontal: Vend Vandret
+flip_vertical: Vend Lodret
+aspect_ratio: Aspekt Forhold
+rotate: Rotér
+all_users: Alle Brugere
+delete_collection: Slet Samling
 update_collection_success: Opdateret Samling
 delete_collection_success: Slettet Samling
+make_collection_visible: Gør Samlingen Synlig
+make_collection_hidden: Gør Samlingen Skjult
+start_end_of_count_items: '{start}-{end} af {count} varer'
+start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede emner'
 one_item: '1 vare'
+delete_collection_are_you_sure: >-
+  Er du sikker på, at du vil slette denne samling? Dette vil slette samlingen og alle elementer i den. Denne handling er permanent.
+collections_shown: Viste Samlinger
+visible_collections: Synlige Samlinger
+hidden_collections: Skjulte Samlinger
+show_hidden_collections: Vis Skjulte Samlinger
+hide_hidden_collections: Skjul Skjulte Samlinger
 show_header: Vis Overskrift
+unmanaged_collections: Ukonfigurerede Samlinger
+system_collections: System Samlinger
 placeholder: Placeholder
 icon_left: Ikon til venstre
 icon_right: Ikon til højre
+count_other_revisions: '{count} Andre revisioner'
+font: Font
 divider: Opdeler
 color: Farve
 circle: Cirkel
 empty_item: Tomt Element
 log_in_with: 'Log ind med {provider}'
+conditional_styles: Betingede Stilarter
 advanced_settings: Avancerede Indstillinger
 advanced_filter: Avanceret Filter
 delete_advanced_filter: Slet Filter
+change_advanced_filter_operator: Skift Operatør
 operators:
   eq: Lig
+  neq: Ligner ikke
   lt: Mindre end
   gt: Større end
   lte: Mindre end eller lig med
   gte: Større end eller lig med
   in: Er en af
+  nin: Er ikke en af
+  null: Er nul
   nnull: Er ikke nul
   contains: Indeholder
   ncontains: Indeholder ikke
@@ -570,13 +611,33 @@ label: Etiket
 dashboard: Instrumentbræt
 panel: Stykke
 visible: Synlig
+suffix_placeholder: Tekst efter værdi...
+decimals_placeholder: Antal decimaler...
 no_dashboards: Ingen Dashboards
 no_dashboards_copy: Du har ikke nogen Dashboards endnu.
 no_data: Ingen Data
+create_dashboard: Opret Dashboard
 full_screen: Fuld Skærm
+edit_panels: Rediger Paneler
+fit_to_screen: Tilpas til skærm
+image_url: Billede Url
+alt_text: Alternativ Tekst
+media: Medier
+quality: Kvalitet
 width: Bredde
 height: Højde
+source: Kilde
+url_placeholder: Indtast en url...
+display_text: Vis Tekst
+display_text_placeholder: Indtast en visningstekst...
+tooltip: Værktøjstip
+tooltip_placeholder: Indtast et værktøjstip...
+unlimited: Ubegrænset
+open_link_in: Åbn link i
+new_tab: Ny fane
+current_tab: Aktuel fane
 wysiwyg_options:
+  aligncenter: Juster centreret
   forecolor: Forgrundsfarve
   backcolor: Baggrunds Farve
   underline: Understreget
@@ -584,8 +645,10 @@ wysiwyg_options:
   subscript: Sænket
   superscript: Hævet
   codeblock: Kode
+  bullist: Kugleliste
   numlist: Nummereret Liste
   hr: Horisontal Regel
+  link: Tilføj/Rediger Link
   unlink: Fjern Link
   media: Tilføj/Rediger Medie
   image: Tilføj/Rediger Billede
@@ -607,9 +670,13 @@ wysiwyg_options:
   removeformat: Fjern Format
   selectall: Vælg alle
   table: Tabel
+  visualaid: Se usynlige elementer
+  source_code: Rediger Kildekode
   fullscreen: Fuld Skærm
+  directionality: Retningslinjer
 dropdown: Rulleliste
 choices: Valgmuligheder
+choices_option_configured_incorrectly: Valg konfigureret forkert
 deselect: Afmarkér
 deselect_all: Fravælg Alle
 other: Andet...
@@ -617,18 +684,30 @@ adding_user: Tilføjer Bruger
 unknown_user: Ukendt Bruger
 creating_in: 'Opretter element i {collection}'
 editing_in: 'Redigerer element i {collection}'
+creating_unit: 'Opretter {unit}'
 editing_unit: 'Redigerer {unit}'
 editing_in_batch: 'Masseredigerer {count} elementer'
 no_options_available: Ingen tilgængelige valgmuligheder
 settings_permissions: Roller og Tilladelser
 settings_project: Projektindstillinger
 settings_webhooks: Webhooks
+settings_presets: Forudindstillinger Og Bogmærker
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 select: Vælg...
+tree_view: Træ Visning
+changes_are_permanent: Ændringer er permanente
+preset_name_placeholder: Serverer som standard når tom...
+preset_search_placeholder: Søg forespørgsel...
+editing_preset: Redigerer Forudindstilling
+layout_preview: Layout Forhåndsvisning
+layout_setup: Layout Opsætning
 unsaved_changes: Ikke gemte ændringer
 unsaved_changes_copy: Er du sikker på du vil forlade denne side?
 discard_changes: Kassér Ændringer
+discard_changes_copy: Er du sikker på, at du vil kassere alle de foretagne ændringer?
+show_x_axis: Vis X- Akse
+show_y_axis: Vis Y-akse
 keep_editing: Fortsæt Redigering
 add_new: Tilføj Ny
 all: Alle
@@ -637,6 +716,14 @@ batch_delete_confirm: >-
 cancel: Annuller
 collection: Samling
 collections: Samlinger
+directus_collection:
+  directus_relations: Sammenhæng konfiguration og metadata
+  directus_revisions: Data snapshots for al aktivitet
+  directus_roles: Tilladelsesgrupper for systembrugere
+  directus_sessions: Bruger session information
+  directus_settings: Valgmuligheder for projektopsætning
+  directus_users: Systembrugere til platformen
+  directus_webhooks: Konfiguration for event-baserede HTTP-forespørgsler
 fields:
   directus_activity:
     item: Element Primær Nøgle
@@ -655,9 +742,12 @@ fields:
     color: Farve
     display_template: Vis Skabelon
     hidden: Skjult
+    translations: Samling Navngivning Oversættelser
+    archive_app_filter: Arkivér Appfilter
     archive_value: Arkiv Værdi
     unarchive_value: Fjern Arkiveringsværdi
     sort_field: Sortér Felt
+    accountability: Aktivitet & Revision Tracking
   directus_files:
     title: Titel
     description: Beskrivelse
@@ -704,12 +794,25 @@ fields:
     status_suspended: Suspenderet
     status_archived: Arkiveret
     role: Rolle
+    token_placeholder: Indtast en sikker adgangstok...
     provider: Udbyder
     external_identifier: External Identifier
     last_page: Sidste side
     last_access: Seneste Adgang
   directus_settings:
+    transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
+    additional_transforms: Yderligere Transformationer
     project_name: Projektnavn
+    project_url: Projekt URL
+    project_color: Projekt Farve
+    project_logo: Projekt Logo
+    public_pages: Offentlige Sider
+    public_foreground: Offentlig Forgrund
+    public_background: Offentlig Baggrund
+    public_note: Offentlig Note
+    auth_password_policy: Auth Adgangskode Politik
+    auth_login_attempts: Auth Login Forsøg
+    files_and_thumbnails: Filer Og Miniaturer
   directus_fields:
     collection: Samlingens Navn
     icon: Samlingsikon
@@ -734,6 +837,9 @@ field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
     security_divider_title: Sikkerhed
+    additional_transforms: Yderligere Transformationer
+    transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
+    files_divider_title: Filer Og Miniaturer
   directus_activity:
     create: Opret
     update: Opdater
@@ -773,6 +879,7 @@ field_options:
     status_dropdown_active: Aktiv
     status_dropdown_suspended: Suspenderet
     status_dropdown_archived: Arkiveret
+    token: Indtast en sikker adgangstok...
   directus_webhooks:
     status_options_active: Aktiv
     status_options_inactive: Inaktiv
@@ -828,6 +935,7 @@ translation: Oversættelse
 value: Værdi
 interfaces:
   filter:
+    name: Filtrer
     add_filter: Tilføj Filter
     all: Alle
     any: Alle
