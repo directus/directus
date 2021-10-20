@@ -1,51 +1,56 @@
+/* eslint-disable no-console */
 import { v4 as uuid } from 'uuid';
-import { music, internet, name, finance, datatype, lorem, address } from 'faker';
+import { music, internet, name, datatype, lorem /*, address */ } from 'faker';
 import { Knex } from 'knex';
 
 type Guest = {
-	id?: number;
+	id?: string;
 	name: string;
 	birthday: Date;
-	search_radius: string;
 	earliest_events_to_show: string;
 	latest_events_to_show: string;
 	password: string;
 	shows_attended: number;
-	favorite_artist?: number | Artist;
+	favorite_artist?: number;
 };
 
 type Artist = {
 	id?: number;
 	name: string;
-	members: string;
+	members: string | Record<string, any>;
 };
 
 type Tour = {
-	id: string;
-	route: string;
-	map_of_stops: string;
-	area_of_reach: string;
-	revenue_estimated: bigint;
+	id?: number;
+	revenue: bigint;
 };
 
 type Organizer = {
-	id: string;
-	name: string;
+	id?: number;
+	company_name: string;
 };
 
 type Event = {
-	id: string;
-	time: Date;
+	id?: number;
+	time: string;
 	description: string;
 	cost: number;
-	location: string;
 	created_at: Date;
 	tags: string;
 };
 
-type JoinTable = {
-	id: string;
-	[key: string]: any;
+type Item = Guest | Artist | Tour | Organizer | Event;
+
+/*
+ * Options Example: Artist
+ * Select: ['name', 'members']
+ * Where: ['id', 3]
+ */
+
+type SeedOptions = {
+	select?: string[];
+	where?: any[];
+	raw?: string;
 };
 
 /* CreateManyOptions:
@@ -58,60 +63,88 @@ type CreateManyOptions = {
 	[column: string]: number;
 };
 
-type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
-
 export const seedTable = async function (
-	knex: Knex<any, unknown>,
+	database: Knex<any, unknown>,
 	count: number,
 	table: string,
-	factory: Item | (() => Item)
-): Promise<void> {
+	factory: Item | (() => Item),
+	options?: SeedOptions
+): Promise<void | any[] | any> {
+	const row: Record<string, number> = {};
 	if (typeof factory === 'object') {
-		await knex(table).insert(factory);
-	} else {
-		const fakeRow = [];
-		for (let i = 0; i < count; i++) {
-			fakeRow.push(factory());
+		await database(table).insert(factory);
+		row[table] = row[table]! + 1;
+	} else if (count >= 200) {
+		try {
+			let fakeRows: any[] = [];
+			for (let i = 0; i < count; i++) {
+				fakeRows.push(factory());
+				if (i % 200 === 0) {
+					await database.batchInsert(table, fakeRows, 200);
+					fakeRows = [];
+				}
+				row[table] = row[table]! + 1;
+			}
+			if (count - row[table]! < 200) {
+				await database.batchInsert(table, fakeRows, 200);
+				fakeRows = [];
+			}
+		} catch (error: any) {
+			throw new Error(error);
 		}
-		await knex(table).insert(fakeRow);
+	} else {
+		try {
+			const fakeRows = [];
+			for (let i = 0; i < count; i++) {
+				fakeRows.push(factory());
+				row[table] = row[table]! + 1;
+			}
+			await database(table).insert(fakeRows);
+		} catch (error: any) {
+			throw new Error(error);
+		}
+	}
+	if (options) {
+		const { select, where, raw } = options;
+		if (raw) return await database.schema.raw(raw!);
+		else if (where && select) return await database(table).select(select).where(where[0], where[1]);
+		else return await database(table).select(select!);
 	}
 };
 
 export const createArtist = (): Artist => ({
 	name: internet.userName(),
-	members: JSON.stringify({ role: internet.userName }),
+	members: JSON.stringify({ guitar: internet.userName() }),
 });
 
 export const createEvent = (): Event => ({
-	id: uuid(),
 	cost: datatype.float(),
 	description: lorem.paragraphs(2),
-	location: address.streetAddress(),
 	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
-	time: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
+	time: randomTime(),
 	tags: `tags
-${music.genre}
-${music.genre}
-${music.genre}
+${music.genre()}
+${music.genre()}
+${music.genre()}
 `,
 });
 
 export const createTour = (): Tour => ({
-	id: uuid(),
-	route: 'string',
-	map_of_stops: 'string',
-	area_of_reach: 'string',
-	revenue_estimated: BigInt(finance.amount(Number.MAX_SAFE_INTEGER)),
+	revenue: BigInt(getRandomInt(Number.MAX_SAFE_INTEGER)),
 });
 
 export const createGuest = (): Guest => ({
+	id: uuid(),
 	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	name: `${name.firstName()} ${name.lastName()}`,
-	search_radius: 'string',
 	earliest_events_to_show: randomTime(),
 	latest_events_to_show: randomTime(),
-	password: 'string',
+	password: getRandomString(32),
 	shows_attended: datatype.number(),
+});
+
+export const createOrganizer = (): Organizer => ({
+	company_name: `${name.firstName()} ${name.lastName()}`,
 });
 
 export const createMany = (factory: () => Item, count: number, options?: CreateManyOptions) => {
@@ -132,6 +165,10 @@ export const createMany = (factory: () => Item, count: number, options?: CreateM
 	return items;
 };
 
+function getRandomInt(max: number) {
+	return Math.floor(Math.random() * max);
+}
+
 function randomDateTime(start: Date, end: Date) {
 	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
@@ -141,10 +178,11 @@ function randomTime() {
 	return dateTime.substring(17, 25);
 }
 
-function getRandomInt(max: number) {
-	let int = 0;
-	while (int <= 0) {
-		int = Math.floor(Math.random() * max);
+function getRandomString(length: number) {
+	const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let result = '';
+	for (let i = 0; i < length; i++) {
+		result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
 	}
-	return int;
+	return result;
 }
