@@ -69,13 +69,10 @@ describe('/items', () => {
 				1,
 				'artists_events',
 				{
-					artists_id: insertedArtist[0].id,
-					events_id: insertedEvent[0].id,
+					artists_id: insertedArtist[insertedArtist.length - 1].id,
+					events_id: insertedEvent[insertedEvent.length - 1].id,
 				},
-				{
-					select: ['id'],
-					where: ['id', insertedEvent[0].id],
-				}
+				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
 			);
 			const response = await request(url)
 				.get(`/items/artists_events/${relation[0].id}?fields[]=artists_id.name&fields[]=events_id.cost`)
@@ -179,8 +176,8 @@ describe('/items', () => {
 				select: ['id'],
 			});
 			await seedTable(databases.get(vendor)!, 10, 'artists_events', {
-				artists_id: insertedArtist[0].id,
-				events_id: insertedEvent[0].id,
+				artists_id: insertedArtist[insertedArtist.length - 1].id,
+				events_id: insertedEvent[insertedEvent.length - 1].id,
 			});
 			const response = await request(url)
 				.get(`/items/artists_events?fields[]=artists_id.name&fields[]=events_id.cost`)
@@ -339,6 +336,40 @@ describe('/items', () => {
 				expect(response.response.status).toBe(403);
 				expect(response.response.statusText).toBe('Forbidden');
 				expect(response.message).toBe('Request failed with status code 403');
+			});
+		});
+	});
+	describe('/:collection PATCH', () => {
+		describe('updateOne', () => {
+			it.only.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+					select: ['id'],
+				});
+				const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
+					select: ['id'],
+				});
+				const relation = await seedTable(
+					databases.get(vendor)!,
+					1,
+					'artists_events',
+					{
+						artists_id: insertedArtist[insertedArtist.length - 1].id,
+						events_id: insertedEvent[insertedEvent.length - 1].id,
+					},
+					{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+				);
+				const body = { artists_id: insertedArtist[0].id };
+				const response: any = await axios.patch(`${url}/items/artists_events/${relation[0].id}`, body, {
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				});
+
+				expect(response.data.data).toMatchObject({
+					artists_id: insertedArtist[0].id,
+				});
 			});
 		});
 	});
