@@ -10,7 +10,6 @@ import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
 import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
-import isEmailAllowed from '../../utils/is-email-allowed';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 
@@ -223,6 +222,12 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
+
+				const { code } = req.query;
+
+				if (!code) {
+					logger.warn(`Couldn't extract oAuth2 code from query: ${JSON.stringify(req.query)}`);
+				}
 
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,

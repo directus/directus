@@ -10,7 +10,6 @@ import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
 import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
-import isEmailAllowed from '../../utils/is-email-allowed';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 
