@@ -964,6 +964,7 @@ field_options:
     files_divider_title: Filer Og Miniaturer
     overrides_divider_title: App Tilsidesættelser
   directus_activity:
+    login: Log ind
     create: Opret
     update: Opdater
     delete: Slet
@@ -1040,6 +1041,7 @@ field_options:
     actions_create: Opret
     actions_update: Opdater
     actions_delete: Slet
+    actions_login: Log ind
 no_fields_in_collection: 'Der er ingen felter i "{collection}" endnu'
 no_value: Ingen værdi
 do_nothing: Gør Intet
@@ -1048,7 +1050,10 @@ save_current_user_id: Gem Nuværende Bruger-Id
 save_current_user_role: Gem Nuværende Brugerrolle
 save_current_datetime: Gem Nuværende Dato/Tid
 always_open: Åbn Altid
+start_open: Start Åben
 start_collapsed: Start Sammenbrudt
+block: Blokér
+inline: Indlejret
 comment: Kommenter
 relational_triggers: Relationelle Udløsere
 referential_action_field_label_m2o: Ved sletning af {collection}...
@@ -1063,6 +1068,7 @@ continue_as: >-
   {name} er i øjeblikket godkendt. Hvis du genkender denne konto, skal du fortsætte.
 editing_role: '{role} Rolle'
 creating_webhook: Opretter Webhook
+default_label: Standard
 delete_label: Slet
 delete_are_you_sure: >-
   Denne handling er permanent og kan ikke fortrydes. Er du sikker på, at du vil fortsætte?
@@ -1082,11 +1088,15 @@ forgot_password: Glemt adgangskode
 hidden: Skjult
 icon: Ikon
 info: Info
+normal: Normal
+warning: Advarsel
+danger: Fare
 junction_collection: Junction Samling
 latency: Latency
 login: Log ind
 my_activity: Min Aktivitet
 not_authenticated: Ikke godkendt
+authenticated: Godkendt
 options: Valgmuligheder
 otp: Engangs Adgangskode
 password: Adgangskode
@@ -1094,11 +1104,13 @@ permissions: Rettigheder
 relationship: Forhold
 reset: Nulstil
 reset_password: Nulstil adgangskode
+revisions: Revisioner
 revert: Gendan
 save: Gem
 schema: Schema
 search: Søg
 select_existing: Vælg Eksisterende
+select_field_type: Vælg en felttype
 select_interface: Vælg et Interface
 settings: Indstillinger
 sign_in: Log ind
@@ -1106,7 +1118,10 @@ sign_out: Log ud
 sign_out_confirm: Er du sikker på, at du vil logge ud?
 something_went_wrong: Noget gik galt.
 sort_direction: Sorteringsretning
+sort_asc: Sortér Stigende
+sort_desc: Sortér Faldende
 template: Skabelon
+require_value_to_be_set: Kræv værdi for at være indstillet
 translation: Oversættelse
 translation_placeholder: Indtast en oversættelse...
 value: Værdi
@@ -1239,20 +1254,62 @@ interfaces:
     box: Blokér / Inline
     imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   map:
+    map: Kort
+    description: Vælg en placering på et kort
     zoom: Zoom
+    geometry_type: Geometritype
+    geometry_format: Geometri Format
+    default_view: Standard Visning
+    invalid_options: Ugyldige indstillinger
+    invalid_format: Ugyldigt format ({format})
+    unexpected_geometry: Forventede {expected}, fik {got}.
+    fit_bounds: Tilpas visning til data
+    native: Indbygget
+    lnglat: Længdegrad, Breddegrad
+    wkb: WKB
+  presentation-notice:
+    notice: Bemærk
+    description: Vis en kort meddelelse
+    text: Indtast notits indhold her...
+  list-o2m:
+    one-to-many: En til mange
+    description: Vælg flere relaterede elementer
+    no_collection: Samlingen kunne ikke findes
   system-folder:
     folder: Mappe
+    description: Vælg en mappe
+    field_hint: Sætter nyligt uploadede filer i den valgte mappe. påvirker ikke eksisterende filer der er valgt.
+    root_name: Fil Biblioteks Rod
+    system_default: Systemstandarder
+  select-radio:
+    radio-buttons: Radioknapper
+    description: Vælg et af flere valg
   list:
+    repeater: Gentager
+    description: Opret flere indgange af samme struktur
+    edit_fields: Rediger Felter
+    add_label: '"Opret Ny" Etiket'
     field_name_placeholder: Indtast feltnavn...
+    field_note_placeholder: Indtast felt note...
+  slider:
+    slider: Skyder
+    description: Vælg et nummer ved hjælp af en skyder
+    always_show_value: Vis altid værdi
   tags:
     tags: Tags
+    description: Vælg eller tilføj tags
+    hyphen: Erstat med bindestreg
     underscore: Erstat med understregning
     remove: Fjern blanke tegn
+    capitalization: Kapitalisering
     uppercase: Konvertér Store Bogstaver
+    lowercase: Konverter Små
     auto_formatter: Brug Titel Auto-Formatter
+    alphabetize: Alphabetize
     alphabetize_label: Gennemtving Alfabetisk Ordre
     add_tags: Tilføj tags...
   input:
+    input: Input
     description: Indtast en værdi manuelt
     trim: Beskær
     trim_label: Trim start og slut
@@ -1274,6 +1331,7 @@ interfaces:
   translations:
     display_template: Vis Skabelon
     no_collection: Ingen Samling
+    toggle_split_view: Slå Opdelt Visning Til/Fra
     language_field: Sprog Indikator Felt
   list-o2m-tree-view:
     description: Trævisning for indlejrede rekursive en-til-mange elementer
@@ -1283,8 +1341,11 @@ interfaces:
     description: Vælg en eksisterende directus bruger
     select_mode: Vælg Tilstand
     modes:
+      auto: Automatisk
       dropdown: Rulleliste
+      modal: Modal
   input-rich-text-html:
+    wysiwyg: WYSIWYG
     description: En rich-tekst editor skriver HTML-indhold
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
@@ -1292,6 +1353,8 @@ interfaces:
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater
+    value_path: Værdi Sti
+    trigger: Udløser
     rate: Sats
   group-raw:
     name: Rå Gruppe
@@ -1300,25 +1363,62 @@ interfaces:
     name: Detaljegruppe
     description: Vis felterne som en sammenklappelig sektion
     show_header: Vis Gruppeoverskrift
+    header_color: Header Farve
+    start_open: Start Åben
+    start_closed: Start Lukket
 displays:
   translations:
     translations: Oversættelser
+    description: Forhåndsvis oversættelse
+    user_language: Brug Nuværende Brugersprog
+    default_language: Standard Sprog
     language_field: Sprog Indikator Felt
   boolean:
     boolean: Boolean
+    description: Vis tændt og slukket tilstand
+    label_on: Etiket Til
+    label_on_placeholder: Indtast en på etiket...
+    label_off: Etiket Fra
+    label_off_placeholder: Indtast en slukket etiket...
     icon_on: Ikon Til
     icon_off: Ikon Fra
+    color_on: Farve Til
+    color_off: Farve Fra
   collection:
     collection: Samling
+    description: Vis en samling
+    icon_label: Vis samlingens ikon
   color:
     color: Farve
+    description: Vis en farvet prik
+    default_color: Standard Farve
   datetime:
     datetime: Datotid
+    description: Vis værdier relateret til tid
     format: Format
+    format_note: >-
+      Det brugerdefinerede format accepterer __[Date Field Symbol Tablet](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    short: Kort
+    relative_label: 'Vis relativ tid, fx: 5 minutter siden'
   file:
     file: Fil
+    description: Vis filer
+  filesize:
+    filesize: Fil Størrelse
+    description: Vis størrelsen på en fil
+  formatted-value:
+    formatted-value: Formateret Værdi
+    description: Vis en formateret version af teksten
+    format_title: Formatér Titel
+    format_title_label: Automatisk formatering af kabinet
+    bold_label: Use bold style
+  formatted-json-value:
+    formatted-json-value: Formateret JSON værdi
+    description: Vis en formateret version af objektet
   icon:
     icon: Ikon
+    description: Vis et ikon
+    filled: Udfyldt
     filled_label: Brug den fyldte variant
   image:
     image: Billede
@@ -1334,11 +1434,15 @@ displays:
     choices_value_placeholder: Indtast en værdi...
     choices_text_placeholder: Indtast en tekst...
   mime-type:
+    extension_only: Kun Udvidelse
     extension_only_label: Vis kun filendelsen
   rating:
     rating: Bedømmelse
     description: Visualiser et tal som stjerner i forhold til max-værdien
+    simple: Simpel
     simple_label: Vis stjerner i et enkelt format
+  raw:
+    raw: Rå Værdi
   related-values:
     related-values: Relaterede Værdier
     description: Vis relative værdier
@@ -1353,6 +1457,8 @@ layouts:
   cards:
     cards: Kort
     image_source: Billedkilde
+    image_fit: Billede Passer Til
+    crop: Beskær
     contain: Indeholder
     title: Titel
     subtitle: Undertitel
@@ -1369,7 +1475,32 @@ layouts:
     end_date_field: Slut Dato Felt
   map:
     map: Kort
+    layers: Lag
+    edit_custom_layers: Rediger Lag
+    cluster_options: Indstillinger for klyngedannelse
+    cluster: Klynge Nærliggende Data
+    cluster_minpoints: Mindste klyngestørrelse
+    cluster_maxzoom: Maksimum zoom til klyngedannelse
     field: Geometri
+    invalid_geometry: Ugyldig geometri
+    auto_location_filter: Auto-filter inden for visning
+    search_this_area: Søg i dette område
+    clear_data_filter: Ryd datafilter
+    clear_location_filter: Ryd placeringsfilter
+    no_results_here: Ingen resultater i dette område
 panels:
+  metric:
+    name: Metrisk
+    description: Vis en enkelt værdi baseret på en forespørgsel
+    field: Felt
+  time_series:
+    name: Tidsserie
+    description: Vis et linjediagram baseret på værdier over tid
+    date_field: Dato Felt
+    value_field: Værdi Felt
   label:
     name: Etiket
+    description: Vis noget tekst
+  list:
+    name: Liste
+    description: Filtrer og liste felter fra en samling
