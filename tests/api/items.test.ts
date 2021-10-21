@@ -399,10 +399,11 @@ describe('/items', () => {
 						'Content-Type': 'application/json',
 					},
 				});
-
-				expect(response.data.data[0]).toMatchObject({
-					events_id: insertedEvent[0].id,
-				});
+				for (let row = 0; row < response.data.data.length; row++) {
+					expect(response.data.data[row]).toMatchObject({
+						events_id: insertedEvent[0].id,
+					});
+				}
 				expect(response.data.data.length).toBe(10);
 			});
 		});
