@@ -52,7 +52,9 @@
 				{{ t('save') }}
 			</v-button>
 
-			<button @click="$emit('toggleAdvanced')">Continue in Advanced Mode</button>
+			<button class="toggle-advanced" @click="$emit('toggleAdvanced')">
+				{{ t('continue_in_advanced_field_creation_mode') }}
+			</button>
 		</div>
 	</div>
 </template>
@@ -150,5 +152,17 @@ export default defineComponent({
 
 .save {
 	margin-top: 40px;
+}
+
+.toggle-advanced {
+	text-align: center;
+	width: 100%;
+	margin-top: 20px;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--primary);
+	}
 }
 </style>
