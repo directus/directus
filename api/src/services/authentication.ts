@@ -14,9 +14,10 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge, clone, cloneDeep } from 'lodash';
+import { merge, clone, cloneDeep, omit } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
+import logger from '../logger';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
@@ -60,7 +61,8 @@ export class AuthenticationService {
 				'role',
 				'tfa_secret',
 				'provider',
-				'external_identifier'
+				'external_identifier',
+				'auth_data'
 			)
 			.from('directus_users')
 			.where('id', await provider.getUserID(cloneDeep(payload)))
@@ -191,7 +193,7 @@ export class AuthenticationService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
-			data: sessionData,
+			data: sessionData && JSON.stringify(sessionData),
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
@@ -242,7 +244,8 @@ export class AuthenticationService {
 				'u.status',
 				'u.role',
 				'u.provider',
-				'u.external_identifier'
+				'u.external_identifier',
+				'u.auth_data'
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -253,10 +256,20 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const { data: sessionData, ...user } = record;
+		let { data: sessionData } = record;
+		const user = omit(record, 'data');
+
+		if (typeof sessionData === 'string') {
+			try {
+				sessionData = JSON.parse(sessionData);
+			} catch {
+				logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+			}
+		}
 
 		const provider = getAuthProvider(user.provider);
-		await provider.refresh(clone(user), sessionData);
+
+		const newSessionData = await provider.refresh(clone(user), sessionData as SessionData);
 
 		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -267,7 +280,11 @@ export class AuthenticationService {
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
 		await this.knex('directus_sessions')
-			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
+			.update({
+				token: newRefreshToken,
+				expires: refreshTokenExpiration,
+				data: newSessionData && JSON.stringify(newSessionData),
+			})
 			.where({ token: refreshToken });
 
 		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
@@ -292,6 +309,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
+				'u.auth_data',
 				's.data'
 			)
 			.from('directus_sessions as s')
@@ -300,10 +318,19 @@ export class AuthenticationService {
 			.first();
 
 		if (record) {
-			const { data: sessionData, ...user } = record;
+			let { data: sessionData } = record;
+			const user = omit(record, 'data');
+
+			if (typeof sessionData === 'string') {
+				try {
+					sessionData = JSON.parse(sessionData);
+				} catch {
+					logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+				}
+			}
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout(clone(user), sessionData);
+			await provider.logout(clone(user), sessionData as SessionData);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
@@ -320,7 +347,8 @@ export class AuthenticationService {
 				'status',
 				'role',
 				'provider',
-				'external_identifier'
+				'external_identifier',
+				'auth_data'
 			)
 			.from('directus_users')
 			.where('id', userID)

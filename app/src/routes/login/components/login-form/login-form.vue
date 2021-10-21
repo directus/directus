@@ -17,19 +17,20 @@
 			</router-link>
 		</div>
 
-		<sso-links />
+		<sso-links :providers="providers" />
 	</form>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
-import { RequestError } from '@/api';
+import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Credentials = {
 	email: string;
@@ -50,7 +51,10 @@ export default defineComponent({
 		const error = ref<RequestError | string | null>(null);
 		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
+		const providers = ref([]);
 		const userStore = useUserStore();
+
+		onMounted(() => fetchProviders());
 
 		watch(email, () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
@@ -68,7 +72,28 @@ export default defineComponent({
 			return null;
 		});
 
-		return { t, errorFormatted, error, email, password, onSubmit, loggingIn, translateAPIError, otp, requiresTFA };
+		return {
+			t,
+			errorFormatted,
+			error,
+			email,
+			password,
+			onSubmit,
+			loggingIn,
+			translateAPIError,
+			otp,
+			requiresTFA,
+			providers,
+		};
+
+		async function fetchProviders() {
+			try {
+				const response = await api.get('/auth');
+				providers.value = response.data.data;
+			} catch (err: any) {
+				unexpectedError(err);
+			}
+		}
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;

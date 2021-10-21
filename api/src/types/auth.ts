@@ -1,3 +1,11 @@
+import { Knex } from 'knex';
+import { SchemaOverview } from './schema';
+
+export interface AuthDriverOptions {
+	knex: Knex;
+	schema: SchemaOverview;
+}
+
 export interface User {
 	id: string;
 	first_name: string | null;
@@ -8,12 +16,15 @@ export interface User {
 	role: string | null;
 	provider: string;
 	external_identifier: string | null;
+	auth_data: string | Record<string, unknown> | null;
 }
 
-export type SessionData = Record<string, any> | null;
+export type AuthData = Record<string, any> | null;
 
 export interface Session {
 	token: string;
 	expires: Date;
-	data: SessionData;
+	data: string | null;
 }
+
+export type SessionData = Record<string, any> | null;
