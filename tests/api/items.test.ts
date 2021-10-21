@@ -38,11 +38,9 @@ describe('/items', () => {
 		});
 		it.each(getDBsToTest())(`%p retrieves a guest's favorite artist`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const artist = createArtist();
 			const guest = createGuest();
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 				select: ['id'],
-				where: ['name', artist.name],
 			});
 			guest.favorite_artist = insertedArtist[0].id;
 			const insertedGuest = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
@@ -60,28 +58,32 @@ describe('/items', () => {
 		});
 		it.each(getDBsToTest())(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const artist = createArtist();
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 				select: ['id'],
-				where: ['name', artist.name],
 			});
-			const event = createEvent();
-			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', event, {
+			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
 				select: ['id'],
-				where: ['cost', event.cost],
 			});
-			await seedTable(databases.get(vendor)!, 1, 'artists_events', {
-				artists_id: insertedArtist[0].id,
-				events_id: insertedEvent[0].id,
-			});
-
+			const relation = await seedTable(
+				databases.get(vendor)!,
+				1,
+				'artists_events',
+				{
+					artists_id: insertedArtist[0].id,
+					events_id: insertedEvent[0].id,
+				},
+				{
+					select: ['id'],
+					where: ['id', insertedEvent[0].id],
+				}
+			);
 			const response = await request(url)
-				.get(`/items/artists_events?fields[]=artists_id.name&fields[]=events_id.cost`)
+				.get(`/items/artists_events/${relation[0].id}?fields[]=artists_id.name&fields[]=events_id.cost`)
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			expect(await response.body.data[0]).toMatchObject({
+			expect(await response.body.data).toMatchObject({
 				artists_id: { name: expect.any(String) },
 				events_id: { cost: expect.any(Number) },
 			});
