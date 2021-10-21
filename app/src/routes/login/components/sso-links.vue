@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, toRefs } from 'vue';
+import { defineComponent, ref, watch, toRefs, PropType } from 'vue';
 import { AuthProvider } from '@/types';
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { getRootPath } from '@/utils/get-root-path';
@@ -35,14 +35,17 @@ export default defineComponent({
 
 		const { providers } = toRefs(props);
 
-		const ssoProviders = ref([]);
+		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
 
 		watch(providers, () => {
 			ssoProviders.value = providers.value
 				.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
 				.map((provider: AuthProvider) => ({
 					name: formatTitle(provider.name),
-					link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href}`,
+					link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
+						location.search,
+						'?continue'
+					)}`,
 					icon: provider.icon ?? 'account_circle',
 				}));
 		});

@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 
 import api from '@/api';
 import { hydrate } from '@/hydrate';
@@ -36,6 +36,12 @@ export default defineComponent({
 		const lastPage = ref<string | null>(null);
 
 		fetchUser();
+
+		onMounted(() => {
+			if ('continue' in router.currentRoute.value.query) {
+				hydrateAndLogin();
+			}
+		});
 
 		return { t, name, lastPage, loading, hydrateAndLogin };
 
