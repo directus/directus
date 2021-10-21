@@ -149,7 +149,15 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
-		const authData = (user.auth_data && JSON.parse(user.auth_data)) as AuthData;
+		let authData = user.auth_data as AuthData;
+
+		if (typeof authData === 'string') {
+			try {
+				authData = JSON.parse(authData);
+			} catch {
+				logger.warn(`Session data isn't valid JSON: ${authData}`);
+			}
+		}
 
 		if (!authData?.refreshToken) {
 			return sessionData;
