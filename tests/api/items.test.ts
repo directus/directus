@@ -54,7 +54,7 @@ describe('/items', () => {
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			expect(await response.body.data).toMatchObject({ favorite_artist: { name: expect.any(String) } });
+			expect(response.body.data).toMatchObject({ favorite_artist: { name: expect.any(String) } });
 		});
 		it.each(getDBsToTest())(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
@@ -83,7 +83,7 @@ describe('/items', () => {
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			expect(await response.body.data).toMatchObject({
+			expect(response.body.data).toMatchObject({
 				artists_id: { name: expect.any(String) },
 				events_id: { cost: expect.any(Number) },
 			});
@@ -156,7 +156,7 @@ describe('/items', () => {
 		it.each(getDBsToTest())('%p retrieves all items from guest table with favorite_artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			seedTable(databases.get(vendor)!, 10, 'artists', createArtist);
-			seedTable(databases.get(vendor)!, 10, 'guests', createMany(createGuest, 10, { favorite_artist: 10 }));
+			seedTable(databases.get(vendor)!, 1, 'guests', createMany(createGuest, 10, { favorite_artist: 10 }));
 
 			const response = await request(url)
 				.get('/items/guests')
@@ -178,7 +178,7 @@ describe('/items', () => {
 			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
 				select: ['id'],
 			});
-			await seedTable(databases.get(vendor)!, 1, 'artists_events', {
+			await seedTable(databases.get(vendor)!, 10, 'artists_events', {
 				artists_id: insertedArtist[0].id,
 				events_id: insertedEvent[0].id,
 			});
@@ -188,10 +188,11 @@ describe('/items', () => {
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			expect(await response.body.data[0]).toMatchObject({
+			expect(response.body.data[0]).toMatchObject({
 				artists_id: { name: expect.any(String) },
 				events_id: { cost: expect.any(Number) },
 			});
+			expect(response.body.data.length).toBeGreaterThanOrEqual(10);
 		});
 		describe('Error handling', () => {
 			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
@@ -242,6 +243,32 @@ describe('/items', () => {
 					},
 				});
 				expect(response.data.data).toMatchObject({ name: body.name, favorite_artist: expect.any(Number) });
+			});
+			it.each(getDBsToTest())(`%p creates an artist_events entry`, async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+					select: ['id'],
+				});
+				const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
+					select: ['id'],
+				});
+				const body = {
+					artists_id: insertedArtist[0].id,
+					events_id: insertedEvent[0].id,
+				};
+
+				const response: any = await axios.post(`${url}/items/artists_events`, body, {
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				});
+
+				expect(response.data.data).toMatchObject({
+					id: expect.any(Number),
+					artists_id: expect.any(Number),
+					events_id: expect.any(Number),
+				});
 			});
 		});
 		describe('createMany', () => {

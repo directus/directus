@@ -75,9 +75,24 @@ export const seedTable = async function (
 	options?: SeedOptions
 ): Promise<void | any[] | any> {
 	const row: Record<string, number> = {};
-	if (typeof factory === 'object') {
-		await database(table).insert(factory);
-		row[table] = row[table]! + 1;
+	if (Array.isArray(factory)) {
+		await database.batchInsert(table, factory, 200);
+	} else if (typeof factory === 'object') {
+		if (count > 1) {
+			try {
+				const fakeRows = [];
+				for (let i = 0; i < count; i++) {
+					fakeRows.push(factory);
+					row[table] = row[table]! + 1;
+				}
+				await database(table).insert(fakeRows);
+			} catch (error: any) {
+				throw new Error(error);
+			}
+		} else {
+			await database(table).insert(factory);
+			row[table] = row[table]! + 1;
+		}
 	} else if (count >= 200) {
 		try {
 			let fakeRows: any[] = [];
@@ -96,8 +111,6 @@ export const seedTable = async function (
 		} catch (error: any) {
 			throw new Error(error);
 		}
-	} else if (Array.isArray(factory)) {
-		await database.batchInsert(table, factory, 200);
 	} else {
 		try {
 			const fakeRows = [];
