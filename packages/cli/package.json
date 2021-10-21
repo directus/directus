@@ -1,6 +1,6 @@
 {
 	"name": "@directus/cli",
-	"version": "9.0.0-rc.98",
+	"version": "9.0.0-rc.99",
 	"description": "The official Directus CLI",
 	"repository": {
 		"type": "git",
@@ -38,8 +38,8 @@
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@directus/format-title": "9.0.0-rc.98",
-		"@directus/sdk": "9.0.0-rc.98",
+		"@directus/format-title": "9.0.0-rc.99",
+		"@directus/sdk": "9.0.0-rc.99",
 		"@types/yargs": "^17.0.0",
 		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
