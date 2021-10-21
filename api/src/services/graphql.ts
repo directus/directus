@@ -411,7 +411,7 @@ export class GraphQLService {
 							type,
 							description: field.note,
 							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? field.field];
+								return obj[field.field];
 							},
 						};
 
@@ -1371,7 +1371,7 @@ export class GraphQLService {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
 
-					current = selection.alias?.value ?? selection.name.value;
+					current = selection.name.value;
 
 					if (parent) {
 						current = `${parent}.${current}`;

@@ -183,7 +183,14 @@ export class UsersService extends ItemsService {
 		}
 
 		if (data.email) {
-			await this.checkUniqueEmails([data.email]);
+			if (keys.length > 1) {
+				throw new RecordNotUniqueException('email', {
+					collection: 'directus_users',
+					field: 'email',
+					invalid: data.email,
+				});
+			}
+			await this.checkUniqueEmails([data.email], keys[0]);
 		}
 
 		if (data.password) {
