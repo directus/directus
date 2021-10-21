@@ -42,7 +42,7 @@ export default function applyQuery(
 		);
 	}
 
-	if (typeof query.limit === 'number') {
+	if (typeof query.limit === 'number' && query.limit !== -1) {
 		dbQuery.limit(query.limit);
 	}
 

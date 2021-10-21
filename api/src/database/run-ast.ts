@@ -69,9 +69,11 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		let dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query, options?.nested);
+		let dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
+
 		if (query.union) {
 			const [field, keys] = query.union;
+
 			if (keys.length) {
 				const queries = keys.map((key) => {
 					return knex.select('*').from(
@@ -81,6 +83,7 @@ export default async function runAST(
 							.as('foo')
 					);
 				});
+
 				dbQuery = knex.unionAll(queries);
 			}
 		}
@@ -103,7 +106,7 @@ export default async function runAST(
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
-				items = mergeWithParentItems(schema, nestedItems, items, nestedNode, true);
+				items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
 			}
 		}
 
@@ -227,13 +230,6 @@ function getDBQuery(
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	// Nested collection sets are retrieved as a batch request (select w/ a filter)
-	// "in", so we shouldn't limit that query, as it's a single request for all
-	// nested items, instead of a query per row
-	if (queryCopy.limit === -1) {
-		delete queryCopy.limit;
-	}
-
 	applyQuery(knex, table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
@@ -316,8 +312,7 @@ function mergeWithParentItems(
 	schema: SchemaOverview,
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
-	nestedNode: NestedCollectionNode,
-	nested?: boolean
+	nestedNode: NestedCollectionNode
 ) {
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
