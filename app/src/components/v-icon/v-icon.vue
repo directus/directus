@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, h } from 'vue';
-import { library, icon, findIconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { defineComponent, computed, h, PropType } from 'vue';
+import { library, icon, findIconDefinition, IconName } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
@@ -523,7 +523,7 @@ const socialIcons: string[] = [
 const SocialIcon = defineComponent({
 	props: {
 		name: {
-			type: String,
+			type: String as PropType<IconName>,
 			required: true,
 		},
 	},
