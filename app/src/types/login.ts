@@ -1,5 +1,5 @@
 export interface AuthProvider {
 	driver: string;
-	provider: string;
+	name: string;
 	icon?: string;
 }
