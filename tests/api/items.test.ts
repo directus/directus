@@ -3,7 +3,7 @@ import request from 'supertest';
 import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
-import { createArtist, createGuest, createMany, seedTable } from '../setup/utils/factories';
+import { createArtist, createEvent, createGuest, createMany, seedTable } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -58,7 +58,34 @@ describe('/items', () => {
 
 			expect(await response.body.data).toMatchObject({ favorite_artist: { name: expect.any(String) } });
 		});
+		it.each(getDBsToTest())(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const artist = createArtist();
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
+				select: ['id'],
+				where: ['name', artist.name],
+			});
+			const event = createEvent();
+			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', event, {
+				select: ['id'],
+				where: ['cost', event.cost],
+			});
+			await seedTable(databases.get(vendor)!, 1, 'artists_events', {
+				artists_id: insertedArtist[0].id,
+				events_id: insertedEvent[0].id,
+			});
 
+			const response = await request(url)
+				.get(`/items/artists_events?fields[]=artists_id.name&fields[]=events_id.cost`)
+				.set('Authorization', 'Bearer AdminToken')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(await response.body.data[0]).toMatchObject({
+				artists_id: { name: expect.any(String) },
+				events_id: { cost: expect.any(Number) },
+			});
+		});
 		describe('Error handling', () => {
 			it.each(getDBsToTest())('%p returns an error when an invalid id is used', async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;

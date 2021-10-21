@@ -39,7 +39,11 @@ type Event = {
 	tags: string;
 };
 
-type Item = Guest | Artist | Tour | Organizer | Event;
+type JoinTable = {
+	[column: string]: number;
+};
+
+type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
 
 /*
  * Options Example: Artist
