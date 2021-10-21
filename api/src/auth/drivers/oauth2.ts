@@ -212,6 +212,11 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		'/callback',
 		asyncHandler(async (req, res, next) => {
 			const token = req.cookies[`oauth2.${providerName}`];
+
+			if (!token) {
+				throw new InvalidCredentialsException();
+			}
+
 			const { verifier, redirect } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 				verifier: string;
 				redirect: string;
