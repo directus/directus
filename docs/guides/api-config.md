@@ -59,8 +59,7 @@ ASSETS_CACHE_TTL="7d"
 #### Multiple Providers
 
 You can configure multiple providers for handling authentication in Directus. This allows for different options when
-when logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of
-them:
+when logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
 
 ```
 AUTH_PROVIDERS="google,adobe"
@@ -91,8 +90,8 @@ Directus' OAuth 2.0 and OpenID integrations provide powerful alternative ways to
 Directus will ask you to login on the external service, and return authenticated with a Directus account linked to that
 service.
 
-Directus supports hundereds of OAuth 2.0 and OpenID services, but requires some configuration to authenticate
-users correctly. For example, enabling logging in through GitHub requires creating an
+Directus supports hundreds of OAuth 2.0 and OpenID services, but requires some configuration to authenticate users
+correctly. For example, enabling authentication through GitHub requires creating an
 [OAuth 2.0 app in GitHub](https://github.com/settings/developers) and adding the following configuration to Directus:
 
 ```

@@ -30,7 +30,6 @@
 		"@directus/shared": "9.0.0-rc.98",
 		"@fortawesome/fontawesome-svg-core": "1.2.36",
 		"@fortawesome/free-brands-svg-icons": "5.15.4",
-		"@fortawesome/vue-fontawesome": "3.0.0-4",
 		"@fullcalendar/core": "5.10.0",
 		"@fullcalendar/daygrid": "5.10.0",
 		"@fullcalendar/interaction": "5.10.0",

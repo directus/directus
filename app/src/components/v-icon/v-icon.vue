@@ -8,15 +8,14 @@
 		@click="emitClick"
 	>
 		<component :is="customIconName" v-if="customIconName" />
-		<font-awesome-icon v-else-if="socialIconName" :icon="['fab', socialIconName]" />
+		<socialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }">{{ name }}</i>
 	</span>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { defineComponent, computed, h } from 'vue';
+import { library, icon, findIconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
@@ -521,6 +520,19 @@ const socialIcons: string[] = [
 	'zhihu',
 ];
 
+const SocialIcon = defineComponent({
+	props: {
+		name: {
+			type: String,
+			required: true,
+		},
+	},
+	render() {
+		const socialIcon = icon(findIconDefinition({ prefix: 'fab', iconName: this.name }));
+		return h({ template: socialIcon?.html[0] });
+	},
+});
+
 export default defineComponent({
 	components: {
 		CustomIconDirectus,
@@ -541,7 +553,7 @@ export default defineComponent({
 		CustomIconFolderMove,
 		CustomIconFolderLock,
 		CustomIconLogout,
-		FontAwesomeIcon,
+		SocialIcon,
 	},
 	props: {
 		name: {
