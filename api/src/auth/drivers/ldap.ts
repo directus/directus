@@ -224,17 +224,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		const userId = await this.fetchUserId(userDn);
-
-		if (userId) {
-			return userId;
-		}
-
-		const userInfo = await this.fetchUserInfo(userDn);
 		const userGroups = await this.fetchUserGroups(userDn);
-
-		if (!userInfo) {
-			throw new InvalidCredentialsException();
-		}
 
 		let userRole;
 
@@ -247,6 +237,17 @@ export class LDAPAuthDriver extends AuthDriver {
 					...userGroups.map((group) => group.toLowerCase()),
 				])
 				.first();
+		}
+		
+		if (userId) {
+			await this.usersService.updateOne(userId, { role: userRole?.id ?? null });
+			return userId;
+		}
+
+		const userInfo = await this.fetchUserInfo(userDn);
+		
+		if (!userInfo) {
+			throw new InvalidCredentialsException();
 		}
 
 		await this.usersService.createOne({
