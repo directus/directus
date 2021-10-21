@@ -299,7 +299,7 @@ No additional configuration required.
 | `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to verify the user.                                           | `email`          |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Can be used in place of `EMAIL_KEY`. | --               |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.                              | `false`          |
-| `AUTH_<PROVIDER>_ALLOWED_EMAIL_DOMAINS`     | CSV of email domains which can register publically. Ignored if empty.                      | --               |
+| `AUTH_<PROVIDER>_ALLOWED_EMAIL_DOMAINS`     | CSV of email domains which can register publicly. Ignored if empty.                        | --               |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                                       | --               |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                                   | `account_circle` |
 
@@ -308,18 +308,18 @@ allowing more complete user registrations.
 
 ### OpenID (`openid`)
 
-| Variable                                    | Description                                                           | Default Value          |
-| ------------------------------------------- | --------------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                           | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                               | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.     | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                      | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.                | `sub`                  |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.         | `false`                |
-| `AUTH_<PROVIDER>_ALLOWED_EMAIL_DOMAINS`     | CSV of email domains which can register publically. Ignored if empty. | --                     |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                       | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                  | --                     |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                              | `account_circle`       |
+| Variable                                    | Description                                                         | Default Value          |
+| ------------------------------------------- | ------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                         | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                             | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.   | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                    | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.              | `sub`                  |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.       | `false`                |
+| `AUTH_<PROVIDER>_ALLOWED_EMAIL_DOMAINS`     | CSV of email domains which can register publicly. Ignored if empty. | --                     |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                     | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                            | `account_circle`       |
 
 ## Extensions
 
