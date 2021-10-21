@@ -134,6 +134,29 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection/:id PATCH', () => {
+		it.each(getDBsToTest())(`%p updates one artist's name with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+				select: ['id'],
+			});
+
+			const body = { name: 'Tommy Cash' };
+			const response: any = await axios.patch(
+				`${url}/items/artists/${insertedArtist[insertedArtist.length - 1].id}`,
+				body,
+				{
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+
+			expect(response.data.data).toMatchObject({
+				id: insertedArtist[insertedArtist.length - 1].id,
+				name: 'Tommy Cash',
+			});
+		});
 		it.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
@@ -166,17 +189,37 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection/:id DELETE', () => {
-		it.each(getDBsToTest())(`%p deletes an artists_events without deleting the artist or event`, async (vendor) => {
+		it.only.each(getDBsToTest())(`%p deletes an artist with no relations`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 				select: ['id'],
 			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
+
+			const response: any = await axios.delete(`${url}/items/artists/${insertedArtist[insertedArtist.length - 1].id}`, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
+
+			expect(response.data.data).toBe(undefined);
+			expect(
+				await databases.get(vendor)!('artists')
+					.select('*')
+					.where('id', insertedArtist[insertedArtist.length - 1].id)
+			).toStrictEqual([]);
+		});
+		it.each(getDBsToTest())(`%p deletes an artists_events without deleting the artist or event`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
 				select: ['id'],
 			});
 			const item = await seedTable(
 				databases.get(vendor)!,
-				10,
+				1,
 				'artists_events',
 				{
 					artists_id: insertedArtist[insertedArtist.length - 1].id,
@@ -448,7 +491,7 @@ describe('/items', () => {
 			expect(response.data.data.length).toBe(10);
 		});
 	});
-	describe('/:collection/ DELETE', () => {
+	describe('/:collection DELETE', () => {
 		it.each(getDBsToTest())(`%p deletes many artists_events without deleting the artists or events`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
