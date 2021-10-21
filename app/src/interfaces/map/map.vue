@@ -78,9 +78,6 @@ import { useAppStore } from '@/stores';
 
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
-const MARKER_ICON_URL =
-	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/48dp/2x/baseline_place_black_48dp.png';
-
 export default defineComponent({
 	props: {
 		type: {
@@ -197,12 +194,6 @@ export default defineComponent({
 			map.on('load', async () => {
 				map.resize();
 				mapLoading.value = false;
-				await addMarkerImage();
-				map.on('basemapselect', () => {
-					map.once('styledata', async () => {
-						await addMarkerImage();
-					});
-				});
 				map.on('draw.create', handleDrawUpdate);
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
@@ -240,7 +231,6 @@ export default defineComponent({
 					map.removeControl(controls.draw as any);
 					map.setStyle(style.value, { diff: false });
 					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
-					await addMarkerImage();
 					map.addControl(controls.draw as any, 'top-left');
 					loadValueFromProps();
 				}
@@ -265,16 +255,6 @@ export default defineComponent({
 		function resetValue(hard: boolean) {
 			geometryParsingError.value = undefined;
 			if (hard) emit('input', null);
-		}
-
-		function addMarkerImage() {
-			return new Promise((resolve, reject) => {
-				map.loadImage(MARKER_ICON_URL, (error: any, image: any) => {
-					if (error) reject(error);
-					map.addImage('place', image, { sdf: true });
-					resolve(true);
-				});
-			});
 		}
 
 		function fitDataBounds(options: CameraOptions & AnimationOptions) {

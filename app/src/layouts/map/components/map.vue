@@ -19,7 +19,6 @@ import {
 	CameraOptions,
 	LngLatLike,
 	AnyLayer,
-	Popup,
 	Map,
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -63,7 +62,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
-	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata'],
+	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata', 'setpopup'],
 	setup(props, { emit }) {
 		const appStore = useAppStore();
 		let map: Map;
@@ -77,14 +76,6 @@ export default defineComponent({
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
-		});
-
-		const popup = new Popup({
-			closeButton: false,
-			closeOnClick: false,
-			className: 'mapboxgl-point-popup',
-			maxWidth: 'unset',
-			offset: 12,
 		});
 
 		const attributionControl = new AttributionControl({ compact: true });
@@ -275,19 +266,22 @@ export default defineComponent({
 			}
 			if (feature && feature.properties) {
 				if (feature.geometry.type === 'Point') {
-					popup.setLngLat(feature.geometry.coordinates as LngLatLike);
+					const { x, y } = map.project(feature.geometry.coordinates as LngLatLike);
+					const rect = map.getContainer().getBoundingClientRect();
+					emit('setpopup', { x: rect.x + x, y: rect.y + y });
 				} else {
-					popup.setLngLat(event.lngLat);
+					const { clientX: x, clientY: y } = event.originalEvent;
+					emit('setpopup', { x, y });
 				}
 				if (featureChanged) {
 					map.setFeatureState({ id: feature.id, source: '__directus' }, { hovered: true });
-					popup.setHTML(feature.properties.description).addTo(map);
 					hoveredFeature.value = feature;
+					emit('setpopup', { item: feature.id });
 				}
 			} else {
 				if (featureChanged) {
 					hoveredFeature.value = feature;
-					popup.remove();
+					emit('setpopup', { item: null });
 				}
 			}
 		}
@@ -506,25 +500,6 @@ export default defineComponent({
 	background: rgba(56, 135, 190, 0.1);
 	border: 1px solid rgb(56, 135, 190);
 	pointer-events: none;
-}
-
-.mapboxgl-point-popup {
-	.maplibregl-popup-tip,
-	.mapboxgl-popup-tip {
-		display: none;
-	}
-
-	.mapboxgl-popup-content {
-		padding: 6px 10px 6px;
-		color: var(--foreground-normal-alt);
-		font-weight: 500;
-		font-size: 14px;
-		font-family: var(--family-sans-serif);
-		background-color: var(--background-page);
-		border-radius: var(--border-radius);
-		box-shadow: var(--card-shadow);
-		pointer-events: none;
-	}
 }
 
 #map-container.hover .mapboxgl-canvas-container {

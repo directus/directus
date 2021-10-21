@@ -196,40 +196,6 @@ Alternatively, you can provide the individual connection parameters:
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `CACHE_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
-## Sessions
-
-Sessions are only used in the oAuth authentication flow.
-
-| Variable        | Description                                                                          | Default Value |
-| --------------- | ------------------------------------------------------------------------------------ | ------------- |
-| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, `memcache` or `database`. | `memory`      |
-
-Based on the `SESSION_STORE` used, you must also provide the following configurations:
-
-### Memory
-
-No additional configuration required.
-
-### Redis
-
-| Variable        | Description                                                           | Default Value |
-| --------------- | --------------------------------------------------------------------- | ------------- |
-| `SESSION_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable                 | Description                      | Default Value |
-| ------------------------ | -------------------------------- | ------------- |
-| `SESSION_REDIS_HOST`     | Hostname of the Redis instance   | --            |
-| `SESSION_REDIS_PORT`     | Port of the Redis instance       | --            |
-| `SESSION_REDIS_PASSWORD` | Password for your Redis instance | --            |
-
-### Memcache
-
-| Variable                 | Description                                                                                                                                                           | Default Value |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
-
 ### Database
 
 No additional configuration required.
@@ -301,28 +267,57 @@ STORAGE_LOCAL_ROOT="./uploads"
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
 
-## OAuth
+## Auth
 
-| Variable          | Description                             | Default Value |
-| ----------------- | --------------------------------------- | ------------- |
-| `OAUTH_PROVIDERS` | CSV of oAuth providers you want to use. | --            |
+| Variable         | Description                            | Default Value |
+| ---------------- | -------------------------------------- | ------------- |
+| `AUTH_PROVIDERS` | CSV of auth providers you want to use. | --            |
 
-For each of the OAuth providers you list, you must also provide a number of extra variables. These differ per external
-service. The following is a list of common required configuration options:
+For each of the auth providers you list, you must provide the following configuration:
 
-| Variable                         | Description                                                                                            | Default Value |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
-| `OAUTH_<PROVIDER>_KEY`           | oAuth key (a.k.a. application id) for the external service.                                            | --            |
-| `OAUTH_<PROVIDER>_SECRET`        | oAuth secret for the external service.                                                                 | --            |
-| `OAUTH_<PROVIDER>_SCOPE`         | A white-space separated list of privileges directus should ask for. A common value is: `openid email`. | --            |
-| `OAUTH_<PROVIDER>_AUTHORIZE_URL` | The authorize page URL of the external service                                                         | --            |
-| `OAUTH_<PROVIDER>_ACCESS_URL`    | The access URL of the external service                                                                 | --            |
-| `OAUTH_<PROVIDER>_PROFILE_URL`   | Where Directus can fetch the profile information of the authenticated user.                            | --            |
+| Variable                 | Description                                             | Default Value |
+| ------------------------ | ------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid` | --            |
 
-Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the oAuth flow. Grant includes
-[a lot of default values](https://github.com/simov/grant/blob/master/config/oauth.json) for popular services. For
-example, if you use `apple` as one of your providers, you only have to specify the key and secret, as Grant has the rest
-covered. Checkout [the grant repo](https://github.com/simov/grant) for more information.
+You must also provide a number of extra variables. These differ per auth driver service. The following is a list of
+common required configuration options:
+
+### Local (`local`)
+
+No additional configuration required.
+
+### OAuth 2.0 (`oauth2`)
+
+| Variable                                    | Description                                                                                | Default Value    |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                                 | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAUth secret for the external service.                                                     | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                          | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                            | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                              | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | Where Directus can fetch the profile information of the authenticated user.                | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to verify the user.                                           | `email`          |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Can be used in place of `EMAIL_KEY`. | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.                              | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                                       | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                                   | `account_circle` |
+
+If possible, OpenID is preferred over OAuth 2.0 as it provides better verification and consistent user information,
+allowing more complete user registrations.
+
+### OpenID (`openid`)
+
+| Variable                                    | Description                                                       | Default Value          |
+| ------------------------------------------- | ----------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                       | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                           | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request. | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                  | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.            | `sub`                  |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.     | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                   | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                              | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                          | `account_circle`       |
 
 ## Extensions
 

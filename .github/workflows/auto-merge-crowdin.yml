@@ -1,0 +1,23 @@
+name: Auto-Merge Translations from Crowdin
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'app/src/lang/translations/*.yaml'
+
+jobs:
+  auto-merge:
+    name: Auto-Merge
+    if: github.event.pull_request.user.login == 'rijkvanzanten' && github.event.pull_request.title == 'New Crowdin updates' && github.head_ref == 'translations'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-Merge
+        uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: ''
+          UPDATE_LABELS: ''
+          MERGE_METHOD: squash
+          MERGE_COMMIT_MESSAGE: '{pullRequest.title} (#{pullRequest.number})'

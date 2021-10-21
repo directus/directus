@@ -54,54 +54,59 @@ possible to cache assets for way longer than you would with the actual content.
 ASSETS_CACHE_TTL="7d"
 ```
 
-## oAuth (Single Sign-On (SSO) / OpenID)
+## Auth
 
-Directus' oAuth integration provides a powerful alternative way to authenticate into your project. Directus will ask you
-to login on the external service, and if your user exists in Directus, you'll be logged in automatically.
+#### Multiple Providers
 
-Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the oAuth flow. This means that
-there's hundreds of services that are supported out of the box. For example, enabling logging in through GitHub is as
-easy as creating an [oAuth app in GitHub](https://github.com/settings/developers) and adding the following to Directus:
+You can configure multiple providers for handling authentication in Directus. This allows for different options when
+logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
 
 ```
-OAUTH_PROVIDERS="github"
-OAUTH_GITHUB_KEY="99d3...c3c4"
-OAUTH_GITHUB_SECRET="34ae...f963"
+AUTH_PROVIDERS="google,adobe"
+
+AUTH_GOOGLE_DRIVER="openid"
+AUTH_GOOGLE_CLIENT_ID="<google_application_id>"
+AUTH_GOOGLE_CLIENT_SECRET= "<google_application_secret_key>"
+AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
+AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true"
+AUTH_GOOGLE_DEFAULT_ROLE_ID="<directus_role_id>"
+AUTH_GOOGLE_ICON="google"
+
+AUTH_ADOBE_DRIVER="oauth2"
+AUTH_ADOBE_CLIENT_ID="<adobe_application_id>"
+AUTH_ADOBE_CLIENT_SECRET="<adobe_application_secret_key>"
+AUTH_ADOBE_AUTHORIZE_URL="https://ims-na1.adobelogin.com/ims/authorize/v2"
+AUTH_ADOBE_ACCESS_URL="https://ims-na1.adobelogin.com/ims/token/v3"
+AUTH_ADOBE_PROFILE_URL="https://ims-na1.adobelogin.com/ims/userinfo/v2"
+AUTH_ADOBE_ALLOW_PUBLIC_REGISTRATION="true"
+AUTH_ADOBE_DEFAULT_ROLE_ID="<directus_role_id>"
+AUTH_ADOBE_ICON="adobe"
+```
+
+### OAuth 2.0 and OpenID
+
+Directus' OAuth 2.0 and OpenID integrations provide powerful alternative ways to authenticate into your project.
+Directus will ask you to login on the external service, and return authenticated with a Directus account linked to that
+service.
+
+Directus supports hundreds of OAuth 2.0 and OpenID services, but requires some configuration to authenticate users
+correctly. For example, enabling authentication through GitHub requires creating an
+[OAuth 2.0 app in GitHub](https://github.com/settings/developers) and adding the following configuration to Directus:
+
+```
+AUTH_PROVIDERS="github"
+AUTH_GITHUB_CLIENT_ID="99d3...c3c4"
+AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
+AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
+AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
+AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 ```
 
 ::: warning PUBLIC_URL
 
-The oAuth flow relies on the `PUBLIC_URL` variable for it's redirecting. Make sure that variable is configured
-correctly.
+These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that variable is configured correctly.
 
 :::
-
-#### Multiple Providers
-
-`OAUTH_PROVIDERS` accepts a CSV of providers, allowing you to specify multiple at the same time:
-
-```
-OAUTH_PROVIDERS ="google,microsoft"
-
-OAUTH_GOOGLE_KEY = "<google_application_id>"
-OAUTH_GOOGLE_SECRET=  "<google_application_secret_key>"
-OAUTH_GOOGLE_SCOPE="openid email"
-
-OAUTH_MICROSOFT_KEY = "<microsoft_application_id>"
-OAUTH_MICROSOFT_SECRET = "<microsoft_application_secret_key>"
-OAUTH_MICROSOFT_SCOPE = "openid email"
-OAUTH_MICROSOFT_AUTHORIZE_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/authorize"
-OAUTH_MICROSOFT_ACCESS_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/token"
-
-PUBLIC_URL = "<public_url_of_directus_instance>"
-```
-
-### Provider Specific Configuration
-
-If you use one of the many supported providers, you often don't have to configure any more than just the key and secret
-for the service. That being said, if you use a more tailored service (like the specific Microsoft application in the
-example above), you might have to provide more configuration values yourself. Please see
-https://github.com/simov/grant#configuration-description for a list of all available configuration flags.
 
 ## File Storage
 

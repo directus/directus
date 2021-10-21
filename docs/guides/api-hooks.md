@@ -105,8 +105,6 @@ object. The third argument is a context object with the following properties:
 | `server.stop`                | --                                                  |
 | `response`                   | `request`, `response`, `ip`, `duration`, `finished` |
 | `auth.login`                 | `payload`, `status`, `user`                         |
-| `oauth.<provider>.login`     | `login`, `redirect`                                 |
-| `oauth.<provider>.redirect`  | `status`, `response`                                |
 | `files.upload`               | `payload`, `key`, `collection`                      |
 | `items.read`                 | `payload`, `query`, `collection`                    |
 | `items.create`               | `payload`, `key`, `collection`                      |
