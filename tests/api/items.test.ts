@@ -266,7 +266,7 @@ describe('/items', () => {
 		});
 		it.each(getDBsToTest())('%p retrieves all items from guest table with favorite_artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			seedTable(databases.get(vendor)!, 10, 'artists', createArtist);
+			await seedTable(databases.get(vendor)!, 10, 'artists', createArtist);
 			seedTable(databases.get(vendor)!, 1, 'guests', createMany(createGuest, 10, { favorite_artist: 10 })!);
 
 			const response = await request(url)
@@ -463,7 +463,7 @@ describe('/items', () => {
 			const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
 				select: ['id'],
 			});
-			await seedTable(
+			const items = await seedTable(
 				databases.get(vendor)!,
 				10,
 				'artists_events',
@@ -473,8 +473,12 @@ describe('/items', () => {
 				},
 				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
 			);
+			const keys: any[] = [];
+			Object.values(items).forEach((item: any) => {
+				keys.push(item.id);
+			});
 			const body = {
-				keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+				keys: keys,
 				data: { events_id: insertedEvent[0].id },
 			};
 			const response: any = await axios.patch(`${url}/items/artists_events/?fields=events_id`, body, {
@@ -488,10 +492,35 @@ describe('/items', () => {
 					events_id: insertedEvent[0].id,
 				});
 			}
-			expect(response.data.data.length).toBe(10);
+			expect(response.data.data.length).toBe(keys.length);
 		});
 	});
 	describe('/:collection DELETE', () => {
+		it.each(getDBsToTest())(`%p deletes many artists with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const items = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const body: any[] = [];
+			items.sort(function (a: any, b: any) {
+				return b.id - a.id;
+			});
+			for (let row = 0; row < 10; row++) {
+				body.push(items[row].id);
+			}
+			const response: any = await axios.delete(`${url}/items/artists/`, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+				data: JSON.stringify(body),
+			});
+
+			expect(response.data.data).toBe(undefined);
+			for (let row = 0; row < body.length; row++) {
+				expect(await databases.get(vendor)!('artists').select('*').where('id', body[row])).toStrictEqual([]);
+			}
+		});
 		it.each(getDBsToTest())(`%p deletes many artists_events without deleting the artists or events`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
@@ -511,9 +540,13 @@ describe('/items', () => {
 				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
 			);
 			const body: any[] = [];
-			items.forEach((item: Item) => {
-				body.push(item.id);
-			});
+			items
+				.sort(function (a: any, b: any) {
+					return b.id - a.id;
+				})
+				.forEach((item: Item) => {
+					body.push(item.id);
+				});
 			const response: any = await axios.delete(`${url}/items/artists_events/`, {
 				headers: {
 					Authorization: 'Bearer AdminToken',
