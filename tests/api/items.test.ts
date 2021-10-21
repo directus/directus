@@ -23,7 +23,7 @@ describe('/items', () => {
 		}
 	});
 
-	describe('/:collection/:id', () => {
+	describe('/:collection/:id GET', () => {
 		it.each(getDBsToTest())('%p retrieves one artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
@@ -133,7 +133,78 @@ describe('/items', () => {
 			});
 		});
 	});
+	describe('/:collection/:id PATCH', () => {
+		it.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
+				select: ['id'],
+			});
+			const relation = await seedTable(
+				databases.get(vendor)!,
+				1,
+				'artists_events',
+				{
+					artists_id: insertedArtist[insertedArtist.length - 1].id,
+					events_id: insertedEvent[insertedEvent.length - 1].id,
+				},
+				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+			);
+			const body = { artists_id: insertedArtist[0].id };
+			const response: any = await axios.patch(`${url}/items/artists_events/${relation[0].id}`, body, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
 
+			expect(response.data.data).toMatchObject({
+				artists_id: insertedArtist[0].id,
+			});
+		});
+	});
+	describe('/:collection/:id DELETE', () => {
+		it.each(getDBsToTest())(`%p deletes an artists_events without deleting the artist or event`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
+				select: ['id'],
+			});
+			const item = await seedTable(
+				databases.get(vendor)!,
+				10,
+				'artists_events',
+				{
+					artists_id: insertedArtist[insertedArtist.length - 1].id,
+					events_id: insertedEvent[insertedEvent.length - 1].id,
+				},
+				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+			);
+			const response: any = await axios.delete(`${url}/items/artists_events/${item[0].id}`, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
+
+			expect(response.data.data).toBe(undefined);
+			expect(await databases.get(vendor)!('artists_events').select('*').where('id', item[0].id)).toStrictEqual([]);
+			expect(
+				await databases.get(vendor)!('artists')
+					.select('id')
+					.where('id', insertedArtist[insertedArtist.length - 1].id)
+			).toStrictEqual([insertedArtist[insertedArtist.length - 1]]);
+			expect(
+				await databases.get(vendor)!('artists')
+					.select('id')
+					.where('id', insertedEvent[insertedEvent.length - 1].id)
+			).toStrictEqual([insertedEvent[insertedEvent.length - 1]]);
+		});
+	});
 	describe('/:collection GET', () => {
 		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
@@ -339,73 +410,42 @@ describe('/items', () => {
 			});
 		});
 	});
-	describe('/:collection PATCH', () => {
-		describe('updateOne', () => {
-			it.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
-				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
-					select: ['id'],
-				});
-				const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
-					select: ['id'],
-				});
-				const relation = await seedTable(
-					databases.get(vendor)!,
-					1,
-					'artists_events',
-					{
-						artists_id: insertedArtist[insertedArtist.length - 1].id,
-						events_id: insertedEvent[insertedEvent.length - 1].id,
-					},
-					{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
-				);
-				const body = { artists_id: insertedArtist[0].id };
-				const response: any = await axios.patch(`${url}/items/artists_events/${relation[0].id}`, body, {
-					headers: {
-						Authorization: 'Bearer AdminToken',
-						'Content-Type': 'application/json',
-					},
-				});
 
-				expect(response.data.data).toMatchObject({
-					artists_id: insertedArtist[0].id,
-				});
+	describe('/:collection PATCH', () => {
+		it.each(getDBsToTest())(`%p updates many artists_events to a different artist`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+				select: ['id'],
 			});
-			it.each(getDBsToTest())(`%p updates many artists_events to a different artist`, async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
-				const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
-					select: ['id'],
-				});
-				const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
-					select: ['id'],
-				});
-				await seedTable(
-					databases.get(vendor)!,
-					10,
-					'artists_events',
-					{
-						artists_id: insertedArtist[insertedArtist.length - 1].id,
-						events_id: insertedEvent[insertedEvent.length - 1].id,
-					},
-					{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
-				);
-				const body = {
-					keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-					data: { events_id: insertedEvent[0].id },
-				};
-				const response: any = await axios.patch(`${url}/items/artists_events/?fields=events_id`, body, {
-					headers: {
-						Authorization: 'Bearer AdminToken',
-						'Content-Type': 'application/json',
-					},
-				});
-				for (let row = 0; row < response.data.data.length; row++) {
-					expect(response.data.data[row]).toMatchObject({
-						events_id: insertedEvent[0].id,
-					});
-				}
-				expect(response.data.data.length).toBe(10);
+			const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
+				select: ['id'],
 			});
+			await seedTable(
+				databases.get(vendor)!,
+				10,
+				'artists_events',
+				{
+					artists_id: insertedArtist[insertedArtist.length - 1].id,
+					events_id: insertedEvent[insertedEvent.length - 1].id,
+				},
+				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+			);
+			const body = {
+				keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+				data: { events_id: insertedEvent[0].id },
+			};
+			const response: any = await axios.patch(`${url}/items/artists_events/?fields=events_id`, body, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
+			for (let row = 0; row < response.data.data.length; row++) {
+				expect(response.data.data[row]).toMatchObject({
+					events_id: insertedEvent[0].id,
+				});
+			}
+			expect(response.data.data.length).toBe(10);
 		});
 	});
 });
