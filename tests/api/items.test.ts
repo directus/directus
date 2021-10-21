@@ -62,7 +62,6 @@ describe('/items', () => {
 		describe('Error handling', () => {
 			it.each(getDBsToTest())('%p returns an error when an invalid id is used', async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
-				seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
 
 				const response = await axios
 					.get(`${url}/items/artists/invalid_id`, {
@@ -89,7 +88,6 @@ describe('/items', () => {
 			});
 			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
-				seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
 
 				const response = await axios
 					.get(`${url}/items/invalid_table/1`, {
@@ -141,6 +139,27 @@ describe('/items', () => {
 			expect(response.body.data[0]).toMatchObject({
 				birthday: expect.any(String),
 				favorite_artist: expect.any(Number),
+			});
+		});
+		describe('Error handling', () => {
+			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+
+				const response = await axios
+					.get(`${url}/items/invalid_table/`, {
+						headers: {
+							Authorization: 'Bearer AdminToken',
+							'Content-Type': 'application/json',
+						},
+					})
+					.catch((error: any) => {
+						return error;
+					});
+
+				expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+				expect(response.response.status).toBe(403);
+				expect(response.response.statusText).toBe('Forbidden');
+				expect(response.message).toBe('Request failed with status code 403');
 			});
 		});
 	});
