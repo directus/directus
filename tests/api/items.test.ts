@@ -189,7 +189,7 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection/:id DELETE', () => {
-		it.only.each(getDBsToTest())(`%p deletes an artist with no relations`, async (vendor) => {
+		it.each(getDBsToTest())(`%p deletes an artist with no relations`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 				select: ['id'],
