@@ -14,9 +14,10 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge, clone, cloneDeep } from 'lodash';
+import { merge, clone, cloneDeep, omit } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
+import logger from '../logger';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
@@ -255,10 +256,20 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const { data: sessionData, ...user } = record;
+		let { data: sessionData } = record;
+		const user = omit(record, 'data');
+
+		if (typeof sessionData === 'string') {
+			try {
+				sessionData = JSON.parse(sessionData);
+			} catch {
+				logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+			}
+		}
 
 		const provider = getAuthProvider(user.provider);
-		const newSessionData = await provider.refresh(clone(user), sessionData && JSON.parse(sessionData as string));
+
+		const newSessionData = await provider.refresh(clone(user), sessionData as SessionData);
 
 		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -307,10 +318,19 @@ export class AuthenticationService {
 			.first();
 
 		if (record) {
-			const { data: sessionData, ...user } = record;
+			let { data: sessionData } = record;
+			const user = omit(record, 'data');
+
+			if (typeof sessionData === 'string') {
+				try {
+					sessionData = JSON.parse(sessionData);
+				} catch {
+					logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+				}
+			}
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout(clone(user), sessionData && JSON.parse(sessionData as string));
+			await provider.logout(clone(user), sessionData as SessionData);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
