@@ -1,38 +1,57 @@
-name: Run linters
+name: Lint
 
 on:
   push:
     branches:
       - main
-    # Don't run on translation updates
-    paths-ignore:
-     - 'app/src/lang/translations/*.yaml'
   pull_request:
     branches:
       - main
-    # Don't run on translation updates
-    paths-ignore:
-     - 'app/src/lang/translations/*.yaml'
 
 jobs:
-  lint:
+  # Skip subsequent jobs if changed files are out of scope for this workflow
+  pre_check:
+    name: Pre Check
     runs-on: ubuntu-latest
+    outputs:
+      # Returns true when only the files listed below have changed
+      skip: ${{ steps.changed_files.outputs.only_changed }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          # Fetch whole history on push events (required for comparison)
+          fetch-depth: ${{ github.event_name == 'push' && '0' || '1' }}
 
+      - name: Check Changed Files
+        id: changed_files
+        uses: tj-actions/changed-files@v10.1
+        with:
+          files: |
+            app/src/lang/translations/*.yaml
+
+  lint:
+    name: Lint
+    needs: pre_check
+    if: needs.pre_check.outputs.skip != 'true'
+    runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16'
           cache: npm
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run linters
+      - name: Run Linters
         run: npm run lint
