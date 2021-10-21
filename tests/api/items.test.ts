@@ -341,7 +341,7 @@ describe('/items', () => {
 	});
 	describe('/:collection PATCH', () => {
 		describe('updateOne', () => {
-			it.only.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
+			it.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
 				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 					select: ['id'],
