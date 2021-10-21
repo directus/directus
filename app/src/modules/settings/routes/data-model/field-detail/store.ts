@@ -10,7 +10,9 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
 import api from '@/api';
 
-const global: Record<string, (updates: StateUpdates, state: State) => void> = {
+type AlterationFunctionObject = Record<string, (updates: StateUpdates, state: State) => void>;
+
+const global: AlterationFunctionObject = {
 	/**
 	 * In case a relational field removed the schema object, we'll have to make sure it's re-added
 	 * for the other types
@@ -128,7 +130,7 @@ const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 	},
 };
 
-const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
+const m2o: AlterationFunctionObject = {
 	prepareRelation(updates, state) {
 		// Add if existing
 		if (!updates.relations) updates.relations = {};
@@ -206,7 +208,7 @@ const m2o: Record<string, (updates: StateUpdates, state: State) => void> = {
 	},
 };
 
-const o2m: Record<string, (updates: StateUpdates, state: State) => void> = {
+const o2m: AlterationFunctionObject = {
 	removeSchema(updates) {
 		set(updates, 'field.schema', undefined);
 	},
@@ -328,7 +330,7 @@ const o2m: Record<string, (updates: StateUpdates, state: State) => void> = {
 	},
 };
 
-const file: Record<string, (updates: StateUpdates, state: State) => void> = {
+const file: AlterationFunctionObject = {
 	setTypeToUUID(updates) {
 		set(updates, 'field.type', 'uuid');
 	},
@@ -353,6 +355,30 @@ const file: Record<string, (updates: StateUpdates, state: State) => void> = {
 
 		if (!updates.relations?.m2o) updates.relations = { m2o: {} };
 		set(updates, 'relations.m2o.field', updates.field.field);
+	},
+};
+
+const presentation: AlterationFunctionObject = {
+	removeSchema(updates) {
+		set(updates, 'field.schema', undefined);
+	},
+	setTypeToAlias(updates) {
+		set(updates, 'field.type', 'alias');
+	},
+	setSpecialToNoData(updates) {
+		set(updates, 'field.meta.special', ['alias', 'no-data']);
+	},
+};
+
+const group: AlterationFunctionObject = {
+	removeSchema(updates) {
+		set(updates, 'field.schema', undefined);
+	},
+	setTypeToAlias(updates) {
+		set(updates, 'field.type', 'alias');
+	},
+	setSpecialToGroup(updates) {
+		set(updates, 'field.meta.special', ['alias', 'no-data', 'group']);
 	},
 };
 
@@ -441,6 +467,18 @@ export const useFieldDetailStore = defineStore({
 				if (getCurrent('localType') === 'file') {
 					file.setTypeToUUID(updates, this);
 					file.prepareRelation(updates, this);
+				}
+
+				if (getCurrent('localType') === 'presentation') {
+					presentation.removeSchema(updates, this);
+					presentation.setTypeToAlias(updates, this);
+					presentation.setSpecialToNoData(updates, this);
+				}
+
+				if (getCurrent('localType') === 'group') {
+					group.removeSchema(updates, this);
+					group.setTypeToAlias(updates, this);
+					group.setSpecialToGroup(updates, this);
 				}
 			}
 

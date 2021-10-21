@@ -163,29 +163,29 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 	else if (type === 'm2a') useM2A();
 	else useStandard();
 
-	function useFile() {
-		if (!isExisting) {
-			state.fieldData.type = 'uuid';
+	// function useFile() {
+	// 	if (!isExisting) {
+	// 		state.fieldData.type = 'uuid';
 
-			state.relations = [
-				{
-					collection: collection,
-					field: '',
-					related_collection: 'directus_files',
-					meta: {
-						sort_field: null,
-					},
-				},
-			];
-		}
+	// 		state.relations = [
+	// 			{
+	// 				collection: collection,
+	// 				field: '',
+	// 				related_collection: 'directus_files',
+	// 				meta: {
+	// 					sort_field: null,
+	// 				},
+	// 			},
+	// 		];
+	// 	}
 
-		watch(
-			() => state.fieldData.field,
-			() => {
-				state.relations[0].field = state.fieldData.field;
-			}
-		);
-	}
+	// 	watch(
+	// 		() => state.fieldData.field,
+	// 		() => {
+	// 			state.relations[0].field = state.fieldData.field;
+	// 		}
+	// 	);
+	// }
 
 	function useM2O() {
 		// const syncNewCollectionsM2O = throttle(() => {
