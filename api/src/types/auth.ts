@@ -16,7 +16,7 @@ export interface User {
 	role: string | null;
 	provider: string;
 	external_identifier: string | null;
-	auth_data: string | null;
+	auth_data: string | Record<string, unknown> | null;
 }
 
 export type AuthData = Record<string, any> | null;
