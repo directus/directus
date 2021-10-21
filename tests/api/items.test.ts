@@ -170,6 +170,29 @@ describe('/items', () => {
 				favorite_artist: expect.any(Number),
 			});
 		});
+		it.each(getDBsToTest())(`%p retrieves artists and events for each entry in artists_events`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
+				select: ['id'],
+			});
+			await seedTable(databases.get(vendor)!, 1, 'artists_events', {
+				artists_id: insertedArtist[0].id,
+				events_id: insertedEvent[0].id,
+			});
+			const response = await request(url)
+				.get(`/items/artists_events?fields[]=artists_id.name&fields[]=events_id.cost`)
+				.set('Authorization', 'Bearer AdminToken')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(await response.body.data[0]).toMatchObject({
+				artists_id: { name: expect.any(String) },
+				events_id: { cost: expect.any(Number) },
+			});
+		});
 		describe('Error handling', () => {
 			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
