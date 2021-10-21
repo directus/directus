@@ -3,7 +3,7 @@ import request from 'supertest';
 import config from '../config';
 import { getDBsToTest } from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
-import { createArtist, createEvent, createGuest, createMany, seedTable } from '../setup/utils/factories';
+import { createArtist, createEvent, createGuest, createMany, seedTable, Item } from '../setup/utils/factories';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -446,6 +446,53 @@ describe('/items', () => {
 				});
 			}
 			expect(response.data.data.length).toBe(10);
+		});
+	});
+	describe('/:collection/ DELETE', () => {
+		it.each(getDBsToTest())(`%p deletes many artists_events without deleting the artists or events`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
+				select: ['id'],
+			});
+			const items = await seedTable(
+				databases.get(vendor)!,
+				10,
+				'artists_events',
+				{
+					artists_id: insertedArtist[insertedArtist.length - 1].id,
+					events_id: insertedEvent[insertedEvent.length - 1].id,
+				},
+				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+			);
+			const body: any[] = [];
+			items.forEach((item: Item) => {
+				body.push(item.id);
+			});
+			const response: any = await axios.delete(`${url}/items/artists_events/`, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+				data: JSON.stringify(body),
+			});
+
+			expect(response.data.data).toBe(undefined);
+			for (let row = 0; row < items.length; row++) {
+				expect(await databases.get(vendor)!('artists_events').select('*').where('id', items[row].id)).toStrictEqual([]);
+			}
+			expect(
+				await databases.get(vendor)!('artists')
+					.select('id')
+					.where('id', insertedArtist[insertedArtist.length - 1].id)
+			).toStrictEqual([insertedArtist[insertedArtist.length - 1]]);
+			expect(
+				await databases.get(vendor)!('artists')
+					.select('id')
+					.where('id', insertedEvent[insertedEvent.length - 1].id)
+			).toStrictEqual([insertedEvent[insertedEvent.length - 1]]);
 		});
 	});
 });

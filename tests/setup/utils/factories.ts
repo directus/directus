@@ -43,7 +43,7 @@ type JoinTable = {
 	[column: string]: number;
 };
 
-type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
+export type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
 
 /*
  * Options Example: Artist
