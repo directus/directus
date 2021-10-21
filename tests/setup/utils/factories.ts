@@ -166,9 +166,9 @@ export const createOrganizer = (): Organizer => ({
 	company_name: `${name.firstName()} ${name.lastName()}`,
 });
 
-export const createMany = (factory: () => Item, count: number, options?: CreateManyOptions) => {
+export const createMany = (factory: (() => Item) | Record<string, any>, count: number, options?: CreateManyOptions) => {
 	const items: Item[] = [];
-	if (options) {
+	if (options && typeof factory !== 'object') {
 		for (let rows = 0; rows < count; rows++) {
 			const item: any = factory();
 			for (const [column, max] of Object.entries(options)) {
@@ -178,8 +178,19 @@ export const createMany = (factory: () => Item, count: number, options?: CreateM
 		}
 		return items;
 	}
-	for (let rows = 0; rows < count; rows++) {
-		items.push(factory());
+	if (options && typeof factory === 'object') {
+		for (let rows = 0; rows < count; rows++) {
+			const item: any = factory;
+			for (const [column, max] of Object.entries(options)) {
+				item[column] = getRandomInt(max);
+			}
+			items.push(item);
+		}
+		return items;
+	} else if (typeof factory !== 'object') {
+		for (let rows = 0; rows < count; rows++) {
+			items.push(factory());
+		}
 	}
 	return items;
 };
