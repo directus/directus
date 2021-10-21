@@ -200,6 +200,21 @@ router.get(
 );
 
 router.get(
+	'/config',
+	asyncHandler(async (req, res, next) => {
+		res.locals.payload = {
+			data: {
+				login: {
+					disabled: env.LOGIN_DISABLED ? env.LOGIN_DISABLED : false,
+				},
+			},
+		};
+		return next();
+	}),
+	respond
+);
+
+router.get(
 	'/oauth/:provider',
 	asyncHandler(async (req, res, next) => {
 		const config = { ...grantConfig };

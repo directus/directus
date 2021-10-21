@@ -1,35 +1,37 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
-		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
+		<div v-if="loginDisabled">
+			<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+			<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
-		<transition-expand>
-			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
-		</transition-expand>
+			<transition-expand>
+				<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
+			</transition-expand>
 
-		<v-notice v-if="error" type="warning">
-			{{ errorFormatted }}
-		</v-notice>
-		<div class="buttons">
-			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
-			<router-link to="/reset-password" class="forgot-password">
-				{{ t('forgot_password') }}
-			</router-link>
+			<v-notice v-if="error" type="warning">
+				{{ errorFormatted }}
+			</v-notice>
+			<div class="buttons">
+				<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
+				<router-link to="/reset-password" class="forgot-password">
+					{{ t('forgot_password') }}
+				</router-link>
+			</div>
 		</div>
-
 		<sso-links />
 	</form>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores';
+import api from '@/api';
 
 type Credentials = {
 	email: string;
@@ -51,10 +53,13 @@ export default defineComponent({
 		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
 		const userStore = useUserStore();
+		const loginDisabled = ref(false);
 
 		watch(email, () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
 		});
+
+		onMounted(() => checkLoginSettings());
 
 		const errorFormatted = computed(() => {
 			// Show "Wrong username or password" for wrongly formatted emails as well
@@ -68,7 +73,26 @@ export default defineComponent({
 			return null;
 		});
 
-		return { t, errorFormatted, error, email, password, onSubmit, loggingIn, translateAPIError, otp, requiresTFA };
+		return {
+			t,
+			errorFormatted,
+			error,
+			email,
+			password,
+			onSubmit,
+			loggingIn,
+			translateAPIError,
+			otp,
+			requiresTFA,
+			checkLoginSettings,
+			loginDisabled,
+		};
+
+		async function checkLoginSettings() {
+			const response = await api.get('/auth/config');
+
+			loginDisabled.value = !response.data.data.login.disabled;
+		}
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;
