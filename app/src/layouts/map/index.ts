@@ -236,7 +236,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
 					geojsonError.value = null;
-					geojson.value = toGeoJSON(items.value, geometryOptions.value, template.value);
+					geojson.value = toGeoJSON(items.value, geometryOptions.value);
 					geojsonLoading.value = false;
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
@@ -325,7 +325,25 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
+		const popupItem = ref<any>(null);
+		const popupPosition = ref<any>({ x: 0, y: 0 });
+		function updatePopup({ x, y, item }: { x: number; y: number; item: string | number }) {
+			const field = primaryKeyField.value?.field;
+			if (!field) {
+				return;
+			}
+			if (x && y) {
+				popupPosition.value = { x, y };
+			}
+			if (item === null) {
+				popupItem.value = null;
+			} else {
+				popupItem.value = items.value.find((i) => i[field] === item);
+			}
+		}
+
 		return {
+			collection,
 			geojson,
 			directusSource,
 			directusLayers,
@@ -370,6 +388,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			clearDataFilters,
 			locationFilter,
 			fitGeoJSONBounds,
+			template,
+			popupItem,
+			popupPosition,
+			updatePopup,
 		};
 
 		async function resetPresetAndRefresh() {
