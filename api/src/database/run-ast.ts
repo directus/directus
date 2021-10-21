@@ -219,8 +219,7 @@ function getDBQuery(
 	knex: Knex,
 	table: string,
 	fieldNodes: FieldNode[],
-	query: Query,
-	nested?: boolean
+	query: Query
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
