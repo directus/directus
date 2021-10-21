@@ -79,7 +79,6 @@ AUTH_ADOBE_AUTHORIZE_URL="https://ims-na1.adobelogin.com/ims/authorize/v2"
 AUTH_ADOBE_ACCESS_URL="https://ims-na1.adobelogin.com/ims/token/v3"
 AUTH_ADOBE_PROFILE_URL="https://ims-na1.adobelogin.com/ims/userinfo/v2"
 AUTH_ADOBE_ALLOW_PUBLIC_REGISTRATION="true"
-AUTH_ADOBE_ALLOWED_EMAIL_DOMAINS="monospace.io,directus.io"
 AUTH_ADOBE_DEFAULT_ROLE_ID="<directus_role_id>"
 AUTH_ADOBE_ICON="adobe"
 ```

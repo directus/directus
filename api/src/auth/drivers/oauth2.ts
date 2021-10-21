@@ -98,7 +98,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
-		const { emailKey, identifierKey, allowPublicRegistration, allowedEmailDomains } = this.config;
+		const { emailKey, identifierKey, allowPublicRegistration } = this.config;
 
 		const email = userInfo[emailKey ?? 'email'] as string | undefined;
 		// Fallback to email if explicit identifier not found
@@ -121,10 +121,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			return userId;
 		}
 
-		const isAllowedEmail = !allowedEmailDomains || (email && isEmailAllowed(email, allowedEmailDomains));
-
 		// Is public registration allowed?
-		if (!allowPublicRegistration || !isAllowedEmail) {
+		if (!allowPublicRegistration) {
 			throw new InvalidCredentialsException();
 		}
 

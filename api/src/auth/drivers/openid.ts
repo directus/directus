@@ -99,7 +99,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
-		const { identifierKey, allowPublicRegistration, allowedEmailDomains, requireVerifiedEmail } = this.config;
+		const { identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
 
 		const email = userInfo.email as string;
 		// Fallback to email if explicit identifier not found
@@ -122,11 +122,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			return userId;
 		}
 
-		const isAllowedEmail = !allowedEmailDomains || (email && isEmailAllowed(email, allowedEmailDomains));
 		const isEmailVerified = !requireVerifiedEmail || userInfo.email_verified;
 
 		// Is public registration allowed?
-		if (!allowPublicRegistration || !isAllowedEmail || !isEmailVerified) {
+		if (!allowPublicRegistration || !isEmailVerified) {
 			throw new InvalidCredentialsException();
 		}
 
