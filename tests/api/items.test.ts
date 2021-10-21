@@ -371,6 +371,40 @@ describe('/items', () => {
 					artists_id: insertedArtist[0].id,
 				});
 			});
+			it.each(getDBsToTest())(`%p updates many artists_events to a different artist`, async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+					select: ['id'],
+				});
+				const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
+					select: ['id'],
+				});
+				await seedTable(
+					databases.get(vendor)!,
+					10,
+					'artists_events',
+					{
+						artists_id: insertedArtist[insertedArtist.length - 1].id,
+						events_id: insertedEvent[insertedEvent.length - 1].id,
+					},
+					{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+				);
+				const body = {
+					keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+					data: { events_id: insertedEvent[0].id },
+				};
+				const response: any = await axios.patch(`${url}/items/artists_events/?fields=events_id`, body, {
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				});
+
+				expect(response.data.data[0]).toMatchObject({
+					events_id: insertedEvent[0].id,
+				});
+				expect(response.data.data.length).toBe(10);
+			});
 		});
 	});
 });
