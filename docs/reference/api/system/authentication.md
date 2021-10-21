@@ -387,3 +387,39 @@ GET /auth/oauth/:provider
 </div>
 
 ---
+
+## Get Login Configuration
+
+Gets the configuration for the login prompt from the .env file.
+
+<div class="two-up">
+<div class="left">
+
+### Response Attributes
+
+<div class="definitions">
+
+`data` **Object**\
+Object of key - values with configuration information.
+
+</div>
+
+</div>
+<div class="right">
+
+```
+GET /auth/config
+```
+
+```json
+{
+	"data": {
+		"login": {
+			"disabled": false
+		}
+	}
+}
+```
+
+</div>
+</div>

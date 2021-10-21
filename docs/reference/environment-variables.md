@@ -17,6 +17,7 @@
 | `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
 | `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 | `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`        |
+| `LOGIN_DISABLED`           | Disables the default login prompt if set to `true`                                                         | `false`       |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like oAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
