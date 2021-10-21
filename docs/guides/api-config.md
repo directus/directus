@@ -59,7 +59,7 @@ ASSETS_CACHE_TTL="7d"
 #### Multiple Providers
 
 You can configure multiple providers for handling authentication in Directus. This allows for different options when
-when logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
+logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
 
 ```
 AUTH_PROVIDERS="google,adobe"

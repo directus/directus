@@ -379,7 +379,7 @@ GET /auth
 		},
 		{
 			"name": "Okta",
-			"driver": "okta"
+			"driver": "openid"
 		}
 	]
 }
