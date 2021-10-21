@@ -156,7 +156,7 @@ describe('/items', () => {
 		it.each(getDBsToTest())('%p retrieves all items from guest table with favorite_artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
 			seedTable(databases.get(vendor)!, 10, 'artists', createArtist);
-			seedTable(databases.get(vendor)!, 1, 'guests', createMany(createGuest, 10, { favorite_artist: 10 }));
+			seedTable(databases.get(vendor)!, 1, 'guests', createMany(createGuest, 10, { favorite_artist: 10 })!);
 
 			const response = await request(url)
 				.get('/items/guests')
@@ -274,7 +274,7 @@ describe('/items', () => {
 		describe('createMany', () => {
 			it.each(getDBsToTest())('%p creates 5 artists', async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
-				const body = createMany(createArtist, 5);
+				const body = createMany(createArtist, 5)!;
 				const response: any = await axios.post(`${url}/items/artists`, body, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
@@ -286,7 +286,7 @@ describe('/items', () => {
 			it.each(getDBsToTest())('%p creates 5 users with a favorite_artist', async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
 				await seedTable(databases.get(vendor)!, 5, 'artists', createArtist);
-				const body = createMany(createGuest, 5, { favorite_artist: 5 });
+				const body = createMany(createGuest, 5, { favorite_artist: 5 })!;
 
 				const response: any = await axios.post(`${url}/items/guests`, body, {
 					headers: {
@@ -295,6 +295,29 @@ describe('/items', () => {
 					},
 				});
 				expect(response.data.data.length).toBe(body.length);
+			});
+			it.each(getDBsToTest())(`%p creates 5 artist_events entries`, async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+					select: ['id'],
+				});
+				await seedTable(databases.get(vendor)!, 5, 'events', createEvent(), {
+					select: ['id'],
+				});
+				const body = createMany({}, 10, { events_id: 5, artists_id: 5 });
+
+				const response: any = await axios.post(`${url}/items/artists_events`, body, {
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				});
+
+				expect(response.data.data.length).toBeGreaterThanOrEqual(10);
+				expect(response.data.data[0]).toMatchObject({
+					artists_id: expect.any(Number),
+					events_id: expect.any(Number),
+				});
 			});
 		});
 		describe('Error handling', () => {
