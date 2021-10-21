@@ -18,7 +18,8 @@ describe('/items', () => {
 
 	afterAll(async () => {
 		for (const [_vendor, connection] of databases) {
-			connection.destroy();
+			await connection('guests').truncate();
+			await connection.destroy();
 		}
 	});
 
@@ -112,15 +113,35 @@ describe('/items', () => {
 	describe('/:collection GET', () => {
 		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			seedTable(databases.get(vendor)!, 100, 'artists', createArtist);
+			seedTable(databases.get(vendor)!, 50, 'artists', createArtist);
 			const response = await request(url)
 				.get('/items/artists')
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			expect(response.body.data.length).toBe(100);
-			expect(Object.keys(response.body.data[0]).sort()).toStrictEqual(['id', 'members', 'name']);
+			expect(response.body.data.length).toBeGreaterThanOrEqual(50);
+			expect(response.body.data[0]).toMatchObject({
+				id: expect.any(Number),
+				name: expect.any(String),
+			});
+		});
+		it.each(getDBsToTest())('%p retrieves all items from guest table with favorite_artist', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			seedTable(databases.get(vendor)!, 10, 'artists', createArtist);
+			seedTable(databases.get(vendor)!, 10, 'guests', createMany(createGuest, 10, { favorite_artist: 10 }));
+
+			const response = await request(url)
+				.get('/items/guests')
+				.set('Authorization', 'Bearer AdminToken')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(response.body.data.length).toBeGreaterThanOrEqual(10);
+			expect(response.body.data[0]).toMatchObject({
+				birthday: expect.any(String),
+				favorite_artist: expect.any(Number),
+			});
 		});
 	});
 
@@ -157,6 +178,19 @@ describe('/items', () => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
 				const body = createMany(createArtist, 5);
 				const response: any = await axios.post(`${url}/items/artists`, body, {
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				});
+				expect(response.data.data.length).toBe(body.length);
+			});
+			it.each(getDBsToTest())('%p creates 5 users with a favorite_artist', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				await seedTable(databases.get(vendor)!, 5, 'artists', createArtist);
+				const body = createMany(createGuest, 5, { favorite_artist: 5 });
+
+				const response: any = await axios.post(`${url}/items/guests`, body, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',

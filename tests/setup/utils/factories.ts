@@ -67,7 +67,7 @@ export const seedTable = async function (
 	database: Knex<any, unknown>,
 	count: number,
 	table: string,
-	factory: Item | (() => Item),
+	factory: Item | (() => Item) | Item[],
 	options?: SeedOptions
 ): Promise<void | any[] | any> {
 	const row: Record<string, number> = {};
@@ -92,6 +92,8 @@ export const seedTable = async function (
 		} catch (error: any) {
 			throw new Error(error);
 		}
+	} else if (Array.isArray(factory)) {
+		await database.batchInsert(table, factory, 200);
 	} else {
 		try {
 			const fakeRows = [];
@@ -166,7 +168,11 @@ export const createMany = (factory: () => Item, count: number, options?: CreateM
 };
 
 function getRandomInt(max: number) {
-	return Math.floor(Math.random() * max);
+	let int = 0;
+	while (int === 0) {
+		int = Math.floor(Math.random() * max);
+	}
+	return int;
 }
 
 function randomDateTime(start: Date, end: Date) {
