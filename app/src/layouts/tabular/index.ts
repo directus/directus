@@ -164,7 +164,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value?.[0].startsWith('-')) {
+				if (!sort.value?.[0]) {
+					return null;
+				} else if (sort.value?.[0].startsWith('-')) {
 					return { by: sort.value[0].substring(1), desc: true };
 				} else {
 					return { by: sort.value[0], desc: false };
@@ -275,6 +277,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			function onSortChange(newSort: { by: string; desc: boolean }) {
 				let sortString = newSort.by;
+				if (!newSort.by) {
+					sort.value = [];
+					return;
+				}
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}
