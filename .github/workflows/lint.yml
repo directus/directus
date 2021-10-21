@@ -14,26 +14,20 @@ jobs:
     name: Pre Check
     runs-on: ubuntu-latest
     outputs:
-      # Returns true when only the files listed below have changed
-      skip: ${{ steps.changed_files.outputs.only_changed }}
+      # Returns true if files other than translations have been changed
+      satisfied: ${{ steps.changes.outputs.not_translations }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: changes
         with:
-          # Fetch whole history on push events (required for comparison)
-          fetch-depth: ${{ github.event_name == 'push' && '0' || '1' }}
-
-      - name: Check Changed Files
-        id: changed_files
-        uses: tj-actions/changed-files@v10.1
-        with:
-          files: |
-            app/src/lang/translations/*.yaml
+          filters: |
+            not_translations:
+              - '!(app/src/lang/translations/*.yaml)'
 
   lint:
     name: Lint
     needs: pre_check
-    if: needs.pre_check.outputs.skip != 'true'
+    if: needs.pre_check.outputs.satisfied == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
