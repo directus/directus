@@ -108,12 +108,12 @@ import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores
 import { useRouter } from 'vue-router';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollection } from '@directus/shared/composables';
-import { getLocalTypeForField } from '../get-local-type';
+import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
 import { LocalType } from '@directus/shared/types';
 
-import { initLocalStore, state, clearLocalStore } from './store';
+import { initLocalStore, state, clearLocalStore } from '../store';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({

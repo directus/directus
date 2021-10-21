@@ -11,6 +11,20 @@ import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores
 import api from '@/api';
 
 const global: Record<string, (updates: StateUpdates, state: State) => void> = {
+	/**
+	 * In case a relational field removed the schema object, we'll have to make sure it's re-added
+	 * for the other types
+	 */
+	resetSchema(updates, state) {
+		if (state.field.schema === undefined) {
+			set(updates, 'field.schema', {});
+		}
+	},
+	/**
+	 * When an interface is chosen before a local type is set (which is the case when using the
+	 * simple flow), we'll set the localType to match whatever the first supported localType is of
+	 * the interface
+	 */
 	setLocalTypeForInterface(updates) {
 		if (!updates.field?.meta?.interface) return;
 
@@ -23,6 +37,11 @@ const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 		const localType = chosenInterface?.localTypes?.[0] ?? 'standard';
 		set(updates, 'localType', localType);
 	},
+	/**
+	 * Default to the first available type for this interface, if the currently selected type doesn't
+	 * work with this interface. Makes sure you never end up saving like "Geometry" for a "Boolean"
+	 * field etc.
+	 */
 	setTypeForInterface(updates, state: State) {
 		if (!updates.field?.meta?.interface) return;
 
@@ -37,6 +56,9 @@ const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 		const defaultType = chosenInterface?.types[0];
 		set(updates, 'field.type', defaultType);
 	},
+	/**
+	 * Some type need special flags set. These are only used for the "standard" localType
+	 */
 	setSpecialForType(updates) {
 		const type = updates.field?.type;
 
@@ -65,6 +87,10 @@ const global: Record<string, (updates: StateUpdates, state: State) => void> = {
 				set(updates, 'field.meta.special', null);
 		}
 	},
+	/**
+	 * Make sure the special flag matches the relational/presentation localType. This isn't used when
+	 * the local type is standard
+	 */
 	setSpecialForLocalType(updates) {
 		if (updates?.localType === 'o2m') {
 			set(updates, 'field.meta.special', ['o2m']);
@@ -302,6 +328,34 @@ const o2m: Record<string, (updates: StateUpdates, state: State) => void> = {
 	},
 };
 
+const file: Record<string, (updates: StateUpdates, state: State) => void> = {
+	setTypeToUUID(updates) {
+		set(updates, 'field.type', 'uuid');
+	},
+	prepareRelation(updates, state) {
+		// Add if existing
+		if (!updates.relations) updates.relations = {};
+
+		updates.relations.m2o = {
+			collection: state.collection,
+			field: state.field.field,
+			related_collection: 'directus_files',
+			meta: {
+				sort_field: null,
+			},
+			schema: {
+				on_delete: 'SET NULL',
+			},
+		};
+	},
+	updateRelationField(updates) {
+		if (!updates.field?.field) return;
+
+		if (!updates.relations?.m2o) updates.relations = { m2o: {} };
+		set(updates, 'relations.m2o.field', updates.field.field);
+	},
+};
+
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
 
@@ -325,8 +379,8 @@ export const useFieldDetailStore = defineStore({
 		field: {
 			field: undefined,
 			type: undefined,
-			schema: undefined,
-			meta: undefined,
+			schema: {},
+			meta: {},
 		} as DeepPartial<Field>,
 
 		// Relations that will be upserted as part of this change
@@ -370,6 +424,7 @@ export const useFieldDetailStore = defineStore({
 			}
 
 			if (hasChanged('localType')) {
+				global.resetSchema(updates, this);
 				global.resetRelations(updates, this);
 				global.setSpecialForLocalType(updates, this);
 
@@ -382,6 +437,11 @@ export const useFieldDetailStore = defineStore({
 					o2m.setTypeToAlias(updates, this);
 					o2m.prepareRelation(updates, this);
 				}
+
+				if (getCurrent('localType') === 'file') {
+					file.setTypeToUUID(updates, this);
+					file.prepareRelation(updates, this);
+				}
 			}
 
 			if (hasChanged('field.field')) {
@@ -391,6 +451,10 @@ export const useFieldDetailStore = defineStore({
 
 				if (getCurrent('localType') === 'o2m') {
 					o2m.updateRelationField(updates, this);
+				}
+
+				if (getCurrent('localType') === 'file') {
+					m2o.updateRelationField(updates, this);
 				}
 			}
 
