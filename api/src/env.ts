@@ -83,6 +83,8 @@ const typeMap: Record<string, string> = {
 	DB_PASSWORD: 'string',
 	DB_DATABASE: 'string',
 	DB_PORT: 'number',
+
+	DB_EXCLUDE_TABLES: 'array',
 };
 
 let env: Record<string, any> = {
