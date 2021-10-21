@@ -1,11 +1,13 @@
 import { Knex } from 'knex';
-import { User, SessionData } from '../types';
+import { AuthDriverOptions, SchemaOverview, User, SessionData } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;
+	schema: SchemaOverview;
 
-	constructor(knex: Knex, _config: Record<string, any>) {
-		this.knex = knex;
+	constructor(options: AuthDriverOptions, _config: Record<string, any>) {
+		this.knex = options.knex;
+		this.schema = options.schema;
 	}
 
 	/**
@@ -46,8 +48,9 @@ export abstract class AuthDriver {
 	 * @param _sessionData Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async refresh(_user: User, _sessionData: SessionData): Promise<void> {
+	async refresh(_user: User, sessionData: SessionData): Promise<SessionData> {
 		/* Optional */
+		return sessionData;
 	}
 
 	/**

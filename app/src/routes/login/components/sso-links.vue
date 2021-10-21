@@ -1,10 +1,15 @@
 <template>
 	<div class="sso-links">
-		<template v-if="providers && providers.length > 0">
+		<template v-if="ssoProviders.length > 0">
 			<v-divider />
 
-			<a v-for="provider in providers" :key="provider.name" class="sso-link" :href="provider.link">
-				{{ t('log_in_with', { provider: provider.name }) }}
+			<a v-for="provider in ssoProviders" :key="provider.name" class="sso-link" :href="provider.link">
+				<div class="sso-icon">
+					<v-icon :name="provider.icon" />
+				</div>
+				<div class="sso-title">
+					{{ t('log_in_with', { provider: provider.name }) }}
+				</div>
 			</a>
 		</template>
 	</div>
@@ -12,40 +17,40 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, onMounted } from 'vue';
-import api from '@/api';
+import { defineComponent, ref, watch, toRefs, PropType } from 'vue';
+import { AuthProvider } from '@/types';
+import { AUTH_SSO_DRIVERS } from '@/constants';
 import { getRootPath } from '@/utils/get-root-path';
-import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
-	setup() {
+	props: {
+		providers: {
+			type: Array as PropType<AuthProvider[]>,
+			default: () => [],
+		},
+	},
+	setup(props) {
 		const { t } = useI18n();
 
-		const providers = ref([]);
-		const loading = ref(false);
+		const { providers } = toRefs(props);
 
-		onMounted(() => fetchProviders());
+		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
 
-		return { t, providers };
+		watch(providers, () => {
+			ssoProviders.value = providers.value
+				.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
+				.map((provider: AuthProvider) => ({
+					name: formatTitle(provider.name),
+					link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
+						location.search,
+						'?continue'
+					)}`,
+					icon: provider.icon ?? 'account_circle',
+				}));
+		});
 
-		async function fetchProviders() {
-			loading.value = true;
-
-			try {
-				const response = await api.get('/auth/oauth/');
-
-				providers.value = response.data.data?.map((providerName: string) => {
-					return {
-						name: providerName,
-						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
-					};
-				});
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
-		}
+		return { t, ssoProviders };
 	},
 });
 </script>
@@ -56,19 +61,39 @@ export default defineComponent({
 }
 
 .sso-link {
-	display: block;
+	$sso-link-border-width: 2px;
+
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	width: 100%;
 	height: var(--input-height);
-	text-align: center;
 	background-color: var(--background-normal);
+	border: $sso-link-border-width var(--background-normal) solid;
 	border-radius: var(--border-radius);
-	transition: background var(--fast) var(--transition);
+	transition: border-color var(--fast) var(--transition);
+
+	.sso-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--input-height);
+		margin: -$sso-link-border-width;
+		background-color: var(--background-normal-alt);
+		border-radius: var(--border-radius);
+
+		span {
+			--v-icon-size: 28px;
+		}
+	}
+
+	.sso-title {
+		display: flex;
+		align-items: center;
+		padding: 0 16px 0 20px;
+		font-size: 16px;
+	}
 
 	&:hover {
-		background-color: var(--background-normal-alt);
+		border-color: var(--background-normal-alt);
 	}
 
 	& + & {
