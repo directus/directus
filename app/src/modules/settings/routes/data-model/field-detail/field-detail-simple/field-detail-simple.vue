@@ -1,52 +1,44 @@
 <template>
-	<v-drawer
-		:model-value="isOpen"
-		:title="title"
-		persistent
-		@cancel="$emit('cancel')"
-		@update:model-value="$emit('cancel')"
-	>
-		<div class="content">
-			<div v-for="group of groups" :key="group.key" class="group">
-				<h2>{{ group.name }}</h2>
+	<div class="content">
+		<div v-for="group of groups" :key="group.key" class="group">
+			<h2>{{ group.name }}</h2>
 
-				<div class="grid">
-					<button
-						v-for="inter of group.interfaces"
-						:key="inter.id"
-						class="interface"
-						:class="{ active: chosenInterface === inter.id }"
-						:disabled="chosenInterface && chosenInterface !== inter.id"
-						@click="toggleInterface(inter.id)"
-					>
-						<div class="preview">
-							<template v-if="inter.preview">
-								<span v-if="isSVG(inter.preview)" v-html="inter.preview" />
-								<img v-else :src="inter.preview" alt="" />
-							</template>
+			<div class="grid">
+				<button
+					v-for="inter of group.interfaces"
+					:key="inter.id"
+					class="interface"
+					:class="{ active: chosenInterface === inter.id }"
+					:disabled="chosenInterface && chosenInterface !== inter.id"
+					@click="toggleInterface(inter.id)"
+				>
+					<div class="preview">
+						<template v-if="inter.preview">
+							<span v-if="isSVG(inter.preview)" v-html="inter.preview" />
+							<img v-else :src="inter.preview" alt="" />
+						</template>
 
-							<v-icon v-else large :name="inter.icon" />
-						</div>
-						<v-text-overflow :text="inter.name" class="name" />
-					</button>
+						<v-icon v-else large :name="inter.icon" />
+					</div>
+					<v-text-overflow :text="inter.name" class="name" />
+				</button>
 
-					<transition-expand>
-						<field-configuration
-							v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
-							:row="configRow"
-							:chosen-interface="chosenInterface"
-							@save="$emit('save')"
-						/>
-					</transition-expand>
-				</div>
+				<transition-expand>
+					<field-configuration
+						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
+						:row="configRow"
+						:chosen-interface="chosenInterface"
+						@save="$emit('save')"
+						@toggleAdvanced="$emit('toggleAdvanced')"
+					/>
+				</transition-expand>
 			</div>
 		</div>
-	</v-drawer>
+	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed, toRefs, watch } from 'vue';
-import { useDialogRoute } from '@/composables/use-dialog-route';
 import { Collection } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { getInterfaces } from '@/interfaces';
@@ -62,17 +54,12 @@ export default defineComponent({
 			type: Object as PropType<Collection>,
 			required: true,
 		},
-		title: {
-			type: String,
-			required: true,
-		},
 	},
-	emits: ['cancel', 'save'],
+	emits: ['save', 'toggleAdvanced'],
 	setup(props) {
 		const { collection } = toRefs(props);
 
 		const { t } = useI18n();
-		const isOpen = useDialogRoute();
 
 		const fieldDetail = useFieldDetailStore();
 		watch(collection, () => fieldDetail.update({ collection: collection.value.collection }), { immediate: true });
@@ -137,7 +124,7 @@ export default defineComponent({
 			return Math.ceil((indexInGroup + 1) / 4) + 1;
 		});
 
-		return { isOpen, t, interfaces, groups, isSVG, syncRefProperty, chosenInterface, configRow, toggleInterface };
+		return { t, interfaces, groups, isSVG, syncRefProperty, chosenInterface, configRow, toggleInterface };
 
 		function isSVG(path: string) {
 			return path.startsWith('<svg');

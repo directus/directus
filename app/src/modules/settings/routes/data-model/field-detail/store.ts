@@ -319,7 +319,7 @@ export const useFieldDetailStore = defineStore({
 	id: 'field-detail',
 	state: () => ({
 		// The current collection we're operating in
-		collection: undefined,
+		collection: undefined as string | undefined,
 
 		// Current field to be created / edited
 		field: {

@@ -1,22 +1,30 @@
 <template>
-	<field-detail-simple v-if="simple" :collection="collectionInfo" :title="title" @cancel="cancel" @save="save" />
-	<field-detail-full v-else :collection="collectionInfo" :title="title" @cancel="cancel" @save="save" />
+	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @update:model-value="cancel">
+		<field-detail-simple
+			v-if="field === '+' && simple"
+			:collection="collectionInfo"
+			@save="save"
+			@toggleAdvanced="simple = false"
+		/>
+		<field-detail-advanced v-else :collection="collectionInfo" @save="save" />
+	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, onUnmounted, computed, toRefs } from 'vue';
+import { defineComponent, PropType, ref, computed, toRefs } from 'vue';
 import { LocalType } from '@directus/shared/types';
 import { useFieldDetailStore } from './store';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
-import FieldDetailFull from './field-detail-full/field-detail-full.vue';
+import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	name: 'FieldDetail',
-	components: { FieldDetailSimple, FieldDetailFull },
+	components: { FieldDetailSimple, FieldDetailAdvanced },
 	props: {
 		collection: {
 			type: String,
@@ -34,6 +42,8 @@ export default defineComponent({
 	setup(props) {
 		const { collection } = toRefs(props);
 
+		const isOpen = useDialogRoute();
+
 		const fieldDetail = useFieldDetailStore();
 
 		const collectionsStore = useCollectionsStore();
@@ -45,9 +55,7 @@ export default defineComponent({
 			return collectionsStore.getCollection(collection.value);
 		});
 
-		const simple = computed(() => {
-			return props.field === '+' && !props.type;
-		});
+		const simple = ref(props.type === null);
 
 		const title = computed(() => {
 			const existingField = fieldsStore.getField(props.collection, props.field);
@@ -60,7 +68,7 @@ export default defineComponent({
 			}
 		});
 
-		return { simple, cancel, collectionInfo, t, title, save };
+		return { simple, cancel, collectionInfo, t, title, save, isOpen };
 
 		async function cancel() {
 			await router.push(`/settings/data-model/${props.collection}`);

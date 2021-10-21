@@ -51,6 +51,8 @@
 			<v-button class="save" full-width :disabled="!readyToSave" @click="$emit('save')" :loading="saving">
 				{{ t('save') }}
 			</v-button>
+
+			<button @click="$emit('toggleAdvanced')">Continue in Advanced Mode</button>
 		</div>
 	</div>
 </template>
@@ -76,12 +78,11 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['save'],
+	emits: ['save', 'toggleAdvanced'],
 	setup(props) {
 		const fieldDetail = useFieldDetailStore();
 
-		const { readyToSave, saving, localType } = storeToRefs(fieldDetail);
-
+		const { readyToSave, saving, localType, collection } = storeToRefs(fieldDetail);
 		const { t } = useI18n();
 
 		const { interfaces } = getInterfaces();
@@ -103,7 +104,19 @@ export default defineComponent({
 		const required = syncFieldDetailStoreProperty('field.meta.required');
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 
-		return { key, t, type, typeOptions, defaultValue, required, note, readyToSave, saving, localType };
+		return {
+			key,
+			t,
+			type,
+			typeOptions,
+			defaultValue,
+			required,
+			note,
+			readyToSave,
+			saving,
+			localType,
+			collection,
+		};
 	},
 });
 </script>
