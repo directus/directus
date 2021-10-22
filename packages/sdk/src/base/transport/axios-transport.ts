@@ -1,79 +1,23 @@
-import { IStorage } from '../../storage';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
 import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
-
-export type AxiosTransportRefreshHandler = () => Promise<void>;
-
-export type AxiosEjector = {
-	eject(): void;
-};
-
-export type AxiosInterceptorFunction<T> = (
-	onFulfilled?: (value: T) => T | Promise<T>,
-	onRejected?: (error: any) => any
-) => AxiosEjector;
-
-export type AxiosInterceptor<T> = {
-	intercept: AxiosInterceptorFunction<T>;
-};
 
 /**
  * Axios transport implementation
  */
-export class AxiosTransport implements ITransport {
-	private _url: string;
-	private _storage: IStorage;
-	private _refresh: () => Promise<void>;
-	public _axios: AxiosInstance;
+export class AxiosTransport extends ITransport {
+	public axiosConfig?: AxiosRequestConfig;
+	public axios: AxiosInstance;
 
-	constructor(url: string, storage: IStorage, refresh: AxiosTransportRefreshHandler = () => Promise.resolve()) {
-		this._url = url;
-		this._storage = storage;
-		this._axios = null as any;
-		this._refresh = refresh;
-		this.url = url;
+	constructor(config?: AxiosRequestConfig) {
+		super();
+
+		this.axiosConfig = config;
+
+		this.axios = axios.create(this.axiosConfig);
 	}
 
-	get url(): string {
-		return this._url;
-	}
-
-	set url(value: string) {
-		this._url = value;
-		this._axios = axios.create({
-			baseURL: value,
-			withCredentials: true,
-		});
-	}
-
-	get axios(): AxiosInstance {
-		return this._axios;
-	}
-
-	get requests(): AxiosInterceptor<AxiosRequestConfig> {
-		return {
-			intercept: (onFulfilled, onRejected) => {
-				const id = this._axios.interceptors.request.use(onFulfilled, onRejected);
-				return {
-					eject: () => {
-						this._axios.interceptors.request.eject(id);
-					},
-				};
-			},
-		};
-	}
-
-	get responses(): AxiosInterceptor<AxiosResponse> {
-		return {
-			intercept: (onFulfilled, onRejected) => {
-				const id = this._axios.interceptors.response.use(onFulfilled, onRejected);
-				return {
-					eject: () => {
-						this._axios.interceptors.response.eject(id);
-					},
-				};
-			},
-		};
+	get url(): string | undefined {
+		return this.axiosConfig?.baseURL;
 	}
 
 	protected async request<T = any, R = any>(
@@ -84,14 +28,8 @@ export class AxiosTransport implements ITransport {
 	): Promise<TransportResponse<T, R>> {
 		try {
 			options = options || {};
-			options.sendAuthorizationHeaders = options.sendAuthorizationHeaders ?? true;
-			options.refreshTokenIfNeeded = options.refreshTokenIfNeeded ?? true;
 			options.headers = options.headers ?? {};
 			options.onUploadProgress = options.onUploadProgress ?? undefined;
-
-			if (options.refreshTokenIfNeeded) {
-				await this._refresh();
-			}
 
 			const config = {
 				method,
@@ -102,32 +40,19 @@ export class AxiosTransport implements ITransport {
 				onUploadProgress: options.onUploadProgress,
 			};
 
-			const token = this._storage.auth_token;
-			const expiration = this._storage.auth_expires;
-			if (options.sendAuthorizationHeaders) {
-				if (token && ((expiration !== null && expiration > Date.now()) || expiration === null)) {
-					if (token.startsWith(`Bearer `)) {
-						config.headers.Authorization = token;
-					} else {
-						config.headers.Authorization = `Bearer ${token}`;
-					}
-				}
-			}
-
 			const response = await this.axios.request<any>(config);
 
-			const responseData = response.data;
 			const content = {
 				raw: response.data as any,
 				status: response.status,
 				statusText: response.statusText,
 				headers: response.headers,
-				data: responseData.data,
-				meta: responseData.meta,
-				errors: responseData.errors,
+				data: response.data.data,
+				meta: response.data.meta,
+				errors: response.data.errors,
 			};
 
-			if (responseData.errors) {
+			if (response.data.errors) {
 				throw new TransportError<T, R>(null, content);
 			}
 
