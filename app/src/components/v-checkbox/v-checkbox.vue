@@ -159,6 +159,7 @@ body {
 	}
 
 	&:disabled {
+		background-color: var(--background-subdued);
 		cursor: not-allowed;
 
 		.label {
