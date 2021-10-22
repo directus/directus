@@ -98,7 +98,28 @@ describe('/items', () => {
 			});
 		});
 	});
-	// describe('/:collection/:id PATCH', () => {});
+	describe('/:collection/:id PATCH', () => {
+		it.each(getDBsToTest())(`%p updates one guest's name to a different name`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+
+			const guest = createGuest();
+			const insertedGuest = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
+				select: ['id'],
+				where: ['name', guest.name],
+			});
+			const body = { name: 'Tommy Cash' };
+			const response: any = await axios.patch(`${url}/items/guests/${insertedGuest[0].id}`, body, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
+
+			expect(response.data.data).toMatchObject({
+				name: 'Tommy Cash',
+			});
+		});
+	});
 	// describe('/:collection/:id DELETE', () => {});
 	// describe('/:collection PATCH', () => {});
 	// describe('/:collection DELETE', () => {});
