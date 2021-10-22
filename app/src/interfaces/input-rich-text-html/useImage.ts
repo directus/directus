@@ -51,7 +51,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 					alt,
 					width: Number(node.getAttribute('width')) || undefined,
 					height: Number(node.getAttribute('height')) || undefined,
-					previewUrl: addTokenToURL(imageUrl),
+					previewUrl: imageUrl,
 				};
 			} else {
 				imageSelection.value = null;
