@@ -268,7 +268,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		return new Promise((resolve, reject) => {
-			const clientConfig = this.config.client?.length ? this.config.client : {};
+			const clientConfig = typeof this.config.client === 'object' ? this.config.client : {};
 			const client = ldap.createClient({
 				url: this.config.clientUrl,
 				...clientConfig,
