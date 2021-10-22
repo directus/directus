@@ -4,7 +4,7 @@
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>
-			<div class="collection-name" @click="openCollection(collection)">
+			<div class="collection-name" @click="$emit('openCollection', collection)">
 				<v-icon
 					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
 					class="collection-icon"
@@ -49,7 +49,6 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import CollectionOptions from './collection-options.vue';
 import { Collection } from '@/types';
-import { useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import { useCollectionsStore } from '@/stores';
 import { DeepPartial } from '@directus/shared/types';
@@ -73,10 +72,9 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['setNestedSort', 'editCollection'],
+	emits: ['setNestedSort', 'editCollection', 'openCollection'],
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
-		const router = useRouter();
 		const { t } = useI18n();
 
 		const nestedCollections = computed(() =>
@@ -113,7 +111,6 @@ export default defineComponent({
 
 		return {
 			collapseIcon,
-			openCollection,
 			onGroupSortChange,
 			nestedCollections,
 			update,
@@ -146,14 +143,6 @@ export default defineComponent({
 
 		async function update(updates: DeepPartial<Collection>) {
 			await collectionsStore.updateCollection(props.collection.collection, updates);
-		}
-
-		function openCollection(collection: Collection) {
-			if (collection.schema) {
-				router.push(`/settings/data-model/${collection.collection}`);
-			} else {
-				emit('editCollection', collection);
-			}
 		}
 
 		function onGroupSortChange(collections: Collection[]) {

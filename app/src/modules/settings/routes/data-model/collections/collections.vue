@@ -50,6 +50,7 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
+							@openCollection="openCollection"
 							@editCollection="editCollection = $event"
 							@setNestedSort="onSort"
 						/>
@@ -116,6 +117,7 @@ import CollectionOptions from './components/collection-options.vue';
 import { sortBy, merge } from 'lodash';
 import CollectionItem from './components/collection-item.vue';
 import { translate } from '@/utils/translate-object-values';
+import { useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
@@ -130,6 +132,7 @@ export default defineComponent({
 		const editCollection = ref<Collection>();
 
 		const collectionsStore = useCollectionsStore();
+		const router = useRouter();
 
 		const collections = computed(() => {
 			return translate(
@@ -180,6 +183,7 @@ export default defineComponent({
 			onSort,
 			rootCollections,
 			editCollection,
+			openCollection,
 		};
 
 		async function onSort(updates: Collection[], removeGroup = false) {
@@ -205,6 +209,14 @@ export default defineComponent({
 				);
 			} catch (err) {
 				unexpectedError(err);
+			}
+		}
+
+		function openCollection(collection: Collection) {
+			if (collection.schema) {
+				router.push(`/settings/data-model/${collection.collection}`);
+			} else {
+				editCollection.value = collection;
 			}
 		}
 	},
