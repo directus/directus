@@ -134,7 +134,7 @@ export default defineComponent({
 
 			try {
 				await update({ meta: { collapse: newCollapse } });
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				collapseLoading.value = false;

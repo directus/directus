@@ -129,7 +129,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const collectionDialogActive = ref(false);
-		const editCollection = ref<Collection>();
+		const editCollection = ref<Collection | null>();
 
 		const collectionsStore = useCollectionsStore();
 		const router = useRouter();
@@ -207,7 +207,7 @@ export default defineComponent({
 						})
 					)
 				);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			}
 		}
