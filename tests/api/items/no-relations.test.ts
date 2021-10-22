@@ -1,0 +1,297 @@
+import axios from 'axios';
+import request from 'supertest';
+import config from '../../config';
+import { getDBsToTest } from '../../get-dbs-to-test';
+import knex, { Knex } from 'knex';
+import { createArtist, createMany, seedTable } from '../../setup/utils/factories';
+
+describe('/items', () => {
+	const databases = new Map<string, Knex>();
+
+	beforeAll(async () => {
+		const vendors = getDBsToTest();
+
+		for (const vendor of vendors) {
+			databases.set(vendor, knex(config.knexConfig[vendor]!));
+		}
+	});
+
+	afterAll(async () => {
+		for (const [_vendor, connection] of databases) {
+			await connection.destroy();
+		}
+	});
+
+	describe('/:collection/:id GET', () => {
+		it.each(getDBsToTest())('%p retrieves one artist', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
+
+			const response = await request(url)
+				.get(`/items/artists/1`)
+				.set('Authorization', 'Bearer AdminToken')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(response.body.data).toMatchObject({ name: expect.any(String) });
+		});
+		describe('Error handling', () => {
+			it.each(getDBsToTest())('%p returns an error when an invalid id is used', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+
+				const response = await axios
+					.get(`${url}/items/artists/invalid_id`, {
+						headers: {
+							Authorization: 'Bearer AdminToken',
+							'Content-Type': 'application/json',
+						},
+					})
+					.catch((error: any) => {
+						return error;
+					});
+
+				if (vendor === 'mssql' || vendor === 'postgres') {
+					expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+					expect(response.response.status).toBe(500);
+					expect(response.response.statusText).toBe('Internal Server Error');
+					expect(response.message).toBe('Request failed with status code 500');
+				} else if (vendor === 'mysql' || vendor === 'maria') {
+					expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+					expect(response.response.status).toBe(403);
+					expect(response.response.statusText).toBe('Forbidden');
+					expect(response.message).toBe('Request failed with status code 403');
+				}
+			});
+			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+
+				const response = await axios
+					.get(`${url}/items/invalid_table/1`, {
+						headers: {
+							Authorization: 'Bearer AdminToken',
+							'Content-Type': 'application/json',
+						},
+					})
+					.catch((error: any) => {
+						return error;
+					});
+
+				expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+				expect(response.response.status).toBe(403);
+				expect(response.response.statusText).toBe('Forbidden');
+				expect(response.message).toBe('Request failed with status code 403');
+			});
+		});
+	});
+	describe('/:collection/:id PATCH', () => {
+		it.each(getDBsToTest())(`%p updates one artist's name with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+				select: ['id'],
+			});
+
+			const body = { name: 'Tommy Cash' };
+			const response: any = await axios.patch(
+				`${url}/items/artists/${insertedArtist[insertedArtist.length - 1].id}`,
+				body,
+				{
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+
+			expect(response.data.data).toMatchObject({
+				id: insertedArtist[insertedArtist.length - 1].id,
+				name: 'Tommy Cash',
+			});
+		});
+	});
+	describe('/:collection/:id DELETE', () => {
+		it.each(getDBsToTest())(`%p deletes an artist with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+				select: ['id'],
+			});
+
+			const response: any = await axios.delete(`${url}/items/artists/${insertedArtist[insertedArtist.length - 1].id}`, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
+
+			expect(response.data.data).toBe(undefined);
+			expect(
+				await databases.get(vendor)!('artists')
+					.select('*')
+					.where('id', insertedArtist[insertedArtist.length - 1].id)
+			).toStrictEqual([]);
+		});
+	});
+	describe('/:collection GET', () => {
+		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			seedTable(databases.get(vendor)!, 50, 'artists', createArtist);
+			const response = await request(url)
+				.get('/items/artists')
+				.set('Authorization', 'Bearer AdminToken')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(response.body.data.length).toBeGreaterThanOrEqual(50);
+			expect(response.body.data[0]).toMatchObject({
+				id: expect.any(Number),
+				name: expect.any(String),
+			});
+		});
+		describe('Error handling', () => {
+			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+
+				const response = await axios
+					.get(`${url}/items/invalid_table/`, {
+						headers: {
+							Authorization: 'Bearer AdminToken',
+							'Content-Type': 'application/json',
+						},
+					})
+					.catch((error: any) => {
+						return error;
+					});
+
+				expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+				expect(response.response.status).toBe(403);
+				expect(response.response.statusText).toBe('Forbidden');
+				expect(response.message).toBe('Request failed with status code 403');
+			});
+		});
+	});
+
+	describe('/:collection POST', () => {
+		describe('createOne', () => {
+			it.each(getDBsToTest())('%p creates one artist', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const body = createArtist();
+				const response: any = await axios.post(`${url}/items/artists`, body, {
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				});
+				expect(response.data.data).toMatchObject({ name: body.name });
+			});
+		});
+		describe('createMany', () => {
+			it.each(getDBsToTest())('%p creates 5 artists', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const body = createMany(createArtist, 5)!;
+				const response: any = await axios.post(`${url}/items/artists`, body, {
+					headers: {
+						Authorization: 'Bearer AdminToken',
+						'Content-Type': 'application/json',
+					},
+				});
+				expect(response.data.data.length).toBe(body.length);
+			});
+		});
+		describe('Error handling', () => {
+			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
+				const url = `http://localhost:${config.ports[vendor]!}`;
+				const body = createArtist();
+				const response = await axios
+					.post(`${url}/items/invalid_table`, body, {
+						headers: {
+							Authorization: 'Bearer AdminToken',
+							'Content-Type': 'application/json',
+						},
+					})
+					.catch((error: any) => {
+						return error;
+					});
+
+				expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+				expect(response.response.status).toBe(403);
+				expect(response.response.statusText).toBe('Forbidden');
+				expect(response.message).toBe('Request failed with status code 403');
+			});
+		});
+	});
+
+	describe('/:collection PATCH', () => {
+		it.each(getDBsToTest())(`%p updates many artists to a different name`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+
+			let items;
+			const keys: any[] = [];
+
+			if (vendor === 'mssql') {
+				items = await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+					raw: 'SELECT TOP(10) id FROM artists ORDER BY id DESC;',
+				});
+				Object.values(items).forEach((item: any) => {
+					keys.push(item.id);
+				});
+			} else if (vendor !== 'postgres') {
+				items = await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+					raw: 'select id from artists order by id desc limit 10;',
+				});
+				Object.values(items[0]).forEach((item: any) => {
+					keys.push(item.id);
+				});
+			} else {
+				items = await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+					raw: 'select id from artists order by id desc limit 10;',
+				});
+				Object.values(items.rows).forEach((item: any) => {
+					keys.push(item.id);
+				});
+			}
+
+			const body = {
+				keys: keys,
+				data: { name: 'Johnny Cash' },
+			};
+			const response: any = await axios.patch(`${url}/items/artists/?fields=name`, body, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
+			for (let row = 0; row < response.data.data.length; row++) {
+				expect(response.data.data[row]).toMatchObject({
+					name: 'Johnny Cash',
+				});
+			}
+			expect(response.data.data.length).toBe(keys.length);
+		});
+	});
+	describe('/:collection DELETE', () => {
+		it.each(getDBsToTest())(`%p deletes many artists with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const items = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const body: any[] = [];
+			items.sort(function (a: any, b: any) {
+				return b.id - a.id;
+			});
+			for (let row = 0; row < 10; row++) {
+				body.push(items[row].id);
+			}
+			const response: any = await axios.delete(`${url}/items/artists/`, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+				data: JSON.stringify(body),
+			});
+
+			expect(response.data.data).toBe(undefined);
+			for (let row = 0; row < body.length; row++) {
+				expect(await databases.get(vendor)!('artists').select('*').where('id', body[row])).toStrictEqual([]);
+			}
+		});
+	});
+});
