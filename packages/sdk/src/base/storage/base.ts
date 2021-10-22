@@ -1,6 +1,8 @@
-import { IStorage } from '../../storage';
+import { IStorage, StorageOptions } from '../../storage';
 
-export abstract class BaseStorage implements IStorage {
+export type { StorageOptions };
+
+export abstract class BaseStorage extends IStorage {
 	get auth_token(): string | null {
 		return this.get('auth_token');
 	}
