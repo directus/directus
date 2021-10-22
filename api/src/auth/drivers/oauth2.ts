@@ -214,7 +214,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
+				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
 					verifier: string;
 					redirect?: string;
 				};
