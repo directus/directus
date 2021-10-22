@@ -8,28 +8,32 @@ export type AuthCredentials = {
 
 export type AuthToken = string;
 
-export type AuthResult = {
-	access_token: string;
-	expires: number;
-	refresh_token?: string | null;
+export type AuthResultType = 'DynamicToken' | 'StaticToken' | null;
+
+export type AuthResult<T extends AuthResultType = 'DynamicToken'> = {
+	access_token: T extends 'DynamicToken' | 'StaticToken' ? string : null;
+	expires: T extends 'DynamicToken' ? number : null;
+	refresh_token?: T extends 'DynamicToken' ? string : null;
 };
 
-export type AuthLoginOptions = {
-	refresh?: AuthRefreshOptions;
+export type AuthMode = 'json' | 'cookie';
+
+export type AuthOptions = {
+	mode?: AuthMode;
+	autoRefresh?: boolean;
+	msRefreshBeforeExpires?: number;
 };
 
-export type AuthRefreshOptions = {
-	auto?: boolean;
-	time?: number;
-};
+export abstract class IAuth {
+	mode = (typeof window === 'undefined' ? 'json' : 'cookie') as AuthMode;
+	autoRefresh = true;
+	msRefreshBeforeExpires = 30000;
 
-export interface IAuth {
-	readonly token: string | null;
-	readonly password: PasswordsHandler;
-	readonly expiring: boolean;
+	abstract readonly token: string | null;
+	abstract readonly password: PasswordsHandler;
 
-	login(credentials: AuthCredentials, options?: AuthLoginOptions): Promise<AuthResult>;
-	refresh(force?: boolean): Promise<AuthResult | false>;
-	static(token: AuthToken): Promise<boolean>;
-	logout(): Promise<void>;
+	abstract login(credentials: AuthCredentials): Promise<AuthResult>;
+	abstract refresh(force?: boolean): Promise<AuthResult | false>;
+	abstract static(token: AuthToken): Promise<boolean>;
+	abstract logout(): Promise<void>;
 }

@@ -17,34 +17,39 @@ export type TransportResponse<T, R = any> = {
 	headers: any;
 };
 
-export type TransportMethods = 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch';
-
 export type TransportOptions = {
 	params?: any;
 	headers?: any;
-	refreshTokenIfNeeded?: boolean;
-	sendAuthorizationHeaders?: boolean;
 	onUploadProgress?: ((progressEvent: any) => void) | undefined;
 };
 
-export interface ITransport {
-	url: string;
-	get<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	head<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	options<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	delete<T = any, P = any, R = any>(
+export abstract class ITransport {
+	abstract get<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	abstract head<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	abstract options<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	abstract delete<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
 		options?: TransportOptions
 	): Promise<TransportResponse<T, R>>;
-	post<T = any, P = any, R = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	put<T = any, P = any, R = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	patch<T = any, P = any, R = any>(
+	abstract post<T = any, P = any, R = any>(
+		path: string,
+		data?: P,
+		options?: TransportOptions
+	): Promise<TransportResponse<T, R>>;
+	abstract put<T = any, P = any, R = any>(
+		path: string,
+		data?: P,
+		options?: TransportOptions
+	): Promise<TransportResponse<T, R>>;
+	abstract patch<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
 		options?: TransportOptions
 	): Promise<TransportResponse<T, R>>;
 }
+
+export type TransportMethods = keyof ITransport;
 
 export class TransportError<T = any, R = any> extends Error {
 	public readonly errors: TransportErrorDescription[];

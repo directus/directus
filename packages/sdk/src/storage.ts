@@ -1,9 +1,19 @@
-export interface IStorage {
-	auth_token: string | null;
-	auth_expires: number | null;
-	auth_refresh_token: string | null;
+export type StorageOptions = {
+	prefix?: string;
+};
 
-	get(key: string): string | null;
-	set(key: string, value: string): string;
-	delete(key: string): string | null;
+export abstract class IStorage {
+	protected prefix: string;
+
+	abstract auth_token: string | null;
+	abstract auth_expires: number | null;
+	abstract auth_refresh_token: string | null;
+
+	abstract get(key: string): string | null;
+	abstract set(key: string, value: string): string;
+	abstract delete(key: string): string | null;
+
+	constructor(options?: StorageOptions) {
+		this.prefix = options?.prefix ?? '';
+	}
 }
