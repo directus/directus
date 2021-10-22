@@ -217,11 +217,18 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
-			const token = req.cookies[`openid.${providerName}`];
-			const { verifier, redirect } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
-				verifier: string;
-				redirect: string;
-			};
+			let tokenData;
+
+			try {
+				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
+					verifier: string;
+					redirect?: string;
+				};
+			} catch (e) {
+				throw new InvalidCredentialsException();
+			}
+
+			const { verifier, redirect } = tokenData;
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
@@ -236,6 +243,10 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`openid.${providerName}`);
+
+				if (!req.query.code) {
+					logger.warn(`Couldn't extract OAuth2 code from query: ${JSON.stringify(req.query)}`);
+				}
 
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,

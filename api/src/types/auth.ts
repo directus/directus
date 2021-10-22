@@ -24,7 +24,7 @@ export type AuthData = Record<string, any> | null;
 export interface Session {
 	token: string;
 	expires: Date;
-	data: string | null;
+	data: string | Record<string, unknown> | null;
 }
 
 export type SessionData = Record<string, any> | null;
