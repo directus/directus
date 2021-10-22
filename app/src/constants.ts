@@ -69,3 +69,5 @@ export const MODULE_BAR_DEFAULT = [
 		locked: true,
 	},
 ];
+
+export const AUTH_SSO_DRIVERS = ['oauth2', 'openid'];

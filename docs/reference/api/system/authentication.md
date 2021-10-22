@@ -80,6 +80,10 @@ The token's expiration time can be configured through
 POST /auth/login
 ```
 
+```
+POST /auth/login/:provider
+```
+
 ```json
 {
 	"email": "admin@example.com",
@@ -331,17 +335,16 @@ mutation {
 
 ---
 
-## List oAuth providers
+## List Auth Providers
 
-List all the configured oAuth providers.
+List all the configured auth providers.
 
 <div class="two-up">
 <div class="left">
 
-::: tip Configuring oAuth
+::: tip Configuring auth providers
 
-To learn more about setting up oAuth providers, see
-[Configuring SSO through oAuth](/guides/api-config/#oauth-single-sign-on-sso-openid).
+To learn more about setting up auth providers, see [Configuring auth providers](/guides/api-config/#auth).
 
 :::
 
@@ -350,7 +353,7 @@ To learn more about setting up oAuth providers, see
 <div class="definitions">
 
 `data` **Array**\
-Array of configured oAuth providers.
+Array of configured auth providers.
 
 </div>
 
@@ -358,12 +361,27 @@ Array of configured oAuth providers.
 <div class="right">
 
 ```
-GET /auth/oauth
+GET /auth
 ```
 
 ```json
 {
-	"data": ["GitHub", "Google", "Okta"]
+	"data": [
+		{
+			"name": "GitHub",
+			"driver": "oauth2",
+			"icon": "github"
+		},
+		{
+			"name": "Google",
+			"driver": "openid",
+			"icon": "google"
+		},
+		{
+			"name": "Okta",
+			"driver": "openid"
+		}
+	]
 }
 ```
 
@@ -372,15 +390,15 @@ GET /auth/oauth
 
 ---
 
-## Login using oAuth provider
+## Login Using SSO Providers
 
-Will redirect to the configured oAuth provider for the user to login.
+Will redirect to the configured SSO provider for the user to login.
 
 <div class="two-up">
 <div class="right">
 
 ```
-GET /auth/oauth/:provider
+GET /auth/login/:provider
 ```
 
 </div>

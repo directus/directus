@@ -56,6 +56,7 @@ jobs:
   publish-npm:
     runs-on: ubuntu-latest
     needs: build
+    if: ${{ github.repository_owner == 'directus' }}
     steps:
       - uses: actions/checkout@v2
       - name: Restore build artifacts

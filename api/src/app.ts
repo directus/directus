@@ -47,8 +47,8 @@ import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
-import { session } from './middleware/session';
 import { flushCaches } from './cache';
+import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 
 export default async function createApp(): Promise<express.Application> {
@@ -73,6 +73,8 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	await flushCaches();
+
+	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
 
@@ -147,9 +149,6 @@ export default async function createApp(): Promise<express.Application> {
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
-
-	// We only rely on cookie-sessions in the oAuth flow where it's required
-	app.use(session);
 
 	app.use(authenticate);
 

@@ -1,8 +1,13 @@
 name: E2E
+
 on:
   push:
     branches:
       - main
+    # Don't run on translation updates
+    paths-ignore:
+     - 'app/src/lang/translations/*.yaml'
+
 jobs:
   tests:
     runs-on: ubuntu-latest
