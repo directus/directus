@@ -238,14 +238,14 @@ export class LDAPAuthDriver extends AuthDriver {
 				])
 				.first();
 		}
-		
+
 		if (userId) {
 			await this.usersService.updateOne(userId, { role: userRole?.id ?? null });
 			return userId;
 		}
 
 		const userInfo = await this.fetchUserInfo(userDn);
-		
+
 		if (!userInfo) {
 			throw new InvalidCredentialsException();
 		}
