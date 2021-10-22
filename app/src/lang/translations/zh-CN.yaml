@@ -50,6 +50,7 @@ indeterminate: 不确定的状态
 edit_collection: 编辑模型
 exclusive: 唯一的
 children: 子页面
+db_only_click_to_configure: '仅限数据库：点击配置'
 show_archived_items: 显示存档项目
 edited: 已编辑的值
 required: 必填
@@ -250,6 +251,7 @@ invalid_item: 无效条目
 next: 下一步
 field_name: 字段名
 translations: 翻译
+no_translations: 无翻译
 note: 注释
 enter_a_value: 请输入值...
 enter_a_placeholder: 输入占位符...
@@ -325,6 +327,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: 分
+hours: 时
 month: 月
 year: 年
 select_all: 全选
@@ -359,6 +363,7 @@ zoom: 缩放
 download: 下载
 open: 打开
 open_in_new_window: 在新窗口中打开
+open_folder: 打开 "{folder}" 文件夹
 foreground_color: 前景色
 background_color: 背景色
 upload_from_device: 从设备中上传文件
@@ -432,6 +437,7 @@ no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
 users: 用户
 activity: 活动
+activity_item: 活动项
 action: 操作
 ip_address: IP 地址
 user_agent: 用户代理（User Agent）
