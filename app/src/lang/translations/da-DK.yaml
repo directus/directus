@@ -1143,6 +1143,8 @@ interfaces:
   group-accordion:
     description: Vis felter eller grupper som harmonika sektioner
     all_closed: Alle Lukkede
+    first_opened: Første Åbnet
+    all_opened: Alle Åbnede
     max_one_section_open: Maks. 1 Sektion Åben
   presentation-links:
     presentation-links: Knap Links
@@ -1322,6 +1324,7 @@ interfaces:
     step_interval: Trin Interval
     slug_label: Gør den angivne værdi URL sikker
   input-multiline:
+    textarea: Tekstareal
     description: Indtast tekst med flere linjer
   boolean:
     toggle: Skift
@@ -1370,6 +1373,7 @@ displays:
   translations:
     translations: Oversættelser
     description: Forhåndsvis oversættelse
+    enable: Aktiver
     user_language: Brug Nuværende Brugersprog
     default_language: Standard Sprog
     language_field: Sprog Indikator Felt
@@ -1399,6 +1403,7 @@ displays:
     format_note: >-
       Det brugerdefinerede format accepterer __[Date Field Symbol Tablet](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     short: Kort
+    relative: Relativ
     relative_label: 'Vis relativ tid, fx: 5 minutter siden'
   file:
     file: Fil
