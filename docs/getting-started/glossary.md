@@ -1,11 +1,15 @@
 # Glossary
 
-> This is list of Directus terminology, and their meanings. Most are simply more approachable names for technical
-> database terms.
+> This is list of platform-specific terminology, and their meanings. Most are simply more approachable names for
+> technical database terms.
 
 [[toc]]
 
-## Admin
+## Admin / Administrator
+
+An "Administrators" Role (with Admin access enabled) is included when you first install the platform. All admin roles
+bypass the permissions check, providing unrestricted access to all data within the App and API. Additionally, only roles
+with the admin option enabled can manage Settings within the app.
 
 ## Alias
 
@@ -15,12 +19,18 @@ as [One-to-Many (O2M)](#) and [Many-to-Many (M2M)](#)).
 
 ## API
 
+The Application Programming Interface (API) provided by the platform is how you can programmatically connect your
+project's content, files, and system information to external code (like a website) or with other third-party services.
+
 ## App
 
 An intuitive no-code application for managing database content. Powered by the API, the modular and highly extensible
 App is written in [Vue.js](https://vuejs.org).
 
 ## Activity
+
+Activity is a log of all events that take place within the platform. Used for accountability, each activity record
+tracks the event type, user, timestamp, IP address, user-agent, and any associated revision data.
 
 ## Collections
 
@@ -45,6 +55,9 @@ that is used to reference the Collection's items throughout the database/platfor
 - [Adjusting a Collection Layout](/guides/collections/#adjusting-a-collection-layout)
 
 ## Dashboards
+
+Dashboards within the Insights module organize different [Panels](#) into an at-a-glance view. They can be used to group
+data based on department, objective, business process or anything you choose.
 
 ## Database Abstraction
 
@@ -103,6 +116,11 @@ migrations to promote data between them.
 
 ## Extensions
 
+The platform has been built to be modular and extensible. This helps keep the core codebase simple and clean (see the
+[80/20 Rule](#)), while allowing the flexibility needed to satisfy all use-cases... no matter how complex. There are
+many different types of supported extensions, each offering a way to deeply customize, override, or extend the core
+platform. [Learn more about Extension Types](#).
+
 ## Fields
 
 Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents
@@ -118,6 +136,11 @@ a **column** in your database. For example, an `articles` [Collection](#collecti
 - [Deleting Fields](/guides/fields/#deleting-a-field)
 
 ## Files & Assets
+
+As you might have guessed, files includes images, videos, PDFs, text documents, or anything else. While files can
+technically be stored as code in the database, it is far more common to manage them as individual assets on a "drive".
+The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
+an excellent Digital Asset Management system.
 
 ## Interfaces
 
@@ -151,6 +174,12 @@ Items are referenced (both individually and relationally) by their unique [prima
 - [Deleting an Item](/guides/items/#deleting-an-item)
 
 ## Junction Collections
+
+The platform allows you to group Items within different Collections. But often times it is important to "link" items
+across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship. There are
+several different types of relationships, but only some (M2M and M2A) require an additional collection to properly
+connect data. For instance, if you have a `recipes` collection and an `ingredients` collection, you would also need a
+`recipe_ingredients` junction collection to sit between and connect the two.
 
 ## Layouts
 
@@ -208,6 +237,9 @@ two main ways to achieve multitenancy:
 
 ## Panels
 
+Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a
+[Dashboard](#dashboards) and can be positioned and resized as needed. [Panels are a Modular Extension Type](#).
+
 ## Permissions
 
 Permissions are attached directly to a Role, defining what a user can can create, read, update, and delete within the
@@ -223,7 +255,13 @@ define bookmarks that can be used to quickly recall specific datasets.
 - [Creating a Preset](/guides/presets/#creating-a-preset)
 - [Deleting a Preset](/guides/presets/#deleting-a-preset)
 
-## Primary Key
+## Primary Key (PK)
+
+When we're trying to view or reference a specific [Item](#) within a [Collection](#), you need some sort of unique
+identifier to know exactly where to look. Much like an address for a house, the primary key field provides the location
+of an item within its collection. For that reason, every collection must have a primary key field, and so they are
+configured when you create the collection. There are different types of identifiers you can use, but the field is often
+called `id`.
 
 ## Projects
 
@@ -239,6 +277,11 @@ file, asset storage, and any custom extensions. Projects are the highest level o
 - [Deleting a Project](#)
 
 ## Relationships
+
+The platform allows you to group Items within different Collections. But often times it is important to "link" items
+across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship, a crucial
+concept within any _relational_ database. There are several different types of relationships, each serving a specific
+purpose. [Learn more about Relationships](#).
 
 ## Revisions
 

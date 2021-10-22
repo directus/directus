@@ -2,12 +2,12 @@
   to: '/app/overview'
   icon: school
 
-- name: Content Collection Page
-  to: '/app/content/collection'
+- name: Content Collections
+  to: '/app/content-collections'
   icon: list_alt
 
-- name: Content Item Page
-  to: '/app/content/item'
+- name: Content Items
+  to: '/app/content-items'
   icon: edit_note
 
 - name: User Directory

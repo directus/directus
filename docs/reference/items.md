@@ -2,7 +2,7 @@
 pageClass: page-reference
 ---
 
-# Items: Data Access
+# Accessing Items
 
 <div class="two-up">
 <div class="left">

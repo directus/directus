@@ -1,4 +1,4 @@
-# Common Issues
+# Frequently Asked Questions
 
 > TK
 

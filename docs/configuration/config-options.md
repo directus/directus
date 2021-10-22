@@ -1,9 +1,182 @@
-# Environment Variables
+# Configuration Options
 
-> Environment variables are used for all configuration within Directus projects. They can either be defined as plain
-> environment variables or via the `.env` file in the root directory, which is created during the installation process.
+> Environment variables are used for all configuration within a Directus project. These variables can be defined in a
+> number of ways, which we cover below.
 
 [[toc]]
+
+## Configuration Files
+
+By default, Directus will read the `.env` file located next to your project's `package.json` (typically in the root
+folder of your project) for its configuration. You can change this path and filename by setting the `CONFIG_PATH`
+environment variable before starting Directus. For example:
+
+```bash
+CONFIG_PATH="/path/to/config.js" npx directus start
+```
+
+In case you prefer using a configuration file instead of environment variables, you can also use the `CONFIG_PATH`
+environment variable to instruct Directus to use a local configuration file instead of environment variables. The config
+file can be one of the following formats:
+
+- [.env](#env)
+- [config.json](#config-json)
+- [config.yaml](#config-yaml)
+- [config.js](#config-js)
+
+### .env
+
+If the config path has no file extension, or a file extension that's not one of the other supported formats, Directus
+will try reading the file config path as environment variables. This has the following structure:
+
+```
+PORT=8055
+
+DB_CLIENT="pg"
+DB_HOST="localhost"
+DB_PORT=5432
+
+etc
+```
+
+### config.json
+
+If you prefer a single JSON file for your configuration, create a JSON file with the environment variables as keys, for
+example:
+
+```
+CONFIG_PATH="/path/to/config.json"
+```
+
+```json
+{
+	"PORT": 8055,
+
+	"DB_CLIENT": "pg",
+	"DB_HOST": "localhost",
+	"DB_PORT": 5432
+
+	// etc
+}
+```
+
+### config.yaml
+
+Similar to JSON, you can use a `.yaml` (or `.yml`) file for your config:
+
+```
+CONFIG_PATH="/path/to/config.yaml"
+```
+
+```yaml
+PORT: 8055
+
+DB_CLIENT: pg
+DB_HOST: localhost
+DB_PORT: 5432
+#
+# etc
+```
+
+### config.js
+
+Using a JavaScript file for your config allows you to dynamically generate the configuration of the project during
+startup. The JavaScript configuration supports two different formats, either an **Object Structure** where the key is
+the environment variable name:
+
+```js
+// Object Sytax
+
+module.exports = {
+	PORT: 8055,
+
+	DB_CLIENT: 'pg',
+	DB_HOST: 'localhost',
+	DB_PORT: 5432,
+
+	// etc
+};
+```
+
+Or a **Function Structure** that _returns_ the same object format as above. The function gets `process.env` as its
+parameter.
+
+```js
+// Function Syntax
+
+module.exports = function (env) {
+	return {
+		PORT: 8055,
+
+		DB_CLIENT: 'pg',
+		DB_HOST: 'localhost',
+		DB_PORT: 5432,
+
+		// etc
+	};
+};
+```
+
+## Environment Variable Files
+
+Any of the environment variable values can be imported from a file, by appending `_FILE` to the environment variable
+name. This is especially useful when used in conjunction with Docker Secrets, so you can keep sensitive data out of your
+compose files. For example:
+
+```
+DB_PASSWORD_FILE="/run/secrets/db_password"
+```
+
+## Type Casting and Nesting
+
+Environment variables are automatically type cast based on the structure of the variable, for example:
+
+```
+PUBLIC_URL="https://example.com"
+// "https://example.com"
+
+DB_HOST="3306"
+// 3306
+
+CORS_ENABLED="false"
+// false
+
+STORAGE_LOCATIONS="s3,local,example"
+// ["s3", "local", "example"]
+```
+
+In cases where the environment variables are converted to a configuration object for third party library use, like in
+`DB_*` or `RATE_LIMITER_REDIS_*`, the environment variable will be converted to camelCase. You can use a double
+underscore (`__`) for nested objects:
+
+```
+DB_CLIENT="pg"
+DB_CONNECTION_STRING="postgresql://postgres:example@127.0.0.1"
+DB_SSL__REJECT_UNAUTHORIZED="false"
+
+{
+	client: "pg",
+	connectionString: "postgresql://postgres:example@127.0.0.1",
+	ssl: {
+		rejectUnauthorized: false
+	}
+}
+```
+
+## Environment Syntax Prefix
+
+Directus will attempt to [automatically type cast environment variables](#type-casting-and-nesting) based on context
+clues. If you have a specific need for a given type, you can tell Directus what type to use for the given value by
+prefixing the value with `{type}:`. The following types are available:
+
+| Syntax Prefix | Example                                                                                                         | Output                                                                                                                       |
+| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `string`      | `string:value`                                                                                                  | `"value"`                                                                                                                    |
+| `number`      | `number:3306`                                                                                                   | `3306`                                                                                                                       |
+| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
+| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
+
+---
 
 ## General
 
@@ -18,7 +191,7 @@
 | `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 | `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`        |
 
-<sup>[1]</sup> The PUBLIC_URL value is used for things like oAuth redirects, forgot-password emails, and logos that
+<sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
 
 ## Database
@@ -115,6 +288,11 @@ multiplied. This may cause out of memory errors, especially when running in cont
 
 ## Rate Limiting
 
+You can use the built-in rate-limiter to prevent users from hitting the API too much. Simply enabling the rate-limiter
+will set a default maximum of 50 requests per second, tracked in memory. Once you have multiple copies of Directus
+running under a load-balancer, or your user base grows so much that memory is no longer a viable place to store the rate
+limiter information, you can use an external `memcache` or `redis` instance to store the rate limiter data.
+
 | Variable                | Description                                                                      | Default Value |
 | ----------------------- | -------------------------------------------------------------------------------- | ------------- |
 | `RATE_LIMITER_ENABLED`  | Whether or not to enable rate limiting on the API.                               | `false`       |
@@ -156,21 +334,67 @@ needs, you can extend the above environment variables to configure any of
 
 :::
 
+### Example: Basic
+
+```
+// 10 requests per 5 seconds
+
+RATE_LIMITER_POINTS="10"
+RATE_LIMITER_DURATION="5"
+```
+
+### Example: Redis
+
+```
+RATE_LIMITER_ENABLED="true"
+
+RATE_LIMITER_POINTS="10"
+RATE_LIMITER_DURATION="5"
+
+RATE_LIMITER_STORE="redis"
+
+RATE_LIMITER_REDIS="redis://@127.0.0.1"
+```
+
 ## Cache
 
-| Variable                      | Description                                                                                  | Default Value    |
-| ----------------------------- | -------------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`               | Whether or not caching is enabled.                                                           | `false`          |
-| `CACHE_TTL`                   | How long the cache is persisted.                                                             | `30m`            |
-| `CACHE_CONTROL_S_MAXAGE`      | Whether to not to add the s-maxage expiration flag. Set to a number for a custom value       | `0`              |
-| `CACHE_AUTO_PURGE`            | Automatically purge the cache on `create`/`update`/`delete` actions.                         | `false`          |
-| `CACHE_SCHEMA` <sup>[1]</sup> | Whether or not the database schema is cached. One of `false`, `true`, or a string time value | `true`           |
-| `CACHE_NAMESPACE`             | How to scope the cache data.                                                                 | `directus-cache` |
-| `CACHE_STORE`                 | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                      | `memory`         |
+Directus has a built-in data-caching option. Enabling this will cache the output of requests (based on the current user
+and exact query parameters used) into to configured cache storage location. This drastically improves API performance,
+as subsequent requests are served straight from this cache. Enabling cache will also make Directus return accurate
+cache-control headers. Depending on your setup, this will further improve performance by caching the request in
+middleman servers (like CDNs) and even the browser.
 
-<sup>[1]</sup> `CACHE_SCHEMA` ignores the `CACHE_ENABLED` value
+::: tip Assets Cache
 
-Based on the `CACHE_STORE` used, you must also provide the following configurations:
+The cache-control header for the `/assets` endpoint is separate from the regular data-cache. This is useful as it's
+often possible to cache assets for far longer than you would cache database content. [Learn More](#assets)
+
+:::
+
+| Variable                         | Description                                                                                  | Default Value    |
+| -------------------------------- | -------------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`                  | Whether or not caching is enabled.                                                           | `false`          |
+| `CACHE_TTL`<sup>[1]</sup>        | How long the cache is persisted.                                                             | `30m`            |
+| `CACHE_CONTROL_S_MAXAGE`         | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value     | `0`              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup> | Automatically purge the cache on `create`, `update`, and `delete` actions.                   | `false`          |
+| `CACHE_SCHEMA`<sup>[3]</sup>     | Whether or not the database schema is cached. One of `false`, `true`, or a string time value | `true`           |
+| `CACHE_NAMESPACE`                | How to scope the cache data.                                                                 | `directus-cache` |
+| `CACHE_STORE`<sup>[4]</sup>      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                      | `memory`         |
+
+<sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
+requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
+instance. This can be incredibly useful for applications where you have a lot of (public) read-access and where updates
+aren't real-time (for example a website). `CACHE_TTL` uses [`ms`](https://www.npmjs.com/package/ms) to parse the value,
+so you configure it using human readable values (like `2 days`, `7 hrs`, `5m`).
+
+<sup>[2]</sup> `CACHE_AUTO_PURGE` allows you to keep the Directus API real-time, while still getting the performance
+benefits on quick subsequent reads.
+
+<sup>[3]</sup> `CACHE_SCHEMA` ignores the `CACHE_ENABLED` value.
+
+<sup>[4]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
+Instead, you can use the above `CACHE_STORE` environment variable to use either `memcache` or `redis` as the cache
+store. Based on the chosen `CACHE_STORE`, you must also provide the following configurations:
 
 ### Memory
 
@@ -196,45 +420,24 @@ Alternatively, you can provide the individual connection parameters:
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `CACHE_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
-## Sessions
-
-Sessions are only used in the oAuth authentication flow.
-
-| Variable        | Description                                                                          | Default Value |
-| --------------- | ------------------------------------------------------------------------------------ | ------------- |
-| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, `memcache` or `database`. | `memory`      |
-
-Based on the `SESSION_STORE` used, you must also provide the following configurations:
-
-### Memory
-
-No additional configuration required.
-
-### Redis
-
-| Variable        | Description                                                           | Default Value |
-| --------------- | --------------------------------------------------------------------- | ------------- |
-| `SESSION_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable                 | Description                      | Default Value |
-| ------------------------ | -------------------------------- | ------------- |
-| `SESSION_REDIS_HOST`     | Hostname of the Redis instance   | --            |
-| `SESSION_REDIS_PORT`     | Port of the Redis instance       | --            |
-| `SESSION_REDIS_PASSWORD` | Password for your Redis instance | --            |
-
-### Memcache
-
-| Variable                 | Description                                                                                                                                                           | Default Value |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
-
-### Database
-
-No additional configuration required.
-
 ## File Storage
+
+By default, Directus stores all uploaded files locally on disk. However, you can also configure Directus to use S3,
+Google Cloud Storage, or Azure. You can also configure _multiple_ storage adapters at the same time. This allows you to
+choose where files are being uploaded on a file-by-file basis. In the Admin App, files will automatically be uploaded to
+the first configured storage location (in this case `local`). The used storage location is saved under `storage` in
+`directus_files`.
+
+::: tip File Storage Default
+
+If you don't provide any configuration for storage adapters, this default will be used:
+
+```
+STORAGE_LOCATIONS="local"
+STORAGE_LOCAL_ROOT="./uploads"
+```
+
+:::
 
 | Variable            | Description                                                                                                           | Default Value |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------- |
@@ -282,11 +485,20 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_KEY_FILENAME` | Path to key file on disk    | --            |
 | `STORAGE_<LOCATION>_BUCKET`       | Google Cloud Storage bucket | --            |
 
-If you don't provide any configuration for storage adapters, Directus will default to the following:
+### Example: Multiple Storage Adapters
+
+Below showcases a CSV of storage location names, with a config block for each:
 
 ```
-STORAGE_LOCATIONS="local"
-STORAGE_LOCAL_ROOT="./uploads"
+STORAGE_LOCATIONS="local,aws"
+
+STORAGE_LOCAL_DRIVER="local"
+STORAGE_LOCAL_ROOT="local"
+
+STORAGE_AWS_KEY="tp15c...510vk"
+STORAGE_AWS_SECRET="yk29b...b932n"
+STORAGE_AWS_REGION="us-east-2"
+STORAGE_AWS_BUCKET="my-files"
 ```
 
 ## Assets
@@ -301,28 +513,70 @@ STORAGE_LOCAL_ROOT="./uploads"
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
 
-## OAuth
+## Authentication
+
+The Directus OAuth/OpenID integration provides a powerful alternative way to authenticate into your project using Single
+Sign-On (SSO). Directus will ask you to login on the external service, and if your user exists in Directus, you'll be
+logged in automatically.
+
+::: warning PUBLIC_URL
+
+The OAuth flow relies on the `PUBLIC_URL` variable for it's redirecting. Make sure that variable is configured
+correctly.
+
+:::
 
 | Variable          | Description                             | Default Value |
 | ----------------- | --------------------------------------- | ------------- |
-| `OAUTH_PROVIDERS` | CSV of oAuth providers you want to use. | --            |
+| `OAUTH_PROVIDERS` | CSV of OAuth providers you want to use. | --            |
 
 For each of the OAuth providers you list, you must also provide a number of extra variables. These differ per external
 service. The following is a list of common required configuration options:
 
 | Variable                         | Description                                                                                            | Default Value |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
-| `OAUTH_<PROVIDER>_KEY`           | oAuth key (a.k.a. application id) for the external service.                                            | --            |
-| `OAUTH_<PROVIDER>_SECRET`        | oAuth secret for the external service.                                                                 | --            |
+| `OAUTH_<PROVIDER>_KEY`           | OAuth key (a.k.a. application id) for the external service.                                            | --            |
+| `OAUTH_<PROVIDER>_SECRET`        | OAuth secret for the external service.                                                                 | --            |
 | `OAUTH_<PROVIDER>_SCOPE`         | A white-space separated list of privileges directus should ask for. A common value is: `openid email`. | --            |
 | `OAUTH_<PROVIDER>_AUTHORIZE_URL` | The authorize page URL of the external service                                                         | --            |
 | `OAUTH_<PROVIDER>_ACCESS_URL`    | The access URL of the external service                                                                 | --            |
 | `OAUTH_<PROVIDER>_PROFILE_URL`   | Where Directus can fetch the profile information of the authenticated user.                            | --            |
 
-Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the oAuth flow. Grant includes
+Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the OAuth flow. Grant includes
 [a lot of default values](https://github.com/simov/grant/blob/master/config/oauth.json) for popular services. For
-example, if you use `apple` as one of your providers, you only have to specify the key and secret, as Grant has the rest
-covered. Checkout [the grant repo](https://github.com/simov/grant) for more information.
+example, if you use `github` as one of your providers, you only have to specify the
+[key and secret for GitHub's OAuth app](https://github.com/settings/developers), as Grant has the rest covered. Checkout
+[the grant repo](https://github.com/simov/grant) for more information.
+
+### Example: GitHub
+
+```
+OAUTH_PROVIDERS="github"
+OAUTH_GITHUB_KEY="99d3...c3c4"
+OAUTH_GITHUB_SECRET="34ae...f963"
+```
+
+### Example: Multiple Providers
+
+Since `OAUTH_PROVIDERS` accepts a CSV, you can also specify _multiple_ providers at the same time. Many of these
+providers work with nothing more than the key and secret, however, more tailored services (like the Microsoft example
+below) might require [additional configuration flags](https://github.com/simov/grant#configuration-description).
+
+```
+OAUTH_PROVIDERS ="google,microsoft"
+
+OAUTH_GOOGLE_KEY = "<google_application_id>"
+OAUTH_GOOGLE_SECRET=  "<google_application_secret_key>"
+OAUTH_GOOGLE_SCOPE="openid email"
+
+OAUTH_MICROSOFT_KEY = "<microsoft_application_id>"
+OAUTH_MICROSOFT_SECRET = "<microsoft_application_secret_key>"
+OAUTH_MICROSOFT_SCOPE = "openid email"
+OAUTH_MICROSOFT_AUTHORIZE_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/authorize"
+OAUTH_MICROSOFT_ACCESS_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/token"
+
+PUBLIC_URL = "<public_url_of_directus_instance>"
+```
 
 ## Extensions
 
@@ -385,62 +639,3 @@ environment variable:
 | Variable    | Description                                                       | Default Value |
 | ----------- | ----------------------------------------------------------------- | ------------- |
 | `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | `true`        |
-
----
-
-## Type Casting and Nesting
-
-Environment variables are automatically type cast based on the structure of the variable, for example:
-
-```
-PUBLIC_URL="https://example.com"
-// "https://example.com"
-
-DB_HOST="3306"
-// 3306
-
-CORS_ENABLED="false"
-// false
-
-STORAGE_LOCATIONS="s3,local,example"
-// ["s3", "local", "example"]
-```
-
-In cases where the environment variables are converted to a configuration object for third party library use, like in
-`DB_*` or `RATE_LIMITER_REDIS_*`, the environment variable will be converted to camelCase. You can use a double
-underscore (`__`) for nested objects:
-
-```
-DB_CLIENT="pg"
-DB_CONNECTION_STRING="postgresql://postgres:example@127.0.0.1"
-DB_SSL__REJECT_UNAUTHORIZED="false"
-
-{
-	client: "pg",
-	connectionString: "postgresql://postgres:example@127.0.0.1",
-	ssl: {
-		rejectUnauthorized: false
-	}
-}
-```
-
-## Environment Syntax Prefix
-
-Directus will attempt to automatically type cast environment variables based on context clues
-([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type
-to use for the given value by prefixing the value with `{type}:`. The following types are available:
-
-| Syntax Prefix | Example                                                                                                         | Output                                                                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `string`      | `string:value`                                                                                                  | `"value"`                                                                                                                    |
-| `number`      | `number:3306`                                                                                                   | `3306`                                                                                                                       |
-| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
-| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
-
-## File Based Environment Variables (Docker Secrets)
-
-Any of the environment variable values can be imported from a file, by appending `_FILE` to the environment variable
-name. For example: `DB_PASSWORD_FILE="/run/secrets/db_password"`.
-
-This is especially useful when used in conjunction with Docker Secrets, so you can keep sensitive data out of your
-compose files.
