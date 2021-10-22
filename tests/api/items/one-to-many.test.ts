@@ -120,7 +120,40 @@ describe('/items', () => {
 			});
 		});
 	});
+	describe('/:collection PATCH', () => {
+		it.each(getDBsToTest())(`%p updates one guest's name to a different name`, async (vendor) => {
+			const url = `http://localhost:${config.ports[vendor]!}`;
+			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+				select: ['id'],
+			});
+			const guest = createGuest();
+			const items = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
+				select: ['id'],
+				where: ['favorite_artist', insertedArtist[insertedArtist.length - 1].id],
+			});
+			const keys: any[] = [];
+			Object.values(items).forEach((item: any) => {
+				keys.push(item.id);
+			});
+			const body = {
+				keys: keys,
+				data: { name: 'Johnny Cash' },
+			};
+			const response: any = await axios.patch(`${url}/items/guests/`, body, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
+
+			for (let row = 0; row < response.data.data.length; row++) {
+				expect(response.data.data[row]).toMatchObject({
+					name: 'Johnny Cash',
+				});
+			}
+			expect(response.data.data.length).toBe(keys.length);
+		});
+	});
 	// describe('/:collection/:id DELETE', () => {});
-	// describe('/:collection PATCH', () => {});
 	// describe('/:collection DELETE', () => {});
 });
