@@ -29,7 +29,7 @@ describe('/items', () => {
 			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 				select: ['id'],
 			});
-			guest.favorite_artist = insertedArtist[0].id;
+			guest.favorite_artist = insertedArtist[insertedArtist.length - 1].id;
 			const insertedGuest = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
 				select: ['id'],
 				where: ['name', guest.name],

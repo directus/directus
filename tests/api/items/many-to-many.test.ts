@@ -18,7 +18,6 @@ describe('/items', () => {
 
 	afterAll(async () => {
 		for (const [_vendor, connection] of databases) {
-			await connection('guests').truncate();
 			await connection.destroy();
 		}
 	});
@@ -89,10 +88,10 @@ describe('/items', () => {
 	describe('/:collection/:id DELETE', () => {
 		it.each(getDBsToTest())(`%p deletes an artists_events without deleting the artist or event`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+			const insertedArtist = await seedTable(databases.get(vendor)!, 3, 'artists', createArtist(), {
 				select: ['id'],
 			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
+			const insertedEvent = await seedTable(databases.get(vendor)!, 3, 'events', createEvent(), {
 				select: ['id'],
 			});
 			const item = await seedTable(
@@ -120,7 +119,7 @@ describe('/items', () => {
 					.where('id', insertedArtist[insertedArtist.length - 1].id)
 			).toStrictEqual([insertedArtist[insertedArtist.length - 1]]);
 			expect(
-				await databases.get(vendor)!('artists')
+				await databases.get(vendor)!('events')
 					.select('id')
 					.where('id', insertedEvent[insertedEvent.length - 1].id)
 			).toStrictEqual([insertedEvent[insertedEvent.length - 1]]);
