@@ -15,7 +15,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'input',
+				interface: 'input-multiline',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},
