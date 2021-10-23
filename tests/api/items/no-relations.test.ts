@@ -4,6 +4,7 @@ import config from '../../config';
 import { getDBsToTest } from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createMany, seedTable } from '../../setup/utils/factories';
+import { v4 as uuid } from 'uuid';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -25,10 +26,11 @@ describe('/items', () => {
 	describe('/:collection/:id GET', () => {
 		it.each(getDBsToTest())('%p retrieves one artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			seedTable(databases.get(vendor)!, 1, 'artists', createArtist());
+			const artist = createArtist();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
 			const response = await request(url)
-				.get(`/items/artists/1`)
+				.get(`/items/artists/${artist.id}`)
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
@@ -86,24 +88,18 @@ describe('/items', () => {
 	describe('/:collection/:id PATCH', () => {
 		it.each(getDBsToTest())(`%p updates one artist's name with no relations`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
-				select: ['id'],
-			});
+			const artist = createArtist();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
 			const body = { name: 'Tommy Cash' };
-			const response: any = await axios.patch(
-				`${url}/items/artists/${insertedArtist[insertedArtist.length - 1].id}`,
-				body,
-				{
-					headers: {
-						Authorization: 'Bearer AdminToken',
-						'Content-Type': 'application/json',
-					},
-				}
-			);
+			const response: any = await axios.patch(`${url}/items/artists/${artist.id}`, body, {
+				headers: {
+					Authorization: 'Bearer AdminToken',
+					'Content-Type': 'application/json',
+				},
+			});
 
 			expect(response.data.data).toMatchObject({
-				id: insertedArtist[insertedArtist.length - 1].id,
 				name: 'Tommy Cash',
 			});
 		});
@@ -111,11 +107,10 @@ describe('/items', () => {
 	describe('/:collection/:id DELETE', () => {
 		it.each(getDBsToTest())(`%p deletes an artist with no relations`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
-				select: ['id'],
-			});
+			const artist = createArtist();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
-			const response: any = await axios.delete(`${url}/items/artists/${insertedArtist[insertedArtist.length - 1].id}`, {
+			const response: any = await axios.delete(`${url}/items/artists/${artist.id}`, {
 				headers: {
 					Authorization: 'Bearer AdminToken',
 					'Content-Type': 'application/json',
@@ -123,17 +118,13 @@ describe('/items', () => {
 			});
 
 			expect(response.data.data).toBe(undefined);
-			expect(
-				await databases.get(vendor)!('artists')
-					.select('*')
-					.where('id', insertedArtist[insertedArtist.length - 1].id)
-			).toStrictEqual([]);
+			expect(await databases.get(vendor)!('artists').select('*').where('id', artist.id)).toStrictEqual([]);
 		});
 	});
 	describe('/:collection GET', () => {
 		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			seedTable(databases.get(vendor)!, 50, 'artists', createArtist);
+			await seedTable(databases.get(vendor)!, 50, 'artists', createArtist);
 			const response = await request(url)
 				.get('/items/artists')
 				.set('Authorization', 'Bearer AdminToken')
@@ -141,10 +132,6 @@ describe('/items', () => {
 				.expect(200);
 
 			expect(response.body.data.length).toBeGreaterThanOrEqual(50);
-			expect(response.body.data[0]).toMatchObject({
-				id: expect.any(Number),
-				name: expect.any(String),
-			});
 		});
 		describe('Error handling', () => {
 			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
@@ -225,23 +212,23 @@ describe('/items', () => {
 
 			let items;
 			const keys: any[] = [];
-
+			const artists = createMany(createArtist, 5, { id: uuid });
 			if (vendor === 'mssql') {
-				items = await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+				items = await seedTable(databases.get(vendor)!, 1, 'artists', artists, {
 					raw: 'SELECT TOP(10) id FROM artists ORDER BY id DESC;',
 				});
 				Object.values(items).forEach((item: any) => {
 					keys.push(item.id);
 				});
 			} else if (vendor !== 'postgres') {
-				items = await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+				items = await seedTable(databases.get(vendor)!, 1, 'artists', artists, {
 					raw: 'select id from artists order by id desc limit 10;',
 				});
 				Object.values(items[0]).forEach((item: any) => {
 					keys.push(item.id);
 				});
 			} else {
-				items = await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+				items = await seedTable(databases.get(vendor)!, 1, 'artists', artists, {
 					raw: 'select id from artists order by id desc limit 10;',
 				});
 				Object.values(items.rows).forEach((item: any) => {
@@ -270,15 +257,11 @@ describe('/items', () => {
 	describe('/:collection DELETE', () => {
 		it.each(getDBsToTest())(`%p deletes many artists with no relations`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const items = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
-				select: ['id'],
-			});
+			const artists = createMany(createArtist, 10, { id: uuid });
+			await seedTable(databases.get(vendor)!, 1, 'artists', artists);
 			const body: any[] = [];
-			items.sort(function (a: any, b: any) {
-				return b.id - a.id;
-			});
-			for (let row = 0; row < 10; row++) {
-				body.push(items[row].id);
+			for (let row = 0; row < artists.length - 1; row++) {
+				body.push(artists[row]!.id);
 			}
 			const response: any = await axios.delete(`${url}/items/artists/`, {
 				headers: {

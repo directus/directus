@@ -4,6 +4,7 @@ import config from '../../config';
 import { getDBsToTest } from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createGuest, createMany, seedTable } from '../../setup/utils/factories';
+import { internet } from 'faker';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -25,42 +26,47 @@ describe('/items', () => {
 	describe('/:collection/:id GET', () => {
 		it.each(getDBsToTest())(`%p retrieves a guest's favorite artist`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
+			const artist = createArtist();
 			const guest = createGuest();
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
-				select: ['id'],
-			});
-			guest.favorite_artist = insertedArtist[insertedArtist.length - 1].id;
-			const insertedGuest = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
-				select: ['id'],
-				where: ['name', guest.name],
-			});
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+			guest.favorite_artist = artist.id;
+			await seedTable(databases.get(vendor)!, 1, 'guests', guest);
 
 			const response = await request(url)
-				.get(`/items/guests/${insertedGuest[0].id}?fields=favorite_artist.*`)
+				.get(`/items/guests/${guest.id}?fields=favorite_artist.*`)
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			expect(response.body.data).toMatchObject({ favorite_artist: { name: expect.any(String) } });
+			expect(response.body.data).toMatchObject({ favorite_artist: { name: artist.name } });
 		});
 	});
 
 	describe('/:collection GET', () => {
 		it.each(getDBsToTest())('%p retrieves all items from guest table with favorite_artist', async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			await seedTable(databases.get(vendor)!, 10, 'artists', createArtist);
-			seedTable(databases.get(vendor)!, 1, 'guests', createMany(createGuest, 10, { favorite_artist: 10 })!);
+			const artist = createArtist();
+			const name = internet.userName();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+			await seedTable(
+				databases.get(vendor)!,
+				1,
+				'guests',
+				createMany(createGuest, 10, { name, favorite_artist: artist.id })
+			);
 
-			const response = await request(url)
-				.get('/items/guests')
-				.set('Authorization', 'Bearer AdminToken')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
+			const response = (
+				await request(url)
+					.get(`/items/guests?filter={"name": { "_eq": "${name}" }}`)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200)
+			).body.data;
 
-			expect(response.body.data.length).toBeGreaterThanOrEqual(10);
-			expect(response.body.data[0]).toMatchObject({
+			expect(response.length).toBeGreaterThanOrEqual(10);
+			expect(response[response.length - 1]).toMatchObject({
 				birthday: expect.any(String),
-				favorite_artist: expect.any(Number),
+				favorite_artist: expect.any(String),
 			});
 		});
 	});
@@ -79,14 +85,15 @@ describe('/items', () => {
 						'Content-Type': 'application/json',
 					},
 				});
-				expect(response.data.data).toMatchObject({ name: body.name, favorite_artist: expect.any(Number) });
+				expect(response.data.data).toMatchObject({ name: body.name, favorite_artist: expect.any(String) });
 			});
 		});
 		describe('createMany', () => {
 			it.each(getDBsToTest())('%p creates 5 users with a favorite_artist', async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
-				await seedTable(databases.get(vendor)!, 5, 'artists', createArtist);
-				const body = createMany(createGuest, 5, { favorite_artist: 5 })!;
+				const artist = createArtist();
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				const body = createMany(createGuest, 5, { favorite_artist: artist.id });
 
 				const response: any = await axios.post(`${url}/items/guests`, body, {
 					headers: {
@@ -95,65 +102,12 @@ describe('/items', () => {
 					},
 				});
 				expect(response.data.data.length).toBe(body.length);
+				expect(response.data.data[0]).toMatchObject({ favorite_artist: expect.any(String) });
 			});
 		});
 	});
-	describe('/:collection/:id PATCH', () => {
-		it.each(getDBsToTest())(`%p updates one guest's name to a different name`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-
-			const guest = createGuest();
-			const insertedGuest = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
-				select: ['id'],
-				where: ['name', guest.name],
-			});
-			const body = { name: 'Tommy Cash' };
-			const response: any = await axios.patch(`${url}/items/guests/${insertedGuest[0].id}`, body, {
-				headers: {
-					Authorization: 'Bearer AdminToken',
-					'Content-Type': 'application/json',
-				},
-			});
-
-			expect(response.data.data).toMatchObject({
-				name: 'Tommy Cash',
-			});
-		});
-	});
-	describe('/:collection PATCH', () => {
-		it.each(getDBsToTest())(`%p updates one guest's name to a different name`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
-				select: ['id'],
-			});
-			const guest = createGuest();
-			const items = await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
-				select: ['id'],
-				where: ['favorite_artist', insertedArtist[insertedArtist.length - 1].id],
-			});
-			const keys: any[] = [];
-			Object.values(items).forEach((item: any) => {
-				keys.push(item.id);
-			});
-			const body = {
-				keys: keys,
-				data: { name: 'Johnny Cash' },
-			};
-			const response: any = await axios.patch(`${url}/items/guests/`, body, {
-				headers: {
-					Authorization: 'Bearer AdminToken',
-					'Content-Type': 'application/json',
-				},
-			});
-
-			for (let row = 0; row < response.data.data.length; row++) {
-				expect(response.data.data[row]).toMatchObject({
-					name: 'Johnny Cash',
-				});
-			}
-			expect(response.data.data.length).toBe(keys.length);
-		});
-	});
+	// describe('/:collection/:id PATCH', () => {});
+	// describe('/:collection PATCH', () => {});
 	// describe('/:collection/:id DELETE', () => {});
 	// describe('/:collection DELETE', () => {});
 });

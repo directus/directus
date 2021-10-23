@@ -4,7 +4,6 @@ import config from '../../config';
 import { getDBsToTest } from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createEvent, createMany, seedTable, Item } from '../../setup/utils/factories';
-
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
 
@@ -25,24 +24,29 @@ describe('/items', () => {
 	describe('/:collection/:id GET', () => {
 		it.each(getDBsToTest())(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
-				select: ['id'],
-			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
-				select: ['id'],
-			});
+			const artist = createArtist();
+			const event = createEvent();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+			await seedTable(databases.get(vendor)!, 1, 'events', event);
+
 			const relation = await seedTable(
 				databases.get(vendor)!,
 				1,
 				'artists_events',
 				{
-					artists_id: insertedArtist[insertedArtist.length - 1].id,
-					events_id: insertedEvent[insertedEvent.length - 1].id,
+					artists_id: artist.id,
+					events_id: event.id,
 				},
-				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+				{
+					select: ['id'],
+					where: ['artists_id', artist.id],
+				}
 			);
+
 			const response = await request(url)
-				.get(`/items/artists_events/${relation[0].id}?fields[]=artists_id.name&fields[]=events_id.cost`)
+				.get(
+					`/items/artists_events/${relation[relation.length - 1].id}?fields[]=artists_id.name&fields[]=events_id.cost`
+				)
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
@@ -88,10 +92,12 @@ describe('/items', () => {
 	describe('/:collection/:id DELETE', () => {
 		it.each(getDBsToTest())(`%p deletes an artists_events without deleting the artist or event`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 3, 'artists', createArtist(), {
+			const artist = createArtist();
+			const event = createEvent();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
 				select: ['id'],
 			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 3, 'events', createEvent(), {
+			await seedTable(databases.get(vendor)!, 1, 'events', event, {
 				select: ['id'],
 			});
 			const item = await seedTable(
@@ -99,12 +105,12 @@ describe('/items', () => {
 				1,
 				'artists_events',
 				{
-					artists_id: insertedArtist[insertedArtist.length - 1].id,
-					events_id: insertedEvent[insertedEvent.length - 1].id,
+					artists_id: artist.id,
+					events_id: event.id,
 				},
-				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+				{ select: ['id'], where: ['events_id', event.id] }
 			);
-			const response: any = await axios.delete(`${url}/items/artists_events/${item[0].id}`, {
+			const response: any = await axios.delete(`${url}/items/artists_events/${item[item.length - 1].id}`, {
 				headers: {
 					Authorization: 'Bearer AdminToken',
 					'Content-Type': 'application/json',
@@ -113,30 +119,29 @@ describe('/items', () => {
 
 			expect(response.data.data).toBe(undefined);
 			expect(await databases.get(vendor)!('artists_events').select('*').where('id', item[0].id)).toStrictEqual([]);
-			expect(
-				await databases.get(vendor)!('artists')
-					.select('id')
-					.where('id', insertedArtist[insertedArtist.length - 1].id)
-			).toStrictEqual([insertedArtist[insertedArtist.length - 1]]);
-			expect(
-				await databases.get(vendor)!('events')
-					.select('id')
-					.where('id', insertedEvent[insertedEvent.length - 1].id)
-			).toStrictEqual([insertedEvent[insertedEvent.length - 1]]);
+			expect(await databases.get(vendor)!('artists').select('name').where('id', artist.id)).toMatchObject([
+				{ name: artist.name },
+			]);
+			expect(await databases.get(vendor)!('events').select('cost').where('id', event.id)).toMatchObject([
+				{ cost: event.cost },
+			]);
 		});
 	});
 	describe('/:collection GET', () => {
 		it.each(getDBsToTest())(`%p retrieves artists and events for each entry in artists_events`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+			const artist = createArtist();
+			const event = createEvent();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
 				select: ['id'],
 			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
+			await seedTable(databases.get(vendor)!, 1, 'events', event, {
 				select: ['id'],
 			});
+
 			await seedTable(databases.get(vendor)!, 10, 'artists_events', {
-				artists_id: insertedArtist[insertedArtist.length - 1].id,
-				events_id: insertedEvent[insertedEvent.length - 1].id,
+				artists_id: artist.id,
+				events_id: event.id,
 			});
 			const response = await request(url)
 				.get(`/items/artists_events?fields[]=artists_id.name&fields[]=events_id.cost`)
@@ -156,15 +161,17 @@ describe('/items', () => {
 		describe('createOne', () => {
 			it.each(getDBsToTest())(`%p creates an artist_events entry`, async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
-				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
+				const artist = createArtist();
+				const event = createEvent();
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
 					select: ['id'],
 				});
-				const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
+				await seedTable(databases.get(vendor)!, 1, 'events', event, {
 					select: ['id'],
 				});
 				const body = {
-					artists_id: insertedArtist[0].id,
-					events_id: insertedEvent[0].id,
+					artists_id: artist.id,
+					events_id: event.id,
 				};
 
 				const response: any = await axios.post(`${url}/items/artists_events`, body, {
@@ -176,22 +183,23 @@ describe('/items', () => {
 
 				expect(response.data.data).toMatchObject({
 					id: expect.any(Number),
-					artists_id: expect.any(Number),
-					events_id: expect.any(Number),
+					artists_id: expect.any(String),
+					events_id: expect.any(String),
 				});
 			});
 		});
 		describe('createMany', () => {
 			it.each(getDBsToTest())(`%p creates 5 artist_events entries`, async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
-				await seedTable(databases.get(vendor)!, 5, 'artists', createArtist(), {
+				const artist = createArtist();
+				const event = createEvent();
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
 					select: ['id'],
 				});
-				await seedTable(databases.get(vendor)!, 5, 'events', createEvent(), {
+				await seedTable(databases.get(vendor)!, 1, 'events', event, {
 					select: ['id'],
 				});
-				const body = createMany({}, 10, { events_id: 5, artists_id: 5 });
-
+				const body = createMany({}, 10, { artists_id: artist.id, events_id: event.id });
 				const response: any = await axios.post(`${url}/items/artists_events`, body, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
@@ -200,8 +208,8 @@ describe('/items', () => {
 				});
 				expect(response.data.data.length).toBeGreaterThanOrEqual(10);
 				expect(response.data.data[0]).toMatchObject({
-					artists_id: expect.any(Number),
-					events_id: expect.any(Number),
+					artists_id: expect.any(String),
+					events_id: expect.any(String),
 				});
 			});
 		});
@@ -210,10 +218,12 @@ describe('/items', () => {
 	describe('/:collection PATCH', () => {
 		it.each(getDBsToTest())(`%p updates many artists_events to a different artist`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+			const artist = createArtist();
+			const event = createEvent();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
 				select: ['id'],
 			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
+			await seedTable(databases.get(vendor)!, 1, 'events', event, {
 				select: ['id'],
 			});
 			const items = await seedTable(
@@ -221,10 +231,10 @@ describe('/items', () => {
 				10,
 				'artists_events',
 				{
-					artists_id: insertedArtist[insertedArtist.length - 1].id,
-					events_id: insertedEvent[insertedEvent.length - 1].id,
+					artists_id: artist.id,
+					events_id: event.id,
 				},
-				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+				{ select: ['id'], where: ['events_id', event.id] }
 			);
 			const keys: any[] = [];
 			Object.values(items).forEach((item: any) => {
@@ -232,17 +242,17 @@ describe('/items', () => {
 			});
 			const body = {
 				keys: keys,
-				data: { events_id: insertedEvent[0].id },
+				data: { events_id: event.id },
 			};
-			const response: any = await axios.patch(`${url}/items/artists_events/?fields=events_id`, body, {
+			const response: any = await axios.patch(`${url}/items/artists_events/?fields=events_id.cost`, body, {
 				headers: {
 					Authorization: 'Bearer AdminToken',
 					'Content-Type': 'application/json',
 				},
 			});
 			for (let row = 0; row < response.data.data.length; row++) {
-				expect(response.data.data[row]).toMatchObject({
-					events_id: insertedEvent[0].id,
+				expect(response.data.data[row].events_id).toMatchObject({
+					cost: event.cost,
 				});
 			}
 			expect(response.data.data.length).toBe(keys.length);
@@ -251,10 +261,12 @@ describe('/items', () => {
 	describe('/:collection DELETE', () => {
 		it.each(getDBsToTest())(`%p deletes many artists_events without deleting the artists or events`, async (vendor) => {
 			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 10, 'artists', createArtist(), {
+			const artist = createArtist();
+			const event = createEvent();
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
 				select: ['id'],
 			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 10, 'events', createEvent(), {
+			await seedTable(databases.get(vendor)!, 1, 'events', event, {
 				select: ['id'],
 			});
 			const items = await seedTable(
@@ -262,10 +274,10 @@ describe('/items', () => {
 				10,
 				'artists_events',
 				{
-					artists_id: insertedArtist[insertedArtist.length - 1].id,
-					events_id: insertedEvent[insertedEvent.length - 1].id,
+					artists_id: artist.id,
+					events_id: event.id,
 				},
-				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
+				{ select: ['id'], where: ['events_id', event.id] }
 			);
 			const body: any[] = [];
 			items
@@ -287,16 +299,8 @@ describe('/items', () => {
 			for (let row = 0; row < items.length; row++) {
 				expect(await databases.get(vendor)!('artists_events').select('*').where('id', items[row].id)).toStrictEqual([]);
 			}
-			expect(
-				await databases.get(vendor)!('artists')
-					.select('id')
-					.where('id', insertedArtist[insertedArtist.length - 1].id)
-			).toStrictEqual([insertedArtist[insertedArtist.length - 1]]);
-			expect(
-				await databases.get(vendor)!('artists')
-					.select('id')
-					.where('id', insertedEvent[insertedEvent.length - 1].id)
-			).toStrictEqual([insertedEvent[insertedEvent.length - 1]]);
+			expect((await databases.get(vendor)!('artists').select('name').where('id', artist.id))[0].name).toBe(artist.name);
+			expect((await databases.get(vendor)!('events').select('cost').where('id', event.id))[0].cost).toBe(event.cost);
 		});
 	});
 });
