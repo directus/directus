@@ -72,39 +72,37 @@ module.exports = function registerHook({ exceptions }) {
 
 ### Event Format Options
 
-| Scope                           | Actions                                                            | Before           |
-| ------------------------------- | ------------------------------------------------------------------ | ---------------- |
-| `cron()`                        | [See below for configuration](#interval-cron)                      | No               |
-| `cli.init`                      | `before` and `after`                                               | No               |
-| `server`                        | `start` and `stop`                                                 | Optional         |
-| `init`                          |                                                                    | Optional         |
-| `routes.init`                   | `before` and `after`                                               | No               |
-| `routes.custom.init`            | `before` and `after`                                               | No               |
-| `middlewares.init`              | `before` and `after`                                               | No               |
-| `request`                       | `not_found`                                                        | No               |
-| `response`                      |                                                                    | No<sup>[1]</sup> |
-| `database.error`                | When a database error is thrown                                    | No               |
-| `error`                         |                                                                    | No               |
-| `auth`                          | `login`, `logout`<sup>[1]</sup>, `jwt` and `refresh`<sup>[1]</sup> | Optional         |
-| `oauth.:provider`<sup>[2]</sup> | `login` and `redirect`                                             | Optional         |
-| `items`                         | `read`<sup>[3]</sup>, `create`, `update` and `delete`              | Optional         |
-| `activity`                      | `create`, `update` and `delete`                                    | Optional         |
-| `collections`                   | `create`, `update` and `delete`                                    | Optional         |
-| `fields`                        | `create`, `update` and `delete`                                    | Optional         |
-| `files`                         | `upload`<sup>[3]</sup>                                             | No               |
-| `folders`                       | `create`, `update` and `delete`                                    | Optional         |
-| `permissions`                   | `create`, `update` and `delete`                                    | Optional         |
-| `presets`                       | `create`, `update` and `delete`                                    | Optional         |
-| `relations`                     | `create`, `update` and `delete`                                    | Optional         |
-| `revisions`                     | `create`, `update` and `delete`                                    | Optional         |
-| `roles`                         | `create`, `update` and `delete`                                    | Optional         |
-| `settings`                      | `create`, `update` and `delete`                                    | Optional         |
-| `users`                         | `create`, `update` and `delete`                                    | Optional         |
-| `webhooks`                      | `create`, `update` and `delete`                                    | Optional         |
+| Scope                | Actions                                                            | Before           |
+| -------------------- | ------------------------------------------------------------------ | ---------------- |
+| `cron()`             | [See below for configuration](#interval-cron)                      | No               |
+| `cli.init`           | `before` and `after`                                               | No               |
+| `server`             | `start` and `stop`                                                 | Optional         |
+| `init`               |                                                                    | Optional         |
+| `routes.init`        | `before` and `after`                                               | No               |
+| `routes.custom.init` | `before` and `after`                                               | No               |
+| `middlewares.init`   | `before` and `after`                                               | No               |
+| `request`            | `not_found`                                                        | No               |
+| `response`           |                                                                    | No<sup>[1]</sup> |
+| `database.error`     | When a database error is thrown                                    | No               |
+| `error`              |                                                                    | No               |
+| `auth`               | `login`, `logout`<sup>[1]</sup>, `jwt` and `refresh`<sup>[1]</sup> | Optional         |
+| `items`              | `read`<sup>[2]</sup>, `create`, `update` and `delete`              | Optional         |
+| `activity`           | `create`, `update` and `delete`                                    | Optional         |
+| `collections`        | `create`, `update` and `delete`                                    | Optional         |
+| `fields`             | `create`, `update` and `delete`                                    | Optional         |
+| `files`              | `upload`<sup>[2]</sup>                                             | No               |
+| `folders`            | `create`, `update` and `delete`                                    | Optional         |
+| `permissions`        | `create`, `update` and `delete`                                    | Optional         |
+| `presets`            | `create`, `update` and `delete`                                    | Optional         |
+| `relations`          | `create`, `update` and `delete`                                    | Optional         |
+| `revisions`          | `create`, `update` and `delete`                                    | Optional         |
+| `roles`              | `create`, `update` and `delete`                                    | Optional         |
+| `settings`           | `create`, `update` and `delete`                                    | Optional         |
+| `users`              | `create`, `update` and `delete`                                    | Optional         |
+| `webhooks`           | `create`, `update` and `delete`                                    | Optional         |
 
 <sup>1</sup> Feature Coming Soon\
-<sup>2</sup> oAuth provider name can replaced with wildcard for any oauth providers `oauth.*.login`\
-<sup>3</sup> Doesn't support `.before` modifier
+<sup>2</sup> Doesn't support `.before` modifier
 
 #### Interval (cron)
 
@@ -196,7 +194,7 @@ receive the primary key(s) of the items but the query used:
 
 #### Auth
 
-The `auth` and `oauth` hooks have the following context properties:
+The `auth` hooks have the following context properties:
 
 - `event` — Full event string
 - `accountability` — Information about the current user
@@ -204,9 +202,7 @@ The `auth` and `oauth` hooks have the following context properties:
 - `payload` — Payload of the request
 - `schema` - The current API schema in use
 - `status` - One of `pending`, `success`, `fail`
-- `user` <sup>†</sup> - ID of the user that tried logging in/has logged in
-
-<sup>†</sup> Not available in `oauth`
+- `user` - ID of the user that tried logging in/has logged in
 
 ## 5. Restart the API
 

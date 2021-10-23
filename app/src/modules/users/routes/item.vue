@@ -305,7 +305,13 @@ export default defineComponent({
 		];
 
 		const fieldsFiltered = computed(() => {
-			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
+			return fields.value.filter((field: Field) => {
+				// These fields should only be editable when creating new users
+				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
+					field.meta.readonly = true;
+				}
+				return !fieldsDenyList.includes(field.field);
+			});
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);

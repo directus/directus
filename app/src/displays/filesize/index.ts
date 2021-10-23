@@ -8,5 +8,5 @@ export default defineDisplay({
 	icon: 'description',
 	component: ({ value }: { value: number }) => formatFilesize(value),
 	options: [],
-	types: ['integer'],
+	types: ['integer', 'bigInteger'],
 });

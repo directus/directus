@@ -2,10 +2,12 @@ import getDatabase from './database';
 import env from './env';
 import logger from './logger';
 import { AuthDriver } from './auth/auth';
-import { LocalAuthDriver } from './auth/drivers/';
+import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver } from './auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { InvalidConfigException } from './exceptions';
+import { AuthDriverOptions } from './types';
 import { getConfigFromEnv } from './utils/get-config-from-env';
+import { getSchema } from './utils/get-schema';
 import { toArray } from '@directus/shared/utils';
 
 const providerNames = toArray(env.AUTH_PROVIDERS);
@@ -13,11 +15,6 @@ const providerNames = toArray(env.AUTH_PROVIDERS);
 const providers: Map<string, AuthDriver> = new Map();
 
 export function getAuthProvider(provider: string): AuthDriver {
-	// When providers haven't been registered yet
-	if (providerNames.length !== providers.size) {
-		registerProviders();
-	}
-
 	if (!providers.has(provider)) {
 		throw new InvalidConfigException('Auth provider not configured', { provider });
 	}
@@ -25,16 +22,12 @@ export function getAuthProvider(provider: string): AuthDriver {
 	return providers.get(provider)!;
 }
 
-function getProviderInstance(driver: string, config: Record<string, any>): AuthDriver | undefined {
-	switch (driver) {
-		case 'local':
-			return new LocalAuthDriver(getDatabase(), config);
-	}
-}
+export async function registerAuthProviders(): Promise<void> {
+	const options = { knex: getDatabase(), schema: await getSchema() };
+	const defaultProvider = getProviderInstance('local', options)!;
 
-function registerProviders() {
 	// Register default provider
-	providers.set(DEFAULT_AUTH_PROVIDER, getProviderInstance('local', {}) as AuthDriver);
+	providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
 
 	if (!env.AUTH_PROVIDERS) {
 		return;
@@ -56,7 +49,7 @@ function registerProviders() {
 			return;
 		}
 
-		const provider = getProviderInstance(driver, { provider: name, ...config });
+		const provider = getProviderInstance(driver, options, { provider: name, ...config });
 
 		if (!provider) {
 			logger.warn(`Invalid "${driver}" auth driver.`);
@@ -65,4 +58,21 @@ function registerProviders() {
 
 		providers.set(name, provider);
 	});
+}
+
+function getProviderInstance(
+	driver: string,
+	options: AuthDriverOptions,
+	config: Record<string, any> = {}
+): AuthDriver | undefined {
+	switch (driver) {
+		case 'local':
+			return new LocalAuthDriver(options, config);
+
+		case 'oauth2':
+			return new OAuth2AuthDriver(options, config);
+
+		case 'openid':
+			return new OpenIDAuthDriver(options, config);
+	}
 }

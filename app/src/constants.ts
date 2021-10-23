@@ -143,3 +143,5 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 		value: 'hash',
 	},
 ];
+
+export const AUTH_SSO_DRIVERS = ['oauth2', 'openid'];
