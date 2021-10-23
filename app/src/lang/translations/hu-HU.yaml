@@ -50,6 +50,7 @@ indeterminate: Meghatározatlan
 edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
+db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához'
 show_archived_items: Archivált elemek megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
@@ -165,6 +166,8 @@ duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
 aggregate_function: Aggregáló függvény
 aggregate_precision: Aggregálás pontossága
+group_aggregation: Csoport aggregáció
+group_precision: Csoport precízió
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
