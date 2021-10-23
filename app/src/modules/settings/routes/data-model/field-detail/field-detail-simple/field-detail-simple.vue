@@ -18,7 +18,9 @@
 							<img v-else :src="inter.preview" alt="" />
 						</template>
 
-						<v-icon v-else large :name="inter.icon" />
+						<span v-else class="fallback">
+							<v-icon large :name="inter.icon" />
+						</span>
 					</div>
 					<v-text-overflow :text="inter.name" class="name" />
 				</button>
@@ -213,9 +215,13 @@ export default defineComponent({
 	filter: drop-shadow(0 0 8px var(--primary-50));
 }
 
-.preview .v-icon {
-	text-shadow: 4px 0px 8px var(--primary-25), -4px 0px 8px var(--primary-25), 0px 4px 8px var(--primary-25),
-		0px -4px 8px var(--primary-25);
+.preview .fallback {
+	--v-icon-color: var(--primary-50);
+
+	display: block;
+	padding: 8px 16px;
+	border-radius: var(--border-radius);
+	box-shadow: 0 0 8px var(--primary-50);
 }
 
 .interface:hover .preview {
@@ -223,13 +229,13 @@ export default defineComponent({
 }
 
 .interface.active .preview {
-	border-color: var(--primary);
 	background-color: var(--primary-alt);
+	border-color: var(--primary);
 }
 
 .interface[disabled] .preview {
-	border-color: var(--border-subdued);
 	background-color: var(--background-subdued);
+	border-color: var(--border-subdued);
 	filter: grayscale(1);
 }
 </style>

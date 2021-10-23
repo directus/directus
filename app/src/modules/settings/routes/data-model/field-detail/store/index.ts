@@ -1,7 +1,7 @@
-import { defineStore, SubscriptionCallback } from 'pinia';
+import { defineStore } from 'pinia';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
-import { has, isEmpty, isNil, orderBy } from 'lodash';
+import { has, isEmpty, orderBy } from 'lodash';
 import { InterfaceConfig, DisplayConfig, DeepPartial, Field, Relation, Collection } from '@directus/shared/types';
 import { LOCAL_TYPES } from '@directus/shared/constants';
 import { computed } from 'vue';
@@ -33,7 +33,7 @@ export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 }
 
 export const useFieldDetailStore = defineStore({
-	id: 'field-detail',
+	id: 'fieldDetailStore',
 	state: () => ({
 		// The current collection we're operating in
 		collection: undefined as string | undefined,
@@ -62,6 +62,9 @@ export const useFieldDetailStore = defineStore({
 		// Fields that will be upserted as part of this change
 		fields: {
 			corresponding: undefined as DeepPartial<Field> | undefined,
+			junctionCurrent: undefined as DeepPartial<Field> | undefined,
+			junctionRelated: undefined as DeepPartial<Field> | undefined,
+			sort: undefined as DeepPartial<Field> | undefined,
 		},
 
 		// Any items that need to be injected into any collection
@@ -137,14 +140,14 @@ export const useFieldDetailStore = defineStore({
 					await api.post('/collections', value);
 				}
 
-				for (const [_type, value] of Object.entries(this.relations)) {
-					if (!value) continue;
-					await api.post('/relations', value);
-				}
-
 				for (const [_type, value] of Object.entries(this.fields)) {
 					if (!value) continue;
 					await api.post(`/fields/${value.collection}`, value);
+				}
+
+				for (const [_type, value] of Object.entries(this.relations)) {
+					if (!value) continue;
+					await api.post('/relations', value);
 				}
 
 				await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), relationsStore.hydrate()]);
