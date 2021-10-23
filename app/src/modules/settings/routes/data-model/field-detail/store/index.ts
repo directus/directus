@@ -11,14 +11,15 @@ import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores
 import api from '@/api';
 
 import * as global from './alterations/global';
-import * as standard from './alterations/standard';
+import * as file from './alterations/file';
+import * as files from './alterations/files';
+import * as group from './alterations/group';
+import * as m2m from './alterations/m2m';
 import * as m2o from './alterations/m2o';
 import * as o2m from './alterations/o2m';
-import * as m2m from './alterations/m2m';
-import * as file from './alterations/file';
-import * as translations from './alterations/translations';
 import * as presentation from './alterations/presentation';
-import * as group from './alterations/group';
+import * as standard from './alterations/standard';
+import * as translations from './alterations/translations';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -95,8 +96,17 @@ export const useFieldDetailStore = defineStore({
 			}
 
 			switch (getCurrent('localType')) {
-				case 'standard':
-					standard.applyChanges(updates, this, helperFn);
+				case 'file':
+					file.applyChanges(updates, this, helperFn);
+					break;
+				case 'files':
+					files.applyChanges(updates, this, helperFn);
+					break;
+				case 'group':
+					group.applyChanges(updates, this, helperFn);
+					break;
+				case 'm2m':
+					m2m.applyChanges(updates, this, helperFn);
 					break;
 				case 'm2o':
 					m2o.applyChanges(updates, this, helperFn);
@@ -104,17 +114,11 @@ export const useFieldDetailStore = defineStore({
 				case 'o2m':
 					o2m.applyChanges(updates, this, helperFn);
 					break;
-				case 'm2m':
-					m2m.applyChanges(updates, this, helperFn);
-					break;
-				case 'file':
-					file.applyChanges(updates, this, helperFn);
-					break;
 				case 'presentation':
 					presentation.applyChanges(updates, this, helperFn);
 					break;
-				case 'group':
-					group.applyChanges(updates, this, helperFn);
+				case 'standard':
+					standard.applyChanges(updates, this, helperFn);
 					break;
 				case 'translations':
 					translations.applyChanges(updates, this, helperFn);

@@ -71,6 +71,14 @@ export function setSpecialForLocalType(updates: StateUpdates) {
 		set(updates, 'field.meta.special', ['translations']);
 	}
 
+	if (updates?.localType === 'file') {
+		set(updates, 'field.meta.special', ['file']);
+	}
+
+	if (updates?.localType === 'files') {
+		set(updates, 'field.meta.special', ['files']);
+	}
+
 	if (updates?.localType === 'presentation') {
 		set(updates, 'field.meta.special', ['alias', 'no-data']);
 	}
