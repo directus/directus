@@ -33,6 +33,14 @@
 
 			<related-collection-select v-model="relatedCollectionM2O" />
 		</div>
+
+		<div class="field half-left" v-if="localType === 'translations'">
+			<div class="label type-label">
+				{{ t('languages_collection') }}
+			</div>
+
+			<related-collection-select v-model="relatedCollectionM2O" />
+		</div>
 	</div>
 </template>
 
@@ -68,6 +76,7 @@ export default defineComponent({
 
 .relationship {
 	@include form-grid;
+
 	--v-select-font-family: var(--family-monospace);
 	--v-input-font-family: var(--family-monospace);
 
