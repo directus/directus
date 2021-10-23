@@ -25,6 +25,14 @@
 				<related-field-select v-model="o2mField" :collection="o2mCollection" :disabled="!o2mCollection" />
 			</div>
 		</template>
+
+		<div class="field half-left" v-if="localType === 'm2m'">
+			<div class="label type-label">
+				{{ t('related_collection') }}
+			</div>
+
+			<related-collection-select v-model="relatedCollectionM2O" />
+		</div>
 	</div>
 </template>
 

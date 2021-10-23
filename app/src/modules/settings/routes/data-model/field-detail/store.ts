@@ -10,7 +10,14 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
 import api from '@/api';
 
-type AlterationFunctionObject = Record<string, (updates: StateUpdates, state: State) => void>;
+type AlterationFunctionObject = Record<
+	string,
+	(
+		updates: StateUpdates,
+		state: State,
+		helperFn: { getCurrent: (path: string) => any; hasChanged: (path: string) => boolean }
+	) => void
+>;
 
 const global: AlterationFunctionObject = {
 	/**
@@ -330,6 +337,65 @@ const o2m: AlterationFunctionObject = {
 	},
 };
 
+const m2m: AlterationFunctionObject = {
+	removeSchema(updates) {
+		set(updates, 'field.schema', undefined);
+	},
+	setTypeToAlias(updates) {
+		set(updates, 'field.type', 'alias');
+	},
+	prepareRelation(updates, state) {
+		if (!updates.relations) updates.relations = {};
+
+		updates.relations.o2m = {
+			collection: undefined,
+			field: undefined,
+			related_collection: state.collection,
+			meta: {
+				one_field: updates.field?.field ?? state.field.field,
+				sort_field: null,
+				one_deselect_action: 'nullify',
+			},
+			schema: {
+				on_delete: 'SET NULL',
+			},
+		};
+
+		updates.relations.m2o = {
+			collection: undefined,
+			field: undefined,
+			related_collection: undefined,
+			meta: {
+				one_field: null,
+				sort_field: null,
+				one_deselect_action: 'nullify',
+			},
+			schema: {
+				on_delete: 'SET NULL',
+			},
+		};
+	},
+	updateRelationField(updates) {
+		if (!updates.field?.field) return;
+
+		if (!updates.relations?.o2m) updates.relations = { o2m: {} };
+		set(updates, 'relations.o2m.meta.one_field', updates.field.field);
+	},
+	preventCircularConstraint(updates, _state, { getCurrent }) {
+		if (getCurrent('relations.o2m.collection') === getCurrent('relations.o2m.related_collection')) {
+			set(updates, 'relations.o2m.schema.on_delete', 'NO ACTION');
+		}
+
+		if (getCurrent('relations.m2o.collection') === getCurrent('relations.m2o.related_collection')) {
+			set(updates, 'relations.m2o.schema.on_delete', 'NO ACTION');
+		}
+	},
+	setFunctionFields(updates, _state, { getCurrent }) {
+		set(updates, 'relations.o2m.meta.junction_field', getCurrent('relations.m2o.field'));
+		set(updates, 'relations.m2o.meta.junction_field', getCurrent('relations.o2m.field'));
+	},
+};
+
 const file: AlterationFunctionObject = {
 	setTypeToUUID(updates) {
 		set(updates, 'field.type', 'uuid');
@@ -440,77 +506,109 @@ export const useFieldDetailStore = defineStore({
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);
 			const getCurrent = (path: string) => (has(updates, path) ? get(updates, path) : get(this, path));
 
+			const helperFn = { hasChanged, getCurrent };
+
 			if (hasChanged('field.meta.interface')) {
-				global.setLocalTypeForInterface(updates, this);
-				global.setTypeForInterface(updates, this);
+				global.setLocalTypeForInterface(updates, this, helperFn);
+				global.setTypeForInterface(updates, this, helperFn);
 			}
 
 			if (hasChanged('field.type')) {
-				global.setSpecialForType(updates, this);
+				global.setSpecialForType(updates, this, helperFn);
 			}
 
 			if (hasChanged('localType')) {
-				global.resetSchema(updates, this);
-				global.resetRelations(updates, this);
-				global.setSpecialForLocalType(updates, this);
+				global.resetSchema(updates, this, helperFn);
+				global.resetRelations(updates, this, helperFn);
+				global.setSpecialForLocalType(updates, this, helperFn);
 
 				if (getCurrent('localType') === 'm2o') {
-					m2o.prepareRelation(updates, this);
+					m2o.prepareRelation(updates, this, helperFn);
 				}
 
 				if (getCurrent('localType') === 'o2m') {
-					o2m.removeSchema(updates, this);
-					o2m.setTypeToAlias(updates, this);
-					o2m.prepareRelation(updates, this);
+					o2m.removeSchema(updates, this, helperFn);
+					o2m.setTypeToAlias(updates, this, helperFn);
+					o2m.prepareRelation(updates, this, helperFn);
+				}
+
+				if (getCurrent('localType') === 'm2m') {
+					m2m.removeSchema(updates, this, helperFn);
+					m2m.setTypeToAlias(updates, this, helperFn);
+					m2m.prepareRelation(updates, this, helperFn);
 				}
 
 				if (getCurrent('localType') === 'file') {
-					file.setTypeToUUID(updates, this);
-					file.prepareRelation(updates, this);
+					file.setTypeToUUID(updates, this, helperFn);
+					file.prepareRelation(updates, this, helperFn);
 				}
 
 				if (getCurrent('localType') === 'presentation') {
-					presentation.removeSchema(updates, this);
-					presentation.setTypeToAlias(updates, this);
-					presentation.setSpecialToNoData(updates, this);
+					presentation.removeSchema(updates, this, helperFn);
+					presentation.setTypeToAlias(updates, this, helperFn);
+					presentation.setSpecialToNoData(updates, this, helperFn);
 				}
 
 				if (getCurrent('localType') === 'group') {
-					group.removeSchema(updates, this);
-					group.setTypeToAlias(updates, this);
-					group.setSpecialToGroup(updates, this);
+					group.removeSchema(updates, this, helperFn);
+					group.setTypeToAlias(updates, this, helperFn);
+					group.setSpecialToGroup(updates, this, helperFn);
 				}
 			}
 
 			if (hasChanged('field.field')) {
 				if (getCurrent('localType') === 'm2o') {
-					m2o.updateRelationField(updates, this);
+					m2o.updateRelationField(updates, this, helperFn);
 				}
 
 				if (getCurrent('localType') === 'o2m') {
-					o2m.updateRelationField(updates, this);
+					o2m.updateRelationField(updates, this, helperFn);
+				}
+
+				if (getCurrent('localType') === 'm2m') {
+					m2m.updateRelationField(updates, this, helperFn);
 				}
 
 				if (getCurrent('localType') === 'file') {
-					m2o.updateRelationField(updates, this);
+					m2o.updateRelationField(updates, this, helperFn);
 				}
 			}
 
 			if (hasChanged('relations.m2o.related_collection')) {
-				m2o.generateRelatedCollection(updates, this);
-				m2o.preventCircularConstraint(updates, this);
-				m2o.setTypeToRelatedPrimaryKey(updates, this);
+				if (getCurrent('localType') === 'm2o') {
+					m2o.generateRelatedCollection(updates, this, helperFn);
+					m2o.preventCircularConstraint(updates, this, helperFn);
+					m2o.setTypeToRelatedPrimaryKey(updates, this, helperFn);
+				}
+
+				if (getCurrent('localType') === 'm2m') {
+					m2m.preventCircularConstraint(updates, this, helperFn);
+				}
 			}
 
 			if (hasChanged('relations.o2m.collection')) {
-				o2m.generateRelatedCollection(updates, this);
-				o2m.preventCircularConstraint(updates, this);
-				o2m.updateGeneratedRelatedField(updates, this);
+				if (getCurrent('localType') === 'o2m') {
+					o2m.generateRelatedCollection(updates, this, helperFn);
+					o2m.preventCircularConstraint(updates, this, helperFn);
+					o2m.updateGeneratedRelatedField(updates, this, helperFn);
+				}
 			}
 
 			if (hasChanged('relations.o2m.field')) {
-				o2m.useExistingRelationValues(updates, this);
-				o2m.generateRelatedField(updates, this);
+				if (getCurrent('localType') === 'o2m') {
+					o2m.useExistingRelationValues(updates, this, helperFn);
+					o2m.generateRelatedField(updates, this, helperFn);
+				}
+
+				if (getCurrent('localType') === 'm2m') {
+					m2m.setJunctionFields(updates, this, helperFn);
+				}
+			}
+
+			if (hasChanged('relations.m2o.field')) {
+				if (getCurrent('localType') === 'm2m') {
+					m2m.setJunctionFields(updates, this, helperFn);
+				}
 			}
 
 			this.$patch(updates);

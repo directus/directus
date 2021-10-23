@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceFiles from './files.vue';
-import Options from '../list-m2m/options.vue';
+// import Options from '../list-m2m/options.vue';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
@@ -13,7 +13,8 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['files'],
 	group: 'relational',
-	options: Options,
+	// options: Options,
+	options: [],
 	recommendedDisplays: ['related-values'],
 	preview: PreviewSVG,
 });

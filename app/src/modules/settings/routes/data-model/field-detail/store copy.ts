@@ -403,8 +403,8 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 	}
 
 	function useM2M() {
-		delete state.fieldData.schema;
-		state.fieldData.type = 'alias';
+		// delete state.fieldData.schema;
+		// state.fieldData.type = 'alias';
 
 		const syncNewCollectionsM2M = throttle(
 			([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]) => {
@@ -596,85 +596,85 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 			50
 		);
 
-		if (!isExisting) {
-			state.fieldData.meta = {
-				...(state.fieldData.meta || {}),
-				special: [type],
-			};
+		// if (!isExisting) {
+		// 	state.fieldData.meta = {
+		// 		...(state.fieldData.meta || {}),
+		// 		special: [type],
+		// 	};
 
-			state.relations = [
-				{
-					collection: '',
-					field: '',
-					related_collection: collection,
-					meta: {
-						one_field: state.fieldData.field,
-						sort_field: null,
-						one_deselect_action: 'nullify',
-					},
-					schema: {
-						on_delete: 'SET NULL',
-					},
-				},
-				{
-					collection: '',
-					field: '',
-					related_collection: '',
-					meta: {
-						one_field: null,
-						sort_field: null,
-						one_deselect_action: 'nullify',
-					},
-					schema: {
-						on_delete: 'SET NULL',
-					},
-				},
-			];
-		}
+		// 	state.relations = [
+		// 		{
+		// 			collection: '',
+		// 			field: '',
+		// 			related_collection: collection,
+		// 			meta: {
+		// 				one_field: state.fieldData.field,
+		// 				sort_field: null,
+		// 				one_deselect_action: 'nullify',
+		// 			},
+		// 			schema: {
+		// 				on_delete: 'SET NULL',
+		// 			},
+		// 		},
+		// 		{
+		// 			collection: '',
+		// 			field: '',
+		// 			related_collection: '',
+		// 			meta: {
+		// 				one_field: null,
+		// 				sort_field: null,
+		// 				one_deselect_action: 'nullify',
+		// 			},
+		// 			schema: {
+		// 				on_delete: 'SET NULL',
+		// 			},
+		// 		},
+		// 	];
+		// }
 
-		watch(
-			() => state.relations[0].collection,
-			() => {
-				if (state.relations[0].collection === state.relations[0].related_collection) {
-					state.relations[0].schema = {
-						...state.relations[0].schema,
-						on_delete: 'NO ACTION',
-					};
-				}
-			}
-		);
+		// watch(
+		// 	() => state.relations[0].collection,
+		// 	() => {
+		// 		if (state.relations[0].collection === state.relations[0].related_collection) {
+		// 			state.relations[0].schema = {
+		// 				...state.relations[0].schema,
+		// 				on_delete: 'NO ACTION',
+		// 			};
+		// 		}
+		// 	}
+		// );
 
-		watch(
-			() => state.relations[1].collection,
-			() => {
-				if (state.relations[1].collection === state.relations[1].related_collection) {
-					state.relations[1].schema = {
-						...state.relations[1].schema,
-						on_delete: 'NO ACTION',
-					};
-				}
-			}
-		);
+		// watch(
+		// 	() => state.relations[1].collection,
+		// 	() => {
+		// 		if (state.relations[1].collection === state.relations[1].related_collection) {
+		// 			state.relations[1].schema = {
+		// 				...state.relations[1].schema,
+		// 				on_delete: 'NO ACTION',
+		// 			};
+		// 		}
+		// 	}
+		// );
 
-		watch(
-			() => state.relations[0].field,
-			() => {
-				state.relations[1].meta = {
-					...(state.relations[1].meta || {}),
-					junction_field: state.relations[0].field,
-				};
-			}
-		);
+		// watch(
+		// 	() => state.relations[0].field,
+		// 	() => {
+		// 		state.relations[1].meta = {
+		// 			...(state.relations[1].meta || {}),
+		// 			junction_field: state.relations[0].field,
+		// 		};
+		// 	}
+		// );
 
-		watch(
-			() => state.relations[1].field,
-			() => {
-				state.relations[0].meta = {
-					...(state.relations[0].meta || {}),
-					junction_field: state.relations[1].field,
-				};
-			}
-		);
+		// watch(
+		// 	() => state.relations[1].field,
+		// 	() => {
+		// 		state.relations[0].meta = {
+		// 			...(state.relations[0].meta || {}),
+		// 			junction_field: state.relations[1].field,
+		// 		};
+		// 	}
+		// );
 
 		watch(
 			[
@@ -693,10 +693,10 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].meta = {
-					...(state.relations[0].meta || {}),
-					one_field: state.fieldData.field,
-				};
+				// state.relations[0].meta = {
+				// 	...(state.relations[0].meta || {}),
+				// 	one_field: state.fieldData.field,
+				// };
 
 				/**
 				 * When the pane is opened, if the current fieldname is the actual name of a related collection, we auto-fill all
@@ -714,24 +714,24 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 			});
 		}
 
-		if (type !== 'translations') {
-			let stop: WatchStopHandle;
+		// if (type !== 'translations') {
+		// 	let stop: WatchStopHandle;
 
-			watch(
-				() => state.autoFillJunctionRelation,
-				(startWatching) => {
-					if (startWatching) {
-						stop = watch(
-							() => state.relations[1].related_collection,
-							(newRelatedCollection) => autoFillFields(newRelatedCollection)
-						);
-					} else {
-						stop?.();
-					}
-				},
-				{ immediate: true }
-			);
-		}
+		// 	watch(
+		// 		() => state.autoFillJunctionRelation,
+		// 		(startWatching) => {
+		// 			if (startWatching) {
+		// 				stop = watch(
+		// 					() => state.relations[1].related_collection,
+		// 					(newRelatedCollection) => autoFillFields(newRelatedCollection)
+		// 				);
+		// 			} else {
+		// 				stop?.();
+		// 			}
+		// 		},
+		// 		{ immediate: true }
+		// 	);
+		// }
 
 		if (type === 'translations') {
 			watch(
