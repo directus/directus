@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, toRefs } from 'vue';
 import { LocalType } from '@directus/shared/types';
-import { useFieldDetailStore } from './store';
+import { useFieldDetailStore } from './store/';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
 import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
 import { useRouter } from 'vue-router';

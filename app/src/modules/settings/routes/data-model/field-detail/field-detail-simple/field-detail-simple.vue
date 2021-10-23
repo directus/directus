@@ -43,7 +43,7 @@ import { Collection } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { getInterfaces } from '@/interfaces';
 import { orderBy } from 'lodash';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
+import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import FieldConfiguration from './field-configuration.vue';
 

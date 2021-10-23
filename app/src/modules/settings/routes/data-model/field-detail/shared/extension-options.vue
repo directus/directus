@@ -28,7 +28,7 @@
 import { defineComponent, PropType, computed } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
-import { useFieldDetailStore } from '../store';
+import { useFieldDetailStore } from '../store/';
 import { get, set } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';

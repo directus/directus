@@ -36,6 +36,8 @@ export async function register(): Promise<void> {
 
 	const registeredModules = [];
 
+	console.log(queuedModules);
+
 	for (const mod of queuedModules) {
 		if (!userStore.currentUser) continue;
 

@@ -63,7 +63,7 @@
 import { defineComponent, computed } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
+import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
 import RelationshipConfiguration from './relationship-configuration.vue';
