@@ -138,6 +138,23 @@ const global: AlterationFunctionObject = {
 };
 
 const m2o: AlterationFunctionObject = {
+	applyChanges(updates, state, helperFn) {
+		const { hasChanged } = helperFn;
+
+		if (hasChanged('localType')) {
+			this.prepareRelation(updates, state, helperFn);
+		}
+
+		if (hasChanged('field.field')) {
+			this.updateRelationField(updates, state, helperFn);
+		}
+
+		if (hasChanged('relations.m2o.related_collection')) {
+			this.generateRelatedCollection(updates, state, helperFn);
+			this.preventCircularConstraint(updates, state, helperFn);
+			this.setTypeToRelatedPrimaryKey(updates, state, helperFn);
+		}
+	},
 	prepareRelation(updates, state) {
 		// Add if existing
 		if (!updates.relations) updates.relations = {};
@@ -216,6 +233,30 @@ const m2o: AlterationFunctionObject = {
 };
 
 const o2m: AlterationFunctionObject = {
+	applyChanges(updates, state, helperFn) {
+		const { hasChanged } = helperFn;
+
+		if (hasChanged('localType')) {
+			this.removeSchema(updates, state, helperFn);
+			this.setTypeToAlias(updates, state, helperFn);
+			this.prepareRelation(updates, state, helperFn);
+		}
+
+		if (hasChanged('field.field')) {
+			this.updateRelationField(updates, state, helperFn);
+		}
+
+		if (hasChanged('relations.o2m.collection')) {
+			this.generateRelatedCollection(updates, state, helperFn);
+			this.preventCircularConstraint(updates, state, helperFn);
+			this.updateGeneratedRelatedField(updates, state, helperFn);
+		}
+
+		if (hasChanged('relations.o2m.field')) {
+			this.useExistingRelationValues(updates, state, helperFn);
+			this.generateRelatedField(updates, state, helperFn);
+		}
+	},
 	removeSchema(updates) {
 		set(updates, 'field.schema', undefined);
 	},
@@ -338,6 +379,31 @@ const o2m: AlterationFunctionObject = {
 };
 
 const m2m: AlterationFunctionObject = {
+	applyChanges(updates, state, helperFn) {
+		const { hasChanged } = helperFn;
+
+		if (hasChanged('localType')) {
+			this.removeSchema(updates, state, helperFn);
+			this.setTypeToAlias(updates, state, helperFn);
+			this.prepareRelation(updates, state, helperFn);
+		}
+
+		if (hasChanged('field.field')) {
+			this.updateRelationField(updates, state, helperFn);
+		}
+
+		if (hasChanged('relations.m2o.related_collection')) {
+			this.preventCircularConstraint(updates, state, helperFn);
+		}
+
+		if (hasChanged('relations.o2m.field')) {
+			this.setJunctionFields(updates, state, helperFn);
+		}
+
+		if (hasChanged('relations.m2o.field')) {
+			this.setJunctionFields(updates, state, helperFn);
+		}
+	},
 	removeSchema(updates) {
 		set(updates, 'field.schema', undefined);
 	},
@@ -397,6 +463,18 @@ const m2m: AlterationFunctionObject = {
 };
 
 const file: AlterationFunctionObject = {
+	applyChanges(updates, state, helperFn) {
+		const { hasChanged } = helperFn;
+
+		if (hasChanged('localType')) {
+			this.setTypeToUUID(updates, state, helperFn);
+			this.prepareRelation(updates, state, helperFn);
+		}
+
+		if (hasChanged('field.field')) {
+			this.updateRelationField(updates, state, helperFn);
+		}
+	},
 	setTypeToUUID(updates) {
 		set(updates, 'field.type', 'uuid');
 	},
@@ -425,6 +503,15 @@ const file: AlterationFunctionObject = {
 };
 
 const presentation: AlterationFunctionObject = {
+	applyChanges(updates, state, helperFn) {
+		const { hasChanged } = helperFn;
+
+		if (hasChanged('localType')) {
+			this.removeSchema(updates, state, helperFn);
+			this.setTypeToAlias(updates, state, helperFn);
+			this.setSpecialToNoData(updates, state, helperFn);
+		}
+	},
 	removeSchema(updates) {
 		set(updates, 'field.schema', undefined);
 	},
@@ -437,6 +524,15 @@ const presentation: AlterationFunctionObject = {
 };
 
 const group: AlterationFunctionObject = {
+	applyChanges(updates, state, helperFn) {
+		const { hasChanged } = helperFn;
+
+		if (hasChanged('localType')) {
+			this.removeSchema(updates, state, helperFn);
+			this.setTypeToAlias(updates, state, helperFn);
+			this.setSpecialToGroup(updates, state, helperFn);
+		}
+	},
 	removeSchema(updates) {
 		set(updates, 'field.schema', undefined);
 	},
@@ -521,94 +617,27 @@ export const useFieldDetailStore = defineStore({
 				global.resetSchema(updates, this, helperFn);
 				global.resetRelations(updates, this, helperFn);
 				global.setSpecialForLocalType(updates, this, helperFn);
-
-				if (getCurrent('localType') === 'm2o') {
-					m2o.prepareRelation(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'o2m') {
-					o2m.removeSchema(updates, this, helperFn);
-					o2m.setTypeToAlias(updates, this, helperFn);
-					o2m.prepareRelation(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'm2m') {
-					m2m.removeSchema(updates, this, helperFn);
-					m2m.setTypeToAlias(updates, this, helperFn);
-					m2m.prepareRelation(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'file') {
-					file.setTypeToUUID(updates, this, helperFn);
-					file.prepareRelation(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'presentation') {
-					presentation.removeSchema(updates, this, helperFn);
-					presentation.setTypeToAlias(updates, this, helperFn);
-					presentation.setSpecialToNoData(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'group') {
-					group.removeSchema(updates, this, helperFn);
-					group.setTypeToAlias(updates, this, helperFn);
-					group.setSpecialToGroup(updates, this, helperFn);
-				}
 			}
 
-			if (hasChanged('field.field')) {
-				if (getCurrent('localType') === 'm2o') {
-					m2o.updateRelationField(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'o2m') {
-					o2m.updateRelationField(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'm2m') {
-					m2m.updateRelationField(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'file') {
-					m2o.updateRelationField(updates, this, helperFn);
-				}
-			}
-
-			if (hasChanged('relations.m2o.related_collection')) {
-				if (getCurrent('localType') === 'm2o') {
-					m2o.generateRelatedCollection(updates, this, helperFn);
-					m2o.preventCircularConstraint(updates, this, helperFn);
-					m2o.setTypeToRelatedPrimaryKey(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'm2m') {
-					m2m.preventCircularConstraint(updates, this, helperFn);
-				}
-			}
-
-			if (hasChanged('relations.o2m.collection')) {
-				if (getCurrent('localType') === 'o2m') {
-					o2m.generateRelatedCollection(updates, this, helperFn);
-					o2m.preventCircularConstraint(updates, this, helperFn);
-					o2m.updateGeneratedRelatedField(updates, this, helperFn);
-				}
-			}
-
-			if (hasChanged('relations.o2m.field')) {
-				if (getCurrent('localType') === 'o2m') {
-					o2m.useExistingRelationValues(updates, this, helperFn);
-					o2m.generateRelatedField(updates, this, helperFn);
-				}
-
-				if (getCurrent('localType') === 'm2m') {
-					m2m.setJunctionFields(updates, this, helperFn);
-				}
-			}
-
-			if (hasChanged('relations.m2o.field')) {
-				if (getCurrent('localType') === 'm2m') {
-					m2m.setJunctionFields(updates, this, helperFn);
-				}
+			switch (getCurrent('localType')) {
+				case 'm2o':
+					m2o.applyChanges(updates, this, helperFn);
+					break;
+				case 'o2m':
+					o2m.applyChanges(updates, this, helperFn);
+					break;
+				case 'm2m':
+					m2m.applyChanges(updates, this, helperFn);
+					break;
+				case 'file':
+					file.applyChanges(updates, this, helperFn);
+					break;
+				case 'presentation':
+					presentation.applyChanges(updates, this, helperFn);
+					break;
+				case 'group':
+					group.applyChanges(updates, this, helperFn);
+					break;
 			}
 
 			this.$patch(updates);
