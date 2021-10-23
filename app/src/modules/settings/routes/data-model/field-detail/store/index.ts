@@ -16,6 +16,7 @@ import * as m2o from './alterations/m2o';
 import * as o2m from './alterations/o2m';
 import * as m2m from './alterations/m2m';
 import * as file from './alterations/file';
+import * as translations from './alterations/translations';
 import * as presentation from './alterations/presentation';
 import * as group from './alterations/group';
 
@@ -114,6 +115,9 @@ export const useFieldDetailStore = defineStore({
 					break;
 				case 'group':
 					group.applyChanges(updates, this, helperFn);
+					break;
+				case 'translations':
+					translations.applyChanges(updates, this, helperFn);
 					break;
 			}
 
