@@ -62,7 +62,7 @@ export default defineComponent({
 
 		watch(
 			() => props.field,
-			() => fieldDetail.startEditing(props.field),
+			() => fieldDetail.startEditing(props.collection, props.field),
 			{ immediate: true }
 		);
 

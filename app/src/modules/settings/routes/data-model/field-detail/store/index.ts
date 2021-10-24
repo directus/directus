@@ -82,9 +82,26 @@ export const useFieldDetailStore = defineStore({
 		saving: false,
 	}),
 	actions: {
-		startEditing(field: string) {
-			// TODO pull existing values if not +
+		startEditing(collection: string, field: string) {
+			this.collection = collection;
 			this.editing = field;
+
+			if (field !== '+') {
+				const fieldsStore = useFieldsStore();
+				const relationsStore = useRelationsStore();
+
+				this.field = fieldsStore.getField(collection, field)!;
+
+				const relations = relationsStore.getRelationsForField(collection, field);
+
+				this.relations.m2o = relations.find(
+					(relation) => relation.collection === collection && relation.field === field
+				) as DeepPartial<Relation> | undefined;
+
+				this.relations.o2m = relations.find(
+					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
+				) as DeepPartial<Relation> | undefined;
+			}
 		},
 		update(updates: DeepPartial<typeof this.$state>) {
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);
