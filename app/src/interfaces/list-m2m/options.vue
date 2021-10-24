@@ -16,6 +16,11 @@
 			/>
 		</div>
 
+		<div class="field full">
+			<p class="type-label">{{ t('filter') }}</p>
+			<system-filter :value="filter" :collection-name="relationCollection" @input="filter = $event"></system-filter>
+		</div>
+
 		<div class="field half-left">
 			<p class="type-label">{{ t('creating_items') }}</p>
 			<v-checkbox v-model="enableCreate" block :label="t('enable_create_button')" />
@@ -34,7 +39,12 @@ import { Field, Relation } from '@directus/shared/types';
 import { Collection } from '@/types';
 import { defineComponent, PropType, computed } from 'vue';
 import { useCollectionsStore } from '@/stores';
+import SystemFilter from '../_system/system-filter/system-filter.vue';
+
 export default defineComponent({
+	components: {
+		SystemFilter,
+	},
 	props: {
 		collection: {
 			type: String,
@@ -103,22 +113,54 @@ export default defineComponent({
 			},
 		});
 
-		const junctionCollection = computed(() => {
+		const filter = computed({
+			get() {
+				return props.value?.filter || null;
+			},
+			set(newFilters: any) {
+				emit('input', {
+					...(props.value || {}),
+					filter: newFilters,
+				});
+			},
+		});
+
+		const junction = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
-			const junctionRelation = props.relations.find(
+			return props.relations.find(
 				(relation) => relation.related_collection === props.collection && relation.meta?.one_field === field
-			);
-			return junctionRelation?.collection || null;
+			) as Relation;
 		});
+
+		const junctionCollection = junction.value?.collection || null;
 
 		const junctionCollectionInfo = computed(() => {
-			if (!junctionCollection.value) return null;
-
-			return collectionsStore.getCollection(junctionCollection.value);
+			if (!junctionCollection) return null;
+			return collectionsStore.getCollection(junctionCollection)!;
 		});
 
-		return { t, template, enableCreate, enableSelect, junctionCollection, junctionCollectionInfo };
+		const relation = computed(() => {
+			return props.relations.find(
+				(relation) =>
+					relation.collection === junctionCollection &&
+					relation.field !== junction.value?.field &&
+					relation.field === junction.value?.meta?.junction_field
+			) as Relation;
+		});
+
+		const relationCollection = relation.value.related_collection;
+
+		return {
+			t,
+			template,
+			enableCreate,
+			enableSelect,
+			filter,
+			relationCollection,
+			junctionCollection,
+			junctionCollectionInfo,
+		};
 	},
 });
 </script>

@@ -7,6 +7,10 @@
 			<p class="type-label">{{ t('interfaces.select-dropdown-m2o.display_template') }}</p>
 			<v-field-template v-model="template" :collection="relatedCollection" :depth="2"></v-field-template>
 		</div>
+		<div class="field full">
+			<p class="type-label">{{ t('filter') }}</p>
+			<system-filter :value="filter" :collection-name="relatedCollection" @input="filter = $event"></system-filter>
+		</div>
 	</div>
 </template>
 
@@ -14,8 +18,12 @@
 import { useI18n } from 'vue-i18n';
 import { Field, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
+import SystemFilter from '../_system/system-filter/system-filter.vue';
 
 export default defineComponent({
+	components: {
+		SystemFilter,
+	},
 	props: {
 		collection: {
 			type: String,
@@ -50,6 +58,18 @@ export default defineComponent({
 			},
 		});
 
+		const filter = computed({
+			get() {
+				return props.value?.filter || null;
+			},
+			set(newFilters: any) {
+				emit('input', {
+					...(props.value || {}),
+					filter: newFilters,
+				});
+			},
+		});
+
 		const relatedCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -59,7 +79,7 @@ export default defineComponent({
 			return relation?.related_collection || null;
 		});
 
-		return { t, template, relatedCollection };
+		return { t, template, filter, relatedCollection };
 	},
 });
 </script>

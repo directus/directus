@@ -80,6 +80,7 @@
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
+			:filter="filter"
 			@input="stageSelection"
 		/>
 	</div>
@@ -123,6 +124,10 @@ export default defineComponent({
 		template: {
 			type: String,
 			default: null,
+		},
+		filter: {
+			type: Object,
+			default: () => null,
 		},
 		selectMode: {
 			type: String as PropType<'auto' | 'dropdown' | 'modal'>,

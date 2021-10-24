@@ -71,6 +71,7 @@
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selectedPrimaryKeys"
+			:filter="filter"
 			multiple
 			@input="$emit('input', $event.length > 0 ? $event : null)"
 		/>
@@ -115,6 +116,10 @@ export default defineComponent({
 		template: {
 			type: String,
 			default: null,
+		},
+		filter: {
+			type: Object,
+			default: () => null,
 		},
 		disabled: {
 			type: Boolean,

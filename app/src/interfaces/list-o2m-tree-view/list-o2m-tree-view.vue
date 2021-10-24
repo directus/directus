@@ -40,6 +40,7 @@
 			v-model:active="selectDrawer"
 			:collection="collection"
 			:selection="[]"
+			:filter="filter"
 			multiple
 			@input="stageSelection"
 		/>
@@ -81,6 +82,10 @@ export default defineComponent({
 		field: {
 			type: String,
 			required: true,
+		},
+		filter: {
+			type: Object,
+			default: () => null,
 		},
 		primaryKey: {
 			type: [String, Number],

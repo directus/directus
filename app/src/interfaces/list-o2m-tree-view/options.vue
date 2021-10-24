@@ -8,6 +8,11 @@
 			<v-field-template v-model="template" :collection="collection" :depth="1"></v-field-template>
 		</div>
 
+		<div class="field full">
+			<p class="type-label">{{ t('filter') }}</p>
+			<system-filter :value="filter" :collection-name="relatedCollection" @input="filter = $event"></system-filter>
+		</div>
+
 		<div class="field half-left">
 			<p class="type-label">{{ t('creating_items') }}</p>
 			<v-checkbox v-model="enableCreate" block :label="t('enable_create_button')" />
@@ -24,7 +29,12 @@
 import { useI18n } from 'vue-i18n';
 import { Field, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
+import SystemFilter from '../_system/system-filter/system-filter.vue';
+
 export default defineComponent({
+	components: {
+		SystemFilter,
+	},
 	props: {
 		collection: {
 			type: String,
@@ -59,6 +69,18 @@ export default defineComponent({
 			},
 		});
 
+		const filter = computed({
+			get() {
+				return props.value?.filter || null;
+			},
+			set(newFilters: any) {
+				emit('input', {
+					...(props.value || {}),
+					filter: newFilters,
+				});
+			},
+		});
+
 		const enableCreate = computed({
 			get() {
 				return props.value?.enableCreate ?? true;
@@ -83,7 +105,16 @@ export default defineComponent({
 			},
 		});
 
-		return { t, template, enableCreate, enableSelect };
+		const relatedCollection = computed(() => {
+			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+			const { field } = props.fieldData;
+			const relatedRelation = props.relations.find(
+				(relation) => relation.related_collection === props.collection && relation.meta?.one_field === field
+			);
+			return relatedRelation?.collection || null;
+		});
+
+		return { t, template, filter, relatedCollection, enableCreate, enableSelect };
 	},
 });
 </script>

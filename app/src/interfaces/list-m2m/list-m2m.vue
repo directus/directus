@@ -70,6 +70,7 @@
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
 			:selection="selectedPrimaryKeys"
+			:filter="filter"
 			multiple
 			@input="stageSelection"
 		/>
@@ -108,6 +109,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		filter: {
+			type: Object,
+			default: () => null,
 		},
 		field: {
 			type: String,
