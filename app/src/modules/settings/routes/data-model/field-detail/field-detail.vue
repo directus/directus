@@ -99,6 +99,7 @@ export default defineComponent({
 		async function save() {
 			await fieldDetail.save();
 			router.push(`/settings/data-model/${props.collection}`);
+			fieldDetail.$reset();
 		}
 	},
 });

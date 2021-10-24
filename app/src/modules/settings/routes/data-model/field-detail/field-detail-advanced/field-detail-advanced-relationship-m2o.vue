@@ -1,77 +1,19 @@
 <template>
 	<div>
 		<div class="grid">
-			<!-- <div class="field">
+			<div class="field">
 				<div class="type-label">{{ t('this_collection') }}</div>
-				<v-input disabled :model-value="relations[0].collection" />
+				<v-input disabled :model-value="collection" />
 			</div>
+
 			<div class="field">
 				<div class="type-label">{{ t('related_collection') }}</div>
-				<v-input
-					key="related-collection"
-					v-model="relations[0].related_collection"
-					:class="{ matches: relatedCollectionExists }"
-					db-safe
-					:nullable="false"
-					:disabled="isExisting"
-					:placeholder="t('collection') + '...'"
-				>
-					<template v-if="!isExisting" #append>
-						<v-menu show-arrow placement="bottom-end">
-							<template #activator="{ toggle }">
-								<v-icon
-									v-tooltip="t('select_existing')"
-									name="list_alt"
-									clickable
-									:disabled="isExisting"
-									@click="toggle"
-								/>
-							</template>
 
-							<v-list class="monospace">
-								<v-list-item
-									v-for="availableCollection in availableCollections"
-									:key="availableCollection.collection"
-									:active="relations[0].related_collection === availableCollection.collection"
-									clickable
-									@click="relations[0].related_collection = availableCollection.collection"
-								>
-									<v-list-item-content>
-										{{ availableCollection.collection }}
-									</v-list-item-content>
-								</v-list-item>
-
-								<v-divider />
-
-								<v-list-group>
-									<template #activator>{{ t('system') }}</template>
-									<v-list-item
-										v-for="systemCollection in systemCollections"
-										:key="systemCollection.collection"
-										:active="relations[0].related_collection === systemCollection.collection"
-										clickable
-										@click="relations[0].related_collection = systemCollection.collection"
-									>
-										<v-list-item-content>
-											{{ systemCollection.collection }}
-										</v-list-item-content>
-									</v-list-item>
-								</v-list-group>
-							</v-list>
-						</v-menu>
-					</template>
-
-					<template v-if="isExisting" #input>
-						<v-text-overflow :text="relations[0].related_collection" />
-					</template>
-				</v-input>
+				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
 			</div>
-			<v-input disabled>
-				<template #input>
-					<v-text-overflow :text="relations[0].field" />
-				</template>
-			</v-input>
-			<v-input v-model="relatedPrimaryKeyField" disabled :placeholder="t('primary_key') + '...'" />
+
+			<v-input disabled :model-value="currentField" />
+			<v-input :model-value="relatedPrimaryKey" disabled :placeholder="t('primary_key') + '...'" />
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
@@ -85,7 +27,7 @@
 			<div class="field">
 				<div class="type-label">{{ t('field_name') }}</div>
 				<v-input
-					v-model="correspondingField"
+					v-model="correspondingFieldKey"
 					:disabled="hasCorresponding === false"
 					:placeholder="t('field_name') + '...'"
 					db-safe
@@ -101,33 +43,33 @@
 				<div class="type-label">
 					{{
 						t('referential_action_field_label_m2o', {
-							collection: relatedCollectionName || 'related',
+							collection: relatedCollection || 'related',
 						})
 					}}
 				</div>
 				<v-select
-					v-model="relations[0].schema.on_delete"
-					:disabled="relations[0].collection === relations[0].related_collection"
+					v-model="onDeleteRelated"
+					:disabled="collection === relatedCollection"
 					:placeholder="t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: m2oFieldName }),
+							text: t('referential_action_set_null', { field: currentField }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: m2oFieldName }),
+							text: t('referential_action_set_default', { field: currentField }),
 							value: 'SET DEFAULT',
 						},
 						{
 							text: t('referential_action_cascade', {
-								collection: currentCollectionName,
-								field: m2oFieldName,
+								collection: collection,
+								field: currentField,
 							}),
 							value: 'CASCADE',
 						},
 						{
 							text: t('referential_action_no_action', {
-								field: m2oFieldName,
+								field: currentField,
 							}),
 							value: 'NO ACTION',
 						},
@@ -147,156 +89,95 @@
 					</li>
 				</ul>
 			</span>
-		</v-notice> -->
-		</div>
+		</v-notice>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
+import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
+import { storeToRefs } from 'pinia';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import { useFieldsStore } from '@/stores';
 
 export default defineComponent({
+	components: { RelatedCollectionSelect },
 	setup() {
-		// const { t } = useI18n();
-		// const collectionsStore = useCollectionsStore();
-		// const fieldsStore = useFieldsStore();
-		// const { availableCollections, systemCollections } = useRelation();
-		// const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
-		// const relatedCollectionExists = computed(() => {
-		// 	return (
-		// 		state.relations[0].related_collection && !!collectionsStore.getCollection(state.relations[0].related_collection)
-		// 	);
-		// });
-		// const relatedPrimaryKeyField = computed(() => {
-		// 	if (!state.relations[0].related_collection) return '';
-		// 	if (relatedCollectionExists.value) {
-		// 		return fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].related_collection).field;
-		// 	}
-		// 	return 'id';
-		// });
-		// const relatedCollectionName = computed(() => {
-		// 	if (!state.relations[0].related_collection) return null;
-		// 	return (
-		// 		collectionsStore.getCollection(state.relations[0].related_collection)?.name ||
-		// 		formatTitle(state.relations[0].related_collection)
-		// 	);
-		// });
-		// const currentCollectionName = computed(() => {
-		// 	if (!state.relations[0].collection) return null;
-		// 	return (
-		// 		collectionsStore.getCollection(state.relations[0].collection)?.name ||
-		// 		formatTitle(state.relations[0].collection)
-		// 	);
-		// });
-		// const m2oFieldName = computed(() => {
-		// 	if (!state.relations[0].collection || !state.relations[0].field) return null;
-		// 	return (
-		// 		fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.name ||
-		// 		formatTitle(state.relations[0].field)
-		// 	);
-		// });
-		// return {
-		// 	t,
-		// 	relations: state.relations,
-		// 	availableCollections,
-		// 	systemCollections,
-		// 	hasCorresponding,
-		// 	correspondingField,
-		// 	correspondingLabel,
-		// 	fieldData: state.fieldData,
-		// 	relatedCollectionExists,
-		// 	generationInfo,
-		// 	relatedPrimaryKeyField,
-		// 	relatedCollectionName,
-		// 	m2oFieldName,
-		// 	currentCollectionName,
-		// };
-		// function useRelation() {
-		// 	const availableCollections = computed(() => {
-		// 		return orderBy(
-		// 			collectionsStore.collections.filter((collection) => {
-		// 				return collection.collection.startsWith('directus_') === false;
-		// 			}),
-		// 			['collection'],
-		// 			['asc']
-		// 		);
-		// 	});
-		// 	/**
-		// 	 * These are the system endpoints that don't have full/regular CRUD operations available.
-		// 	 */
-		// 	const collectionsDenyList = [
-		// 		'directus_activity',
-		// 		'directus_collections',
-		// 		'directus_fields',
-		// 		'directus_migrations',
-		// 		'directus_relations',
-		// 		'directus_revisions',
-		// 		'directus_sessions',
-		// 		'directus_settings',
-		// 	];
-		// 	const systemCollections = computed(() => {
-		// 		return orderBy(
-		// 			collectionsStore.collections.filter((collection) => {
-		// 				return collection.collection.startsWith('directus_') === true;
-		// 			}),
-		// 			['collection'],
-		// 			['asc']
-		// 		).filter((collection) => collectionsDenyList.includes(collection.collection) === false);
-		// 	});
-		// 	return { availableCollections, systemCollections };
-		// }
-		// function useCorresponding() {
-		// 	const hasCorresponding = computed({
-		// 		get() {
-		// 			return state.newFields.length > 0;
-		// 		},
-		// 		set(enabled: boolean) {
-		// 			if (enabled === true) {
-		// 				state.relations[0].meta = {
-		// 					...(state.relations[0].meta || {}),
-		// 					one_field: state.relations[0].collection,
-		// 				};
-		// 				state.newFields.push({
-		// 					$type: 'corresponding',
-		// 					field: state.relations[0].meta.one_field!,
-		// 					collection: state.relations[0].related_collection!,
-		// 					meta: {
-		// 						special: ['o2m'],
-		// 						interface: 'list-o2m',
-		// 					},
-		// 				});
-		// 			} else {
-		// 				state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
-		// 			}
-		// 		},
-		// 	});
-		// 	const correspondingField = computed({
-		// 		get() {
-		// 			return state.newFields?.find((field: any) => field.$type === 'corresponding')?.field || null;
-		// 		},
-		// 		set(field: string | null) {
-		// 			state.newFields = state.newFields.map((newField: any) => {
-		// 				if (newField.$type === 'corresponding') {
-		// 					return {
-		// 						...newField,
-		// 						field,
-		// 					};
-		// 				}
-		// 				return newField;
-		// 			});
-		// 			state.relations[0].meta = {
-		// 				...(state.relations[0].meta || {}),
-		// 				one_field: field,
-		// 			};
-		// 		},
-		// 	});
-		// 	const correspondingLabel = computed(() => {
-		// 		if (state.relations[0].related_collection) {
-		// 			return t('add_o2m_to_collection', { collection: state.relations[0].related_collection });
-		// 		}
-		// 		return t('add_field_related');
-		// 	});
-		// 	return { hasCorresponding, correspondingField, correspondingLabel };
+		const { t } = useI18n();
+
+		const fieldDetailStore = useFieldDetailStore();
+		const fieldsStore = useFieldsStore();
+
+		const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+		const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
+
+		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+
+		const isExisting = computed(() => editing.value !== '+');
+
+		const relatedPrimaryKey = computed(
+			() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+		);
+
+		const currentField = computed(() => field.value.field);
+
+		const hasCorresponding = computed({
+			get() {
+				return !!correspondingField.value;
+			},
+			set(enabled: boolean) {
+				if (enabled) {
+					correspondingField.value = {
+						field: collection.value,
+						collection: relatedCollection.value,
+						type: 'alias',
+						meta: {
+							special: ['o2m'],
+							interface: 'list-o2m',
+						},
+					};
+				} else {
+					correspondingField.value = null;
+				}
+			},
+		});
+
+		const correspondingLabel = computed(() => {
+			if (relatedCollection.value) {
+				return t('add_o2m_to_collection', { collection: relatedCollection.value });
+			}
+
+			return t('add_field_related');
+		});
+
+		const correspondingFieldKey = computed({
+			get() {
+				return correspondingField.value?.field;
+			},
+			set(key: string | undefined) {
+				if (!hasCorresponding.value) {
+					hasCorresponding.value = true;
+				}
+
+				correspondingField.value!.field = key;
+			},
+		});
+
+		return {
+			t,
+			collection,
+			relatedCollection,
+			isExisting,
+			relatedPrimaryKey,
+			currentField,
+			hasCorresponding,
+			correspondingLabel,
+			correspondingFieldKey,
+			generationInfo,
+			onDeleteRelated,
+		};
 	},
 });
 </script>
