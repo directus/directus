@@ -4,9 +4,9 @@
 	</v-notice>
 
 	<v-form
-		class="extension-options"
 		v-else-if="usesCustomComponent === false"
 		v-model="options"
+		class="extension-options"
 		:fields="optionsFields"
 		primary-key="+"
 	/>
@@ -29,9 +29,10 @@ import { defineComponent, PropType, computed } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { useFieldDetailStore } from '../store/';
-import { get, set } from 'lodash';
+import { get } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+import { Field, DeepPartial } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -78,7 +79,7 @@ export default defineComponent({
 			if (usesCustomComponent.value === true) return [];
 
 			if (typeof extensionInfo.value.options === 'function') {
-				return (extensionInfo.value.options as Function)(fieldDetail);
+				return (extensionInfo.value.options as (x: typeof fieldDetail) => DeepPartial<Field>[])(fieldDetail);
 			}
 
 			return extensionInfo.value.options;
