@@ -41,7 +41,7 @@ export abstract class IAuth {
 	abstract readonly storage: IStorage;
 
 	abstract login(credentials: AuthCredentials): Promise<AuthResult>;
-	abstract refresh(force?: boolean): Promise<AuthResult | false>;
+	abstract refresh(): Promise<AuthResult | false>;
 	abstract static(token: AuthToken): Promise<boolean>;
 	abstract logout(): Promise<void>;
 }
