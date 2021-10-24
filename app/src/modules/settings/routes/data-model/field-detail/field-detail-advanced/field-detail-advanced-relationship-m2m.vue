@@ -188,7 +188,6 @@
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -223,7 +222,7 @@ export default defineComponent({
 		const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
 		const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
 		const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
-		const deselectAction = syncFieldDetailStoreProperty('relations.o2m.schema.one_deselect_action');
+		const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
 		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
 
 		const type = computed(() => field.value.type);

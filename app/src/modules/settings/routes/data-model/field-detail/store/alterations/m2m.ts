@@ -241,9 +241,6 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 
 function generateFields(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
 	const fieldsStore = useFieldsStore();
-
-	// TODO add corresponding
-
 	const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(state.collection!);
 	const junctionCollection = getCurrent('relations.o2m.collection');
 	const junctionCurrent = getCurrent('relations.o2m.field');

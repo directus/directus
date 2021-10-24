@@ -19,11 +19,16 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		generateRelatedCollection(updates);
 		preventCircularConstraint(updates, state);
 		updateGeneratedRelatedField(updates, state);
+		generateSortField(updates, state, helperFn);
 	}
 
 	if (hasChanged('relations.o2m.field')) {
 		useExistingRelationValues(updates);
 		generateRelatedField(updates, state);
+	}
+
+	if (hasChanged('relations.o2m.meta.sort_field')) {
+		generateSortField(updates, state, helperFn);
 	}
 }
 
@@ -142,6 +147,10 @@ export function generateRelatedField(updates: StateUpdates, state: State) {
 			field: field,
 			type: currentCollectionPrimaryKeyFieldType,
 			schema: {},
+			meta: {
+				interface: 'select-dropdown-m2o',
+				hidden: true,
+			},
 		};
 	}
 }
@@ -152,5 +161,31 @@ export function updateGeneratedRelatedField(updates: StateUpdates, state: State)
 
 	if (state.fields.corresponding) {
 		set(updates, 'fields.corresponding.collection', collection);
+	}
+}
+
+export function generateSortField(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
+	const sort = getCurrent('relations.o2m.meta.sort_field');
+
+	if (!sort) return;
+
+	const fieldsStore = useFieldsStore();
+
+	const relatedCollection = getCurrent('relations.o2m.collection');
+
+	const exists = !!fieldsStore.getField(relatedCollection, sort);
+
+	if (exists) {
+		set(updates, 'fields.sort', undefined);
+	} else {
+		set(updates, 'fields.sort', {
+			collection: relatedCollection,
+			field: sort,
+			type: 'integer',
+			schema: {},
+			meta: {
+				hidden: true,
+			},
+		});
 	}
 }
