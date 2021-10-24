@@ -56,7 +56,6 @@ export const useFieldDetailStore = defineStore({
 		relations: {
 			m2o: undefined as DeepPartial<Relation> | undefined,
 			o2m: undefined as DeepPartial<Relation> | undefined,
-			m2a: undefined as DeepPartial<Relation> | undefined,
 		},
 
 		// Collections that will be upserted as part of this change
@@ -71,6 +70,7 @@ export const useFieldDetailStore = defineStore({
 			junctionCurrent: undefined as DeepPartial<Field> | undefined,
 			junctionRelated: undefined as DeepPartial<Field> | undefined,
 			sort: undefined as DeepPartial<Field> | undefined,
+			oneCollectionField: undefined as DeepPartial<Field> | undefined,
 		},
 
 		// Any items that need to be injected into any collection

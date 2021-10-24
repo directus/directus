@@ -9,11 +9,12 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		removeSchema(updates);
 		setTypeToAlias(updates);
 		prepareRelation(updates, state);
-		setDefaults(updates, state);
+		setDefaults(updates, state, helperFn);
 	}
 
 	if (hasChanged('field.field')) {
 		updateRelationField(updates);
+		autoGenerateJunctionCollectionName(updates, state, helperFn);
 	}
 
 	if (hasChanged('relations.o2m.field')) {
@@ -33,9 +34,13 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 	}
 
 	if (
-		['relations.o2m.collection', 'relations.o2m.field', 'relations.m2o.field', 'relations.o2m.meta?.sort_field'].some(
-			hasChanged
-		)
+		[
+			'relations.o2m.collection',
+			'relations.o2m.field',
+			'relations.m2o.field',
+			'relations.o2m.meta.sort_field',
+			'relations.o2m.meta.one_collection_field',
+		].some(hasChanged)
 	) {
 		generateCollections(updates, state, helperFn);
 		generateFields(updates, state, helperFn);
@@ -80,23 +85,37 @@ export function prepareRelation(updates: StateUpdates, state: State) {
 	};
 }
 
-export function setDefaults(updates: StateUpdates, state: State) {
+export function setDefaults(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
 	const currentCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
 
-	const junctionName = getAutomaticJunctionCollectionName(currentCollection);
+	const junctionName = getAutomaticJunctionCollectionName(currentCollection, getCurrent('field.field'));
 
 	set(updates, 'relations.o2m.collection', junctionName);
 	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
 	set(updates, 'relations.m2o.collection', junctionName);
-
 	set(updates, 'relations.m2o.field', 'item');
+	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
 }
 
-export function getAutomaticJunctionCollectionName(collectionA: string) {
+export function autoGenerateJunctionCollectionName(
+	updates: StateUpdates,
+	state: State,
+	{ getCurrent }: HelperFunctions
+) {
+	if (getCurrent('autoGenerateJunctionRelation') === false) return;
+
+	set(
+		updates,
+		'relations.o2m.collection',
+		getAutomaticJunctionCollectionName(getCurrent('collection'), getCurrent('field.field'))
+	);
+}
+
+export function getAutomaticJunctionCollectionName(collectionA: string, field: string) {
 	let index = 0;
 	let name = getName(index);
 
@@ -108,7 +127,7 @@ export function getAutomaticJunctionCollectionName(collectionA: string) {
 	return name;
 
 	function getName(index: number) {
-		let name = `${collectionA}_items`;
+		let name = `${collectionA}_${field}`;
 
 		if (name.startsWith('directus_')) {
 			name = 'junction_' + name;
@@ -182,7 +201,8 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 	const junctionCollection = getCurrent('relations.o2m.collection');
 	const junctionCurrent = getCurrent('relations.o2m.field');
 	const junctionRelated = getCurrent('relations.m2o.field');
-	const sort = getCurrent('relations.o2m.sort_field');
+	const oneCollectionField = getCurrent('relations.m2o.meta.one_collection_field');
+	const sort = getCurrent('relations.o2m.meta.sort_field');
 
 	if (junctionCollection && junctionCurrent && fieldExists(junctionCollection, junctionCurrent) === false) {
 		set(updates, 'fields.junctionCurrent', {
@@ -202,7 +222,9 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		set(updates, 'fields.junctionRelated', {
 			collection: junctionCollection,
 			field: junctionRelated,
-			type: currentPrimaryKeyField?.type ?? 'integer',
+			// We'll have to save the foreign key as a string, as that's the only way to safely
+			// be able to store the PK of multiple typed collections
+			type: 'string',
 			schema: {},
 			meta: {
 				hidden: true,
@@ -210,6 +232,21 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		});
 	} else {
 		set(updates, 'fields.junctionRelated', undefined);
+	}
+
+	if (junctionCollection && oneCollectionField && fieldExists(junctionCollection, oneCollectionField) === false) {
+		set(updates, 'fields.oneCollectionField', {
+			collection: junctionCollection,
+			field: oneCollectionField,
+			// directus_collections.collection is a string
+			type: 'string',
+			schema: {},
+			meta: {
+				hidden: true,
+			},
+		});
+	} else {
+		set(updates, 'fields.oneCollectionField', undefined);
 	}
 
 	if (junctionCollection && sort && fieldExists(junctionCollection, sort) === false) {

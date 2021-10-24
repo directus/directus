@@ -46,7 +46,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 			'relations.o2m.field',
 			'relations.m2o.field',
 			'relations.m2o.related_collection',
-			'relations.o2m.meta?.sort_field',
+			'relations.o2m.meta.sort_field',
 		].some(hasChanged)
 	) {
 		generateCollections(updates, state, helperFn);
@@ -245,7 +245,10 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 	const junctionCollection = getCurrent('relations.o2m.collection');
 	const junctionCurrent = getCurrent('relations.o2m.field');
 	const junctionRelated = getCurrent('relations.m2o.field');
-	const sort = getCurrent('relations.o2m.sort_field');
+	const sort = getCurrent('relations.o2m.meta.sort_field');
+	const relatedCollection = getCurrent('relations.m2o.related_collection');
+	const relatedPrimaryKeyField =
+		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection) ?? getCurrent('collections.related.fields[0]');
 
 	if (junctionCollection && junctionCurrent && fieldExists(junctionCollection, junctionCurrent) === false) {
 		set(updates, 'fields.junctionCurrent', {
@@ -265,7 +268,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		set(updates, 'fields.junctionRelated', {
 			collection: junctionCollection,
 			field: junctionRelated,
-			type: currentPrimaryKeyField?.type ?? 'integer',
+			type: relatedPrimaryKeyField?.type ?? 'integer',
 			schema: {},
 			meta: {
 				hidden: true,
