@@ -34,6 +34,7 @@ export class Auth extends IAuth {
 	}
 
 	private autoRefreshJob() {
+		if (!this.autoRefresh) return;
 		if (!this.sdk.storage.auth_expires) return;
 
 		const msWaitUntilRefresh = this.sdk.storage.auth_expires - this.msRefreshBeforeExpires;
