@@ -11,18 +11,12 @@
 			<field-detail-advanced-tabs v-model:current-tab="currentTab" />
 		</template>
 
-		<field-detail-advanced
-			v-if="showAdvanced"
-			:collection="collectionInfo"
-			:current-tab="currentTab[0]"
-			:is-existing="isExisting"
-			@save="save"
-		/>
+		<field-detail-advanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs } from 'vue';
+import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { LocalType } from '@directus/shared/types';
 import { useFieldDetailStore } from './store/';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
@@ -33,6 +27,7 @@ import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	name: 'FieldDetail',
@@ -58,6 +53,14 @@ export default defineComponent({
 
 		const fieldDetail = useFieldDetailStore();
 
+		const { editing } = storeToRefs(fieldDetail);
+
+		watch(
+			() => props.field,
+			() => fieldDetail.startEditing(props.field),
+			{ immediate: true }
+		);
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const router = useRouter();
@@ -82,15 +85,11 @@ export default defineComponent({
 
 		const currentTab = ref(['schema']);
 
-		const isExisting = computed(() => {
-			return props.field !== '+';
-		});
-
 		const showAdvanced = computed(() => {
-			return isExisting.value || !simple.value;
+			return editing.value !== '+' || !simple.value;
 		});
 
-		return { simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced, isExisting };
+		return { simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced };
 
 		async function cancel() {
 			await router.push(`/settings/data-model/${props.collection}`);

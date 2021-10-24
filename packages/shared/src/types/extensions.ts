@@ -73,6 +73,7 @@ export type ApiExtensionContext = {
 
 export type ExtensionsOptionsContext = {
 	collection: string;
+	editing: string;
 	field: DeepPartial<Field>;
 	relations: {
 		m2o: DeepPartial<Relation> | undefined;

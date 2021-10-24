@@ -70,12 +70,6 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 
 export default defineComponent({
-	props: {
-		isExisting: {
-			type: Boolean,
-			required: true,
-		},
-	},
 	setup() {
 		const { t } = useI18n();
 

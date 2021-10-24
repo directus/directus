@@ -230,16 +230,13 @@ export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } |
 ];
 
 export default defineComponent({
-	props: {
-		isExisting: {
-			type: Boolean,
-			required: true,
-		},
-	},
 	setup() {
 		const fieldDetailStore = useFieldDetailStore();
 
-		const { localType, relations } = storeToRefs(fieldDetailStore);
+		const { localType, relations, editing } = storeToRefs(fieldDetailStore);
+
+		const isExisting = computed(() => editing.value !== '+');
+
 		const type = syncFieldDetailStoreProperty('field.type');
 		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
 		const field = syncFieldDetailStoreProperty('field.field');
@@ -305,6 +302,7 @@ export default defineComponent({
 			nullable,
 			unique,
 			isPrimaryKey,
+			isExisting,
 		};
 
 		function useOnCreate() {

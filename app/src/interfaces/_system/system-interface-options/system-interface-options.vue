@@ -85,6 +85,7 @@ export default defineComponent({
 					field: {
 						type: 'unknown',
 					},
+					editing: '+',
 					collection: props.collection,
 					relations: {
 						o2m: undefined,

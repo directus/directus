@@ -40,7 +40,10 @@ export const useFieldDetailStore = defineStore({
 		// The current collection we're operating in
 		collection: undefined as string | undefined,
 
-		// Current field to be created / edited
+		// What field we're currently editing ("+"" for new)
+		editing: '+' as string,
+
+		// Field edits
 		field: {
 			field: undefined,
 			type: undefined,
@@ -78,6 +81,10 @@ export const useFieldDetailStore = defineStore({
 		saving: false,
 	}),
 	actions: {
+		startEditing(field: string) {
+			// TODO pull existing values if not +
+			this.editing = field;
+		},
 		update(updates: DeepPartial<typeof this.$state>) {
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);
 			const getCurrent = (path: string) => (has(updates, path) ? get(updates, path) : get(this, path));
