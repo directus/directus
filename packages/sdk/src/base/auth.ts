@@ -62,7 +62,11 @@ export class Auth extends IAuth {
 	}
 
 	async login(credentials: AuthCredentials): Promise<AuthResult> {
-		const response = await this.sdk.transport.post<AuthResult>('/auth/login', { mode: this.mode, ...credentials });
+		const response = await this.sdk.transport.post<AuthResult>(
+			'/auth/login',
+			{ mode: this.mode, ...credentials },
+			{ headers: { Authorization: null } }
+		);
 
 		this.updateStorage(response.data!);
 
@@ -76,7 +80,7 @@ export class Auth extends IAuth {
 	}
 
 	async static(token: AuthToken): Promise<boolean> {
-		await this.sdk.transport.get('/users/me', { params: { access_token: token } });
+		await this.sdk.transport.get('/users/me', { params: { access_token: token }, headers: { Authorization: null } });
 
 		this.updateStorage<'StaticToken'>({ access_token: token, expires: null, refresh_token: null });
 

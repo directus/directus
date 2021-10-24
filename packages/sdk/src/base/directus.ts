@@ -1,4 +1,4 @@
-import { IAuth } from '../auth';
+import { IAuth, AuthOptions } from '../auth';
 import { IDirectus } from '../directus';
 import {
 	ActivityHandler,
@@ -17,11 +17,11 @@ import {
 	UtilsHandler,
 } from '../handlers';
 import { IItems } from '../items';
-import { ITransport } from '../transport';
+import { ITransport, TransportOptions } from '../transport';
 import { ItemsHandler } from './items';
 import { AxiosTransport } from './transport';
 import { Auth } from './auth';
-import { IStorage } from '../storage';
+import { IStorage, StorageOptions } from '../storage';
 import { LocalStorage, MemoryStorage } from './storage';
 import { TypeMap, TypeOf } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
@@ -29,12 +29,14 @@ import { ISingleton } from '../singleton';
 import { SingletonHandler } from '../handlers/singleton';
 
 export type DirectusOptions = {
-	auth?: IAuth;
-	transport?: ITransport;
-	storage?: IStorage;
+	auth?: IAuth | AuthOptions;
+	transport?: ITransport | TransportOptions;
+	storage?: IStorage | StorageOptions;
 };
 
 export class Directus<T extends TypeMap> implements IDirectus<T> {
+	private _url: string;
+	private _options?: DirectusOptions;
 	private _auth: IAuth;
 	private _transport: ITransport;
 	private _storage: IStorage;
@@ -63,15 +65,40 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
-		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
-		this._transport =
-			options?.transport ||
-			new AxiosTransport(url, this._storage, async () => {
-				await this._auth.refresh();
-			});
-		this._auth = options?.auth || new Auth(this._transport, this._storage);
+		const Storage = typeof window !== 'undefined' ? LocalStorage : MemoryStorage;
+
+		this._url = url;
+		this._options = options;
 		this._items = {};
 		this._singletons = {};
+
+		if (this._options?.auth && this._options?.auth instanceof IAuth) this._auth = this._options.auth;
+		else this._auth = new Auth(this, this._options?.auth as AuthOptions);
+
+		if (this._options?.storage && this._options?.storage instanceof IStorage) this._storage = this._options.storage;
+		else this._storage = new Storage(this._options?.storage as StorageOptions | undefined);
+
+		if (this._options?.transport && this._options?.transport instanceof ITransport)
+			this._transport = this._options.transport;
+		else {
+			const token = this.storage.auth_token;
+
+			this._transport = new AxiosTransport({
+				baseURL: this.url,
+				withCredentials: true,
+				headers: {
+					Authorization: token
+						? token.startsWith(`Bearer `)
+							? String(this.storage.auth_token)
+							: `Bearer ${this.storage.auth_token}`
+						: '',
+				},
+			});
+		}
+	}
+
+	get url() {
+		return this._url;
 	}
 
 	get auth(): IAuth {
