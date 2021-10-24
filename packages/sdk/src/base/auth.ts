@@ -1,16 +1,19 @@
-import { IDirectusBase } from '../directus';
 import { AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthResultType, IAuth } from '../auth';
 import { PasswordsHandler } from '../handlers/passwords';
+import { IStorage } from '../storage';
+import { ITransport } from '../transport';
 
 export class Auth extends IAuth {
-	private sdk: IDirectusBase;
+	private _storage: IStorage;
+	private _transport: ITransport;
 	private timer: ReturnType<typeof setTimeout> | false;
 	private passwords?: PasswordsHandler;
 
-	constructor(sdk: IDirectusBase, options?: AuthOptions | undefined) {
+	constructor(options: AuthOptions) {
 		super();
 
-		this.sdk = sdk;
+		this._transport = options.transport;
+		this._storage = options.storage;
 
 		this.autoRefresh = options?.autoRefresh ?? this.autoRefresh;
 		this.mode = options?.mode ?? this.mode;
@@ -19,25 +22,33 @@ export class Auth extends IAuth {
 		this.timer = false;
 	}
 
+	get storage(): IStorage {
+		return this._storage;
+	}
+
+	get transport(): ITransport {
+		return this._transport;
+	}
+
 	get token(): string | null {
-		return this.sdk.storage.auth_token;
+		return this._storage.auth_token;
 	}
 
 	get password(): PasswordsHandler {
-		return (this.passwords = this.passwords || new PasswordsHandler(this.sdk.transport));
+		return (this.passwords = this.passwords || new PasswordsHandler(this._transport));
 	}
 
 	private updateStorage<T extends AuthResultType>(result: AuthResult<T>) {
-		this.sdk.storage.auth_token = result.access_token;
-		this.sdk.storage.auth_refresh_token = result.refresh_token ?? null;
-		this.sdk.storage.auth_expires = result.expires ?? null;
+		this._storage.auth_token = result.access_token;
+		this._storage.auth_refresh_token = result.refresh_token ?? null;
+		this._storage.auth_expires = result.expires ?? null;
 	}
 
 	private autoRefreshJob() {
 		if (!this.autoRefresh) return;
-		if (!this.sdk.storage.auth_expires) return;
+		if (!this._storage.auth_expires) return;
 
-		const msWaitUntilRefresh = this.sdk.storage.auth_expires - this.msRefreshBeforeExpires;
+		const msWaitUntilRefresh = this._storage.auth_expires - this.msRefreshBeforeExpires;
 
 		this.timer = setTimeout(async () => {
 			await this.refresh().catch(() => {
@@ -49,8 +60,8 @@ export class Auth extends IAuth {
 	}
 
 	async refresh(): Promise<AuthResult | false> {
-		const response = await this.sdk.transport.post<AuthResult>('/auth/refresh', {
-			refresh_token: this.mode === 'json' ? this.sdk.storage.auth_refresh_token : undefined,
+		const response = await this._transport.post<AuthResult>('/auth/refresh', {
+			refresh_token: this.mode === 'json' ? this._storage.auth_refresh_token : undefined,
 		});
 
 		this.updateStorage<'DynamicToken'>(response.data!);
@@ -63,7 +74,7 @@ export class Auth extends IAuth {
 	}
 
 	async login(credentials: AuthCredentials): Promise<AuthResult> {
-		const response = await this.sdk.transport.post<AuthResult>(
+		const response = await this._transport.post<AuthResult>(
 			'/auth/login',
 			{ mode: this.mode, ...credentials },
 			{ headers: { Authorization: null } }
@@ -81,7 +92,7 @@ export class Auth extends IAuth {
 	}
 
 	async static(token: AuthToken): Promise<boolean> {
-		await this.sdk.transport.get('/users/me', { params: { access_token: token }, headers: { Authorization: null } });
+		await this._transport.get('/users/me', { params: { access_token: token }, headers: { Authorization: null } });
 
 		this.updateStorage<'StaticToken'>({ access_token: token, expires: null, refresh_token: null });
 
@@ -91,10 +102,10 @@ export class Auth extends IAuth {
 	async logout(): Promise<void> {
 		let refresh_token: string | undefined;
 		if (this.mode === 'json') {
-			refresh_token = this.sdk.storage.auth_refresh_token || undefined;
+			refresh_token = this._storage.auth_refresh_token || undefined;
 		}
 
-		await this.sdk.transport.post('/auth/logout', { refresh_token });
+		await this._transport.post('/auth/logout', { refresh_token });
 
 		this.updateStorage<null>({ access_token: null, expires: null, refresh_token: null });
 

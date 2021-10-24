@@ -72,9 +72,6 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		this._items = {};
 		this._singletons = {};
 
-		if (this._options?.auth && this._options?.auth instanceof IAuth) this._auth = this._options.auth;
-		else this._auth = new Auth(this, this._options?.auth as AuthOptions);
-
 		if (this._options?.storage && this._options?.storage instanceof IStorage) this._storage = this._options.storage;
 		else this._storage = new Storage(this._options?.storage as StorageOptions | undefined);
 
@@ -95,6 +92,14 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 				},
 			});
 		}
+
+		if (this._options?.auth && this._options?.auth instanceof IAuth) this._auth = this._options.auth;
+		else
+			this._auth = new Auth({
+				transport: this._transport,
+				storage: this._storage,
+				...this._options?.auth,
+			} as AuthOptions);
 	}
 
 	get url() {

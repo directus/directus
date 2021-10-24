@@ -1,3 +1,5 @@
+import { IStorage } from './storage';
+import { ITransport } from './transport';
 import { PasswordsHandler } from './handlers/passwords';
 
 export type AuthCredentials = {
@@ -22,6 +24,8 @@ export type AuthOptions = {
 	mode?: AuthMode;
 	autoRefresh?: boolean;
 	msRefreshBeforeExpires?: number;
+	transport: ITransport;
+	storage: IStorage;
 };
 
 export abstract class IAuth {
@@ -31,6 +35,8 @@ export abstract class IAuth {
 
 	abstract readonly token: string | null;
 	abstract readonly password: PasswordsHandler;
+	abstract readonly transport: ITransport;
+	abstract readonly storage: IStorage;
 
 	abstract login(credentials: AuthCredentials): Promise<AuthResult>;
 	abstract refresh(force?: boolean): Promise<AuthResult | false>;
