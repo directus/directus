@@ -1125,6 +1125,7 @@ require_value_to_be_set: Kræv værdi for at være indstillet
 translation: Oversættelse
 translation_placeholder: Indtast en oversættelse...
 value: Værdi
+view_project: Vis Projekt
 report_error: Fejl I Rapport
 interfaces:
   filter:
