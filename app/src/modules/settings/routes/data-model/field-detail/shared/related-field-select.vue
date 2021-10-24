@@ -1,12 +1,12 @@
 <template>
 	<v-input
-		:modelValue="modelValue"
-		@update:model-value="$emit('update:modelValue', $event)"
+		:model-value="modelValue"
 		db-safe
 		:nullable="false"
 		:disabled="disabled"
-		:placeholder="t('foreign_key') + '...'"
+		:placeholder="placeholder"
 		:class="{ matches: fieldExists }"
+		@update:model-value="$emit('update:modelValue', $event)"
 	>
 		<template v-if="fields && fields.length > 0 && !disabled" #append>
 			<v-menu show-arrow placement="bottom-end">
@@ -41,6 +41,7 @@
 import { defineComponent, computed, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldsStore } from '@/stores';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -59,6 +60,10 @@ export default defineComponent({
 		typeDenyList: {
 			type: Array as PropType<string[]>,
 			default: () => [],
+		},
+		placeholder: {
+			type: String,
+			default: () => i18n.global.t('foreign_key') + '...',
 		},
 	},
 	emits: ['update:modelValue'],

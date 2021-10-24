@@ -239,9 +239,9 @@ new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
 new_field: 'New Field'
 new_collection: 'New Collection'
-add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
-add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
-add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
+add_m2o_to_collection: 'Add M2O to "{collection}"'
+add_o2m_to_collection: 'Add O2M to "{collection}"'
+add_m2m_to_collection: 'Add M2M to "{collection}"'
 choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
@@ -1111,12 +1111,12 @@ block: Block
 inline: Inline
 comment: Comment
 relational_triggers: Relational Triggers
-referential_action_field_label_m2o: On Delete of {collection}...
-referential_action_field_label_o2m: On Deselect of {collection}...
+referential_action_field_label_m2o: On Delete of "{collection}"...
+referential_action_field_label_o2m: On Deselect of "{collection}"...
 referential_action_no_action: Prevent the deletion
-referential_action_cascade: Delete the {collection} item (cascade)
-referential_action_set_null: Nullify the {field} field
-referential_action_set_default: Set {field} to its default value
+referential_action_cascade: Delete the "{collection}" item (cascade)
+referential_action_set_null: Nullify the "{field}" field
+referential_action_set_default: Set "{field}" to its default value
 choose_action: Choose Action
 continue_label: Continue
 continue_as: >-

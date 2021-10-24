@@ -11,6 +11,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		prepareRelation(updates, state);
 	}
 
+	if (hasChanged('autoGenerateJunctionRelation')) {
+		autoGenerateJunctionFields(updates, state, helperFn);
+	}
+
 	if (hasChanged('field.field')) {
 		updateRelationField(updates);
 	}
@@ -26,6 +30,14 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 
 	if (hasChanged('relations.m2o.field')) {
 		setJunctionFields(updates, state, helperFn);
+	}
+
+	if (hasChanged('relations.o2m.collection') || hasChanged('relations.m2o.collection')) {
+		matchJunctionCollectionName(updates);
+	}
+
+	if (hasChanged('fields.corresponding')) {
+		setRelatedOneFieldForCorrespondingField(updates);
 	}
 
 	if (
@@ -105,6 +117,8 @@ export function setJunctionFields(updates: StateUpdates, _state: State, { getCur
 }
 
 export function autoGenerateJunctionFields(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
+	if (getCurrent('autoGenerateJunctionRelation') === false) return;
+
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
@@ -276,5 +290,25 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		});
 	} else {
 		set(updates, 'fields.sort', undefined);
+	}
+}
+
+export function matchJunctionCollectionName(updates: StateUpdates) {
+	if (updates?.relations?.o2m?.collection && updates.relations.o2m.collection !== updates.relations.m2o?.collection) {
+		set(updates, 'relations.m2o.collection', updates.relations.o2m.collection);
+	}
+
+	if (updates?.relations?.m2o?.collection && updates.relations.m2o.collection !== updates.relations.o2m?.collection) {
+		set(updates, 'relations.o2m.collection', updates.relations.m2o.collection);
+	}
+}
+
+export function setRelatedOneFieldForCorrespondingField(updates: StateUpdates) {
+	if (updates?.fields?.corresponding?.field) {
+		set(updates, 'relations.m2o.meta.one_field', updates.fields.corresponding.field);
+	}
+
+	if (!updates.fields?.corresponding) {
+		set(updates, 'relations.m2o.meta.one_field', null);
 	}
 }
