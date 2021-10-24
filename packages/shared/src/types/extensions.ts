@@ -85,7 +85,11 @@ export type ExtensionsOptionsContext = {
 	};
 	fields: {
 		corresponding: DeepPartial<Field> | undefined;
+		junctionCurrent: DeepPartial<Field> | undefined;
+		junctionRelated: DeepPartial<Field> | undefined;
+		sort: DeepPartial<Field> | undefined;
 	};
+
 	items: Record<string, Record<string, any>[]>;
 
 	localType: typeof LOCAL_TYPES[number];

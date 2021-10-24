@@ -16,10 +16,6 @@
 		v-else
 		:value="options"
 		:collection="collection"
-		:field-data="field"
-		:relations="relations"
-		:new-fields="fields"
-		:new-collections="collections"
 		@input="options = $event"
 	/>
 </template>
