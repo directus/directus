@@ -20,6 +20,7 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+identifier: Identifier
 avatar: Avatar
 default_provider: Default
 published: Published

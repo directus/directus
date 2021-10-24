@@ -33,7 +33,7 @@ interface UserInfo {
 
 // 0x2: ACCOUNTDISABLE
 // 0x800000: PASSWORD_EXPIRED
-const INVALID_ACCESS_FLAGS = 0x800002;
+const INVALID_ACCOUNT_FLAGS = 0x800002;
 
 export class LDAPAuthDriver extends AuthDriver {
 	bindClient: Promise<Client>;
@@ -238,14 +238,14 @@ export class LDAPAuthDriver extends AuthDriver {
 				])
 				.first();
 		}
-		
+
 		if (userId) {
 			await this.usersService.updateOne(userId, { role: userRole?.id ?? null });
 			return userId;
 		}
 
 		const userInfo = await this.fetchUserInfo(userDn);
-		
+
 		if (!userInfo) {
 			throw new InvalidCredentialsException();
 		}
@@ -298,24 +298,24 @@ export class LDAPAuthDriver extends AuthDriver {
 	async refresh(user: User): Promise<SessionData> {
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
 
-		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCESS_FLAGS) {
+		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
 			throw new InvalidCredentialsException();
 		}
 		return null;
 	}
 }
 
-const handleError = (err: Error) => {
+const handleError = (e: Error) => {
 	if (
-		err instanceof InappropriateAuthenticationError ||
-		err instanceof InvalidCredentialsError ||
-		err instanceof InsufficientAccessRightsError
+		e instanceof InappropriateAuthenticationError ||
+		e instanceof InvalidCredentialsError ||
+		e instanceof InsufficientAccessRightsError
 	) {
 		return new InvalidCredentialsException();
 	}
 	return new ServiceUnavailableException('Service returned unexpected error', {
 		service: 'ldap',
-		message: err.message,
+		message: e.message,
 	});
 };
 
