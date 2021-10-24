@@ -3,6 +3,7 @@
 		<field-detail-advanced-schema v-if="currentTab === 'schema'" :is-existing="isExisting" />
 		<field-detail-advanced-field v-if="currentTab === 'field'" :is-existing="isExisting" />
 		<field-detail-advanced-interface v-if="currentTab === 'interface'" :is-existing="isExisting" />
+		<field-detail-advanced-display v-if="currentTab === 'display'" :is-existing="isExisting" />
 	</div>
 </template>
 
@@ -11,9 +12,15 @@ import { defineComponent } from 'vue';
 import FieldDetailAdvancedSchema from './field-detail-advanced-schema.vue';
 import FieldDetailAdvancedField from './field-detail-advanced-field.vue';
 import FieldDetailAdvancedInterface from './field-detail-advanced-interface.vue';
+import FieldDetailAdvancedDisplay from './field-detail-advanced-display.vue';
 
 export default defineComponent({
-	components: { FieldDetailAdvancedSchema, FieldDetailAdvancedField, FieldDetailAdvancedInterface },
+	components: {
+		FieldDetailAdvancedSchema,
+		FieldDetailAdvancedField,
+		FieldDetailAdvancedInterface,
+		FieldDetailAdvancedDisplay,
+	},
 	props: {
 		currentTab: {
 			type: String,
