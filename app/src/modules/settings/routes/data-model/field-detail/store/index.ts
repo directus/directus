@@ -14,6 +14,7 @@ import * as global from './alterations/global';
 import * as file from './alterations/file';
 import * as files from './alterations/files';
 import * as group from './alterations/group';
+import * as m2a from './alterations/m2a';
 import * as m2m from './alterations/m2m';
 import * as m2o from './alterations/m2o';
 import * as o2m from './alterations/o2m';
@@ -111,6 +112,9 @@ export const useFieldDetailStore = defineStore({
 					break;
 				case 'group':
 					group.applyChanges(updates, this, helperFn);
+					break;
+				case 'm2a':
+					m2a.applyChanges(updates, this, helperFn);
 					break;
 				case 'm2m':
 					m2m.applyChanges(updates, this, helperFn);

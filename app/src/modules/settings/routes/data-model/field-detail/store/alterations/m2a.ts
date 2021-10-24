@@ -1,5 +1,5 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
-import { set, get } from 'lodash';
+import { set } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
@@ -16,10 +16,6 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		updateRelationField(updates);
 	}
 
-	if (hasChanged('relations.m2o.related_collection')) {
-		preventCircularConstraint(updates, state, helperFn);
-	}
-
 	if (hasChanged('relations.o2m.field')) {
 		setJunctionFields(updates, state, helperFn);
 	}
@@ -32,14 +28,14 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		matchJunctionCollectionName(updates);
 	}
 
+	if (hasChanged('fields.corresponding')) {
+		setRelatedOneFieldForCorrespondingField(updates);
+	}
+
 	if (
-		[
-			'relations.o2m.collection',
-			'relations.o2m.field',
-			'relations.m2o.field',
-			'relations.m2o.related_collection',
-			'relations.o2m.meta?.sort_field',
-		].some(hasChanged)
+		['relations.o2m.collection', 'relations.o2m.field', 'relations.m2o.field', 'relations.o2m.meta?.sort_field'].some(
+			hasChanged
+		)
 	) {
 		generateCollections(updates, state, helperFn);
 		generateFields(updates, state, helperFn);
@@ -74,16 +70,53 @@ export function prepareRelation(updates: StateUpdates, state: State) {
 	updates.relations.m2o = {
 		collection: undefined,
 		field: undefined,
-		related_collection: undefined,
+		related_collection: null,
 		meta: {
 			one_field: null,
 			sort_field: null,
 			one_deselect_action: 'nullify',
 		},
-		schema: {
-			on_delete: 'SET NULL',
-		},
+		schema: null,
 	};
+}
+
+export function setDefaults(updates: StateUpdates, state: State) {
+	const fieldsStore = useFieldsStore();
+
+	const currentCollection = state.collection!;
+	const currentCollectionPrimaryKeyField =
+		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
+
+	const junctionName = getAutomaticJunctionCollectionName(currentCollection);
+
+	set(updates, 'relations.o2m.collection', junctionName);
+	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
+	set(updates, 'relations.m2o.collection', junctionName);
+
+	set(updates, 'relations.m2o.field', 'item');
+}
+
+export function getAutomaticJunctionCollectionName(collectionA: string) {
+	let index = 0;
+	let name = getName(index);
+
+	while (collectionExists(name)) {
+		index++;
+		name = getName(index);
+	}
+
+	return name;
+
+	function getName(index: number) {
+		let name = `${collectionA}_items`;
+
+		if (name.startsWith('directus_')) {
+			name = 'junction_' + name;
+		}
+
+		if (index) return name + '_' + index;
+		return name;
+	}
 }
 
 export function updateRelationField(updates: StateUpdates) {
@@ -96,10 +129,6 @@ export function updateRelationField(updates: StateUpdates) {
 export function preventCircularConstraint(updates: StateUpdates, _state: State, { getCurrent }: HelperFunctions) {
 	if (getCurrent('relations.o2m.collection') === getCurrent('relations.o2m.related_collection')) {
 		set(updates, 'relations.o2m.schema.on_delete', 'NO ACTION');
-	}
-
-	if (getCurrent('relations.m2o.collection') === getCurrent('relations.m2o.related_collection')) {
-		set(updates, 'relations.m2o.schema.on_delete', 'NO ACTION');
 	}
 }
 
@@ -149,14 +178,10 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 
 function generateFields(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
 	const fieldsStore = useFieldsStore();
-
 	const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(state.collection!);
 	const junctionCollection = getCurrent('relations.o2m.collection');
 	const junctionCurrent = getCurrent('relations.o2m.field');
 	const junctionRelated = getCurrent('relations.m2o.field');
-	const relatedCollection = getCurrent('relations.m2o.related_collection');
-	const relatedPrimaryKeyField =
-		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection) ?? getCurrent('collections.related.fields[0]');
 	const sort = getCurrent('relations.o2m.sort_field');
 
 	if (junctionCollection && junctionCurrent && fieldExists(junctionCollection, junctionCurrent) === false) {
@@ -177,7 +202,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		set(updates, 'fields.junctionRelated', {
 			collection: junctionCollection,
 			field: junctionRelated,
-			type: relatedPrimaryKeyField?.type ?? 'uuid',
+			type: currentPrimaryKeyField?.type ?? 'integer',
 			schema: {},
 			meta: {
 				hidden: true,
@@ -202,23 +227,6 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 	}
 }
 
-export function setDefaults(updates: StateUpdates, state: State) {
-	const fieldsStore = useFieldsStore();
-
-	const currentCollection = state.collection!;
-	const currentCollectionPrimaryKeyField =
-		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
-
-	const junctionName = getAutomaticJunctionCollectionName(currentCollection);
-
-	set(updates, 'relations.o2m.collection', junctionName);
-	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
-	set(updates, 'relations.m2o.collection', junctionName);
-	set(updates, 'relations.m2o.related_collection', 'directus_files');
-
-	set(updates, 'relations.m2o.field', 'directus_files_id');
-}
-
 export function matchJunctionCollectionName(updates: StateUpdates) {
 	if (updates?.relations?.o2m?.collection && updates.relations.o2m.collection !== updates.relations.m2o?.collection) {
 		set(updates, 'relations.m2o.collection', updates.relations.o2m.collection);
@@ -229,25 +237,12 @@ export function matchJunctionCollectionName(updates: StateUpdates) {
 	}
 }
 
-export function getAutomaticJunctionCollectionName(collectionA: string) {
-	let index = 0;
-	let name = getName(index);
-
-	while (collectionExists(name)) {
-		index++;
-		name = getName(index);
+export function setRelatedOneFieldForCorrespondingField(updates: StateUpdates) {
+	if (updates?.fields?.corresponding?.field) {
+		set(updates, 'relations.m2o.meta.one_field', updates.fields.corresponding.field);
 	}
 
-	return name;
-
-	function getName(index: number) {
-		let name = `${collectionA}_files`;
-
-		if (name.startsWith('directus_')) {
-			name = 'junction_' + name;
-		}
-
-		if (index) return name + '_' + index;
-		return name;
+	if (!updates.fields?.corresponding) {
+		set(updates, 'relations.m2o.meta.one_field', null);
 	}
 }
