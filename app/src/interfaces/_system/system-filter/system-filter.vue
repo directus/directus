@@ -52,6 +52,9 @@ import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 import { useFieldTree } from '@/composables/use-field-tree';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
+import { useFieldsStore } from '@/stores';
+import { ClientFilterOperator } from '@directus/shared/types';
 
 export default defineComponent({
 	components: {
@@ -91,6 +94,8 @@ export default defineComponent({
 
 			return values.value[props.collectionField] ?? null;
 		});
+
+		const fieldsStore = useFieldsStore();
 
 		const { treeList, loadFieldRelations } = useFieldTree(collection);
 
@@ -138,6 +143,24 @@ export default defineComponent({
 			}
 		}
 
+		function defaultValueForOperator(operator: ClientFilterOperator) {
+			switch (operator) {
+				case 'in':
+				case 'nin':
+					return [];
+				case 'between':
+				case 'nbetween':
+					return [null, null];
+				case 'null':
+				case 'nnull':
+				case 'empty':
+				case 'nempty':
+					return true;
+				default:
+					return null;
+			}
+		}
+
 		function addNode(key: string) {
 			if (key === '$group') {
 				innerValue.value = [
@@ -149,7 +172,10 @@ export default defineComponent({
 			} else {
 				const filterObj = {};
 
-				set(filterObj, key, { _eq: null });
+				const field = fieldsStore.getField(collection.value, key)!;
+				const operator = getFilterOperatorsForType(field.type)[0];
+				const value = defaultValueForOperator(operator);
+				set(filterObj, key, { ['_' + operator]: value });
 
 				innerValue.value = [...innerValue.value, filterObj] as FieldFilter[];
 			}
