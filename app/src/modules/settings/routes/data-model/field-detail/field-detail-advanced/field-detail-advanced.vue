@@ -1,15 +1,17 @@
 <template>
 	<div class="content">
 		<field-detail-advanced-schema v-if="currentTab === 'schema'" :is-existing="isExisting" />
+		<field-detail-advanced-field v-if="currentTab === 'field'" :is-existing="isExisting" />
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FieldDetailAdvancedSchema from './field-detail-advanced-schema.vue';
+import FieldDetailAdvancedField from './field-detail-advanced-field.vue';
 
 export default defineComponent({
-	components: { FieldDetailAdvancedSchema },
+	components: { FieldDetailAdvancedSchema, FieldDetailAdvancedField },
 	props: {
 		currentTab: {
 			type: String,
