@@ -1,12 +1,23 @@
 <template>
 	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @update:model-value="cancel">
 		<field-detail-simple
-			v-if="field === '+' && simple"
+			v-if="!showAdvanced"
 			:collection="collectionInfo"
 			@save="save"
 			@toggleAdvanced="simple = false"
 		/>
-		<field-detail-advanced v-else :collection="collectionInfo" @save="save" />
+
+		<template v-if="showAdvanced" #sidebar>
+			<field-detail-advanced-tabs v-model:current-tab="currentTab" />
+		</template>
+
+		<field-detail-advanced
+			v-if="showAdvanced"
+			:collection="collectionInfo"
+			:current-tab="currentTab[0]"
+			:is-existing="isExisting"
+			@save="save"
+		/>
 	</v-drawer>
 </template>
 
@@ -16,6 +27,7 @@ import { LocalType } from '@directus/shared/types';
 import { useFieldDetailStore } from './store/';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
 import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
+import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
@@ -24,7 +36,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	name: 'FieldDetail',
-	components: { FieldDetailSimple, FieldDetailAdvanced },
+	components: { FieldDetailSimple, FieldDetailAdvanced, FieldDetailAdvancedTabs },
 	props: {
 		collection: {
 			type: String,
@@ -68,7 +80,17 @@ export default defineComponent({
 			}
 		});
 
-		return { simple, cancel, collectionInfo, t, title, save, isOpen };
+		const currentTab = ref(['schema']);
+
+		const isExisting = computed(() => {
+			return props.field !== '+';
+		});
+
+		const showAdvanced = computed(() => {
+			return isExisting.value || !simple.value;
+		});
+
+		return { simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced, isExisting };
 
 		async function cancel() {
 			await router.push(`/settings/data-model/${props.collection}`);
