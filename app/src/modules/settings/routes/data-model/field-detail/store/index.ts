@@ -212,5 +212,28 @@ export const useFieldDetailStore = defineStore({
 				['name']
 			);
 		},
+		generationInfo() {
+			const items: { name: string; type: 'collection' | 'field' }[] = [];
+
+			for (const collection of Object.values(this.collections)) {
+				if (!collection || !collection.collection) continue;
+
+				items.push({
+					name: collection.collection,
+					type: 'collection',
+				});
+			}
+
+			for (const field of Object.values(this.fields)) {
+				if (!field || !field.collection || !field.field) continue;
+
+				items.push({
+					name: `${field.collection}.${field.field}`,
+					type: 'field',
+				});
+			}
+
+			return items;
+		},
 	},
 });

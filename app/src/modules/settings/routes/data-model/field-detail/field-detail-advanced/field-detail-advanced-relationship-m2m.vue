@@ -181,8 +181,6 @@
 			</div>
 		</div>
 
-		<!--
-
 		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
 				{{ t('new_data_alert') }}
@@ -194,7 +192,7 @@
 					</li>
 				</ul>
 			</span>
-		</v-notice> -->
+		</v-notice>
 	</div>
 </template>
 
@@ -215,7 +213,7 @@ export default defineComponent({
 		const fieldDetailStore = useFieldDetailStore();
 		const fieldsStore = useFieldsStore();
 
-		const { field, collection, editing } = storeToRefs(fieldDetailStore);
+		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
 
 		const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
 		const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
@@ -298,6 +296,7 @@ export default defineComponent({
 			hasCorresponding,
 			correspondingLabel,
 			correspondingFieldKey,
+			generationInfo,
 		};
 	},
 });
