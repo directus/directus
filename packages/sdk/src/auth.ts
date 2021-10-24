@@ -24,6 +24,7 @@ export type AuthOptions = {
 	mode?: AuthMode;
 	autoRefresh?: boolean;
 	msRefreshBeforeExpires?: number;
+	staticToken?: string;
 	transport: ITransport;
 	storage: IStorage;
 };
@@ -32,6 +33,7 @@ export abstract class IAuth {
 	mode = (typeof window === 'undefined' ? 'json' : 'cookie') as AuthMode;
 	autoRefresh = true;
 	msRefreshBeforeExpires = 30000;
+	staticToken = '';
 
 	abstract readonly token: string | null;
 	abstract readonly password: PasswordsHandler;

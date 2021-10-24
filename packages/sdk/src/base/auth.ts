@@ -19,6 +19,11 @@ export class Auth extends IAuth {
 		this.mode = options?.mode ?? this.mode;
 		this.msRefreshBeforeExpires = options?.msRefreshBeforeExpires ?? this.msRefreshBeforeExpires;
 
+		if (options?.staticToken) {
+			this.staticToken = options?.staticToken;
+			this.updateStorage<'StaticToken'>({ access_token: this.staticToken, expires: null, refresh_token: null });
+		}
+
 		this.timer = false;
 	}
 
