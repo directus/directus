@@ -8,16 +8,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { LocalType } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useSync } from '@directus/shared/composables';
+import { useFieldDetailStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	props: {
-		type: {
-			type: String as PropType<LocalType>,
-			default: null,
-		},
 		currentTab: {
 			type: Array as PropType<string[]>,
 			required: true,
@@ -25,6 +22,10 @@ export default defineComponent({
 	},
 	emits: ['update:currentTab'],
 	setup(props, { emit }) {
+		const fieldDetail = useFieldDetailStore();
+
+		const { localType } = storeToRefs(fieldDetail);
+
 		const currentTabSync = useSync(props, 'currentTab', emit);
 
 		const { t } = useI18n();
@@ -45,21 +46,21 @@ export default defineComponent({
 				},
 			];
 
-			if (props.type !== 'presentation' && props.type !== 'group') {
+			if (localType.value !== 'presentation' && localType.value !== 'group') {
 				tabs.push({
 					text: t('display'),
 					value: 'display',
 				});
 			}
 
-			if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(props.type)) {
+			if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
 				tabs.splice(1, 0, {
 					text: t('relationship'),
 					value: 'relationship',
 				});
 			}
 
-			if (props.type === 'translations') {
+			if (localType.value === 'translations') {
 				tabs.splice(
 					1,
 					0,
