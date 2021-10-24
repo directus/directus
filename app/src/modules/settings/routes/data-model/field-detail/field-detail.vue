@@ -11,6 +11,10 @@
 			<field-detail-advanced-tabs v-model:current-tab="currentTab" />
 		</template>
 
+		<template v-if="showAdvanced" #actions>
+			<field-detail-advanced-actions @save="save" />
+		</template>
+
 		<field-detail-advanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
 	</v-drawer>
 </template>
@@ -22,6 +26,7 @@ import { useFieldDetailStore } from './store/';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
 import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
 import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
+import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
@@ -31,7 +36,7 @@ import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	name: 'FieldDetail',
-	components: { FieldDetailSimple, FieldDetailAdvanced, FieldDetailAdvancedTabs },
+	components: { FieldDetailSimple, FieldDetailAdvanced, FieldDetailAdvancedTabs, FieldDetailAdvancedActions },
 	props: {
 		collection: {
 			type: String,
