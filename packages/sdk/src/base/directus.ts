@@ -23,13 +23,13 @@ import { AxiosTransport } from './transport';
 import { Auth } from './auth';
 import { IStorage, StorageOptions } from '../storage';
 import { LocalStorage, MemoryStorage } from './storage';
-import { TypeMap, TypeOf } from '../types';
+import { TypeMap, TypeOf, PartialBy } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
 import { ISingleton } from '../singleton';
 import { SingletonHandler } from '../handlers/singleton';
 
 export type DirectusOptions = {
-	auth?: IAuth | AuthOptions;
+	auth?: IAuth | PartialBy<AuthOptions, 'transport' | 'storage'>;
 	transport?: ITransport | TransportOptions;
 	storage?: IStorage | StorageOptions;
 };
