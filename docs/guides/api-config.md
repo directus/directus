@@ -117,7 +117,7 @@ information and roles will be assigned from Active Directory. LDAP requires the 
 AUTH_LDAP_DRIVER="ldap"
 AUTH_LDAP_CLIENT_URL="ldap://ldap.directus.io"
 AUTH_LDAP_BIND_DN="CN=Bind User,OU=Users,DC=ldap,DC=directus,DC=io"
-AUTH_LDAP_BIND_PASSWORD="BindPassword"
+AUTH_LDAP_BIND_PASSWORD="d1r3ct5us"
 AUTH_LDAP_USER_DN="OU=Users,DC=ldap,DC=directus,DC=io"
 AUTH_LDAP_GROUP_DN="OU=Groups,DC=ldap,DC=directus,DC=io"
 ```
