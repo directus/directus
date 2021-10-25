@@ -122,6 +122,8 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .field-configuration {
+	--v-button-background-color-disabled: var(--background-normal);
+
 	grid-column: 1 / span 4;
 	background-color: var(--background-subdued);
 	border-top: var(--border-width) solid var(--border-normal);
@@ -135,9 +137,8 @@ export default defineComponent({
 }
 
 .schema {
-	@include form-grid;
-
 	margin-bottom: 20px;
+	@include form-grid;
 }
 
 .monospace {
@@ -145,8 +146,6 @@ export default defineComponent({
 }
 
 .save {
-	--v-button-background-color-disabled: var(--background-normal);
-
 	margin-top: 40px;
 }
 
