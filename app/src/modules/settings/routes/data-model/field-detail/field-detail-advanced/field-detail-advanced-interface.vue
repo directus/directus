@@ -8,7 +8,12 @@
 			<button @click="interfaceID = null">{{ t('reset_interface') }}</button>
 		</v-notice>
 
-		<extension-options v-if="interfaceID && selectedInterface" type="interface" :extension="interfaceID" />
+		<extension-options
+			v-if="interfaceID && selectedInterface"
+			type="interface"
+			:extension="interfaceID"
+			show-advanced
+		/>
 	</div>
 </template>
 

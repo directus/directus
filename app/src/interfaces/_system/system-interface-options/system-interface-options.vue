@@ -80,8 +80,12 @@ export default defineComponent({
 			if (!selectedInterface.value.options) return [];
 			if (usesCustomComponent.value === true) return [];
 
+			let optionsObjectOrArray;
+
 			if (typeof selectedInterface.value.options === 'function') {
-				return (selectedInterface.value.options as (x: ExtensionsOptionsContext) => DeepPartial<Field>[])({
+				optionsObjectOrArray = (
+					selectedInterface.value.options as (x: ExtensionsOptionsContext) => DeepPartial<Field>[]
+				)({
 					field: {
 						type: 'unknown',
 					},
@@ -107,9 +111,13 @@ export default defineComponent({
 					autoGenerateJunctionRelation: false,
 					saving: false,
 				});
+			} else {
+				optionsObjectOrArray = selectedInterface.value.options;
 			}
 
-			return selectedInterface.value.options;
+			if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
+
+			return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
 		});
 
 		return { t, selectedInterface, values, usesCustomComponent, optionsFields };

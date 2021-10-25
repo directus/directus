@@ -10,7 +10,13 @@ export interface InterfaceConfig {
 	description?: string;
 
 	component: Component;
-	options: DeepPartial<Field>[] | ((ctx: ExtensionsOptionsContext) => DeepPartial<Field>[]) | Component | null;
+	options:
+		| DeepPartial<Field>[]
+		| ((ctx: ExtensionsOptionsContext) => DeepPartial<Field>[])
+		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
+		| ((ctx: ExtensionsOptionsContext) => { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
+		| Component
+		| null;
 	types: readonly Type[];
 	localTypes?: readonly LocalType[];
 	group?: 'standard' | 'selection' | 'relational' | 'presentation' | 'presentation' | 'group' | 'other';

@@ -12,116 +12,120 @@ export default defineInterface({
 	types: ['string', 'uuid', 'bigInteger', 'integer', 'float', 'decimal', 'text'],
 	group: 'standard',
 	options: ({ field }: ExtensionsOptionsContext) => {
-		const textOptions = [
-			{
-				field: 'placeholder',
-				name: '$t:placeholder',
-				meta: {
-					width: 'half',
-					interface: 'input',
-					options: {
-						placeholder: '$t:enter_a_placeholder',
+		const textOptions = {
+			standard: [
+				{
+					field: 'placeholder',
+					name: '$t:placeholder',
+					meta: {
+						width: 'full',
+						interface: 'input',
+						options: {
+							placeholder: '$t:enter_a_placeholder',
+						},
 					},
 				},
-			},
-			{
-				field: 'font',
-				name: '$t:font',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{ text: '$t:sans_serif', value: 'sans-serif' },
-							{ text: '$t:monospace', value: 'monospace' },
-							{ text: '$t:serif', value: 'serif' },
-						],
+				{
+					field: 'iconLeft',
+					name: '$t:icon_left',
+					type: 'string',
+					meta: {
+						width: 'half',
+						interface: 'select-icon',
 					},
 				},
-				schema: {
-					default_value: 'sans-serif',
-				},
-			},
-			{
-				field: 'iconLeft',
-				name: '$t:icon_left',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'select-icon',
-				},
-			},
-			{
-				field: 'iconRight',
-				name: '$t:icon_right',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'select-icon',
-				},
-			},
-			{
-				field: 'trim',
-				name: '$t:interfaces.input.trim',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:interfaces.input.trim_label',
+				{
+					field: 'iconRight',
+					name: '$t:icon_right',
+					type: 'string',
+					meta: {
+						width: 'half',
+						interface: 'select-icon',
 					},
 				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
-				field: 'masked',
-				name: '$t:interfaces.input.mask',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:interfaces.input.mask_label',
+			],
+			advanced: [
+				{
+					field: 'font',
+					name: '$t:font',
+					type: 'string',
+					meta: {
+						width: 'half',
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{ text: '$t:sans_serif', value: 'sans-serif' },
+								{ text: '$t:monospace', value: 'monospace' },
+								{ text: '$t:serif', value: 'serif' },
+							],
+						},
+					},
+					schema: {
+						default_value: 'sans-serif',
 					},
 				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
-				field: 'clear',
-				name: '$t:interfaces.input.clear',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:interfaces.input.clear_label',
+				{
+					field: 'trim',
+					name: '$t:interfaces.input.trim',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+						options: {
+							label: '$t:interfaces.input.trim_label',
+						},
+					},
+					schema: {
+						default_value: false,
 					},
 				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
-				field: 'slug',
-				name: '$t:interfaces.input.slug',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:interfaces.input.slug_label',
+				{
+					field: 'masked',
+					name: '$t:interfaces.input.mask',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+						options: {
+							label: '$t:interfaces.input.mask_label',
+						},
+					},
+					schema: {
+						default_value: false,
 					},
 				},
-				schema: {
-					default_value: false,
+				{
+					field: 'clear',
+					name: '$t:interfaces.input.clear',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+						options: {
+							label: '$t:interfaces.input.clear_label',
+						},
+					},
+					schema: {
+						default_value: false,
+					},
 				},
-			},
-		];
+				{
+					field: 'slug',
+					name: '$t:interfaces.input.slug',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+						options: {
+							label: '$t:interfaces.input.slug_label',
+						},
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+			],
+		};
 
 		const numberOptions = [
 			{

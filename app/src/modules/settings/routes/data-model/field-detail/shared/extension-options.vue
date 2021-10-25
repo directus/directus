@@ -40,6 +40,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		showAdvanced: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const fieldDetail = useFieldDetailStore();
@@ -74,11 +78,23 @@ export default defineComponent({
 			if (!extensionInfo.value.options) return [];
 			if (usesCustomComponent.value === true) return [];
 
+			let optionsObjectOrArray;
+
 			if (typeof extensionInfo.value.options === 'function') {
-				return (extensionInfo.value.options as (x: typeof fieldDetail) => DeepPartial<Field>[])(fieldDetail);
+				optionsObjectOrArray = (extensionInfo.value.options as (x: typeof fieldDetail) => DeepPartial<Field>[])(
+					fieldDetail
+				);
+			} else {
+				optionsObjectOrArray = extensionInfo.value.options;
 			}
 
-			return extensionInfo.value.options;
+			if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
+
+			if (props.showAdvanced) {
+				return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
+			}
+
+			return optionsObjectOrArray.standard;
 		});
 
 		const options = computed({
