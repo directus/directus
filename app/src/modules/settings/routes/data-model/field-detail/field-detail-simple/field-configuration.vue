@@ -97,7 +97,7 @@ export default defineComponent({
 		const key = syncFieldDetailStoreProperty('field.field');
 		const type = syncFieldDetailStoreProperty('field.type');
 		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
-		const required = syncFieldDetailStoreProperty('field.meta.required');
+		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 
 		return {
