@@ -143,24 +143,6 @@ export default defineComponent({
 			}
 		}
 
-		function defaultValueForOperator(operator: ClientFilterOperator) {
-			switch (operator) {
-				case 'in':
-				case 'nin':
-					return [];
-				case 'between':
-				case 'nbetween':
-					return [null, null];
-				case 'null':
-				case 'nnull':
-				case 'empty':
-				case 'nempty':
-					return true;
-				default:
-					return null;
-			}
-		}
-
 		function addNode(key: string) {
 			if (key === '$group') {
 				innerValue.value = [
@@ -174,8 +156,7 @@ export default defineComponent({
 
 				const field = fieldsStore.getField(collection.value, key)!;
 				const operator = getFilterOperatorsForType(field.type)[0];
-				const value = defaultValueForOperator(operator);
-				set(filterObj, key, { ['_' + operator]: value });
+				set(filterObj, key, { ['_' + operator]: null });
 
 				innerValue.value = [...innerValue.value, filterObj] as FieldFilter[];
 			}
