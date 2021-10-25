@@ -16,6 +16,7 @@
 		v-else
 		:value="options"
 		:collection="collection"
+		:field="field"
 		@input="options = $event"
 	/>
 </template>
