@@ -133,8 +133,8 @@ function validateBoolean(value: any, key: string) {
 }
 
 function validateGeometry(value: any, key: string) {
+	if (value === null) return true;
 	try {
-		if (value === null) return true;
 		stringify(value);
 	} catch {
 		throw new InvalidQueryException(`"${key}" has to be a valid GeoJSON object`);
