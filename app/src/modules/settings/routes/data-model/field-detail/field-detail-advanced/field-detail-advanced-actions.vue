@@ -1,5 +1,12 @@
 <template>
-	<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="$emit('save')">
+	<v-button
+		v-tooltip.bottom="t('save')"
+		:disabled="readyToSave === false"
+		:loading="saving"
+		icon
+		rounded
+		@click="$emit('save')"
+	>
 		<v-icon name="check" />
 	</v-button>
 </template>
@@ -14,11 +21,11 @@ export default defineComponent({
 	emits: ['save'],
 	setup() {
 		const fieldDetailStore = useFieldDetailStore();
-		const { saving } = storeToRefs(fieldDetailStore);
+		const { saving, readyToSave } = storeToRefs(fieldDetailStore);
 
 		const { t } = useI18n();
 
-		return { saving, t };
+		return { saving, t, readyToSave };
 	},
 });
 </script>

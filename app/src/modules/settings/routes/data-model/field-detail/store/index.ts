@@ -189,14 +189,50 @@ export const useFieldDetailStore = defineStore({
 		},
 	},
 	getters: {
-		// Check if the currently configured values could be saved or not. Most basic form of validation
-		readyToSave(state) {
-			// TODO expand later. Might wanna use validatePayload
+		missingConfiguration(state) {
 			const requiredProperties = ['field.field', 'collection'];
 
-			return requiredProperties.every((path) => {
-				return has(state, path) && isEmpty(get(state, path)) === false;
+			const localType = state.localType;
+
+			if (localType === 'files' || localType === 'm2m' || localType === 'translations') {
+				requiredProperties.push(
+					'relations.o2m.collection',
+					'relations.o2m.field',
+					'relations.o2m.related_collection',
+					'relations.m2o.collection',
+					'relations.m2o.field',
+					'relations.m2o.related_collection'
+				);
+			}
+
+			if (localType === 'file' || localType === 'm2o') {
+				requiredProperties.push('relations.m2o.collection', 'relations.m2o.field', 'relations.m2o.related_collection');
+			}
+
+			if (localType === 'o2m') {
+				requiredProperties.push('relations.o2m.collection', 'relations.o2m.field', 'relations.o2m.related_collection');
+			}
+
+			if (localType === 'm2a') {
+				requiredProperties.push(
+					'relations.o2m.collection',
+					'relations.o2m.field',
+					'relations.o2m.related_collection',
+					'relations.m2o.collection',
+					'relations.m2o.field',
+					'relations.m2o.meta.one_allowed_collections',
+					'relations.m2o.meta.one_collection_field'
+				);
+			}
+
+			return requiredProperties.filter((path) => {
+				return (has(state, path) && isEmpty(get(state, path)) === false) === false;
 			});
+		},
+		readyToSave() {
+			// There's a bug in pinia where the other getters don't show up in the types for "this"
+			const missing = (this as typeof this & { missingConfiguration: string[] }).missingConfiguration;
+			return missing.length === 0;
 		},
 		interfacesForType(): InterfaceConfig[] {
 			const { interfaces } = getInterfaces();
