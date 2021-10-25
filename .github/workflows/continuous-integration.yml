@@ -10,7 +10,7 @@ on:
 
 jobs:
   pre_check:
-    name: Pre Check
+    name: Pre-Check
     runs-on: ubuntu-latest
     outputs:
       # Returns true if workflow is skippable for one of the following reasons:
@@ -21,8 +21,8 @@ jobs:
       - name: Check if workflow is skippable
         id: skip_check
         uses: fkirc/skip-duplicate-actions@master
-        # Run all the jobs if the pre check should fail for any reason
-        # (the pre check will be marked as passed, better solution pending at https://github.com/actions/toolkit/issues/399)
+        # Run all the jobs if the pre-check should fail for any reason
+        # (the pre-check will be marked as passed, better solution pending at https://github.com/actions/toolkit/issues/399)
         continue-on-error: true
         with:
           # Cancel outdated workflow-runs
