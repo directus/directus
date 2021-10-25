@@ -38,6 +38,8 @@
 
 			<relationship-configuration :local-type="localType" />
 
+			<v-divider inline />
+
 			<extension-options type="interface" :extension="chosenInterface" />
 
 			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
@@ -143,6 +145,10 @@ export default defineComponent({
 
 .save {
 	margin-top: 40px;
+}
+
+.v-divider {
+	margin: 28px 0;
 }
 
 .toggle-advanced {

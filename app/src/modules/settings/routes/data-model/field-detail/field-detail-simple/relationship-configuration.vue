@@ -80,7 +80,9 @@ export default defineComponent({
 	--v-select-font-family: var(--family-monospace);
 	--v-input-font-family: var(--family-monospace);
 
-	margin-bottom: 20px;
+	&:not(:empty) {
+		margin-bottom: 20px;
+	}
 
 	.v-input.matches {
 		--v-input-color: var(--primary);
