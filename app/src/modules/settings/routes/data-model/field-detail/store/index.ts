@@ -2,7 +2,15 @@ import { defineStore } from 'pinia';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { has, isEmpty, orderBy } from 'lodash';
-import { InterfaceConfig, DisplayConfig, DeepPartial, Field, Relation, Collection } from '@directus/shared/types';
+import {
+	InterfaceConfig,
+	DisplayConfig,
+	DeepPartial,
+	Field,
+	Relation,
+	Collection,
+	LocalType,
+} from '@directus/shared/types';
 import { LOCAL_TYPES } from '@directus/shared/constants';
 import { computed } from 'vue';
 import { get, set } from 'lodash';
@@ -82,14 +90,13 @@ export const useFieldDetailStore = defineStore({
 		saving: false,
 	}),
 	actions: {
-		startEditing(collection: string, field: string) {
+		startEditing(collection: string, field: string, localType?: LocalType) {
 			// Make sure we clean up any stray values from unexpected paths
 			this.$reset();
 
 			this.collection = collection;
 			this.field.collection = collection;
 			this.editing = field;
-			this.localType = getLocalTypeForField(collection, field) ?? 'standard';
 
 			if (field !== '+') {
 				const fieldsStore = useFieldsStore();
@@ -104,7 +111,7 @@ export const useFieldDetailStore = defineStore({
 					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
 				) as DeepPartial<Relation> | undefined;
 
-				if (['files', 'm2m', translations].includes(this.localType)) {
+				if (['files', 'm2m', 'translations'].includes(this.localType)) {
 					this.relations.m2o = relations.find((relation) => relation !== this.relations.o2m) as
 						| DeepPartial<Relation>
 						| undefined;
@@ -114,6 +121,10 @@ export const useFieldDetailStore = defineStore({
 					) as DeepPartial<Relation> | undefined;
 				}
 			}
+
+			this.update({
+				localType: localType ?? getLocalTypeForField(collection, field) ?? 'standard',
+			});
 		},
 		update(updates: DeepPartial<typeof this.$state>) {
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);
@@ -202,7 +213,7 @@ export const useFieldDetailStore = defineStore({
 	},
 	getters: {
 		missingConfiguration(state) {
-			const requiredProperties = ['field.field', 'collection'];
+			const requiredProperties = ['field.field', 'field.type', 'collection'];
 
 			const localType = state.localType;
 

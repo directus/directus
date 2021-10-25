@@ -67,7 +67,7 @@ export default defineComponent({
 					...[
 						{
 							text: t('translations'),
-							value: 'translations',
+							value: 'relationship',
 						},
 					]
 				);

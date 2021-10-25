@@ -25,6 +25,27 @@
 		<v-button full-width :to="`/settings/data-model/${collection}/+`">
 			{{ t('create_field') }}
 		</v-button>
+
+		<v-menu show-arrow>
+			<template #activator="{ toggle, active }">
+				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
+					{{ t('create_in_advanced_field_creation_mode') }}
+				</button>
+			</template>
+			<v-list>
+				<template v-for="(option, index) in addOptions" :key="index">
+					<v-divider v-if="option.divider === true" />
+					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
+						<v-list-item-icon>
+							<v-icon :name="option.icon" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ option.text }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
+			</v-list>
+		</v-menu>
 	</div>
 </template>
 
@@ -180,13 +201,18 @@ export default defineComponent({
 	--v-button-background-color-hover: var(--primary-125);
 
 	margin-top: -12px;
+}
 
-	.v-icon {
-		margin-right: 8px;
-	}
+.add-field-advanced {
+	display: block;
+	width: max-content;
+	margin: 0 auto;
+	margin-top: 8px;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
 
-	&.active {
-		--v-button-background-color: var(--primary);
+	&:hover {
+		color: var(--foreground-normal);
 	}
 }
 
