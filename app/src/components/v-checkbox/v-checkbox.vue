@@ -159,7 +159,6 @@ body {
 	}
 
 	&:disabled {
-		background-color: var(--background-subdued);
 		cursor: not-allowed;
 
 		.label {
@@ -179,6 +178,10 @@ body {
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: all var(--fast) var(--transition);
+
+		&:disabled {
+			background-color: var(--background-subdued);
+		}
 
 		&::before {
 			position: absolute;
