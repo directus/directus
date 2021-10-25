@@ -29,6 +29,7 @@ import * as presentation from './alterations/presentation';
 import * as standard from './alterations/standard';
 import * as translations from './alterations/translations';
 import { getLocalTypeForField } from '../../get-local-type';
+import api from '@/api';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -203,6 +204,10 @@ export const useFieldDetailStore = defineStore({
 				for (const relation of Object.values(this.relations)) {
 					if (!relation || !relation.collection || !relation.field) continue;
 					await relationsStore.upsertRelation(relation.collection, relation.field, relation);
+				}
+
+				for (const collection of Object.keys(this.items)) {
+					await api.post(`/items/${collection}`, this.items[collection]);
 				}
 			} catch (err: any) {
 				unexpectedError(err);

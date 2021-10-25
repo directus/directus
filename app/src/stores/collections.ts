@@ -1,6 +1,6 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { Collection as CollectionRaw, DeepPartial } from '@directus/shared/types';
+import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/shared/types';
 import { Collection } from '@/types';
 import { getCollectionType } from '@directus/shared/utils';
 import { notEmpty } from '@/utils/is-empty/';
@@ -10,6 +10,7 @@ import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { isEqual, orderBy, omit } from 'lodash';
+import { useFieldsStore } from '.';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
@@ -91,7 +92,8 @@ export const useCollectionsStore = defineStore({
 				return collection;
 			});
 		},
-		async upsertCollection(collection: string, values: DeepPartial<Collection>) {
+		async upsertCollection(collection: string, values: DeepPartial<Collection & { fields: Field[] }>) {
+			const fieldsStore = useFieldsStore();
 			const existing = this.getCollection(collection);
 
 			// Strip out any fields the app might've auto-generated at some point
@@ -120,6 +122,8 @@ export const useCollectionsStore = defineStore({
 				}
 			} catch (err: any) {
 				unexpectedError(err);
+			} finally {
+				await fieldsStore.hydrate();
 			}
 		},
 		async updateCollection(collection: string, updates: DeepPartial<Collection>) {
