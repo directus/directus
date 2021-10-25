@@ -257,6 +257,16 @@ export default defineComponent({
 				case '_nempty':
 					update(true);
 					break;
+				case '_intersects':
+				case '_nintersects':
+				case '_intersects_bbox':
+				case '_nintersects_bbox':
+					if (['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'].includes(nodeInfo.comparator)) {
+						update(value);
+					} else {
+						update(null);
+					}
+					break;
 				default:
 					update(Array.isArray(value) ? value[0] : value);
 					break;
