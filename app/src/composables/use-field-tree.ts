@@ -34,6 +34,7 @@ export function useFieldTree(
 		() => {
 			if (collection.value) {
 				tree.value = getFieldTreeForCollection(collection.value, 'any');
+				visitedRelations.value = [];
 				Object.values(tree.value).forEach((value) => {
 					loadFieldRelations(value.field);
 				});
