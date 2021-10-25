@@ -23,8 +23,8 @@
 						{{ t('default_value') }}
 					</div>
 
-					<v-checkbox block v-if="type === 'boolean'" v-model="defaultValue" :label="t('enabled')" />
-					<v-input v-else class="monospace" v-model="defaultValue" placeholder="NULL" />
+					<v-checkbox v-if="type === 'boolean'" v-model="defaultValue" block :label="t('enabled')" />
+					<v-input v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
 				</div>
 
 				<div class="field half-right">
@@ -32,7 +32,7 @@
 						{{ t('required') }}
 					</div>
 
-					<v-checkbox block v-model="required" :label="t('require_value_to_be_set')" />
+					<v-checkbox v-model="required" block :label="t('require_value_to_be_set')" />
 				</div>
 
 				<div class="field full">
@@ -48,7 +48,7 @@
 
 			<extension-options type="interface" :extension="chosenInterface" />
 
-			<v-button class="save" full-width :disabled="!readyToSave" @click="$emit('save')" :loading="saving">
+			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
 				{{ t('save') }}
 			</v-button>
 
@@ -127,13 +127,12 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .field-configuration {
-	background-color: var(--background-normal);
 	grid-column: 1 / span 4;
+	background-color: var(--background-normal);
 	border-top: var(--border-width) solid var(--border-normal);
 	border-bottom: var(--border-width) solid var(--border-normal);
 }
 
-// Extra bouding box ensures transition animation behaves properly
 .setup {
 	--form-vertical-gap: 20px;
 
@@ -155,10 +154,10 @@ export default defineComponent({
 }
 
 .toggle-advanced {
-	text-align: center;
 	width: 100%;
 	margin-top: 20px;
 	color: var(--foreground-subdued);
+	text-align: center;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

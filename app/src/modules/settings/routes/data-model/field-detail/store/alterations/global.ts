@@ -1,4 +1,4 @@
-import { set, get } from 'lodash';
+import { set } from 'lodash';
 import { State, StateUpdates } from '../types';
 import { getInterfaces } from '@/interfaces';
 

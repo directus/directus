@@ -1,13 +1,13 @@
 <template>
 	<v-input
 		key="related-collection-select"
-		:modelValue="modelValue"
-		@update:model-value="$emit('update:modelValue', $event)"
+		:model-value="modelValue"
 		:class="{ matches: collectionExists }"
 		db-safe
 		:nullable="false"
 		:disabled="disabled"
 		:placeholder="t('collection') + '...'"
+		@update:model-value="$emit('update:modelValue', $event)"
 	>
 		<template v-if="!disabled" #append>
 			<v-menu show-arrow placement="bottom-end">

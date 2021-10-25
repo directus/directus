@@ -164,7 +164,7 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+		const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
 
 		const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
 		const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');

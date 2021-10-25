@@ -177,10 +177,10 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
+		background-color: var(--background-page);
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: all var(--fast) var(--transition);
-		background-color: var(--background-page);
 
 		&::before {
 			position: absolute;

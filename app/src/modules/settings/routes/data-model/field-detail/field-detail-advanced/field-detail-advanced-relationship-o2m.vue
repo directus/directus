@@ -120,7 +120,7 @@ import { useFieldsStore } from '@/stores';
 
 export default defineComponent({
 	components: { RelatedCollectionSelect, RelatedFieldSelect },
-	setup(props) {
+	setup() {
 		const { t } = useI18n();
 
 		const fieldDetailStore = useFieldDetailStore();
@@ -132,7 +132,7 @@ export default defineComponent({
 		const onDelete = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
 		const onDeselect = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
 
-		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+		const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
 
 		const isExisting = computed(() => editing.value !== '+');
 		const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);

@@ -11,6 +11,7 @@ import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
+	emits: ['save'],
 	setup() {
 		const fieldDetailStore = useFieldDetailStore();
 		const { saving } = storeToRefs(fieldDetailStore);

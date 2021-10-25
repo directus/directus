@@ -1,5 +1,5 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
-import { set, get } from 'lodash';
+import { set } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {

@@ -1,6 +1,6 @@
 <template>
 	<div class="relationship">
-		<div class="field half-left" v-if="localType === 'm2o'">
+		<div v-if="localType === 'm2o'" class="field half-left">
 			<div class="label type-label">
 				{{ t('related_collection') }}
 			</div>
@@ -26,7 +26,7 @@
 			</div>
 		</template>
 
-		<div class="field half-left" v-if="localType === 'm2m'">
+		<div v-if="localType === 'm2m'" class="field half-left">
 			<div class="label type-label">
 				{{ t('related_collection') }}
 			</div>
@@ -34,7 +34,7 @@
 			<related-collection-select v-model="relatedCollectionM2O" />
 		</div>
 
-		<div class="field half-left" v-if="localType === 'translations'">
+		<div v-if="localType === 'translations'" class="field half-left">
 			<div class="label type-label">
 				{{ t('languages_collection') }}
 			</div>
