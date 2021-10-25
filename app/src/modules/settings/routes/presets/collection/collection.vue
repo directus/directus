@@ -252,7 +252,7 @@ export default defineComponent({
 			return { headers };
 		}
 
-		function onRowClick(item: Preset) {
+		function onRowClick({ item }: { item: Preset }) {
 			if (selection.value.length === 0) {
 				router.push(`/settings/presets/${item.id}`);
 			} else {

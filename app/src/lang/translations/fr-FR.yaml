@@ -50,6 +50,7 @@ indeterminate: Indéterminé
 edit_collection: Modifier la collection
 exclusive: Exclusif
 children: Les enfants
+db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer'
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
 required: Obligatoire
@@ -250,6 +251,7 @@ invalid_item: Élément invalide
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
+no_translations: Aucune traduction
 note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un placeholder...
@@ -361,6 +363,7 @@ zoom: Zoom
 download: Télécharger
 open: Ouvrir
 open_in_new_window: Ouvrir dans une nouvelle fenêtre
+open_folder: Ouvrir le dossier "{folder}"
 foreground_color: Couleur du premier plan
 background_color: Couleur de fond
 upload_from_device: Télécharger un fichier depuis l'appareil
@@ -434,6 +437,7 @@ no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
+activity_item: Flux d'activité
 action: Action
 ip_address: Adresse IP
 user_agent: Agent utilisateur
@@ -522,6 +526,8 @@ all_users: Tous les utilisateurs
 delete_collection: Supprimer la collection
 update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
+make_collection_visible: Rendre la collection visible
+make_collection_hidden: Rendre la collection cachée
 start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
 one_item: '1 élément'
@@ -611,7 +617,9 @@ all_files: Tous les fichiers
 my_files: Mes fichiers
 recent_files: Fichiers Récents
 create_folder: Créer un Dossier
+edit_folder: Modifier le dossier
 folder_name: Nom du dossier...
+folder_key: Clé du dossier...
 add_file: Ajouter un fichier
 replace_file: Remplacer le fichier
 no_results: Aucun résultat
@@ -812,10 +820,12 @@ system_fields_locked: Les champs système sont verrouillés et ne peuvent pas ê
 directus_collection:
   directus_activity: Journaux de responsabilité pour tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
+  directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
+  directus_panels: Panneaux individuels dans les tableaux de bord Insights
   directus_permissions: Sélectionner les permissions pour chaque groupe
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
@@ -901,6 +911,7 @@ fields:
     role: Rôle
     token: Token
     token_placeholder: Entrez un jeton d'accès sécurisé...
+    provider: Fournisseur
     last_page: Dernière page
     last_access: Dernier accès
   directus_settings:
@@ -1284,9 +1295,6 @@ interfaces:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
     zoom: Zoom
-    geometry_type: Type de géométrie
-    geometry_format: Format géométrique
-    default_view: Vue par défaut
     invalid_options: Options non valides
     invalid_format: Format invalide ({format})
     unexpected_geometry: '{expected} attendu, reçu {got}.'
@@ -1513,13 +1521,11 @@ layouts:
     layers: Afficher...
     edit_custom_layers: Modifier la couche
     cluster_options: Options de regroupement
-    cluster: Activer le clustering
     cluster_radius: Rayon de grappe
     cluster_minpoints: Taille minimale du cluster
     cluster_maxzoom: Zoom maximum pour la grappe
     field: Géométrie
     invalid_geometry: Géométrie invalide
-    auto_location_filter: Toujours filtrer les données pour afficher les limites
     search_this_area: Chercher dans cette zone
     clear_data_filter: Réinitialiser le filtre
     clear_location_filter: Réinitialiser le filtre de localisation

@@ -211,16 +211,18 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
-			const token = req.cookies[`oauth2.${providerName}`];
+			let tokenData;
 
-			if (!token) {
+			try {
+				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
+					verifier: string;
+					redirect?: string;
+				};
+			} catch (e) {
 				throw new InvalidCredentialsException();
 			}
 
-			const { verifier, redirect } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
-				verifier: string;
-				redirect: string;
-			};
+			const { verifier, redirect } = tokenData;
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
@@ -236,10 +238,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				const { code } = req.query;
-
-				if (!code) {
-					logger.warn(`Couldn't extract oAuth2 code from query: ${JSON.stringify(req.query)}`);
+				if (!req.query.code) {
+					logger.warn(`Couldn't extract OAuth2 code from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {

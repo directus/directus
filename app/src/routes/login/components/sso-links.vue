@@ -44,8 +44,8 @@ export default defineComponent({
 					name: formatTitle(provider.name),
 					link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
 						location.search,
-						'?continue'
-					)}`,
+						''
+					)}?continue`,
 					icon: provider.icon ?? 'account_circle',
 				}));
 		});

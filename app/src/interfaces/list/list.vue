@@ -131,7 +131,9 @@ export default defineComponent({
 		const drawerOpen = computed(() => active.value !== null);
 		const { value } = toRefs(props);
 
-		const templateWithDefaults = computed(() => props.template || `{{${props.fields[0].field}}}`);
+		const templateWithDefaults = computed(() =>
+			props.template || props.fields?.[0]?.field ? `{{${props.fields[0].field}}}` : ''
+		);
 
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
