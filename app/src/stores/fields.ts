@@ -210,10 +210,18 @@ export const useFieldsStore = defineStore({
 			}
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
+			const relationsStore = useRelationsStore();
+
 			const stateClone = [...this.fields];
+			const relationsStateClone = [...relationsStore.relations];
 
 			this.fields = this.fields.filter((field) => {
 				if (field.field === fieldKey && field.collection === collectionKey) return false;
+				return true;
+			});
+
+			relationsStore.relations = relationsStore.relations.filter((relation) => {
+				if (relation.collection === collectionKey && relation.field === fieldKey) return false;
 				return true;
 			});
 
@@ -221,6 +229,7 @@ export const useFieldsStore = defineStore({
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
 			} catch (err: any) {
 				this.fields = stateClone;
+				relationsStore.relations = relationsStateClone;
 				unexpectedError(err);
 			}
 		},
