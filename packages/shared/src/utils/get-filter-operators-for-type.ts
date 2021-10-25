@@ -68,14 +68,14 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 
 		default:
 			return [
+				'contains',
+				'ncontains',
 				'eq',
 				'neq',
 				'lt',
 				'lte',
 				'gt',
 				'gte',
-				'contains',
-				'ncontains',
 				'between',
 				'nbetween',
 				'empty',

@@ -164,7 +164,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value?.[0].startsWith('-')) {
+				if (!sort.value?.[0]) {
+					return null;
+				} else if (sort.value?.[0].startsWith('-')) {
 					return { by: sort.value[0].substring(1), desc: true };
 				} else {
 					return { by: sort.value[0], desc: false };
@@ -257,7 +259,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				getFieldDisplay,
 			};
 
-			function onRowClick(item: Item) {
+			function onRowClick({ item, event }: { item: Item; event: PointerEvent }) {
 				if (props.readonly === true || !primaryKeyField.value) return;
 
 				const primaryKey = item[primaryKeyField.value.field];
@@ -269,12 +271,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						selection.value = selection.value.filter((item) => item !== primaryKey);
 					}
 				} else {
-					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					const next = router.resolve(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+
+					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
+					else router.push(next);
 				}
 			}
 
 			function onSortChange(newSort: { by: string; desc: boolean }) {
 				let sortString = newSort.by;
+				if (!newSort.by) {
+					sort.value = [];
+					return;
+				}
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}
