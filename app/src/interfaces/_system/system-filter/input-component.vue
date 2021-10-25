@@ -10,11 +10,21 @@
 	<input
 		v-else-if="is === 'interface-input'"
 		ref="inputEl"
-		:type="type"
+		type="text"
+		:pattern="inputPattern"
 		:value="value"
 		:style="{ width }"
 		placeholder="--"
 		@input="emitValueDebounced($event.target.value)"
+	/>
+	<v-select
+		v-else-if="is === 'select'"
+		inline
+		:items="choices"
+		:model-value="value"
+		allow-other
+		:placeholder="t('select')"
+		@update:model-value="emitValueDebounced($event)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
@@ -44,6 +54,12 @@ import { debounce } from 'lodash';
 import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+type Choice = {
+	text: string;
+	value: string | number;
+	children?: Choice[];
+};
+
 export default defineComponent({
 	props: {
 		is: {
@@ -57,6 +73,14 @@ export default defineComponent({
 		value: {
 			type: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
 			default: null,
+		},
+		focus: {
+			type: Boolean,
+			default: true,
+		},
+		choices: {
+			type: Array as PropType<Choice[]>,
+			default: () => [],
 		},
 	},
 	emits: ['input'],
@@ -76,26 +100,39 @@ export default defineComponent({
 		});
 
 		const width = computed(() => {
-			if (props.is === 'interface-input' && typeof props.value === 'string') {
-				return (props.value?.length >= 3 ? props.value.length + 1 : 3) + 'ch';
-			}
+			return (props.value?.toString().length || 2) + 1 + 'ch';
+		});
 
-			return 3 + 'ch';
+		const inputPattern = computed(() => {
+			switch (props.type) {
+				case 'integer':
+				case 'bigInteger':
+					return '[+-]?[0-9]+';
+				case 'decimal':
+				case 'float':
+					return '[+-]?[0-9]+\\.?[0-9]*';
+				case 'uuid':
+					return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+				default:
+					return '';
+			}
 		});
 
 		onMounted(() => {
-			inputEl.value?.focus();
+			if (props.focus) inputEl.value?.focus();
 		});
 
 		const emitValueDebounced = debounce((val: unknown) => emitValue(val), 250);
 
-		return { displayValue, width, t, emitValueDebounced, inputEl };
+		return { displayValue, width, t, emitValueDebounced, inputEl, inputPattern };
 
 		function emitValue(val: unknown) {
 			if (val === '') {
 				emit('input', null);
 			} else {
-				emit('input', val);
+				if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
+					emit('input', val);
+				}
 			}
 		}
 	},
@@ -140,6 +177,7 @@ input {
 	color: var(--primary);
 	font-family: var(--family-monospace);
 	line-height: 1em;
+	background-color: var(--background-page);
 	border: none;
 
 	&::placeholder {

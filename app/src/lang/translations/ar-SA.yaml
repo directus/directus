@@ -50,7 +50,6 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
-db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
 show_archived_items: أظهر العناصر المؤرشفة
 edited: تم تعديل القيمة
 required: مطلوب
@@ -407,6 +406,9 @@ copy: نسخ
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+action: الإجراء
+ip_address: عنوان IP
+user_agent: وكيل المستخدم
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
 add_filter: إضافة فلتر
@@ -793,8 +795,10 @@ field_options:
     collection_setup: لا توجد مجموعات الإعداد
     singleton: معاملته ككائن واحد
     language: لغة
+    translation: الترجمة
+    collection_name: اسم المجموعة
     archive_divider: أرشفة
-    divider: رتب
+    sort_divider: رتب
   directus_roles:
     fields:
       icon_name: أيقونة
@@ -1011,6 +1015,8 @@ interfaces:
   input-autocomplete-api:
     rate: معدل
 displays:
+  translations:
+    translations: الترجمة
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل

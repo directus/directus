@@ -36,7 +36,6 @@ enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentica
 add_field: Tambah Kolom
 role_name: Nama Peran
 branch: Cabang
-db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
 edited: Nilai Diedit
 required: Diperlukan
@@ -374,6 +373,9 @@ no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini un
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
+action: Aksi
+ip_address: Alamat IP
+user_agent: Agen pengguna
 webhooks: Webhooks
 field_width: Lebar Bidang
 add_filter: Tambah Filter
@@ -564,7 +566,7 @@ field_options:
   directus_collections:
     language: Bahasa
     archive_divider: Arsip
-    divider: Sortir
+    sort_divider: Sortir
   directus_roles:
     fields:
       icon_name: Ikon
@@ -661,6 +663,8 @@ interfaces:
     modes:
       dropdown: Dropwdown
 displays:
+  translations:
+    translations: Terjemahan
   boolean:
     boolean: Boolean
   collection:

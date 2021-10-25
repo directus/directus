@@ -142,12 +142,12 @@
 		</template>
 
 		<template #navigation>
-			<collections-navigation-search />
-			<collections-navigation />
+			<collections-navigation :current-collection="collection" />
 		</template>
 
 		<v-form
 			ref="form"
+			:key="collection"
 			v-model="edits"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
@@ -195,7 +195,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
-import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
@@ -215,7 +214,6 @@ export default defineComponent({
 	name: 'CollectionsItem',
 	components: {
 		CollectionsNavigation,
-		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
@@ -444,7 +442,6 @@ export default defineComponent({
 				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 				}

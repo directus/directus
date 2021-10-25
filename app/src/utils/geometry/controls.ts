@@ -113,10 +113,6 @@ export class BoxSelectControl {
 		const rect = container.getBoundingClientRect();
 		// @ts-ignore
 		return new Point(event.clientX - rect.left - container.clientLeft, event.clientY - rect.top - container.clientTop);
-		// return {
-		// 	x: event.clientX - rect.left - container.clientLeft,
-		// 	y: event.clientY - rect.top - container.clientTop
-		// };
 	}
 
 	onKeyDown(event: KeyboardEvent): void {
@@ -134,6 +130,10 @@ export class BoxSelectControl {
 		this.shiftPressed = yes;
 		this.selectButton.activate(yes);
 		this.map!.fire(`select.${yes ? 'enable' : 'disable'}`);
+	}
+
+	showUnselect(yes: boolean): void {
+		this.unselectButton.show(yes);
 	}
 
 	onKeyUp(event: KeyboardEvent): void {

@@ -411,7 +411,7 @@ export class GraphQLService {
 							type,
 							description: field.note,
 							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? field.field];
+								return obj[field.field];
 							},
 						};
 
@@ -879,6 +879,13 @@ export class GraphQLService {
 					type: [AggregatedFunctions[collection.collection]],
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
+						filter: ReadableCollectionFilterTypes[collection.collection],
+						search: {
+							type: GraphQLString,
+						},
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
@@ -1364,7 +1371,7 @@ export class GraphQLService {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
 
-					current = selection.alias?.value ?? selection.name.value;
+					current = selection.name.value;
 
 					if (parent) {
 						current = `${parent}.${current}`;

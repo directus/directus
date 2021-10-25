@@ -9,7 +9,6 @@ field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
 add_field: Legg til felt
 role_name: Rollenavn
-db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
 show_archived_items: Vis arkiverte elementer
 edited: Verdi endret
 required: Påkrevd
@@ -291,6 +290,8 @@ select_a_collection: Velg en Kolleksjon
 active: Aktiv
 users: Brukere
 activity: Aktivitet
+ip_address: IP-addresse
+user_agent: Brukeragent
 webhooks: Webhooks
 field_width: Feltbredde
 add_filter: Legg til filter
@@ -421,7 +422,7 @@ field_options:
   directus_collections:
     language: Språk
     archive_divider: Arkiv
-    divider: Sorter
+    sort_divider: Sorter
   directus_roles:
     fields:
       icon_name: Ikon
@@ -497,6 +498,8 @@ interfaces:
   boolean:
     label_default: Aktivert
 displays:
+  translations:
+    translations: Oversettelser
   boolean:
     boolean: Sann/usann
   collection:

@@ -32,7 +32,6 @@ add_field: Προσθήκη Πεδίου
 role_name: Όνομα Ρόλου
 exclusive: Αποκλειστικά
 children: Παιδιά
-db_only_click_to_configure: 'Βάση δεδομένων μόνο: Κάντε κλικ για ρύθμιση '
 show_archived_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
 edited: Η Τιμή Επεξεργάστηκε
 required: Υποχρεωτικό
@@ -134,6 +133,9 @@ comments: Σχόλια
 create_collection: Δημιουργία Συλλογής
 users: Χρήστες
 activity: Δραστηριότητα
+action: Ενέργεια
+ip_address: Διεύθυνση IP
+user_agent: Πράκτορας χρήστη
 field_width: Πλάτος πεδίου
 duration: Διάρκεια
 status: Κατάσταση
@@ -231,6 +233,7 @@ field_options:
     create: Δημιουργία
     update: Ενημέρωση
   directus_collections:
+    translation: Μετάφραση
     archive_divider: Αρχειοθέτηση
   directus_roles:
     fields:

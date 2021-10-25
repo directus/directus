@@ -50,7 +50,7 @@ indeterminate: Неопределен
 edit_collection: Редактиране на колекция
 exclusive: Изключително
 children: Дъщерен
-db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация '
+db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация'
 show_archived_items: Включително архивираните
 edited: Стойността е редактирана
 required: Задължително
@@ -251,6 +251,7 @@ invalid_item: Невалиден запис
 next: Напред
 field_name: Име на поле
 translations: Преводи
+no_translations: Няма преводи
 note: Бележка
 enter_a_value: Въвеждане на стойност...
 enter_a_placeholder: Въвеждане на подсказка...
@@ -326,6 +327,8 @@ date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Минути
+hours: Часа
 month: Месец
 year: Година
 select_all: Избиране на всичко
@@ -360,6 +363,7 @@ zoom: Мащабиране
 download: Изтегляне
 open: Отваряне
 open_in_new_window: Отваряне в нов прозорец
+open_folder: Отваряне на папка "{folder}"
 foreground_color: Основен цвят
 background_color: Цвят на фона
 upload_from_device: Добавяне на файл от устройство
@@ -433,6 +437,9 @@ no_other_dashboards_copy: Все още нямате други табла.
 inactive: Неактивен
 users: Потребители
 activity: Активности
+action: Действие
+ip_address: IP адрес
+user_agent: Потребителски агент
 webhooks: Уеб-куки
 decimals: Десетични знаци
 value_decimals: Десетични знаци
@@ -518,6 +525,8 @@ all_users: Всички потребители
 delete_collection: Изтриване на колекция
 update_collection_success: Обновена колекция
 delete_collection_success: Изтрита колекция
+make_collection_visible: Показване на колекцията
+make_collection_hidden: Скриване на колекцията
 start_end_of_count_items: '{start}-{end} от {count} записа'
 start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
 one_item: '1 запис'
@@ -607,7 +616,9 @@ all_files: Всички файлове
 my_files: Мои файлове
 recent_files: Последни файлове
 create_folder: Създаване на папка
+edit_folder: Редакция на папка
 folder_name: Име на папка...
+folder_key: Ключ за папката...
 add_file: Добавяне на файл
 replace_file: Заместване на файл
 no_results: Няма резултати
@@ -808,10 +819,12 @@ system_fields_locked: Системните полета са заключени 
 directus_collection:
   directus_activity: Профилирани логове за всички събития
   directus_collections: Допълнителна кофигурация и данни
+  directus_dashboards: Табла в модула за задълбочен анализ
   directus_fields: Допълнителна кофигурация и данни
   directus_files: Мета данни за всички файлове
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
+  directus_panels: Панели в таблото на задълбочения анализ
   directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
   directus_relations: Релационни настройки и мета данни
@@ -897,6 +910,8 @@ fields:
     role: Роля
     token: Токен
     token_placeholder: Въвеждане на сигурен токен...
+    provider: Доставчик
+    external_identifier: Външен идентификатор
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
@@ -909,6 +924,7 @@ fields:
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
     mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
@@ -973,6 +989,7 @@ field_options:
     additional_transforms: Допълнителни трансформации
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
@@ -993,15 +1010,21 @@ field_options:
     hidden_label: Скриване в приложението
     singleton: Използване като единствен запис
     language: Език
-    translation: Въвеждане на превод...
+    translation: Превод
+    translation_placeholder: Въвеждане на превод...
+    collection_name: Име на колекцията
+    singular_unit: Единствено число
+    plural_unit: Множествено число
     archive_divider: Архивиране
-    archive_field: Избор на поле...
+    archive_field: Архивиране по поле
+    archive_field_placeholder: Избор на поле...
     archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
-    divider: Сортиране
+    sort_divider: Сортиране
     sort_field: Избор на поле...
     accountability_divider: Профилиране
+    duplication_divider: Дублиране
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -1058,6 +1081,9 @@ generate_and_save_uuid: Генериране и запазване на UUID
 save_current_user_id: Запазване на ID на текущия потребител
 save_current_user_role: Запазване на ролята на текущия потребител
 save_current_datetime: Запазване на текущия дата/час
+always_open: Винаги отворена
+start_open: Отворена в началото
+start_collapsed: Затворена в началото
 block: Блок
 inline: Вложен
 comment: Коментиране
@@ -1130,6 +1156,7 @@ sort_desc: Низходящо сортиране
 template: Шаблон
 require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
+translation_placeholder: Въвеждане на превод...
 value: Стойност
 view_project: Преглед на проект
 report_error: Докладване на грешка
@@ -1393,6 +1420,13 @@ interfaces:
     start_open: Отворена в началото
     start_closed: Затворена в началото
 displays:
+  translations:
+    translations: Преводи
+    description: Преглед на преводите
+    enable: Включване
+    user_language: Използване на езика на потребителя
+    default_language: Език по подразбиране
+    language_field: Поле за език
   boolean:
     boolean: Булев
     description: Показване на активно и неактивно състояние
@@ -1504,16 +1538,16 @@ layouts:
     layers: Слоеве
     edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
-    cluster: Активиране на групирането
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
     field: Геометрия
     invalid_geometry: Невалидна геометрия
-    auto_location_filter: Филтриране на данните спрямо границите
+    auto_location_filter: Автоматично филтриране според изгледа
     search_this_area: Търсене в тази зона
     clear_data_filter: Изчистване на филтрирането
-    clear_location_filter: Изчистване на локацията
+    clear_location_filter: Изчистване на филтрирането
+    no_results_here: Няма резултати в тази зона
 panels:
   metric:
     name: Метричен Индикатор

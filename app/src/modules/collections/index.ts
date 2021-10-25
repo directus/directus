@@ -5,7 +5,12 @@ import { NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
-import Overview from './routes/overview.vue';
+import NoCollections from './routes/no-collections.vue';
+import { useCollectionsStore } from '@/stores';
+import { Collection } from '@directus/shared/types';
+import { orderBy, isNil } from 'lodash';
+import { useNavigation } from './composables/use-navigation';
+import { ref } from 'vue';
 
 const checkForSystem: NavigationGuard = (to, from) => {
 	if (!to.params?.collection) return;
@@ -58,9 +63,53 @@ export default defineModule({
 	icon: 'box',
 	routes: [
 		{
-			name: 'collections-overview',
+			name: 'no-collections',
 			path: '',
-			component: Overview,
+			component: NoCollections,
+			beforeEnter() {
+				const collectionsStore = useCollectionsStore();
+				const { activeGroups } = useNavigation(ref(null));
+
+				if (collectionsStore.visibleCollections.length === 0) return;
+
+				const rootCollections = orderBy(
+					collectionsStore.visibleCollections.filter((collection) => {
+						return isNil(collection?.meta?.group);
+					}),
+					['meta.sort', 'collection']
+				);
+
+				let firstCollection = findFirst(rootCollections);
+
+				// If the first collection couldn't be found in any open collections, try again but with closed collections
+				firstCollection = findFirst(rootCollections, { skipClosed: false });
+
+				if (!firstCollection) return;
+
+				return `/collections/${firstCollection.collection}`;
+
+				function findFirst(collections: Collection[], { skipClosed } = { skipClosed: true }): Collection | void {
+					for (const collection of collections) {
+						if (collection.schema) {
+							return collection;
+						}
+
+						// Don't default to a collection in a currently closed folder
+						if (skipClosed && activeGroups.value.includes(collection.collection) === false) continue;
+
+						const children = orderBy(
+							collectionsStore.visibleCollections.filter((childCollection) => {
+								return collection.collection === childCollection.meta?.group;
+							}),
+							['meta.sort', 'collection']
+						);
+
+						const first = findFirst(children);
+
+						if (first) return first;
+					}
+				}
+			},
 		},
 		{
 			path: ':collection',
@@ -73,6 +122,7 @@ export default defineModule({
 					props: (route) => ({
 						collection: route.params.collection,
 						bookmark: route.query.bookmark,
+						archive: 'archive' in route.query,
 					}),
 					beforeEnter: checkForSystem,
 				},

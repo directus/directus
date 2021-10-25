@@ -46,14 +46,12 @@ export function usePopper(
 
 	function start() {
 		return new Promise((resolve) => {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
 				placement: options.value.attached ? 'bottom-start' : options.value.placement,
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
 			popperInstance.value.forceUpdate();
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			observer.observe(popper.value!, {
 				attributes: false,
 				childList: true,

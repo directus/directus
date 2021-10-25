@@ -1,6 +1,7 @@
 <template>
 	<div ref="el" v-tooltip="hasEllipsis && text" class="v-text-overflow">
-		{{ text }}
+		<v-highlight v-if="highlight" :query="highlight" :text="text" />
+		<template v-else>{{ text }}</template>
 	</div>
 </template>
 
@@ -13,6 +14,10 @@ export default defineComponent({
 		text: {
 			type: [String, Number, Array, Object, Boolean],
 			required: true,
+		},
+		highlight: {
+			type: String,
+			default: null,
 		},
 	},
 	setup() {

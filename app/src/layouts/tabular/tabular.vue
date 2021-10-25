@@ -81,10 +81,11 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ComponentPublicInstance, defineComponent, PropType, ref } from 'vue';
+import { ComponentPublicInstance, defineComponent, PropType, ref, inject, Ref, watch } from 'vue';
 import { useSync } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import { Field, Item, Collection, Filter } from '@directus/shared/types';
+import { Collection } from '@/types';
+import { Field, Item, Filter } from '@directus/shared/types';
 import { HeaderRaw } from '@/components/v-table/types';
 
 export default defineComponent({
@@ -199,7 +200,14 @@ export default defineComponent({
 		const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
 		const limitWritable = useSync(props, 'limit', emit);
 
+		const mainElement = inject<Ref<Element | undefined>>('main-element');
+
 		const table = ref<ComponentPublicInstance>();
+
+		watch(
+			() => props.page,
+			() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
+		);
 
 		useShortcut(
 			'meta+a',

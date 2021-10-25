@@ -30,7 +30,6 @@ field_name_translations: Översättningar fältnamn
 enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
 add_field: Lägg till fält
 role_name: Rollens namn
-db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
 show_archived_items: Visa arkiverade objekt
 edited: Redigerat värde
 required: Obligatoriskt
@@ -364,6 +363,9 @@ active: Aktiv
 copy: Kopiera
 users: Användare
 activity: Händelser
+action: Åtgärd
+ip_address: IP-adress
+user_agent: Användaragent
 webhooks: Webhooks
 field_width: Fältbredd
 add_filter: Lägg till filter
@@ -779,8 +781,10 @@ field_options:
     collection_setup: Konfiguration av kollektion
     singleton: Behandla som ett enskilt objekt
     language: Språk
+    translation: Översättning
+    collection_name: Namn kollektion
     archive_divider: Arkivera
-    divider: Sortera
+    sort_divider: Sortera
   directus_roles:
     fields:
       icon_name: Ikon
@@ -946,6 +950,8 @@ interfaces:
       dropdown: Rullgardinsmeny
       modal: Popup
 displays:
+  translations:
+    translations: Översättningar
   boolean:
     boolean: Boolean
     description: Visa på och av lägen

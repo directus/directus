@@ -30,7 +30,6 @@ field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
 role_name: Roolin nimi
-db_only_click_to_configure: 'Vain tietokanta: Klikkaa määrittääksesi '
 show_archived_items: Näytä arkistoidut kohteet
 edited: Arvoa muokattu
 required: Vaadittu
@@ -375,6 +374,9 @@ active: Aktiivinen
 copy: Kopioi
 users: Käyttäjät
 activity: Tapahtuma
+action: Toiminto
+ip_address: IP-osoite
+user_agent: Asiakasohjelma
 webhooks: Webhookit
 field_width: Kentän leveys
 add_filter: Lisää suodatin
@@ -803,8 +805,10 @@ field_options:
     collection_setup: Kokoelman asetukset
     singleton: Käsittele yhtenä objektina
     language: Kieli
+    translation: Käännös
+    collection_name: Kokoelman nimi
     archive_divider: Arkistoi
-    divider: Järjestä
+    sort_divider: Järjestä
   directus_roles:
     fields:
       icon_name: Kuvake
@@ -1091,6 +1095,8 @@ interfaces:
     trigger: Laukaisija
     rate: Rajoita
 displays:
+  translations:
+    translations: Käännökset
   boolean:
     boolean: Totuusarvo
     description: Näytä päällä- ja pois-tilat

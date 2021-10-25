@@ -349,7 +349,6 @@ export default defineComponent({
 				}
 
 				const value: FormattedPreset = {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					id: preset.value.id!,
 					collection: preset.value.collection,
 					layout: preset.value.layout,
@@ -594,6 +593,7 @@ export default defineComponent({
 
 :deep(.layout-options) {
 	--form-vertical-gap: 24px;
+
 	@include form-grid;
 }
 

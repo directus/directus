@@ -36,7 +36,6 @@ leaf: Lapas
 indeterminate: Neapibrėžta
 exclusive: Išskirtinis
 children: Vaikai
-db_only_click_to_configure: 'Tik duomenų bazė: spausti, kad konfigūruoti '
 show_archived_items: Rodyti archyvuotus elementus
 edited: Vertė redaguota
 required: Privalomas
@@ -369,6 +368,9 @@ active: Aktyvus
 copy: Kopijuoti
 users: Vartotojai
 activity: Veiksmas
+action: Veiksmas
+ip_address: IP adresas
+user_agent: Naršyklė
 webhooks: '„Webhook“''ai'
 field_width: Laukelio plotis
 add_filter: Pridėti filtrą
@@ -743,8 +745,10 @@ field_options:
     collection_setup: Kolekcijos konfigūracija
     singleton: Laikyti vienu objektu
     language: Kalba
+    translation: Vertimas
+    collection_name: Kolekcijos pavadinimas
     archive_divider: Archyvuoti
-    divider: Rūšiuoti
+    sort_divider: Rūšiuoti
   directus_roles:
     fields:
       icon_name: Ikona
@@ -905,6 +909,8 @@ interfaces:
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
 displays:
+  translations:
+    translations: Vertimai
   boolean:
     boolean: Loginis
     description: Rodyti įjungimo/išjungimo būsenas

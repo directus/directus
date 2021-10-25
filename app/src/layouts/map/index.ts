@@ -4,7 +4,7 @@ import MapOptions from './options.vue';
 import MapActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref, watch, Ref } from 'vue';
+import { toRefs, computed, ref, watch } from 'vue';
 
 import { toGeoJSON } from '@/utils/geometry';
 import { layers } from './style';
@@ -16,6 +16,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 import { cloneDeep, merge } from 'lodash';
 
@@ -27,8 +28,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: MapLayout,
 	slots: {
 		options: MapOptions,
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		sidebar: () => {},
+		sidebar: () => undefined,
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
@@ -44,9 +44,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const page = syncOption(layoutQuery, 'page', 1);
-		const limit = syncOption(layoutQuery, 'limit', 1000);
-		const sort = syncOption(layoutQuery, 'sort', [fieldsInCollection.value?.[0]?.field]);
+		const page = syncRefProperty(layoutQuery, 'page', 1);
+		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
+		const sort = syncRefProperty(layoutQuery, 'sort', [fieldsInCollection.value?.[0]?.field]);
 
 		const locationFilter = ref<Filter>();
 
@@ -61,11 +61,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const customLayerDrawerOpen = ref(false);
 
-		const cameraOptions = syncOption(layoutOptions, 'cameraOptions', undefined);
-		const customLayers = syncOption(layoutOptions, 'customLayers', layers);
-		const autoLocationFilter = syncOption(layoutOptions, 'autoLocationFilter', false);
-		const clusterData = syncOption(layoutOptions, 'clusterData', false);
-		const geometryField = syncOption(layoutOptions, 'geometryField', undefined);
+		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
+		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
+		const customLayers = syncRefProperty(layoutOptions, 'customLayers', layers);
+		const autoLocationFilter = syncRefProperty(layoutOptions, 'autoLocationFilter', false);
+		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
+		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
 		const geometryFormat = computed<GeometryFormat | undefined>({
 			get: () => layoutOptions.value?.geometryFormat,
 			set(newValue: GeometryFormat | undefined) {
@@ -120,8 +121,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const template = computed(() => {
-			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			return `{{ ${primaryKeyField.value?.field} }}`;
+			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
 		});
 
 		const queryFields = computed(() => {
@@ -165,17 +165,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function clearLocationFilter() {
 			shouldUpdateCamera.value = true;
 			locationFilterOutdated.value = false;
-
 			locationFilter.value = undefined;
+		}
 
+		function fitGeoJSONBounds() {
+			if (!geojson.value?.features.length) {
+				return;
+			}
+			shouldUpdateCamera.value = true;
+			locationFilterOutdated.value = false;
 			if (geojson.value) {
-				geojsonBounds.value = geojson.value.bbox;
+				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
 		}
 
 		function clearDataFilters() {
-			locationFilter.value = undefined;
-			search.value = null;
+			props?.clearFilters();
 		}
 
 		const shouldUpdateCamera = ref(false);
@@ -223,7 +228,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function onQueryChange() {
 			shouldUpdateCamera.value = true;
 			geojsonLoading.value = false;
-			page.value = 1;
 		}
 
 		function updateGeojson() {
@@ -232,7 +236,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
 					geojsonError.value = null;
-					geojson.value = toGeoJSON(items.value, geometryOptions.value, template.value);
+					geojson.value = toGeoJSON(items.value, geometryOptions.value);
 					geojsonLoading.value = false;
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
@@ -321,8 +325,25 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
+		const popupItem = ref<any>(null);
+		const popupPosition = ref<any>({ x: 0, y: 0 });
+		function updatePopup({ x, y, item }: { x: number; y: number; item: string | number }) {
+			const field = primaryKeyField.value?.field;
+			if (!field) {
+				return;
+			}
+			if (x && y) {
+				popupPosition.value = { x, y };
+			}
+			if (item === null) {
+				popupItem.value = null;
+			} else {
+				popupItem.value = items.value.find((i) => i[field] === item);
+			}
+		}
+
 		return {
-			template,
+			collection,
 			geojson,
 			directusSource,
 			directusLayers,
@@ -338,6 +359,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			handleSelect,
 			geometryFormat,
 			geometryField,
+			displayTemplate,
 			isGeometryFieldNative,
 			cameraOptions,
 			autoLocationFilter,
@@ -365,6 +387,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			clearLocationFilter,
 			clearDataFilters,
 			locationFilter,
+			fitGeoJSONBounds,
+			template,
+			popupItem,
+			popupPosition,
+			updatePopup,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -378,15 +405,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function toPage(newPage: number) {
 			page.value = newPage;
-		}
-
-		function syncOption<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T]) {
-			return computed<R[T]>({
-				get: () => ref.value?.[key] ?? defaultValue,
-				set: (value: R[T]) => {
-					ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
-				},
-			});
 		}
 	},
 });

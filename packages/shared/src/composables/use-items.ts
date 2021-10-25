@@ -77,11 +77,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 			if (!newCollection || !query) return;
 
-			if (newFilter !== oldFilter || newLimit !== oldLimit || newSort !== oldSort || newSearch !== oldSearch) {
+			if (
+				!isEqual(newFilter, oldFilter) ||
+				!isEqual(newSort, oldSort) ||
+				newLimit !== oldLimit ||
+				newSearch !== oldSearch
+			) {
 				page.value = 1;
 			}
 
-			if (isEqual(newCollection, oldCollection) === false) {
+			if (newCollection !== oldCollection) {
 				reset();
 			}
 
