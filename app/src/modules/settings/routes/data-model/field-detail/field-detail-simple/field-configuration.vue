@@ -122,7 +122,7 @@ export default defineComponent({
 
 .field-configuration {
 	grid-column: 1 / span 4;
-	background-color: var(--background-normal);
+	background-color: var(--background-subdued);
 	border-top: var(--border-width) solid var(--border-normal);
 	border-bottom: var(--border-width) solid var(--border-normal);
 }
