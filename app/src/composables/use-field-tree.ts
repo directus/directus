@@ -27,21 +27,21 @@ export function useFieldTree(
 
 	const tree = ref<FieldTree>({});
 
-	if (collection.value) {
-		tree.value = getFieldTreeForCollection(collection.value, 'any');
-	}
-
-	watch(collection, () => {
-		if (collection.value) {
-			tree.value = getFieldTreeForCollection(collection.value, 'any');
-		}
-	});
-
 	const visitedRelations = ref<string[][]>([]);
 
-	Object.values(tree.value).forEach((value) => {
-		loadFieldRelations(value.field);
-	});
+	watch(
+		collection,
+		() => {
+			if (collection.value) {
+				tree.value = getFieldTreeForCollection(collection.value, 'any');
+				visitedRelations.value = [];
+				Object.values(tree.value).forEach((value) => {
+					loadFieldRelations(value.field);
+				});
+			}
+		},
+		{ immediate: true }
+	);
 
 	const treeList = computed(() => treeToList(tree.value));
 

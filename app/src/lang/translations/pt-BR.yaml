@@ -1140,9 +1140,6 @@ interfaces:
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
   map:
     zoom: Zoom
-    geometry_type: Tipo de geometria
-    geometry_format: Formato da geometria
-    default_view: Visualização padrão
     invalid_options: Opções inválidas
     invalid_format: Formato inválido ({format})
     unexpected_geometry: Esperado {expected}, obtido {got}.

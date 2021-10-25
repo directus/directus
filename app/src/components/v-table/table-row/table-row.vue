@@ -6,7 +6,7 @@
 			'--table-row-height': height + 2 + 'px',
 			'--table-row-line-height': 1,
 		}"
-		@click="$emit('click')"
+		@click="$emit('click', $event)"
 	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />

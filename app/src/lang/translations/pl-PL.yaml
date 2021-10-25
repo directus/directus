@@ -50,6 +50,7 @@ indeterminate: Nieokreślony
 edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
+db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować'
 show_archived_items: Pokaż zarchiwizowane elementy
 edited: Wartość zmieniona
 required: Wymagane
@@ -250,6 +251,7 @@ invalid_item: Niepoprawny element
 next: Następny
 field_name: Nazwa pola
 translations: Tłumaczenia
+no_translations: Brak tłumaczeń
 note: Notatka
 enter_a_value: Wprowadź wartość...
 enter_a_placeholder: Wprowadź tekst zastępczy...
@@ -524,6 +526,8 @@ all_users: Wszyscy użytkownicy
 delete_collection: Usuń kolekcję
 update_collection_success: Zaktualizowana kolekcja
 delete_collection_success: Usunięta kolekcja
+make_collection_visible: Spraw, aby kolekcja była widoczna
+make_collection_hidden: Spraw, aby kolekcja była ukryta
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
@@ -613,7 +617,9 @@ all_files: Wszystkie pliki
 my_files: Moje pliki
 recent_files: Ostatnie pliki
 create_folder: Utwórz Folder
+edit_folder: Edytuj folder
 folder_name: Nazwa folderu...
+folder_key: Klucz folderu...
 add_file: Dodaj plik
 replace_file: Zastąp plik
 no_results: Brak wyników
@@ -1532,13 +1538,13 @@ layouts:
     layers: Warstwy
     edit_custom_layers: Edytuj warstwy
     cluster_options: Opcje klastrowania
-    cluster: Aktywuj klastrowanie
+    cluster: Klaster danych w pobliżu
     cluster_radius: Promień klastra
     cluster_minpoints: Minimalny rozmiar klastra
     cluster_maxzoom: Maksymalne powiększenie klastrów
     field: Geometria
     invalid_geometry: Nieprawidłowa geometria
-    auto_location_filter: Zawsze filtruj dane do wyświetlania granic
+    auto_location_filter: Automatyczne filtrowanie w widoku
     search_this_area: Przeszukaj ten obszar
     clear_data_filter: Wyczyść filtr danych
     clear_location_filter: Wyczyść filtr lokalizacji
