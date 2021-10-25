@@ -273,7 +273,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				} else {
 					const next = router.resolve(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
 
-					if (event.ctrlKey) window.open(next.href, '_blank');
+					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
 					else router.push(next);
 				}
 			}
