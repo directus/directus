@@ -50,6 +50,7 @@ indeterminate: Meghatározatlan
 edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
+db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához'
 show_archived_items: Archivált elemek megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
@@ -165,6 +166,8 @@ duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
 aggregate_function: Aggregáló függvény
 aggregate_precision: Aggregálás pontossága
+group_aggregation: Csoport aggregáció
+group_precision: Csoport precízió
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
@@ -245,6 +248,7 @@ invalid_item: Érvénytelen elem
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
+no_translations: Nincsenek fordítások
 note: Jegyzet
 enter_a_value: Adjon meg egy értéket...
 enter_a_placeholder: Adjon meg egy helyőrzőt...
@@ -320,6 +324,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM. d.
+minutes: Perc
+hours: Óra
 month: hónap
 year: év
 select_all: Összes kijelölése
@@ -354,6 +360,7 @@ zoom: Nagyítás
 download: Letöltés
 open: Megnyitás
 open_in_new_window: Megnyitás új ablakban
+open_folder: Nyissa meg a "{folder}" mappát
 foreground_color: Előtérszín
 background_color: Háttérszín
 upload_from_device: Fájl feltöltése Eszközről
@@ -427,6 +434,7 @@ no_other_dashboards_copy: Önnek még nincs másik irányítópultja.
 inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
+activity_item: Aktivitás elem
 action: Művelet
 ip_address: IP cím
 user_agent: Felhasználói ügynök
@@ -514,6 +522,8 @@ all_users: Összes felhasználó
 delete_collection: Gyűjtemény törlése
 update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
+make_collection_visible: A Gyűjtemény legyen látható
+make_collection_hidden: A Gyűjtemény legyen rejtett
 start_end_of_count_items: '{start}-{end} {count} elemből'
 start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
@@ -603,7 +613,9 @@ all_files: Minden fájl
 my_files: A saját fájljaim
 recent_files: Legutóbbi fájlok
 create_folder: Mappa létrehozása
+edit_folder: Mappa szerkesztése
 folder_name: Mappa neve...
+folder_key: Mappa kulcsa...
 add_file: Fájl hozzáadása
 replace_file: Fájl cseréje
 no_results: Nincs találat
@@ -892,6 +904,8 @@ fields:
     role: Szerepkör
     token: Token
     token_placeholder: Írja be a biztonságos hozzáférés tokenjét...
+    provider: Szolgáltató
+    external_identifier: Külső azonosító
     last_page: Utolsó oldal
     last_access: Utolsó hozzáférés
   directus_settings:
@@ -940,6 +954,7 @@ fields:
     ip_access: IP cím
     enforce_tfa: 2FA megkövetelése
     users: Felhasználók a szerepkörben
+    module_list: Modul navigáció felülbírálása
     collection_list: Gyűjtemény navigáció
   directus_webhooks:
     name: Név
@@ -990,6 +1005,7 @@ field_options:
     singleton: Egyetlen objektumként kezelendő
     language: Nyelv
     translation: Fordítás
+    translation_placeholder: Fordítás megadása...
     collection_name: Gyűjtemény neve
     archive_divider: Archiválás
     archive_field_placeholder: Mező kiválasztása...
@@ -1128,6 +1144,7 @@ sort_desc: Csökkenő sorrend
 template: Sablon
 require_value_to_be_set: Az érték beállítása kötelező
 translation: Fordítás
+translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
@@ -1274,9 +1291,6 @@ interfaces:
     map: Térkép
     description: Hely megadása térképen
     zoom: Nagyítás
-    geometry_type: Geometria típusa
-    geometry_format: Geometria formátuma
-    default_view: Alapértelmezett nézet
     invalid_options: Érvénytelen opciók
     invalid_format: Érvénytelen formátum ({format})
     unexpected_geometry: 'Elvárt: {expected}, kapott: {got}.'
@@ -1502,13 +1516,11 @@ layouts:
     layers: Rétegek
     edit_custom_layers: Rétegek szerkesztése
     cluster_options: Klaszterezés beállításai
-    cluster: Klaszterezés aktiválása
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
     field: Geometria
     invalid_geometry: Érvénytelen geometria
-    auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
     search_this_area: Keresés ezen a területen
 panels:
   metric:

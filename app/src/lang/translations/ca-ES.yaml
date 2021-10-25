@@ -1115,9 +1115,6 @@ interfaces:
     map: Mapa
     description: Selecciona una localització al mapa
     zoom: Zoom
-    geometry_type: Tipus geometria
-    geometry_format: Format geometria
-    default_view: Vista predeterminada
     invalid_options: Opcions no vàlides
     invalid_format: Format no vàlid ({format})
     unexpected_geometry: Esperat {expected}, obtingut {got}.
@@ -1343,7 +1340,6 @@ layouts:
     layers: Capes
     edit_custom_layers: Edita capes
     cluster_options: Opcions de clustering
-    cluster: Activa el clustering
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering

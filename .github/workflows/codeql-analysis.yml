@@ -1,16 +1,7 @@
-name: "CodeQL"
+name: CodeQL Analysis
 
 on:
-  push:
-    branches: [ main ]
-    # Don't run on translation updates
-    paths-ignore:
-     - 'app/src/lang/translations/*.yaml'
-  pull_request:
-    branches: [ main ]
-    # Don't run on translation updates
-    paths-ignore:
-     - 'app/src/lang/translations/*.yaml'
+  workflow_call:
   schedule:
     - cron: '42 23 * * 5'
 
@@ -22,23 +13,22 @@ jobs:
       actions: read
       contents: read
       security-events: write
-
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]
-
+        language:
+          - javascript
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: ${{ matrix.language }}
-        
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v1

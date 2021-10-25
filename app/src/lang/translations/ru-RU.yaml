@@ -1283,9 +1283,6 @@ interfaces:
     map: Карта
     description: Указать место на карте
     zoom: Масштаб
-    geometry_type: Тип геометрии
-    geometry_format: Формат
-    default_view: Вид по умолчанию
     invalid_options: Некорректные настройки
     invalid_format: Некорректный формат ({format})
     unexpected_geometry: Ожидалось {expected}, а встретилось {got}.
@@ -1512,13 +1509,11 @@ layouts:
     layers: Слои
     edit_custom_layers: Редактировать слои
     cluster_options: Настройки кластеров
-    cluster: Использовать кластеры
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
     field: Геометрия
     invalid_geometry: Некорректная геометрия
-    auto_location_filter: Всегда фильтровать данные к границам отображения
     search_this_area: Искать в этой области
 panels:
   metric:
