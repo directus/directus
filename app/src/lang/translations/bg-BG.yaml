@@ -50,6 +50,7 @@ indeterminate: Неопределен
 edit_collection: Редактиране на колекция
 exclusive: Изключително
 children: Дъщерен
+db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация'
 show_archived_items: Включително архивираните
 edited: Стойността е редактирана
 required: Задължително
@@ -250,6 +251,7 @@ invalid_item: Невалиден запис
 next: Напред
 field_name: Име на поле
 translations: Преводи
+no_translations: Няма преводи
 note: Бележка
 enter_a_value: Въвеждане на стойност...
 enter_a_placeholder: Въвеждане на подсказка...
@@ -361,6 +363,7 @@ zoom: Мащабиране
 download: Изтегляне
 open: Отваряне
 open_in_new_window: Отваряне в нов прозорец
+open_folder: Отваряне на папка "{folder}"
 foreground_color: Основен цвят
 background_color: Цвят на фона
 upload_from_device: Добавяне на файл от устройство
@@ -522,6 +525,8 @@ all_users: Всички потребители
 delete_collection: Изтриване на колекция
 update_collection_success: Обновена колекция
 delete_collection_success: Изтрита колекция
+make_collection_visible: Показване на колекцията
+make_collection_hidden: Скриване на колекцията
 start_end_of_count_items: '{start}-{end} от {count} записа'
 start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
 one_item: '1 запис'
@@ -611,7 +616,9 @@ all_files: Всички файлове
 my_files: Мои файлове
 recent_files: Последни файлове
 create_folder: Създаване на папка
+edit_folder: Редакция на папка
 folder_name: Име на папка...
+folder_key: Ключ за папката...
 add_file: Добавяне на файл
 replace_file: Заместване на файл
 no_results: Няма резултати
@@ -903,6 +910,8 @@ fields:
     role: Роля
     token: Токен
     token_placeholder: Въвеждане на сигурен токен...
+    provider: Доставчик
+    external_identifier: Външен идентификатор
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
@@ -915,6 +924,7 @@ fields:
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
     mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
@@ -979,6 +989,7 @@ field_options:
     additional_transforms: Допълнителни трансформации
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
@@ -1000,8 +1011,12 @@ field_options:
     singleton: Използване като единствен запис
     language: Език
     translation: Превод
+    translation_placeholder: Въвеждане на превод...
     collection_name: Име на колекцията
+    singular_unit: Единствено число
+    plural_unit: Множествено число
     archive_divider: Архивиране
+    archive_field: Архивиране по поле
     archive_field_placeholder: Избор на поле...
     archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
@@ -1009,6 +1024,7 @@ field_options:
     sort_divider: Сортиране
     sort_field: Избор на поле...
     accountability_divider: Профилиране
+    duplication_divider: Дублиране
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -1140,6 +1156,7 @@ sort_desc: Низходящо сортиране
 template: Шаблон
 require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
+translation_placeholder: Въвеждане на превод...
 value: Стойност
 view_project: Преглед на проект
 report_error: Докладване на грешка
@@ -1521,13 +1538,12 @@ layouts:
     layers: Слоеве
     edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
-    cluster: Активиране на групирането
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
     field: Геометрия
     invalid_geometry: Невалидна геометрия
-    auto_location_filter: Филтриране на данните спрямо границите
+    auto_location_filter: Автоматично филтриране според изгледа
     search_this_area: Търсене в тази зона
     clear_data_filter: Изчистване на филтрирането
     clear_location_filter: Изчистване на филтрирането

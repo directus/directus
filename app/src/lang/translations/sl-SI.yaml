@@ -1166,9 +1166,6 @@ interfaces:
     map: Zemljevid
     description: Izberite lokacijo
     zoom: Povečaj
-    geometry_type: Tip geometrije
-    geometry_format: Geometrijski format
-    default_view: Privzeti pogled
     invalid_options: Neveljavne možnosti
     invalid_format: Neveljavna oblika ({format})
     unexpected_geometry: Pričakovano {expected}, vsebina {got}.
@@ -1394,7 +1391,6 @@ layouts:
     layers: Plasti
     edit_custom_layers: Uredi plasti
     cluster_options: Možnosti gruče
-    cluster: Aktiviraj gruče
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
