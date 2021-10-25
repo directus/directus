@@ -109,3 +109,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style scoped>
+:deep(.required-mark) {
+	--v-icon-color: var(--primary);
+}
+</style>

@@ -3,6 +3,7 @@
 		<div v-if="localType === 'm2o'" class="field half-left">
 			<div class="label type-label">
 				{{ t('related_collection') }}
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -12,6 +13,7 @@
 			<div class="field half-left">
 				<div class="label type-label">
 					{{ t('related_collection') }}
+					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
 				</div>
 
 				<related-collection-select v-model="o2mCollection" />
@@ -20,6 +22,7 @@
 			<div class="field half-right">
 				<div class="label type-label">
 					{{ t('foreign_key') }}
+					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
 				</div>
 
 				<related-field-select v-model="o2mField" :collection="o2mCollection" :disabled="!o2mCollection" />
@@ -29,6 +32,7 @@
 		<div v-if="localType === 'm2m'" class="field half-left">
 			<div class="label type-label">
 				{{ t('related_collection') }}
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -37,6 +41,7 @@
 		<div v-if="localType === 'translations'" class="field half-left">
 			<div class="label type-label">
 				{{ t('languages_collection') }}
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
