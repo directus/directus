@@ -1,6 +1,6 @@
 <template>
 	<div class="relationship">
-		<div v-if="localType === 'm2o'" class="field half-left">
+		<div v-if="localType === 'm2o'" class="field full">
 			<div class="label type-label">
 				{{ t('related_collection') }}
 				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
@@ -29,7 +29,7 @@
 			</div>
 		</template>
 
-		<div v-if="localType === 'm2m'" class="field half-left">
+		<div v-if="localType === 'm2m'" class="field full">
 			<div class="label type-label">
 				{{ t('related_collection') }}
 				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
@@ -38,7 +38,7 @@
 			<related-collection-select v-model="relatedCollectionM2O" />
 		</div>
 
-		<div v-if="localType === 'translations'" class="field half-left">
+		<div v-if="localType === 'translations'" class="field full">
 			<div class="label type-label">
 				{{ t('languages_collection') }}
 				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
@@ -46,16 +46,36 @@
 
 			<related-collection-select v-model="relatedCollectionM2O" />
 		</div>
+
+		<div v-if="localType === 'm2a'" class="field full">
+			<div class="label type-label">
+				{{ t('related_collections') }}
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+			</div>
+
+			<v-select
+				v-model="oneAllowedCollections"
+				:placeholder="t('collection') + '...'"
+				:items="availableCollections"
+				item-value="collection"
+				item-text="name"
+				item-disabled="meta.singleton"
+				multiple
+				:multiple-preview-threshold="0"
+			/>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { LOCAL_TYPES } from '@directus/shared/constants';
 import { syncFieldDetailStoreProperty } from '../store';
 import { useI18n } from 'vue-i18n';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { orderBy } from 'lodash';
+import { useCollectionsStore } from '@/stores';
 
 export default defineComponent({
 	components: { RelatedCollectionSelect, RelatedFieldSelect },
@@ -66,12 +86,33 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const collectionsStore = useCollectionsStore();
+
 		const { t } = useI18n();
 		const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
 		const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
 		const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
+		const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_fields', []);
 
-		return { relatedCollectionM2O, o2mCollection, o2mField, t };
+		const availableCollections = computed(() => {
+			return orderBy(
+				[
+					...collectionsStore.allCollections,
+					{
+						divider: true,
+					},
+					{
+						name: t('system'),
+						selectable: false,
+						children: collectionsStore.crudSafeSystemCollections,
+					},
+				],
+				['collection'],
+				['asc']
+			);
+		});
+
+		return { availableCollections, oneAllowedCollections, relatedCollectionM2O, o2mCollection, o2mField, t };
 	},
 });
 </script>
