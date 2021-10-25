@@ -34,14 +34,6 @@
 
 					<v-checkbox v-model="required" block :label="t('require_value_to_be_set')" />
 				</div>
-
-				<div class="field full">
-					<div class="label type-label">
-						{{ t('note') }}
-					</div>
-
-					<v-input v-model="note" :placeholder="t('add_note')" />
-				</div>
 			</div>
 
 			<relationship-configuration :local-type="localType" />
