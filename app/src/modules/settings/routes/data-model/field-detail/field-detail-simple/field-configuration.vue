@@ -123,8 +123,21 @@ export default defineComponent({
 
 .field-configuration {
 	--v-button-background-color-disabled: var(--background-normal);
+	--columns: 1;
 
-	grid-column: 1 / span 4;
+	@media (min-width: 400px) {
+		--columns: 2;
+	}
+
+	@media (min-width: 600px) {
+		--columns: 3;
+	}
+
+	@media (min-width: 840px) {
+		--columns: 4;
+	}
+
+	grid-column: 1 / span var(--columns);
 	background-color: var(--background-subdued);
 	border-top: var(--border-width) solid var(--border-normal);
 	border-bottom: var(--border-width) solid var(--border-normal);

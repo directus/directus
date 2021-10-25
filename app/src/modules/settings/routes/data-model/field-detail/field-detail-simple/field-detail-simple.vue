@@ -122,8 +122,23 @@ export default defineComponent({
 
 			if (indexInGroup === null) return null;
 
-			// TODO different amounts responsively
-			return Math.ceil((indexInGroup + 1) / 4) + 1;
+			const windowWidth = window.innerWidth;
+
+			let columns = 1;
+
+			if (windowWidth > 400) {
+				columns = 2;
+			}
+
+			if (windowWidth > 600) {
+				columns = 3;
+			}
+
+			if (windowWidth > 840) {
+				columns = 4;
+			}
+
+			return Math.ceil((indexInGroup + 1) / columns) + 1;
 		});
 
 		return { t, interfaces, groups, isSVG, syncRefProperty, chosenInterface, configRow, toggleInterface };
@@ -147,7 +162,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;
@@ -166,9 +181,23 @@ export default defineComponent({
 }
 
 .grid {
+	--columns: 1;
+
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(var(--columns), 1fr);
 	gap: 32px;
+
+	@media (min-width: 400px) {
+		--columns: 2;
+	}
+
+	@media (min-width: 600px) {
+		--columns: 3;
+	}
+
+	@media (min-width: 840px) {
+		--columns: 4;
+	}
 }
 
 .interface {
