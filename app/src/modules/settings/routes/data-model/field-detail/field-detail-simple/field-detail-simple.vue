@@ -8,8 +8,7 @@
 					v-for="inter of group.interfaces"
 					:key="inter.id"
 					class="interface"
-					:class="{ active: chosenInterface === inter.id }"
-					:disabled="chosenInterface && chosenInterface !== inter.id"
+					:class="{ active: chosenInterface === inter.id, gray: chosenInterface && chosenInterface !== inter.id }"
 					@click="toggleInterface(inter.id)"
 				>
 					<div class="preview">
@@ -148,14 +147,10 @@ export default defineComponent({
 		}
 
 		function toggleInterface(id: string) {
-			if (!chosenInterface.value) {
-				chosenInterface.value = id;
-				return;
-			}
-
 			if (chosenInterface.value === id) {
 				chosenInterface.value = null;
-				return;
+			} else {
+				chosenInterface.value = id;
 			}
 		}
 	},
@@ -204,10 +199,6 @@ export default defineComponent({
 	min-height: 100px;
 	overflow: hidden;
 	text-align: left;
-}
-
-.interface[disabled] {
-	cursor: default;
 }
 
 .preview {
@@ -262,9 +253,8 @@ export default defineComponent({
 	border-color: var(--primary);
 }
 
-.interface[disabled] .preview {
+.interface.gray .preview {
 	background-color: var(--background-subdued);
-	border-color: var(--border-subdued);
 	filter: grayscale(1);
 }
 </style>
