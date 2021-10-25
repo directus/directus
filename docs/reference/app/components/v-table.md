@@ -136,15 +136,15 @@ export default defineComponent({
 
 #### Events
 
-| Event            | Description                                         | Value                           |
-| ---------------- | --------------------------------------------------- | ------------------------------- |
-| `update:sort`    | `v-model` event for `sort` prop                     | `{ by: string, desc: boolean }` |
-| `click:row`      | When a row has been clicked                         |                                 |
-| `update:items`   | When changes to the items where made                |                                 |
-| `manual-sort`    | When a user manually sorts the items                |                                 |
-| `update:headers` | `v-model` event for `headers` prop or `HeaderRaw[]` |                                 |
-| `item-selected`  | Emitted when an item is selected or deselected      | `{ item: any, value: boolean }` |
-| `select`         | Emitted when selected items change                  | `any[]`                         |
+| Event            | Description                                         | Value                               |
+| ---------------- | --------------------------------------------------- | ----------------------------------- |
+| `update:sort`    | `v-model` event for `sort` prop                     | `{ by: string, desc: boolean }`     |
+| `click:row`      | When a row has been clicked                         | `{item: any, event: PointerEvent }` |
+| `update:items`   | When changes to the items where made                |                                     |
+| `manual-sort`    | When a user manually sorts the items                |                                     |
+| `update:headers` | `v-model` event for `headers` prop or `HeaderRaw[]` |                                     |
+| `item-selected`  | Emitted when an item is selected or deselected      | `{ item: any, value: boolean }`     |
+| `select`         | Emitted when selected items change                  | `any[]`                             |
 
 #### Slots
 
