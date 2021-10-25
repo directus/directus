@@ -5,7 +5,7 @@ import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
-import { merge, orderBy } from 'lodash';
+import { isEqual, merge, orderBy, omit } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
@@ -59,7 +59,7 @@ export const useFieldsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
-			const fieldsResponse = await api.get(`/fields`, { params: { limit: -1 } });
+			const fieldsResponse = await api.get<any>(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 
@@ -71,7 +71,7 @@ export const useFieldsStore = defineStore({
 			this.$reset();
 		},
 		parseField(field: FieldRaw): Field {
-			const name = formatTitle(field.field);
+			let name = formatTitle(field.field);
 
 			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
@@ -87,6 +87,10 @@ export const useFieldsStore = defineStore({
 				}
 			}
 
+			if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
+				name = i18n.global.t(`fields.${field.collection}.${field.field}`);
+			}
+
 			return {
 				...field,
 				name,
@@ -94,49 +98,55 @@ export const useFieldsStore = defineStore({
 		},
 		translateFields() {
 			this.fields = this.fields.map((field) => {
-				let name: string;
-
 				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
-					name = i18n.global.t(`fields.${field.collection}.${field.field}`);
-				} else {
-					name = formatTitle(field.field);
+					field.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 				}
-
-				return {
-					...field,
-					name,
-				};
+				return field;
 			});
 		},
-		async createField(collectionKey: string, newField: Field) {
+		async upsertField(collection: string, field: string, values: DeepPartial<Field>) {
+			const existing = this.getField(collection, field);
+
+			// Strip out auto-generated fields the app might've added
+			const rawField = omit(values, ['name']);
+
+			if (existing) {
+				if (isEqual(values, existing)) return;
+
+				return await this.updateField(collection, field, rawField);
+			} else {
+				return await this.createField(collection, rawField);
+			}
+		},
+		async createField(collectionKey: string, newField: DeepPartial<Field>) {
 			const stateClone = [...this.fields];
 
 			// Update locally first, so the changes are visible immediately
-			this.fields = [...this.fields, newField];
+			this.fields = [...this.fields, newField as Field];
 
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
 				const response = await api.post(`/fields/${collectionKey}`, newField);
 
-				const field = this.parseField(response.data.data);
+				const createdField = this.parseField(response.data.data);
 
 				this.fields = this.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === newField.field) {
-						return field;
+						return createdField;
 					}
 
 					return field;
 				});
 
-				return field;
+				return createdField;
 			} catch (err: any) {
 				// reset the changes if the api sync failed
 				this.fields = stateClone;
 				unexpectedError(err);
 			}
 		},
-		async updateField(collectionKey: string, fieldKey: string, updates: Record<string, Partial<Field>>) {
+		async updateField(collectionKey: string, fieldKey: string, updates: DeepPartial<Field>) {
 			const stateClone = [...this.fields];
 
 			// Update locally first, so the changes are visible immediately
@@ -151,7 +161,7 @@ export const useFieldsStore = defineStore({
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.patch(`/fields/${collectionKey}/${fieldKey}`, updates);
+				const response = await api.patch<any>(`/fields/${collectionKey}/${fieldKey}`, updates);
 
 				this.fields = this.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === fieldKey) {

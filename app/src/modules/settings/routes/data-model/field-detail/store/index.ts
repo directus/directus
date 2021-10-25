@@ -8,7 +8,6 @@ import { computed } from 'vue';
 import { get, set } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
-import api from '@/api';
 
 import * as global from './alterations/global';
 import * as file from './alterations/file';
@@ -84,6 +83,7 @@ export const useFieldDetailStore = defineStore({
 	actions: {
 		startEditing(collection: string, field: string) {
 			this.collection = collection;
+			this.field.collection = collection;
 			this.editing = field;
 
 			if (field !== '+') {
@@ -162,31 +162,25 @@ export const useFieldDetailStore = defineStore({
 			const fieldsStore = useFieldsStore();
 			const relationsStore = useRelationsStore();
 
-			const update = !!fieldsStore.getField(this.collection, this.field.field);
-
 			this.saving = true;
 
 			try {
-				// TODO add update
+				await fieldsStore.upsertField(this.collection, this.editing, this.field);
 
-				await api.post(`/fields/${this.collection}`, this.field);
-
-				for (const [_type, value] of Object.entries(this.collections)) {
-					if (!value) continue;
-					await api.post('/collections', value);
+				for (const collection of Object.values(this.collections)) {
+					if (!collection || !collection.collection) continue;
+					await collectionsStore.upsertCollection(collection?.collection, collection);
 				}
 
-				for (const [_type, value] of Object.entries(this.fields)) {
-					if (!value) continue;
-					await api.post(`/fields/${value.collection}`, value);
+				for (const field of Object.values(this.fields)) {
+					if (!field || !field.collection || !field.field) continue;
+					await fieldsStore.upsertField(field.collection, field.field, field);
 				}
 
-				for (const [_type, value] of Object.entries(this.relations)) {
-					if (!value) continue;
-					await api.post('/relations', value);
+				for (const relation of Object.values(this.relations)) {
+					if (!relation || !relation.collection || !relation.field) continue;
+					await relationsStore.upsertRelation(relation.collection, relation.field, relation);
 				}
-
-				await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), relationsStore.hydrate()]);
 			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
