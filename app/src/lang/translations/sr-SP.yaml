@@ -20,11 +20,21 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: Аватар
+default_provider: Подразумевано
+published: Објављено
+draft: Нацрт
+archived: Архивирано
+modules: Модули
 edit_field: Уреди поља
+conditions: Услови
+maps: Мапе
 item_revision: Ревизија итема
+enter_a_name: Унесите име...
 duplicate_field: Дуплирај поље
 half_width: Пола ширине
 full_width: Пуна ширина
+group: Група
+or: Или
 fill_width: Попуни ширину
 required: Захтјева се
 create_role: Креирајте улогу

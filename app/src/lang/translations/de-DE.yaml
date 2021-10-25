@@ -50,6 +50,7 @@ indeterminate: Unbestimmt
 edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
+db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
 show_archived_items: Zeige archivierte Elemente
 edited: Bearbeiteter Wert
 required: Erforderlich
@@ -250,6 +251,7 @@ invalid_item: Ungültiges Element
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
+no_translations: Keine Übersetzung
 note: Notiz
 enter_a_value: Gib einen Wert ein...
 enter_a_placeholder: Platzhalter eingeben...
@@ -524,6 +526,8 @@ all_users: Alle Benutzer
 delete_collection: Sammlung löschen
 update_collection_success: Sammlung aktualisiert
 delete_collection_success: Sammlung gelöscht
+make_collection_visible: Sammlung sichtbar machen
+make_collection_hidden: Sammlung verstecken
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
@@ -613,7 +617,9 @@ all_files: Alle Dateien
 my_files: Meine Dateien
 recent_files: Zuletzt verwendete Dateien
 create_folder: Ordner erstellen
+edit_folder: Ordner bearbeiten
 folder_name: Ordnername...
+folder_key: Ordnerschlüssel...
 add_file: Datei hinzufügen
 replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
@@ -1155,6 +1161,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1301,7 +1308,7 @@ interfaces:
     zoom: Zoom
     geometry_type: Geometrie-Typ
     geometry_format: Geometrie-Format
-    default_view: Standardansicht
+    default_view: Standard-Ansicht
     invalid_options: Ungültige Optionen
     invalid_format: Ungültiges Format ({format})
     unexpected_geometry: Erwartete {expected}, erhielt {got}.
@@ -1533,14 +1540,14 @@ layouts:
     basemap: Basiskarte
     layers: Ebenen
     edit_custom_layers: Ebenen bearbeiten
-    cluster_options: Clustering-Optionen
-    cluster: Clustering aktivieren
+    cluster_options: Cluster-Optionen
+    cluster: Cluster Nachbardaten
     cluster_radius: Cluster-Radius
-    cluster_minpoints: Minimale Punkte Clustering
-    cluster_maxzoom: Maximaler Zoom für Clustering
+    cluster_minpoints: Kleinstes Cluster
+    cluster_maxzoom: Maximaler Zoom für Cluster
     field: Dimensionen
     invalid_geometry: Ungültige Geometrie
-    auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
+    auto_location_filter: Auto-Filter in der Ansicht
     search_this_area: Diesen Bereich durchsuchen
     clear_data_filter: Datenfilter löschen
     clear_location_filter: Standortfilter löschen
