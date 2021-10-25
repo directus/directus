@@ -1,41 +1,14 @@
 name: Lint
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
-  # Skip subsequent jobs if changed files are out of scope for this workflow
-  pre_check:
-    name: Pre Check
-    runs-on: ubuntu-latest
-    outputs:
-      # Returns true if files other than translations have been changed
-      satisfied: ${{ steps.changes.outputs.not_translations }}
-    steps:
-      - uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            not_translations:
-              - '!(app/src/lang/translations/*.yaml)'
-
   lint:
     name: Lint
-    needs: pre_check
-    if: needs.pre_check.outputs.satisfied == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Setup Node.js
@@ -44,8 +17,8 @@ jobs:
           node-version: '16'
           cache: npm
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Run Linters
+      - name: Run linters
         run: npm run lint

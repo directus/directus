@@ -1,41 +1,13 @@
 name: CodeQL Analysis
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_call:
   schedule:
     - cron: '42 23 * * 5'
 
 jobs:
-  # Skip subsequent jobs if changed files are out of scope for this workflow
-  pre_check:
-    name: Pre Check
-    runs-on: ubuntu-latest
-    outputs:
-      # Returns true when only the files listed below have changed
-      skip: ${{ steps.changed_files.outputs.only_changed }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-        with:
-          # Fetch whole history on push events (required for comparison)
-          fetch-depth: ${{ github.event_name == 'push' && '0' || '1' }}
-
-      - name: Check Changed Files
-        id: changed_files
-        uses: tj-actions/changed-files@v10.1
-        with:
-          files: |
-            app/src/lang/translations/*.yaml
-
   analyze:
     name: Analyze
-    needs: pre_check
-    if: needs.pre_check.outputs.skip != 'true'
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -47,7 +19,7 @@ jobs:
         language:
           - javascript
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Initialize CodeQL
@@ -58,5 +30,5 @@ jobs:
       - name: Autobuild
         uses: github/codeql-action/autobuild@v1
 
-      - name: Perform CodeQL Analysis
+      - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v1

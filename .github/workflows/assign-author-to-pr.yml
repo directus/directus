@@ -10,5 +10,5 @@ jobs:
     name: Assign Author
     runs-on: ubuntu-latest
     steps:
-      - name: Assign Author
+      - name: Assign author
         uses: technote-space/assign-author@v1

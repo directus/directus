@@ -14,10 +14,10 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create Release
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -34,7 +34,7 @@ jobs:
     name: Build Packages
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Setup Node.js
@@ -47,10 +47,10 @@ jobs:
       - name: Downgrade NPM
         run: npm i -g npm@7.20.2
 
-      - name: Setup NPM Cache
+      - name: Setup NPM cache
         uses: c-hive/gha-npm-cache@v1
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
       - name: Build
@@ -58,7 +58,7 @@ jobs:
           npm run build
           node docker/pack
 
-      - name: Cache Build Artifacts
+      - name: Cache build artifacts
         uses: actions/cache@v2
         with:
           path: '**/dist'
@@ -71,10 +71,10 @@ jobs:
     # Skip this step in forks
     if: ${{ github.repository_owner == 'directus' }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Restore Build Artifacts
+      - name: Restore build artifacts
         uses: actions/cache@v2
         with:
           path: '**/dist'
@@ -91,10 +91,10 @@ jobs:
       - name: Downgrade NPM
         run: npm i -g npm@7.20.2
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Publish Packages to NPM
+      - name: Publish packages to NPM
         run: npx lerna publish from-git --no-verify-access --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -104,10 +104,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Restore Build Artifacts
+      - name: Restore build artifacts
         uses: actions/cache@v2
         with:
           path: '**/dist'
@@ -119,7 +119,7 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Cache Docker Layers
+      - name: Cache Docker layers
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
@@ -127,7 +127,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Extract Docker Metadata
+      - name: Extract metadata for Docker image
         id: meta
         uses: docker/metadata-action@v3
         with:
@@ -142,7 +142,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
 
-      - name: Login to DockerHub
+      - name: Login to Docker Hub
         uses: docker/login-action@v1
         if: ${{ env.DOCKERHUB_IMAGE }}
         with:
@@ -157,7 +157,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -172,7 +172,7 @@ jobs:
       # Temp fix:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
-      - name: Move Cache
+      - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
