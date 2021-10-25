@@ -121,23 +121,14 @@ export const useFieldsStore = defineStore({
 		async createField(collectionKey: string, newField: DeepPartial<Field>) {
 			const stateClone = [...this.fields];
 
-			// Update locally first, so the changes are visible immediately
-			this.fields = [...this.fields, newField as Field];
-
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.post(`/fields/${collectionKey}`, newField);
+				const response = await api.post<{ data: Field }>(`/fields/${collectionKey}`, newField);
 
 				const createdField = this.parseField(response.data.data);
 
-				this.fields = this.fields.map((field) => {
-					if (field.collection === collectionKey && field.field === newField.field) {
-						return createdField;
-					}
-
-					return field;
-				});
+				this.fields = [...this.fields, createdField];
 
 				return createdField;
 			} catch (err: any) {
