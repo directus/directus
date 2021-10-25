@@ -20,6 +20,7 @@ import * as o2m from './alterations/o2m';
 import * as presentation from './alterations/presentation';
 import * as standard from './alterations/standard';
 import * as translations from './alterations/translations';
+import { getLocalTypeForField } from '../../get-local-type';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -82,9 +83,13 @@ export const useFieldDetailStore = defineStore({
 	}),
 	actions: {
 		startEditing(collection: string, field: string) {
+			// Make sure we clean up any stray values from unexpected paths
+			this.$reset();
+
 			this.collection = collection;
 			this.field.collection = collection;
 			this.editing = field;
+			this.localType = getLocalTypeForField(collection, field) ?? 'standard';
 
 			if (field !== '+') {
 				const fieldsStore = useFieldsStore();
@@ -94,13 +99,20 @@ export const useFieldDetailStore = defineStore({
 
 				const relations = relationsStore.getRelationsForField(collection, field);
 
-				this.relations.m2o = relations.find(
-					(relation) => relation.collection === collection && relation.field === field
-				) as DeepPartial<Relation> | undefined;
-
+				// o2m relation is the same regardless of type
 				this.relations.o2m = relations.find(
 					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
 				) as DeepPartial<Relation> | undefined;
+
+				if (['files', 'm2m', translations].includes(this.localType)) {
+					this.relations.m2o = relations.find((relation) => relation !== this.relations.o2m) as
+						| DeepPartial<Relation>
+						| undefined;
+				} else {
+					this.relations.m2o = relations.find(
+						(relation) => relation.collection === collection && relation.field === field
+					) as DeepPartial<Relation> | undefined;
+				}
 			}
 		},
 		update(updates: DeepPartial<typeof this.$state>) {
