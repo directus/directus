@@ -24,3 +24,4 @@ schema.json
 /.vs/Directus/v16/.suo
 /.vs/slnx.sqlite
 /.vs
+/api/.vs
