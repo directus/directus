@@ -182,7 +182,7 @@ prefixing the value with `{type}:`. The following types are available:
 
 | Variable                   | Description                                                                                                | Default Value |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH`              | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`        |
 | `PORT`                     | What port to run the API under.                                                                            | `8055`        |
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
@@ -220,25 +220,25 @@ database instance.
 
 ::: tip Pooling
 
-All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com/vincit/tarn.js#usage) through
+All the `DB_POOL_` prefixed options are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage) through
 [Knex](http://knexjs.org/#Installation-pooling)
 
 :::
 
 ## Security
 
-| Variable                         | Description                                                                                                                       | Default Value            |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `KEY`                            | Unique identifier for the project.                                                                                                | --                       |
-| `SECRET`                         | Secret string for the project.                                                                                                    | --                       |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                      | `15m`                    |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                  | `7d`                     |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                          | --                       |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                       | `false`                  |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                             | `lax`                    |
-| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                    | `directus_refresh_token` |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/system/authentication/#request-password-reset) | --                       |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/api/system/users/#invite-a-new-user)                  | --                       |
+| Variable                         | Description                                                                                                            | Default Value            |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `KEY`                            | Unique identifier for the project.                                                                                     | --                       |
+| `SECRET`                         | Secret string for the project.                                                                                         | --                       |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                           | `15m`                    |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                       | `7d`                     |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                               | --                       |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                            | `false`                  |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                  | `lax`                    |
+| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                         | `directus_refresh_token` |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset) | --                       |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)           | --                       |
 
 ::: tip Cookie Strictness
 
@@ -261,7 +261,7 @@ your project and API on different domains, make sure to verify your configuratio
 
 Argon2's hashing function is used by Directus for three purposes: 1) hashing user passwords, 2) generating hashes for
 the `Hash` field type in collections, and 3) the
-[generate a hash API endpoint](https://docs.directus.io/reference/api/system/utilities/#generate-a-hash).
+[generate a hash API endpoint](/reference/system/utilities/#generate-a-hash).
 
 All `HASH_*` environment variable parameters are passed to the `argon2.hash` function. See the
 [node-argon2 library options page](https://github.com/ranisalt/node-argon2/wiki/Options) for reference.

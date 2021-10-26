@@ -58,12 +58,12 @@ are available:
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
-  [Collection Page](/concepts/application/#collection-detail) will be bypassed, taking users directly to the
+  [Collection Page](/app/content-collections/) will be bypassed, taking users directly to the
   [Item Page](/concepts/application/#item-detail).
 - **Collection Naming Translations** — While the collection key can not be changed (as of now), this option allows
-  translating the collection name into different languages. By default, the platform uses the [Title Formatter](#) to
-  display collection keys as human readable names, but you can also use translations to explicitly rename more technical
-  table keys.
+  translating the collection name into different languages. By default, the platform uses the
+  [Title Formatter](/getting-started/glossary/#title-formatter) to display collection keys as human readable names, but
+  you can also use translations to explicitly rename more technical table keys.
 
 ### Archive
 
@@ -85,8 +85,8 @@ this field, the collection's archive settings will automatically be configured f
 ### Sort
 
 The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the
-[Collection Page](/concepts/application/#collection-detail), but can also be used for sorting items within
-[Junction Tables](#). Configuration is as easy as selecting the appropriate sort field:
+[Collection Page](/app/content-collections/), but can also be used for sorting items within [Junction Tables](#).
+Configuration is as easy as selecting the appropriate sort field:
 
 - **Sort Field** — Choose a field with the `integer` type. You may want to set this field to be "hidden" so it doesn't
   show up within the Item Page form.
@@ -107,8 +107,8 @@ Field** on the field's Relationship pane.
 
 ### Accountability
 
-By default, the platform tracks all [activity](#) and [revisions](#) for collections. This option allows you to override
-this, choosing what data is tracked.
+By default, the platform tracks all [activity](/reference/system/activity) and [revisions](/reference/system/revisions/)
+for collections. This option allows you to override this, choosing what data is tracked.
 
 - **Activity & Revision Tracking** — supports the follow options:
   - Track Activity & Revisions
@@ -201,15 +201,15 @@ As of now, the key can not be modified after the field has been created.
 This pane is only shown when configuring relational fields (including images and translations). Depending on the type of
 relationship, you'll be presented with one of the following set of options:
 
-- [Many-to-One](#)
-- [One-to-Many](#)
-- [Many-to-Many](#)
-- [Many-to-Any](#)
-- [Translations](#)
+- [Many-to-One](/configuration/relationships/#many-to-one-m2o)
+- [One-to-Many](/configuration/relationships/#one-to-many-o2m)
+- [Many-to-Many](/configuration/relationships/#many-to-many-m2m)
+- [Many-to-Any](/configuration/relationships/#many-to-many-m2m)
+- [Translations](/configuration/relationships/#translations-o2m)
 
 ::: tip Corresponding Field
 
-[Relationships go both ways](/concepts/relationships/#perspective-matters), so when creating a new relation Field,
+[Relationships go both ways](/configuration/relationships/#perspective-matters), so when creating a new relation Field,
 Directus offers to automatically create the corresponding Field on the related Collection.
 
 :::
@@ -227,8 +227,9 @@ Directus offers to automatically create the corresponding Field on the related C
 - **Note** — (App Only) Displayed below the field in the App form, providing a helpful comment for App users. This note
   supports markdown.
 - **Field Name Translations** — (App Only) While the field key can not be changed (as of now), this option allows
-  translating the field name into different languages. By default, the platform uses the [Title Formatter](#) to display
-  field keys as human readable names, but you can also use translations to explicitly rename more technical column keys.
+  translating the field name into different languages. By default, the platform uses the
+  [Title Formatter](/getting-started/glossary/#title-formatter) to display field keys as human readable names, but you
+  can also use translations to explicitly rename more technical column keys.
 
 ### Interface
 
@@ -265,7 +266,7 @@ The conditions are matched in order. The **last** condition that matches is the 
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Click the field you want to update
-3. Make any desired updates referencing the [Creating a Field](#) docs above
+3. Make any desired updates referencing the [Creating a Field](/configuration/data-model/#creating-a-field) docs above
 
 ::: tip System Fields
 

@@ -22,20 +22,20 @@ Which one you choose is ultimately up to you.
 ## Authentication
 
 By default, all data in the system is off limits for unauthenticated users. To gain access to protected data, you must
-[include an access token with every request](/reference/api/authentication/), or
+[include an access token with every request](/reference/authentication/#access-tokens), or
 [configure permissions for the public role](/concepts/roles/#public-role).
 
 Useful references:
 
-- [Authenticating into the API](/reference/api/authentication/)
-- [Login endpoint reference](/reference/api/system/authentication/)
+- [Authenticating into the API](/reference/authentication/)
+- [Login endpoint reference](reference/authentication/#login)
 
 ## Relational Data
 
 Directus only retrieves the fields in your items that explicitly have been requested. Relational data can be retrieved
-nested by using the [the `fields` parameter](/reference/api/query/#fields) in REST, or regular nested queries in
-GraphQL. This allows you to retrieve the author of your article included in the articles data, or fetch related log
-entry points for your app's analytics data for example.
+nested by using the [the `fields` parameter](/reference/query/#fields) in REST, or regular nested queries in GraphQL.
+This allows you to retrieve the author of your article included in the articles data, or fetch related log entry points
+for your app's analytics data for example.
 
 ### Creating / Updating / Deleting
 

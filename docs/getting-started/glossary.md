@@ -197,23 +197,23 @@ data within the App, such as Gantt charts, seating maps, or spreadsheets.
 
 ### Relevant Guides
 
-- [Creating a Custom Layout](/guides/layouts)
+- [Creating a Custom Layout](/extensions/layouts/)
 
 ## Modules
 
 Modules are the highest and broadest level of organization within the App. There are several modules included
 out-of-the-box, however you can also add your own.
 
-The [Module Bar](/concepts/application/#_1-module-bar) lists all available Modules and allows you to switch between
-them. Each module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality
-within the App can be bucketed into one of the following modules:
+The [Module Bar](/app/overview/#_1-module-bar) lists all available Modules and allows you to switch between them. Each
+module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality within the
+App can be bucketed into one of the following modules:
 
-- [Content](#) — The primary way to view and interact with database content
-- [User Directory](#) — A dedicated section for the platform's system Users
-- [File Library](#) — An aggregate of all files uploaded and managed within the platform
-- [Insights](#insights) — Access to infinitely customizable data dashboards
-- [App Guide](#) — A tailored, in-app portal for the platform's concepts, guides, and reference
-- [Settings](#) — An admin-only section for configuring the project and system settings
+- [Content](/app/content-collections/) — The primary way to view and interact with database content
+- [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
+- [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
+- [Insights](/app/insights) — Access to infinitely customizable data dashboards
+- [App Guide](/app/overview) — A tailored, in-app portal for the platform's concepts, guides, and reference
+- [Settings](/app/settings) — An admin-only section for configuring the project and system settings
 
 In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
 experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (eg: a Stripe
@@ -221,7 +221,7 @@ Payments Console).
 
 ### Relevant Guides
 
-- [Creating a Custom Module](#)
+- [Creating a Custom Module](/extensions/modules/)
 
 ## Multitenancy
 
@@ -247,21 +247,21 @@ platform. Extremely granular, these filter-based permissions control access for 
 
 ## Presets
 
-Presets store the exact state of a [collection page](#) page. They are used to set layout defaults for a user, or to
-define bookmarks that can be used to quickly recall specific datasets.
+Presets store the exact state of a [collection page](#collections) page. They are used to set layout defaults for a
+user, or to define bookmarks that can be used to quickly recall specific datasets.
 
 #### Relevant Guides
 
-- [Creating a Preset](/guides/presets/#creating-a-preset)
-- [Deleting a Preset](/guides/presets/#deleting-a-preset)
+- [Creating a Preset](/reference/system/presets/#create-a-preset)
+- [Deleting a Preset](/reference/system/presets/#delete-a-preset)
 
 ## Primary Key (PK)
 
-When we're trying to view or reference a specific [Item](#) within a [Collection](#), you need some sort of unique
-identifier to know exactly where to look. Much like an address for a house, the primary key field provides the location
-of an item within its collection. For that reason, every collection must have a primary key field, and so they are
-configured when you create the collection. There are different types of identifiers you can use, but the field is often
-called `id`.
+When we're trying to view or reference a specific [Item](#items) within a [Collection](#collections), you need some sort
+of unique identifier to know exactly where to look. Much like an address for a house, the primary key field provides the
+location of an item within its collection. For that reason, every collection must have a primary key field, and so they
+are configured when you create the collection. There are different types of identifiers you can use, but the field is
+often called `id`.
 
 ## Projects
 
@@ -281,7 +281,7 @@ file, asset storage, and any custom extensions. Projects are the highest level o
 The platform allows you to group Items within different Collections. But often times it is important to "link" items
 across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship, a crucial
 concept within any _relational_ database. There are several different types of relationships, each serving a specific
-purpose. [Learn more about Relationships](#).
+purpose. [Learn more about Relationships](#relationships).
 
 ## Revisions
 
@@ -303,11 +303,11 @@ There is also a "Public" role that determines access for unauthenticated access.
 
 ### Relevant Guides
 
-- [Creating a Role](/guides/roles/#creating-a-role)
-- [Configuring a Role](/guides/roles/#configuring-a-role)
-- [Configuring Role Permissions](/guides/permissions/#configuring-role-permissions)
-- [Configuring System Permissions](/guides/permissions/#configuring-system-permissions)
-- [Deleting a Role](/guides/roles/#deleting-a-role)
+- [Creating a Role](/configuration/users-roles-permissions/#creating-a-role)
+- [Configuring a Role](/configuration/users-roles-permissions/#configuring-a-role)
+- [Configuring Role Permissions](/configuration/users-roles-permissions/#configuring-permissions)
+- [Configuring System Permissions](/configuration/users-roles-permissions/#configuring-system-permissions)
+- [Deleting a Role](/configuration/users-roles-permissions/#deleting-a-role)
 
 ## Storage Adapters
 
@@ -372,6 +372,6 @@ all of these differences, Directus has a single _superset_ of types that map to 
 
 ## Users
 
-An active User is required to access a project. Each user is assigned to a [Role](/concepts/roles/) that determines what
-they have access to see and do. This means that the experience of users may vary significantly depending on their role's
+An active User is required to access a project. Each user is assigned to a [Role](#roles) that determines what they have
+access to see and do. This means that the experience of users may vary significantly depending on their role's
 permissions.
