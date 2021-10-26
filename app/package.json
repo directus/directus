@@ -63,7 +63,7 @@
 		"@vitejs/plugin-vue": "1.9.3",
 		"@vue/compiler-sfc": "3.2.20",
 		"apexcharts": "3.29.0",
-		"axios": "0.23.0",
+		"axios": "0.24.0",
 		"base-64": "1.0.0",
 		"codemirror": "5.63.3",
 		"copyfiles": "2.4.1",
