@@ -124,9 +124,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		// If email matches identifier, don't set "external_identifier"
-		const emailIsIdentifier = email?.toLowerCase() === identifier.toLowerCase();
-
 		await this.usersService.createOne({
 			provider: this.config.provider,
 			email: email,
