@@ -68,28 +68,55 @@ This will set-up the required tables for Directus and make sure all the migratio
 
 ## 7. Start the development server
 
-Run the following command from the root directory.
+First you need to choose what packages you want to work on. Then, you should run the `dev` script on that package. You
+can see their names and list of scripts in their related `package.json`. Example of running APP:
 
 ```bash
-npm run dev
+npm run dev -w @directus/app
 ```
 
-To work on a specific part of the platform, like just the app+api, you can provide the `scope` option as follows:
+If you want to work on multiple packages at once, you should create a new instance of your terminal for each package:
+Example of running Api, App:
+
+<table>
+  <tr>
+  <th>
+  Terminal 1 [Api]
+  </th>
+  <th>
+  Terminal 2 [App]
+  </th>
+  </tr>
+  <tr>
+  <td>
 
 ```bash
-npm run dev -- --scope directus --scope @directus/app
+npm run dev -w directus
 ```
 
-::: warning Server startup
+  </td>
+  <td>
 
-When using `npm run dev` without a provided `scope`, `ts-node-dev` can get a little confused with the many restarts on
-first launch. Keep an eye out for the "directus: Server started at port xxxx" message. If that doesn't show up, try
-restarting `npm run dev`.
+```bash
+npm run dev -w @directus/app
+```
 
-:::
+  </td>
+  </tr>
+</table>
 
-If are looking to work on the Documentation (public website version), you can navigate to the `docs` directory and run
-the following command:
+---
+
+To work on the Documentation (public website version), you should navigate to the `docs` directory and run the following
+command:
+
+```bash
+npm install
+```
+
+<sup>ℹ This is necessary because the way vue-server-renderer imports vue</sup>
+
+Then you should run
 
 ```bash
 npm run dev:site
