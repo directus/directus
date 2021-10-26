@@ -160,9 +160,9 @@ export default defineComponent({
 	height: 40px;
 	background: linear-gradient(
 		180deg,
-		rgba(var(--background-page-rgb), 0) 0%,
-		rgba(var(--background-page-rgb), 0.8) 25%,
-		rgba(var(--background-page-rgb), 1) 100%
+		rgb(var(--background-page-rgb) 0) 0%,
+		rgb(var(--background-page-rgb) 0.8) 25%,
+		rgb(var(--background-page-rgb) 1) 100%
 	);
 	content: '';
 }

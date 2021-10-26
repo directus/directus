@@ -413,7 +413,7 @@ body {
 		&::-webkit-outer-spin-button,
 		&::-webkit-inner-spin-button {
 			margin: 0;
-			-webkit-appearance: none;
+			appearance: none;
 		}
 
 		&:focus {
@@ -423,7 +423,7 @@ body {
 		/* Firefox */
 
 		&[type='number'] {
-			-moz-appearance: textfield;
+			appearance: textfield;
 		}
 	}
 
