@@ -8,6 +8,7 @@ export * from './permissions';
 export * from './presets';
 export * from './relations';
 export * from './requests';
+export * from './scroll-position';
 export * from './server';
 export * from './settings';
 export * from './user';

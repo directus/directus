@@ -72,7 +72,7 @@ import ProjectInfo from './components/project-info';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
-import { useUserStore, useAppStore } from '@/stores';
+import { useUserStore, useAppStore, useScrollPositionStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import useTitle from '@/composables/use-title';
 
@@ -103,9 +103,10 @@ export default defineComponent({
 
 		const { title } = toRefs(props);
 		const navOpen = ref(false);
-		const contentEl = ref<Element>();
+		const contentEl = ref<HTMLElement>();
 		const userStore = useUserStore();
 		const appStore = useAppStore();
+		const scrollPositionStore = useScrollPositionStore();
 
 		const appAccess = computed(() => {
 			if (!userStore.currentUser) return true;
@@ -122,9 +123,19 @@ export default defineComponent({
 
 		provide('main-element', contentEl);
 
+		let timeout: ReturnType<typeof setTimeout>;
+
 		router.afterEach(async () => {
-			contentEl.value?.scrollTo({ top: 0 });
-			fullScreen.value = false;
+			clearTimeout(timeout);
+
+			timeout = setTimeout(() => {
+				debugger;
+				if (scrollPositionStore.top !== null) contentEl.value?.scrollTo({ top: scrollPositionStore.top });
+
+				scrollPositionStore.top = 0;
+
+				fullScreen.value = false;
+			}, 100);
 		});
 
 		useTitle(title);

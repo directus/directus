@@ -28,7 +28,7 @@ import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.v
 import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
 import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
 import { useRouter } from 'vue-router';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore, useFieldsStore, useScrollPositionStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 import { useDialogRoute } from '@/composables/use-dialog-route';
@@ -50,6 +50,11 @@ export default defineComponent({
 			type: String as PropType<LocalType>,
 			default: null,
 		},
+	},
+	beforeRouteEnter() {
+		debugger;
+
+		useScrollPositionStore().top = null;
 	},
 	setup(props) {
 		const { collection } = toRefs(props);

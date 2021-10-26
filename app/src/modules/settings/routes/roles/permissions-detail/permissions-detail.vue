@@ -49,7 +49,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
 import { Permission, Role } from '@directus/shared/types';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore, useScrollPositionStore } from '@/stores/';
 import { useRouter } from 'vue-router';
 import Actions from './components/actions.vue';
 import Tabs from './components/tabs.vue';
@@ -76,6 +76,9 @@ export default defineComponent({
 		},
 	},
 	emits: ['refresh'],
+	beforeRouteEnter() {
+		useScrollPositionStore().top = null;
+	},
 	setup(props) {
 		const { t } = useI18n();
 
