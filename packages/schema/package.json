@@ -42,7 +42,7 @@
 		"typescript": "4.4.4"
 	},
 	"dependencies": {
-		"knex-schema-inspector": "1.6.2",
+		"knex-schema-inspector": "1.6.4",
 		"lodash": "^4.17.21"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
