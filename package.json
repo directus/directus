@@ -31,7 +31,7 @@
 		"@types/faker": "5.5.9",
 		"@types/jest": "27.0.2",
 		"@types/listr": "0.14.4",
-		"@types/node": "15.12.2",
+		"@types/node": "16.11.6",
 		"@types/supertest": "2.0.11",
 		"@typescript-eslint/eslint-plugin": "5.1.0",
 		"@typescript-eslint/parser": "5.1.0",
@@ -76,7 +76,7 @@
 		"*.{css,scss,vue}": "stylelint --fix"
 	},
 	"volta": {
-		"node": "16.5.0",
+		"node": "16.12.0",
 		"npm": "8.1.1"
 	}
 }
