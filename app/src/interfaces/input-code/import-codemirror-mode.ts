@@ -1,3 +1,4 @@
+// @ts-nocheck
 export default function importCodemirrorMode(mode: string): Promise<void> {
 	switch (mode) {
 		case 'apl':

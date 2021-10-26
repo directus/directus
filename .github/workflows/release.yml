@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
@@ -11,12 +11,13 @@ env:
 
 jobs:
   create-release:
+    name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create Release
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -30,72 +31,92 @@ jobs:
           prerelease: false
 
   build:
+    name: Build Packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
+          node-version: '16'
           cache: npm
 
       # See https://github.com/npm/cli/issues/3637
-      - run: npm i -g npm@7.20.2
+      - name: Downgrade NPM
+        run: npm i -g npm@7.20.2
 
-      - uses: c-hive/gha-npm-cache@v1
-      - run: npm ci
-      - run: npm run build
-      - run: node docker/pack
+      - name: Setup NPM cache
+        uses: c-hive/gha-npm-cache@v1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: |
+          npm run build
+          node docker/pack
 
       - name: Cache build artifacts
         uses: actions/cache@v2
         with:
-          path: "**/dist"
+          path: '**/dist'
           key: build-artifacts-${{ github.sha }}
 
   publish-npm:
+    name: Publish to NPM
     runs-on: ubuntu-latest
     needs: build
+    # Skip this step in forks
     if: ${{ github.repository_owner == 'directus' }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Restore build artifacts
         uses: actions/cache@v2
         with:
-          path: "**/dist"
+          path: '**/dist'
           key: build-artifacts-${{ github.sha }}
-      - name: Use Node.js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '16'
+          registry-url: https://registry.npmjs.org
           cache: npm
 
       # See https://github.com/npm/cli/issues/3637
-      - run: npm i -g npm@7.20.2
+      - name: Downgrade NPM
+        run: npm i -g npm@7.20.2
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npx lerna publish from-git --no-verify-access --yes
+      - name: Publish packages to NPM
+        run: npx lerna publish from-git --no-verify-access --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   build-images:
+    name: Build Images
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Restore build artifacts
         uses: actions/cache@v2
         with:
-          path: "**/dist"
+          path: '**/dist'
           key: build-artifacts-${{ github.sha }}
 
-      - name: Set up QEMU
+      - name: Setup QEMU
         uses: docker/setup-qemu-action@v1
 
-      - name: Set up Docker Buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Cache Docker layers
@@ -106,7 +127,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Docker meta
+      - name: Extract metadata for Docker image
         id: meta
         uses: docker/metadata-action@v3
         with:
@@ -121,7 +142,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
 
-      - name: Login to DockerHub
+      - name: Login to Docker Hub
         uses: docker/login-action@v1
         if: ${{ env.DOCKERHUB_IMAGE }}
         with:
@@ -140,16 +161,17 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: "./docker/Dockerfile"
+          file: ./docker/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
+
+      # Temp fix:
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache

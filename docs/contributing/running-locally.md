@@ -106,3 +106,9 @@ If you encounter errors during this installation process, make sure your node ve
 
 At this point you are ready to start working on Directus! Before diving in however, it's worth reading through the
 introduction to [Contributing](/contributing/introduction).
+
+::: tip Debugging
+
+Check our Wiki for a [guide](https://github.com/directus/directus/wiki/debugging) on debugging the app and api.
+
+:::

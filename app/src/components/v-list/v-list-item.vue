@@ -271,6 +271,10 @@ body {
 			border: var(--border-width) solid var(--primary) !important;
 		}
 
+		&.sortable-ghost {
+			pointer-events: none;
+		}
+
 		& + & {
 			margin-top: 8px;
 		}
