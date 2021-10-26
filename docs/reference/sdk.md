@@ -1,55 +1,257 @@
 # JavaScript SDK
 
 > The JS SDK provides an intuitive interface for the Directus API from within a JavaScript-powered project (browsers and
-> node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
-> storing state.
+> Node.js).
 
 [[toc]]
 
+## Prerequisites
+
+- Typescript >= 4.1 (Optional)
+
 ## Installation
+
+If you are pretending to use Directus SDK on Node.js or on projects with bundlers, you should install it from NPM.
 
 ```bash
 npm install @directus/sdk
 ```
 
-## Usage
+But, you can also use it directly on browser using a CDN. For example, UNPKG:
 
-```js
-import { Directus } from '@directus/sdk';
-
-const directus = new Directus('https://api.example.com/');
+```html
+<script type="module">
+	import { Directus } from 'https://unpkg.com/@directus/sdk@latest/dist/sdk.esm.min.js';
+</script>
 ```
 
-**NOTE** _All_ methods return promises. Make sure to await methods, for example:
+## Usage
+
+In order to fetch data from API, you need:
+
+1. Import or require the SDK
+1. Create a new instance of it
+   1. In case you are using Typescript, you need to pass type definition.
+1. Login into Directus using credentials or a static token
+1. Fetch data from the pretended model
+
+### Examples
+
+<details>
+<summary>
+Browser
+</summary>
 
 ```js
+// 1. using import
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+// 2.
+const directus = new Directus('https://directus.example.com/');
 
-// Wait for login to be done...
+async function start() {
+	// 3. using credentials
+	await sdk.auth.login({
+		email: 'user@direct.io',
+		password: 'password_for_directus',
+	});
+
+	// 4.
+	const itemsFromModel = await directus.items('your_model').readMany();
+}
+
+start();
+```
+
+</details>
+
+<details>
+<summary>
+Node.js
+</summary>
+
+```js
+// 1. using require
+const { Directus } = require('@directus/sdk');
+
+// 2.
+const directus = new Directus('https://directus.example.com/', {
+	// 3. using static token
+	auth: {
+		staticToken: 'static_token_from_user',
+	},
+});
+
+async function start() {
+	// 4.
+	const itemsFromModel = await directus.items('your_model').readMany();
+}
+
+start();
+```
+
+</details>
+
+<details>
+
+<summary>
+TypeScript
+</summary>
+
+```ts
+// 1. using import
+import { Directus } from '@directus/sdk';
+
+// 2.1
+type YourModel = {
+	id: ID;
+	your_model_field: string;
+};
+
+type Schema = {
+	your_model: YourModel;
+};
+
+// 2.
+const directus = new Directus<Schema>('https://directus.example.com/');
+
+async function start() {
+	// 3. using credentials
+	await sdk.auth.login({
+		email: 'user@direct.io',
+		password: 'password_for_directus',
+	});
+
+	// 4.
+	const itemsFromModel = await directus.items('your_model').readMany();
+}
+
+start();
+```
+
+</details>
+
+**NOTE** _All_ methods return promises. Make sure to await methods.
+
+## TypeScript
+
+TypeScript will improve the development experience by providing relevant information when manipulating your data. For
+example, `directus.items` knows about your collection types if you feed the SDK with enough information in the
+construction of the SDK instance. This allows for a more detailed IDE suggestions for return types, sorting, and
+filtering.
+
+<details>
+<summary>
+Example
+</summary>
+
+```ts
+type BlogPost = {
+	id: ID;
+	title: string;
+};
+
+type BlogSettings = {
+	display_promotions: boolean;
+};
+
+type MyCollections = {
+	posts: BlogPost;
+	settings: BlogSettings;
+};
+
+// This is how you feed custom type information to Directus.
+const directus = new Directus<MyCollections>('http://url');
+
+// ...
+
+const post = await directus.items('posts').readOne(1);
+// typeof(post) is a partial BlogPost object
+
+const settings = await posts.singleton('settings').read();
+// typeof(settings) is a partial BlogSettings object
+```
+
+</details>
+
+You can also extend the Directus system type information by providing type information for system collections as well.
+
+<details>
+<summary>
+Example
+</summary>
+
+```ts
+import { Directus } from '@directus/sdk';
+
+// Custom fields added to Directus user collection.
+type UserType = {
+	level: number;
+	experience: number;
+};
+
+type CustomTypes = {
+	/*
+	This type will be merged with Directus user type.
+	It's important that the naming matches a directus
+	collection name exactly. Typos won't get caught here
+	since SDK will assume it's a custom user collection.
+	*/
+	directus_users: UserType;
+};
+
+const directus = new Directus<CustomTypes>('https://api.example.com');
+
 await directus.auth.login({
 	email: 'admin@example.com',
 	password: 'password',
 });
 
-// ... before fetching items
-const articles = await directus.items('articles').readMany();
+const me = await directus.users.me.read();
+// typeof me = partial DirectusUser & UserType;
 
-console.log({
-	items: articles.data,
-	total: articles.meta.total_count,
-});
+// OK
+me.level = 42;
+
+// Error TS2322: Type "string" is not assignable to type "number".
+me.experience = 'high';
 ```
 
-## Global
+</details>
 
-### Initialize
+## Reference
+
+### Constructor
+
+<details open>
+<summary>
+
+```js
+const directus = new Directus(url, options);
+```
+
+</summary>
+
+- `url`: `string` - origin of your Directus instance. E.g. `http://localhost:8055`
+- `options`:
+  - `auth`: `[Auth]() | AuthOptions`:
+    - `mode`: `'cookie' | 'json'` - set authentication mode. Defaults to `cookie` on browsers, and `json` on Node.js
+    - `autoRefresh`: `boolean` - set if SDK should handle refresh tokens automatically. Defaults to `true`
+    - `msRefreshBeforeExpires` - defines the milliseconds before token expires to do the refresh. Defaults to `30000`
+
+</details>
 
 ```js
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+const defaults = {
+	auth: {
+		mode: 'cookie', // 'cookie' on browsers, 'json' on Node.js;
+		autoRefresh: true,
+		msRefreshBeforeExpires: 30000,
+		staticToken: null,
+	},
+};
 ```
 
 #### `url`
@@ -761,75 +963,3 @@ await directus.utils.revert(451);
 Note: The key passed is the primary key of the revision you'd like to apply.
 
 ---
-
-## TypeScript
-
-If you are using TypeScript, the JS-SDK requires TypeScript 3.8 or newer. TypeScript will also improve the development
-experience by providing relevant information when manipulating your data. For example, `directus.items` knows about your
-collection types if you feed the SDK with enough information in the construction of the SDK instance. This allows for a
-more detailed IDE suggestions for return types, sorting, and filtering.
-
-```ts
-type BlogPost = {
-	id: ID;
-	title: string;
-};
-
-type BlogSettings = {
-	display_promotions: boolean;
-};
-
-type MyCollections = {
-	posts: BlogPost;
-	settings: BlogSettings;
-};
-
-// This is how you feed custom type information to Directus.
-const directus = new Directus<MyCollections>('http://url');
-
-// ...
-
-const post = await directus.items('posts').readOne(1);
-// typeof(post) is a partial BlogPost object
-
-const settings = await posts.singleton('settings').read();
-// typeof(settings) is a partial BlogSettings object
-```
-
-You can also extend the Directus system type information by providing type information for system collections as well.
-
-```ts
-import { Directus } from '@directus/sdk';
-
-// Custom fields added to Directus user collection.
-type UserType = {
-	level: number;
-	experience: number;
-};
-
-type CustomTypes = {
-	/*
-	This type will be merged with Directus user type.
-	It's important that the naming matches a directus
-	collection name exactly. Typos won't get caught here
-	since SDK will assume it's a custom user collection.
-	*/
-	directus_users: UserType;
-};
-
-const directus = new Directus<CustomTypes>('https://api.example.com');
-
-await directus.auth.login({
-	email: 'admin@example.com',
-	password: 'password',
-});
-
-const me = await directus.users.me.read();
-// typeof me = partial DirectusUser & UserType;
-
-// OK
-me.level = 42;
-
-// Error TS2322: Type "string" is not assignable to type "number".
-me.experience = 'high';
-```
