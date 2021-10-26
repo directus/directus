@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+.vs
 .vscode
 .env
 .env.*
@@ -20,8 +21,3 @@ coverage
 TODO
 schema.yaml
 schema.json
-/.vs/Directus/config/applicationhost.config
-/.vs/Directus/v16/.suo
-/.vs/slnx.sqlite
-/.vs
-/api/.vs
