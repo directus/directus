@@ -1,44 +1,54 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
-import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
+import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../transport';
 
 /**
  * Axios transport implementation
  */
-export class AxiosTransport extends ITransport {
-	public axiosConfig?: AxiosRequestConfig;
-	public axios: AxiosInstance;
+export class Transport extends ITransport {
+	private axios: AxiosInstance;
+	private config: TransportOptions;
 
-	constructor(config?: AxiosRequestConfig) {
+	constructor(config: TransportOptions) {
 		super();
 
-		this.axiosConfig = config;
+		this.config = config;
 
-		this.axios = axios.create(this.axiosConfig);
+		this.axios = axios.create({
+			baseURL: this.config.url,
+			params: this.config.params,
+			headers: this.config.headers,
+			onUploadProgress: this.config.onUploadProgress,
+			withCredentials: true,
+		});
+
+		if (this.config?.beforeRequest) this.beforeRequest = this.config.beforeRequest;
+	}
+
+	beforeRequest(config: AxiosRequestConfig): AxiosRequestConfig {
+		return config;
 	}
 
 	get url(): string | undefined {
-		return this.axiosConfig?.baseURL;
+		return this.config.url;
 	}
 
 	protected async request<T = any, R = any>(
 		method: TransportMethods,
 		path: string,
 		data?: Record<string, any>,
-		options?: TransportOptions
+		options?: Omit<TransportOptions, 'url'>
 	): Promise<TransportResponse<T, R>> {
 		try {
-			options = options || {};
-			options.headers = options.headers ?? {};
-			options.onUploadProgress = options.onUploadProgress ?? undefined;
-
-			const config = {
+			let config: AxiosRequestConfig = {
 				method,
 				url: path,
 				data: data,
-				params: options.params,
-				headers: options.headers,
-				onUploadProgress: options.onUploadProgress,
+				params: options?.params,
+				headers: options?.headers,
+				onUploadProgress: options?.onUploadProgress,
 			};
+
+			config = this.beforeRequest(config);
 
 			const response = await this.axios.request<any>(config);
 

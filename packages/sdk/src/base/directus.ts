@@ -19,7 +19,7 @@ import {
 import { IItems } from '../items';
 import { ITransport, TransportOptions } from '../transport';
 import { ItemsHandler } from './items';
-import { AxiosTransport } from './transport';
+import { Transport } from './transport';
 import { Auth } from './auth';
 import { IStorage, StorageOptions } from '../storage';
 import { LocalStorage, MemoryStorage } from './storage';
@@ -78,17 +78,22 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		if (this._options?.transport && this._options?.transport instanceof ITransport)
 			this._transport = this._options.transport;
 		else {
-			const token = this.storage.auth_token;
+			this._transport = new Transport({
+				url: this.url,
+				beforeRequest: (config) => {
+					const token = this.storage.auth_token;
 
-			this._transport = new AxiosTransport({
-				baseURL: this.url,
-				withCredentials: true,
-				headers: {
-					Authorization: token
-						? token.startsWith(`Bearer `)
-							? String(this.storage.auth_token)
-							: `Bearer ${this.storage.auth_token}`
-						: '',
+					return {
+						...config,
+						headers: {
+							...config.headers,
+							Authorization: token
+								? token.startsWith(`Bearer `)
+									? String(this.storage.auth_token)
+									: `Bearer ${this.storage.auth_token}`
+								: '',
+						},
+					};
 				},
 			});
 		}

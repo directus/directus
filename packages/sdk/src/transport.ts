@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { ItemMetadata } from './items';
 
 export type TransportErrorDescription = {
@@ -17,39 +18,44 @@ export type TransportResponse<T, R = any> = {
 	headers: any;
 };
 
-export type TransportOptions = {
+export type TransportMethods = 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch';
+
+export type TransportRequestOptions = {
 	params?: any;
 	headers?: any;
 	onUploadProgress?: ((progressEvent: any) => void) | undefined;
 };
 
+export type TransportOptions = TransportRequestOptions & {
+	url: string;
+	beforeRequest?: (config: AxiosRequestConfig) => AxiosRequestConfig;
+};
+
 export abstract class ITransport {
-	abstract get<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	abstract head<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	abstract options<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	abstract get<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
+	abstract head<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
+	abstract options<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
 	abstract delete<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
-		options?: TransportOptions
+		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
 	abstract post<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
-		options?: TransportOptions
+		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
 	abstract put<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
-		options?: TransportOptions
+		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
 	abstract patch<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
-		options?: TransportOptions
+		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
 }
-
-export type TransportMethods = keyof ITransport;
 
 export class TransportError<T = any, R = any> extends Error {
 	public readonly errors: TransportErrorDescription[];
