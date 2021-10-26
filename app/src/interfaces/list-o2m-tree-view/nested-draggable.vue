@@ -165,10 +165,10 @@ export default defineComponent({
 
 .row {
 	.preview {
-		padding: 12px 12px;
+		padding: 12px;
 		background-color: var(--card-face-color);
 		border-radius: var(--border-radius);
-		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color) 0.2);
 		cursor: grab;
 		transition: var(--fast) var(--transition);
 		transition-property: box-shadow, background-color;

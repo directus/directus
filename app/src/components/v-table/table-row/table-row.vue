@@ -105,7 +105,7 @@ export default defineComponent({
 		border-bottom: var(--border-width) solid var(--border-subdued);
 
 		&:last-child {
-			padding: 0 12px 0 12px;
+			padding: 0 12px;
 		}
 
 		&.select {

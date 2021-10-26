@@ -10,7 +10,7 @@
 	"scripts": {
 		"lint": "npm-run-all --parallel --continue-on-error lint:*",
 		"lint:eslint": "eslint .",
-		"lint:stylelint": "stylelint \"**/*.{css,scss,vue}\"",
+		"lint:stylelint": "stylelint \"**/*.{css,scss,vue}\" --custom-syntax postcss-html",
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
@@ -56,12 +56,12 @@
 		"prettier": "2.4.1",
 		"simple-git-hooks": "2.6.1",
 		"sqlite3": "5.0.2",
-		"stylelint": "13.13.1",
+		"stylelint": "14.0.0",
 		"stylelint-config-prettier": "9.0.3",
 		"stylelint-config-rational-order": "0.1.2",
-		"stylelint-config-standard": "23.0.0",
-		"stylelint-order": "4.1.0",
-		"stylelint-scss": "3.21.0",
+		"stylelint-config-standard": "^23.0.0",
+		"stylelint-order": "5.0.0",
+		"stylelint-scss": "4.0.0",
 		"supertest": "6.1.6",
 		"tedious": "13.0.0",
 		"ts-jest": "27.0.7",
@@ -73,7 +73,7 @@
 	"lint-staged": {
 		"*.{js,ts,vue}": "eslint --fix",
 		"*.{md,yaml}": "prettier --write",
-		"*.{css,scss,vue}": "stylelint --fix"
+		"*.{css,scss,vue}": "stylelint --fix --custom-syntax postcss-html"
 	},
 	"volta": {
 		"node": "16.12.0",
