@@ -1,16 +1,11 @@
 <template>
 	<div class="form-grid">
-		<div class="field half-left">
-			<div class="type-label">{{ t('interfaces.map.geometry_format') }}</div>
-			<v-input v-model="geometryFormat" :disabled="true" :value="t(`interfaces.map.${compatibleFormat}`)" />
-		</div>
-		<div class="field half-right">
+		<div v-if="!nativeGeometryType && geometryFormat !== 'lnglat'" class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
 				:placeholder="t('any')"
 				:show-deselect="true"
-				:disabled="!!nativeGeometryType || geometryFormat == 'lnglat'"
 				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>
@@ -25,7 +20,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { GEOMETRY_TYPES } from '@directus/shared/constants';
-import { Field, GeometryType, GeometryFormat, GeometryOptions } from '@directus/shared/types';
+import { Field, GeometryType, GeometryOptions } from '@directus/shared/types';
 import { getGeometryFormatForType } from '@/utils/geometry';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -39,7 +34,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fieldData: {
+		field: {
 			type: Object as PropType<Field>,
 			default: null,
 		},
@@ -52,20 +47,18 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const isGeometry = props.fieldData.type == 'geometry';
-		const nativeGeometryType = isGeometry ? (props.fieldData!.schema!.geometry_type as GeometryType) : undefined;
-		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
-
-		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
+		const isGeometry = props.field.type == 'geometry';
+		const nativeGeometryType = isGeometry ? (props.field!.schema!.geometry_type as GeometryType) : undefined;
+		const geometryFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.field.type);
 		const geometryType = ref<GeometryType>(
-			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
+			geometryFormat === 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
 		);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
 		watch(
-			[geometryFormat, geometryType, defaultView],
+			[geometryType, defaultView],
 			() => {
-				const type = geometryFormat.value == 'lnglat' ? 'Point' : geometryType;
+				const type = geometryFormat == 'lnglat' ? 'Point' : geometryType;
 				emit('input', { defaultView, geometryFormat, geometryType: type });
 			},
 			{ immediate: true }
@@ -108,7 +101,6 @@ export default defineComponent({
 			t,
 			isGeometry,
 			nativeGeometryType,
-			compatibleFormat,
 			geometryFormat,
 			GEOMETRY_TYPES,
 			geometryType,

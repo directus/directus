@@ -9,8 +9,6 @@ export * from './graphql';
 export * from './items';
 export * from './meta';
 export * from './migration';
-export * from './permissions';
-export * from './query';
 export * from './relation';
 export * from './revision';
 export * from './schema';

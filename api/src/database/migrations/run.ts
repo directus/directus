@@ -26,6 +26,11 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
 	].sort((a, b) => (a.version > b.version ? 1 : -1));
 
+	const migrationKeys = new Set(migrations.map((m) => m.version));
+	if (migrations.length > migrationKeys.size) {
+		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
+	}
+
 	function parseFilePath(filePath: string, custom = false) {
 		const version = filePath.split('-')[0];
 		const name = formatTitle(filePath.split('-').slice(1).join('_').split('.')[0]);

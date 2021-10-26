@@ -52,8 +52,8 @@ import env from '../env';
 import { BaseException } from '@directus/shared/exceptions';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
-import { Accountability } from '@directus/shared/types';
-import { AbstractServiceOptions, Action, Aggregate, GraphQLParams, Item, Query, SchemaOverview } from '../types';
+import { Accountability, Query, Aggregate } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, GraphQLParams, Item, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
@@ -410,8 +410,8 @@ export class GraphQLService {
 						acc[field.field] = {
 							type,
 							description: field.note,
-							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? field.field];
+							resolve: (obj: Record<string, any>) => {
+								return obj[field.field];
 							},
 						};
 
@@ -879,6 +879,13 @@ export class GraphQLService {
 					type: [AggregatedFunctions[collection.collection]],
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
+						filter: ReadableCollectionFilterTypes[collection.collection],
+						search: {
+							type: GraphQLString,
+						},
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
@@ -1364,7 +1371,7 @@ export class GraphQLService {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
 
-					current = selection.alias?.value ?? selection.name.value;
+					current = selection.name.value;
 
 					if (parent) {
 						current = `${parent}.${current}`;
@@ -1413,7 +1420,7 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
-		const replaceFuncs = (filter?: Filter): undefined | Filter => {
+		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
 			if (!filter) return filter;
 
 			return replaceFuncDeep(filter);

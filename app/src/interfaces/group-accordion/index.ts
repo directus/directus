@@ -10,7 +10,8 @@ export default defineInterface({
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
-	groups: ['group'],
+	localTypes: ['group'],
+	group: 'group',
 	options: [
 		{
 			field: 'accordionMode',

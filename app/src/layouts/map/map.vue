@@ -14,8 +14,13 @@
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
-			@fitdata="clearLocationFilter"
+			@fitdata="fitGeoJSONBounds"
+			@setpopup="updatePopup"
 		/>
+
+		<div v-if="popupItem" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }">
+			<render-template :template="template" :item="popupItem" :collection="collection" />
+		</div>
 
 		<v-button
 			v-if="isGeometryFieldNative && !autoLocationFilter && locationFilterOutdatedWritable"
@@ -47,20 +52,17 @@
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 			<v-info
-				v-else-if="itemCount === 0 && (searchQuery || activeFilterCount > 0 || !locationFilterOutdated)"
+				v-else-if="!loading && !itemCount && !locationFilterOutdated && (search || filter || locationFilter)"
 				icon="search"
 				center
-				:title="t('no_results_here')"
+				:title="t('layouts.map.no_results_here')"
 			>
 				<template #append>
 					<v-card-actions>
-						<v-button
-							:disabled="!searchQuery && !filters.filter((f) => f.key !== 'location-filter').length"
-							@click="clearDataFilters"
-						>
-							{{ t('clear_data_filters') }}
+						<v-button :disabled="!search && !filter" @click="clearDataFilters">
+							{{ t('layouts.map.clear_data_filter') }}
 						</v-button>
-						<v-button :disabled="locationFilterOutdated" @click="clearLocationFilter">
+						<v-button :disabled="!locationFilter" @click="clearLocationFilter">
 							{{ t('layouts.map.clear_location_filter') }}
 						</v-button>
 					</v-card-actions>
@@ -124,11 +126,15 @@ export default defineComponent({
 	components: { MapComponent },
 	inheritAttrs: false,
 	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
 		selection: {
 			type: Array as PropType<Item[]>,
 			default: () => [],
 		},
-		searchQuery: {
+		search: {
 			type: String as PropType<string | null>,
 			default: null,
 		},
@@ -192,10 +198,6 @@ export default defineComponent({
 			type: Number,
 			default: null,
 		},
-		activeFilterCount: {
-			type: Number,
-			required: true,
-		},
 		totalPages: {
 			type: Number,
 			required: true,
@@ -212,16 +214,16 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			required: true,
-		},
 		autoLocationFilter: {
 			type: Boolean,
 			default: undefined,
 		},
 		locationFilterOutdated: {
 			type: Boolean,
+			required: true,
+		},
+		fitGeoJSONBounds: {
+			type: Function as PropType<() => void>,
 			required: true,
 		},
 		updateLocationFilter: {
@@ -240,8 +242,32 @@ export default defineComponent({
 			type: Boolean,
 			required: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
+		locationFilter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
+		template: {
+			type: String,
+			default: () => undefined,
+		},
+		popupItem: {
+			type: [String, Number],
+			default: () => undefined,
+		},
+		popupPosition: {
+			type: Object,
+			default: () => undefined,
+		},
+		updatePopup: {
+			type: Function,
+			required: true,
+		},
 	},
-	emits: ['update:cameraOptions', 'update:limit'],
+	emits: ['update:cameraOptions', 'update:limit', 'update:locationFilterOutdated'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
@@ -262,8 +288,8 @@ export default defineComponent({
 	height: 36px;
 	padding: 10px;
 	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
-	border: var(--border-width) solid var(--background-subdued);
+	background-color: var(--background-page);
+	border: var(--border-width) solid var(--background-page);
 	border-radius: var(--border-radius);
 
 	span {
@@ -275,9 +301,23 @@ export default defineComponent({
 		color: var(--foreground-normal);
 	}
 }
-</style>
 
-<style lang="scss">
+.popup {
+	position: fixed;
+	z-index: 1;
+	max-width: 80%;
+	padding: 6px 10px;
+	color: var(--foreground-normal-alt);
+	font-weight: 500;
+	font-size: 14px;
+	font-family: var(--family-sans-serif);
+	background-color: var(--background-page);
+	border-radius: var(--border-radius);
+	box-shadow: var(--card-shadow);
+	pointer-events: none;
+	translate: -50% calc(-100% - 12px);
+}
+
 .layout-map .mapboxgl-map .mapboxgl-canvas-container {
 	transition: opacity 0.2s;
 }
@@ -295,14 +335,13 @@ export default defineComponent({
 .layout-map {
 	position: relative;
 	width: 100%;
-	height: calc(100% - 65px);
+	height: calc(100% - 61px);
 }
 
 .center {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 }
 
@@ -310,6 +349,7 @@ export default defineComponent({
 	position: absolute;
 	top: 10px;
 	left: 50%;
+	box-shadow: var(--card-shadow);
 	transform: translate(-50%, 0%);
 }
 
@@ -364,7 +404,7 @@ export default defineComponent({
 		display: inline-block;
 
 		button {
-			box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 2px 1px rgb(0 0 0 / 0.2);
 		}
 	}
 }

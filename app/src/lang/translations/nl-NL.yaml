@@ -39,7 +39,6 @@ leaf: Blad
 indeterminate: Onbepaald
 exclusive: Exclusief
 children: Onderliggende
-db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
 show_archived_items: Toon Gearchiveerde Items
 edited: Waarde bewerkt
 required: Vereist
@@ -166,6 +165,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimaal
 float: Float
 integer: Integer
@@ -196,9 +196,6 @@ new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 search_collection: Collectie doorzoeken...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
-add_m2o_to_collection: 'Many-to-one toevoegen aan "{collection}"'
-add_o2m_to_collection: 'One-to-many toevoegen aan "{collection}"'
-add_m2m_to_collection: 'Many-to-many toevoegen aan "{collection}"'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
@@ -387,6 +384,9 @@ active: Actief
 copy: Kopieer
 users: Gebruikers
 activity: Activiteit
+action: Actie
+ip_address: IP Adres
+user_agent: User Agent
 webhooks: Webhooks
 field_width: Veld breedte
 add_filter: Filter toevoegen
@@ -823,8 +823,10 @@ field_options:
     collection_setup: Collectie setup
     singleton: Behandel als één object
     language: Taal
+    translation: Vertaling
+    collection_name: Collectie naam
     archive_divider: Archiveren
-    divider: Sorteren
+    sort_divider: Sorteren
   directus_roles:
     fields:
       icon_name: Icoon
@@ -1038,6 +1040,8 @@ interfaces:
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
 displays:
+  translations:
+    translations: Vertalingen
   boolean:
     boolean: Boolean
     description: Toon aan/uit status

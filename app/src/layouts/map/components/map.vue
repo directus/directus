@@ -19,7 +19,6 @@ import {
 	CameraOptions,
 	LngLatLike,
 	AnyLayer,
-	Popup,
 	Map,
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -63,7 +62,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
-	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata'],
+	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata', 'setpopup'],
 	setup(props, { emit }) {
 		const appStore = useAppStore();
 		let map: Map;
@@ -79,16 +78,10 @@ export default defineComponent({
 			return getStyleFromBasemapSource(source);
 		});
 
-		const popup = new Popup({
-			closeButton: false,
-			closeOnClick: false,
-			className: 'mapboxgl-point-popup',
-			maxWidth: 'unset',
-			offset: 20,
-		});
-
 		const attributionControl = new AttributionControl({ compact: true });
-		const navigationControl = new NavigationControl();
+		const navigationControl = new NavigationControl({
+			showCompass: false,
+		});
 		const geolocateControl = new GeolocateControl();
 		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
 			emit('fitdata');
@@ -115,6 +108,7 @@ export default defineComponent({
 				container: 'map-container',
 				style: style.value,
 				attributionControl: false,
+				dragRotate: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -174,9 +168,9 @@ export default defineComponent({
 		}
 
 		function fitBounds() {
-			const bbox = props.data.bbox as LngLatBoundsLike;
+			const bbox = props.data.bbox?.map((x) => x % 90);
 			if (map && bbox) {
-				map.fitBounds(bbox, {
+				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 100,
 					speed: 1.3,
 					maxZoom: 14,
@@ -245,6 +239,7 @@ export default defineComponent({
 			newSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: true });
 			});
+			boxSelectControl.showUnselect(newSelection?.length);
 		}
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
@@ -271,19 +266,22 @@ export default defineComponent({
 			}
 			if (feature && feature.properties) {
 				if (feature.geometry.type === 'Point') {
-					popup.setLngLat(feature.geometry.coordinates as LngLatLike);
+					const { x, y } = map.project(feature.geometry.coordinates as LngLatLike);
+					const rect = map.getContainer().getBoundingClientRect();
+					emit('setpopup', { x: rect.x + x, y: rect.y + y });
 				} else {
-					popup.setLngLat(event.lngLat);
+					const { clientX: x, clientY: y } = event.originalEvent;
+					emit('setpopup', { x, y });
 				}
 				if (featureChanged) {
 					map.setFeatureState({ id: feature.id, source: '__directus' }, { hovered: true });
-					popup.setHTML(feature.properties.description).addTo(map);
 					hoveredFeature.value = feature;
+					emit('setpopup', { item: feature.id });
 				}
 			} else {
 				if (featureChanged) {
 					hoveredFeature.value = feature;
-					popup.remove();
+					emit('setpopup', { item: null });
 				}
 			}
 		}
@@ -325,14 +323,15 @@ export default defineComponent({
 	background: none;
 
 	&:not(:empty) {
-		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
 	}
 
 	button {
 		width: 36px;
 		height: 36px;
-		background: var(--background-subdued) !important;
+		background: var(--background-input) !important;
 		border: none !important;
+		transition: background-color var(--fast) var(--transition);
 
 		span {
 			display: none !important;
@@ -365,6 +364,22 @@ export default defineComponent({
 		font-variant: normal;
 		text-rendering: auto;
 		-webkit-font-smoothing: antialiased;
+	}
+}
+
+.mapboxgl-user-location-dot,
+.maplibregl-user-location-dot {
+	width: 12px;
+	height: 12px;
+
+	&::before {
+		width: 12px;
+		height: 12px;
+	}
+
+	&::after {
+		width: 16px;
+		height: 16px;
 	}
 }
 
@@ -403,19 +418,37 @@ export default defineComponent({
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
 	min-height: 24px;
-	color: var(--foreground-normal);
-	background: var(--background-subdued) !important;
+	color: var(--foreground-subdued);
+	background: var(--background-input) !important;
+	box-shadow: var(--card-shadow);
+
+	button {
+		opacity: 0.25;
+		transition: opacity var(--fast) var(--transition);
+	}
+
+	&:hover {
+		button {
+			opacity: 0.75;
+		}
+	}
+
+	.maplibregl-ctrl-attrib-inner,
+	.mapboxgl-ctrl-attrib-inner {
+		font-size: 12px;
+		line-height: 20px;
+	}
 }
 
 .mapboxgl-ctrl-geocoder {
 	font-size: inherit !important;
 	font-family: inherit !important;
 	line-height: inherit !important;
-	background-color: var(--background-subdued);
+	background-color: var(--background-page);
 
 	&,
 	&.suggestions {
-		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
 	}
 }
 
@@ -464,41 +497,11 @@ export default defineComponent({
 	z-index: 1000;
 	width: 0;
 	height: 0;
-	background: rgba(56, 135, 190, 0.1);
-	border: 1px solid rgb(56, 135, 190);
+	background: rgb(56 135 190 / 0.1);
+	border: 1px solid rgb(56 135 190);
 	pointer-events: none;
 }
 
-.mapboxgl-point-popup {
-	&.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
-		border-right-color: var(--background-normal);
-	}
-
-	&.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
-		border-bottom-color: var(--background-normal);
-	}
-
-	&.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-		border-top-color: var(--background-normal);
-	}
-
-	&.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
-		border-left-color: var(--background-normal);
-	}
-
-	.mapboxgl-popup-content {
-		color: var(--foreground-normal-alt);
-		font-weight: 500;
-		font-size: 14px;
-		font-family: var(--family-sans-serif);
-		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
-		pointer-events: none;
-	}
-}
-</style>
-
-<style lang="scss">
 #map-container.hover .mapboxgl-canvas-container {
 	cursor: pointer !important;
 }

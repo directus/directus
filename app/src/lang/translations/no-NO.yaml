@@ -9,7 +9,6 @@ field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
 add_field: Legg til felt
 role_name: Rollenavn
-db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
 show_archived_items: Vis arkiverte elementer
 edited: Verdi endret
 required: Påkrevd
@@ -128,6 +127,7 @@ bigInteger: Stort heltall
 boolean: Sann/usann
 date: Dato
 datetime: Dato og tid
+dateTime: Dato og tid
 decimal: Desimaltall
 float: Flyttall
 integer: Heltall
@@ -156,9 +156,6 @@ new_data_alert: 'Følgende vil bli opprettet i din Data Model:'
 search_collection: Søk i kolleksjonen...
 new_field: 'Nytt felt'
 new_collection: 'Ny Kolleksjon'
-add_m2o_to_collection: 'Legg til mange-til-en til "{collection}"'
-add_o2m_to_collection: 'Legg til en-til-mange til "{collection}"'
-add_m2m_to_collection: 'Legg til mange-til mange til "{collection}'
 choose_a_type: Velg en Type...
 determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
@@ -291,6 +288,8 @@ select_a_collection: Velg en Kolleksjon
 active: Aktiv
 users: Brukere
 activity: Aktivitet
+ip_address: IP-addresse
+user_agent: Brukeragent
 webhooks: Webhooks
 field_width: Feltbredde
 add_filter: Legg til filter
@@ -421,7 +420,7 @@ field_options:
   directus_collections:
     language: Språk
     archive_divider: Arkiv
-    divider: Sorter
+    sort_divider: Sorter
   directus_roles:
     fields:
       icon_name: Ikon
@@ -497,6 +496,8 @@ interfaces:
   boolean:
     label_default: Aktivert
 displays:
+  translations:
+    translations: Oversettelser
   boolean:
     boolean: Sann/usann
   collection:

@@ -1,36 +1,46 @@
-import { AnyLayer, Expression } from 'maplibre-gl';
+import { AnyLayer } from 'maplibre-gl';
 
-const baseColor = '#09f';
-const selectColor = '#FFA500';
-const fill: Expression = ['case', ['boolean', ['feature-state', 'selected'], false], selectColor, baseColor];
-const outline: Expression = [
-	'case',
-	['boolean', ['feature-state', 'selected'], false],
-	selectColor,
-	['boolean', ['feature-state', 'hovered'], false],
-	selectColor,
-	baseColor,
-];
+const white = '#ffffff';
+const green = '#00c897';
+const yellow = '#ffb300';
+const orange = '#ee9746';
 
 export const layers: AnyLayer[] = [
-	{
-		id: '__directus_polygons',
-		type: 'fill',
-		source: '__directus',
-		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
-		paint: {
-			'fill-color': fill,
-			'fill-opacity': 0.15,
-		},
-	},
 	{
 		id: '__directus_polygons_outline',
 		type: 'line',
 		source: '__directus',
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
 		paint: {
-			'line-color': outline,
+			'line-color': [
+				'case',
+				['boolean', ['feature-state', 'selected'], false],
+				orange,
+				['boolean', ['feature-state', 'hovered'], false],
+				orange,
+				green,
+			],
 			'line-width': 2,
+		},
+		layout: {
+			'line-join': 'round',
+		},
+	},
+	{
+		id: '__directus_polygons',
+		type: 'fill',
+		source: '__directus',
+		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
+		paint: {
+			'fill-color': [
+				'case',
+				['boolean', ['feature-state', 'selected'], false],
+				yellow,
+				['boolean', ['feature-state', 'hovered'], false],
+				yellow,
+				green,
+			],
+			'fill-opacity': 0.15,
 		},
 	},
 	{
@@ -39,8 +49,28 @@ export const layers: AnyLayer[] = [
 		source: '__directus',
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'LineString']],
 		paint: {
-			'line-color': outline,
+			'line-color': [
+				'case',
+				['boolean', ['feature-state', 'selected'], false],
+				orange,
+				['boolean', ['feature-state', 'hovered'], false],
+				orange,
+				green,
+			],
 			'line-width': 2,
+		},
+	},
+	{
+		id: '__directus_points_shadow',
+		type: 'circle',
+		source: '__directus',
+		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
+		layout: {},
+		paint: {
+			'circle-radius': 10,
+			'circle-blur': 1,
+			'circle-opacity': 0.9,
+			'circle-color': '#000000',
 		},
 	},
 	{
@@ -50,10 +80,17 @@ export const layers: AnyLayer[] = [
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
 		layout: {},
 		paint: {
-			'circle-radius': 5,
-			'circle-color': fill,
-			'circle-stroke-color': outline,
-			'circle-stroke-width': 3,
+			'circle-radius': 6,
+			'circle-color': [
+				'case',
+				['boolean', ['feature-state', 'selected'], false],
+				orange,
+				['boolean', ['feature-state', 'hovered'], false],
+				orange,
+				green,
+			],
+			'circle-stroke-color': white,
+			'circle-stroke-width': 2,
 		},
 	},
 	{
@@ -62,8 +99,9 @@ export const layers: AnyLayer[] = [
 		source: '__directus',
 		filter: ['has', 'point_count'],
 		paint: {
-			'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
 			'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+			'circle-color': ['step', ['get', 'point_count'], '#7fe3ca', 100, '#fde2a7', 750, '#f0a7b3'],
+			'circle-opacity': 0.7,
 		},
 	},
 	{
@@ -75,6 +113,9 @@ export const layers: AnyLayer[] = [
 			'text-field': '{point_count_abbreviated}',
 			'text-font': ['Open Sans Semibold'],
 			'text-size': ['step', ['get', 'point_count'], 15, 100, 17, 750, 19],
+		},
+		paint: {
+			'text-opacity': 0.85,
 		},
 	},
 ];

@@ -3,7 +3,8 @@ import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Aggregate, Filter, Query, Relation, SchemaOverview } from '../types';
+import { Relation, SchemaOverview } from '../types';
+import { Aggregate, Filter, Query } from '@directus/shared/types';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
@@ -24,14 +25,24 @@ export default function applyQuery(
 ): void {
 	if (query.sort) {
 		dbQuery.orderBy(
-			query.sort.map((sort) => ({
-				...sort,
-				column: getColumn(knex, collection, sort.column, false) as any,
-			}))
+			query.sort.map((sortField) => {
+				let column = sortField;
+				let order: 'asc' | 'desc' = 'asc';
+
+				if (sortField.startsWith('-')) {
+					column = column.substring(1);
+					order = 'desc';
+				}
+
+				return {
+					order,
+					column: getColumn(knex, collection, column, false) as any,
+				};
+			})
 		);
 	}
 
-	if (typeof query.limit === 'number') {
+	if (typeof query.limit === 'number' && query.limit !== -1) {
 		dbQuery.limit(query.limit);
 	}
 
@@ -39,7 +50,7 @@ export default function applyQuery(
 		dbQuery.offset(query.offset);
 	}
 
-	if (query.page && query.limit) {
+	if (query.page && query.limit && query.limit !== -1) {
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
@@ -184,7 +195,7 @@ export function applyFilter(
 							.on(
 								`${parentAlias || parentCollection}.${relation.field}`,
 								'=',
-								`${alias}.${schema.collections[pathScope].primary}`
+								knex.raw(`CAST(?? AS TEXT)`, `${alias}.${schema.collections[pathScope].primary}`)
 							)
 							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
 					});

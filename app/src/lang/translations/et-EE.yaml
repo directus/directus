@@ -31,7 +31,6 @@ field_name_translations: Väljade tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
 add_field: Lisa väli
 role_name: Rolli nimi
-db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 edited: Muudetud väärtus
 required: Nõutud
@@ -156,6 +155,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Kuupäev
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -186,9 +186,6 @@ new_data_alert: 'Sinu andmemudelisse lisatakse:'
 search_collection: Otsi andmekogu...
 new_field: 'Uus väli'
 new_collection: 'Uus kogumik'
-add_m2o_to_collection: 'Lisa mitu-ühele (M2O) seos koguga "{collection}"'
-add_o2m_to_collection: 'Lisa üks-mitmele (O2M) seos koguga "{collection}"'
-add_m2m_to_collection: 'Lisa mitu-mitmele (M2M) seos koguga "{collection}"'
 choose_a_type: Vali Tüüp...
 determined_by_relationship: Määratud suhtega
 add_note: Lisa kasutajaid abistav märkus...
@@ -376,6 +373,9 @@ active: aktiivne
 copy: Kopeeri
 users: Kasutajad
 activity: Tegevus
+action: Tegevus
+ip_address: IP aadress
+user_agent: Kasutaja agent
 webhooks: Webhooks
 field_width: Välja laius
 add_filter: Lisa filter
@@ -807,8 +807,10 @@ field_options:
     collection_setup: Andmekogu seadistus
     singleton: Käsitle üksiku objektina
     language: Keel
+    translation: Tõlge
+    collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
-    divider: Sorteeri
+    sort_divider: Sorteeri
   directus_roles:
     fields:
       icon_name: Ikoon
@@ -1101,6 +1103,8 @@ interfaces:
     trigger: Päästik
     rate: Hinnang
 displays:
+  translations:
+    translations: Tõlked
   boolean:
     boolean: Boolean
     description: Näita sees/väljas seisu

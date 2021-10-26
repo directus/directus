@@ -146,6 +146,8 @@ export default defineComponent({
 			top: 2px;
 			left: 0;
 			color: var(--foreground-subdued);
+			font-weight: 600;
+			font-size: 12px;
 			white-space: nowrap;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
@@ -177,7 +179,7 @@ export default defineComponent({
 	}
 
 	&.collapsed {
-		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
+		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 
 		.title-container {
 			.headline {

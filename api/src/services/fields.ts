@@ -397,11 +397,17 @@ export class FieldsService {
 			}
 
 			// Cleanup directus_fields
-			const metaRow = await trx.select('id').from('directus_fields').where({ collection, field }).first();
+			const metaRow = await trx
+				.select('collection', 'field')
+				.from('directus_fields')
+				.where({ collection, field })
+				.first();
 
-			if (metaRow?.id) {
+			if (metaRow) {
 				// Handle recursive FK constraints
-				await trx('directus_fields').update({ group: null }).where({ group: metaRow.id });
+				await trx('directus_fields')
+					.update({ group: null })
+					.where({ group: metaRow.field, collection: metaRow.collection });
 			}
 
 			await trx('directus_fields').delete().where({ collection, field });
@@ -484,7 +490,9 @@ export class FieldsService {
 			column.nullable();
 		}
 
-		if (field.schema?.is_unique === true) {
+		if (field.schema?.is_primary_key) {
+			column.primary().notNullable();
+		} else if (field.schema?.is_unique === true) {
 			if (!alter || alter.is_unique === false) {
 				column.unique();
 			}
@@ -492,10 +500,6 @@ export class FieldsService {
 			if (alter && alter.is_unique === true) {
 				table.dropUnique([field.field]);
 			}
-		}
-
-		if (field.schema?.is_primary_key) {
-			column.primary().notNullable();
 		}
 
 		if (alter) {

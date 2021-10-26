@@ -51,7 +51,7 @@ indeterminate: Indeterminate
 edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
-db_only_click_to_configure: 'Database Only: Click to Configure '
+db_only_click_to_configure: 'Database Only: Click to Configure'
 show_archived_items: Show Archived Items
 edited: Value Edited
 required: Required
@@ -177,6 +177,8 @@ global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
 show_zero: Show Zero
+create_in_advanced_field_creation_mode: Create in Advanced Field Creation Mode
+continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
 sum: Sum
 sum_distinct: Sum Distinct
 avg: Average
@@ -204,6 +206,7 @@ boolean: Boolean
 date: Date
 date_range: Date Range
 datetime: DateTime
+dateTime: DateTime
 precision: Precision
 decimal: Decimal
 float: Float
@@ -237,9 +240,9 @@ new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
 new_field: 'New Field'
 new_collection: 'New Collection'
-add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
-add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
-add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
+add_m2o_to_collection: 'Add M2O to "{collection}"'
+add_o2m_to_collection: 'Add O2M to "{collection}"'
+add_m2m_to_collection: 'Add M2M to "{collection}"'
 choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
@@ -257,6 +260,7 @@ invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations
+no_translations: No Translations
 note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
@@ -332,6 +336,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutes
+hours: Hours
 month: Month
 year: Year
 select_all: Select All
@@ -366,6 +372,7 @@ zoom: Zoom
 download: Download
 open: Open
 open_in_new_window: Open in New Window
+open_folder: Open "{folder}" folder
 foreground_color: Foreground Color
 background_color: Background Color
 upload_from_device: Upload File from Device
@@ -439,6 +446,10 @@ no_other_dashboards_copy: You don't have any other Dashboards yet.
 inactive: Inactive
 users: Users
 activity: Activity
+activity_item: Activity Item
+action: Action
+ip_address: IP Address
+user_agent: User Agent
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -524,6 +535,8 @@ all_users: All Users
 delete_collection: Delete Collection
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
+make_collection_visible: Make Collection Visible
+make_collection_hidden: Make Collection Hidden
 start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
@@ -614,7 +627,9 @@ all_files: All Files
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
+edit_folder: Edit Folder
 folder_name: Folder Name...
+folder_key: Folder Key...
 add_file: Add File
 replace_file: Replace File
 no_results: No Results
@@ -676,6 +691,12 @@ source: Source
 url_placeholder: Enter an url...
 display_text: Display Text
 display_text_placeholder: Enter a display text...
+interface_group_text_and_numbers: Text & Numbers
+interface_group_selection: Selection
+interface_group_relational: Relational
+interface_group_presentation: Presentation
+interface_group_groups: Groups
+interface_group_other: Other
 tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
@@ -821,10 +842,12 @@ system_fields_locked: System fields are locked and can't be edited
 directus_collection:
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
+  directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
+  directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
@@ -910,6 +933,8 @@ fields:
     role: Role
     token: Token
     token_placeholder: Enter a secure access token...
+    provider: Provider
+    external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
   directus_settings:
@@ -1008,15 +1033,22 @@ field_options:
     hidden_label: Hide within the App
     singleton: Treat as single object
     language: Language
-    translation: Enter a translation...
+    translation: Translation
+    translation_placeholder: Enter a translation...
+    collection_name: Collection Name
+    singular_unit: Singular Unit
+    plural_unit: Plural Unit
     archive_divider: Archive
-    archive_field: Choose a field...
+    archive_field: Archive Field
+    archive_field_placeholder: Choose a field...
     archive_app_filter: Enable App Archive Filter
     archive_value: Value set when archiving...
     unarchive_value: Value set when unarchiving...
-    divider: Sort
+    sort_divider: Sort
     sort_field: Choose a field...
     accountability_divider: Accountability
+    duplication_divider: Duplication
+    item_duplication_fields: Item Duplication Fields
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1073,6 +1105,9 @@ generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
 save_current_user_role: Save Current User Role
 save_current_datetime: Save Current Date/Time
+always_open: Always Open
+start_open: Start Open
+start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
@@ -1145,6 +1180,7 @@ sort_desc: Sort Descending
 template: Template
 require_value_to_be_set: Require value to be set
 translation: Translation
+translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 weeks: {}
@@ -1292,9 +1328,9 @@ interfaces:
     map: Map
     description: Select a location on a map
     zoom: Zoom
-    geometry_type: Geometry type
-    geometry_format: Geometry format
-    default_view: Default view
+    geometry_type: Geometry Type
+    geometry_format: Geometry Format
+    default_view: Default View
     invalid_options: Invalid options
     invalid_format: Invalid format ({format})
     unexpected_geometry: Expected {expected}, got {got}.
@@ -1372,7 +1408,7 @@ interfaces:
     display_template: Display Template
     no_collection: No Collection
     toggle_split_view: Toggle Split View
-    language_field: Language Field
+    language_field: Language Indicator Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -1409,6 +1445,13 @@ interfaces:
     start_open: Start Open
     start_closed: Start Closed
 displays:
+  translations:
+    translations: Translations
+    description: Preview translations
+    enable: Enable
+    user_language: Use Current User Language
+    default_language: Default Language
+    language_field: Language Indicator Field
   boolean:
     boolean: Boolean
     description: Display on and off states
@@ -1521,16 +1564,17 @@ layouts:
     layers: Layers
     edit_custom_layers: Edit Layers
     cluster_options: Clustering options
-    cluster: Activate clustering
+    cluster: Cluster Nearby Data
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
     field: Geometry
     invalid_geometry: Invalid geometry
-    auto_location_filter: Always filter data to view bounds
+    auto_location_filter: Auto-Filter within View
     search_this_area: Search this area
-    clear_data_filter: Clear Data Filter
-    clear_location_filter: Clear Location Filter
+    clear_data_filter: Clear data filter
+    clear_location_filter: Clear location filter
+    no_results_here: No results in this area
 
 panels:
   metric:

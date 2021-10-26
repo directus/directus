@@ -1,12 +1,12 @@
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit, isNil } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview, Alterations } from '../types';
+import { Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import { unflatten } from 'flat';
@@ -130,7 +130,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		let processedPayload = toArray(payload);
+		const processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -172,13 +172,25 @@ export class PayloadService {
 			});
 		}
 
-		processedPayload = processedPayload.map((item: Record<string, any>) => unflatten(item, { delimiter: '->' }));
+		if (action === 'read') {
+			this.processAggregates(processedPayload);
+		}
 
 		if (Array.isArray(payload)) {
 			return processedPayload;
 		}
 
 		return processedPayload[0];
+	}
+
+	processAggregates(payload: Partial<Item>[]) {
+		const aggregateKeys = Object.keys(payload[0]).filter((key) => key.includes('->'));
+		if (aggregateKeys.length) {
+			for (const item of payload) {
+				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				aggregateKeys.forEach((key) => delete item[key]);
+			}
+		}
 	}
 
 	async processField(
@@ -405,12 +417,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -473,12 +485,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -574,7 +586,7 @@ export class PayloadService {
 
 				savedPrimaryKeys.push(
 					...(await itemsService.upsertMany(recordsToUpsert, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					}))
 				);
 
@@ -604,7 +616,7 @@ export class PayloadService {
 						query,
 						{ [relation.field]: null },
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -622,7 +634,7 @@ export class PayloadService {
 							[relation.field]: parent || payload[currentPrimaryKeyField],
 						})),
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -638,7 +650,7 @@ export class PayloadService {
 								[relation.field]: parent || payload[currentPrimaryKeyField],
 							},
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}
@@ -669,7 +681,7 @@ export class PayloadService {
 							query,
 							{ [relation.field]: null },
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}

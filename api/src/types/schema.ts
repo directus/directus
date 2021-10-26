@@ -1,5 +1,4 @@
-import { Type } from '@directus/shared/types';
-import { Permission } from './permissions';
+import { Type, Permission } from '@directus/shared/types';
 import { Relation } from './relation';
 
 export type FieldOverview = {

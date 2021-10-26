@@ -141,6 +141,9 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 													'KEY=directus-test',
 													'SECRET=directus-test',
 													'TELEMETRY=false',
+													'CACHE_SCHEMA=false',
+													'CACHE_ENABLED=false',
+													'RATE_LIMITER_ENABLED=false',
 												],
 												HostConfig: {
 													Links:
@@ -261,6 +264,24 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 
 									throw new Error(logString);
 								}
+							},
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
+		},
+		{
+			title: 'Migrate and seed databases',
+			task: async () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => {
+								const database = knex(config.knexConfig[vendor]!);
+								await database.migrate.latest();
+								await database.seed.run();
 							},
 						};
 					}),

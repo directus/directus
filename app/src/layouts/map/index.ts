@@ -1,11 +1,10 @@
 import { defineLayout } from '@directus/shared/utils';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
-import MapSidebar from './sidebar.vue';
 import MapActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref, watch, Ref } from 'vue';
+import { toRefs, computed, ref, watch } from 'vue';
 
 import { toGeoJSON } from '@/utils/geometry';
 import { layers } from './style';
@@ -17,6 +16,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 import { cloneDeep, merge } from 'lodash';
 
@@ -28,7 +28,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: MapLayout,
 	slots: {
 		options: MapOptions,
-		sidebar: MapSidebar,
+		sidebar: () => undefined,
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
@@ -39,23 +39,34 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter, filterUser, search } = toRefs(props);
+
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const page = syncOption(layoutQuery, 'page', 1);
-		const limit = syncOption(layoutQuery, 'limit', 1000);
-		const sort = syncOption(layoutQuery, 'sort', fieldsInCollection.value?.[0]?.field);
+		const page = syncRefProperty(layoutQuery, 'page', 1);
+		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
+		const sort = syncRefProperty(layoutQuery, 'sort', [fieldsInCollection.value?.[0]?.field]);
+
+		const locationFilter = ref<Filter>();
+
+		const filterWithLocation = computed<Filter | null>(() => {
+			if (!locationFilter.value) return filter.value;
+			if (!filter.value) return locationFilter.value;
+
+			return {
+				_and: [filter.value, locationFilter.value],
+			};
+		});
 
 		const customLayerDrawerOpen = ref(false);
 
-		const cameraOptions = syncOption(layoutOptions, 'cameraOptions', undefined);
-		const customLayers = syncOption(layoutOptions, 'customLayers', layers);
-		const autoLocationFilter = syncOption(layoutOptions, 'autoLocationFilter', false);
-		const clusterData = syncOption(layoutOptions, 'clusterData', false);
-		const geometryField = syncOption(layoutOptions, 'geometryField', undefined);
+		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
+		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
+		const customLayers = syncRefProperty(layoutOptions, 'customLayers', layers);
+		const autoLocationFilter = syncRefProperty(layoutOptions, 'autoLocationFilter', false);
+		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
+		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
 		const geometryFormat = computed<GeometryFormat | undefined>({
 			get: () => layoutOptions.value?.geometryFormat,
 			set(newValue: GeometryFormat | undefined) {
@@ -110,8 +121,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const template = computed(() => {
-			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			return `{{ ${primaryKeyField.value?.field} }}`;
+			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
 		});
 
 		const queryFields = computed(() => {
@@ -123,10 +133,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const locationFilterOutdated = ref(false);
 
 		function getLocationFilter(): Filter | undefined {
-			if (!isGeometryFieldNative.value || !cameraOptions.value) {
+			if (!isGeometryFieldNative.value || !cameraOptions.value || !geometryField.value) {
 				return;
 			}
+
 			const bbox = cameraOptions.value.bbox;
+
 			const bboxPolygon = [
 				[bbox[0], bbox[1]],
 				[bbox[2], bbox[1]],
@@ -134,35 +146,41 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				[bbox[0], bbox[3]],
 				[bbox[0], bbox[1]],
 			];
+
 			return {
-				key: 'location-filter',
-				field: geometryField.value,
-				operator: 'intersects_bbox',
-				value: {
-					type: 'Polygon',
-					coordinates: [bboxPolygon],
-				} as any,
+				[geometryField.value]: {
+					_intersects_bbox: {
+						type: 'Polygon',
+						coordinates: [bboxPolygon],
+					},
+				},
 			} as Filter;
 		}
 
 		function updateLocationFilter() {
-			const locationFilter = getLocationFilter();
 			locationFilterOutdated.value = false;
-			filters.value = filters.value.filter((filter) => filter.key !== 'location-filter').concat(locationFilter ?? []);
+			locationFilter.value = getLocationFilter();
 		}
 
 		function clearLocationFilter() {
 			shouldUpdateCamera.value = true;
 			locationFilterOutdated.value = false;
-			filters.value = filters.value.filter((filter) => filter.key !== 'location-filter');
+			locationFilter.value = undefined;
+		}
+
+		function fitGeoJSONBounds() {
+			if (!geojson.value?.features.length) {
+				return;
+			}
+			shouldUpdateCamera.value = true;
+			locationFilterOutdated.value = false;
 			if (geojson.value) {
-				geojsonBounds.value = geojson.value.bbox;
+				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
 		}
 
 		function clearDataFilters() {
-			filters.value = filters.value.filter((filter) => filter.key === 'location-filter');
-			searchQuery.value = null;
+			props?.clearFilters();
 		}
 
 		const shouldUpdateCamera = ref(false);
@@ -189,8 +207,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sort,
 			limit,
 			page,
-			filters,
-			searchQuery,
+			search,
+			filter: filterWithLocation,
 			fields: queryFields,
 		});
 
@@ -199,11 +217,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const geojsonError = ref<string | null>(null);
 		const geojsonLoading = ref(false);
 
-		watch(() => searchQuery.value, onQueryChange);
-		watch(() => collection.value, onQueryChange);
-		watch(() => limit.value, onQueryChange);
-		watch(() => sort.value, onQueryChange);
-		watch(() => items.value, updateGeojson);
+		watch([search, collection, limit, sort], onQueryChange);
+		watch(items, updateGeojson);
 
 		watch(
 			() => geometryField.value,
@@ -213,7 +228,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function onQueryChange() {
 			shouldUpdateCamera.value = true;
 			geojsonLoading.value = false;
-			page.value = 1;
 		}
 
 		function updateGeojson() {
@@ -222,7 +236,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
 					geojsonError.value = null;
-					geojson.value = toGeoJSON(items.value, geometryOptions.value, template.value);
+					geojson.value = toGeoJSON(items.value, geometryOptions.value);
 					geojsonLoading.value = false;
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
@@ -291,7 +305,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
 				if (itemCount.value === 1) {
 					return t('one_filtered_item');
 				}
@@ -311,12 +325,25 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
-		const activeFilterCount = computed(() => {
-			return filters.value.filter((filter) => !filter.locked).length;
-		});
+		const popupItem = ref<any>(null);
+		const popupPosition = ref<any>({ x: 0, y: 0 });
+		function updatePopup({ x, y, item }: { x: number; y: number; item: string | number }) {
+			const field = primaryKeyField.value?.field;
+			if (!field) {
+				return;
+			}
+			if (x && y) {
+				popupPosition.value = { x, y };
+			}
+			if (item === null) {
+				popupItem.value = null;
+			} else {
+				popupItem.value = items.value.find((i) => i[field] === item);
+			}
+		}
 
 		return {
-			template,
+			collection,
 			geojson,
 			directusSource,
 			directusLayers,
@@ -332,6 +359,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			handleSelect,
 			geometryFormat,
 			geometryField,
+			displayTemplate,
 			isGeometryFieldNative,
 			cameraOptions,
 			autoLocationFilter,
@@ -345,12 +373,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			itemCount,
 			fieldsInCollection,
 			limit,
-			filters,
+			filter,
 			primaryKeyField,
 			sort,
 			info,
 			showingCount,
-			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
 			geometryFields,
@@ -359,6 +386,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			updateLocationFilter,
 			clearLocationFilter,
 			clearDataFilters,
+			locationFilter,
+			fitGeoJSONBounds,
+			template,
+			popupItem,
+			popupPosition,
+			updatePopup,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -372,15 +405,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function toPage(newPage: number) {
 			page.value = newPage;
-		}
-
-		function syncOption<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T]) {
-			return computed<R[T]>({
-				get: () => ref.value?.[key] ?? defaultValue,
-				set: (value: R[T]) => {
-					ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
-				},
-			});
 		}
 	},
 });
