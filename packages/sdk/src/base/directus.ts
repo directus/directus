@@ -21,17 +21,19 @@ import { ITransport, TransportOptions } from '../transport';
 import { ItemsHandler } from './items';
 import { Transport } from './transport';
 import { Auth } from './auth';
-import { IStorage, StorageOptions } from '../storage';
-import { LocalStorage, MemoryStorage } from './storage';
+import { IStorage } from '../storage';
+import { LocalStorage, MemoryStorage, StorageOptions } from './storage';
 import { TypeMap, TypeOf, PartialBy } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
 import { ISingleton } from '../singleton';
 import { SingletonHandler } from '../handlers/singleton';
 
+export type DirectusStorageOptions = StorageOptions & { mode?: 'LocalStorage' | 'MemoryStorage' };
+
 export type DirectusOptions = {
 	auth?: IAuth | PartialBy<AuthOptions, 'transport' | 'storage'>;
 	transport?: ITransport | TransportOptions;
-	storage?: IStorage | StorageOptions;
+	storage?: IStorage | DirectusStorageOptions;
 };
 
 export class Directus<T extends TypeMap> implements IDirectus<T> {
@@ -65,15 +67,22 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
-		const Storage = typeof window !== 'undefined' ? LocalStorage : MemoryStorage;
-
 		this._url = url;
 		this._options = options;
 		this._items = {};
 		this._singletons = {};
 
 		if (this._options?.storage && this._options?.storage instanceof IStorage) this._storage = this._options.storage;
-		else this._storage = new Storage(this._options?.storage as StorageOptions | undefined);
+		else {
+			const directusStorageOptions = this._options?.storage as DirectusStorageOptions | undefined;
+			const { mode, ...storageOptions } = directusStorageOptions ?? {};
+
+			if (mode === 'MemoryStorage' || typeof window === 'undefined') {
+				this._storage = new MemoryStorage(storageOptions);
+			} else {
+				this._storage = new LocalStorage(storageOptions);
+			}
+		}
 
 		if (this._options?.transport && this._options?.transport instanceof ITransport)
 			this._transport = this._options.transport;
