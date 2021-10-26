@@ -28,7 +28,7 @@ export class Transport extends ITransport {
 		return config;
 	}
 
-	get url(): string | undefined {
+	get url(): string {
 		return this.config.url;
 	}
 
