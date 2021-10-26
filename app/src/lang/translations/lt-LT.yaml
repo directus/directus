@@ -161,6 +161,7 @@ bigInteger: Didelis sveikasis skaičius
 boolean: Loginis
 date: Data
 datetime: Data ir laikas
+dateTime: Data ir laikas
 decimal: Dešimtainis skaičius
 float: Slankiojo kablelio skaičius
 integer: Sveikasis skaičius
@@ -191,9 +192,6 @@ new_data_alert: 'Jūsų duomenų modelyje bus sukurta:'
 search_collection: Ieškoti kolekcijoje...
 new_field: 'Naujas laukas'
 new_collection: 'Nauja kolekcija'
-add_m2o_to_collection: 'Pridėti daug-su-vienu į "{collection}"'
-add_o2m_to_collection: 'Pridėti vienas-su-daug į "{collection}"'
-add_m2m_to_collection: 'Pridėti daug-su-daug į "{collection}"'
 choose_a_type: Pasirinkite tipą...
 determined_by_relationship: Nustatoma pagal sąryšį
 add_note: Pridėkite paaiškinimą vartotojui...
