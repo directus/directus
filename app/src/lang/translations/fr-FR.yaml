@@ -199,6 +199,7 @@ boolean: Booléen
 date: Date
 date_range: Plage de dates
 datetime: Date et heure
+dateTime: Date et heure
 precision: Précision
 decimal: Décimale
 float: Décimal
@@ -231,9 +232,6 @@ new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de do
 search_collection: Rechercher une collection...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
-add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
-add_o2m_to_collection: 'Ajouter une relation One-to-Many à "{collection}"'
-add_m2m_to_collection: 'Ajouter une relation Many-to-Many à "{collection}"'
 choose_a_type: Choisir un type...
 determined_by_relationship: Déterminé par la relation
 add_note: Ajouter une note utile aux utilisateurs…
@@ -569,7 +567,7 @@ operators:
   gte: Plus grand ou égal à
   in: Appartient à
   nin: N'appartient pas à
-  null: Est null
+  null: Est nul
   nnull: N'est pas null
   contains: Contient
   ncontains: Ne contient pas
@@ -583,10 +581,10 @@ operators:
   nempty: N'est pas vide
   all: Contient ces clés
   has: Contient certaines de ces clés
-  intersects: Intersecte
-  nintersects: N'intersecte pas
-  intersects_bbox: Intersecte la boite englobante
-  nintersects_bbox: N'intersecte pas la boîte englobante
+  intersects: Intersectes
+  nintersects: Ne se croise pas
+  intersects_bbox: Boîte englobante d'intersectes
+  nintersects_bbox: Ne pas intersecter la boîte englobante
 loading: Chargement…
 drop_to_upload: Déposer pour téléverser
 item: Élément
@@ -661,7 +659,7 @@ edit_dashboard: Modifier le tableau de bord
 delete_dashboard: Supprimer
 visible: Visible
 prefix_placeholder: Texte avant la valeur...
-suffix_placeholder: Texte après la valeur...
+suffix_placeholder: Texte avant la valeur...
 decimals_placeholder: Nombre de décimales
 no_dashboards: Tableaux de bord
 no_dashboards_copy: Tu n'as pas encore de rapport.

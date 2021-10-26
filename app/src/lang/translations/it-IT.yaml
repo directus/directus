@@ -199,6 +199,7 @@ boolean: Boolean
 date: Data
 date_range: Intervallo di date
 datetime: DateTime
+dateTime: DateTime
 precision: Precisione
 decimal: Decimal
 float: Float
@@ -231,9 +232,6 @@ new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
-add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
-add_o2m_to_collection: 'Aggiungi O2M a "{collection}"'
-add_m2m_to_collection: 'Aggiungi M2M a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -1161,7 +1159,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:

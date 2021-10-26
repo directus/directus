@@ -199,6 +199,7 @@ boolean: Boolean
 date: Date
 date_range: 时间段
 datetime: DateTime
+dateTime: DateTime
 precision: 精度
 decimal: Decimal
 float: Float
@@ -231,9 +232,6 @@ new_data_alert: '以下将在您的模型中创建：'
 search_collection: 搜索模型...
 new_field: '新建字段'
 new_collection: '新建模型'
-add_m2o_to_collection: '添加多对一到"{collection}"'
-add_o2m_to_collection: '添加一到多个到 "{collection}"'
-add_m2m_to_collection: '添加多对多到"{collection}"'
 choose_a_type: 选择类型...
 determined_by_relationship: 由关系确定
 add_note: 为用户添加有用的注释...
