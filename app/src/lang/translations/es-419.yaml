@@ -194,6 +194,7 @@ boolean: Booleano
 date: Fecha
 date_range: Rango de fechas
 datetime: Fecha y Hora
+dateTime: Fecha y Hora
 precision: Precisión
 decimal: Decimal
 float: Flotante
@@ -226,9 +227,6 @@ new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
-add_m2o_to_collection: 'Agregar Muchos-a-Uno a "{collection}"'
-add_o2m_to_collection: 'Agregar Uno-a-Muchos a "{collection}"'
-add_m2m_to_collection: 'Agregar Muchos-a-Muchos a "{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinar por relación
 add_note: Agrega una nota de ayuda para los usuarios...
