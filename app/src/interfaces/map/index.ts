@@ -9,6 +9,7 @@ export default defineInterface({
 	icon: 'map',
 	component: InterfaceMap,
 	types: ['geometry', 'json', 'string', 'text', 'binary', 'csv'],
+	group: 'selection',
 	options: Options,
 	recommendedDisplays: [],
 });
