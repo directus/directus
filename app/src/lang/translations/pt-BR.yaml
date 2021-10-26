@@ -187,6 +187,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Data
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -218,9 +219,6 @@ new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 search_collection: Pesquisar Coleção...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
-add_m2o_to_collection: 'Adicionar Muitos-para-Um a "{collection}"'
-add_o2m_to_collection: 'Adicionar Um-para-Muitos a "{collection}"'
-add_m2m_to_collection: 'Adicionar Muitos-para-Muitos a "{collection}"'
 choose_a_type: Escolha um tipo...
 determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
