@@ -199,6 +199,7 @@ boolean: Булев
 date: Дата
 date_range: Времеви период
 datetime: Дата и час
+dateTime: Дата и час
 precision: Точност
 decimal: Десетичен
 float: Реално число
@@ -231,9 +232,6 @@ new_data_alert: 'Следващото ще бъде създадено във в
 search_collection: Търсене на колекция...
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
-add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
-add_o2m_to_collection: 'Добавяне на "един към много" в "{collection}"'
-add_m2m_to_collection: 'Добавяне на "много към много" в "{collection}"'
 choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
