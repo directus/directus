@@ -177,6 +177,8 @@ global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
 show_zero: Show Zero
+create_in_advanced_field_creation_mode: Create in Advanced Field Creation Mode
+continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
 sum: Sum
 sum_distinct: Sum Distinct
 avg: Average
@@ -204,6 +206,7 @@ boolean: Boolean
 date: Date
 date_range: Date Range
 datetime: DateTime
+dateTime: DateTime
 precision: Precision
 decimal: Decimal
 float: Float
@@ -237,9 +240,9 @@ new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
 new_field: 'New Field'
 new_collection: 'New Collection'
-add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
-add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
-add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
+add_m2o_to_collection: 'Add M2O to "{collection}"'
+add_o2m_to_collection: 'Add O2M to "{collection}"'
+add_m2m_to_collection: 'Add M2M to "{collection}"'
 choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
@@ -688,6 +691,12 @@ source: Source
 url_placeholder: Enter an url...
 display_text: Display Text
 display_text_placeholder: Enter a display text...
+interface_group_text_and_numbers: Text & Numbers
+interface_group_selection: Selection
+interface_group_relational: Relational
+interface_group_presentation: Presentation
+interface_group_groups: Groups
+interface_group_other: Other
 tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited

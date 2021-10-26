@@ -3,23 +3,24 @@
 		{{ t('select_interface') }}
 	</v-notice>
 
-	<v-notice v-else-if="!selectedInterface.options">
+	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
 		{{ t('no_options_available') }}
 	</v-notice>
 
 	<div v-else class="inset">
 		<v-form
-			v-if="Array.isArray(selectedInterface.options)"
-			:fields="selectedInterface.options"
+			v-if="usesCustomComponent === false"
+			v-model="options"
+			class="extension-options"
+			:fields="optionsFields"
 			primary-key="+"
-			:model-value="value"
-			@update:model-value="$emit('input', $event)"
 		/>
 
 		<component
 			:is="`interface-options-${selectedInterface.id}`"
 			v-else
 			:value="value"
+			:collection="collection"
 			@input="$emit('input', $event)"
 		/>
 	</div>
@@ -29,7 +30,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref } from 'vue';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig } from '@directus/shared/types';
+import { InterfaceConfig, DeepPartial, Field, ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -42,6 +43,10 @@ export default defineComponent({
 			default: null,
 		},
 		interface: {
+			type: String,
+			default: null,
+		},
+		collection: {
 			type: String,
 			default: null,
 		},
@@ -64,7 +69,58 @@ export default defineComponent({
 			return interfaces.value.find((inter: InterfaceConfig) => inter.id === values.value[props.interfaceField]);
 		});
 
-		return { t, selectedInterface, values };
+		const usesCustomComponent = computed(() => {
+			if (!selectedInterface.value) return false;
+
+			return selectedInterface.value.options && 'render' in selectedInterface.value.options;
+		});
+
+		const optionsFields = computed(() => {
+			if (!selectedInterface.value) return [];
+			if (!selectedInterface.value.options) return [];
+			if (usesCustomComponent.value === true) return [];
+
+			let optionsObjectOrArray;
+
+			if (typeof selectedInterface.value.options === 'function') {
+				optionsObjectOrArray = (
+					selectedInterface.value.options as (x: ExtensionsOptionsContext) => DeepPartial<Field>[]
+				)({
+					field: {
+						type: 'unknown',
+					},
+					editing: '+',
+					collection: props.collection,
+					relations: {
+						o2m: undefined,
+						m2o: undefined,
+						m2a: undefined,
+					},
+					collections: {
+						related: undefined,
+						junction: undefined,
+					},
+					fields: {
+						corresponding: undefined,
+						junctionCurrent: undefined,
+						junctionRelated: undefined,
+						sort: undefined,
+					},
+					items: {},
+					localType: 'standard',
+					autoGenerateJunctionRelation: false,
+					saving: false,
+				});
+			} else {
+				optionsObjectOrArray = selectedInterface.value.options;
+			}
+
+			if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
+
+			return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
+		});
+
+		return { t, selectedInterface, values, usesCustomComponent, optionsFields };
 	},
 });
 </script>

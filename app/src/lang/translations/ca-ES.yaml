@@ -171,6 +171,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Data
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -202,9 +203,6 @@ new_data_alert: 'Es crearà el següent en el teu Model de dades:'
 search_collection: Cerca la col·lecció...
 new_field: 'Nou camp'
 new_collection: 'Nova col·lecció'
-add_m2o_to_collection: 'Afegeix Molts-a-Un a "{collection}"'
-add_o2m_to_collection: 'Afegeix Un-a-Molts a "{collection}"'
-add_m2m_to_collection: 'Afegeix Molts-a-Molts a "{collection}"'
 choose_a_type: Tria un tipus...
 determined_by_relationship: Determinat per la relació
 add_note: Afegiu una nota útil per als usuaris...
@@ -1115,9 +1113,6 @@ interfaces:
     map: Mapa
     description: Selecciona una localització al mapa
     zoom: Zoom
-    geometry_type: Tipus geometria
-    geometry_format: Format geometria
-    default_view: Vista predeterminada
     invalid_options: Opcions no vàlides
     invalid_format: Format no vàlid ({format})
     unexpected_geometry: Esperat {expected}, obtingut {got}.
@@ -1343,7 +1338,6 @@ layouts:
     layers: Capes
     edit_custom_layers: Edita capes
     cluster_options: Opcions de clustering
-    cluster: Activa el clustering
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering

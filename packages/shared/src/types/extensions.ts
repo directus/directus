@@ -10,6 +10,8 @@ import {
 	EXTENSION_TYPES,
 } from '../constants';
 import { Accountability } from './accountability';
+import { Collection, Field, Relation, DeepPartial } from '.';
+import { LOCAL_TYPES } from '../constants';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -67,4 +69,31 @@ export type ApiExtensionContext = {
 	env: Record<string, any>;
 	logger: Logger;
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
+};
+
+export type ExtensionsOptionsContext = {
+	collection: string;
+	editing: string;
+	field: DeepPartial<Field>;
+	relations: {
+		m2o: DeepPartial<Relation> | undefined;
+		m2a: DeepPartial<Relation> | undefined;
+		o2m: DeepPartial<Relation> | undefined;
+	};
+	collections: {
+		junction: DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined;
+		related: DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined;
+	};
+	fields: {
+		corresponding: DeepPartial<Field> | undefined;
+		junctionCurrent: DeepPartial<Field> | undefined;
+		junctionRelated: DeepPartial<Field> | undefined;
+		sort: DeepPartial<Field> | undefined;
+	};
+
+	items: Record<string, Record<string, any>[]>;
+
+	localType: typeof LOCAL_TYPES[number];
+	autoGenerateJunctionRelation: boolean;
+	saving: boolean;
 };

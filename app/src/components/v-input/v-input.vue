@@ -86,7 +86,7 @@ export default defineComponent({
 			default: true,
 		},
 		placeholder: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		modelValue: {

@@ -154,6 +154,7 @@ bigInteger: Suuri kokonaisluku
 boolean: Totuusarvo
 date: Päivämäärä
 datetime: DateTime
+dateTime: DateTime
 decimal: Desimaali
 float: Liukuluku
 integer: Kokonaisluku
@@ -184,9 +185,6 @@ new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
 search_collection: Hae kokoelmasta...
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
-add_m2o_to_collection: 'Lisää moni-yhteen (M2O) kokoelmaan "{collection}"'
-add_o2m_to_collection: 'Lisää yksi-moniin (O2M) kokoelmaan "{collection}"'
-add_m2m_to_collection: 'Lisää moni-moneen (M2M) kokoelmaan "{collection}"'
 choose_a_type: Valitse tyyppi...
 determined_by_relationship: Suhteen määrittämä
 add_note: Lisää käyttäjälle hyödyllinen huomautus...

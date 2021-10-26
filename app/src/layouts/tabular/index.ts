@@ -259,7 +259,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				getFieldDisplay,
 			};
 
-			function onRowClick(item: Item) {
+			function onRowClick({ item, event }: { item: Item; event: PointerEvent }) {
 				if (props.readonly === true || !primaryKeyField.value) return;
 
 				const primaryKey = item[primaryKeyField.value.field];
@@ -271,7 +271,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						selection.value = selection.value.filter((item) => item !== primaryKey);
 					}
 				} else {
-					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					const next = router.resolve(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+
+					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
+					else router.push(next);
 				}
 			}
 

@@ -381,7 +381,7 @@ export default defineComponent({
 
 			const field = currentCollection.value.meta.archive_field;
 
-			if (!field) return filter.value;
+			if (!field) return null;
 
 			let archiveValue: any = currentCollection.value.meta.archive_value;
 			if (archiveValue === 'true') archiveValue = true;
