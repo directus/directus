@@ -200,6 +200,7 @@ The `auth` hooks have the following context properties:
 - `accountability` — Information about the current user
 - `action` — Action that is performed
 - `payload` — Payload of the request
+- `provider` — The auth provider triggering the request
 - `schema` - The current API schema in use
 - `status` - One of `pending`, `success`, `fail`
 - `user` - ID of the user that tried logging in/has logged in
