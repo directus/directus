@@ -4,10 +4,10 @@
 
 import nock from 'nock';
 
-import { AxiosTransport } from '../../../src/base/transport/axios-transport';
-import { TransportResponse, TransportError } from '../../../src/transport';
+import { Transport } from '../../src/base/transport';
+import { TransportResponse, TransportError } from '../../src/transport';
 
-describe('axios transport', function () {
+describe('default transport', function () {
 	const URL = 'http://localhost';
 	nock.disableNetConnect();
 
@@ -31,7 +31,7 @@ describe('axios transport', function () {
 			const route = `/${method}/response`;
 			(nock(URL) as any)[method](route).reply(200);
 
-			const transport = new AxiosTransport({ baseURL: URL }) as any;
+			const transport = new Transport({ url: URL }) as any;
 			const response = await transport[method](route);
 			expectResponse(response, {
 				status: 200,
@@ -42,7 +42,7 @@ describe('axios transport', function () {
 			const route = `/${method}/500`;
 			(nock(URL) as any)[method](route).reply(500);
 
-			const transport = new AxiosTransport({ baseURL: URL }) as any;
+			const transport = new Transport({ url: URL }) as any;
 
 			try {
 				await transport[method](route);
@@ -65,7 +65,7 @@ describe('axios transport', function () {
 				],
 			});
 
-			const transport = new AxiosTransport({ baseURL: URL }) as any;
+			const transport = new Transport({ url: URL }) as any;
 
 			try {
 				await transport[method](route);
@@ -85,7 +85,7 @@ describe('axios transport', function () {
 			const route = `/${method}/this/raises/error`;
 			(nock(URL) as any)[method](route).replyWithError('Random error');
 
-			const transport = new AxiosTransport({ baseURL: URL }) as any;
+			const transport = new Transport({ url: URL }) as any;
 
 			try {
 				await transport[method](route);
@@ -102,12 +102,12 @@ describe('axios transport', function () {
 	});
 
 	it('returns the configured url', async function () {
-		const transport = new AxiosTransport({ baseURL: URL });
+		const transport = new Transport({ url: URL });
 		expect(transport.url).toBe(URL);
 	});
 
 	it('non axios errors are set in parent', async function () {
-		const transport = new AxiosTransport({ baseURL: URL });
+		const transport = new Transport({ url: URL });
 		const mock = jest.spyOn(transport.axios, 'request');
 		mock.mockImplementation(() => {
 			throw new Error('this is not an axios error');
