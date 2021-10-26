@@ -361,7 +361,7 @@
 				<span>Administrator guides for tailoring the Directus platform to fit your exact project needs.</span>
 				<u>Learn More</u>
 			</a>
-			<a href="/reference/api/introduction/" class="panel">
+			<a href="/reference/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<circle cx="30" cy="30" r="30" fill="#00C897" />
 					<path
