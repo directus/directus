@@ -200,8 +200,8 @@ export default defineComponent({
 	}
 
 	.v-list {
-		margin: 0px 0px 10px 0px;
-		padding: 20px 20px 12px 20px;
+		margin: 0px 0px 10px;
+		padding: 20px 20px 12px;
 		border: var(--border-width) solid var(--border-subdued);
 
 		& > :deep(.group) {

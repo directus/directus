@@ -199,6 +199,7 @@ boolean: Boolean
 date: Dato
 date_range: Datointerval
 datetime: DatoTid
+dateTime: DatoTid
 precision: Præcision
 decimal: Decimal
 float: Flydende
@@ -231,9 +232,6 @@ new_data_alert: 'Følgende oprettes inden for din datamodel:'
 search_collection: Søg Samling...
 new_field: 'Nyt felt'
 new_collection: 'Ny Samling'
-add_m2o_to_collection: 'Tilføj Many-to-One til "{collection}"'
-add_o2m_to_collection: 'Tilføj En-til-mange til "{collection}"'
-add_m2m_to_collection: 'Tilføj Many-to-Mange til "{collection}"'
 choose_a_type: Vælg en type...
 determined_by_relationship: Bestemt af forhold
 add_note: Tilføj en nyttig note til brugere...

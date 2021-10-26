@@ -155,6 +155,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Date
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -185,9 +186,6 @@ new_data_alert: 'Sljedeće će biti kreirano u sklopu Modela Podataka:'
 search_collection: Pretraži Kolekciju...
 new_field: 'Novo Polje'
 new_collection: 'Nova Kolekcija'
-add_m2o_to_collection: 'Dodaj Many-to-One relaciju na "{collection}"'
-add_o2m_to_collection: 'Dodaj One-to-Many relaciju na "{collection}"'
-add_m2m_to_collection: 'Dodaj Many-to-Many relaciju na "{collection}"'
 choose_a_type: Izaberi Tip...
 determined_by_relationship: Određeno Relacijom
 add_note: Dodaj korisnu napomenu korisnicima...

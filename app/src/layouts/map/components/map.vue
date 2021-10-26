@@ -323,7 +323,7 @@ export default defineComponent({
 	background: none;
 
 	&:not(:empty) {
-		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
 	}
 
 	button {
@@ -448,7 +448,7 @@ export default defineComponent({
 
 	&,
 	&.suggestions {
-		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
 	}
 }
 
@@ -497,8 +497,8 @@ export default defineComponent({
 	z-index: 1000;
 	width: 0;
 	height: 0;
-	background: rgba(56, 135, 190, 0.1);
-	border: 1px solid rgb(56, 135, 190);
+	background: rgb(56 135 190 / 0.1);
+	border: 1px solid rgb(56 135 190);
 	pointer-events: none;
 }
 

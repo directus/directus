@@ -310,7 +310,7 @@ img {
 	line-height: 1;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.25) 100%);
+	background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
 	transition: height var(--fast) var(--transition);
 }
 
@@ -365,7 +365,7 @@ img {
 	height: 17px;
 	max-height: 0;
 	overflow: hidden;
-	color: rgba(255, 255, 255, 0.75);
+	color: rgb(255 255 255 / 0.75);
 	transition: max-height var(--fast) var(--transition);
 }
 
@@ -373,7 +373,7 @@ img {
 .image-preview:hover {
 	.shadow {
 		height: 100%;
-		background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.5) 100%);
+		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
 	.actions .v-button {

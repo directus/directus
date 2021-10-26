@@ -52,7 +52,7 @@ export default defineComponent({
 		},
 		collection: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		depth: {
 			type: Number,

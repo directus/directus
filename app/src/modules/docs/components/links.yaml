@@ -1,182 +1,43 @@
-- name: Getting Started
-  icon: play_circle_outline
-  to: '/getting-started'
-  children:
-    - to: '/getting-started/introduction'
-      name: Introduction
-    - to: '/getting-started/support'
-      name: Help & Support
-    - to: '/getting-started/backing-directus'
-      name: Backing Directus
-
-- name: Concepts
+- name: App Overview
+  to: '/app/overview'
   icon: school
-  to: '/concepts'
-  children:
-    - to: '/concepts/activity'
-      name: Activity
-    - to: '/concepts/application'
-      name: Application
-    - to: '/concepts/collections'
-      name: Collections
-    - to: '/concepts/databases'
-      name: Databases
-    - to: '/concepts/displays'
-      name: Displays
-    - to: '/concepts/extensions'
-      name: Extensions
-    - to: '/concepts/fields'
-      name: Fields
-    - to: '/concepts/files'
-      name: Files
-    - to: '/concepts/interfaces'
-      name: Interfaces
-    - to: '/concepts/items'
-      name: Items
-    - to: '/concepts/layouts'
-      name: Layouts
-    - to: '/concepts/modules'
-      name: Modules
-    - to: '/concepts/permissions'
-      name: Permissions
-    - to: '/concepts/projects'
-      name: Projects
-    - to: '/concepts/relationships'
-      name: Relationships
-    - to: '/concepts/revisions'
-      name: Revisions
-    - to: '/concepts/roles'
-      name: Roles
-    - to: '/concepts/translations'
-      name: Translations
-    - to: '/concepts/types'
-      name: Types
-    - to: '/concepts/users'
-      name: Users
 
-- name: Guides
-  to: '/guides'
-  icon: article
-  children:
-    - to: '/guides/api-config'
-      name: API Config
-    - to: '/guides/api-endpoints'
-      name: API Endpoints
-    - to: '/guides/api-hooks'
-      name: API Hooks
-    - to: '/guides/collections'
-      name: Collections
-    - to: '/guides/displays'
-      name: Displays
-    - to: '/guides/email-templates'
-      name: Email Templates
-    - to: '/guides/fields'
-      name: Fields
-    - to: '/guides/files'
-      name: Files
-    - to: '/guides/interfaces'
-      name: Interfaces
-    - to: '/guides/items'
-      name: Items
-    - to: '/guides/layouts'
-      name: Layouts
-    - to: '/guides/migrations'
-      name: Migrations
-    - to: '/guides/modules'
-      name: Modules
-    - to: '/guides/permissions'
-      name: Permissions
-    - to: '/guides/presets'
-      name: Presets
-    - to: '/guides/projects'
-      name: Projects
-    - to: '/guides/roles'
-      name: Roles
-    - to: '/guides/styles'
-      name: Styles
-    - to: '/guides/users'
-      name: Users
-    - to: '/guides/webhooks'
-      name: Webhooks
+- name: Content Collections
+  to: '/app/content-collections'
+  icon: list_alt
 
-- name: Reference
-  icon: code
-  to: '/reference'
-  children:
-    - to: '/reference/command-line-interface'
-      name: Command Line Interface
-    - to: '/reference/environment-variables'
-      name: Environment Variables
-    - to: '/reference/config-files'
-      name: Config Files
-    - to: '/reference/error-codes'
-      name: Error Codes
-    - to: '/reference/field-transforms'
-      name: Field Transforms
-    - to: '/reference/filter-rules'
-      name: Filter Rules
-    - to: '/reference/sdk'
-      name: JavaScript SDK
+- name: Content Items
+  to: '/app/content-items'
+  icon: edit_note
 
-- name: API Reference
-  icon: api
-  to: '/reference/api'
-  children:
-    - to: '/reference/api/introduction'
-      name: Introduction
-    - to: '/reference/api/authentication'
-      name: Authentication
-    - name: Global Query Parameters
-      to: '/reference/api/query'
-    - name: Data Access
-      to: '/reference/api/items'
-    - name: Assets
-      to: '/reference/api/assets'
-    - name: System
-      to: '/reference/api/system'
-      children:
-        - to: '/reference/api/system/activity'
-          name: Activity
-        - to: '/reference/api/system/authentication'
-          name: Authentication
-        - to: '/reference/api/system/collections'
-          name: Collections
-        - to: '/reference/api/system/extensions'
-          name: Extensions
-        - to: '/reference/api/system/fields'
-          name: Fields
-        - to: '/reference/api/system/files'
-          name: Files
-        - to: '/reference/api/system/folders'
-          name: Folders
-        - to: '/reference/api/system/permissions'
-          name: Permissions
-        - to: '/reference/api/system/presets'
-          name: Presets
-        - to: '/reference/api/system/relations'
-          name: Relations
-        - to: '/reference/api/system/revisions'
-          name: Revisions
-        - to: '/reference/api/system/roles'
-          name: Roles
-        - to: '/reference/api/system/server'
-          name: Server
-        - to: '/reference/api/system/settings'
-          name: Settings
-        - to: '/reference/api/system/users'
-          name: Users
-        - to: '/reference/api/system/utilities'
-          name: Utilities
-        - to: '/reference/api/system/webhooks'
-          name: Webhooks
-# - name: Contributing
-#   to: '/contributing'
-#   children:
-#     - to: '/contributing/introduction'
-#       name: Introduction
-#     - to: '/contributing/codebase-overview'
-#       name: Codebase Overview
-#     - to: '/contributing/running-locally'
-#       name: Running Locally
-#     - to: '/contributing/translations'
-#       name: Translating the App
+- name: User Directory
+  to: '/app/user-directory'
+  icon: people_alt
+
+- name: File Library
+  to: '/app/file-library'
+  icon: folder
+
+- name: Insights
+  to: '/app/insights'
+  icon: insights
+
+- name: Documentation
+  to: '/app/documentation'
+  icon: help_outline
+
+- name: Settings
+  to: '/app/settings'
+  icon: settings
+
+- name: Help & Support
+  to: '/getting-started/support'
+  icon: support_agent
+
+- name: Backing Directus
+  to: '/getting-started/backing-directus'
+  icon: card_giftcard
+
+- name: Glossary
+  to: '/getting-started/glossary'
+  icon: menu_book
