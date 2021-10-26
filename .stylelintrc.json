@@ -20,6 +20,7 @@
 		"block-opening-brace-newline-after": "always-multi-line",
 		"alpha-value-notation": "number",
 		"selector-class-pattern": null,
-		"declaration-block-no-redundant-longhand-properties": null
+		"declaration-block-no-redundant-longhand-properties": null,
+		"color-function-notation": null
 	}
 }
