@@ -18,7 +18,7 @@ export default defineDisplay({
 	component: DisplayTranslations,
 	options: options,
 	types: ['alias'],
-	groups: ['translations'],
+	localTypes: ['translations'],
 	fields: (options: Options | null, { field, collection }) => {
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();

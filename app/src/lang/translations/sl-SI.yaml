@@ -172,6 +172,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: Datum in ura
+dateTime: Datum in ura
 decimal: Decimalno število
 float: Float
 integer: Integer
@@ -203,9 +204,6 @@ new_data_alert: 'Naslednje bo generirano v podatkovnem modelu:'
 search_collection: Iskalna zbirka ...
 new_field: 'Novo polje'
 new_collection: 'Nova zbirka'
-add_m2o_to_collection: 'Dodaj več-na-ena v "{collection}"'
-add_o2m_to_collection: 'Dodaj ena-na-več v "{collection}"'
-add_m2m_to_collection: 'Dodaj več-na-več v "{collection}"'
 choose_a_type: Izberite tip ...
 determined_by_relationship: Določeno s povezavo
 add_note: Dodaj opombo za uporabnike ...

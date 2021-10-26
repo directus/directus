@@ -410,7 +410,7 @@ export class GraphQLService {
 						acc[field.field] = {
 							type,
 							description: field.note,
-							resolve: (obj: Record<string, any>, _, __, info) => {
+							resolve: (obj: Record<string, any>) => {
 								return obj[field.field];
 							},
 						};

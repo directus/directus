@@ -76,7 +76,7 @@
 		"@types/figlet": "1.5.4",
 		"@types/fs-extra": "9.0.13",
 		"@types/jest": "27.0.2",
-		"@types/js-yaml": "4.0.3",
+		"@types/js-yaml": "4.0.4",
 		"@types/marked-terminal": "3.1.2",
 		"jest": "27.3.1",
 		"nock": "13.1.4",
