@@ -182,6 +182,10 @@ body {
 		border-radius: var(--border-radius);
 		transition: all var(--fast) var(--transition);
 
+		&:disabled {
+			background-color: var(--background-subdued);
+		}
+
 		&::before {
 			position: absolute;
 			top: 0;
