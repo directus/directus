@@ -172,6 +172,8 @@ global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
 show_zero: Mostra zero
+create_in_advanced_field_creation_mode: Crea con la Modalità di Creazione Campo Avanzata
+continue_in_advanced_field_creation_mode: Continua con la Modalità di Creazione Campo Avanzata
 sum: Somma
 sum_distinct: Somma valori unici
 avg: Media
@@ -232,6 +234,9 @@ new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
+add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
+add_o2m_to_collection: 'Aggiungi O2M a "{collection}"'
+add_m2m_to_collection: 'Aggiungi M2M a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -679,6 +684,12 @@ source: Sorgente
 url_placeholder: Inserisci url...
 display_text: Visualizza testo
 display_text_placeholder: Inserisci un testo di visualizzazione...
+interface_group_text_and_numbers: Testo & Numeri
+interface_group_selection: Selezione
+interface_group_relational: Relazionale
+interface_group_presentation: Presentazione
+interface_group_groups: Gruppi
+interface_group_other: Altro
 tooltip: Suggerimento
 tooltip_placeholder: Inserisci un suggerimento...
 unlimited: Illimitato
@@ -1159,6 +1170,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
