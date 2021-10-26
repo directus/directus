@@ -70,8 +70,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
-			.orWhereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
 		return user?.id;
@@ -131,7 +130,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		await this.usersService.createOne({
 			provider: this.config.provider,
 			email: email,
-			external_identifier: !emailIsIdentifier ? identifier : undefined,
+			external_identifier: identifier,
 			role: this.config.defaultRoleId,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
