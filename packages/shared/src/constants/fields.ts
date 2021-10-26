@@ -43,3 +43,15 @@ export const LOCAL_TYPES = [
 	'translations',
 	'group',
 ] as const;
+
+export type LocalTypes =
+	| 'standard'
+	| 'file'
+	| 'files'
+	| 'm2o'
+	| 'o2m'
+	| 'm2m'
+	| 'm2a'
+	| 'presentation'
+	| 'translations'
+	| 'group';
