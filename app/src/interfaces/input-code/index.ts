@@ -2,6 +2,7 @@ import { defineInterface } from '@directus/shared/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
 import InterfaceCode from './input-code.vue';
+import PreviewSVG from './preview.svg?raw';
 
 const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
 	if (['JSON', 'JSON-LD'].includes(choice.name)) {
@@ -34,6 +35,8 @@ export default defineInterface({
 	icon: 'code',
 	component: InterfaceCode,
 	types: ['string', 'json', 'text', 'geometry'],
+	group: 'standard',
+	preview: PreviewSVG,
 	options: [
 		{
 			field: 'language',

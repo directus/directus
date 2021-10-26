@@ -144,6 +144,7 @@ bigInteger: Grande inteiro
 boolean: Boleano
 date: Data
 datetime: Data e Hora
+dateTime: Data e Hora
 decimal: Decimal
 float: Ponto flutuante
 integer: Inteiro
@@ -174,9 +175,6 @@ new_data_alert: 'O seguinte será criado dentro do seu modelo de dados:'
 search_collection: Procurar coleção...
 new_field: 'Novo Campo'
 new_collection: 'Nova coleção'
-add_m2o_to_collection: 'Adicionar muitos-para-um a "{collection}"'
-add_o2m_to_collection: 'Adicionar um-para-um a "{collection}"'
-add_m2m_to_collection: 'Adicionar muitos-para-muitos a "{collection}"'
 choose_a_type: Escolha um Tipo...
 determined_by_relationship: Determinado pela Relação
 add_note: Adicionar uma nota para os utilizadores...

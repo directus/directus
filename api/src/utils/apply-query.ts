@@ -42,7 +42,7 @@ export default function applyQuery(
 		);
 	}
 
-	if (typeof query.limit === 'number') {
+	if (typeof query.limit === 'number' && query.limit !== -1) {
 		dbQuery.limit(query.limit);
 	}
 
@@ -50,7 +50,7 @@ export default function applyQuery(
 		dbQuery.offset(query.offset);
 	}
 
-	if (query.page && query.limit) {
+	if (query.page && query.limit && query.limit !== -1) {
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
@@ -195,7 +195,7 @@ export function applyFilter(
 							.on(
 								`${parentAlias || parentCollection}.${relation.field}`,
 								'=',
-								`${alias}.${schema.collections[pathScope].primary}`
+								knex.raw(`CAST(?? AS TEXT)`, `${alias}.${schema.collections[pathScope].primary}`)
 							)
 							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
 					});

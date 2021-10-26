@@ -50,6 +50,7 @@ indeterminate: Indeterminato
 edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
+db_only_click_to_configure: 'Solo Database: click per configurare'
 show_archived_items: Mostra gli elementi archiviati
 edited: Valore Modificato
 required: Obbligatorio
@@ -198,6 +199,7 @@ boolean: Boolean
 date: Data
 date_range: Intervallo di date
 datetime: DateTime
+dateTime: DateTime
 precision: Precisione
 decimal: Decimal
 float: Float
@@ -230,9 +232,6 @@ new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
-add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
-add_o2m_to_collection: 'Aggiungi O2M a "{collection}"'
-add_m2m_to_collection: 'Aggiungi M2M a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -250,6 +249,7 @@ invalid_item: Oggetto non valido
 next: Il prossimo
 field_name: Nome del Campo
 translations: Traduzioni
+no_translations: Nessuna traduzione
 note: Nota
 enter_a_value: Inserisci un valore...
 enter_a_placeholder: Inserisci un segnaposto...
@@ -524,6 +524,8 @@ all_users: Tutti gli Utenti
 delete_collection: Elimina Raccolta
 update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
+make_collection_visible: Rendi visibile la raccolta
+make_collection_hidden: Rendi nascosta la raccolta
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
@@ -613,7 +615,9 @@ all_files: Tutti i File
 my_files: I Miei File
 recent_files: File Recenti
 create_folder: Crea Cartella
+edit_folder: Modifica la cartella
 folder_name: Nome Cartella...
+folder_key: Chiave della cartella...
 add_file: Aggiungi File
 replace_file: Sostituisci File
 no_results: Nessun risultato
@@ -1533,14 +1537,14 @@ layouts:
     basemap: Mappa base
     layers: Livelli
     edit_custom_layers: Modifica i livelli
-    cluster_options: Opzioni di clustering
-    cluster: Attiva il clustering
+    cluster_options: Opzioni di raggruppamento
+    cluster: Raggruppa dati vicini
     cluster_radius: Raggio del Cluster
     cluster_minpoints: Dimensione minima del cluster
-    cluster_maxzoom: Zoom massimo per il clustering
+    cluster_maxzoom: Zoom massimo per il raggruppamento
     field: Geometria
     invalid_geometry: Geometria non valida
-    auto_location_filter: Filtra sempre i dati al rettangolo di selezione
+    auto_location_filter: Filtro automatico nella vista
     search_this_area: Cerca in quest'area
     clear_data_filter: Rimuovi il filtro sui dati
     clear_location_filter: Rimuovi il filtro sulla posizione

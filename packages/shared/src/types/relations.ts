@@ -13,6 +13,6 @@ export type Relation = {
 		one_deselect_action: 'nullify' | 'delete';
 		one_collection_field: null | string;
 		one_allowed_collections: null | string[];
-	};
-	schema?: Record<string, unknown>;
+	} | null;
+	schema?: Record<string, unknown> | null;
 };

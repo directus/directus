@@ -198,6 +198,7 @@ boolean: Логическое
 date: Дата
 date_range: Диапазон дат
 datetime: ДатаВремя
+dateTime: ДатаВремя
 precision: Точность
 decimal: Десятичная
 float: Десятичное
@@ -230,9 +231,6 @@ new_data_alert: 'В вашей модели данных будет создан
 search_collection: Поиск коллекций...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
-add_m2o_to_collection: 'Добавить Many-to-One в "{collection}"'
-add_o2m_to_collection: 'Добавить One-to-Many в "{collection}"'
-add_m2m_to_collection: 'Добавить Many-to-Many в "{collection}"'
 choose_a_type: Выберите Тип...
 determined_by_relationship: Определяется отношением
 add_note: Добавить заметку для пользователей...
@@ -1283,9 +1281,6 @@ interfaces:
     map: Карта
     description: Указать место на карте
     zoom: Масштаб
-    geometry_type: Тип геометрии
-    geometry_format: Формат
-    default_view: Вид по умолчанию
     invalid_options: Некорректные настройки
     invalid_format: Некорректный формат ({format})
     unexpected_geometry: Ожидалось {expected}, а встретилось {got}.
@@ -1512,13 +1507,11 @@ layouts:
     layers: Слои
     edit_custom_layers: Редактировать слои
     cluster_options: Настройки кластеров
-    cluster: Использовать кластеры
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
     field: Геометрия
     invalid_geometry: Некорректная геометрия
-    auto_location_filter: Всегда фильтровать данные к границам отображения
     search_this_area: Искать в этой области
 panels:
   metric:

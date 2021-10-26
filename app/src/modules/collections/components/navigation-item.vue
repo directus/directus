@@ -18,9 +18,9 @@
 		</template>
 
 		<navigation-item
-			v-for="collection in childCollections"
-			:key="collection.collection"
-			:collection="collection"
+			v-for="childCollection in childCollections"
+			:key="childCollection.collection"
+			:collection="childCollection"
 			:search="search"
 		/>
 		<navigation-bookmark v-for="bookmark in childBookmarks" :key="bookmark.id" :bookmark="bookmark" />
@@ -64,6 +64,7 @@ import { useCollectionsStore, usePresetsStore } from '@/stores';
 import NavigationItemContent from './navigation-item-content.vue';
 import NavigationBookmark from './navigation-bookmark.vue';
 import { useI18n } from 'vue-i18n';
+import { orderBy } from 'lodash';
 
 export default defineComponent({
 	name: 'NavigationItem',
@@ -150,7 +151,7 @@ export default defineComponent({
 				collections = collections.filter((collection) => collection.meta?.hidden !== true);
 			}
 
-			return collections;
+			return orderBy(collections, ['meta.sort', 'collection']);
 		}
 
 		function getChildBookmarks(collection: Collection) {
