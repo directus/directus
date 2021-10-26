@@ -515,67 +515,106 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 ## Authentication
 
-The Directus OAuth/OpenID integration provides a powerful alternative way to authenticate into your project using Single
-Sign-On (SSO). Directus will ask you to login on the external service, and if your user exists in Directus, you'll be
-logged in automatically.
+| Variable         | Description                            | Default Value |
+| ---------------- | -------------------------------------- | ------------- |
+| `AUTH_PROVIDERS` | CSV of auth providers you want to use. | --            |
+
+For each of the auth providers you list, you must provide the following configuration:
+
+| Variable                 | Description                                             | Default Value |
+| ------------------------ | ------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid` | --            |
+
+You must also provide a number of extra variables. These differ per auth driver service. The following is a list of
+common required configuration options:
+
+### Local (`local`)
+
+No additional configuration required.
+
+### OAuth 2.0 and OpenID
+
+Directus' OAuth 2.0 and OpenID integrations provide powerful alternative ways to authenticate into your project.
+Directus will ask you to login on the external service, and return authenticated with a Directus account linked to that
+service.
+
+Directus supports hundreds of OAuth 2.0 and OpenID services, but requires some configuration to authenticate users
+correctly. For example, enabling authentication through GitHub requires creating an
+[OAuth 2.0 app in GitHub](https://github.com/settings/developers) and adding the following configuration to Directus:
+
+```
+AUTH_PROVIDERS="github"
+AUTH_GITHUB_CLIENT_ID="99d3...c3c4"
+AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
+AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
+AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
+AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
+```
 
 ::: warning PUBLIC_URL
 
-The OAuth flow relies on the `PUBLIC_URL` variable for it's redirecting. Make sure that variable is configured
-correctly.
+These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that variable is configured correctly.
 
 :::
 
-| Variable          | Description                             | Default Value |
-| ----------------- | --------------------------------------- | ------------- |
-| `OAUTH_PROVIDERS` | CSV of OAuth providers you want to use. | --            |
+#### OAuth 2.0 (`oauth2`)
 
-For each of the OAuth providers you list, you must also provide a number of extra variables. These differ per external
-service. The following is a list of common required configuration options:
+| Variable                                    | Description                                                                                | Default Value    |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                                 | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAUth secret for the external service.                                                     | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                          | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                            | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                              | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | Where Directus can fetch the profile information of the authenticated user.                | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to verify the user.                                           | `email`          |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Can be used in place of `EMAIL_KEY`. | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.                              | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                                       | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                                   | `account_circle` |
 
-| Variable                         | Description                                                                                            | Default Value |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
-| `OAUTH_<PROVIDER>_KEY`           | OAuth key (a.k.a. application id) for the external service.                                            | --            |
-| `OAUTH_<PROVIDER>_SECRET`        | OAuth secret for the external service.                                                                 | --            |
-| `OAUTH_<PROVIDER>_SCOPE`         | A white-space separated list of privileges directus should ask for. A common value is: `openid email`. | --            |
-| `OAUTH_<PROVIDER>_AUTHORIZE_URL` | The authorize page URL of the external service                                                         | --            |
-| `OAUTH_<PROVIDER>_ACCESS_URL`    | The access URL of the external service                                                                 | --            |
-| `OAUTH_<PROVIDER>_PROFILE_URL`   | Where Directus can fetch the profile information of the authenticated user.                            | --            |
+If possible, OpenID is preferred over OAuth 2.0 as it provides better verification and consistent user information,
+allowing more complete user registrations.
 
-Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the OAuth flow. Grant includes
-[a lot of default values](https://github.com/simov/grant/blob/master/config/oauth.json) for popular services. For
-example, if you use `github` as one of your providers, you only have to specify the
-[key and secret for GitHub's OAuth app](https://github.com/settings/developers), as Grant has the rest covered. Checkout
-[the grant repo](https://github.com/simov/grant) for more information.
+#### OpenID (`openid`)
 
-### Example: GitHub
+| Variable                                    | Description                                                       | Default Value          |
+| ------------------------------------------- | ----------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                       | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                           | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request. | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                  | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.            | `sub`                  |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.     | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                   | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                              | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                          | `account_circle`       |
+
+#### Multiple Providers
+
+You can configure multiple providers for handling authentication in Directus. This allows for different options when
+logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
 
 ```
-OAUTH_PROVIDERS="github"
-OAUTH_GITHUB_KEY="99d3...c3c4"
-OAUTH_GITHUB_SECRET="34ae...f963"
-```
+AUTH_PROVIDERS="google,adobe"
 
-### Example: Multiple Providers
+AUTH_GOOGLE_DRIVER="openid"
+AUTH_GOOGLE_CLIENT_ID="<google_application_id>"
+AUTH_GOOGLE_CLIENT_SECRET= "<google_application_secret_key>"
+AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
+AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true"
+AUTH_GOOGLE_DEFAULT_ROLE_ID="<directus_role_id>"
+AUTH_GOOGLE_ICON="google"
 
-Since `OAUTH_PROVIDERS` accepts a CSV, you can also specify _multiple_ providers at the same time. Many of these
-providers work with nothing more than the key and secret, however, more tailored services (like the Microsoft example
-below) might require [additional configuration flags](https://github.com/simov/grant#configuration-description).
-
-```
-OAUTH_PROVIDERS ="google,microsoft"
-
-OAUTH_GOOGLE_KEY = "<google_application_id>"
-OAUTH_GOOGLE_SECRET=  "<google_application_secret_key>"
-OAUTH_GOOGLE_SCOPE="openid email"
-
-OAUTH_MICROSOFT_KEY = "<microsoft_application_id>"
-OAUTH_MICROSOFT_SECRET = "<microsoft_application_secret_key>"
-OAUTH_MICROSOFT_SCOPE = "openid email"
-OAUTH_MICROSOFT_AUTHORIZE_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/authorize"
-OAUTH_MICROSOFT_ACCESS_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/token"
-
-PUBLIC_URL = "<public_url_of_directus_instance>"
+AUTH_ADOBE_DRIVER="oauth2"
+AUTH_ADOBE_CLIENT_ID="<adobe_application_id>"
+AUTH_ADOBE_CLIENT_SECRET="<adobe_application_secret_key>"
+AUTH_ADOBE_AUTHORIZE_URL="https://ims-na1.adobelogin.com/ims/authorize/v2"
+AUTH_ADOBE_ACCESS_URL="https://ims-na1.adobelogin.com/ims/token/v3"
+AUTH_ADOBE_PROFILE_URL="https://ims-na1.adobelogin.com/ims/userinfo/v2"
+AUTH_ADOBE_ALLOW_PUBLIC_REGISTRATION="true"
+AUTH_ADOBE_DEFAULT_ROLE_ID="<directus_role_id>"
+AUTH_ADOBE_ICON="adobe"
 ```
 
 ## Extensions
