@@ -151,6 +151,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -179,9 +180,6 @@ no_collections_found: Inga kollektioner hittades.
 new_data_alert: 'Följande kommer att skapas inom din datamodell:'
 new_field: 'Nytt fält'
 new_collection: 'Ny kollektion'
-add_m2o_to_collection: 'Lägg till Many-to-One i "{collection}"'
-add_o2m_to_collection: 'Lägg till One-to-Many i "{collection}"'
-add_m2m_to_collection: 'Lägg till Many-to-Many i "{collection}"'
 choose_a_type: Välj en typ...
 determined_by_relationship: Bestämd av relation
 add_note: Lägg till kommentar för användare...

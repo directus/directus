@@ -169,6 +169,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Ngày tháng
 datetime: Ngày Giờ
+dateTime: Ngày Giờ
 decimal: Dạng thập phân
 float: Số thực
 integer: Số nguyên
@@ -189,9 +190,6 @@ no_collections_found: Không có bảng dữ liệu.
 search_collection: Chọn Bảng...
 new_field: 'Trường mới'
 new_collection: 'Tạo bảng mới'
-add_m2o_to_collection: 'Quan hệ nhiều một "{collection}"'
-add_o2m_to_collection: 'Quan hệ một nhiều "{collection}"'
-add_m2m_to_collection: 'Quan hệ nhiều nhiều "{collection}"'
 choose_a_type: Chọn một Kiểu...
 determined_by_relationship: Xác định theo Quan hệ
 add_note: Thêm ghi chú hữu ích cho người dùng...
