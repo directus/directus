@@ -172,6 +172,8 @@ global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
 show_zero: Vis Nul
+create_in_advanced_field_creation_mode: Opret i avanceret feltskabelsestilstand
+continue_in_advanced_field_creation_mode: Fortsæt i avanceret feltskabelsestilstand
 sum: Sum
 sum_distinct: Sum Distinkt
 avg: Gennemsnit
@@ -232,6 +234,9 @@ new_data_alert: 'Følgende oprettes inden for din datamodel:'
 search_collection: Søg Samling...
 new_field: 'Nyt felt'
 new_collection: 'Ny Samling'
+add_m2o_to_collection: 'Tilføj M2O til "{collection}"'
+add_o2m_to_collection: 'Tilføj O2M til "{collection}"'
+add_m2m_to_collection: 'Tilføj M2M til "{collection}"'
 choose_a_type: Vælg en type...
 determined_by_relationship: Bestemt af forhold
 add_note: Tilføj en nyttig note til brugere...
@@ -663,6 +668,7 @@ no_dashboards: Ingen Dashboards
 no_dashboards_copy: Du har ikke nogen Dashboards endnu.
 no_data: Ingen Data
 create_dashboard: Opret Dashboard
+dashboard_name: Betjeningspanels Navn
 full_screen: Fuld Skærm
 edit_panels: Rediger Paneler
 fit_to_screen: Tilpas til skærm
@@ -676,6 +682,12 @@ source: Kilde
 url_placeholder: Indtast en url...
 display_text: Vis Tekst
 display_text_placeholder: Indtast en visningstekst...
+interface_group_text_and_numbers: Tekst & Tal
+interface_group_selection: Markering
+interface_group_relational: Forhold
+interface_group_presentation: Præsentation
+interface_group_groups: Grupper
+interface_group_other: Andet
 tooltip: Værktøjstip
 tooltip_placeholder: Indtast et værktøjstip...
 unlimited: Ubegrænset
