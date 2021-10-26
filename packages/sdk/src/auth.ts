@@ -1,5 +1,6 @@
 import { IStorage } from './storage';
 import { ITransport } from './transport';
+import { PasswordsHandler } from './handlers/passwords';
 
 export type AuthCredentials = {
 	email: string;
@@ -29,7 +30,10 @@ export type AuthOptions = {
 };
 
 export abstract class IAuth {
+	mode = (typeof window === 'undefined' ? 'json' : 'cookie') as AuthMode;
+
 	abstract readonly token: string | null;
+	abstract readonly password: PasswordsHandler;
 
 	abstract login(credentials: AuthCredentials): Promise<AuthResult>;
 	abstract refresh(): Promise<AuthResult | false>;

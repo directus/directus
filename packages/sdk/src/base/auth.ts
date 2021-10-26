@@ -1,4 +1,4 @@
-import { IAuth, AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthResultType, AuthMode } from '../auth';
+import { IAuth, AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthResultType } from '../auth';
 import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
 import { ITransport } from '../transport';
@@ -10,7 +10,6 @@ export type AuthStorage<T extends AuthResultType = 'DynamicToken'> = {
 };
 
 export class Auth extends IAuth {
-	mode = (typeof window === 'undefined' ? 'json' : 'cookie') as AuthMode;
 	autoRefresh = true;
 	msRefreshBeforeExpires = 30000;
 	staticToken = '';
