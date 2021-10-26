@@ -1,9 +1,20 @@
-import { AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthResultType, IAuth } from '../auth';
+import { IAuth, AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthResultType, AuthMode } from '../auth';
 import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
 import { ITransport } from '../transport';
 
+export type AuthStorage<T extends AuthResultType = 'DynamicToken'> = {
+	access_token: T extends 'DynamicToken' | 'StaticToken' ? string : null;
+	expires: T extends 'DynamicToken' ? number : null;
+	refresh_token?: T extends 'DynamicToken' ? string : null;
+};
+
 export class Auth extends IAuth {
+	mode = (typeof window === 'undefined' ? 'json' : 'cookie') as AuthMode;
+	autoRefresh = true;
+	msRefreshBeforeExpires = 30000;
+	staticToken = '';
+
 	private _storage: IStorage;
 	private _transport: ITransport;
 	private timer: ReturnType<typeof setTimeout> | false;
@@ -43,7 +54,7 @@ export class Auth extends IAuth {
 		return (this.passwords = this.passwords || new PasswordsHandler(this._transport));
 	}
 
-	private updateStorage<T extends AuthResultType>(result: AuthResult<T>) {
+	private updateStorage<T extends AuthResultType>(result: AuthStorage<T>) {
 		this._storage.auth_token = result.access_token;
 		this._storage.auth_refresh_token = result.refresh_token ?? null;
 		this._storage.auth_expires = result.expires ?? null;
