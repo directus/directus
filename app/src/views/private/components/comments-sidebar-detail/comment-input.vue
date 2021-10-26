@@ -100,7 +100,7 @@ export default defineComponent({
 	bottom: 36px;
 	left: 0;
 	height: 8px;
-	background: linear-gradient(180deg, rgb(var(--background-page-rgb) 0) 0%, rgb(var(--background-page-rgb) 1) 100%);
+	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
 }
 
