@@ -306,7 +306,7 @@ export default defineComponent({
 	position: fixed;
 	z-index: 1;
 	max-width: 80%;
-	padding: 6px 10px 6px;
+	padding: 6px 10px;
 	color: var(--foreground-normal-alt);
 	font-weight: 500;
 	font-size: 14px;
@@ -342,7 +342,6 @@ export default defineComponent({
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 }
 
@@ -405,7 +404,7 @@ export default defineComponent({
 		display: inline-block;
 
 		button {
-			box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 2px 1px rgb(0 0 0 / 0.2);
 		}
 	}
 }

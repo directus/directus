@@ -354,7 +354,7 @@ export default defineComponent({
 }
 
 .md :deep(img.shadow) {
-	box-shadow: 0px 5px 10px 0px rgba(23, 41, 64, 0.1), 0px 2px 40px 0px rgba(23, 41, 64, 0.05);
+	box-shadow: 0px 5px 10px 0px rgb(23 41 64 / 0.1), 0px 2px 40px 0px rgb(23 41 64 / 0.05);
 }
 
 .md.page-reference {
