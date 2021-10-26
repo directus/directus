@@ -129,7 +129,7 @@ export default definePanel({
 				interface: 'system-field',
 				options: {
 					collectionField: 'collection',
-					typeAllowList: ['date', 'datetime', 'timestamp'],
+					typeAllowList: ['date', 'dateTime', 'timestamp'],
 				},
 				width: 'half',
 			},
