@@ -107,12 +107,12 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/app/content/content-collections',
+						path: '/app/content-collections',
 						title: 'Content Collections',
 					},
 					{
 						type: 'page',
-						path: '/app/content/content-items',
+						path: '/app/content-items',
 						title: 'Content Items',
 					},
 					{
@@ -195,7 +195,7 @@ module.exports = {
 								path: '/configuration/installation/ubuntu',
 								title: 'Ubuntu',
 							},
-						]
+						],
 					},
 					{
 						type: 'page',
@@ -218,7 +218,7 @@ module.exports = {
 								path: '/configuration/relationships',
 								title: 'Relationships',
 							},
-						]
+						],
 					},
 					{
 						type: 'page',

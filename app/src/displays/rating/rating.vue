@@ -61,7 +61,7 @@ export default defineComponent({
 		padding: 2px 6px 2px 4px;
 		color: #ffc107;
 		font-weight: 600;
-		background-color: rgba(255, 193, 7, 0.15);
+		background-color: rgb(255 193 7 / 0.15);
 		border-radius: var(--border-radius);
 
 		.v-icon {
