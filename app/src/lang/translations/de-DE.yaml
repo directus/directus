@@ -199,6 +199,7 @@ boolean: Boolean
 date: Datum
 date_range: Zeitspanne
 datetime: Datum mit Uhrzeit
+dateTime: Datum mit Uhrzeit
 precision: Präzision
 decimal: Dezimal
 float: Float
@@ -231,9 +232,6 @@ new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung durchsuchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
-add_m2o_to_collection: 'n:1 zu "{collection}" hinzufügen'
-add_o2m_to_collection: '1:n zu "{collection}" hinzufügen'
-add_m2m_to_collection: 'n:m zu "{collection}" hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
@@ -1161,7 +1159,6 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:

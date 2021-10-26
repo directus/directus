@@ -173,6 +173,7 @@ bigInteger: Big Integer
 boolean: ค่าบูลีน
 date: วันที่
 datetime: วันที่และเวลา
+dateTime: วันที่และเวลา
 decimal: เลขฐานสิบ
 float: เลขทศนิยม
 integer: จำนวนเต็ม
@@ -204,9 +205,6 @@ new_data_alert: 'สิ่งเหล่านี้จะถูกสร้า
 search_collection: ค้นหาตาราง...
 new_field: 'สร้างฟิลด์ใหม่'
 new_collection: 'คอลเลกชันใหม่'
-add_m2o_to_collection: 'เพิ่ม Many-to-One ให้ "{collection}"'
-add_o2m_to_collection: 'เพิ่ม One-to-Many ให้ "{collection}"'
-add_m2m_to_collection: 'เพิ่ม Many-to-Many ให้ "{collection}"'
 choose_a_type: เลือกชนิด...
 determined_by_relationship: กำหนดโดยความสัมพันธ์
 add_note: เพิ่มโน้ตเพื่อแนะนำผู้ใช้

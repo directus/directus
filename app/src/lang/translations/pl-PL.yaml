@@ -199,6 +199,7 @@ boolean: Wartość logiczna
 date: Data
 date_range: Zakres dat
 datetime: Data i godzina
+dateTime: Data i godzina
 precision: Dokładność
 decimal: Liczba dziesiętna
 float: Liczba zmiennoprzecinkowa
@@ -231,9 +232,6 @@ new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
 search_collection: Przeszukaj kolekcje...
 new_field: 'Nowe pole'
 new_collection: 'Nowa kolekcja'
-add_m2o_to_collection: 'Dodaj relację wiele do jednego do "{collection}"'
-add_o2m_to_collection: 'Dodaj relację jeden do wielu do "{collection}"'
-add_m2m_to_collection: 'Dodaj relację wiele do wielu do "{collection}"'
 choose_a_type: Wybierz typ...
 determined_by_relationship: Określone przez relację
 add_note: Dodaj użyteczną informację dla użytkowników...

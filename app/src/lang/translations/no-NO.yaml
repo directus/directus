@@ -127,6 +127,7 @@ bigInteger: Stort heltall
 boolean: Sann/usann
 date: Dato
 datetime: Dato og tid
+dateTime: Dato og tid
 decimal: Desimaltall
 float: Flyttall
 integer: Heltall
@@ -155,9 +156,6 @@ new_data_alert: 'Følgende vil bli opprettet i din Data Model:'
 search_collection: Søk i kolleksjonen...
 new_field: 'Nytt felt'
 new_collection: 'Ny Kolleksjon'
-add_m2o_to_collection: 'Legg til mange-til-en til "{collection}"'
-add_o2m_to_collection: 'Legg til en-til-mange til "{collection}"'
-add_m2m_to_collection: 'Legg til mange-til mange til "{collection}'
 choose_a_type: Velg en Type...
 determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
