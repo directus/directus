@@ -151,11 +151,11 @@ and the value is the handler function itself.
 The `registerHook` function receives a context parameter with the following properties:
 
 - `services` — All API internal services
-- `exceptions` — API exception objects that can be used for throwing "proper" errors
+- `exceptions` — API exception objects that can be used for throwing "proper" errors
 - `database` — Knex instance that is connected to the current database
 - `getSchema` — Async function that reads the full available schema for use in services
-- `env` — Parsed environment variables
-- `logger` — [Pino](https://github.com/pinojs/pino) instance.
+- `env` — Parsed environment variables
+- `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
 ### Event Handler Function
 
@@ -165,9 +165,9 @@ properties:
 - `event` — Full event string
 - `accountability` — Information about the current user
 - `collection` — Collection that is being modified
-- `item` — Primary key(s) of the item(s) being modified
-- `action` — Action that is performed
-- `payload` — Payload of the request
+- `item` — Primary key(s) of the item(s) being modified
+- `action` — Action that is performed
+- `payload` — Payload of the request
 - `schema` - The current API schema in use
 - `database` - Current database transaction
 
@@ -186,9 +186,9 @@ receive the primary key(s) of the items but the query used:
 - `event` — Full event string
 - `accountability` — Information about the current user
 - `collection` — Collection that is being modified
-- `query` — The query used to get the data
-- `action` — Action that is performed
-- `payload` — Payload of the request
+- `query` — The query used to get the data
+- `action` — Action that is performed
+- `payload` — Payload of the request
 - `schema` - The current API schema in use
 - `database` - Current database transaction
 
@@ -198,8 +198,8 @@ The `auth` hooks have the following context properties:
 
 - `event` — Full event string
 - `accountability` — Information about the current user
-- `action` — Action that is performed
-- `payload` — Payload of the request
+- `action` — Action that is performed
+- `payload` — Payload of the request
 - `schema` - The current API schema in use
 - `status` - One of `pending`, `success`, `fail`
 - `user` - ID of the user that tried logging in/has logged in
