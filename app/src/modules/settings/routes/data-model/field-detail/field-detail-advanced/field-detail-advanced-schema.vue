@@ -85,7 +85,7 @@
 				</div>
 			</template>
 
-			<div v-if="!isAlias && !isPrimaryKey" class="field full">
+			<div v-if="!isAlias && !isPrimaryKey && !isGenerated" class="field full">
 				<div class="label type-label">{{ t('default_value') }}</div>
 
 				<v-input v-if="['string', 'uuid'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
@@ -134,12 +134,12 @@
 				<v-input v-else v-model="defaultValue" class="monospace" disabled placeholder="NULL" />
 			</div>
 
-			<div v-if="!isAlias" class="field half-left">
+			<div v-if="!isAlias && !isGenerated" class="field half-left">
 				<div class="label type-label">{{ t('nullable') }}</div>
 				<v-checkbox v-model="nullable" :label="t('allow_null_value')" block />
 			</div>
 
-			<div v-if="!isAlias" class="field half-right">
+			<div v-if="!isAlias && !isGenerated" class="field half-right">
 				<div class="label type-label">{{ t('unique') }}</div>
 				<v-checkbox v-model="unique" :label="t('value_unique')" block />
 			</div>
@@ -279,6 +279,10 @@ export default defineComponent({
 			return fieldDetailStore.field.schema?.is_primary_key === true;
 		});
 
+		const isGenerated = computed(() => {
+			return fieldDetailStore.field.schema?.is_generated;
+		});
+
 		return {
 			t,
 			typesWithLabels,
@@ -303,6 +307,7 @@ export default defineComponent({
 			unique,
 			isPrimaryKey,
 			isExisting,
+			isGenerated,
 		};
 
 		function useOnCreate() {

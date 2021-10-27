@@ -154,6 +154,7 @@ async function getDatabaseSchema(
 					field: column.column_name,
 					defaultValue: getDefaultValue(column) ?? null,
 					nullable: column.is_nullable ?? true,
+					generated: column.is_generated ?? false,
 					type: getLocalType(column).type,
 					dbType: column.data_type,
 					precision: column.numeric_precision || null,
