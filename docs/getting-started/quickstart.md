@@ -61,7 +61,8 @@ sticking to the defaults for now. These defaults use the "String" datatype and "
 
 ::: tip More Info on Fields
 
-To learn more about the different types of Fields, and all available options, see [Fields](/guides/fields).
+To learn more about the different types of Fields, and all available options, see
+[Fields](/getting-started/glossary/#fields).
 
 :::
 
