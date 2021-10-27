@@ -18,7 +18,7 @@
 					v-else-if="nestedCollections.length"
 					v-tooltip="collapseTooltip"
 					:name="collapseIcon"
-					:clickable="nestedCollections.length"
+					:clickable="nestedCollections.length > 0"
 					@click="toggleCollapse"
 				/>
 				<v-icon v-else :name="collapseIcon" />
