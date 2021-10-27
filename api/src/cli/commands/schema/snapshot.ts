@@ -44,7 +44,7 @@ export async function snapshot(
 
 	try {
 		if (options?.format === 'yaml') {
-			await fs.writeFile(filename, toYaml(snapshot));
+			await fs.writeFile(filename, toYaml(snapshot, {'sortKeys': true}));
 		} else {
 			await fs.writeFile(filename, JSON.stringify(snapshot));
 		}
