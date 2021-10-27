@@ -76,7 +76,7 @@ Below is an overview to how Directus mirrors the database, and our non-technical
 - **[Item](/reference/items/)** — A Database Record/Row
 - **[Relationships](/reference/system/relationships/)** — A Database Relationship, including additional non-standard
   types
-- **[Type](/concepts/types/)** — A Database Data Type, including additional non-standard types
+- **[Type](/getting-started/glossary/#types/)** — A Database Data Type, including additional non-standard types
 - **[Users](/reference/system/users/)** — A Directus User (App or API), not to be confused with a Database User
 
 Perhaps one of the biggest advantages of _Database Mirroring_ is that you have direct access to your pure and unaltered
