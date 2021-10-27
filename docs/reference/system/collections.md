@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
-> alter the schema of the database. [Learn more about Collections](/concepts/collections/).
+> alter the schema of the database. [Learn more about Collections](/getting-started/glossary/#collections).
 
 </div>
 <div class="right">
@@ -155,7 +155,7 @@ GET /collections
 SEARCH /collections
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -258,8 +258,8 @@ The `collection` property is required, all other properties of the [collection o
 optional.
 
 You are able to provide an array of `fields` to be created during the creation of the collection. See the
-[fields object](/reference/api/system/fields/#the-fields-object) for more information on what properties are available
-in a field.
+[fields object](/reference/system/fields/#the-fields-object) for more information on what properties are available in a
+field.
 
 ### Returns
 

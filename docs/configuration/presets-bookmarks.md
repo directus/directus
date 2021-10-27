@@ -1,7 +1,7 @@
 # Collection Presets
 
 > Presets store the state of a Collection Detail page. They can be used to set layout defaults or define bookmarks to
-> specific datasets. [Learn more about Presets](/concepts/presets/).
+> specific datasets. [Learn more about Presets](/getting-started/glossary/#presets).
 
 ## Creating a Preset
 

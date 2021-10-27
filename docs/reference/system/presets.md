@@ -8,8 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
-> item listings and bookmarks for users of the app.
-> [Learn more about Presets](/concepts/collections/#collection-presets-bookmarks).
+> item listings and bookmarks for users of the app. [Learn more about Presets](/getting-started/glossary/#presets).
 
 </div>
 <div class="right">

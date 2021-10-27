@@ -1,8 +1,8 @@
 # Users, Roles & Permissions
 
-> [Users](/getting-started/glossary#users) are the individual accounts for authenticating into the API and App. Each
-> user belongs to a [Role](/getting-started/glossary#roles) which defines its access
-> [Permissions](/getting-started/glossary#permissions).
+> [Users](/getting-started/glossary/#users) are the individual accounts for authenticating into the API and App. Each
+> user belongs to a [Role](/getting-started/glossary/#roles) which defines its access
+> [Permissions](/getting-started/glossary/#permissions).
 
 [[toc]]
 
@@ -39,7 +39,7 @@ The User Detail is only editable by the current user and admins, and the followi
   - **Suspended** — A user that has been temporarily disabled; no App/API access
   - **Archived** — A soft-deleted user; no App/API access
 - **Role** — The user's role determines their permissions and access
-- **Token** — A user's token is an alternate way to [authenticate into the API](/reference/api/authentication) using a
+- **Token** — A user's token is an alternate way to [authenticate into the API](/reference/authentication/) using a
   static string. When NULL, the token is disabled. When enabled, ensure that a secure string is used.
 
 ## Archiving a User
@@ -154,7 +154,7 @@ continue with the appropriate guide below based on the relevant _action_.
 
 ### Read (Custom Access)
 
-5. **Item Permissions** control which items can be read, as defined by the [Filter Rules](/reference/filter-rules)
+5. **Item Permissions** control which items can be read, as defined by the [Filter Rules](/configuration/filter-rules)
    entered.
 6. **Field Permissions** control which fields can be read. Fields are individually toggled.
 
@@ -168,16 +168,16 @@ App's soft-delete and manual sorting features.
 
 ### Update (Custom Access)
 
-5. **Item Permissions** control which items can be updated, as defined by [Filter Rules](/reference/filter-rules).
+5. **Item Permissions** control which items can be updated, as defined by [Filter Rules](/configuration/filter-rules/).
 6. **Field Permissions** control which fields can be updated. Fields are individually toggled.
 7. **Field Validation** define the rules for field values on update, as defined by
-   [Filter Rules](/reference/filter-rules).
+   [Filter Rules](/configuration/filter-rules/).
 8. **Field Presets** control the field defaults when updating an item
 
 ### Delete (Custom Access)
 
-5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules/))
-   entered.
+5. **Item Permissions** control which items can be deleted, as defined by the
+   [Filter Rules](/configuration/filter-rules/)) entered.
 
 ---
 
@@ -213,8 +213,8 @@ Workflows are a way to add structured stages to the flow of content authoring. T
 permissions for a Collection, but can be further enhanced via email notifications, custom interfaces, and automation.
 Directus supports endlessly configurable workflows, so we will only cover one simple example below.
 
-1. To create a structured workflow for **Articles**, the first step is [Creating a Field](#) to track the article
-   "status" — we'll call it **Status**, but it can be named anything.
+1. To create a structured workflow for **Articles**, the first step is [Creating a Field](/reference/system/fields/) to
+   track the article "status" — we'll call it **Status**, but it can be named anything.
 2. Next, create different Roles for each stage of the workflow, such as `author` and `manager`.
 3. Finally, configure the Role permissions based on the possible values of that Status field, such as `draft`, `review`,
    `approved`, and `published`, so that they are properly restricted to create content and update the status.

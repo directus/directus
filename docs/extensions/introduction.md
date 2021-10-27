@@ -8,15 +8,15 @@
 Directus has been architected as completely modular and extensible, with four keystone App component types.
 Out-of-the-box components are configurable, or altogether new components can be created as extensions.
 
-- [Modules](/concepts/modules/)
-- [Layouts](/concepts/layouts/)
-- [Interfaces](/concepts/interfaces/)
-- [Displays](/concepts/displays/)
+- [Modules](/extensions/modules/)
+- [Layouts](/extensions/layouts/)
+- [Interfaces](/extensions/interfaces/)
+- [Displays](/extensions/displays/)
 
 ## API Extensions
 
-- [Endpoints](/guides/api-endpoints)
-- [Hooks](/guides/api-hooks)
+- [Endpoints](/extensions/api-endpoints)
+- [Hooks](/extensions/api-hooks)
 
 <!-- ## CLI Extensions
 

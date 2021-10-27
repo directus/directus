@@ -361,7 +361,7 @@
 				<span>Administrator guides for tailoring the Directus platform to fit your exact project needs.</span>
 				<u>Learn More</u>
 			</a>
-			<a href="/reference/api/introduction/" class="panel">
+			<a href="/reference/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<circle cx="30" cy="30" r="30" fill="#00C897" />
 					<path
@@ -403,9 +403,9 @@
 			<div class="listing">
 				<h2>Popular Topics</h2>
 				<ul>
-					<li><a href="#">Filter Rules (Configuration)</a></li>
+					<li><a href="/configuration/filter-rules">Filter Rules (Configuration)</a></li>
 					<li><a href="#">App Guide -> Layouts</a></li>
-					<li><a href="#">Getting Started -> Installation -> Docker</a></li>
+					<li><a href="/configuration/installation/docker/">Getting Started -> Installation -> Docker</a></li>
 					<li><a href="#">Fields Parameter (Data Access)</a></li>
 				</ul>
 			</div>
@@ -413,9 +413,11 @@
 			<div class="listing">
 				<h2>Latest Updates</h2>
 				<ul>
-					<li><a href="#">Environment Variables (Configuration)</a></li>
+					<li><a href="/configuration/config-options/">Environment Variables (Configuration)</a></li>
 					<li><a href="#">Setting up SSO (Configuration)</a></li>
-					<li><a href="#">Understanding Database Mirroring</a></li>
+					<li>
+						<a href="/getting-started/introduction/#database-mirroring">Understanding Database Mirroring</a>
+					</li>
 					<li><a href="#">Backing Directus</a></li>
 				</ul>
 			</div>
