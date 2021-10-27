@@ -91,16 +91,17 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 				url: this.url,
 				beforeRequest: (config) => {
 					const token = this.storage.auth_token;
+					const bearer = token
+						? token.startsWith(`Bearer `)
+							? String(this.storage.auth_token)
+							: `Bearer ${this.storage.auth_token}`
+						: '';
 
 					return {
 						...config,
 						headers: {
+							Authorization: bearer,
 							...config.headers,
-							Authorization: token
-								? token.startsWith(`Bearer `)
-									? String(this.storage.auth_token)
-									: `Bearer ${this.storage.auth_token}`
-								: '',
 						},
 					};
 				},
