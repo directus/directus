@@ -15,7 +15,8 @@ with the admin option enabled can manage Settings within the app.
 
 [Fields](#fields) that do not map directly to an actual database column are called "alias" fields. For example,
 presentation fields (such as dividers and groups) and certain relational types that display data stored elsewhere (such
-as [One-to-Many (O2M)](#) and [Many-to-Many (M2M)](#)).
+as [One-to-Many (O2M)](/configuration/relationships/#one-to-many-o2m) and
+[Many-to-Many (M2M)](/configuration/relationships/#many-to-many-m2m)).
 
 ## API
 
@@ -130,10 +131,10 @@ a **column** in your database. For example, an `articles` [Collection](#collecti
 
 ### Relevant Guides
 
-- [Creating a Field](/guides/fields/#creating-a-field)
-- [Duplicating Fields](/guides/fields/#duplicating-a-field)
-- [Adjusting Field Layout](/guides/fields/#adjusting-field-layout)
-- [Deleting Fields](/guides/fields/#deleting-a-field)
+- [Creating a Field](/reference/system/fields/#creating-a-field)
+- [Duplicating Fields](/reference/system/fields/#duplicating-a-field)
+- [Adjusting Field Layout](/reference/system/fields/#adjusting-field-layout)
+- [Deleting Fields](/reference/system/fields/#deleting-a-field)
 
 ## Files & Assets
 
@@ -268,20 +269,20 @@ often called `id`.
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](#)
-- [Configuring a Project](#)
-- [Adjusting Project Settings](#)
-- [Upgrading a Project](#)
-- [Backing-up a Project](#)
-- [Migrating a Project](#)
-- [Deleting a Project](#)
+- [Creating a Project](/dead)
+- [Configuring a Project](/dead)
+- [Adjusting Project Settings](/configuration/project-settings/)
+- [Upgrading a Project](/dead)
+- [Backing-up a Project](/dead)
+- [Migrating a Project](/dead)
+- [Deleting a Project](/dead)
 
 ## Relationships
 
 The platform allows you to group Items within different Collections. But often times it is important to "link" items
 across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship, a crucial
 concept within any _relational_ database. There are several different types of relationships, each serving a specific
-purpose. [Learn more about Relationships](#relationships).
+purpose. [Learn more about Relationships](/configuration/relationships/).
 
 ## Revisions
 

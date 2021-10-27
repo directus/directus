@@ -7,9 +7,10 @@
 
 ## Dynamic API
 
-The platform's API uses [Database Mirroring](#) to dynamically generate REST endpoints and a GraphQL schema based on the
-connected database's architecture. Since these endpoints return data based on your specific schema and configured
-permissions, the input/output of the API differs greatly for individual installations.
+The platform's API uses [Database Mirroring](/getting-started/introduction/#database-mirroring) to dynamically generate
+REST endpoints and a GraphQL schema based on the connected database's architecture. Since these endpoints return data
+based on your specific schema and configured permissions, the input/output of the API differs greatly for individual
+installations.
 
 ## REST vs. GraphQL
 

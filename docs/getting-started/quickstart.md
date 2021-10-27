@@ -76,7 +76,7 @@ Once you're happy with your creation, click the checkmark in the top-right to sa
 
 ::: tip More Info on Items
 
-To learn more about the different types of Items, and all available options, see [Items](/guides/items).
+To learn more about the different types of Items, and all available options, see [Items](/app/content-items/).
 
 :::
 

@@ -56,7 +56,7 @@ to return data in a custom order.
 
 ## Adjusting Item Layouts
 
-**[Learn more about Layouts](/concepts/layouts/)**
+**[Learn more about Layouts](/getting-started/glossary/#layouts)**
 
 1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to browse

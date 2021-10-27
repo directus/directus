@@ -1,7 +1,7 @@
 # Data Model
 
-> The data model describes the structure of your database's schema using [Collections](#) (database tables) and
-> [Fields](#) (database columns).
+> The data model describes the structure of your database's schema using [Collections](/app/content-collections/)
+> (database tables) and [Fields](/reference/system/fields/) (database columns).
 
 [[toc]]
 
@@ -44,22 +44,22 @@ are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
-  - [Creating a Field](/guides/fields/#creating-a-field)
-  - [Updating a Field](/guides/fields/#updating-a-field)
-  - [Deleting a Field](/guides/fields/#deleting-a-field)
-  - [Duplicating a Field](/guides/fields/#duplicating-a-field)
-  - [Changing Field Order & Layout](/guides/fields/#adjusting-field-layout)
+  - [Creating a Field](#creating-a-field)
+  - [Updating a Field](#updating-a-field)
+  - [Deleting a Field](#deleting-a-field)
+  - [Duplicating a Field](#duplicating-a-field)
+  - [Changing Field Order & Layout](/dead)
 - **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
   Translations (see field below).
 - **Note** — A helpful note that explains the collection's purpose
 - **Icon** — The icon used throughout the App when referencing this collection
 - **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A [Field Template](#) that creates dynamic titles for the collection's items
+- **Display Template** — A [Field Template](/dead) that creates dynamic titles for the collection's items
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
   [Collection Page](/app/content-collections/) will be bypassed, taking users directly to the
-  [Item Page](/concepts/application/#item-detail).
+  [Item Page](/app/content-items/).
 - **Collection Naming Translations** — While the collection key can not be changed (as of now), this option allows
   translating the collection name into different languages. By default, the platform uses the
   [Title Formatter](/getting-started/glossary/#title-formatter) to display collection keys as human readable names, but
@@ -85,8 +85,9 @@ this field, the collection's archive settings will automatically be configured f
 ### Sort
 
 The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the
-[Collection Page](/app/content-collections/), but can also be used for sorting items within [Junction Tables](#).
-Configuration is as easy as selecting the appropriate sort field:
+[Collection Page](/app/content-collections/), but can also be used for sorting items within
+[Junction Tables](/getting-started/glossary/#junction-collections). Configuration is as easy as selecting the
+appropriate sort field:
 
 - **Sort Field** — Choose a field with the `integer` type. You may want to set this field to be "hidden" so it doesn't
   show up within the Item Page form.
@@ -139,8 +140,8 @@ Collections can be organized in several ways.
 
 ## Adjusting the Collection Form
 
-The [Item Page](#) displays a custom form for viewing and editing each collection's fields. This form is is highly
-configurable, with the following field options:
+The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
+is is highly configurable, with the following field options:
 
 - **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the field's context menu
   or edit drawer.
@@ -173,7 +174,7 @@ This pane controls the technical details of the field's database column.
 
 - **Key** — (Required) The database column name and field's API key. The key must be unique within its parent
   Collection. As of now, all keys are sanitized: lowercased, alphanumeric, and with spaces removed. Keys can not be
-  changed once created, however you can use [Field Name Translations](#) to override how it's displayed in the App.
+  changed once created, however you can use [Field Name Translations](/dead) to override how it's displayed in the App.
 - **Type** — (Required) How the data is saved to the database; See [Directus Data Type Superset](/concepts/types). This
   dropdown maybe be limited or even disabled based on your chosen Field category.
 - **Length** — (Only for certain types) For String types this determines the number of characters that can be stored in

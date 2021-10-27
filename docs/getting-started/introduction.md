@@ -71,7 +71,7 @@ tables, columns, datatypes, default values, indexes, relationships, etc.
 Below is an overview to how Directus mirrors the database, and our non-technical naming convention.
 
 - **[Project](/configuration/project-settings/)** — A Database, asset storage, and config file
-- **[Collection](/reference/system/collections/)** — A Database Table
+- **[Collection](/app/content-collections/)** — A Database Table
 - **[Fields](/reference/system/fields/)** — A Database Column
 - **[Item](/reference/items/)** — A Database Record/Row
 - **[Relationships](/reference/system/relationships/)** — A Database Relationship, including additional non-standard

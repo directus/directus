@@ -104,7 +104,7 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 ::: tip Expiry time
 
 The token's expiration time can be configured through
-[the `ACCESS_TOKEN_TTL` environment variable](http://localhost:8080/configuration/config-options/#general).
+[the `ACCESS_TOKEN_TTL` environment variable](/configuration/config-options/#general).
 
 :::
 
