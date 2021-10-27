@@ -36,6 +36,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			column_name: string;
 			default_value: string;
 			is_nullable: string;
+			is_generated: string;
 			data_type: string;
 			numeric_precision: number | null;
 			numeric_scale: number | null;

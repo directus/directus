@@ -13,6 +13,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			max_length: number | null;
 			is_identity: boolean;
 			is_nullable: boolean;
+			is_generated: boolean;
 		};
 
 		type RawGeometryColumn = {
