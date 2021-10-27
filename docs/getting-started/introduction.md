@@ -70,13 +70,14 @@ tables, columns, datatypes, default values, indexes, relationships, etc.
 
 Below is an overview to how Directus mirrors the database, and our non-technical naming convention.
 
-- **[Project](/concepts/projects/)** — A Database, asset storage, and config file
-- **[Collection](/concepts/collections/)** — A Database Table
-- **[Fields](/concepts/fields/)** — A Database Column
-- **[Item](/concepts/items/)** — A Database Record/Row
-- **[Relationships](/concepts/relationships/)** — A Database Relationship, including additional non-standard types
-- **[Type](/concepts/types/)** — A Database Data Type, including additional non-standard types
-- **[Users](/concepts/users/)** — A Directus User (App or API), not to be confused with a Database User
+- **[Project](/getting-started/glossary/#projects)** — A Database, asset storage, and config file
+- **[Collection](/app/content-collections/)** — A Database Table
+- **[Fields](/getting-started/glossary/#fields)** — A Database Column
+- **[Item](/getting-started/glossary/#items)** — A Database Record/Row
+- **[Relationships](/getting-started/glossary/#relationships)** — A Database Relationship, including additional
+  non-standard types
+- **[Type](/getting-started/glossary/#types/)** — A Database Data Type, including additional non-standard types
+- **[Users](/getting-started/glossary/#users)** — A Directus User (App or API), not to be confused with a Database User
 
 Perhaps one of the biggest advantages of _Database Mirroring_ is that you have direct access to your pure and unaltered
 data. That means you have the option to bypass the Directus middleware (API, SDK, App) and connect to your data with
@@ -88,15 +89,15 @@ What makes Directus so flexible is that it has been designed from the ground up 
 avoid a feature ceiling. In addition to offering our software's codebase as open-source, we've included the following
 extension types in the platform's App and API.
 
-- **[Modules](/concepts/modules/)** — (App) The highest and broadest level of organization within the App
-- **[Layouts](/concepts/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
-- **[Interfaces](/concepts/interfaces/)** — (App) How you view or interact with a field and its value
-- **[Displays](/concepts/displays/)** — (App) A small inline preview of a field's value
-- **[Panes](#)** — (App) A way to view dashboard data within the Insights Module
+- **[Modules](/extensions/modules/)** — (App) The highest and broadest level of organization within the App
+- **[Layouts](/extensions/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
+- **[Interfaces](/extensions/interfaces/)** — (App) How you view or interact with a field and its value
+- **[Displays](/extensions/displays/)** — (App) A small inline preview of a field's value
+- **[Panes](/extensions/panes/)** — (App) A way to view dashboard data within the Insights Module
 - **[Styles](/guides/styles/)** — (App) Whitelabeling through App Themes and CSS Overrides
-- **[Endpoints](/guides/api-endpoints/)** — (API) Custom registered API endpoints
-- **[Hooks](/guides/api-hooks/)** — (API) Event and interval hooks for triggering custom logic
-- **[Email Templates](/guides/email-templates/)** — (API) Custom structure and formatting for emails
+- **[Endpoints](/extensions/api-endpoints/)** — (API) Custom registered API endpoints
+- **[Hooks](/extensions/hooks/)** — (API) Event and interval hooks for triggering custom logic
+- **[Email Templates](/extensions/email-templates/)** — (API) Custom structure and formatting for emails
 
 ## The Directus Ecosystem
 

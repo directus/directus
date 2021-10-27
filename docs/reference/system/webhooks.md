@@ -83,12 +83,12 @@ List all webhooks that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query/).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [webhook objects](#the-webhook-object). If no items are
-available, data will be an empty array.
+An array of up to [limit](reference/query/#limit) [webhook objects](#the-webhook-object). If no items are available,
+data will be an empty array.
 
 </div>
 <div class="right">
@@ -100,7 +100,7 @@ GET /webhooks
 SEARCH /webhooks
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/query/#search)
 
 ### GraphQL
 
@@ -139,7 +139,7 @@ List an existing webhook by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -192,7 +192,7 @@ Create a new webhook.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -265,7 +265,7 @@ Create multiple new webhooks.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -349,7 +349,7 @@ Update an existing webhook.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -414,7 +414,7 @@ Update multiple existing webhooks.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 

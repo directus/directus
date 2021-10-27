@@ -2,7 +2,7 @@
 
 ## 1. Setup a repo on GitHub
 
-See the doc on [installing Directus manually](/guides/installation/manual) to learn how to configure this repo.
+See the doc on [installing Directus manually](/configuration/installation/manual/) to learn how to configure this repo.
 
 ## 2. Sign up for a DigitalOcean account
 
@@ -21,11 +21,11 @@ Make sure to select the database you created in step 2 during the configuration 
 While Directus itself doesn't have to be built from source in order to use it on App Platform, we do recommend adding
 `npx directus bootstrap` as the "build" step for DigitalOcean. This will automatically provision the database if it's
 empty, and migrate it to the latest version in case of upgrades. See
-[Command Line Interface](/reference/command-line-interface/#bootstrap-a-project) for more information.
+[Command Line Interface](/configuration/installation/cli/) for more information.
 
 ## 6. Configure the environment variables
 
-See [Environment Variables](/reference/environment-variables) for all available environment variables.
+See [Environment Variables](/configuration/config-options/#general) for all available environment variables.
 
 DigitalOcean requires you to use SSL connections to managed databases. DigitalOcean provides a bunch of aliases to often
 used database properties that can be injected when the database is a component of your app. To enable SSL connections,

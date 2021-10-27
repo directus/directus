@@ -9,7 +9,7 @@
 ## Browsing Users
 
 Lists all users of the project, with a navigation that allows quick access to the different role groups. This page has
-the same functionality as other [Collection Pages](#).
+the same functionality as other [Collection Pages](/app/content-collections/).
 
 ## Viewing a User
 
