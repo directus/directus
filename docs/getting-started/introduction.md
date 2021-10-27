@@ -74,8 +74,8 @@ Below is an overview to how Directus mirrors the database, and our non-technical
 - **[Collection](/app/content-collections/)** — A Database Table
 - **[Fields](/reference/system/fields/)** — A Database Column
 - **[Item](/reference/items/)** — A Database Record/Row
-- **[Relationships](/reference/system/relationships/)** — A Database Relationship, including additional non-standard
-  types
+- **[Relationships](/getting-started/glossary/#relationships)** — A Database Relationship, including additional
+  non-standard types
 - **[Type](/getting-started/glossary/#types/)** — A Database Data Type, including additional non-standard types
 - **[Users](/reference/system/users/)** — A Directus User (App or API), not to be confused with a Database User
 
