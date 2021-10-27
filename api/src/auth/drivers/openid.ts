@@ -99,9 +99,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const { identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
 
-		const email = userInfo.email as string;
+		const email = userInfo.email as string | null | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey ?? 'sub'] as string | undefined) ?? email;
+		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
 
 		if (!identifier) {
 			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
