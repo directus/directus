@@ -17,10 +17,10 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 				c.CHARACTER_MAXIMUM_LENGTH as max_length,
        			cc.is_computed as is_generated,
 				pk.PK_SET as column_key,
-				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') as is_identity
+				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') as is_identity,
+				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsComputed') as is_generated
 			FROM
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
-			LEFT JOIN [sys].[computed_columns] AS [cc] ON [cc].[object_id] = [c].[object_id] AND [cc].[column_id] = [c].[column_id]
 			LEFT JOIN (
 				SELECT
 					PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END,
