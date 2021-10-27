@@ -70,14 +70,14 @@ tables, columns, datatypes, default values, indexes, relationships, etc.
 
 Below is an overview to how Directus mirrors the database, and our non-technical naming convention.
 
-- **[Project](/configuration/project-settings/)** — A Database, asset storage, and config file
+- **[Project](/getting-started/glossary/#projects)** — A Database, asset storage, and config file
 - **[Collection](/app/content-collections/)** — A Database Table
-- **[Fields](/reference/system/fields/)** — A Database Column
-- **[Item](/reference/items/)** — A Database Record/Row
+- **[Fields](/getting-started/glossary/#fields)** — A Database Column
+- **[Item](/getting-started/glossary/#items)** — A Database Record/Row
 - **[Relationships](/getting-started/glossary/#relationships)** — A Database Relationship, including additional
   non-standard types
 - **[Type](/getting-started/glossary/#types/)** — A Database Data Type, including additional non-standard types
-- **[Users](/reference/system/users/)** — A Directus User (App or API), not to be confused with a Database User
+- **[Users](/getting-started/glossary/#users)** — A Directus User (App or API), not to be confused with a Database User
 
 Perhaps one of the biggest advantages of _Database Mirroring_ is that you have direct access to your pure and unaltered
 data. That means you have the option to bypass the Directus middleware (API, SDK, App) and connect to your data with
