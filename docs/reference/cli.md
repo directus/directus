@@ -74,7 +74,7 @@ To move your configured data model between Directus instances, you can use the s
 
 Directus can automatically generate a snapshot of your current data model in YAML or JSON format. This includes all
 collections, fields, and relations, and their configuration. This snapshot can be checked in version control and shared
-with your team. To generate the snapshot, run
+with your team. The YAML snapshot is sorted by key, so comparison of changes is easy. To generate the snapshot, run
 
 ```
 npx directus schema snapshot ./snapshot.yaml
