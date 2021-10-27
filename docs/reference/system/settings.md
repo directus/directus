@@ -39,13 +39,13 @@ Link to the (public) website that goes with this project.
 Brand color for the current project.
 
 `project_logo` **many-to-one**\
-Primary logo for the current project. Many-to-one to [files](/reference/api/system/files/).
+Primary logo for the current project. Many-to-one to [files](/reference/system/files/).
 
 `public_foreground` **many-to-one**\
-Foreground image for the Admin App's public pages. Many-to-one to [files](/reference/api/system/files/).
+Foreground image for the Admin App's public pages. Many-to-one to [files](/reference/system/files/).
 
 `public_background` **many-to-one**\
-Background image for the Admin App's public pages. Many-to-one to [files](/reference/api/system/files/).
+Background image for the Admin App's public pages. Many-to-one to [files](/reference/system/files/).
 
 `public_note` **string**\
 Note shown on the Admin App's public pages. Supports Markdown.
@@ -100,7 +100,7 @@ What preset keys exist in [the assets endpoint](/reference/assets/).
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -149,7 +149,7 @@ query {
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
