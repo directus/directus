@@ -416,9 +416,7 @@
 					<li><a href="/configuration/config-options/">Environment Variables (Configuration)</a></li>
 					<li><a href="#">Setting up SSO (Configuration)</a></li>
 					<li>
-						<a href="http://localhost:8080/getting-started/introduction/#database-mirroring">
-							Understanding Database Mirroring
-						</a>
+						<a href="/getting-started/introduction/#database-mirroring">Understanding Database Mirroring</a>
 					</li>
 					<li><a href="#">Backing Directus</a></li>
 				</ul>
