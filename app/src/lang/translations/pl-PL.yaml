@@ -1144,7 +1144,7 @@ otp: Jednorazowe hasło
 password: Hasło
 permissions: Uprawnienia
 relationship: Powiązanie
-reset: Wyczyść
+reset: Resetuj
 reset_password: Resetuj hasło
 revisions: Wersje
 revert: Przywróć
