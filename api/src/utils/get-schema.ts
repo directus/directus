@@ -192,6 +192,7 @@ async function getDatabaseSchema(
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
+			generated: existing?.generated ?? false,
 			type: type,
 			dbType: existing?.dbType || null,
 			precision: existing?.precision || null,
