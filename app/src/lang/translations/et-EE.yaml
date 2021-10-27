@@ -748,7 +748,7 @@ fields:
     password: Parool
     avatar: Avatar
     location: Asukoht
-    title: Pealkiri
+    title: Amet
     description: Kirjeldus
     tags: Sildid
     language: Keel
