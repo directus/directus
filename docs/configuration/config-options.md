@@ -532,14 +532,12 @@ common required configuration options:
 
 No additional configuration required.
 
-### OAuth 2.0 and OpenID
+### SSO (`oauth2` and `openid`)
 
-Directus' OAuth 2.0 and OpenID integrations provide powerful alternative ways to authenticate into your project.
-Directus will ask you to login on the external service, and return authenticated with a Directus account linked to that
-service.
+Directus' SSO integrations provide powerful alternative ways to authenticate into your project. Directus will ask you to
+login on the external service, and return authenticated with a Directus account linked to that service.
 
-Directus supports hundreds of OAuth 2.0 and OpenID services, but requires some configuration to authenticate users
-correctly. For example, enabling authentication through GitHub requires creating an
+For example, you can login to Directus using a github account by creating an
 [OAuth 2.0 app in GitHub](https://github.com/settings/developers) and adding the following configuration to Directus:
 
 ```
@@ -557,26 +555,27 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that va
 
 :::
 
-#### OAuth 2.0 (`oauth2`)
+#### OAuth 2.0
 
-| Variable                                    | Description                                                                                | Default Value    |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                                 | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAUth secret for the external service.                                                     | --               |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                          | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                            | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                              | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | Where Directus can fetch the profile information of the authenticated user.                | --               |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to verify the user.                                           | `email`          |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Can be used in place of `EMAIL_KEY`. | --               |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.                              | `false`          |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                                       | --               |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                                   | `account_circle` |
+| Variable                                    | Description                                                                        | Default Value    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                         | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAuth secret for the external service.                                             | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                  | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                    | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                      | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | The user profile information URL of the external service.                          | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to find the email address.                            | `email`          |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Will default to `EMAIL_KEY`. | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                            | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                    | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                           | `account_circle` |
 
-If possible, OpenID is preferred over OAuth 2.0 as it provides better verification and consistent user information,
-allowing more complete user registrations.
+#### OpenID
 
-#### OpenID (`openid`)
+OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
+OpenID offers better user verification and consistent profile information, allowing for more complete user
+registrations.
 
 | Variable                                    | Description                                                       | Default Value          |
 | ------------------------------------------- | ----------------------------------------------------------------- | ---------------------- |
@@ -585,9 +584,9 @@ allowing more complete user registrations.
 | `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request. | `openid profile email` |
 | `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                  | --                     |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.            | `sub`                  |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.     | `false`                |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.           | `false`                |
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                   | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                              | --                     |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                   | --                     |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                          | `account_circle`       |
 
 #### Multiple Providers
@@ -602,8 +601,6 @@ AUTH_GOOGLE_DRIVER="openid"
 AUTH_GOOGLE_CLIENT_ID="<google_application_id>"
 AUTH_GOOGLE_CLIENT_SECRET= "<google_application_secret_key>"
 AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
-AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true"
-AUTH_GOOGLE_DEFAULT_ROLE_ID="<directus_role_id>"
 AUTH_GOOGLE_ICON="google"
 
 AUTH_ADOBE_DRIVER="oauth2"
@@ -612,8 +609,6 @@ AUTH_ADOBE_CLIENT_SECRET="<adobe_application_secret_key>"
 AUTH_ADOBE_AUTHORIZE_URL="https://ims-na1.adobelogin.com/ims/authorize/v2"
 AUTH_ADOBE_ACCESS_URL="https://ims-na1.adobelogin.com/ims/token/v3"
 AUTH_ADOBE_PROFILE_URL="https://ims-na1.adobelogin.com/ims/userinfo/v2"
-AUTH_ADOBE_ALLOW_PUBLIC_REGISTRATION="true"
-AUTH_ADOBE_DEFAULT_ROLE_ID="<directus_role_id>"
 AUTH_ADOBE_ICON="adobe"
 ```
 
