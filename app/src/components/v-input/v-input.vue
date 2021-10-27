@@ -248,7 +248,6 @@ export default defineComponent({
 				}
 
 				if (props.dbSafe === true) {
-					value = value.toLowerCase();
 					value = value.replace(/\s/g, '_');
 					// Replace é -> e etc
 					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
