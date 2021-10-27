@@ -47,6 +47,11 @@
 		}
 	],
 	"main": "index.js",
+	"exports": {
+		".": "./index.js",
+		"./*": "./dist/*.js",
+		"./package.json": "./package.json"
+	},
 	"bin": {
 		"directus": "cli.js"
 	},
