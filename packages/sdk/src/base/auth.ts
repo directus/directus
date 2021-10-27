@@ -1,9 +1,9 @@
-import { IAuth, AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthResultType } from '../auth';
+import { IAuth, AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthTokenType } from '../auth';
 import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
 import { ITransport } from '../transport';
 
-export type AuthStorage<T extends AuthResultType = 'DynamicToken'> = {
+export type AuthStorage<T extends AuthTokenType = 'DynamicToken'> = {
 	access_token: T extends 'DynamicToken' | 'StaticToken' ? string : null;
 	expires: T extends 'DynamicToken' ? number : null;
 	refresh_token?: T extends 'DynamicToken' ? string : null;
@@ -53,7 +53,7 @@ export class Auth extends IAuth {
 		return (this.passwords = this.passwords || new PasswordsHandler(this._transport));
 	}
 
-	private updateStorage<T extends AuthResultType>(result: AuthStorage<T>) {
+	private updateStorage<T extends AuthTokenType>(result: AuthStorage<T>) {
 		this._storage.auth_token = result.access_token;
 		this._storage.auth_refresh_token = result.refresh_token ?? null;
 		this._storage.auth_expires = result.expires ?? null;

@@ -10,7 +10,7 @@ export type AuthCredentials = {
 
 export type AuthToken = string;
 
-export type AuthResultType = 'DynamicToken' | 'StaticToken' | null;
+export type AuthTokenType = 'DynamicToken' | 'StaticToken' | null;
 
 export type AuthResult = {
 	access_token: string;
