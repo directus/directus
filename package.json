@@ -54,7 +54,7 @@
 		"oracledb": "5.3.0",
 		"pg": "8.7.1",
 		"prettier": "2.4.1",
-		"simple-git-hooks": "2.6.1",
+		"simple-git-hooks": "2.7.0",
 		"sqlite3": "5.0.2",
 		"stylelint": "14.0.1",
 		"stylelint-config-prettier": "9.0.3",
