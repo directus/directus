@@ -98,9 +98,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { emailKey, identifierKey, allowPublicRegistration } = this.config;
 
-		const email = userInfo[emailKey ?? 'email'] as string | undefined;
+		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey] as string | undefined) ?? email;
+		const identifier = (userInfo[identifierKey] as string | null | undefined) ?? email;
 
 		if (!identifier) {
 			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
