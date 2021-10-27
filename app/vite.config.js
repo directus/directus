@@ -100,8 +100,8 @@ export default defineConfig({
 
 					const titleLine = code.match(titleRegex);
 
-					const title = titleLine[1] ?? null;
-					const modularExtension = Boolean(titleLine[2]);
+					const title = titleLine?.[1] ?? null;
+					const modularExtension = Boolean(titleLine?.[2]);
 					const codeWithoutTitle = code.replace(titleRegex, '');
 
 					const newCode = `---\ntitle: "${title}"\nmodularExtension: ${modularExtension}${

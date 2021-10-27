@@ -155,7 +155,7 @@ export default defineComponent({
 			}
 		}
 
-		function navigateToRole(item: Role) {
+		function navigateToRole({ item }: { item: Role }) {
 			router.push(`/settings/roles/${item.id}`);
 		}
 	},

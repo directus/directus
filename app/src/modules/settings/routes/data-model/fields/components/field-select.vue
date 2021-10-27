@@ -192,7 +192,7 @@ export default defineComponent({
 
 		const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
 
-		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.meta?.field));
+		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
 
 		return {
 			t,

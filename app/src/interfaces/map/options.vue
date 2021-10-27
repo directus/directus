@@ -34,7 +34,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fieldData: {
+		field: {
 			type: Object as PropType<Field>,
 			default: null,
 		},
@@ -47,11 +47,11 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const isGeometry = props.fieldData.type == 'geometry';
-		const nativeGeometryType = isGeometry ? (props.fieldData!.schema!.geometry_type as GeometryType) : undefined;
-		const geometryFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
+		const isGeometry = props.field.type == 'geometry';
+		const nativeGeometryType = isGeometry ? (props.field!.schema!.geometry_type as GeometryType) : undefined;
+		const geometryFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.field.type);
 		const geometryType = ref<GeometryType>(
-			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
+			geometryFormat === 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
 		);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 

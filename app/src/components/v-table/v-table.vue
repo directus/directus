@@ -61,7 +61,7 @@
 						:sorted-manually="internalSort.by === manualSortKey"
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
-						@click="clickable ? $emit('click:row', element) : null"
+						@click="clickable ? $emit('click:row', { item: element, event: $event }) : null"
 						@item-selected="
 							onItemSelected({
 								item: element,

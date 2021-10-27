@@ -123,7 +123,7 @@ export default defineComponent({
 		font-size: 15px;
 		line-height: 24px;
 		background-color: #fff;
-		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
+		box-shadow: 0 0 40px 0 rgb(0 0 0 / 0.25);
 		transition: max-width var(--medium) var(--transition);
 
 		:slotted(.type-title) {
@@ -182,7 +182,7 @@ export default defineComponent({
 				color: var(--white);
 				font-size: 15px;
 				line-height: 24px;
-				background-color: rgba(38, 50, 56, 0.25);
+				background-color: rgb(38 50 56 / 0.25);
 				border-radius: 6px;
 				backdrop-filter: blur(2px);
 			}

@@ -71,8 +71,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
-			.orWhereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
 		return user?.id;
@@ -128,15 +127,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		// If email matches identifier, don't set "external_identifier"
-		const emailIsIdentifier = email?.toLowerCase() === identifier.toLowerCase();
-
 		await this.usersService.createOne({
 			provider: this.config.provider,
 			first_name: userInfo.given_name,
 			last_name: userInfo.family_name,
 			email: email,
-			external_identifier: !emailIsIdentifier ? identifier : undefined,
+			external_identifier: identifier,
 			role: this.config.defaultRoleId,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
@@ -217,11 +213,18 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
-			const token = req.cookies[`openid.${providerName}`];
-			const { verifier, redirect } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
-				verifier: string;
-				redirect: string;
-			};
+			let tokenData;
+
+			try {
+				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
+					verifier: string;
+					redirect?: string;
+				};
+			} catch (e) {
+				throw new InvalidCredentialsException();
+			}
+
+			const { verifier, redirect } = tokenData;
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
@@ -236,6 +239,10 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`openid.${providerName}`);
+
+				if (!req.query.code) {
+					logger.warn(`Couldn't extract OAuth2 code from query: ${JSON.stringify(req.query)}`);
+				}
 
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,

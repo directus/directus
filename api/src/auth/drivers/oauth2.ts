@@ -70,8 +70,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
-			.orWhereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
 		return user?.id;
@@ -125,13 +124,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		// If email matches identifier, don't set "external_identifier"
-		const emailIsIdentifier = email?.toLowerCase() === identifier.toLowerCase();
-
 		await this.usersService.createOne({
 			provider: this.config.provider,
 			email: email,
-			external_identifier: !emailIsIdentifier ? identifier : undefined,
+			external_identifier: identifier,
 			role: this.config.defaultRoleId,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
@@ -211,16 +207,18 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
-			const token = req.cookies[`oauth2.${providerName}`];
+			let tokenData;
 
-			if (!token) {
+			try {
+				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
+					verifier: string;
+					redirect?: string;
+				};
+			} catch (e) {
 				throw new InvalidCredentialsException();
 			}
 
-			const { verifier, redirect } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
-				verifier: string;
-				redirect: string;
-			};
+			const { verifier, redirect } = tokenData;
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
@@ -236,10 +234,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				const { code } = req.query;
-
-				if (!code) {
-					logger.warn(`Couldn't extract oAuth2 code from query: ${JSON.stringify(req.query)}`);
+				if (!req.query.code) {
+					logger.warn(`Couldn't extract OAuth2 code from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {

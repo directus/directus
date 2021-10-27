@@ -52,6 +52,9 @@ import { Filter, FieldFilter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 import { useFieldTree } from '@/composables/use-field-tree';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
+import { useFieldsStore } from '@/stores';
+import { ClientFilterOperator } from '@directus/shared/types';
 
 export default defineComponent({
 	components: {
@@ -92,6 +95,8 @@ export default defineComponent({
 			return values.value[props.collectionField] ?? null;
 		});
 
+		const fieldsStore = useFieldsStore();
+
 		const { treeList, loadFieldRelations } = useFieldTree(collection);
 
 		const innerValue = computed<Filter[]>({
@@ -107,10 +112,16 @@ export default defineComponent({
 				}
 			},
 			set(newVal) {
-				if (newVal.length === 0) {
-					emit('input', null);
-				} else {
-					emit('input', { _and: newVal });
+				switch (newVal.length) {
+					case 0:
+						emit('input', null);
+						break;
+					case 1:
+						emit('input', newVal[0]);
+						break;
+					default:
+						emit('input', { _and: newVal });
+						break;
 				}
 			},
 		});
@@ -149,7 +160,9 @@ export default defineComponent({
 			} else {
 				const filterObj = {};
 
-				set(filterObj, key, { _eq: null });
+				const field = fieldsStore.getField(collection.value, key)!;
+				const operator = getFilterOperatorsForType(field.type)[0];
+				set(filterObj, key, { ['_' + operator]: null });
 
 				innerValue.value = [...innerValue.value, filterObj] as FieldFilter[];
 			}
@@ -187,8 +200,8 @@ export default defineComponent({
 	}
 
 	.v-list {
-		margin: 0px 0px 10px 0px;
-		padding: 20px 20px 12px 20px;
+		margin: 0px 0px 10px;
+		padding: 20px 20px 12px;
 		border: var(--border-width) solid var(--border-subdued);
 
 		& > :deep(.group) {
