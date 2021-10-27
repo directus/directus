@@ -3,7 +3,7 @@
 	"extends": ["config:base", ":disableDependencyDashboard"],
 	"force": {
 		"constraints": {
-			"node": ">=16.0.0",
+			"node": ">=16.13.0",
 			"npm": ">=7.0.0"
 		}
 	},
