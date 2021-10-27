@@ -60,7 +60,7 @@
 		"@types/ms": "0.7.31",
 		"@types/qrcode": "1.4.1",
 		"@types/wellknown": "0.5.1",
-		"@vitejs/plugin-vue": "1.9.3",
+		"@vitejs/plugin-vue": "1.9.4",
 		"@vue/compiler-sfc": "3.2.20",
 		"apexcharts": "3.29.0",
 		"axios": "0.24.0",
