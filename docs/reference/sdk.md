@@ -1,7 +1,7 @@
 # JavaScript SDK
 
 > The JS SDK provides an intuitive interface for the Directus API from within a JavaScript-powered project (browsers and
-> node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
+> Node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
 > storing state.
 
 [[toc]]
@@ -40,12 +40,12 @@ start();
 
 ## TypeScript
 
-version >= 4.1
+Version >= 4.1
 
-Although it's not required, it is recommended to use Typescript in order to have a nice development experience. This
-allows a more detailed IDE suggestions for return types, sorting, filtering, etc.
+Although it's not required, it is recommended to use Typescript to have an easy development experience. This allows more
+detailed IDE suggestions for return types, sorting, filtering, etc.
 
-To feed SDK with your current schema just need to pass it on the constructor.
+To feed the SDK with your current schema, you need to pass it on the constructor.
 
 ```ts
 type BlogPost = {
@@ -137,17 +137,18 @@ const directus = new Directus(url, init);
   - `auth` [optional] _Object_ - Defines settings you want to customize regarding [authentication](#auth). The possible
     options are:
 
-    - `mode` [optional] _String_ - Defines the mode you want to use for authentication. Can be `'cookie'` for cookies or
-      `'json'` for JWT. Defaults to `'cookie'` on browsers and `'json'` otherwise. We recommend to use cookies when
+    - `mode` [optional] _String_ - Defines the mode you want to use for authentication. It can be `'cookie'` for cookies
+      or `'json'` for JWT. Defaults to `'cookie'` on browsers and `'json'` otherwise. We recommend using cookies when
       possible to prevent any kind of attacks, mostly XSS.
 
       <a name="options.auth.autoRefresh"></a>
 
-    - `autoRefresh` [optional] _Boolean_ - Tells SDK if should handle refresh tokens automatically. Defaults to `true`.
-    - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, tells how many milliseconds before
-      token expires should refresh it. Defaults to `30000`.
-    - `staticToken` [optional] _String_ - Defines the static token to be used. It is not compatible with options above,
-      since does not to handle refreshes. Defaults to `''` (no static token).
+    - `autoRefresh` [optional] _Boolean_ - Tells SDK ifit should handle refresh tokens automatically. Defaults to
+      `true`.
+    - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
+      before the refresh token expires and needs to be refreshed. Defaults to `30000`.
+    - `staticToken` [optional] _String_ - Defines the static token to use. It is not compatible with the options above
+      since it does not refresh. Defaults to `''` (no static token).
 
   <a name="options.storage"></a>
 
@@ -155,11 +156,11 @@ const directus = new Directus(url, init);
 
     <a name="options.storage.prefix"></a>
 
-    - `prefix` [optional] _String_ - Defines the tokens prefix tokens to be saved. This should be fulfilled with
+    - `prefix` [optional] _String_ - Defines the tokens prefix tokens that are saved. This should be fulfilled with
       different values when using multiple instances of SDK. Defaults to `''` (no prefix).
-    - `mode` [optional] _String_ - Defines the storage to be used for save tokens. Allowed values are `LocalStorage` and
-      `MemoryStorage`. Defaults to `LocalStorage` on browsers and `MemoryStorage` on Node.js. The mode `LocalStorage` is
-      not compatible on Node.js.
+    - `mode` [optional] _String_ - Defines the storage location to be used to save tokens. Allowed values are
+      `LocalStorage` and `MemoryStorage`. Defaults to `LocalStorage` on browsers and `MemoryStorage` on Node.js. The
+      mode `LocalStorage` is not compatible with Node.js.
 
   <a name="options.transport"></a>
 
@@ -174,10 +175,10 @@ const directus = new Directus(url, init);
 
 Defines how authentication is handled by the SDK.
 
-### Custom Implementatin
+### Custom Implementation
 
-It is possible to provide a custom implementation by extending `IAuth`. While, this could be useful for advanced usage,
-it is not needed for most use-cases.
+It is possible to provide a custom implementation by extending `IAuth`. While this could be useful for advanced usage,
+most use-cases do not need it.
 
 ```js
 import { IAuth, Directus } from '@directus/sdk';
