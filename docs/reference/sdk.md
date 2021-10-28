@@ -17,7 +17,7 @@ npm install @directus/sdk
 ```js
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+const directus = new Directus('http://directus.example.com');
 
 async function start() {
 	// Wait for login to be done...
@@ -196,7 +196,7 @@ class MyAuth extends IAuth {
 	}
 }
 
-const directus = new Directus({ auth: new MyAuth() });
+const directus = new Directus('http://directus.example.com', { auth: new MyAuth() });
 ```
 
 ### Directus Implementation
@@ -314,7 +314,7 @@ class MyTransport extends ITransport {
 	}
 }
 
-const directus = new Directus({ transport: new MyTransport() });
+const directus = new Directus('http://directus.example.com', { transport: new MyTransport() });
 ```
 
 ### Directus Implementation
@@ -359,7 +359,7 @@ class MyStorage extends IStorage {
 	}
 }
 
-const directus = new Directus({ storage: new MyStorage() });
+const directus = new Directus('http://directus.example.com', { storage: new MyStorage() });
 ```
 
 ### Directus Implementation
@@ -387,7 +387,7 @@ You can get an instance of the item handler by providing the collection (and typ
 // import { Directus, ID } from '@directus/sdk';
 const { Directus } = require('@directus/sdk');
 
-const directus = new Directus('https://api.example.com');
+const directus = new Directus('http://directus.example.com');
 
 const articles = directus.items('articles');
 ```
