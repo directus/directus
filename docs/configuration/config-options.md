@@ -544,6 +544,7 @@ correctly. For example, enabling authentication through GitHub requires creating
 
 ```
 AUTH_PROVIDERS="github"
+
 AUTH_GITHUB_CLIENT_ID="99d3...c3c4"
 AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
 AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
@@ -610,6 +611,8 @@ information and roles will be assigned from Active Directory.
 ### Example: LDAP
 
 ```
+AUTH_PROVIDERS="ldap"
+
 AUTH_LDAP_DRIVER="ldap"
 AUTH_LDAP_CLIENT_URL="ldap://ldap.directus.io"
 AUTH_LDAP_BIND_DN="CN=Bind User,OU=Users,DC=ldap,DC=directus,DC=io"
