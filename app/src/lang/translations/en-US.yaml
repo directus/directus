@@ -1326,6 +1326,8 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
+    editorFont: Editor Font
+    previewFont: Preview Font
     customSyntax: Custom Blocks
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
