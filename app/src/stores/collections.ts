@@ -93,7 +93,6 @@ export const useCollectionsStore = defineStore({
 			});
 		},
 		async upsertCollection(collection: string, values: DeepPartial<Collection & { fields: Field[] }>) {
-			const fieldsStore = useFieldsStore();
 			const existing = this.getCollection(collection);
 
 			// Strip out any fields the app might've auto-generated at some point
@@ -122,8 +121,6 @@ export const useCollectionsStore = defineStore({
 				}
 			} catch (err: any) {
 				unexpectedError(err);
-			} finally {
-				await fieldsStore.hydrate();
 			}
 		},
 		async updateCollection(collection: string, updates: DeepPartial<Collection>) {
