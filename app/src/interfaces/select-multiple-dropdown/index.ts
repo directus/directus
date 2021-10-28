@@ -103,6 +103,18 @@ export default defineInterface({
 				interface: 'select-icon',
 			},
 		},
+		{
+			field: 'previewThreshold',
+			name: '$t:interfaces.select-dropdown.preview_threshold',
+			type: 'integer',
+			meta: {
+				width: 'half',
+				interface: 'input',
+			},
+			schema: {
+				default_value: 3,
+			},
+		},
 	],
 	recommendedDisplays: ['labels'],
 });
