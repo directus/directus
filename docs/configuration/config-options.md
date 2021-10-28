@@ -607,7 +607,7 @@ information and roles will be assigned from Active Directory.
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
 
-#### Multiple Providers
+### Multiple Providers
 
 You can configure multiple providers for handling authentication in Directus. This allows for different options when
 logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
