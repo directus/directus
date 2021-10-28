@@ -60,7 +60,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			const client = ldap.createClient({ url: additionalConfig.clientUrl, reconnect: true, ...clientConfig });
 
 			client.on('error', (err: Error) => {
-				logger.error('Unhandled error', err);
+				logger.error(err);
 			});
 
 			client.bind(bindDn, bindPassword, (err: Error | null) => {
