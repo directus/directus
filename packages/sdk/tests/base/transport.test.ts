@@ -108,7 +108,7 @@ describe('default transport', function () {
 
 	it('non axios errors are set in parent', async function () {
 		const transport = new Transport({ url: URL });
-		const mock = jest.spyOn(transport.axios, 'request');
+		const mock = jest.spyOn(transport, 'beforeRequest');
 		mock.mockImplementation(() => {
 			throw new Error('this is not an axios error');
 		});

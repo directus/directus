@@ -2,10 +2,10 @@ import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
 import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../transport';
 
 /**
- * Axios transport implementation
+ * Transport implementation
  */
 export class Transport extends ITransport {
-	public axios: AxiosInstance;
+	private axios: AxiosInstance;
 	private config: TransportOptions;
 
 	constructor(config: TransportOptions) {
