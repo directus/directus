@@ -601,6 +601,7 @@ AUTH_GOOGLE_DRIVER="openid"
 AUTH_GOOGLE_CLIENT_ID="<google_application_id>"
 AUTH_GOOGLE_CLIENT_SECRET= "<google_application_secret_key>"
 AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
+AUTH_GOOGLE_IDENTIFIER_KEY="email"
 AUTH_GOOGLE_ICON="google"
 
 AUTH_ADOBE_DRIVER="oauth2"
