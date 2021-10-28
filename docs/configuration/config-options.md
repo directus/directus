@@ -607,7 +607,18 @@ information and roles will be assigned from Active Directory.
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
 
-### Multiple Providers
+### Example: LDAP
+
+```
+AUTH_LDAP_DRIVER="ldap"
+AUTH_LDAP_CLIENT_URL="ldap://ldap.directus.io"
+AUTH_LDAP_BIND_DN="CN=Bind User,OU=Users,DC=ldap,DC=directus,DC=io"
+AUTH_LDAP_BIND_PASSWORD="p455w0rd"
+AUTH_LDAP_USER_DN="OU=Users,DC=ldap,DC=directus,DC=io"
+AUTH_LDAP_GROUP_DN="OU=Groups,DC=ldap,DC=directus,DC=io"
+```
+
+### Example: Multiple Auth Providers
 
 You can configure multiple providers for handling authentication in Directus. This allows for different options when
 logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
