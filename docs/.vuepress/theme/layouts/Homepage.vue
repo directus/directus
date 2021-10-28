@@ -401,24 +401,24 @@
 
 		<div class="listings">
 			<div class="listing">
-				<h2>Popular Topics</h2>
+				<h2>Popular Configuration Topics</h2>
 				<ul>
-					<li><a href="/configuration/filter-rules">Filter Rules (Configuration)</a></li>
-					<li><a href="#">App Guide -> Layouts</a></li>
-					<li><a href="/configuration/installation/docker/">Getting Started -> Installation -> Docker</a></li>
-					<li><a href="#">Fields Parameter (Data Access)</a></li>
+					<li><a href="/configuration/filter-rules/">Filter Rules</a></li>
+					<li><a href="/configuration/config-options/">Environment Variables</a></li>
+					<li><a href="/configuration/relationships/">Data Relationships</a></li>
+					<li><a href="/configuration/config-options/#authentication">Single Sign-On (SSO)</a></li>
+					<li><a href="/configuration/installation/docker/">Installing with Docker</a></li>
 				</ul>
 			</div>
 
 			<div class="listing">
-				<h2>Latest Updates</h2>
+				<h2>Popular Data Access Topics</h2>
 				<ul>
-					<li><a href="/configuration/config-options/">Environment Variables (Configuration)</a></li>
-					<li><a href="#">Setting up SSO (Configuration)</a></li>
-					<li>
-						<a href="/getting-started/introduction/#database-mirroring">Understanding Database Mirroring</a>
-					</li>
-					<li><a href="#">Backing Directus</a></li>
+					<li><a href="/reference/authentication/">API: Authentication</a></li>
+					<li><a href="/reference/items/">API: Accessing Items</a></li>
+					<li><a href="/reference/query/#filter">API: Filter Parameter</a></li>
+					<li><a href="/reference/query/#fields">API: Fields Parameter</a></li>
+					<li><a href="/reference/introduction/#rest-vs-graphql">API: GraphQL API</a></li>
 				</ul>
 			</div>
 		</div>
