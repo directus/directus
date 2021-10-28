@@ -49,6 +49,7 @@ edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
 children: Trẻ em
 show_archived_items: Hiển thị các mục đã Lưu Trữ
+edited: Giá trị đã được chỉnh sửa
 required: Bắt buộc
 required_for_app_access: Yêu Cầu cho Kết Nối
 requires_value: Giá trị bắt buộc
@@ -120,6 +121,7 @@ validationError:
   nnull: Dữ liệu không thể là null
   required: Dữ liệu là bắt buộc
   unique: Giá trị phải là duy nhất
+  regex: Giá trị không có định dạng đúng
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
@@ -602,11 +604,17 @@ editing_in: 'Chỉnh sửa mục trong {collection}'
 creating_unit: 'Đang tạo {unit}'
 editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
+no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
 settings_permissions: Vai trò & Quyền hạn
 settings_project: Cài Đặt Chung
 settings_webhooks: Webhooks
+one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
+scope: Phạm vi
+select: Chọn...
 layout: Bố cục
+changes_are_permanent: Thay đổi là lâu dài
+preset_search_placeholder: Tìm kiếm truy vấn...
 layout_preview: Xem Trước Bố Cục
 layout_setup: Cài Đặt Bố Cục
 unsaved_changes: Những thay đổi chưa được lưu
