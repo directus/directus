@@ -612,7 +612,7 @@ class TypescriptSpecsService implements SpecificationSubService {
 				'\n\n'
 			) +
 			'\n\n' +
-			this.generateCustomDirectusTypes(collections)
+			this.generateDefaultExport(collections)
 		);
 	}
 
@@ -642,18 +642,29 @@ class TypescriptSpecsService implements SpecificationSubService {
 		return collectionType;
 	}
 
-	generateCustomDirectusTypes(collections: { name: string; pascalName: string; fields: Field[] }[]) {
-		const customDirectusTypesName = collections
-			.map((collection) => collection.pascalName)
-			.includes('CustomDirectusTypes')
-			? '_CustomDirectusTypes'
-			: 'CustomDirectusTypes';
-		let customDirectusTypes = `export type ${customDirectusTypesName} = {\n`;
-		customDirectusTypes += collections
-			.map((collection) => `  ${collection.name}: ${collection.pascalName};`)
-			.join('\n');
-		customDirectusTypes += '\n}';
-		return customDirectusTypes;
+	generateDefaultExport(collections: { name: string; pascalName: string; fields: Field[] }[]) {
+		// Check if there already exists a collection called
+		// CustomDirectusTypes and then rename the default
+		// export to CustomDirectusTypes0, CustomDirectusTypes1, etc.
+		function nameExists(name: string) {
+			return collections.map((collection) => collection.pascalName).includes(name);
+		}
+		let defaultExportName = !nameExists('CustomDirectusTypes') && 'CustomDirectusTypes';
+		if (!defaultExportName)
+			for (let i = 0; ; i++) {
+				const name = `CustomDirectusTypes${i}`;
+				if (!nameExists(name)) {
+					defaultExportName = name;
+					break;
+				}
+			}
+		let defaultExport = `type ${defaultExportName} = {\n`;
+		defaultExport += collections.map((collection) => `  ${collection.name}: ${collection.pascalName};`).join('\n');
+		defaultExport += `
+}
+
+export default ${defaultExportName};`;
+		return defaultExport;
 	}
 
 	// Try to get the pascal case name from a (supposedly) snake case name
@@ -670,7 +681,7 @@ class TypescriptSpecsService implements SpecificationSubService {
 				equalNames += 1;
 			}
 		});
-		return equalNames < 2 && pascalName !== 'CustomDirectusTypes' ? pascalName : snakeName;
+		return equalNames < 2 ? pascalName : snakeName;
 	}
 
 	getPascalName(snakeName: string) {
