@@ -50,7 +50,6 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
-							@openCollection="openCollection"
 							@editCollection="editCollection = $event"
 							@setNestedSort="onSort"
 						/>
@@ -71,10 +70,10 @@
 						<v-icon name="add" />
 					</v-list-item-icon>
 
-					<div class="collection-name" @click="openCollection(collection)">
+					<router-link class="collection-name" :to="`/settings/data-model/${collection.collection}`">
 						<v-icon class="collection-icon" name="dns" />
 						<span class="collection-name">{{ collection.name }}</span>
-					</div>
+					</router-link>
 
 					<collection-options :collection="collection" />
 				</v-list-item>
@@ -117,7 +116,6 @@ import CollectionOptions from './components/collection-options.vue';
 import { sortBy, merge } from 'lodash';
 import CollectionItem from './components/collection-item.vue';
 import { translate } from '@/utils/translate-object-values';
-import { useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
@@ -132,7 +130,6 @@ export default defineComponent({
 		const editCollection = ref<Collection | null>();
 
 		const collectionsStore = useCollectionsStore();
-		const router = useRouter();
 
 		const collections = computed(() => {
 			return translate(
@@ -183,7 +180,6 @@ export default defineComponent({
 			onSort,
 			rootCollections,
 			editCollection,
-			openCollection,
 		};
 
 		async function onSort(updates: Collection[], removeGroup = false) {
@@ -209,14 +205,6 @@ export default defineComponent({
 				);
 			} catch (err: any) {
 				unexpectedError(err);
-			}
-		}
-
-		function openCollection(collection: Collection) {
-			if (collection.schema) {
-				router.push(`/settings/data-model/${collection.collection}`);
-			} else {
-				editCollection.value = collection;
 			}
 		}
 	},

@@ -4,7 +4,19 @@
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>
-			<div class="collection-name" @click="$emit('openCollection', collection)">
+			<router-link
+				v-if="collection.schema"
+				class="collection-name"
+				:to="`/settings/data-model/${collection.collection}`"
+			>
+				<v-icon
+					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
+					class="collection-icon"
+					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
+				/>
+				<span>{{ collection.name }}</span>
+			</router-link>
+			<div v-else class="collection-name" @click="$emit('editCollection', collection)">
 				<v-icon
 					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
 					class="collection-icon"
@@ -72,7 +84,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['setNestedSort', 'editCollection', 'openCollection'],
+	emits: ['setNestedSort', 'editCollection'],
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 		const { t } = useI18n();
