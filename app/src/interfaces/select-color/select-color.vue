@@ -40,7 +40,7 @@
 			<div class="color-data-input color-type">
 				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
-			<template v-if="colorType === 'RGBA'">
+			<template v-if="colorType === 'RGB(A)'">
 				<v-input
 					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
 					:key="i"
@@ -62,13 +62,13 @@
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
-					:max="100"
+					:max="255"
 					:step="1"
 					maxlength="3"
 					@update:model-value="setValue('alpha', 0, $event)"
 				/>
 			</template>
-			<template v-if="colorType === 'HSLA'">
+			<template v-if="colorType === 'HSL(A)'">
 				<v-input
 					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
 					:key="i"
@@ -89,7 +89,7 @@
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
-					:max="100"
+					:max="255"
 					:step="1"
 					maxlength="3"
 					@update:model-value="setValue('alpha', 0, $event)"
@@ -182,10 +182,10 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
-		type ColorType = 'RGBA' | 'HSLA';
+		type ColorType = 'RGB(A)' | 'HSL(A)';
 
-		const colorTypes = ['RGBA', 'HSLA'] as ColorType[];
-		const colorType = ref<ColorType>('RGBA');
+		const colorTypes = ['RGB(A)', 'HSL(A)'] as ColorType[];
+		const colorType = ref<ColorType>('RGB(A)');
 
 		function unsetColor() {
 			emit('input', null);
@@ -302,14 +302,14 @@ export default defineComponent({
 
 			const alpha = computed<number>({
 				get() {
-					return color.value !== null ? Math.round(color?.value?.alpha() * 100) : 100;
+					return color.value !== null ? Math.round(color?.value?.alpha() * 255) : 255;
 				},
 				set(newAlpha) {
 					if (!newAlpha) {
 						return;
 					}
 					const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
-					setColor(Color(newColor).alpha(newAlpha / 100));
+					setColor(Color(newColor).alpha(newAlpha / 255));
 				},
 			});
 
