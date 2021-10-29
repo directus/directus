@@ -50,6 +50,7 @@
 	"exports": {
 		".": "./index.js",
 		"./*": "./dist/*.js",
+		"./cli": "./dist/cli/*.js",
 		"./package.json": "./package.json"
 	},
 	"bin": {
