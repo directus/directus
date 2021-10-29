@@ -976,6 +976,7 @@ fields:
     method: Metoda
     status: Status
     data: Dane
+    value: Wartość
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
@@ -1083,6 +1084,8 @@ field_options:
     actions_update: Zaktualizuj
     actions_delete: Usuń
     actions_login: Logowanie
+    headers:
+      value: Wartość
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 no_value: Brak wartości
 do_nothing: Nic nie rób
