@@ -32,8 +32,9 @@ interface UserInfo {
 }
 
 // 0x2: ACCOUNTDISABLE
+// 0x10: LOCKOUT
 // 0x800000: PASSWORD_EXPIRED
-const INVALID_ACCOUNT_FLAGS = 0x800002;
+const INVALID_ACCOUNT_FLAGS = 0x800012;
 
 export class LDAPAuthDriver extends AuthDriver {
 	bindClient: Promise<Client>;
