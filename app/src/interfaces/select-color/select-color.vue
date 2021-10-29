@@ -40,7 +40,7 @@
 			<div class="color-data-input color-type">
 				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
-			<template v-if="colorType === 'RGB(A)'">
+			<template v-if="colorType === 'RGB'">
 				<v-input
 					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
 					:key="i"
@@ -55,20 +55,8 @@
 					maxlength="3"
 					@update:model-value="setValue('rgb', i, $event)"
 				/>
-				<v-input
-					key="3"
-					type="number"
-					:model-value="alpha"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="255"
-					:step="1"
-					maxlength="3"
-					@update:model-value="setValue('alpha', 0, $event)"
-				/>
 			</template>
-			<template v-if="colorType === 'HSL(A)'">
+			<template v-if="colorType === 'HSL'">
 				<v-input
 					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
 					:key="i"
@@ -82,11 +70,22 @@
 					maxlength="3"
 					@update:model-value="setValue('hsl', i, $event)"
 				/>
+			</template>
+		</div>
+		<div class="color-data-alphas">
+			<div class="color-data-alpha">
+				<v-slider
+					:model-value="alpha"
+					:min="0"
+					:max="255"
+					:step="1"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
+			</div>
+			<div class="color-data-alpha">
 				<v-input
-					key="3"
 					type="number"
 					:model-value="alpha"
-					class="color-data-input"
 					pattern="\d*"
 					:min="0"
 					:max="255"
@@ -94,8 +93,9 @@
 					maxlength="3"
 					@update:model-value="setValue('alpha', 0, $event)"
 				/>
-			</template>
+			</div>
 		</div>
+		<div></div>
 		<div v-if="presets" class="presets">
 			<v-button
 				v-for="preset in presets"
@@ -182,10 +182,10 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
-		type ColorType = 'RGB(A)' | 'HSL(A)';
+		type ColorType = 'RGB' | 'HSL';
 
-		const colorTypes = ['RGB(A)', 'HSL(A)'] as ColorType[];
-		const colorType = ref<ColorType>('RGB(A)');
+		const colorTypes = ['RGB', 'HSL'] as ColorType[];
+		const colorType = ref<ColorType>('RGB');
 
 		function unsetColor() {
 			emit('input', null);
@@ -377,7 +377,7 @@ export default defineComponent({
 .color-data-inputs {
 	display: grid;
 	grid-gap: 0px;
-	grid-template-columns: repeat(6, 1fr);
+	grid-template-columns: repeat(5, 1fr);
 	width: 100%;
 	padding: 12px 10px;
 }
@@ -441,5 +441,25 @@ export default defineComponent({
 
 .color-data-inputs.stacked .color-data-input:last-child {
 	--border-radius: 0px 0px 4px 0px;
+}
+
+.color-data-alphas {
+	display: grid;
+	grid-gap: 12px;
+	grid-template-columns: 1fr 90px;
+	width: 100%;
+	padding: 0 10px 12px 10px;
+}
+
+.color-data-alphas .color-data-alpha {
+	display: grid;
+}
+
+.color-data-alphas .color-data-alpha .v-slider {
+	padding-top: 12px;
+}
+
+.color-data-alphas .color-data-alpha .slider input {
+	background-color: transparent;
 }
 </style>
