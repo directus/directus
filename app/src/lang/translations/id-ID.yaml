@@ -557,6 +557,7 @@ fields:
   directus_webhooks:
     name: Nama
     status: Status
+    value: Nilai
 field_options:
   directus_activity:
     create: Buat
@@ -576,6 +577,8 @@ field_options:
   directus_webhooks:
     actions_create: Buat
     actions_update: Perbarui
+    headers:
+      value: Nilai
 comment: Komentar
 editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
