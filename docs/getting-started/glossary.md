@@ -15,7 +15,8 @@ with the admin option enabled can manage Settings within the app.
 
 [Fields](#fields) that do not map directly to an actual database column are called "alias" fields. For example,
 presentation fields (such as dividers and groups) and certain relational types that display data stored elsewhere (such
-as [One-to-Many (O2M)](#) and [Many-to-Many (M2M)](#)).
+as [One-to-Many (O2M)](/configuration/relationships/#one-to-many-o2m) and
+[Many-to-Many (M2M)](/configuration/relationships/#many-to-many-m2m)).
 
 ## API
 
@@ -35,8 +36,8 @@ tracks the event type, user, timestamp, IP address, user-agent, and any associat
 ## Collections
 
 Collections are containers for specific types of Items and contain any number of fields. Each collection represents a
-**table** in your database. By default, the [title formatter](#) is used to display any existing database table names as
-human-readable collection titles.
+**table** in your database. By default, the [title formatter](#title-formatter) is used to display any existing database
+table names as human-readable collection titles.
 
 Collections can be organized in any way that is appropriate for your project. You can architect them platform-specific
 (eg: _pages_ of a website), or in a more platform-agnostic way (eg: raw _customers_ of your business). While there's no
@@ -44,20 +45,20 @@ right or wrong way to structure your data-model, we recommend keeping your data 
 to repurpose in the future. **In short, learn to see your data as its own asset — not only through the lens of your
 immediate project needs**.
 
-The only requirement of a collection is that it must contain a [Primary Key](#) field. This field stores a unique value
-that is used to reference the Collection's items throughout the database/platform.
+The only requirement of a collection is that it must contain a [Primary Key](#primary-key-pk) field. This field stores a
+unique value that is used to reference the Collection's items throughout the database/platform.
 
 ### Relevant Guides
 
-- [Creating a Collection](/guides/collections/#creating-a-collection)
-- [Configuring a Collection](/guides/collections/#configuring-a-collection)
-- [Deleting a Collection](/guides/collections/#deleting-a-collection)
-- [Adjusting a Collection Layout](/guides/collections/#adjusting-a-collection-layout)
+- [Creating a Collection](/configuration/data-model/#creating-a-collection)
+- [Configuring a Collection](/configuration/data-model/#configuring-a-collection)
+- [Deleting a Collection](/configuration/data-model/#deleting-a-collection)
+- [Adjusting a Collection Layout](/configuration/data-model/#adjusting-a-collection-layout)
 
 ## Dashboards
 
-Dashboards within the Insights module organize different [Panels](#) into an at-a-glance view. They can be used to group
-data based on department, objective, business process or anything you choose.
+Dashboards within the Insights module organize different [Panels](#panels) into an at-a-glance view. They can be used to
+group data based on department, objective, business process or anything you choose.
 
 ## Database Abstraction
 
@@ -107,7 +108,7 @@ formatting styles, or anything else.
 
 ### Relevant Guides
 
-- [Creating a Custom Display](/guides/displays)
+- [Creating a Custom Display](/extensions/displays/)
 
 ## Environments
 
@@ -117,9 +118,9 @@ migrations to promote data between them.
 ## Extensions
 
 The platform has been built to be modular and extensible. This helps keep the core codebase simple and clean (see the
-[80/20 Rule](#)), while allowing the flexibility needed to satisfy all use-cases... no matter how complex. There are
-many different types of supported extensions, each offering a way to deeply customize, override, or extend the core
-platform. [Learn more about Extension Types](#).
+[80/20 Rule](/contributing/introduction/#feature-requests)), while allowing the flexibility needed to satisfy all
+use-cases... no matter how complex. There are many different types of supported extensions, each offering a way to
+deeply customize, override, or extend the core platform. [Learn more about Extension Types](#).
 
 ## Fields
 
@@ -130,10 +131,10 @@ a **column** in your database. For example, an `articles` [Collection](#collecti
 
 ### Relevant Guides
 
-- [Creating a Field](/guides/fields/#creating-a-field)
-- [Duplicating Fields](/guides/fields/#duplicating-a-field)
-- [Adjusting Field Layout](/guides/fields/#adjusting-field-layout)
-- [Deleting Fields](/guides/fields/#deleting-a-field)
+- [Creating a Field](/reference/system/fields/#creating-a-field)
+- [Duplicating Fields](/reference/system/fields/#duplicating-a-field)
+- [Adjusting Field Layout](/reference/system/fields/#adjusting-field-layout)
+- [Deleting Fields](/reference/system/fields/#deleting-a-field)
 
 ## Files & Assets
 
@@ -153,7 +154,7 @@ proprietary options, such as seating charts, QR codes, or Stripe customer info.
 
 ### Relevant Guides
 
-- [Creating a Custom Interface](#)
+- [Creating a Custom Interface](/extensions/interfaces/)
 
 ## Items
 
@@ -164,14 +165,14 @@ Items are the primary building blocks of your project content. Similar to a "row
 the platform is accessed via these "atomic" data units. Items themselves are fairly straightforward, however their real
 power comes from the complexity that begins to form when items are relationally connected to each other.
 
-Items are referenced (both individually and relationally) by their unique [primary key](#).
+Items are referenced (both individually and relationally) by their unique [primary key](#primary-key-pk).
 
 #### Relevant Guides
 
 - [Creating an Item](/guides/items/#creating-an-item)
-- [Archiving an Item](/guides/items/#archiving-an-item)
+- [Archiving an Item](/app/content-items/#archiving-an-item)
 - [Reordering Items](/guides/items/#reordering-items)
-- [Deleting an Item](/guides/items/#deleting-an-item)
+- [Deleting an Item](/app/content-items/#deleting-an-item)
 
 ## Junction Collections
 
@@ -197,23 +198,23 @@ data within the App, such as Gantt charts, seating maps, or spreadsheets.
 
 ### Relevant Guides
 
-- [Creating a Custom Layout](/guides/layouts)
+- [Creating a Custom Layout](/extensions/layouts/)
 
 ## Modules
 
 Modules are the highest and broadest level of organization within the App. There are several modules included
 out-of-the-box, however you can also add your own.
 
-The [Module Bar](/concepts/application/#_1-module-bar) lists all available Modules and allows you to switch between
-them. Each module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality
-within the App can be bucketed into one of the following modules:
+The [Module Bar](/app/overview/#_1-module-bar) lists all available Modules and allows you to switch between them. Each
+module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality within the
+App can be bucketed into one of the following modules:
 
-- [Content](#) — The primary way to view and interact with database content
-- [User Directory](#) — A dedicated section for the platform's system Users
-- [File Library](#) — An aggregate of all files uploaded and managed within the platform
-- [Insights](#insights) — Access to infinitely customizable data dashboards
-- [App Guide](#) — A tailored, in-app portal for the platform's concepts, guides, and reference
-- [Settings](#) — An admin-only section for configuring the project and system settings
+- [Content](/app/content-collections/) — The primary way to view and interact with database content
+- [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
+- [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
+- [Insights](/app/insights) — Access to infinitely customizable data dashboards
+- [App Guide](/app/overview) — A tailored, in-app portal for the platform's concepts, guides, and reference
+- [Settings](/app/settings) — An admin-only section for configuring the project and system settings
 
 In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
 experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (eg: a Stripe
@@ -221,7 +222,7 @@ Payments Console).
 
 ### Relevant Guides
 
-- [Creating a Custom Module](#)
+- [Creating a Custom Module](/extensions/modules/)
 
 ## Multitenancy
 
@@ -247,41 +248,41 @@ platform. Extremely granular, these filter-based permissions control access for 
 
 ## Presets
 
-Presets store the exact state of a [collection page](#) page. They are used to set layout defaults for a user, or to
-define bookmarks that can be used to quickly recall specific datasets.
+Presets store the exact state of a [collection page](#collections) page. They are used to set layout defaults for a
+user, or to define bookmarks that can be used to quickly recall specific datasets.
 
 #### Relevant Guides
 
-- [Creating a Preset](/guides/presets/#creating-a-preset)
-- [Deleting a Preset](/guides/presets/#deleting-a-preset)
+- [Creating a Preset](/reference/system/presets/#create-a-preset)
+- [Deleting a Preset](/reference/system/presets/#delete-a-preset)
 
 ## Primary Key (PK)
 
-When we're trying to view or reference a specific [Item](#) within a [Collection](#), you need some sort of unique
-identifier to know exactly where to look. Much like an address for a house, the primary key field provides the location
-of an item within its collection. For that reason, every collection must have a primary key field, and so they are
-configured when you create the collection. There are different types of identifiers you can use, but the field is often
-called `id`.
+When we're trying to view or reference a specific [Item](#items) within a [Collection](#collections), you need some sort
+of unique identifier to know exactly where to look. Much like an address for a house, the primary key field provides the
+location of an item within its collection. For that reason, every collection must have a primary key field, and so they
+are configured when you create the collection. There are different types of identifiers you can use, but the field is
+often called `id`.
 
 ## Projects
 
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](#)
-- [Configuring a Project](#)
-- [Adjusting Project Settings](#)
-- [Upgrading a Project](#)
-- [Backing-up a Project](#)
-- [Migrating a Project](#)
-- [Deleting a Project](#)
+- [Creating a Project](/dead)
+- [Configuring a Project](/dead)
+- [Adjusting Project Settings](/configuration/project-settings/)
+- [Upgrading a Project](/dead)
+- [Backing-up a Project](/dead)
+- [Migrating a Project](/dead)
+- [Deleting a Project](/dead)
 
 ## Relationships
 
 The platform allows you to group Items within different Collections. But often times it is important to "link" items
 across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship, a crucial
 concept within any _relational_ database. There are several different types of relationships, each serving a specific
-purpose. [Learn more about Relationships](#).
+purpose. [Learn more about Relationships](/configuration/relationships/).
 
 ## Revisions
 
@@ -303,11 +304,11 @@ There is also a "Public" role that determines access for unauthenticated access.
 
 ### Relevant Guides
 
-- [Creating a Role](/guides/roles/#creating-a-role)
-- [Configuring a Role](/guides/roles/#configuring-a-role)
-- [Configuring Role Permissions](/guides/permissions/#configuring-role-permissions)
-- [Configuring System Permissions](/guides/permissions/#configuring-system-permissions)
-- [Deleting a Role](/guides/roles/#deleting-a-role)
+- [Creating a Role](/configuration/users-roles-permissions/#creating-a-role)
+- [Configuring a Role](/configuration/users-roles-permissions/#configuring-a-role)
+- [Configuring Role Permissions](/configuration/users-roles-permissions/#configuring-permissions)
+- [Configuring System Permissions](/configuration/users-roles-permissions/#configuring-system-permissions)
+- [Deleting a Role](/configuration/users-roles-permissions/#deleting-a-role)
 
 ## Storage Adapters
 
@@ -372,6 +373,6 @@ all of these differences, Directus has a single _superset_ of types that map to 
 
 ## Users
 
-An active User is required to access a project. Each user is assigned to a [Role](/concepts/roles/) that determines what
-they have access to see and do. This means that the experience of users may vary significantly depending on their role's
+An active User is required to access a project. Each user is assigned to a [Role](#roles) that determines what they have
+access to see and do. This means that the experience of users may vary significantly depending on their role's
 permissions.

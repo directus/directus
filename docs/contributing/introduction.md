@@ -49,7 +49,7 @@ will not be merged.
 ## Feature Requests
 
 Feature requests are a great way to let our team know what should be prioritized next. You can
-[submit a new feature request](https://github.com/directus/directus/discussions/category_choices) or
+[submit a new feature request](https://github.com/directus/directus/discussions/new) or
 [vote on existing submissions](https://github.com/directus/directus/discussions) via GitHub Discussions.
 
 ::: warning The 80/20 Rule

@@ -1,8 +1,8 @@
 # Installing with Docker
 
 Directus is published to both [DockerHub](https://hub.docker.com/r/directus/directus) and
-[GitHub Packages](https://github.com/orgs/directus/packages/container/package/directus) under `directus/directus`. To
-use the Directus image from DockerHub, run:
+[GitHub Packages](https://github.com/directus/directus/pkgs/container/directus) under `directus/directus`. To use the
+Directus image from DockerHub, run:
 
 ```bash
 # Make sure to change sensitive values (KEY, SECRET, ...) in production

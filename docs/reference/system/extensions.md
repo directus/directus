@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > The extensions endpoints are used by the Admin App to retrieve what extensions to install.
-> [Learn more about Extensions](/concepts/extensions/).
+> [Learn more about Extensions](/getting-started/glossary/#extensions).
 
 </div>
 <div class="right">

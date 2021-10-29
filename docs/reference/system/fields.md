@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Fields are individual pieces of content within an item. They are mapped to columns in the database.
-> [Learn more about Fields](/concepts/fields/).
+> [Learn more about Fields](/getting-started/glossary/#fields).
 
 </div>
 <div class="right">

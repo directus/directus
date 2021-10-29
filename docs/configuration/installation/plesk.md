@@ -66,7 +66,7 @@ a script entry for it.
 Instead of a start command, Plesk wants a startup file. So create a `index.js` with the following content:
 
 ```js
-var { startServer } = require('directus/dist/server');
+var { startServer } = require('directus/server');
 
 startServer();
 ```
