@@ -469,6 +469,7 @@ fields:
   directus_webhooks:
     name: Navn
     status: Status
+    value: Verdi
 field_options:
   directus_activity:
     create: Opprett
@@ -488,6 +489,8 @@ field_options:
     status_options_active: Aktiv
     actions_create: Opprett
     actions_update: Oppdater
+    headers:
+      value: Verdi
 comment: Kommenter
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
