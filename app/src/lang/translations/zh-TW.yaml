@@ -543,6 +543,7 @@ fields:
   directus_webhooks:
     name: 名稱
     status: 狀態
+    value: 值
 field_options:
   directus_activity:
     create: 新建
@@ -564,6 +565,8 @@ field_options:
   directus_webhooks:
     actions_create: 新建
     actions_update: 更新
+    headers:
+      value: 值
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID
