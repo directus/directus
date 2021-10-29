@@ -29,8 +29,8 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/configuration/installation/digitalocean-app-platform/) or
-[AWS Elastic Beanstalk](/configuration/installation/aws)
+[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/) or
+[AWS Elastic Beanstalk](/getting-started/installation/aws)
 
 ::: tip First User
 

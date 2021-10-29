@@ -57,10 +57,11 @@ How often a user is allowed to try to login. After which times the user will be 
 What regex passwords must pass in order to be valid.
 
 `storage_asset_transform` **string**\
-If the transform endpoints are allowed to be used on [the assets endpoint](/reference/assets/). One of `all`, `none` or `presets`.
+If the transform endpoints are allowed to be used on [the assets endpoint](/reference/files/#requesting-a-thumbnail). One
+of `all`, `none` or `presets`.
 
 `storage_asset_presets` **array**\
-What preset keys exist in [the assets endpoint](/reference/assets/).
+What preset keys exist in [the assets endpoint](/reference/files/#requesting-a-thumbnail).
 
 </div>
 </div>

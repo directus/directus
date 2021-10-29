@@ -13,12 +13,13 @@ few basics that will help you better visualize them in your mind's eye.
 
 ### Primary and Foreign Keys
 
-Every [Item](/getting-started/glossary/#items) in a relational database has a unique "key" that identifies it within its
-[Collection](/app/content-collections/). Because it's required, the key is the first [field](/concepts/fields/) created
-within a collection, typically storing an "auto-increment" number, an automatically generated unique hash, or a manually
-entered value. They are often abbreviated to "PK" (Primary Key), "ID" (Identifier), "UID" (Unique Identifier), or "UUID"
-(Universally Unique Identifier), depending on the type of value they store. After it's created, the value of an item's
-PK should _never_ change.
+Every [Item](/getting-started/glossary/#items) in a relational database has a unique
+[Primary Key](/getting-started/glossary/#primary-key-pk) (or "PK") that identifies it within its
+[Collection](/getting-started/glossary/#collections). Because it's required, the key is the first
+[field](/getting-started/glossary/#fields) created within a collection, typically storing an "auto-increment" number, an
+automatically generated unique hash, or a manually entered value. They are often abbreviated to "PK" (Primary Key), "ID"
+(Identifier), "UID" (Unique Identifier), or "UUID" (Universally Unique Identifier), depending on the type of value they
+store. After it's created, the value of an item's PK should _never_ change.
 
 To link items together relationally, you simply save a reference to an item's PK in a different field. That _reference_
 is called a Foreign Key (FK). If the primary key is a _person_, the foreign key is like their _business card_. It

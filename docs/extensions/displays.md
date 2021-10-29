@@ -1,7 +1,7 @@
 # Custom Displays <small></small>
 
 > Displays are small inline components that allow you to create new ways of viewing field values throughout the App.
-> [Learn more about Displays](/concepts/displays/).
+> [Learn more about Displays](/getting-started/glossary/#displays).
 
 ## 1. Setup the Boilerplate
 
