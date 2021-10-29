@@ -833,6 +833,7 @@ fields:
   directus_webhooks:
     name: ชื่อ
     status: สถานะ
+    value: ค่า
 field_options:
   directus_settings:
     security_divider_title: ความปลอดภัย
@@ -866,6 +867,8 @@ field_options:
     status_options_inactive: ไม่ใช้งาน
     actions_create: สร้าง
     actions_update: แก้ไข
+    headers:
+      value: ค่า
 no_fields_in_collection: 'ยังไม่มีฟิลด์ใน {collection}'
 do_nothing: ไม่ต้องทำอะไร
 generate_and_save_uuid: สร้างและบันทึก UUID โดยอัตโนมัติ
