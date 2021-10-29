@@ -850,6 +850,7 @@ fields:
     method: Metoda
     status: Stanje
     data: Podatki
+    value: Vrednost
     data_label: Pošlji podatke dogodka
     triggers: Sprožilci
     actions: Dejanja
@@ -946,6 +947,8 @@ field_options:
     actions_update: Posodobi
     actions_delete: Izbriši
     actions_login: Prijava
+    headers:
+      value: Vrednost
 no_fields_in_collection: 'Zbirka {collection} še nima polj'
 do_nothing: Ne stori ničesar
 generate_and_save_uuid: Ustvari in shrani UUID
