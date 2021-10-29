@@ -977,6 +977,7 @@ fields:
     method: Metodo
     status: Stato
     data: Dati
+    value: Valore
     data_label: Invia dati evento
     triggers: Trigger
     actions: Azioni
@@ -1085,6 +1086,8 @@ field_options:
     actions_update: Modifica
     actions_delete: Cancellazione
     actions_login: Accedi
+    headers:
+      value: Valore
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
 do_nothing: Non Fare Niente
@@ -1170,7 +1173,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
