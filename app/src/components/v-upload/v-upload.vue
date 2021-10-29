@@ -364,7 +364,7 @@ export default defineComponent({
 
 .uploading {
 	--v-progress-linear-color: var(--white);
-	--v-progress-linear-background-color: rgb(255 255 255 / 25%);
+	--v-progress-linear-background-color: rgb(255 255 255 / 0.25);
 	--v-progress-linear-height: 8px;
 
 	color: var(--white);

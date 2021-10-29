@@ -39,7 +39,7 @@ type Event = {
 };
 
 type JoinTable = {
-	[column: string]: string;
+	[column: string]: number | string;
 };
 
 export type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;

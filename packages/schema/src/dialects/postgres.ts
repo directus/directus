@@ -13,6 +13,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			max_length: number | null;
 			is_identity: boolean;
 			is_nullable: boolean;
+			is_generated: boolean;
 		};
 
 		type RawGeometryColumn = {
@@ -31,6 +32,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           , c.column_default as default_value
           , c.data_type
 			 		, c.character_maximum_length as max_length
+          , c.is_generated = 'ALWAYS' is_generated
           , CASE WHEN c.is_identity = 'YES' THEN true ELSE false END is_identity
           , CASE WHEN c.is_nullable = 'YES' THEN true ELSE false END is_nullable
         FROM

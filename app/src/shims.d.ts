@@ -6,8 +6,10 @@ declare module '*.vue' {
 }
 
 declare module '*.md' {
-	const value: string;
-	export default value;
+	import { DefineComponent } from 'vue';
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	const component: DefineComponent<{}, {}, any>;
+	export default component;
 }
 
 declare module '*.yaml' {
@@ -16,7 +18,7 @@ declare module '*.yaml' {
 }
 
 declare module '*.json' {
-	const value: { [key: string]: any };
+	const value: Record<string, any>;
 	export default value;
 }
 
@@ -49,14 +51,14 @@ declare module '@directus-extensions-layout' {
 	export default layouts;
 }
 
+declare module '@directus-extensions-panel' {
+	import { PanelConfig } from '@directus/shared/types';
+	const panel: PanelConfig[];
+	export default panel;
+}
+
 declare module '@directus-extensions-module' {
 	import { ModuleConfig } from '@directus/shared/types';
 	const modules: ModuleConfig[];
-	export default modules;
-}
-
-declare module '@directus-extensions-panel' {
-	import { PanelConfig } from '@directus/shared/types';
-	const modules: PanelConfig[];
 	export default modules;
 }

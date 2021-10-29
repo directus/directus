@@ -196,6 +196,7 @@ boolean: Logikai
 date: Dátum
 date_range: Dátum intervallum
 datetime: Dátum és idő
+dateTime: Dátum és idő
 precision: Pontosság
 decimal: Tizedes szám
 float: Törtszám
@@ -228,9 +229,6 @@ new_data_alert: 'A következők jönnek létre az Adatmodelledben:'
 search_collection: Keresés a Gyűjteményben...
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
-add_m2o_to_collection: 'Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_o2m_to_collection: 'Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_m2m_to_collection: 'Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
 choose_a_type: Válassz típust...
 determined_by_relationship: A kapcsolat által meghatározott
 add_note: Felhasználóknak szóló hasznos megjegyzés hozzáadása...

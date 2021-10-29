@@ -132,16 +132,13 @@ export default async function createApp(): Promise<express.Application> {
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL
-		let html = fse.readFileSync(adminPath, 'utf-8');
-		html = html.replace(
-			/<meta charset="utf-8" \/>/,
-			`<meta charset="utf-8" />\n\t\t<base href="${adminUrl.toString({ rootRelative: true })}/">`
-		);
+		const html = await fse.readFile(adminPath, 'utf8');
+		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		app.get('/admin', (req, res) => res.send(html));
+		app.get('/admin', (req, res) => res.send(htmlWithBase));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
-			res.send(html);
+			res.send(htmlWithBase);
 		});
 	}
 

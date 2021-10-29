@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationNotice from './presentation-notice.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'presentation-notice',
@@ -10,7 +11,8 @@ export default defineInterface({
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
-	groups: ['presentation'],
+	localTypes: ['presentation'],
+	group: 'presentation',
 	options: [
 		{
 			field: 'color',
@@ -55,4 +57,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

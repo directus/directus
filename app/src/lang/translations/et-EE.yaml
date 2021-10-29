@@ -155,6 +155,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Kuupäev
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -185,9 +186,6 @@ new_data_alert: 'Sinu andmemudelisse lisatakse:'
 search_collection: Otsi andmekogu...
 new_field: 'Uus väli'
 new_collection: 'Uus kogumik'
-add_m2o_to_collection: 'Lisa mitu-ühele (M2O) seos koguga "{collection}"'
-add_o2m_to_collection: 'Lisa üks-mitmele (O2M) seos koguga "{collection}"'
-add_m2m_to_collection: 'Lisa mitu-mitmele (M2M) seos koguga "{collection}"'
 choose_a_type: Vali Tüüp...
 determined_by_relationship: Määratud suhtega
 add_note: Lisa kasutajaid abistav märkus...

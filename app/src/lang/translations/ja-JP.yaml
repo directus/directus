@@ -73,6 +73,7 @@ key: キー
 boolean: 真偽値
 date: 日付
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: 整数

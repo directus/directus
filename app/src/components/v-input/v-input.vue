@@ -55,8 +55,8 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
+import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -86,7 +86,7 @@ export default defineComponent({
 			default: true,
 		},
 		placeholder: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		modelValue: {
@@ -157,6 +157,7 @@ export default defineComponent({
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));
 		const attributes = computed(() => omit(attrs, ['class']));
+
 		const classes = computed(() => [
 			{
 				'full-width': props.fullWidth,
@@ -248,7 +249,6 @@ export default defineComponent({
 				}
 
 				if (props.dbSafe === true) {
-					value = value.toLowerCase();
 					value = value.replace(/\s/g, '_');
 					// Replace é -> e etc
 					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -413,7 +413,7 @@ body {
 		&::-webkit-outer-spin-button,
 		&::-webkit-inner-spin-button {
 			margin: 0;
-			-webkit-appearance: none;
+			appearance: none;
 		}
 
 		&:focus {
@@ -423,7 +423,7 @@ body {
 		/* Firefox */
 
 		&[type='number'] {
-			-moz-appearance: textfield;
+			appearance: textfield;
 		}
 	}
 

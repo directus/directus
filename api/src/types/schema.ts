@@ -5,6 +5,7 @@ export type FieldOverview = {
 	field: string;
 	defaultValue: any;
 	nullable: boolean;
+	generated: boolean;
 	type: Type | 'unknown' | 'alias';
 	dbType: string | null;
 	precision: number | null;
