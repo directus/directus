@@ -213,7 +213,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.identifier || !payload.password) {
+		if (!payload.identifier) {
 			throw new InvalidCredentialsException();
 		}
 
