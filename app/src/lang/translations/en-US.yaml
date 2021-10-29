@@ -990,6 +990,9 @@ fields:
     method: Method
     status: Status
     data: Data
+    header: Header
+    value: Value
+    headers: Request Headers
     data_label: Send Event Data
     triggers: Triggers
     actions: Actions
@@ -1098,6 +1101,10 @@ field_options:
     actions_update: Update
     actions_delete: Delete
     actions_login: Login
+    headers:
+      header: Header
+      value: Value
+      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
