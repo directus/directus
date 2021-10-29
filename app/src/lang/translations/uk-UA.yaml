@@ -332,6 +332,7 @@ fields:
   directus_webhooks:
     name: Назва
     status: Статус
+    value: Значення
 field_options:
   directus_activity:
     create: Створити
@@ -348,6 +349,8 @@ field_options:
   directus_webhooks:
     actions_create: Створити
     actions_update: Оновити
+    headers:
+      value: Значення
 comment: Коментар
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
