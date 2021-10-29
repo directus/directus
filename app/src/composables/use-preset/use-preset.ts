@@ -1,6 +1,6 @@
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
-import { merge, debounce, isEqual } from 'lodash';
+import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsablePreset = {
@@ -82,7 +82,7 @@ export function usePreset(
 	}
 
 	function updatePreset(preset: Partial<Preset>, immediate?: boolean) {
-		localPreset.value = merge({}, localPreset.value, preset);
+		localPreset.value = assign({}, localPreset.value, preset);
 		immediate ? savePreset() : handleChanges();
 	}
 
@@ -184,9 +184,9 @@ export function usePreset(
 	function initLocalPreset() {
 		const preset = { layout: 'tabular' };
 		if (bookmark.value === null) {
-			merge(preset, presetsStore.getPresetForCollection(collection.value));
+			assign(preset, presetsStore.getPresetForCollection(collection.value));
 		} else if (bookmarkExists.value) {
-			merge(preset, presetsStore.getBookmark(Number(bookmark.value)));
+			assign(preset, presetsStore.getBookmark(Number(bookmark.value)));
 		}
 		localPreset.value = preset;
 
