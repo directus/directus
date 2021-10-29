@@ -388,6 +388,7 @@ fields:
   directus_webhooks:
     name: 名前
     status: ステータス
+    value: 値
 field_options:
   directus_activity:
     create: 作成
@@ -410,6 +411,8 @@ field_options:
   directus_webhooks:
     actions_create: 作成
     actions_update: 更新
+    headers:
+      value: 値
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存
