@@ -13,7 +13,7 @@
 				<template #prepend>
 					<v-input
 						ref="htmlColorInput"
-						:model-value="hex.substr(0, 7)"
+						:model-value="hex ? hex.substr(0, 7) : null"
 						type="color"
 						class="html-color-select"
 						@update:model-value="setSwatchValue($event)"
@@ -28,6 +28,8 @@
 						@click="activateColorPicker"
 					>
 						<v-icon v-if="!isValidColor" name="colorize" />
+						<div class="checkers"></div>
+						<div class="white"></div>
 					</v-button>
 				</template>
 				<template #append>
@@ -441,5 +443,14 @@ export default defineComponent({
 
 .color-data-inputs.stacked .color-data-input:last-child {
 	--border-radius: 0px 0px 4px 0px;
+}
+
+.checkers {
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==')
+		0;
+}
+
+.white {
+	background: white;
 }
 </style>
