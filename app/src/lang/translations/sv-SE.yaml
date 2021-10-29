@@ -771,6 +771,7 @@ fields:
   directus_webhooks:
     name: Namn
     status: Status
+    value: Värde
 field_options:
   directus_activity:
     create: Skapa
@@ -797,6 +798,8 @@ field_options:
     status_options_active: Aktiv
     actions_create: Skapa
     actions_update: Uppdatera
+    headers:
+      value: Värde
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 do_nothing: Gör ingenting
 generate_and_save_uuid: Generera och spara UUID
