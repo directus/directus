@@ -160,6 +160,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Tanggal
 datetime: DateTime
+dateTime: DateTime
 decimal: Desimal
 float: Float
 integer: Integer
@@ -190,9 +191,6 @@ new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
-add_m2o_to_collection: 'Tambahkan Many-to-One ke "{collection}"'
-add_o2m_to_collection: 'Tambahkan One-to-Many ke "{collection}"'
-add_m2m_to_collection: 'Tambahkan Many-to-Many ke "{collection}"'
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...

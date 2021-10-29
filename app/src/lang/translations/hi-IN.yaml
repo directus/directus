@@ -145,6 +145,7 @@ boolean: Boolean
 date: Date
 date_range: तिथि सीमा
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer

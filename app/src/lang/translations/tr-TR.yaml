@@ -156,6 +156,7 @@ bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
 datetime: Tarih Saat
+dateTime: Tarih Saat
 decimal: Ondalık
 float: Ondalıklı sayı
 integer: Tamsayı
@@ -186,9 +187,6 @@ new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
 search_collection: Koleksiyonu Ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
-add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
-add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
-add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
 determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...

@@ -1,11 +1,9 @@
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="!collectionField && !collectionName" type="warning">
-			{{ t('interfaces.system-display-template.collection_field_not_setup') }}
-		</v-notice>
-		<v-notice v-else-if="collection === null" type="warning">
+		<v-notice v-if="collection === null" type="info">
 			{{ t('interfaces.system-display-template.select_a_collection') }}
 		</v-notice>
+
 		<v-field-template
 			v-else
 			:collection="collection"
