@@ -1348,6 +1348,7 @@ interfaces:
     lnglat: Longitude, Latitude
     wkt: WKT
     wkb: WKB
+    click_to_select: Click to select {geometry}
   presentation-notice:
     notice: Notice
     description: Display a short notice
