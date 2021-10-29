@@ -70,18 +70,6 @@ This means there is also the possibility of supporting other datastores in the f
 MongoDB, or even third-party data services like Firebase or Heroku. However these options are _fundamentally_ different
 from the relational SQL databases we currently support, and so more research is needed.
 
-## Database Mirroring
-
-**Instead of using a predefined “one-size-fits-all” data model to store your content, Directus “mirrors” your actual SQL
-database in real-time.** The principle is akin to a database client (like _phpMyAdmin_), but includes far more advanced
-tools, and is safe and intuitive enough for non-technical users. This approach has many unique advantages:
-
-- A custom (pure) SQL database schema, tailored to your exact requirements
-- Significant performance improvements through optimizations and indexing
-- Complete transparency, portability, and security for your data
-- Direct database access and the full power of raw/complex SQL queries
-- Allows importing existing databases, unaltered and without any migrations
-
 ## Displays
 
 Displays are the smaller, read-only counterpart to [Interfaces](#interfaces), defining how a field's data will be
