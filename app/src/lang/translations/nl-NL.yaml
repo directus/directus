@@ -812,6 +812,7 @@ fields:
   directus_webhooks:
     name: Naam
     status: Status
+    value: Waarde
 field_options:
   directus_activity:
     create: Maak
@@ -841,6 +842,8 @@ field_options:
     status_options_active: Actief
     actions_create: Maak
     actions_update: Updaten
+    headers:
+      value: Waarde
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID
