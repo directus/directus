@@ -845,6 +845,7 @@ fields:
     method: Mètode
     status: Estat
     data: Dades
+    value: Valor
     data_label: Envia les dades de l'event
     triggers: Disparadors
     actions: Accions
@@ -897,6 +898,8 @@ field_options:
     actions_create: Crear
     actions_update: Actualitzar
     actions_delete: Elimina
+    headers:
+      value: Valor
 no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
 do_nothing: No facis res
 generate_and_save_uuid: Genera i Desa UUID
