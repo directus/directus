@@ -795,6 +795,7 @@ fields:
   directus_webhooks:
     name: Ime
     status: Status
+    value: Vrijednost
 field_options:
   directus_activity:
     create: Kreiraj
@@ -825,6 +826,8 @@ field_options:
     status_options_active: Aktivan
     actions_create: Kreiraj
     actions_update: Ažuriranje
+    headers:
+      value: Vrijednost
 no_fields_in_collection: 'Trenutno ne postoji nijedno polje u "{collection}" kolekciji'
 do_nothing: Ne radi ništa
 generate_and_save_uuid: Generiši i Sačuvaj UUID
