@@ -15,11 +15,15 @@
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
 			@fitdata="fitGeoJSONBounds"
-			@setpopup="updatePopup"
+			@updateitempopup="updateItemPopup"
 		/>
 
-		<div v-if="popupItem" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }">
-			<render-template :template="template" :item="popupItem" :collection="collection" />
+		<div
+			v-if="itemPopup.item"
+			class="popup"
+			:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
+		>
+			<render-template :template="template" :item="itemPopup.item" :collection="collection" />
 		</div>
 
 		<v-button
@@ -254,15 +258,11 @@ export default defineComponent({
 			type: String,
 			default: () => undefined,
 		},
-		popupItem: {
+		itemPopup: {
 			type: [String, Number],
 			default: () => undefined,
 		},
-		popupPosition: {
-			type: Object,
-			default: () => undefined,
-		},
-		updatePopup: {
+		updateItemPopup: {
 			type: Function,
 			required: true,
 		},
@@ -280,58 +280,31 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.mapboxgl-ctrl-dropdown {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 36px;
-	padding: 10px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--background-page);
-	border-radius: var(--border-radius);
-
-	span {
-		width: auto;
-		margin-right: 4px;
-	}
-
-	.v-select {
-		color: var(--foreground-normal);
-	}
-}
-
-.popup {
-	position: fixed;
-	z-index: 1;
-	max-width: 80%;
-	padding: 6px 10px;
-	color: var(--foreground-normal-alt);
-	font-weight: 500;
-	font-size: 14px;
-	font-family: var(--family-sans-serif);
+<style lang="scss" scoped>
+.v-info {
+	padding: 40px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);
 	pointer-events: none;
-	translate: -50% calc(-100% - 12px);
 }
 
-.layout-map .mapboxgl-map .mapboxgl-canvas-container {
+.v-info :deep(.v-button) {
+	pointer-events: initial;
+}
+
+.layout-map .mapboxgl-map :deep(.mapboxgl-canvas-container) {
 	transition: opacity 0.2s;
 }
 
-.layout-map .mapboxgl-map.loading .mapboxgl-canvas-container {
+.layout-map .mapboxgl-map.loading :deep(.mapboxgl-canvas-container) {
 	opacity: 0.9;
 }
 
-.layout-map .mapboxgl-map.error .mapboxgl-canvas-container {
+.layout-map .mapboxgl-map.error :deep(.mapboxgl-canvas-container) {
 	opacity: 0.4;
 }
-</style>
 
-<style lang="scss" scoped>
 .layout-map {
 	position: relative;
 	width: 100%;
@@ -353,6 +326,43 @@ export default defineComponent({
 	transform: translate(-50%, 0%);
 }
 
+.popup {
+	position: fixed;
+	z-index: 1;
+	max-width: 80%;
+	padding: 6px 10px;
+	color: var(--foreground-normal-alt);
+	font-weight: 500;
+	font-size: 14px;
+	font-family: var(--family-sans-serif);
+	background-color: var(--background-page);
+	border-radius: var(--border-radius);
+	box-shadow: var(--card-shadow);
+	pointer-events: none;
+	translate: -50% calc(-100% - 12px);
+}
+
+.mapboxgl-ctrl-dropdown {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 36px;
+	padding: 10px;
+	color: var(--foreground-subdued);
+	background-color: var(--background-page);
+	border: var(--border-width) solid var(--background-page);
+	border-radius: var(--border-radius);
+
+	span {
+		width: auto;
+		margin-right: 4px;
+	}
+
+	.v-select {
+		color: var(--foreground-normal);
+	}
+}
+
 .v-progress-circular {
 	--v-progress-circular-background-color: var(--primary-25);
 	--v-progress-circular-color: var(--primary-75);
@@ -360,30 +370,6 @@ export default defineComponent({
 
 .reset-preset {
 	margin-top: 24px;
-}
-
-.delete-action {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.custom-layers {
-	padding: var(--content-padding);
-	padding-top: 0;
-}
-
-.v-info {
-	padding: 40px;
-	background-color: var(--background-page);
-	border-radius: var(--border-radius);
-	box-shadow: var(--card-shadow);
-	pointer-events: none;
-}
-
-.v-info :deep(.v-button) {
-	pointer-events: initial;
 }
 
 .footer {
