@@ -1,6 +1,6 @@
 {
 	"name": "@directus/gatsby-source-directus",
-	"version": "9.0.0-rc.99",
+	"version": "9.0.0-rc.100",
 	"description": "Source plugin for pulling data into Gatsby from a Directus API.",
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
@@ -10,7 +10,7 @@
 		"directus"
 	],
 	"dependencies": {
-		"@directus/sdk": "9.0.0-rc.99",
+		"@directus/sdk": "9.0.0-rc.100",
 		"chalk": "4.1.2",
 		"gatsby-source-filesystem": "4.0.0",
 		"gatsby-source-graphql": "4.0.0",
