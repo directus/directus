@@ -698,6 +698,7 @@ fields:
   directus_webhooks:
     name: Tên
     status: Trạng thái
+    value: Giá trị
 field_options:
   directus_settings:
     security_divider_title: Bảo mật
@@ -726,6 +727,8 @@ field_options:
     status_options_active: Kích hoạt
     actions_create: Tạo
     actions_update: Cập nhật
+    headers:
+      value: Giá trị
 comment: Bình luận
 continue_label: Tiếp tục
 continue_as: >-
