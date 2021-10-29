@@ -3,9 +3,15 @@ name: End-to-End Tests
 on:
   workflow_call:
   workflow_dispatch:
+    inputs:
+      should_skip:
+        required: false
+        type: string
+
 jobs:
   test:
     name: Test
+    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -62,3 +68,13 @@ jobs:
         run: |
           docker tag directus-test-image $CACHED_IMAGE
           docker push $CACHED_IMAGE || true
+
+  result:
+    name: Result
+    if: inputs.should_skip != 'true' && always()
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Mark result as failed
+        if: needs.test.result != 'success'
+        run: exit 1
