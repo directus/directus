@@ -780,6 +780,7 @@ fields:
   directus_webhooks:
     name: الاسم
     status: حالة
+    value: قيمة
 field_options:
   directus_settings:
     security_divider_title: الأمان
@@ -813,6 +814,8 @@ field_options:
     status_options_inactive: غير نشط
     actions_create: انشاء
     actions_update: تحديث
+    headers:
+      value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
