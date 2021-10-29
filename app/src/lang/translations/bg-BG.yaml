@@ -965,6 +965,7 @@ fields:
     method: Метод
     status: Статус
     data: Данни
+    value: Стойност
     data_label: Изпращане на данните
     triggers: Тригери
     actions: Действия
@@ -1072,6 +1073,8 @@ field_options:
     actions_update: Обновяване
     actions_delete: Изтриване
     actions_login: Вход
+    headers:
+      value: Стойност
 no_fields_in_collection: 'Все още няма полета в {collection}'
 no_value: Няма стойност
 do_nothing: Без действие
