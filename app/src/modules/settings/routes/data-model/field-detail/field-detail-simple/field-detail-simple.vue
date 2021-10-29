@@ -232,7 +232,7 @@ export default defineComponent({
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 8px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--primary-50));
 }
 
 .preview .fallback {
@@ -240,6 +240,7 @@ export default defineComponent({
 
 	display: block;
 	padding: 8px 16px;
+	background-color: var(--background-page);
 	border: 2px solid var(--primary);
 	border-radius: var(--border-radius);
 	box-shadow: 0 0 8px var(--primary-75);
