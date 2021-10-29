@@ -236,12 +236,13 @@ export default defineComponent({
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-50);
+	--v-icon-color: var(--primary-75);
 
 	display: block;
 	padding: 8px 16px;
+	border: 2px solid var(--primary);
 	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-50);
+	box-shadow: 0 0 8px var(--primary-75);
 }
 
 .interface:hover .preview {
