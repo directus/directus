@@ -770,6 +770,7 @@ fields:
   directus_webhooks:
     name: Anv
     status: Stad
+    value: Talvoud
 field_options:
   directus_activity:
     create: Krouiñ
@@ -800,6 +801,8 @@ field_options:
     status_options_active: Oberiat
     actions_create: Krouiñ
     actions_update: Hizivaat
+    headers:
+      value: Talvoud
 no_fields_in_collection: 'N''eus ket a vaezienn e "{collection}" evit poent'
 do_nothing: Ober netra
 generate_and_save_uuid: Genel hag Enrollañ an UUID
