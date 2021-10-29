@@ -364,6 +364,7 @@ fields:
   directus_webhooks:
     name: Jméno
     status: Stav
+    value: Hodnota
 field_options:
   directus_activity:
     create: Vytořit
@@ -383,6 +384,8 @@ field_options:
   directus_webhooks:
     actions_create: Vytořit
     actions_update: Úpravy
+    headers:
+      value: Hodnota
 comment: Komentář
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
