@@ -636,6 +636,7 @@ fields:
   directus_webhooks:
     name: İsim
     status: Durum
+    value: Değer
 field_options:
   directus_activity:
     create: Oluştur
@@ -660,6 +661,8 @@ field_options:
     status_options_active: Aktif
     actions_create: Oluştur
     actions_update: Güncelle
+    headers:
+      value: Değer
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
