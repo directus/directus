@@ -228,6 +228,7 @@ fields:
   directus_webhooks:
     name: Όνομα
     status: Κατάσταση
+    value: Τιμή
 field_options:
   directus_activity:
     create: Δημιουργία
@@ -243,6 +244,8 @@ field_options:
   directus_webhooks:
     actions_create: Δημιουργία
     actions_update: Ενημέρωση
+    headers:
+      value: Τιμή
 comment: Σχόλιο
 delete_field_are_you_sure: >-
   Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.
