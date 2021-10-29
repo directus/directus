@@ -197,16 +197,16 @@ Title for the file.
 Mimetype of the file.
 
 `folder` **many-to-one**\
-What (virtual) folder the file is in. Many-to-one to [folders](/reference/api/system/folders/).
+What (virtual) folder the file is in. Many-to-one to [folders](/reference/system/folders/).
 
 `uploaded_by` **many-to-one**\
-Who uploaded the file. Many-to-one to [users](/reference/api/system/users/).
+Who uploaded the file. Many-to-one to [users](/reference/system/users/).
 
 `uploaded_on` **datetime**\
 When the file was uploaded.
 
 `modified_by` **many-to-one**\
-Who updated the file last. Many-to-one to [users](/reference/api/system/users/).
+Who updated the file last. Many-to-one to [users](/reference/system/users/).
 
 `filesize` **number**\
 Size of the file in bytes.
@@ -287,11 +287,11 @@ List all files that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [file objects](#the-file-object). If no items are available, data
+An array of up to [limit](/reference/query/#limit) [file objects](#the-file-object). If no items are available, data
 will be an empty array.
 
 </div>
@@ -304,7 +304,7 @@ GET /files
 SEARCH /files
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -343,7 +343,7 @@ Retrieve a single file by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -449,7 +449,7 @@ await axios.post('/files', formData);
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -491,7 +491,7 @@ Import a file from the web
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -567,7 +567,7 @@ Update an existing file, and/or replace it's file contents.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -635,7 +635,7 @@ Update multiple files at the same time.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -718,7 +718,7 @@ This will also delete the file from disk.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 

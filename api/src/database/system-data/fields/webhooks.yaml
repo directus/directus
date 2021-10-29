@@ -68,6 +68,27 @@ fields:
     width: half
     display: boolean
 
+  - field: headers
+    special: json
+    interface: list
+    options:
+      template: '{{ header }}: {{ value }}'
+      addLabel: $t:field_options.directus_webhooks.headers.add
+      fields:
+        - field: header
+          name: $t:field_options.directus_webhooks.headers.header
+          type: string
+          meta:
+            interface: input
+            width: half
+        - field: value
+          name: $t:field_options.directus_webhooks.headers.value
+          type: string
+          meta:
+            interface: input
+            width: half
+    width: full
+
   - field: triggers_divider
     interface: presentation-divider
     options:

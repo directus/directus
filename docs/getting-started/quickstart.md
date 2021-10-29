@@ -45,7 +45,7 @@ to make it your own!
 
 ::: tip More Info on Collections
 
-For a more in-depth guide to setting up Collections, see [Collections](/guides/collections).
+For a more in-depth guide to setting up Collections, see [Collections](/app/content-collections).
 
 :::
 
@@ -61,7 +61,8 @@ sticking to the defaults for now. These defaults use the "String" datatype and "
 
 ::: tip More Info on Fields
 
-To learn more about the different types of Fields, and all available options, see [Fields](/guides/fields).
+To learn more about the different types of Fields, and all available options, see
+[Fields](/getting-started/glossary/#fields).
 
 :::
 
@@ -76,7 +77,7 @@ Once you're happy with your creation, click the checkmark in the top-right to sa
 
 ::: tip More Info on Items
 
-To learn more about the different types of Items, and all available options, see [Items](/guides/items).
+To learn more about the different types of Items, and all available options, see [Items](/app/content-items/).
 
 :::
 
@@ -95,7 +96,7 @@ public role to read the items in your collection.
 ::: tip More Info on Roles & Permissions
 
 Roles & Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting up
-roles & permissions, see [Roles](/guides/roles) & [Permissions](/guides/permissions).
+roles & permissions, see [Roles](/reference/system/roles) & [Permissions](/reference/system/permissions).
 
 :::
 
@@ -103,7 +104,7 @@ roles & permissions, see [Roles](/guides/roles) & [Permissions](/guides/permissi
 
 Now that your project has some content in it, it's time to start using this content externally. Data can be accessed in
 a number of ways, including the REST API, GraphQL, the CLI, or even straight from the database. In this case, we'll use
-[the `/items/` REST API endpoint](/reference/api/items) to retrieve the item we just created.
+[the `/items/` REST API endpoint](/reference/items) to retrieve the item we just created.
 
 Using your browser, or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud), open
 [http://localhost:8055/items/articles](http://localhost:8055/items/articles).

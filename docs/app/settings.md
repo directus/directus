@@ -11,12 +11,11 @@ Only Administrators have access to the Settings module.
 
 Settings are split into five distinct sections, each described below.
 
-- [Project Settings](/guides/projects/#adjusting-project-settings) — Branding and other global options
-- [Data Model](/concepts/databases/#database-mirroring) — Your database schema, form layout, and field options.
-- [Roles & Permissions](/concepts/roles) — Create and manage access via roles and permissions
-- [Presets & Bookmarks](/concepts/collections/#collection-presets-bookmarks) — Set default views of data and configure
-  bookmarks
-- [Webhooks](/guides/webhooks) — Use platform events to trigger external services
+- [Project Settings](/configuration/project-settings) — Branding and other global options
+- [Data Model](/configuration/data-model) — Your database schema, form layout, and field options.
+- [Roles & Permissions](/configuration/users-roles-permissions) — Create and manage access via roles and permissions
+- [Presets & Bookmarks](/configuration/presets-bookmarks) — Set default views of data and configure bookmarks
+- [Webhooks](/configuration/webhooks) — Use platform events to trigger external services
 
 ## Reporting a Bug from the App
 
