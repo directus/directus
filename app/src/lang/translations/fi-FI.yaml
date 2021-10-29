@@ -792,6 +792,7 @@ fields:
   directus_webhooks:
     name: Nimi
     status: Tila
+    value: Arvo
 field_options:
   directus_activity:
     create: Luo
@@ -822,6 +823,8 @@ field_options:
     status_options_active: Aktiivinen
     actions_create: Luo
     actions_update: Päivitä
+    headers:
+      value: Arvo
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 do_nothing: Älä tee mitään
 generate_and_save_uuid: Luo ja tallenna UUID
