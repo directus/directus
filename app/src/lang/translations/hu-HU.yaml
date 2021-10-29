@@ -959,6 +959,7 @@ fields:
     method: Metódus
     status: Állapot
     data: Adat
+    value: Érték
     data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
@@ -1060,6 +1061,8 @@ field_options:
     actions_update: Frissítés
     actions_delete: Törlés
     actions_login: Bejelentkezés
+    headers:
+      value: Érték
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 no_value: Hiányzó érték
 do_nothing: Ne tegyen semmit
