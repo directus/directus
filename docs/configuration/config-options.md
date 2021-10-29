@@ -521,9 +521,9 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 For each of the auth providers you list, you must provide the following configuration:
 
-| Variable                 | Description                                             | Default Value |
-| ------------------------ | ------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid` | --            |
+| Variable                 | Description                                                     | Default Value |
+| ------------------------ | --------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap` | --            |
 
 You must also provide a number of extra variables. These differ per auth driver service. The following is a list of
 common required configuration options:
@@ -542,6 +542,7 @@ For example, you can login to Directus using a github account by creating an
 
 ```
 AUTH_PROVIDERS="github"
+
 AUTH_GITHUB_CLIENT_ID="99d3...c3c4"
 AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
 AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
@@ -589,7 +590,37 @@ registrations.
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                   | --                     |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                          | `account_circle`       |
 
-#### Multiple Providers
+### LDAP (`ldap`)
+
+LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
+information and roles will be assigned from Active Directory.
+
+| Variable                          | Description                                        | Default Value |
+| --------------------------------- | -------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                               | --            |
+| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.       | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                | --            |
+| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                   | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                    | `cn`          |
+| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                  | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group. | `member`      |
+
+<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+
+### Example: LDAP
+
+```
+AUTH_PROVIDERS="ldap"
+
+AUTH_LDAP_DRIVER="ldap"
+AUTH_LDAP_CLIENT_URL="ldap://ldap.directus.io"
+AUTH_LDAP_BIND_DN="CN=Bind User,OU=Users,DC=ldap,DC=directus,DC=io"
+AUTH_LDAP_BIND_PASSWORD="p455w0rd"
+AUTH_LDAP_USER_DN="OU=Users,DC=ldap,DC=directus,DC=io"
+AUTH_LDAP_GROUP_DN="OU=Groups,DC=ldap,DC=directus,DC=io"
+```
+
+### Example: Multiple Auth Providers
 
 You can configure multiple providers for handling authentication in Directus. This allows for different options when
 logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:

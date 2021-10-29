@@ -1,6 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+		<v-input v-model="identifier" autofocus autocomplete="username" :placeholder="t('identifier')" />
 		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
 		<transition-expand>
@@ -10,12 +10,7 @@
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
-		<div class="buttons">
-			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
-			<router-link to="/reset-password" class="forgot-password">
-				{{ t('forgot_password') }}
-			</router-link>
-		</div>
+		<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
 	</form>
 </template>
 
@@ -29,7 +24,7 @@ import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores';
 
 type Credentials = {
-	email: string;
+	identifier: string;
 	password: string;
 	otp?: string;
 };
@@ -48,19 +43,19 @@ export default defineComponent({
 
 		const { provider } = toRefs(props);
 		const loggingIn = ref(false);
-		const email = ref<string | null>(null);
+		const identifier = ref<string | null>(null);
 		const password = ref<string | null>(null);
 		const error = ref<RequestError | string | null>(null);
 		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
 		const userStore = useUserStore();
 
-		watch(email, () => {
+		watch(identifier, () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
 		});
 
 		watch(provider, () => {
-			email.value = null;
+			identifier.value = null;
 			password.value = null;
 			error.value = null;
 			otp.value = null;
@@ -68,7 +63,6 @@ export default defineComponent({
 		});
 
 		const errorFormatted = computed(() => {
-			// Show "Wrong username or password" for wrongly formatted emails as well
 			if (error.value === 'INVALID_PAYLOAD') {
 				return translateAPIError('INVALID_CREDENTIALS');
 			}
@@ -83,7 +77,7 @@ export default defineComponent({
 			t,
 			errorFormatted,
 			error,
-			email,
+			identifier,
 			password,
 			onSubmit,
 			loggingIn,
@@ -93,13 +87,13 @@ export default defineComponent({
 		};
 
 		async function onSubmit() {
-			if (email.value === null || password.value === null) return;
+			if (identifier.value === null || password.value === null) return;
 
 			try {
 				loggingIn.value = true;
 
 				const credentials: Credentials = {
-					email: email.value,
+					identifier: identifier.value,
 					password: password.value,
 				};
 
@@ -130,20 +124,5 @@ export default defineComponent({
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
-}
-
-.buttons {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.forgot-password {
-	color: var(--foreground-subdued);
-	transition: color var(--fast) var(--transition);
-
-	&:hover {
-		color: var(--foreground-normal);
-	}
 }
 </style>
