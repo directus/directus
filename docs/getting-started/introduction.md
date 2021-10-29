@@ -63,25 +63,29 @@ Directus is a simple solution for complex problems, with a data-first approach g
 
 ## Database Mirroring
 
-What makes Directus so unique is that it dynamically generates custom API endpoints based on your SQL database's schema
-in real-time — something we call "[Database Mirroring](/concepts/databases/#database-mirroring)". Whether you install
-fresh or on top of an existing database, you always maintain end-to-end control over your actual database, including:
-tables, columns, datatypes, default values, indexes, relationships, etc.
+Directus is installed as a _layer_ on top of your new or existing SQL database, with its App and API dynamically
+“mirroring” your actual schema and content in real-time. This approach is similar to how technical database clients
+(like _phpMyAdmin_) work, however Directus provides an experience that is safe, intuitive, and powerful enough for
+anyone... even the most non-technical users.
 
-Below is an overview to how Directus mirrors the database, and our non-technical naming convention.
+To keep things simple, Directus uses friendlier names for database terms, including
+[Project](/getting-started/glossary/#projects) (database), [Collection](/getting-started/glossary/#collections) (table),
+[Field](/getting-started/glossary/#fields) (column), [Item](/getting-started/glossary/#items) (record), and
+[Type](/getting-started/glossary/#types) (datatype).
 
-- **[Project](/getting-started/glossary/#projects)** — A Database, asset storage, and config file
-- **[Collection](/app/content-collections/)** — A Database Table
-- **[Fields](/getting-started/glossary/#fields)** — A Database Column
-- **[Item](/getting-started/glossary/#items)** — A Database Record/Row
-- **[Relationships](/getting-started/glossary/#relationships)** — A Database Relationship, including additional
-  non-standard types
-- **[Type](/getting-started/glossary/#types/)** — A Database Data Type, including additional non-standard types
-- **[Users](/getting-started/glossary/#users)** — A Directus User (App or API), not to be confused with a Database User
+Database mirroring has many unique advantages:
 
-Perhaps one of the biggest advantages of _Database Mirroring_ is that you have direct access to your pure and unaltered
-data. That means you have the option to bypass the Directus middleware (API, SDK, App) and connect to your data with
-proper SQL queries. This effectively removes all bottlenecks, latency overhead, and proprietary access limitations.
+- Control over your pure SQL database schema, tailored to your exact requirements
+- Significant performance improvements through optimizations and indexing
+- Complete transparency, portability, and security for your data
+- Direct database access and the full power of raw/complex SQL queries
+- Allows importing existing databases, unaltered and without any migrations
+
+Other platforms typically use a predefined or proprietary “one-size-fits-all” data model to store your content (have you
+ever peeked behind the curtain of a WordPress installation? Yikes!). That is not the case with Directus. Directus gives
+you direct access to your pure and unaltered data. That means you have the option to bypass the Directus middleware
+(API, SDK, App) and connect to your data with proper SQL queries. This effectively removes all bottlenecks, latency
+overhead, and proprietary access limitations.
 
 ## Modular & Extensible
 
@@ -94,7 +98,7 @@ extension types in the platform's App and API.
 - **[Interfaces](/extensions/interfaces/)** — (App) How you view or interact with a field and its value
 - **[Displays](/extensions/displays/)** — (App) A small inline preview of a field's value
 - **[Panes](/extensions/panes/)** — (App) A way to view dashboard data within the Insights Module
-- **[Styles](/guides/styles/)** — (App) Whitelabeling through App Themes and CSS Overrides
+- **[Styles](/configuration/project-settings/#branding)** — (App) Whitelabeling through App Themes and CSS Overrides
 - **[Endpoints](/extensions/api-endpoints/)** — (API) Custom registered API endpoints
 - **[Hooks](/extensions/hooks/)** — (API) Event and interval hooks for triggering custom logic
 - **[Email Templates](/extensions/email-templates/)** — (API) Custom structure and formatting for emails
