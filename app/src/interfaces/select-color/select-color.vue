@@ -78,7 +78,7 @@
 				<v-slider
 					:model-value="alpha"
 					:min="0"
-					:max="255"
+					:max="100"
 					:step="1"
 					@update:model-value="setValue('alpha', 0, $event)"
 				/>
@@ -89,7 +89,7 @@
 					:model-value="alpha"
 					pattern="\d*"
 					:min="0"
-					:max="255"
+					:max="100"
 					:step="1"
 					maxlength="3"
 					@update:model-value="setValue('alpha', 0, $event)"
@@ -303,14 +303,14 @@ export default defineComponent({
 
 			const alpha = computed<number>({
 				get() {
-					return color.value !== null ? Math.round(color?.value?.alpha() * 255) : 255;
+					return color.value !== null ? Math.round(color?.value?.alpha() * 100) : 100;
 				},
 				set(newAlpha) {
-					if (!newAlpha) {
+					if (newAlpha === null) {
 						return;
 					}
 					const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
-					setColor(Color(newColor).alpha(newAlpha / 255));
+					setColor(Color(newColor).alpha(newAlpha / 100));
 				},
 			});
 
