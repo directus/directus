@@ -55,8 +55,8 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
+import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -157,6 +157,7 @@ export default defineComponent({
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));
 		const attributes = computed(() => omit(attrs, ['class']));
+
 		const classes = computed(() => [
 			{
 				'full-width': props.fullWidth,

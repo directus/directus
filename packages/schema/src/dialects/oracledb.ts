@@ -36,6 +36,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			column_name: string;
 			default_value: string;
 			is_nullable: string;
+			is_generated: string;
 			data_type: string;
 			numeric_precision: number | null;
 			numeric_scale: number | null;
@@ -62,7 +63,8 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				"c"."DATA_PRECISION" "numeric_precision",
 				"c"."DATA_SCALE" "numeric_scale",
 				"ct"."CONSTRAINT_TYPE" "column_key",
-				"c"."CHAR_LENGTH" "max_length"
+				"c"."CHAR_LENGTH" "max_length",
+				"c"."VIRTUAL_COLUMN" "is_generated"
 			FROM "USER_TAB_COLUMNS" "c"
 			LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
 				AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
@@ -88,6 +90,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
 				is_nullable: column.is_nullable === 'Y',
+				is_generated: column.is_generated === 'YES',
 				default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : stripQuotes(column.default_value),
 			};
 		}

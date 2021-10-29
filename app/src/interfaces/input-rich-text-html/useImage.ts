@@ -51,7 +51,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 					alt,
 					width: Number(node.getAttribute('width')) || undefined,
 					height: Number(node.getAttribute('height')) || undefined,
-					previewUrl: addTokenToURL(imageUrl),
+					previewUrl: imageUrl,
 				};
 			} else {
 				imageSelection.value = null;
@@ -78,18 +78,14 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		let imageUrl = getPublicURL() + 'assets/' + image.id;
-
-		if (imageToken.value) {
-			imageUrl = addTokenToURL(imageUrl, imageToken.value);
-		}
+		const imageUrl = addTokenToURL(getPublicURL() + 'assets/' + image.id, imageToken.value);
 
 		imageSelection.value = {
 			imageUrl,
 			alt: image.title,
 			width: image.width,
 			height: image.height,
-			previewUrl: addTokenToURL(imageUrl),
+			previewUrl: imageUrl,
 		};
 	}
 
