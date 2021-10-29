@@ -8,7 +8,7 @@
 		:placement="placement"
 	>
 		<template #activator="{ toggle, active }">
-			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue }" @click="toggle">
+			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue, label, active }" @click="toggle">
 				<slot name="preview">{{ displayValue || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
@@ -21,8 +21,6 @@
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:active="active"
-					:small="small"
-					:solid="solid"
 					@click="toggle"
 				>
 					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
@@ -202,6 +200,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		label: {
+			type: Boolean,
+			default: false,
+		},
 		multiplePreviewThreshold: {
 			type: Number,
 			default: 3,
@@ -209,14 +211,6 @@ export default defineComponent({
 		placement: {
 			type: String as PropType<Placement>,
 			default: 'bottom',
-		},
-		small: {
-			type: Boolean,
-			default: false,
-		},
-		solid: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	emits: ['update:modelValue', 'group-toggle'],
@@ -326,7 +320,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 :global(body) {
 	--v-select-font-family: var(--family-sans-serif);
 	--v-select-placeholder-color: var(--foreground-subdued);
@@ -372,6 +366,20 @@ export default defineComponent({
 	width: max-content;
 	padding-right: 18px;
 	cursor: pointer;
+}
+
+.inline-display.label {
+	padding: 4px 8px;
+	padding-right: 26px;
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+	transition: color var(--fast) var(--transition);
+
+	&:hover,
+	&.active {
+		color: var(--foreground);
+	}
 }
 
 .inline-display .v-icon {

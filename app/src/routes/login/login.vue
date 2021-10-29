@@ -3,7 +3,7 @@
 		<div class="header">
 			<h1 class="type-title">{{ t('sign_in') }}</h1>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
-				<v-select v-model="providerSelect" :items="providerOptions" small solid />
+				<v-select v-model="providerSelect" inline :items="providerOptions" label />
 			</div>
 		</div>
 
@@ -111,7 +111,6 @@ h1 {
 	}
 
 	.provider-select {
-		width: 110px;
 		margin-bottom: 8px;
 	}
 }

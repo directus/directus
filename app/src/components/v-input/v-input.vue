@@ -142,14 +142,6 @@ export default defineComponent({
 			type: String,
 			default: 'off',
 		},
-		small: {
-			type: Boolean,
-			default: false,
-		},
-		solid: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
 	setup(props, { emit, attrs }) {
@@ -171,8 +163,6 @@ export default defineComponent({
 				'full-width': props.fullWidth,
 				'has-click': props.clickable,
 				disabled: props.disabled,
-				small: props.small,
-				solid: props.solid && !props.disabled,
 			},
 			...((attrs.class || '') as string).split(' '),
 		]);
@@ -436,20 +426,6 @@ body {
 		&[type='number'] {
 			appearance: textfield;
 		}
-	}
-
-	&.small {
-		--input-padding: 8px;
-		--input-height: 36px;
-	}
-
-	&.solid {
-		--v-input-background-color: var(--background-normal);
-		--v-input-border-color-focus: var(--foreground-subdued);
-		--v-input-color: var(--foreground-subdued);
-		--background-input: var(--background-normal);
-		--border-normal: var(--background-normal);
-		--border-normal-alt: var(--background-normal-alt);
 	}
 
 	&.full-width {
