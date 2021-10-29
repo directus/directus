@@ -953,6 +953,7 @@ fields:
     method: Метод
     status: Статус
     data: Данные
+    value: Значение
     data_label: Отправлять данные о событии
     triggers: Триггеры
     actions: Действия
@@ -1055,6 +1056,8 @@ field_options:
     actions_update: Обновить
     actions_delete: Удалить
     actions_login: Войти
+    headers:
+      value: Значение
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
 no_value: Нет значения
 do_nothing: Ничего не Делать
