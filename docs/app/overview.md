@@ -13,9 +13,8 @@ The leftmost section of the App is the module bar, which includes the:
   If configured, clicking this component will navigate to the Project URL. During platform activity, an indeterminate
   progress indicator will also be shown here.
 - **Module Navigation** — Allows navigating between the different modules your user has access to. Customizing the
-  Module Navigation is done within the
-  [Role's configuration](/configuration/users-roles-permissions/#configuring-a-role), but the default module list
-  includes:
+  Module Navigation is done within the [Project Settings](/configuration/project-settings/#module-bar), but the default
+  module list includes:
   - [Content](/app/content-collections/) — The primary way to view and interact with database content
   - [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
   - [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform

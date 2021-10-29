@@ -174,9 +174,11 @@ This pane controls the technical details of the field's database column.
 
 - **Key** — (Required) The database column name and field's API key. The key must be unique within its parent
   Collection. As of now, all keys are sanitized: lowercased, alphanumeric, and with spaces removed. Keys can not be
-  changed once created, however you can use [Field Name Translations](/dead) to override how it's displayed in the App.
-- **Type** — (Required) How the data is saved to the database; See [Directus Data Type Superset](/concepts/types). This
-  dropdown maybe be limited or even disabled based on your chosen Field category.
+  changed once created, however you can use [Field Name Translations](/configuration/data-model/#field) to override how
+  it's displayed in the App.
+- **Type** — (Required) How the data is saved to the database; See
+  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown maybe be limited or even
+  disabled based on your chosen Field category.
 - **Length** — (Only for certain types) For String types this determines the number of characters that can be stored in
   the database. For Float and Decimal types, this control becomes **Precision & Scale**.
 - **On Create** — (Only for certain types) For some data types, this option allows you to control what value is saved
@@ -272,8 +274,7 @@ The conditions are matched in order. The **last** condition that matches is the 
 ::: tip System Fields
 
 While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the
-system collections. To get started, enable System Collections within the sidebar filter of
-[Settings > Data Model](/concepts/databases/).
+system collections. To get started, expand System Collections from the bottom of **Settings > Data Model**.
 
 :::
 

@@ -22,7 +22,7 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 ## Manually Sorting Items
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to sort
 3. Choose a layout that supports manual sorting (eg: the default "table" mode)
 4. Enable manual sorting. (eg: for the table layout, click on the Sort column's header)
@@ -39,7 +39,7 @@ This feature is only available if a Sort column has been configured in the Colle
 
 ## Ordering Items
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to a collection of items
 3. Choose a layout that supports manual ordering (eg: the default "table" mode)
 4. Set the Order Field and Order Direction

@@ -108,7 +108,7 @@ migrations to promote data between them.
 The platform has been built to be modular and extensible. This helps keep the core codebase simple and clean (see the
 [80/20 Rule](/contributing/introduction/#feature-requests)), while allowing the flexibility needed to satisfy all
 use-cases... no matter how complex. There are many different types of supported extensions, each offering a way to
-deeply customize, override, or extend the core platform. [Learn more about Extension Types](#).
+deeply customize, override, or extend the core platform. [Learn more about Extensions](/extensions/introduction/).
 
 ## Fields
 
@@ -157,9 +157,9 @@ Items are referenced (both individually and relationally) by their unique [prima
 
 #### Relevant Guides
 
-- [Creating an Item](/guides/items/#creating-an-item)
+- [Creating an Item](/app/content-collections/#creating-an-item)
 - [Archiving an Item](/app/content-items/#archiving-an-item)
-- [Reordering Items](/guides/items/#reordering-items)
+- [Manually Sorting Items](/app/content-collections/#manually-sorting-items)
 - [Deleting an Item](/app/content-items/#deleting-an-item)
 
 ## Junction Collections
@@ -227,7 +227,8 @@ two main ways to achieve multitenancy:
 ## Panels
 
 Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a
-[Dashboard](#dashboards) and can be positioned and resized as needed. [Panels are a Modular Extension Type](#).
+[Dashboard](#dashboards) and can be positioned and resized as needed.
+[Panels are a Modular Extension Type](/extensions/panels/).
 
 ## Permissions
 
@@ -257,13 +258,13 @@ often called `id`.
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](/dead)
-- [Configuring a Project](/dead)
+- [Creating a Project](/getting-started/installation/)
+- [Configuring a Project](/configuration/config-options/)
 - [Adjusting Project Settings](/configuration/project-settings/)
-- [Upgrading a Project](/dead)
-- [Backing-up a Project](/dead)
-- [Migrating a Project](/dead)
-- [Deleting a Project](/dead)
+- [Upgrading a Project](/configuration/upgrades-migrations/)
+- [Backing-up a Project](/configuration/upgrades-migrations/#backing-up-a-project)
+- [Migrating a Project](/configuration/upgrades-migrations/#migrating-a-project)
+- [Deleting a Project](/configuration/upgrades-migrations/#deleting-a-project)
 
 ## Relationships
 
