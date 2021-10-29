@@ -950,6 +950,7 @@ fields:
     method: Metode
     status: Status
     data: Data
+    value: Værdi
     data_label: Send Begivenhedsdata
     triggers: Udløsere
     actions: Handlinger
@@ -1052,6 +1053,8 @@ field_options:
     actions_update: Opdater
     actions_delete: Slet
     actions_login: Log ind
+    headers:
+      value: Værdi
 no_fields_in_collection: 'Der er ingen felter i "{collection}" endnu'
 no_value: Ingen værdi
 do_nothing: Gør Intet
