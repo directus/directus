@@ -543,6 +543,7 @@ For example, you can login to Directus using a github account by creating an
 ```
 AUTH_PROVIDERS="github"
 
+AUTH_GITHUB_DRIVER="oauth2"
 AUTH_GITHUB_CLIENT_ID="99d3...c3c4"
 AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
 AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
