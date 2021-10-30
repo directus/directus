@@ -2,7 +2,6 @@ name: End-to-End Tests
 
 on:
   workflow_call:
-  workflow_dispatch:
 
 jobs:
   test:
