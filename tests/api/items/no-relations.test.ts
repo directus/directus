@@ -30,7 +30,7 @@ describe('/items', () => {
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
 			const response = await request(url)
-				.get(`/items/artists/1`)
+				.get(`/items/artists/${artist.id}`)
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
@@ -149,37 +149,6 @@ describe('/items', () => {
 			expect(response.data.data).toMatchObject({
 				id: artist.id,
 				name: 'Tommy Cash',
-			});
-		});
-		it.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
-			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
-				select: ['id'],
-			});
-			const insertedEvent = await seedTable(databases.get(vendor)!, 1, 'events', createEvent(), {
-				select: ['id'],
-			});
-			const relation = await seedTable(
-				databases.get(vendor)!,
-				1,
-				'artists_events',
-				{
-					artists_id: insertedArtist[insertedArtist.length - 1].id,
-					events_id: insertedEvent[insertedEvent.length - 1].id,
-				},
-				{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
-			);
-			const body = { artists_id: insertedArtist[0].id };
-			const response: any = await axios.patch(`${url}/items/artists_events/${relation[0].id}`, body, {
-				headers: {
-					Authorization: 'Bearer AdminToken',
-					'Content-Type': 'application/json',
-				},
-			});
-
-			expect(response.data.data).toMatchObject({
-				name: 'Tommy Cash',
-				artists_id: insertedArtist[0].id,
 			});
 		});
 	});
