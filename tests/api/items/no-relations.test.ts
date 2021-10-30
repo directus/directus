@@ -147,7 +147,7 @@ describe('/items', () => {
 			});
 
 			expect(response.data.data).toMatchObject({
-				id: artist.id,
+				id: expect.any(String),
 				name: 'Tommy Cash',
 			});
 		});
