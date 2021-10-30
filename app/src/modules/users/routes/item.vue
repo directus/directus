@@ -323,7 +323,7 @@ export default defineComponent({
 		});
 
 		useShortcut('meta+s', saveAndStay, form);
-		useShortcut('meta+shift+s', saveAndAddNew, form);
+		useShortcut('meta+shift+s', saveAsCopyAndNavigate, form);
 
 		return {
 			t,

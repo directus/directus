@@ -139,7 +139,7 @@ export default defineComponent({
 		});
 
 		useShortcut('meta+shift+s', () => {
-			if (hasEdits.value) saveAndAddNew();
+			if (hasEdits.value) saveAsCopyAndNavigate();
 		});
 
 		const isSavable = computed(() => {
