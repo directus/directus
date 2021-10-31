@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Индентификатор
 avatar: Аватар
 default_provider: По умолчанию
 published: Опубликовано
@@ -228,6 +249,7 @@ invalid_item: Неверное содержимое
 next: Дальше
 field_name: Название поля
 translations: Переводы
+no_translations: Нет переводов
 note: Заметка
 enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
@@ -304,6 +326,7 @@ date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
 minutes: Минуты
+hours: Часов
 month: Месяц
 year: Год
 select_all: Выбрать Все
@@ -499,6 +522,7 @@ all_users: Все пользователи
 delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
+make_collection_hidden: Сделать коллекцию скрытой
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
@@ -588,6 +612,7 @@ all_files: Все Файлы
 my_files: Мои Файлы
 recent_files: Недавние Файлы
 create_folder: Создать Папку
+edit_folder: Изменить папку
 folder_name: Название Папки...
 add_file: Добавить Файл
 replace_file: Заменить Файл
@@ -650,6 +675,7 @@ source: Источник
 url_placeholder: Введите адрес url...
 display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
+interface_group_other: Другие
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
 unlimited: Без ограничения
@@ -1379,6 +1405,10 @@ interfaces:
 displays:
   translations:
     translations: Переводы
+    description: Предпросмотр переводов
+    enable: Включить
+    user_language: Использовать текущий язык пользователя
+    default_language: Язык по умолчанию
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл
