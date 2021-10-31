@@ -46,7 +46,7 @@
 
 	<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 		<v-list>
-			<v-list-item clickable :to="`/collections/${collection.collection}?archive`" exact query>
+			<v-list-item v-if="hasArchive" clickable :to="`/collections/${collection.collection}?archive`" exact query>
 				<v-list-item-icon>
 					<v-icon name="archive" outline />
 				</v-list-item-icon>
@@ -172,7 +172,7 @@ export default defineComponent({
 		}
 
 		function activateContextMenu(event: PointerEvent) {
-			if (hasArchive.value) {
+			if (hasArchive.value || props.collection.schema) {
 				contextMenu.value.activate(event);
 			}
 		}
