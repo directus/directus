@@ -220,7 +220,7 @@ not_available_for_type: Не е налично за типа
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
 refresh_interval: Интервал за опресняване
-no_refresh: Да не се опреснява
+no_refresh: Без опресняване
 refresh_interval_seconds: Моментално опресняване | Всяка секунда | Всеки {seconds} секунди
 refresh_interval_minutes: Всяка минута | Всеки {minutes} минути
 auto_generate: Автоматично генериране
