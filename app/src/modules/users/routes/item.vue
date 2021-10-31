@@ -87,7 +87,7 @@
 					<save-options
 						v-if="hasEdits === true"
 						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
+						@create-new="createNew"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
 				</template>
@@ -341,7 +341,7 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			saveAndStay,
-			saveAndAddNew,
+			createNew,
 			saveAsCopyAndNavigate,
 			isBatch,
 			revisionsDrawerDetail,
@@ -407,15 +407,8 @@ export default defineComponent({
 			}
 		}
 
-		async function saveAndAddNew() {
-			try {
-				const savedItem: Record<string, any> = await save();
-				await setLang(savedItem);
-				await refreshCurrentUser();
-				router.push(`/users/+`);
-			} catch {
-				// `save` will show unexpected error dialog
-			}
+		async function createNew() {
+			router.push(`/users/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {

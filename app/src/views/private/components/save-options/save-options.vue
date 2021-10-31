@@ -15,9 +15,9 @@
 				<v-list-item-content>{{ t('save_as_copy') }}</v-list-item-content>
 				<v-list-item-hint>{{ translateShortcut(['meta', 'shift', 's']) }}</v-list-item-hint>
 			</v-list-item>
-			<v-list-item :disabled="disabled" clickable @click="$emit('save-and-add-new')">
+			<v-list-item :disabled="disabled" clickable @click="$emit('create-new')">
 				<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-				<v-list-item-content>{{ t('save_and_create_new') }}</v-list-item-content>
+				<v-list-item-content>{{ t('create_new') }}</v-list-item-content>
 			</v-list-item>
 		</v-list>
 	</v-menu>
@@ -35,7 +35,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['save-and-stay', 'save-and-add-new', 'save-as-copy'],
+	emits: ['save-and-stay', 'create-new', 'save-as-copy'],
 	setup() {
 		const { t } = useI18n();
 

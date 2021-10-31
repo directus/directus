@@ -39,7 +39,7 @@
 					<save-options
 						:disabled="hasEdits === false"
 						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
+						@create-new="createNew"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
 				</template>
@@ -176,7 +176,7 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			saveAndStay,
-			saveAndAddNew,
+			createNew,
 			saveAsCopyAndNavigate,
 			isBatch,
 			title,
@@ -196,8 +196,7 @@ export default defineComponent({
 			await save();
 		}
 
-		async function saveAndAddNew() {
-			await save();
+		async function createNew() {
 			router.push(`/settings/webhooks/+`);
 		}
 

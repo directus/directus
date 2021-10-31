@@ -134,7 +134,7 @@
 					<save-options
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
+						@create-new="createNew"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
 				</template>
@@ -339,6 +339,7 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAsCopyAndNavigate, form);
+		useShortcut('alt+n', createNew, form);
 
 		const editsGuard: NavigationGuard = (to) => {
 			if (hasEdits.value) {
@@ -383,7 +384,7 @@ export default defineComponent({
 			deleting,
 			archiving,
 			saveAndStay,
-			saveAndAddNew,
+			createNew,
 			saveAsCopyAndNavigate,
 			templateData,
 			templateDataLoading,
@@ -450,20 +451,8 @@ export default defineComponent({
 			}
 		}
 
-		async function saveAndAddNew() {
-			if (isSavable.value === false) return;
-
-			try {
-				await save();
-
-				if (isNew.value === true) {
-					refresh();
-				} else {
-					router.push(`/collections/${props.collection}/+`);
-				}
-			} catch {
-				// Save shows unexpected error dialog
-			}
+		async function createNew() {
+			router.push(`/collections/${props.collection}/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
