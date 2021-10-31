@@ -100,9 +100,11 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true || saveAllowed === true"
+						:is-savable="hasEdits === true && saveAllowed === true"
+						:is-creatable="createAllowed === true"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@create-new="createNew"
 					/>
 				</template>
 			</v-button>
@@ -292,6 +294,8 @@ export default defineComponent({
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		useShortcut('meta+s', saveAndStay, form);
+		useShortcut('meta+shift+s', saveAsCopyAndNavigate, form);
+		useShortcut('alt+n', createNew, form);
 
 		const editsGuard: NavigationGuard = (to) => {
 			if (hasEdits.value) {
@@ -303,7 +307,7 @@ export default defineComponent({
 		onBeforeRouteUpdate(editsGuard);
 		onBeforeRouteLeave(editsGuard);
 
-		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
+		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed, createAllowed } = usePermissions(
 			ref('directus_files'),
 			item,
 			isNew
@@ -330,6 +334,7 @@ export default defineComponent({
 			deleting,
 			saveAndStay,
 			saveAsCopyAndNavigate,
+			createNew,
 			isBatch,
 			editActive,
 			revisionsDrawerDetail,
@@ -348,6 +353,7 @@ export default defineComponent({
 			refresh,
 			deleteAllowed,
 			saveAllowed,
+			createAllowed,
 			updateAllowed,
 			fields,
 			fieldsFiltered,
@@ -398,6 +404,10 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
 			if (newPrimaryKey) router.push(`/files/${newPrimaryKey}`);
+		}
+
+		function createNew() {
+			router.push(`/files/+`);
 		}
 
 		async function deleteAndQuit() {

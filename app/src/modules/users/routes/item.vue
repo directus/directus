@@ -85,7 +85,8 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true"
+						:is-savable="hasEdits === true || saveAllowed === true"
+						:is-creatable="createAllowed === true"
 						@save-and-stay="saveAndStay"
 						@create-new="createNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -286,11 +287,8 @@ export default defineComponent({
 		onBeforeRouteUpdate(editsGuard);
 		onBeforeRouteLeave(editsGuard);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
-			ref('directus_users'),
-			item,
-			isNew
-		);
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields, createAllowed } =
+			usePermissions(ref('directus_users'), item, isNew);
 
 		// These fields will be shown in the sidebar instead
 		const fieldsDenyList = [
@@ -354,6 +352,7 @@ export default defineComponent({
 			formFields,
 			deleteAllowed,
 			saveAllowed,
+			createAllowed,
 			archiveAllowed,
 			isArchived,
 			updateAllowed,

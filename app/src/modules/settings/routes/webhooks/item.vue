@@ -37,7 +37,8 @@
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false"
+						:is-savable="hasEdits === false"
+						:is-creatable="true"
 						@save-and-stay="saveAndStay"
 						@create-new="createNew"
 						@save-as-copy="saveAsCopyAndNavigate"

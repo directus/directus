@@ -132,10 +132,12 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
+						v-if="collectionInfo?.meta?.singleton !== true"
+						:is-updatable="isSavable"
+						:is-creatable="createAllowed === true"
 						@save-and-stay="saveAndStay"
-						@create-new="createNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@create-new="createNew"
 					/>
 				</template>
 			</v-button>
@@ -351,11 +353,8 @@ export default defineComponent({
 		onBeforeRouteUpdate(editsGuard);
 		onBeforeRouteLeave(editsGuard);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
-			collection,
-			item,
-			isNew
-		);
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed, createAllowed } =
+			usePermissions(collection, item, isNew);
 
 		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
@@ -398,6 +397,7 @@ export default defineComponent({
 			discardAndLeave,
 			deleteAllowed,
 			saveAllowed,
+			createAllowed,
 			archiveAllowed,
 			isArchived,
 			updateAllowed,
@@ -451,7 +451,7 @@ export default defineComponent({
 			}
 		}
 
-		async function createNew() {
+		function createNew() {
 			router.push(`/collections/${props.collection}/+`);
 		}
 
