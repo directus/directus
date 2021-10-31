@@ -465,7 +465,7 @@ file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
-sort_field: Сортиране по поле
+sort_field: Поле за сортиране
 add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
 status: Статус
@@ -607,7 +607,7 @@ interface_options: Опции за интерфейса
 layout_options: Опции за оформление
 rows: Редове
 columns: Колони
-collection_setup: Настройки на колекция
+collection_setup: Настройки на колекцията
 optional_system_fields: Незадължителни системни полета
 value_unique: Само уникални стойности
 all_activity: Цялата активност
@@ -652,7 +652,7 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
-insights: Задълбочен анализ (тестов)
+insights: Задълбочен анализ (тестови)
 dashboard: Табло
 panel: Панел
 panel_options: Опции на панела
@@ -864,11 +864,11 @@ fields:
     display_template: Шаблон при показване
     hidden: Скриване
     singleton: Сек
-    translations: Преводи на името за колекцията
-    archive_app_filter: Филтър за архивни
+    translations: Превод на името на колекцията
+    archive_app_filter: Архивен филтър
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране
-    sort_field: Сортиране по поле
+    sort_field: Поле за сортиране
     accountability: Следене за активност и ревизии
   directus_files:
     $thumbnail: Умалена картинка
