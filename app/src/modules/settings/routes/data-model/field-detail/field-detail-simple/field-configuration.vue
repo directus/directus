@@ -1,5 +1,5 @@
 <template>
-	<div class="field-configuration" :style="{ 'grid-row': row }">
+	<form ref="form" class="field-configuration" :style="{ 'grid-row': row }">
 		<div class="setup">
 			<div class="schema">
 				<div class="field half-left">
@@ -51,17 +51,18 @@
 				{{ t('continue_in_advanced_field_creation_mode') }}
 			</button>
 		</div>
-	</div>
+	</form>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
 import RelationshipConfiguration from './relationship-configuration.vue';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	components: { ExtensionOptions, RelationshipConfiguration },
@@ -76,9 +77,10 @@ export default defineComponent({
 		},
 	},
 	emits: ['save', 'toggleAdvanced'],
-	setup(props) {
+	setup(props, { emit }) {
 		const fieldDetail = useFieldDetailStore();
 
+		const form = ref<HTMLFormElement>();
 		const { readyToSave, saving, localType, collection } = storeToRefs(fieldDetail);
 		const { t } = useI18n();
 
@@ -101,7 +103,10 @@ export default defineComponent({
 		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 
+		useShortcut('meta+s', () => emit('save'), form);
+
 		return {
+			form,
 			key,
 			t,
 			type,
