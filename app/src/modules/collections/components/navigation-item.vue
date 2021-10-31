@@ -6,7 +6,8 @@
 		:value="collection.collection"
 		query
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
-		@contextmenu="activateContextMenu"
+		@contextmenu.prevent.stop="activateContextMenu"
+		@focusout="deactivateContextMenu"
 	>
 		<template #activator>
 			<navigation-item-content
@@ -32,7 +33,8 @@
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 		query
-		@contextmenu="activateContextMenu"
+		@contextmenu.prevent.stop="activateContextMenu"
+		@focusout="deactivateContextMenu"
 	>
 		<navigation-item-content
 			:search="search"
@@ -138,6 +140,7 @@ export default defineComponent({
 			matchesSearch,
 			contextMenu,
 			activateContextMenu,
+			deactivateContextMenu,
 			t,
 			hasArchive,
 		};
@@ -161,9 +164,11 @@ export default defineComponent({
 		function activateContextMenu(event: PointerEvent) {
 			if (hasArchive.value) {
 				contextMenu.value.activate(event);
-				event.stopPropagation();
-				event.preventDefault();
 			}
+		}
+
+		function deactivateContextMenu() {
+			contextMenu.value.deactivate();
 		}
 	},
 });

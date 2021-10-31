@@ -8,10 +8,12 @@
 			v-model="activeGroups"
 			scope="collections-navigation"
 			class="collections-navigation"
+			tabindex="-1"
 			nav
 			:mandatory="false"
 			:dense="dense"
 			@contextmenu.prevent.stop="activateContextMenu"
+			@focusout="deactivateContextMenu"
 		>
 			<navigation-item
 				v-for="collection in rootItems"
@@ -83,6 +85,7 @@ export default defineComponent({
 			rootItems,
 			dense,
 			activateContextMenu,
+			deactivateContextMenu,
 			contextMenu,
 			contextMenuTarget,
 			search,
@@ -92,6 +95,10 @@ export default defineComponent({
 		function activateContextMenu(event: PointerEvent, target?: string) {
 			contextMenuTarget.value = target;
 			contextMenu.value.activate(event);
+		}
+
+		function deactivateContextMenu() {
+			contextMenu.value.deactivate();
 		}
 	},
 });
