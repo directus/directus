@@ -1515,19 +1515,14 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
-    basemap: Carte de base
+    basemap: Fond de carte
     layers: Afficher...
-    edit_custom_layers: Modifier la couche
     cluster_options: Options de regroupement
     cluster_radius: Rayon de grappe
     cluster_minpoints: Taille minimale du cluster
     cluster_maxzoom: Zoom maximum pour la grappe
-    field: Géométrie
+    field: Champ de la géométrie
     invalid_geometry: Géométrie invalide
-    search_this_area: Chercher dans cette zone
-    clear_data_filter: Réinitialiser le filtre
-    clear_location_filter: Réinitialiser le filtre de localisation
-    no_results_here: Aucun résultat dans cette zone
 panels:
   metric:
     name: Indicateurs
