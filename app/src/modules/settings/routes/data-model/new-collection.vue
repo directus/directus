@@ -80,10 +80,11 @@
 							v-model="info.name"
 							class="monospace"
 							:class="{ active: info.enabled }"
+							:disabled="info.inputDisabled"
 							@focus="info.enabled = true"
 						>
 							<template #prepend>
-								<v-checkbox v-model="info.enabled" />
+								<v-checkbox v-model="info.enabled" :disabled="info.inputDisabled" />
 							</template>
 
 							<template #append>
@@ -122,7 +123,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, reactive } from 'vue';
+import { defineComponent, ref, reactive, watch } from 'vue';
 import api from '@/api';
 import { Field, Relation } from '@directus/shared/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
@@ -160,36 +161,42 @@ export default defineComponent({
 		const systemFields = reactive({
 			status: {
 				enabled: false,
+				inputDisabled: false,
 				name: 'status',
 				label: 'status',
 				icon: 'flag',
 			},
 			sort: {
 				enabled: false,
+				inputDisabled: false,
 				name: 'sort',
 				label: 'sort',
 				icon: 'low_priority',
 			},
 			dateCreated: {
 				enabled: false,
+				inputDisabled: false,
 				name: 'date_created',
 				label: 'created_on',
 				icon: 'access_time',
 			},
 			userCreated: {
 				enabled: false,
+				inputDisabled: false,
 				name: 'user_created',
 				label: 'created_by',
 				icon: 'account_circle',
 			},
 			dateUpdated: {
 				enabled: false,
+				inputDisabled: false,
 				name: 'date_updated',
 				label: 'updated_on',
 				icon: 'access_time',
 			},
 			userUpdated: {
 				enabled: false,
+				inputDisabled: false,
 				name: 'user_updated',
 				label: 'updated_by',
 				icon: 'account_circle',
@@ -197,6 +204,8 @@ export default defineComponent({
 		});
 
 		const saving = ref(false);
+
+		watch(() => singleton.value, setOptionsForSingleton);
 
 		return {
 			t,
@@ -211,6 +220,10 @@ export default defineComponent({
 			saving,
 			singleton,
 		};
+
+		function setOptionsForSingleton() {
+			systemFields.sort.inputDisabled = singleton.value;
+		}
 
 		async function save() {
 			saving.value = true;
