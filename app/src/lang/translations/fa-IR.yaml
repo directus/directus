@@ -1,10 +1,36 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: آواتار
+default_provider: پیش‌فرض
 published: منتشر شد
+draft: پیش‌نویس
+archived: بایگانی‌شده
+modules: ماژول‌ها
 module_bar: ماژول
 tile_size: اندازه آجر
 edit_field: ویرایش فیلد
 conditions: مزایای همکاری
 maps: نقشه ها
+item_creation: ایجاد مورد
 item_revision: مشاهده ویرایش ها
 enter_a_name: یک نام وارد کنید
 duplicate_field: زمینه های تکراری (Automatic Translation)
@@ -24,14 +50,17 @@ indeterminate: نامشخص
 edit_collection: ویرایش مجموعه
 exclusive: انحصاری
 children: همراه با کودک
+db_only_click_to_configure: 'فقط پایگاه داده: برای پیکربندی کلیک کنید'
 show_archived_items: نشان دادن یادداشت‌های بایگانی شده
 edited: ارزش ویرایش شد
 required: الزامی
 required_for_app_access: برای دسترسی به برنامه مورد نیاز است
 requires_value: مقدار موردنیاز
 create_preset: ایجاد ایستگاه از پیش تنظیم شده
+create_panel: ایجاد پنل
 create_role: افزودن نقش
 create_user: ایجاد کاربر
+delete_panel: حذف پنل
 create_webhook: به روزرسانی webhook
 invite_users: دعوت کاربران
 invite: دعوت
@@ -47,6 +76,58 @@ delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
 reset_bookmark: بازنشانی نشانک
+rename_bookmark: تغییر نام نشانک
+update_bookmark: به روز کردن نشانک
+delete_bookmark: حذف نشانک
+delete_bookmark_copy: >-
+  آیا مطمئن هستید که می‌خواهید «{bookmark}» را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+logoutReason:
+  SIGN_OUT: از حساب خارج شده
+  SESSION_EXPIRED: نشست به پایان رسیده
+public_label: عمومی
+public_description: داده API موجود را بدون احراز هویت کنترل می‌کند.
+not_allowed: مجاز نیست
+directus_version: نسخه دایرکتوس
+node_version: نسخه نود
+node_uptime: زمان به کار نود
+os_type: نوع سیستم عامل
+os_version: نسخه سیستم عامل
+os_uptime: زمان به کار سیستم عامل
+os_totalmem: حافظه سیستم عامل
+archive: بایگانی
+archive_confirm: از بایگانی شدن این مورد مطمئنید؟
+archive_confirm_count: >-
+  هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید {count} موارد را بایگانی کنید؟
+reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
+reset_system_permissions_copy: این عمل مجوزهای سفارشی را که ممکن است برای مجموعه‌های سیستم اعمال کرده باشید بازنویسی کند. مطمئن هستید؟
+the_following_are_minimum_permissions: موارد زیر حداقل مجوزهای مورد نیاز هنگام فعال بودن "دسترسی به برنامه" است. شما می توانید مجوزها را فراتر از این بسازید ، اما نه در زیر.
+app_access_minimum: حداقل دسترسی به برنامه
+recommended_defaults: پیش‌فرض‌های توصیه شده
+unarchive: خارج کردن از بایگانی
+unarchive_confirm: از خارج کردن از بایگانی این مورد مطمئنید؟
+nested_files_folders_will_be_moved: فایل‌ها و پوشه‌های تو در تو یک سطح به بالا منتقل می‌شوند.
+unknown_validation_errors: 'خطاهای تأیید اعتبار برای موردهای پنهان زیر وجود دارد:'
+validationError:
+  eq: مقدار باید {valid} باشد
+  neq: مقدار نمی‌تواند {invalid} باشد
+  in: مقدار باید یکی از {valid} باشد
+  nin: مقدار نمی‌تواند یکی از {invalid} باشد
+  contains: مقدار باید حاوی {substring} باشد
+  ncontains: مقدار نمی‌تواند حاوی {substring} باشد
+  gt: مقدار باید بیشتر از {valid} باشد
+  gte: مقدار باید بزرگتر یا مساوی {valid} باشد
+  lt: مقدار باید کمتر از {valid} باشد
+  lte: مقدار باید کمتر یا مساوی {valid} باشد
+  empty: مقدار باید خالی باشد
+  nempty: مقدار نمی تواند خالی باشد
+  null: مقدار باید خالی باشد
+  nnull: مقدار نمی تواند خالی (نال) باشد
+  required: مقدار الزامی است
+  unique: مقدار باید یکتا باشد
+  regex: این مقدار، فرمت صحیحی ندارد
+all_access: دسترسی کامل
+no_access: بدون دسترسی
+use_custom: استفاده از حالت سفارشی
 nullable: قابل خواندن
 allow_null_value: مقدار NULL را مجاز کنید
 allow_multiple: امکان چندین انتخاب
@@ -180,6 +261,9 @@ creating_collection_system: هر یک از این زمینه های اختیار
 auto_increment_integer: عدد صحیح افزایش خودکار
 generated_uuid: UUID تولید شده
 manual_string: رشته به صورت دستی وارد شده است
+errors:
+  NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
+value_unique: مقدار باید یکتا باشد
 wysiwyg_options:
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
@@ -204,6 +288,7 @@ fields:
 field_options:
   directus_collections:
     language: زبان
+    archive_divider: بایگانی
   directus_roles:
     fields:
       name_name: نام

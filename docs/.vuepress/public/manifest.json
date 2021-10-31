@@ -3,7 +3,7 @@
     "name": "Directus Docs",
     "short-name": "Docs",
     "description": "Directus 9. An Instant App & API for your SQL Database.",
-    "theme-color": "#2CCDA6",
+    "theme-color": "#00C897",
     "version": "1.0",
     "scope": "/",
     "start_url": "/",

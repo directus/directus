@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.0.0-rc.99",
+	"version": "9.0.0-rc.100",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -52,7 +52,7 @@
 	"devDependencies": {
 		"@types/fs-extra": "9.0.13",
 		"@types/jest": "27.0.2",
-		"@types/node": "15.12.2",
+		"@types/node": "16.11.6",
 		"dotenv": "10.0.0",
 		"jest": "27.3.1",
 		"npm-run-all": "4.1.5",

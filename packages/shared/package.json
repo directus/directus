@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.99",
+	"version": "9.0.0-rc.100",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {

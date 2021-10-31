@@ -49,7 +49,7 @@ will not be merged.
 ## Feature Requests
 
 Feature requests are a great way to let our team know what should be prioritized next. You can
-[submit a new feature request](https://github.com/directus/directus/discussions/category_choices) or
+[submit a new feature request](https://github.com/directus/directus/discussions/new) or
 [vote on existing submissions](https://github.com/directus/directus/discussions) via GitHub Discussions.
 
 ::: warning The 80/20 Rule
@@ -76,7 +76,7 @@ Issues. Please ensure the following for all submissions:
 - You are experiencing an actual bug, not a configuration issue
 - You are using the official (pre-built) version of directus and not a fork
 - You are not asking a question or requesting a new feature
-- You have checked that no similar issue already exists
+- You have checked that no similar issue (or discussion) already exists
 - You have entered a clear and concise title
 - You have followed the issue template, with stack details and steps to reproduce
 - You have already completed all [troubleshooting steps](/getting-started/support#troubleshooting-steps)

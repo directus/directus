@@ -112,7 +112,7 @@ export default defineComponent({
 				case 'float':
 					return '[+-]?[0-9]+\\.?[0-9]*';
 				case 'uuid':
-					return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+					return '\\$CURRENT_USER|\\$CURRENT_ROLE|[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
 				default:
 					return '';
 			}

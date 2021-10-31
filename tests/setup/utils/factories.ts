@@ -39,7 +39,11 @@ type Event = {
 	tags: string;
 };
 
-type Item = Guest | Artist | Tour | Organizer | Event;
+type JoinTable = {
+	[column: string]: number;
+};
+
+export type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
 
 /*
  * Options Example: Artist
@@ -67,13 +71,28 @@ export const seedTable = async function (
 	database: Knex<any, unknown>,
 	count: number,
 	table: string,
-	factory: Item | (() => Item),
+	factory: Item | (() => Item) | Item[],
 	options?: SeedOptions
 ): Promise<void | any[] | any> {
 	const row: Record<string, number> = {};
-	if (typeof factory === 'object') {
-		await database(table).insert(factory);
-		row[table] = row[table]! + 1;
+	if (Array.isArray(factory)) {
+		await database.batchInsert(table, factory, 200);
+	} else if (typeof factory === 'object') {
+		if (count > 1) {
+			try {
+				const fakeRows = [];
+				for (let i = 0; i < count; i++) {
+					fakeRows.push(factory);
+					row[table] = row[table]! + 1;
+				}
+				await database(table).insert(fakeRows);
+			} catch (error: any) {
+				throw new Error(error);
+			}
+		} else {
+			await database(table).insert(factory);
+			row[table] = row[table]! + 1;
+		}
 	} else if (count >= 200) {
 		try {
 			let fakeRows: any[] = [];
@@ -147,9 +166,9 @@ export const createOrganizer = (): Organizer => ({
 	company_name: `${name.firstName()} ${name.lastName()}`,
 });
 
-export const createMany = (factory: () => Item, count: number, options?: CreateManyOptions) => {
+export const createMany = (factory: (() => Item) | Record<string, any>, count: number, options?: CreateManyOptions) => {
 	const items: Item[] = [];
-	if (options) {
+	if (options && typeof factory !== 'object') {
 		for (let rows = 0; rows < count; rows++) {
 			const item: any = factory();
 			for (const [column, max] of Object.entries(options)) {
@@ -159,14 +178,29 @@ export const createMany = (factory: () => Item, count: number, options?: CreateM
 		}
 		return items;
 	}
-	for (let rows = 0; rows < count; rows++) {
-		items.push(factory());
+	if (options && typeof factory === 'object') {
+		for (let rows = 0; rows < count; rows++) {
+			const item: any = factory;
+			for (const [column, max] of Object.entries(options)) {
+				item[column] = getRandomInt(max);
+			}
+			items.push(item);
+		}
+		return items;
+	} else if (typeof factory !== 'object') {
+		for (let rows = 0; rows < count; rows++) {
+			items.push(factory());
+		}
 	}
 	return items;
 };
 
 function getRandomInt(max: number) {
-	return Math.floor(Math.random() * max);
+	let int = 0;
+	while (int === 0) {
+		int = Math.floor(Math.random() * max);
+	}
+	return int;
 }
 
 function randomDateTime(start: Date, end: Date) {

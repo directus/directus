@@ -195,7 +195,7 @@ export function applyFilter(
 							.on(
 								`${parentAlias || parentCollection}.${relation.field}`,
 								'=',
-								`${alias}.${schema.collections[pathScope].primary}`
+								knex.raw(`CAST(?? AS TEXT)`, `${alias}.${schema.collections[pathScope].primary}`)
 							)
 							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
 					});

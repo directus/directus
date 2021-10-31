@@ -165,6 +165,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimaal
 float: Float
 integer: Integer
@@ -195,9 +196,6 @@ new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 search_collection: Collectie doorzoeken...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
-add_m2o_to_collection: 'Many-to-one toevoegen aan "{collection}"'
-add_o2m_to_collection: 'One-to-many toevoegen aan "{collection}"'
-add_m2m_to_collection: 'Many-to-many toevoegen aan "{collection}"'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...

@@ -180,7 +180,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function clearDataFilters() {
-			props?.clearFilters();
+			props?.clearFilters?.();
 		}
 
 		const shouldUpdateCamera = ref(false);
@@ -325,21 +325,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
-		const popupItem = ref<any>(null);
-		const popupPosition = ref<any>({ x: 0, y: 0 });
-		function updatePopup({ x, y, item }: { x: number; y: number; item: string | number }) {
-			const field = primaryKeyField.value?.field;
-			if (!field) {
-				return;
+		type ItemPopup = { item?: any; position?: { x: number; y: number } };
+		const itemPopup = ref<ItemPopup>({ item: null });
+		function updateItemPopup(update: Partial<ItemPopup>) {
+			if ('item' in update) {
+				const field = primaryKeyField.value?.field;
+				update.item = !field ? null : items.value.find((i) => i[field] === update.item) ?? null;
 			}
-			if (x && y) {
-				popupPosition.value = { x, y };
-			}
-			if (item === null) {
-				popupItem.value = null;
-			} else {
-				popupItem.value = items.value.find((i) => i[field] === item);
-			}
+			itemPopup.value = merge({}, itemPopup.value, update);
 		}
 
 		return {
@@ -389,9 +382,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			locationFilter,
 			fitGeoJSONBounds,
 			template,
-			popupItem,
-			popupPosition,
-			updatePopup,
+			itemPopup,
+			updateItemPopup,
 		};
 
 		async function resetPresetAndRefresh() {

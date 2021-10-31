@@ -20,10 +20,28 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: צלמית
+default_provider: ספק ברירת מחדל
+published: פורסם
+draft: טיוטה
+archived: ארכיון
+modules: מודולים
+module_bar: סרגל מודולים
+tile_size: גודל צלמית
 edit_field: ערוך שדה
+conditions: תנאים
+maps: מפות
+item_creation: יצירת פריט חדש
+item_revision: גרסת פריט
+enter_a_name: הכניסו שם...
+duplicate_field: שדה כפול
 half_width: חצי עמוד
 full_width: רוחב מלא
+group: קבוצה
+and: ו
+or: או
 fill_width: עמוד מלא
+field_name_translations: תרגומי שמות שדות
+enter_password_to_enable_tfa: הכניסו סיסמה להפעלת אימות דו שלבי
 add_field: הוסף שדה
 role_name: שם תפקיד
 branch: ענף
@@ -89,6 +107,8 @@ fields:
     tfa_secret: אימות דו-שלבי
     status: סטטוס
     role: תפקיד
+  directus_fields:
+    translation: תרגומי שמות שדות
   directus_roles:
     name: שם תפקיד
     description: תיאור

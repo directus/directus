@@ -8,7 +8,7 @@ export default defineDisplay({
 	icon: 'insert_drive_file',
 	component: DisplayFile,
 	types: ['uuid'],
-	groups: ['file'],
+	localTypes: ['file'],
 	options: [],
 	fields: ['id', 'type', 'title'],
 });

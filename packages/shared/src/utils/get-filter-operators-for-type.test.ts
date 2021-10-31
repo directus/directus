@@ -4,14 +4,14 @@ import { TYPES } from '../constants/fields';
 describe('', () => {
 	it('returns the filter operators for alias', () => {
 		expect(getFilterOperatorsForType(TYPES[0])).toStrictEqual([
+			'contains',
+			'ncontains',
 			'eq',
 			'neq',
 			'lt',
 			'lte',
 			'gt',
 			'gte',
-			'contains',
-			'ncontains',
 			'between',
 			'nbetween',
 			'empty',
