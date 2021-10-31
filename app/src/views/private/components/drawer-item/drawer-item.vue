@@ -13,6 +13,7 @@
 		</template>
 
 		<template #actions>
+			<slot name="actions" />
 			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
@@ -358,11 +359,7 @@ export default defineComponent({
 				return null;
 			});
 
-			const junctionRelatedCollectionInfo = computed(() => {
-				if (!junctionRelatedCollection.value) return null;
-				const { info } = useCollection(junctionRelatedCollection.value);
-				return info.value;
-			});
+			const { info: junctionRelatedCollectionInfo } = useCollection(junctionRelatedCollection);
 
 			return { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits };
 

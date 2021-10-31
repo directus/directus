@@ -109,7 +109,7 @@ export default function getLocalType(
 ): LocalTypeEntry {
 	const database = getDatabase();
 
-	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
+	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]] as LocalTypeEntry;
 
 	const special = field?.special;
 

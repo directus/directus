@@ -1,4 +1,26 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
+default_provider: Privzeto
 draft: Osnutek
 archived: Arhivirano
 edit_field: Uredi polje
@@ -8,7 +30,6 @@ item_revision: Revizija postavke
 duplicate_field: Podvajanje polja
 half_width: Polovična širina
 full_width: Polna širina
-limit: Omejitev
 group: Skupina
 and: in
 or: ali
@@ -23,7 +44,6 @@ indeterminate: Nedoločeno
 edit_collection: Uredi zbirko
 exclusive: Ekskluzivno
 children: Podrejeni
-db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
 show_archived_items: Prikaži arhivirane opombe
 edited: Urejena vrednost
 required: Zahtevano
@@ -34,7 +54,6 @@ create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
 create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
 emails: E-pošte
@@ -153,6 +172,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: Datum in ura
+dateTime: Datum in ura
 decimal: Decimalno število
 float: Float
 integer: Integer
@@ -184,9 +204,6 @@ new_data_alert: 'Naslednje bo generirano v podatkovnem modelu:'
 search_collection: Iskalna zbirka ...
 new_field: 'Novo polje'
 new_collection: 'Nova zbirka'
-add_m2o_to_collection: 'Dodaj več-na-ena v "{collection}"'
-add_o2m_to_collection: 'Dodaj ena-na-več v "{collection}"'
-add_m2m_to_collection: 'Dodaj več-na-več v "{collection}"'
 choose_a_type: Izberite tip ...
 determined_by_relationship: Določeno s povezavo
 add_note: Dodaj opombo za uporabnike ...
@@ -373,9 +390,13 @@ display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
 active: Aktivno
+copy: Kopiraj
 inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
+action: Dejanje
+ip_address: IP naslov
+user_agent: Brskalnik
 webhooks: Prožilci
 field_width: Širina polja
 add_filter: Dodaj filter
@@ -424,10 +445,10 @@ errors:
   RECORD_NOT_UNIQUE: Vrednost ni edinstvena (že obstaja)
   USER_SUSPENDED: Uporabnik suspendiran
   CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
-  UNKNOWN: Nepričakovana napaka
   UNPROCESSABLE_ENTITY: Obdelava nemogoča
   INTERNAL_SERVER_ERROR: Nepričakovana napaka
   NOT_NULL_VIOLATION: Vrednost ne sme biti nična
+  UNKNOWN: Nepričakovana napaka
 security: Varnost
 value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...
@@ -567,6 +588,7 @@ toggle: Preklopi
 icon_on: Prikaži ikono
 icon_off: Skrij ikono
 label: Oznaka
+full_screen: Celozaslonski način
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
 media: Medijska datoteka
@@ -664,7 +686,6 @@ unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
 keep_editing: Nadaljuj urejanje
-page_help_collections_overview: '**Pregled zbirk** - Spisek vseh zbirk, do katerih imate dostop.'
 page_help_collections_collection: >-
   **Brskaj zapise** - Pokaže vse {collection} zapise, do katerih imate dostop. Uredite postavitev, filter in razvrščanje za prilagojen pogled in shranite te nastavitve kot zaznamek za hiter dostop.
 page_help_collections_item: >-
@@ -723,6 +744,7 @@ fields:
     collection: Zbirka
     icon: Ikona
     note: Opomba
+    color: Barva
     display_template: Prikaži predlogo
     hidden: Skrito
     singleton: En zapis
@@ -865,13 +887,14 @@ field_options:
     hidden_label: Skrij v aplikaciji
     singleton: Obravnavaj kot en objekt
     language: Jezik
-    translation: Vnesite prevod ...
+    translation: Prevod
+    collection_name: Ime zbirke
     archive_divider: Arhiviraj
-    archive_field: Izberite polje ...
+    archive_field_placeholder: Izberite polje ...
     archive_app_filter: Omogoči aplikacijski arhivski filter
     archive_value: Nastavljena vrednost pri arhiviranju ...
     unarchive_value: Nastavljena vrednost pri dearhiviranju ...
-    divider: Razvrsti
+    sort_divider: Razvrsti
     sort_field: Izberite polje ...
     accountability_divider: Odgovornost
   directus_files:
@@ -929,6 +952,9 @@ generate_and_save_uuid: Ustvari in shrani UUID
 save_current_user_id: Shrani ID uporabnika
 save_current_user_role: Shrani vlogo uporabnika
 save_current_datetime: Shrani datum in uro
+always_open: Vedno odprto
+start_open: Začni odprto
+start_collapsed: Začni zaprto
 block: Blokiraj
 inline: V vrstici
 comment: Komentar
@@ -954,6 +980,7 @@ delete_field_are_you_sure: >-
 description: Opis
 done: Opravljeno
 duplicate: Dvojnik
+limit: Omejitev
 email: E-pošta
 embed: Vstavi
 fallback_icon: Nadomestna ikona
@@ -1005,6 +1032,10 @@ view_project: Poglej projekt
 report_error: Sporoči napako
 start: Začetek
 interfaces:
+  filter:
+    add_filter: Dodaj filter
+    all: Vse
+    any: Katerokoli
   group-accordion:
     name: Harmonika
     description: Prikaži polja ali skupine kot segmente harmonike
@@ -1133,9 +1164,6 @@ interfaces:
     map: Zemljevid
     description: Izberite lokacijo
     zoom: Povečaj
-    geometry_type: Tip geometrije
-    geometry_format: Geometrijski format
-    default_view: Privzeti pogled
     invalid_options: Neveljavne možnosti
     invalid_format: Neveljavna oblika ({format})
     unexpected_geometry: Pričakovano {expected}, vsebina {got}.
@@ -1248,6 +1276,8 @@ interfaces:
     start_open: Začni odprto
     start_closed: Začni zaprto
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Pokaži prižgano / ugasnjeno stanje
@@ -1359,9 +1389,11 @@ layouts:
     layers: Plasti
     edit_custom_layers: Uredi plasti
     cluster_options: Možnosti gruče
-    cluster: Aktiviraj gruče
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
     field: Geometrija
     invalid_geometry: Neveljavna geometrija
+panels:
+  label:
+    name: Oznaka

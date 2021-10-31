@@ -1,25 +1,24 @@
-# Directus Docs
+# Getting Started
 
 > These Docs will help you get up-and-running quickly, guide you through advanced features, and explain the core
 > concepts that make Directus so unique.
 
-::: tip Version 9
-
-This is the documentation for the new **[Directus 9](https://github.com/directus/directus)** platform written in
-Node.js. If you are looking for the previous **[Directus 8](https://github.com/directus/v8-archive/releases/latest)**
-(PHP) docs, you can find them [here](https://v8.docs.directus.io).
-
-:::
-
 ## What is Directus?
 
-**Directus is an Open Data Platform for managing the content of any SQL database. It provides a powerful API layer for
-developers and an intuitive App for non-technical users.** Written entirely in JavaScript (primarily
-[Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org)), Directus is completely open-source, modular, and
-extensible, allowing it to be fully tailored to the requirements of any project.
+**Directus is an Open Data Platform built to democratize the database.** Its no-code app is safe and intuitive enough to
+make data accessible to everyone, while still providing the granular configuration and technical tools required by
+power-users and data scientists. For developers, a data connection toolkit provides a dynamic REST+GraphQL API,
+JavaScript SDK, and options for authorization, caching, and more.
 
-The platform can be used for an individual purpose, such as headless content management, or more broadly to democratize
-an entire organization's data (customers, inventory, business intelligence, projects, etc).
+Written entirely in JavaScript (primarily [Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org)), Directus is
+completely open-source, modular, and extensible, allowing it to be fully tailored to the requirements of any project.
+Below are the key features of the platform:
+
+- **No-Code App for anyone to manage data**
+- **Data Connection Toolkit with REST & GraphQL**
+- **Supports Any SQL Database**
+- **Authorization & Caching**
+- **Completely Free & Open Source**
 
 ::: tip What's in a name?
 
@@ -28,42 +27,23 @@ lines_. The broadest goal of our platform is to present data in a simple, orderl
 
 :::
 
-## Database Mirroring
+## Use Cases
 
-**What makes Directus so unique is that it dynamically generates custom API endpoints based on your SQL database's
-schema in real-time — something we call "[Database Mirroring](/concepts/databases/#database-mirroring)".** Whether you
-install fresh or on top of an existing database, you always maintain end-to-end control over your actual database,
-including: tables, columns, datatypes, default values, indexes, relationships, etc.
+As flexible as the database itself, Directus can power any data-driven project. Below are some examples of common ways
+the platform is used:
 
-Below is an overview to how Directus mirrors the database, and our non-technical naming convention.
-
-- **[Project](/concepts/projects/)** — A Database (also includes asset storage and the config file)
-- **[Collection](/concepts/collections/)** — A Database Table
-- **[Fields](/concepts/fields/)** — A Database Column
-- **[Item](/concepts/items/)** — A Database Record/Row
-- **[Relationships](/concepts/relationships/)** — A Database Relationship, including additional non-standard types
-- **[Type](/concepts/types/)** — A Database Data Type, including additional non-standard types
-- **[Users](/concepts/users/)** — A Directus User (App or API), not to be confused with a Database User
-
-Perhaps one of the biggest advantages of _Database Mirroring_ is that you have direct access to your pure and unaltered
-data. That means you have the option to bypass the Directus middleware (API, SDK, App) and connect to your data with
-proper SQL queries. This effectively removes all bottlenecks, latency overhead, and proprietary access limitations.
-
-## Modular & Extensible
-
-What makes Directus so flexible is that it has been designed from the ground up with complete extensibility, helping
-avoid a feature ceiling. In addition to offering our software's codebase as open-source, we've included the following
-extension types in the platform's App and API.
-
-- **[Modules](/concepts/modules/)** — (App) The highest and broadest level of organization within the App
-- **[Layouts](/concepts/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
-- **[Interfaces](/concepts/interfaces/)** — (App) How you view or interact with a field and its value
-- **[Displays](/concepts/displays/)** — (App) A small inline preview of a field's value
-- **[Panes](#)** — (App) A way to view dashboard data within the Insights Module
-- **[Styles](/guides/styles/)** — (App) Whitelabeling through App Themes and CSS Overrides
-- **[Endpoints](/guides/api-endpoints/)** — (API) Custom registered API endpoints
-- **[Hooks](/guides/api-hooks/)** — (API) Event and interval hooks for triggering custom logic
-- **[Email Templates](/guides/email-templates/)** — (API) Custom structure and formatting for emails
+- **Headless CMS** — Whether you’re building on JAMstack, server-side (SSR), static websites (SSG), etc — Open Data
+  Platforms offer a modern and flexible way to manage every omnichannel digital experience.
+- **Apps, Games & IoT** — A powerful data backbone for any software or smart device, including: native or hybrid apps,
+  VR/AR, customer kiosks, installations, microcontrollers, digital signage, and even smart appliances.
+- **No-Code App Builder** — Ditch the spreadsheet. Now anyone can create beautiful custom apps for managing customers,
+  projects, inventory, knowledgebases, task lists, marketing, or anything else... all with zero code.
+- **Back-Office & BI Tools** — Gain insights into company KPIs and enable no-code exploration of business data. Coalesce
+  previously siloed department data to give your team meaningful and actionable analytics.
+- **Digital Asset Management** — Aggregate all of your digital files in one place for improved organization,
+  searchability, delivery, and integration with other datasets, all while enabling on-the-fly file transformations.
+- **Raw Data Visualization** — Establish a “single source of truth” for all of your disparate data while enabling
+  non-technical users to build custom dashboards that generate meaningful insights from complex datasets.
 
 ## Core Principles
 
@@ -81,93 +61,65 @@ Directus is a simple solution for complex problems, with a data-first approach g
   Core engine.
 - **Unopinionated** — Choose your database (all SQL vendors), API (REST or GraphQL), and infra (self-hosted or Cloud).
 
+## Database Mirroring
+
+Directus is installed as a _layer_ on top of your new or existing SQL database, with its App and API dynamically
+“mirroring” your actual schema and content in real-time. This approach is similar to how technical database clients
+(like _phpMyAdmin_) work, however Directus provides an experience that is safe, intuitive, and powerful enough for
+anyone... even the most non-technical users.
+
+To keep things simple, Directus uses friendlier names for database terms, including
+[Project](/getting-started/glossary/#projects) (database), [Collection](/getting-started/glossary/#collections) (table),
+[Field](/getting-started/glossary/#fields) (column), [Item](/getting-started/glossary/#items) (record), and
+[Type](/getting-started/glossary/#types) (datatype).
+
+Database mirroring has many unique advantages:
+
+- Control over your pure SQL database schema, tailored to your exact requirements
+- Significant performance improvements through optimizations and indexing
+- Complete transparency, portability, and security for your data
+- Direct database access and the full power of raw/complex SQL queries
+- Allows importing existing databases, unaltered and without any migrations
+
+Other platforms typically use a predefined or proprietary “one-size-fits-all” data model to store your content (have you
+ever peeked behind the curtain of a WordPress installation? Yikes!). That is not the case with Directus. Directus gives
+you direct access to your pure and unaltered data. That means you have the option to bypass the Directus middleware
+(API, SDK, App) and connect to your data with proper SQL queries. This effectively removes all bottlenecks, latency
+overhead, and proprietary access limitations.
+
+## Modular & Extensible
+
+What makes Directus so flexible is that it has been designed from the ground up with complete extensibility, helping
+avoid a feature ceiling. In addition to offering our software's codebase as open-source, we've included the following
+extension types in the platform's App and API.
+
+- **[Modules](/extensions/modules/)** — (App) The highest and broadest level of organization within the App
+- **[Layouts](/extensions/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
+- **[Interfaces](/extensions/interfaces/)** — (App) How you view or interact with a field and its value
+- **[Displays](/extensions/displays/)** — (App) A small inline preview of a field's value
+- **[Panes](/extensions/panes/)** — (App) A way to view dashboard data within the Insights Module
+- **[Styles](/configuration/project-settings/#branding)** — (App) Whitelabeling through App Themes and CSS Overrides
+- **[Endpoints](/extensions/api-endpoints/)** — (API) Custom registered API endpoints
+- **[Hooks](/extensions/hooks/)** — (API) Event and interval hooks for triggering custom logic
+- **[Email Templates](/extensions/email-templates/)** — (API) Custom structure and formatting for emails
+
 ## The Directus Ecosystem
 
-### Open-Source Core
-
-Our completely free and open-source (GPLv3) Open Data Platform. Directus includes our dynamic API engine (Node.js), the
-intuitive Admin App (Vue.js), this documentation (Markdown), and all dependencies.
-
-- **[GitHub Repository](https://github.com/directus/directus)**
-- **[npm Package](https://www.npmjs.com/package/directus)**
-- **[Docker Image](https://hub.docker.com/r/directus/directus)**
-
-### Documentation
-
-[Our documentation](https://docs.directus.io) describes the most recent version of our platform. They are written in
-publicly managed markdown files so the community can help keep them clean and up-to-date. The docs are divided into the
-following sections:
-
-- [Getting Started](/getting-started/introduction/) — Novice oriented, for a platform intro and installation.
-- [Concepts](/concepts/activity/) — Learning oriented, for understanding the platform.
-- [Guides](/guides/projects/) — Problem oriented, follow along with steps while working.
-- [Reference](/reference/command-line-interface/) — Information oriented, look up info and specs while working.
-- [API Reference](/reference/api/introduction/) — Information oriented, look up API resources while working.
-- [Contributing](/contributing/introduction/) — Contributor oriented — resources for working on Open-Source Core.
-
-::: tip Versioned Docs
-
-Specific version of the Docs ship with each install of Directus 9. They can be found within the
-[Documentation module](/concepts/application#documentation) of the App.
-
-:::
-
-### On-Demand Cloud
-
-[Our self-service platform](https://directus.cloud) for quick and affordable instances of Directus on a multitenant
-infrastructure. Each project includes automatic updates, automatic backups, .
-
-### Enterprise Cloud
-
-Our premium managed solution. Powered by dedicated hardware in your selected region, this service offers
-high-availability, custom limits, SSO, API white-labeling, uptime SLAs, and more.
-[Contact our sales team](https://directus.io/contact/) to discuss pricing and options.
-
-### Cloud Documentation
-
-[Cloud-Specific Docs](https://directus.cloud/docs) include guides for managing projects within our Cloud Dashboard.
-
-### Private Demos
-
-Our On-Demand Cloud platform includes ability to
-[create private demo instances](https://directus.cloud/docs#creating-a-private-demo). Each demo runs the latest version
-of Directus, lasts for several hours, and is completely free, with no credit card required.
-
-### System Status
-
-The [Status Page](https://status.directus.cloud) provides up-to-date information on our various systems, including
-current and historical incident details and our 30-day uptime percentage. From this site you can access the global
-status or your Cloud project's dedicated status page.
-
-### Website
-
-Our [marketing site](https://directus.io) provides general information, resources, and team info for the project.
-
-### Social
-
-For the latest product info and sneak-peeks, be sure to follow us on [Twitter](https://twitter.com/directus).
-
-### Videos
-
-Our [YouTube Channel](https://www.youtube.com/c/DirectusVideos) has video tutorials, release updates, feature overviews,
-and more.
-
-### Community
-
-Join our growing community of 4,000+ developers on [Discord](https://directus.chat) and Slack (legacy). From community
-support to seeing where the platform is heading next, it's a great way to get involved.
-
-### App Locales
-
-We use [Crowdin](https://locales.directus.io/) to manage our numerous App translations. If you're looking to add or
-improve Directus in your language, you can [learn more here](/contributing/translations/).
-
-### Marketplace
-
-Coming in 2021, the [Directus Marketplace](https://directus.market/) will offer a unified portal to extensions created
-by our Core Team and community contributors.
-
-### Awesome List
-
-Head to [awesome-directus](https://github.com/directus-community/awesome-directus) for a list of awesome things related
-to Directus.
+- **[GitHub](https://github.com/directus/directus)** — The open-source repository and version control
+- **[NPM Package](https://www.npmjs.com/package/directus)** — The official Directus node package
+- **[Docker Image](https://hub.docker.com/r/directus/directus)** — The official Directus docker image
+- **[Documentation](https://docs.directus.io)** — Docs for the most recent version of our platform
+- **[On-Demand Cloud](https://directus.cloud)** — Our self-service managed solution (multitenant)
+- **[Enterprise Cloud](https://directus.cloud)** — Our tailored managed solution (single tenant)
+- **[Cloud Documentation](https://directus.cloud/docs)** — Docs for the managed cloud dashboard
+- **[Private Demos](https://directus.cloud/docs#creating-a-private-demo)** — Instructions on creating a free cloud demo
+- **[System Status](https://status.directus.cloud)** — Up-to-date information on our various cloud systems
+- **[Website](https://directus.io)** — General information, resources, and team info
+- **[Twitter](https://twitter.com/directus)** — The latest product info and sneak-peeks
+- **[Videos](https://www.youtube.com/c/DirectusVideos)** — Our YouTube channel with video tutorials and feature
+  overviews
+- **[Discord](https://directus.chat)** — A growing community of 4K+ developers
+- **[Crowdin](https://locales.directus.io/)** — Service for managing the App's many language translations
+- **[Marketplace](https://directus.market/)** — Coming in 2021, will offer a unified portal for platform extensions
+- **[Awesome List](https://github.com/directus-community/awesome-directus)** — A list of awesome things related to
+  Directus

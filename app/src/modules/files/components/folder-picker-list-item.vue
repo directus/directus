@@ -71,10 +71,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style scoped>
-.folder-picker-list-item {
-	--v-list-item-background-color-hover: var(--background-normal-alt);
-	--v-list-item-background-color-active: var(--background-normal-alt);
-}
-</style>

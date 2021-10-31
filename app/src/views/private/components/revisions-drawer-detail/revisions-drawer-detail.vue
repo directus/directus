@@ -8,28 +8,17 @@
 
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
-				<v-divider>{{ group.dateFormatted }}</v-divider>
-
-				<template v-for="(item, index) in group.revisions" :key="item.id">
-					<revision-item :revision="item" :last="index === group.revisions.length - 1" @click="openModal(item.id)" />
-				</template>
+				<RevisionsDateGroup :group="group" @click="openModal" />
 			</template>
 
-			<v-divider v-if="revisionsCount > 100" class="other">
-				{{ t('count_other_revisions', revisionsCount - 101) }}
-			</v-divider>
-
-			<template v-if="created">
-				<revision-item :revision="created" last @click="openModal(created.id)" />
-			</template>
-
-			<template v-else>
+			<template v-if="page == pagesCount && !created">
 				<v-divider v-if="revisionsByDate.length > 0" />
 
 				<div class="external">
 					{{ t('revision_delta_created_externally') }}
 				</div>
 			</template>
+			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="2" />
 		</template>
 
 		<revisions-drawer
@@ -44,20 +33,20 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import { Revision, RevisionsByDate } from './types';
 
 import api from '@/api';
 import { groupBy, orderBy } from 'lodash';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
 import formatLocalized from '@/utils/localized-format';
-import RevisionItem from './revision-item.vue';
+import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 export default defineComponent({
-	components: { RevisionItem, RevisionsDrawer },
+	components: { RevisionsDrawer, RevisionsDateGroup },
 	props: {
 		collection: {
 			type: String,
@@ -72,13 +61,21 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const { revisions, revisionsByDate, loading, refresh, revisionsCount, created } = useRevisions(
+		const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
 			props.collection,
 			props.primaryKey
 		);
 
 		const modalActive = ref(false);
 		const modalCurrentRevision = ref<number | null>(null);
+		const page = ref<number>(1);
+
+		watch(
+			() => page.value,
+			(newPage) => {
+				refresh(newPage);
+			}
+		);
 
 		return {
 			t,
@@ -91,6 +88,8 @@ export default defineComponent({
 			openModal,
 			revisionsCount,
 			created,
+			page,
+			pagesCount,
 			abbreviateNumber,
 		};
 
@@ -105,13 +104,15 @@ export default defineComponent({
 			const loading = ref(false);
 			const revisionsCount = ref(0);
 			const created = ref<Revision>();
+			const pagesCount = ref(0);
 
 			getRevisions();
 
-			return { created, revisions, revisionsByDate, loading, refresh, revisionsCount };
+			return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
 
-			async function getRevisions() {
+			async function getRevisions(page = 0) {
 				loading.value = true;
+				const pageSize = 100;
 
 				try {
 					const response = await api.get(`/revisions`, {
@@ -125,7 +126,8 @@ export default defineComponent({
 								},
 							},
 							sort: '-id',
-							limit: 100,
+							limit: pageSize,
+							page,
 							fields: [
 								'id',
 								'data',
@@ -217,15 +219,16 @@ export default defineComponent({
 					revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 					revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
 					revisionsCount.value = response.data.meta.filter_count;
-				} catch (err: any) {
+					pagesCount.value = Math.ceil(revisionsCount.value / pageSize);
+				} catch (err) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
 			}
 
-			async function refresh() {
-				await getRevisions();
+			async function refresh(page = 0) {
+				await getRevisions(page);
 			}
 		}
 	},
@@ -275,5 +278,9 @@ export default defineComponent({
 	--v-divider-label-color: var(--foreground-subdued);
 
 	font-style: italic;
+}
+
+.v-pagination {
+	justify-content: center;
 }
 </style>

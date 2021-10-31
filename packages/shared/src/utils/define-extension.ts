@@ -1,4 +1,12 @@
-import { InterfaceConfig, DisplayConfig, LayoutConfig, ModuleConfig, HookConfig, EndpointConfig } from '../types';
+import {
+	InterfaceConfig,
+	DisplayConfig,
+	LayoutConfig,
+	ModuleConfig,
+	HookConfig,
+	EndpointConfig,
+	PanelConfig,
+} from '../types';
 
 export function defineInterface(config: InterfaceConfig): InterfaceConfig {
 	return config;
@@ -23,5 +31,9 @@ export function defineHook(config: HookConfig): HookConfig {
 }
 
 export function defineEndpoint(config: EndpointConfig): EndpointConfig {
+	return config;
+}
+
+export function definePanel(config: PanelConfig): PanelConfig {
 	return config;
 }

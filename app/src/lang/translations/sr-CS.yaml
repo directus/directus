@@ -1,4 +1,26 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
+published: Objavljeno
 edit_field: Izmijeni
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
@@ -9,7 +31,6 @@ field_name_translations: Prevodi Polja
 enter_password_to_enable_tfa: Unesite vašu lozinku kako biste uključili dvostruku potvrdu autentičnosti
 add_field: Dodaj Polje
 role_name: Naziv uloge
-db_only_click_to_configure: 'Samo za bazu podataka: Kliknite za Podešavanje '
 show_archived_items: Prikaži arhivirane stavke
 edited: Vrijednost izmijenjena
 required: Obavezno
@@ -20,7 +41,6 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
-email_examples: "admin{'@'}primjer.com, user{'@'}primjer.com..."
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
 emails: Email adrese
@@ -135,6 +155,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Date
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -165,9 +186,6 @@ new_data_alert: 'Sljedeće će biti kreirano u sklopu Modela Podataka:'
 search_collection: Pretraži Kolekciju...
 new_field: 'Novo Polje'
 new_collection: 'Nova Kolekcija'
-add_m2o_to_collection: 'Dodaj Many-to-One relaciju na "{collection}"'
-add_o2m_to_collection: 'Dodaj One-to-Many relaciju na "{collection}"'
-add_m2m_to_collection: 'Dodaj Many-to-Many relaciju na "{collection}"'
 choose_a_type: Izaberi Tip...
 determined_by_relationship: Određeno Relacijom
 add_note: Dodaj korisnu napomenu korisnicima...
@@ -352,8 +370,12 @@ display_template_not_setup: Šablon za grafički prikaz nije ispravno konfiguris
 collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
 select_a_collection: Izaberi Kolekciju
 active: Aktivan
+copy: Kopiraj
 users: Korisnici
 activity: Aktivnost
+action: Akcija
+ip_address: IP adresa
+user_agent: Korisnički Agent
 webhooks: Webhooks
 field_width: Širina Polja
 add_filter: Dodaj Filter
@@ -401,9 +423,9 @@ errors:
   RECORD_NOT_UNIQUE: Detektovana je dupla vrijednost
   USER_SUSPENDED: Suspendovan Korisnik
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
-  UNKNOWN: Neočekivana greška
   INTERNAL_SERVER_ERROR: Neočekivana greška
   NOT_NULL_VIOLATION: Vrijednost ne može biti null
+  UNKNOWN: Neočekivana greška
 value_hashed: Vrijednost je Sigurno Skladištena
 bookmark_name: Naziv oznake...
 create_bookmark: Napravi Oznaku
@@ -531,6 +553,7 @@ toggle: Isključi / Uključi
 icon_on: Ikonica Na
 icon_off: Bez Ikonice
 label: Oznaka
+full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
 media: Medij
@@ -627,7 +650,6 @@ unsaved_changes: Nesačuvane izmjene
 unsaved_changes_copy: Da li ste sigurni da želite da napustite ovu stranicu?
 discard_changes: Poništi Promjene
 keep_editing: Nastavi uređivanje
-page_help_collections_overview: '**Pregled Kolekcija** - Lista svih kolekcija kojima imate pristup.'
 page_help_collections_collection: >-
   **Pretraga Stavki** — Lista svih {collection} stavki kojima imate pristup. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
 page_help_collections_item: >-
@@ -685,6 +707,7 @@ fields:
     collection: Kolekcija
     icon: Ikonica
     note: Napomena
+    color: Boja
     display_template: Šablon za Prikaz
     hidden: Sakriveno
     singleton: Singleton
@@ -783,8 +806,10 @@ field_options:
     collection_setup: Podešavanje Kolekcije
     singleton: Tretiraj kao jedinstven objekat
     language: Jezik
+    translation: Prevodi
+    collection_name: Ime Kolekcije
     archive_divider: Arhiviraj
-    divider: Sortiranje
+    sort_divider: Sortiranje
   directus_roles:
     fields:
       icon_name: Ikonica
@@ -875,6 +900,9 @@ value: Vrijednost
 view_project: Pregledaj Projekat
 report_error: Prijavi Grešku
 interfaces:
+  filter:
+    add_filter: Dodaj Filter
+    all: Svi
   presentation-links:
     presentation-links: Linkovi dugmeta
     links: Linkovi
@@ -1073,6 +1101,8 @@ interfaces:
     trigger: Okidač
     rate: Ocjena
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Prikaži uključena i isključena stanja
@@ -1178,3 +1208,6 @@ layouts:
     calendar: Kalendar
     start_date_field: Polje Početnog Datuma
     end_date_field: Polje Završnog Datuma
+panels:
+  label:
+    name: Oznaka

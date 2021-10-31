@@ -1,11 +1,10 @@
 import { defineLayout } from '@directus/shared/utils';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
-import CardsSidebar from './sidebar.vue';
 import CardsActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { toRefs, inject, computed, ref } from 'vue';
+import { toRefs, computed, ref } from 'vue';
 import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -15,6 +14,7 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { clone } from 'lodash';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
@@ -23,7 +23,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: CardsLayout,
 	slots: {
 		options: CardsOptions,
-		sidebar: CardsSidebar,
+		sidebar: () => undefined,
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
@@ -31,15 +31,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const relationsStore = useRelationsStore();
 
-		const mainElement = inject('main-element', ref<Element | null>(null));
-
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter, search, filterUser } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -66,13 +62,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sort,
 			limit,
 			page,
-			fields: fields,
-			filters: filters,
-			searchQuery: searchQuery,
+			fields,
+			filter,
+			search,
 		});
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
 				if (itemCount.value === 1) {
 					return t('one_filtered_item');
 				}
@@ -82,9 +78,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					count: n(itemCount.value || 0),
 				});
 			}
+
 			if (itemCount.value === 1) {
 				return t('one_item');
 			}
+
 			return t('start_end_of_count_items', {
 				start: n((+page.value - 1) * limit.value + 1),
 				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
@@ -97,10 +95,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const isSingleRow = computed(() => {
 			const cardsWidth = items.value.length * (size.value * 40) + (items.value.length - 1) * 24;
 			return cardsWidth <= width.value;
-		});
-
-		const activeFilterCount = computed(() => {
-			return filters.value.filter((filter) => !filter.locked).length;
 		});
 
 		return {
@@ -128,10 +122,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			showingCount,
 			isSingleRow,
 			width,
-			activeFilterCount,
 			refresh,
 			selectAll,
 			resetPresetAndRefresh,
+			filter,
+			search,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -145,10 +140,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function toPage(newPage: number) {
 			page.value = newPage;
-			mainElement.value?.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
 		}
 
 		function useLayoutOptions() {
@@ -177,43 +168,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useLayoutQuery() {
-			const page = computed({
-				get() {
-					return layoutQuery.value?.page || 1;
-				},
-				set(newPage: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: newPage,
-					};
-				},
-			});
-
-			const sort = computed({
-				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
-				},
-				set(newSort: string) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: 1,
-						sort: newSort,
-					};
-				},
-			});
-
-			const limit = computed({
-				get() {
-					return layoutQuery.value?.limit || 25;
-				},
-				set(newLimit: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: 1,
-						limit: newLimit,
-					};
-				},
-			});
+			const page = syncRefProperty(layoutQuery, 'page', 1);
+			const limit = syncRefProperty(layoutQuery, 'limit', 25);
+			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
+			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort.value);
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value || !props.collection) return [];
@@ -230,14 +188,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
 					fields.push('modified_on');
 					fields.push('type');
-				}
-
-				if (sort.value) {
-					const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
-
-					if (fields.includes(sortField) === false) {
-						fields.push(sortField);
-					}
 				}
 
 				const titleSubtitleFields: string[] = [];

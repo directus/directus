@@ -1,8 +1,35 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: Avatar
+published: Zveřejněno
+modules: Moduly
+module_bar: Panel modulů
+tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 maps: Mapy
+item_creation: Vytvoření položky
 item_revision: Revize položky
+enter_a_name: Zadejte název...
 duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
@@ -18,16 +45,18 @@ branch: Větev
 leaf: List
 indeterminate: Neurčitý
 edit_collection: Upravit kolekci
+exclusive: Exkluzivní
 children: Potomci
-db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
 required: Povinné
 required_for_app_access: Vyžadováno pro přístup k aplikacím
 requires_value: Vyžaduje hodnotu
 create_preset: Vytvořit šablonu
+create_panel: Vytvořit panel
 create_role: Vytvořit roli
 create_user: Vytvořit uživatele
+delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
 invite: Pozvat
@@ -190,8 +219,12 @@ no_comments: Zatím bez komentářů
 request_feature: Požadavek na funkci
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
 create_collection: Vytvořit kategorii
+copy: Kopírovat
 users: Uživatelé
 activity: Aktivita
+action: Akce
+ip_address: IP adresa
+user_agent: Uživatelský agent
 webhooks: Webhooky
 field_width: Šířka pole
 user_directory: Uživatelé
@@ -284,6 +317,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    color: Barva
     hidden: Skryté
   directus_files:
     title: Název
@@ -336,6 +370,7 @@ field_options:
     update: Úpravy
   directus_collections:
     language: Jazyk
+    translation: Překlad
     archive_divider: Archivovat
   directus_roles:
     fields:
@@ -354,6 +389,7 @@ delete_field_are_you_sure: >-
 description: Popis
 done: Hotovo
 duplicate: Duplikovat
+limit: Limit
 email: E-mail
 embed: Vložení
 field: Pole | Pole
@@ -390,6 +426,8 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
+  filter:
+    all: Vše
   presentation-links:
     primary: Primární
   system-collection:

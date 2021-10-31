@@ -1,11 +1,31 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+avatar: プロフィール画像
 edit_field: フィールドの編集
 item_revision: 履歴
 full_width: 最大幅
 field_name_translations: 項目名の翻訳を追加する
 add_field: フィールドの追加
 role_name: 権限名
-db_only_click_to_configure: 'データベースのみ: クリックして設定する '
 required: 必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成
@@ -53,6 +73,7 @@ key: キー
 boolean: 真偽値
 date: 日付
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: 整数
@@ -176,8 +197,11 @@ csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
+copy: コピー
 users: ユーザー
 activity: 操作履歴
+ip_address: IPアドレス
+user_agent: ユーザーエージェント
 webhooks: Webhook
 field_width: 入力欄幅
 user_directory: ユーザーディレクトリ
@@ -201,8 +225,8 @@ errors:
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
-  UNKNOWN: 予期しないエラーが発生しました
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
+  UNKNOWN: 予期しないエラーが発生しました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
@@ -254,6 +278,7 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+full_screen: 全画面表示
 width: 幅
 height: 高さ
 wysiwyg_options:
@@ -310,6 +335,7 @@ fields:
   directus_collections:
     icon: アイコン
     note: 備考
+    color: 色
     hidden: 非表示
     singleton: シングルトン
     sort_field: フィールドの並べ替え
@@ -370,8 +396,9 @@ field_options:
     collection_setup: コレクションの作成
     singleton: シングルオブジェクトに設定する
     language: 言語
+    translation: 翻訳
     archive_divider: アーカイブ
-    divider: 並べ替え
+    sort_divider: 並べ替え
   directus_roles:
     fields:
       icon_name: アイコン
@@ -432,6 +459,8 @@ sort_direction: ソート順
 translation: 翻訳
 value: 値
 interfaces:
+  filter:
+    all: すべて
   system-collections:
     collections: コレクション
   select-color:
@@ -457,6 +486,8 @@ interfaces:
   user:
     user: ユーザー
 displays:
+  translations:
+    translations: 翻訳
   boolean:
     boolean: 真偽値
   color:

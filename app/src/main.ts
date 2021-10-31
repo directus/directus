@@ -7,6 +7,7 @@ import App from './app.vue';
 import { registerComponents } from './components/register';
 import { DIRECTUS_LOGO } from './constants';
 import { registerDirectives } from './directives/register';
+import { registerPanels } from './panels/register';
 import { registerDisplays } from './displays/register';
 import { registerInterfaces } from './interfaces/register';
 import { i18n } from './lang/';
@@ -42,7 +43,13 @@ async function init() {
 	registerComponents(app);
 	registerViews(app);
 
-	await Promise.all([registerInterfaces(app), registerDisplays(app), registerLayouts(app), loadModules()]);
+	await Promise.all([
+		registerInterfaces(app),
+		registerPanels(app),
+		registerDisplays(app),
+		registerLayouts(app),
+		loadModules(),
+	]);
 
 	app.mount('#app');
 

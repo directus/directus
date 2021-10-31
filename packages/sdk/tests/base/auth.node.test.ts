@@ -86,7 +86,7 @@ describe('auth (node)', function () {
 			expect(sdk.storage.auth_expires).toBe(107000);
 			await tick(5000);
 
-			expect(scope.pendingMocks().length).toBe(1);
+			expect(scope.pendingMocks().length).toBe(0);
 			await flush();
 			expect(sdk.auth.expiring).toBe(true);
 

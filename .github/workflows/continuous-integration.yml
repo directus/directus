@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pre_check:
+    name: Pre-Check
+    runs-on: ubuntu-latest
+    outputs:
+      # Returns 'true' if workflow is skippable for one of the following reasons:
+      # - Exact same files have been successfully checked in older run
+      # - Only files that do not require checks have been changed (paths_ignore)
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - name: Check if workflow is skippable
+        id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        # Run all the jobs if the pre-check should fail for any reason
+        # (the pre-check will be marked as 'passed', better solution pending at https://github.com/actions/toolkit/issues/399)
+        continue-on-error: true
+        with:
+          # Cancel outdated workflow-runs
+          cancel_others: 'true'
+          paths_ignore: '["app/src/lang/translations/*.yaml"]'
+
+  lint:
+    name: Lint
+    needs: pre_check
+    if: needs.pre_check.outputs.should_skip != 'true'
+    uses: directus/directus/.github/workflows/lint.yml@main
+
+  codeql_analysis:
+    name: CodeQL Analysis
+    needs: pre_check
+    if: needs.pre_check.outputs.should_skip != 'true'
+    uses: directus/directus/.github/workflows/codeql-analysis.yml@main
+
+  unit_tests:
+    name: Unit Tests
+    needs: pre_check
+    if: needs.pre_check.outputs.should_skip != 'true'
+    uses: directus/directus/.github/workflows/unit-tests.yml@main
+
+  e2e_tests:
+    name: End-to-End Tests
+    needs: pre_check
+    # Only run on push events (on main branch) for now
+    if: github.event_name == 'push' && needs.pre_check.outputs.should_skip != 'true'
+    uses: directus/directus/.github/workflows/e2e-tests.yml@main
