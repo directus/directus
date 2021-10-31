@@ -119,6 +119,7 @@
 				:width="item.width"
 				:height="item.height"
 				:title="item.title"
+				:readonly="saveAllowed !== true"
 				@click="replaceFileDialogActive = true"
 			/>
 

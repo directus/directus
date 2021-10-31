@@ -3,11 +3,11 @@
 		<div
 			v-if="type === 'image'"
 			class="image"
-			:class="{ svg: isSVG, 'max-size': inModal === false }"
-			@click="$emit('click')"
+			:class="{ svg: isSVG, 'max-size': inModal === false, pointer: !readonly }"
+			@click="readonly ? null : $emit('click')"
 		>
 			<img :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
-			<v-icon v-if="inModal === false" name="upload" />
+			<v-icon v-if="!readonly && inModal === false" name="upload" />
 		</div>
 
 		<video v-else-if="type === 'video'" controls :src="src" />
@@ -21,6 +21,10 @@ import { defineComponent, computed, ref } from 'vue';
 
 export default defineComponent({
 	props: {
+		readonly: {
+			type: Boolean,
+			default: false,
+		},
 		mime: {
 			type: String,
 			required: true,
@@ -96,7 +100,6 @@ audio {
 .image {
 	width: 100%;
 	height: 100%;
-	cursor: pointer;
 
 	&.max-size {
 		max-height: 75vh;
@@ -137,5 +140,9 @@ audio {
 		// Max height - padding * 2
 		max-height: calc(75vh - 128px);
 	}
+}
+
+.pointer {
+	cursor: pointer;
 }
 </style>
