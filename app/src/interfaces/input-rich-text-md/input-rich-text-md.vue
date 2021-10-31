@@ -163,7 +163,6 @@
 				</v-button>
 				<v-button x-small value="preview" :class="[{ active: view[0] === 'preview' }]">
 					{{ t('interfaces.input-rich-text-md.preview') }}
-					{{ toolbar.includes('image') }}
 				</v-button>
 			</v-item-group>
 		</div>
