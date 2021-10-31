@@ -46,7 +46,7 @@
 						v-tooltip.bottom="t('move_to_folder')"
 						rounded
 						icon
-						:disabled="item === null"
+						:disabled="item === null || saveAllowed === false"
 						class="folder"
 						@click="on"
 					>
