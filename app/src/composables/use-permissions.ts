@@ -8,6 +8,7 @@ import { useCollection } from '@directus/shared/composables';
 type UsablePermissions = {
 	deleteAllowed: ComputedRef<boolean>;
 	saveAllowed: ComputedRef<boolean>;
+	createAllowed: ComputedRef<boolean>;
 	archiveAllowed: ComputedRef<boolean>;
 	updateAllowed: ComputedRef<boolean>;
 	fields: ComputedRef<Field[]>;
@@ -19,6 +20,8 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	const permissionsStore = usePermissionsStore();
 
 	const { info: collectionInfo, fields: rawFields } = useCollection(collection);
+
+	const createAllowed = computed(() => isAllowed(collection.value, 'create', item.value));
 
 	const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
 
@@ -90,5 +93,5 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 		);
 	});
 
-	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields, revisionsAllowed };
+	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields, revisionsAllowed, createAllowed };
 }
