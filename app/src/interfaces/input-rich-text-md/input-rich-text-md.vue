@@ -1,147 +1,143 @@
 <template>
 	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
 		<div class="toolbar">
-			<v-menu
-				v-if="view[0] !== 'preview' && toolbar.indexOf('heading') !== -1"
-				show-arrow
-				placement="bottom-start"
-				:class="[{ active: view[0] !== 'preview' }]"
-			>
-				<template #activator="{ toggle }">
-					<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
-						<v-icon name="format_size" />
-					</v-button>
-				</template>
-				<v-list>
-					<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
-						<v-list-item-content><v-text-overflow :text="t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
-						<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+			<template v-if="view[0] !== 'preview'">
+				<v-menu
+					v-if="toolbar.includes('heading')"
+					show-arrow
+					placement="bottom-start"
+					:class="[{ active: view[0] !== 'preview' }]"
+				>
+					<template #activator="{ toggle }">
+						<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
+							<v-icon name="format_size" />
+						</v-button>
+					</template>
+					<v-list>
+						<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
+							<v-list-item-content><v-text-overflow :text="t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
+							<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
+						</v-list-item>
+					</v-list>
+				</v-menu>
 
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('bold') !== -1"
-				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
-				small
-				icon
-				@click="edit('bold')"
-			>
-				<v-icon name="format_bold" />
-			</v-button>
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('italic') !== -1"
-				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
-				small
-				icon
-				@click="edit('italic')"
-			>
-				<v-icon name="format_italic" />
-			</v-button>
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('strikethrough') !== -1"
-				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
-				small
-				icon
-				@click="edit('strikethrough')"
-			>
-				<v-icon name="format_strikethrough" />
-			</v-button>
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('bullist') !== -1"
-				v-tooltip="t('wysiwyg_options.bullist')"
-				small
-				icon
-				@click="edit('listBulleted')"
-			>
-				<v-icon name="format_list_bulleted" />
-			</v-button>
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('numlist') !== -1"
-				v-tooltip="t('wysiwyg_options.numlist')"
-				small
-				icon
-				@click="edit('listNumbered')"
-			>
-				<v-icon name="format_list_numbered" />
-			</v-button>
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('blockquote') !== -1"
-				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
-				small
-				icon
-				@click="edit('blockquote')"
-			>
-				<v-icon name="format_quote" />
-			</v-button>
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('code') !== -1"
-				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
-				small
-				icon
-				@click="edit('code')"
-			>
-				<v-icon name="code" />
-			</v-button>
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('link') !== -1"
-				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
-				small
-				icon
-				@click="edit('link')"
-			>
-				<v-icon name="insert_link" />
-			</v-button>
+				<v-button
+					v-if="toolbar.includes('bold')"
+					v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+					small
+					icon
+					@click="edit('bold')"
+				>
+					<v-icon name="format_bold" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('italic')"
+					v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+					small
+					icon
+					@click="edit('italic')"
+				>
+					<v-icon name="format_italic" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('strikethrough')"
+					v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
+					small
+					icon
+					@click="edit('strikethrough')"
+				>
+					<v-icon name="format_strikethrough" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('bullist')"
+					v-tooltip="t('wysiwyg_options.bullist')"
+					small
+					icon
+					@click="edit('listBulleted')"
+				>
+					<v-icon name="format_list_bulleted" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('numlist')"
+					v-tooltip="t('wysiwyg_options.numlist')"
+					small
+					icon
+					@click="edit('listNumbered')"
+				>
+					<v-icon name="format_list_numbered" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('blockquote')"
+					v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
+					small
+					icon
+					@click="edit('blockquote')"
+				>
+					<v-icon name="format_quote" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('code')"
+					v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
+					small
+					icon
+					@click="edit('code')"
+				>
+					<v-icon name="code" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('link')"
+					v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+					small
+					icon
+					@click="edit('link')"
+				>
+					<v-icon name="insert_link" />
+				</v-button>
 
-			<v-menu
-				v-if="view[0] !== 'preview' && toolbar.indexOf('table') !== -1"
-				show-arrow
-				:close-on-content-click="false"
-			>
-				<template #activator="{ toggle }">
-					<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
-						<v-icon name="table_chart" />
-					</v-button>
-				</template>
+				<v-menu v-if="toolbar.includes('table')" show-arrow :close-on-content-click="false">
+					<template #activator="{ toggle }">
+						<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
+							<v-icon name="table_chart" />
+						</v-button>
+					</template>
 
-				<template #default="{ deactivate }">
-					<div class="table-options">
-						<div class="field half">
-							<p class="type-label">{{ t('rows') }}</p>
-							<v-input v-model="table.rows" :min="1" type="number" />
+					<template #default="{ deactivate }">
+						<div class="table-options">
+							<div class="field half">
+								<p class="type-label">{{ t('rows') }}</p>
+								<v-input v-model="table.rows" :min="1" type="number" />
+							</div>
+							<div class="field half">
+								<p class="type-label">{{ t('columns') }}</p>
+								<v-input v-model="table.columns" :min="1" type="number" />
+							</div>
+							<div class="field full">
+								<v-button
+									full-width
+									@click="
+										() => {
+											edit('table', table);
+											deactivate();
+										}
+									"
+								>
+									Create
+								</v-button>
+							</div>
 						</div>
-						<div class="field half">
-							<p class="type-label">{{ t('columns') }}</p>
-							<v-input v-model="table.columns" :min="1" type="number" />
-						</div>
-						<div class="field full">
-							<v-button
-								full-width
-								@click="
-									() => {
-										edit('table', table);
-										deactivate();
-									}
-								"
-							>
-								Create
-							</v-button>
-						</div>
-					</div>
-				</template>
-			</v-menu>
+					</template>
+				</v-menu>
 
-			<v-button
-				v-if="view[0] !== 'preview' && toolbar.indexOf('image') !== -1"
-				v-tooltip="t('wysiwyg_options.image')"
-				small
-				icon
-				@click="imageDialogOpen = true"
-			>
-				<v-icon name="insert_photo" />
-			</v-button>
+				<v-button
+					v-if="toolbar.includes('image')"
+					v-tooltip="t('wysiwyg_options.image')"
+					small
+					icon
+					@click="imageDialogOpen = true"
+				>
+					<v-icon name="insert_photo" />
+				</v-button>
 
-			<span v-if="view[0] !== 'preview'">
 				<v-button
 					v-for="custom in customSyntax"
 					:key="custom.name"
@@ -152,13 +148,23 @@
 				>
 					<v-icon :name="custom.icon" />
 				</v-button>
-			</span>
+			</template>
 
 			<div class="spacer"></div>
 
 			<v-item-group v-model="view" class="view" mandatory rounded>
-				<v-button x-small value="editor" :class="[{ active: view[0] !== 'preview' }]">Edit</v-button>
-				<v-button x-small value="preview" :class="[{ active: view[0] === 'preview' }]">Preview</v-button>
+				<v-button
+					x-small
+					value="editor"
+					:class="[{ active: view[0] !== 'preview' }]"
+					:text="t(`input-rich-text-md.edit`)"
+				>
+					{{ t('interfaces.input-rich-text-md.edit') }}
+				</v-button>
+				<v-button x-small value="preview" :class="[{ active: view[0] === 'preview' }]">
+					{{ t('interfaces.input-rich-text-md.preview') }}
+					{{ toolbar.includes('image') }}
+				</v-button>
 			</v-item-group>
 		</div>
 

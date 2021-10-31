@@ -155,7 +155,7 @@ export default defineInterface({
 								interface: 'input',
 								width: 'half',
 								options: {
-									placeholder: '$t:Name',
+									placeholder: '$t:name',
 									default: null,
 								},
 							},
