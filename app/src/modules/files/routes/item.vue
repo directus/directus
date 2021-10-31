@@ -82,6 +82,7 @@
 				rounded
 				icon
 				class="edit"
+				:disabled="saveAllowed === false"
 				@click="editActive = true"
 			>
 				<v-icon name="tune" />
