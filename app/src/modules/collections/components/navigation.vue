@@ -63,7 +63,6 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const contextMenu = ref();
-		const contextMenuTarget = ref<undefined | string>();
 
 		const rootItems = computed(() => {
 			const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
@@ -87,13 +86,11 @@ export default defineComponent({
 			activateContextMenu,
 			deactivateContextMenu,
 			contextMenu,
-			contextMenuTarget,
 			search,
 			showSearch,
 		};
 
-		function activateContextMenu(event: PointerEvent, target?: string) {
-			contextMenuTarget.value = target;
+		function activateContextMenu(event: PointerEvent) {
 			contextMenu.value.activate(event);
 		}
 
