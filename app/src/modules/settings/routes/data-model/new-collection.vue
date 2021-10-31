@@ -123,6 +123,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
+import { cloneDeep } from 'lodash';
 import { defineComponent, ref, reactive, watch } from 'vue';
 import api from '@/api';
 import { Field, Relation } from '@directus/shared/types';
@@ -132,6 +133,51 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { DeepPartial } from '@directus/shared/types';
+
+const defaultSystemFields = {
+	status: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'status',
+		label: 'status',
+		icon: 'flag',
+	},
+	sort: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'sort',
+		label: 'sort',
+		icon: 'low_priority',
+	},
+	dateCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_created',
+		label: 'created_on',
+		icon: 'access_time',
+	},
+	userCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_created',
+		label: 'created_by',
+		icon: 'account_circle',
+	},
+	dateUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_updated',
+		label: 'updated_on',
+		icon: 'access_time',
+	},
+	userUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_updated',
+		label: 'updated_by',
+		icon: 'account_circle',
+	},
+};
 
 export default defineComponent({
 	setup() {
@@ -158,50 +204,7 @@ export default defineComponent({
 		const archiveValue = ref<string>();
 		const unarchiveValue = ref<string>();
 
-		const systemFields = reactive({
-			status: {
-				enabled: false,
-				inputDisabled: false,
-				name: 'status',
-				label: 'status',
-				icon: 'flag',
-			},
-			sort: {
-				enabled: false,
-				inputDisabled: false,
-				name: 'sort',
-				label: 'sort',
-				icon: 'low_priority',
-			},
-			dateCreated: {
-				enabled: false,
-				inputDisabled: false,
-				name: 'date_created',
-				label: 'created_on',
-				icon: 'access_time',
-			},
-			userCreated: {
-				enabled: false,
-				inputDisabled: false,
-				name: 'user_created',
-				label: 'created_by',
-				icon: 'account_circle',
-			},
-			dateUpdated: {
-				enabled: false,
-				inputDisabled: false,
-				name: 'date_updated',
-				label: 'updated_on',
-				icon: 'access_time',
-			},
-			userUpdated: {
-				enabled: false,
-				inputDisabled: false,
-				name: 'user_updated',
-				label: 'updated_by',
-				icon: 'account_circle',
-			},
-		});
+		const systemFields = reactive(cloneDeep(defaultSystemFields));
 
 		const saving = ref(false);
 
@@ -222,6 +225,7 @@ export default defineComponent({
 		};
 
 		function setOptionsForSingleton() {
+			systemFields.sort = { ...defaultSystemFields.sort };
 			systemFields.sort.inputDisabled = singleton.value;
 		}
 
