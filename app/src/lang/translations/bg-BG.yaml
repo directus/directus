@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Идентификатор
 avatar: Аватар
 default_provider: По подразбиране
 published: Публикувано
@@ -30,7 +51,7 @@ indeterminate: Неопределен
 edit_collection: Редактиране на колекция
 exclusive: Изключително
 children: Дъщерен
-db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация'
+db_only_click_to_configure: 'Само в базата от данни: Натиснете за конфигуриране'
 show_archived_items: Включително архивираните
 edited: Стойността е редактирана
 required: Задължително
@@ -152,6 +173,8 @@ global: Глобален
 admins_have_all_permissions: Администраторите имат всички позволения
 camera: Камера
 show_zero: Показване на нули
+create_in_advanced_field_creation_mode: Създаване в разширен режим
+continue_in_advanced_field_creation_mode: Продълважане в разширен режим
 sum: Сумиране
 sum_distinct: Сумиране на уникалните
 avg: Усредняване
@@ -212,6 +235,9 @@ new_data_alert: 'Следващото ще бъде създадено във в
 search_collection: Търсене на колекция...
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
+add_m2o_to_collection: 'Добавяне на М2О в "{collection}"'
+add_o2m_to_collection: 'Добавяне на O2M в "{collection}"'
+add_m2m_to_collection: 'Добавяне на M2M в "{collection}"'
 choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
@@ -400,7 +426,7 @@ any: Който и да е
 csv: CSV
 no_collections: Няма колекции
 create_collection: Създаване на колекция
-no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за започване.
+no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
 no_collections_copy: Все още нямате никакви колекции. Свържете се със системния администратор.
 relationship_not_setup: Релацията не е конфигурирана правилно
 display_template_not_setup: Опциите за показване на шаблона, не са правилно конфигурирани
@@ -658,6 +684,7 @@ source: Източник
 url_placeholder: Въвеждане на URL...
 display_text: Текст за показване
 display_text_placeholder: Въвеждане на текст за показване...
+interface_group_text_and_numbers: Текст и числа
 interface_group_selection: За избиране
 interface_group_relational: Релационни
 interface_group_presentation: Оформление
@@ -759,7 +786,7 @@ page_help_collections_collection: >-
 page_help_collections_item: >-
   **Детайли за запис** — Формуляр за преглед и управление на записа. Страничният панел също съдържа и пълна история на ревизиите и коментарите към него.
 page_help_activity_collection: >-
-  **Емисия на активността** — Подробен списък на активността за съдържанието, потребителите и системата.
+  **Поток на активността** — Подробен списък на цялата активност по съдържанието, записите, потребителите и системата.
 page_help_docs_global: >-
   **Обзор на документацията** — Показване на документи, специфични за проекта, версия и схема.
 page_help_files_collection: >-
@@ -784,7 +811,7 @@ page_help_users_item: >-
   **Детайли за потребител** — Управление на информацията на вашия потребителския профил, или преглед на детайли за други потребители.
 page_help_insights_overview: '**Задълбочен анализ** — Показване на всички налични табла до които имате достъп.'
 page_help_insights_dashboard: '**Табло** — Работен плот за управление на един или множество панели'
-activity_feed: Емисия на активността
+activity_feed: Поток на активността
 add_new: Добави нов запис
 create_new: Създаване
 all: Всичко
@@ -950,7 +977,9 @@ fields:
     method: Метод
     status: Статус
     data: Данни
+    header: Хедър
     value: Стойност
+    headers: Хедъри при заявката
     data_label: Изпращане на данните
     triggers: Тригери
     actions: Действия
@@ -1059,7 +1088,9 @@ field_options:
     actions_delete: Изтриване
     actions_login: Вход
     headers:
+      header: Хедър
       value: Стойност
+      add: Добавяне на хедър
 no_fields_in_collection: 'Все още няма полета в {collection}'
 no_value: Няма стойност
 do_nothing: Без действие
@@ -1159,7 +1190,7 @@ interfaces:
     and: и
     of_the_following: от следните
     no_rules: Няма зададени правила
-    change_value: Кликнете за промяна
+    change_value: Натиснете за промяна
     placeholder: Привлачете правилата тук
   group-accordion:
     name: Акордеон
@@ -1301,6 +1332,7 @@ interfaces:
     lnglat: Географски дължина/ширина
     wkt: WKT
     wkb: WKB
+    click_to_select: Натиснете за избор на {geometry}
   presentation-notice:
     notice: Пояснение
     description: Показване на кратко пояснение
@@ -1524,12 +1556,13 @@ layouts:
     layers: Слоеве
     edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
+    cluster: Групиране на близките обекти
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
     field: Геометрия
     invalid_geometry: Невалидна геометрия
-    auto_location_filter: Автоматично филтриране според изгледа
+    auto_location_filter: Филтриране според изгледа
     search_this_area: Търсене в тази зона
     clear_data_filter: Изчистване на филтрирането
     clear_location_filter: Изчистване на филтрирането
