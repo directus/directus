@@ -658,6 +658,11 @@ source: Източник
 url_placeholder: Въвеждане на URL...
 display_text: Текст за показване
 display_text_placeholder: Въвеждане на текст за показване...
+interface_group_selection: За избиране
+interface_group_relational: Релационни
+interface_group_presentation: Оформление
+interface_group_groups: Групиране
+interface_group_other: Други
 tooltip: Подсказка
 tooltip_placeholder: Въвеждане на подсказка...
 unlimited: Неограничен
