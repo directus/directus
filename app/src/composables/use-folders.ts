@@ -1,4 +1,5 @@
 import api from '@/api';
+import { usePermissionsStore } from '@/stores';
 import { ref, Ref } from 'vue';
 
 type FolderRaw = {
@@ -31,6 +32,8 @@ let openFolders: Ref<string[] | null> | null = null;
 let error: Ref<any> | null = null;
 
 export default function useFolders(): UsableFolders {
+	const permissionsStore = usePermissionsStore();
+
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
@@ -44,6 +47,7 @@ export default function useFolders(): UsableFolders {
 	return { loading, folders, nestedFolders, error, fetchFolders, openFolders };
 
 	async function fetchFolders() {
+		if (!permissionsStore.hasPermission('directus_folders', 'read')) return;
 		if (loading === null) return;
 		if (folders === null) return;
 		if (nestedFolders === null) return;
