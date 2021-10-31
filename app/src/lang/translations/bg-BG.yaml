@@ -63,7 +63,7 @@ create_role: Създаване на роля
 create_user: Създаване на потребител
 delete_panel: Изтриване на панел
 create_webhook: Създаване на уеб-кука
-invite_users: Покана към потребители
+invite_users: Поканване на потребители
 invite: Покана
 email_already_invited: Вече е изпратена покана в пощата на "{email}"
 emails: E-пощи
@@ -907,7 +907,7 @@ fields:
     user_preferences: Потребителски настройки
     language: Език
     theme: Тема
-    theme_auto: Автоматично (според системата)
+    theme_auto: Автоматична (според системата)
     theme_light: Светъл режим
     theme_dark: Тъмен режим
     tfa_secret: Двуфакторна автентикация
@@ -1070,7 +1070,7 @@ field_options:
     collections_addLabel: Добавяне на колекция...
   directus_users:
     preferences_divider: Потребителски настройки
-    dropdown_auto: Автоматично (според системата)
+    dropdown_auto: Автоматична (според системата)
     dropdown_light: Светъл режим
     dropdown_dark: Тъмен режим
     admin_divider: Административни настройки
