@@ -43,7 +43,7 @@
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item clickable @click="renameActive = true">
+				<v-list-item clickable :disabled="!updateAllowed" @click="renameActive = true">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
@@ -51,7 +51,7 @@
 						<v-text-overflow :text="t('rename_folder')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item clickable @click="moveActive = true">
+				<v-list-item clickable :disabled="!updateAllowed" @click="moveActive = true">
 					<v-list-item-icon>
 						<v-icon name="folder_move" />
 					</v-list-item-icon>
@@ -59,7 +59,7 @@
 						<v-text-overflow :text="t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item clickable @click="deleteActive = true">
+				<v-list-item clickable :disabled="!deleteAllowed" @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
@@ -123,6 +123,7 @@ import api from '@/api';
 import FolderPicker from './folder-picker.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { usePermissions } from '@/composables/use-permissions';
 
 export default defineComponent({
 	name: 'NavigationFolder',
@@ -148,6 +149,11 @@ export default defineComponent({
 
 		const contextMenu = ref();
 
+		const { deleteAllowed, saveAllowed, updateAllowed } = usePermissions(
+			ref('directus_folders'),
+			ref(null),
+			ref(false)
+		);
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
@@ -170,6 +176,9 @@ export default defineComponent({
 			contextMenu,
 			activateContextMenu,
 			deactivateContextMenu,
+			updateAllowed,
+			saveAllowed,
+			deleteAllowed,
 		};
 
 		function useRenameFolder() {
