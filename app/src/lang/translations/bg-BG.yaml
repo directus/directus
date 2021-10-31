@@ -420,7 +420,7 @@ no_files_copy: Тук не са открити файлове.
 user_count: 'Няма потребители | Един потребител | {count} потребителя'
 no_users_copy: Все още няма потребители в тази роля.
 webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
-no_webhooks_copy: Няма зададени уеб-куки. Започване на създаването с бутона по-долу.
+no_webhooks_copy: Няма зададени уеб-куки. Натиснете бутона по-долу за да започнете.
 all_items: Всички записи
 any: Който и да е
 csv: CSV
@@ -441,6 +441,7 @@ no_other_dashboards_copy: Все още нямате други табла.
 inactive: Неактивен
 users: Потребители
 activity: Активности
+activity_item: Предмет на дейността
 action: Действие
 ip_address: IP адрес
 user_agent: Потребителски агент
@@ -658,8 +659,8 @@ panel_options: Опции на панела
 panel_header: Заглавие на панела
 panel_name_placeholder: Име на панела...
 panel_note_placeholder: Незадължително описание за този панел...
-panel_delete_confirm: Наистина ли искате да изтриете този панел? Това действие не може да бъде отменено.
-dashboard_delete_confirm: Наистина ли искате да изтриете това табло? Това действие не може да бъде отменено.
+panel_delete_confirm: Сигурни ли сте, че искате да изтриете този панел? Това действие не може да бъде отменено.
+dashboard_delete_confirm: Сигурни ли сте, че искате да изтриете това табло? Това действие не може да бъде отменено.
 edit_dashboard: Промяна на таблото
 delete_dashboard: Изтриване на таблото
 visible: Видимост
@@ -818,7 +819,7 @@ all: Всичко
 none: Нищо
 no_layout_collection_selected_yet: Все още не е избран изглед или колекция
 batch_delete_confirm: >-
-  Няма избрани записи | Наистина ли искате да изтриете записа? Действието не може да бъде отменено. | Наистина ли искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
+  Няма избрани записи | Сигурни ли сте, че искате да изтриете записа? Действието не може да бъде отменено. | Сигурни ли сте, че искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
 cancel: Отмяна
 no_upscale: Без уголемяване на картиките
 collection: Колекция
@@ -1038,6 +1039,7 @@ field_options:
     sort_field: Избор на поле...
     accountability_divider: Профилиране
     duplication_divider: Дублиране
+    item_duplication_fields: Копиране на полета при дублиране
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -1091,7 +1093,7 @@ field_options:
       header: Хедър
       value: Стойност
       add: Добавяне на хедър
-no_fields_in_collection: 'Все още няма полета в {collection}'
+no_fields_in_collection: 'Все още няма полета в "{collection}"'
 no_value: Няма стойност
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
@@ -1176,6 +1178,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превод...
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
