@@ -100,7 +100,7 @@ archive_confirm: Сигурни ли сте, че искате да архиви
 archive_confirm_count: >-
   Няма избрани записи | Сигурни ли сте, че искате да архивирате записа? | Сигурни ли сте, че искате да архивирате тези {count} записа?
 reset_system_permissions_to: 'Нулиране на системните позволения към:'
-reset_system_permissions_copy: Действието може да презапише потребителските позволения, които са приложени към системните колекции. Сигурни ли сте?
+reset_system_permissions_copy: Действието може да презапише персонализираните позволения, които са приложени към системните колекции. Сигурни ли сте?
 the_following_are_minimum_permissions: Следните са минималните изисквани позволения за достъп до "Приложението". Може да бъдат добавяни повече, но не и по-малко.
 app_access_minimum: Минимум за достъп до приложението
 recommended_defaults: Препоръчителни
@@ -242,7 +242,7 @@ choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
 add_link: Добавяне на връзка
-custom_link: Персонализирана връзка
+custom_link: Собствена връзка
 default_value: Стойност по подразбиране
 standard_field: Стандартно поле
 single_file: Единствен файл
@@ -315,7 +315,7 @@ last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
 a_unique_table_name: Уникално име на таблица...
 a_unique_column_name: Уникално име на колона...
-enable_custom_values: Персонализирани стойности
+enable_custom_values: Собствени стойности
 submit: Изпращане
 move_to_folder: Преместване в папка
 move: Преместване
@@ -953,7 +953,7 @@ fields:
     storage_asset_presets: Заготовки за съхранените файлове
     storage_asset_transform: Трансформиране на съхранените файлове
     overrides: Отмяна
-    custom_css: Потребителски CSS
+    custom_css: Собствен CSS
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -1313,9 +1313,9 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Въвеждане и преглед за markdown
-    customSyntax: Персонализирани блокове
-    customSyntax_label: Добавяне на персонализиран синтаксис
-    customSyntax_add: Добавяне на персонален синтаксис
+    customSyntax: Собствени блокове
+    customSyntax_label: Добавяне на собствен синтактични типове
+    customSyntax_add: Добавяне на собствен синтаксис
     box: Блоков / Вложен
     imageToken: Токен за изображенията
     imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
@@ -1374,7 +1374,7 @@ interfaces:
     capitalization: Първа-главна буква
     uppercase: Обръщане към големи букви
     lowercase: Обръщане към малки букви
-    auto_formatter: Автоматично форматиране като заглавие
+    auto_formatter: Форматиране като заглавие
     alphabetize: По азбучен ред
     alphabetize_label: Винаги в азбучен ред
     add_tags: Добавяне на етикет...
@@ -1420,7 +1420,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Редактор на текст с допълнения в HTML формат
     toolbar: Лента с инструменти
-    custom_formats: Персонализирани формати
+    custom_formats: Собтсвени формати
     options_override: Наслагване на опции
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
@@ -1472,7 +1472,7 @@ displays:
     description: Показване на стойностите релативни към момента
     format: Формат
     format_note: >-
-      Персонализирания формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Собственият формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Дълго
     short: Късо
     relative: Относително
