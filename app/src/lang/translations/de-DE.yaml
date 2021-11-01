@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Avatar
 default_provider: Standard
 published: Veröffentlicht
@@ -172,6 +152,8 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 show_zero: Null anzeigen
+create_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus erstellen
+continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
 avg: Mittelwert
@@ -232,6 +214,9 @@ new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung durchsuchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
+add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
+add_o2m_to_collection: 'O2M zu "{collection} " hinzufügen'
+add_m2m_to_collection: 'M2M zu "{collection} " hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
@@ -679,6 +664,12 @@ source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
 display_text_placeholder: Anzeigetext eingeben...
+interface_group_text_and_numbers: Text & Zahlen
+interface_group_selection: Auswahl
+interface_group_relational: Beziehung
+interface_group_presentation: Präsentation
+interface_group_groups: Gruppen
+interface_group_other: Andere
 tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
@@ -966,6 +957,7 @@ fields:
     method: Methode
     status: Status
     data: Daten
+    value: Wert
     data_label: Ereignisdaten senden
     triggers: Auslöser
     actions: Aktionen
@@ -1074,6 +1066,8 @@ field_options:
     actions_update: Aktualisieren
     actions_delete: Löschen
     actions_login: Login
+    headers:
+      value: Wert
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 no_value: Kein Wert
 do_nothing: Keine Aktion
