@@ -308,7 +308,7 @@ export default defineComponent({
 .layout-map {
 	position: relative;
 	width: 100%;
-	height: calc(100% - 61px);
+	height: calc(100% - 60px);
 }
 
 .center {
