@@ -341,7 +341,14 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAsCopyAndNavigate, form);
-		useShortcut('alt+n', createNew, form);
+		useShortcut(
+			'alt+n',
+			async () => {
+				await saveAndStay();
+				createNew();
+			},
+			form
+		);
 
 		const editsGuard: NavigationGuard = (to) => {
 			if (hasEdits.value) {
