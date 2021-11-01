@@ -134,13 +134,11 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
+						const email = object[mailAttribute ?? 'mail'];
 						const user = {
 							firstName: typeof object.givenName === 'object' ? object.givenName[0] : object.givenName,
 							lastName: typeof object.sn === 'object' ? object.sn[0] : object.sn,
-							email:
-								typeof object[mailAttribute ?? 'mail'] === 'object'
-									? object[mailAttribute ?? 'mail'][0]
-									: String(object[mailAttribute ?? 'mail']),
+							email: typeof email === 'object' ? email[0] : email,
 							userAccountControl:
 								typeof object.userAccountControl === 'object'
 									? Number(object.userAccountControl[0])
