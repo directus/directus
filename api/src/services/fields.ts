@@ -85,7 +85,8 @@ export class FieldsService {
 				return field.field === column.name && field.collection === column.table;
 			});
 
-			const { type = 'alias', ...info } = column ? getLocalType(column, field) : {};
+			const { type, ...info } = getLocalType(column, field);
+
 			const data = {
 				collection: column.table,
 				field: column.name,
@@ -122,10 +123,12 @@ export class FieldsService {
 		});
 
 		const aliasFieldsAsField = aliasFields.map((field) => {
+			const { type } = getLocalType(undefined, field);
+
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: Array.isArray(field.special) ? field.special[0] : field.special,
+				type,
 				schema: null,
 				meta: field,
 			};
@@ -183,7 +186,7 @@ export class FieldsService {
 			}
 		}
 
-		let column;
+		let column = undefined;
 		let fieldInfo = await this.knex.select('*').from('directus_fields').where({ collection, field }).first();
 
 		if (fieldInfo) {
@@ -201,13 +204,14 @@ export class FieldsService {
 			// Do nothing
 		}
 
-		const { type = 'alias', ...info } = column ? getLocalType(column, fieldInfo) : {};
+		const { type = 'alias', ...info } = getLocalType(column, fieldInfo);
+
 		const data = {
 			collection,
 			field,
 			type,
 			meta: fieldInfo || null,
-			schema: type == 'alias' ? null : { ...column, ...info },
+			schema: type === 'alias' ? null : { ...column, ...info },
 		};
 
 		return data;
