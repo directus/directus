@@ -320,8 +320,30 @@ export default defineComponent({
 			return t('archive');
 		});
 
-		useShortcut('meta+s', saveAndStay, form);
-		useShortcut('meta+shift+s', saveAsCopyAndNavigate, form);
+		useShortcut(
+			'meta+s',
+			() => {
+				if (hasEdits.value) saveAndStay();
+			},
+			form
+		);
+
+		useShortcut(
+			'meta+shift+s',
+			() => {
+				saveAsCopyAndNavigate();
+			},
+			form
+		);
+
+		useShortcut(
+			'alt+n',
+			() => {
+				if (hasEdits.value) saveAndStay();
+				createNew();
+			},
+			form
+		);
 
 		return {
 			t,
