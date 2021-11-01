@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Avatar
 default_provider: Défaut
 published: Publié
@@ -172,6 +152,8 @@ global: Global
 admins_have_all_permissions: Les administrateurs ont toutes les autorisations
 camera: Appareil photo
 show_zero: Afficher zéro
+create_in_advanced_field_creation_mode: Créer en mode de création de champ avancé
+continue_in_advanced_field_creation_mode: Continuer en mode de création de champ avancé
 sum: Somme
 sum_distinct: Somme distincte
 avg: Moyenne
@@ -232,6 +214,9 @@ new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de do
 search_collection: Rechercher une collection...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
+add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
+add_o2m_to_collection: 'Ajouter une relation One-to-Many à "{collection}"'
+add_m2m_to_collection: 'Ajouter une relation Many-to-Many à "{collection}"'
 choose_a_type: Choisir un type...
 determined_by_relationship: Déterminé par la relation
 add_note: Ajouter une note utile aux utilisateurs…
@@ -679,6 +664,12 @@ source: Source
 url_placeholder: Entrez une url...
 display_text: Afficher le texte
 display_text_placeholder: Entrez un texte d'affichage...
+interface_group_text_and_numbers: Texte et nombres
+interface_group_selection: Sélection
+interface_group_relational: Relationnel
+interface_group_presentation: Présentation
+interface_group_groups: Groupes
+interface_group_other: Autre
 tooltip: Info-bulle
 tooltip_placeholder: Entrez une infobulle ...
 unlimited: Illimité
@@ -910,6 +901,7 @@ fields:
     token: Token
     token_placeholder: Entrez un jeton d'accès sécurisé...
     provider: Fournisseur
+    external_identifier: Identifiant externe
     last_page: Dernière page
     last_access: Dernier accès
   directus_settings:
@@ -964,6 +956,7 @@ fields:
     method: Méthode
     status: État
     data: Données
+    value: Valeur
     data_label: Envoyer les données de l'événement
     triggers: Déclencheurs
     actions: Actions
@@ -1007,8 +1000,10 @@ field_options:
     singleton: Est un objet unique
     language: Langue
     translation: Traduction
+    translation_placeholder: Entrez une nouvelle traduction...
     collection_name: Nom de la Collection
     archive_divider: Archiver
+    archive_field: Champ d'archive
     archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Activer le filtre des archives d'applications
     archive_value: Valeur définie lors de l'archivage...
@@ -1065,6 +1060,8 @@ field_options:
     actions_update: Mettre à jour
     actions_delete: Supprimer
     actions_login: Identifiant
+    headers:
+      value: Valeur
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 no_value: Aucune valeur
 do_nothing: Ne rien faire
@@ -1147,6 +1144,7 @@ sort_desc: Tri décroissant
 template: Modèle
 require_value_to_be_set: Nécessite que la valeur soit définie
 translation: Traduction
+translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
@@ -1293,6 +1291,9 @@ interfaces:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
     zoom: Zoom
+    geometry_type: Type de géométrie
+    geometry_format: Forme géométrique
+    default_view: Vue par défaut
     invalid_options: Options non valides
     invalid_format: Format invalide ({format})
     unexpected_geometry: '{expected} attendu, reçu {got}.'
@@ -1370,6 +1371,7 @@ interfaces:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue spatiale
+    language_field: Champ d'indicateur de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
     recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
@@ -1408,6 +1410,11 @@ interfaces:
 displays:
   translations:
     translations: Traductions
+    description: Aperçu des traductions
+    enable: Activer
+    user_language: Utiliser la langue actuelle de l'utilisateur
+    default_language: Langue par défaut
+    language_field: Champ d'indicateur de langue
   boolean:
     boolean: Booléen
     description: Afficher les états sélectionnés et désélectionnés
@@ -1524,6 +1531,7 @@ layouts:
     cluster_maxzoom: Zoom maximum pour la grappe
     field: Géométrie
     invalid_geometry: Géométrie invalide
+    auto_location_filter: Filtre automatique dans la vue
     search_this_area: Chercher dans cette zone
     clear_data_filter: Réinitialiser le filtre
     clear_location_filter: Réinitialiser le filtre de localisation

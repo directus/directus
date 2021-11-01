@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Ảnh đại diện
 default_provider: Mặc định
 published: Đã xuất bản
@@ -49,6 +29,7 @@ edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
 children: Trẻ em
 show_archived_items: Hiển thị các mục đã Lưu Trữ
+edited: Giá trị đã được chỉnh sửa
 required: Bắt buộc
 required_for_app_access: Yêu Cầu cho Kết Nối
 requires_value: Giá trị bắt buộc
@@ -120,6 +101,7 @@ validationError:
   nnull: Dữ liệu không thể là null
   required: Dữ liệu là bắt buộc
   unique: Giá trị phải là duy nhất
+  regex: Giá trị không có định dạng đúng
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
@@ -259,7 +241,10 @@ languages_collection: Ngôn ngữ
 export_data: Kết Xuất Dữ Liệu
 format: Định dạng
 export_collection: 'Kết xuất {collection}'
+last_access: Truy cập lần cuối
+fill_template: Điền với Giá trị Mẫu
 submit: Gửi đi
+move_to_folder: Chuyển tới Thư mục
 move: Di Chuyển
 system: Hệ thống
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
@@ -267,6 +252,8 @@ interface_label: Giao diện
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
+minutes: Phút
+hours: Giờ
 month: Tháng
 year: Năm
 select_all: Chọn Tất Cả
@@ -287,6 +274,7 @@ drag_mode: Chế Độ Kéo Thả
 cancel_crop: Hủy Cắt Xén
 original: Nguyên bản
 url: Đường Dẫn
+import_label: Nhập
 file_details: Thông Tin Chi Tiết của Tập Tin
 dimensions: Kích thước
 size: Kích thước
@@ -300,10 +288,12 @@ zoom: Thu phóng
 download: Tải xuống
 open: Mở
 open_in_new_window: Mở trong Cửa Sổ Mới
+open_folder: Mở thư mục "{folder}"
 foreground_color: Màu Tô
 background_color: Màu Nền
 upload_from_device: Tải Tập Tin lên từ Thiết Bị
 choose_from_library: Chọn Tập Tin từ Thư viện
+import_from_url: Nhập Thư mục từ URL
 replace_from_device: Hoán đổi với Tập Tin từ Thiết Bị
 replace_from_library: Hoán đổi với Tập Tin từ Thư Viện
 replace_from_url: Hoán đổi với Tập Tin từ một Đường Dẫn
@@ -325,6 +315,7 @@ save_and_create_new: Lưu và Tạo Mới
 save_and_stay: Lưu và Tiếp Tục Sửa Đổi
 save_as_copy: Lưu thành bản sao
 add_existing: Thêm Dữ Liệu Sẵn Có
+enable_create_button: Bật Nút Tạo
 comments: Bình luận
 no_comments: Chưa Có Bình Luận
 click_to_expand: Nhấn vào để Mở rộng
@@ -348,16 +339,25 @@ all_items: Tất cả các mục
 csv: CSV
 no_collections: Chưa có Bảng nào
 create_collection: Tạo Danh mục mới
+no_collections_copy_admin: Bạn chưa có Bộ sưu tập nào. Bấm nút bên dưới để bắt đầu.
+no_collections_copy: Bạn chưa có Bộ sưu tập nào. Vui lòng liên hệ với quản trị viên hệ thống.
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 select_a_collection: Chọn Bảng
+select_a_field: Chọn một trường
 active: Kích hoạt
+move_to: Chuyển tới...
 copy: Sao chép
+copy_to: Sao chép đến...
+no_other_dashboards_copy: Bạn chưa có Bảng điều khiển nào.
 users: Tài khoản
 activity: Hoạt động
 action: Hành động
 ip_address: Địa chỉ IP
 user_agent: Tài khoản người dùng
 webhooks: Webhooks
+min_value: Giá trị nhỏ nhất
+max_value: Giá trị lớn nhất
+automatic: Tự động
 field_width: Độ rộng trường
 add_filter: Thêm bộ lọc
 upper_limit: Giới hạn trên...
@@ -367,6 +367,7 @@ documentation: Tài liệu
 sidebar: Thanh bên
 duration: Thời lượng
 charset: Bảng mã
+second: giây
 file_moved: Đã di chuyển Tập tin
 collection_created: Bảng đã được Tạo
 modified_on: Sửa đổi vào
@@ -401,9 +402,12 @@ errors:
   ITEM_LIMIT_REACHED: Đạt mức giới hạn của bản ghi
   ITEM_NOT_FOUND: Bản ghi không tồn tại
   ROUTE_NOT_FOUND: Không tìm thấy
+  USER_SUSPENDED: Tài khoản bị vô hiệu
   INTERNAL_SERVER_ERROR: Lỗi Bất Thường
   NOT_NULL_VIOLATION: Dữ liệu không thể là null
+  ILLEGAL_ASSET_TRANSFORMATION: Nguồn ảnh quá lớn để xem trước
   UNKNOWN: Lỗi Bất Thường
+security: Bảo mật
 value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
 create_bookmark: Tạo Dấu trang
@@ -418,6 +422,7 @@ no_app_access_copy: Người dùng này không có quyền truy cập chương t
 password_reset_sent: Chúng tôi đã gửi cho bạn email để đặt lại mật khẩu của bạn
 password_reset_successful: Mật khẩu được đặt lại thành công
 back: Trở lại
+filter: Bộ lọc
 editing_image: Chỉnh sửa Hình ảnh
 square: Hình vuông
 free: Miễn phí
@@ -471,26 +476,67 @@ operators:
   between: Giữa
   empty: Bị rỗng
 loading: Đang tải...
+upload_file_indeterminate: Đang tải tệp lên...
+upload_file_success: Tệp tin được tải lên
+upload_files_indeterminate: 'Đang tải lên thư mục {done}/{total}'
+upload_files_success: '{count} Tệp được tải lên'
+drag_file_here: Kéo & thả tệp vào đây
+click_to_browse: Bấm để Tìm kiếm
+interface_options: Tùy chọn giao diện
 layout_options: Các Tuỳ Chọn Bố Cục
+rows: Các hàng
+columns: Các cột
+collection_setup: Cài đặt Bộ sưu tập
 value_unique: Giá trị phải là duy nhất
+all_activity: Tất cả hoạt động
 create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
+per_page: Mỗi trang
+all_files: Tất cả các tệp
+my_files: Tập tin của tôi
+recent_files: Các tệp gần đây
+create_folder: Tạo Thư mục
+edit_folder: Chỉnh sửa thư mục
+folder_name: Tên thư mục...
+folder_key: Khóa Thư mục...
+add_file: Thêm tập tin
+replace_file: Thay thế tập tin
 no_results: Không có kết quả
+no_results_copy: Điều chỉnh hoặc xóa bộ lọc tìm kiếm để tìm được kết quả.
+clear_filters: Xoá các bộ lọc
+saves_automatically: Lưu tự động
 role: Phân quyền
+rule: Quy tắc
 user: Người dùng
 create: Tạo
 on_update: Khi cập nhật
 read: Đọc
 update: Cập nhật
 select_fields: Chọn trường
+format_text: Định dạng văn bản
+format_value: Định dạng giá trị
+bold: In đậm
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
+label: Nhãn
+dashboard: Bảng điều khiển
+panel: Bảng
+panel_options: Tùy chọn Bảng
+panel_note_placeholder: Chi tiết tùy chọn về bảng...
+panel_delete_confirm: Bạn có chắc muốn xóa bảng này? Hành động này không thể hoàn tác.
+full_screen: Toàn màn hình
 width: Độ rộng
 height: Độ dài
+current_tab: Thẻ hiện tại
 wysiwyg_options:
+  aligncenter: Canh giữa
+  alignjustify: Canh đều hai bên
+  alignleft: Canh lề trái
+  alignnone: Không canh lề
   alignright: Canh phải
   forecolor: Màu Tô
   backcolor: Màu Nền
+  bold: In đậm
   italic: Nghiêng
   underline: Gạch chân
   strikethrough: Gạch ngang
@@ -501,7 +547,10 @@ wysiwyg_options:
   bullist: Danh sách dấu đầu dòng
   numlist: Danh Sách Đánh Số
   hr: Thước ngang
+  link: Thêm/Sửa Liên kết
   unlink: Loại bỏ liên kết
+  media: Thêm/Sửa Phương tiện
+  image: Thêm/Sửa hình ảnh
   copy: Sao chép
   cut: Cắt
   paste: Dán
@@ -514,19 +563,38 @@ wysiwyg_options:
   h6: Đầu mục 6
   fontselect: Chọn kiểu chữ
   fontsizeselect: Chọn kích thước phông chữ
+  indent: Canh lề
+  outdent: Lề ngoài
+  undo: Hoàn tác
   remove: Xoá
+  removeformat: Xóa bỏ định dạng
   selectall: Chọn Tất Cả
   table: Bảng
+  source_code: Chỉnh sửa mã nguồn
+  fullscreen: Toàn màn hình
 dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
 deselect: Bỏ chọn
+deselect_all: Bỏ chọn tất cả
+other: Khác...
+adding_user: Đang thêm người dùng
+unknown_user: Người dùng vô danh
 creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
+editing_in: 'Chỉnh sửa mục trong {collection}'
+creating_unit: 'Đang tạo {unit}'
+editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
+no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
 settings_permissions: Vai trò & Quyền hạn
 settings_project: Cài Đặt Chung
 settings_webhooks: Webhooks
+one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
+scope: Phạm vi
+select: Chọn...
 layout: Bố cục
+changes_are_permanent: Thay đổi là lâu dài
+preset_search_placeholder: Tìm kiếm truy vấn...
 layout_preview: Xem Trước Bố Cục
 layout_setup: Cài Đặt Bố Cục
 unsaved_changes: Những thay đổi chưa được lưu
@@ -594,6 +662,7 @@ fields:
     status: Trạng thái
     status_active: Kích hoạt
     role: Phân quyền
+    last_access: Truy cập lần cuối
   directus_settings:
     project_name: Tên Dự Án
     auth_password_policy: Quy định về mật khẩu
@@ -609,14 +678,17 @@ fields:
   directus_webhooks:
     name: Tên
     status: Trạng thái
+    value: Giá trị
 field_options:
   directus_settings:
+    security_divider_title: Bảo mật
     auth_password_policy:
       none_text: Không có - Không khuyến nghị
   directus_activity:
     create: Tạo
     update: Cập nhật
   directus_collections:
+    collection_setup: Cài đặt Bộ sưu tập
     language: Ngôn ngữ
     translation: Bản dịch
     archive_divider: Lưu trữ
@@ -635,6 +707,8 @@ field_options:
     status_options_active: Kích hoạt
     actions_create: Tạo
     actions_update: Cập nhật
+    headers:
+      value: Giá trị
 comment: Bình luận
 continue_label: Tiếp tục
 continue_as: >-
@@ -683,6 +757,7 @@ translation: Bản dịch
 value: Giá trị
 interfaces:
   filter:
+    name: Bộ lọc
     add_filter: Thêm bộ lọc
     all: Tất cả
   presentation-links:
@@ -777,3 +852,6 @@ layouts:
     comfortable: Thoải mái
     compact: Thu gọn
     cozy: Ấm cúng
+panels:
+  label:
+    name: Nhãn

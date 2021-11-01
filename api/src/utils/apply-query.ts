@@ -67,7 +67,7 @@ export default function applyQuery(
 	}
 
 	if (query.aggregate) {
-		applyAggregate(dbQuery, query.aggregate);
+		applyAggregate(dbQuery, query.aggregate, collection);
 	}
 }
 
@@ -535,45 +535,45 @@ export async function applySearch(
 	});
 }
 
-export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate): void {
+export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate, collection: string): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
 		if (!fields) continue;
 
 		for (const field of fields) {
 			if (operation === 'avg') {
-				dbQuery.avg(field, { as: `avg->${field}` });
+				dbQuery.avg(`${collection}.${field}`, { as: `avg->${field}` });
 			}
 
 			if (operation === 'avgDistinct') {
-				dbQuery.avgDistinct(field, { as: `avgDistinct->${field}` });
+				dbQuery.avgDistinct(`${collection}.${field}`, { as: `avgDistinct->${field}` });
 			}
 
 			if (operation === 'count') {
 				if (field === '*') {
 					dbQuery.count('*', { as: 'count' });
 				} else {
-					dbQuery.count(field, { as: `count->${field}` });
+					dbQuery.count(`${collection}.${field}`, { as: `count->${field}` });
 				}
 			}
 
 			if (operation === 'countDistinct') {
-				dbQuery.countDistinct(field, { as: `countDistinct->${field}` });
+				dbQuery.countDistinct(`${collection}.${field}`, { as: `countDistinct->${field}` });
 			}
 
 			if (operation === 'sum') {
-				dbQuery.sum(field, { as: `sum->${field}` });
+				dbQuery.sum(`${collection}.${field}`, { as: `sum->${field}` });
 			}
 
 			if (operation === 'sumDistinct') {
-				dbQuery.sumDistinct(field, { as: `sumDistinct->${field}` });
+				dbQuery.sumDistinct(`${collection}.${field}`, { as: `sumDistinct->${field}` });
 			}
 
 			if (operation === 'min') {
-				dbQuery.min(field, { as: `min->${field}` });
+				dbQuery.min(`${collection}.${field}`, { as: `min->${field}` });
 			}
 
 			if (operation === 'max') {
-				dbQuery.max(field, { as: `max->${field}` });
+				dbQuery.max(`${collection}.${field}`, { as: `max->${field}` });
 			}
 		}
 	}
