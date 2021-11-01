@@ -87,7 +87,7 @@ Supports all [global query parameters](/reference/query/).
 
 ### Returns
 
-An array of up to [limit](reference/query/#limit) [webhook objects](#the-webhook-object). If no items are available,
+An array of up to [limit](/reference/query/#limit) [webhook objects](#the-webhook-object). If no items are available,
 data will be an empty array.
 
 </div>
@@ -100,7 +100,7 @@ GET /webhooks
 SEARCH /webhooks
 ```
 
-[Learn more about SEARCH ->](/reference/query/#search)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 

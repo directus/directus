@@ -1,7 +1,7 @@
 # Themes & Styling
 
 > **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily
-> tailored to your brand. [Learn more about the App](/concepts/application/).
+> tailored to your brand. [Learn more about the App](/app/overview/).
 
 ## App Themes
 
@@ -20,8 +20,7 @@ no limit to customization. Below are several code resources for key SCSS files.
 
 ## Project Styling
 
-Directus includes many no-code options for branding and styling the App. Learn more within:
-[Adjusting Project Settings](/guides/projects/#adjusting-project-settings)
+See [Adjusting Project Settings](/configuration/project-settings/)
 
 ## Custom CSS
 

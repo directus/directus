@@ -1,7 +1,8 @@
 # Insights
 
-> This [Module](#) allows the creation of custom [Dashboards](#), each with any number of highly configurable
-> [Panels](#) for displaying data.
+> This [Module](/getting-started/glossary/#modules) allows the creation of custom
+> [Dashboards](/getting-started/glossary/#dashboards), each with any number of highly configurable
+> [Panels](/getting-started/glossary/#panels) for displaying data.
 
 [[toc]]
 
