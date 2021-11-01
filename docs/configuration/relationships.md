@@ -136,8 +136,9 @@ field to be created.
 ## Translations (O2M)
 
 The Translations relationship is just a special version of the standard O2M. Just like the O2M, it creates an
-[Alias](/glossary/#fields) field that is used to list all related items (the translations). Translations themselves are
-stored in a separate collection, which is then further related to _third_ collection that stores all languages.
+[Alias](/getting-started/glossary/#alias) field that is used to list all related items (the translations). Translations
+themselves are stored in a separate collection, which is then further related to _third_ collection that stores all
+languages.
 
 ### Setup
 

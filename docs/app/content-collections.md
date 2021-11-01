@@ -97,7 +97,7 @@ features/options:
 
 ## Searching Items
 
-**[Learn more about Search](/guides/items/#searching-items)**
+**[Learn more about Search](/reference/introduction/#search-http-method)**
 
 1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to search

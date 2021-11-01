@@ -97,7 +97,7 @@ extension types in the platform's App and API.
 - **[Layouts](/extensions/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
 - **[Interfaces](/extensions/interfaces/)** — (App) How you view or interact with a field and its value
 - **[Displays](/extensions/displays/)** — (App) A small inline preview of a field's value
-- **[Panes](/extensions/panes/)** — (App) A way to view dashboard data within the Insights Module
+- **[Panes](/extensions/panels/#panes)** — (App) A way to view dashboard data within the Insights Module
 - **[Styles](/configuration/project-settings/#branding)** — (App) Whitelabeling through App Themes and CSS Overrides
 - **[Endpoints](/extensions/api-endpoints/)** — (API) Custom registered API endpoints
 - **[Hooks](/extensions/hooks/)** — (API) Event and interval hooks for triggering custom logic
