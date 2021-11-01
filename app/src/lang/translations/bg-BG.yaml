@@ -1178,7 +1178,6 @@ translation: Превод
 translation_placeholder: Въвеждане на превод...
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1557,19 +1556,12 @@ layouts:
     map: Географска карта
     basemap: Основна карта
     layers: Слоеве
-    edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
     cluster: Групиране на близките обекти
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
-    field: Геометрия
     invalid_geometry: Невалидна геометрия
-    auto_location_filter: Филтриране според изгледа
-    search_this_area: Търсене в тази зона
-    clear_data_filter: Изчистване на филтрирането
-    clear_location_filter: Изчистване на филтрирането
-    no_results_here: Няма резултати в тази зона
 panels:
   metric:
     name: Метричен Индикатор
