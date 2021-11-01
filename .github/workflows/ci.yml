@@ -1,4 +1,5 @@
-# Continuous Integration
+### Continuous Integration
+# Entrypoint for all CI related jobs
 name: CI
 
 on:
@@ -10,6 +11,7 @@ on:
       - main
 
 jobs:
+  # Check whether workflow is skippable
   pre_check:
     name: Pre-Check
     runs-on: ubuntu-latest
