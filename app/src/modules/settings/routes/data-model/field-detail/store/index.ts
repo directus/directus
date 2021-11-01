@@ -104,6 +104,7 @@ export const useFieldDetailStore = defineStore({
 				const relationsStore = useRelationsStore();
 
 				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
+				console.log(this.field);
 				this.localType = getLocalTypeForField(collection, field)!;
 
 				const relations = relationsStore.getRelationsForField(collection, field);
