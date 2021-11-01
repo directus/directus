@@ -117,7 +117,7 @@ function validateFilterPrimitive(value: any, key: string) {
 }
 
 function validateList(value: any, key: string) {
-	if (Array.isArray(value) === false || value.length === 0) {
+	if (Array.isArray(value) === false) {
 		throw new InvalidQueryException(`"${key}" has to be an array of values`);
 	}
 
