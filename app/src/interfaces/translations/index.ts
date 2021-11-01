@@ -6,7 +6,7 @@ import { useFieldsStore } from '@/stores';
 export default defineInterface({
 	id: 'translations',
 	name: '$t:translations',
-	icon: 'replay',
+	icon: 'translate',
 	types: ['alias'],
 	localTypes: ['translations'],
 	group: 'relational',
