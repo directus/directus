@@ -257,7 +257,15 @@ export default defineComponent({
 }
 
 .interface.gray .preview {
+	--primary: var(--foreground-subdued);
+	--primary-50: var(--foreground-subdued);
+
 	background-color: var(--background-subdued);
-	filter: grayscale(1);
+}
+
+.interface.gray .preview .fallback {
+	--v-icon-color: var(--foreground-subdued);
+
+	box-shadow: 0 0 8px var(--foreground-subdued);
 }
 </style>
