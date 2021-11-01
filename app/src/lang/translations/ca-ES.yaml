@@ -1319,12 +1319,10 @@ layouts:
     map: Mapa
     basemap: Mapa base
     layers: Capes
-    edit_custom_layers: Edita capes
     cluster_options: Opcions de clustering
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
-    field: Geometria
     invalid_geometry: Geometria invàlida
 panels:
   label:
