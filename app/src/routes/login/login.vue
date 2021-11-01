@@ -75,17 +75,6 @@ export default defineComponent({
 
 		onMounted(() => fetchProviders());
 
-		watch(providers, () => {
-			providerOptions.value = providers.value
-				.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
-				.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
-			if (!disableDefault.value) {
-				providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
-			} else {
-				providerSelect.value = providerOptions.value[0]?.value;
-			}
-		});
-
 		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver };
 
 		async function fetchProviders() {
@@ -93,6 +82,16 @@ export default defineComponent({
 				const response = await api.get('/auth');
 				providers.value = response.data.data;
 				disableDefault.value = response.data.disableDefault;
+
+				providerOptions.value = providers.value
+					.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
+					.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
+
+				if (!disableDefault.value) {
+					providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
+				} else {
+					providerSelect.value = providerOptions.value[0]?.value;
+				}
 			} catch (err: any) {
 				unexpectedError(err);
 			}
