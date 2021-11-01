@@ -8,10 +8,12 @@
 			v-model="activeGroups"
 			scope="collections-navigation"
 			class="collections-navigation"
+			tabindex="-1"
 			nav
 			:mandatory="false"
 			:dense="dense"
 			@contextmenu.prevent.stop="activateContextMenu"
+			@focusout="deactivateContextMenu"
 		>
 			<navigation-item
 				v-for="collection in rootItems"
@@ -61,7 +63,6 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const contextMenu = ref();
-		const contextMenuTarget = ref<undefined | string>();
 
 		const rootItems = computed(() => {
 			const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
@@ -83,15 +84,18 @@ export default defineComponent({
 			rootItems,
 			dense,
 			activateContextMenu,
+			deactivateContextMenu,
 			contextMenu,
-			contextMenuTarget,
 			search,
 			showSearch,
 		};
 
-		function activateContextMenu(event: PointerEvent, target?: string) {
-			contextMenuTarget.value = target;
+		function activateContextMenu(event: PointerEvent) {
 			contextMenu.value.activate(event);
+		}
+
+		function deactivateContextMenu() {
+			contextMenu.value.deactivate();
 		}
 	},
 });
