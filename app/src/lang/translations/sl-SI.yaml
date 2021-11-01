@@ -1370,12 +1370,10 @@ layouts:
     map: Zemljevid
     basemap: Osnovni zemljevid
     layers: Plasti
-    edit_custom_layers: Uredi plasti
     cluster_options: Možnosti gruče
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
-    field: Geometrija
     invalid_geometry: Neveljavna geometrija
 panels:
   label:
