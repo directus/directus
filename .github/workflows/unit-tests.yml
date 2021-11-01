@@ -2,10 +2,15 @@ name: Unit Tests
 
 on:
   workflow_call:
+    inputs:
+      should_skip:
+        required: false
+        type: string
 
 jobs:
   test:
-    name: Test (Node.js ${{ matrix.node-version }})
+    name: Test
+    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,3 +36,13 @@ jobs:
         run: npm run test
         env:
           SECRET: TEST_SECRET
+
+  result:
+    name: Result
+    if: inputs.should_skip != 'true' && always()
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Mark result as failed
+        if: needs.test.result != 'success'
+        run: exit 1

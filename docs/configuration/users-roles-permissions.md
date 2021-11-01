@@ -100,8 +100,8 @@ undone. Please proceed with caution.
 ::: warning Users in a Deleted Role
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which denies their App access
-and limits them to the [Public Role](/concepts/roles/#public-role) permissions. They can then be reassigned to a new
-role by an admin.
+and limits them to the [Public Role](/configuration/users-roles-permissions/#configuring-public-permissions)
+permissions. They can then be reassigned to a new role by an admin.
 
 :::
 

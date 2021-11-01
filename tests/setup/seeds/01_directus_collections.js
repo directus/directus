@@ -1,5 +1,5 @@
-exports.seed = function (knex) {
-	return knex('directus_collections').insert([
+exports.seed = async function (knex) {
+	return await knex('directus_collections').insert([
 		{ collection: 'artists' },
 		{ collection: 'artists_events' },
 		{ collection: 'events' },

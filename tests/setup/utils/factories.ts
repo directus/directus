@@ -1,37 +1,36 @@
-/* eslint-disable no-console */
-// import { v4 as uuid } from 'uuid';
-import { music, internet, name, datatype, lorem /*, address */ } from 'faker';
+import { music, internet, name, datatype, lorem } from 'faker';
+import { v4 as uuid } from 'uuid';
 import { Knex } from 'knex';
 
 type Guest = {
-	id?: string | number;
+	id: string;
 	name: string;
 	birthday: Date;
 	earliest_events_to_show: Date | string;
 	latest_events_to_show: Date | string;
 	password: string;
 	shows_attended: number;
-	favorite_artist?: number | Artist;
+	favorite_artist?: string | Artist;
 };
 
 type Artist = {
-	id?: number;
+	id: string;
 	name: string;
 	members: string | Record<string, any>;
 };
 
 type Tour = {
-	id?: number;
+	id: string;
 	revenue: bigint;
 };
 
 type Organizer = {
-	id?: number;
+	id: string;
 	company_name: string;
 };
 
 type Event = {
-	id?: number;
+	id: string;
 	time: string;
 	description: string;
 	cost: number;
@@ -40,7 +39,7 @@ type Event = {
 };
 
 type JoinTable = {
-	[column: string]: number;
+	[column: string]: number | string;
 };
 
 export type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
@@ -48,7 +47,7 @@ export type Item = Guest | Artist | Tour | Organizer | Event | JoinTable;
 /*
  * Options Example: Artist
  * Select: ['name', 'members']
- * Where: ['id', 3]
+ * Where: ['id', uuid]
  */
 
 type SeedOptions = {
@@ -64,7 +63,7 @@ type SeedOptions = {
  */
 
 type CreateManyOptions = {
-	[column: string]: number;
+	[column: string]: string | (() => unknown);
 };
 
 export const seedTable = async function (
@@ -76,7 +75,7 @@ export const seedTable = async function (
 ): Promise<void | any[] | any> {
 	const row: Record<string, number> = {};
 	if (Array.isArray(factory)) {
-		await database.batchInsert(table, factory, 200);
+		await database(table).insert(factory);
 	} else if (typeof factory === 'object') {
 		if (count > 1) {
 			try {
@@ -132,11 +131,13 @@ export const seedTable = async function (
 };
 
 export const createArtist = (): Artist => ({
+	id: uuid(),
 	name: internet.userName(),
 	members: JSON.stringify({ guitar: internet.userName() }),
 });
 
 export const createEvent = (): Event => ({
+	id: uuid(),
 	cost: datatype.float(),
 	description: lorem.paragraphs(2),
 	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
@@ -149,11 +150,12 @@ ${music.genre()}
 });
 
 export const createTour = (): Tour => ({
+	id: uuid(),
 	revenue: BigInt(getRandomInt(Number.MAX_SAFE_INTEGER)),
 });
 
 export const createGuest = (): Guest => ({
-	// id: uuid(),
+	id: uuid(),
 	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	name: `${name.firstName()} ${name.lastName()}`,
 	earliest_events_to_show: randomTime(),
@@ -163,6 +165,7 @@ export const createGuest = (): Guest => ({
 });
 
 export const createOrganizer = (): Organizer => ({
+	id: uuid(),
 	company_name: `${name.firstName()} ${name.lastName()}`,
 });
 
@@ -171,25 +174,30 @@ export const createMany = (factory: (() => Item) | Record<string, any>, count: n
 	if (options && typeof factory !== 'object') {
 		for (let rows = 0; rows < count; rows++) {
 			const item: any = factory();
-			for (const [column, max] of Object.entries(options)) {
-				item[column] = getRandomInt(max);
+			for (const [column, value] of Object.entries(options)) {
+				if (typeof value === 'string') {
+					item[column] = value;
+				} else {
+					item[column] = value();
+				}
 			}
 			items.push(item);
 		}
-		return items;
-	}
-	if (options && typeof factory === 'object') {
-		for (let rows = 0; rows < count; rows++) {
-			const item: any = factory;
-			for (const [column, max] of Object.entries(options)) {
-				item[column] = getRandomInt(max);
-			}
-			items.push(item);
-		}
-		return items;
 	} else if (typeof factory !== 'object') {
 		for (let rows = 0; rows < count; rows++) {
 			items.push(factory());
+		}
+	} else {
+		for (let rows = 0; rows < count; rows++) {
+			const item: any = factory;
+			for (const [column, value] of Object.entries(options!)) {
+				if (typeof value === 'string') {
+					item[column] = value;
+				} else {
+					item[column] = value();
+				}
+				items.push(item);
+			}
 		}
 	}
 	return items;

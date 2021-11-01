@@ -1,3 +1,4 @@
+import { ExtensionsOptionsContext } from '@directus/shared/types';
 import { defineInterface } from '@directus/shared/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
@@ -37,43 +38,57 @@ export default defineInterface({
 	types: ['string', 'json', 'text', 'geometry'],
 	group: 'standard',
 	preview: PreviewSVG,
-	options: [
-		{
-			field: 'language',
-			name: '$t:language',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'select-dropdown',
-				options: { choices },
-			},
-		},
-		{
-			field: 'lineNumber',
-			name: '$t:interfaces.input-code.line_number',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-			},
-			schema: {
-				default_value: false,
-			},
-		},
-		{
-			field: 'template',
-			name: '$t:template',
-			type: 'text',
-			meta: {
-				width: 'full',
-				interface: 'input-code',
-				options: {
-					placeholder: '$t:interfaces.input-code.placeholder',
+	options: ({ field }: ExtensionsOptionsContext) => {
+		const sharedOptions = [
+			{
+				field: 'lineNumber',
+				name: '$t:interfaces.input-code.line_number',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
+					default_value: false,
 				},
 			},
-			schema: {
-				default_value: null,
+			{
+				field: 'template',
+				name: '$t:template',
+				type: 'text',
+				meta: {
+					width: 'full',
+					interface: 'input-code',
+					options: {
+						placeholder: '$t:interfaces.input-code.placeholder',
+					},
+				},
+				schema: {
+					default_value: null,
+				},
 			},
-		},
-	],
+		];
+
+		const defaultOptions = [
+			{
+				field: 'language',
+				name: '$t:language',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: { choices },
+				},
+			},
+			...sharedOptions,
+		];
+
+		const jsonOptions = [...sharedOptions];
+
+		if (field?.type === 'json') {
+			return jsonOptions;
+		}
+
+		return defaultOptions;
+	},
 });
