@@ -28,7 +28,6 @@ export default defineLayout<LayoutOptions>({
 	name: '$t:layouts.calendar.calendar',
 	icon: 'event',
 	component: CalendarLayout,
-	smallHeader: true,
 	slots: {
 		options: CalendarOptions,
 		sidebar: () => undefined,
