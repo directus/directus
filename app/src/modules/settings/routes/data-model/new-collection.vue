@@ -178,7 +178,6 @@ export default defineComponent({
 			},
 			userCreated: {
 				enabled: false,
-				on_delete: 'SET NULL',
 				name: 'user_created',
 				label: 'created_by',
 				icon: 'account_circle',
@@ -192,7 +191,6 @@ export default defineComponent({
 			userUpdated: {
 				enabled: false,
 				name: 'user_updated',
-				on_delete: 'SET NULL',
 				label: 'updated_by',
 				icon: 'account_circle',
 			},
@@ -465,6 +463,9 @@ export default defineComponent({
 					collection: collectionName.value!,
 					field: systemFields.userCreated.name,
 					related_collection: 'directus_users',
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				});
 			}
 
@@ -473,6 +474,9 @@ export default defineComponent({
 					collection: collectionName.value!,
 					field: systemFields.userUpdated.name,
 					related_collection: 'directus_users',
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				});
 			}
 
