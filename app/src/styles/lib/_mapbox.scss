@@ -1,0 +1,228 @@
+
+.mapboxgl-map {
+	font: inherit;
+}
+
+.mapboxgl-ctrl-group {
+	overflow: hidden;
+	background: none;
+
+	&:not(:empty) {
+		box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
+	}
+
+	button {
+		width: 36px;
+		height: 36px;
+		background: var(--background-input) !important;
+		border: none !important;
+		transition: background-color var(--fast) var(--transition);
+
+		span {
+			display: none !important;
+		}
+
+		& + button {
+			margin-top: 1px;
+		}
+
+		&:hover {
+			background: var(--background-normal) !important;
+		}
+
+		&.active {
+			color: var(--background-subdued) !important;
+			background: var(--foreground-normal) !important;
+		}
+
+		&.hidden {
+			display: none;
+		}
+	}
+
+	button::after {
+		display: flex;
+		justify-content: center;
+		font-size: 24px;
+		font-family: 'Material Icons Outline', sans-serif;
+		font-style: normal;
+		font-variant: normal;
+		text-rendering: auto;
+		-webkit-font-smoothing: antialiased;
+	}
+}
+
+.mapboxgl-search-location-dot,
+.mapboxgl-user-location-dot,
+.maplibregl-user-location-dot {
+	width: 12px;
+	height: 12px;
+
+	&::before {
+		width: 12px;
+		height: 12px;
+	}
+
+	&::after {
+		width: 16px;
+		height: 16px;
+	}
+	pointer-events: none;
+}
+
+.mapboxgl-search-location-dot {
+	&, &::before {
+		background-color: var(--purple);
+	}
+}
+
+.mapboxgl-ctrl-attrib.mapboxgl-compact {
+	min-width: 24px;
+	min-height: 24px;
+	color: var(--foreground-subdued);
+	background: var(--background-input) !important;
+	box-shadow: var(--card-shadow);
+
+	button {
+		opacity: 0.25;
+		transition: opacity var(--fast) var(--transition);
+	}
+
+	&:hover {
+		button {
+			opacity: 0.75;
+		}
+	}
+
+	a {
+		color: var(--foreground-normal);
+		&:hover {
+			color: var(--foreground-normal-alt);
+		}
+	}
+
+	.maplibregl-ctrl-attrib-inner,
+	.mapboxgl-ctrl-attrib-inner {
+		font-size: 12px;
+		line-height: 20px;
+	}
+}
+
+.mapboxgl-ctrl-geocoder {
+	font-size: inherit !important;
+	font-family: inherit !important;
+	line-height: inherit !important;
+	background-color: var(--background-page);
+
+	&,
+	&.suggestions {
+		box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
+	}
+}
+
+.mapboxgl-ctrl-geocoder--input {
+	color: var(--foreground-normal) !important;
+	border-radius: var(--border-radius);
+}
+
+.mapboxgl-ctrl-geocoder .suggestions {
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+}
+
+.mapboxgl-ctrl-geocoder .suggestions > li > a {
+	color: var(--foreground-normal);
+}
+
+.mapboxgl-ctrl-geocoder .suggestions > .active > a,
+.mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
+	color: var(--v-list-item-color-active);
+	background-color: var(--background-normal-alt);
+}
+
+.mapboxgl-ctrl-geocoder--button {
+	background: var(--background-subdued);
+}
+
+.mapboxgl-ctrl-geocoder--icon {
+	fill: var(--v-icon-color);
+}
+
+.mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {
+	fill: var(--v-icon-color-hover);
+}
+
+.mapbox-gl-geocoder--error {
+	color: var(--foreground-subdued);
+}
+
+.map-selection-box {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1000;
+	width: 0;
+	height: 0;
+	background: rgb(56 135 190 / 0.1);
+	border: 1px solid rgb(56 135 190);
+	pointer-events: none;
+}
+
+
+.maplibregl-ctrl-top-right {
+	max-width: 80%;
+}
+
+.mapboxgl-ctrl-zoom-in::after {
+	content: 'add';
+}
+
+.mapboxgl-ctrl-zoom-out::after {
+	content: 'remove';
+}
+
+.mapboxgl-ctrl-compass::after {
+	content: 'explore';
+}
+
+.mapboxgl-ctrl-geolocate::after {
+	content: 'my_location';
+}
+
+.mapboxgl-ctrl-fitdata::after {
+	content: 'crop_free';
+}
+
+.mapboxgl-ctrl-select::after {
+	content: 'highlight_alt';
+}
+
+.mapboxgl-ctrl-unselect::after {
+	content: 'clear';
+}
+
+.mapbox-gl-draw_point::after {
+	content: 'add_location';
+}
+
+.mapbox-gl-draw_line::after {
+	content: 'timeline';
+}
+
+.mapbox-gl-draw_polygon::after {
+	content: 'category';
+}
+
+.mapbox-gl-draw_trash::after {
+	content: 'delete';
+}
+
+.mapbox-gl-draw_uncombine::after {
+	content: 'call_split';
+}
+
+.mapbox-gl-draw_combine::after {
+	content: 'call_merge';
+}

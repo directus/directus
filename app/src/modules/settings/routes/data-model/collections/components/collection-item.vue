@@ -12,14 +12,17 @@
 				/>
 				<span>{{ collection.name }}</span>
 			</div>
-			<v-progress-circular v-if="nestedCollections.length && collapseLoading" small indeterminate />
-			<v-icon
-				v-else-if="nestedCollections.length"
-				v-tooltip="collapseTooltip"
-				:name="collapseIcon"
-				clickable
-				@click="toggleCollapse"
-			/>
+			<template v-if="collection.type === 'alias' || nestedCollections.length">
+				<v-progress-circular v-if="collapseLoading" small indeterminate />
+				<v-icon
+					v-else-if="nestedCollections.length"
+					v-tooltip="collapseTooltip"
+					:name="collapseIcon"
+					:clickable="nestedCollections.length > 0"
+					@click="toggleCollapse"
+				/>
+				<v-icon v-else :name="collapseIcon" />
+			</template>
 			<collection-options :collection="collection" />
 		</v-list-item>
 

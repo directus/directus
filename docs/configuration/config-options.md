@@ -182,7 +182,7 @@ prefixing the value with `{type}:`. The following types are available:
 
 | Variable                   | Description                                                                                                | Default Value |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH`              | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`        |
 | `PORT`                     | What port to run the API under.                                                                            | `8055`        |
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
@@ -220,25 +220,25 @@ database instance.
 
 ::: tip Pooling
 
-All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com/vincit/tarn.js#usage) through
+All the `DB_POOL_` prefixed options are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage) through
 [Knex](http://knexjs.org/#Installation-pooling)
 
 :::
 
 ## Security
 
-| Variable                         | Description                                                                                                                       | Default Value            |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `KEY`                            | Unique identifier for the project.                                                                                                | --                       |
-| `SECRET`                         | Secret string for the project.                                                                                                    | --                       |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                      | `15m`                    |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                  | `7d`                     |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                          | --                       |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                       | `false`                  |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                             | `lax`                    |
-| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                    | `directus_refresh_token` |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/system/authentication/#request-password-reset) | --                       |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/api/system/users/#invite-a-new-user)                  | --                       |
+| Variable                         | Description                                                                                                            | Default Value            |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `KEY`                            | Unique identifier for the project.                                                                                     | --                       |
+| `SECRET`                         | Secret string for the project.                                                                                         | --                       |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                           | `15m`                    |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                       | `7d`                     |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                               | --                       |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                            | `false`                  |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                  | `lax`                    |
+| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                         | `directus_refresh_token` |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset) | --                       |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)           | --                       |
 
 ::: tip Cookie Strictness
 
@@ -261,7 +261,7 @@ your project and API on different domains, make sure to verify your configuratio
 
 Argon2's hashing function is used by Directus for three purposes: 1) hashing user passwords, 2) generating hashes for
 the `Hash` field type in collections, and 3) the
-[generate a hash API endpoint](https://docs.directus.io/reference/api/system/utilities/#generate-a-hash).
+[generate a hash API endpoint](/reference/system/utilities/#generate-a-hash).
 
 All `HASH_*` environment variable parameters are passed to the `argon2.hash` function. See the
 [node-argon2 library options page](https://github.com/ranisalt/node-argon2/wiki/Options) for reference.
@@ -521,9 +521,9 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 For each of the auth providers you list, you must provide the following configuration:
 
-| Variable                 | Description                                             | Default Value |
-| ------------------------ | ------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid` | --            |
+| Variable                 | Description                                                     | Default Value |
+| ------------------------ | --------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap` | --            |
 
 You must also provide a number of extra variables. These differ per auth driver service. The following is a list of
 common required configuration options:
@@ -532,18 +532,18 @@ common required configuration options:
 
 No additional configuration required.
 
-### OAuth 2.0 and OpenID
+### SSO (`oauth2` and `openid`)
 
-Directus' OAuth 2.0 and OpenID integrations provide powerful alternative ways to authenticate into your project.
-Directus will ask you to login on the external service, and return authenticated with a Directus account linked to that
-service.
+Directus' SSO integrations provide powerful alternative ways to authenticate into your project. Directus will ask you to
+login on the external service, and return authenticated with a Directus account linked to that service.
 
-Directus supports hundreds of OAuth 2.0 and OpenID services, but requires some configuration to authenticate users
-correctly. For example, enabling authentication through GitHub requires creating an
+For example, you can login to Directus using a github account by creating an
 [OAuth 2.0 app in GitHub](https://github.com/settings/developers) and adding the following configuration to Directus:
 
 ```
 AUTH_PROVIDERS="github"
+
+AUTH_GITHUB_DRIVER="oauth2"
 AUTH_GITHUB_CLIENT_ID="99d3...c3c4"
 AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
 AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
@@ -557,26 +557,27 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that va
 
 :::
 
-#### OAuth 2.0 (`oauth2`)
+#### OAuth 2.0
 
-| Variable                                    | Description                                                                                | Default Value    |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                                 | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAUth secret for the external service.                                                     | --               |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                          | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                            | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                              | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | Where Directus can fetch the profile information of the authenticated user.                | --               |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to verify the user.                                           | `email`          |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Can be used in place of `EMAIL_KEY`. | --               |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.                              | `false`          |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                                                       | --               |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                                   | `account_circle` |
+| Variable                                    | Description                                                                        | Default Value    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                         | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAuth secret for the external service.                                             | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                  | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                    | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                      | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | The user profile information URL of the external service.                          | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to find the email address.                            | `email`          |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Will default to `EMAIL_KEY`. | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                            | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                    | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                           | `account_circle` |
 
-If possible, OpenID is preferred over OAuth 2.0 as it provides better verification and consistent user information,
-allowing more complete user registrations.
+#### OpenID
 
-#### OpenID (`openid`)
+OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
+OpenID offers better user verification and consistent profile information, allowing for more complete user
+registrations.
 
 | Variable                                    | Description                                                       | Default Value          |
 | ------------------------------------------- | ----------------------------------------------------------------- | ---------------------- |
@@ -585,12 +586,43 @@ allowing more complete user registrations.
 | `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request. | `openid profile email` |
 | `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                  | --                     |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.            | `sub`                  |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Whether to allow public registration of authenticating users.     | `false`                |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.           | `false`                |
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                   | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | Directus role ID to assign to users.                              | --                     |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                   | --                     |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                          | `account_circle`       |
 
-#### Multiple Providers
+### LDAP (`ldap`)
+
+LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
+information and roles will be assigned from Active Directory.
+
+| Variable                          | Description                                        | Default Value |
+| --------------------------------- | -------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                               | --            |
+| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.       | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                | --            |
+| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                   | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                    | `cn`          |
+| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                  | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group. | `member`      |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user         | `mail`        |
+
+<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+
+### Example: LDAP
+
+```
+AUTH_PROVIDERS="ldap"
+
+AUTH_LDAP_DRIVER="ldap"
+AUTH_LDAP_CLIENT_URL="ldap://ldap.directus.io"
+AUTH_LDAP_BIND_DN="CN=Bind User,OU=Users,DC=ldap,DC=directus,DC=io"
+AUTH_LDAP_BIND_PASSWORD="p455w0rd"
+AUTH_LDAP_USER_DN="OU=Users,DC=ldap,DC=directus,DC=io"
+AUTH_LDAP_GROUP_DN="OU=Groups,DC=ldap,DC=directus,DC=io"
+```
+
+### Example: Multiple Auth Providers
 
 You can configure multiple providers for handling authentication in Directus. This allows for different options when
 logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
@@ -602,8 +634,6 @@ AUTH_GOOGLE_DRIVER="openid"
 AUTH_GOOGLE_CLIENT_ID="<google_application_id>"
 AUTH_GOOGLE_CLIENT_SECRET= "<google_application_secret_key>"
 AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
-AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true"
-AUTH_GOOGLE_DEFAULT_ROLE_ID="<directus_role_id>"
 AUTH_GOOGLE_ICON="google"
 
 AUTH_ADOBE_DRIVER="oauth2"
@@ -612,8 +642,6 @@ AUTH_ADOBE_CLIENT_SECRET="<adobe_application_secret_key>"
 AUTH_ADOBE_AUTHORIZE_URL="https://ims-na1.adobelogin.com/ims/authorize/v2"
 AUTH_ADOBE_ACCESS_URL="https://ims-na1.adobelogin.com/ims/token/v3"
 AUTH_ADOBE_PROFILE_URL="https://ims-na1.adobelogin.com/ims/userinfo/v2"
-AUTH_ADOBE_ALLOW_PUBLIC_REGISTRATION="true"
-AUTH_ADOBE_DEFAULT_ROLE_ID="<directus_role_id>"
 AUTH_ADOBE_ICON="adobe"
 ```
 

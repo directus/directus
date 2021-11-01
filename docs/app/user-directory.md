@@ -9,7 +9,7 @@
 ## Browsing Users
 
 Lists all users of the project, with a navigation that allows quick access to the different role groups. This page has
-the same functionality as other [Collection Pages](#).
+the same functionality as other [Collection Pages](/app/content-collections/).
 
 ## Viewing a User
 
@@ -19,9 +19,10 @@ profile page.
 
 ## Editing a User
 
-You can access your profile page from the User Directory or by clicking the [User Menu](#) in the Module Bar. The
-profile page has the same features and functionality as the [Item Page](/app/content/item). Administrators can customize
-the fields on this page, but the following are available by default.
+You can access your profile page from the User Directory or by clicking the User Menu in the
+[Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
+[Item Page](/app/content/item). Administrators can customize the fields on this page, but the following are available by
+default.
 
 - **First Name** — The given name
 - **Last Name** — The family/surname

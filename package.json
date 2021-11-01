@@ -24,7 +24,7 @@
 	},
 	"engines": {
 		"node": ">=16.0.0",
-		"npm": ">=8.1.0"
+		"npm": ">=7.0.0"
 	},
 	"devDependencies": {
 		"@types/dockerode": "3.3.0",
@@ -54,7 +54,7 @@
 		"oracledb": "5.3.0",
 		"pg": "8.7.1",
 		"prettier": "2.4.1",
-		"simple-git-hooks": "2.6.1",
+		"simple-git-hooks": "2.7.0",
 		"sqlite3": "5.0.2",
 		"stylelint": "14.0.1",
 		"stylelint-config-prettier": "9.0.3",
@@ -77,6 +77,6 @@
 	},
 	"volta": {
 		"node": "16.13.0",
-		"npm": "8.1.1"
+		"npm": "8.1.2"
 	}
 }

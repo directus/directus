@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Permissions are assigned to Roles, and control data access throughout the platform.
-> [Learn more about Permissions](/concepts/permissions/).
+> [Learn more about Permissions](/getting-started/glossary/#permissions).
 
 </div>
 <div class="right">
@@ -30,7 +30,7 @@ pageClass: page-reference
 Primary key of the permission rule.
 
 `role` **many-to-one**\
-Role this permission applies to. Many-to-one to [roles](/reference/api/system/roles/). `null` is used for public permissions.
+Role this permission applies to. Many-to-one to [roles](/reference/system/roles/). `null` is used for public permissions.
 
 `collection` **string**\
 Collection this permission rule applies to.
@@ -39,10 +39,10 @@ Collection this permission rule applies to.
 What CRUD operation this permission rule applies to. One of `create`, `read`, `update`, `delete`.
 
 `permissions` **object**\
-What rules the item must pass before the role is allowed to alter it. Follows [the Filter Rules spec](/reference/filter-rules/).
+What rules the item must pass before the role is allowed to alter it. Follows [the Filter Rules spec](/configuration/filter-rules).
 
 `validation` **object**\
-What rules the provided values must pass before the role is allowed to submit them for insertion/update. Follows [the Filter Rules spec](/reference/filter-rules/).
+What rules the provided values must pass before the role is allowed to submit them for insertion/update. Follows [the Filter Rules spec](/configuration/filter-rules).
 
 `preset` **object**\
 Additional default values for the role.
@@ -94,11 +94,11 @@ other than the current user's role won't be returned.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [permission objects](#the-permission-object). If no items are
+An array of up to [limit](/reference/query/#limit) [permission objects](#the-permission-object). If no items are
 available, data will be an empty array.
 
 </div>
@@ -111,7 +111,7 @@ GET /permissions
 SEARCH /permissions
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -151,7 +151,7 @@ List an existing permission by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -229,7 +229,7 @@ Create a new permission rule
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -301,7 +301,7 @@ Create multiple new permission rules
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -384,7 +384,7 @@ Update an existing permissions rule.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -451,7 +451,7 @@ Update multiple existing permissions rules.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
