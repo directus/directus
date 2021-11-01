@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Индентификатор
 avatar: Аватар
 default_provider: По умолчанию
 published: Опубликовано
@@ -248,6 +249,7 @@ invalid_item: Неверное содержимое
 next: Дальше
 field_name: Название поля
 translations: Переводы
+no_translations: Нет переводов
 note: Заметка
 enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
@@ -324,6 +326,7 @@ date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
 minutes: Минуты
+hours: Часов
 month: Месяц
 year: Год
 select_all: Выбрать Все
@@ -519,6 +522,7 @@ all_users: Все пользователи
 delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
+make_collection_hidden: Сделать коллекцию скрытой
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
@@ -608,6 +612,7 @@ all_files: Все Файлы
 my_files: Мои Файлы
 recent_files: Недавние Файлы
 create_folder: Создать Папку
+edit_folder: Изменить папку
 folder_name: Название Папки...
 add_file: Добавить Файл
 replace_file: Заменить Файл
@@ -670,6 +675,7 @@ source: Источник
 url_placeholder: Введите адрес url...
 display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
+interface_group_other: Другие
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
 unlimited: Без ограничения
@@ -953,6 +959,7 @@ fields:
     method: Метод
     status: Статус
     data: Данные
+    value: Значение
     data_label: Отправлять данные о событии
     triggers: Триггеры
     actions: Действия
@@ -1055,6 +1062,8 @@ field_options:
     actions_update: Обновить
     actions_delete: Удалить
     actions_login: Войти
+    headers:
+      value: Значение
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
 no_value: Нет значения
 do_nothing: Ничего не Делать
@@ -1396,6 +1405,10 @@ interfaces:
 displays:
   translations:
     translations: Переводы
+    description: Предпросмотр переводов
+    enable: Включить
+    user_language: Использовать текущий язык пользователя
+    default_language: Язык по умолчанию
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл

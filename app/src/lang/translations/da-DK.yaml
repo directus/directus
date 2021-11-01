@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Profilbillede
 default_provider: Standard
 published: Publiceret
@@ -172,6 +152,8 @@ global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
 show_zero: Vis Nul
+create_in_advanced_field_creation_mode: Opret i avanceret feltskabelsestilstand
+continue_in_advanced_field_creation_mode: Fortsæt i avanceret feltskabelsestilstand
 sum: Sum
 sum_distinct: Sum Distinkt
 avg: Gennemsnit
@@ -232,6 +214,9 @@ new_data_alert: 'Følgende oprettes inden for din datamodel:'
 search_collection: Søg Samling...
 new_field: 'Nyt felt'
 new_collection: 'Ny Samling'
+add_m2o_to_collection: 'Tilføj M2O til "{collection}"'
+add_o2m_to_collection: 'Tilføj O2M til "{collection}"'
+add_m2m_to_collection: 'Tilføj M2M til "{collection}"'
 choose_a_type: Vælg en type...
 determined_by_relationship: Bestemt af forhold
 add_note: Tilføj en nyttig note til brugere...
@@ -663,6 +648,7 @@ no_dashboards: Ingen Dashboards
 no_dashboards_copy: Du har ikke nogen Dashboards endnu.
 no_data: Ingen Data
 create_dashboard: Opret Dashboard
+dashboard_name: Betjeningspanels Navn
 full_screen: Fuld Skærm
 edit_panels: Rediger Paneler
 fit_to_screen: Tilpas til skærm
@@ -676,6 +662,12 @@ source: Kilde
 url_placeholder: Indtast en url...
 display_text: Vis Tekst
 display_text_placeholder: Indtast en visningstekst...
+interface_group_text_and_numbers: Tekst & Tal
+interface_group_selection: Markering
+interface_group_relational: Forhold
+interface_group_presentation: Præsentation
+interface_group_groups: Grupper
+interface_group_other: Andet
 tooltip: Værktøjstip
 tooltip_placeholder: Indtast et værktøjstip...
 unlimited: Ubegrænset
@@ -938,6 +930,7 @@ fields:
     method: Metode
     status: Status
     data: Data
+    value: Værdi
     data_label: Send Begivenhedsdata
     triggers: Udløsere
     actions: Handlinger
@@ -1040,6 +1033,8 @@ field_options:
     actions_update: Opdater
     actions_delete: Slet
     actions_login: Log ind
+    headers:
+      value: Værdi
 no_fields_in_collection: 'Der er ingen felter i "{collection}" endnu'
 no_value: Ingen værdi
 do_nothing: Gør Intet

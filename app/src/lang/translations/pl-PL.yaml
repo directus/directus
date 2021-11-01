@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identyfikator
 avatar: Awatar
 default_provider: Domyślny
 published: Opublikowany
@@ -172,6 +173,8 @@ global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
 show_zero: Pokaż zerowy
+create_in_advanced_field_creation_mode: Utwórz w Zaawansowanym trybie tworzenia pól
+continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
 avg: Średnia
@@ -232,6 +235,9 @@ new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
 search_collection: Przeszukaj kolekcje...
 new_field: 'Nowe pole'
 new_collection: 'Nowa kolekcja'
+add_m2o_to_collection: 'Dodaj M2O do "{collection}"'
+add_o2m_to_collection: 'Dodaj O2M do "{collection}"'
+add_m2m_to_collection: 'Dodaj M2M do "{collection}"'
 choose_a_type: Wybierz typ...
 determined_by_relationship: Określone przez relację
 add_note: Dodaj użyteczną informację dla użytkowników...
@@ -679,6 +685,12 @@ source: Źródło
 url_placeholder: Wprowadź adres url...
 display_text: Wyświetl tekst
 display_text_placeholder: Wprowadź tekst wyświetlany...
+interface_group_text_and_numbers: Tekst i numery
+interface_group_selection: Wybór
+interface_group_relational: Relacyjny
+interface_group_presentation: Prezentacja
+interface_group_groups: Grupy
+interface_group_other: Inne
 tooltip: Podpowiedź
 tooltip_placeholder: Wprowadź podpowiedź...
 unlimited: Nielimitowany
@@ -965,6 +977,9 @@ fields:
     method: Metoda
     status: Status
     data: Dane
+    header: Nagłówek
+    value: Wartość
+    headers: Nagłówki żądania
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
@@ -1072,6 +1087,10 @@ field_options:
     actions_update: Zaktualizuj
     actions_delete: Usuń
     actions_login: Logowanie
+    headers:
+      header: Nagłówek
+      value: Wartość
+      add: Dodaj nagłówek
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 no_value: Brak wartości
 do_nothing: Nic nie rób
@@ -1133,7 +1152,7 @@ otp: Jednorazowe hasło
 password: Hasło
 permissions: Uprawnienia
 relationship: Powiązanie
-reset: Wyczyść
+reset: Resetuj
 reset_password: Resetuj hasło
 revisions: Wersje
 revert: Przywróć
@@ -1313,6 +1332,7 @@ interfaces:
     lnglat: Długość geograficzna
     wkt: WKT
     wkb: WKB
+    click_to_select: Kliknij, aby wybrać {geometry}
   presentation-notice:
     notice: Informacja
     description: Wyświetl krótką informacje
