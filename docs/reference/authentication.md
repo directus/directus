@@ -393,6 +393,9 @@ To learn more about setting up auth providers, see
 `data` **Array**\
 Array of configured auth providers.
 
+`disableDefault` **boolean**\
+Whether or not the default authentication provider is disabled.
+
 </div>
 
 </div>
@@ -419,7 +422,8 @@ GET /auth
 			"name": "Okta",
 			"driver": "openid"
 		}
-	]
+	],
+	"disableDefault": false
 }
 ```
 
