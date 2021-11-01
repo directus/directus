@@ -140,7 +140,12 @@ export default defineComponent({
 		});
 
 		useShortcut('meta+shift+s', () => {
-			if (hasEdits.value) saveAsCopyAndNavigate();
+			saveAsCopyAndNavigate();
+		});
+
+		useShortcut('alt+n', async () => {
+			if (hasEdits.value) await saveAndStay();
+			createNew();
 		});
 
 		const isSavable = computed(() => {
