@@ -20,7 +20,8 @@ no limit to customization. Below are several code resources for key SCSS files.
 
 ## Project Styling
 
-See [Adjusting Project Settings](/guides/projects/#adjusting-project-settings)
+Directus includes many no-code options for branding and styling the App. Learn more within:
+[Adjusting Project Settings](/guides/projects/#adjusting-project-settings)
 
 ## Custom CSS
 
