@@ -1323,8 +1323,6 @@ layouts:
     calendar: Calendário
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
-  map:
-    field: Geometria
 panels:
   label:
     name: Rótulo
