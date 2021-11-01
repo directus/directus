@@ -18,7 +18,12 @@
 			@update:model-value="setSort"
 		>
 			<template #item="{ element }">
-				<field-select :field="element" :fields="usableFields" @setNestedSort="setNestedSort" />
+				<field-select
+					:field="element"
+					:fields="usableFields"
+					:duplicate="duplicate === element.field"
+					@setNestedSort="setNestedSort"
+				/>
 			</template>
 		</draggable>
 
@@ -68,6 +73,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		duplicate: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {

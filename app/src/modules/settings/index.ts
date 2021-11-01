@@ -74,6 +74,7 @@ export default defineModule({
 						collection: route.params.collection,
 						field: route.params.field,
 						type: route.query.type,
+						duplicate: route.query.duplicate,
 					}),
 					children: [
 						{

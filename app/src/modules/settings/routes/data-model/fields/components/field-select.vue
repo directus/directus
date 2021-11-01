@@ -139,7 +139,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import { useRouter } from 'vue-router';
@@ -168,6 +168,10 @@ export default defineComponent({
 			type: Array as PropType<Field[]>,
 			default: () => [],
 		},
+		duplicate: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['setNestedSort'],
 	setup(props, { emit }) {
@@ -193,6 +197,13 @@ export default defineComponent({
 		const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
 
 		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
+
+		watch(
+			() => props.duplicate,
+			() => {
+				duplicateActive.value = props.duplicate;
+			}
+		);
 
 		return {
 			t,

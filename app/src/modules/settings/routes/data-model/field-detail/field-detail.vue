@@ -68,10 +68,18 @@ export default defineComponent({
 		);
 
 		useShortcut('meta+s', () => {
-			if (readyToSave.value !== false) save();
+			if (readyToSave.value !== false) saveAndStay();
 		});
 
-		useShortcut('alt+n', createNew);
+		useShortcut('meta+shift+s', async () => {
+			if (readyToSave.value !== false) await saveAndStay();
+			duplicate();
+		});
+
+		useShortcut('alt+n', async () => {
+			if (readyToSave.value !== false) await saveAndStay();
+			createNew();
+		});
 
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -102,6 +110,14 @@ export default defineComponent({
 		});
 
 		return { simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced };
+
+		async function saveAndStay() {
+			await save();
+		}
+
+		async function duplicate() {
+			router.push(`/settings/data-model/${props.collection}?duplicate=${props.field}`);
+		}
 
 		function createNew() {
 			router.push(`/settings/data-model/${props.collection}/+`);

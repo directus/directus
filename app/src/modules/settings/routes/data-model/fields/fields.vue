@@ -61,7 +61,7 @@
 					{{ t('fields_and_layout') }}
 					<span class="instant-save">{{ t('saves_automatically') }}</span>
 				</h2>
-				<fields-management :collection="collection" />
+				<fields-management :collection="collection" :duplicate="duplicate" />
 			</div>
 
 			<router-view name="field" :collection="collection" :field="field" :type="type" />
@@ -125,6 +125,10 @@ export default defineComponent({
 			default: null,
 		},
 		type: {
+			type: String,
+			default: null,
+		},
+		duplicate: {
 			type: String,
 			default: null,
 		},
