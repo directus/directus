@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Avatar
 default_provider: Predefinito
 published: Pubblicato
@@ -172,6 +152,8 @@ global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
 show_zero: Mostra zero
+create_in_advanced_field_creation_mode: Crea con la Modalità di Creazione Campo Avanzata
+continue_in_advanced_field_creation_mode: Continua con la Modalità di Creazione Campo Avanzata
 sum: Somma
 sum_distinct: Somma valori unici
 avg: Media
@@ -232,6 +214,9 @@ new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
+add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
+add_o2m_to_collection: 'Aggiungi O2M a "{collection}"'
+add_m2m_to_collection: 'Aggiungi M2M a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -679,6 +664,12 @@ source: Sorgente
 url_placeholder: Inserisci url...
 display_text: Visualizza testo
 display_text_placeholder: Inserisci un testo di visualizzazione...
+interface_group_text_and_numbers: Testo & Numeri
+interface_group_selection: Selezione
+interface_group_relational: Relazionale
+interface_group_presentation: Presentazione
+interface_group_groups: Gruppi
+interface_group_other: Altro
 tooltip: Suggerimento
 tooltip_placeholder: Inserisci un suggerimento...
 unlimited: Illimitato
@@ -966,6 +957,7 @@ fields:
     method: Metodo
     status: Stato
     data: Dati
+    value: Valore
     data_label: Invia dati evento
     triggers: Trigger
     actions: Azioni
@@ -1074,6 +1066,8 @@ field_options:
     actions_update: Modifica
     actions_delete: Cancellazione
     actions_login: Accedi
+    headers:
+      value: Valore
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
 do_nothing: Non Fare Niente
