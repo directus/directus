@@ -21,7 +21,11 @@
 
 	<div class="field">
 		<div class="type-label">{{ t('display_template') }}</div>
-		<v-field-template v-model="displayTemplateWritable" :collection="collection" :placeholder="t('layouts.map.default_template')" />
+		<v-field-template
+			v-model="displayTemplateWritable"
+			:collection="collection"
+			:placeholder="t('layouts.map.default_template')"
+		/>
 	</div>
 
 	<div class="field">
@@ -70,11 +74,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
-	emits: [
-		'update:geometryField',
-		'update:autoLocationFilter',
-		'update:clusterData',
-	],
+	emits: ['update:geometryField', 'update:autoLocationFilter', 'update:clusterData'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
