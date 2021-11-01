@@ -3,7 +3,7 @@
 ::: tip Automation
 
 We've created a little CLI tool you can run that does this process automatically. For more info, check the doc on
-[installing through the CLI](/guides/installation/cli).
+[installing through the CLI](/getting-started/installation/cli/).
 
 :::
 
