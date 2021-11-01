@@ -1471,7 +1471,7 @@ export class GraphQLService {
 			query.aggregate[aggregateProperty] =
 				aggregationGroup.selectionSet?.selections
 					// filter out graphql pointers, like __typename
-					.filter((selectionNode) => !selectionNode.name.value.startsWith('__'))
+					.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
 					.map((selectionNode) => {
 						selectionNode = selectionNode as FieldNode;
 						return selectionNode.name.value;
