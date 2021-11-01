@@ -1,9 +1,6 @@
 import { AnyLayer } from 'maplibre-gl';
-
-const white = '#ffffff';
-const green = '#00c897';
-const yellow = '#ffb300';
-const orange = '#ee9746';
+import colors from '@/styles/_colors.module.scss';
+const { green, orange, yellow, black, white } = colors;
 
 export const layers: AnyLayer[] = [
 	{
@@ -70,7 +67,7 @@ export const layers: AnyLayer[] = [
 			'circle-radius': 10,
 			'circle-blur': 1,
 			'circle-opacity': 0.9,
-			'circle-color': '#000000',
+			'circle-color': black,
 		},
 	},
 	{

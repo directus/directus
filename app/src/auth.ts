@@ -4,16 +4,19 @@ import { router } from '@/router';
 import { useAppStore } from '@/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
+import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 
 export type LoginCredentials = {
-	email: string;
+	identifier?: string;
+	email?: string;
 	password: string;
+	otp?: string;
 };
 
-export async function login(credentials: LoginCredentials): Promise<void> {
+export async function login(credentials: LoginCredentials, provider: string): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post<any>(`/auth/login`, {
+	const response = await api.post<any>(provider !== DEFAULT_AUTH_PROVIDER ? `/auth/login/${provider}` : '/auth/login', {
 		...credentials,
 		mode: 'cookie',
 	});

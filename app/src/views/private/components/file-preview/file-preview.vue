@@ -116,7 +116,7 @@ audio {
 		bottom: 12px;
 		z-index: 2;
 		color: white;
-		text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
+		text-shadow: 0px 0px 8px rgb(0 0 0 / 0.75);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}

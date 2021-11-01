@@ -70,8 +70,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
-			.orWhereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
 		return user?.id;
@@ -99,9 +98,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { emailKey, identifierKey, allowPublicRegistration } = this.config;
 
-		const email = userInfo[emailKey ?? 'email'] as string | undefined;
+		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey] as string | undefined) ?? email;
+		const identifier = (userInfo[identifierKey] as string | null | undefined) ?? email;
 
 		if (!identifier) {
 			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
@@ -125,13 +124,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		// If email matches identifier, don't set "external_identifier"
-		const emailIsIdentifier = email?.toLowerCase() === identifier.toLowerCase();
-
 		await this.usersService.createOne({
 			provider: this.config.provider,
 			email: email,
-			external_identifier: !emailIsIdentifier ? identifier : undefined,
+			external_identifier: identifier,
 			role: this.config.defaultRoleId,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
