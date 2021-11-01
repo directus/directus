@@ -1469,10 +1469,13 @@ export class GraphQLService {
 			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
 
 			query.aggregate[aggregateProperty] =
-				aggregationGroup.selectionSet?.selections.map((selectionNode) => {
-					selectionNode = selectionNode as FieldNode;
-					return selectionNode.name.value;
-				}) ?? [];
+				aggregationGroup.selectionSet?.selections
+					// filter out graphql pointers, like __typename
+					.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
+					.map((selectionNode) => {
+						selectionNode = selectionNode as FieldNode;
+						return selectionNode.name.value;
+					}) ?? [];
 		}
 
 		validateQuery(query);
