@@ -123,6 +123,7 @@ import throttle from 'lodash/throttle';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import useShortcut from '@/composables/use-shortcut';
 
 type Image = {
 	type: string;
@@ -190,6 +191,21 @@ export default defineComponent({
 		const imageURL = computed(() => {
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
 		});
+
+		useShortcut('meta+s', save);
+		useShortcut('escape', (event, stop) => {
+			if (cropping.value) {
+				cropping.value = false;
+				stop();
+			}
+		});
+		useShortcut('meta+m', () => {
+			dragMode.value = dragMode.value === 'crop' ? 'move' : 'crop';
+		});
+		useShortcut('meta+arrowleft', rotate);
+		useShortcut('meta+arrowright', rotate);
+		useShortcut('meta+arrowup', () => flip('vertical'));
+		useShortcut('meta+arrowdown', () => flip('horizontal'));
 
 		return {
 			t,
