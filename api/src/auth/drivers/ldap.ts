@@ -28,7 +28,7 @@ interface UserInfo {
 	firstName?: string;
 	lastName?: string;
 	email?: string;
-	userAccountControl?: number;
+	userAccountControl: number;
 }
 
 // 0x2: ACCOUNTDISABLE
