@@ -82,7 +82,7 @@ export default defineComponent({
 			if (!disableDefault.value) {
 				providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
 			} else {
-				providerSelect.value = providerOptions.value[0].value;
+				providerSelect.value = providerOptions.value[0]?.value;
 			}
 		});
 
