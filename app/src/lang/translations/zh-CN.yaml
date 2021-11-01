@@ -1485,7 +1485,6 @@ layouts:
     map: 地图
     basemap: 底图
     layers: 图层
-    edit_custom_layers: 编辑图层
     cluster_options: 集群选项
     cluster_radius: 集群半径
     cluster_minpoints: 集群最小尺寸

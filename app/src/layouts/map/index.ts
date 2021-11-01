@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { toRefs, computed, ref, watch } from 'vue';
 
 import { toGeoJSON } from '@/utils/geometry';
-import { layers } from './style';
+import { layers as directusLayers } from './style';
 import { useRouter } from 'vue-router';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
@@ -59,12 +59,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			};
 		});
 
-		const customLayerDrawerOpen = ref(false);
-
 		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
 		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
-		const customLayers = syncRefProperty(layoutOptions, 'customLayers', layers);
-		const autoLocationFilter = syncRefProperty(layoutOptions, 'autoLocationFilter', false);
 		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
 		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
 		const geometryFormat = computed<GeometryFormat | undefined>({
@@ -130,8 +126,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		const locationFilterOutdated = ref(false);
-
 		function getLocationFilter(): Filter | undefined {
 			if (!isGeometryFieldNative.value || !cameraOptions.value || !geometryField.value) {
 				return;
@@ -157,49 +151,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			} as Filter;
 		}
 
-		function updateLocationFilter() {
-			locationFilterOutdated.value = false;
-			locationFilter.value = getLocationFilter();
-		}
+		const shouldUpdateCamera = ref(false);
 
-		function clearLocationFilter() {
+		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
-			locationFilterOutdated.value = false;
-			locationFilter.value = undefined;
-		}
-
-		function fitGeoJSONBounds() {
-			if (!geojson.value?.features.length) {
+			if (isGeometryFieldNative.value) {
+				locationFilter.value = undefined;
 				return;
 			}
-			shouldUpdateCamera.value = true;
-			locationFilterOutdated.value = false;
-			if (geojson.value) {
+			if (geojson.value?.features.length) {
 				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
 		}
-
-		function clearDataFilters() {
-			props?.clearFilters?.();
-		}
-
-		const shouldUpdateCamera = ref(false);
 
 		watch(
 			() => cameraOptions.value,
 			() => {
 				shouldUpdateCamera.value = false;
-				locationFilterOutdated.value = true;
-				if (autoLocationFilter.value) {
-					updateLocationFilter();
-				}
-			}
-		);
-
-		watch(
-			() => autoLocationFilter.value,
-			(value) => {
-				if (value) updateLocationFilter();
+				locationFilter.value = getLocationFilter();
 			}
 		);
 
@@ -251,7 +220,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		}
 
-		const directusLayers = ref(layers);
 		const directusSource = ref({
 			type: 'geojson',
 			data: {
@@ -261,17 +229,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		watch(() => clusterData.value, updateSource, { immediate: true });
-		updateLayers();
-
-		function updateLayers() {
-			customLayerDrawerOpen.value = false;
-			directusLayers.value = customLayers.value ?? [];
-		}
-
-		function resetLayers() {
-			directusLayers.value = cloneDeep(layers);
-			customLayers.value = directusLayers.value;
-		}
 
 		function updateSource() {
 			directusSource.value = merge({}, directusSource.value, {
@@ -340,9 +297,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geojson,
 			directusSource,
 			directusLayers,
-			customLayers,
-			updateLayers,
-			resetLayers,
 			featureId,
 			geojsonBounds,
 			geojsonLoading,
@@ -355,7 +309,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			displayTemplate,
 			isGeometryFieldNative,
 			cameraOptions,
-			autoLocationFilter,
 			clusterData,
 			items,
 			loading,
@@ -374,13 +327,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			refresh,
 			resetPresetAndRefresh,
 			geometryFields,
-			customLayerDrawerOpen,
-			locationFilterOutdated,
-			updateLocationFilter,
-			clearLocationFilter,
-			clearDataFilters,
-			locationFilter,
-			fitGeoJSONBounds,
+			fitDataBounds,
 			template,
 			itemPopup,
 			updateItemPopup,

@@ -93,7 +93,22 @@ features/options:
 
 ### Calendar Layout
 
+An excellent choice for temporal (date/time) data, this Layout allows you to choose between a Month, Week, Day, and List
+view. The following options are included:
+
+- Display Layout
+- Start Date Field
+- End Date Field
+
 ### Map Layout
+
+For geospatial/geographic data, the Map Layout provides a world map for points, lines, and other geometry. The following
+options are available:
+
+- Basemap
+- Location Field
+- Display Template
+- Enable Clustering
 
 ## Searching Items
 

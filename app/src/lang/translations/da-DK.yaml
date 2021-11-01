@@ -1475,18 +1475,12 @@ layouts:
   map:
     map: Kort
     layers: Lag
-    edit_custom_layers: Rediger Lag
     cluster_options: Indstillinger for klyngedannelse
     cluster: Klynge Nærliggende Data
     cluster_minpoints: Mindste klyngestørrelse
     cluster_maxzoom: Maksimum zoom til klyngedannelse
     field: Geometri
     invalid_geometry: Ugyldig geometri
-    auto_location_filter: Auto-filter inden for visning
-    search_this_area: Søg i dette område
-    clear_data_filter: Ryd datafilter
-    clear_location_filter: Ryd placeringsfilter
-    no_results_here: Ingen resultater i dette område
 panels:
   metric:
     name: Metrisk

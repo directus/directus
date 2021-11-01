@@ -10,6 +10,13 @@ If you have _any_ questions along your contributor journey, please feel free to 
 
 :::
 
+::: tip Technical Contributor Docs
+
+Technical documentation for contributing to the core codebase is located on the main `directus/directus`
+[GitHub repository's Wiki](https://github.com/directus/directus/wiki).
+
+:::
+
 ## Code of Conduct
 
 **The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md) is one of the ways
