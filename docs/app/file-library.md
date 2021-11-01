@@ -8,7 +8,7 @@
 ## Browsing Files
 
 This module aggregates all files within the project into one consolidated library. This listing page has the same
-features and functionality as the [Collection Page](/app/content/collection).
+features and functionality as the [Collection Page](/app/content-collections/).
 
 ## Viewing or Editing a File
 

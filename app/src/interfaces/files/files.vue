@@ -90,7 +90,9 @@
 		<v-dialog v-if="!disabled" v-model="showUpload">
 			<v-card>
 				<v-card-title>{{ t('upload_file') }}</v-card-title>
-				<v-card-text><v-upload multiple from-url @input="onUpload" /></v-card-text>
+				<v-card-text>
+					<v-upload multiple from-url :folder="folder" @input="onUpload" />
+				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
 				</v-card-actions>
@@ -153,6 +155,10 @@ export default defineComponent({
 		enableSelect: {
 			type: Boolean,
 			default: true,
+		},
+		folder: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

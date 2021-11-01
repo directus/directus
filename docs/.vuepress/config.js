@@ -79,6 +79,48 @@ module.exports = {
 						type: 'page',
 						path: '/getting-started/installation',
 						title: 'Installation',
+						children: [
+							{
+								type: 'page',
+								path: '/getting-started/installation/aws',
+								title: 'AWS',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/cli',
+								title: 'CLI',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/digitalocean-app-platform',
+								title: 'DigitalOcean',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/docker',
+								title: 'Docker',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/iis',
+								title: 'IIS',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/manual',
+								title: 'Manual',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/plesk',
+								title: 'Plesk',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/ubuntu',
+								title: 'Ubuntu',
+							},
+						],
 					},
 					{
 						type: 'page',
@@ -145,58 +187,11 @@ module.exports = {
 			{
 				title: 'Configuration',
 				children: [
-					{
-						type: 'page',
-						path: '/configuration/overview',
-						title: 'Overview',
-					},
-					{
-						type: 'page',
-						path: '/configuration/installation',
-						title: 'Installation',
-						children: [
-							{
-								type: 'page',
-								path: '/configuration/installation/aws',
-								title: 'AWS',
-							},
-							{
-								type: 'page',
-								path: '/configuration/installation/cli',
-								title: 'CLI',
-							},
-							{
-								type: 'page',
-								path: '/configuration/installation/digitalocean-app-platform',
-								title: 'DigitalOcean',
-							},
-							{
-								type: 'page',
-								path: '/configuration/installation/docker',
-								title: 'Docker',
-							},
-							{
-								type: 'page',
-								path: '/configuration/installation/iis',
-								title: 'IIS',
-							},
-							{
-								type: 'page',
-								path: '/configuration/installation/manual',
-								title: 'Manual',
-							},
-							{
-								type: 'page',
-								path: '/configuration/installation/plesk',
-								title: 'Plesk',
-							},
-							{
-								type: 'page',
-								path: '/configuration/installation/ubuntu',
-								title: 'Ubuntu',
-							},
-						],
-					},
+					// {
+					// 	type: 'page',
+					// 	path: '/configuration/overview',
+					// 	title: 'Overview',
+					// },
 					{
 						type: 'page',
 						path: '/configuration/config-options',
@@ -441,8 +436,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/extensions/panes',
-						title: 'Panes',
+						path: '/extensions/panels',
+						title: 'Panels',
 					},
 					{
 						type: 'page',
