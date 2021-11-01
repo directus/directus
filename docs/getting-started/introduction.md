@@ -49,22 +49,17 @@ the platform is used:
 
 Directus is a simple solution for complex problems, with a data-first approach guided by the following core principles:
 
-- **Pure** — There is no predefined model or proprietary rules for your schema, and all system settings are stored
-  separately.
-- **Open** — Our entire codebase is public and transparent, allowing for end-to-end audits. Nothing is obfuscated or
-  black-boxed.
-- **Portable** — Data is stored in your bespoke database and can be migrated/exported/backed-up at any time. Absolutely
-  no vendor lock-in.
-- **Limitless** — Create unlimited users, roles, languages, collections, and items. No arbitrary restrictions or paywall
-  limitations.
-- **Extensible** — Every aspect of the platform is modular, allowing you to adapt, customize, and infinitely extend the
-  Core engine.
-- **Unopinionated** — Choose your database (all SQL vendors), API (REST or GraphQL), and infra (self-hosted or Cloud).
+- **Pure** — No predefined or proprietary schema, with all system metadata stored separately
+- **Open** — Public and transparent codebase with no obfuscated or cloud-only code
+- **Portable** — Database can be exported or migrated at any time with no vendor lock-in
+- **Limitless** — No artificial limitations or paywalls on users, roles, languages, collections, or items
+- **Extensible** — Every aspect of the platform is modular to avoid any hard feature ceilings
+- **Unopinionated** — Choose your stack, database, and architecture; self-hosted or on cloud
 
 ## Database Mirroring
 
-Directus is installed as a _layer_ on top of your new or existing SQL database, with its App and API dynamically
-“mirroring” your actual schema and content in real-time. This approach is similar to how technical database clients
+**Directus is installed as a _layer_ on top of your new or existing SQL database, with its App and API dynamically
+“mirroring” your actual schema and content in real-time.** This approach is similar to how technical database clients
 (like _phpMyAdmin_) work, however Directus provides an experience that is safe, intuitive, and powerful enough for
 anyone... even the most non-technical users.
 
@@ -93,15 +88,16 @@ What makes Directus so flexible is that it has been designed from the ground up 
 avoid a feature ceiling. In addition to offering our software's codebase as open-source, we've included the following
 extension types in the platform's App and API.
 
-- **[Modules](/extensions/modules/)** — (App) The highest and broadest level of organization within the App
-- **[Layouts](/extensions/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
-- **[Interfaces](/extensions/interfaces/)** — (App) How you view or interact with a field and its value
-- **[Displays](/extensions/displays/)** — (App) A small inline preview of a field's value
-- **[Panes](/extensions/panes/)** — (App) A way to view dashboard data within the Insights Module
-- **[Styles](/configuration/project-settings/#branding)** — (App) Whitelabeling through App Themes and CSS Overrides
-- **[Endpoints](/extensions/api-endpoints/)** — (API) Custom registered API endpoints
-- **[Hooks](/extensions/hooks/)** — (API) Event and interval hooks for triggering custom logic
-- **[Email Templates](/extensions/email-templates/)** — (API) Custom structure and formatting for emails
+- **[API Endpoints](/extensions/api-endpoints/)** — Custom registered API endpoints
+- **[Displays](/extensions/displays/)** — A small inline preview of a field's value
+- **[Email Templates](/extensions/email-templates/)** — Custom structure and formatting for emails
+- **[Hooks](/extensions/hooks/)** — Event and interval hooks for triggering custom logic
+- **[Interfaces](/extensions/interfaces/)** — How you view or interact with a field and its value
+- **[Layouts](/extensions/layouts/)** — How you browse, view or interact with a set of Items in a Collection
+- **[Migrations](/extensions/migrations/)** — Custom migrations for tracking project schema and content updates
+- **[Modules](/extensions/modules/)** — The highest and broadest level of organization within the App
+- **[Panels](/extensions/panels/)** — A way to view dashboard data within the Insights Module
+- **[Themes](/extensions/themes/)** — Whitelabeling through App Themes and CSS Overrides
 
 ## The Directus Ecosystem
 

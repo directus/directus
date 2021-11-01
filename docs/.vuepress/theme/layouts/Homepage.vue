@@ -349,7 +349,7 @@
 				<span>A non-technical overview of the Directus no-code App and its various features.</span>
 				<u>Learn More</u>
 			</a>
-			<a href="/configuration/overview/" class="panel">
+			<a href="/configuration/config-options/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<circle cx="30" cy="30" r="30" fill="#00C897" />
 					<path
