@@ -1489,9 +1489,7 @@ layouts:
     cluster_radius: 集群半径
     cluster_minpoints: 集群最小尺寸
     cluster_maxzoom: 集群的最大缩放
-    field: 几何
     invalid_geometry: 无效几何图形
-    search_this_area: 搜索此区域
 panels:
   metric:
     name: 公制

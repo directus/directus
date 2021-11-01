@@ -1078,8 +1078,6 @@ layouts:
     calendar: تقويم
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
-  map:
-    field: الأشكال الهندسية
 panels:
   label:
     name: تسمية

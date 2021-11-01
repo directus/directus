@@ -1178,7 +1178,6 @@ translation: Превод
 translation_placeholder: Въвеждане на превод...
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1562,7 +1561,6 @@ layouts:
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
-    field: Геометрия
     invalid_geometry: Невалидна геометрия
 panels:
   metric:

@@ -1559,7 +1559,6 @@ layouts:
     cluster_radius: Promień klastra
     cluster_minpoints: Minimalny rozmiar klastra
     cluster_maxzoom: Maksymalne powiększenie klastrów
-    field: Geometria
     invalid_geometry: Nieprawidłowa geometria
 panels:
   metric:

@@ -1479,7 +1479,6 @@ layouts:
     cluster: Klynge Nærliggende Data
     cluster_minpoints: Mindste klyngestørrelse
     cluster_maxzoom: Maksimum zoom til klyngedannelse
-    field: Geometri
     invalid_geometry: Ugyldig geometri
 panels:
   metric:

@@ -1374,7 +1374,6 @@ layouts:
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
-    field: Geometrija
     invalid_geometry: Neveljavna geometrija
 panels:
   label:

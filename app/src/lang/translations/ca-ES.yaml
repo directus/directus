@@ -1323,7 +1323,6 @@ layouts:
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
-    field: Geometria
     invalid_geometry: Geometria invàlida
 panels:
   label:
