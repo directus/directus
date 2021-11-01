@@ -18,7 +18,7 @@ jobs:
     outputs:
       # Returns 'true' if workflow is skippable for one of the following reasons:
       # - Exact same files have been successfully checked in older run
-      # - Only files that do not require checks have been changed (paths_ignore) and older commits were succesful
+      # - Only files that do not require checks have been changed (paths_ignore) and older commits were successful
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
       skipped_by: ${{ steps.skip_check.outputs.skipped_by }}
     steps:
@@ -33,6 +33,7 @@ jobs:
         with:
           # Cancel outdated workflow-runs
           cancel_others: 'true'
+          # Ignore changes in the following files
           paths_ignore: '["app/src/lang/translations/*.yaml"]'
 
   lint:
@@ -57,7 +58,7 @@ jobs:
       should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   # Run end-to-end tests only on push events to 'main' branch for now
-  # (not skippable by succesful workflow run which wasn't triggered by 'push' event)
+  # (not skippable by successful workflow run which wasn't triggered by 'push' event)
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
