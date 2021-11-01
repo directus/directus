@@ -1518,14 +1518,11 @@ layouts:
     map: Карта
     basemap: Основа карты
     layers: Слои
-    edit_custom_layers: Редактировать слои
     cluster_options: Настройки кластеров
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
-    field: Геометрия
     invalid_geometry: Некорректная геометрия
-    search_this_area: Искать в этой области
 panels:
   metric:
     name: Метрика
