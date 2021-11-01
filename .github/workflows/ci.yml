@@ -1,3 +1,5 @@
+### Continuous Integration
+# Entrypoint for all CI related jobs
 name: CI
 
 on:
@@ -9,47 +11,57 @@ on:
       - main
 
 jobs:
+  # Check whether workflow is skippable
   pre_check:
     name: Pre-Check
     runs-on: ubuntu-latest
     outputs:
       # Returns 'true' if workflow is skippable for one of the following reasons:
       # - Exact same files have been successfully checked in older run
-      # - Only files that do not require checks have been changed (paths_ignore)
+      # - Only files that do not require checks have been changed (paths_ignore) and older commits were successful
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      skipped_by: ${{ steps.skip_check.outputs.skipped_by }}
     steps:
       - name: Check if workflow is skippable
         id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
+        # Switch back to fkirc/skip-duplicate-actions once changes have been merged
+        uses: paescuj/skip-duplicate-actions@revision
         # Run all the jobs if the pre-check should fail for any reason
-        # (the pre-check will be marked as 'passed', better solution pending at https://github.com/actions/toolkit/issues/399)
+        # (setting this on step-level makes sure the pre-check will still be marked as 'passed',
+        # better solution pending at https://github.com/actions/toolkit/issues/399)
         continue-on-error: true
         with:
           # Cancel outdated workflow-runs
           cancel_others: 'true'
+          # Ignore changes in the following files
           paths_ignore: '["app/src/lang/translations/*.yaml"]'
 
   lint:
     name: Lint
     needs: pre_check
-    if: needs.pre_check.outputs.should_skip != 'true'
     uses: directus/directus/.github/workflows/lint.yml@main
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   codeql_analysis:
     name: CodeQL Analysis
     needs: pre_check
-    if: needs.pre_check.outputs.should_skip != 'true'
     uses: directus/directus/.github/workflows/codeql-analysis.yml@main
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   unit_tests:
     name: Unit Tests
     needs: pre_check
-    if: needs.pre_check.outputs.should_skip != 'true'
     uses: directus/directus/.github/workflows/unit-tests.yml@main
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
+  # Run end-to-end tests only on push events to 'main' branch for now
+  # (not skippable by successful workflow run which wasn't triggered by 'push' event)
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
-    # Only run on push events (on main branch) for now
-    if: github.event_name == 'push' && needs.pre_check.outputs.should_skip != 'true'
     uses: directus/directus/.github/workflows/e2e-tests.yml@main
+    with:
+      should_skip: ${{ github.event_name != 'push' || (needs.pre_check.outputs.skipped_by && fromJSON(needs.pre_check.outputs.skipped_by).event == 'push') }}
