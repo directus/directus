@@ -18,6 +18,7 @@
 			<v-list-item :disabled="disabled || !isCreatable" clickable @click="$emit('create-new')">
 				<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 				<v-list-item-content>{{ t('create_new') }}</v-list-item-content>
+				<v-list-item-hint>{{ translateShortcut(['alt', 'n']) }}</v-list-item-hint>
 			</v-list-item>
 		</v-list>
 	</v-menu>
