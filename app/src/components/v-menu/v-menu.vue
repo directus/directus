@@ -350,7 +350,7 @@ body {
 
 	&::after {
 		bottom: 2px;
-		// box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: 2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -359,7 +359,7 @@ body {
 
 	&::after {
 		top: 2px;
-		// box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: -2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -368,7 +368,7 @@ body {
 
 	&::after {
 		left: 2px;
-		// box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: -2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -377,7 +377,7 @@ body {
 
 	&::after {
 		right: 2px;
-		// box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: 2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 

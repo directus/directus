@@ -1,3 +1,5 @@
 files:
   - source: /app/src/lang/translations/en-US.yaml
     translation: /app/src/lang/translations/%locale%.yaml
+pull_request_labels:
+  - automerge
