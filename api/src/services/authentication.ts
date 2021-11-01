@@ -19,6 +19,11 @@ import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 import logger from '../logger';
 
+type AuthenticateOptions = {
+	providerName?: string;
+	sessionData?: Record<string, any> | null;
+};
+
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
 export class AuthenticationService {
@@ -35,10 +40,7 @@ export class AuthenticationService {
 	}
 
 	/**
-	 * Retrieve the tokens for a given user email.
-	 *
-	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
-	 * to handle password existence checks elsewhere
+	 * Login using the provided credentials and issue an access and refresh token for the user.
 	 */
 	async login(
 		providerName: string = DEFAULT_AUTH_PROVIDER,
@@ -161,6 +163,36 @@ export class AuthenticationService {
 			}
 		}
 
+		const tokens = await this.authenticate(user, { providerName, sessionData });
+
+		if (this.accountability) {
+			await this.activityService.createOne({
+				action: Action.LOGIN,
+				user: user.id,
+				ip: this.accountability.ip,
+				user_agent: this.accountability.userAgent,
+				collection: 'directus_users',
+				item: user.id,
+			});
+		}
+
+		emitStatus('success');
+
+		if (allowedAttempts !== null) {
+			await loginAttemptsLimiter.set(user.id, 0, 0);
+		}
+
+		await stall(STALL_TIME, timeStart);
+
+		return tokens;
+	}
+
+	/**
+	 * Create access and refresh tokens for a user.
+	 */
+	async authenticate(user: User, options: AuthenticateOptions = {}) {
+		const { sessionData, providerName } = options;
+
 		let tokenPayload = {
 			id: user.id,
 		};
@@ -201,26 +233,7 @@ export class AuthenticationService {
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
 
-		if (this.accountability) {
-			await this.activityService.createOne({
-				action: Action.LOGIN,
-				user: user.id,
-				ip: this.accountability.ip,
-				user_agent: this.accountability.userAgent,
-				collection: 'directus_users',
-				item: user.id,
-			});
-		}
-
 		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
-
-		emitStatus('success');
-
-		if (allowedAttempts !== null) {
-			await loginAttemptsLimiter.set(user.id, 0, 0);
-		}
-
-		await stall(STALL_TIME, timeStart);
 
 		return {
 			accessToken,
