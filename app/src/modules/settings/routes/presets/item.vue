@@ -204,6 +204,11 @@ export default defineComponent({
 			if (hasEdits.value) save();
 		});
 
+		useShortcut('alt+n', async () => {
+			if (hasEdits.value) await save();
+			createNew();
+		});
+
 		const isSavable = computed(() => {
 			if (hasEdits.value === true) return true;
 			return hasEdits.value;
@@ -250,6 +255,10 @@ export default defineComponent({
 			leaveTo,
 			discardAndLeave,
 		};
+
+		function createNew() {
+			router.push('/settings/presets/+');
+		}
 
 		function useSave() {
 			const saving = ref(false);
