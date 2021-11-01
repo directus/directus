@@ -1334,10 +1334,7 @@ layouts:
     map: Mapa
     basemap: Mapa base
     layers: Capas
-    edit_custom_layers: Editar capas
-    field: Geometría
     invalid_geometry: Geometría incorrecta
-    search_this_area: Buscar en esta área
 panels:
   metric:
     name: Métrico
