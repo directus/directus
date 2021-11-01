@@ -153,6 +153,8 @@ export default defineComponent({
 			if (hasEdits.value) saveAndStay();
 		});
 
+		useShortcut('alt+n', createNewField);
+
 		const confirmDelete = ref(false);
 
 		const isSavable = computed(() => {
@@ -218,6 +220,10 @@ export default defineComponent({
 			await collectionsStore.hydrate();
 			await fieldsStore.hydrate();
 			router.push(`/settings/data-model`);
+		}
+
+		function createNewField() {
+			router.push(`/settings/data-model/${collection.value}/+`);
 		}
 
 		function discardAndLeave() {
