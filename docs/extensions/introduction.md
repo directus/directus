@@ -13,7 +13,6 @@ Allow creating custom experiences within the Directus App.
 - [Displays](/extensions/displays/) — Created with Vue.js
 - [Panels](/extensions/panels/) — Created with Vue.js
 - [Themes](/extensions/themes/) — Created with custom CSS
-- [Translations](/extensions/app-translations/) — Managed in Crowdin
 
 ## API Extensions
 
