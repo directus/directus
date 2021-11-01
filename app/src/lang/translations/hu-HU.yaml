@@ -1499,9 +1499,7 @@ layouts:
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
-    field: Geometria
     invalid_geometry: Érvénytelen geometria
-    search_this_area: Keresés ezen a területen
 panels:
   metric:
     name: Metrikus

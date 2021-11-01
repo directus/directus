@@ -1535,7 +1535,6 @@ layouts:
     cluster_radius: Raggio del Cluster
     cluster_minpoints: Dimensione minima del cluster
     cluster_maxzoom: Zoom massimo per il raggruppamento
-    field: Geometria
     invalid_geometry: Geometria non valida
 panels:
   metric:

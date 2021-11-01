@@ -1522,9 +1522,7 @@ layouts:
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
-    field: Геометрия
     invalid_geometry: Некорректная геометрия
-    search_this_area: Искать в этой области
 panels:
   metric:
     name: Метрика

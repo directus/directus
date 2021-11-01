@@ -1178,7 +1178,6 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1562,7 +1561,6 @@ layouts:
     cluster_radius: Cluster-Radius
     cluster_minpoints: Kleinstes Cluster
     cluster_maxzoom: Maximaler Zoom für Cluster
-    field: Dimensionen
     invalid_geometry: Ungültige Geometrie
 panels:
   metric:

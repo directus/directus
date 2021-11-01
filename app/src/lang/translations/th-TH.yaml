@@ -1235,8 +1235,6 @@ layouts:
     calendar: ปฏิทิน
     start_date_field: ฟิลด์วันที่เริ่มต้น
     end_date_field: ฟิลด์วันที่สิ้นสุด
-  map:
-    field: เรขาคณิต
 panels:
   label:
     name: ป้าย
