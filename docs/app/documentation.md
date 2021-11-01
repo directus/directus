@@ -11,7 +11,7 @@ Below are the six main sections of the platform's documentation, as well as desc
 
 - [Getting Started](/getting-started/introduction/) — For anyone who is unfamiliar with the platform
 - [App Guide](/app/overview/) — For users (non-technical or technical) of the platform's no-code App
-- [Configuration](/configuration/overview/) — For administrators installing and setting up the platform
+- [Configuration](/configuration/config-options/) — For administrators installing and setting up the platform
 - [API Reference](/reference/introduction/) — For developers connecting with data via the platform's API toolkit
 - [Extensions](/extensions/introduction/) — For developers creating custom experiences on top of the platform
 - [Contributing](/contributing/introduction/) — For developers working on the platform's open-source core

@@ -24,7 +24,7 @@ On the server, create a project folder with 4 files in it.
 This file is used to configure Directus. Normally, the `init` script would create it for us. So now we have to do it
 manually. You can just copy it from another Directus installation or use the
 [example file](https://github.com/directus/directus/blob/main/api/example.env) of Directus and then modify it (see
-[Environment Variables](/reference/environment-variables/)). You likely have to adjust the database information.
+[Environment Variables](/configuration/config-options/#general)). You likely have to adjust the database information.
 
 If you have not already a user in the database make sure to add a first user by adding the following two lines so that
 you can later login to Directus.

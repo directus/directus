@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
-import { has, isEmpty, orderBy } from 'lodash';
+import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
 import {
 	InterfaceConfig,
 	DisplayConfig,
@@ -103,7 +103,8 @@ export const useFieldDetailStore = defineStore({
 				const fieldsStore = useFieldsStore();
 				const relationsStore = useRelationsStore();
 
-				this.field = fieldsStore.getField(collection, field)!;
+				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
+				this.localType = getLocalTypeForField(collection, field)!;
 
 				const relations = relationsStore.getRelationsForField(collection, field);
 
@@ -121,11 +122,11 @@ export const useFieldDetailStore = defineStore({
 						(relation) => relation.collection === collection && relation.field === field
 					) as DeepPartial<Relation> | undefined;
 				}
+			} else {
+				this.update({
+					localType: localType ?? 'standard',
+				});
 			}
-
-			this.update({
-				localType: localType ?? getLocalTypeForField(collection, field) ?? 'standard',
-			});
 		},
 		update(updates: DeepPartial<typeof this.$state>) {
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);

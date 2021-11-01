@@ -34,7 +34,7 @@ export default {
 - `description` — A short description (<80 characters) of this interface shown in the App.
 - `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
 - `component` — A reference to your Vue component.
-- `types` — An array of supported [types](/concepts/types/).
+- `types` — An array of supported [types](/getting-started/glossary/#types).
 - `groups` — An array of field-groups. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2a`, `translations`.
   Defaults to `standard`.
 

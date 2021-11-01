@@ -136,12 +136,12 @@
 
 			<div v-if="!isAlias" class="field half-left">
 				<div class="label type-label">{{ t('nullable') }}</div>
-				<v-checkbox v-model="nullable" :disabled="!isGenerated" :label="t('allow_null_value')" block />
+				<v-checkbox v-model="nullable" :disabled="isGenerated" :label="t('allow_null_value')" block />
 			</div>
 
 			<div v-if="!isAlias" class="field half-right">
 				<div class="label type-label">{{ t('unique') }}</div>
-				<v-checkbox v-model="unique" :disabled="!isGenerated" :label="t('value_unique')" block />
+				<v-checkbox v-model="unique" :disabled="isGenerated" :label="t('value_unique')" block />
 			</div>
 		</div>
 	</div>
