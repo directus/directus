@@ -62,7 +62,6 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
 import RelationshipConfiguration from './relationship-configuration.vue';
-import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	components: { ExtensionOptions, RelationshipConfiguration },
@@ -102,8 +101,6 @@ export default defineComponent({
 		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
 		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
-
-		useShortcut('meta+s', () => emit('save'), form);
 
 		return {
 			form,

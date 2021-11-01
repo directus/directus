@@ -33,6 +33,7 @@ import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { storeToRefs } from 'pinia';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	name: 'FieldDetail',
@@ -58,13 +59,19 @@ export default defineComponent({
 
 		const fieldDetail = useFieldDetailStore();
 
-		const { editing } = storeToRefs(fieldDetail);
+		const { editing, readyToSave } = storeToRefs(fieldDetail);
 
 		watch(
 			() => props.field,
 			() => fieldDetail.startEditing(props.collection, props.field, props.type),
 			{ immediate: true }
 		);
+
+		useShortcut('meta+s', () => {
+			if (readyToSave.value !== false) save();
+		});
+
+		useShortcut('alt+n', createNew);
 
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -95,6 +102,10 @@ export default defineComponent({
 		});
 
 		return { simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced };
+
+		function createNew() {
+			router.push(`/settings/data-model/${props.collection}/+`);
+		}
 
 		async function cancel() {
 			await router.push(`/settings/data-model/${props.collection}`);
