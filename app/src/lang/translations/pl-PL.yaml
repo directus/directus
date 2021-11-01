@@ -1554,7 +1554,6 @@ layouts:
     map: Mapa
     basemap: Mapa bazowa
     layers: Warstwy
-    edit_custom_layers: Edytuj warstwy
     cluster_options: Opcje klastrowania
     cluster: Klaster danych w pobliżu
     cluster_radius: Promień klastra
@@ -1562,11 +1561,6 @@ layouts:
     cluster_maxzoom: Maksymalne powiększenie klastrów
     field: Geometria
     invalid_geometry: Nieprawidłowa geometria
-    auto_location_filter: Automatyczne filtrowanie w widoku
-    search_this_area: Przeszukaj ten obszar
-    clear_data_filter: Wyczyść filtr danych
-    clear_location_filter: Wyczyść filtr lokalizacji
-    no_results_here: Brak wyników w tym obszarze
 panels:
   metric:
     name: Metryczny

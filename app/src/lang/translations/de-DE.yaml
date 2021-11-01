@@ -1557,7 +1557,6 @@ layouts:
     map: Karte
     basemap: Basiskarte
     layers: Ebenen
-    edit_custom_layers: Ebenen bearbeiten
     cluster_options: Cluster-Optionen
     cluster: Cluster Nachbardaten
     cluster_radius: Cluster-Radius
@@ -1565,11 +1564,6 @@ layouts:
     cluster_maxzoom: Maximaler Zoom für Cluster
     field: Dimensionen
     invalid_geometry: Ungültige Geometrie
-    auto_location_filter: Auto-Filter in der Ansicht
-    search_this_area: Diesen Bereich durchsuchen
-    clear_data_filter: Datenfilter löschen
-    clear_location_filter: Standortfilter löschen
-    no_results_here: Keine Ergebnisse in diesem Bereich
 panels:
   metric:
     name: Metrik

@@ -14,7 +14,7 @@
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
-			@fitdata="fitGeoJSONBounds"
+			@fitdata="fitDataBounds"
 			@updateitempopup="updateItemPopup"
 		/>
 
@@ -25,15 +25,6 @@
 		>
 			<render-template :template="template" :item="itemPopup.item" :collection="collection" />
 		</div>
-
-		<v-button
-			v-if="isGeometryFieldNative && !autoLocationFilter && locationFilterOutdatedWritable"
-			small
-			class="location-filter"
-			@click="updateLocationFilter"
-		>
-			{{ t('layouts.map.search_this_area') }}
-		</v-button>
 
 		<transition name="fade">
 			<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
@@ -55,23 +46,6 @@
 				{{ geojsonError }}
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
-			<v-info
-				v-else-if="!loading && !itemCount && !locationFilterOutdated && (search || filter || locationFilter)"
-				icon="search"
-				center
-				:title="t('layouts.map.no_results_here')"
-			>
-				<template #append>
-					<v-card-actions>
-						<v-button :disabled="!search && !filter" @click="clearDataFilters">
-							{{ t('layouts.map.clear_data_filter') }}
-						</v-button>
-						<v-button :disabled="!locationFilter" @click="clearLocationFilter">
-							{{ t('layouts.map.clear_location_filter') }}
-						</v-button>
-					</v-card-actions>
-				</template>
-			</v-info>
 		</transition>
 
 		<template v-if="loading || itemCount > 0">
@@ -124,7 +98,6 @@ import { defineComponent, PropType } from 'vue';
 import MapComponent from './components/map.vue';
 import { useSync } from '@directus/shared/composables';
 import { GeometryOptions, Item } from '@directus/shared/types';
-import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { MapComponent },
@@ -137,10 +110,6 @@ export default defineComponent({
 		selection: {
 			type: Array as PropType<Item[]>,
 			default: () => [],
-		},
-		search: {
-			type: String as PropType<string | null>,
-			default: null,
 		},
 		loading: {
 			type: Boolean,
@@ -222,37 +191,9 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
-		locationFilterOutdated: {
-			type: Boolean,
-			required: true,
-		},
-		fitGeoJSONBounds: {
+		fitDataBounds: {
 			type: Function as PropType<() => void>,
 			required: true,
-		},
-		updateLocationFilter: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		clearDataFilters: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		clearLocationFilter: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		isGeometryFieldNative: {
-			type: Boolean,
-			required: true,
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: null,
-		},
-		locationFilter: {
-			type: Object as PropType<Filter>,
-			default: null,
 		},
 		template: {
 			type: String,
@@ -267,15 +208,14 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['update:cameraOptions', 'update:limit', 'update:locationFilterOutdated'],
+	emits: ['update:cameraOptions', 'update:limit'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
 		const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 		const limitWritable = useSync(props, 'limit', emit);
-		const locationFilterOutdatedWritable = useSync(props, 'locationFilterOutdated', emit);
 
-		return { t, n, cameraOptionsWritable, limitWritable, locationFilterOutdatedWritable };
+		return { t, n, cameraOptionsWritable, limitWritable };
 	},
 });
 </script>
@@ -338,8 +278,8 @@ export default defineComponent({
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);
+	transform: translate(-50%, -140%);
 	pointer-events: none;
-	translate: -50% calc(-100% - 12px);
 }
 
 .mapboxgl-ctrl-dropdown {

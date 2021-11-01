@@ -993,7 +993,7 @@ field_options:
     auth_password_policy:
       none_text: Няма - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
-      strong_text: Силна - главни, малки, числа и специални символи 
+      strong_text: Силна - главни, малки, числа и специални символи
     storage_asset_presets:
       fit:
         contain_text: Напасване (запазване на съотношението)
@@ -1557,7 +1557,6 @@ layouts:
     map: Географска карта
     basemap: Основна карта
     layers: Слоеве
-    edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
     cluster: Групиране на близките обекти
     cluster_radius: Радиус за групиране
@@ -1565,11 +1564,6 @@ layouts:
     cluster_maxzoom: Максимално увеличение при групиране
     field: Геометрия
     invalid_geometry: Невалидна геометрия
-    auto_location_filter: Филтриране според изгледа
-    search_this_area: Търсене в тази зона
-    clear_data_filter: Изчистване на филтрирането
-    clear_location_filter: Изчистване на филтрирането
-    no_results_here: Няма резултати в тази зона
 panels:
   metric:
     name: Метричен Индикатор
