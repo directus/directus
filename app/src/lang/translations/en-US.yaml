@@ -1571,19 +1571,15 @@ layouts:
     map: Map
     basemap: Basemap
     layers: Layers
-    edit_custom_layers: Edit Layers
     cluster_options: Clustering options
     cluster: Cluster Nearby Data
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
-    field: Geometry
+    field: Geospatial Field
     invalid_geometry: Invalid geometry
-    auto_location_filter: Auto-Filter within View
-    search_this_area: Search this area
-    clear_data_filter: Clear data filter
-    clear_location_filter: Clear location filter
-    no_results_here: No results in this area
+    find_location: Find location...
+    default_template: Using Collection Default...
 
 panels:
   metric:

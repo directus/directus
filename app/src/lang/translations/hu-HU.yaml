@@ -1495,7 +1495,6 @@ layouts:
     map: Térkép
     basemap: Alaptérkép
     layers: Rétegek
-    edit_custom_layers: Rétegek szerkesztése
     cluster_options: Klaszterezés beállításai
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret

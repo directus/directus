@@ -1530,7 +1530,6 @@ layouts:
     map: Mappa
     basemap: Mappa base
     layers: Livelli
-    edit_custom_layers: Modifica i livelli
     cluster_options: Opzioni di raggruppamento
     cluster: Raggruppa dati vicini
     cluster_radius: Raggio del Cluster
@@ -1538,11 +1537,6 @@ layouts:
     cluster_maxzoom: Zoom massimo per il raggruppamento
     field: Geometria
     invalid_geometry: Geometria non valida
-    auto_location_filter: Filtro automatico nella vista
-    search_this_area: Cerca in quest'area
-    clear_data_filter: Rimuovi il filtro sui dati
-    clear_location_filter: Rimuovi il filtro sulla posizione
-    no_results_here: Non ci sono risultati in quest'area
 panels:
   metric:
     name: Metrica
