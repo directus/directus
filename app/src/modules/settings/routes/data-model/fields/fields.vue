@@ -153,7 +153,10 @@ export default defineComponent({
 			if (hasEdits.value) saveAndStay();
 		});
 
-		useShortcut('alt+n', createNewField);
+		useShortcut('alt+n', async () => {
+			if (hasEdits.value) await saveAndStay();
+			createNewField();
+		});
 
 		const confirmDelete = ref(false);
 
