@@ -2,12 +2,17 @@ name: CodeQL Analysis
 
 on:
   workflow_call:
+    inputs:
+      should_skip:
+        required: false
+        type: string
   schedule:
     - cron: '42 23 * * 5'
 
 jobs:
   analyze:
     name: Analyze
+    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     permissions:
       actions: read

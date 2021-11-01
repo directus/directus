@@ -2,10 +2,15 @@ name: Lint
 
 on:
   workflow_call:
+    inputs:
+      should_skip:
+        required: false
+        type: string
 
 jobs:
   lint:
     name: Lint
+    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
