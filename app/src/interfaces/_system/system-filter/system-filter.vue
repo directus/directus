@@ -54,7 +54,6 @@ import { getNodeName } from './utils';
 import { useFieldTree } from '@/composables/use-field-tree';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { useFieldsStore } from '@/stores';
-import { ClientFilterOperator } from '@directus/shared/types';
 
 export default defineComponent({
 	components: {

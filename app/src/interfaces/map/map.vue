@@ -66,7 +66,6 @@ import {
 	Map,
 	NavigationControl,
 	GeolocateControl,
-	PointLike,
 } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 // @ts-ignore
