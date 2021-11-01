@@ -297,6 +297,14 @@ export default defineComponent({
 			}
 		);
 
+		const editFamily = computed(() => {
+			return `var(--family-${props.editorFont})`;
+		});
+
+		const previewFamily = computed(() => {
+			return `var(--family-${props.previewFont})`;
+		});
+
 		const markdownString = computed(() => {
 			let mdString = props.value || '';
 
@@ -344,6 +352,8 @@ export default defineComponent({
 			useShortcut,
 			translateShortcut,
 			markdownInterface,
+			editFamily,
+			previewFamily,
 		};
 
 		function onImageUpload(image: any) {
@@ -399,7 +409,7 @@ textarea {
 	color: var(--foreground-normal-alt);
 	font-weight: 700;
 	font-size: 36px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 46px;
 }
 
@@ -409,7 +419,7 @@ textarea {
 	color: var(--foreground-normal-alt);
 	font-weight: 700;
 	font-size: 24px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 34px;
 }
 
@@ -419,7 +429,7 @@ textarea {
 	color: var(--foreground-normal-alt);
 	font-weight: 700;
 	font-size: 19px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 29px;
 }
 
@@ -429,7 +439,7 @@ textarea {
 	color: var(--foreground-normal-alt);
 	font-weight: 700;
 	font-size: 16px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 26px;
 }
 
@@ -439,7 +449,7 @@ textarea {
 	color: var(--foreground-normal-alt);
 	font-weight: 700;
 	font-size: 14px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
 }
 
@@ -449,7 +459,7 @@ textarea {
 	color: var(--foreground-normal-alt);
 	font-weight: 700;
 	font-size: 12px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 22px;
 }
 
@@ -457,7 +467,7 @@ textarea {
 	margin: 1.5em 0;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
 }
 
@@ -471,7 +481,7 @@ textarea {
 	margin: 1.5em 0;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
 }
 
@@ -514,7 +524,7 @@ textarea {
 	padding-left: 1em;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: v-bind(previewFont), serif;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
 	border-left: 2px solid var(--border-normal);
 }
@@ -565,7 +575,7 @@ textarea {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror) {
-	font-family: v-bind(editorFont), sans-serif;
+	font-family: v-bind(editFamily), sans-serif;
 	border: none;
 	border-radius: 0;
 }
