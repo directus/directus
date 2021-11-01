@@ -1,8 +1,8 @@
 name: End-to-End Tests
 
 on:
-  workflow_call:
   workflow_dispatch:
+  workflow_call:
     inputs:
       should_skip:
         required: false
