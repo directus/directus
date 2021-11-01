@@ -4,9 +4,9 @@
 > auditing user activity and enforcing accountability.
 
 The Activity Log is the only module that is not found in the module bar. Instead, it is accessed via the notifications
-tray of the [Sidebar](#). This page has the same features and configuration as
+tray of the [Sidebar](/app/overview/#_4-sidebar). This page has the same features and configuration as
 [Collection Page](/app/content-collections/). It's also worth noting that the activity of a _specific_ item is available
-via the Revisions sidebar of its individual [Item Page](/concepts/application/#item-detail).
+via the Revisions sidebar of its individual [Item Page](/app/content-items/).
 
 For proper accountability, activity items are **readonly** by design, though administrators may have access to make
 certain updates. The following information is stored for each event's activity item:

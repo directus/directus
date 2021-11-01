@@ -1403,7 +1403,7 @@ interfaces:
     name: Détail du groupe
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
-    header_icon: Icônes de l'en-tête 
+    header_icon: Icônes de l'en-tête
     header_color: Couleur d'en-tête
     start_open: Démarrer Ouverture
     start_closed: Commencer réduit
@@ -1522,12 +1522,13 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
-    basemap: Carte de base
+    basemap: Fond de carte
     layers: Afficher...
     cluster_options: Options de regroupement
     cluster_radius: Rayon de grappe
     cluster_minpoints: Taille minimale du cluster
     cluster_maxzoom: Zoom maximum pour la grappe
+    field: Champ de la géométrie
     invalid_geometry: Géométrie invalide
 panels:
   metric:
