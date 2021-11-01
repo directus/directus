@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificador
 avatar: Avatar
 default_provider: Por defecto
 published: Publicado
@@ -30,6 +51,7 @@ indeterminate: Indeterminado
 edit_collection: Editar Colección
 exclusive: Exclusivo
 children: Hijo
+db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
 show_archived_items: Mostrar los registros archivados
 edited: Valor editado
 required: Requerido
@@ -143,6 +165,8 @@ field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
 duplicate_where_to: '¿Dónde le gustaría duplicar este campo?'
 language: Idioma
+aggregate_function: Función de agregado
+group_precision: Precisión del grupo
 global: Global
 admins_have_all_permissions: Los Administradores tienen todos los permisos
 camera: Cámara
@@ -207,6 +231,8 @@ new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
+add_m2o_to_collection: 'Añadir M2O a "{collection}"'
+add_m2m_to_collection: 'Añadir M2M a "{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinar por relación
 add_note: Agrega una nota de ayuda para los usuarios...
@@ -224,6 +250,7 @@ invalid_item: Registro invalido
 next: Siguiente
 field_name: Nombre del Campo
 translations: Traducciónes
+no_translations: Sin traducciones
 note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
@@ -299,6 +326,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutos
+hours: Horas
 month: Mes
 year: Año
 select_all: Seleccionar Todos
@@ -406,6 +435,7 @@ no_other_dashboards_copy: Aún no tienes un Panel.
 inactive: Inactivo
 users: Usuarios
 activity: Actividad
+activity_item: Elemento de actividad
 action: Acción
 ip_address: Dirección IP
 user_agent: Navegador
@@ -494,6 +524,8 @@ all_users: Todos los Usuarios
 delete_collection: Eliminar Colección
 update_collection_success: Colección Actualizada
 delete_collection_success: Colección Eliminada
+make_collection_visible: Hacer visible la colección
+make_collection_hidden: Hacer que la colección se oculte
 start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
@@ -549,6 +581,7 @@ operators:
   nempty: No está Vacío
   all: Contiene estas llaves
   has: Contiene alguna de estas llaves
+  intersects: Intersección
 loading: Cargando...
 drop_to_upload: Arrastrar para Subir
 item: Elemento
@@ -604,7 +637,12 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+visible: Visible
+prefix_placeholder: Texto antes del valor...
+suffix_placeholder: Texto después del valor...
+no_data: Sin datos
 full_screen: Pantalla Completa
+fit_to_screen: Ajustar a la pantalla
 image_url: Url de la imagen
 alt_text: Texto Alternativo
 media: Medios
@@ -814,15 +852,18 @@ fields:
     last_page: Última página
     last_access: Último acceso
   directus_settings:
+    mapbox_placeholder: pk.eyJ1Ijo.....
     project_name: Nombre del Proyecto
     project_url: URL del Proyecto
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
+    public_pages: Páginas públicas
     public_foreground: Superficie Pública
     public_background: Fondo Público
     public_note: Notas Públicas
     auth_password_policy: Política de Contraseña para Autentificación
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
+    files_and_thumbnails: Archivos y miniaturas
     storage_asset_presets: Predefinidos de Activos en Almacenamiento
     storage_asset_transform: Transformación de Activos en Almacenamiento
     custom_css: CSS Personalizado
@@ -848,11 +889,17 @@ fields:
   directus_webhooks:
     name: Nombre
     status: Estatus
+    data: Datos
+    header: Encabezado
     value: Valor
+    actions: Acciones
 field_options:
   directus_settings:
     security_divider_title: Seguridad
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    files_divider_title: Archivos y miniaturas
   directus_activity:
+    login: Iniciar sesión
     create: Crear
     update: Actualización
     delete: Eliminar
@@ -878,13 +925,17 @@ field_options:
     collections_name: Colecciones
   directus_users:
     status_dropdown_active: Activo
+    status_dropdown_archived: Archivado
   directus_webhooks:
     status_options_active: Activo
     status_options_inactive: Inactivo
+    triggers_divider: Disparadores
     actions_create: Crear
     actions_update: Actualización
     actions_delete: Eliminar
+    actions_login: Iniciar sesión
     headers:
+      header: Encabezado
       value: Valor
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 do_nothing: No hacer nada
@@ -917,6 +968,7 @@ delete_field_are_you_sure: >-
 description: Descripción
 done: Hecho
 duplicate: Duplicado
+limit: Límite
 email: Correo Electrónico
 embed: Incrustado
 fallback_icon: Ícono de Reserva
@@ -973,6 +1025,7 @@ interfaces:
     add_filter: Agregar Filtro
     all: Todos
     any: Cualquiera
+    and: "y"
   group-accordion:
     start: Iniciar
     all_closed: Todo Cerrado
@@ -1088,6 +1141,11 @@ interfaces:
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
   map:
     zoom: Lupa
+    native: Nativo
+    geojson: GeoJSON
+    lnglat: Longitud, Latitud
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Aviso
   list-o2m:
@@ -1100,6 +1158,8 @@ interfaces:
     system_default: Valores por defecto del sistema
   list:
     repeater: Repetidor
+    edit_fields: Editar campos
+    field_name_placeholder: Ingrese el nombre del campo...
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -1119,6 +1179,8 @@ interfaces:
     alphabetize_label: Forzar Orden Alfabético
     add_tags: Agregar etiquetas...
   input:
+    input: Entrada
+    trim: Recortar
     mask: Enmascarado
     mask_label: Ocultar el valor real
     clear: Valor Limpiado
@@ -1132,10 +1194,12 @@ interfaces:
   boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
+    label_placeholder: Ingresar una etiqueta...
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
+    language_field: Campo indicador de idioma
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus
@@ -1151,9 +1215,16 @@ interfaces:
     options_override: Sobrescribir Opciones
   input-autocomplete-api:
     results_path: Ruta de Resultados
+    trigger: Disparador
+    rate: Tasa
+  group-detail:
+    header_icon: Iconos del encabezado
+    header_color: Color del encabezado
 displays:
   translations:
     translations: Traducciónes
+    default_language: Idioma predeterminado
+    language_field: Campo indicador de idioma
   boolean:
     boolean: Booleano
     description: Presentar estados Activo e Inactivo
@@ -1260,7 +1331,17 @@ layouts:
     start_date_field: Campo Fecha de Inicio
     end_date_field: Campo Fecha de Fin
   map:
-    field: Geometría
+    map: Mapa
+    basemap: Mapa base
+    layers: Capas
+    invalid_geometry: Geometría incorrecta
 panels:
+  metric:
+    name: Métrico
+    field: Campo
+  time_series:
+    name: Series de tiempo
   label:
     name: Etiqueta
+  list:
+    name: Lista
