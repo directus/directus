@@ -120,7 +120,7 @@ options are available:
 
 ## Filtering Items
 
-**[Learn more about Filtering](o/configuration/filter-rules/).**
+**[Learn more about Filtering](/configuration/filter-rules/).**
 
 1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to filter
