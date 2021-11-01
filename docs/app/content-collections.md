@@ -120,7 +120,7 @@ options are available:
 
 ## Filtering Items
 
-**[Learn more about Filtering](/guides/items/#filtering-items).**
+**[Learn more about Filtering](/configuration/filter-rules/).**
 
 1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to filter
@@ -132,9 +132,9 @@ options are available:
 
 ## Bookmarking Item Presets
 
-**[Learn more about Bookmarks](/guides/items/#bookmarking-item-presets)**
+**[Learn more about Bookmarks](/app/content-collections/#bookmarking-item-presets)**
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Collections Module](/app/content-collections/)
 2. Navigate to the collection of the items you want to bookmark
 3. Configure the page as desired (eg: layout, options, search, filters, order, etc)
 4. Click the "Create Bookmark" (bookmark icon) button in the header beside the page title
