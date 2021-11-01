@@ -1,10 +1,20 @@
 ---
 avatar: 頭像
+default_provider: 預設
+published: 已發佈
+draft: 草稿
+archived: 已封存
+modules: 模組
 edit_field: 編輯欄位
+conditions: 條件
 item_revision: 項目修改
+enter_a_name: 輸入名稱...
 duplicate_field: 複製欄位
 half_width: 半寬
 full_width: 滿寬
+group: 組
+and: 和
+or: 或
 fill_width: 填滿寬度
 field_name_translations: 欄位名稱翻譯
 enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
