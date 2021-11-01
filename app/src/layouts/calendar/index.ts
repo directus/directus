@@ -28,10 +28,10 @@ export default defineLayout<LayoutOptions>({
 	name: '$t:layouts.calendar.calendar',
 	icon: 'event',
 	component: CalendarLayout,
+	smallHeader: true,
 	slots: {
 		options: CalendarOptions,
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		sidebar: () => {},
+		sidebar: () => undefined,
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
@@ -161,7 +161,7 @@ export default defineLayout<LayoutOptions>({
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
-				contentHeight: 800,
+				height: '100%',
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',

@@ -39,6 +39,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .calendar-layout {
+	height: calc(100% - 60px);
 	padding: var(--content-padding);
 	padding-top: 0;
 }
