@@ -13,6 +13,7 @@
 				>
 					<div class="preview">
 						<template v-if="inter.preview">
+							<!-- eslint-disable-next-line vue/no-v-html -->
 							<span v-if="isSVG(inter.preview)" v-html="inter.preview" />
 							<img v-else :src="inter.preview" alt="" />
 						</template>

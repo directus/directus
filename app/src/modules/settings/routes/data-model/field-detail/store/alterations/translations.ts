@@ -207,7 +207,7 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 		};
 	} else {
 		set(updates, 'collections.related', undefined);
-		updates.items = undefined;
+		updates.items = {};
 	}
 }
 

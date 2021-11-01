@@ -1,9 +1,9 @@
 import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import options from './options.vue';
 import DisplayTranslations from './translations.vue';
 import { useFieldsStore, useRelationsStore } from '@/stores';
+import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 type Options = {
 	template: string;
@@ -16,7 +16,65 @@ export default defineDisplay({
 	description: '$t:displays.translations.description',
 	icon: 'translate',
 	component: DisplayTranslations,
-	options: options,
+	options: ({ collection, field, relations }: ExtensionsOptionsContext) => {
+		const fieldsStore = useFieldsStore();
+
+		const junctionCollection = relations.o2m?.collection;
+		const relatedCollection = relations.m2o?.related_collection;
+
+		const languageFields = relatedCollection ? fieldsStore.getFieldsForCollection(relatedCollection) : [];
+
+		return [
+			{
+				field: 'template',
+				name: '$t:display_template',
+				meta: {
+					interface: 'system-display-template',
+					options: {
+						collectionName: junctionCollection,
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'languageField',
+				name: '$t:displays.translations.language_field',
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: languageFields.map(({ field, name }) => ({ text: name, value: field })),
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'defaultLanguage',
+				name: '$t:displays.translations.default_language',
+				meta: {
+					interface: 'input',
+					width: 'half',
+					options: {
+						placeholder: '$t:primary_key',
+					},
+				},
+			},
+			{
+				field: 'userLanguage',
+				name: '$t:displays.translations.user_language',
+				type: 'string',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.translations.enable',
+					},
+					width: 'half',
+				},
+			},
+		];
+	},
 	types: ['alias'],
 	localTypes: ['translations'],
 	fields: (options: Options | null, { field, collection }) => {

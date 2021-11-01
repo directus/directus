@@ -5,9 +5,9 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 	const { hasChanged } = helperFn;
 
 	if (hasChanged('localType')) {
-		this.removeSchema(updates, state, helperFn);
-		this.setTypeToAlias(updates, state, helperFn);
-		this.setSpecialToGroup(updates, state, helperFn);
+		removeSchema(updates);
+		setTypeToAlias(updates);
+		setSpecialToGroup(updates);
 	}
 }
 

@@ -1,3 +1,0 @@
-# App Translations
-
-> TK
