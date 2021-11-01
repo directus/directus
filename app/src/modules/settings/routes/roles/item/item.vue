@@ -139,7 +139,7 @@ export default defineComponent({
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 
-		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
+		const { edits, item, saving, loading, error, save, remove, deleting, isBatch, saveAsCopy } = useItem(
 			ref('directus_roles'),
 			primaryKey
 		);
@@ -168,6 +168,15 @@ export default defineComponent({
 
 		useShortcut('meta+s', () => {
 			if (hasEdits.value) saveAndStay();
+		});
+
+		useShortcut('meta+shift+s', () => {
+			saveAsCopyAndNavigate();
+		});
+
+		useShortcut('alt+n', async () => {
+			if (hasEdits.value) await saveAndStay();
+			createNew();
 		});
 
 		const isSavable = computed(() => {
@@ -222,6 +231,15 @@ export default defineComponent({
 		async function saveAndStay() {
 			await save();
 			await userStore.hydrate();
+		}
+
+		async function saveAsCopyAndNavigate() {
+			const newPrimaryKey = await saveAsCopy();
+			if (newPrimaryKey) router.push(`/settings/roles/${newPrimaryKey}`);
+		}
+
+		function createNew() {
+			router.push(`/settings/roles/+`);
 		}
 
 		async function saveAndQuit() {
