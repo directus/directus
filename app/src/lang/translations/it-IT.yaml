@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificatore
 avatar: Avatar
 default_provider: Predefinito
 published: Pubblicato
@@ -957,7 +978,9 @@ fields:
     method: Metodo
     status: Stato
     data: Dati
+    header: Header
     value: Valore
+    headers: Request Headers
     data_label: Invia dati evento
     triggers: Trigger
     actions: Azioni
@@ -1067,7 +1090,9 @@ field_options:
     actions_delete: Cancellazione
     actions_login: Accedi
     headers:
+      header: Header
       value: Valore
+      add: Aggiungi Header
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
 do_nothing: Non Fare Niente
@@ -1153,6 +1178,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1309,6 +1335,7 @@ interfaces:
     lnglat: Longitudine, Latitudine
     wkt: WKT
     wkb: WKB
+    click_to_select: Clicca per selezionare {geometry}
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -1535,7 +1562,10 @@ layouts:
     cluster_radius: Raggio del Cluster
     cluster_minpoints: Dimensione minima del cluster
     cluster_maxzoom: Zoom massimo per il raggruppamento
+    field: Campo geospaziale
     invalid_geometry: Geometria non valida
+    find_location: Trova località...
+    default_template: Utilizzo della Collezione Predefinita...
 panels:
   metric:
     name: Metrica
