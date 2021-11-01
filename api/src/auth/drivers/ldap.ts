@@ -120,12 +120,13 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	private async fetchUserInfo(userDn: string): Promise<UserInfo | undefined> {
 		const client = await this.bindClient;
+		const { mailAttribute } = this.config;
 
 		return new Promise((resolve, reject) => {
 			// Fetch user info in LDAP by domain component
 			client.search(
 				userDn,
-				{ attributes: ['givenName', 'sn', 'mail', 'userAccountControl'] },
+				{ attributes: ['givenName', 'sn', mailAttribute ?? 'mail', 'userAccountControl'] },
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
 						reject(handleError(err));
@@ -133,10 +134,11 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
+						const email = object[mailAttribute ?? 'mail'];
 						const user = {
 							firstName: typeof object.givenName === 'object' ? object.givenName[0] : object.givenName,
 							lastName: typeof object.sn === 'object' ? object.sn[0] : object.sn,
-							email: typeof object.mail === 'object' ? object.mail[0] : object.mail,
+							email: typeof email === 'object' ? email[0] : email,
 							userAccountControl:
 								typeof object.userAccountControl === 'object'
 									? Number(object.userAccountControl[0])

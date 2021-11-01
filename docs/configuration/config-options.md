@@ -605,6 +605,7 @@ information and roles will be assigned from Active Directory.
 | `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                    | `cn`          |
 | `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                  | --            |
 | `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group. | `member`      |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user         | `mail`        |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
 
