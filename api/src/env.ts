@@ -55,6 +55,7 @@ const defaults: Record<string, any> = {
 	CACHE_SCHEMA: true,
 
 	AUTH_PROVIDERS: '',
+	AUTH_DISABLE_DEFAULT: false,
 
 	EXTENSIONS_PATH: './extensions',
 

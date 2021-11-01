@@ -59,6 +59,7 @@ export default defineComponent({
 		const provider = ref(DEFAULT_AUTH_PROVIDER);
 		const providerOptions = ref([]);
 		const driver = ref('local');
+		const disableDefault = ref(false);
 
 		const providerSelect = computed({
 			get() {
@@ -78,7 +79,11 @@ export default defineComponent({
 			providerOptions.value = providers.value
 				.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
 				.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
-			providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
+			if (!disableDefault.value) {
+				providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
+			} else {
+				providerSelect.value = providerOptions.value[0].value;
+			}
 		});
 
 		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver };
@@ -87,6 +92,7 @@ export default defineComponent({
 			try {
 				const response = await api.get('/auth');
 				providers.value = response.data.data;
+				disableDefault.value = response.data.disableDefault;
 			} catch (err: any) {
 				unexpectedError(err);
 			}

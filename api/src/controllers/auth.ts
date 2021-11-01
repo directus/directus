@@ -191,7 +191,10 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		res.locals.payload = { data: getAuthProviders() };
+		res.locals.payload = {
+			data: getAuthProviders(),
+			disableDefault: env.AUTH_DISABLE_DEFAULT,
+		};
 		return next();
 	}),
 	respond
