@@ -22,8 +22,16 @@ class Emitter {
 		this.initEmitter = new EventEmitter2(emitterOptions);
 	}
 
+	public eventsToEmit(event: string, meta: Record<string, any>) {
+		if (event.startsWith('items')) {
+			return [event, `${meta.collection}.${event}`];
+		}
+		return [event];
+	}
+
 	public async emitFilter<T>(event: string, payload: T, meta: Record<string, any>, context: HookContext): Promise<T> {
-		const listeners = this.filterEmitter.listeners(event) as FilterHandler[];
+		const events = this.eventsToEmit(event, meta);
+		const listeners = events.flatMap((event) => this.filterEmitter.listeners(event)) as FilterHandler[];
 
 		let updatedPayload = payload;
 		for (const listener of listeners) {
@@ -38,10 +46,13 @@ class Emitter {
 	}
 
 	public emitAction(event: string, meta: Record<string, any>, context: HookContext): void {
-		this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
-			logger.warn(`An error was thrown while executing action "${event}"`);
-			logger.warn(err);
-		});
+		const events = this.eventsToEmit(event, meta);
+		for (const event of events) {
+			this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
+				logger.warn(`An error was thrown while executing action "${event}"`);
+				logger.warn(err);
+			});
+		}
 	}
 
 	public async emitInit(event: string, meta: Record<string, any>): Promise<void> {
