@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
-> which defines its granular Permissions. [Learn more about Users](/concepts/users/).
+> which defines its granular Permissions. [Learn more about Users](/getting-started/glossary/#users/).
 
 </div>
 <div class="right">
@@ -54,7 +54,7 @@ Description of the user.
 Tags for the user.
 
 `avatar` **many-to-one**\
-Avatar file. Many-to-one to [files](/reference/api/system/files/).
+Avatar file. Many-to-one to [files](/reference/files/).
 
 `language` **string**\
 Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
@@ -107,11 +107,11 @@ List all users that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [user objects](#the-user-object). If no items are available, data
+An array of up to [limit](/reference/query/#limit) [user objects](#the-user-object). If no items are available, data
 will be an empty array.
 
 </div>
@@ -124,7 +124,7 @@ GET /users
 SEARCH /users
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -164,7 +164,7 @@ List an existing user by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -223,7 +223,7 @@ Retrieve the currently authenticated user.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -274,7 +274,7 @@ Create a new user
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -346,7 +346,7 @@ Create multiple new users
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -428,7 +428,7 @@ Update an existing user.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -494,7 +494,7 @@ Update multiple existing users.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 

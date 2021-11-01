@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
-> [Learn more about Items](/concepts/items/).
+> [Learn more about Items](/getting-started/glossary/#items).
 
 </div>
 <div class="right">
@@ -57,17 +57,17 @@ List all items that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ::: tip Nested Data
 
-The [Field Parameter](/reference/api/query/#fields) is required to return nested relational data!
+The [Field Parameter](/reference/query/#fields) is required to return nested relational data!
 
 :::
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [item objects](#the-item-object). If no items are available, data
+An array of up to [limit](/reference/query/#limit) [item objects](#the-item-object). If no items are available, data
 will be an empty array.
 
 #### Singleton
@@ -85,7 +85,7 @@ GET /items/:collection
 SEARCH /items/:collection
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ##### Example
 
@@ -133,7 +133,7 @@ Get an item that exists in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -191,7 +191,7 @@ Create a new item in the given collection.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -200,7 +200,7 @@ An array of partial [item objects](#the-item-object).
 ::: tip Nested Data (Relations)
 
 Relational data needs to be correctly nested to add new items successfully. Check out the
-[relational data section](/reference/api/introduction/#relational-data) for more information
+[relational data section](/reference/introduction/#relational-data) for more information
 
 :::
 
@@ -267,7 +267,7 @@ Create new items in the given collection.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -347,7 +347,7 @@ Update an existing item.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -415,7 +415,7 @@ Update multiple items at the same time.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
