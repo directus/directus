@@ -24,8 +24,7 @@ jobs:
     steps:
       - name: Check if workflow is skippable
         id: skip_check
-        # Switch back to fkirc/skip-duplicate-actions once changes have been merged
-        uses: paescuj/skip-duplicate-actions@revision
+        uses: fkirc/skip-duplicate-actions@master
         # Run all the jobs if the pre-check should fail for any reason
         # (setting this on step-level makes sure the pre-check will still be marked as 'passed',
         # better solution pending at https://github.com/actions/toolkit/issues/399)
