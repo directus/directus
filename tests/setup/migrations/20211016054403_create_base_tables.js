@@ -1,11 +1,11 @@
 exports.up = async function (knex) {
 	await knex.schema.createTable('artists', (table) => {
-		table.increments('id').primary();
+		table.uuid('id').primary();
 		table.string('name');
 		table.json('members');
 	});
 	await knex.schema.createTable('guests', (table) => {
-		table.increments('id');
+		table.uuid('id').primary();
 		table.string('name');
 		table.date('birthday');
 		table.string('search_radius');
@@ -13,10 +13,10 @@ exports.up = async function (knex) {
 		table.time('latest_events_to_show');
 		table.string('password');
 		table.integer('shows_attended');
-		table.integer('favorite_artist').unsigned().references('id').inTable('artists');
+		table.uuid('favorite_artist').references('id').inTable('artists');
 	});
 	await knex.schema.createTable('events', (table) => {
-		table.increments('id').primary();
+		table.uuid('id').primary();
 		table.timestamp('created_at');
 		table.float('cost');
 		table.text('description');
@@ -24,11 +24,11 @@ exports.up = async function (knex) {
 		table.time('time');
 	});
 	await knex.schema.createTable('tours', (table) => {
-		table.increments('id').primary();
+		table.uuid('id').primary();
 		table.bigInteger('revenue');
 	});
 	await knex.schema.createTable('organizers', (table) => {
-		table.increments('id').primary();
+		table.uuid('id').primary();
 		table.string('company_name');
 	});
 };

@@ -5,12 +5,12 @@
 
 ## Branding
 
-- **Project Name** — The name used at the top of the [Navigation Bar](/concepts/application/#_2-navigation-bar) and on
-  the login/public pages
-- **Project URL** — The URL when clicking the logo at the top of the [Module Bar](/concepts/application/#_1-module-bar)
-- **Project Color** — The color used behind the logo at the top of the
-  [Module Bar](/concepts/application/#_1-module-bar), on the login/public pages, and for the browser's FavIcon
-- **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/concepts/application/#_1-module-bar) and on the
+- **Project Name** — The name used at the top of the [Navigation Bar](/app/overview/#_2-navigation-bar) and on the
+  login/public pages
+- **Project URL** — The URL when clicking the logo at the top of the [Module Bar](/app/overview/#_1-module-bar)
+- **Project Color** — The color used behind the logo at the top of the [Module Bar](/app/overview/#_1-module-bar), on
+  the login/public pages, and for the browser's FavIcon
+- **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/app/overview/#_1-module-bar) and on the
   login/public pages. The image is _inset_ within the 64x64 pixel square filled with the Project Color, so we recommend
   using a SVG or PNG logo with transparency to avoid a "boxy" look.
 - **CSS Overrides** — Allows for adding CSS rules to override the App's default styling. Be aware that the App's core
@@ -78,4 +78,4 @@ reorder links by dragging on the sort handle, or create new custom links with th
 
 - **Name** — The title of the module link, also shown in a tooltip on hover
 - **Icon** — Choose an icon for the module button
-- **URL** — Should start with a `/` for links within the [Directus App](/concepts/application/#the-directus-application)
+- **URL** — Should start with a `/` for links within the [Directus App](/app/overview/)

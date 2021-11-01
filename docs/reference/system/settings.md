@@ -39,13 +39,13 @@ Link to the (public) website that goes with this project.
 Brand color for the current project.
 
 `project_logo` **many-to-one**\
-Primary logo for the current project. Many-to-one to [files](/reference/system/files/).
+Primary logo for the current project. Many-to-one to [files](/reference/files/).
 
 `public_foreground` **many-to-one**\
-Foreground image for the Admin App's public pages. Many-to-one to [files](/reference/system/files/).
+Foreground image for the Admin App's public pages. Many-to-one to [files](/reference/files/).
 
 `public_background` **many-to-one**\
-Background image for the Admin App's public pages. Many-to-one to [files](/reference/system/files/).
+Background image for the Admin App's public pages. Many-to-one to [files](/reference/files/).
 
 `public_note` **string**\
 Note shown on the Admin App's public pages. Supports Markdown.
