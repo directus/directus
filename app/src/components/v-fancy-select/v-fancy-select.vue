@@ -3,7 +3,7 @@
 		<transition-group tag="div" name="option">
 			<template v-for="(item, index) in visibleItems" :key="index">
 				<v-divider v-if="item.divider === true" />
-				<div
+				<button
 					v-else
 					class="v-fancy-select-option"
 					:class="{ active: item.value === modelValue, disabled }"
@@ -23,7 +23,7 @@
 
 					<v-icon v-if="modelValue === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
 					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
-				</div>
+				</button>
 			</template>
 		</transition-group>
 	</div>
@@ -82,6 +82,7 @@ export default defineComponent({
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 12px;
+	text-align: left;
 	background-color: var(--background-normal);
 	border: 2px solid var(--background-normal);
 	border-radius: 6px;
@@ -91,7 +92,8 @@ export default defineComponent({
 	transition-duration: var(--fast);
 	transition-property: background-color, border-color;
 
-	&:not(.disabled):hover {
+	&:not(.disabled):hover,
+	&:not(.disabled):focus {
 		border-color: var(--background-normal-alt);
 	}
 

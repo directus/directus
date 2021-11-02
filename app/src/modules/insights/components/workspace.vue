@@ -21,7 +21,7 @@
 				@update="$emit('update', { edits: $event, id: panel.id })"
 				@move="$emit('move', panel.id)"
 				@delete="$emit('delete', panel.id)"
-				@duplicate="$emit('duplicate', panel)"
+				@duplicate="$emit('duplicate', panel.id)"
 			/>
 		</div>
 	</div>

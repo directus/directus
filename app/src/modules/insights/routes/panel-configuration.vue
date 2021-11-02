@@ -94,6 +94,7 @@ import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@/types';
 import { useI18n } from 'vue-i18n';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	name: 'PanelConfiguration',
@@ -103,7 +104,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	emits: ['cancel', 'save'],
+	emits: ['cancel', 'save', 'duplicate', 'delete'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -152,6 +153,10 @@ export default defineComponent({
 			}
 		});
 
+		useShortcut('meta+s', emitSave);
+		useShortcut('meta+shift+s', emitDuplicate);
+		useShortcut('meta+backspace', emitDelete);
+
 		return {
 			selectItems,
 			selectedPanel,
@@ -164,6 +169,14 @@ export default defineComponent({
 
 		function emitSave() {
 			emit('save', edits);
+		}
+
+		function emitDuplicate() {
+			emit('duplicate', props.panel.id);
+		}
+
+		function emitDelete() {
+			emit('delete', props.panel.id);
 		}
 	},
 });

@@ -1,5 +1,5 @@
 <template>
-	<span
+	<button
 		class="v-icon"
 		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
 		:role="clickable ? 'button' : null"
@@ -10,7 +10,7 @@
 		<component :is="customIconName" v-if="customIconName" />
 		<socialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }">{{ name }}</i>
-	</span>
+	</button>
 </template>
 
 <script lang="ts">
@@ -666,7 +666,8 @@ body {
 		cursor: pointer;
 		transition: color var(--fast) var(--transition);
 
-		&:hover {
+		&:hover,
+		&:focus {
 			color: var(--v-icon-color-hover);
 		}
 	}

@@ -14,7 +14,7 @@
 		<template #actions>
 			<template v-if="editMode">
 				<v-button
-					v-tooltip.bottom="t('clear_changes')"
+					v-tooltip.bottom="`${t('clear_changes')}  ${translateShortcut(['meta', 'm'])}`"
 					class="clear-changes"
 					rounded
 					icon
@@ -24,18 +24,30 @@
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+				<v-button
+					v-tooltip.bottom="`${t('create_panel')}  ${translateShortcut(['alt', 'n'])}`"
+					rounded
+					icon
+					outlined
+					:to="`/insights/${currentDashboard.id}/+`"
+				>
 					<v-icon name="add" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
+				<v-button
+					v-tooltip.bottom="`${t('save')}  ${translateShortcut(['meta', 's'])}`"
+					rounded
+					icon
+					:loading="saving"
+					@click="saveChanges"
+				>
 					<v-icon name="check" />
 				</v-button>
 			</template>
 
 			<template v-else>
 				<v-button
-					v-tooltip.bottom="t('fit_to_screen')"
+					v-tooltip.bottom="`${t('fit_to_screen')}  ${translateShortcut(['meta', 'd'])}`"
 					:active="zoomToFit"
 					class="zoom-to-fit"
 					rounded
@@ -47,7 +59,7 @@
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="t('full_screen')"
+					v-tooltip.bottom="`${t('full_screen')}  ${translateShortcut(['meta', 'f'])}`"
 					:active="fullScreen"
 					class="fullscreen"
 					rounded
@@ -58,7 +70,13 @@
 					<v-icon name="fullscreen" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
+				<v-button
+					v-tooltip.bottom="`${t('edit_panels')}  ${translateShortcut(['meta', 'm'])}`"
+					rounded
+					icon
+					outlined
+					@click="editMode = !editMode"
+				>
 					<v-icon name="edit" />
 				</v-button>
 			</template>
@@ -90,6 +108,8 @@
 			:dashboard-key="primaryKey"
 			:panel="panelKey ? panels.find((panel) => panel.id === panelKey) : null"
 			@save="stageConfiguration"
+			@duplicate="duplicatePanelAndNavigate"
+			@delete="deletePanelAndNavigate"
 			@cancel="$router.push(`/insights/${primaryKey}`)"
 		/>
 
@@ -160,6 +180,7 @@ import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
+import translateShortcut from '@/utils/translate-shortcut';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -192,9 +213,13 @@ export default defineComponent({
 
 		const zoomToFit = ref(false);
 
-		useShortcut('meta+s', () => {
-			saveChanges();
-		});
+		useShortcut('escape', exitEditMode);
+		useShortcut('meta+m', toggleMode);
+		useShortcut('meta+d', toggleZoomToFit);
+		useShortcut('meta+f', toggleFullScreen);
+
+		useShortcut('meta+s', saveChanges);
+		useShortcut('alt+n', createPanel);
 
 		watch(editMode, (editModeEnabled) => {
 			if (editModeEnabled) {
@@ -330,33 +355,54 @@ export default defineComponent({
 			now,
 			confirmCancel,
 			cancelChanges,
+			translateShortcut,
+			duplicatePanelAndNavigate,
+			deletePanelAndNavigate,
 		};
+
+		function exitEditMode() {
+			editMode.value = false;
+		}
+
+		function toggleMode() {
+			editMode.value = !editMode.value;
+		}
+
+		function createPanel() {
+			if (!editMode.value) return;
+			router.push(`/insights/${props.primaryKey}/+`);
+		}
+
+		function duplicatePanelAndNavigate(id: string) {
+			if (!editMode.value) return;
+			const newPanel = duplicatePanel(id);
+
+			router.push(`/insights/${props.primaryKey}/${newPanel.id}`);
+		}
+
+		function deletePanelAndNavigate(id: string) {
+			if (!editMode.value) return;
+
+			deletePanel(id);
+			router.replace(`/insights/${props.primaryKey}`);
+		}
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
 			const key = event.id ?? props.panelKey;
 
-			if (key === '+') {
-				stagedPanels.value = [
-					...stagedPanels.value,
-					{
-						id: `_${nanoid()}`,
-						dashboard: props.primaryKey,
-						...event.edits,
-					},
-				];
-			} else {
-				if (stagedPanels.value.some((panel) => panel.id === key)) {
-					stagedPanels.value = stagedPanels.value.map((panel) => {
-						if (panel.id === key) {
-							return merge({ id: key, dashboard: props.primaryKey }, panel, event.edits);
-						}
+			let panel = { id: key === '+' ? `_${nanoid()}` : key, dashboard: props.primaryKey, ...event.edits };
 
-						return panel;
-					});
-				} else {
-					stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...event.edits }];
-				}
+			const exists = stagedPanels.value.find((panel) => panel.id === key);
+
+			if (exists) {
+				panel = merge(exists, panel);
+			} else {
+				stagedPanels.value.push(panel);
 			}
+
+			stagedPanels.value = [...stagedPanels.value];
+
+			return panel;
 		}
 
 		function stageConfiguration(edits: Partial<Panel>) {
@@ -436,11 +482,16 @@ export default defineComponent({
 			router.push(leaveTo.value);
 		}
 
-		function duplicatePanel(panel: Panel) {
-			const newPanel = omit(merge({}, panel), 'id');
-			newPanel.position_x = newPanel.position_x + 2;
-			newPanel.position_y = newPanel.position_y + 2;
-			stagePanelEdits({ edits: newPanel, id: '+' });
+		function duplicatePanel(id: string) {
+			const currentPanel = panels.value.find((panel) => panel.id === id);
+
+			const panel = omit(merge({}, currentPanel), 'id');
+			panel.position_x = (panel.position_x || 0) + 2;
+			panel.position_y = (panel.position_y || 0) + 2;
+
+			const newPanel = stagePanelEdits({ edits: panel, id: '+' });
+
+			return newPanel;
 		}
 
 		function toggleFullScreen() {
