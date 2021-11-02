@@ -588,7 +588,7 @@ registrations.
 | `AUTH_<PROVIDER>_ISSUER_URL`                 | The OpenID `.well-known` Discovery Document URL.                                 | --                     |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`             | OpenID profile identifier key used to verify the user.                           | `sub`                  |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION`  | Automatically create accounts for authenticating users.                          | `false`                |
-| `AUTH_<PROVIDER>_PUBLIC_REGISTRATION_FILTER` | Filter allowed registration based on [Filter Rules](/configuration/filter-rules) | `account_circle`       |
+| `AUTH_<PROVIDER>_PUBLIC_REGISTRATION_FILTER` | Filter allowed registration based on [Filter Rules](/configuration/filter-rules) | --                     |
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`     | Require users to have a verified email address.                                  | `false`                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`            | The Directus role ID assigned to created users.                                  | --                     |
 | `AUTH_<PROVIDER>_ICON`                       | SVG icon to display with the login link.                                         | `account_circle`       |
