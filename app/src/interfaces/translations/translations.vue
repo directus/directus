@@ -286,6 +286,14 @@ export default defineComponent({
 						loadItems();
 					}
 
+					if (
+						newVal &&
+						newVal !== oldVal &&
+						newVal?.every((item) => typeof item === 'object')
+					) {
+						items.value = newVal.map(el => { return { ...el, languages_code : el.languages_code.code }; });
+					}
+
 					if (newVal === null || newVal.length === 0) {
 						items.value = [];
 					}
