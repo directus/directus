@@ -58,14 +58,6 @@ export default defineComponent({
 			type: Array as PropType<Choice[]>,
 			default: () => [],
 		},
-		defaultBackground: {
-			type: String,
-			default: '#eceff1',
-		},
-		defaultForeground: {
-			type: String,
-			default: '#263238',
-		},
 		type: {
 			type: String,
 			required: true,
@@ -99,15 +91,15 @@ export default defineComponent({
 					return {
 						value: item,
 						text: itemStringValue,
-						foreground: props.defaultForeground,
-						background: props.defaultBackground,
+						foreground: 'var(--foreground-normal)',
+						background: 'var(--background-normal)',
 					};
 				} else {
 					return translate({
 						value: item,
 						text: choice.text || itemStringValue,
-						foreground: choice.foreground || props.defaultForeground,
-						background: choice.background || props.defaultBackground,
+						foreground: choice.foreground || 'var(--foreground-normal)',
+						background: choice.background || 'var(--background-normal)',
 					});
 				}
 			});
