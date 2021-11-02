@@ -25,19 +25,20 @@ export default defineInterface({
 				value: field.field,
 			}));
 		}
-
-		return [
-			{
-				field: 'languageField',
-				type: 'string',
-				name: '$t:interfaces.translations.language_field',
-				meta: {
-					interface: 'select-dropdown',
-					options: {
-						choices,
+		return choices.length > 0
+			? [
+					{
+						field: 'languageField',
+						type: 'string',
+						name: '$t:interfaces.translations.language_field',
+						meta: {
+							interface: 'select-dropdown',
+							options: {
+								choices,
+							},
+						},
 					},
-				},
-			},
-		];
+			  ]
+			: [];
 	},
 });
