@@ -26,7 +26,8 @@ const getPermissions: RequestHandler = asyncHandler(async (req, res, next) => {
 		throw new Error('"getPermissions" needs to be used after the "schema" middleware');
 	}
 
-	const cacheKey = `permissions-${hash(req.accountability)}`;
+	const { user, role, app, admin } = req.accountability;
+	const cacheKey = `permissions-${hash({ user, role, app, admin })}`;
 
 	if (env.CACHE_PERMISSIONS !== false) {
 		const cachedPermissions = await systemCache.get(cacheKey);
