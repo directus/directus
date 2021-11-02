@@ -96,7 +96,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			);
 			userInfo = await this.client.userinfo(tokenSet);
 			if (validatePayload(env.AUTH_GITHUB_PUBLIC_REGISTRATION_FILTER, userInfo)) {
-				throw new Error('User does not pass registration filter.');
+				throw new InvalidCredentialsException();
 			}
 		} catch (e) {
 			throw handleError(e);
