@@ -24,7 +24,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
 
-		if (!authorizeUrl || !accessUrl || !profileUrl || !clientId || !clientSecret || !additionalConfig.provider) {
+		if (!authorizeUrl || !accessUrl || !clientId || !clientSecret || !additionalConfig.provider) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 
@@ -93,7 +93,15 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{ code: payload.code, state: payload.state },
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
-			userInfo = await this.client.userinfo(tokenSet);
+
+			const issuer = this.client.issuer;
+			if (issuer.metadata.userinfo_endpoint) {
+				userInfo = await this.client.userinfo(tokenSet);
+			} else if (tokenSet.id_token) {
+				userInfo = tokenSet.claims();
+			} else {
+				throw new InvalidConfigException('OAuth profile URL not defined', { provider: this.config.provider });
+			}
 		} catch (e) {
 			throw handleError(e);
 		}
