@@ -1,21 +1,21 @@
 import { Knex } from 'knex';
 import getDatabase from '..';
 
-let dateHelper: KnexSpatial | undefined;
+let dateHelper: KnexDate | undefined;
 
-export function getDateHelper(): KnexSpatial {
+export function getDateHelper(): KnexDate {
 	if (!dateHelper) {
 		const db = getDatabase();
 		const client = db.client.config.client as string;
 		const constructor = {
-			mysql: KnexSpatial,
-			mariadb: KnexSpatial,
-			sqlite3: KnexSpatial_SQLITE,
-			pg: KnexSpatial,
-			postgres: KnexSpatial,
-			redshift: KnexSpatial,
-			mssql: KnexSpatial,
-			oracledb: KnexSpatial,
+			mysql: KnexDate,
+			mariadb: KnexDate,
+			sqlite3: KnexDate_SQLITE,
+			pg: KnexDate,
+			postgres: KnexDate,
+			redshift: KnexDate,
+			mssql: KnexDate,
+			oracledb: KnexDate,
 		}[client];
 		if (!constructor) {
 			throw new Error(`Geometry helper not implemented on ${client}.`);
@@ -25,7 +25,7 @@ export function getDateHelper(): KnexSpatial {
 	return dateHelper;
 }
 
-class KnexSpatial {
+class KnexDate {
 	constructor(protected knex: Knex) {}
 
 	parseDate(date: string): string {
@@ -33,7 +33,7 @@ class KnexSpatial {
 	}
 }
 
-class KnexSpatial_SQLITE extends KnexSpatial {
+class KnexDate_SQLITE extends KnexDate {
 	parseDate(date: string): string {
 		const newDate = new Date(date);
 		return (newDate.getTime() - newDate.getTimezoneOffset() * 60 * 1000).toString();
