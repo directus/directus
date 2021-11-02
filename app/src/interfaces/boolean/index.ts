@@ -62,21 +62,5 @@ export default defineInterface({
 				default_value: '#00C897',
 			},
 		},
-		{
-			field: 'nullable',
-			name: '$t:nullable',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:allow_null_value',
-					nullable: false,
-				},
-			},
-			schema: {
-				default_value: false,
-			},
-		},
 	],
 });

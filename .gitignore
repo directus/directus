@@ -21,7 +21,3 @@ coverage
 TODO
 schema.yaml
 schema.json
-/.vs
-/iisnode
-/api/dev.env
-/api/live.env
