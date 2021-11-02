@@ -127,7 +127,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 
 			const payloadWithPresets = this.accountability
-				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
+				? await authorizationService.getValidationErrors('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
 			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
@@ -420,7 +420,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const payloadWithPresets = this.accountability
-			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+			? await authorizationService.getValidationErrors('update', this.collection, payloadAfterHooks)
 			: payloadAfterHooks;
 
 		await this.knex.transaction(async (trx) => {

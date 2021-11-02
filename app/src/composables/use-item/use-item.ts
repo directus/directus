@@ -7,7 +7,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { validatePayload } from '@directus/shared/utils';
+import { getValidationErrors } from '@directus/shared/utils';
 import { Filter, Item, Field } from '@directus/shared/types';
 import { isNil, flatten, merge } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
@@ -324,7 +324,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				const matchingCondition = conditions.find((condition) => {
 					if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 					const rule = parseFilter(condition.rule);
-					const errors = validatePayload(rule, item, { requireAll: true });
+					const errors = getValidationErrors(rule, item, { requireAll: true });
 					return errors.length === 0;
 				});
 
@@ -367,7 +367,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 
 		return flatten(
-			validatePayload(validationRules, item).map((error) =>
+			getValidationErrors(validationRules, item).map((error) =>
 				error.details.map((details) => new FailedValidationException(details).extensions)
 			)
 		);

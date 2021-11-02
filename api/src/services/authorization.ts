@@ -3,7 +3,7 @@ import { cloneDeep, merge, uniq, uniqWith, flatten, isNil } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
-import { validatePayload, parseFilter } from '@directus/shared/utils';
+import { getValidationErrors, parseFilter } from '@directus/shared/utils';
 import { Accountability } from '@directus/shared/types';
 import {
 	AbstractServiceOptions,
@@ -194,7 +194,7 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
+	getValidationErrors(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
 		const payload = cloneDeep(data);
 
 		let permission: Permission | undefined;
@@ -282,7 +282,7 @@ export class AuthorizationService {
 
 		validationErrors.push(
 			...flatten(
-				validatePayload(parseFilter(permission.validation!, this.accountability), payloadWithPresets).map((error) =>
+				getValidationErrors(parseFilter(permission.validation!, this.accountability), payloadWithPresets).map((error) =>
 					error.details.map((details) => new FailedValidationException(details))
 				)
 			)

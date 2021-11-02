@@ -12,7 +12,7 @@ import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
-import { validatePayload } from '@directus/shared/utils';
+import { getValidationErrors } from '@directus/shared/utils';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -126,12 +126,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const isEmailVerified = !requireVerifiedEmail || userInfo.email_verified;
 
 		const canRegisterUser =
-			!this.config.publicRegistrationFilter || !validatePayload(this.config.publicRegistrationFilter, userInfo).length;
+			!this.config.publicRegistrationFilter ||
+			!getValidationErrors(this.config.publicRegistrationFilter, userInfo).length;
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !canRegisterUser || !isEmailVerified) {
 			if (!canRegisterUser) {
-				logger.warn({}, validatePayload(this.config.publicRegistrationFilter, userInfo).join(', '));
+				logger.warn({}, getValidationErrors(this.config.publicRegistrationFilter, userInfo).join(', '));
 			}
 			throw new InvalidCredentialsException();
 		}

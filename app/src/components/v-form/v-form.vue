@@ -70,7 +70,7 @@ import { assign, cloneDeep, isNil, merge, omit, pick } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
-import { validatePayload } from '@directus/shared/utils';
+import { getValidationErrors } from '@directus/shared/utils';
 import { parseFilter } from '@/utils/parse-filter';
 
 type FieldValues = {
@@ -247,7 +247,7 @@ export default defineComponent({
 							if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 
 							const rule = parseFilter(condition.rule);
-							const errors = validatePayload(rule, values.value, { requireAll: true });
+							const errors = getValidationErrors(rule, values.value, { requireAll: true });
 							return errors.length === 0;
 						});
 

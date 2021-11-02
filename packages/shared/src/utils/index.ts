@@ -13,4 +13,5 @@ export * from './parse-filter';
 export * from './pluralize';
 export * from './to-array';
 export * from './validate-extension-manifest';
+export * from './get-validation-errors';
 export * from './validate-payload';

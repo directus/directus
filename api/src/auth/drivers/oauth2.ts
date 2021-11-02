@@ -12,7 +12,7 @@ import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
-import { validatePayload } from '@directus/shared/utils';
+import { getValidationErrors } from '@directus/shared/utils';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -122,11 +122,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		const canRegisterUser =
-			!this.config.publicRegistrationFilter || !validatePayload(this.config.publicRegistrationFilter, userInfo).length;
+			!this.config.publicRegistrationFilter ||
+			!getValidationErrors(this.config.publicRegistrationFilter, userInfo).length;
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !canRegisterUser) {
 			if (!canRegisterUser) {
-				logger.warn({}, validatePayload(this.config.publicRegistrationFilter, userInfo).join(', '));
+				logger.warn({}, getValidationErrors(this.config.publicRegistrationFilter, userInfo).join(', '));
 			}
 			throw new InvalidCredentialsException();
 		}
