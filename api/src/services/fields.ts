@@ -243,6 +243,19 @@ export class FieldsService {
 				schema: this.schema,
 			});
 
+			if (field.meta) {
+				await emitter.emitAsync(`fields.create.before`, field, {
+					event: `fields.create.before`,
+					accountability: this.accountability,
+					collection,
+					item: null,
+					action: 'create',
+					payload: field,
+					schema: this.schema,
+					database: trx,
+				});
+			}
+
 			if (field.type && ALIAS_TYPES.includes(field.type) === false) {
 				if (table) {
 					this.addColumnToTable(table, field as Field);
@@ -254,10 +267,24 @@ export class FieldsService {
 			}
 
 			if (field.meta) {
-				await itemsService.createOne({
-					...field.meta,
-					collection: collection,
-					field: field.field,
+				await itemsService.createOne(
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					{ emitEvents: false }
+				);
+
+				emitAsyncSafe(`fields.create`, {
+					event: `fields.create`,
+					accountability: this.accountability,
+					collection,
+					item: field.field,
+					action: 'create',
+					payload: field,
+					schema: this.schema,
+					database: getDatabase(),
 				});
 			}
 		});
@@ -276,6 +303,36 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
+		const record = field.meta
+			? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
+			: null;
+
+		if (field.meta) {
+			if (record) {
+				await emitter.emitAsync(`fields.update.before`, field, {
+					event: `fields.update.before`,
+					accountability: this.accountability,
+					collection,
+					item: field.field,
+					action: 'update',
+					payload: field,
+					schema: this.schema,
+					database: this.knex,
+				});
+			} else {
+				await emitter.emitAsync(`fields.create.before`, field, {
+					event: `fields.create.before`,
+					accountability: this.accountability,
+					collection,
+					item: null,
+					action: 'create',
+					payload: field,
+					schema: this.schema,
+					database: this.knex,
+				});
+			}
+		}
+
 		if (field.schema) {
 			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
 
@@ -292,23 +349,46 @@ export class FieldsService {
 		}
 
 		if (field.meta) {
-			const record = await this.knex
-				.select('id')
-				.from('directus_fields')
-				.where({ collection, field: field.field })
-				.first();
-
 			if (record) {
-				await this.itemsService.updateOne(record.id, {
-					...field.meta,
-					collection: collection,
-					field: field.field,
+				await this.itemsService.updateOne(
+					record.id,
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					{ emitEvents: false }
+				);
+
+				emitAsyncSafe(`fields.update`, {
+					event: `fields.update`,
+					accountability: this.accountability,
+					collection,
+					item: field.field,
+					action: 'update',
+					payload: field,
+					schema: this.schema,
+					database: getDatabase(),
 				});
 			} else {
-				await this.itemsService.createOne({
-					...field.meta,
-					collection: collection,
-					field: field.field,
+				await this.itemsService.createOne(
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					{ emitEvents: false }
+				);
+
+				emitAsyncSafe(`fields.create`, {
+					event: `fields.create`,
+					accountability: this.accountability,
+					collection,
+					item: field.field,
+					action: 'create',
+					payload: field,
+					schema: this.schema,
+					database: getDatabase(),
 				});
 			}
 		}
