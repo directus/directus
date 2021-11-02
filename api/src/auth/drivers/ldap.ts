@@ -63,10 +63,10 @@ export class LDAPAuthDriver extends AuthDriver {
 			const client = ldap.createClient({ url: additionalConfig.clientUrl, reconnect: true, ...clientConfig });
 
 			client.on('error', (err: Error) => {
-				if (!isClientPending) {
-					logger.error(err);
-				} else {
+				if (isClientPending) {
 					reject(err);
+				} else {
+					logger.error(err);
 				}
 
 				isClientPending = false;
@@ -75,14 +75,16 @@ export class LDAPAuthDriver extends AuthDriver {
 			client.on('connect', () => {
 				client.bind(bindDn, bindPassword, (err: Error | null) => {
 					if (err) {
-						const error = handleError(err);
+						let error = handleError(err);
 
-						if (!isClientPending) {
-							logger.error(error);
-						} else if (error instanceof InvalidCredentialsException) {
-							reject(new InvalidConfigException('Invalid bind user', { provider: additionalConfig.provider }));
-						} else {
+						if (error instanceof InvalidCredentialsException) {
+							error = new InvalidConfigException('Invalid bind user', { provider: additionalConfig.provider });
+						}
+
+						if (isClientPending) {
 							reject(error);
+						} else {
+							logger.error(error);
 						}
 					} else if (isClientPending) {
 						resolve(client);
