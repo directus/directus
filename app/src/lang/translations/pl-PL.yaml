@@ -1559,7 +1559,10 @@ layouts:
     cluster_radius: Promień klastra
     cluster_minpoints: Minimalny rozmiar klastra
     cluster_maxzoom: Maksymalne powiększenie klastrów
+    field: Pole geoprzestrzenne
     invalid_geometry: Nieprawidłowa geometria
+    find_location: Znajdź lokalizację...
+    default_template: Używanie domyślnej kolekcji...
 panels:
   metric:
     name: Metryczny
