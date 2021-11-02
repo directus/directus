@@ -48,7 +48,7 @@ are available:
   - [Updating a Field](#updating-a-field)
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
-  - [Changing Field Order & Layout](/dead)
+  - [Changing Field Order & Layout](#adjusting-the-collection-form)
 - **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
   Translations (see field below).
 - **Note** — A helpful note that explains the collection's purpose
