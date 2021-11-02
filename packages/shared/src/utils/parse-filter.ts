@@ -1,10 +1,21 @@
 import { REGEX_BETWEEN_PARENS } from '../constants';
-import { Accountability, Filter } from '../types';
+import { Accountability, Filter, User, Role } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
+import { get } from 'lodash';
 
-export function parseFilter(filter: Filter | null, accountability: Accountability | null): any {
+type ParseFilterContext = {
+	// The user can add any custom fields to user
+	$CURRENT_USER?: User & { [field: string]: any };
+	$CURRENT_ROLE?: Role & { [field: string]: any };
+};
+
+export function parseFilter(
+	filter: Filter | null,
+	accountability: Accountability | null,
+	context: ParseFilterContext = {}
+): any {
 	if (!filter) return filter;
 
 	return deepMap(filter, applyFilter);
@@ -29,8 +40,15 @@ export function parseFilter(filter: Filter | null, accountability: Accountabilit
 			return new Date();
 		}
 
-		if (val === '$CURRENT_USER') return accountability?.user || null;
-		if (val === '$CURRENT_ROLE') return accountability?.role || null;
+		if (typeof val === 'string' && val.startsWith('$CURRENT_USER')) {
+			if (val === '$CURRENT_USER') return accountability?.user ?? null;
+			return get(context, val, null);
+		}
+
+		if (typeof val === 'string' && val.startsWith('$CURRENT_ROLE')) {
+			if (val === '$CURRENT_ROLE') return accountability?.role ?? null;
+			return get(context, val, null);
+		}
 
 		return val;
 	}

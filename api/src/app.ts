@@ -34,6 +34,7 @@ import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
+import getPermissions from './middleware/get-permissions';
 import cache from './middleware/cache';
 import { checkIP } from './middleware/check-ip';
 import cors from './middleware/cors';
@@ -153,13 +154,15 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(sanitizeQuery);
 
-	await emitAsyncSafe('middlewares.init.after', { app });
-
-	await emitAsyncSafe('routes.init.before', { app });
-
 	app.use(cache);
 
 	app.use(schema);
+
+	app.use(getPermissions);
+
+	await emitAsyncSafe('middlewares.init.after', { app });
+
+	await emitAsyncSafe('routes.init.before', { app });
 
 	app.use('/auth', authRouter);
 
