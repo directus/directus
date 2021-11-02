@@ -41,6 +41,7 @@ export class FieldsService {
 		this.schema = options.schema;
 
 		const { cache, systemCache } = getCache();
+
 		this.cache = cache;
 		this.systemCache = systemCache;
 	}
