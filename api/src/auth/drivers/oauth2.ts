@@ -95,7 +95,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
 			userInfo = await this.client.userinfo(tokenSet);
-			if (validatePayload(env.AUTH_GITHUB_PUBLIC_REGISTRATION_FILTER, userInfo)) {
+			const providerFilter = `AUTH_${this.config.provider.toUpperCase()}_PUBLIC_REGISTRATION_FILTER`;
+			if (validatePayload(env[providerFilter], userInfo).length > 0) {
 				throw new InvalidCredentialsException();
 			}
 		} catch (e) {
