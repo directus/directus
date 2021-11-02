@@ -78,7 +78,7 @@ export class LDAPAuthDriver extends AuthDriver {
 						const error = handleError(err);
 
 						if (!isClientPending) {
-							logger.error(err);
+							logger.error(error);
 						} else if (error instanceof InvalidCredentialsException) {
 							reject(new InvalidConfigException('Invalid bind user', { provider: additionalConfig.provider }));
 						} else {
