@@ -1,15 +1,13 @@
 {
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"skipLibCheck": true,
-		"target": "es5",
-		"module": "commonjs",
-		"lib": ["es2019", "es2018", "es2017", "es7", "es6", "dom"],
-		"declaration": true,
-		"outDir": "./dist",
-		"strict": true,
-		"esModuleInterop": true,
+		"target": "ES5",
+		"module": "CommonJS",
+		"composite": true,
+		"declarationMap": true,
 		"forceConsistentCasingInFileNames": true,
-		"rootDir": "src"
+		"rootDir": "src",
+		"outDir": "dist"
 	},
-	"exclude": ["node_modules", "dist", "test"]
+	"include": ["src/**/*.ts"]
 }

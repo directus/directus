@@ -1,19 +1,14 @@
 {
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"target": "es5",
-		"lib": ["es5"],
-		"module": "es2015",
+		"target": "ES5",
+		"module": "ES2015",
 		"moduleResolution": "node",
-		"sourceMap": true,
-		"declaration": true,
+		"composite": true,
+		"declarationMap": true,
 		"declarationDir": "dist/types",
-		"noEmit": true,
-		"noEmitOnError": true,
-		"strict": true,
-		"skipLibCheck": true,
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true
+		"emitDeclarationOnly": true,
+		"rootDir": "src"
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules"]
+	"include": ["src/**/*.ts"]
 }

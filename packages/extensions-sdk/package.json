@@ -19,11 +19,9 @@
 		"directus-extension": "cli.js"
 	},
 	"scripts": {
-		"build": "run-p \"build:* -- {@}\" --",
-		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
-		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
+		"build": "tsc --build tsconfig.json tsconfig.cjs.json",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "npm run build -- --watch --preserveWatchOutput"
 	},
 	"engines": {
 		"node": ">=12.20.0"
@@ -49,7 +47,6 @@
 		"rollup-plugin-vue": "^6.0.0"
 	},
 	"devDependencies": {
-		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
 		"typescript": "4.4.4"
 	}

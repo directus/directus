@@ -1,32 +1,20 @@
 {
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"target": "ES2018",
-		"lib": ["ES2018"],
 		"module": "CommonJS",
 		"moduleResolution": "node",
-		"declaration": true,
+		"composite": true,
 		"declarationMap": true,
-		"strict": true,
 		"noFallthroughCasesInSwitch": true,
-		"esModuleInterop": true,
-		"noImplicitAny": true,
-		"noImplicitThis": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"noUncheckedIndexedAccess": true,
 		"noUnusedParameters": true,
-		"alwaysStrict": true,
-		"strictNullChecks": true,
-		"strictFunctionTypes": true,
-		"strictBindCallApply": true,
-		"strictPropertyInitialization": true,
-		"resolveJsonModule": false,
-		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
-		"rootDir": "./src",
-		"outDir": "./dist"
+		"rootDir": "src",
+		"outDir": "dist"
 	},
-	"include": ["./src/**/*.ts"]
+	"include": ["src/**/*.ts"]
 }

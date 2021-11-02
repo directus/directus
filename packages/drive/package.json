@@ -30,13 +30,13 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project ./tsconfig.json",
+		"build": "tsc --build",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "npm run build -- --watch --preserveWatchOutput"
 	},
 	"dependencies": {
 		"fs-extra": "^10.0.0",

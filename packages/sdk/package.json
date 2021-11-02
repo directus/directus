@@ -27,7 +27,7 @@
 		"prebuild": "npm run cleanup",
 		"build": "run-p build:*",
 		"build:targets": "rollup -c",
-		"build:node": "tsc --project ./tsconfig.json",
+		"build:node": "tsc --build --force",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:types": "rimraf ./types",

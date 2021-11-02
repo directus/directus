@@ -1,0 +1,18 @@
+{
+	"files": [],
+	"references": [
+		{ "path": "./api" },
+		{ "path": "./app" },
+		{ "path": "./packages/cli" },
+		{ "path": "./packages/drive" },
+		{ "path": "./packages/drive-azure" },
+		{ "path": "./packages/drive-gcs" },
+		{ "path": "./packages/drive-s3" },
+		{ "path": "./packages/extensions-sdk" },
+		{ "path": "./packages/format-title" },
+		{ "path": "./packages/schema" },
+		{ "path": "./packages/sdk" },
+		{ "path": "./packages/shared" },
+		{ "path": "./tests" }
+	]
+}

@@ -23,7 +23,7 @@
 	],
 	"scripts": {
 		"prebuild": "npm run cleanup",
-		"build": "tsc --project ./tsconfig.json",
+		"build": "tsc --build",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",

@@ -1,17 +1,23 @@
 {
+	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
-		"module": "commonjs",
-		"esModuleInterop": true,
 		"target": "ES2019",
+		"module": "CommonJS",
 		"moduleResolution": "node",
-		"sourceMap": false,
-		"outDir": "dist",
-		"rootDir": "src",
-		"strict": true,
-		"lib": ["es2019"],
-		"skipLibCheck": true,
 		"declaration": true,
-		"resolveJsonModule": true
+		"declarationMap": true,
+		"resolveJsonModule": true,
+		"rootDir": "src",
+		"outDir": "dist"
 	},
-	"exclude": ["node_modules", "dist", "extensions"]
+	"include": ["src/**/*.ts"],
+	"references": [
+		{ "path": "../packages/drive" },
+		{ "path": "../packages/drive-azure" },
+		{ "path": "../packages/drive-gcs" },
+		{ "path": "../packages/drive-s3" },
+		{ "path": "../packages/format-title" },
+		{ "path": "../packages/schema" },
+		{ "path": "../packages/shared" }
+	]
 }

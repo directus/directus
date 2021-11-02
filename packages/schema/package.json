@@ -9,18 +9,8 @@
 	},
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc --build && echo \"Built successfully\"",
-		"dev": "npm-watch build"
-	},
-	"watch": {
-		"build": {
-			"patterns": [
-				"src/*"
-			],
-			"extensions": "ts",
-			"quiet": true,
-			"silent": true
-		}
+		"build": "tsc --build",
+		"dev": "tsc --build --watch --preserveWatchOutput"
 	},
 	"repository": {
 		"type": "git",
@@ -42,7 +32,6 @@
 	},
 	"homepage": "https://github.com/directus/directus#readme",
 	"devDependencies": {
-		"npm-watch": "0.11.0",
 		"typescript": "4.4.4"
 	},
 	"dependencies": {

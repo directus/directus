@@ -1,0 +1,7 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"strict": true
+	}
+}

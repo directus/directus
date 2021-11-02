@@ -11,6 +11,7 @@
 		"lint": "npm-run-all --parallel --continue-on-error lint:*",
 		"lint:eslint": "eslint .",
 		"lint:stylelint": "stylelint \"**/*.{css,scss,vue}\" --custom-syntax postcss-html",
+		"lint:typescript": "tsc --build --force",
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",

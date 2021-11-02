@@ -22,8 +22,12 @@
 		"access": "public"
 	},
 	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
+		"dev": "run-p 'dev:*'",
+		"dev:tsc": "tsc --build --watch --preserveWatchOutput",
+		"dev:vite": "vite",
+		"build": "npm run build:tsc; npm run build:vite",
+		"build:tsc": "tsc --build",
+		"build:vite": "vite build",
 		"serve": "vite preview"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
@@ -85,6 +89,7 @@
 		"mime": "3.0.0",
 		"mitt": "3.0.0",
 		"nanoid": "3.1.30",
+		"npm-run-all": "4.1.5",
 		"p-queue": "7.1.0",
 		"pinia": "2.0.2",
 		"prettier": "2.4.1",

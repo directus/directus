@@ -66,6 +66,9 @@ function createConfig({
 				useTsconfigDeclarationDir: true,
 				tsconfigOverride: {
 					compilerOptions: {
+						composite: false,
+						declaration: true,
+						emitDeclarationOnly: false,
 						target,
 						lib: [target],
 					},
