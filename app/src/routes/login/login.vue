@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, ref, onMounted, watch } from 'vue';
+import { defineComponent, computed, PropType, ref, onMounted } from 'vue';
 import { LoginForm, LdapForm } from './components/login-form/';
 import ContinueAs from './components/continue-as.vue';
 import SsoLinks from './components/sso-links.vue';
