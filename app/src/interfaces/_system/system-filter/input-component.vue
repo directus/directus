@@ -103,36 +103,19 @@ export default defineComponent({
 			return (props.value?.toString().length || 2) + 1 + 'ch';
 		});
 
-		const inputPattern = computed(() => {
-			switch (props.type) {
-				case 'integer':
-				case 'bigInteger':
-					return '[+-]?[0-9]+';
-				case 'decimal':
-				case 'float':
-					return '[+-]?[0-9]+\\.?[0-9]*';
-				case 'uuid':
-					return '\\$CURRENT_USER|\\$CURRENT_ROLE|[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
-				default:
-					return '';
-			}
-		});
-
 		onMounted(() => {
 			if (props.focus) inputEl.value?.focus();
 		});
 
 		const emitValueDebounced = debounce((val: unknown) => emitValue(val), 250);
 
-		return { displayValue, width, t, emitValueDebounced, inputEl, inputPattern };
+		return { displayValue, width, t, emitValueDebounced, inputEl };
 
 		function emitValue(val: unknown) {
 			if (val === '') {
 				emit('input', null);
 			} else {
-				if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
-					emit('input', val);
-				}
+				emit('input', val);
 			}
 		}
 	},
