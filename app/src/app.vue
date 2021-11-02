@@ -54,17 +54,17 @@ export default defineComponent({
 		});
 
 		watch(
-			() => userStore.currentUser,
-			(newUser) => {
+			() => userStore.currentUser?.theme,
+			(theme) => {
 				document.body.classList.remove('dark');
 				document.body.classList.remove('light');
 				document.body.classList.remove('auto');
 
-				if (newUser !== undefined && newUser !== null && newUser.theme) {
-					document.body.classList.add(newUser.theme);
+				if (theme) {
+					document.body.classList.add(theme);
 					document
 						.querySelector('head meta[name="theme-color"]')
-						?.setAttribute('content', newUser.theme === 'light' ? '#ffffff' : '#263238');
+						?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');
 				} else {
 					// Default to light mode
 					document.body.classList.add('light');

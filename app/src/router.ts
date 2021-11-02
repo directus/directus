@@ -105,6 +105,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 
 	if (to.meta?.public !== true && userStore.currentUser && to.fullPath !== '/tfa-setup') {
 		if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+			userStore.currentUser.theme = 'light';
 			return '/tfa-setup';
 		}
 	}
