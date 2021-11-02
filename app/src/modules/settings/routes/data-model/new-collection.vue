@@ -133,7 +133,6 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { DeepPartial } from '@directus/shared/types';
-import { translate } from '@/utils/translate-object-values';
 
 const defaultSystemFields = {
 	status: {
@@ -470,7 +469,7 @@ export default defineComponent({
 				});
 			}
 
-			return translate(fields);
+			return fields;
 		}
 
 		function getSystemRelations() {
