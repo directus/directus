@@ -120,6 +120,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 			'avatar',
 			'language',
 			'theme',
+			'tfa_secret',
 		],
 	},
 	{
