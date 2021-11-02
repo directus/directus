@@ -4,7 +4,6 @@ import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, SchemaOverview } from '../types';
 import { Accountability, Query } from '@directus/shared/types';
 import { applyFilter, applySearch } from '../utils/apply-query';
-import { parseFilter } from '@directus/shared/utils';
 
 export class MetaService {
 	knex: Knex;
