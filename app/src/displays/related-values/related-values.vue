@@ -31,9 +31,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, Ref } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({
@@ -67,12 +67,7 @@ export default defineComponent({
 			return getRelatedCollection(props.collection, props.field);
 		});
 
-		const primaryKeyField = computed(() => {
-			if (relatedCollection.value !== null) {
-				return useCollection(relatedCollection as unknown as Ref<string>).primaryKeyField.value;
-			}
-			return null;
-		});
+		const { primaryKeyField } = useCollection(relatedCollection);
 
 		const internalTemplate = computed(() => {
 			return props.template || `{{ ${primaryKeyField.value!.field} }}`;

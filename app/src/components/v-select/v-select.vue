@@ -1,33 +1,38 @@
 <template>
 	<v-menu
-		:disabled="disabled"
 		class="v-select"
+		:disabled="disabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
+		:placement="placement"
 	>
 		<template #activator="{ toggle, active }">
-			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue }" @click="toggle">
-				{{ displayValue || placeholder }}
+			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue, label, active }" @click="toggle">
+				<slot name="preview">{{ displayValue || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
-			<v-input
-				v-else
-				:full-width="fullWidth"
-				readonly
-				:model-value="displayValue"
-				clickable
-				:placeholder="placeholder"
-				:disabled="disabled"
-				:active="active"
-				@click="toggle"
-			>
-				<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
-				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
-			</v-input>
+			<slot v-else name="preview">
+				<v-input
+					:full-width="fullWidth"
+					readonly
+					:model-value="displayValue"
+					clickable
+					:placeholder="placeholder"
+					:disabled="disabled"
+					:active="active"
+					@click="toggle"
+				>
+					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
+					<template #append>
+						<v-icon name="expand_more" :class="{ active }" />
+						<slot name="append" />
+					</template>
+				</v-input>
+			</slot>
 		</template>
 
-		<v-list class="list">
+		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
 			<template v-if="showDeselect">
 				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
 					<v-list-item-icon v-if="multiple === true">
@@ -119,6 +124,7 @@ import { get } from 'lodash';
 import SelectListItemGroup from './select-list-item-group.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
+import { Placement } from '@popperjs/core';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
@@ -162,6 +168,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		mandatory: {
+			type: Boolean,
+			default: true,
+		},
 		placeholder: {
 			type: String,
 			default: null,
@@ -190,12 +200,20 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		label: {
+			type: Boolean,
+			default: false,
+		},
 		multiplePreviewThreshold: {
 			type: Number,
 			default: 3,
 		},
+		placement: {
+			type: String as PropType<Placement>,
+			default: 'bottom',
+		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'group-toggle'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -211,7 +229,16 @@ export default defineComponent({
 			(value) => emit('update:modelValue', value)
 		);
 
-		return { t, internalItems, displayValue, otherValue, usesOtherValue, otherValues, addOtherValue, setOtherValue };
+		return {
+			t,
+			internalItems,
+			displayValue,
+			otherValue,
+			usesOtherValue,
+			otherValues,
+			addOtherValue,
+			setOtherValue,
+		};
 
 		function useItems() {
 			const internalItems = computed(() => {
@@ -293,9 +320,10 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 :global(body) {
 	--v-select-font-family: var(--family-sans-serif);
+	--v-select-placeholder-color: var(--foreground-subdued);
 }
 
 .list {
@@ -340,11 +368,25 @@ export default defineComponent({
 	cursor: pointer;
 }
 
+.inline-display.label {
+	padding: 4px 8px;
+	padding-right: 26px;
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+	transition: color var(--fast) var(--transition);
+
+	&:hover,
+	&.active {
+		color: var(--foreground);
+	}
+}
+
 .inline-display .v-icon {
 	position: absolute;
 }
 
 .inline-display.placeholder {
-	color: var(--foreground-subdued);
+	color: var(--v-select-placeholder-color);
 }
 </style>

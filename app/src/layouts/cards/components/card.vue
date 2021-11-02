@@ -1,12 +1,12 @@
 <template>
 	<div
 		class="card"
-		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]) }"
+		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
 		@click="handleClick"
 	>
 		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
 		<div class="header">
-			<div class="selection-indicator" :class="{ 'select-mode': selectMode }"></div>
+			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
@@ -223,7 +223,7 @@ export default defineComponent({
 			height: 100%;
 		}
 
-		.selection-indicator {
+		.selection-fade {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -239,12 +239,8 @@ export default defineComponent({
 				left: 0;
 				width: 100%;
 				height: 100%;
-				background-image: linear-gradient(-180deg, rgba(38, 50, 56, 0.1) 10%, rgba(38, 50, 56, 0));
+				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
 				content: '';
-			}
-
-			&.select-mode {
-				opacity: 1;
 			}
 		}
 	}
@@ -272,11 +268,23 @@ export default defineComponent({
 		left: 0px;
 		z-index: 3;
 		margin: 4px;
-		opacity: 0.5;
+		opacity: 0;
 		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 
 		&:hover {
-			opacity: 1;
+			opacity: 1 !important;
+		}
+	}
+
+	&.select-mode {
+		.selector {
+			opacity: 0.5;
+		}
+
+		.header {
+			.selection-fade {
+				opacity: 1;
+			}
 		}
 	}
 
@@ -294,16 +302,20 @@ export default defineComponent({
 
 		.header {
 			border-width: 12px;
+
+			.selection-fade {
+				opacity: 1;
+			}
 		}
 	}
 
 	&:hover {
 		.selector {
-			opacity: 1;
+			opacity: 0.5;
 		}
 
 		.header {
-			.selection-indicator {
+			.selection-fade {
 				opacity: 1;
 			}
 		}

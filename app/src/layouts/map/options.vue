@@ -20,10 +20,11 @@
 	</template>
 
 	<div class="field">
-		<v-checkbox
-			v-model="autoLocationFilterWritable"
-			:label="t('layouts.map.auto_location_filter')"
-			:disabled="geometryOptions && geometryOptions.geometryFormat !== 'native'"
+		<div class="type-label">{{ t('display_template') }}</div>
+		<v-field-template
+			v-model="displayTemplateWritable"
+			:collection="collection"
+			:placeholder="t('layouts.map.default_template')"
 		/>
 	</div>
 
@@ -34,30 +35,6 @@
 			:disabled="geometryOptions && geometryOptions.geometryType !== 'Point'"
 		/>
 	</div>
-
-	<!-- <div class="field">
-		<v-drawer
-			v-model="customLayerDrawerOpenWritable"
-			:title="t('layouts.map.custom_layers')"
-			@cancel="customLayerDrawerOpenWritable = false"
-		>
-			<template #activator="{ on }">
-				<v-button @click="on">{{ t('layouts.map.edit_custom_layers') }}</v-button>
-			</template>
-
-			<template #actions>
-				<v-button v-tooltip.bottom="t('reset')" icon rounded class="delete-action" @click="resetLayers">
-					<v-icon name="replay" />
-				</v-button>
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="updateLayers">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-			<div class="custom-layers">
-				<interface-input-code v-model="customLayersWritable" language="json" type="json" :line-number="false" />
-			</div>
-		</v-drawer>
-	</div> -->
 </template>
 
 <script lang="ts">
@@ -67,21 +44,21 @@ import { defineComponent, PropType, toRefs } from 'vue';
 import { useAppStore } from '@/stores';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { GeometryOptions, Item } from '@directus/shared/types';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	inheritAttrs: false,
 	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
 		geometryFields: {
 			type: Array as PropType<Item[]>,
 			required: true,
 		},
 		geometryField: {
 			type: String,
-			default: undefined,
-		},
-		autoLocationFilter: {
-			type: Boolean,
 			default: undefined,
 		},
 		geometryOptions: {
@@ -92,40 +69,20 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
-		customLayerDrawerOpen: {
-			type: Boolean,
-			required: true,
-		},
-		resetLayers: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		updateLayers: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		customLayers: {
-			type: Array as PropType<any[]>,
+		displayTemplate: {
+			type: String as string | undefined,
 			default: undefined,
 		},
 	},
-	emits: [
-		'update:geometryField',
-		'update:autoLocationFilter',
-		'update:clusterData',
-		'update:customLayerDrawerOpen',
-		'update:customLayers',
-	],
+	emits: ['update:geometryField', 'update:autoLocationFilter', 'update:clusterData'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const appStore = useAppStore();
 
 		const geometryFieldWritable = useSync(props, 'geometryField', emit);
-		const autoLocationFilterWritable = useSync(props, 'autoLocationFilter', emit);
 		const clusterDataWritable = useSync(props, 'clusterData', emit);
-		const customLayerDrawerOpenWritable = useSync(props, 'customLayerDrawerOpen', emit);
-		const customLayersWritable = useSync(props, 'customLayers', emit);
+		const displayTemplateWritable = useSync(props, 'displayTemplate', emit);
 
 		const basemaps = getBasemapSources();
 		const { basemap } = toRefs(appStore);
@@ -133,10 +90,8 @@ export default defineComponent({
 		return {
 			t,
 			geometryFieldWritable,
-			autoLocationFilterWritable,
 			clusterDataWritable,
-			customLayerDrawerOpenWritable,
-			customLayersWritable,
+			displayTemplateWritable,
 			basemaps,
 			basemap,
 		};

@@ -5,8 +5,8 @@
 		v-model:selection="layoutSelection"
 		v-model:layout-options="localOptions"
 		v-model:layout-query="localQuery"
-		v-model:filters="layoutFilters"
-		v-model:search-query="searchQuery"
+		:filter="layoutFilter"
+		:search="search"
 		:collection="collection"
 		select-mode
 	>
@@ -15,10 +15,16 @@
 				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 			</template>
 
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded icon secondary disabled>
+					<v-icon :name="collectionInfo.icon" :color="collectionInfo.color" />
+				</v-button>
+			</template>
+
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 					<v-icon name="check" />
@@ -43,7 +49,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { Filter } from '@directus/shared/types';
 import usePreset from '@/composables/use-preset';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useLayout } from '@/composables/use-layout';
 import SearchInput from '@/views/private/components/search-input';
 
@@ -66,12 +72,12 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			default: () => [],
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
 		},
 	},
-	emits: ['update:filters', 'update:active', 'input'],
+	emits: ['update:active', 'input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -82,7 +88,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
-		const { layout, layoutOptions, layoutQuery, searchQuery } = usePreset(collection, ref(null), true);
+		const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = usePreset(collection, ref(null), true);
 
 		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values
@@ -99,16 +105,21 @@ export default defineComponent({
 			},
 		});
 
-		const layoutFilters = computed<Filter[]>({
+		const { layoutWrapper } = useLayout(layout);
+
+		const layoutFilter = computed({
 			get() {
-				return props.filters;
+				if (!props.filter) return presetFilter.value;
+				if (!presetFilter.value) return props.filter;
+
+				return {
+					_and: [props.filter, presetFilter.value],
+				};
 			},
-			set(newFilters) {
-				emit('update:filters', newFilters);
+			set(newFilter: Filter | null) {
+				presetFilter.value = newFilter;
 			},
 		});
-
-		const { layoutWrapper } = useLayout(layout);
 
 		return {
 			t,
@@ -117,12 +128,13 @@ export default defineComponent({
 			internalActive,
 			layoutWrapper,
 			layoutSelection,
-			layoutFilters,
+			layoutFilter,
 			localLayout,
 			localOptions,
 			localQuery,
 			collectionInfo,
-			searchQuery,
+			search,
+			presetFilter,
 		};
 
 		function useActiveState() {

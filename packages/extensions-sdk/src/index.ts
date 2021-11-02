@@ -5,5 +5,7 @@ export {
 	defineModule,
 	defineHook,
 	defineEndpoint,
+	getFieldsFromTemplate,
+	getRelationType,
 } from '@directus/shared/utils';
-export { useStores, useApi } from '@directus/shared/composables';
+export { useStores, useApi, useSync, useCollection, useItems, useFilterFields } from '@directus/shared/composables';

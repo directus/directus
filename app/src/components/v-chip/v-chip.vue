@@ -104,7 +104,7 @@ body {
 	border: var(--border-width) solid var(--v-chip-background-color);
 	border-radius: 16px;
 
-	&:hover {
+	&.clickable:hover {
 		color: var(--v-chip-color-hover);
 		background-color: var(--v-chip-background-color-hover);
 		border-color: var(--v-chip-background-color-hover);
@@ -120,7 +120,7 @@ body {
 		background-color: var(--v-chip-background-color);
 		border-color: var(--v-chip-background-color);
 
-		&:hover {
+		&.clickable:hover {
 			color: var(--v-chip-color);
 			background-color: var(--v-chip-background-color);
 			border-color: var(--v-chip-background-color);
@@ -129,12 +129,14 @@ body {
 
 	&.x-small {
 		height: 20px;
+		padding: 0 4px;
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
-		height: 26px;
+		height: 24px;
+		padding: 0 4px;
 		font-size: 14px;
 		border-radius: 12px;
 	}

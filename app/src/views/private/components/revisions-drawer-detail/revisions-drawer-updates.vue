@@ -110,7 +110,7 @@ export default defineComponent({
 }
 
 .change-line {
-	margin-bottom: 4px;
+	margin-bottom: 0px;
 }
 
 .v-notice {

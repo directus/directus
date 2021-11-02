@@ -1,5 +1,5 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
-import { Relation } from '@/types';
+import { Relation } from '@directus/shared/types';
 
 export default function getRelatedCollection(collection: string, field: string): string {
 	const relationsStore = useRelationsStore();

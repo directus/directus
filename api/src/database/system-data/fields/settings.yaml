@@ -318,3 +318,32 @@ fields:
             interface: text-input
             options:
               placeholder: http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png
+        - field: tileSize
+          name: $t:tile_size
+          type: integer
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            options:
+              placeholder: '512'
+            conditions:
+              - name: typeNeqRaster
+                rule:
+                  type:
+                    _neq: 'raster'
+                hidden: true
+
+  - field: modules_divider
+    interface: presentation-divider
+    options:
+      icon: view_module
+      title: $t:modules
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: module_bar
+    interface: system-modules
+    special: json

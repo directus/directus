@@ -7,8 +7,6 @@
 		expand-on-focus
 	>
 		<template #append>
-			<!-- <v-icon name="alternate_email" class="add-mention" />
-			<v-icon name="insert_emoticon" class="add-emoji" /> -->
 			<v-button
 				:disabled="!newCommentContent || newCommentContent.length === 0"
 				:loading="saving"
@@ -102,7 +100,7 @@ export default defineComponent({
 	bottom: 36px;
 	left: 0;
 	height: 8px;
-	background: linear-gradient(180deg, rgba(var(--background-page-rgb), 0) 0%, rgba(var(--background-page-rgb), 1) 100%);
+	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
 }
 

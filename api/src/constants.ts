@@ -40,4 +40,8 @@ export const ASSET_TRANSFORM_QUERY_KEYS = [
 
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
-export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'translations'];
+export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'translations'];
+
+export const DEFAULT_AUTH_PROVIDER = 'default';
+
+export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];

@@ -1,12 +1,16 @@
 <template>
-	<v-list-item :to="bookmark.to" query class="bookmark" @contextmenu.prevent.stop="activateContextMenu">
-		<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
+	<v-list-item
+		:to="`/collections/${bookmark.collection}?bookmark=${bookmark.id}`"
+		query
+		class="bookmark"
+		clickable
+		@contextmenu.prevent.stop="activateContextMenu"
+		@focusout="deactivateContextMenu"
+	>
+		<v-list-item-icon><v-icon name="bookmark_outline" /></v-list-item-icon>
 		<v-list-item-content>
 			<v-text-overflow :text="bookmark.bookmark" />
 		</v-list-item-content>
-		<v-list-item-icon v-if="bookmark.scope !== 'user'" class="bookmark-scope">
-			<v-icon :name="bookmark.scope === 'role' ? 'people' : 'public'" />
-		</v-list-item-icon>
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
@@ -49,7 +53,7 @@
 				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleteSaving" class="action-delete" @click="deleteSave">
+					<v-button :loading="deleteSaving" kind="danger" @click="deleteSave">
 						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
@@ -101,6 +105,7 @@ export default defineComponent({
 			deleteSave,
 			deleteSaving,
 			activateContextMenu,
+			deactivateContextMenu,
 		};
 
 		function useRenameBookmark() {
@@ -162,31 +167,17 @@ export default defineComponent({
 		function activateContextMenu(event: PointerEvent) {
 			contextMenu.value.activate(event);
 		}
+
+		function deactivateContextMenu() {
+			contextMenu.value.deactivate();
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.bookmark-scope {
-	--v-icon-color: var(--foreground-subdued);
-
-	opacity: 0;
-	transition: opacity var(--fast) var(--transition);
-}
-
-.bookmark:hover .bookmark-scope {
-	opacity: 1;
-}
-
 .danger {
 	--v-list-item-color: var(--danger);
 	--v-list-item-icon-color: var(--danger);
-}
-
-.action-delete {
-	--v-button-background-color: var(--danger-25);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
-	--v-button-color-hover: var(--danger);
 }
 </style>

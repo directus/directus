@@ -1,5 +1,5 @@
 <template>
-	<v-list large>
+	<v-list nav>
 		<v-list-item v-for="item in navItems" :key="item.to" :to="item.to">
 			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
@@ -67,22 +67,18 @@ export default defineComponent({
 		];
 
 		const externalItems = computed(() => {
-			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
-
----
-
-### Project details
-Directus Version: ${parsedInfo.value?.directus.version}
-Environment: ${import.meta.env.MODE}
-OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
-Node: ${parsedInfo.value?.node.version}
-			`;
+			const bugReportParams = new URLSearchParams({
+				template: 'bug_report.yml',
+				'directus-version': parsedInfo.value?.directus.version ?? '',
+				'node-version': parsedInfo.value?.node.version ?? '',
+				'operating-system': `${parsedInfo.value?.os.type ?? ''} ${parsedInfo.value?.os.version ?? ''}`,
+			});
 
 			return [
 				{
 					icon: 'bug_report',
 					name: t('report_bug'),
-					href: `https://github.com/directus/directus/issues/new?body=${encodeURIComponent(debugInfo)}`,
+					href: `https://github.com/directus/directus/issues/new?${bugReportParams.toString()}`,
 					outline: true,
 				},
 				{

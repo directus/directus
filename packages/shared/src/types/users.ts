@@ -11,13 +11,6 @@ export type Role = {
 					collection: string;
 				}[];
 		  }[];
-	module_list:
-		| null
-		| {
-				link: string;
-				name: string;
-				icon: string;
-		  }[];
 	enforce_tfa: null | boolean;
 	external_id: null | string;
 	ip_whitelist: string[];

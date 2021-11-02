@@ -1,22 +1,30 @@
-export default [
+import { AnyLayer } from 'maplibre-gl';
+import colors from '@/styles/_colors.module.scss';
+const { green, orange, black, white } = colors;
+const color = ['case', ['==', ['get', 'mode'], 'static'], black, ['==', ['get', 'active'], 'true'], orange, green];
+
+export default <AnyLayer[]>[
 	{
-		id: 'directus-polygon-fill-inactive',
+		id: 'directus-polygon-fill',
 		type: 'fill',
-		filter: ['all', ['==', 'active', 'false'], ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+		filter: ['all', ['==', '$type', 'Polygon']],
 		paint: {
-			'fill-color': '#3bb2d0',
-			'fill-outline-color': '#3bb2d0',
-			'fill-opacity': 0.1,
+			'fill-color': color,
+			'fill-outline-color': color,
+			'fill-opacity': 0.15,
 		},
 	},
 	{
-		id: 'directus-polygon-fill-active',
-		type: 'fill',
-		filter: ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
+		id: 'directus-polygon-stroke',
+		type: 'line',
+		filter: ['all', ['==', '$type', 'Polygon']],
+		layout: {
+			'line-cap': 'round',
+			'line-join': 'round',
+		},
 		paint: {
-			'fill-color': '#fbb03b',
-			'fill-outline-color': '#fbb03b',
-			'fill-opacity': 0.1,
+			'line-color': color,
+			'line-width': 2,
 		},
 	},
 	{
@@ -25,195 +33,64 @@ export default [
 		filter: ['all', ['==', '$type', 'Point'], ['==', 'meta', 'midpoint']],
 		paint: {
 			'circle-radius': 3,
-			'circle-color': '#fbb03b',
+			'circle-color': orange,
 		},
 	},
 	{
-		id: 'directus-polygon-stroke-inactive',
+		id: 'directus-line',
 		type: 'line',
-		filter: ['all', ['==', 'active', 'false'], ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+		filter: ['all', ['==', '$type', 'LineString']],
 		layout: {
 			'line-cap': 'round',
 			'line-join': 'round',
 		},
 		paint: {
-			'line-color': '#3bb2d0',
+			'line-color': color,
 			'line-width': 2,
 		},
 	},
 	{
-		id: 'directus-polygon-stroke-active',
-		type: 'line',
-		filter: ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
-		layout: {
-			'line-cap': 'round',
-			'line-join': 'round',
-		},
-		paint: {
-			'line-color': '#fbb03b',
-			'line-dasharray': [0.2, 2],
-			'line-width': 2,
-		},
-	},
-	{
-		id: 'directus-line-inactive',
-		type: 'line',
-		filter: ['all', ['==', 'active', 'false'], ['==', '$type', 'LineString'], ['!=', 'mode', 'static']],
-		layout: {
-			'line-cap': 'round',
-			'line-join': 'round',
-		},
-		paint: {
-			'line-color': '#3bb2d0',
-			'line-width': 2,
-		},
-	},
-	{
-		id: 'directus-line-active',
-		type: 'line',
-		filter: ['all', ['==', '$type', 'LineString'], ['==', 'active', 'true']],
-		layout: {
-			'line-cap': 'round',
-			'line-join': 'round',
-		},
-		paint: {
-			'line-color': '#fbb03b',
-			'line-dasharray': [0.2, 2],
-			'line-width': 2,
-		},
-	},
-	{
-		id: 'directus-polygon-and-line-vertex-stroke-inactive',
+		id: 'directus-polygon-and-line-vertex',
 		type: 'circle',
-		filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point'], ['!=', 'mode', 'static']],
-		paint: {
-			'circle-radius': 5,
-			'circle-color': '#fff',
-		},
-	},
-	{
-		id: 'directus-polygon-and-line-vertex-inactive',
-		type: 'circle',
-		filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point'], ['!=', 'mode', 'static']],
+		filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point']],
 		paint: {
 			'circle-radius': 3,
-			'circle-color': '#fbb03b',
+			'circle-color': orange,
+			'circle-opacity': ['case', ['==', ['get', 'active'], 'true'], 1, 0.2],
+			'circle-stroke-color': ['case', ['==', ['get', 'active'], 'true'], white, orange],
+			'circle-stroke-width': 2,
 		},
 	},
 	{
-		id: 'directus-points-shadow',
+		id: 'directus-point-shadow',
 		filter: [
 			'all',
-			['==', 'active', 'false'],
 			['==', '$type', 'Point'],
 			['==', 'meta', 'feature'],
 			['!=', 'meta', 'midpoint'],
+			['!=', 'mode', 'static'],
 		],
 		type: 'circle',
+		layout: {},
 		paint: {
-			'circle-pitch-alignment': 'map',
+			'circle-radius': 10,
 			'circle-blur': 1,
-			'circle-opacity': 0.5,
+			'circle-opacity': 0.9,
+			'circle-color': black,
+		},
+	},
+	{
+		id: 'directus-point',
+		filter: ['all', ['==', '$type', 'Point'], ['==', 'meta', 'feature'], ['!=', 'meta', 'midpoint']],
+		type: 'circle',
+		layout: {},
+		paint: {
 			'circle-radius': 6,
-		},
-	},
-	{
-		id: 'directus-point-inactive',
-		filter: [
-			'all',
-			['==', '$type', 'Point'],
-			['==', 'active', 'false'],
-			['==', 'meta', 'feature'],
-			['!=', 'meta', 'midpoint'],
-		],
-		type: 'symbol',
-		layout: {
-			'icon-image': 'place',
-			'icon-anchor': 'bottom',
-			'icon-allow-overlap': true,
-			'icon-size': 2,
-			'icon-offset': [0, 3],
-		},
-		paint: {
-			'icon-color': '#3bb2d0',
-		},
-	},
-	{
-		id: 'directus-point-active',
-		filter: [
-			'all',
-			['==', '$type', 'Point'],
-			['==', 'active', 'true'],
-			['==', 'meta', 'feature'],
-			['!=', 'meta', 'midpoint'],
-		],
-		type: 'symbol',
-		layout: {
-			'icon-image': 'place',
-			'icon-anchor': 'bottom',
-			'icon-allow-overlap': true,
-			'icon-size': 2,
-			'icon-offset': [0, 3],
-		},
-		paint: {
-			'icon-color': '#fbb03b',
-		},
-	},
-	{
-		id: 'directus-point-static',
-		type: 'symbol',
-		filter: [
-			'all',
-			['==', '$type', 'Point'],
-			['==', 'mode', 'static'],
-			['==', 'meta', 'feature'],
-			['!=', 'meta', 'midpoint'],
-		],
-		layout: {
-			'icon-image': 'place',
-			'icon-anchor': 'bottom',
-			'icon-allow-overlap': true,
-			'icon-size': 2,
-			'icon-offset': [0, 3],
-		},
-		paint: {
-			'icon-color': '#404040',
-		},
-	},
-	{
-		id: 'directus-polygon-fill-static',
-		type: 'fill',
-		filter: ['all', ['==', 'mode', 'static'], ['==', '$type', 'Polygon']],
-		paint: {
-			'fill-color': '#404040',
-			'fill-outline-color': '#404040',
-			'fill-opacity': 0.1,
-		},
-	},
-	{
-		id: 'directus-polygon-stroke-static',
-		type: 'line',
-		filter: ['all', ['==', 'mode', 'static'], ['==', '$type', 'Polygon']],
-		layout: {
-			'line-cap': 'round',
-			'line-join': 'round',
-		},
-		paint: {
-			'line-color': '#404040',
-			'line-width': 2,
-		},
-	},
-	{
-		id: 'directus-line-static',
-		type: 'line',
-		filter: ['all', ['==', 'mode', 'static'], ['==', '$type', 'LineString']],
-		layout: {
-			'line-cap': 'round',
-			'line-join': 'round',
-		},
-		paint: {
-			'line-color': '#404040',
-			'line-width': 2,
+			'circle-color': color,
+			'circle-stroke-color': ['case', ['==', ['get', 'mode'], 'static'], black, white],
+			'circle-opacity': ['case', ['==', ['get', 'mode'], 'static'], 0.2, 1],
+			'circle-stroke-width': 2,
+			'circle-stroke-opacity': 1,
 		},
 	},
 ];

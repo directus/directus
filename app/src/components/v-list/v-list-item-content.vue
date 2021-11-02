@@ -41,8 +41,8 @@ body {
 	margin-bottom: 2px;
 }
 
-.v-list:not(.large) .v-list-item-content,
-.v-list-item:not(.large) .v-list-item-content {
+.v-list:not(.nav) .v-list-item-content,
+.v-list-item:not(.nav) .v-list-item-content {
 	--v-list-item-content-padding: 4px 0;
 }
 </style>

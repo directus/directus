@@ -41,7 +41,3 @@ properties:
     items:
       type: string
     nullable: true
-  limit:
-    description: Maximum amount of items the user can interact with at a time.
-    type: number
-    nullable: true

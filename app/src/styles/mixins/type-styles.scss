@@ -28,3 +28,12 @@
 	font-style: normal;
 	line-height: 22px;
 }
+
+@mixin type-note {
+	color: var(--foreground-subdued);
+	font-weight: 500;
+	font-size: 13px;
+	font-family: var(--family-sans-serif);
+	font-style: italic;
+	line-height: 18px;
+}

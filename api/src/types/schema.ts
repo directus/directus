@@ -1,11 +1,11 @@
-import { Type } from '@directus/shared/types';
-import { Permission } from './permissions';
+import { Type, Permission } from '@directus/shared/types';
 import { Relation } from './relation';
 
 export type FieldOverview = {
 	field: string;
 	defaultValue: any;
 	nullable: boolean;
+	generated: boolean;
 	type: Type | 'unknown' | 'alias';
 	dbType: string | null;
 	precision: number | null;

@@ -250,7 +250,7 @@ export default defineComponent({
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color);
-		border-bottom: 2px solid var(--border-subdued);
+		border-bottom: var(--border-width) solid var(--border-subdued);
 
 		&.select,
 		&.manual {
@@ -346,7 +346,7 @@ export default defineComponent({
 			top: 20%;
 			left: 2px;
 			display: block;
-			width: 2px;
+			width: var(--border-width);
 			height: 60%;
 			background-color: var(--border-subdued);
 			content: '';

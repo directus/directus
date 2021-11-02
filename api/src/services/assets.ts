@@ -2,7 +2,7 @@ import { Range, StatResponse } from '@directus/drive';
 import { Semaphore } from 'async-mutex';
 import { Knex } from 'knex';
 import { contentType } from 'mime-types';
-import ObjectHash from 'object-hash';
+import hash from 'object-hash';
 import path from 'path';
 import sharp from 'sharp';
 import getDatabase from '../database';
@@ -18,7 +18,7 @@ sharp.concurrency(1);
 
 // Note: don't put this in the service. The service can be initialized in multiple places, but they
 // should all share the same semaphore instance.
-const semaphore = new Semaphore(env.ASSETS_MAX_CONCURRENT_TRANSFORMATIONS);
+const semaphore = new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
 
 export class AssetsService {
 	knex: Knex;
@@ -124,5 +124,5 @@ export class AssetsService {
 
 const getAssetSuffix = (transforms: Transformation[]) => {
 	if (Object.keys(transforms).length === 0) return '';
-	return `__${ObjectHash.sha1(transforms)}`;
+	return `__${hash(transforms)}`;
 };

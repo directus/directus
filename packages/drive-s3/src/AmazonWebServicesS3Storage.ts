@@ -64,7 +64,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 */
 	public async copy(src: string, dest: string): Promise<Response> {
 		src = this._fullPath(src);
-		dest = this._fullPath(src);
+		dest = this._fullPath(dest);
 
 		const params = {
 			Key: dest,

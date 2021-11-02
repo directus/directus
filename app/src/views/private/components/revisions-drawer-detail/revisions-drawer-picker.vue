@@ -26,7 +26,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, watch, ref } from 'vue';
 import { Revision } from './types';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import localizedFormat from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
 
@@ -85,7 +85,7 @@ export default defineComponent({
 		return { internalCurrent, options, selectedOption };
 
 		async function getFormattedDate(revision: Revision) {
-			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_date')));
+			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_date_short')));
 			const time = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_time')));
 
 			return `${date} (${time})`;

@@ -1,35 +1,21 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+avatar: Avatar
 edit_field: Edit Kolom
+conditions: Kondisi
+maps: Peta
 item_revision: Revisi Item
 duplicate_field: Kolom Duplikat
 half_width: Lebar Setengah
 full_width: Lebar Penuh
+group: Grup
+and: Dan
+or: Atau
 fill_width: Lebar Penuh
 field_name_translations: Terjemahan Nama Kolom
 enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentication
 add_field: Tambah Kolom
 role_name: Nama Peran
-db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
+branch: Cabang
 show_archived_items: Tampilkan Yang Diarsipkan
 edited: Nilai Diedit
 required: Diperlukan
@@ -125,9 +111,6 @@ fields_for_role: 'Baris {role} Peran dapat {action}.'
 validation_for_role: 'Aturan baris {action} Peran {role} harus tunduk.'
 presets_for_role: 'Nilai bawaan baris untuk Peran {role}.'
 presentation_and_aliases: Presentasi & Alias
-revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan...
-changes_made: Ini adalah perubahan spesifik yang telah dibuat...
-no_relational_data: Untuk catatan bahwa ini tidak termasuk data relasional.
 hide_field_on_detail: Sembunyikan Baris pada Rincian
 show_field_on_detail: Tampilkan Baris pada Rincian
 delete_field: Hapus Baris
@@ -157,6 +140,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Tanggal
 datetime: DateTime
+dateTime: DateTime
 decimal: Desimal
 float: Float
 integer: Integer
@@ -187,9 +171,6 @@ new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
-add_m2o_to_collection: 'Tambahkan Many-to-One ke "{collection}"'
-add_o2m_to_collection: 'Tambahkan One-to-Many ke "{collection}"'
-add_m2m_to_collection: 'Tambahkan Many-to-Many ke "{collection}"'
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
@@ -362,7 +343,6 @@ no_files_copy: Tidak ada berkas disini.
 user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
 no_users_copy: Belum ada pengguna didalam peran ini.
 webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
-no_webhooks_copy: Belum ada webhook.
 all_items: Semua Item
 csv: CSV
 no_collections: Tidak ada koleksi
@@ -371,6 +351,9 @@ no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini un
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
+action: Aksi
+ip_address: Alamat IP
+user_agent: Agen pengguna
 webhooks: Webhooks
 field_width: Lebar Bidang
 add_filter: Tambah Filter
@@ -415,9 +398,9 @@ errors:
   ITEM_NOT_FOUND: Item tidak ditemukan
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
-  UNKNOWN: Kesalahan Tidak Terduga
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
+  UNKNOWN: Kesalahan Tidak Terduga
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
@@ -430,11 +413,22 @@ copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
 back: Kembali
+rotate: Putar
+all_users: Semua Pengguna
+delete_collection: Hapus Koleksi
+update_collection_success: Perbarui Koleksi
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
 icon_right: Ikon Kanan
+font: Huruf
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
 divider: Pembagi/Pemecah
 color: Warna
+circle: Lingkaran
+advanced_filter: Filter Lanjutan
+delete_advanced_filter: Hapus Filter
 operators:
   lt: Kurang dari
   gt: Lebih besar dari
@@ -448,9 +442,11 @@ operators:
   empty: Kosong
   nempty: Tidak kosong
 loading: Memuat...
+layout_options: Pilihan Tata Letak
 value_unique: Nilai harus unik
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
+saves_automatically: Menyimpan Secara Otomatis
 role: Peran
 create: Buat
 on_update: Saat Pembaruan
@@ -473,6 +469,7 @@ editing_in_batch: 'Mengedit Masal {count} item'
 settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
+scope: Lingkup
 discard_changes: Batalkan Perubahan
 keep_editing: Tetap Mengedit
 add_new: Tambah Baru
@@ -493,6 +490,7 @@ fields:
     collection: Koleksi
     icon: Ikon
     note: Catatan
+    color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
     sort_field: Sortir Baris
@@ -539,11 +537,15 @@ fields:
   directus_webhooks:
     name: Nama
     status: Status
+    value: Nilai
 field_options:
+  directus_activity:
+    create: Buat
+    update: Perbarui
   directus_collections:
     language: Bahasa
     archive_divider: Arsip
-    divider: Sortir
+    sort_divider: Sortir
   directus_roles:
     fields:
       icon_name: Ikon
@@ -555,12 +557,16 @@ field_options:
   directus_webhooks:
     actions_create: Buat
     actions_update: Perbarui
+    headers:
+      value: Nilai
 comment: Komentar
+editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
   Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.
 description: Deskripsi
 done: Selesai
 duplicate: Gandakan
+limit: Batas
 email: Email
 embed: Lampirkan
 file: Berkas
@@ -593,6 +599,9 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
+  filter:
+    add_filter: Tambah Filter
+    all: Semua
   presentation-links:
     primary: Primer
   input-code:
@@ -635,6 +644,8 @@ interfaces:
     modes:
       dropdown: Dropwdown
 displays:
+  translations:
+    translations: Terjemahan
   boolean:
     boolean: Boolean
   collection:
@@ -650,6 +661,8 @@ displays:
     filesize: Ukuran Berkas
   icon:
     icon: Ikon
+  image:
+    circle: Lingkaran
   labels:
     choices_value_placeholder: Masukkan sebuah nilai...
   user:

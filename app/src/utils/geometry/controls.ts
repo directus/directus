@@ -7,7 +7,7 @@ export class ButtonControl {
 	constructor(private className: string, private callback: (...args: any) => any) {
 		this.element = document.createElement('button');
 		this.element.className = this.className;
-		this.element.onclick = callback;
+		this.element.onpointerdown = callback;
 		this.active = false;
 	}
 	click(...args: any[]): void {
@@ -36,7 +36,6 @@ type BoxSelectControlOptions = {
 	groupElementClass?: string;
 	boxElementClass?: string;
 	selectButtonClass?: string;
-	unselectButtonClass?: string;
 	layers: string[];
 };
 
@@ -45,7 +44,6 @@ export class BoxSelectControl {
 	boxElement: HTMLElement;
 
 	selectButton: ButtonControl;
-	unselectButton: ButtonControl;
 
 	map?: Map & { fire: (event: string, data?: any) => void };
 	layers: string[];
@@ -70,13 +68,7 @@ export class BoxSelectControl {
 		this.selectButton = new ButtonControl(options?.selectButtonClass ?? 'ctrl-select', () => {
 			this.activate(!this.shiftPressed);
 		});
-		this.unselectButton = new ButtonControl(options?.unselectButtonClass ?? 'ctrl-unselect', () => {
-			this.reset();
-			this.activate(false);
-			this.map!.fire('select.end');
-		});
 		this.groupElement.appendChild(this.selectButton.element);
-		this.groupElement.appendChild(this.unselectButton.element);
 
 		this.onKeyDownHandler = this.onKeyDown.bind(this);
 		this.onKeyUpHandler = this.onKeyUp.bind(this);
@@ -113,10 +105,6 @@ export class BoxSelectControl {
 		const rect = container.getBoundingClientRect();
 		// @ts-ignore
 		return new Point(event.clientX - rect.left - container.clientLeft, event.clientY - rect.top - container.clientTop);
-		// return {
-		// 	x: event.clientX - rect.left - container.clientLeft,
-		// 	y: event.clientY - rect.top - container.clientTop
-		// };
 	}
 
 	onKeyDown(event: KeyboardEvent): void {
@@ -126,7 +114,7 @@ export class BoxSelectControl {
 		if (event.key == 'Escape') {
 			this.reset();
 			this.activate(false);
-			this.map!.fire('select.end');
+			this.map!.fire('select.end', { features: [] });
 		}
 	}
 
@@ -169,12 +157,15 @@ export class BoxSelectControl {
 		this.updateBoxStyle({ transform, width, height });
 	}
 
-	onMouseUp(): void {
+	onMouseUp(event: MouseEvent): void {
 		this.reset();
+		if (!this.active()) {
+			return;
+		}
 		const features = this.map!.queryRenderedFeatures([this.startPos!, this.lastPos!], {
 			layers: this.layers,
 		});
-		this.map!.fire('select.end', { features });
+		this.map!.fire('select.end', { features, alt: event.altKey });
 	}
 
 	reset(): void {

@@ -71,13 +71,16 @@ export const router = createRouter({
 	routes: defaultRoutes,
 });
 
-export const onBeforeEach: NavigationGuard = async (to, from) => {
+let firstLoad = true;
+
+export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 	const userStore = useUserStore();
 
 	// First load
-	if (from.name === undefined) {
+	if (firstLoad) {
+		firstLoad = false;
 		// Try retrieving a fresh access token on first load
 		try {
 			await refresh({ navigate: false });

@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_project')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="public" />
@@ -24,6 +24,19 @@
 		<template #sidebar>
 			<project-info-sidebar-detail />
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -31,20 +44,25 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useSettingsStore, useServerStore } from '@/stores';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
+import useShortcut from '@/composables/use-shortcut';
+import unsavedChanges from '@/composables/unsaved-changes';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 
 export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoSidebarDetail },
 	setup() {
 		const { t } = useI18n();
 
+		const router = useRouter();
+
 		const settingsStore = useSettingsStore();
 		const serverStore = useServerStore();
 
-		const { fields } = useCollection(ref('directus_settings'));
+		const { fields } = useCollection('directus_settings');
 
 		const initialValues = ref(clone(settingsStore.settings));
 
@@ -54,7 +72,43 @@ export default defineComponent({
 
 		const saving = ref(false);
 
-		return { t, fields, initialValues, edits, noEdits, saving, save };
+		useShortcut('meta+s', () => {
+			if (!noEdits.value) save();
+		});
+
+		const isSavable = computed(() => {
+			if (noEdits.value === true) return false;
+			return noEdits.value;
+		});
+
+		unsavedChanges(isSavable);
+
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (!noEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
+
+		return {
+			t,
+			fields,
+			initialValues,
+			edits,
+			noEdits,
+			saving,
+			isSavable,
+			confirmLeave,
+			leaveTo,
+			save,
+			discardAndLeave,
+		};
 
 		async function save() {
 			if (edits.value === null) return;
@@ -64,6 +118,13 @@ export default defineComponent({
 			edits.value = null;
 			saving.value = false;
 			initialValues.value = clone(settingsStore.settings);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });

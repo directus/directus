@@ -30,6 +30,8 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
+import { translate } from '@/utils/translate-object-values';
+import { isEmpty } from 'lodash';
 
 type Choice = {
 	value: string;
@@ -74,7 +76,7 @@ export default defineComponent({
 		const items = computed(() => {
 			let items: string[];
 
-			if (props.value === null) items = [];
+			if (isEmpty(props.value)) items = [];
 			else if (props.type === 'string') items = [props.value as string];
 			else items = props.value as string[];
 
@@ -101,12 +103,12 @@ export default defineComponent({
 						background: props.defaultBackground,
 					};
 				} else {
-					return {
+					return translate({
 						value: item,
 						text: choice.text || itemStringValue,
 						foreground: choice.foreground || props.defaultForeground,
 						background: choice.background || props.defaultBackground,
-					};
+					});
 				}
 			});
 		});

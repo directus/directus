@@ -13,7 +13,7 @@ properties:
       - create
       - update
       - delete
-      - authenticate
+      - login
   user:
     description: The user who performed this action.
     oneOf:

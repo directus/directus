@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.92",
+	"version": "9.0.0-rc.100",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -38,7 +38,10 @@
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
+		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll",
+		"prepublishOnly": "npm run cleanup && npm run build"
 	},
 	"author": "Nicola Krumschmidt",
 	"maintainers": [
@@ -46,21 +49,24 @@
 	],
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"date-fns": "2.23.0",
-		"express": "4.17.1",
+		"axios": "*",
+		"date-fns": "2.24.0",
+		"express": "*",
 		"fs-extra": "10.0.0",
-		"geojson": "0.5.0",
+		"geojson": "*",
 		"joi": "17.4.2",
-		"knex": "0.95.10",
-		"knex-schema-inspector": "1.6.0",
+		"knex": "*",
+		"knex-schema-inspector": "*",
 		"lodash": "4.17.21",
-		"pino": "6.13.1",
-		"vue": "3.2.8",
-		"vue-router": "4.0.11"
+		"pino": "*",
+		"vue": "3",
+		"vue-i18n": "9",
+		"vue-router": "4"
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
-		"typescript": "4.4.2"
+		"tmp": "0.2.1",
+		"typescript": "4.4.4"
 	}
 }

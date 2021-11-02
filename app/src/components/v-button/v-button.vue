@@ -1,9 +1,8 @@
 <template>
-	<div class="v-button" :class="{ secondary, 'full-width': fullWidth }">
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 		<component
 			:is="component"
-			:ref="component === 'a' ? 'noopener noreferer' : undefined"
 			v-focus="autofocus"
 			:download="download"
 			class="button"
@@ -20,12 +19,14 @@
 					tile,
 					'full-width': fullWidth,
 				},
+				kind,
 			]"
 			:type="type"
 			:disabled="disabled"
 			:to="to !== '' ? to : undefined"
 			:href="href"
 			:target="component === 'a' ? '_blank' : undefined"
+			:rel="component === 'a' ? 'noopener noreferrer' : undefined"
 			@click="onClick"
 		>
 			<span class="content" :class="{ invisible: loading }">
@@ -54,6 +55,10 @@ export default defineComponent({
 		autofocus: {
 			type: Boolean,
 			default: false,
+		},
+		kind: {
+			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
+			default: 'normal',
 		},
 		fullWidth: {
 			type: Boolean,
@@ -104,6 +109,14 @@ export default defineComponent({
 			default: false,
 		},
 		secondary: {
+			type: Boolean,
+			default: false,
+		},
+		warning: {
+			type: Boolean,
+			default: false,
+		},
+		danger: {
 			type: Boolean,
 			default: false,
 		},
@@ -164,7 +177,6 @@ export default defineComponent({
 
 			return false;
 		});
-
 		return { sizeClass, onClick, component, isActiveRoute, toggle };
 
 		function onClick(event: MouseEvent) {
@@ -188,16 +200,43 @@ export default defineComponent({
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 	--v-button-background-color-active: var(--primary);
-	--v-button-background-color-disabled: var(--background-normal);
+	--v-button-background-color-disabled: var(--background-subdued);
 	--v-button-font-size: 16px;
 	--v-button-font-weight: 600;
 	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
 }
 
-.v-button {
-	display: inline-flex;
-	align-items: center;
+.info {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--blue);
+	--v-button-background-color-hover: var(--blue-125);
+	--v-button-background-color-active: var(--blue);
+}
+
+.success {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--success);
+	--v-button-background-color-hover: var(--success-125);
+	--v-button-background-color-active: var(--success);
+}
+
+.warning {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-125);
+	--v-button-background-color-active: var(--warning);
+}
+
+.danger {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-125);
+	--v-button-background-color-active: var(--danger);
 }
 
 .secondary {
@@ -207,6 +246,32 @@ export default defineComponent({
 	--v-button-background-color: var(--border-subdued);
 	--v-button-background-color-hover: var(--background-normal-alt);
 	--v-button-background-color-active: var(--background-normal-alt);
+}
+
+.secondary.rounded {
+	--v-button-background-color: var(--background-normal);
+	--v-button-background-color-active: var(--background-normal);
+	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.warning.rounded {
+	--v-button-background-color: var(--warning-10);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-25);
+	--v-button-color-hover: var(--warning);
+}
+
+.danger.rounded {
+	--v-button-background-color: var(--danger-10);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-25);
+	--v-button-color-hover: var(--danger);
+}
+
+.v-button {
+	display: inline-flex;
+	align-items: center;
 }
 
 .v-button.full-width {
@@ -235,6 +300,7 @@ export default defineComponent({
 	transition-property: background-color border;
 }
 
+.button:focus,
 .button:hover {
 	color: var(--v-button-color-hover);
 	background-color: var(--v-button-background-color-hover);
@@ -274,6 +340,7 @@ export default defineComponent({
 	background-color: transparent;
 }
 
+.outlined:not(.active):focus,
 .outlined:not(.active):hover {
 	color: var(--v-button-background-color-hover);
 	background-color: transparent;
@@ -282,6 +349,10 @@ export default defineComponent({
 
 .outlined.secondary {
 	--v-button-color: var(--foreground-subdued);
+}
+
+.outlined.active {
+	background-color: var(--v-button-background-color);
 }
 
 .dashed {
@@ -314,7 +385,7 @@ export default defineComponent({
 }
 
 .x-large {
-	--v-button-height: 64px;
+	--v-button-height: 60px;
 	--v-button-font-size: 18px;
 	--v-button-min-width: 180px;
 
@@ -334,8 +405,6 @@ export default defineComponent({
 .content,
 .spinner {
 	max-width: 100%;
-	margin: 0 -1px;
-	padding: 0 1px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

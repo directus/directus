@@ -1,14 +1,14 @@
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { formatISO, parse, format } from 'date-fns';
-import useItems from '@/composables/use-items';
+import { useItems } from '@directus/shared/composables';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field, Item } from '@directus/shared/types';
+import { Field, Item, Filter } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -20,8 +20,7 @@ import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
-import CalendarSidebar from './sidebar.vue';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { LayoutOptions } from './types';
 
 export default defineLayout<LayoutOptions>({
@@ -31,7 +30,7 @@ export default defineLayout<LayoutOptions>({
 	component: CalendarLayout,
 	slots: {
 		options: CalendarOptions,
-		sidebar: CalendarSidebar,
+		sidebar: () => undefined,
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
@@ -42,8 +41,8 @@ export default defineLayout<LayoutOptions>({
 		const appStore = useAppStore();
 
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
-		const filters = useSync(props, 'filters', emit);
-		const searchQuery = useSync(props, 'searchQuery', emit);
+		const filter = useSync(props, 'filter', emit);
+		const search = useSync(props, 'search', emit);
 
 		const { selection, collection } = toRefs(props);
 
@@ -55,26 +54,22 @@ export default defineLayout<LayoutOptions>({
 			})
 		);
 
-		const filtersWithCalendarView = computed(() => {
-			if (!calendar.value || !startDateField.value) return filters.value;
+		const filterWithCalendarView = computed(() => {
+			if (!calendar.value || !startDateField.value) return filter.value;
 
-			return [
-				...filters.value,
-				{
-					key: 'start_date',
-					field: startDateField.value,
-					operator: 'gte',
-					value: formatISO(calendar.value.view.currentStart),
-					hidden: true,
-				},
-				{
-					key: 'end_date',
-					field: startDateField.value,
-					operator: 'lte',
-					value: formatISO(calendar.value.view.currentEnd),
-					hidden: true,
-				},
-			];
+			const calendarFilter: Filter = {
+				_and: [
+					{
+						[startDateField.value]: {
+							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
+						},
+					},
+				],
+			};
+
+			if (filter.value) calendarFilter._and.push(filter.value);
+
+			return calendarFilter;
 		});
 
 		const template = computed({
@@ -136,7 +131,7 @@ export default defineLayout<LayoutOptions>({
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
-				sort: computed(() => primaryKeyField.value?.field || ''),
+				sort: computed(() => [primaryKeyField.value?.field || '']),
 				page: ref(1),
 				limit: ref(-1),
 				fields: computed(() => {
@@ -148,8 +143,8 @@ export default defineLayout<LayoutOptions>({
 					if (endDateField.value) fields.push(endDateField.value);
 					return fields;
 				}),
-				filters: filtersWithCalendarView,
-				searchQuery: searchQuery,
+				filter: filterWithCalendarView,
+				search: search,
 			},
 			false
 		);
@@ -165,7 +160,7 @@ export default defineLayout<LayoutOptions>({
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
-				contentHeight: 800,
+				height: '100%',
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
@@ -269,7 +264,7 @@ export default defineLayout<LayoutOptions>({
 			totalCount,
 			changeManualSort,
 			getItems,
-			filtersWithCalendarView,
+			filterWithCalendarView,
 			template,
 			dateFields,
 			startDateField,
