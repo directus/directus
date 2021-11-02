@@ -54,7 +54,7 @@ are available:
 - **Note** — A helpful note that explains the collection's purpose
 - **Icon** — The icon used throughout the App when referencing this collection
 - **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A [Field Template](/dead) that creates dynamic titles for the collection's items
+- **Display Template** — A Field Template that creates dynamic titles for the collection's items
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
