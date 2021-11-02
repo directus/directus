@@ -111,7 +111,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		const userId = await this.fetchUserId(identifier);
-
 		if (userId) {
 			// Update user refreshToken if provided
 			if (tokenSet.refresh_token) {
@@ -123,10 +122,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		const canRegisterUser =
-			!this.config.publicRegistrationFilter || validatePayload(this.config.publicRegistrationFilter, userInfo).length;
-
+			!this.config.publicRegistrationFilter || !validatePayload(this.config.publicRegistrationFilter, userInfo).length;
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !canRegisterUser) {
+			logger.warn({}, canRegisterUser.toString());
 			throw new InvalidCredentialsException();
 		}
 

@@ -129,7 +129,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const isEmailVerified = !requireVerifiedEmail || userInfo.email_verified;
 
 		const canRegisterUser =
-			!this.config.publicRegistrationFilter || validatePayload(this.config.publicRegistrationFilter, userInfo).length;
+			!this.config.publicRegistrationFilter || !validatePayload(this.config.publicRegistrationFilter, userInfo).length;
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !canRegisterUser || !isEmailVerified) {
