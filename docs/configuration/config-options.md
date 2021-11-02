@@ -570,7 +570,7 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that va
 | `AUTH_<PROVIDER>_EMAIL_KEY`                  | OAuth profile email key used to find the email address.                            | `email`          |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`             | OAuth profile identifier key used to verify the user. Will default to `EMAIL_KEY`. | --               |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION`  | Automatically create accounts for authenticating users.                            | `false`          |
-| `AUTH_<PROVIDER>_PUBLIC_REGISTRATION_FILTER` | Filter allowed registration based on [Filter Rules](/configuration/filter-rules)   | `account_circle` |
+| `AUTH_<PROVIDER>_PUBLIC_REGISTRATION_FILTER` | Filter allowed registration based on [Filter Rules](/configuration/filter-rules)   | --               |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`            | The Directus role ID assigned to created users.                                    | --               |
 | `AUTH_<PROVIDER>_ICON`                       | SVG icon to display with the login link.                                           | `account_circle` |
 
