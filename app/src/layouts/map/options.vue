@@ -21,14 +21,10 @@
 
 	<div class="field">
 		<div class="type-label">{{ t('display_template') }}</div>
-		<v-field-template v-model="displayTemplateWritable" :collection="collection" />
-	</div>
-
-	<div class="field">
-		<v-checkbox
-			v-model="autoLocationFilterWritable"
-			:label="t('layouts.map.auto_location_filter')"
-			:disabled="geometryOptions && geometryOptions.geometryFormat !== 'native'"
+		<v-field-template
+			v-model="displayTemplateWritable"
+			:collection="collection"
+			:placeholder="t('layouts.map.default_template')"
 		/>
 	</div>
 
@@ -65,10 +61,6 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
-		autoLocationFilter: {
-			type: Boolean,
-			default: undefined,
-		},
 		geometryOptions: {
 			type: Object as PropType<GeometryOptions>,
 			default: undefined,
@@ -77,44 +69,19 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
-		customLayerDrawerOpen: {
-			type: Boolean,
-			required: true,
-		},
-		resetLayers: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		updateLayers: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		customLayers: {
-			type: Array as PropType<any[]>,
-			default: undefined,
-		},
 		displayTemplate: {
 			type: String as string | undefined,
 			default: undefined,
 		},
 	},
-	emits: [
-		'update:geometryField',
-		'update:autoLocationFilter',
-		'update:clusterData',
-		'update:customLayerDrawerOpen',
-		'update:customLayers',
-	],
+	emits: ['update:geometryField', 'update:autoLocationFilter', 'update:clusterData'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const appStore = useAppStore();
 
 		const geometryFieldWritable = useSync(props, 'geometryField', emit);
-		const autoLocationFilterWritable = useSync(props, 'autoLocationFilter', emit);
 		const clusterDataWritable = useSync(props, 'clusterData', emit);
-		const customLayerDrawerOpenWritable = useSync(props, 'customLayerDrawerOpen', emit);
-		const customLayersWritable = useSync(props, 'customLayers', emit);
 		const displayTemplateWritable = useSync(props, 'displayTemplate', emit);
 
 		const basemaps = getBasemapSources();
@@ -123,10 +90,7 @@ export default defineComponent({
 		return {
 			t,
 			geometryFieldWritable,
-			autoLocationFilterWritable,
 			clusterDataWritable,
-			customLayerDrawerOpenWritable,
-			customLayersWritable,
 			displayTemplateWritable,
 			basemaps,
 			basemap,

@@ -12,9 +12,9 @@ collection takes to you to the Collection Page.
 
 This is the main gateway to your items, providing highly configurable Layouts for browsing, visualizing, and managing
 the items within a collection. Clicking on an item takes to you to the Item Page.
-[Learn more about the Collection Page](/app/content/collection)
+[Learn more about the Collection Page](/getting-started/glossary/#collections)
 
 ## Item Page
 
 A tailored form for viewing and editing an item's fields. This page also includes options for archiving, reverting,
-deleting, and commenting on the item. [Learn more about the Item Page](/app/content/item)
+deleting, and commenting on the item. [Learn more about the Item Page](/getting-started/glossary/#items)

@@ -22,7 +22,7 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 ## Manually Sorting Items
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to sort
 3. Choose a layout that supports manual sorting (eg: the default "table" mode)
 4. Enable manual sorting. (eg: for the table layout, click on the Sort column's header)
@@ -39,7 +39,7 @@ This feature is only available if a Sort column has been configured in the Colle
 
 ## Ordering Items
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to a collection of items
 3. Choose a layout that supports manual ordering (eg: the default "table" mode)
 4. Set the Order Field and Order Direction
@@ -49,14 +49,14 @@ This feature is only available if a Sort column has been configured in the Colle
 ::: tip Sort vs Order
 
 **Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or
-numerically. **Sorting** (when enabled) saves a value in a [Sort](/guides/collections/#sort) field, which can then be
-used to return data in a custom order.
+numerically. **Sorting** (when enabled) saves a value in a [Sort](/reference/query/#sort) field, which can then be used
+to return data in a custom order.
 
 :::
 
 ## Adjusting Item Layouts
 
-**[Learn more about Layouts](/concepts/layouts/)**
+**[Learn more about Layouts](/getting-started/glossary/#layouts)**
 
 1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to browse
@@ -79,7 +79,8 @@ features/options:
 ### Card Layout
 
 This tiled layout is ideal for collections that prioritize an image, and is the default for both the
-[User Directory](/guides/users/) and [File Library](/guides/files/). It includes the following features/options:
+[User Directory](/app/user-directory/) and [File Library](/reference/files/). It includes the following
+features/options:
 
 - Image Source (Option)
 - Title (Option)
@@ -92,11 +93,26 @@ This tiled layout is ideal for collections that prioritize an image, and is the 
 
 ### Calendar Layout
 
+An excellent choice for temporal (date/time) data, this Layout allows you to choose between a Month, Week, Day, and List
+view. The following options are included:
+
+- Display Layout
+- Start Date Field
+- End Date Field
+
 ### Map Layout
+
+For geospatial/geographic data, the Map Layout provides a world map for points, lines, and other geometry. The following
+options are available:
+
+- Basemap
+- Location Field
+- Display Template
+- Enable Clustering
 
 ## Searching Items
 
-**[Learn more about Search](/guides/items/#searching-items)**
+**[Learn more about Search](/reference/introduction/#search-http-method)**
 
 1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to search
@@ -104,7 +120,7 @@ This tiled layout is ideal for collections that prioritize an image, and is the 
 
 ## Filtering Items
 
-**[Learn more about Filtering](/guides/items/#filtering-items).**
+**[Learn more about Filtering](/configuration/filter-rules/).**
 
 1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to filter
@@ -116,9 +132,9 @@ This tiled layout is ideal for collections that prioritize an image, and is the 
 
 ## Bookmarking Item Presets
 
-**[Learn more about Bookmarks](/guides/items/#bookmarking-item-presets)**
+**[Learn more about Bookmarks](/app/content-collections/#bookmarking-item-presets)**
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Collections Module](/app/content-collections/)
 2. Navigate to the collection of the items you want to bookmark
 3. Configure the page as desired (eg: layout, options, search, filters, order, etc)
 4. Click the "Create Bookmark" (bookmark icon) button in the header beside the page title

@@ -7,10 +7,9 @@
 
 ## Syntax
 
-- **Field** — Any valid root field, [relational field](/reference/filter-rules#relational), or
-  [logical operator](/reference/filter-rules#logical-operators)
-- **Operator** — Any valid [API operator](/reference/filter-rules#supported-operators) prefaced with an underscore
-- **Value** — Any valid static value, or [dynamic variable](/reference/filter-rules#dynamic-variables)
+- **Field** — Any valid root field, [relational field](#relational), or [logical operator](#logical-operators)
+- **Operator** — Any valid [API operator](#supported-operators) prefaced with an underscore
+- **Value** — Any valid static value, or [dynamic variable](#dynamic-variables)
 
 ```
 {

@@ -16,21 +16,17 @@
 				{{ t('forgot_password') }}
 			</router-link>
 		</div>
-
-		<sso-links :providers="providers" />
 	</form>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
-import api, { RequestError } from '@/api';
+import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 type Credentials = {
 	email: string;
@@ -39,25 +35,36 @@ type Credentials = {
 };
 
 export default defineComponent({
-	components: { ssoLinks },
-	setup() {
+	props: {
+		provider: {
+			type: String,
+			required: true,
+		},
+	},
+	setup(props) {
 		const { t } = useI18n();
 
 		const router = useRouter();
 
+		const { provider } = toRefs(props);
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
 		const error = ref<RequestError | string | null>(null);
 		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
-		const providers = ref([]);
 		const userStore = useUserStore();
-
-		onMounted(() => fetchProviders());
 
 		watch(email, () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
+		});
+
+		watch(provider, () => {
+			email.value = null;
+			password.value = null;
+			error.value = null;
+			otp.value = null;
+			requiresTFA.value = false;
 		});
 
 		const errorFormatted = computed(() => {
@@ -83,17 +90,7 @@ export default defineComponent({
 			translateAPIError,
 			otp,
 			requiresTFA,
-			providers,
 		};
-
-		async function fetchProviders() {
-			try {
-				const response = await api.get('/auth');
-				providers.value = response.data.data;
-			} catch (err: any) {
-				unexpectedError(err);
-			}
-		}
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;
@@ -110,7 +107,7 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials);
+				await login(credentials, provider.value);
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;

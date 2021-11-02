@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > All events that within Directus are tracked and stored in the activities collection. This gives you full
-> accountability over everything that happens. [Learn more about Activity](/concepts/activity/).
+> accountability over everything that happens. [Learn more about Activity](/getting-started/glossary/#activity).
 
 </div>
 <div class="right">
@@ -48,13 +48,13 @@ Unique identifier for the item the action applied to. This is always a string, e
 When the action happened.
 
 `user` **many-to-one**\
-The user who performed this action. Many-to-one to [users](/reference/api/system/users/#the-users-object).
+The user who performed this action. Many-to-one to [users](/reference/system/users/#the-users-object).
 
 `user_agent` **string**\
 User agent string of the browser the user used when the action took place.
 
 `revisions` **one-to-many**\
-Any changes that were made in this activity. One-to-many to [revisions](/reference/api/system/revisions/#the-revisions-object).
+Any changes that were made in this activity. One-to-many to [revisions](/reference/system/revisions/#the-revisions-object).
 
 </div>
 </div>
@@ -89,12 +89,12 @@ Returns a list of activity actions.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [activity objects](#the-activity-object). If no items are
-available, data will be an empty array.
+An array of up to [limit](/reference/query/#limit) [activity objects](#the-activity-object). If no items are available,
+data will be an empty array.
 
 </div>
 <div class="right">
@@ -106,7 +106,7 @@ GET /activity
 SEARCH /activity
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -144,7 +144,7 @@ Returns a single activity action by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 

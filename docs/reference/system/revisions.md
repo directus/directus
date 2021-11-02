@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a
-> previous state at will. [Learn more about Revisions](/concepts/revisions/).
+> previous state at will. [Learn more about Revisions](/getting-started/glossary/#revisions).
 
 </div>
 <div class="right">
@@ -30,7 +30,7 @@ pageClass: page-reference
 Primary key of the revision.
 
 `activity` **many-to-one**\
-Related activity record. Many-to-one to [activity](/reference/api/system/activity/).
+Related activity record. Many-to-one to [activity](/reference/system/activity/).
 
 `collection` **string**\
 Collection in which this revision happened.
@@ -88,12 +88,12 @@ to a collection that the current user doesn't have access to are stripped out.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [revision objects](#the-revision-object). If no items are
-available, data will be an empty array.
+An array of up to [limit](/reference/query/#limit) [revision objects](#the-revision-object). If no items are available,
+data will be an empty array.
 
 </div>
 <div class="right">
@@ -105,7 +105,7 @@ GET /revisions
 SEARCH /revisions
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -145,7 +145,7 @@ List an existing revision by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 

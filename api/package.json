@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.99",
+	"version": "9.0.0-rc.100",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -47,6 +47,12 @@
 		}
 	],
 	"main": "index.js",
+	"exports": {
+		".": "./index.js",
+		"./*": "./dist/*.js",
+		"./cli": "./dist/cli/*.js",
+		"./package.json": "./package.json"
+	},
 	"bin": {
 		"directus": "cli.js"
 	},
@@ -70,16 +76,16 @@
 		"example.env"
 	],
 	"dependencies": {
-		"@directus/app": "9.0.0-rc.99",
-		"@directus/drive": "9.0.0-rc.99",
-		"@directus/drive-azure": "9.0.0-rc.99",
-		"@directus/drive-gcs": "9.0.0-rc.99",
-		"@directus/drive-s3": "9.0.0-rc.99",
-		"@directus/extensions-sdk": "9.0.0-rc.99",
-		"@directus/format-title": "9.0.0-rc.99",
-		"@directus/schema": "9.0.0-rc.99",
-		"@directus/shared": "9.0.0-rc.99",
-		"@directus/specs": "9.0.0-rc.99",
+		"@directus/app": "9.0.0-rc.100",
+		"@directus/drive": "9.0.0-rc.100",
+		"@directus/drive-azure": "9.0.0-rc.100",
+		"@directus/drive-gcs": "9.0.0-rc.100",
+		"@directus/drive-s3": "9.0.0-rc.100",
+		"@directus/extensions-sdk": "9.0.0-rc.100",
+		"@directus/format-title": "9.0.0-rc.100",
+		"@directus/schema": "9.0.0-rc.100",
+		"@directus/shared": "9.0.0-rc.100",
+		"@directus/specs": "9.0.0-rc.100",
 		"@godaddy/terminus": "^4.9.0",
 		"@rollup/plugin-alias": "^3.1.2",
 		"@rollup/plugin-virtual": "^2.0.3",
@@ -116,7 +122,8 @@
 		"jsonwebtoken": "^8.5.1",
 		"keyv": "^4.0.3",
 		"knex": "^0.95.11",
-		"knex-schema-inspector": "1.6.2",
+		"knex-schema-inspector": "1.6.4",
+		"ldapjs": "^2.3.1",
 		"liquidjs": "^9.25.0",
 		"lodash": "^4.17.21",
 		"macos-release": "^2.4.1",
@@ -181,6 +188,7 @@
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.5",
 		"@types/keyv": "3.1.3",
+		"@types/ldapjs": "2.2.1",
 		"@types/lodash": "4.14.176",
 		"@types/mime-types": "2.1.1",
 		"@types/ms": "0.7.31",
