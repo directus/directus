@@ -199,8 +199,8 @@ export class CollectionsService {
 		meta.push(...systemCollectionRows);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
-				.filter((permission) => {
+			const collectionsYouHavePermissionToRead: string[] = this.accountability
+				.permissions!.filter((permission) => {
 					return permission.action === 'read';
 				})
 				.map(({ collection }) => collection);
@@ -258,7 +258,7 @@ export class CollectionsService {
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.schema.permissions.filter((permission) => {
+			const permissions = this.accountability.permissions!.filter((permission) => {
 				return permission.action === 'read' && collectionKeys.includes(permission.collection);
 			});
 

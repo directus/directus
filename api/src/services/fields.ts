@@ -46,7 +46,7 @@ export class FieldsService {
 	}
 
 	private get hasReadAccess() {
-		return !!this.schema.permissions.find((permission) => {
+		return !!this.accountability?.permissions?.find((permission) => {
 			return permission.collection === 'directus_fields' && permission.action === 'read';
 		});
 	}
@@ -144,7 +144,7 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.schema.permissions.filter((permission) => {
+			const permissions = this.accountability.permissions!.filter((permission) => {
 				return permission.action === 'read';
 			});
 
@@ -175,7 +175,7 @@ export class FieldsService {
 				throw new ForbiddenException();
 			}
 
-			const permissions = this.schema.permissions.find((permission) => {
+			const permissions = this.accountability.permissions!.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 

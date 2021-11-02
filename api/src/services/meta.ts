@@ -40,7 +40,7 @@ export class MetaService {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' }).first();
 
 		if (this.accountability?.admin !== true) {
-			const permissionsRecord = this.schema.permissions.find((permission) => {
+			const permissionsRecord = this.accountability?.permissions?.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
@@ -62,7 +62,7 @@ export class MetaService {
 		let filter = query.filter || {};
 
 		if (this.accountability?.admin !== true) {
-			const permissionsRecord = this.schema.permissions.find((permission) => {
+			const permissionsRecord = this.accountability?.permissions?.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 

@@ -76,7 +76,7 @@ export class RelationsService {
 				throw new ForbiddenException();
 			}
 
-			const permissions = this.schema.permissions.find((permission) => {
+			const permissions = this.accountability.permissions?.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
@@ -325,7 +325,7 @@ export class RelationsService {
 	 * Whether or not the current user has read access to relations
 	 */
 	private get hasReadAccess() {
-		return !!this.schema.permissions.find((permission) => {
+		return !!this.accountability?.permissions?.find((permission) => {
 			return permission.collection === 'directus_relations' && permission.action === 'read';
 		});
 	}
@@ -380,11 +380,12 @@ export class RelationsService {
 	private async filterForbidden(relations: Relation[]): Promise<Relation[]> {
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
-		const allowedCollections = this.schema.permissions
-			.filter((permission) => {
-				return permission.action === 'read';
-			})
-			.map(({ collection }) => collection);
+		const allowedCollections =
+			this.accountability.permissions
+				?.filter((permission) => {
+					return permission.action === 'read';
+				})
+				.map(({ collection }) => collection) ?? [];
 
 		const allowedFields = this.permissionsService.getAllowedFields('read');
 

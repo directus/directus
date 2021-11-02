@@ -10,17 +10,18 @@ export class PermissionsService extends ItemsService {
 	}
 
 	getAllowedFields(action: PermissionsAction, collection?: string): Record<string, string[]> {
-		const results = this.schema.permissions.filter((permission) => {
-			let matchesCollection = true;
+		const results =
+			this.accountability?.permissions?.filter((permission) => {
+				let matchesCollection = true;
 
-			if (collection) {
-				matchesCollection = permission.collection === collection;
-			}
+				if (collection) {
+					matchesCollection = permission.collection === collection;
+				}
 
-			const matchesAction = permission.action === action;
+				const matchesAction = permission.action === action;
 
-			return collection ? matchesCollection && matchesAction : matchesAction;
-		});
+				return collection ? matchesCollection && matchesAction : matchesAction;
+			}) ?? [];
 
 		const fieldsPerCollection: Record<string, string[]> = {};
 

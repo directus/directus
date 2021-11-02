@@ -1,17 +1,15 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
 import logger from '../logger';
 import { RelationsService } from '../services';
 import { SchemaOverview } from '../types';
-import { Accountability, Permission } from '@directus/shared/types';
+import { Accountability } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
-import { mergePermissions } from './merge-permissions';
 import getDatabase from '../database';
 import { getCache } from '../cache';
 import env from '../env';
@@ -55,52 +53,6 @@ export async function getSchema(options?: {
 		result = await getDatabaseSchema(database, schemaInspector);
 	}
 
-	let permissions: Permission[] = [];
-
-	if (options?.accountability && options.accountability.admin !== true) {
-		const permissionsForRole = await database
-			.select('*')
-			.from('directus_permissions')
-			.where({ role: options.accountability.role });
-
-		permissions = permissionsForRole.map((permissionRaw) => {
-			if (permissionRaw.permissions && typeof permissionRaw.permissions === 'string') {
-				permissionRaw.permissions = JSON.parse(permissionRaw.permissions);
-			} else if (permissionRaw.permissions === null) {
-				permissionRaw.permissions = {};
-			}
-
-			if (permissionRaw.validation && typeof permissionRaw.validation === 'string') {
-				permissionRaw.validation = JSON.parse(permissionRaw.validation);
-			} else if (permissionRaw.validation === null) {
-				permissionRaw.validation = {};
-			}
-
-			if (permissionRaw.presets && typeof permissionRaw.presets === 'string') {
-				permissionRaw.presets = JSON.parse(permissionRaw.presets);
-			} else if (permissionRaw.presets === null) {
-				permissionRaw.presets = {};
-			}
-
-			if (permissionRaw.fields && typeof permissionRaw.fields === 'string') {
-				permissionRaw.fields = permissionRaw.fields.split(',');
-			} else if (permissionRaw.fields === null) {
-				permissionRaw.fields = [];
-			}
-
-			return permissionRaw;
-		});
-
-		if (options.accountability.app === true) {
-			permissions = mergePermissions(
-				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability!.role }))
-			);
-		}
-	}
-
-	result.permissions = permissions;
-
 	return result;
 }
 
@@ -111,7 +63,6 @@ async function getDatabaseSchema(
 	const result: SchemaOverview = {
 		collections: {},
 		relations: [],
-		permissions: [],
 	};
 
 	const schemaOverview = await schemaInspector.overview();
