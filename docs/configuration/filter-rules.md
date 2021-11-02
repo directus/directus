@@ -148,3 +148,11 @@ In addition to static values, you can also filter against _dynamic_ values using
 - `$NOW` — The current timestamp
 - `$NOW(<adjustment>)` - The current timestamp plus/minus a given distance, for example `$NOW(-1 year)`,
   `$NOW(+2 hours)`
+
+::: tip Nested User / Role variables
+
+`$CURRENT_USER` and `$CURRENT_ROLE` allow you to specify any (nested) field under the current user/role as well as the
+root ID. For example: `$CURRENT_ROLE.name` or `$CURRENT_USER.avatar.filesize`. This includes custom fields that were
+added to the directus_users/directus_roles tables.
+
+:::
