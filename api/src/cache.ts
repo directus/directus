@@ -8,15 +8,15 @@ import { validateEnv } from './utils/validate-env';
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
 
-export function getCache(): { cache: Keyv | null; systemCache: Keyv | null } {
+export function getCache(): { cache: Keyv | null; systemCache: Keyv } {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
 		cache = getKeyvInstance(ms(env.CACHE_TTL as string));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
-	if (env.CACHE_SCHEMA !== false && systemCache === null) {
-		systemCache = getKeyvInstance(typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined, '_schema');
+	if (systemCache === null) {
+		systemCache = getKeyvInstance(undefined, '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 

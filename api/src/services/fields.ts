@@ -30,7 +30,7 @@ export class FieldsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	systemCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -266,9 +266,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	async updateField(collection: string, field: RawField): Promise<string> {
@@ -317,9 +315,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return field.field;
 	}
@@ -431,9 +427,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		emitAsyncSafe(`fields.delete`, {
 			event: `fields.delete`,

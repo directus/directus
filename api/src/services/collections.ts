@@ -26,7 +26,7 @@ export class CollectionsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	systemCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -141,9 +141,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return payload.collection;
 	}
@@ -173,9 +171,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collections;
 	}
@@ -313,9 +309,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKey;
 	}
@@ -344,9 +338,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKeys;
 	}
@@ -445,9 +437,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKey;
 	}
@@ -476,9 +466,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKeys;
 	}

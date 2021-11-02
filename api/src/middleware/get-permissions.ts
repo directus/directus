@@ -8,9 +8,13 @@ import asyncHandler from '../utils/async-handler';
 import { mergePermissions } from '../utils/merge-permissions';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
+import { getCache } from '../cache';
+import hash from 'object-hash';
+import env from '../env';
 
 const getPermissions: RequestHandler = asyncHandler(async (req, res, next) => {
 	const database = getDatabase();
+	const { systemCache } = getCache();
 
 	let permissions: Permission[] = [];
 
@@ -20,6 +24,17 @@ const getPermissions: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	if (!req.schema) {
 		throw new Error('"getPermissions" needs to be used after the "schema" middleware');
+	}
+
+	const cacheKey = `permissions-${hash(req.accountability)}`;
+
+	if (env.CACHE_PERMISSIONS !== false) {
+		const cachedPermissions = await systemCache.get(cacheKey);
+
+		if (cachedPermissions) {
+			req.accountability.permissions = cachedPermissions;
+			return next();
+		}
 	}
 
 	if (req.accountability.admin !== true) {
@@ -110,6 +125,10 @@ const getPermissions: RequestHandler = asyncHandler(async (req, res, next) => {
 
 			return permission;
 		});
+
+		if (env.CACHE_PERMISSIONS !== false) {
+			await systemCache.set(cacheKey, permissions);
+		}
 	}
 
 	req.accountability.permissions = permissions;

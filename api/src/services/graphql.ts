@@ -2013,7 +2013,7 @@ export class GraphQLService {
 					const { cache, systemCache } = getCache();
 
 					await cache?.clear();
-					await systemCache?.clear();
+					await systemCache.clear();
 
 					return;
 				},

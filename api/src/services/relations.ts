@@ -21,7 +21,7 @@ export class RelationsService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
-	systemCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -195,9 +195,7 @@ export class RelationsService {
 			await relationsItemService.createOne(metaRow);
 		});
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	/**
@@ -275,9 +273,7 @@ export class RelationsService {
 			}
 		});
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	/**
@@ -316,9 +312,7 @@ export class RelationsService {
 			}
 		});
 
-		if (this.systemCache) {
-			await this.systemCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	/**

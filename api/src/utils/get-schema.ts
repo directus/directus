@@ -13,7 +13,6 @@ import getLocalType from './get-local-type';
 import getDatabase from '../database';
 import { getCache } from '../cache';
 import env from '../env';
-import ms from 'ms';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -25,7 +24,7 @@ export async function getSchema(options?: {
 
 	let result: SchemaOverview;
 
-	if (env.CACHE_SCHEMA !== false && systemCache) {
+	if (env.CACHE_SCHEMA !== false) {
 		let cachedSchema;
 
 		try {
@@ -40,11 +39,7 @@ export async function getSchema(options?: {
 			result = await getDatabaseSchema(database, schemaInspector);
 
 			try {
-				await systemCache.set(
-					'schema',
-					result,
-					typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined
-				);
+				await systemCache.set('schema', result);
 			} catch (err: any) {
 				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
 			}
