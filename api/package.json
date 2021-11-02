@@ -112,7 +112,7 @@
 		"express": "^4.17.1",
 		"flat": "^5.0.2",
 		"fs-extra": "^10.0.0",
-		"graphql": "^15.5.0",
+		"graphql": "^16.0.0",
 		"graphql-compose": "^9.0.1",
 		"inquirer": "^8.1.1",
 		"joi": "^17.3.0",
