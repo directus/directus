@@ -197,7 +197,7 @@
 		"@types/nodemailer": "6.4.4",
 		"@types/object-hash": "2.2.1",
 		"@types/qs": "6.9.7",
-		"@types/sharp": "0.29.2",
+		"@types/sharp": "0.29.3",
 		"@types/stream-json": "1.7.1",
 		"@types/supertest": "2.0.11",
 		"@types/uuid": "8.3.1",
