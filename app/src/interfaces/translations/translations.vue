@@ -281,17 +281,9 @@ export default defineComponent({
 					if (
 						newVal &&
 						newVal !== oldVal &&
-						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
+						newVal?.every((item) => typeof item === 'string' || typeof item === 'number' || typeof item === 'object')
 					) {
 						loadItems();
-					}
-
-					if (
-						newVal &&
-						newVal !== oldVal &&
-						newVal?.every((item) => typeof item === 'object')
-					) {
-						items.value = newVal.map(el => { return { ...el, languages_code : el.languages_code.code }; });
 					}
 
 					if (newVal === null || newVal.length === 0) {
