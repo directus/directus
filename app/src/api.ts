@@ -37,7 +37,13 @@ export const onRequest = (config: AxiosRequestConfig): Promise<RequestConfig> =>
 	};
 
 	return new Promise((resolve) => {
-		queue.add(() => resolve(requestConfig));
+		if (config.url && config.url === '/auth/refresh') {
+			queue.pause();
+			resolve(requestConfig);
+			queue.start();
+		} else {
+			queue.add(() => resolve(requestConfig));
+		}
 	});
 };
 
@@ -98,7 +104,7 @@ api.interceptors.response.use(onResponse, onError);
 export default api;
 
 export function getToken(): string | null {
-	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+	return api.defaults.headers.common['Authorization']?.split(' ')[1] || null;
 }
 
 export function addTokenToURL(url: string, token?: string): string {

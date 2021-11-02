@@ -410,8 +410,8 @@ export class GraphQLService {
 						acc[field.field] = {
 							type,
 							description: field.note,
-							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? field.field];
+							resolve: (obj: Record<string, any>) => {
+								return obj[field.field];
 							},
 						};
 
@@ -1371,7 +1371,7 @@ export class GraphQLService {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
 
-					current = selection.alias?.value ?? selection.name.value;
+					current = selection.name.value;
 
 					if (parent) {
 						current = `${parent}.${current}`;
@@ -1469,10 +1469,13 @@ export class GraphQLService {
 			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
 
 			query.aggregate[aggregateProperty] =
-				aggregationGroup.selectionSet?.selections.map((selectionNode) => {
-					selectionNode = selectionNode as FieldNode;
-					return selectionNode.name.value;
-				}) ?? [];
+				aggregationGroup.selectionSet?.selections
+					// filter out graphql pointers, like __typename
+					.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
+					.map((selectionNode) => {
+						selectionNode = selectionNode as FieldNode;
+						return selectionNode.name.value;
+					}) ?? [];
 		}
 
 		validateQuery(query);

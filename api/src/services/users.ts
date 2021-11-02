@@ -82,21 +82,23 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		if (policyRegExString) {
-			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
-			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
+		if (!policyRegExString) {
+			return;
+		}
 
-			for (const password of passwords) {
-				if (regex.test(password) === false) {
-					throw new FailedValidationException({
-						message: `Provided password doesn't match password policy`,
-						path: ['password'],
-						type: 'custom.pattern.base',
-						context: {
-							value: password,
-						},
-					});
-				}
+		const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
+		const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
+
+		for (const password of passwords) {
+			if (!regex.test(password)) {
+				throw new FailedValidationException({
+					message: `Provided password doesn't match password policy`,
+					path: ['password'],
+					type: 'custom.pattern.base',
+					context: {
+						value: password,
+					},
+				});
 			}
 		}
 	}
@@ -141,16 +143,6 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy(passwords);
 		}
 
-		for (const user of data) {
-			if (user.provider !== undefined) {
-				throw new InvalidPayloadException(`You can't set the "provider" value manually.`);
-			}
-
-			if (user.external_identifier !== undefined) {
-				throw new InvalidPayloadException(`You can't set the "external_identifier" value manually.`);
-			}
-		}
-
 		return await super.createMany(data, opts);
 	}
 
@@ -183,7 +175,14 @@ export class UsersService extends ItemsService {
 		}
 
 		if (data.email) {
-			await this.checkUniqueEmails([data.email]);
+			if (keys.length > 1) {
+				throw new RecordNotUniqueException('email', {
+					collection: 'directus_users',
+					field: 'email',
+					invalid: data.email,
+				});
+			}
+			await this.checkUniqueEmails([data.email], keys[0]);
 		}
 
 		if (data.password) {

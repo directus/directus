@@ -135,7 +135,7 @@ export default defineComponent({
 			if (codemirror) {
 				const lang = props.language.toLowerCase();
 
-				if (lang === 'json') {
+				if (props.type === 'json' || lang === 'json') {
 					// @ts-ignore
 					await import('codemirror/mode/javascript/javascript.js');
 
@@ -237,7 +237,7 @@ export default defineComponent({
 				defaultOptions,
 				{
 					lineNumbers: props.lineNumber,
-					readOnly: false,
+					readOnly: props.disabled ? 'nocursor' : false,
 					mode: props.language,
 					placeholder: props.placeholder,
 				},

@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Идентификатор
 avatar: Аватар
 default_provider: По подразбиране
 published: Публикувано
@@ -50,7 +51,7 @@ indeterminate: Неопределен
 edit_collection: Редактиране на колекция
 exclusive: Изключително
 children: Дъщерен
-db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация '
+db_only_click_to_configure: 'Само в базата от данни: Натиснете за конфигуриране'
 show_archived_items: Включително архивираните
 edited: Стойността е редактирана
 required: Задължително
@@ -62,7 +63,7 @@ create_role: Създаване на роля
 create_user: Създаване на потребител
 delete_panel: Изтриване на панел
 create_webhook: Създаване на уеб-кука
-invite_users: Покана към потребители
+invite_users: Поканване на потребители
 invite: Покана
 email_already_invited: Вече е изпратена покана в пощата на "{email}"
 emails: E-пощи
@@ -99,7 +100,7 @@ archive_confirm: Сигурни ли сте, че искате да архиви
 archive_confirm_count: >-
   Няма избрани записи | Сигурни ли сте, че искате да архивирате записа? | Сигурни ли сте, че искате да архивирате тези {count} записа?
 reset_system_permissions_to: 'Нулиране на системните позволения към:'
-reset_system_permissions_copy: Действието може да презапише потребителските позволения, които са приложени към системните колекции. Сигурни ли сте?
+reset_system_permissions_copy: Действието може да презапише персонализираните позволения, които са приложени към системните колекции. Сигурни ли сте?
 the_following_are_minimum_permissions: Следните са минималните изисквани позволения за достъп до "Приложението". Може да бъдат добавяни повече, но не и по-малко.
 app_access_minimum: Минимум за достъп до приложението
 recommended_defaults: Препоръчителни
@@ -172,6 +173,8 @@ global: Глобален
 admins_have_all_permissions: Администраторите имат всички позволения
 camera: Камера
 show_zero: Показване на нули
+create_in_advanced_field_creation_mode: Създаване в разширен режим
+continue_in_advanced_field_creation_mode: Продълважане в разширен режим
 sum: Сумиране
 sum_distinct: Сумиране на уникалните
 avg: Усредняване
@@ -199,6 +202,7 @@ boolean: Булев
 date: Дата
 date_range: Времеви период
 datetime: Дата и час
+dateTime: Дата и час
 precision: Точност
 decimal: Десетичен
 float: Реално число
@@ -216,7 +220,7 @@ not_available_for_type: Не е налично за типа
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
 refresh_interval: Интервал за опресняване
-no_refresh: Да не се опреснява
+no_refresh: Без опресняване
 refresh_interval_seconds: Моментално опресняване | Всяка секунда | Всеки {seconds} секунди
 refresh_interval_minutes: Всяка минута | Всеки {minutes} минути
 auto_generate: Автоматично генериране
@@ -231,14 +235,14 @@ new_data_alert: 'Следващото ще бъде създадено във в
 search_collection: Търсене на колекция...
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
-add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
-add_o2m_to_collection: 'Добавяне на "един към много" в "{collection}"'
-add_m2m_to_collection: 'Добавяне на "много към много" в "{collection}"'
+add_m2o_to_collection: 'Добавяне на М2О в "{collection}"'
+add_o2m_to_collection: 'Добавяне на O2M в "{collection}"'
+add_m2m_to_collection: 'Добавяне на M2M в "{collection}"'
 choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
 add_link: Добавяне на връзка
-custom_link: Персонализирана връзка
+custom_link: Собствена връзка
 default_value: Стойност по подразбиране
 standard_field: Стандартно поле
 single_file: Единствен файл
@@ -251,6 +255,7 @@ invalid_item: Невалиден запис
 next: Напред
 field_name: Име на поле
 translations: Преводи
+no_translations: Няма преводи
 note: Бележка
 enter_a_value: Въвеждане на стойност...
 enter_a_placeholder: Въвеждане на подсказка...
@@ -310,7 +315,7 @@ last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
 a_unique_table_name: Уникално име на таблица...
 a_unique_column_name: Уникално име на колона...
-enable_custom_values: Персонализирани стойности
+enable_custom_values: Собствени стойности
 submit: Изпращане
 move_to_folder: Преместване в папка
 move: Преместване
@@ -326,6 +331,8 @@ date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Минути
+hours: Часа
 month: Месец
 year: Година
 select_all: Избиране на всичко
@@ -360,13 +367,14 @@ zoom: Мащабиране
 download: Изтегляне
 open: Отваряне
 open_in_new_window: Отваряне в нов прозорец
+open_folder: Отваряне на папка "{folder}"
 foreground_color: Основен цвят
 background_color: Цвят на фона
 upload_from_device: Добавяне на файл от устройство
-choose_from_library: Избиране на файл от библиотеката
+choose_from_library: Избиране на файл от архива
 import_from_url: Импортиране на файл от URL
 replace_from_device: Замяна на файл от устройство
-replace_from_library: Зямяна на файл от библиотеката
+replace_from_library: Зямяна на файл от архива
 replace_from_url: Замяна на файл от URL
 no_file_selected: Не е избран файл
 download_file: Изтегляне на файл
@@ -412,13 +420,13 @@ no_files_copy: Тук не са открити файлове.
 user_count: 'Няма потребители | Един потребител | {count} потребителя'
 no_users_copy: Все още няма потребители в тази роля.
 webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
-no_webhooks_copy: Няма зададени уеб-куки. Започване на създаването с бутона по-долу.
+no_webhooks_copy: Няма зададени уеб-куки. Натиснете бутона по-долу за да започнете.
 all_items: Всички записи
 any: Който и да е
 csv: CSV
 no_collections: Няма колекции
 create_collection: Създаване на колекция
-no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за започване.
+no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
 no_collections_copy: Все още нямате никакви колекции. Свържете се със системния администратор.
 relationship_not_setup: Релацията не е конфигурирана правилно
 display_template_not_setup: Опциите за показване на шаблона, не са правилно конфигурирани
@@ -433,6 +441,10 @@ no_other_dashboards_copy: Все още нямате други табла.
 inactive: Неактивен
 users: Потребители
 activity: Активности
+activity_item: Предмет на дейността
+action: Действие
+ip_address: IP адрес
+user_agent: Потребителски агент
 webhooks: Уеб-куки
 decimals: Десетични знаци
 value_decimals: Десетични знаци
@@ -453,7 +465,7 @@ file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
-sort_field: Сортиране по поле
+sort_field: Поле за сортиране
 add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
 status: Статус
@@ -518,6 +530,8 @@ all_users: Всички потребители
 delete_collection: Изтриване на колекция
 update_collection_success: Обновена колекция
 delete_collection_success: Изтрита колекция
+make_collection_visible: Показване на колекцията
+make_collection_hidden: Скриване на колекцията
 start_end_of_count_items: '{start}-{end} от {count} записа'
 start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
 one_item: '1 запис'
@@ -593,7 +607,7 @@ interface_options: Опции за интерфейса
 layout_options: Опции за оформление
 rows: Редове
 columns: Колони
-collection_setup: Настройки на колекция
+collection_setup: Настройки на колекцията
 optional_system_fields: Незадължителни системни полета
 value_unique: Само уникални стойности
 all_activity: Цялата активност
@@ -607,13 +621,15 @@ all_files: Всички файлове
 my_files: Мои файлове
 recent_files: Последни файлове
 create_folder: Създаване на папка
+edit_folder: Редакция на папка
 folder_name: Име на папка...
+folder_key: Ключ за папката...
 add_file: Добавяне на файл
 replace_file: Заместване на файл
 no_results: Няма резултати
 no_results_copy: Променете или изчистете филтрите за да видите резултат.
 clear_filters: Изчистване на филтрите
-saves_automatically: Автоматично запазване
+saves_automatically: Запазването е автоматично
 role: Роля
 rule: Правило
 user: Потребител
@@ -636,15 +652,15 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
-insights: Задълбочен анализ (тестов)
+insights: Задълбочен анализ (тестови)
 dashboard: Табло
 panel: Панел
 panel_options: Опции на панела
 panel_header: Заглавие на панела
 panel_name_placeholder: Име на панела...
 panel_note_placeholder: Незадължително описание за този панел...
-panel_delete_confirm: Наистина ли искате да изтриете този панел? Това действие не може да бъде отменено.
-dashboard_delete_confirm: Наистина ли искате да изтриете това табло? Това действие не може да бъде отменено.
+panel_delete_confirm: Сигурни ли сте, че искате да изтриете този панел? Това действие не може да бъде отменено.
+dashboard_delete_confirm: Сигурни ли сте, че искате да изтриете това табло? Това действие не може да бъде отменено.
 edit_dashboard: Промяна на таблото
 delete_dashboard: Изтриване на таблото
 visible: Видимост
@@ -669,6 +685,12 @@ source: Източник
 url_placeholder: Въвеждане на URL...
 display_text: Текст за показване
 display_text_placeholder: Въвеждане на текст за показване...
+interface_group_text_and_numbers: Текст и числа
+interface_group_selection: За избиране
+interface_group_relational: Релационни
+interface_group_presentation: Оформление
+interface_group_groups: Групиране
+interface_group_other: Други
 tooltip: Подсказка
 tooltip_placeholder: Въвеждане на подсказка...
 unlimited: Неограничен
@@ -761,15 +783,15 @@ show_y_axis: Показване на оста по Y
 keep_editing: Връщане за редакция
 page_help_collections_overview: '**Обзор на колекциите** — Показване на всички налични колекции до които имате достъп.'
 page_help_collections_collection: >-
-  **Преглед на записи** — Показване на всички записи от {collection}, до които имате достъп. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
+  **Преглед на записи** — Показване на всички записи от {collection}, до които имате достъп. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите заготовка в тази конфигурация за по-бърз достъп.
 page_help_collections_item: >-
   **Детайли за запис** — Формуляр за преглед и управление на записа. Страничният панел също съдържа и пълна история на ревизиите и коментарите към него.
 page_help_activity_collection: >-
-  **Емисия на активността** — Подробен списък на активността за съдържанието, потребителите и системата.
+  **Поток на активността** — Подробен списък на цялата активност по съдържанието, записите, потребителите и системата.
 page_help_docs_global: >-
   **Обзор на документацията** — Показване на документи, специфични за проекта, версия и схема.
 page_help_files_collection: >-
-  **Файлов архив** — Показване на всички налични файлове, добавени към проекта. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
+  **Файлов архив** — Показване на всички налични файлове, добавени към проекта. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите заготовка в тази конфигурация за по-бърз достъп.
 page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
 page_help_settings_project: "**Настройки за проекта** — Глобални настройки и конфигурация на вашият проект."
@@ -790,14 +812,14 @@ page_help_users_item: >-
   **Детайли за потребител** — Управление на информацията на вашия потребителския профил, или преглед на детайли за други потребители.
 page_help_insights_overview: '**Задълбочен анализ** — Показване на всички налични табла до които имате достъп.'
 page_help_insights_dashboard: '**Табло** — Работен плот за управление на един или множество панели'
-activity_feed: Емисия на активността
+activity_feed: Поток на активността
 add_new: Добави нов запис
 create_new: Създаване
 all: Всичко
 none: Нищо
 no_layout_collection_selected_yet: Все още не е избран изглед или колекция
 batch_delete_confirm: >-
-  Няма избрани записи | Наистина ли искате да изтриете записа? Действието не може да бъде отменено. | Наистина ли искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
+  Няма избрани записи | Сигурни ли сте, че искате да изтриете записа? Действието не може да бъде отменено. | Сигурни ли сте, че искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
 cancel: Отмяна
 no_upscale: Без уголемяване на картиките
 collection: Колекция
@@ -808,10 +830,12 @@ system_fields_locked: Системните полета са заключени 
 directus_collection:
   directus_activity: Профилирани логове за всички събития
   directus_collections: Допълнителна кофигурация и данни
+  directus_dashboards: Табла в модула за задълбочен анализ
   directus_fields: Допълнителна кофигурация и данни
   directus_files: Мета данни за всички файлове
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
+  directus_panels: Панели в таблото на задълбочения анализ
   directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
   directus_relations: Релационни настройки и мета данни
@@ -840,11 +864,11 @@ fields:
     display_template: Шаблон при показване
     hidden: Скриване
     singleton: Сек
-    translations: Преводи на името за колекцията
-    archive_app_filter: Филтър за архивни
+    translations: Превод на името на колекцията
+    archive_app_filter: Архивен филтър
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране
-    sort_field: Сортиране по поле
+    sort_field: Поле за сортиране
     accountability: Следене за активност и ревизии
   directus_files:
     $thumbnail: Умалена картинка
@@ -883,7 +907,7 @@ fields:
     user_preferences: Потребителски настройки
     language: Език
     theme: Тема
-    theme_auto: Автоматично (според системата)
+    theme_auto: Автоматична (според системата)
     theme_light: Светъл режим
     theme_dark: Тъмен режим
     tfa_secret: Двуфакторна автентикация
@@ -897,6 +921,8 @@ fields:
     role: Роля
     token: Токен
     token_placeholder: Въвеждане на сигурен токен...
+    provider: Доставчик
+    external_identifier: Външен идентификатор
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
@@ -909,6 +935,7 @@ fields:
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
     mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
@@ -926,7 +953,7 @@ fields:
     storage_asset_presets: Заготовки за съхранените файлове
     storage_asset_transform: Трансформиране на съхранените файлове
     overrides: Отмяна
-    custom_css: Потребителски CSS
+    custom_css: Собствен CSS
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -951,6 +978,9 @@ fields:
     method: Метод
     status: Статус
     data: Данни
+    header: Хедър
+    value: Стойност
+    headers: Хедъри при заявката
     data_label: Изпращане на данните
     triggers: Тригери
     actions: Действия
@@ -963,7 +993,7 @@ field_options:
     auth_password_policy:
       none_text: Няма - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
-      strong_text: Силна - главни, малки, числа и специални символи 
+      strong_text: Силна - главни, малки, числа и специални символи
     storage_asset_presets:
       fit:
         contain_text: Напасване (запазване на съотношението)
@@ -973,6 +1003,7 @@ field_options:
     additional_transforms: Допълнителни трансформации
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
@@ -993,15 +1024,22 @@ field_options:
     hidden_label: Скриване в приложението
     singleton: Използване като единствен запис
     language: Език
-    translation: Въвеждане на превод...
+    translation: Превод
+    translation_placeholder: Въвеждане на превод...
+    collection_name: Име на колекцията
+    singular_unit: Единствено число
+    plural_unit: Множествено число
     archive_divider: Архивиране
-    archive_field: Избор на поле...
+    archive_field: Архивиране по поле
+    archive_field_placeholder: Избор на поле...
     archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
-    divider: Сортиране
+    sort_divider: Сортиране
     sort_field: Избор на поле...
     accountability_divider: Профилиране
+    duplication_divider: Дублиране
+    item_duplication_fields: Копиране на полета при дублиране
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -1032,7 +1070,7 @@ field_options:
     collections_addLabel: Добавяне на колекция...
   directus_users:
     preferences_divider: Потребителски настройки
-    dropdown_auto: Автоматично (според системата)
+    dropdown_auto: Автоматична (според системата)
     dropdown_light: Светъл режим
     dropdown_dark: Тъмен режим
     admin_divider: Административни настройки
@@ -1051,13 +1089,20 @@ field_options:
     actions_update: Обновяване
     actions_delete: Изтриване
     actions_login: Вход
-no_fields_in_collection: 'Все още няма полета в {collection}'
+    headers:
+      header: Хедър
+      value: Стойност
+      add: Добавяне на хедър
+no_fields_in_collection: 'Все още няма полета в "{collection}"'
 no_value: Няма стойност
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
 save_current_user_id: Запазване на ID на текущия потребител
 save_current_user_role: Запазване на ролята на текущия потребител
 save_current_datetime: Запазване на текущия дата/час
+always_open: Винаги отворена
+start_open: Отворена в началото
+start_collapsed: Затворена в началото
 block: Блок
 inline: Вложен
 comment: Коментиране
@@ -1130,6 +1175,7 @@ sort_desc: Низходящо сортиране
 template: Шаблон
 require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
+translation_placeholder: Въвеждане на превод...
 value: Стойност
 view_project: Преглед на проект
 report_error: Докладване на грешка
@@ -1146,7 +1192,7 @@ interfaces:
     and: и
     of_the_following: от следните
     no_rules: Няма зададени правила
-    change_value: Кликнете за промяна
+    change_value: Натиснете за промяна
     placeholder: Привлачете правилата тук
   group-accordion:
     name: Акордеон
@@ -1266,9 +1312,9 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Въвеждане и преглед за markdown
-    customSyntax: Персонализирани блокове
-    customSyntax_label: Добавяне на персонализиран синтаксис
-    customSyntax_add: Добавяне на персонален синтаксис
+    customSyntax: Собствени блокове
+    customSyntax_label: Добавяне на собствен синтактични типове
+    customSyntax_add: Добавяне на собствен синтаксис
     box: Блоков / Вложен
     imageToken: Токен за изображенията
     imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
@@ -1288,6 +1334,7 @@ interfaces:
     lnglat: Географски дължина/ширина
     wkt: WKT
     wkb: WKB
+    click_to_select: Натиснете за избор на {geometry}
   presentation-notice:
     notice: Пояснение
     description: Показване на кратко пояснение
@@ -1326,7 +1373,7 @@ interfaces:
     capitalization: Първа-главна буква
     uppercase: Обръщане към големи букви
     lowercase: Обръщане към малки букви
-    auto_formatter: Автоматично форматиране като заглавие
+    auto_formatter: Форматиране като заглавие
     alphabetize: По азбучен ред
     alphabetize_label: Винаги в азбучен ред
     add_tags: Добавяне на етикет...
@@ -1372,7 +1419,7 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Редактор на текст с допълнения в HTML формат
     toolbar: Лента с инструменти
-    custom_formats: Персонализирани формати
+    custom_formats: Собтсвени формати
     options_override: Наслагване на опции
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
@@ -1393,6 +1440,13 @@ interfaces:
     start_open: Отворена в началото
     start_closed: Затворена в началото
 displays:
+  translations:
+    translations: Преводи
+    description: Преглед на преводите
+    enable: Включване
+    user_language: Използване на езика на потребителя
+    default_language: Език по подразбиране
+    language_field: Поле за език
   boolean:
     boolean: Булев
     description: Показване на активно и неактивно състояние
@@ -1417,7 +1471,7 @@ displays:
     description: Показване на стойностите релативни към момента
     format: Формат
     format_note: >-
-      Персонализирания формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Собственият формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Дълго
     short: Късо
     relative: Относително
@@ -1502,18 +1556,12 @@ layouts:
     map: Географска карта
     basemap: Основна карта
     layers: Слоеве
-    edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
-    cluster: Активиране на групирането
+    cluster: Групиране на близките обекти
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
-    field: Геометрия
     invalid_geometry: Невалидна геометрия
-    auto_location_filter: Филтриране на данните спрямо границите
-    search_this_area: Търсене в тази зона
-    clear_data_filter: Изчистване на филтрирането
-    clear_location_filter: Изчистване на локацията
 panels:
   metric:
     name: Метричен Индикатор

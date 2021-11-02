@@ -90,7 +90,9 @@
 		<v-dialog v-if="!disabled" v-model="showUpload">
 			<v-card>
 				<v-card-title>{{ t('upload_file') }}</v-card-title>
-				<v-card-text><v-upload multiple from-url @input="onUpload" /></v-card-text>
+				<v-card-text>
+					<v-upload multiple from-url :folder="folder" @input="onUpload" />
+				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
 				</v-card-actions>
@@ -108,7 +110,7 @@ import { get } from 'lodash';
 import Draggable from 'vuedraggable';
 
 import useActions from '../list-m2m/use-actions';
-import useRelation from '../list-m2m/use-relation';
+import useRelation from '@/composables/use-m2m';
 import usePreview from '../list-m2m/use-preview';
 import useEdit from '../list-m2m/use-edit';
 import useSelection from '../list-m2m/use-selection';
@@ -153,6 +155,10 @@ export default defineComponent({
 		enableSelect: {
 			type: Boolean,
 			default: true,
+		},
+		folder: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

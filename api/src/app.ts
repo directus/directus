@@ -47,8 +47,8 @@ import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
-import { session } from './middleware/session';
 import { flushCaches } from './cache';
+import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 
 export default async function createApp(): Promise<express.Application> {
@@ -73,6 +73,8 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	await flushCaches();
+
+	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
 
@@ -130,16 +132,13 @@ export default async function createApp(): Promise<express.Application> {
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL
-		let html = fse.readFileSync(adminPath, 'utf-8');
-		html = html.replace(
-			/<meta charset="utf-8" \/>/,
-			`<meta charset="utf-8" />\n\t\t<base href="${adminUrl.toString({ rootRelative: true })}/">`
-		);
+		const html = await fse.readFile(adminPath, 'utf8');
+		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		app.get('/admin', (req, res) => res.send(html));
+		app.get('/admin', (req, res) => res.send(htmlWithBase));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
-			res.send(html);
+			res.send(htmlWithBase);
 		});
 	}
 
@@ -147,9 +146,6 @@ export default async function createApp(): Promise<express.Application> {
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
-
-	// We only rely on cookie-sessions in the oAuth flow where it's required
-	app.use(session);
 
 	app.use(authenticate);
 

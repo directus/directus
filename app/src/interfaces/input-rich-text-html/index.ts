@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import { defineAsyncComponent } from 'vue';
+import PreviewSVG from './preview.svg?raw';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
 
@@ -10,6 +11,8 @@ export default defineInterface({
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG,
 	types: ['text'],
+	group: 'standard',
+	preview: PreviewSVG,
 	options: [
 		{
 			field: 'toolbar',

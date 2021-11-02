@@ -30,8 +30,7 @@ export default defineLayout<LayoutOptions>({
 	component: CalendarLayout,
 	slots: {
 		options: CalendarOptions,
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		sidebar: () => {},
+		sidebar: () => undefined,
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
@@ -59,21 +58,19 @@ export default defineLayout<LayoutOptions>({
 		const filterWithCalendarView = computed(() => {
 			if (!calendar.value || !startDateField.value) return filter.value;
 
-			return {
+			const calendarFilter: Filter = {
 				_and: [
-					filter.value,
 					{
 						[startDateField.value]: {
-							_gte: formatISO(calendar.value.view.currentStart),
-						},
-					},
-					{
-						[startDateField.value]: {
-							_lte: formatISO(calendar.value.view.currentEnd),
+							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
 						},
 					},
 				],
-			} as Filter;
+			};
+
+			if (filter.value) calendarFilter._and.push(filter.value);
+
+			return calendarFilter;
 		});
 
 		const template = computed({
@@ -164,7 +161,7 @@ export default defineLayout<LayoutOptions>({
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
-				contentHeight: 800,
+				height: '100%',
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',

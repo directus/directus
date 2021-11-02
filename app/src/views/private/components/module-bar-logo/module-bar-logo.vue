@@ -74,7 +74,7 @@ export default defineComponent({
 .module-bar-logo {
 	--v-progress-linear-height: 2px;
 	--v-progress-linear-color: var(--white);
-	--v-progress-linear-background-color: rgba(255, 255, 255, 0.5);
+	--v-progress-linear-background-color: rgb(255 255 255 / 0.5);
 
 	position: relative;
 	display: flex;

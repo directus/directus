@@ -16,7 +16,13 @@ fields:
     display_options:
       defaultForeground: 'var(--foreground-normal)'
       defaultBackground: 'var(--background-normal-alt)'
-      choices: null
+      choices:
+        - value: POST
+          foreground: 'var(--primary)'
+          background: 'var(--primary-25)'
+        - value: GET
+          foreground: 'var(--secondary)'
+          background: 'var(--secondary-25)'
       format: false
     options:
       choices:
@@ -61,6 +67,27 @@ fields:
     special: boolean
     width: half
     display: boolean
+
+  - field: headers
+    special: json
+    interface: list
+    options:
+      template: '{{ header }}: {{ value }}'
+      addLabel: $t:field_options.directus_webhooks.headers.add
+      fields:
+        - field: header
+          name: $t:field_options.directus_webhooks.headers.header
+          type: string
+          meta:
+            interface: input
+            width: half
+        - field: value
+          name: $t:field_options.directus_webhooks.headers.value
+          type: string
+          meta:
+            interface: input
+            width: half
+    width: full
 
   - field: triggers_divider
     interface: presentation-divider
