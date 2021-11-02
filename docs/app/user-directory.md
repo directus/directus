@@ -45,6 +45,7 @@ The sidebar's info component also includes the following readonly details:
 
 ::: tip System Fields
 
-Administrators have access to additional system fields. [Learn More](#)
+Administrators have access to additional system fields.
+[Learn More](/configuration/users-roles-permissions/#configuring-a-user)
 
 :::
