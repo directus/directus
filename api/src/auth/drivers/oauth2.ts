@@ -125,7 +125,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			!this.config.publicRegistrationFilter || !validatePayload(this.config.publicRegistrationFilter, userInfo).length;
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !canRegisterUser) {
-			logger.warn({}, canRegisterUser.toString());
+			if (!canRegisterUser) {
+				logger.warn({}, validatePayload(this.config.publicRegistrationFilter, userInfo).join(', '));
+			}
 			throw new InvalidCredentialsException();
 		}
 

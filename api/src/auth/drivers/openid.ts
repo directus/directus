@@ -123,9 +123,6 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			}
 			return userId;
 		}
-		if (validatePayload(this.config.publicRegistrationFilter, userInfo).length) {
-			throw new InvalidCredentialsException();
-		}
 		const isEmailVerified = !requireVerifiedEmail || userInfo.email_verified;
 
 		const canRegisterUser =
@@ -133,6 +130,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !canRegisterUser || !isEmailVerified) {
+			if (!canRegisterUser) {
+				logger.warn({}, validatePayload(this.config.publicRegistrationFilter, userInfo).join(', '));
+			}
 			throw new InvalidCredentialsException();
 		}
 
