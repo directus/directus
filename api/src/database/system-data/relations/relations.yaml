@@ -54,3 +54,31 @@ data:
   - many_collection: directus_settings
     many_field: public_background
     one_collection: directus_files
+  - many_collection: directus_panels
+    many_field: dashboard
+    one_collection: directus_dashboards
+    one_field: panels
+  - many_collection: directus_files
+    many_field: modified_by
+    one_collection: directus_users
+  - many_collection: directus_fields
+    many_field: group
+    one_collection: directus_fields
+  - many_collection: directus_permissions
+    many_field: role
+    one_collection: directus_roles
+  - many_collection: directus_revisions
+    many_field: parent
+    one_collection: directus_revisions
+  - many_collection: directus_sessions
+    many_field: user
+    one_collection: directus_users
+  - many_collection: directus_settings
+    many_field: storage_default_folder
+    one_collection: directus_folders
+  - many_collection: directus_dashboards
+    many_field: user_created
+    one_collection: directus_users
+  - many_collection: directus_panels
+    many_field: user_created
+    one_collection: directus_users

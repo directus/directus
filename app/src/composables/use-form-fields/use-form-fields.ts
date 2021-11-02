@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { FormField } from '@/components/v-form/types';
 import { getInterfaces } from '@/interfaces';
 import { Field, InterfaceConfig } from '@directus/shared/types';
@@ -10,8 +8,6 @@ import { translate } from '@/utils/translate-object-values';
 
 export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
 	const { interfaces } = getInterfaces();
-
-	const systemFieldsCount = computed(() => fields.value.filter((field) => field.meta?.system === true).length);
 
 	const formFields = computed(() => {
 		let formFields = clone(fields.value);
@@ -44,10 +40,6 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 				}
 			}
 
-			if (field.meta?.sort && field.meta?.system !== true) {
-				field.meta.sort = Number(field.meta.sort) + Number(systemFieldsCount.value);
-			}
-
 			return field;
 		});
 
@@ -56,7 +48,7 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 			return systemFake === false;
 		});
 
-		formFields = orderBy(formFields, 'meta.sort');
+		formFields = orderBy(formFields, [(field) => !!field.meta?.system, 'meta.sort', 'meta.id'], ['desc', 'asc', 'asc']);
 
 		formFields = translate(formFields);
 

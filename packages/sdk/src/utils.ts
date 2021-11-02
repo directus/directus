@@ -1,4 +1,4 @@
-export class Debouncer<T extends any = any> {
+export class Debouncer<T = any> {
 	private func: (...args: any[]) => Promise<T>;
 	private debounced: {
 		resolve: (value: T) => void;
@@ -12,7 +12,7 @@ export class Debouncer<T extends any = any> {
 		this.debouncing = false;
 	}
 
-	async debounce<P extends any>(...args: P[]): Promise<T> {
+	async debounce<P>(...args: P[]): Promise<T> {
 		if (this.debouncing) {
 			return await new Promise<T>((resolve, reject) => {
 				this.debounced.push({

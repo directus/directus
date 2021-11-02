@@ -58,7 +58,7 @@
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button type="submit" class="disable" :loading="loading" :disabled="otp.length !== 6">
+						<v-button type="submit" kind="warning" :loading="loading" :disabled="otp.length !== 6">
 							{{ t('disable_tfa') }}
 						</v-button>
 					</v-card-actions>
@@ -230,16 +230,11 @@ export default defineComponent({
 
 .secret {
 	display: block;
-	margin: 0 auto 16px auto;
+	margin: 0 auto 16px;
 	color: var(--foreground-subdued);
 	font-family: var(--family-monospace);
 	letter-spacing: 2.6px;
 	text-align: center;
-}
-
-.disable {
-	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-125);
 }
 
 .v-error {

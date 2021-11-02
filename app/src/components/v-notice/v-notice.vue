@@ -64,12 +64,17 @@ body {
 	min-height: var(--input-height);
 	padding: 12px 16px;
 	color: var(--v-notice-color);
+	line-height: 22px;
 	background-color: var(--v-notice-background-color);
 	border-radius: var(--border-radius);
 }
 
 .v-icon {
 	--v-icon-color: var(--v-notice-icon-color);
+}
+
+.v-icon.left {
+	margin-right: 16px;
 }
 
 .info {

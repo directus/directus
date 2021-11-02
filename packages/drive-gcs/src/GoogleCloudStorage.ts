@@ -30,6 +30,8 @@ import path from 'path';
 
 import normalize from 'normalize-path';
 
+import { mapKeys, snakeCase } from 'lodash';
+
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {
 		case 401:
@@ -53,6 +55,10 @@ export class GoogleCloudStorage extends Storage {
 
 	public constructor(config: GoogleCloudStorageConfig) {
 		super();
+		// This is necessary as only credentials are in snake_case, not camelCase. Ref #8601
+		if (config.credentials) {
+			config.credentials = mapKeys(config.credentials, (_value, key) => snakeCase(key));
+		}
 		this.$config = config;
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);

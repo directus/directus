@@ -80,10 +80,11 @@
 							v-model="info.name"
 							class="monospace"
 							:class="{ active: info.enabled }"
+							:disabled="info.inputDisabled"
 							@focus="info.enabled = true"
 						>
 							<template #prepend>
-								<v-checkbox v-model="info.enabled" />
+								<v-checkbox v-model="info.enabled" :disabled="info.inputDisabled" />
 							</template>
 
 							<template #append>
@@ -122,16 +123,61 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, reactive } from 'vue';
+import { cloneDeep } from 'lodash';
+import { defineComponent, ref, reactive, watch } from 'vue';
 import api from '@/api';
-import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { DeepPartial } from '@directus/shared/types';
+
+const defaultSystemFields = {
+	status: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'status',
+		label: 'status',
+		icon: 'flag',
+	},
+	sort: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'sort',
+		label: 'sort',
+		icon: 'low_priority',
+	},
+	dateCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_created',
+		label: 'created_on',
+		icon: 'access_time',
+	},
+	userCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_created',
+		label: 'created_by',
+		icon: 'account_circle',
+	},
+	dateUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_updated',
+		label: 'updated_on',
+		icon: 'access_time',
+	},
+	userUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_updated',
+		label: 'updated_by',
+		icon: 'account_circle',
+	},
+};
 
 export default defineComponent({
 	setup() {
@@ -158,46 +204,11 @@ export default defineComponent({
 		const archiveValue = ref<string>();
 		const unarchiveValue = ref<string>();
 
-		const systemFields = reactive({
-			status: {
-				enabled: false,
-				name: 'status',
-				label: 'status',
-				icon: 'flag',
-			},
-			sort: {
-				enabled: false,
-				name: 'sort',
-				label: 'sort',
-				icon: 'low_priority',
-			},
-			dateCreated: {
-				enabled: false,
-				name: 'date_created',
-				label: 'created_on',
-				icon: 'access_time',
-			},
-			userCreated: {
-				enabled: false,
-				name: 'user_created',
-				label: 'created_by',
-				icon: 'account_circle',
-			},
-			dateUpdated: {
-				enabled: false,
-				name: 'date_updated',
-				label: 'updated_on',
-				icon: 'access_time',
-			},
-			userUpdated: {
-				enabled: false,
-				name: 'user_updated',
-				label: 'updated_by',
-				icon: 'account_circle',
-			},
-		});
+		const systemFields = reactive(cloneDeep(defaultSystemFields));
 
 		const saving = ref(false);
+
+		watch(() => singleton.value, setOptionsForSingleton);
 
 		return {
 			t,
@@ -213,6 +224,11 @@ export default defineComponent({
 			singleton,
 		};
 
+		function setOptionsForSingleton() {
+			systemFields.sort = { ...defaultSystemFields.sort };
+			systemFields.sort.inputDisabled = singleton.value;
+		}
+
 		async function save() {
 			saving.value = true;
 
@@ -220,6 +236,7 @@ export default defineComponent({
 				await api.post(`/collections`, {
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
+					schema: {},
 					meta: {
 						sort_field: sortField.value,
 						archive_field: archiveField.value,
@@ -317,15 +334,15 @@ export default defineComponent({
 						options: {
 							choices: [
 								{
-									text: 'Published',
+									text: '$t:published',
 									value: 'published',
 								},
 								{
-									text: 'Draft',
+									text: '$t:draft',
 									value: 'draft',
 								},
 								{
-									text: 'Archived',
+									text: '$t:archived',
 									value: 'archived',
 								},
 							],
@@ -463,6 +480,9 @@ export default defineComponent({
 					collection: collectionName.value!,
 					field: systemFields.userCreated.name,
 					related_collection: 'directus_users',
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				});
 			}
 
@@ -471,6 +491,9 @@ export default defineComponent({
 					collection: collectionName.value!,
 					field: systemFields.userUpdated.name,
 					related_collection: 'directus_users',
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				});
 			}
 

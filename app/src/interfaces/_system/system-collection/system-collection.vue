@@ -1,10 +1,17 @@
 <template>
-	<v-select :model-value="value" :disabled="disabled" :items="items" @update:model-value="$emit('input', $event)" />
+	<v-select
+		:model-value="value"
+		:disabled="disabled"
+		:items="items"
+		:placeholder="t('select_a_collection')"
+		@update:model-value="$emit('input', $event)"
+	/>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -23,14 +30,15 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
-			if (props.includeSystem) return collectionsStore.collections;
-
-			return collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false
-			);
+			return [
+				...collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false),
+				...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : []),
+			];
 		});
 
 		const items = computed(() => {
@@ -40,7 +48,7 @@ export default defineComponent({
 			}));
 		});
 
-		return { items };
+		return { items, t };
 	},
 });
 </script>

@@ -85,7 +85,8 @@ export class FieldsService {
 				return field.field === column.name && field.collection === column.table;
 			});
 
-			const { type = 'alias', ...info } = column ? getLocalType(column, field) : {};
+			const { type, ...info } = getLocalType(column, field);
+
 			const data = {
 				collection: column.table,
 				field: column.name,
@@ -122,10 +123,12 @@ export class FieldsService {
 		});
 
 		const aliasFieldsAsField = aliasFields.map((field) => {
+			const { type } = getLocalType(undefined, field);
+
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: Array.isArray(field.special) ? field.special[0] : field.special,
+				type,
 				schema: null,
 				meta: field,
 			};
@@ -133,7 +136,11 @@ export class FieldsService {
 			return data;
 		}) as Field[];
 
-		const result = [...columnsWithSystem, ...aliasFieldsAsField];
+		const knownCollections = Object.keys(this.schema.collections);
+
+		const result = [...columnsWithSystem, ...aliasFieldsAsField].filter((field) =>
+			knownCollections.includes(field.collection)
+		);
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
@@ -179,7 +186,7 @@ export class FieldsService {
 			}
 		}
 
-		let column;
+		let column = undefined;
 		let fieldInfo = await this.knex.select('*').from('directus_fields').where({ collection, field }).first();
 
 		if (fieldInfo) {
@@ -197,13 +204,14 @@ export class FieldsService {
 			// Do nothing
 		}
 
-		const { type = 'alias', ...info } = column ? getLocalType(column, fieldInfo) : {};
+		const { type = 'alias', ...info } = getLocalType(column, fieldInfo);
+
 		const data = {
 			collection,
 			field,
 			type,
 			meta: fieldInfo || null,
-			schema: type == 'alias' ? null : { ...column, ...info },
+			schema: type === 'alias' ? null : { ...column, ...info },
 		};
 
 		return data;
@@ -393,11 +401,17 @@ export class FieldsService {
 			}
 
 			// Cleanup directus_fields
-			const metaRow = await trx.select('id').from('directus_fields').where({ collection, field }).first();
+			const metaRow = await trx
+				.select('collection', 'field')
+				.from('directus_fields')
+				.where({ collection, field })
+				.first();
 
-			if (metaRow?.id) {
+			if (metaRow) {
 				// Handle recursive FK constraints
-				await trx('directus_fields').update({ group: null }).where({ group: metaRow.id });
+				await trx('directus_fields')
+					.update({ group: null })
+					.where({ group: metaRow.field, collection: metaRow.collection });
 			}
 
 			await trx('directus_fields').delete().where({ collection, field });
@@ -480,7 +494,9 @@ export class FieldsService {
 			column.nullable();
 		}
 
-		if (field.schema?.is_unique === true) {
+		if (field.schema?.is_primary_key) {
+			column.primary().notNullable();
+		} else if (field.schema?.is_unique === true) {
 			if (!alter || alter.is_unique === false) {
 				column.unique();
 			}
@@ -488,10 +504,6 @@ export class FieldsService {
 			if (alter && alter.is_unique === true) {
 				table.dropUnique([field.field]);
 			}
-		}
-
-		if (field.schema?.is_primary_key) {
-			column.primary().notNullable();
 		}
 
 		if (alter) {

@@ -28,7 +28,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 64px;
+	height: 60px;
 	padding: 0 20px;
 	color: var(--foreground-normal-alt);
 	text-align: left;

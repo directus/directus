@@ -1,6 +1,6 @@
 import api from '@/api';
 import { Collection } from '@/types';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { computed, Ref, ref, watch } from 'vue';
 
 type UsableTemplateData = {

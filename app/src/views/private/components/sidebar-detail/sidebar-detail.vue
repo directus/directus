@@ -86,7 +86,7 @@ body {
 		flex-shrink: 0;
 		justify-content: space-between;
 		width: 100%;
-		height: 64px;
+		height: 60px;
 		color: var(--sidebar-detail-color);
 		background-color: var(--background-normal-alt);
 
@@ -96,7 +96,7 @@ body {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: 64px;
+			width: 60px;
 			height: 100%;
 		}
 
@@ -118,8 +118,8 @@ body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 64px;
-		height: 64px;
+		width: 60px;
+		height: 60px;
 		color: var(--foreground-normal);
 		cursor: pointer;
 		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);

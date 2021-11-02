@@ -7,14 +7,16 @@ export default {
 	props: {
 		value: {
 			type: String,
-			required: true,
+			default: null,
 		},
 	},
 	emits: ['input'],
-	methods: {
-		handleChange(value) {
-			this.$emit('input', value);
-		},
+	setup(props, { emit }) {
+		return { handleChange };
+
+		function handleChange(value) {
+			emit('input', value);
+		}
 	},
 };
 </script>

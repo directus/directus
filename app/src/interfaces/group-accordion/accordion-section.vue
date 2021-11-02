@@ -4,7 +4,13 @@
 			<div class="label type-title" :class="{ active }" @click="handleModifier($event, toggle)">
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				{{ field.name }}
-				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="warning" />
+				<v-icon
+					v-if="!active && validationMessage"
+					v-tooltip="validationMessage"
+					class="warning"
+					name="error_outline"
+					small
+				/>
 			</div>
 
 			<transition-expand>
@@ -77,7 +83,7 @@ export default defineComponent({
 			default: () => [],
 		},
 		group: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 

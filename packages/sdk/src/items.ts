@@ -30,7 +30,7 @@ export enum Meta {
 export type QueryOne<T> = {
 	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
 	search?: string;
-	deep?: Record<string, QueryMany<T>>;
+	deep?: Record<string, DeepQueryMany<T>>;
 	export?: 'json' | 'csv' | 'xml';
 	filter?: Filter<T>;
 };
@@ -41,6 +41,10 @@ export type QueryMany<T> = QueryOne<T> & {
 	offset?: number;
 	page?: number;
 	meta?: keyof ItemMetadata | '*';
+};
+
+export type DeepQueryMany<T> = {
+	[K in keyof QueryMany<T> as `_${string & K}`]: QueryMany<T>[K];
 };
 
 export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
@@ -59,7 +63,11 @@ export type FilterOperators =
 	| '_null'
 	| '_nnull'
 	| '_empty'
-	| '_nempty';
+	| '_nempty'
+	| '_intersects'
+	| '_nintersects'
+	| '_intersects_bbox'
+	| '_nintersects_bbox';
 
 export type FilterOperator<T, K extends keyof T> = {
 	[O in FilterOperators]?: Filter<T> | T[K];

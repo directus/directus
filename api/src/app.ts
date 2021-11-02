@@ -3,10 +3,12 @@ import express, { RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
+
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
 import collectionsRouter from './controllers/collections';
+import dashboardsRouter from './controllers/dashboards';
 import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
 import filesRouter from './controllers/files';
@@ -14,6 +16,7 @@ import foldersRouter from './controllers/folders';
 import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
+import panelsRouter from './controllers/panels';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -28,7 +31,7 @@ import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, va
 import { emitAsyncSafe } from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
-import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
+import { getExtensionManager } from './extensions';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import cache from './middleware/cache';
@@ -39,12 +42,13 @@ import extractToken from './middleware/extract-token';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
+
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
-import { session } from './middleware/session';
 import { flushCaches } from './cache';
+import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 
 export default async function createApp(): Promise<express.Application> {
@@ -70,13 +74,13 @@ export default async function createApp(): Promise<express.Application> {
 
 	await flushCaches();
 
-	await initializeExtensions();
+	await registerAuthProviders();
 
-	registerExtensionHooks();
+	const extensionManager = getExtensionManager();
+
+	await extensionManager.initialize();
 
 	const app = express();
-
-	const customRouter = express.Router();
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
@@ -128,16 +132,13 @@ export default async function createApp(): Promise<express.Application> {
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL
-		let html = fse.readFileSync(adminPath, 'utf-8');
-		html = html.replace(
-			/<meta charset="utf-8" \/>/,
-			`<meta charset="utf-8" />\n\t\t<base href="${adminUrl.toString({ rootRelative: true })}/">`
-		);
+		const html = await fse.readFile(adminPath, 'utf8');
+		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		app.get('/admin', (req, res) => res.send(html));
+		app.get('/admin', (req, res) => res.send(htmlWithBase));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
-			res.send(html);
+			res.send(htmlWithBase);
 		});
 	}
 
@@ -145,9 +146,6 @@ export default async function createApp(): Promise<express.Application> {
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
-
-	// We only rely on cookie-sessions in the oAuth flow where it's required
-	app.use(session);
 
 	app.use(authenticate);
 
@@ -170,11 +168,13 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/activity', activityRouter);
 	app.use('/assets', assetsRouter);
 	app.use('/collections', collectionsRouter);
+	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
 	app.use('/relations', relationsRouter);
@@ -186,11 +186,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 
-	app.use(customRouter);
-
-	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });
-	registerExtensionEndpoints(customRouter);
+	app.use(extensionManager.getEndpointRouter());
 	await emitAsyncSafe('routes.custom.init.after', { app });
 
 	app.use(notFoundHandler);

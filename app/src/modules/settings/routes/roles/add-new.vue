@@ -92,13 +92,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
 .form-grid {
 	--form-horizontal-gap: 12px;
 	--form-vertical-gap: 24px;
-
-	@include form-grid;
 
 	.type-label {
 		font-size: 1rem;

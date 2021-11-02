@@ -85,7 +85,7 @@ export default defineComponent({
 		overflow: visible;
 
 		.avatar-image {
-			opacity: 0.5;
+			opacity: 0.8;
 			transition: opacity var(--fast) var(--transition);
 		}
 

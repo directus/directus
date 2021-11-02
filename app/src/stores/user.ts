@@ -27,7 +27,7 @@ export const useUserStore = defineStore({
 			try {
 				const { data } = await api.get(`/users/me`, {
 					params: {
-						fields: '*,avatar.*,role.*',
+						fields: '*,avatar.id,role.*',
 					},
 				});
 

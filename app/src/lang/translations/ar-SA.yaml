@@ -19,14 +19,24 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: English
+avatar: الصورةالرمزية
+default_provider: الإفتراضي
+published: تم نشره
+draft: مسوّدة
+archived: مؤرشف
+modules: الوحدات
+module_bar: شريط الوحدة
+tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 maps: الخرائط
+item_creation: إنشاء عنصر
 item_revision: التعديلات على العنصر
+enter_a_name: أدخل اسم...
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
-limit: الحد
 group: المجموعة
 and: و
 or: أو
@@ -41,18 +51,18 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
-db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
 show_archived_items: أظهر العناصر المؤرشفة
 edited: تم تعديل القيمة
 required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
 requires_value: قيمة مطلوبة
 create_preset: إنشاء إعدادات مسبقة
+create_panel: إنشاء لوحة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
+delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
 emails: البريد الإلكتروني
@@ -142,9 +152,9 @@ fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث...
-changes_made: هذه هي التغييرات المحددة التي تم إجراؤها...
-no_relational_data: ولا يغيب عن البال أن هذا لا يشمل بيانات علاقية.
+revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
+revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
+changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -153,9 +163,12 @@ field_create_success: 'حقل تم إنشاؤه: "{field}"'
 field_update_success: 'حقل تم إنشاؤه: "{field}"'
 duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+aggregate_function: وظائف المجاميع
+aggregate_precision: وظائف التدقيق
 global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
+show_zero: إظهار صفر
 exposure: التعرض
 shutter: الغالق
 iso: ISO
@@ -174,6 +187,7 @@ bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
 datetime: الوقت و التاريخ
+dateTime: الوقت و التاريخ
 decimal: عشري
 float: عشري
 integer: رقم صحيح
@@ -205,9 +219,6 @@ new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيان�
 search_collection: مجموعة البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
-add_m2o_to_collection: 'إضافة كثيرين إلى واحد ل "{collection}"'
-add_o2m_to_collection: 'إضافة واحد إلى كثيرين ل "{collection}"'
-add_m2m_to_collection: 'إضافة كثيرين إلى كثيرين ل "{collection}"'
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
@@ -378,7 +389,6 @@ no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
-no_webhooks_copy: لا يوجد أسئلة بعد.
 all_items: كافة العناصر
 any: أي
 csv: CSV
@@ -391,9 +401,13 @@ display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
 select_a_collection: حدد مجموعة
 active: مفعل
+copy: نسخ
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+action: الإجراء
+ip_address: عنوان IP
+user_agent: وكيل المستخدم
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
 add_filter: إضافة فلتر
@@ -442,9 +456,9 @@ errors:
   RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   USER_SUSPENDED: المستخدم موقوف
   CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
-  UNKNOWN: خطأ غير متوقع
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
+  UNKNOWN: خطأ غير متوقع
 security: الأمان
 value_hashed: تم تجزئة القيمة بشكل آمن
 bookmark_name: اسم الإشارة المرجعية...
@@ -481,6 +495,7 @@ visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
 show_hidden_collections: أظهر المجموعات المخفية
 hide_hidden_collections: اخفي المجموعات المخفية
+show_header: إظهار العناوين الرأسية
 unmanaged_collections: مجموعات غير مهيأة
 system_collections: مجموعات النظام
 placeholder: مكان محجوز
@@ -575,6 +590,7 @@ read: قراءة
 update: تحديث
 select_fields: حدد حقول
 format_text: تنسيق النص
+toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
@@ -642,7 +658,6 @@ unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
 keep_editing: استمر في التحرير
-page_help_collections_overview: '**نظرة عامة للمجموعات** - قوائم جميع المجموعات التي لديك حق الوصول إليها.'
 page_help_collections_collection: >-
   **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_collections_item: >-
@@ -697,6 +712,7 @@ fields:
     collection: المجموعة
     icon: أيقونة
     note: ملحوظة
+    color: لون
     display_template: عرض القالب
     hidden: مخفي
     translations: ترجمات تسمية المجموعات
@@ -765,9 +781,13 @@ fields:
   directus_webhooks:
     name: الاسم
     status: حالة
+    value: قيمة
 field_options:
   directus_settings:
     security_divider_title: الأمان
+  directus_activity:
+    create: انشاء
+    update: تحديث
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
@@ -775,8 +795,10 @@ field_options:
     collection_setup: لا توجد مجموعات الإعداد
     singleton: معاملته ككائن واحد
     language: لغة
+    translation: الترجمة
+    collection_name: اسم المجموعة
     archive_divider: أرشفة
-    divider: رتب
+    sort_divider: رتب
   directus_roles:
     fields:
       icon_name: أيقونة
@@ -793,6 +815,8 @@ field_options:
     status_options_inactive: غير نشط
     actions_create: انشاء
     actions_update: تحديث
+    headers:
+      value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
@@ -813,6 +837,7 @@ delete_field_are_you_sure: >-
 description: التفاصيل
 done: تم
 duplicate: مكرر
+limit: الحد
 email: البريد الإلكتروني
 embed: تضمين
 field: حقل | حقول
@@ -858,6 +883,10 @@ value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
 interfaces:
+  filter:
+    add_filter: إضافة فلتر
+    all: الجميع
+    any: أي
   presentation-links:
     links: روابط
     primary: الأساسي
@@ -967,6 +996,7 @@ interfaces:
   input-multiline:
     description: أدخل النص المتعدد الأسطر
   boolean:
+    toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
     label_default: تمكين
   translations:
@@ -987,6 +1017,8 @@ interfaces:
   input-autocomplete-api:
     rate: معدل
 displays:
+  translations:
+    translations: الترجمة
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل
@@ -1067,5 +1099,6 @@ layouts:
     calendar: تقويم
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
-  map:
-    field: الأشكال الهندسية
+panels:
+  label:
+    name: تسمية

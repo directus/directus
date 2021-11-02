@@ -79,7 +79,7 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
@@ -113,7 +113,7 @@
 						<v-button secondary @click="confirmArchive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-archive" :loading="archiving" @click="toggleArchive">
+						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
@@ -142,18 +142,18 @@
 		</template>
 
 		<template #navigation>
-			<collections-navigation-search />
-			<collections-navigation />
+			<collections-navigation :current-collection="collection" />
 		</template>
 
 		<v-form
 			ref="form"
+			:key="collection"
 			v-model="edits"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
-			:primary-key="primaryKey || '+'"
+			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 		/>
 
@@ -195,10 +195,9 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
-import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -215,7 +214,6 @@ export default defineComponent({
 	name: 'CollectionsItem',
 	components: {
 		CollectionsNavigation,
-		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
@@ -441,10 +439,9 @@ export default defineComponent({
 			try {
 				const savedItem: Record<string, any> = await save();
 
-				revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 				}
@@ -481,6 +478,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
+				edits.value = {};
 				router.push(`/collections/${props.collection}`);
 			} catch {
 				// `remove` will show the unexpected error dialog

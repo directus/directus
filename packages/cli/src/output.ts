@@ -60,7 +60,7 @@ export type FormatData = {
 	value?: any;
 };
 
-export interface IOutputFormat<O extends any = any> {
+export interface IOutputFormat<O = any> {
 	registerOptions(options: Argv): Argv<O>;
 	format(data: FormatData, options: O): Promise<string>;
 }

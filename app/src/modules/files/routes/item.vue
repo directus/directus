@@ -33,7 +33,7 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
@@ -387,7 +387,7 @@ export default defineComponent({
 		async function saveAndStay() {
 			try {
 				await save();
-				revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.refresh?.();
 			} catch {
 				// `save` will show unexpected error dialog
 			}
@@ -404,6 +404,7 @@ export default defineComponent({
 				router.push(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
+				confirmDelete.value = false;
 			}
 		}
 

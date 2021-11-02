@@ -28,23 +28,20 @@ export type Settings<P = unknown> = {
 	options?(builder: Argv): Argv<P>;
 };
 
-export type Handler<T extends Toolbox = Toolbox, P = unknown, R extends any = void> = (
-	toolbox: T,
-	params: P
-) => Promise<R>;
+export type Handler<T extends Toolbox = Toolbox, P = unknown, R = void> = (toolbox: T, params: P) => Promise<R>;
 
-export type CommandResult<T extends any> = {
+export type CommandResult<T> = {
 	result?: T;
 	help?: GeneralHelp | CommandHelp;
 	error?: CLIError;
 	output?: IOutput;
 };
 
-export type Command<T extends Toolbox = Toolbox, P = unknown, R extends any = void> = {
+export type Command<T extends Toolbox = Toolbox, P = unknown, R = void> = {
 	settings?: Settings<P>;
 	run: {
 		/**
-		 * @deprecated Please don't access this field. It's for internal use only and a workaround for Gluegun.
+		 * @note Please don't access this field. It's for internal use only and a workaround for Gluegun.
 		 */
 		$directus: {
 			settings: Settings<P>;

@@ -1,6 +1,7 @@
 import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
-import { Filter, Meta, Query, Sort } from '../types';
+import { Meta } from '../types';
+import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter, deepMap } from '@directus/shared/utils';
 
@@ -17,6 +18,14 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 
 	if (rawQuery.fields) {
 		query.fields = sanitizeFields(rawQuery.fields);
+	}
+
+	if (rawQuery.groupBy) {
+		query.group = sanitizeFields(rawQuery.groupBy);
+	}
+
+	if (rawQuery.aggregate) {
+		query.aggregate = sanitizeAggregate(rawQuery.aggregate);
 	}
 
 	if (rawQuery.sort) {
@@ -36,7 +45,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	}
 
 	if (rawQuery.meta) {
-		query.meta = sanitizeMeta(rawQuery.meta);
+		(query as any).meta = sanitizeMeta(rawQuery.meta);
 	}
 
 	if (rawQuery.search && typeof rawQuery.search === 'string') {
@@ -51,6 +60,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		if (!query.deep) query.deep = {};
 
 		query.deep = sanitizeDeep(rawQuery.deep, accountability);
+	}
+
+	if (rawQuery.alias) {
+		query.alias = sanitizeAlias(rawQuery.alias);
 	}
 
 	return query;
@@ -78,11 +91,26 @@ function sanitizeSort(rawSort: any) {
 	if (typeof rawSort === 'string') fields = rawSort.split(',');
 	else if (Array.isArray(rawSort)) fields = rawSort as string[];
 
-	return fields.map((field) => {
-		const order = field.startsWith('-') ? 'desc' : 'asc';
-		const column = field.startsWith('-') ? field.substring(1) : field;
-		return { column, order } as Sort;
-	});
+	return fields;
+}
+
+function sanitizeAggregate(rawAggregate: any): Aggregate {
+	let aggregate: Aggregate = rawAggregate;
+
+	if (typeof rawAggregate === 'string') {
+		try {
+			aggregate = JSON.parse(rawAggregate);
+		} catch {
+			logger.warn('Invalid value passed for filter query parameter.');
+		}
+	}
+
+	for (const [operation, fields] of Object.entries(aggregate)) {
+		if (typeof fields === 'string') aggregate[operation as keyof Aggregate] = (fields as string).split(',');
+		else if (Array.isArray(fields)) aggregate[operation as keyof Aggregate] = fields as string[];
+	}
+
+	return aggregate as Aggregate;
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
@@ -98,7 +126,11 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 
 	filters = deepMap(filters, (val) => {
 		try {
-			return JSON.parse(val);
+			const parsed = JSON.parse(val);
+
+			if (typeof parsed == 'number' && !Number.isSafeInteger(parsed)) return val;
+
+			return parsed;
 		} catch {
 			return val;
 		}
@@ -174,4 +206,18 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 			set(result, path, merge({}, get(result, path, {}), parsedLevel));
 		}
 	}
+}
+
+function sanitizeAlias(rawAlias: any) {
+	let alias: Record<string, string> = rawAlias;
+
+	if (typeof rawAlias === 'string') {
+		try {
+			alias = JSON.parse(rawAlias);
+		} catch (err) {
+			logger.warn('Invalid value passed for alias query parameter.');
+		}
+	}
+
+	return alias;
 }

@@ -72,6 +72,7 @@ import { Permission } from '@directus/shared/types';
 import api from '@/api';
 import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { orderBy } from 'lodash';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -96,11 +97,16 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
+			collectionsStore.collections.filter(
+				(collection) => collection.collection.startsWith('directus_') === false && collection.schema
+			)
 		);
 
 		const systemCollections = computed(() =>
-			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
+			orderBy(
+				collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
+				'name'
+			)
 		);
 
 		const systemVisible = ref(false);

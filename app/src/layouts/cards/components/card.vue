@@ -1,9 +1,12 @@
 <template>
-	<div class="card" :class="{ loading, readonly }" @click="handleClick">
-		<div class="header" :class="{ selected: item && modelValue.includes(item[itemKey]) }">
-			<div class="selection-indicator" :class="{ 'select-mode': selectMode }">
-				<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
-			</div>
+	<div
+		class="card"
+		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
+		@click="handleClick"
+	>
+		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
+		<div class="header">
+			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
@@ -163,17 +166,23 @@ export default defineComponent({
 }
 
 .card {
+	position: relative;
 	cursor: pointer;
 
 	.header {
 		position: relative;
+		z-index: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
 		background-color: var(--background-normal);
+		border-color: var(--primary-50);
+		border-style: solid;
+		border-width: 0px;
 		border-radius: var(--border-radius);
+		transition: border-width var(--fast) var(--transition);
 
 		&::after {
 			display: block;
@@ -214,7 +223,7 @@ export default defineComponent({
 			height: 100%;
 		}
 
-		.selection-indicator {
+		.selection-fade {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -230,40 +239,83 @@ export default defineComponent({
 				left: 0;
 				width: 100%;
 				height: 100%;
-				background-image: linear-gradient(-180deg, rgba(38, 50, 56, 0.2) 10%, rgba(38, 50, 56, 0));
+				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
 				content: '';
 			}
+		}
+	}
 
-			&.select-mode {
-				opacity: 1;
-			}
+	&::before {
+		position: absolute;
+		top: 7px;
+		left: 7px;
+		z-index: 2;
+		width: 18px;
+		height: 18px;
+		background-color: var(--background-page);
+		border-radius: 24px;
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+		content: '';
+	}
 
-			.selector {
-				--v-icon-color: var(--white);
-				--v-icon-color-hover: var(--white);
+	.selector {
+		--v-icon-color: var(--white);
+		--v-icon-color-hover: var(--white);
 
-				margin: 8px;
-				opacity: 0.5;
-				transition: opacity var(--fast) var(--transition);
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		z-index: 3;
+		margin: 4px;
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 
-				&:hover {
-					opacity: 1;
-				}
-			}
+		&:hover {
+			opacity: 1 !important;
+		}
+	}
+
+	&.select-mode {
+		.selector {
+			opacity: 0.5;
 		}
 
-		&.selected {
-			.selection-indicator {
-				.selector {
-					opacity: 1;
-				}
+		.header {
+			.selection-fade {
+				opacity: 1;
+			}
+		}
+	}
+
+	&.selected {
+		&::before {
+			opacity: 1;
+		}
+
+		.selector {
+			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--primary);
+
+			opacity: 1;
+		}
+
+		.header {
+			border-width: 12px;
+
+			.selection-fade {
+				opacity: 1;
 			}
 		}
 	}
 
 	&:hover {
+		.selector {
+			opacity: 0.5;
+		}
+
 		.header {
-			.selection-indicator {
+			.selection-fade {
 				opacity: 1;
 			}
 		}
@@ -281,7 +333,7 @@ export default defineComponent({
 	align-items: center;
 	width: 100%;
 	height: 20px;
-	margin-top: 4px;
+	margin-top: 2px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
@@ -289,6 +341,7 @@ export default defineComponent({
 }
 
 .subtitle {
+	margin-top: 0px;
 	color: var(--foreground-subdued);
 }
 </style>

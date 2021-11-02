@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+.vs
 .vscode
 .env
 .env.*
@@ -14,6 +15,9 @@ dist
 .nyc_output
 .history
 /.idea/
-app/public/img/docs/*
 *.tsbuildinfo
 .e2e-containers.json
+coverage
+TODO
+schema.yaml
+schema.json

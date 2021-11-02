@@ -1,6 +1,7 @@
 import { ListenerFn } from 'eventemitter2';
 import { Router } from 'express';
 import { Knex } from 'knex';
+import { Logger } from 'pino';
 import env from '../env';
 import * as exceptions from '../exceptions';
 import * as services from '../services';
@@ -11,6 +12,7 @@ export type ExtensionContext = {
 	exceptions: typeof exceptions;
 	database: Knex;
 	env: typeof env;
+	logger: Logger;
 	getSchema: typeof getSchema;
 };
 
