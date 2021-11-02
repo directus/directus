@@ -56,26 +56,40 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 
+		let isClientPending = true;
+
 		this.bindClient = new Promise((resolve, reject) => {
 			const clientConfig = typeof additionalConfig.client === 'object' ? additionalConfig.client : {};
 			const client = ldap.createClient({ url: additionalConfig.clientUrl, reconnect: true, ...clientConfig });
 
 			client.on('error', (err: Error) => {
-				logger.error(err);
+				if (!isClientPending) {
+					logger.error(err);
+				} else {
+					reject(err);
+				}
+
+				isClientPending = false;
 			});
 
-			client.bind(bindDn, bindPassword, (err: Error | null) => {
-				if (err) {
-					const error = handleError(err);
+			client.on('connect', () => {
+				client.bind(bindDn, bindPassword, (err: Error | null) => {
+					if (err) {
+						const error = handleError(err);
 
-					if (error instanceof InvalidCredentialsException) {
-						reject(new InvalidConfigException('Invalid bind user', { provider: additionalConfig.provider }));
-					} else {
-						reject(error);
+						if (!isClientPending) {
+							logger.error(err);
+						} else if (error instanceof InvalidCredentialsException) {
+							reject(new InvalidConfigException('Invalid bind user', { provider: additionalConfig.provider }));
+						} else {
+							reject(error);
+						}
+					} else if (isClientPending) {
+						resolve(client);
 					}
-					return;
-				}
-				resolve(client);
+
+					isClientPending = false;
+				});
 			});
 		});
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
