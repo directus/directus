@@ -56,46 +56,38 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 
-		let isClientPending = true;
+		const clientConfig = typeof additionalConfig.client === 'object' ? additionalConfig.client : {};
+		const client = ldap.createClient({ url: additionalConfig.clientUrl, reconnect: true, ...clientConfig });
 
-		this.bindClient = new Promise((resolve, reject) => {
-			const clientConfig = typeof additionalConfig.client === 'object' ? additionalConfig.client : {};
-			const client = ldap.createClient({ url: additionalConfig.clientUrl, reconnect: true, ...clientConfig });
-
-			client.on('error', (err: Error) => {
-				if (isClientPending) {
-					reject(err);
-				} else {
-					logger.error(err);
-				}
-
-				isClientPending = false;
-			});
-
-			client.on('connect', () => {
-				client.bind(bindDn, bindPassword, (err: Error | null) => {
-					if (err) {
-						let error = handleError(err);
-
-						if (error instanceof InvalidCredentialsException) {
-							error = new InvalidConfigException('Invalid bind user', { provider: additionalConfig.provider });
-						}
-
-						if (isClientPending) {
-							reject(error);
-						} else {
-							logger.error(error);
-						}
-					} else if (isClientPending) {
-						resolve(client);
-					}
-
-					isClientPending = false;
-				});
-			});
+		client.on('connect', () => {
+			this.rebindClient(client, bindDn, bindPassword);
 		});
+
+		client.on('error', (err: Error) => {
+			logger.error(err);
+		});
+
+		this.bindClient = Promise.resolve(client);
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
+	}
+
+	private rebindClient(client: Client, userDn: string, password: string): void {
+		this.bindClient = new Promise((resolve, reject) => {
+			client.bind(userDn, password, (err: Error | null) => {
+				if (err) {
+					const error = handleError(err);
+
+					if (error instanceof InvalidCredentialsException) {
+						reject(new InvalidConfigException('Invalid bind user', { user: userDn }));
+					} else {
+						reject(error);
+					}
+				} else {
+					resolve(client);
+				}
+			});
+		});
 	}
 
 	private async fetchUserDn(identifier: string): Promise<string | undefined> {
