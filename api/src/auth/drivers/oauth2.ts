@@ -98,9 +98,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		} catch (e) {
 			throw handleError(e);
 		}
-		if (validatePayload(this.config.publicRegistrationFilter, userInfo).length > 0) {
-			throw new InvalidCredentialsException();
-		}
+
 		const { emailKey, identifierKey, allowPublicRegistration } = this.config;
 
 		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
@@ -124,8 +122,11 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			return userId;
 		}
 
+		const canRegisterUser =
+			!this.config.publicRegistrationFilter || validatePayload(this.config.publicRegistrationFilter, userInfo).length;
+
 		// Is public registration allowed?
-		if (!allowPublicRegistration) {
+		if (!allowPublicRegistration || !canRegisterUser) {
 			throw new InvalidCredentialsException();
 		}
 
