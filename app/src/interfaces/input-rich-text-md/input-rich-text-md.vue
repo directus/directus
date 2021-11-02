@@ -1,5 +1,5 @@
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view[0], { focused }]">
 		<div class="toolbar">
 			<v-menu show-arrow placement="bottom-start">
 				<template #activator="{ toggle }">
@@ -195,6 +195,8 @@ export default defineComponent({
 
 		const imageDialogOpen = ref(false);
 
+		const focused = ref(false);
+
 		onMounted(async () => {
 			if (codemirrorEl.value) {
 				codemirror = CodeMirror(codemirrorEl.value, {
@@ -211,6 +213,14 @@ export default defineComponent({
 					const content = cm.getValue();
 
 					emit('input', content);
+				});
+
+				codemirror.on('focus', () => {
+					focused.value = true;
+				});
+
+				codemirror.on('blur', () => {
+					focused.value = false;
 				});
 			}
 		});
@@ -271,6 +281,7 @@ export default defineComponent({
 			codemirrorEl,
 			edit,
 			view,
+			focused,
 			markdownString,
 			table,
 			onImageUpload,
@@ -316,6 +327,10 @@ export default defineComponent({
 	overflow: hidden;
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
+
+	&.focused {
+		border-color: var(--primary);
+	}
 }
 
 textarea {

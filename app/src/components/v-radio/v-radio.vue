@@ -156,5 +156,13 @@ body {
 			}
 		}
 	}
+
+	&:not(:disabled):focus-visible {
+		border-color: var(--v-radio-color);
+
+		&.checked {
+			background-color: var(--background-subdued);
+		}
+	}
 }
 </style>

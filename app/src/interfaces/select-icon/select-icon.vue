@@ -1,6 +1,6 @@
 <template>
 	<v-menu attached :disabled="disabled">
-		<template #activator="{ active, activate }">
+		<template #activator="{ active, activate, deactivate }">
 			<v-input
 				v-model="searchQuery"
 				:disabled="disabled"
@@ -8,6 +8,7 @@
 				:class="{ 'has-value': value }"
 				:nullable="false"
 				@focus="activate"
+				@blur="deactivate"
 			>
 				<template v-if="value" #prepend>
 					<v-icon clickable :name="value" :class="{ active: value }" @click="activate" />

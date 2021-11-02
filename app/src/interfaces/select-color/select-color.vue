@@ -1,6 +1,6 @@
 <template>
 	<v-menu attached :disabled="disabled" :close-on-content-click="false">
-		<template #activator="{ activate }">
+		<template #activator="{ activate, deactivate }">
 			<v-input
 				v-model="hex"
 				:disabled="disabled"
@@ -9,6 +9,7 @@
 				class="color-input"
 				maxlength="7"
 				@focus="activate"
+				@keyup.escape="deactivate"
 			>
 				<template #prepend>
 					<v-input ref="htmlColorInput" v-model="hex" type="color" class="html-color-select" />

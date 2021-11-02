@@ -233,6 +233,22 @@ body {
 		}
 	}
 
+	&:not(:disabled):focus-visible {
+		&.block {
+			border-color: var(--v-icon-color-hover);
+		}
+
+		&:not(.block) {
+			&.checked {
+				background-color: var(--background-subdued);
+			}
+
+			.checkbox {
+				color: var(--v-icon-color-hover);
+			}
+		}
+	}
+
 	.prepend,
 	.append {
 		display: contents;
