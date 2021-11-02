@@ -78,7 +78,7 @@
 		"maplibre-gl": "1.15.2",
 		"marked": "3.0.0",
 		"micromustache": "8.0.3",
-		"mime": "2.5.2",
+		"mime": "2.6.0",
 		"mitt": "3.0.0",
 		"nanoid": "3.1.30",
 		"p-queue": "7.1.0",
