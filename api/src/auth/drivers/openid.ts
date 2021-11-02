@@ -12,6 +12,7 @@ import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
+import { validatePayload } from '@directus/shared/utils';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -122,7 +123,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			}
 			return userId;
 		}
-
+		if (validatePayload(this.config.publicRegistrationFilter, userInfo).length) {
+			throw new InvalidCredentialsException();
+		}
 		const isEmailVerified = !requireVerifiedEmail || userInfo.email_verified;
 
 		// Is public registration allowed?
