@@ -12,7 +12,7 @@ import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
-import { getValidationErrors } from '@directus/shared/utils';
+import { getValidationErrors, validatePayload } from '@directus/shared/utils';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -122,8 +122,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		const canRegisterUser =
-			!this.config.publicRegistrationFilter ||
-			!getValidationErrors(this.config.publicRegistrationFilter, userInfo).length;
+			!this.config.publicRegistrationFilter || validatePayload(this.config.publicRegistrationFilter, userInfo);
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !canRegisterUser) {
 			if (!canRegisterUser) {

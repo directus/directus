@@ -2,6 +2,7 @@ import { FieldFilter, Filter } from '../types/filter';
 import { flatten } from 'lodash';
 import { generateJoi, JoiOptions } from './generate-joi';
 import Joi from 'joi';
+import { getValidationErrors } from '.';
 
 /**
  * Validate the payload against the given filter rules
@@ -11,11 +12,7 @@ import Joi from 'joi';
  * @param {JoiOptions} [options] - Optional options to pass to Joi
  * @returns Array of errors
  */
-export function validatePayload(
-	filter: Filter,
-	payload: Record<string, any>,
-	options?: JoiOptions
-): Joi.ValidationError[] {
+export function validatePayload(filter: Filter, payload: Record<string, any>, options?: JoiOptions): boolean {
 	const errors: Joi.ValidationError[] = [];
 
 	/**
@@ -27,16 +24,15 @@ export function validatePayload(
 
 		const nestedErrors = flatten<Joi.ValidationError>(
 			subValidation.map((subObj: Record<string, any>) => {
-				return validatePayload(subObj, payload, options);
+				return getValidationErrors(subObj, payload, options);
 			})
 		).filter((err?: Joi.ValidationError) => err);
-
 		errors.push(...nestedErrors);
 	} else if (Object.keys(filter)[0] === '_or') {
 		const subValidation = Object.values(filter)[0] as FieldFilter[];
 
 		const nestedErrors = flatten<Joi.ValidationError>(
-			subValidation.map((subObj: Record<string, any>) => validatePayload(subObj, payload, options))
+			subValidation.map((subObj: Record<string, any>) => getValidationErrors(subObj, payload, options))
 		);
 
 		const allErrored = subValidation.length === nestedErrors.length;
@@ -54,5 +50,5 @@ export function validatePayload(
 		}
 	}
 
-	return errors;
+	return errors.length ? false : true;
 }
