@@ -3,7 +3,7 @@ import { cloneDeep, merge, uniq, uniqWith, flatten, isNil } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
-import { validatePayload, parseFilter } from '@directus/shared/utils';
+import { validatePayload } from '@directus/shared/utils';
 import { Accountability } from '@directus/shared/types';
 import {
 	AbstractServiceOptions,
@@ -175,16 +175,14 @@ export class AuthorizationService {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 
-				const parsedPermissions = parseFilter(permissions.permissions, accountability);
-
 				if (!query.filter || Object.keys(query.filter).length === 0) {
 					query.filter = { _and: [] };
 				} else {
 					query.filter = { _and: [query.filter] };
 				}
 
-				if (parsedPermissions && Object.keys(parsedPermissions).length > 0) {
-					query.filter._and.push(parsedPermissions);
+				if (permissions.permissions && Object.keys(permissions.permissions).length > 0) {
+					query.filter._and.push(permissions.permissions);
 				}
 
 				if (query.filter._and.length === 0) delete query.filter;
@@ -195,7 +193,7 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
+	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Partial<Item> {
 		const payload = cloneDeep(data);
 
 		let permission: Permission | undefined;
@@ -232,7 +230,7 @@ export class AuthorizationService {
 			}
 		}
 
-		const preset = parseFilter(permission.presets || {}, this.accountability);
+		const preset = permission.presets ?? {};
 
 		const payloadWithPresets = merge({}, preset, payload);
 
@@ -283,7 +281,7 @@ export class AuthorizationService {
 
 		validationErrors.push(
 			...flatten(
-				validatePayload(parseFilter(permission.validation!, this.accountability), payloadWithPresets).map((error) =>
+				validatePayload(permission.validation!, payloadWithPresets).map((error) =>
 					error.details.map((details) => new FailedValidationException(details))
 				)
 			)

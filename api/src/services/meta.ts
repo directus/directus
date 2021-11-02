@@ -46,7 +46,7 @@ export class MetaService {
 
 			if (!permissionsRecord) throw new ForbiddenException();
 
-			const permissions = parseFilter(permissionsRecord.permissions, this.accountability);
+			const permissions = permissionsRecord.permissions ?? {};
 
 			applyFilter(this.knex, this.schema, dbQuery, permissions, collection);
 		}
@@ -68,7 +68,7 @@ export class MetaService {
 
 			if (!permissionsRecord) throw new ForbiddenException();
 
-			const permissions = parseFilter(permissionsRecord.permissions, this.accountability);
+			const permissions = permissionsRecord.permissions ?? {};
 
 			if (Object.keys(filter).length > 0) {
 				filter = { _and: [permissions, filter] };
