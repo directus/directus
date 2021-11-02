@@ -30,7 +30,7 @@ export class FieldsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -40,9 +40,9 @@ export class FieldsService {
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
 
-		const { cache, schemaCache } = getCache();
+		const { cache, systemCache } = getCache();
 		this.cache = cache;
-		this.schemaCache = schemaCache;
+		this.systemCache = systemCache;
 	}
 
 	private get hasReadAccess() {
@@ -266,8 +266,8 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 	}
 
@@ -317,8 +317,8 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		return field.field;
@@ -431,8 +431,8 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		emitAsyncSafe(`fields.delete`, {

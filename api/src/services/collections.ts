@@ -26,7 +26,7 @@ export class CollectionsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -34,9 +34,9 @@ export class CollectionsService {
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 
-		const { cache, schemaCache } = getCache();
+		const { cache, systemCache } = getCache();
 		this.cache = cache;
-		this.schemaCache = schemaCache;
+		this.systemCache = systemCache;
 	}
 
 	/**
@@ -141,8 +141,8 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		return payload.collection;
@@ -173,8 +173,8 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		return collections;
@@ -313,8 +313,8 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		return collectionKey;
@@ -344,8 +344,8 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		return collectionKeys;
@@ -445,8 +445,8 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		return collectionKey;
@@ -476,8 +476,8 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 
 		return collectionKeys;

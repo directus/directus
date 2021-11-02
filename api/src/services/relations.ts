@@ -21,7 +21,7 @@ export class RelationsService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -37,7 +37,7 @@ export class RelationsService {
 			// happens in `filterForbidden` down below
 		});
 
-		this.schemaCache = getCache().schemaCache;
+		this.systemCache = getCache().systemCache;
 	}
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
@@ -195,8 +195,8 @@ export class RelationsService {
 			await relationsItemService.createOne(metaRow);
 		});
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 	}
 
@@ -275,8 +275,8 @@ export class RelationsService {
 			}
 		});
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 	}
 
@@ -316,8 +316,8 @@ export class RelationsService {
 			}
 		});
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
+		if (this.systemCache) {
+			await this.systemCache.clear();
 		}
 	}
 

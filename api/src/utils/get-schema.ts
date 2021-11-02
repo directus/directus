@@ -21,15 +21,15 @@ export async function getSchema(options?: {
 }): Promise<SchemaOverview> {
 	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
-	const { schemaCache } = getCache();
+	const { systemCache } = getCache();
 
 	let result: SchemaOverview;
 
-	if (env.CACHE_SCHEMA !== false && schemaCache) {
+	if (env.CACHE_SCHEMA !== false && systemCache) {
 		let cachedSchema;
 
 		try {
-			cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+			cachedSchema = (await systemCache.get('schema')) as SchemaOverview;
 		} catch (err: any) {
 			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
 		}
@@ -40,7 +40,7 @@ export async function getSchema(options?: {
 			result = await getDatabaseSchema(database, schemaInspector);
 
 			try {
-				await schemaCache.set(
+				await systemCache.set(
 					'schema',
 					result,
 					typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined

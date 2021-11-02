@@ -2010,10 +2010,10 @@ export class GraphQLService {
 						throw new ForbiddenException();
 					}
 
-					const { cache, schemaCache } = getCache();
+					const { cache, systemCache } = getCache();
 
 					await cache?.clear();
-					await schemaCache?.clear();
+					await systemCache?.clear();
 
 					return;
 				},
