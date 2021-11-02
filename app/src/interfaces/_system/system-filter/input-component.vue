@@ -29,7 +29,7 @@
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
 			<v-icon
-				v-if="type === 'geometry' || type === 'json'"
+				v-if="type.startsWith('geometry') || type === 'json'"
 				class="preview"
 				:name="type === 'json' ? 'integration_instructions' : 'map'"
 				@click="toggle"

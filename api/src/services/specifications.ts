@@ -551,7 +551,25 @@ class OASSpecsService implements SpecificationSubService {
 			format: 'uuid',
 		},
 		geometry: {
-			type: 'string',
+			type: 'object',
+		},
+		'geometry.Point': {
+			type: 'object',
+		},
+		'geometry.LineString': {
+			type: 'object',
+		},
+		'geometry.Polygon': {
+			type: 'object',
+		},
+		'geometry.MultiPoint': {
+			type: 'object',
+		},
+		'geometry.MultiLineString': {
+			type: 'object',
+		},
+		'geometry.MultiPolygon': {
+			type: 'object',
 		},
 	};
 }

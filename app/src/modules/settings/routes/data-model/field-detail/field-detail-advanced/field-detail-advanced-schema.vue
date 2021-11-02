@@ -35,23 +35,7 @@
 				/>
 			</div>
 
-			<template v-if="type == 'geometry'">
-				<template v-if="!isAlias">
-					<div class="field half-right">
-						<div class="label type-label">{{ t('interfaces.map.geometry_type') }}</div>
-
-						<v-select
-							v-model="geometryType"
-							:show-deselect="true"
-							:placeholder="t('any')"
-							:disabled="isExisting"
-							:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
-						/>
-					</div>
-				</template>
-			</template>
-
-			<template v-else-if="['decimal', 'float'].includes(type) === false">
+			<template v-if="['decimal', 'float'].includes(type) === false">
 				<div v-if="!isAlias" class="field half">
 					<div class="label type-label">{{ t('length') }}</div>
 					<v-input
@@ -157,7 +141,8 @@ import { TranslateResult } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 
-export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } | { divider: true }> = [
+type FieldTypeOption = { value: Type; text: TranslateResult | string; children?: FieldTypeOption[] };
+export const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	{
 		text: '$t:string',
 		value: 'string',
@@ -189,6 +174,30 @@ export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } |
 		value: 'decimal',
 	},
 	{ divider: true },
+	{
+		text: '$t:geometry.Point',
+		value: 'geometry.Point',
+	},
+	{
+		text: '$t:geometry.LineString',
+		value: 'geometry.LineString',
+	},
+	{
+		text: '$t:geometry.Polygon',
+		value: 'geometry.Polygon',
+	},
+	{
+		text: '$t:geometry.MultiPoint',
+		value: 'geometry.MultiPoint',
+	},
+	{
+		text: '$t:geometry.MultiLineString',
+		value: 'geometry.MultiLineString',
+	},
+	{
+		text: '$t:geometry.MultiPolygon',
+		value: 'geometry.MultiPolygon',
+	},
 	{
 		text: '$t:geometry',
 		value: 'geometry',
@@ -241,7 +250,6 @@ export default defineComponent({
 		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
 		const field = syncFieldDetailStoreProperty('field.field');
 		const special = syncFieldDetailStoreProperty('field.meta.special');
-		const geometryType = syncFieldDetailStoreProperty('field.schema.geometry_type');
 		const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
 		const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
 		const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable');
@@ -298,7 +306,6 @@ export default defineComponent({
 			field,
 			isAlias,
 			type,
-			geometryType,
 			maxLength,
 			numericPrecision,
 			numericScale,
