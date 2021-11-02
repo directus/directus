@@ -95,14 +95,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
 			userInfo = await this.client.userinfo(tokenSet);
-			const providerFilter = `AUTH_${this.config.provider.toUpperCase()}_PUBLIC_REGISTRATION_FILTER`;
-			if (validatePayload(env[providerFilter], userInfo).length > 0) {
-				throw new InvalidCredentialsException();
-			}
 		} catch (e) {
 			throw handleError(e);
 		}
-
+		if (validatePayload(this.config.publicRegistrationFilter, userInfo).length > 0) {
+			throw new InvalidCredentialsException();
+		}
 		const { emailKey, identifierKey, allowPublicRegistration } = this.config;
 
 		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
