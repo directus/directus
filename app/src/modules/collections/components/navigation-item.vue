@@ -1,13 +1,12 @@
 <template>
 	<v-list-group
 		v-if="isGroup && matchesSearch"
+		v-context-menu
 		:to="to"
 		scope="collections-navigation"
 		:value="collection.collection"
 		query
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
-		@contextmenu.prevent.stop="activateContextMenu"
-		@focusout="deactivateContextMenu"
 	>
 		<template #activator>
 			<navigation-item-content
@@ -29,12 +28,11 @@
 
 	<v-list-item
 		v-else-if="matchesSearch"
+		v-context-menu
 		:to="to"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 		query
-		@contextmenu.prevent.stop="activateContextMenu"
-		@focusout="deactivateContextMenu"
 	>
 		<navigation-item-content
 			:search="search"
@@ -67,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { Collection } from '@/types';
 import { Preset } from '@directus/shared/types';
 import { useUserStore, useCollectionsStore, usePresetsStore } from '@/stores';
@@ -103,8 +101,6 @@ export default defineComponent({
 		const childCollections = computed(() => getChildCollections(props.collection));
 
 		const childBookmarks = computed(() => getChildBookmarks(props.collection));
-
-		const contextMenu = ref();
 
 		const hasArchive = computed(
 			() => props.collection.meta?.archive_field && props.collection.meta?.archive_app_filter
@@ -147,9 +143,6 @@ export default defineComponent({
 			isGroup,
 			to,
 			matchesSearch,
-			contextMenu,
-			activateContextMenu,
-			deactivateContextMenu,
 			isAdmin,
 			t,
 			hasArchive,
@@ -169,16 +162,6 @@ export default defineComponent({
 
 		function getChildBookmarks(collection: Collection) {
 			return presetsStore.bookmarks.filter((bookmark) => bookmark.collection === collection.collection);
-		}
-
-		function activateContextMenu(event: PointerEvent) {
-			if (hasArchive.value || props.collection.schema) {
-				contextMenu.value.activate(event);
-			}
-		}
-
-		function deactivateContextMenu() {
-			contextMenu.value.deactivate();
 		}
 	},
 });
