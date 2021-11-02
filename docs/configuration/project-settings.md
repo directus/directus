@@ -26,7 +26,7 @@ it easier to identify different Directus projects.
 ## Public Pages
 
 In addition to the above global Project Settings, you can also apply the following styling to tailor your project's
-[public pages](/guides/projects/#public-pages).
+[public pages](/configuration/project-settings/#public-pages).
 
 - **Public Foreground** — An image centered in the public page's right-pane. Limited to a maximum width of 400px.
 - **Public Background** — An image displayed behind the above foreground image, shown full-bleed within the public
