@@ -12,6 +12,7 @@ import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
+import { validatePayload } from '@directus/shared/utils';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -94,6 +95,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
 			userInfo = await this.client.userinfo(tokenSet);
+			if (validatePayload(env.AUTH_GITHUB_PUBLIC_REGISTRATION_FILTER, userInfo)) {
+				throw new Error('User does not pass registration filter.');
+			}
 		} catch (e) {
 			throw handleError(e);
 		}
