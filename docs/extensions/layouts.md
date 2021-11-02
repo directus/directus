@@ -1,7 +1,7 @@
 # Custom Layouts <small></small>
 
 > Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages.
-> [Learn more about Layouts](/guides/layouts/).
+> [Learn more about Layouts](/getting-started/glossary/#layouts).
 
 ## 1. Setup the Boilerplate
 

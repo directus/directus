@@ -56,10 +56,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	async generateAuthUrl(codeVerifier: string): Promise<string> {
 		try {
 			const client = await this.client;
+			const codeChallenge = generators.codeChallenge(codeVerifier);
 			return client.authorizationUrl({
 				scope: this.config.scope ?? 'openid profile email',
-				code_challenge: generators.codeChallenge(codeVerifier),
+				code_challenge: codeChallenge,
 				code_challenge_method: 'S256',
+				// Some providers require state even with PKCE
+				state: codeChallenge,
 				access_type: 'offline',
 			});
 		} catch (e) {
@@ -71,8 +74,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
-			.orWhereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
 		return user?.id;
@@ -90,8 +92,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const client = await this.client;
 			tokenSet = await client.callback(
 				this.redirectUrl,
-				{ code: payload.code },
-				{ code_verifier: payload.codeVerifier }
+				{ code: payload.code, state: payload.state },
+				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
 			userInfo = await client.userinfo(tokenSet);
 		} catch (e) {
@@ -100,9 +102,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const { identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
 
-		const email = userInfo.email as string;
+		const email = userInfo.email as string | null | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey ?? 'sub'] as string | undefined) ?? email;
+		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
 
 		if (!identifier) {
 			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
@@ -128,15 +130,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		// If email matches identifier, don't set "external_identifier"
-		const emailIsIdentifier = email?.toLowerCase() === identifier.toLowerCase();
-
 		await this.usersService.createOne({
 			provider: this.config.provider,
 			first_name: userInfo.given_name,
 			last_name: userInfo.family_name,
 			email: email,
-			external_identifier: !emailIsIdentifier ? identifier : undefined,
+			external_identifier: identifier,
 			role: this.config.defaultRoleId,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		});
@@ -244,13 +243,14 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`openid.${providerName}`);
 
-				if (!req.query.code) {
-					logger.warn(`Couldn't extract OAuth2 code from query: ${JSON.stringify(req.query)}`);
+				if (!req.query.code || !req.query.state) {
+					logger.warn(`Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,
 					codeVerifier: verifier,
+					state: req.query.state,
 				});
 			} catch (error: any) {
 				logger.warn(error);

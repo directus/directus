@@ -104,6 +104,7 @@
 		</v-dialog>
 
 		<drawer-collection
+			v-if="activeDialog === 'choose'"
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
 			@update:active="activeDialog = null"

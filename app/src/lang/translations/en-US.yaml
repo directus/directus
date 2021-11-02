@@ -20,6 +20,7 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+identifier: Identifier
 avatar: Avatar
 default_provider: Default
 published: Published
@@ -990,6 +991,9 @@ fields:
     method: Method
     status: Status
     data: Data
+    header: Header
+    value: Value
+    headers: Request Headers
     data_label: Send Event Data
     triggers: Triggers
     actions: Actions
@@ -1098,6 +1102,10 @@ field_options:
     actions_update: Update
     actions_delete: Delete
     actions_login: Login
+    headers:
+      header: Header
+      value: Value
+      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
@@ -1340,6 +1348,7 @@ interfaces:
     lnglat: Longitude, Latitude
     wkt: WKT
     wkb: WKB
+    click_to_select: Click to select {geometry}
   presentation-notice:
     notice: Notice
     description: Display a short notice
@@ -1562,19 +1571,15 @@ layouts:
     map: Map
     basemap: Basemap
     layers: Layers
-    edit_custom_layers: Edit Layers
     cluster_options: Clustering options
     cluster: Cluster Nearby Data
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
-    field: Geometry
+    field: Geospatial Field
     invalid_geometry: Invalid geometry
-    auto_location_filter: Auto-Filter within View
-    search_this_area: Search this area
-    clear_data_filter: Clear data filter
-    clear_location_filter: Clear location filter
-    no_results_here: No results in this area
+    find_location: Find location...
+    default_template: Using Collection Default...
 
 panels:
   metric:

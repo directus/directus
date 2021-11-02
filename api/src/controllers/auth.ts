@@ -7,7 +7,12 @@ import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import { getAuthProviders } from '../utils/get-auth-providers';
 import logger from '../logger';
-import { createLocalAuthRouter, createOAuth2AuthRouter, createOpenIDAuthRouter } from '../auth/drivers';
+import {
+	createLocalAuthRouter,
+	createOAuth2AuthRouter,
+	createOpenIDAuthRouter,
+	createLDAPAuthRouter,
+} from '../auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const router = Router();
@@ -28,6 +33,10 @@ for (const authProvider of authProviders) {
 
 		case 'openid':
 			authRouter = createOpenIDAuthRouter(authProvider.name);
+			break;
+
+		case 'ldap':
+			authRouter = createLDAPAuthRouter(authProvider.name);
 			break;
 	}
 

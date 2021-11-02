@@ -62,9 +62,7 @@ export const useFieldsStore = defineStore({
 			const fieldsResponse = await api.get<any>(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
-
 			this.fields = [...fields.map(this.parseField), fakeFilesField];
-
 			this.translateFields();
 		},
 		async dehydrate() {
