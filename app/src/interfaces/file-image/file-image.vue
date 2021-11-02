@@ -7,7 +7,14 @@
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
-			<img :src="src" alt="" role="presentation" />
+			<div v-if="imageError" class="image-error">
+				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
+
+				<span class="message">
+					{{ t(`errors.${imageError}`) }}
+				</span>
+			</div>
+			<img v-else :src="src" alt="" role="presentation" @error="imageErrorHandler" />
 
 			<div class="shadow" />
 
@@ -85,12 +92,13 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
+		const { t, n, te } = useI18n();
 
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
 		const editDrawerActive = ref(false);
+		const imageError = ref<string | null>(null);
 
 		const cacheBuster = ref(nanoid());
 
@@ -147,6 +155,8 @@ export default defineComponent({
 			loading,
 			image,
 			src,
+			imageError,
+			imageErrorHandler,
 			meta,
 			lightboxActive,
 			editDrawerActive,
@@ -182,6 +192,19 @@ export default defineComponent({
 				unexpectedError(err);
 			} finally {
 				loading.value = false;
+			}
+		}
+
+		async function imageErrorHandler() {
+			if (!src.value) return;
+			try {
+				await api.get(src.value);
+			} catch (err: any) {
+				imageError.value = err.response?.data?.errors[0]?.extensions?.code;
+
+				if (!imageError.value || !te('errors.' + imageError.value)) {
+					imageError.value = 'UNKNOWN';
+				}
 			}
 		}
 
@@ -255,6 +278,27 @@ img {
 	}
 }
 
+.image-error {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	// width: 100%;
+	height: 100%;
+	color: var(--foreground-subdued);
+	background-color: var(--background-normal);
+
+	.v-icon {
+		margin-bottom: 6px;
+	}
+
+	.message {
+		max-width: 300px;
+		padding: 0 16px;
+		text-align: center;
+	}
+}
+
 .shadow {
 	position: absolute;
 	bottom: 0;
@@ -266,7 +310,7 @@ img {
 	line-height: 1;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.25) 100%);
+	background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
 	transition: height var(--fast) var(--transition);
 }
 
@@ -321,14 +365,15 @@ img {
 	height: 17px;
 	max-height: 0;
 	overflow: hidden;
-	color: rgba(255, 255, 255, 0.75);
+	color: rgb(255 255 255 / 0.75);
 	transition: max-height var(--fast) var(--transition);
 }
 
+.image-preview:focus-within,
 .image-preview:hover {
 	.shadow {
 		height: 100%;
-		background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.5) 100%);
+		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
 	.actions .v-button {

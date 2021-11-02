@@ -1,4 +1,5 @@
 ---
+avatar: Avatar
 edit_field: Alanı Düzenle
 item_revision: Revizyonları Göster
 duplicate_field: Yinelenen Alan
@@ -10,7 +11,6 @@ enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirm
 add_field: Alan Ekle
 role_name: Rol Adı
 edit_collection: Koleksiyonu düzenle
-db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
 edited: Değer Düzenlendi
 required: Gerekli
@@ -136,6 +136,7 @@ bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
 datetime: Tarih Saat
+dateTime: Tarih Saat
 decimal: Ondalık
 float: Ondalıklı sayı
 integer: Tamsayı
@@ -166,9 +167,6 @@ new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
 search_collection: Koleksiyonu Ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
-add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
-add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
-add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
 determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
@@ -336,8 +334,12 @@ create_collection: Koleksiyon Oluştur
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
 select_a_collection: Koleksiyon Seç
 active: Aktif
+copy: Kopyala
 users: Kullanıcılar
 activity: Aktivite
+action: İşlem
+ip_address: IP Adresi
+user_agent: Kullanıcı Aracısı
 webhooks: Ağ Kancaları
 field_width: Alan Genişliği
 add_filter: Filtre Ekle
@@ -377,9 +379,9 @@ errors:
   RECORD_NOT_UNIQUE: Kopya değer tespit edildi
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  UNKNOWN: Beklenmeyen hata
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
   NOT_NULL_VIOLATION: Değer null olamaz
+  UNKNOWN: Beklenmeyen hata
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
@@ -463,6 +465,7 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 label: Etiket
+full_screen: Tam Ekran
 width: Genişlik
 height: Yükseklik
 wysiwyg_options:
@@ -548,6 +551,7 @@ fields:
     collection: Koleksiyon
     icon: İkon
     note: Not
+    color: Renk
     display_template: Görüntüleme Şablonu
     hidden: Gizli
     sort_field: Sıralama Alanı
@@ -612,14 +616,17 @@ fields:
   directus_webhooks:
     name: İsim
     status: Durum
+    value: Değer
 field_options:
   directus_activity:
     create: Oluştur
     update: Güncelle
   directus_collections:
     language: Dil
+    translation: Çeviri
+    collection_name: Koleksiyon Adı
     archive_divider: Arşiv
-    divider: Sırala
+    sort_divider: Sırala
   directus_roles:
     fields:
       icon_name: İkon
@@ -634,6 +641,8 @@ field_options:
     status_options_active: Aktif
     actions_create: Oluştur
     actions_update: Güncelle
+    headers:
+      value: Değer
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
@@ -693,6 +702,9 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
+  filter:
+    add_filter: Filtre Ekle
+    all: Tümü
   presentation-links:
     primary: Birincil
   input-code:
@@ -747,6 +759,8 @@ interfaces:
       auto: Otomatik
       dropdown: Açılır Liste
 displays:
+  translations:
+    translations: Çeviriler
   boolean:
     boolean: Evet/Hayır
   collection:
@@ -805,3 +819,6 @@ layouts:
     comfortable: Geniş
     compact: Sıkışık
     cozy: Normal
+panels:
+  label:
+    name: Etiket

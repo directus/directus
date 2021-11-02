@@ -204,7 +204,7 @@ describe('axios transport', function () {
 		expect(response1.headers['x-new-header-value']).toBe('');
 
 		const interceptor1 = transport.requests.intercept((config) => {
-			config.headers['x-new-header'] = 'Testing';
+			config.headers!['x-new-header'] = 'Testing';
 			return config;
 		});
 
@@ -230,7 +230,7 @@ describe('axios transport', function () {
 		expect(response1.data).toBe('original data');
 
 		const interceptor1 = transport.responses.intercept((response) => {
-			response.data = { data: 'injected data' };
+			(response.data as any) = { data: 'injected data' };
 			return response;
 		});
 

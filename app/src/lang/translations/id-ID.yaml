@@ -1,4 +1,5 @@
 ---
+avatar: Avatar
 edit_field: Edit Kolom
 conditions: Kondisi
 maps: Peta
@@ -6,7 +7,6 @@ item_revision: Revisi Item
 duplicate_field: Kolom Duplikat
 half_width: Lebar Setengah
 full_width: Lebar Penuh
-limit: Batas
 group: Grup
 and: Dan
 or: Atau
@@ -16,7 +16,6 @@ enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentica
 add_field: Tambah Kolom
 role_name: Nama Peran
 branch: Cabang
-db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
 edited: Nilai Diedit
 required: Diperlukan
@@ -141,6 +140,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Tanggal
 datetime: DateTime
+dateTime: DateTime
 decimal: Desimal
 float: Float
 integer: Integer
@@ -171,9 +171,6 @@ new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
-add_m2o_to_collection: 'Tambahkan Many-to-One ke "{collection}"'
-add_o2m_to_collection: 'Tambahkan One-to-Many ke "{collection}"'
-add_m2m_to_collection: 'Tambahkan Many-to-Many ke "{collection}"'
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
@@ -354,6 +351,9 @@ no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini un
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
+action: Aksi
+ip_address: Alamat IP
+user_agent: Agen pengguna
 webhooks: Webhooks
 field_width: Lebar Bidang
 add_filter: Tambah Filter
@@ -398,9 +398,9 @@ errors:
   ITEM_NOT_FOUND: Item tidak ditemukan
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
-  UNKNOWN: Kesalahan Tidak Terduga
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
+  UNKNOWN: Kesalahan Tidak Terduga
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
@@ -490,6 +490,7 @@ fields:
     collection: Koleksi
     icon: Ikon
     note: Catatan
+    color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
     sort_field: Sortir Baris
@@ -536,6 +537,7 @@ fields:
   directus_webhooks:
     name: Nama
     status: Status
+    value: Nilai
 field_options:
   directus_activity:
     create: Buat
@@ -543,7 +545,7 @@ field_options:
   directus_collections:
     language: Bahasa
     archive_divider: Arsip
-    divider: Sortir
+    sort_divider: Sortir
   directus_roles:
     fields:
       icon_name: Ikon
@@ -555,6 +557,8 @@ field_options:
   directus_webhooks:
     actions_create: Buat
     actions_update: Perbarui
+    headers:
+      value: Nilai
 comment: Komentar
 editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
@@ -562,6 +566,7 @@ delete_field_are_you_sure: >-
 description: Deskripsi
 done: Selesai
 duplicate: Gandakan
+limit: Batas
 email: Email
 embed: Lampirkan
 file: Berkas
@@ -594,6 +599,9 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
+  filter:
+    add_filter: Tambah Filter
+    all: Semua
   presentation-links:
     primary: Primer
   input-code:
@@ -636,6 +644,8 @@ interfaces:
     modes:
       dropdown: Dropwdown
 displays:
+  translations:
+    translations: Terjemahan
   boolean:
     boolean: Boolean
   collection:

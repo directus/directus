@@ -1,5 +1,5 @@
 <template>
-	<ul class="v-list" :class="{ large }">
+	<ul class="v-list" :class="{ nav, dense }">
 		<slot />
 	</ul>
 </template>
@@ -14,7 +14,11 @@ export default defineComponent({
 			type: Array as PropType<(number | string)[]>,
 			default: null,
 		},
-		large: {
+		nav: {
+			type: Boolean,
+			default: false,
+		},
+		dense: {
 			type: Boolean,
 			default: false,
 		},
@@ -26,21 +30,30 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		scope: {
+			type: String,
+			default: 'v-list',
+		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'toggle'],
 	setup(props, { emit }) {
 		const { modelValue, multiple, mandatory } = toRefs(props);
+
 		useGroupableParent(
 			{
 				selection: modelValue,
 				onSelectionChange: (newSelection) => {
 					emit('update:modelValue', newSelection);
 				},
+				onToggle: (item) => {
+					emit('toggle', item);
+				},
 			},
 			{
 				mandatory,
 				multiple,
-			}
+			},
+			props.scope
 		);
 
 		return {};
@@ -51,6 +64,7 @@ export default defineComponent({
 <style scoped>
 :global(body) {
 	--v-list-padding: 4px 0;
+	--v-list-border-radius: var(--border-radius);
 	--v-list-max-height: none;
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;
@@ -74,19 +88,15 @@ export default defineComponent({
 	color: var(--v-list-color);
 	line-height: 22px;
 	list-style: none;
-	border-radius: var(--border-radius);
+	border-radius: var(--v-list-border-radius);
 }
 
-.large {
+.nav {
 	--v-list-padding: 12px;
 }
 
 :slotted(.v-divider) {
 	max-width: calc(100% - 16px);
 	margin: 8px;
-}
-
-:slotted(*) {
-	pointer-events: all;
 }
 </style>

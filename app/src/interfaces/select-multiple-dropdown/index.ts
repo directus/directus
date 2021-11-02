@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectMultipleDropdown from './select-multiple-dropdown.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'select-multiple-dropdown',
@@ -8,6 +9,8 @@ export default defineInterface({
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceSelectMultipleDropdown,
 	types: ['json', 'csv'],
+	group: 'selection',
+	preview: PreviewSVG,
 	options: [
 		{
 			field: 'choices',

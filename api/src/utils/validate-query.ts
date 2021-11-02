@@ -1,17 +1,13 @@
 import Joi from 'joi';
 import { isPlainObject } from 'lodash';
 import { InvalidQueryException } from '../exceptions';
-import { Query } from '../types';
+import { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
-	sort: Joi.array().items(
-		Joi.object({
-			column: Joi.string(),
-			order: Joi.string().valid('asc', 'desc'),
-		})
-	),
+	group: Joi.array().items(Joi.string()),
+	sort: Joi.array().items(Joi.string()),
 	filter: Joi.object({}).unknown(),
 	limit: Joi.number(),
 	offset: Joi.number(),
@@ -19,7 +15,9 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('json', 'csv', 'xml'),
+	aggregate: Joi.object(),
 	deep: Joi.object(),
+	alias: Joi.object(),
 }).id('query');
 
 export function validateQuery(query: Query): Query {
@@ -27,6 +25,10 @@ export function validateQuery(query: Query): Query {
 
 	if (query.filter && Object.keys(query.filter).length > 0) {
 		validateFilter(query.filter);
+	}
+
+	if (query.alias) {
+		validateAlias(query.alias);
 	}
 
 	if (error) {
@@ -123,6 +125,7 @@ function validateList(value: any, key: string) {
 }
 
 function validateBoolean(value: any, key: string) {
+	if (value === null) return true;
 	if (typeof value !== 'boolean') {
 		throw new InvalidQueryException(`"${key}" has to be a boolean`);
 	}
@@ -131,6 +134,7 @@ function validateBoolean(value: any, key: string) {
 }
 
 function validateGeometry(value: any, key: string) {
+	if (value === null) return true;
 	try {
 		stringify(value);
 	} catch {
@@ -138,4 +142,24 @@ function validateGeometry(value: any, key: string) {
 	}
 
 	return true;
+}
+
+function validateAlias(alias: any) {
+	if (isPlainObject(alias) === false) {
+		throw new InvalidQueryException(`"alias" has to be an object`);
+	}
+
+	for (const [key, value] of Object.entries(alias)) {
+		if (typeof key !== 'string') {
+			throw new InvalidQueryException(`"alias" key has to be a string. "${typeof key}" given.`);
+		}
+
+		if (typeof value !== 'string') {
+			throw new InvalidQueryException(`"alias" value has to be a string. "${typeof key}" given.`);
+		}
+
+		if (key.includes('.') || value.includes('.')) {
+			throw new InvalidQueryException(`"alias" key/value can't contain a period character \`.\``);
+		}
+	}
 }

@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_permissions')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -155,7 +155,7 @@ export default defineComponent({
 			}
 		}
 
-		function navigateToRole(item: Role) {
+		function navigateToRole({ item }: { item: Role }) {
 			router.push(`/settings/roles/${item.id}`);
 		}
 	},

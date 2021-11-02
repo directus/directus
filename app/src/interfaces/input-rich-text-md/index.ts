@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceInputRichTextMD from './input-rich-text-md.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'input-rich-text-md',
@@ -8,6 +9,8 @@ export default defineInterface({
 	icon: 'functions',
 	component: InterfaceInputRichTextMD,
 	types: ['text'],
+	group: 'standard',
+	preview: PreviewSVG,
 	options: [
 		{
 			field: 'placeholder',

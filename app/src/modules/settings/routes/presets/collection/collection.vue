@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_presets')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -252,7 +252,7 @@ export default defineComponent({
 			return { headers };
 		}
 
-		function onRowClick(item: Preset) {
+		function onRowClick({ item }: { item: Preset }) {
 			if (selection.value.length === 0) {
 				router.push(`/settings/presets/${item.id}`);
 			} else {

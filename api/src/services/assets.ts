@@ -18,7 +18,7 @@ sharp.concurrency(1);
 
 // Note: don't put this in the service. The service can be initialized in multiple places, but they
 // should all share the same semaphore instance.
-const semaphore = new Semaphore(env.ASSETS_MAX_CONCURRENT_TRANSFORMATIONS);
+const semaphore = new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
 
 export class AssetsService {
 	knex: Knex;

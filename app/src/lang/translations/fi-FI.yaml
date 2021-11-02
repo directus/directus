@@ -1,4 +1,5 @@
 ---
+avatar: Avatari
 edit_field: Muokkaa kenttää
 item_revision: Kohteen versio
 duplicate_field: Monista kenttä
@@ -9,7 +10,6 @@ field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
 role_name: Roolin nimi
-db_only_click_to_configure: 'Vain tietokanta: Klikkaa määrittääksesi '
 show_archived_items: Näytä arkistoidut kohteet
 edited: Arvoa muokattu
 required: Vaadittu
@@ -134,6 +134,7 @@ bigInteger: Suuri kokonaisluku
 boolean: Totuusarvo
 date: Päivämäärä
 datetime: DateTime
+dateTime: DateTime
 decimal: Desimaali
 float: Liukuluku
 integer: Kokonaisluku
@@ -164,9 +165,6 @@ new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
 search_collection: Hae kokoelmasta...
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
-add_m2o_to_collection: 'Lisää moni-yhteen (M2O) kokoelmaan "{collection}"'
-add_o2m_to_collection: 'Lisää yksi-moniin (O2M) kokoelmaan "{collection}"'
-add_m2m_to_collection: 'Lisää moni-moneen (M2M) kokoelmaan "{collection}"'
 choose_a_type: Valitse tyyppi...
 determined_by_relationship: Suhteen määrittämä
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
@@ -351,8 +349,12 @@ display_template_not_setup: Näyttöpohjan asetus on konfiguroitu väärin
 collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
 select_a_collection: Valitse kokoelma
 active: Aktiivinen
+copy: Kopioi
 users: Käyttäjät
 activity: Tapahtuma
+action: Toiminto
+ip_address: IP-osoite
+user_agent: Asiakasohjelma
 webhooks: Webhookit
 field_width: Kentän leveys
 add_filter: Lisää suodatin
@@ -400,9 +402,9 @@ errors:
   RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   USER_SUSPENDED: Käyttäjä jäädytetty
   CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
-  UNKNOWN: Odottamaton virhe
   INTERNAL_SERVER_ERROR: Odottamaton virhe
   NOT_NULL_VIOLATION: Arvo ei voi olla null
+  UNKNOWN: Odottamaton virhe
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki
@@ -528,6 +530,7 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+full_screen: Koko näyttö
 image_url: Kuvan URL
 alt_text: Vaihtoehtoinen teksti
 media: Media
@@ -624,7 +627,6 @@ unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
 keep_editing: Jatka muokkausta
-page_help_collections_overview: '**Kokoelmien Yleiskatsaus** — Luettelo kaikista kokoelmista, joihin sinulla on pääsy.'
 page_help_collections_collection: >-
   **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 page_help_collections_item: >-
@@ -682,6 +684,7 @@ fields:
     collection: Kokoelma
     icon: Kuvake
     note: Muistiinpano
+    color: Väri
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton
@@ -769,6 +772,7 @@ fields:
   directus_webhooks:
     name: Nimi
     status: Tila
+    value: Arvo
 field_options:
   directus_activity:
     create: Luo
@@ -780,8 +784,10 @@ field_options:
     collection_setup: Kokoelman asetukset
     singleton: Käsittele yhtenä objektina
     language: Kieli
+    translation: Käännös
+    collection_name: Kokoelman nimi
     archive_divider: Arkistoi
-    divider: Järjestä
+    sort_divider: Järjestä
   directus_roles:
     fields:
       icon_name: Kuvake
@@ -797,6 +803,8 @@ field_options:
     status_options_active: Aktiivinen
     actions_create: Luo
     actions_update: Päivitä
+    headers:
+      value: Arvo
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 do_nothing: Älä tee mitään
 generate_and_save_uuid: Luo ja tallenna UUID
@@ -867,6 +875,9 @@ value: Arvo
 view_project: Näytä projekti
 report_error: Raportoi virhe
 interfaces:
+  filter:
+    add_filter: Lisää suodatin
+    all: Kaikki
   presentation-links:
     presentation-links: Painikelinkit
     links: Linkit
@@ -1065,6 +1076,8 @@ interfaces:
     trigger: Laukaisija
     rate: Rajoita
 displays:
+  translations:
+    translations: Käännökset
   boolean:
     boolean: Totuusarvo
     description: Näytä päällä- ja pois-tilat
@@ -1170,3 +1183,6 @@ layouts:
     calendar: Kalenteri
     start_date_field: Aloituspäivämäärän kenttä
     end_date_field: Päättymispäivämäärän kenttä
+panels:
+  label:
+    name: Tunniste

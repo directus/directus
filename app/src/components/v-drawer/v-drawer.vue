@@ -19,9 +19,11 @@
 
 			<div class="content">
 				<v-overlay v-if="$slots.sidebar" absolute @click="sidebarActive = false" />
+
 				<nav v-if="$slots.sidebar" class="sidebar">
 					<slot name="sidebar" />
 				</nav>
+
 				<main ref="mainEl" class="main">
 					<header-bar :title="title" primary-action-icon="close" @primary="$emit('cancel')">
 						<template #title><slot name="title" /></template>

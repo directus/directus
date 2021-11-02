@@ -1,4 +1,5 @@
 ---
+avatar: Avatar
 archived: Arhiveeritud
 edit_field: Muuda välja
 item_revision: Kirje parandamine
@@ -10,7 +11,6 @@ field_name_translations: Väljade tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
 add_field: Lisa väli
 role_name: Rolli nimi
-db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 edited: Muudetud väärtus
 required: Nõutud
@@ -135,6 +135,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Kuupäev
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -165,9 +166,6 @@ new_data_alert: 'Sinu andmemudelisse lisatakse:'
 search_collection: Otsi andmekogu...
 new_field: 'Uus väli'
 new_collection: 'Uus kogumik'
-add_m2o_to_collection: 'Lisa mitu-ühele (M2O) seos koguga "{collection}"'
-add_o2m_to_collection: 'Lisa üks-mitmele (O2M) seos koguga "{collection}"'
-add_m2m_to_collection: 'Lisa mitu-mitmele (M2M) seos koguga "{collection}"'
 choose_a_type: Vali Tüüp...
 determined_by_relationship: Määratud suhtega
 add_note: Lisa kasutajaid abistav märkus...
@@ -352,8 +350,12 @@ display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
 active: aktiivne
+copy: Kopeeri
 users: Kasutajad
 activity: Tegevus
+action: Tegevus
+ip_address: IP aadress
+user_agent: Kasutaja agent
 webhooks: Webhooks
 field_width: Välja laius
 add_filter: Lisa filter
@@ -401,9 +403,9 @@ errors:
   RECORD_NOT_UNIQUE: Kirje pole unikaalne
   USER_SUSPENDED: Kasutajakonto on suletud
   CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
-  UNKNOWN: Ootamatu viga
   INTERNAL_SERVER_ERROR: Ootamatu viga
   NOT_NULL_VIOLATION: Väärtus ei saa olla null
+  UNKNOWN: Ootamatu viga
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
@@ -531,6 +533,7 @@ toggle: Lülita
 icon_on: Ikoon sees
 icon_off: Ikoon väljas
 label: Silt
+full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
 media: Meedia
@@ -627,7 +630,6 @@ unsaved_changes: Salvestamata muudatused
 unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
-page_help_collections_overview: '**Andmekogude ülevaade** — Nimekiri andmekogudest, millele sul on ligipääs'
 page_help_collections_collection: >-
   **Vaata kirjeid* - näitab kõiki {collection} andmekogu kirjeid, millele sul on ligipääs. Kiiremaks ligipääsuks saad seadistada vaateid, filtreid, sorteerimist ning lisada järjehoidjaid.
 page_help_collections_item: >-
@@ -685,6 +687,7 @@ fields:
     collection: Kogud
     icon: Ikoon
     note: Märkus
+    color: Värv
     display_template: Vaate mall
     hidden: Peidetud
     singleton: Üksik
@@ -725,7 +728,7 @@ fields:
     password: Parool
     avatar: Avatar
     location: Asukoht
-    title: Pealkiri
+    title: Amet
     description: Kirjeldus
     tags: Sildid
     language: Keel
@@ -773,6 +776,7 @@ fields:
   directus_webhooks:
     name: Nimi
     status: Staatus
+    value: Väärtus
 field_options:
   directus_activity:
     create: Loo
@@ -784,8 +788,10 @@ field_options:
     collection_setup: Andmekogu seadistus
     singleton: Käsitle üksiku objektina
     language: Keel
+    translation: Tõlge
+    collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
-    divider: Sorteeri
+    sort_divider: Sorteeri
   directus_roles:
     fields:
       icon_name: Ikoon
@@ -802,6 +808,8 @@ field_options:
     status_options_active: aktiivne
     actions_create: Loo
     actions_update: Uuenda
+    headers:
+      value: Väärtus
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID
@@ -877,6 +885,9 @@ value: Väärtus
 view_project: Näita projekti
 report_error: Raporteeri viga
 interfaces:
+  filter:
+    add_filter: Lisa filter
+    all: Kõik
   presentation-links:
     presentation-links: Nuppude lingid
     links: Lingid
@@ -1075,6 +1086,8 @@ interfaces:
     trigger: Päästik
     rate: Hinnang
 displays:
+  translations:
+    translations: Tõlked
   boolean:
     boolean: Boolean
     description: Näita sees/väljas seisu
@@ -1180,3 +1193,6 @@ layouts:
     calendar: Kalender
     start_date_field: Alguse kuupäev
     end_date_field: Lõpu kuupäev
+panels:
+  label:
+    name: Silt

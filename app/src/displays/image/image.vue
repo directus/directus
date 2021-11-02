@@ -1,6 +1,13 @@
 <template>
-	<v-icon v-if="imgError" name="" />
-	<img v-else-if="src" :src="src" role="presentation" :alt="value && value.title" :class="{ circle }" />
+	<v-icon v-if="imageError" name="image" />
+	<img
+		v-else-if="src"
+		:src="src"
+		role="presentation"
+		:alt="value && value.title"
+		:class="{ circle }"
+		@error="imageError = true"
+	/>
 	<value-null v-else />
 </template>
 
@@ -29,7 +36,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const imgError = ref(false);
+		const imageError = ref(false);
 
 		const src = computed(() => {
 			if (props.value === null) return null;
@@ -37,7 +44,7 @@ export default defineComponent({
 			return addTokenToURL(url);
 		});
 
-		return { src, imgError };
+		return { src, imageError };
 	},
 });
 </script>

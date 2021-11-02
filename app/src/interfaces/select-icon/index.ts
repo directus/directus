@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'insert_emoticon',
 	component: InterfaceSelectIcon,
 	types: ['string'],
+	group: 'selection',
 	options: [],
 	recommendedDisplays: ['icon'],
 });

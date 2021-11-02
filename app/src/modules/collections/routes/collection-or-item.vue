@@ -4,6 +4,7 @@
 		:collection="collection"
 		:bookmark="bookmark"
 		:singleton="isSingleton ? true : undefined"
+		:archive="archive"
 	/>
 </template>
 
@@ -26,6 +27,10 @@ export default defineComponent({
 		bookmark: {
 			type: String,
 			default: null,
+		},
+		archive: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
