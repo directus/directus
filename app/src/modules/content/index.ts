@@ -58,8 +58,8 @@ const checkForSystem: NavigationGuard = (to, from) => {
 };
 
 export default defineModule({
-	id: 'collections',
-	name: '$t:collections',
+	id: 'content',
+	name: '$t:content',
 	icon: 'box',
 	routes: [
 		{
@@ -86,7 +86,7 @@ export default defineModule({
 
 				if (!firstCollection) return;
 
-				return `/collections/${firstCollection.collection}`;
+				return `/content/${firstCollection.collection}`;
 
 				function findFirst(collections: Collection[], { skipClosed } = { skipClosed: true }): Collection | void {
 					for (const collection of collections) {
@@ -116,7 +116,7 @@ export default defineModule({
 			component: RouterPass,
 			children: [
 				{
-					name: 'collections-collection',
+					name: 'content-collection',
 					path: '',
 					component: CollectionOrItem,
 					props: (route) => ({
@@ -127,7 +127,7 @@ export default defineModule({
 					beforeEnter: checkForSystem,
 				},
 				{
-					name: 'collections-item',
+					name: 'content-item',
 					path: ':primaryKey',
 					component: Item,
 					props: true,
@@ -136,7 +136,7 @@ export default defineModule({
 			],
 		},
 		{
-			name: 'collections-item-not-found',
+			name: 'content-item-not-found',
 			path: ':_(.+)+',
 			component: ItemNotFound,
 			beforeEnter: checkForSystem,
