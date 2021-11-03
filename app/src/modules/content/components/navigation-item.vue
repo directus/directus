@@ -2,7 +2,7 @@
 	<v-list-group
 		v-if="isGroup && matchesSearch"
 		:to="to"
-		scope="collections-navigation"
+		scope="content-navigation"
 		:value="collection.collection"
 		query
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
