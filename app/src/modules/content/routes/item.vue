@@ -1,5 +1,5 @@
 <template>
-	<collections-not-found
+	<content-not-found
 		v-if="error || (collectionInfo.meta && collectionInfo.meta.singleton === true && primaryKey !== null)"
 	/>
 
@@ -51,7 +51,7 @@
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: t('collections'), to: '/content' }]"
+				:items="[{ name: t('content'), to: '/content' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
@@ -142,7 +142,7 @@
 		</template>
 
 		<template #navigation>
-			<collections-navigation :current-collection="collection" />
+			<content-navigation :current-collection="collection" />
 		</template>
 
 		<v-form
@@ -195,8 +195,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
-import CollectionsNavigation from '../components/navigation.vue';
-import CollectionsNotFound from './not-found.vue';
+import ContentNavigation from '../components/navigation.vue';
+import ContentNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
@@ -211,10 +211,10 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
-	name: 'CollectionsItem',
+	name: 'ContentsItem',
 	components: {
-		CollectionsNavigation,
-		CollectionsNotFound,
+		ContentNavigation,
+		ContentNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
 		SaveOptions,
