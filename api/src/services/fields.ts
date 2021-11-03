@@ -239,6 +239,21 @@ export class FieldsService {
 				schema: this.schema,
 			});
 
+			if (field.meta) {
+				await emitter.emitFilter(
+					`fields.create`,
+					field,
+					{
+						collection: collection,
+					},
+					{
+						database: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
+			}
+
 			if (field.type && ALIAS_TYPES.includes(field.type) === false) {
 				if (table) {
 					this.addColumnToTable(table, field as Field);
@@ -250,11 +265,30 @@ export class FieldsService {
 			}
 
 			if (field.meta) {
-				await itemsService.createOne({
-					...field.meta,
-					collection: collection,
-					field: field.field,
-				});
+				await itemsService.createOne(
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					{ emitEvents: false }
+				);
+
+				emitter.emitAction(
+					`fields.create`,
+					{
+						payload: field,
+						key: field.field,
+						collection: collection,
+					},
+					{
+						// This hook is called async. If we would pass the transaction here, the hook can be
+						// called after the transaction is done #5460
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			}
 		});
 
@@ -270,6 +304,41 @@ export class FieldsService {
 	async updateField(collection: string, field: RawField): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
+		}
+
+		const record = field.meta
+			? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
+			: null;
+
+		if (field.meta) {
+			if (record) {
+				await emitter.emitFilter(
+					`fields.update`,
+					field,
+					{
+						keys: [field.field],
+						collection: collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
+			} else {
+				await emitter.emitFilter(
+					`fields.create`,
+					field,
+					{
+						collection: collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
+			}
 		}
 
 		if (field.schema) {
@@ -288,24 +357,57 @@ export class FieldsService {
 		}
 
 		if (field.meta) {
-			const record = await this.knex
-				.select('id')
-				.from('directus_fields')
-				.where({ collection, field: field.field })
-				.first();
-
 			if (record) {
-				await this.itemsService.updateOne(record.id, {
-					...field.meta,
-					collection: collection,
-					field: field.field,
-				});
+				await this.itemsService.updateOne(
+					record.id,
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					{ emitEvents: false }
+				);
+
+				emitter.emitAction(
+					`fields.update`,
+					{
+						payload: field,
+						keys: [field.field],
+						collection: collection,
+					},
+					{
+						// This hook is called async. If we would pass the transaction here, the hook can be
+						// called after the transaction is done #5460
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			} else {
-				await this.itemsService.createOne({
-					...field.meta,
-					collection: collection,
-					field: field.field,
-				});
+				await this.itemsService.createOne(
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					{ emitEvents: false }
+				);
+
+				emitter.emitAction(
+					`fields.create`,
+					{
+						payload: field,
+						key: field.field,
+						collection: collection,
+					},
+					{
+						// This hook is called async. If we would pass the transaction here, the hook can be
+						// called after the transaction is done #5460
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			}
 		}
 
