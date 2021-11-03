@@ -7,6 +7,7 @@ import ldap, {
 	InappropriateAuthenticationError,
 	InvalidCredentialsError,
 	InsufficientAccessRightsError,
+	OperationsError,
 } from 'ldapjs';
 import ms from 'ms';
 import Joi from 'joi';
@@ -54,7 +55,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		const client = ldap.createClient({ url: clientUrl, reconnect: true, ...clientConfig });
 
 		client.on('error', (err: Error) => {
-			logger.error(err);
+			logger.warn(err);
 		});
 
 		this.bindClient = client;
@@ -62,7 +63,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		this.config = config;
 	}
 
-	private async rebindClient(): Promise<void> {
+	private async validateBindClient(): Promise<void> {
 		const { bindDn, bindPassword, provider } = this.config;
 
 		return new Promise((resolve, reject) => {
@@ -73,12 +74,17 @@ export class LDAPAuthDriver extends AuthDriver {
 					return;
 				}
 
-				res.on('searchEntry', ({ object }: SearchEntry) => {
+				res.on('searchEntry', () => {
 					resolve();
 				});
 
 				res.on('error', (err: Error) => {
-					// Rebind on error
+					if (!(err instanceof OperationsError)) {
+						reject(handleError(err));
+						return;
+					}
+
+					// Rebind on OperationsError
 					this.bindClient.bind(bindDn, bindPassword, (err: Error | null) => {
 						if (err) {
 							const error = handleError(err);
@@ -231,8 +237,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		// Ensure client has active bind user
-		await this.rebindClient();
+		await this.validateBindClient();
 
 		const userDn = await this.fetchUserDn(payload.identifier);
 
@@ -313,8 +318,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	async refresh(user: User): Promise<SessionData> {
-		// Ensure client has active bind user
-		await this.rebindClient();
+		await this.validateBindClient();
 
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
 
