@@ -26,7 +26,7 @@
 			</template>
 
 			<template #navigation>
-				<activity-navigation v-model:filter="roleFilter" />
+				<notifications-navigation v-model:filter="roleFilter" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout">
@@ -61,7 +61,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
-import ActivityNavigation from '../components/navigation.vue';
+import NotificationsNavigation from '../components/navigation.vue';
 import usePreset from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
@@ -71,7 +71,7 @@ import { mergeFilters } from '@directus/shared/utils';
 
 export default defineComponent({
 	name: 'ActivityCollection',
-	components: { ActivityNavigation, LayoutSidebarDetail, SearchInput },
+	components: { NotificationsNavigation, LayoutSidebarDetail, SearchInput },
 	props: {
 		primaryKey: {
 			type: String,

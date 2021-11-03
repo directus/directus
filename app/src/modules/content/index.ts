@@ -33,9 +33,9 @@ const checkForSystem: NavigationGuard = (to, from) => {
 
 	if (to.params.collection === 'directus_activity') {
 		if (to.params.primaryKey) {
-			return `/activity/${to.params.primaryKey}`;
+			return `/notifications/${to.params.primaryKey}`;
 		} else {
-			return '/activity';
+			return '/notifications';
 		}
 	}
 
