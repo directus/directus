@@ -943,6 +943,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Mapping
     basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -955,18 +956,21 @@ fields:
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
-    public_pages: Public Pages
+    branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
-    files_and_thumbnails: Files & Thumbnails
-    storage_default_folder: Storage Default Folder
-    storage_asset_presets: Storage Asset Presets
-    storage_asset_transform: Storage Asset Transform
+    files_and_thumbnails: Files & Storage
+    storage_default_folder: Default Folder
+    storage_asset_presets: Transformation Presets
+    storage_asset_transform: Allowed Transformations
     overrides: App Overrides
     custom_css: Custom CSS
+    transformations_all: Allow all transformations
+    transformations_none: Disable transformations
+    transformations_presets: Limit transformations to presets below
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
@@ -1360,7 +1364,7 @@ interfaces:
   system-folder:
     folder: Folder
     description:  Select a folder
-    field_hint: Puts newly uploaded files in selected folder. Does not affect existing files that are selected.
+    field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:
