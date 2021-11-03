@@ -14,6 +14,8 @@ export default defineInterface({
 	localTypes: ['m2m'],
 	group: 'relational',
 	options: ({ relations }: ExtensionsOptionsContext) => {
+		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
+
 		return [
 			{
 				field: 'template',
@@ -21,7 +23,7 @@ export default defineInterface({
 				meta: {
 					interface: 'system-display-template',
 					options: {
-						collectionName: relations.m2o?.related_collection ?? null,
+						collectionName: relatedCollection,
 					},
 				},
 			},
