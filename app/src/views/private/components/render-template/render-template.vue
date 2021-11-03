@@ -2,7 +2,7 @@
 	<div ref="templateEl" class="render-template">
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
-			<value-null v-if="part === null || part.value === null" />
+			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
 			<component
 				:is="`display-${part.component}`"
 				v-else-if="typeof part === 'object' && part.component"
@@ -14,7 +14,8 @@
 				:collection="part.collection"
 				:field="part.field"
 			/>
-			<span v-else>{{ translate(part) }}</span>
+			<span v-else-if="typeof part === 'string'">{{ translate(part) }}</span>
+			<span v-else>{{ part }}</span>
 		</template>
 	</div>
 </template>
