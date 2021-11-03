@@ -88,7 +88,7 @@
 		"qrcode": "1.4.4",
 		"rimraf": "3.0.2",
 		"sass": "1.43.4",
-		"tinymce": "5.10.0",
+		"tinymce": "5.10.1",
 		"typescript": "4.4.4",
 		"vite": "2.6.13",
 		"vite-plugin-md": "0.11.4",
