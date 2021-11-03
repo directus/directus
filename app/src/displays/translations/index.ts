@@ -77,5 +77,5 @@ export default defineDisplay({
 	},
 	types: ['alias'],
 	localTypes: ['translations'],
-	fields: ['*'],
+	fields: ['*.*'],
 });
