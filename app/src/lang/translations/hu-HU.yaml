@@ -903,16 +903,11 @@ fields:
     project_url: Projekt webcíme
     project_color: Projekt színe
     project_logo: Projekt logója
-    public_pages: Nyilvános oldalak
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
     auth_password_policy: Hitelesítési jelszóházirend
     auth_login_attempts: Bejelentkezési kísérletek
-    files_and_thumbnails: Fájlok és miniatűrök
-    storage_default_folder: Tároló alapértelmezett mappája
-    storage_asset_presets: Tárolóeszköz alapbeállításai
-    storage_asset_transform: Tárolóeszközök transzformáció
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
   directus_fields:
@@ -1292,7 +1287,6 @@ interfaces:
   system-folder:
     folder: Könyvtár
     description: Válasszon egy mappát
-    field_hint: Az újonnan feltöltött fájlokat a kiválasztott mappába helyezi. Nem érinti a kiválasztott, de már létező fájlokat.
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
   select-radio:
