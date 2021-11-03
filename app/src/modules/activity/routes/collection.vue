@@ -106,7 +106,7 @@ export default defineComponent({
 				return [
 					{
 						name: t('collection', 2),
-						to: `/collections`,
+						to: `/content`,
 					},
 				];
 			});

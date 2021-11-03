@@ -1,5 +1,5 @@
 <template>
-	<private-view class="collections-overview" :title="t('collections')">
+	<private-view class="content-overview" :title="t('content')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="box" />
@@ -7,7 +7,7 @@
 		</template>
 
 		<template #navigation>
-			<collections-navigation />
+			<content-navigation />
 		</template>
 
 		<v-info icon="box" :title="t('no_collections')" center>
@@ -35,13 +35,13 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import CollectionsNavigation from '../components/navigation.vue';
+import ContentNavigation from '../components/navigation.vue';
 import { useUserStore } from '@/stores';
 
 export default defineComponent({
-	name: 'CollectionsOverview',
+	name: 'ContentOverview',
 	components: {
-		CollectionsNavigation,
+		ContentNavigation,
 	},
 	props: {},
 	setup() {
