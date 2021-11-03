@@ -5,7 +5,7 @@ import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
@@ -326,16 +326,18 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		await emitter.emitAsync(`fields.delete.before`, {
-			event: `fields.delete.before`,
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		await emitter.emitFilter(
+			'fields.delete',
+			[field],
+			{
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		await this.knex.transaction(async (trx) => {
 			const relations = this.schema.relations.filter((relation) => {
@@ -430,16 +432,18 @@ export class FieldsService {
 
 		await this.systemCache.clear();
 
-		emitAsyncSafe(`fields.delete`, {
-			event: `fields.delete`,
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		emitter.emitAction(
+			'fields.delete',
+			{
+				payload: [field],
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
