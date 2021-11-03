@@ -1,30 +1,32 @@
 <template>
 	<value-null v-if="!junctionCollection.collection" />
-	<v-menu v-else show-arrow :disabled="value.length === 0">
-		<template #activator="{ toggle }">
-			<render-template
-				:template="internalTemplate"
-				:item="displayItem"
-				:collection="junctionCollection.collection"
-				@click.stop="toggle"
-			/>
-		</template>
+	<div v-else class="display-translations">
+		<render-template :template="internalTemplate" :item="displayItem" :collection="junctionCollection.collection" />
+		<v-menu class="menu" show-arrow :disabled="value.length === 0">
+			<template #activator="{ toggle, deactivate }">
+				<v-icon small class="icon" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
+			</template>
 
-		<v-list class="links">
-			<v-list-item v-for="item in translations" :key="item.id">
-				<v-list-item-content>
-					<div class="header">
-						<div class="lang">
-							<v-icon name="translate" small />
-							{{ item.lang }}
+			<v-list class="links">
+				<v-list-item v-for="item in translations" :key="item.id">
+					<v-list-item-content>
+						<div class="header">
+							<div class="lang">
+								<v-icon name="translate" small />
+								{{ item.lang }}
+							</div>
+							<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
 						</div>
-						<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
-					</div>
-					<render-template :template="internalTemplate" :item="item.item" :collection="junctionCollection.collection" />
-				</v-list-item-content>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+						<render-template
+							:template="internalTemplate"
+							:item="item.item"
+							:collection="junctionCollection.collection"
+						/>
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+	</div>
 </template>
 
 <script lang="ts">
@@ -132,6 +134,19 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-list {
 	width: 300px;
+}
+
+.display-translations {
+	display: flex;
+
+	.icon {
+		color: var(--foreground-subdued);
+		opacity: 0;
+	}
+
+	&:hover .icon {
+		opacity: 1;
+	}
 }
 
 .header {
