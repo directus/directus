@@ -17,7 +17,7 @@ export default defineDisplay({
 	icon: 'settings_ethernet',
 	component: DisplayRelatedValues,
 	options: ({ relations }: ExtensionsOptionsContext) => {
-		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
+		const relatedCollection = relations.m2o?.related_collection ?? relations.o2m?.collection;
 
 		return [
 			{
