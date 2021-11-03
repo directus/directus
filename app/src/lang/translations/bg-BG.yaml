@@ -65,7 +65,7 @@ delete_panel: Изтриване на панела
 create_webhook: Създаване на уеб-кука
 invite_users: Покана до потребители
 invite: Покана
-email_already_invited: Вече е изпратена покана в пощата на "{email}"
+email_already_invited: Вече е изпратена покана в пощата на „{email}“
 emails: Имейли
 connection_excellent: Връзката е отлична
 connection_good: Връзката е добра
@@ -81,7 +81,7 @@ rename_bookmark: Преименуване на отметката
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
 delete_bookmark_copy: >-
-  Сигурни ли сте, че искате да изтриете "{bookmark}" отметката? Действието не може да бъде отменено.
+  Сигурни ли сте, че искате да изтриете „{bookmark}“ отметката? Действието не може да бъде отменено.
 logoutReason:
   SIGN_OUT: Отписан
   SESSION_EXPIRED: Сесията е изтекла
@@ -101,7 +101,7 @@ archive_confirm_count: >-
   Няма избрани записи | Сигурни ли сте, че искате да архивирате записа? | Сигурни ли сте, че искате да архивирате тези {count} записа?
 reset_system_permissions_to: 'Нулиране на системните позволения към:'
 reset_system_permissions_copy: Действието може да презапише персонализираните позволения, които са приложени към системните колекции. Сигурни ли сте?
-the_following_are_minimum_permissions: Следните са минималните изисквани позволения за достъп до "Приложението". Може да бъдат добавяни повече, но не и по-малко.
+the_following_are_minimum_permissions: Следните са минималните изисквани позволения за достъп до „Приложението". Може да бъдат добавяни повече, но не и по-малко.
 app_access_minimum: Минимум за достъп до приложението
 recommended_defaults: Препоръчителни
 unarchive: Разархивиране
@@ -148,10 +148,10 @@ item_permissions: Позволения по запис
 field_permissions: Позволения по поле
 field_validation: Валидация по поле
 field_presets: Стойности на полета
-permissions_for_role: 'Записи, които ролята "{role}" има позволение за {action}.'
-fields_for_role: 'Полета, които ролята "{role}" има позволение за {action}.'
-validation_for_role: 'Правила, които ролята "{role}" трябва да спазва, при {action} на полета.'
-presets_for_role: 'Стойности по подразбиране на полетата, за ролята "{role}".'
+permissions_for_role: 'Записи, които ролята „{role}“ има позволение за {action}.'
+fields_for_role: 'Полета, които ролята „{role}“ има позволение за {action}.'
+validation_for_role: 'Правила, които ролята „{role}“ трябва да спазва, при {action} на полета.'
+presets_for_role: 'Стойности по подразбиране на полетата, за ролята „{role}“.'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_create: Ето как е изглеждал записът при създаването си.
 revision_post_update: Така ще изглежда записът, след възстановяване.
@@ -161,8 +161,8 @@ hide_field_on_detail: Скриване в детайлен изглед
 show_field_on_detail: Показване в детайлния изглед
 delete_field: Изтриване на полето
 fields_and_layout: Полета и оформление
-field_create_success: 'Създадено поле: "{field}"'
-field_update_success: 'Обновено поле: "{field}"'
+field_create_success: 'Създадено поле: „{field}“'
+field_update_success: 'Обновено поле: „{field}“'
 duplicate_where_to: Къде искате да дублирате полето?
 language: Език
 aggregate_function: Агрегираща функция
@@ -235,9 +235,9 @@ new_data_alert: 'Следващото ще бъде създадено във в
 search_collection: Търсене на колекция...
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
-add_m2o_to_collection: 'Добавяне на М2О в "{collection}"'
-add_o2m_to_collection: 'Добавяне на O2M в "{collection}"'
-add_m2m_to_collection: 'Добавяне на M2M в "{collection}"'
+add_m2o_to_collection: 'Добавяне на М2О в „{collection}“'
+add_o2m_to_collection: 'Добавяне на O2M в „{collection}“'
+add_m2m_to_collection: 'Добавяне на M2M в „{collection}“'
 choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне спрямо релацията
 add_note: Въвеждане на полезна бележка към потребителите...
@@ -367,7 +367,7 @@ zoom: Мащабиране
 download: Изтегляне
 open: Отваряне
 open_in_new_window: Отваряне в нов прозорец
-open_folder: Отваряне на папка "{folder}"
+open_folder: Отваряне на папка „{folder}“
 foreground_color: Основен цвят
 background_color: Цвят на фона
 upload_from_device: Добавяне на файл от устройство
@@ -408,9 +408,9 @@ disabled: Изключване
 information: Информативен
 report_bug: Доклад за проблем
 request_feature: Заявка за функция
-interface_not_found: 'Интерфейсът "{interface}" не е намерен.'
+interface_not_found: 'Интерфейсът „{interface}“ не е намерен.'
 reset_interface: Нулиране на интерфейс
-display_not_found: 'Изгледът "{display}" не е намерен.'
+display_not_found: 'Изгледът „{display}“ не е намерен.'
 reset_display: Нулиране на изглед
 list-m2a: Строител (M2A)
 item_count: 'Няма записи | Един запис | {count} записа'
@@ -1093,7 +1093,7 @@ field_options:
       header: Хедър
       value: Стойност
       add: Добавяне на хедър
-no_fields_in_collection: 'Все още няма полета в "{collection}"'
+no_fields_in_collection: 'Все още няма полета в „{collection}“'
 no_value: Няма стойност
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
@@ -1108,7 +1108,7 @@ inline: Вложен
 comment: Коментиране
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
-referential_action_field_label_o2m: При деселектиране на {collection}...
+referential_action_field_label_o2m: При размаркиране от {collection}...
 referential_action_no_action: Избягване на изтривания
 referential_action_cascade: Каскадно изтриване на {collection}
 referential_action_set_null: Зануляване на {field}
@@ -1124,7 +1124,7 @@ delete_label: Изтриване
 delete_are_you_sure: >-
   Действието е постоянно и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
 delete_field_are_you_sure: >-
-  Сигурни ли сте, че искате да изтриете полето "{field}"? Действието не може да бъде отменено.
+  Сигурни ли сте, че искате да изтриете полето „{field}“? Действието не може да бъде отменено.
 description: Описание
 done: Готово
 duplicate: Дублиране
@@ -1178,6 +1178,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1356,7 +1357,7 @@ interfaces:
     repeater: Повторение
     description: Създаване на множество записи със същата структура
     edit_fields: Редактиране на полетата
-    add_label: 'Текст за "Създаване"'
+    add_label: 'Текст за „Създаване“'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
   slider:
@@ -1564,6 +1565,7 @@ layouts:
     field: Геопространствено поле
     invalid_geometry: Невалидна геометрия
     find_location: Определяне на местоположение...
+    default_template: По подразбиране от колекцията...
 panels:
   metric:
     name: Метричен индикатор
