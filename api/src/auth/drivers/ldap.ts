@@ -51,15 +51,14 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidConfigException('Invalid provider config', { provider });
 		}
 
-		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
-		this.config = config;
-
 		const clientConfig = typeof config.client === 'object' ? config.client : {};
 
 		this.bindClient = ldap.createClient({ url: clientUrl, reconnect: true, ...clientConfig });
 		this.bindClient.on('error', (err: Error) => {
 			logger.warn(err);
 		});
+		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
+		this.config = config;
 	}
 
 	private async validateBindClient(): Promise<void> {
