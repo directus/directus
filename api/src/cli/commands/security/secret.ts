@@ -1,13 +1,13 @@
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { join as pathJoin } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import logger from '../../../logger';
 
-export default async function generateKey({ show }: { show?: boolean }): Promise<void> {
-	const key = uuidv4();
+export default async function generateSecret({ show }: { show?: boolean }): Promise<void> {
+	const SECRET = nanoid(32);
 
 	if (show) {
-		process.stdout.write(`Your new app key: ${key}\n`);
+		process.stdout.write(`Your new app secret: ${SECRET}\n`);
 
 		process.exit(0);
 	}
@@ -22,9 +22,9 @@ export default async function generateKey({ show }: { show?: boolean }): Promise
 
 	const envFileContent = readFileSync(envPath)
 		.toString()
-		.replace(/^KEY=(.*)$/gm, `KEY="${key}"`);
+		.replace(/^SECRET=(.*)$/gm, `SECRET="${SECRET}"`);
 
 	writeFileSync(envPath, envFileContent);
 
-	process.stdout.write('App key set correctly.\n');
+	process.stdout.write('App secret set correctly.\n');
 }

@@ -8,6 +8,7 @@ import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
 import init from './commands/init';
 import keyGenerate from './commands/security/key';
+import secretGenerate from './commands/security/secret';
 import rolesCreate from './commands/roles/create';
 import usersCreate from './commands/users/create';
 import usersPasswd from './commands/users/passwd';
@@ -37,6 +38,12 @@ export async function createCli(): Promise<Command> {
 		.description('Generate the app key')
 		.option('--show', 'Show the key without updating the .env file')
 		.action(keyGenerate);
+
+	program
+		.command('secret:generate')
+		.description('Generate the app secret')
+		.option('--show', 'Show the secret without updating the .env file')
+		.action(secretGenerate);
 
 	const dbCommand = program.command('database');
 	dbCommand.command('install').description('Install the database').action(dbInstall);
