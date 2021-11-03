@@ -14,6 +14,13 @@
 		"prepositions"
 	],
 	"main": "dist/format-title.cjs.js",
+	"exports": {
+		".": {
+			"import": "./dist/format-title.bundler.js",
+			"require": "./dist/format-title.cjs.js"
+		  },
+		"./package.json": "./package.json"
+	},
 	"module": "dist/format-title.bundler.js",
 	"unpkg": "dist/format-title.global.min.js",
 	"types": "dist/types/index.d.ts",

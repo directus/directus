@@ -5,6 +5,10 @@
 	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"main": "dist/index.html",
+	"exports": {
+		".": "./dist/index.html",
+		"./package.json": "./package.json"
+	},
 	"files": [
 		"dist",
 		"LICENSE",
