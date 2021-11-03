@@ -33,13 +33,13 @@ export async function createCli(): Promise<Command> {
 	program.command('init').description('Create a new Directus Project').action(init);
 
 	// Security
-	program
+	const securityCommand = program.command('security');
+	securityCommand
 		.command('key:generate')
 		.description('Generate the app key')
 		.option('--show', 'Show the key without updating the .env file')
 		.action(keyGenerate);
-
-	program
+	securityCommand
 		.command('secret:generate')
 		.description('Generate the app secret')
 		.option('--show', 'Show the secret without updating the .env file')
