@@ -46,11 +46,10 @@
 			"url": "https://github.com/benhaynes"
 		}
 	],
-	"main": "index.js",
+	"main": "dist/index.js",
 	"exports": {
-		".": "./index.js",
+		".": "./dist/index.js",
 		"./*": "./dist/*.js",
-		"./cli": "./dist/cli/*.js",
 		"./package.json": "./package.json"
 	},
 	"bin": {
