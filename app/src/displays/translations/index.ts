@@ -16,7 +16,7 @@ export default defineDisplay({
 	description: '$t:displays.translations.description',
 	icon: 'translate',
 	component: DisplayTranslations,
-	options: ({ collection, field, relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }: ExtensionsOptionsContext) => {
 		const fieldsStore = useFieldsStore();
 
 		const junctionCollection = relations.o2m?.collection;
