@@ -993,7 +993,7 @@ field_options:
     auth_password_policy:
       none_text: Няма - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
-      strong_text: Силна - главни, малки, числа и специални символи
+      strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
       fit:
         contain_text: Напасване (запазване на съотношението)
@@ -1561,7 +1561,9 @@ layouts:
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
+    field: Геопространствено поле
     invalid_geometry: Невалидна геометрия
+    find_location: Определяне на местоположение...
 panels:
   metric:
     name: Метричен Индикатор
