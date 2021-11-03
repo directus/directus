@@ -46,7 +46,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const page = syncRefProperty(layoutQuery, 'page', 1);
 		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
-		const sort = syncRefProperty(layoutQuery, 'sort', [fieldsInCollection.value?.[0]?.field]);
+		const sort = syncRefProperty(layoutQuery, 'sort', () =>
+			primaryKeyField.value ? [primaryKeyField.value?.field] : []
+		);
 
 		const locationFilter = ref<Filter>();
 
