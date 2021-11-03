@@ -6,9 +6,9 @@
 While our CLI is the recommended method for self-hosting, you can use whichever of these self-hosted options best suits
 your needs. These methods offer a high level of customization and are ideal for intermediate developers.
 
-- [Command Line Interface (CLI)](/reference/cli/)
-- [Docker](/configuration/installation/docker/)
-- [Manually](/configuration/installation/manual/)
+- [Command Line Interface (CLI)](/getting-started/installation/cli/)
+- [Docker](/getting-started/installation/docker/)
+- [Manually](/getting-started/installation/manual/)
 
 ::: tip Development Environment
 
@@ -22,11 +22,11 @@ The following guides will walk you through the self-hosted installation process 
 These options are only recommended for developers familiar with these services and comfortable with more advanced setup.
 While Directus is always completely free, you will likely need to pay for these services.
 
-- [Generic Ubuntu](/configuration/installation/ubuntu/)
-- [Internet Information Services (IIS)](/configuration/installation/iis)
-- [Amazon AWS](/configuration/installation/aws)
-- [DigitalOcean App Platform](/configuration/installation/digitalocean-app-platform)
-- [Shared Hosting with Plesk](/configuration/installation/plesk)
+- [Generic Ubuntu](/getting-started/installation/ubuntu/)
+- [Internet Information Services (IIS)](/getting-started/installation/iis)
+- [Amazon AWS](/getting-started/installation/aws)
+- [DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform)
+- [Shared Hosting with Plesk](/getting-started/installation/plesk)
 
 ## One-Click Installs
 

@@ -22,14 +22,14 @@ Which one you choose is ultimately up to you.
 
 ## Authentication
 
-By default, all data in the system is off limits for unauthenticated users. To gain access to protected data, you must
+By default, all data in the system is off-limits for unauthenticated users. To gain access to protected data, you must
 [include an access token with every request](/reference/authentication/#access-tokens), or
-[configure permissions for the public role](/concepts/roles/#public-role).
+[configure permissions for the public role](/getting-started/quickstart/#_6-set-role-public-permissions).
 
 Useful references:
 
 - [Authenticating into the API](/reference/authentication/)
-- [Login endpoint reference](reference/authentication/#login)
+- [Login endpoint reference](/reference/authentication/#login)
 
 ## Relational Data
 
@@ -239,7 +239,7 @@ or to rely on a different method altogether. As of right now, we've chosen
 While we recognize this is still a draft spec, the SEARCH method has been used extensively before in the WebDAV world
 ([spec](https://tools.ietf.org/html/rfc5323)), and compared to the other available options, it feels like the "cleanest"
 and most correct to handle this moving forward. As with everything else, if you have any ideas, opinions, or concerns,
-[we'd love to hear your thoughts](http://github.com/directus/directus/discussions/new).
+[we'd love to hear your thoughts](https://github.com/directus/directus/discussions/new).
 
 Useful reading:
 

@@ -1,8 +1,29 @@
 <template>
 	<div class="interface-map">
-		<div class="map" :class="{ loading: mapLoading, error: geometryParsingError || geometryOptionsError }">
+		<div
+			class="map"
+			:class="{
+				loading: mapLoading,
+				error: geometryParsingError || geometryOptionsError,
+				'has-selection': selection.length > 0,
+			}"
+		>
 			<div ref="container" />
 		</div>
+		<div
+			v-if="location"
+			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
+			:style="`transform: translate(${projection.x}px, ${projection.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
+		></div>
+		<transition name="fade">
+			<div
+				v-if="tooltipVisible"
+				class="tooltip top"
+				:style="`display: block; transform: translate(${tooltipPosition.x}px, ${tooltipPosition.y}px) translate(-50%, -150%) rotateX(0deg) rotateZ(0deg)`"
+			>
+				{{ tooltipMessage }}
+			</div>
+		</transition>
 		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
 			<v-icon name="map" />
 			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
@@ -44,7 +65,8 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, toRefs, computed } from 'vue';
-import {
+import maplibre, {
+	LngLatLike,
 	LngLatBoundsLike,
 	AnimationOptions,
 	CameraOptions,
@@ -70,8 +92,17 @@ import {
 	MultiGeometry,
 } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
-import { snakeCase, isEqual } from 'lodash';
-import styles from './style';
+import { snakeCase, isEqual, debounce } from 'lodash';
+import drawLayers from './style';
+const activeLayers = [
+	'directus-point',
+	'directus-line',
+	'directus-polygon-fill',
+	'directus-polygon-stroke',
+	'directus-polygon-midpoint',
+	'directus-polygon-and-line-vertex',
+].flatMap((name) => [name + '.hot', name + '.cold']);
+
 import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
 import { useAppStore } from '@/stores';
@@ -127,6 +158,7 @@ export default defineComponent({
 		const geometryType = (props.fieldData?.schema?.geometry_type ?? props.geometryType) as GeometryType;
 		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
 
+		const mapboxKey = getSetting('mapbox_key');
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
@@ -144,7 +176,14 @@ export default defineComponent({
 			geometryOptionsError.value = error;
 		}
 
-		const mapboxKey = getSetting('mapbox_key');
+		const selection = ref<GeoJSON.Feature[]>([]);
+
+		const location = ref<LngLatLike | null>();
+		const projection = ref<{ x: number; y: number } | null>();
+		function updateProjection() {
+			projection.value = !location.value ? null : map.project(location.value as any);
+		}
+		watch(location, updateProjection);
 
 		const controls = {
 			draw: new MapboxDraw(getDrawOptions(geometryType)),
@@ -152,8 +191,42 @@ export default defineComponent({
 			navigation: new NavigationControl({
 				showCompass: false,
 			}),
-			geolocate: new GeolocateControl(),
+			geolocate: new GeolocateControl({
+				showUserLocation: false,
+			}),
+			geocoder: !mapboxKey
+				? null
+				: (new MapboxGeocoder({
+						accessToken: mapboxKey,
+						collapsed: true,
+						flyTo: { speed: 1.4 },
+						marker: false,
+						mapboxgl: maplibre as any,
+						placeholder: t('layouts.map.find_location'),
+				  }) as any),
 		};
+
+		const tooltipVisible = ref(false);
+		const tooltipMessage = ref('');
+		const tooltipPosition = ref({ x: 0, y: 0 });
+
+		function hideTooltip() {
+			tooltipVisible.value = false;
+		}
+
+		const updateTooltipDebounce = debounce((event: any) => {
+			const feature = event.features?.[0];
+			if (feature && feature.properties!.active === 'false') {
+				tooltipMessage.value = t('interfaces.map.click_to_select', { geometry: feature.geometry.type });
+				tooltipVisible.value = true;
+				tooltipPosition.value = event.point;
+			}
+		}, 200);
+
+		function updateTooltip(event: any) {
+			tooltipVisible.value = false;
+			updateTooltipDebounce({ point: event.point, features: event.features });
+		}
 
 		onMounted(() => {
 			const cleanup = setupMap();
@@ -162,6 +235,9 @@ export default defineComponent({
 
 		return {
 			t,
+			tooltipPosition,
+			tooltipVisible,
+			tooltipMessage,
 			container,
 			mapLoading,
 			resetValue,
@@ -169,6 +245,9 @@ export default defineComponent({
 			geometryOptionsError,
 			basemaps,
 			basemap,
+			location,
+			projection,
+			selection,
 		};
 
 		function setupMap(): () => void {
@@ -181,15 +260,23 @@ export default defineComponent({
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
-
+			if (controls.geocoder) {
+				map.addControl(controls.geocoder, 'top-right');
+				controls.geocoder.on('result', (event: any) => {
+					location.value = event.result.center;
+				});
+				controls.geocoder.on('clear', () => {
+					location.value = null;
+				});
+			}
+			controls.geolocate.on('geolocate', (event: any) => {
+				const { longitude, latitude } = event.coords;
+				location.value = [longitude, latitude];
+			});
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
 			map.addControl(controls.fitData, 'top-left');
 			map.addControl(controls.draw as any, 'top-left');
-
-			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }) as any, 'top-right');
-			}
 
 			map.on('load', async () => {
 				map.resize();
@@ -198,58 +285,52 @@ export default defineComponent({
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
 				map.on('draw.modechange', handleDrawModeChange);
+				map.on('draw.selectionchange', handleSelectionChange);
+				map.on('move', updateProjection);
+				for (const layer of activeLayers) {
+					map.on('mousedown', layer, hideTooltip);
+					map.on('mousemove', layer, updateTooltip);
+					map.on('mouseleave', layer, updateTooltip);
+				}
 				window.addEventListener('keydown', handleKeyDown);
 			});
 
-			watch(
-				() => props.value,
-				(value) => {
-					if (!value) {
-						controls.draw.deleteAll();
-						currentGeometry = null;
-						if (geometryType) {
-							const snaked = snakeCase(geometryType.replace('Multi', ''));
-							const mode = `draw_${snaked}` as any;
-							controls.draw.changeMode(mode);
-						}
-					} else {
-						if (!isEqual(value, currentGeometry && serialize(currentGeometry))) {
-							loadValueFromProps();
-							controls.draw.changeMode('simple_select');
-						}
-					}
-					if (props.disabled) {
-						controls.draw.changeMode('static');
-					}
-				},
-				{ immediate: true }
-			);
-
-			watch(
-				() => style.value,
-				async () => {
-					map.removeControl(controls.draw as any);
-					map.setStyle(style.value, { diff: false });
-					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
-					map.addControl(controls.draw as any, 'top-left');
-					loadValueFromProps();
-				}
-			);
-
-			watch(
-				() => props.disabled,
-				() => {
-					map.removeControl(controls.draw as any);
-					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
-					map.addControl(controls.draw as any, 'top-left');
-					loadValueFromProps();
-				}
-			);
+			watch(() => props.value, updateValue, { immediate: true });
+			watch(() => style.value, updateStyle);
+			watch(() => props.disabled, updateStyle);
 
 			return () => {
 				window.removeEventListener('keydown', handleKeyDown);
 				map.remove();
 			};
+		}
+
+		function updateValue(value: any) {
+			if (!value) {
+				controls.draw.deleteAll();
+				currentGeometry = null;
+				if (geometryType) {
+					const snaked = snakeCase(geometryType.replace('Multi', ''));
+					const mode = `draw_${snaked}` as any;
+					controls.draw.changeMode(mode);
+				}
+			} else {
+				if (!isEqual(value, currentGeometry && serialize(currentGeometry))) {
+					loadValueFromProps();
+					controls.draw.changeMode('simple_select');
+				}
+			}
+			if (props.disabled) {
+				controls.draw.changeMode('static');
+			}
+		}
+
+		function updateStyle() {
+			map.removeControl(controls.draw as any);
+			map.setStyle(style.value, { diff: false });
+			controls.draw = new MapboxDraw(getDrawOptions(geometryType));
+			map.addControl(controls.draw as any, 'top-left');
+			loadValueFromProps();
 		}
 
 		function resetValue(hard: boolean) {
@@ -269,7 +350,7 @@ export default defineComponent({
 
 		function getDrawOptions(type: GeometryType): any {
 			const options = {
-				styles,
+				styles: drawLayers,
 				controls: {},
 				userProperties: true,
 				displayControlsDefault: false,
@@ -367,6 +448,10 @@ export default defineComponent({
 			}
 		}
 
+		function handleSelectionChange(event: any) {
+			selection.value = event.features;
+		}
+
 		function handleDrawUpdate() {
 			currentGeometry = getCurrentGeometry();
 			if (!currentGeometry) {
@@ -377,7 +462,7 @@ export default defineComponent({
 			}
 		}
 
-		function handleKeyDown(event) {
+		function handleKeyDown(event: any) {
 			if ([8, 46].includes(event.keyCode)) {
 				controls.draw.trash();
 			}
@@ -386,34 +471,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.mapbox-gl-draw_point::after {
-	content: 'add_location';
-}
-
-.mapbox-gl-draw_line::after {
-	content: 'timeline';
-}
-
-.mapbox-gl-draw_polygon::after {
-	content: 'category';
-}
-
-.mapbox-gl-draw_trash::after {
-	content: 'delete';
-}
-
-.mapbox-gl-draw_uncombine::after {
-	content: 'call_split';
-}
-
-.mapbox-gl-draw_combine::after {
-	content: 'call_merge';
-}
-</style>
-
 <style lang="scss" scoped>
 .interface-map {
+	position: relative;
 	overflow: hidden;
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -432,6 +492,10 @@ export default defineComponent({
 			width: 100%;
 			height: 100%;
 		}
+
+		&:not(.has-selection) :deep(.mapbox-gl-draw_trash) {
+			display: none;
+		}
 	}
 
 	.v-info {
@@ -445,6 +509,30 @@ export default defineComponent({
 		position: absolute;
 		bottom: 10px;
 		left: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 36px;
+		padding: 10px;
+		color: var(--foreground-subdued);
+		background-color: var(--background-page);
+		border: var(--border-width) solid var(--background-page);
+		border-radius: var(--border-radius);
+
+		span {
+			width: auto;
+			margin-right: 4px;
+		}
+
+		.v-select {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.mapboxgl-search-location-dot {
+		position: absolute;
+		top: 0;
+		left: 0;
 	}
 }
 
@@ -453,5 +541,19 @@ export default defineComponent({
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+.tooltip {
+	pointer-events: none;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

@@ -104,12 +104,14 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 };
 
 export default function getLocalType(
-	column: SchemaOverview[string]['columns'][string] | Column,
+	column?: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
 ): LocalTypeEntry {
 	const database = getDatabase();
 
-	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]] as LocalTypeEntry;
+	const type = (
+		column ? localTypeMap[column.data_type.toLowerCase().split('(')[0]] : { type: 'alias' }
+	) as LocalTypeEntry;
 
 	const special = field?.special;
 
@@ -124,7 +126,10 @@ export default function getLocalType(
 	}
 
 	/** Handle OracleDB timestamp with time zone */
-	if (database.client.constructor.name === 'Client_Oracledb' || database.client.constructor.name === 'Client_Oracle') {
+	if (
+		column &&
+		(database.client.constructor.name === 'Client_Oracledb' || database.client.constructor.name === 'Client_Oracle')
+	) {
 		const type = column.data_type.toLowerCase();
 
 		if (type.startsWith('timestamp')) {
@@ -136,20 +141,21 @@ export default function getLocalType(
 		}
 	}
 	/** Handle Postgres numeric decimals */
-	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
+	if (column && column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return { type: 'decimal' };
 	}
 
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
-	if (column.data_type === 'nvarchar' && column.max_length === -1) {
+	if (column && column.data_type === 'nvarchar' && column.max_length === -1) {
 		return { type: 'text' };
 	}
 
 	/** Handle Boolean as TINYINT and edgecase MySQL where it still is just tinyint */
 	if (
-		(database.client.constructor.name === 'Client_MySQL' && column.data_type.toLowerCase() === 'tinyint') ||
-		column.data_type.toLowerCase() === 'tinyint(1)' ||
-		column.data_type.toLowerCase() === 'tinyint(0)'
+		column &&
+		((database.client.constructor.name === 'Client_MySQL' && column.data_type.toLowerCase() === 'tinyint') ||
+			column.data_type.toLowerCase() === 'tinyint(1)' ||
+			column.data_type.toLowerCase() === 'tinyint(0)')
 	) {
 		return { type: 'boolean' };
 	}

@@ -1,18 +1,18 @@
 <template>
 	<div class="form">
-		<div class="field half-left">
+		<div v-if="!isGenerated" class="field half-left">
 			<div class="label type-label">{{ t('readonly') }}</div>
 			<v-checkbox v-model="readonly" :label="t('disabled_editing_value')" block />
 		</div>
 
-		<div class="field half-right">
-			<div class="label type-label">{{ t('hidden') }}</div>
-			<v-checkbox v-model="hidden" :label="t('hidden_on_detail')" block />
+		<div v-if="!isGenerated" class="field half-right">
+			<div class="label type-label">{{ t('required') }}</div>
+			<v-checkbox v-model="required" :label="t('require_value_to_be_set')" block />
 		</div>
 
 		<div class="field half-left">
-			<div class="label type-label">{{ t('required') }}</div>
-			<v-checkbox v-model="required" :label="t('require_value_to_be_set')" block />
+			<div class="label type-label">{{ t('hidden') }}</div>
+			<v-checkbox v-model="hidden" :label="t('hidden_on_detail')" block />
 		</div>
 
 		<div v-if="type !== 'group'" class="field full">
@@ -84,8 +84,9 @@ export default defineComponent({
 		const { field } = storeToRefs(fieldDetailStore);
 
 		const type = computed(() => field.value.type);
+		const isGenerated = computed(() => field.value.schema?.is_generated);
 
-		return { t, readonly, hidden, required, note, translations, type };
+		return { t, readonly, hidden, required, note, translations, type, isGenerated };
 	},
 });
 </script>

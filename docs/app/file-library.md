@@ -14,7 +14,7 @@ features and functionality as the [Collection Page](/app/content-collections/).
 
 Provides a custom form for viewing assets and embeds, with core fields included out-of-the-box (see below), and the
 ability for administrators to add additional custom fields. This page has the same features and functionality as the
-[Item Page](/app/content/item).
+[Item Page](/getting-started/glossary/#items).
 
 #### File Info
 

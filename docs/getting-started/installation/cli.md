@@ -85,4 +85,5 @@ By default, the `create-directus-project` tool will set the file permissions of 
 
 ## Configure / Update / Upgrade your Project
 
-See the [Project Guide](/guides/projects/#upgrading-updating-a-project) to learn how to maintain your project further.
+See the [Updates & Migrations](/configuration/upgrades-migrations/) to learn how to maintain your project moving
+forward.

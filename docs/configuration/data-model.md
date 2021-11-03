@@ -48,13 +48,13 @@ are available:
   - [Updating a Field](#updating-a-field)
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
-  - [Changing Field Order & Layout](/dead)
+  - [Changing Field Order & Layout](#adjusting-the-collection-form)
 - **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
   Translations (see field below).
 - **Note** — A helpful note that explains the collection's purpose
 - **Icon** — The icon used throughout the App when referencing this collection
 - **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A [Field Template](/dead) that creates dynamic titles for the collection's items
+- **Display Template** — A Field Template that creates dynamic titles for the collection's items
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
@@ -174,9 +174,11 @@ This pane controls the technical details of the field's database column.
 
 - **Key** — (Required) The database column name and field's API key. The key must be unique within its parent
   Collection. As of now, all keys are sanitized: lowercased, alphanumeric, and with spaces removed. Keys can not be
-  changed once created, however you can use [Field Name Translations](/dead) to override how it's displayed in the App.
-- **Type** — (Required) How the data is saved to the database; See [Directus Data Type Superset](/concepts/types). This
-  dropdown maybe be limited or even disabled based on your chosen Field category.
+  changed once created, however you can use [Field Name Translations](/configuration/data-model/#field) to override how
+  it's displayed in the App.
+- **Type** — (Required) How the data is saved to the database; See
+  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown maybe be limited or even
+  disabled based on your chosen Field category.
 - **Length** — (Only for certain types) For String types this determines the number of characters that can be stored in
   the database. For Float and Decimal types, this control becomes **Precision & Scale**.
 - **On Create** — (Only for certain types) For some data types, this option allows you to control what value is saved
@@ -272,8 +274,7 @@ The conditions are matched in order. The **last** condition that matches is the 
 ::: tip System Fields
 
 While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the
-system collections. To get started, enable System Collections within the sidebar filter of
-[Settings > Data Model](/concepts/databases/).
+system collections. To get started, expand System Collections from the bottom of **Settings > Data Model**.
 
 :::
 
