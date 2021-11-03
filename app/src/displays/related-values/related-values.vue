@@ -1,7 +1,7 @@
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(type.toLowerCase())"
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType.toLowerCase())"
 		show-arrow
 		:disabled="value.length === 0"
 	>
@@ -35,6 +35,7 @@ import { defineComponent, computed, PropType } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
 import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
+import { getLocalTypeForField } from '../../modules/settings/routes/data-model/get-local-type';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -55,16 +56,16 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		type: {
-			type: String,
-			required: true,
-		},
 	},
 	setup(props) {
 		const { t, te } = useI18n();
 
 		const relatedCollection = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
+		});
+
+		const localType = computed(() => {
+			return getLocalTypeForField(props.collection, props.field);
 		});
 
 		const { primaryKeyField } = useCollection(relatedCollection);
@@ -93,7 +94,7 @@ export default defineComponent({
 			return null;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, internalTemplate, unit };
+		return { relatedCollection, primaryKeyField, getLinkForItem, internalTemplate, unit, localType };
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;
