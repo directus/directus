@@ -3,6 +3,13 @@
 > Directus can be installed in many different ways and on several different stacks. You can choose between local,
 > self-hosted on-premises, or our managed Cloud solution.
 
+::: warning Use a unique secret
+
+When deploying your Directus app in a different environment like **staging** or **production** be sure to
+[use a fresh and unique secret](/reference/cli/#generate-the-app-secret) to avoid security issues.
+
+:::
+
 While our CLI is the recommended method for self-hosting, you can use whichever of these self-hosted options best suits
 your needs. These methods offer a high level of customization and are ideal for intermediate developers.
 
