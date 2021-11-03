@@ -221,6 +221,49 @@ export class GraphQLService {
 			);
 		}
 
+		const extensionManager = getExtensionManager();
+
+		extensionManager.listExtensions('endpoint').map((extension) => {
+			const endpointConfig = extensionManager.getEndpointConfig(extension);
+			if (!endpointConfig || typeof endpointConfig === 'function') return;
+
+			const { queries, mutations } = endpointConfig;
+			if (queries) {
+				queries.map((query) => {
+					const { operationName, fields, resolver, variables } = query;
+
+					// TODO: handle missing fields before creating mutation
+					schemaComposer.Query.addFields({
+						[operationName]: {
+							type: schemaComposer.createObjectTC({
+								name: `endpoint_${operationName}`,
+								fields: fields,
+							}),
+							resolve: (_, input) => resolver(_, input),
+							...(variables && { args: variables }),
+						},
+					});
+				});
+			}
+			if (mutations) {
+				mutations.map((mutation) => {
+					const { operationName, fields, resolver, variables } = mutation;
+
+					// TODO: handle missing fields before creating mutation
+					schemaComposer.Mutation.addFields({
+						[operationName]: {
+							type: schemaComposer.createObjectTC({
+								name: `endpoint_${operationName}`,
+								fields: fields,
+							}),
+							resolve: (_, input) => resolver(_, input),
+							...(variables && { args: variables }),
+						},
+					});
+				});
+			}
+		});
+
 		const readableCollections = Object.values(schema.read.collections)
 			.filter((collection) => collection.collection in ReadCollectionTypes)
 			.filter(scopeFilter);
