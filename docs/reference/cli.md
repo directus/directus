@@ -70,6 +70,42 @@ Migrate the database up/down to match the versions of Directus. Once you update 
 
 To move your configured data model between Directus instances, you can use the schema "snapshot" and "apply" commands.
 
+### Generate the app key
+
+If you need to setup your local `.env` file or deploy a Directus project, you can generate a fresh app key with a simple
+command.
+
+```bash
+npx directus security key:generate
+```
+
+This will overwrite your `.env` current key with a brand new one. You can, otherwise, use the `--show` flag to skip this
+operation and just display the key in your terminal, particularly useful when deploying in production your project.
+
+```bash
+npx directus security key:generate --show
+# Your new app key: 9a30bf49-946c-430c-83fc-eaefce5673c3
+```
+
+### Generate the app secret
+
+Along with the app key, a secret token is required to let your Directus project work properly. It is **vital** that this
+token remains **unique** for every environment, since it's being used to sign JWTs and many other security features. You
+can generate a new one with this simple command:
+
+```bash
+npx directus security secret:generate
+```
+
+This will overwrite your `.env` current key with a brand new token. You can, otherwise, use the `--show` flag to skip
+this operation and just display the value in your terminal, particularly useful when deploying in production your
+project.
+
+```bash
+npx directus security token:generate --show
+# Your new app secret: Ypzy1c2O3tcvpP_1c7uT4Dhl-liOub8S
+```
+
 #### Snapshot the Data Model
 
 Directus can automatically generate a snapshot of your current data model in YAML or JSON format. This includes all
