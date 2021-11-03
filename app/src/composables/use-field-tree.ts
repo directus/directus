@@ -49,8 +49,9 @@ export function useFieldTree(
 
 	function treeToList(tree: FieldTree, parentName?: string): FieldOption[] {
 		return Object.values(tree).map((field) => {
-			const fieldName = field.type === 'm2a' ? `${field.field}:${field.collection}` : field.field;
-			const key = parentName ? `${parentName}.${fieldName}` : fieldName;
+			const parent = field.type == 'm2a' ? `${parentName}:${field.collection}` : parentName;
+			const key = parent ? `${parent}.${field.field}` : field.field;
+			const fieldName = field.field;
 			const children = treeToList(field.children, key);
 			return {
 				name: field.name,

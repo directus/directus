@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { get, set, isEmpty, cloneDeep } from 'lodash';
+import { get, set, isEmpty, cloneDeep, merge } from 'lodash';
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
@@ -150,18 +150,11 @@ export default defineComponent({
 
 		function addNode(key: string) {
 			if (key === '$group') {
-				innerValue.value = [
-					...innerValue.value,
-					{
-						_and: [],
-					},
-				];
+				innerValue.value = merge({}, innerValue.value, { _and: [] });
 			} else {
-				const filterObj = {};
-
 				const field = fieldsStore.getField(collection.value, key)!;
 				const operator = getFilterOperatorsForType(field.type)[0];
-				set(filterObj, key, { ['_' + operator]: null });
+				const filterObj = set({}, key, { ['_' + operator]: null });
 
 				innerValue.value = [...innerValue.value, filterObj] as FieldFilter[];
 			}
