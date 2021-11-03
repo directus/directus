@@ -3,7 +3,7 @@ import axios, { CancelTokenSource } from 'axios';
 import { useCollection } from './use-collection';
 import { Item } from '../types';
 import { moveInArray } from '../utils';
-import { isEqual, throttle, debounce } from 'lodash';
+import { isEqual, throttle } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';
 import { Query } from '../types/query';
 
@@ -69,7 +69,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 	watch(
 		[collection, limit, sort, search, filter, fields, page],
-		debounce(async (after, before) => {
+		async (after, before) => {
 			if (isEqual(after, before)) return;
 
 			const [newCollection, newLimit, newSort, newSearch, newFilter, _newFields, _newPage] = after;
@@ -91,7 +91,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 			}
 
 			fetchItems();
-		}, 300),
+		},
 		{ deep: true, immediate: true }
 	);
 

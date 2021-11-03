@@ -22,8 +22,8 @@
 		inline
 		:items="choices"
 		:model-value="value"
-		allow-other
 		:placeholder="t('select')"
+		allow-other
 		@update:model-value="emitValue($event)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
@@ -80,8 +80,6 @@ export default defineComponent({
 		const inputEl = ref<HTMLElement>();
 		const { t } = useI18n();
 
-		const localValue = ref(props.value);
-
 		const displayValue = computed(() => {
 			if (props.value === null) return null;
 			if (props.value === undefined) return null;
@@ -94,7 +92,7 @@ export default defineComponent({
 		});
 
 		const width = computed(() => {
-			return (localValue.value?.toString().length || 2) + 1 + 'ch';
+			return (props.value?.toString().length || 2) + 1 + 'ch';
 		});
 
 		const inputPattern = computed(() => {
@@ -106,7 +104,7 @@ export default defineComponent({
 				case 'float':
 					return '[+-]?[0-9]+\\.?[0-9]*';
 				case 'uuid':
-					return '\\$CURRENT_USER|\\$CURRENT_ROLE|[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+					return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
 				default:
 					return '';
 			}
@@ -120,9 +118,18 @@ export default defineComponent({
 
 		function emitValue(val: unknown) {
 			if (val === '') {
-				emit('input', null);
-			} else {
-				emit('input', val);
+				return emit('input', null);
+			}
+
+			if (
+				typeof val === 'string' &&
+				['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix))
+			) {
+				return emit('input', val);
+			}
+
+			if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
+				return emit('input', val);
 			}
 		}
 	},
