@@ -28,27 +28,27 @@ archived: Архивиран
 modules: Модули
 module_bar: Модулна лента
 tile_size: Големина на сегментите
-edit_field: Редактиране на поле
+edit_field: Редактиране на полето
 conditions: Условия
 maps: Географски карти
 item_creation: Записът е създаден
 item_revision: Ревизии на запис
 enter_a_name: Въвеждане на името...
-duplicate_field: Дублиране на поле
+duplicate_field: Дублиране на полето
 half_width: Половин ширина
 full_width: Пълна ширина
 group: Групиране
 and: И
 or: Или
 fill_width: Изпълване по ширина
-field_name_translations: Превод на името за полето
+field_name_translations: Превод на името на полето
 enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
 add_field: Добавяне на поле
 role_name: Име на роля
 branch: Клон
 leaf: Листо
 indeterminate: Неопределен
-edit_collection: Редактиране на колекция
+edit_collection: Редактиране на колекцията
 exclusive: Изключително
 children: Дъщерен
 db_only_click_to_configure: 'Само в базата от данни: Натиснете за конфигуриране'
@@ -61,9 +61,9 @@ create_preset: Създаване на заготовка
 create_panel: Създаване на панел
 create_role: Създаване на роля
 create_user: Създаване на потребител
-delete_panel: Изтриване на панел
+delete_panel: Изтриване на панела
 create_webhook: Създаване на уеб-кука
-invite_users: Поканване на потребители
+invite_users: Покана до потребители
 invite: Покана
 email_already_invited: Вече е изпратена покана в пощата на "{email}"
 emails: E-пощи
@@ -71,15 +71,15 @@ connection_excellent: Връзката е отлична
 connection_good: Връзката е добра
 connection_fair: Връзката е приемлива
 connection_poor: Връзката е лоша
-primary: Първичен
-rename_folder: Преименуване на папка
-delete_folder: Изтриване на папка
+primary: Главен
+rename_folder: Преименуване на папката
+delete_folder: Изтриване на папката
 prefix: Представка
 suffix: Наставка
 reset_bookmark: Нулиране на отметки
-rename_bookmark: Преименуване на отметка
+rename_bookmark: Преименуване на отметката
 update_bookmark: Обновяване на отметка
-delete_bookmark: Изтриване на отметка
+delete_bookmark: Изтриване на отметката
 delete_bookmark_copy: >-
   Сигурни ли сте, че искате да изтриете "{bookmark}" отметката? Действието не може да бъде отменено.
 logoutReason:
@@ -130,7 +130,7 @@ all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран
 nullable: Може да е null
-allow_null_value: Може да е NULL
+allow_null_value: Възможна е празна - NULL стойност
 allow_multiple: Множествен избор
 allow_multiple_to_be_open: Отваряне на множество
 enter_value_to_replace_nulls: Въвеждане на нова стойност, която да замени NULL в полето.
@@ -151,15 +151,15 @@ field_presets: Стойности на полета
 permissions_for_role: 'Записи, които ролята "{role}" има позволение за {action}.'
 fields_for_role: 'Полета, които ролята "{role}" има позволение за {action}.'
 validation_for_role: 'Правила, които ролята "{role}" трябва да спазва, при {action} на полета.'
-presets_for_role: 'Стойности на полета по подразбиране, за ролята "{role}".'
+presets_for_role: 'Стойности по подразбиране на полетата, за ролята "{role}".'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_create: Ето как е изглеждал записът при създаването си.
-revision_post_update: Ето как ще изглежда записът след промяната.
-changes_made: По-долу са специфичните промени след ревизията.
-no_relational_data: Релационните данни не са включени тук.
+revision_post_update: Така ще изглежда записът, след възстановяване.
+changes_made: По-долу, са промените в ревизията.
+no_relational_data: Данните от релационните полета не са включени.
 hide_field_on_detail: Скриване в детайлен изглед
 show_field_on_detail: Показване в детайлния изглед
-delete_field: Изтриване на поле
+delete_field: Изтриване на полето
 fields_and_layout: Полета и оформление
 field_create_success: 'Създадено поле: "{field}"'
 field_update_success: 'Обновено поле: "{field}"'
@@ -258,7 +258,7 @@ translations: Преводи
 no_translations: Няма преводи
 note: Бележка
 enter_a_value: Въвеждане на стойност...
-enter_a_placeholder: Въвеждане на подсказка...
+enter_a_placeholder: Въвеждане на подсказката...
 length: Дължина
 precision_scale: Прецизност и мащаб
 readonly: Само за четене
@@ -272,7 +272,7 @@ dismiss: Отхвърляне
 raw_value: Стойност в суров вид
 edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
-clear_value: Изчистване на стойност
+clear_value: Изчистване на стойността
 clear_changes: Изчистване на промените
 reset_to_default: Възстановяване към начално състояние
 undo_changes: Отмяна и напускане
@@ -317,7 +317,7 @@ a_unique_table_name: Уникално име на таблица...
 a_unique_column_name: Уникално име на колона...
 enable_custom_values: Собствени стойности
 submit: Изпращане
-move_to_folder: Преместване в папка
+move_to_folder: Преместване в друга папка
 move: Преместване
 system: Система
 add_field_related: Добавяне на поле към релативната колекция
@@ -335,7 +335,7 @@ minutes: Минути
 hours: Часа
 month: Месец
 year: Година
-select_all: Избиране на всичко
+select_all: Избиране на всички
 months:
   january: Януари
   february: Февруари
@@ -405,7 +405,7 @@ select_item: Избор на запис
 no_items: Няма записи
 search_items: Търсене в записите...
 disabled: Изключване
-information: Информация
+information: Информативен
 report_bug: Доклад за проблем
 request_feature: Заявка за функция
 interface_not_found: 'Интерфейсът "{interface}" не е намерен.'
@@ -505,7 +505,7 @@ errors:
   UNKNOWN: Неочаквана грешка
 security: Сигурност
 value_hashed: Хеширана стойност
-bookmark_name: Име на отметка...
+bookmark_name: Име на отметката...
 create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
 bookmarks: Отметки
@@ -527,7 +527,7 @@ flip_vertical: Вертикално обръщане
 aspect_ratio: Съотношение
 rotate: Завъртане
 all_users: Всички потребители
-delete_collection: Изтриване на колекция
+delete_collection: Изтриване на колекцията
 update_collection_success: Обновена колекция
 delete_collection_success: Изтрита колекция
 make_collection_visible: Показване на колекцията
@@ -551,9 +551,9 @@ icon_left: Икона вляво
 icon_right: Икона вдясно
 count_other_revisions: '{count} други ревизии'
 font: Шрифт
-sans_serif: Несерифен
+sans_serif: Безсерифен
 serif: Серифен
-monospace: Monospace
+monospace: Равноширок
 divider: Разделител
 color: Цвят
 circle: Кръг
@@ -604,7 +604,7 @@ upload_pending: Качване в изчакване
 drag_file_here: За да качите файловете, пуснете ги тук
 click_to_browse: Натиснете за избор
 interface_options: Опции за интерфейса
-layout_options: Опции за оформление
+layout_options: Оформление и настройки
 rows: Редове
 columns: Колони
 collection_setup: Настройки на колекцията
@@ -665,7 +665,7 @@ edit_dashboard: Промяна на таблото
 delete_dashboard: Изтриване на таблото
 visible: Видимост
 prefix_placeholder: Текст пред стойността...
-suffix_placeholder: Текст след стойността...
+suffix_placeholder: Текст зад стойността...
 decimals_placeholder: Брой на цифрите след десетичния знак...
 no_dashboards: Няма табла
 no_dashboards_copy: Все още нямате нито едно табло.
@@ -733,19 +733,19 @@ wysiwyg_options:
   fontselect: Избор на шрифт
   fontsizeselect: Избор на големина
   indent: Отстъп
-  outdent: Отместване навън
+  outdent: Външно отместване
   undo: Връщане
   redo: Повторение
   remove: Премахване
-  removeformat: Премахване на форматиране
-  selectall: Избиране на всичко
+  removeformat: Изчистване на форматирането
+  selectall: Избиране на всички
   table: Таблица
   visualaid: Преглед на невидимите елементи
   source_code: Редактиране на изходен код
   fullscreen: Пълен Екран
   directionality: Подравняване
 dropdown: Падащо меню
-choices: Избори
+choices: Възможности
 choices_option_configured_incorrectly: Възможностите са настроени неправилно
 deselect: Отмяна на избора
 deselect_all: Премахване на избора
@@ -756,7 +756,7 @@ creating_in: 'Създаване на запис в {collection}'
 editing_in: 'Редактиране на запис от {collection}'
 creating_unit: 'Създаване {unit}'
 editing_unit: 'Редактиране на {unit}'
-editing_in_batch: 'Масово редактиране {count} на записа'
+editing_in_batch: 'Множествено редактиране на {count} записи'
 no_options_available: Не са налични опции
 settings_data_model: Модел на данни
 settings_permissions: Роли и позволения
@@ -825,7 +825,7 @@ no_upscale: Без уголемяване на картиките
 collection: Колекция
 collections: Колекции
 singleton: Сек
-singleton_label: Използване като единствен запис
+singleton_label: Използване като сам и единствен запис
 system_fields_locked: Системните полета са заключени и не могат да бъдат променяни
 directus_collection:
   directus_activity: Профилирани логове за всички събития
@@ -847,7 +847,7 @@ directus_collection:
   directus_webhooks: Конфигурация от HTTP завките базирани на събития
 fields:
   directus_activity:
-    item: Първичен ключ на запис
+    item: Първичен ключ на записа
     action: Действие
     collection: Колекция
     timestamp: Действие на
@@ -901,7 +901,7 @@ fields:
     password: Парола
     avatar: Аватар
     location: Местоположение
-    title: Заглавие
+    title: Звание
     description: Описание
     tags: Тагове
     user_preferences: Потребителски настройки
@@ -913,10 +913,10 @@ fields:
     tfa_secret: Двуфакторна автентикация
     admin_options: Административни настройки
     status: Статус
-    status_draft: Чернова
+    status_draft: Чернови
     status_invited: Поканен
     status_active: Активен
-    status_suspended: Замразен
+    status_suspended: Спрян
     status_archived: Архивиран
     role: Роля
     token: Токен
@@ -950,7 +950,7 @@ fields:
     auth_login_attempts: Брой за опити за вход
     files_and_thumbnails: Файлове и картинки
     storage_default_folder: Папка по подразбиране
-    storage_asset_presets: Заготовки за съхранените файлове
+    storage_asset_presets: Заготовки за записаните картинки
     storage_asset_transform: Трансформиране на съхранените файлове
     overrides: Отмяна
     custom_css: Собствен CSS
@@ -960,7 +960,7 @@ fields:
     note: Бележка
     hidden: Скриване
     singleton: Сек
-    translation: Превод на името за полето
+    translation: Превод на името на полето
     display_template: Шаблон
   directus_roles:
     name: Име на роля
@@ -1019,10 +1019,10 @@ field_options:
     track_activity_revisions: Проследяване на активността и ревизиите
     only_track_activity: Проследяване само на активността
     do_not_track_anything: Без следене
-    collection_setup: Настройки на колекция
+    collection_setup: Настройки на колекцията
     note_placeholder: Описание на колекцията...
     hidden_label: Скриване в приложението
-    singleton: Използване като единствен запис
+    singleton: Използване като сам и единствен запис
     language: Език
     translation: Превод
     translation_placeholder: Въвеждане на превод...
@@ -1030,9 +1030,9 @@ field_options:
     singular_unit: Единствено число
     plural_unit: Множествено число
     archive_divider: Архивиране
-    archive_field: Архивиране по поле
+    archive_field: Поле за архивен статус
     archive_field_placeholder: Избор на поле...
-    archive_app_filter: Възможност за филтриране на архивни
+    archive_app_filter: Възможност за филтриране на архивираните
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
     sort_divider: Сортиране
@@ -1054,7 +1054,7 @@ field_options:
     fields:
       icon_name: Икона
       name_name: Име
-      name_placeholder: Въвеждане на заглавие...
+      name_placeholder: Въвеждане на заглавието...
       link_name: Връзка
       link_placeholder: Релативен или абсолютен URL...
     collection_list:
@@ -1074,15 +1074,15 @@ field_options:
     dropdown_light: Светъл режим
     dropdown_dark: Тъмен режим
     admin_divider: Административни настройки
-    status_dropdown_draft: Чернова
+    status_dropdown_draft: Чернови
     status_dropdown_invited: Поканен
     status_dropdown_active: Активен
-    status_dropdown_suspended: Замразен
+    status_dropdown_suspended: Спрян
     status_dropdown_archived: Архивиран
     token: Въвеждане на сигурен токен...
   directus_webhooks:
-    status_options_active: Активен
-    status_options_inactive: Неактивен
+    status_options_active: Активна
+    status_options_inactive: Неактивна
     data_label: Изпращане на данните
     triggers_divider: Тригери
     actions_create: Създаване
@@ -1139,7 +1139,7 @@ forgot_password: Забравена парола
 hidden: Скриване
 icon: Икона
 info: Информация
-normal: Нормално
+normal: Нормален
 success: Успех
 warning: Внимание
 danger: Опасност
@@ -1208,7 +1208,7 @@ interfaces:
     links: Връзки
     description: Конфигуриуеми бутонни връзки за отваряне на динамични URL адреси
     style: Стил
-    primary: Първичен
+    primary: Главен
     link: Връзки
     button: Бутони
     error: Действието не може да бъде изпълнено
@@ -1260,16 +1260,16 @@ interfaces:
   presentation-divider:
     divider: Разделител
     description: Именуване и разделяне на полетата по секции
-    title_placeholder: Въвеждане на заглавие...
+    title_placeholder: Въвеждане на заглавието...
     inline_title: Заглавие в линия
-    inline_title_label: Показване на заглавията в линия
+    inline_title_label: Вграждане на заглавието в линия
     margin_top: Горно отстояние
     margin_top_label: Увеличено горно отстояние
   select-dropdown:
     description: Избор на стойност от падащо меню
     choices_placeholder: Добавяне на избор
     allow_other: Други
-    allow_other_label: Позволяване на други стойности
+    allow_other_label: Позволяване на собствени стойности
     allow_none: Празен избор
     allow_none_label: Позволяване на празен избор
     choices_name_placeholder: Въвеждане на име...
@@ -1355,7 +1355,7 @@ interfaces:
   list:
     repeater: Повторение
     description: Създаване на множество записи със същата структура
-    edit_fields: Редактиране на полета
+    edit_fields: Редактиране на полетата
     add_label: 'Текст за "Създаване"'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
@@ -1381,7 +1381,7 @@ interfaces:
     input: Текстово поле
     description: Ръчно въвеждане на стойност
     trim: Почистване
-    trim_label: Почистване на краищата от интервали
+    trim_label: Премахване на интервалите от краищата
     mask: Маскиране
     mask_label: Скриване на истинската стойност
     clear: Изчистване на стойност
@@ -1465,15 +1465,15 @@ displays:
   color:
     color: Цвят
     description: Показване на цветна точка
-    default_color: Свят по подразбиране
+    default_color: Цвят по подразбиране
   datetime:
     datetime: Дата и час
     description: Показване на стойностите релативни към момента
     format: Формат
     format_note: >-
       Собственият формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
-    long: Дълго
-    short: Късо
+    long: Дълъг
+    short: Къс
     relative: Относително
     relative_label: 'Показване на относително време, пр. преди 5 минути'
   file:
@@ -1483,8 +1483,8 @@ displays:
     filesize: Големина на файла
     description: Показване на големината на файл
   formatted-value:
-    formatted-value: Форматиране на стойност
-    description: Показване на форматирана стойност на текст
+    formatted-value: Форматирана стойност
+    description: Форматиране на текстовата стойност
     format_title: Формат на заглавие
     format_title_label: Автоматично форматиране на регистъра
     bold_label: Използване на удебелен стил
@@ -1535,7 +1535,7 @@ displays:
 layouts:
   cards:
     cards: Карти
-    image_source: Източник на изображението
+    image_source: Източник за изображението
     image_fit: Напасване на изображението
     crop: Изрязване
     contain: Напасване
@@ -1566,7 +1566,7 @@ layouts:
     find_location: Определяне на местоположение...
 panels:
   metric:
-    name: Метричен Индикатор
+    name: Метричен индикатор
     description: Показване на единична стойност спрямо заявка
     field: Поле
   time_series:
