@@ -30,7 +30,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref } from 'vue';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig, DeepPartial, Field, ExtensionsOptionsContext } from '@directus/shared/types';
+import { InterfaceConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -92,9 +92,7 @@ export default defineComponent({
 			let optionsObjectOrArray;
 
 			if (typeof selectedInterface.value.options === 'function') {
-				optionsObjectOrArray = (
-					selectedInterface.value.options as (x: ExtensionsOptionsContext) => DeepPartial<Field>[]
-				)({
+				optionsObjectOrArray = selectedInterface.value.options({
 					field: {
 						type: 'unknown',
 					},

@@ -1,6 +1,5 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationLinks from './presentation-links.vue';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'presentation-links',
@@ -13,7 +12,7 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['presentation'],
 	group: 'presentation',
-	options: ({ collection }: ExtensionsOptionsContext) => [
+	options: ({ collection }) => [
 		{
 			field: 'links',
 			name: '$t:interfaces.presentation-links.links',

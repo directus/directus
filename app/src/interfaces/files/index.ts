@@ -1,7 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceFiles from './files.vue';
 import PreviewSVG from './preview.svg?raw';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'files',
@@ -13,7 +12,7 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['files'],
 	group: 'relational',
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		return [
 			{
 				field: 'folder',

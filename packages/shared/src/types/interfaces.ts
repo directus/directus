@@ -1,7 +1,7 @@
 import { Field, LocalType, Type } from './fields';
-import { Component } from 'vue';
+import { Component, ComponentOptions } from 'vue';
 import { DeepPartial } from './misc';
-import { ExtensionsOptionsContext } from '.';
+import { ExtensionOptionsContext } from './extensions';
 
 export interface InterfaceConfig {
 	id: string;
@@ -12,10 +12,11 @@ export interface InterfaceConfig {
 	component: Component;
 	options:
 		| DeepPartial<Field>[]
-		| ((ctx: ExtensionsOptionsContext) => DeepPartial<Field>[])
 		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
-		| ((ctx: ExtensionsOptionsContext) => { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
-		| Component
+		| ((
+				ctx: ExtensionOptionsContext
+		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
+		| ComponentOptions
 		| null;
 	types: readonly Type[];
 	localTypes?: readonly LocalType[];
