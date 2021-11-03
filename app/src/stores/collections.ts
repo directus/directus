@@ -10,7 +10,7 @@ import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { isEqual, orderBy, omit } from 'lodash';
-import { useFieldsStore } from '.';
+import { useFieldsStore, useRelationsStore } from '.';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
@@ -139,9 +139,12 @@ export const useCollectionsStore = defineStore({
 			}
 		},
 		async deleteCollection(collection: string) {
+			const relationsStore = useRelationsStore();
+
 			try {
 				await api.delete(`/collections/${collection}`);
 				await this.hydrate();
+				await relationsStore.hydrate();
 				notify({
 					type: 'success',
 					title: i18n.global.t('delete_collection_success'),
