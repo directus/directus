@@ -2,6 +2,7 @@ import { Accountability } from '@directus/shared/types';
 import { Router } from 'express';
 import { Knex } from 'knex';
 import { Logger } from 'pino';
+import { CustomGraphQLMutation, CustomGraphQLQuery } from '.';
 import env from '../env';
 import * as exceptions from '../exceptions';
 import * as services from '../services';
@@ -43,6 +44,8 @@ type EndpointHandlerFunction = (router: Router, context: ExtensionContext) => vo
 interface EndpointAdvancedConfig {
 	id: string;
 	handler: EndpointHandlerFunction;
+	queries?: CustomGraphQLQuery[];
+	mutations?: CustomGraphQLMutation[];
 }
 
 export type EndpointConfig = EndpointHandlerFunction | EndpointAdvancedConfig;
