@@ -1,7 +1,7 @@
 <template>
 	<v-list-group
 		v-if="isGroup && matchesSearch"
-		v-context-menu
+		v-context-menu="'contextMenu'"
 		:to="to"
 		scope="collections-navigation"
 		:value="collection.collection"
@@ -28,7 +28,7 @@
 
 	<v-list-item
 		v-else-if="matchesSearch"
-		v-context-menu
+		v-context-menu="'contextMenu'"
 		:to="to"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"

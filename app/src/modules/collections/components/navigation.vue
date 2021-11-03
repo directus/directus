@@ -6,7 +6,7 @@
 
 		<v-list
 			v-model="activeGroups"
-			v-context-menu
+			v-context-menu="'contextMenu'"
 			scope="collections-navigation"
 			class="collections-navigation"
 			tabindex="-1"

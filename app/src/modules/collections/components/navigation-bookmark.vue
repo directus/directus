@@ -1,6 +1,6 @@
 <template>
 	<v-list-item
-		v-context-menu
+		v-context-menu="'contextMenu'"
 		:to="`/collections/${bookmark.collection}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"

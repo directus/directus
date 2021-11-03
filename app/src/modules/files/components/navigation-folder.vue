@@ -2,7 +2,7 @@
 	<div>
 		<v-list-item
 			v-if="folder.children === undefined"
-			v-context-menu
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
 		>
@@ -14,7 +14,7 @@
 
 		<v-list-group
 			v-else
-			v-context-menu
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
 			:value="folder.id"

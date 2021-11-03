@@ -1,17 +1,18 @@
 import { Directive, DirectiveBinding } from 'vue';
 
 function mounted(element: HTMLElement, binding: DirectiveBinding): void {
-	const contextMenu = binding.instance?.$refs['contextMenu'];
+	const contextMenu = binding.instance?.$refs[binding.value];
 	if (contextMenu) {
 		element.addEventListener('contextmenu', activateContextMenu(contextMenu));
 		element.addEventListener('focusout', deactivateContextMenu(contextMenu));
 	} else {
-		throw new Error(`[v-context-menu] Couldn't find a context menu by the ref "contextMenu".`);
+		// eslint-disable-next-line no-console
+		console.error(`[v-context-menu] Couldn't find a context menu by the ref "${binding.value}".`);
 	}
 }
 
 function unmounted(element: HTMLElement, binding: DirectiveBinding): void {
-	const contextMenu = binding.instance?.$refs['contextMenu'];
+	const contextMenu = binding.instance?.$refs[binding.value];
 	if (contextMenu) {
 		element.removeEventListener('contextmenu', activateContextMenu(contextMenu));
 		element.removeEventListener('focusout', deactivateContextMenu(contextMenu));

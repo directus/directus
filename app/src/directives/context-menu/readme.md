@@ -2,11 +2,11 @@
 
 ## Usage
 
-This allows the element to open a context menu when `contextmenu` event (right click) is triggered, and closes it on
-`focusout`.
+This allows the element to open a context menu with the specified ref. It adds `contextmenu` event (right click) to
+activate/open the context menu, and `focusout` event to deactivate/close it. .
 
 ```html
-<element v-context-menu></element>
+<element v-context-menu="'contextMenu'"></element>
 ```
 
 Somewhere in the same component:
