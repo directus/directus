@@ -3,7 +3,7 @@ import { Accountability, Filter, User, Role } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
-import { isDynamicVariable } from '@directus/shared/utils';
+import { isDynamicVariable } from './is-dynamic-variable';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
