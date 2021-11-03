@@ -3,7 +3,6 @@ import { Accountability, Filter, User, Role } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
-import { get } from 'lodash';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
@@ -51,5 +50,28 @@ export function parseFilter(
 		}
 
 		return val;
+	}
+}
+
+function get(obj: Record<string, any> | any[], path: string, defaultValue: any) {
+	const pathParts = path.split('.');
+	let val = obj;
+
+	while (pathParts.length) {
+		const key = pathParts.shift();
+
+		if (key) {
+			val = processLevel(val, key);
+		}
+	}
+
+	return val || defaultValue;
+
+	function processLevel(value: Record<string, any> | any[], key: string) {
+		if (Array.isArray(value)) {
+			return value.map((subVal) => subVal[key]);
+		} else if (value && typeof value === 'object') {
+			return value[key];
+		}
 	}
 }
