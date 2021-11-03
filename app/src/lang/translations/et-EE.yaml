@@ -751,8 +751,6 @@ fields:
     public_note: Avalik märkus
     auth_password_policy: Salasõna reeglid
     auth_login_attempts: Sisselogimise katseid
-    storage_asset_presets: Salvestusruumi eelseadistused
-    storage_asset_transform: Salvestusruumi kirjete töötlus
     custom_css: Kohandatud CSS
   directus_fields:
     collection: Andmekogu nimetus
