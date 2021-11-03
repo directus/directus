@@ -64,7 +64,13 @@ export class PayloadService {
 		},
 		async boolean({ action, value }) {
 			if (action === 'read') {
-				return value === true || value === 1 || value === '1';
+				if (value === true || value === 1 || value === '1') {
+					return true;
+				} else if (value === false || value === 0 || value === '0') {
+					return false;
+				} else if (value === null || value === '') {
+					return null;
+				}
 			}
 
 			return value;

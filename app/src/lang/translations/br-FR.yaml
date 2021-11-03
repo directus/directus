@@ -772,6 +772,8 @@ fields:
     status: Stad
     value: Talvoud
 field_options:
+  directus_settings:
+    mapbox_placeholder: pk.eyJ1Ijo.....
   directus_activity:
     create: Krouiñ
     update: Hizivaat
