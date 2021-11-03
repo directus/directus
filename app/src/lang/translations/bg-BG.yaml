@@ -135,7 +135,7 @@ allow_multiple: Множествен избор
 allow_multiple_to_be_open: Отваряне на множество
 enter_value_to_replace_nulls: Въвеждане на нова стойност, която да замени NULL в полето.
 field_standard: Стандартно
-field_presentation: Презентационни и псевдоними
+field_presentation: Визуализиране и псевдоними
 field_file: Единствен файл
 field_files: Множество файлове
 field_m2o: M2O релация
@@ -152,7 +152,7 @@ permissions_for_role: 'Записи, които ролята „{role}“ има
 fields_for_role: 'Полета, които ролята „{role}“ има позволение за {action}.'
 validation_for_role: 'Правила, които ролята „{role}“ трябва да спазва, при {action} на полета.'
 presets_for_role: 'Стойности по подразбиране на полетата, за ролята „{role}“.'
-presentation_and_aliases: Презентационни и псевдоними
+presentation_and_aliases: Визуализиране и псевдоними
 revision_post_create: Ето как е изглеждал записът при създаването си.
 revision_post_update: Така ще изглежда записът, след възстановяване.
 changes_made: По-долу, са промените в ревизията.
@@ -220,7 +220,7 @@ not_available_for_type: Не е налично за типа
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
 refresh_interval: Интервал за опресняване
-no_refresh: Без опресняване
+no_refresh: Да не се опреснява
 refresh_interval_seconds: Моментално опресняване | Всяка секунда | Всеки {seconds} секунди
 refresh_interval_minutes: Всяка минута | Всеки {minutes} минути
 auto_generate: Автоматично генериране
@@ -405,7 +405,7 @@ select_item: Избор на запис
 no_items: Няма записи
 search_items: Търсене в записите...
 disabled: Изключване
-information: Информативен
+information: Информация
 report_bug: Доклад за проблем
 request_feature: Заявка за функция
 interface_not_found: 'Интерфейсът „{interface}“ не е намерен.'
@@ -636,7 +636,7 @@ user: Потребител
 no_presets: Няма заготовки
 no_presets_copy: Все още няма запазени заготовки или отметки.
 no_presets_cta: Добавяне на заготовка
-presets_only: Само заготовки
+presets_only: Само чрез заготовките
 create: Създаване
 on_create: При създаване
 on_update: При промяна
@@ -950,8 +950,8 @@ fields:
     auth_login_attempts: Брой опити за вход
     files_and_thumbnails: Файлове и картинки
     storage_default_folder: Папка по подразбиране
-    storage_asset_presets: Заготовки за записаните картинки
-    storage_asset_transform: Трансформации на записаните картинки
+    storage_asset_presets: Заготовки към съхранените картинки
+    storage_asset_transform: Трансформации на съхранените картинки
     overrides: Преопределяне в приложението
     custom_css: Собствен CSS
   directus_fields:
