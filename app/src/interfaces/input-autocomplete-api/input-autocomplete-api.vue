@@ -34,6 +34,8 @@ import { defineComponent, ref, PropType } from 'vue';
 import axios from 'axios';
 import { throttle, get, debounce } from 'lodash';
 import { render } from 'micromustache';
+import { addTokenToURL } from '@/api.ts';
+import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
 	props: {
@@ -94,7 +96,10 @@ export default defineComponent({
 				return;
 			}
 
-			const url = render(props.url, { value });
+			let url = render(props.url, { value });
+			
+			if (url.startsWith(getRootPath())
+				url = addTokenToURL(url);
 
 			try {
 				const result = await axios.get(url);
