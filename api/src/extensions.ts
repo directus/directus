@@ -115,6 +115,20 @@ class ExtensionManager {
 		await this.initialize();
 	}
 
+	public getEndpointConfig(endpointName: string): EndpointConfig | undefined {
+		const matchingEndpoints = this.extensions.filter(
+			(extension) => extension.type === 'endpoint' && extension.name === endpointName
+		);
+		const endpoint = matchingEndpoints[0];
+		if (endpoint) {
+			const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint || '');
+			const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+
+			return getModuleDefault(endpointInstance);
+		}
+		return;
+	}
+
 	public listExtensions(type?: ExtensionType): string[] {
 		if (type === undefined) {
 			return this.extensions.map((extension) => extension.name);
