@@ -942,16 +942,11 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
-    public_pages: Публични страници
     public_foreground: Публично изображение
     public_background: Публичен фон
     public_note: Публично съобщение
     auth_password_policy: Политика за пароли
     auth_login_attempts: Брой опити за вход
-    files_and_thumbnails: Файлове и картинки
-    storage_default_folder: Папка по подразбиране
-    storage_asset_presets: Заготовки към съхранените картинки
-    storage_asset_transform: Трансформации на съхранените картинки
     overrides: Преопределяне в приложението
     custom_css: Собствен CSS
   directus_fields:
@@ -1178,7 +1173,6 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1347,7 +1341,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Избор на папка
-    field_hint: Влагане на новите файлове в избраната папка. Вече добавените файлове за полето не се променят.
     root_name: Коренова папка
     system_default: По подразбиране
   select-radio:
