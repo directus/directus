@@ -3,6 +3,10 @@
 	"version": "9.0.0-rc.100",
 	"description": "A small util that will scaffold a Directus extension.",
 	"main": "lib/index.js",
+	"exports": {
+		".": "./lib/index.js",
+		"./package.json": "./package.json"
+	},
 	"bin": {
 		"create-directus-extension": "./lib/index.js",
 		"cde": "./lib/index.js"
