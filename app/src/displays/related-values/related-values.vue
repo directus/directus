@@ -100,7 +100,7 @@ export default defineComponent({
 			if (!relatedCollection.value || !primaryKeyField.value) return null;
 			const primaryKey = item[primaryKeyField.value.field];
 
-			return `/collections/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
+			return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
 		}
 	},
 });

@@ -58,7 +58,7 @@ const checkForSystem: NavigationGuard = (to, from) => {
 };
 
 export default defineModule({
-	id: 'collections',
+	id: 'content',
 	name: '$t:collections',
 	icon: 'box',
 	routes: [
@@ -86,7 +86,7 @@ export default defineModule({
 
 				if (!firstCollection) return;
 
-				return `/collections/${firstCollection.collection}`;
+				return `/content/${firstCollection.collection}`;
 
 				function findFirst(collections: Collection[], { skipClosed } = { skipClosed: true }): Collection | void {
 					for (const collection of collections) {

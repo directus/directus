@@ -28,7 +28,7 @@
 
 			<template #headline>
 				<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
-				<v-breadcrumb v-else :items="[{ name: t('collections'), to: '/collections' }]" />
+				<v-breadcrumb v-else :items="[{ name: t('collections'), to: '/content' }]" />
 			</template>
 
 			<template #title-outer:append>
@@ -212,7 +212,7 @@
 						{{ t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<v-button :to="`/collections/${collection}/+`">{{ t('create_item') }}</v-button>
+							<v-button :to="`/content/${collection}/+`">{{ t('create_item') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -457,7 +457,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: currentCollection.value?.name,
-					to: `/collections/${props.collection}`,
+					to: `/content/${props.collection}`,
 				},
 			]);
 
@@ -541,11 +541,11 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				return `/collections/${props.collection}/+`;
+				return `/content/${props.collection}/+`;
 			});
 
 			const currentCollectionLink = computed<string>(() => {
-				return `/collections/${props.collection}`;
+				return `/content/${props.collection}`;
 			});
 
 			return { addNewLink, currentCollectionLink };
@@ -569,7 +569,7 @@ export default defineComponent({
 
 				try {
 					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
-					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
+					router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
 				} catch (err: any) {
