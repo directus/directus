@@ -14,7 +14,7 @@ body:
           required: true
         - label: I'm on [the latest version of Directus](https://github.com/directus/directus/releases).
           required: true
-        - label: There's [no other issue](https://github.com/directus/directus/issues) that already describes my problem.
+        - label: There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes my problem.
           required: true
   - type: textarea
     attributes:
