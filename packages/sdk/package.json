@@ -7,12 +7,16 @@
 		"url": "https://github.com/directus/directus.git"
 	},
 	"main": "./dist/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/sdk.esm.js",
+			"require": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
 	"module": "./dist/sdk.esm.js",
 	"unpkg": "./dist/sdk.esm.min.js",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		".": "./dist/index.js"
-	},
 	"files": [
 		"dist"
 	],

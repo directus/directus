@@ -8,6 +8,10 @@
 		"directory": "packages/cli"
 	},
 	"main": "./dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"types": "./dist/index.d.ts",
 	"bin": {
 		"directusctl": "./bin/directus.js",

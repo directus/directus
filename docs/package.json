@@ -4,6 +4,10 @@
 	"version": "9.0.0-rc.100",
 	"description": "",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"scripts": {
 		"build": "node build.js",
 		"dev": "npm-watch build",

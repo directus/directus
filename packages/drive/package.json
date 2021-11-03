@@ -4,6 +4,10 @@
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"types": "dist/index.d.ts",
 	"keywords": [
 		"storage",

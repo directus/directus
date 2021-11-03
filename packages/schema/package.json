@@ -3,6 +3,10 @@
 	"version": "9.0.0-rc.100",
 	"description": "Utility for extracting information about existing DB schema",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc --build && echo \"Built successfully\"",
