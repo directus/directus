@@ -34,16 +34,8 @@ export async function createCli(): Promise<Command> {
 
 	// Security
 	const securityCommand = program.command('security');
-	securityCommand
-		.command('key:generate')
-		.description('Generate the app key')
-		.option('--show', 'Show the key without updating the .env file')
-		.action(keyGenerate);
-	securityCommand
-		.command('secret:generate')
-		.description('Generate the app secret')
-		.option('--show', 'Show the secret without updating the .env file')
-		.action(secretGenerate);
+	securityCommand.command('key:generate').description('Generate the app key').action(keyGenerate);
+	securityCommand.command('secret:generate').description('Generate the app secret').action(secretGenerate);
 
 	const dbCommand = program.command('database');
 	dbCommand.command('install').description('Install the database').action(dbInstall);
