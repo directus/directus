@@ -28,7 +28,7 @@
 
 	<v-list-item
 		v-else-if="matchesSearch"
-		v-context-menu="'contextMenu'"
+		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
@@ -42,7 +42,7 @@
 		/>
 	</v-list-item>
 
-	<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+	<v-menu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">
 		<v-list>
 			<v-list-item v-if="hasArchive" clickable :to="`/content/${collection.collection}?archive`" exact query>
 				<v-list-item-icon>
@@ -137,6 +137,8 @@ export default defineComponent({
 			}
 		});
 
+		const hasContextMenu = computed(() => hasArchive.value || isAdmin);
+
 		return {
 			childCollections,
 			childBookmarks,
@@ -146,6 +148,7 @@ export default defineComponent({
 			isAdmin,
 			t,
 			hasArchive,
+			hasContextMenu,
 		};
 
 		function getChildCollections(collection: Collection) {
