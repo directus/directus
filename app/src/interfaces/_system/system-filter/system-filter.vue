@@ -33,7 +33,7 @@
 				:items="fieldOptions"
 				:mandatory="false"
 				:groups-clickable="true"
-				@group-toggle="loadFieldRelations($event.value, 1)"
+				@group-toggle="loadFieldRelations($event.value)"
 				@update:modelValue="addNode($event)"
 			>
 				<template v-if="inline" #prepend>
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { get, set, isEmpty, cloneDeep, merge } from 'lodash';
+import { get, set, isEmpty, cloneDeep } from 'lodash';
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter, FieldFilter } from '@directus/shared/types';
