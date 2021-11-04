@@ -745,7 +745,6 @@ fields:
     enforce_tfa: Kräv 2FA
     users: Användare i rollen
     module_list: Navigering för modul
-    collection_list: Navigering för kollektion
   directus_webhooks:
     name: Namn
     status: Status
@@ -766,9 +765,6 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Namn
-    collection_list:
-      fields:
-        type_name: Typ
     collections_name: Kollektioner
   directus_users:
     status_dropdown_active: Aktiv
