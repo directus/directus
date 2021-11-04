@@ -150,13 +150,12 @@ export default defineComponent({
 
 		function addNode(key: string) {
 			if (key === '$group') {
-				innerValue.value = merge({}, innerValue.value, { _and: [] });
+				innerValue.value = innerValue.value.concat({ _and: [] });
 			} else {
 				const field = fieldsStore.getField(collection.value, key)!;
 				const operator = getFilterOperatorsForType(field.type)[0];
-				const filterObj = set({}, key, { ['_' + operator]: null });
-
-				innerValue.value = [...innerValue.value, filterObj] as FieldFilter[];
+				const node = set({}, key, { ['_' + operator]: null });
+				innerValue.value = innerValue.value.concat(node);
 			}
 		}
 

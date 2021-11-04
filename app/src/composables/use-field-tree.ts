@@ -49,13 +49,15 @@ export function useFieldTree(
 
 	function treeToList(tree: FieldTree, parentName?: string): FieldOption[] {
 		return Object.values(tree).map((field) => {
+			// const fieldName = field.type === 'm2a' ? `${field.field}:${field.collection}` : field.field;
+			// const key = parentName ? `${parentName}.${fieldName}` : fieldName;
 			const parent = field.type == 'm2a' ? `${parentName}:${field.collection}` : parentName;
 			const key = parent ? `${parent}.${field.field}` : field.field;
 			const fieldName = field.field;
 			const children = treeToList(field.children, key);
 			return {
-				name: field.name,
 				key,
+				name: field.name,
 				field: fieldName,
 				children: children.length > 0 ? children : undefined,
 				selectable: !children || children.length === 0,
@@ -105,7 +107,7 @@ export function useFieldTree(
 		function getFieldRecursive(path: string[], list: FieldOption[]): FieldOption | undefined {
 			const targetField = path.shift();
 			const subList = list.find((el) => el.field === targetField);
-			if (subList === undefined || subList.children === undefined) return undefined;
+			if (subList?.children === undefined) return undefined;
 			if (path.length === 0) return subList;
 			return getFieldRecursive(path, subList.children);
 		}
