@@ -24,6 +24,16 @@ fields:
       translations: Website
     width: half
 
+  - field: branding_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.branding
+    special:
+      - alias
+      - no-data
+    width: full
+
   - field: project_color
     interface: select-color
     note: $t:field_options.directus_settings.project_logo_note
@@ -40,16 +50,6 @@ fields:
       translations: Brand Logo
     width: half
 
-  - field: public_divider
-    interface: presentation-divider
-    options:
-      icon: public
-      title: $t:fields.directus_settings.public_pages
-    special:
-      - alias
-      - no-data
-    width: full
-
   - field: public_foreground
     interface: file
     translations:
@@ -65,15 +65,42 @@ fields:
     width: half
 
   - field: public_note
-    interface: input-multiline
+    interface: input
     options:
       placeholder: $t:field_options.directus_settings.public_note_placeholder
+      iconRight: info
     width: full
+
+  - field: custom_css
+    interface: input-code
+    options:
+      language: css
+      lineNumber: true
+      template: |
+        #app {
+          --border-radius-outline: 0px !important;
+          --border-radius: 0px !important;
+        }
+    width: full
+
+  - field: modules_divider
+    interface: presentation-divider
+    options:
+      icon: menu_open
+      title: $t:modules
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: module_bar
+    interface: system-modules
+    special: json
 
   - field: security_divider
     interface: presentation-divider
     options:
-      icon: security
+      icon: shield
       title: $t:security
     special:
       - alias
@@ -103,12 +130,29 @@ fields:
   - field: files_divider
     interface: presentation-divider
     options:
-      icon: storage
+      icon: folder
       title: $t:fields.directus_settings.files_and_thumbnails
     special:
       - alias
       - no-data
     width: full
+
+  - field: storage_asset_transform
+    interface: select-dropdown
+    options:
+      choices:
+        - value: all
+          text: $t:fields.directus_settings.transformations_all
+        - value: none
+          text: $t:fields.directus_settings.transformations_none
+        - value: presets
+          text: $t:fields.directus_settings.transformations_presets
+    width: half
+
+  - field: storage_default_folder
+    interface: system-folder
+    width: half
+    note: $t:interfaces.system-folder.field_hint
 
   - field: storage_asset_presets
     interface: list
@@ -230,45 +274,11 @@ fields:
     special: json
     width: full
 
-  - field: storage_asset_transform
-    interface: select-dropdown
-    options:
-      choices:
-        - value: all
-          text: $t:all
-        - value: none
-          text: $t:none
-        - value: presets
-          text: $t:presets_only
-    width: half
-
-  - field: storage_default_folder
-    interface: system-folder
-    width: half
-    note: $t:interfaces.system-folder.field_hint
-
-  - field: overrides_divider
-    interface: presentation-divider
-    options:
-      icon: brush
-      title: $t:fields.directus_settings.overrides
-    special:
-      - alias
-      - no-data
-    width: full
-
-  - field: custom_css
-    interface: input-code
-    options:
-      language: css
-      lineNumber: true
-    width: full
-
   - field: map_divider
     interface: presentation-divider
     options:
       icon: map
-      title: $t:maps
+      title: $t:fields.directus_settings.mapping
     special:
       - alias
       - no-data
@@ -282,7 +292,7 @@ fields:
       placeholder: $t:field_options.directus_settings.mapbox_placeholder
       iconLeft: vpn_key
       font: monospace
-    width: half
+    width: full
 
   - field: basemaps
     interface: list
@@ -333,17 +343,3 @@ fields:
                   type:
                     _neq: 'raster'
                 hidden: true
-
-  - field: modules_divider
-    interface: presentation-divider
-    options:
-      icon: view_module
-      title: $t:modules
-    special:
-      - alias
-      - no-data
-    width: full
-
-  - field: module_bar
-    interface: system-modules
-    special: json

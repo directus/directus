@@ -920,16 +920,11 @@ fields:
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
-    public_pages: Pages Publiques
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
     auth_password_policy: Politique des mots de passe
     auth_login_attempts: Tentatives de connexion
-    files_and_thumbnails: Fichiers et miniatures
-    storage_default_folder: Dossier de stockage par défaut
-    storage_asset_presets: Préréglages des fichiers dans le stockage
-    storage_asset_transform: Transformation des fichiers du stockage
     overrides: Remplacer les applications
     custom_css: Personnalisation du CSS
   directus_fields:
@@ -1314,7 +1309,6 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
-    field_hint: Met les fichiers récemment téléchargés dans le dossier sélectionné. Cela n'affecte pas les fichiers existants qui sont sélectionnés.
     root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
@@ -1403,7 +1397,7 @@ interfaces:
     name: Détail du groupe
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
-    header_icon: Icônes de l'en-tête
+    header_icon: Icônes de l'en-tête 
     header_color: Couleur d'en-tête
     start_open: Démarrer Ouverture
     start_closed: Commencer réduit
@@ -1522,13 +1516,12 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
-    basemap: Fond de carte
+    basemap: Carte de base
     layers: Afficher...
     cluster_options: Options de regroupement
     cluster_radius: Rayon de grappe
     cluster_minpoints: Taille minimale du cluster
     cluster_maxzoom: Zoom maximum pour la grappe
-    field: Champ de la géométrie
     invalid_geometry: Géométrie invalide
 panels:
   metric:

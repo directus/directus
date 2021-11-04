@@ -10,13 +10,7 @@
 			@click="active = true"
 		>
 			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
-			<input
-				ref="input"
-				:value="modelValue"
-				:placeholder="t('search_items')"
-				@input="emitValueDebounced"
-				@paste="emitValueDebounced"
-			/>
+			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
 			<v-icon
 				v-if="modelValue"
 				clickable
@@ -109,14 +103,12 @@ export default defineComponent({
 			}
 		});
 
-		const emitValueDebounced = debounce(() => emitValue(), 250);
-
 		return {
 			t,
 			active,
 			disable,
 			input,
-			emitValueDebounced,
+			emitValue,
 			activeFilterCount,
 			filterActive,
 			onClickOutside,

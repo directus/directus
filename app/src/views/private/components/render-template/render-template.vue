@@ -14,7 +14,7 @@
 				:collection="part.collection"
 				:field="part.field"
 			/>
-			<span v-else>{{ part }}</span>
+			<span v-else>{{ translate(part) }}</span>
 		</template>
 	</div>
 </template>
@@ -27,6 +27,7 @@ import { DisplayConfig, Field } from '@directus/shared/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { translate } from '@/utils/translate-literal';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -113,7 +114,7 @@ export default defineComponent({
 				.map((p) => p ?? null)
 		);
 
-		return { parts, templateEl };
+		return { parts, templateEl, translate };
 	},
 });
 </script>

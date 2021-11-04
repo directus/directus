@@ -746,8 +746,6 @@ fields:
     public_note: Kemennadennoù war ar bajenn degemer
     auth_password_policy: Politikerezh ar gerioù-tremen
     auth_login_attempts: Taolioù kevreañ
-    storage_asset_presets: Rakreoliñ ar resktroù el lec'h stokañ
-    storage_asset_transform: Treuzfurmiñ restroù ar stokañ
     custom_css: Personelaat an CSS
   directus_fields:
     collection: Anv an dastumad
@@ -772,6 +770,8 @@ fields:
     status: Stad
     value: Talvoud
 field_options:
+  directus_settings:
+    mapbox_placeholder: pk.eyJ1Ijo.....
   directus_activity:
     create: Krouiñ
     update: Hizivaat

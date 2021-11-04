@@ -942,16 +942,11 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
-    public_pages: Pagine pubbliche
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
-    files_and_thumbnails: File e miniature
-    storage_default_folder: Cartella predefinita di archiviazione
-    storage_asset_presets: Preimpostazioni salvataggio risorse
-    storage_asset_transform: Trasformazione salvataggio risorse
     overrides: Personalizzazioni App
     custom_css: CSS personalizzato
   directus_fields:
@@ -1178,7 +1173,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1347,7 +1341,6 @@ interfaces:
   system-folder:
     folder: Cartella
     description: Seleziona una cartella
-    field_hint: Mette i file appena caricati nella cartella selezionata. Non influisce sui file esistenti selezionati.
     root_name: Radice libreria file
     system_default: Predefiniti di sistema
   select-radio:

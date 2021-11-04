@@ -25,7 +25,6 @@ export default defineInterface({
 				value: field.field,
 			}));
 		}
-
 		return [
 			{
 				field: 'languageField',
@@ -34,6 +33,7 @@ export default defineInterface({
 				meta: {
 					interface: 'select-dropdown',
 					options: {
+						placeholder: '$t:primary_key',
 						choices,
 					},
 				},

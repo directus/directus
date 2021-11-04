@@ -9,6 +9,7 @@ import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getGeometryHelper } from '../database/helpers/geometry';
+import { getDateHelper } from '../database/helpers/date';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -341,6 +342,22 @@ export function applyFilter(
 				dbQuery[logical].andWhere((query) => {
 					query.where(key, '!=', '');
 				});
+			}
+
+			const dateHelper = getDateHelper();
+
+			const [collection, field] = key.split('.');
+
+			if (collection in schema.collections && field in schema.collections[collection].fields) {
+				const type = schema.collections[collection].fields[field].type;
+
+				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
+					if (Array.isArray(compareValue)) {
+						compareValue = compareValue.map((val) => dateHelper.parseDate(val));
+					} else {
+						compareValue = dateHelper.parseDate(compareValue);
+					}
+				}
 			}
 
 			// The following fields however, require a value to be run. If no value is passed, we
