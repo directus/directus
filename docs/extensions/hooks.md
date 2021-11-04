@@ -260,7 +260,7 @@ module.exports = function registerHook({ filter, action }, { services, exception
 			throw new ServiceUnavailableException(error);
 		}
 
-		input[0].syncedWithExample = true;
+		input.syncedWithExample = true;
 
 		return input;
 	});
@@ -268,7 +268,7 @@ module.exports = function registerHook({ filter, action }, { services, exception
 	// Force everything to be admin-only at all times
 	const adminOnly = async (_, { accountability }) => {
 		if (accountability.admin !== true) throw new ForbiddenException();
-	});
+	};
 
 	action('items.create', adminOnly);
 	action('items.read', adminOnly);
