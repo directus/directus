@@ -622,7 +622,6 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
-insights: Betekintés (Béta)
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
@@ -928,7 +927,6 @@ fields:
     enforce_tfa: 2FA megkövetelése
     users: Felhasználók a szerepkörben
     module_list: Modul navigáció felülbírálása
-    collection_list: Gyűjtemény navigáció
   directus_webhooks:
     name: Név
     method: Metódus
@@ -1004,15 +1002,6 @@ field_options:
       name_placeholder: Írjon be egy címet...
       link_name: Hivatkozás
       link_placeholder: Relatív vagy abszolút URL...
-    collection_list:
-      group_name_addLabel: Új csoport hozzáadása...
-      fields:
-        group_name: Csoportnév
-        group_placeholder: Címkézze fel ezt a csoportot...
-        type_name: Típus
-        choices_always: Mindig nyitva
-        choices_start_open: Indíts nyitva!
-        choices_start_collapsed: Kezdetben összecsukva
     collections_name: Gyűjtemények
     collections_addLabel: Gyűjtemény hozzáadása...
   directus_users:

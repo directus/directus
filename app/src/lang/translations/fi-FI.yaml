@@ -766,7 +766,6 @@ fields:
     enforce_tfa: Vaadi 2FA
     users: Käyttäjät roolissa
     module_list: Moduulien navigointi
-    collection_list: Kokoelman navigointi
   directus_webhooks:
     name: Nimi
     status: Tila
@@ -791,9 +790,6 @@ field_options:
       icon_name: Kuvake
       name_name: Nimi
       name_placeholder: Syötä otsikko...
-    collection_list:
-      fields:
-        type_name: Tyyppi
     collections_name: Kokoelmat
   directus_users:
     status_dropdown_active: Aktiivinen

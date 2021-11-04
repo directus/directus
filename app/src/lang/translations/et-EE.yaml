@@ -770,7 +770,6 @@ fields:
     enforce_tfa: 2FA on nõutav
     users: Kasutajad selles rollis
     module_list: Moodulite näitamine
-    collection_list: Andmekogude näitamine
   directus_webhooks:
     name: Nimi
     status: Staatus
@@ -795,9 +794,6 @@ field_options:
       icon_name: Ikoon
       name_name: Nimi
       name_placeholder: Sisesta pealkiri...
-    collection_list:
-      fields:
-        type_name: Tüüp
     collections_name: Kogud
   directus_users:
     status_dropdown_active: aktiivne

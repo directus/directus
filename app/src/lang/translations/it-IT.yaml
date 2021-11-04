@@ -652,7 +652,6 @@ toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
-insights: Approfondimenti (Beta)
 dashboard: Bacheca
 panel: Pannello
 panel_options: Opzioni del pannello
@@ -977,7 +976,6 @@ fields:
     enforce_tfa: Richiede 2FA
     users: Utenti nel ruolo
     module_list: Navigazione del modulo
-    collection_list: Navigazione Raccolte
   directus_webhooks:
     name: Nome
     method: Metodo
@@ -1062,15 +1060,6 @@ field_options:
       name_placeholder: Inserisci un titolo...
       link_name: Link
       link_placeholder: URL relativo o assoluto...
-    collection_list:
-      group_name_addLabel: Aggiungi Nuovo Gruppo...
-      fields:
-        group_name: Nome del gruppo
-        group_placeholder: Etichetta questo gruppo...
-        type_name: Tipo
-        choices_always: Sempre aperto
-        choices_start_open: Inizia aperto
-        choices_start_collapsed: Inizia chiuse
     collections_name: Raccolte
     collections_addLabel: Aggiungi raccolta...
   directus_users:
@@ -1183,7 +1172,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:

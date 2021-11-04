@@ -550,9 +550,6 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Nama
-    collection_list:
-      fields:
-        type_name: Tipe
     collections_name: Pengumpulan
   directus_webhooks:
     actions_create: Buat

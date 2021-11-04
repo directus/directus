@@ -769,7 +769,6 @@ fields:
     enforce_tfa: Traži 2FA
     users: Svi korisnici ove Uloge
     module_list: Navigacija Modula
-    collection_list: Navigacija Kolekcije
   directus_webhooks:
     name: Ime
     status: Status
@@ -794,9 +793,6 @@ field_options:
       icon_name: Ikonica
       name_name: Ime
       name_placeholder: Unesi naslov...
-    collection_list:
-      fields:
-        type_name: Tip
     collections_name: Kolekcije
   directus_users:
     status_dropdown_active: Aktivan

@@ -709,7 +709,6 @@ fields:
     enforce_tfa: Reikalinga 2FA
     users: Vartotojai grupėje
     module_list: Modulių navigacija
-    collection_list: Kolekcijų navigacija
   directus_webhooks:
     name: Pavadinimas
     status: Būsena
@@ -730,9 +729,6 @@ field_options:
     fields:
       icon_name: Ikona
       name_name: Pavadinimas
-    collection_list:
-      fields:
-        type_name: Tipas
     collections_name: Kolekcijos
   directus_users:
     status_dropdown_active: Aktyvus

@@ -607,7 +607,6 @@ fields:
     enforce_tfa: Exigir 2FA
     users: Utilizadores na função
     module_list: Navegação do Modulo
-    collection_list: Navegação da coleção
   directus_webhooks:
     name: Nome
     status: Estado
@@ -624,9 +623,6 @@ field_options:
   directus_roles:
     fields:
       name_name: Nome
-    collection_list:
-      fields:
-        type_name: Tipo
   directus_users:
     status_dropdown_active: Ativar
   directus_webhooks:

@@ -645,7 +645,6 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
-insights: Аналитика (бета)
 dashboard: Доска
 panel: Панель
 panel_options: Параметры панели
@@ -951,7 +950,6 @@ fields:
     enforce_tfa: Требуется 2FA
     users: Пользователи в Роли
     module_list: Навигация по Модулям
-    collection_list: Навигация по Коллекциям
   directus_webhooks:
     name: Имя
     method: Метод
@@ -1028,15 +1026,6 @@ field_options:
       name_placeholder: Введите название...
       link_name: Ссылка
       link_placeholder: Относительный или абсолютный URL...
-    collection_list:
-      group_name_addLabel: Добавить новую группу...
-      fields:
-        group_name: Название группы
-        group_placeholder: Обозначьте эту группу...
-        type_name: Тип
-        choices_always: Всегда открыто
-        choices_start_open: Раскрыта
-        choices_start_collapsed: Начать свернутым
     collections_name: Коллекции
     collections_addLabel: Добавить коллекцию...
   directus_users:

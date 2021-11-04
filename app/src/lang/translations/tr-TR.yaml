@@ -631,9 +631,6 @@ field_options:
     fields:
       icon_name: İkon
       name_name: İsim
-    collection_list:
-      fields:
-        type_name: Tür
     collections_name: Koleksiyonlar
   directus_users:
     status_dropdown_active: Aktif

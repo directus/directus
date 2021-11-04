@@ -652,7 +652,6 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
-insights: Задълбочен анализ (тестови)
 dashboard: Табло
 panel: Панел
 panel_options: Настройки на панела
@@ -967,7 +966,6 @@ fields:
     enforce_tfa: Изисква 2FA
     users: Потребители към роля
     module_list: Модули
-    collection_list: Навигация в колекции
   directus_webhooks:
     name: Име
     method: Метод
@@ -1052,15 +1050,6 @@ field_options:
       name_placeholder: Въвеждане на заглавието...
       link_name: Връзка
       link_placeholder: Релативен или абсолютен URL...
-    collection_list:
-      group_name_addLabel: Добавяне на група...
-      fields:
-        group_name: Име на група
-        group_placeholder: Именуване на групата...
-        type_name: Вид
-        choices_always: Винаги отворена
-        choices_start_open: Отворена в началото
-        choices_start_collapsed: Затворена в началото
     collections_name: Колекции
     collections_addLabel: Добавяне на колекция...
   directus_users:
