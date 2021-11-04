@@ -1,13 +1,13 @@
 <template>
-	<div class="collections-navigation-wrapper">
+	<div class="content-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
 			<v-input v-model="search" type="search" :placeholder="t('search_collection')" />
 		</div>
 
 		<v-list
 			v-model="activeGroups"
-			scope="collections-navigation"
-			class="collections-navigation"
+			scope="content-navigation"
+			class="content-navigation"
 			tabindex="-1"
 			nav
 			:mandatory="false"
@@ -115,13 +115,13 @@ export default defineComponent({
 	}
 }
 
-.collections-navigation-wrapper {
+.content-navigation-wrapper {
 	display: flex;
 	flex-direction: column;
 	min-height: 100%;
 }
 
-.collections-navigation {
+.content-navigation {
 	--v-list-min-height: calc(100% - 64px);
 
 	flex-grow: 1;

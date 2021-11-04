@@ -750,8 +750,6 @@ fields:
     public_note: Opis Projekta
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
-    storage_asset_presets: Izgled prostora za skladištenje
-    storage_asset_transform: Transformacija sredstava za skladištenje
     custom_css: Prilagođeni CSS
   directus_fields:
     collection: Ime Kolekcije
