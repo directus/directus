@@ -18,10 +18,10 @@ export function getDefaultIndexName(
 	const table = collection.replace(/\.|-/g, '_');
 	const indexName = (table + '_' + fields.join('_') + '_' + type).toLowerCase();
 
-	if (indexName.length <= 64) return indexName;
+	if (indexName.length <= 60) return indexName;
 
 	const suffix = `__${simpleHash(indexName)}_${type}`;
-	const prefix = indexName.substring(0, 64 - suffix.length);
+	const prefix = indexName.substring(0, 60 - suffix.length);
 
 	return `${prefix}${suffix}`;
 }
