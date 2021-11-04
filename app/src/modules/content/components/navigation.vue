@@ -95,7 +95,7 @@ export default defineComponent({
 		}
 
 		function deactivateContextMenu() {
-			contextMenu.value.deactivate();
+			contextMenu.value?.deactivate();
 		}
 	},
 });
