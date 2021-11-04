@@ -844,7 +844,6 @@ fields:
     enforce_tfa: Exigir 2FA
     users: Usuários no cargo
     module_list: Navegação do Módulo
-    collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
     method: Método 
@@ -882,9 +881,6 @@ field_options:
       icon_name: Ícone
       name_name: Nome
       name_placeholder: Insira um título...
-    collection_list:
-      fields:
-        type_name: Tipo
     collections_name: Coleções
   directus_users:
     preferences_divider: Preferências do Usuário
