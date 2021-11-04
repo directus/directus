@@ -1525,7 +1525,7 @@ displays:
     rating: Valutazione
     description: Visualizza un numero come stelle rispetto al valore massimo
     simple: Semplice
-    simple_label: Mostra le stelle in formato semplice
+    simple_label: Mostra in formato breve
   raw:
     raw: Valore grezzo
   related-values:
