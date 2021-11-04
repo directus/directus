@@ -357,9 +357,6 @@ field_options:
     fields:
       icon_name: Ikona
       name_name: Jméno
-    collection_list:
-      fields:
-        type_name: Typ
     collections_name: Kategorie
   directus_webhooks:
     actions_create: Vytořit
