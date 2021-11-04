@@ -652,7 +652,6 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
-insights: Insights (beta)
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -966,7 +965,6 @@ fields:
     enforce_tfa: Wymagaj uwierzytelniania dwuskładnikowego
     users: Użytkownicy w roli
     module_list: Moduł Nawigacji
-    collection_list: Kolekcja Nawigacji
   directus_webhooks:
     name: Nazwa
     method: Metoda
@@ -1050,15 +1048,6 @@ field_options:
       name_placeholder: Wprowadź tytuł...
       link_name: Link
       link_placeholder: Względny lub bezwzględny URL...
-    collection_list:
-      group_name_addLabel: Dodaj nową grupę...
-      fields:
-        group_name: Nazwa grupy
-        group_placeholder: Oznacz tę grupę...
-        type_name: Typ
-        choices_always: Zawsze otwarte
-        choices_start_open: Rozpocznij rozwinięty
-        choices_start_collapsed: Rozpocznij zwinięty
     collections_name: Kolekcje
     collections_addLabel: Dodaj kolekcję...
   directus_users:
