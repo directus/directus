@@ -113,7 +113,7 @@ export const useFieldDetailStore = defineStore({
 					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
 				) as DeepPartial<Relation> | undefined;
 
-				if (['files', 'm2m', 'translations'].includes(this.localType)) {
+				if (['files', 'm2m', 'translations', 'm2a'].includes(this.localType)) {
 					this.relations.m2o = relations.find((relation) => relation !== this.relations.o2m) as
 						| DeepPartial<Relation>
 						| undefined;
