@@ -824,6 +824,7 @@ cancel: Annulla
 no_upscale: Non ingrandire le immagini
 collection: Raccolta
 collections: Raccolte
+content: Contenuto
 singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
@@ -930,6 +931,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Mappe
     basemaps: Mappe base
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -942,13 +944,21 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    branding: Branding e stile
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
+    files_and_thumbnails: File e archiviazione
+    storage_default_folder: Cartella predefinita
+    storage_asset_presets: Trasformazioni preimpostate
+    storage_asset_transform: Trasformazioni consentite
     overrides: Personalizzazioni App
     custom_css: CSS personalizzato
+    transformations_all: Permetti tutte le trasformazioni
+    transformations_none: Disabilita le trasformazioni
+    transformations_presets: Limita le trasformazioni ai preset preimpostati
   directus_fields:
     collection: Nome della Raccolta
     icon: Icona Raccolta
@@ -1173,6 +1183,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1341,6 +1352,7 @@ interfaces:
   system-folder:
     folder: Cartella
     description: Seleziona una cartella
+    field_hint: Cartella per i file caricati. Non influisce sui file esistenti.
     root_name: Radice libreria file
     system_default: Predefiniti di sistema
   select-radio:
