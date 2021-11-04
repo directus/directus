@@ -919,7 +919,6 @@ fields:
     ip_access: Ip Adgang
     enforce_tfa: Kræv 2FA
     users: Brugere i Rolle
-    collection_list: Samling Navigation
   directus_webhooks:
     name: Navn
     method: Metode
@@ -996,15 +995,6 @@ field_options:
       name_placeholder: Indtast en titel...
       link_name: Link
       link_placeholder: Relativ eller absolut URL...
-    collection_list:
-      group_name_addLabel: Tilføj Ny Gruppe...
-      fields:
-        group_name: Gruppens Navn
-        group_placeholder: Markér denne gruppe...
-        type_name: Type
-        choices_always: Åbn Altid
-        choices_start_open: Start Åben
-        choices_start_collapsed: Start Sammenbrudt
     collections_name: Samlinger
     collections_addLabel: Tilføj Samling...
   directus_users:

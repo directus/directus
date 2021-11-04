@@ -764,7 +764,6 @@ fields:
     enforce_tfa: Ret eo kaout A2F
     users: Izili gant ar roll
     module_list: Modulenn ar Merdeiñ
-    collection_list: Merdeiñ an dastumad
   directus_webhooks:
     name: Anv
     status: Stad
@@ -791,9 +790,6 @@ field_options:
       icon_name: Arlun
       name_name: Anv
       name_placeholder: Bizskrivit un titl...
-    collection_list:
-      fields:
-        type_name: Seurt
     collections_name: Dastumadoù
   directus_users:
     status_dropdown_active: Oberiat

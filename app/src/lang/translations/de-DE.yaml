@@ -652,7 +652,6 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
-insights: Einblicke (Beta)
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
@@ -967,7 +966,6 @@ fields:
     enforce_tfa: 2FA erforderlich
     users: Benutzer in Rolle
     module_list: Modulnavigation
-    collection_list: Sammlungsnavigation
   directus_webhooks:
     name: Name
     method: Methode
@@ -1052,15 +1050,6 @@ field_options:
       name_placeholder: Titel eingeben...
       link_name: Link
       link_placeholder: Relative oder absolute URL...
-    collection_list:
-      group_name_addLabel: Neue Gruppe hinzufügen...
-      fields:
-        group_name: Gruppen-Name
-        group_placeholder: Diese Gruppe benennen...
-        type_name: Typ
-        choices_always: Immer geöffnet
-        choices_start_open: Geöffnet starten
-        choices_start_collapsed: Eingeklappt starten
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
   directus_users:

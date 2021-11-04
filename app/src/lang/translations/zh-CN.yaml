@@ -622,7 +622,6 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
-insights: 洞察(测试)
 dashboard: 控制面板
 panel: 面板
 panel_options: 选项
@@ -926,7 +925,6 @@ fields:
     enforce_tfa: 请求两步验证
     users: 角色中的用户
     module_list: 模块导航
-    collection_list: 模型导航
   directus_webhooks:
     name: 名称
     method: 方法
@@ -1002,15 +1000,6 @@ field_options:
       name_placeholder: 输入标题...
       link_name: 链接
       link_placeholder: 相对或绝对的 URL...
-    collection_list:
-      group_name_addLabel: 新建分组...
-      fields:
-        group_name: 分组名称
-        group_placeholder: 分组标签
-        type_name: 类型
-        choices_always: 总是展开
-        choices_start_open: 默认打开
-        choices_start_collapsed: 默认收起
     collections_name: 数据模型
     collections_addLabel: 添加到模型...
   directus_users:

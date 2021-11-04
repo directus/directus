@@ -819,7 +819,6 @@ fields:
     enforce_tfa: Obvezno 2FA
     users: Uporabniki v vlogi
     module_list: Krmarjenje po modulu
-    collection_list: Krmarjenje po zbirki
   directus_webhooks:
     name: Ime
     method: Metoda
@@ -890,15 +889,6 @@ field_options:
       name_placeholder: Vnesite naslov ...
       link_name: Povezava
       link_placeholder: Relativni ali absolutni URL naslov ...
-    collection_list:
-      group_name_addLabel: Dodaj novo skupino ...
-      fields:
-        group_name: Ime skupine
-        group_placeholder: Naziv te skupine ...
-        type_name: Tip
-        choices_always: Vedno odprto
-        choices_start_open: Začni odprto
-        choices_start_collapsed: Začni zaprto
     collections_name: Zbirke
     collections_addLabel: Dodaj zbirko ...
   directus_users:

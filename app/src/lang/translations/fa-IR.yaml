@@ -272,9 +272,6 @@ field_options:
   directus_roles:
     fields:
       name_name: نام
-    collection_list:
-      fields:
-        type_name: نوع
 limit: محدوده
 interfaces:
   presentation-links:

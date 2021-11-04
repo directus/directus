@@ -881,7 +881,6 @@ fields:
     enforce_tfa: Requiere 2FA
     users: Usuarios en el Rol
     module_list: Navegación en Módulo
-    collection_list: Navegación en Colección
   directus_webhooks:
     name: Nombre
     status: Estado
@@ -915,9 +914,6 @@ field_options:
       icon_name: Icono
       name_name: Nombre
       name_placeholder: Ingresar un título...
-    collection_list:
-      fields:
-        type_name: Tipo
     collections_name: Colecciones
   directus_users:
     status_dropdown_active: Activo
