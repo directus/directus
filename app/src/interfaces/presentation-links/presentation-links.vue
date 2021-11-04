@@ -1,33 +1,23 @@
 <template>
 	<div class="presentation-links">
 		<v-button
-			v-for="(link, index) in linksParsed"
-			:key="index"
 			class="action"
-			:class="[link.type]"
-			:secondary="link.type !== 'primary'"
+			:class="[type]"
+			:secondary="type !== 'primary'"
 			:disabled="disabled"
-			:icon="!link.label"
-			:href="link.href"
-			:to="link.to"
+			:icon="!label"
+			:href="linkRoutes.href"
+			:to="linkRoutes.to"
 		>
-			<v-icon v-if="link.icon" left :name="link.icon" />
-			<span v-if="link.label">{{ link.label }}</span>
+			<v-icon v-if="icon" left :name="icon" />
+			<span v-if="label">{{ label }}</span>
 		</v-button>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, inject, computed } from 'vue';
+import { defineComponent, ref, computed, inject } from 'vue';
 import { render } from 'micromustache';
-import { omit } from 'lodash';
-
-type Link = {
-	icon: string;
-	label: string;
-	type: string;
-	url?: string;
-};
 
 export default defineComponent({
 	props: {
@@ -35,31 +25,37 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		links: {
-			type: Array as PropType<Link[]>,
-			default: null,
+		icon: {
+			type: String,
+			default: undefined,
+		},
+		label: {
+			type: String,
+			default: undefined,
+		},
+		type: {
+			type: String,
+			default: undefined,
+		},
+		url: {
+			type: String,
+			default: undefined,
 		},
 	},
 	setup(props) {
 		const values = inject('values', ref<Record<string, any>>({}));
 
-		const linksParsed = computed(() => {
-			return props.links.map((link) => {
-				const parsedLink = omit<Record<string, any>>(link, ['url']);
-				const linkValue = render(link.url ?? '', values.value);
+		const linkRoutes = computed(() => {
+			const linkValue = render(props.url ?? '', values.value);
 
-				if (linkValue.startsWith('/')) {
-					parsedLink.to = linkValue;
-				} else {
-					parsedLink.href = linkValue;
-				}
-
-				return parsedLink;
-			});
+			return {
+				href: linkValue.startsWith('/') ? undefined : linkValue,
+				to: linkValue.startsWith('/') ? linkValue : undefined,
+			};
 		});
 
 		return {
-			linksParsed,
+			linkRoutes,
 		};
 	},
 });
