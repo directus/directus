@@ -34,7 +34,7 @@ maps: Mappe
 item_creation: Creazione elemento
 item_revision: Revisione elemento
 enter_a_name: Inserisci un nome...
-duplicate_field: Campo duplicato
+duplicate_field: Duplica campo
 half_width: Metà larghezza
 full_width: Larghezza Massima
 group: Gruppo
@@ -1524,7 +1524,7 @@ displays:
   rating:
     rating: Valutazione
     description: Visualizza un numero come stelle rispetto al valore massimo
-    simple: Semplice
+    simple: Formato breve
     simple_label: Mostra in formato breve
   raw:
     raw: Valore grezzo
