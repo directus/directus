@@ -90,7 +90,6 @@ export function setSpecialForLocalType(updates: StateUpdates) {
 
 export function resetRelations(updates: StateUpdates) {
 	if (!updates.relations) updates.relations = {};
-	updates.relations.m2a = undefined;
 	updates.relations.m2o = undefined;
 	updates.relations.o2m = undefined;
 }

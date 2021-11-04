@@ -46,7 +46,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
-import { debounce, isObject } from 'lodash';
+import { isObject } from 'lodash';
 
 export default defineComponent({
 	props: {

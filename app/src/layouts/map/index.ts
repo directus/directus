@@ -255,7 +255,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (props.selectMode) {
 				handleSelect({ ids: [id], replace });
 			} else {
-				router.push(`/collections/${collection.value}/${id}`);
+				router.push(`/content/${collection.value}/${id}`);
 			}
 		}
 

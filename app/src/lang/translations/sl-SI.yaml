@@ -794,16 +794,11 @@ fields:
     project_url: Spletni naslov (URL) projekta
     project_color: Barva projekta
     project_logo: Logo projekta
-    public_pages: Javne strani
     public_foreground: Glavna slika v javnem delu, logo
     public_background: Slika za ozadje v javnem delu
     public_note: Sporočilo v javnem delu
     auth_password_policy: Pravila gesel
     auth_login_attempts: Število poskusov prijave
-    files_and_thumbnails: Datoteke & sličice
-    storage_default_folder: Privzeta mapa za shranjevanje
-    storage_asset_presets: Prednastavitve shrambe
-    storage_asset_transform: Pretvorba elementa
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
   directus_fields:
@@ -1167,7 +1162,6 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Izberi mapo
-    field_hint: Naloži novo datoteko v izbrano mapo. Ne vpliva na obstoječe izbrane datoteke.
     root_name: Korenska mapa knjižnjice
     system_default: Sistemske privzete vrednosti
   select-radio:

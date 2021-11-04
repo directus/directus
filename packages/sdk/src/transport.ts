@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { ItemMetadata } from './items';
 
 export type TransportErrorDescription = {
@@ -19,30 +20,40 @@ export type TransportResponse<T, R = any> = {
 
 export type TransportMethods = 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch';
 
-export type TransportOptions = {
+export type TransportRequestOptions = {
 	params?: any;
 	headers?: any;
-	refreshTokenIfNeeded?: boolean;
-	sendAuthorizationHeaders?: boolean;
 	onUploadProgress?: ((progressEvent: any) => void) | undefined;
 };
 
-export interface ITransport {
+export type TransportOptions = TransportRequestOptions & {
 	url: string;
-	get<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	head<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	options<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	delete<T = any, P = any, R = any>(
+	beforeRequest?: (config: AxiosRequestConfig) => AxiosRequestConfig;
+};
+
+export abstract class ITransport {
+	abstract get<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
+	abstract head<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
+	abstract options<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
+	abstract delete<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
-		options?: TransportOptions
+		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
-	post<T = any, P = any, R = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	put<T = any, P = any, R = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T, R>>;
-	patch<T = any, P = any, R = any>(
+	abstract post<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
-		options?: TransportOptions
+		options?: TransportRequestOptions
+	): Promise<TransportResponse<T, R>>;
+	abstract put<T = any, P = any, R = any>(
+		path: string,
+		data?: P,
+		options?: TransportRequestOptions
+	): Promise<TransportResponse<T, R>>;
+	abstract patch<T = any, P = any, R = any>(
+		path: string,
+		data?: P,
+		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
 }
 

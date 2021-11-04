@@ -8,7 +8,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { validatePayload } from '@directus/shared/utils';
-import { Filter, Item, Field } from '@directus/shared/types';
+import { Item, Field, LogicalFilterAND } from '@directus/shared/types';
 import { isNil, flatten, merge } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { getEndpoint } from '@/utils/get-endpoint';
@@ -314,8 +314,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	function validate(item: Item) {
 		const validationRules = {
-			_and: [] as Filter['_and'],
-		} as Filter;
+			_and: [],
+		} as LogicalFilterAND;
 
 		const applyConditions = (field: Field) => {
 			if (field.meta && Array.isArray(field.meta?.conditions)) {
@@ -352,14 +352,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 		for (const field of requiredFields) {
 			if (isNew.value === true && isNil(field.schema?.default_value)) {
-				validationRules._and!.push({
+				validationRules._and.push({
 					[field.field]: {
 						_submitted: true,
 					},
 				});
 			}
 
-			validationRules._and!.push({
+			validationRules._and.push({
 				[field.field]: {
 					_nnull: true,
 				},
