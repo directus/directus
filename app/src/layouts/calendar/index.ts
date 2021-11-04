@@ -191,7 +191,7 @@ export default defineLayout<LayoutOptions>({
 
 						const endpoint = collection.value.startsWith('directus')
 							? collection.value.substring(9)
-							: `/content/${collection.value}`;
+							: `content/${collection.value}`;
 
 						router.push(`/${endpoint}/${primaryKey}`);
 					}
