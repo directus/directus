@@ -21,7 +21,7 @@ export default defineInterface({
 				meta: {
 					interface: 'system-display-template',
 					options: {
-						collectionName: relations.m2o?.related_collection ?? null,
+						collectionName: relations.o2m?.collection,
 					},
 				},
 			},
