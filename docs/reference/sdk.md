@@ -1,7 +1,7 @@
 # JavaScript SDK
 
 > The JS SDK provides an intuitive interface for the Directus API from within a JavaScript-powered project (browsers and
-> node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
+> Node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
 > storing state.
 
 [[toc]]
@@ -17,130 +17,364 @@ npm install @directus/sdk
 ```js
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+const directus = new Directus('http://directus.example.com');
+
+async function start() {
+	// Wait for login to be done...
+	await directus.auth.login({
+		email: 'admin@example.com',
+		password: 'password',
+	});
+
+	// ... before fetching items
+	const articles = await directus.items('articles').readMany();
+
+	console.log({
+		items: articles.data,
+		total: articles.meta.total_count,
+	});
+}
+
+start();
 ```
 
-**NOTE** _All_ methods return promises. Make sure to await methods, for example:
+## TypeScript
 
-```js
+Version >= 4.1
+
+Although it's not required, it is recommended to use Typescript to have an easy development experience. This allows more
+detailed IDE suggestions for return types, sorting, filtering, etc.
+
+To feed the SDK with your current schema, you need to pass it on the constructor.
+
+```ts
+type BlogPost = {
+	id: ID;
+	title: string;
+};
+
+type BlogSettings = {
+	display_promotions: boolean;
+};
+
+type MyCollections = {
+	posts: BlogPost;
+	settings: BlogSettings;
+};
+
+// This is how you feed custom type information to Directus.
+const directus = new Directus<MyCollections>('http://url');
+
+// ...
+
+const post = await directus.items('posts').readOne(1);
+// typeof(post) is a partial BlogPost object
+
+const settings = await posts.singleton('settings').read();
+// typeof(settings) is a partial BlogSettings object
+```
+
+You can also extend the Directus system type information by providing type information for system collections as well.
+
+```ts
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+// Custom fields added to Directus user collection.
+type UserType = {
+	level: number;
+	experience: number;
+};
 
-// Wait for login to be done...
+type CustomTypes = {
+	/*
+	This type will be merged with Directus user type.
+	It's important that the naming matches a directus
+	collection name exactly. Typos won't get caught here
+	since SDK will assume it's a custom user collection.
+	*/
+	directus_users: UserType;
+};
+
+const directus = new Directus<CustomTypes>('https://api.example.com');
+
 await directus.auth.login({
 	email: 'admin@example.com',
 	password: 'password',
 });
 
-// ... before fetching items
-const articles = await directus.items('articles').readMany();
+const me = await directus.users.me.read();
+// typeof me = partial DirectusUser & UserType;
 
-console.log({
-	items: articles.data,
-	total: articles.meta.total_count,
-});
+// OK
+me.level = 42;
+
+// Error TS2322: Type "string" is not assignable to type "number".
+me.experience = 'high';
 ```
 
-## Global
+## Reference
 
-### Initialize
+### Constructor
+
+This is the starting point to use the SDK. You need to create an instance and invoke methods from it. In most cases a
+single instance is sufficient, but in case you need more, you need to define
+[`options.storage.prefix`](#options.storage.prefix).
 
 ```js
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+const directus = new Directus(url, init);
 ```
 
-#### `url`
+- `url` [required] _String_ - A string pointing to your Directus instance. E.g. `https://admin.directus.io`
 
-The constructor accepts the URL as the first parameter.
+  <a name="options"></a>
 
-#### `options.auth`
+- `init` [optional] _Object_ - Define settings that you want to customize .The possible options are:
 
-The authentication implementation. See [Auth](#auth) for more information.
+  <a name="options.auth"></a>
 
-Defaults to an instance `Auth`.
+  - `auth` [optional] _Object_ - Defines settings you want to customize regarding [authentication](#auth). The possible
+    options are:
 
-#### `options.storage`
+    - `mode` [optional] _String_ - Defines the mode you want to use for authentication. It can be `'cookie'` for cookies
+      or `'json'` for JWT. Defaults to `'cookie'` on browsers and `'json'` otherwise. We recommend using cookies when
+      possible to prevent any kind of attacks, mostly XSS.
 
-The storage implementation. See [Storage](#storage) for more information.
+      <a name="options.auth.autoRefresh"></a>
 
-Defaults to an instance of `MemoryStorage` when in node.js, and `LocalStorage` when in browsers.
+    - `autoRefresh` [optional] _Boolean_ - Tells SDK ifit should handle refresh tokens automatically. Defaults to
+      `true`.
+    - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
+      before the refresh token expires and needs to be refreshed. Defaults to `30000`.
+    - `staticToken` [optional] _String_ - Defines the static token to use. It is not compatible with the options above
+      since it does not refresh. Defaults to `''` (no static token).
 
-**NOTE:**
+  <a name="options.storage"></a>
 
-If you plan to use multiple SDK instances at once, keep in mind that they will share the Storage across them, leading to
-unpredictable behaviors. This scenario might be a case while writing tests.
+  - `storage` [optional] _Object_ - Defines settings you want to customize regarding [storage](#storage).
 
-For example, the SDK instance that executed last the `login()` method writes the resulting `access_token` into the
-Storage and **overwrites** any prior fetched `access_token` from any other SDK instance. That might mix up your test
-scenario by granting false access rights to your previous logged-in users.
+    <a name="options.storage.prefix"></a>
 
-Adding prefixes to your Storage instances would solve this error:
+    - `prefix` [optional] _String_ - Defines the tokens prefix tokens that are saved. This should be fulfilled with
+      different values when using multiple instances of SDK. Defaults to `''` (no prefix).
+    - `mode` [optional] _String_ - Defines the storage location to be used to save tokens. Allowed values are
+      `LocalStorage` and `MemoryStorage`. Defaults to `LocalStorage` on browsers and `MemoryStorage` on Node.js. The
+      mode `LocalStorage` is not compatible with Node.js.
+
+  <a name="options.transport"></a>
+
+  - `transport` [optional] _Object_ - Defines settings you want to customize regarding [transport](#transport).
+    - `params` [optional] _Object_ - Defines an object with keys and values to be passed as additional query string.
+    - `headers` [optional] _Object_ - Defines an object with keys and values to be passed as additional headers.
+    - `onUploadProgress` [optional] _(event:
+      [ProgressEvent](https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent) => void)_ - Defines a callback
+      function to indicate the upload progress.
+
+## Auth
+
+Defines how authentication is handled by the SDK.
+
+### Custom Implementation
+
+It is possible to provide a custom implementation by extending `IAuth`. While this could be useful for advanced usage,
+most use-cases do not need it.
 
 ```js
-import { Directus, MemoryStorage } from '@directus/sdk';
-import { randomBytes } from 'crypto';
+import { IAuth, Directus } from '@directus/sdk';
 
-// ...
+class MyAuth extends IAuth {
+	async login() {
+		return { access_token: '', expires: 0 };
+	}
+	async logout() {}
+	async refresh() {
+		return { access_token: '', expires: 0 };
+	}
+	async static() {
+		return true;
+	}
+}
 
-const prefix = randomBytes(8).toString('hex');
-const storage = new MemoryStorage(prefix);
-const url = `http://${host}:${port}`;
-const directus = new Directus(url, { storage });
+const directus = new Directus('http://directus.example.com', { auth: new MyAuth() });
 ```
 
-#### `options.transport`
+### Directus Implementation
 
-The transport implementation. See [Transport](#transport) for more information.
+By default, Directus creates an instance of `Auth` which handles refresh tokens automatically. Check
+[`options.auth`](#options.auth) to see the available settings.
 
-Defaults to an instance of `AxiosTransport`.
-
-### Example
-
-```js
-const directus = new Directus('http://api.example.com/');
-```
-
-### Get / Set API URL
-
-```js
-// Get the API base URL
-console.log(directus.transport.url); // => https://api.example.com/
-
-// Set the API base URL
-directus.transport.url = 'https://api2.example.com';
-```
-
-### Access to transport/Axios
-
-You can tap into the transport through `directus.transport`. If you are using the (default) `AxiosTransport`, you can
-access axios through `directus.transport.axios`.
-
-#### Intercepting requests and responses
-
-Axios transport offers a wrapper around Axios interceptors to make it easy for you to inject/eject interceptors.
+### Get current token
 
 ```ts
-const requestInterceptor = directus.transport.requests.intercept((config) => {
-	config.headers['My-Custom-Header'] = 'Header value';
-	return config;
-});
-
-// If you don't want the interceptor anymore, remove it
-requestInterceptor.eject();
+const token = directus.auth.token;
 ```
 
-```ts
-const responseInterceptor = directus.transport.responses.intercept((response) => {
-	console.log('Response received', { response });
-	return response;
-});
+### Login
 
-// If you don't want the interceptor anymore, remove it
-responseInterceptor.eject();
+#### With credentials
+
+```js
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'd1r3ctu5',
+});
 ```
+
+#### With static tokens
+
+```js
+await directus.auth.static('static_token');
+```
+
+### Refresh Auth Token
+
+By default, Directus will handle token refreshes. Although, you can handle this behaviour manually by setting
+[`autoRefresh`](#options.auth.autoRefresh) to `false`.
+
+```js
+await directus.auth.refresh();
+```
+
+### Logout
+
+```js
+await directus.auth.logout();
+```
+
+### Request a Password Reset
+
+By default, the address defined in `PUBLIC_URL` on `.env` file is used for the link to the reset password page sent in
+the email:
+
+```js
+await directus.auth.password.request('admin@example.com');
+```
+
+But a custom address can be passed as second argument:
+
+```js
+await directus.auth.password.request(
+	'admin@example.com',
+	'https://myapp.com' // In this case, the link will be https://myapp.com?token=FEE0A...
+);
+```
+
+### Reset a Password
+
+```js
+await directus.auth.password.reset('abc.def.ghi', 'n3w-p455w0rd');
+```
+
+Note: The token passed in the first parameter is sent in an email to the user when using `request()`
+
+## Transport
+
+The transport object abstracts how you communicate with Directus. Transports can be customized to use different HTTP
+libraries for example.
+
+### Custom Implementatin
+
+It is possible to provide a custom implementation by extending `ITransport`. While, this could be useful for advanced
+usage, it is not needed for most use-cases.
+
+```js
+import { ITransport, Directus } from '@directus/sdk';
+
+class MyTransport extends ITransport {
+	buildResponse() {
+		return {
+			raw: '',
+			data: {},
+			status: 0,
+			headers: {},
+		};
+	}
+
+	async get(path, options) {
+		return this.buildResponse();
+	}
+	async head(path, options) {
+		return this.buildResponse();
+	}
+	async options(path, options) {
+		return this.buildResponse();
+	}
+	async delete(path, data, options) {
+		return this.buildResponse();
+	}
+	async post(path, data, options) {
+		return this.buildResponse();
+	}
+	async put(path, data, options) {
+		return this.buildResponse();
+	}
+	async patch(path, data, options) {
+		return this.buildResponse();
+	}
+}
+
+const directus = new Directus('http://directus.example.com', { transport: new MyTransport() });
+```
+
+### Directus Implementation
+
+By default, Directus creates an instance of `Transport` which handles requests automatically. Check
+[`options.transport`](#options.transport) to see the available settings.
+
+To make HTTP requests SDK uses `axios` so it is compatible in both browsers and Node.js. Also, it is possible to handle
+upload progress (a downside of `fetch`). To have direct access to this instance you can call `directus.transport.axios`.
+
+## Storage
+
+The storage is used to load and save token information.
+
+### Custom Implementatin
+
+It is possible to provide a custom implementation by extending `IStorage`. While, this could be useful for advanced
+usage, it is not needed for most use-cases.
+
+```js
+import { IStorage, Directus } from '@directus/sdk';
+
+class MyStorage extends IStorage {
+	get auth_token() {
+		return this.get('auth_token');
+	}
+	get auth_expires() {
+		return Number(this.get('auth_expires'));
+	}
+	get auth_refresh_token() {
+		return this.get('auth_refresh_token');
+	}
+
+	get(key) {
+		return '';
+	}
+	set(key, value) {
+		return value;
+	}
+	delete(key) {
+		return null;
+	}
+}
+
+const directus = new Directus('http://directus.example.com', { storage: new MyStorage() });
+```
+
+### Directus Implementation
+
+By default, Directus creates an instance of `Storage` which handles store information automatically. Check
+[`options.storage`](#options.storage) to see the available settings.
+
+SDK uses `localStorage` on browsers and the memory itself on Node.js to save tokens. This behavior can be configured in
+[`options.storage.mode`](#options.storage.mode). The `LocalStorage` is only available on browsers and the
+`MemoryStorage` is not persitent, i.e., once you leave the tab or quit the process, you will need to authenticate again.
+
+If you want to use multiple instances of the SDK you should set a different [`prefix`](#options.storage.prefix) for each
+one.
+
+When using
 
 ## Items
 
@@ -153,7 +387,7 @@ You can get an instance of the item handler by providing the collection (and typ
 // import { Directus, ID } from '@directus/sdk';
 const { Directus } = require('@directus/sdk');
 
-const directus = new Directus('https://api.example.com');
+const directus = new Directus('http://directus.example.com');
 
 const articles = directus.items('articles');
 ```
@@ -281,286 +515,19 @@ await articles.deleteMany([15, 42]);
 
 ## Activity
 
-### Read All Activity
+```js
+directus.activity;
+```
+
+Same methods as `directus.items("directus_activity")`.
+
+## Comments
 
 ```js
-await directus.activity.readMany();
+directus.comments;
 ```
 
-### Read Activity By Query
-
-```js
-await directus.activity.readMany({
-	filter: {
-		action: {
-			_eq: 'create',
-		},
-	},
-});
-```
-
-### Read Activity By Primary Key(s)
-
-```js
-await directus.activity.readOne(15);
-```
-
-Supports optional query:
-
-```js
-await directus.activity.readOne(15, { fields: ['action'] });
-```
-
-### Create a Comment
-
-```js
-await directus.activity.comments.create({
-	collection: 'articles',
-	item: 15,
-	comment: 'Hello, world!',
-});
-```
-
-### Update a comment
-
-```js
-await directus.activity.comments.update(31, {
-	comment: 'Howdy, world!',
-});
-```
-
-Note: The passed key is the primary key of the comment
-
-### Delete a comment
-
-```js
-await directus.activity.comments.delete(31);
-```
-
-Note: The passed key is the primary key of the comment
-
-## Auth
-
-### Configuration
-
-Directus will accept custom implementations of the `IAuth` interface. The default implementation `Auth` can be imported
-from `@directus/sdk`. The default implementation will require you to pass the transport and storage implementations. All
-options are optional.
-
-```js
-import { Auth } from '@directus/sdk';
-
-// ...
-
-const sdk = new Directus('url', {
-	auth: new Auth(transport, storage, options);
-	// ...
-});
-```
-
-#### transport
-
-The transport responsible for communicating with Directus backend.
-
-Defaults to an instance of `AxiosTransport` when not creating `Auth` youself.
-
-#### storage
-
-The storage responsible for storing authentication and sdk state.
-
-When not creating `Auth` youself, defaults to `MemoryStorage` in node.js, and `LocalStorage` in browsers.
-
-#### options
-
-##### options.mode
-
-Accepts `cookie` or `json`.
-
-When in `cookie` mode, the API will set the refresh token in an `httpOnly` secure cookie that can't be accessed from
-client side JavaScript. This is the most secure way to connect to the API from a public front-end website.
-
-When you can't rely on cookies, or need more control over handling the storage of the cookie (like in node.js), use
-`json` mode. This will return the refresh token in the "normal" payload. The storage of these tokens are handled by the
-`storage` implementation.
-
-Defaults to `cookie` in browsers, `json` in node.js.
-
-##### options.refresh
-
-See [Refresh auth token](#refresh-auth-token).
-
-### Get current token
-
-```ts
-const token = directus.auth.token;
-```
-
-### Login
-
-#### With credentials
-
-```js
-await directus.auth.login({
-	email: 'admin@example.com',
-	password: 'd1r3ctu5',
-});
-```
-
-#### With static tokens
-
-```js
-await directus.auth.static('static_token');
-```
-
-#### Refresh auth token
-
-You can set authentication to auto-refresh the token once it's close to expire.
-
-```js
-await directus.auth.login(
-	{
-		email: 'admin@example.com',
-		password: 'd1r3ctu5',
-	},
-	{
-		refresh: {
-			auto: true,
-		},
-	}
-);
-```
-
-You can also set how much time before the expiration you want to auto-refresh the token. When not specified, 30 sec is
-the default time.
-
-```js
-await directus.auth.login(
-	{
-		email: 'admin@example.com',
-		password: 'd1r3ctu5',
-	},
-	{
-		refresh: {
-			auto: true,
-			time: 30000, // refesh the token 30 secs before the expiration
-		},
-	}
-);
-```
-
-### Refresh Auth Token
-
-You can manually refresh the authentication token. This won't try to refresh the token if it's still valid in the eyes
-of the SDK.
-
-Also worth mentioning that any concurrent refreshes (trying to refresh while a there's an existing refresh running),
-will result in only a single refresh hitting the server, and promises resolving/rejecting with the result from the first
-call. This depends on the implementation of IAuth you're using.
-
-```js
-await directus.auth.refresh();
-```
-
-You can force the refresh by passing true in the first parameter.
-
-An optional parameter will accept auto-refresh information.
-
-```js
-await directus.auth.refresh(true);
-```
-
-This function can either return the `AuthResult` in case a refresh was made, `false` in case SDK thinks it's not needed,
-or throw an error in case refresh fails.
-
-### Logout
-
-```js
-await directus.auth.logout();
-```
-
-### Request a Password Reset
-
-By default, the address defined in `PUBLIC_URL` on `.env` file is used for the link to the reset password page sent in
-the email:
-
-```js
-await directus.auth.password.request('admin@example.com');
-```
-
-But a custom address can be passed as second argument:
-
-```js
-await directus.auth.password.request(
-	'admin@example.com',
-	'https://myapp.com' // In this case, the link will be https://myapp.com?token=FEE0A...
-);
-```
-
-### Reset a Password
-
-```js
-await directus.auth.password.reset('abc.def.ghi', 'n3w-p455w0rd');
-```
-
-Note: The token passed in the first parameter is sent in an email to the user when using `request()`
-
-## Transport
-
-The transport object abstracts how you communicate with Directus. Transports can be customized to use different HTTP
-libraries for example.
-
-### Interface
-
-```ts
-// Simplified version, `import { ITransport } from '@directus/sdk';`
-interface ITransport {
-	url;
-	get(path);
-	head(path);
-	options(path);
-	delete(path, data = undefined);
-	post(path, data);
-	put(path, data);
-	patch(path, data);
-}
-```
-
-### AxiosTransport
-
-The default transport used in both browser and node deployments. It supports auto refresh on request.
-
-#### Options
-
-AxiosTransport requires a base URL and a storage implementation to work.
-
-```ts
-const transport = new AxiosTransport('http://example.com', new MemoryStorage(), async () => {
-	await sdk.auth.refresh();
-});
-await transport.get('/server/info');
-```
-
-## Storage
-
-The storage is used to load and save SDK data.
-
-### LocalStorage
-
-The storage used in environments where Local Storage is supported.
-
-#### Options
-
-The `LocalStorage` implementation accepts a _transparent_ prefix. Use this when you need multiple SDK instances with
-independent authentication for example.
-
-### MemoryStorage
-
-The storage used when SDK data is ephemeral. For example: only during the lifecycle of the process.
-
-#### Options
-
-The `MemoryStorage` implementation accepts a _transparent_ prefix so you can have multiple instances of the SDK without
-having clashing keys.
+Same methods as `directus.items("directus_comments")`.
 
 ## Collections
 
@@ -761,75 +728,3 @@ await directus.utils.revert(451);
 Note: The key passed is the primary key of the revision you'd like to apply.
 
 ---
-
-## TypeScript
-
-If you are using TypeScript, the JS-SDK requires TypeScript 3.8 or newer. TypeScript will also improve the development
-experience by providing relevant information when manipulating your data. For example, `directus.items` knows about your
-collection types if you feed the SDK with enough information in the construction of the SDK instance. This allows for a
-more detailed IDE suggestions for return types, sorting, and filtering.
-
-```ts
-type BlogPost = {
-	id: ID;
-	title: string;
-};
-
-type BlogSettings = {
-	display_promotions: boolean;
-};
-
-type MyCollections = {
-	posts: BlogPost;
-	settings: BlogSettings;
-};
-
-// This is how you feed custom type information to Directus.
-const directus = new Directus<MyCollections>('http://url');
-
-// ...
-
-const post = await directus.items('posts').readOne(1);
-// typeof(post) is a partial BlogPost object
-
-const settings = await posts.singleton('settings').read();
-// typeof(settings) is a partial BlogSettings object
-```
-
-You can also extend the Directus system type information by providing type information for system collections as well.
-
-```ts
-import { Directus } from '@directus/sdk';
-
-// Custom fields added to Directus user collection.
-type UserType = {
-	level: number;
-	experience: number;
-};
-
-type CustomTypes = {
-	/*
-	This type will be merged with Directus user type.
-	It's important that the naming matches a directus
-	collection name exactly. Typos won't get caught here
-	since SDK will assume it's a custom user collection.
-	*/
-	directus_users: UserType;
-};
-
-const directus = new Directus<CustomTypes>('https://api.example.com');
-
-await directus.auth.login({
-	email: 'admin@example.com',
-	password: 'password',
-});
-
-const me = await directus.users.me.read();
-// typeof me = partial DirectusUser & UserType;
-
-// OK
-me.level = 42;
-
-// Error TS2322: Type "string" is not assignable to type "number".
-me.experience = 'high';
-```

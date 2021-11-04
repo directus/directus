@@ -1,6 +1,12 @@
 import { IStorage } from '../../storage';
 
-export abstract class BaseStorage implements IStorage {
+export type StorageOptions = {
+	prefix?: string;
+};
+
+export abstract class BaseStorage extends IStorage {
+	protected prefix: string;
+
 	get auth_token(): string | null {
 		return this.get('auth_token');
 	}
@@ -44,4 +50,10 @@ export abstract class BaseStorage implements IStorage {
 	abstract get(key: string): string | null;
 	abstract set(key: string, value: string): string;
 	abstract delete(key: string): string | null;
+
+	constructor(options?: StorageOptions) {
+		super();
+
+		this.prefix = options?.prefix ?? '';
+	}
 }
