@@ -23,7 +23,7 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview,
 	subQuery = false
-): void {
+): Knex.QueryBuilder {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sortField) => {
@@ -91,6 +91,8 @@ export default function applyQuery(
 	if (query.aggregate) {
 		applyAggregate(dbQuery, query.aggregate, collection);
 	}
+
+	return dbQuery;
 }
 
 /**

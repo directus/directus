@@ -213,9 +213,7 @@ function getDBQuery(
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	applyQuery(knex, table, dbQuery, queryCopy, schema);
-
-	return dbQuery;
+	return applyQuery(knex, table, dbQuery, queryCopy, schema);
 }
 
 function applyParentFilters(
