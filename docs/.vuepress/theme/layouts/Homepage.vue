@@ -581,8 +581,15 @@ export default {
 }
 
 @media (max-width: 700px) {
+	.header .text {
+		top: 20px;
+		right: 20px;
+		bottom: 20px;
+		left: 20px;
+	}
+
 	.header .text h1 {
-		font-size: 42px;
+		font-size: clamp(30px, 7vw, 42px);
 	}
 
 	.panel {
