@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Foto
 default_provider: Predeterminat
 draft: Esborrany
@@ -809,16 +789,11 @@ fields:
     project_url: URL del projecte
     project_color: Color del projecte
     project_logo: Logotip del projecte
-    public_pages: Pàgines públiques
     public_foreground: Primer pla públic
     public_background: Fons públic
     public_note: Anotació de la vista pública
     auth_password_policy: Política de contrasenyes
     auth_login_attempts: Intents d'autenticació
-    files_and_thumbnails: Fitxers i miniatures
-    storage_default_folder: Carpeta predeterminada d'emmagatzematge
-    storage_asset_presets: Predefinits de recursos d'emmagatzematge
-    storage_asset_transform: Transformació de recursos d'emmagatzematge
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
   directus_fields:
@@ -845,6 +820,7 @@ fields:
     method: Mètode
     status: Estat
     data: Dades
+    value: Valor
     data_label: Envia les dades de l'event
     triggers: Disparadors
     actions: Accions
@@ -897,6 +873,8 @@ field_options:
     actions_create: Crear
     actions_update: Actualitzar
     actions_delete: Elimina
+    headers:
+      value: Valor
 no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
 do_nothing: No facis res
 generate_and_save_uuid: Genera i Desa UUID
@@ -1133,7 +1111,6 @@ interfaces:
   system-folder:
     folder: Carpeta
     description: Selecciona una carpeta
-    field_hint: Insereix els fitxers carregats recentment a la carpeta seleccionada. No afecta els fitxers existents seleccionats.
     root_name: Arrel de la biblioteca de fitxers
     system_default: Predeterminats del sistema
   select-radio:
@@ -1336,12 +1313,10 @@ layouts:
     map: Mapa
     basemap: Mapa base
     layers: Capes
-    edit_custom_layers: Edita capes
     cluster_options: Opcions de clustering
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
-    field: Geometria
     invalid_geometry: Geometria invàlida
 panels:
   label:

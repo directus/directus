@@ -1,6 +1,6 @@
 import { Command, Option } from 'commander';
 import { startServer } from '../server';
-import { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import { getExtensionManager } from '../extensions';
 import bootstrap from './commands/bootstrap';
 import count from './commands/count';
@@ -22,7 +22,7 @@ export async function createCli(): Promise<Command> {
 
 	await extensionManager.initialize({ schedule: false });
 
-	await emitAsyncSafe('cli.init.before', { program });
+	await emitter.emitInit('cli.before', { program });
 
 	program.name('directus').usage('[command] [options]');
 	program.version(pkg.version, '-v, --version');
@@ -95,7 +95,7 @@ export async function createCli(): Promise<Command> {
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
 
-	await emitAsyncSafe('cli.init.after', { program });
+	await emitter.emitInit('cli.after', { program });
 
 	return program;
 }

@@ -1,37 +1,32 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: 頭像
+default_provider: 預設
+published: 已發佈
+draft: 草稿
+archived: 已封存
+modules: 模組
 edit_field: 編輯欄位
+conditions: 條件
 item_revision: 項目修改
+enter_a_name: 輸入名稱...
 duplicate_field: 複製欄位
 half_width: 半寬
 full_width: 滿寬
+group: 組
+and: 和
+or: 或
 fill_width: 填滿寬度
 field_name_translations: 欄位名稱翻譯
 enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
 add_field: 增加欄位
 role_name: 角色名稱
+exclusive: 專屬
+children: 子層
+db_only_click_to_configure: '僅數據庫：單擊進行配置'
 show_archived_items: 顯示已封存的項目
+edited: 已編輯值
 required: 必填
+required_for_app_access: 連接程式時必需
 requires_value: 需要值
 create_preset: 創建預置
 create_role: 新建角色
@@ -39,11 +34,13 @@ create_user: 建立用户
 create_webhook: 建立 Webhook
 invite_users: 邀請用戶
 invite: 邀请
+email_already_invited: 此電郵 "{email}" 已被邀請
 emails: 信件
 connection_excellent: 優秀的連接
 connection_good: 好的連接
 connection_fair: 公平的連接
 connection_poor: 連線不穩
+primary: 主要
 rename_folder: 重新命名資料夾
 delete_folder: 刪除資料夾
 prefix: 前綴
@@ -57,6 +54,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 已登出
   SESSION_EXPIRED: 工作階段已逾時
+public_label: 公開
 public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
 not_allowed: 不允许
 directus_version: Directus 版本
@@ -68,6 +66,8 @@ os_uptime: 作業系統已運行時間
 os_totalmem: 作業系統記憶體
 archive: 封存
 archive_confirm: 您確定要封存這個項目嗎？
+reset_system_permissions_to: '重設系統權限至:'
+reset_system_permissions_copy: 此動作會取代你先前自設的系統權限。你確定?
 unarchive: 取消封存
 unarchive_confirm: 您確定要解除封存這個項目嗎？
 nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
@@ -88,19 +88,36 @@ validationError:
   null: 值必須為null
   nnull: 值不能為null
   required: 必須輸入值
+  unique: 值必須是唯一的
+  regex: 值沒有正確的格式
+all_access: 所有存取權限
+no_access: 無存取權限
 use_custom: 使用自訂
+nullable: 可空值
+allow_null_value: 接受空(NULL)值
+allow_multiple: 接受多項
+enter_value_to_replace_nulls: 請輸入新值以取代現有此欄位的空值。
+field_standard: 標準
 field_file: 單一檔案
 field_files: 多個檔案
 field_m2o: 多對一關聯
+field_m2a: 多對任何關聯
 field_o2m: 一對多關聯
 field_m2m: 多對多關聯
 field_translations: 翻譯
+field_group: 欄位群組
 item_permissions: 項目權限
 field_permissions: 欄位權限
 field_validation: 欄位驗證
+field_presets: 欄位預設
 permissions_for_role: '角色 {role} 可以 {action} 項目'
 fields_for_role: '角色 {role} 可以 {action} 欄位'
 validation_for_role: '角色 {role} 必須遵守欄位 {action} 規則'
+presets_for_role: '{role} 角色的欄位預設值。'
+revision_post_create: 這是項目建立後看起來的樣子.
+revision_post_update: 這是項目更新後看起來的樣子.
+changes_made: 以下是此版本所做的改變。
+no_relational_data: 請留意關聯數據並不包含於此。
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示
 delete_field: 刪除欄位
@@ -111,23 +128,44 @@ duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
+show_zero: 顯示零值
+sum: 總和
+avg: 平均
+count: 數量
+min: 最小值
+max: 最大值
 create_field: 新建欄位
 creating_new_field: '新欄位 ({collection})'
 reset_page_preferences: 重設頁面偏好設定
 hidden_field: 隱藏欄位
 hidden_on_detail: 從詳細內容隱藏
 alias: 別名
+boolean: 布林值
 date: 日期
+date_range: 日期範圍
+datetime: 日期時間
+dateTime: 日期時間
+precision: 精確度
 decimal: 小數
+float: 浮點
+integer: 整數
 json: JSON
+xml: XML
+string: 字串
 text: 文字
 time: 時間
+timestamp: 時間
 uuid: UUID
 hash: 哈希
+not_available_for_type: 此類別無法使用
 create_translations: 創建翻譯
+auto_refresh: 自動刷新
 refresh_interval: 重新整理間隔
 no_refresh: 不要重新整理
+refresh_interval_seconds: 即時刷新 | 每秒 | 每{seconds} 秒
+refresh_interval_minutes: 每分鐘 | 每 {minutes} 分鐘
 auto_generate: 自動產生
+this_will_auto_setup_fields_relations: 這會自動設定所有相關的必要欄位和關係。
 click_here: 點擊此處
 fields_group: 欄位群組
 choose_a_type: 選擇類型...
@@ -143,6 +181,7 @@ m2a_relationship: 多對Any關係
 next: 下一個
 field_name: 欄位名稱
 translations: 翻譯
+no_translations: 沒有翻譯
 note: 備註
 enter_a_value: 請輸入...
 enter_a_placeholder: 輸入一個佔位符...
@@ -155,7 +194,11 @@ primary_key: 主鍵
 foreign_key: 外鍵
 finish_setup: 完成安装
 dismiss: 忽略
+raw_value: 原始值
+edit_raw_value: 編輯原始值
+enter_raw_value: 輸入原始值...
 clear_value: 清除內容
+clear_changes: 清除更改
 reset_to_default: 重設為預設值
 undo_changes: 還原變更
 notifications: 通知
@@ -170,7 +213,9 @@ revision_delta_created: 已建立
 revision_delta_updated: '更新 1 個欄位 | 更新 {count} 個欄位'
 revision_delta_deleted: 已刪除
 revision_delta_reverted: 已復原
+revision_delta_other: 版本
 revision_delta_by: '{date} 由 {user}'
+private_user: 私密用戶
 leave_comment: 發表評論
 post_comment_success: 評論已發佈。
 item_create_success: 項目已建立 | 多個項目已建立
@@ -185,6 +230,7 @@ format: 格式
 use_current_filters_settings: 使用當前篩選器及設置
 export_collection: '匯出 {collection}'
 last_page: 最後一頁
+last_access: 最後存取
 fill_template: 使用範本填充
 a_unique_table_name: 一個唯一的資料表名稱...
 a_unique_column_name: 一個唯一的欄位名稱...
@@ -198,7 +244,12 @@ interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+minutes: 分
+hours: 小時
 month: 月
+year: 年
 select_all: 全選
 months:
   january: 一月
@@ -213,9 +264,11 @@ months:
   october: 十月
   november: 十一月
   december: 十二月
+drag_mode: 拖動模式
 cancel_crop: 取消裁切
 original: 原始
 url: URL
+import_label: 匯入
 file_details: 檔案詳細資訊
 dimensions: 尺寸
 size: 尺寸
@@ -229,6 +282,7 @@ zoom: 縮放
 download: 下載
 open: 開啟
 open_in_new_window: 在新視窗開啟
+open_folder: 開啟"{folder}" 資料夾
 foreground_color: 前景顏色
 background_color: 背景顏色
 upload_from_device: 從裝置上傳
@@ -252,6 +306,10 @@ save_and_create_new: 儲存並新建
 save_and_stay: 儲存並停留
 save_as_copy: 儲存為副本
 add_existing: 新增現有的
+creating_items: 建立項目中
+enable_create_button: 啟用建立按鈕
+selecting_items: 選擇項目中
+enable_select_button: 啟用選取按鈕
 comments: 評論
 no_comments: 還沒有評論
 click_to_expand: 點擊以展開
@@ -274,6 +332,7 @@ user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
 no_users_copy: 這個角色中還沒有任何使用者。
 webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
 all_items: 所有項目
+any: 任何
 csv: CSV
 no_collections: 沒有集合
 create_collection: 新建集合
@@ -281,9 +340,15 @@ no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始�
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
 select_a_collection: 選擇一個集合
+select_a_field: 選擇一個欄位
+active: 有效的
+move_to: 移動到...
 copy: 複製
+copy_to: 複製到...
+inactive: 未啟用
 users: 用戶
 activity: 活動
+activity_item: 活動項目
 action: 操作
 ip_address: IP位址
 user_agent: 代理用戶
@@ -380,6 +445,7 @@ operators:
   between: 介於
   empty: 是空的
 loading: 載入中...
+value_unique: 值必須是唯一的
 display_template: 顯示模板
 n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
 create_folder: 建立資料夾
@@ -515,8 +581,10 @@ fields:
     theme: 主題
     tfa_secret: 雙重身份驗證
     status: 狀態
+    status_active: 有效的
     role: 角色
     last_page: 最後一頁
+    last_access: 最後存取
   directus_settings:
     project_name: 專案名稱
     project_url: 專案 URL
@@ -543,6 +611,7 @@ fields:
   directus_webhooks:
     name: 名稱
     status: 狀態
+    value: 值
 field_options:
   directus_activity:
     create: 新建
@@ -561,9 +630,15 @@ field_options:
       fields:
         type_name: 類型
     collections_name: 資料集
+  directus_users:
+    status_dropdown_active: 有效的
   directus_webhooks:
+    status_options_active: 有效的
+    status_options_inactive: 未啟用
     actions_create: 新建
     actions_update: 更新
+    headers:
+      value: 值
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID
@@ -626,6 +701,9 @@ interfaces:
   filter:
     add_filter: 新增篩選器
     all: 全部
+    any: 任何
+  presentation-links:
+    primary: 主要
   input-code:
     code: 程式碼
   system-collection:
@@ -691,6 +769,7 @@ displays:
   translations:
     translations: 翻譯
   boolean:
+    boolean: 布林值
     description: 顯示開關狀態
   collection:
     collection: 集合

@@ -6,7 +6,7 @@ import { useFieldsStore } from '@/stores';
 export default defineInterface({
 	id: 'translations',
 	name: '$t:translations',
-	icon: 'replay',
+	icon: 'translate',
 	types: ['alias'],
 	localTypes: ['translations'],
 	group: 'relational',
@@ -25,7 +25,6 @@ export default defineInterface({
 				value: field.field,
 			}));
 		}
-
 		return [
 			{
 				field: 'languageField',
@@ -34,6 +33,7 @@ export default defineInterface({
 				meta: {
 					interface: 'select-dropdown',
 					options: {
+						placeholder: '$t:primary_key',
 						choices,
 					},
 				},

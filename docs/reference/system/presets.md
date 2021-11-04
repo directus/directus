@@ -8,8 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
-> item listings and bookmarks for users of the app.
-> [Learn more about Presets](/concepts/collections/#collection-presets-bookmarks).
+> item listings and bookmarks for users of the app. [Learn more about Presets](/getting-started/glossary/#presets).
 
 </div>
 <div class="right">
@@ -34,10 +33,10 @@ Primary key of the preset.
 The title of the bookmark. If this value is `null`, it's considered a preset instead of a bookmark.
 
 `user` **many-to-one**\
-User this preset applies to. Many-to-one to [users](/reference/api/system/users/).
+User this preset applies to. Many-to-one to [users](/reference/system/users/).
 
 `role` **many-to-one**\
-Role this preset applies to. Many-to-one to [users](/reference/api/system/roles/).
+Role this preset applies to. Many-to-one to [users](/reference/system/users/).
 
 `collection` **string**\
 Collection this preset applies to.
@@ -112,12 +111,12 @@ other than the current user's role won't be returned.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [preset objects](#the-preset-object). If no items are available,
-data will be an empty array.
+An array of up to [limit](/reference/query/#limit) [preset objects](#the-preset-object). If no items are available, data
+will be an empty array.
 
 </div>
 <div class="right">
@@ -129,7 +128,7 @@ GET /presets
 SEARCH /presets
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -168,7 +167,7 @@ List an existing preset by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -226,7 +225,7 @@ Create a new preset.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -294,7 +293,7 @@ Create multiple new presets.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -380,7 +379,7 @@ Update an existing preset.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -446,7 +445,7 @@ Update multiple existing presets.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 

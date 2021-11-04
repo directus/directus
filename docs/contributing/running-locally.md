@@ -124,8 +124,7 @@ npm run dev:site
 
 ::: tip
 
-If you encounter errors during this installation process, make sure your node version meets the
-[minimum requirements](/guides/installation/cli)
+If you encounter errors during this installation process, make sure your node version meets the minimum requirements
 
 :::
 

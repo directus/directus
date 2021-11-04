@@ -49,38 +49,38 @@ the platform is used:
 
 Directus is a simple solution for complex problems, with a data-first approach guided by the following core principles:
 
-- **Pure** — There is no predefined model or proprietary rules for your schema, and all system settings are stored
-  separately.
-- **Open** — Our entire codebase is public and transparent, allowing for end-to-end audits. Nothing is obfuscated or
-  black-boxed.
-- **Portable** — Data is stored in your bespoke database and can be migrated/exported/backed-up at any time. Absolutely
-  no vendor lock-in.
-- **Limitless** — Create unlimited users, roles, languages, collections, and items. No arbitrary restrictions or paywall
-  limitations.
-- **Extensible** — Every aspect of the platform is modular, allowing you to adapt, customize, and infinitely extend the
-  Core engine.
-- **Unopinionated** — Choose your database (all SQL vendors), API (REST or GraphQL), and infra (self-hosted or Cloud).
+- **Pure** — No predefined or proprietary schema, with all system metadata stored separately
+- **Open** — Public and transparent codebase with no obfuscated or cloud-only code
+- **Portable** — Database can be exported or migrated at any time with no vendor lock-in
+- **Limitless** — No artificial limitations or paywalls on users, roles, languages, collections, or items
+- **Extensible** — Every aspect of the platform is modular to avoid any hard feature ceilings
+- **Unopinionated** — Choose your stack, database, and architecture; self-hosted or on cloud
 
 ## Database Mirroring
 
-What makes Directus so unique is that it dynamically generates custom API endpoints based on your SQL database's schema
-in real-time — something we call "[Database Mirroring](/concepts/databases/#database-mirroring)". Whether you install
-fresh or on top of an existing database, you always maintain end-to-end control over your actual database, including:
-tables, columns, datatypes, default values, indexes, relationships, etc.
+**Directus is installed as a _layer_ on top of your new or existing SQL database, with its App and API dynamically
+“mirroring” your actual schema and content in real-time.** This approach is similar to how technical database clients
+(like _phpMyAdmin_) work, however Directus provides an experience that is safe, intuitive, and powerful enough for
+anyone... even the most non-technical users.
 
-Below is an overview to how Directus mirrors the database, and our non-technical naming convention.
+To keep things simple, Directus uses friendlier names for database terms, including
+[Project](/getting-started/glossary/#projects) (database), [Collection](/getting-started/glossary/#collections) (table),
+[Field](/getting-started/glossary/#fields) (column), [Item](/getting-started/glossary/#items) (record), and
+[Type](/getting-started/glossary/#types) (datatype).
 
-- **[Project](/concepts/projects/)** — A Database, asset storage, and config file
-- **[Collection](/concepts/collections/)** — A Database Table
-- **[Fields](/concepts/fields/)** — A Database Column
-- **[Item](/concepts/items/)** — A Database Record/Row
-- **[Relationships](/concepts/relationships/)** — A Database Relationship, including additional non-standard types
-- **[Type](/concepts/types/)** — A Database Data Type, including additional non-standard types
-- **[Users](/concepts/users/)** — A Directus User (App or API), not to be confused with a Database User
+Database mirroring has many unique advantages:
 
-Perhaps one of the biggest advantages of _Database Mirroring_ is that you have direct access to your pure and unaltered
-data. That means you have the option to bypass the Directus middleware (API, SDK, App) and connect to your data with
-proper SQL queries. This effectively removes all bottlenecks, latency overhead, and proprietary access limitations.
+- Control over your pure SQL database schema, tailored to your exact requirements
+- Significant performance improvements through optimizations and indexing
+- Complete transparency, portability, and security for your data
+- Direct database access and the full power of raw/complex SQL queries
+- Allows importing existing databases, unaltered and without any migrations
+
+Other platforms typically use a predefined or proprietary “one-size-fits-all” data model to store your content (have you
+ever peeked behind the curtain of a WordPress installation? Yikes!). That is not the case with Directus. Directus gives
+you direct access to your pure and unaltered data. That means you have the option to bypass the Directus middleware
+(API, SDK, App) and connect to your data with proper SQL queries. This effectively removes all bottlenecks, latency
+overhead, and proprietary access limitations.
 
 ## Modular & Extensible
 
@@ -88,15 +88,16 @@ What makes Directus so flexible is that it has been designed from the ground up 
 avoid a feature ceiling. In addition to offering our software's codebase as open-source, we've included the following
 extension types in the platform's App and API.
 
-- **[Modules](/concepts/modules/)** — (App) The highest and broadest level of organization within the App
-- **[Layouts](/concepts/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
-- **[Interfaces](/concepts/interfaces/)** — (App) How you view or interact with a field and its value
-- **[Displays](/concepts/displays/)** — (App) A small inline preview of a field's value
-- **[Panes](#)** — (App) A way to view dashboard data within the Insights Module
-- **[Styles](/guides/styles/)** — (App) Whitelabeling through App Themes and CSS Overrides
-- **[Endpoints](/guides/api-endpoints/)** — (API) Custom registered API endpoints
-- **[Hooks](/guides/api-hooks/)** — (API) Event and interval hooks for triggering custom logic
-- **[Email Templates](/guides/email-templates/)** — (API) Custom structure and formatting for emails
+- **[API Endpoints](/extensions/api-endpoints/)** — Custom registered API endpoints
+- **[Displays](/extensions/displays/)** — A small inline preview of a field's value
+- **[Email Templates](/extensions/email-templates/)** — Custom structure and formatting for emails
+- **[Hooks](/extensions/hooks/)** — Event and interval hooks for triggering custom logic
+- **[Interfaces](/extensions/interfaces/)** — How you view or interact with a field and its value
+- **[Layouts](/extensions/layouts/)** — How you browse, view or interact with a set of Items in a Collection
+- **[Migrations](/extensions/migrations/)** — Custom migrations for tracking project schema and content updates
+- **[Modules](/extensions/modules/)** — The highest and broadest level of organization within the App
+- **[Panels](/extensions/panels/)** — A way to view dashboard data within the Insights Module
+- **[Themes](/extensions/themes/)** — Whitelabeling through App Themes and CSS Overrides
 
 ## The Directus Ecosystem
 

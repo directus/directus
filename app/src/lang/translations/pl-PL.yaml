@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identyfikator
 avatar: Awatar
 default_provider: Domyślny
 published: Opublikowany
@@ -172,6 +173,8 @@ global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
 show_zero: Pokaż zerowy
+create_in_advanced_field_creation_mode: Utwórz w Zaawansowanym trybie tworzenia pól
+continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
 avg: Średnia
@@ -232,6 +235,9 @@ new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
 search_collection: Przeszukaj kolekcje...
 new_field: 'Nowe pole'
 new_collection: 'Nowa kolekcja'
+add_m2o_to_collection: 'Dodaj M2O do "{collection}"'
+add_o2m_to_collection: 'Dodaj O2M do "{collection}"'
+add_m2m_to_collection: 'Dodaj M2M do "{collection}"'
 choose_a_type: Wybierz typ...
 determined_by_relationship: Określone przez relację
 add_note: Dodaj użyteczną informację dla użytkowników...
@@ -679,6 +685,12 @@ source: Źródło
 url_placeholder: Wprowadź adres url...
 display_text: Wyświetl tekst
 display_text_placeholder: Wprowadź tekst wyświetlany...
+interface_group_text_and_numbers: Tekst i numery
+interface_group_selection: Wybór
+interface_group_relational: Relacyjny
+interface_group_presentation: Prezentacja
+interface_group_groups: Grupy
+interface_group_other: Inne
 tooltip: Podpowiedź
 tooltip_placeholder: Wprowadź podpowiedź...
 unlimited: Nielimitowany
@@ -929,16 +941,11 @@ fields:
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
-    public_pages: Strony publiczne
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
-    files_and_thumbnails: Pliki i miniatury
-    storage_default_folder: Domyślny folder magazynu
-    storage_asset_presets: Ustawienia magazynu zasobów
-    storage_asset_transform: Przekształcanie zasobów magazynowych
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
   directus_fields:
@@ -965,6 +972,9 @@ fields:
     method: Metoda
     status: Status
     data: Dane
+    header: Nagłówek
+    value: Wartość
+    headers: Nagłówki żądania
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
@@ -1072,6 +1082,10 @@ field_options:
     actions_update: Zaktualizuj
     actions_delete: Usuń
     actions_login: Logowanie
+    headers:
+      header: Nagłówek
+      value: Wartość
+      add: Dodaj nagłówek
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 no_value: Brak wartości
 do_nothing: Nic nie rób
@@ -1133,7 +1147,7 @@ otp: Jednorazowe hasło
 password: Hasło
 permissions: Uprawnienia
 relationship: Powiązanie
-reset: Wyczyść
+reset: Resetuj
 reset_password: Resetuj hasło
 revisions: Wersje
 revert: Przywróć
@@ -1313,6 +1327,7 @@ interfaces:
     lnglat: Długość geograficzna
     wkt: WKT
     wkb: WKB
+    click_to_select: Kliknij, aby wybrać {geometry}
   presentation-notice:
     notice: Informacja
     description: Wyświetl krótką informacje
@@ -1324,7 +1339,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
-    field_hint: Wstawia nowo przesłane pliki w wybranym folderze. Nie wpływa na istniejące pliki, które są zaznaczone.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -1534,19 +1548,15 @@ layouts:
     map: Mapa
     basemap: Mapa bazowa
     layers: Warstwy
-    edit_custom_layers: Edytuj warstwy
     cluster_options: Opcje klastrowania
     cluster: Klaster danych w pobliżu
     cluster_radius: Promień klastra
     cluster_minpoints: Minimalny rozmiar klastra
     cluster_maxzoom: Maksymalne powiększenie klastrów
-    field: Geometria
+    field: Pole geoprzestrzenne
     invalid_geometry: Nieprawidłowa geometria
-    auto_location_filter: Automatyczne filtrowanie w widoku
-    search_this_area: Przeszukaj ten obszar
-    clear_data_filter: Wyczyść filtr danych
-    clear_location_filter: Wyczyść filtr lokalizacji
-    no_results_here: Brak wyników w tym obszarze
+    find_location: Znajdź lokalizację...
+    default_template: Używanie domyślnej kolekcji...
 panels:
   metric:
     name: Metryczny

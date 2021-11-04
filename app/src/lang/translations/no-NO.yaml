@@ -1,25 +1,42 @@
 ---
+avatar: Profilbilde
+published: Publisert
+draft: Utkast
+archived: Arkivert
+modules: Moduler
 edit_field: Rediger felt
+conditions: Betingelser
+maps: Kart
 item_revision: Element revisjoner
 duplicate_field: Dupliser felt
 half_width: Halv vidde
 full_width: Fullbredde
+group: Gruppe
+and: Og
+or: Eller
 fill_width: Fyll vidde
 field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
 add_field: Legg til felt
 role_name: Rollenavn
+branch: Gren
+edit_collection: Rediger samling
+children: Barn
+db_only_click_to_configure: 'Kun database: Klikk for å konfigurere'
 show_archived_items: Vis arkiverte elementer
 edited: Verdi endret
 required: Påkrevd
 required_for_app_access: Påkrevd for app-tilgang
 requires_value: Krever verdi
 create_preset: Opprett forhåndsinnstilling
+create_panel: Opprett panel
 create_role: Opprett rolle
 create_user: Opprett bruker
+delete_panel: Slett panel
 create_webhook: Lag Webhook
 invite_users: Invitere brukere
 invite: Inviter
+email_already_invited: E-postadressen "{email}" er allerede invitert
 emails: E-post
 connection_excellent: Utmerket tilkobling
 connection_good: God tilkobling
@@ -39,6 +56,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Utlogget
   SESSION_EXPIRED: Økt utløpt
+public_label: Offentlig
 public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
 not_allowed: Ikke tillatt
 directus_version: Directus versjon
@@ -77,9 +95,15 @@ validationError:
   null: Verdien må være null
   nnull: Verdien kan ikke være null
   required: Verdi er påkrevd
+  unique: Verdien må være unik
+  regex: Verdien har ikke riktig format
 all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
+allow_null_value: Tillat NULL verdi
+allow_multiple: Tillat flere
+allow_multiple_to_be_open: Tillat at flere kan åpnes
+enter_value_to_replace_nulls: Vennligst skriv inn en ny verdi for å erstatte alle NULLer som er i dette feltet.
 field_standard: Standard
 field_presentation: Presentation & Aliaser
 field_file: En fil
@@ -89,6 +113,7 @@ field_m2a: M2A Relasjon
 field_o2m: O2M Relasjon
 field_m2m: M2M Relasjon
 field_translations: Oversettelser
+field_group: Feltgruppe
 item_permissions: Element Tillatelser
 field_permissions: Felt Tillatelser
 field_validation: Felt validering
@@ -98,6 +123,10 @@ fields_for_role: 'Felter {role} rollen kan {action}.'
 validation_for_role: 'Felt {action} regler {role} rollen må følge.'
 presets_for_role: 'Felt standardverdi for rollen {role}.'
 presentation_and_aliases: Presentation & Aliaser
+revision_post_create: Her er hvordan dette produktet så ut etter oppdateringen.
+revision_post_update: Her er hvordan dette produktet så ut etter oppdateringen.
+changes_made: Nedenfor følger de spesifikke endringene i denne revisjonen.
+no_relational_data: Husk at relasjonsdata ikke er tatt med her.
 hide_field_on_detail: Skjul felt ved detaljert visning
 show_field_on_detail: Vis felt ved detaljert visning
 delete_field: Slett felt
@@ -109,6 +138,12 @@ language: Språk
 global: Globalt
 admins_have_all_permissions: Administratorer har alle rettigheter
 camera: Kamera
+show_zero: Vis null
+create_in_advanced_field_creation_mode: Opprett i avansert feltopprettingsmodus
+continue_in_advanced_field_creation_mode: Opprett i avansert feltopprettingsmodus
+sum: Sum
+avg: Gjennomsnitt
+count: Antall
 exposure: Eksponering
 shutter: Utløser
 iso: ISO
@@ -341,6 +376,7 @@ operators:
   ncontains: Inneholder ikke
   empty: Er tom
 loading: Laster...
+value_unique: Verdien må være unik
 no_results: Ingen treff
 create: Opprett
 on_update: Ved oppdatering
@@ -413,6 +449,7 @@ fields:
   directus_webhooks:
     name: Navn
     status: Status
+    value: Verdi
 field_options:
   directus_activity:
     create: Opprett
@@ -432,6 +469,8 @@ field_options:
     status_options_active: Aktiv
     actions_create: Opprett
     actions_update: Oppdater
+    headers:
+      value: Verdi
 comment: Kommenter
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..

@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: English
 avatar: الصورةالرمزية
 default_provider: الإفتراضي
 published: تم نشره
@@ -780,6 +781,7 @@ fields:
   directus_webhooks:
     name: الاسم
     status: حالة
+    value: قيمة
 field_options:
   directus_settings:
     security_divider_title: الأمان
@@ -813,6 +815,8 @@ field_options:
     status_options_inactive: غير نشط
     actions_create: انشاء
     actions_update: تحديث
+    headers:
+      value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
@@ -1095,8 +1099,6 @@ layouts:
     calendar: تقويم
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
-  map:
-    field: الأشكال الهندسية
 panels:
   label:
     name: تسمية

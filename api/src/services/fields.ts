@@ -5,7 +5,7 @@ import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
@@ -30,7 +30,7 @@ export class FieldsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -40,13 +40,14 @@ export class FieldsService {
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
 
-		const { cache, schemaCache } = getCache();
+		const { cache, systemCache } = getCache();
+
 		this.cache = cache;
-		this.schemaCache = schemaCache;
+		this.systemCache = systemCache;
 	}
 
 	private get hasReadAccess() {
-		return !!this.schema.permissions.find((permission) => {
+		return !!this.accountability?.permissions?.find((permission) => {
 			return permission.collection === 'directus_fields' && permission.action === 'read';
 		});
 	}
@@ -85,7 +86,8 @@ export class FieldsService {
 				return field.field === column.name && field.collection === column.table;
 			});
 
-			const { type = 'alias', ...info } = column ? getLocalType(column, field) : {};
+			const { type, ...info } = getLocalType(column, field);
+
 			const data = {
 				collection: column.table,
 				field: column.name,
@@ -122,10 +124,12 @@ export class FieldsService {
 		});
 
 		const aliasFieldsAsField = aliasFields.map((field) => {
+			const { type } = getLocalType(undefined, field);
+
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: Array.isArray(field.special) ? field.special[0] : field.special,
+				type,
 				schema: null,
 				meta: field,
 			};
@@ -141,7 +145,7 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.schema.permissions.filter((permission) => {
+			const permissions = this.accountability.permissions!.filter((permission) => {
 				return permission.action === 'read';
 			});
 
@@ -172,7 +176,7 @@ export class FieldsService {
 				throw new ForbiddenException();
 			}
 
-			const permissions = this.schema.permissions.find((permission) => {
+			const permissions = this.accountability.permissions!.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
@@ -183,7 +187,7 @@ export class FieldsService {
 			}
 		}
 
-		let column;
+		let column = undefined;
 		let fieldInfo = await this.knex.select('*').from('directus_fields').where({ collection, field }).first();
 
 		if (fieldInfo) {
@@ -201,13 +205,14 @@ export class FieldsService {
 			// Do nothing
 		}
 
-		const { type = 'alias', ...info } = column ? getLocalType(column, fieldInfo) : {};
+		const { type = 'alias', ...info } = getLocalType(column, fieldInfo);
+
 		const data = {
 			collection,
 			field,
 			type,
 			meta: fieldInfo || null,
-			schema: type == 'alias' ? null : { ...column, ...info },
+			schema: type === 'alias' ? null : { ...column, ...info },
 		};
 
 		return data;
@@ -262,9 +267,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	async updateField(collection: string, field: RawField): Promise<string> {
@@ -313,9 +316,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return field.field;
 	}
@@ -325,16 +326,18 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		await emitter.emitAsync(`fields.delete.before`, {
-			event: `fields.delete.before`,
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		await emitter.emitFilter(
+			'fields.delete',
+			[field],
+			{
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		await this.knex.transaction(async (trx) => {
 			const relations = this.schema.relations.filter((relation) => {
@@ -427,20 +430,20 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
-		emitAsyncSafe(`fields.delete`, {
-			event: `fields.delete`,
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		emitter.emitAction(
+			'fields.delete',
+			{
+				payload: [field],
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {

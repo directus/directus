@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Avatar
 default_provider: Standard
 published: Veröffentlicht
@@ -172,6 +173,8 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 show_zero: Null anzeigen
+create_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus erstellen
+continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
 avg: Mittelwert
@@ -232,6 +235,9 @@ new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung durchsuchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
+add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
+add_o2m_to_collection: 'O2M zu "{collection} " hinzufügen'
+add_m2m_to_collection: 'M2M zu "{collection} " hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
@@ -679,6 +685,12 @@ source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
 display_text_placeholder: Anzeigetext eingeben...
+interface_group_text_and_numbers: Text & Zahlen
+interface_group_selection: Auswahl
+interface_group_relational: Beziehung
+interface_group_presentation: Präsentation
+interface_group_groups: Gruppen
+interface_group_other: Andere
 tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
@@ -930,16 +942,11 @@ fields:
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
-    public_pages: Öffentliche Seiten
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
-    files_and_thumbnails: Dateien & Vorschaubilder
-    storage_default_folder: Standardordner
-    storage_asset_presets: Vorlagen für Dateien
-    storage_asset_transform: Transformierung von Dateien
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
   directus_fields:
@@ -966,6 +973,9 @@ fields:
     method: Methode
     status: Status
     data: Daten
+    header: Header
+    value: Wert
+    headers: Request-Headers
     data_label: Ereignisdaten senden
     triggers: Auslöser
     actions: Aktionen
@@ -1074,6 +1084,10 @@ field_options:
     actions_update: Aktualisieren
     actions_delete: Löschen
     actions_login: Login
+    headers:
+      header: Header
+      value: Wert
+      add: Header hinzufügen
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 no_value: Kein Wert
 do_nothing: Keine Aktion
@@ -1315,6 +1329,7 @@ interfaces:
     lnglat: Längengrad, Breitengrad
     wkt: WKT
     wkb: WKB
+    click_to_select: Klicken, um {geometry} auszuwählen
   presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
@@ -1326,7 +1341,6 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
-    field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1536,19 +1550,12 @@ layouts:
     map: Karte
     basemap: Basiskarte
     layers: Ebenen
-    edit_custom_layers: Ebenen bearbeiten
     cluster_options: Cluster-Optionen
     cluster: Cluster Nachbardaten
     cluster_radius: Cluster-Radius
     cluster_minpoints: Kleinstes Cluster
     cluster_maxzoom: Maximaler Zoom für Cluster
-    field: Dimensionen
     invalid_geometry: Ungültige Geometrie
-    auto_location_filter: Auto-Filter in der Ansicht
-    search_this_area: Diesen Bereich durchsuchen
-    clear_data_filter: Datenfilter löschen
-    clear_location_filter: Standortfilter löschen
-    no_results_here: Keine Ergebnisse in diesem Bereich
 panels:
   metric:
     name: Metrik

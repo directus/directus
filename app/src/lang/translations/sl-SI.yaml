@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Avatar
 default_provider: Privzeto
 draft: Osnutek
@@ -814,16 +794,11 @@ fields:
     project_url: Spletni naslov (URL) projekta
     project_color: Barva projekta
     project_logo: Logo projekta
-    public_pages: Javne strani
     public_foreground: Glavna slika v javnem delu, logo
     public_background: Slika za ozadje v javnem delu
     public_note: Sporočilo v javnem delu
     auth_password_policy: Pravila gesel
     auth_login_attempts: Število poskusov prijave
-    files_and_thumbnails: Datoteke & sličice
-    storage_default_folder: Privzeta mapa za shranjevanje
-    storage_asset_presets: Prednastavitve shrambe
-    storage_asset_transform: Pretvorba elementa
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
   directus_fields:
@@ -850,6 +825,7 @@ fields:
     method: Metoda
     status: Stanje
     data: Podatki
+    value: Vrednost
     data_label: Pošlji podatke dogodka
     triggers: Sprožilci
     actions: Dejanja
@@ -946,6 +922,8 @@ field_options:
     actions_update: Posodobi
     actions_delete: Izbriši
     actions_login: Prijava
+    headers:
+      value: Vrednost
 no_fields_in_collection: 'Zbirka {collection} še nima polj'
 do_nothing: Ne stori ničesar
 generate_and_save_uuid: Ustvari in shrani UUID
@@ -1184,7 +1162,6 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Izberi mapo
-    field_hint: Naloži novo datoteko v izbrano mapo. Ne vpliva na obstoječe izbrane datoteke.
     root_name: Korenska mapa knjižnjice
     system_default: Sistemske privzete vrednosti
   select-radio:
@@ -1387,12 +1364,10 @@ layouts:
     map: Zemljevid
     basemap: Osnovni zemljevid
     layers: Plasti
-    edit_custom_layers: Uredi plasti
     cluster_options: Možnosti gruče
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
-    field: Geometrija
     invalid_geometry: Neveljavna geometrija
 panels:
   label:

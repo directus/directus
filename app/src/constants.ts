@@ -41,7 +41,7 @@ export const COLLECTIONS_DENY_LIST = [
 export const MODULE_BAR_DEFAULT = [
 	{
 		type: 'module',
-		id: 'collections',
+		id: 'content',
 		enabled: true,
 	},
 	{
@@ -143,5 +143,7 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 		value: 'hash',
 	},
 ];
+
+export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const AUTH_SSO_DRIVERS = ['oauth2', 'openid'];

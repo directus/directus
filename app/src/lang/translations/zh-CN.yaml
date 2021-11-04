@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: 头像
 default_provider: 默认值
 published: 已发布
@@ -921,16 +901,11 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
-    public_pages: 公开页面
     public_foreground: 公共前景
     public_background: 公共背景
     public_note: 公共便笺
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
-    files_and_thumbnails: 文件和缩略图
-    storage_default_folder: 默认存储文件夹
-    storage_asset_presets: 存储资产预设
-    storage_asset_transform: 存储资产转换
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
   directus_fields:
@@ -957,6 +932,7 @@ fields:
     method: 方法
     status: 状态
     data: 数据
+    value: 值
     data_label: 发送事件数据
     triggers: 触发条件
     actions: 操作
@@ -1058,6 +1034,8 @@ field_options:
     actions_update: 更新
     actions_delete: 删除
     actions_login: 登录
+    headers:
+      value: 值
 no_fields_in_collection: '集合 {collection} 中没有任何字段'
 no_value: 没有值
 do_nothing: 什么都不做
@@ -1298,7 +1276,6 @@ interfaces:
   system-folder:
     folder: 文件夹
     description: 选择文件夹
-    field_hint: 将新上传的文件放入选中的文件夹。不影响已选中的现有文件。
     root_name: 文件管理
     system_default: 系统默认
   select-radio:
@@ -1502,14 +1479,11 @@ layouts:
     map: 地图
     basemap: 底图
     layers: 图层
-    edit_custom_layers: 编辑图层
     cluster_options: 集群选项
     cluster_radius: 集群半径
     cluster_minpoints: 集群最小尺寸
     cluster_maxzoom: 集群的最大缩放
-    field: 几何
     invalid_geometry: 无效几何图形
-    search_this_area: 搜索此区域
 panels:
   metric:
     name: 公制

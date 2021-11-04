@@ -92,7 +92,7 @@ export default defineComponent({
 		const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
 		const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
 		const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
-		const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_fields', []);
+		const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
 
 		const availableCollections = computed(() => {
 			return orderBy(

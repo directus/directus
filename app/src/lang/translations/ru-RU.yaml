@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Индентификатор
 avatar: Аватар
 default_provider: По умолчанию
 published: Опубликовано
@@ -50,6 +51,7 @@ indeterminate: Неопределенный
 edit_collection: Изменить коллекцию
 exclusive: Эксклюзивный
 children: Дочерние элементы
+db_only_click_to_configure: 'Только База данных: Нажмите для настройки'
 show_archived_items: Показать элементы в архиве
 edited: Значение изменено
 required: Необходимые
@@ -171,6 +173,8 @@ global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
 show_zero: Показать нулевое
+create_in_advanced_field_creation_mode: Создание расширенного поля
+continue_in_advanced_field_creation_mode: Создание расширенного поля
 sum: Сумма
 sum_distinct: Сумма уникальных
 avg: Среднее
@@ -248,6 +252,7 @@ invalid_item: Неверное содержимое
 next: Дальше
 field_name: Название поля
 translations: Переводы
+no_translations: Нет переводов
 note: Заметка
 enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
@@ -324,6 +329,7 @@ date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
 minutes: Минуты
+hours: Часов
 month: Месяц
 year: Год
 select_all: Выбрать Все
@@ -519,6 +525,7 @@ all_users: Все пользователи
 delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
+make_collection_hidden: Сделать коллекцию скрытой
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
@@ -608,6 +615,7 @@ all_files: Все Файлы
 my_files: Мои Файлы
 recent_files: Недавние Файлы
 create_folder: Создать Папку
+edit_folder: Изменить папку
 folder_name: Название Папки...
 add_file: Добавить Файл
 replace_file: Заменить Файл
@@ -670,6 +678,7 @@ source: Источник
 url_placeholder: Введите адрес url...
 display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
+interface_group_other: Другие
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
 unlimited: Без ограничения
@@ -917,16 +926,11 @@ fields:
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
-    public_pages: Публичные страницы
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
     auth_password_policy: Минимальная сложность пароля
     auth_login_attempts: Попыток войти
-    files_and_thumbnails: Файлы и миниатюры
-    storage_default_folder: Основная папка
-    storage_asset_presets: Пресеты Элементов Хранилища
-    storage_asset_transform: Преобразование Элементов Хранилища
     overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
   directus_fields:
@@ -953,6 +957,7 @@ fields:
     method: Метод
     status: Статус
     data: Данные
+    value: Значение
     data_label: Отправлять данные о событии
     triggers: Триггеры
     actions: Действия
@@ -1055,6 +1060,8 @@ field_options:
     actions_update: Обновить
     actions_delete: Удалить
     actions_login: Войти
+    headers:
+      value: Значение
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
 no_value: Нет значения
 do_nothing: Ничего не Делать
@@ -1301,7 +1308,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
-    field_hint: Папка для новых файлов. Ранее загруженные файлы останутся на месте.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:
@@ -1396,6 +1402,10 @@ interfaces:
 displays:
   translations:
     translations: Переводы
+    description: Предпросмотр переводов
+    enable: Включить
+    user_language: Использовать текущий язык пользователя
+    default_language: Язык по умолчанию
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл
@@ -1505,14 +1515,11 @@ layouts:
     map: Карта
     basemap: Основа карты
     layers: Слои
-    edit_custom_layers: Редактировать слои
     cluster_options: Настройки кластеров
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
-    field: Геометрия
     invalid_geometry: Некорректная геометрия
-    search_this_area: Искать в этой области
 panels:
   metric:
     name: Метрика

@@ -63,12 +63,12 @@ List all folders that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [folder objects](#the-folder-object). If no items are available,
-data will be an empty array.
+An array of up to [limit](/reference/query/#limit) [folder objects](#the-folder-object). If no items are available, data
+will be an empty array.
 
 </div>
 <div class="right">
@@ -80,7 +80,7 @@ GET /folders
 SEARCH /folders
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -118,7 +118,7 @@ List all folders that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -175,7 +175,7 @@ Create a new (virtual) folder.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -241,7 +241,7 @@ Create multiple new (virtual) folders.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -312,7 +312,7 @@ Update an existing folder.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -381,7 +381,7 @@ Update multiple existing folders.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
