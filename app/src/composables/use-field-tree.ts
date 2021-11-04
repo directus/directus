@@ -26,14 +26,14 @@ export function useFieldTree(
 	const relationsStore = useRelationsStore();
 
 	const treeList = ref<FieldNode[]>([]);
-	const visitedDepth = ref(0);
+	const visitedPaths = ref<Set<string>>(new Set());
 
 	watch(() => collection.value, refresh, { immediate: true });
 
 	return { treeList, loadFieldRelations };
 
 	function refresh(collection?: string | null) {
-		visitedDepth.value = 0;
+		visitedPaths.value = new Set();
 		treeList.value = getTree(collection) ?? [];
 		for (const node of treeList.value) {
 			node.children = getTree(node.relatedCollection, node);
@@ -116,9 +116,12 @@ export function useFieldTree(
 	}
 
 	function loadFieldRelations(path: string) {
-		const node = getNodeAtPath(path, treeList.value);
-		for (const child of node?.children || []) {
-			child.children = getTree(child.relatedCollection, child);
+		if (!visitedPaths.value.has(path)) {
+			visitedPaths.value.add(path);
+			const node = getNodeAtPath(path, treeList.value);
+			for (const child of node?.children || []) {
+				child.children = getTree(child.relatedCollection, child);
+			}
 		}
 	}
 }
