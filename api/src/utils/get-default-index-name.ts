@@ -1,6 +1,14 @@
-import { customAlphabet } from 'nanoid';
-
-const generateID = customAlphabet('abcdefghijklmnopqrstuvxyz', 5);
+/**
+ * Simple hash function copied from https://stackoverflow.com/questions/65824393/make-short-hash-from-long-string
+ * @param s
+ */
+const hashCode = (s: string) => {
+	let hash = 0;
+	for (let i = 0; i < s.length; hash &= hash) {
+		hash = 31 * hash + s.charCodeAt(i++);
+	}
+	return hash.toString(16);
+};
 
 /**
  * Generate an index name for a given collection + fields combination.
@@ -22,8 +30,8 @@ export function getDefaultIndexName(
 
 	if (indexName.length <= 64) return indexName;
 
-	const suffix = `__${generateID()}_${type}`;
+	const suffix = `__${hashCode(indexName)}_${type}`;
 	const prefix = indexName.substring(0, 64 - suffix.length);
 
-	return `${prefix}__${generateID()}_${type}`;
+	return `${prefix}${suffix}`;
 }
