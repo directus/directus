@@ -52,10 +52,19 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const { interfaces } = getInterfaces();
+
+		const options = computed({
+			get() {
+				return props.value;
+			},
+			set(newVal: any) {
+				emit('input', newVal);
+			},
+		});
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
@@ -120,7 +129,7 @@ export default defineComponent({
 			return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
 		});
 
-		return { t, selectedInterface, values, usesCustomComponent, optionsFields };
+		return { t, selectedInterface, values, usesCustomComponent, optionsFields, options };
 	},
 });
 </script>
