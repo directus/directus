@@ -55,6 +55,18 @@ export default function applyQuery(
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
+	if (query.search) {
+		applySearch(schema, dbQuery, query.search, collection);
+	}
+
+	if (query.group) {
+		dbQuery.groupBy(query.group.map(applyFunctionToColumnName));
+	}
+
+	if (query.aggregate) {
+		applyAggregate(dbQuery, query.aggregate, collection);
+	}
+
 	if (query.union && query.union[1].length > 0) {
 		const [field, keys] = query.union as [string, (string | number)[]];
 
@@ -78,18 +90,6 @@ export default function applyQuery(
 		dbQuery = knex.unionAll(queries);
 	} else if (query.filter) {
 		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
-	}
-
-	if (query.search) {
-		applySearch(schema, dbQuery, query.search, collection);
-	}
-
-	if (query.group) {
-		dbQuery.groupBy(query.group.map(applyFunctionToColumnName));
-	}
-
-	if (query.aggregate) {
-		applyAggregate(dbQuery, query.aggregate, collection);
 	}
 
 	return dbQuery;
