@@ -1,14 +1,7 @@
 import { defineDisplay } from '@directus/shared/utils';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
 import DisplayTranslations from './translations.vue';
-import { useFieldsStore, useRelationsStore } from '@/stores';
+import { useFieldsStore } from '@/stores';
 import { ExtensionsOptionsContext } from '@directus/shared/types';
-
-type Options = {
-	template: string;
-	languageField: string;
-};
 
 export default defineDisplay({
 	id: 'translations',
