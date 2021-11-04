@@ -1,11 +1,24 @@
 {
+	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly"],
+	"timezone": "America/New_York",
 	"labels": ["Dependencies"],
-	"extends": ["config:base", ":disableDependencyDashboard"],
+	"commitMessage": "{{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}} {{commitMessageSuffix}}",
 	"force": {
 		"constraints": {
 			"node": ">=16.0.0",
 			"npm": ">=7.0.0"
 		}
 	},
-	"commitMessage": "{{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}} {{commitMessageSuffix}}"
+	"packageRules": [
+		{
+			"matchDatasources": ["npm"],
+			"matchUpdateTypes": ["major"],
+			"groupName": "NPM dependencies (major)"
+		},
+		{
+			"matchDatasources": ["npm"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"groupName": "NPM dependencies (non-major)"
+		}
+	]
 }
