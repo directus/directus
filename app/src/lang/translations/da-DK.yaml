@@ -898,16 +898,11 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farve
     project_logo: Projekt Logo
-    public_pages: Offentlige Sider
     public_foreground: Offentlig Forgrund
     public_background: Offentlig Baggrund
     public_note: Offentlig Note
     auth_password_policy: Auth Adgangskode Politik
     auth_login_attempts: Auth Login Forsøg
-    files_and_thumbnails: Filer Og Miniaturer
-    storage_default_folder: Standard Lagerplads Mappe
-    storage_asset_presets: Lagring Aktiv Forudindstillinger
-    storage_asset_transform: Lagring Aktiv Transform
     overrides: App Tilsidesættelser
   directus_fields:
     collection: Samlingens Navn
@@ -1274,7 +1269,6 @@ interfaces:
   system-folder:
     folder: Mappe
     description: Vælg en mappe
-    field_hint: Sætter nyligt uploadede filer i den valgte mappe. påvirker ikke eksisterende filer der er valgt.
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder
   select-radio:

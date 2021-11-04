@@ -747,8 +747,6 @@ fields:
     public_note: Julkinen muistiinpano
     auth_password_policy: Salasanakäytäntö
     auth_login_attempts: Kirjautumisyritykset
-    storage_asset_presets: Tallennustilan sisältöjen esiasetukset
-    storage_asset_transform: Tallennustilan sisältöjen muunnos
     custom_css: Mukautettu CSS
   directus_fields:
     collection: Kokoelman nimi

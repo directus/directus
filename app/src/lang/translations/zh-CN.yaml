@@ -901,16 +901,11 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
-    public_pages: 公开页面
     public_foreground: 公共前景
     public_background: 公共背景
     public_note: 公共便笺
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
-    files_and_thumbnails: 文件和缩略图
-    storage_default_folder: 默认存储文件夹
-    storage_asset_presets: 存储资产预设
-    storage_asset_transform: 存储资产转换
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
   directus_fields:
@@ -1281,7 +1276,6 @@ interfaces:
   system-folder:
     folder: 文件夹
     description: 选择文件夹
-    field_hint: 将新上传的文件放入选中的文件夹。不影响已选中的现有文件。
     root_name: 文件管理
     system_default: 系统默认
   select-radio:

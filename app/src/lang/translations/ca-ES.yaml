@@ -789,16 +789,11 @@ fields:
     project_url: URL del projecte
     project_color: Color del projecte
     project_logo: Logotip del projecte
-    public_pages: Pàgines públiques
     public_foreground: Primer pla públic
     public_background: Fons públic
     public_note: Anotació de la vista pública
     auth_password_policy: Política de contrasenyes
     auth_login_attempts: Intents d'autenticació
-    files_and_thumbnails: Fitxers i miniatures
-    storage_default_folder: Carpeta predeterminada d'emmagatzematge
-    storage_asset_presets: Predefinits de recursos d'emmagatzematge
-    storage_asset_transform: Transformació de recursos d'emmagatzematge
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
   directus_fields:
@@ -1116,7 +1111,6 @@ interfaces:
   system-folder:
     folder: Carpeta
     description: Selecciona una carpeta
-    field_hint: Insereix els fitxers carregats recentment a la carpeta seleccionada. No afecta els fitxers existents seleccionats.
     root_name: Arrel de la biblioteca de fitxers
     system_default: Predeterminats del sistema
   select-radio:

@@ -92,7 +92,7 @@ class OASSpecsService implements SpecificationSubService {
 		const collections = await this.collectionsService.readByQuery();
 		const fields = await this.fieldsService.readAll();
 		const relations = (await this.relationsService.readAll()) as Relation[];
-		const permissions = this.schema.permissions;
+		const permissions = this.accountability?.permissions ?? [];
 
 		const tags = await this.generateTags(collections);
 		const paths = await this.generatePaths(permissions, tags);

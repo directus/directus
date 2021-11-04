@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import getDatabase from '../database';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
@@ -14,7 +14,7 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge, clone, cloneDeep, omit } from 'lodash';
+import { clone, cloneDeep, omit } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 import logger from '../logger';
@@ -69,34 +69,36 @@ export class AuthenticationService {
 			.andWhere('provider', providerName)
 			.first();
 
-		const updatedPayload = await emitter.emitAsync('auth.login.before', {
-			event: 'auth.login.before',
-			action: 'login',
-			schema: this.schema,
-			payload: payload,
-			provider: providerName,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
-
-		if (updatedPayload) {
-			payload = updatedPayload.length > 0 ? updatedPayload.reduce((acc, val) => merge(acc, val), {}) : payload;
-		}
+		const updatedPayload = await emitter.emitFilter(
+			'auth.login',
+			payload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', {
-				event: 'auth.login',
-				action: 'login',
-				schema: this.schema,
-				payload: payload,
-				provider: providerName,
-				accountability: this.accountability,
-				status,
-				user: user?.id,
-				database: this.knex,
-			});
+			emitter.emitAction(
+				'auth.login',
+				{
+					payload: updatedPayload,
+					status,
+					user: user?.id,
+					provider: providerName,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		};
 
 		if (user?.status !== 'active') {
@@ -137,7 +139,7 @@ export class AuthenticationService {
 		let sessionData: SessionData = null;
 
 		try {
-			sessionData = await provider.login(clone(user), cloneDeep(payload));
+			sessionData = await provider.login(clone(user), cloneDeep(updatedPayload));
 		} catch (e) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -161,28 +163,26 @@ export class AuthenticationService {
 			}
 		}
 
-		let tokenPayload = {
+		const tokenPayload = {
 			id: user.id,
 		};
 
-		const customClaims = await emitter.emitAsync('auth.jwt.before', tokenPayload, {
-			event: 'auth.jwt.before',
-			action: 'jwt',
-			schema: this.schema,
-			payload: tokenPayload,
-			provider: providerName,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
-		if (customClaims) {
-			tokenPayload =
-				customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), tokenPayload) : tokenPayload;
-		}
-
-		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
