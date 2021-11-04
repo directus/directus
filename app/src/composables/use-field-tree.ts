@@ -54,6 +54,7 @@ export function useFieldTree(
 
 	function getRelatedCollections(field: Field): string[] {
 		const relation = getRelationForField(field);
+		if (!relation?.meta) return [];
 		const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
 		switch (relationType) {
 			case 'o2m':
