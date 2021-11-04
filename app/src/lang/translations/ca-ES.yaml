@@ -814,7 +814,6 @@ fields:
     enforce_tfa: Requereix 2FA
     users: Usuaris al rol
     module_list: Navegació dels mòduls
-    collection_list: Navegació de les col·leccions
   directus_webhooks:
     name: Nom
     method: Mètode
@@ -849,10 +848,6 @@ field_options:
       icon_name: Icona
       name_name: Nom
       name_placeholder: Introdueix un títol...
-    collection_list:
-      fields:
-        type_name: Tipus
-        choices_start_open: Comença obert
     collections_name: Col·leccions
   directus_users:
     preferences_divider: Preferències de l'usuari
