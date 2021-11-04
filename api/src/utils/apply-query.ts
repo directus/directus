@@ -55,31 +55,27 @@ export default function applyQuery(
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
-	if (query.union) {
-		const [field, keys] = query.union;
+	if (query.union && query.union[1].length > 0) {
+		const [field, keys] = query.union as [string, (string | number)[]];
 
-		if (keys.length) {
-			const queries = keys.map((key) => {
-				let filter = { [field]: { _eq: key } } as Filter;
+		const queries = keys.map((key) => {
+			let filter = { [field]: { _eq: key } } as Filter;
 
-				if (query.filter) {
-					if ('_and' in query.filter) {
-						(query.filter as LogicalFilterAND)._and.push(filter);
-						filter = query.filter;
-					} else {
-						filter = {
-							_and: [query.filter, filter],
-						} as LogicalFilterAND;
-					}
+			if (query.filter) {
+				if ('_and' in query.filter) {
+					(query.filter as LogicalFilterAND)._and.push(filter);
+					filter = query.filter;
+				} else {
+					filter = {
+						_and: [query.filter, filter],
+					} as LogicalFilterAND;
 				}
+			}
 
-				return knex
-					.select('*')
-					.from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
-			});
+			return knex.select('*').from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
+		});
 
-			dbQuery = knex.unionAll(queries);
-		}
+		dbQuery = knex.unionAll(queries);
 	} else if (query.filter) {
 		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
 	}
