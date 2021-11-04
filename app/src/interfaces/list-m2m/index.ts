@@ -1,7 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceListM2M from './list-m2m.vue';
 import PreviewSVG from './preview.svg?raw';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'list-m2m',
@@ -13,7 +12,7 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['m2m'],
 	group: 'relational',
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		return [
 			{
 				field: 'template',
