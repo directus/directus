@@ -27,3 +27,26 @@ jobs:
 
       - name: Run linters
         run: npm run lint
+
+  check_types_vue:
+    name: Check Types in Vue Files
+    if: inputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check types
+        shell: sh {0}
+        run: |
+          npx tsc --build app
+          npx --yes vue-tsc --project app
