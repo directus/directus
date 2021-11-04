@@ -807,7 +807,6 @@ fields:
     enforce_tfa: ต้องการ 2FA
     users: ผู้ใช้ในบทบาทนี้
     module_list: รายการโมดูล
-    collection_list: รายการคอลเลกชัน
   directus_webhooks:
     name: ชื่อ
     status: สถานะ
@@ -834,9 +833,6 @@ field_options:
       icon_name: ไอคอน
       name_name: ชื่อ
       name_placeholder: ป้อนชื่อเรื่อง
-    collection_list:
-      fields:
-        type_name: ชนิด
     collections_name: คอลเลกชัน
   directus_users:
     status_dropdown_active: เปิดใช้งาน
