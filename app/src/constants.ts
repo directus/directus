@@ -57,7 +57,7 @@ export const MODULE_BAR_DEFAULT = [
 	{
 		type: 'module',
 		id: 'insights',
-		enabled: false,
+		enabled: true,
 	},
 	{
 		type: 'module',
