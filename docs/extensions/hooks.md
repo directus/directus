@@ -53,9 +53,18 @@ module.exports = function registerHook({ filter }, { exceptions }) {
 };
 ```
 
-The first parameter of the filter register function is the event name. The second parameter is the modifiable payload.
-The third argument is an event-specific meta object. The fourth argument is a context object with the following
-properties:
+The filter register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives three parameters:
+
+- The modifiable payload
+- An event-specific meta object
+- A context object
+
+The context object has the following properties:
 
 - `database` — The current database transaction
 - `schema` — The current API schema in use
@@ -88,8 +97,17 @@ properties:
 
 An action event executes after a certain event and receives some data related to the event.
 
-The first parameter of the action register function is the event name. The second argument is an event-specific meta
-object. The third argument is a context object with the following properties:
+The action register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives two parameters:
+
+- An event-specific meta object
+- A context object
+
+The context object has the following properties:
 
 - `database` — The current database transaction
 - `schema` — The current API schema in use
@@ -124,8 +142,14 @@ object. The third argument is a context object with the following properties:
 An init event executes at a certain point within the lifecycle of Directus. Init events can be used to inject logic into
 internal services.
 
-The first parameter of the init register function is the event name. The second parameter is an event-specific meta
-object.
+The init register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives one parameters:
+
+- An event-specific meta object
 
 #### Available Events
 
@@ -145,7 +169,7 @@ object.
 ### Schedule
 
 A schedule event executes at certain points in time. This is supported through
-[`node-cron`](https://www.npmjs.com/package/node-cron). To set this up, provide a cron statement as the first argument
+[`node-cron`](https://www.npmjs.com/package/node-cron). To set this up, provide a cron statement as the first parameter
 to the `schedule()` function, for example `schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or
 `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday). See example below:
 
