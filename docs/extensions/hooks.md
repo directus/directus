@@ -102,7 +102,7 @@ The action register function receives two parameters:
 - The event name
 - A callback function that is executed whenever the event fires.
 
-The callback function itself receives three parameters:
+The callback function itself receives two parameters:
 
 - An event-specific meta object
 - A context object
