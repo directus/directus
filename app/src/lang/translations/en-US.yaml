@@ -990,7 +990,6 @@ fields:
     enforce_tfa: Require 2FA
     users: Users in Role
     module_list: Module Navigation
-    collection_list: Collection Navigation
   directus_webhooks:
     name: Name
     method: Method
@@ -1075,15 +1074,6 @@ field_options:
       name_placeholder: Enter a title...
       link_name: Link
       link_placeholder: Relative or absolute URL...
-    collection_list:
-      group_name_addLabel: Add New Group...
-      fields:
-        group_name: Group Name
-        group_placeholder: Label this group...
-        type_name: Type
-        choices_always: Always Open
-        choices_start_open: Start Open
-        choices_start_collapsed: Start Collapsed
     collections_name: Collections
     collections_addLabel: Add Collection...
   directus_users:
