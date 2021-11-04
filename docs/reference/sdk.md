@@ -273,7 +273,7 @@ Note: The token passed in the first parameter is sent in an email to the user wh
 The transport object abstracts how you communicate with Directus. Transports can be customized to use different HTTP
 libraries for example.
 
-### Custom Implementatin
+### Custom Implementation
 
 It is possible to provide a custom implementation by extending `ITransport`. While, this could be useful for advanced
 usage, it is not needed for most use-cases.
@@ -323,7 +323,7 @@ By default, Directus creates an instance of `Transport` which handles requests a
 [`options.transport`](#options.transport) to see the available settings.
 
 To make HTTP requests SDK uses `axios` so it is compatible in both browsers and Node.js. Also, it is possible to handle
-upload progress (a downside of `fetch`). To have direct access to this instance you can call `directus.transport.axios`.
+upload progress (a downside of `fetch`).
 
 ## Storage
 
