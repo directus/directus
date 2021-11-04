@@ -23,6 +23,8 @@ columns:
     default: false
   module_list:
     type: json
+  collection_list:
+    type: json
   admin_access:
     type: boolean
     nullable: false
