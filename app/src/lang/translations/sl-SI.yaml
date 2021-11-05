@@ -164,7 +164,6 @@ time: Ura
 timestamp: Časovni žig
 uuid: UUID
 hash: Hash
-geometry: Geometrija
 not_available_for_type: Ni na razpolago za ta tip
 create_translations: Ustvari nove prevode
 auto_refresh: Samodejno osveži
