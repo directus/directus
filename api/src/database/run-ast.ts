@@ -10,7 +10,6 @@ import { stripFunction } from '../utils/strip-function';
 import { toArray } from '@directus/shared/utils';
 import { Query } from '@directus/shared/types';
 import getDatabase from './index';
-import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 
 type RunASTOptions = {
@@ -192,7 +191,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 			alias = fieldNode.fieldKey;
 		}
 
-		if (isNativeGeometry(field)) {
+		if (field.type.startsWith('geometry')) {
 			return helper.asText(table, field.field);
 		}
 

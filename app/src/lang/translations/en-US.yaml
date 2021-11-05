@@ -220,7 +220,13 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry
+geometry: Geometry (All)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
