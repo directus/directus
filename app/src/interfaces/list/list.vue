@@ -163,7 +163,7 @@ export default defineComponent({
 			props.fields?.map((field) => {
 				return {
 					...field,
-					name: field.name ?? formatTitle(field.field!),
+					name: formatTitle(field.name ?? field.field!),
 				};
 			})
 		);
