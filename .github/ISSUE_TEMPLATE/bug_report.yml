@@ -36,7 +36,7 @@ body:
     id: directus-version
     attributes:
       label: What version of Directus are you using?
-      description: 'For example: v9.1.4'
+      description: 'Version is displayed under "Settings". For example: 9.0.1'
     validations:
       required: true
   - type: input
