@@ -211,7 +211,6 @@ time: Hora
 timestamp: Marca de Tiempo
 uuid: UUID
 hash: Hash
-geometry: Geometría
 not_available_for_type: No habilitado para este Tipo
 create_translations: Crear traducción
 auto_refresh: Actualizar automáticamente
