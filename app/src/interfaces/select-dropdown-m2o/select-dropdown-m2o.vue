@@ -194,14 +194,19 @@ export default defineComponent({
 						newValue !== currentItem.value?.[relatedPrimaryKeyField.value!.field] &&
 						(typeof newValue === 'string' || typeof newValue === 'number')
 					) {
-						fetchCurrent();
+						fetchCurrent(newValue);
 					}
 
 					// If the value isn't a primary key, the current value will be set by the editing
 					// handlers in useEdit()
-
-					if (newValue === null) {
+					else if (newValue === null) {
 						currentItem.value = null;
+					}
+
+					// If value is already fullfilled, let's fetch all necessary
+					// fields for display template
+					else if (typeof newValue === 'object' && newValue[relatedPrimaryKeyField.value!.field]) {
+						fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
 					}
 				},
 				{ immediate: true }
@@ -231,7 +236,7 @@ export default defineComponent({
 				emit('input', item[relatedPrimaryKeyField.value.field]);
 			}
 
-			async function fetchCurrent() {
+			async function fetchCurrent(key: string | number) {
 				if (!relatedPrimaryKeyField.value || !relatedCollection.value) return;
 
 				loading.value = true;
@@ -244,8 +249,8 @@ export default defineComponent({
 
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
-						? `/${relatedCollection.value.collection.substring(9)}/${props.value}`
-						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(props.value!)}`;
+						? `/${relatedCollection.value.collection.substring(9)}/${key}`
+						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(key!)}`;
 
 					const response = await api.get(endpoint, {
 						params: {
