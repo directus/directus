@@ -993,7 +993,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
-    project_logo_note: Connexion et arrière-plan du logo
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -1036,7 +1035,6 @@ field_options:
     singular_unit: Unité singulière
     plural_unit: Unité plurielle
     archive_divider: Archiver
-    archive_field: Champ d'archive
     archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Activer le filtre des archives d'applications
     archive_value: Valeur définie lors de l'archivage...
@@ -1045,7 +1043,6 @@ field_options:
     sort_field: Choisissez un champ...
     accountability_divider: Responsabilité
     duplication_divider: Duplication
-    item_duplication_fields: Champs de duplication d'éléments
   directus_files:
     title: Un titre unique...
     description: Une description optionnelle...
