@@ -1178,7 +1178,6 @@ interfaces:
   presentation-divider:
     divider: Opdeler
     description: Etiket og opdel felter i sektioner
-    title_placeholder: Indtast en titel...
     inline_title: Indlejret Titel
     inline_title_label: Vis titel inde i linien
     margin_top: Margen Top
