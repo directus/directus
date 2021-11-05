@@ -192,7 +192,6 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: 几何
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
