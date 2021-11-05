@@ -102,7 +102,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	private async fetchUserDn(identifier: string): Promise<string | undefined> {
-		const { userDn, userAttribute } = this.config;
+		const { userDn, userAttribute, userScope } = this.config;
 
 		return new Promise((resolve, reject) => {
 			// Search for the user in LDAP by attribute
@@ -111,7 +111,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				{
 					attributes: ['cn'],
 					filter: `(${userAttribute ?? 'cn'}=${identifier})`,
-					scope: 'one',
+					scope: userScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
@@ -177,7 +177,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	private async fetchUserGroups(userDn: string): Promise<string[]> {
-		const { groupDn, groupAttribute } = this.config;
+		const { groupDn, groupAttribute, groupScope } = this.config;
 
 		if (!groupDn) {
 			return Promise.resolve([]);
@@ -192,7 +192,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				{
 					attributes: ['cn'],
 					filter: `(${groupAttribute ?? 'member'}=${userDn})`,
-					scope: 'one',
+					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
