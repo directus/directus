@@ -179,7 +179,6 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
