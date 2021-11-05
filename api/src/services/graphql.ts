@@ -186,10 +186,14 @@ export class GraphQLService {
 		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
 		const schema = {
-			read: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['read']),
-			create: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['create']),
-			update: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['update']),
-			delete: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['delete']),
+			read:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['read']),
+			create:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['create']),
+			update:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['update']),
+			delete:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['delete']),
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
@@ -2006,10 +2010,10 @@ export class GraphQLService {
 						throw new ForbiddenException();
 					}
 
-					const { cache, schemaCache } = getCache();
+					const { cache, systemCache } = getCache();
 
 					await cache?.clear();
-					await schemaCache?.clear();
+					await systemCache.clear();
 
 					return;
 				},

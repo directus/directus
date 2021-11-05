@@ -15,16 +15,16 @@
 		:value="value"
 		:style="{ width }"
 		placeholder="--"
-		@input="emitValueDebounced($event.target.value)"
+		@input="emitValue($event.target.value)"
 	/>
 	<v-select
 		v-else-if="is === 'select'"
 		inline
 		:items="choices"
 		:model-value="value"
-		allow-other
 		:placeholder="t('select')"
-		@update:model-value="emitValueDebounced($event)"
+		allow-other
+		@update:model-value="emitValue($event)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
@@ -37,20 +37,12 @@
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component
-				:is="is"
-				class="input-component"
-				small
-				:type="type"
-				:value="value"
-				@input="emitValueDebounced($event)"
-			/>
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
 		</div>
 	</v-menu>
 </template>
 
 <script lang="ts">
-import { debounce } from 'lodash';
 import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -112,7 +104,7 @@ export default defineComponent({
 				case 'float':
 					return '[+-]?[0-9]+\\.?[0-9]*';
 				case 'uuid':
-					return '\\$CURRENT_USER|\\$CURRENT_ROLE|[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+					return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
 				default:
 					return '';
 			}
@@ -122,17 +114,22 @@ export default defineComponent({
 			if (props.focus) inputEl.value?.focus();
 		});
 
-		const emitValueDebounced = debounce((val: unknown) => emitValue(val), 250);
-
-		return { displayValue, width, t, emitValueDebounced, inputEl, inputPattern };
+		return { displayValue, width, t, emitValue, inputEl, inputPattern };
 
 		function emitValue(val: unknown) {
 			if (val === '') {
-				emit('input', null);
-			} else {
-				if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
-					emit('input', val);
-				}
+				return emit('input', null);
+			}
+
+			if (
+				typeof val === 'string' &&
+				['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix))
+			) {
+				return emit('input', val);
+			}
+
+			if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
+				return emit('input', val);
 			}
 		}
 	},

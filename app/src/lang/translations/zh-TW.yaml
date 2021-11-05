@@ -626,9 +626,6 @@ field_options:
     fields:
       icon_name: 圖示
       name_name: 名稱
-    collection_list:
-      fields:
-        type_name: 類型
     collections_name: 資料集
   directus_users:
     status_dropdown_active: 有效的

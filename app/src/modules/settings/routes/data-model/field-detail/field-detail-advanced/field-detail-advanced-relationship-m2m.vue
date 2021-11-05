@@ -224,6 +224,7 @@ export default defineComponent({
 		const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
 		const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
 		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+		const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
 
 		const type = computed(() => field.value.type);
 		const isExisting = computed(() => editing.value !== '+');
@@ -261,19 +262,6 @@ export default defineComponent({
 			}
 
 			return t('add_field_related');
-		});
-
-		const correspondingFieldKey = computed({
-			get() {
-				return correspondingField.value?.field;
-			},
-			set(key: string | undefined) {
-				if (!hasCorresponding.value) {
-					hasCorresponding.value = true;
-				}
-
-				correspondingField.value!.field = key;
-			},
 		});
 
 		return {

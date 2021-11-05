@@ -48,13 +48,13 @@ are available:
   - [Updating a Field](#updating-a-field)
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
-  - [Changing Field Order & Layout](/dead)
+  - [Changing Field Order & Layout](#adjusting-the-collection-form)
 - **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
   Translations (see field below).
 - **Note** — A helpful note that explains the collection's purpose
 - **Icon** — The icon used throughout the App when referencing this collection
 - **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A [Field Template](/dead) that creates dynamic titles for the collection's items
+- **Display Template** — A Field Template that creates dynamic titles for the collection's items
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the

@@ -1,7 +1,6 @@
 import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 import getRelatedCollection from '@/utils/get-related-collection';
 import DisplayRelatedValues from './related-values.vue';
 import { useFieldsStore } from '@/stores';
@@ -16,7 +15,7 @@ export default defineDisplay({
 	description: '$t:displays.related-values.description',
 	icon: 'settings_ethernet',
 	component: DisplayRelatedValues,
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
 
 		return [

@@ -22,7 +22,7 @@
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value, 1)">
+		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value)">
 			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>

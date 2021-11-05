@@ -71,7 +71,7 @@ export type ApiExtensionContext = {
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
 };
 
-export type ExtensionsOptionsContext = {
+export type ExtensionOptionsContext = {
 	collection: string;
 	editing: string;
 	field: DeepPartial<Field>;
