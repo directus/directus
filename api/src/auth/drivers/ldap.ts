@@ -108,11 +108,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			// Search for the user in LDAP by attribute
 			this.bindClient.search(
 				userDn,
-				{
-					attributes: ['cn'],
-					filter: `(${userAttribute ?? 'cn'}=${identifier})`,
-					scope: userScope ?? 'one',
-				},
+				{ filter: `(${userAttribute ?? 'cn'}=${identifier})`, scope: userScope ?? 'one' },
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
 						reject(handleError(err));
@@ -120,8 +116,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						const userCn = typeof object.cn === 'object' ? object.cn[0] : object.cn;
-						resolve(`cn=${userCn},${userDn}`.toLowerCase());
+						resolve(object.dn.toLowerCase());
 					});
 
 					res.on('error', (err: Error) => {
