@@ -830,7 +830,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
-    project_logo_note: Ozadje prijave in logotip
     public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
     security_divider_title: Varnost
     auth_password_policy:
