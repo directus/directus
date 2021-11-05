@@ -930,7 +930,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
-    project_logo_note: Login- & Logo Baggrund
     public_note_placeholder: En kort, offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
@@ -967,7 +966,6 @@ field_options:
     singular_unit: Ental Enhed
     plural_unit: Flertalsenhed
     archive_divider: Arkiver
-    archive_field: Arkivér Felt
     archive_field_placeholder: Vælg et felt...
     archive_app_filter: Aktiver App Arkivfilter
     archive_value: Værdi sat når arkiverer...
@@ -976,7 +974,6 @@ field_options:
     sort_field: Vælg et felt...
     accountability_divider: Ansvarlighed
     duplication_divider: Duplikering
-    item_duplication_fields: Element Duplikationsfelter
   directus_files:
     title: En unik titel...
     description: En valgfri beskrivelse...
