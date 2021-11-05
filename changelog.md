@@ -2,6 +2,48 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0 (November 4, 2021)
+
+### :rocket: Improvements
+
+- **create-directus-project**
+  - [#9496](https://github.com/directus/directus/pull/9496) Don't show all migrations logged on init ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#9491](https://github.com/directus/directus/pull/9491) Remove beta flag from insights ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9490](https://github.com/directus/directus/pull/9490) Remove collection listing option from role settings ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9487](https://github.com/directus/directus/pull/9487) Removes "Collections Navigation" setting from roles detail page ([@YannickMol](https://github.com/YannickMol))
+
+### :bug: Bug Fixes
+
+- **sdk**
+  - [#9502](https://github.com/directus/directus/pull/9502) Fix importing the SDK from a Node ESM environment ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#9501](https://github.com/directus/directus/pull/9501) Prevent negative hashes from being generated ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9494](https://github.com/directus/directus/pull/9494) Move union query application to applyQuery, fix where clause ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9448](https://github.com/directus/directus/pull/9448) Use hash instead of random for default index name ([@faridsaud](https://github.com/faridsaud))
+- **App**
+  - [#9485](https://github.com/directus/directus/pull/9485) Fix presentation-links interfaces ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9484](https://github.com/directus/directus/pull/9484) Fix m2a relations on editing field ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9483](https://github.com/directus/directus/pull/9483) Fix nested system-interface-options usage ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9477](https://github.com/directus/directus/pull/9477) Resolve calendar link to detail page ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9432](https://github.com/directus/directus/pull/9432) Properly handle M2A fields in fieldStore and useFieldTree ([@Oreilles](https://github.com/Oreilles))
+  - [#9420](https://github.com/directus/directus/pull/9420) Fix invalid collection for Interface Display Template for M2M relationships ([@Toilal](https://github.com/Toilal))
+  - [#9407](https://github.com/directus/directus/pull/9407) Fix render template for number template parts (#9406) ([@Toilal](https://github.com/Toilal))
+  - [#9397](https://github.com/directus/directus/pull/9397) Update geometric types and patch new field flow. ([@Oreilles](https://github.com/Oreilles))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#9466](https://github.com/directus/directus/pull/9466) Fixing some type errors in app ([@paescuj](https://github.com/paescuj))
+  - [#9447](https://github.com/directus/directus/pull/9447) Clean up interface options type ([@nickrum](https://github.com/nickrum))
+
+### :memo: Documentation
+
+- [#9497](https://github.com/directus/directus/pull/9497) Small fixes for Hooks documentation ([@tylerforesthauser](https://github.com/tylerforesthauser))
+- [#9489](https://github.com/directus/directus/pull/9489) Clarify hook register function parameter descriptions in docs ([@nickrum](https://github.com/nickrum))
+- [#9486](https://github.com/directus/directus/pull/9486) Fix docs about SDK refactor ([@joselcvarela](https://github.com/joselcvarela))
+- [#9450](https://github.com/directus/directus/pull/9450) fix docs homepage header responsiveness ([@azrikahar](https://github.com/azrikahar))
+
 ## v9.0.0-rc.101 (November 3, 2021)
 
 ### ⚠️ Breaking Changes
