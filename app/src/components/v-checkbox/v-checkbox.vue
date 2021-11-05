@@ -4,6 +4,7 @@
 		class="v-checkbox"
 		type="button"
 		role="checkbox"
+		:title="customValue === false ? label : internalValue"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
 		:class="{ checked: isChecked, indeterminate, block }"
