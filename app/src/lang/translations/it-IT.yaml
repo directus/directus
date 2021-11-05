@@ -1253,7 +1253,6 @@ interfaces:
   presentation-divider:
     divider: Separatore
     description: Etichetta e divide i campi in sezioni
-    title_placeholder: Inserisci un titolo...
     inline_title: Titolo incorporato
     inline_title_label: Mostra titolo all'interno della riga
     margin_top: Margine superiore
