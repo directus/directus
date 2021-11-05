@@ -997,7 +997,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
-    project_logo_note: Фон на логото и вход-а
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
@@ -1040,7 +1039,6 @@ field_options:
     singular_unit: Форма в единствено число
     plural_unit: Форма в множествено число
     archive_divider: Архивиране
-    archive_field: Поле за архивен статус
     archive_field_placeholder: Избор на поле...
     archive_app_filter: Възможност за филтриране на архивираните
     archive_value: Задаване на стойност при архивиране...
@@ -1049,7 +1047,6 @@ field_options:
     sort_field: Избор на поле...
     accountability_divider: Профилиране
     duplication_divider: Дублиране
-    item_duplication_fields: Копиране на полета при дублиране
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
