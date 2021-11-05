@@ -215,7 +215,6 @@ time: Час
 timestamp: Времеви печат
 uuid: UUID
 hash: Хеш
-geometry: Геометрия
 not_available_for_type: Не е налично за типа
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
