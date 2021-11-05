@@ -890,6 +890,8 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    archive_field: Archive Field
+    item_duplication_fields: Item Duplication Fields
   directus_files:
     $thumbnail: Thumbnail
     title: Title
@@ -1010,7 +1012,8 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: My project...
-    project_logo_note: Login & Logo Background
+    project_color_note: Login & Logo Background
+    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -1018,6 +1021,8 @@ field_options:
       weak_text: Weak – Minimum 8 Characters
       strong_text: Strong – Upper / Lowercase / Numbers / Special
     storage_asset_presets:
+      fit_label: Fit
+      upscaling: Upscaling
       fit:
         contain_text: Contain (preserve aspect ratio)
         cover_text: Cover (forces exact size)
@@ -1028,6 +1033,7 @@ field_options:
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basemaps
+    basemaps_name_placeholder: Enter the basemap name...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -1053,7 +1059,6 @@ field_options:
     singular_unit: Singular Unit
     plural_unit: Plural Unit
     archive_divider: Archive
-    archive_field: Archive Field
     archive_field_placeholder: Choose a field...
     archive_app_filter: Enable App Archive Filter
     archive_value: Value set when archiving...
@@ -1062,7 +1067,6 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
-    item_duplication_fields: Item Duplication Fields
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1333,6 +1337,8 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
+    preview: Preview
+    editor: Editor
   map:
     map: Map
     description: Select a location on a map
@@ -1581,6 +1587,7 @@ layouts:
     invalid_geometry: Invalid geometry
     find_location: Find location...
     default_template: Using Collection Default...
+    no_compatible_fields: No compatible fields
 
 panels:
   metric:
