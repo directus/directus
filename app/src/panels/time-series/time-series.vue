@@ -13,6 +13,7 @@ import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { getEndpoint } from '@/utils/get-endpoint';
+import { addWeeks } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -180,7 +181,14 @@ export default defineComponent({
 			function toISO(metric: Record<string, any>) {
 				const year = metric[`${props.dateField}_year`];
 				const month = padZero(metric[`${props.dateField}_month`] ?? 1);
-				const day = padZero(metric[`${props.dateField}_day`] ?? 1);
+				const day = metric[`${props.dateField}_week`]
+					? padZero(
+							addWeeks(
+								new Date(year, metric[`${props.dateField}_month`] - 1, 1),
+								metric[`${props.dateField}_week`]
+							).getDate()
+					  )
+					: padZero(metric[`${props.dateField}_day`] ?? 1);
 				const hour = padZero(metric[`${props.dateField}_hour`] ?? 0);
 				const minute = padZero(metric[`${props.dateField}_minute`] ?? 0);
 				const second = padZero(metric[`${props.dateField}_second`] ?? 0);
@@ -201,6 +209,9 @@ export default defineComponent({
 						break;
 					case 'month':
 						groups = ['year', 'month'];
+						break;
+					case 'week':
+						groups = ['year', 'month', 'week'];
 						break;
 					case 'day':
 						groups = ['year', 'month', 'day'];
@@ -290,7 +301,7 @@ export default defineComponent({
 					x: {
 						show: true,
 						formatter(date: number) {
-							return d(new Date(date), 'long');
+							return props.precision === 'week' ? date : d(new Date(date), 'long');
 						},
 					},
 					y: {
@@ -303,7 +314,7 @@ export default defineComponent({
 					},
 				},
 				xaxis: {
-					type: 'datetime',
+					type: props.precision === 'week' ? 'numeric' : 'datetime',
 					tooltip: {
 						enabled: false,
 					},
