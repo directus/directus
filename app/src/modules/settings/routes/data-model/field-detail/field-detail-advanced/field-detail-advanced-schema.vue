@@ -175,35 +175,6 @@ export const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	},
 	{ divider: true },
 	{
-		text: '$t:geometry.Point',
-		value: 'geometry.Point',
-	},
-	{
-		text: '$t:geometry.LineString',
-		value: 'geometry.LineString',
-	},
-	{
-		text: '$t:geometry.Polygon',
-		value: 'geometry.Polygon',
-	},
-	{
-		text: '$t:geometry.MultiPoint',
-		value: 'geometry.MultiPoint',
-	},
-	{
-		text: '$t:geometry.MultiLineString',
-		value: 'geometry.MultiLineString',
-	},
-	{
-		text: '$t:geometry.MultiPolygon',
-		value: 'geometry.MultiPolygon',
-	},
-	{
-		text: '$t:geometry',
-		value: 'geometry',
-	},
-	{ divider: true },
-	{
 		text: '$t:timestamp',
 		value: 'timestamp',
 	},
@@ -235,6 +206,35 @@ export const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	{
 		text: '$t:hash',
 		value: 'hash',
+	},
+	{ divider: true },
+	{
+		text: '$t:geometry',
+		value: 'geometry',
+	},
+	{
+		text: '$t:geometry.Point',
+		value: 'geometry.Point',
+	},
+	{
+		text: '$t:geometry.LineString',
+		value: 'geometry.LineString',
+	},
+	{
+		text: '$t:geometry.Polygon',
+		value: 'geometry.Polygon',
+	},
+	{
+		text: '$t:geometry.MultiPoint',
+		value: 'geometry.MultiPoint',
+	},
+	{
+		text: '$t:geometry.MultiLineString',
+		value: 'geometry.MultiLineString',
+	},
+	{
+		text: '$t:geometry.MultiPolygon',
+		value: 'geometry.MultiPolygon',
 	},
 ];
 

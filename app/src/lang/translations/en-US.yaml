@@ -221,12 +221,12 @@ timestamp: Timestamp
 uuid: UUID
 hash: Hash
 geometry: Geometry (All)
-geometry.Point: 'Geometry: Point'
-geometry.LineString: 'Geometry: LineString'
-geometry.Polygon: 'Geometry: Polygon'
-geometry.MultiPoint: 'Geometry: MultiPoint'
-geometry.MultiLineString: 'Geometry: MultiLineString'
-geometry.MultiPolygon: 'Geometry: MultiPolygon'
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
