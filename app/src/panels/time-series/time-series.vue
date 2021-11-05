@@ -301,7 +301,7 @@ export default defineComponent({
 					x: {
 						show: true,
 						formatter(date: number) {
-							return props.precision === 'week' ? date : d(new Date(date), 'long');
+							return d(new Date(date), 'long');
 						},
 					},
 					y: {
@@ -314,7 +314,7 @@ export default defineComponent({
 					},
 				},
 				xaxis: {
-					type: props.precision === 'week' ? 'numeric' : 'datetime',
+					type: 'datetime',
 					tooltip: {
 						enabled: false,
 					},
