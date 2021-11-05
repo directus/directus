@@ -9,5 +9,5 @@ export function simpleHash(str: string) {
 		hash = 31 * hash + str.charCodeAt(i++);
 	}
 
-	return hash.toString(16);
+	return Math.abs(hash).toString(16);
 }
