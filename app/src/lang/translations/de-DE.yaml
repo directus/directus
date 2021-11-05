@@ -215,7 +215,6 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
-geometry: Dimensionen
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
