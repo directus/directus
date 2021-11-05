@@ -1023,7 +1023,6 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta i divideix els camps en seccions
-    title_placeholder: Introdueix un títol...
     inline_title: Títol en línia
     inline_title_label: Mostra el títol dins la línia
     margin_top: Marge superior
