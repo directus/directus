@@ -1,33 +1,41 @@
-# Installing with Docker
+# Installing With Docker
 
-Directus is published to both [DockerHub](https://hub.docker.com/r/directus/directus) and
+Directus is published to both [Docker Hub](https://hub.docker.com/r/directus/directus) and
 [GitHub Packages](https://github.com/directus/directus/pkgs/container/directus) under `directus/directus`. To use the
-Directus image from DockerHub, run:
+latest Directus image from Docker Hub, run:
 
 ```bash
 # Make sure to change sensitive values (KEY, SECRET, ...) in production
-docker run -p 8055:8055 -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 directus/directus
+docker run \
+  -p 8055:8055 \
+  -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 \
+  -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 \
+  directus/directus
 ```
 
 ### Installing Specific Versions
 
-Each released version is available under its own tag (e.g. 9.0.0-rc.96). To use a specific version of Directus, run:
+To stick to a more specific version of Directus you can use one of the following tags:
+
+- Full version, e.g. `9.0.0`
+- Minor releases, e.g. `9.0`
+- Major releases, e.g. `9`
+
+To use a specific version of Directus, run:
 
 ```bash
 # Make sure to change sensitive values (KEY, SECRET, ...) in production
-docker run -p 8055:8055 -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 directus/directus:9.0.0-rc.96
+docker run \
+  -p 8055:8055 \
+  -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 \
+  -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 \
+  directus/directus:9.0.0
 ```
 
-::: warning Change In Naming of Docker Tags
+### Configure Admin User
 
-Before 9.0.0-rc.84 the Docker tags were prefixed by a "v" - e.g. v9.0.0-rc.83.
-
-:::
-
-### Create admin user using docker
-
-The published Docker image will automatically populate the database, and create a user. To configure the email/password
-for this first user, pass the following env vars:
+The published Docker image will automatically populate the database and create an admin user. To configure the
+email/password for this first user, pass the following env vars:
 
 ```bash
 ADMIN_EMAIL="admin@example.com"
@@ -49,7 +57,7 @@ persistence (note that these can be changed through environment variables)
 
 ## Docker Compose
 
-When using Docker compose, you can use the following setup to get you started - make sure to change all sensitive values
+When using Docker Compose, you can use the following setup to get you started - make sure to change all sensitive values
 (`SECRET`, `DB_PASSWORD`, ...) in production:
 
 ```yaml
@@ -118,14 +126,14 @@ networks:
   directus:
 ```
 
-### Updating with Docker Compose
+### Updating With Docker Compose
 
-If you are not using the `latest` tag for directus you need to adjust your `docker-compose.yml` file to increment the
-tag version number, e.g.
+If you are not using the `latest` tag for the Directus image you need to adjust your `docker-compose.yml` file to
+increment the tag version number, e.g.:
 
 ```
--   image: directus/directus:9.0.0-rc.89
-+   image: directus/directus:9.0.0-rc.90
+-   image: directus/directus:9.0.0-rc.101
++   image: directus/directus:9.0.0
 ```
 
 You can then issue the following two commands (from your docker-compose root):
@@ -136,7 +144,7 @@ docker-compose up -d
 ```
 
 The images will be pulled and the containers recreated. Migrations will happen automatically so once the containers have
-started you will be on the newest version (or the version you specified).
+started you will be on the latest version (or the version you specified).
 
 ## Supported Databases
 
