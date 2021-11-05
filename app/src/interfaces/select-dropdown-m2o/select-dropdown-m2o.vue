@@ -205,7 +205,11 @@ export default defineComponent({
 
 					// If value is already fullfilled, let's fetch all necessary
 					// fields for display template
-					else if (typeof newValue === 'object' && newValue[relatedPrimaryKeyField.value!.field]) {
+					else if (
+						!currentItem.value &&
+						typeof newValue === 'object' &&
+						newValue[relatedPrimaryKeyField.value!.field]
+					) {
 						fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
 					}
 				},
