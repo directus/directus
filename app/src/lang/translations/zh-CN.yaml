@@ -1182,7 +1182,6 @@ interfaces:
   presentation-divider:
     divider: 分隔线
     description: 标记字段并分成多个部分
-    title_placeholder: 输入标题...
     inline_title: 行内标题
     inline_title_label: 在行内显示标题
     margin_top: 上边距
