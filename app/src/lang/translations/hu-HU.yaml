@@ -938,7 +938,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
-    project_logo_note: Bejelentkezés és logó háttere
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
