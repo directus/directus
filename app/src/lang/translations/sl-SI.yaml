@@ -1069,7 +1069,6 @@ interfaces:
   presentation-divider:
     divider: Ločilo
     description: Oznaka in delilnik polj v odseke
-    title_placeholder: Vnesite naslov ...
     inline_title: Naslov v vrstici
     inline_title_label: Pokaži naslov v vrsti
     margin_top: Zgornji rob
