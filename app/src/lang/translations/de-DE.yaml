@@ -215,6 +215,12 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -651,6 +657,7 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+insights: Einblicke
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
@@ -822,6 +829,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 collection: Sammlung
 collections: Sammlungen
+content: Inhalt
 singleton: Einzelnes Element
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
