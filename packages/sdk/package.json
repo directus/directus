@@ -9,7 +9,10 @@
 	"main": "./dist/index.js",
 	"exports": {
 		".": {
-			"import": "./dist/sdk.esm.js",
+			"import": {
+				"node": "./index.mjs",
+				"default": "./dist/sdk.esm.js"
+			},
 			"require": "./dist/index.js"
 		},
 		"./package.json": "./package.json"
