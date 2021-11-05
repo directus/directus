@@ -21,7 +21,8 @@
 	"unpkg": "./dist/sdk.esm.min.js",
 	"types": "./dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist",
+		"index.mjs"
 	],
 	"scripts": {
 		"prebuild": "npm run cleanup",
