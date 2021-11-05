@@ -215,6 +215,7 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
+geometry: Geometrie (alle)
 geometry.Point: Point
 geometry.LineString: LineString
 geometry.Polygon: Polygon
@@ -936,6 +937,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -948,13 +950,21 @@ fields:
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
+    branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
+    files_and_thumbnails: Dateien & Speicher
+    storage_default_folder: Standardordner
+    storage_asset_presets: Transformations-Voreinstellungen
+    storage_asset_transform: Erlaubte Transformationen
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
+    transformations_all: Alle Transformationen erlauben
+    transformations_none: Transformationen deaktivieren
+    transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon
@@ -1169,6 +1179,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1337,6 +1348,7 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
+    field_hint: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1551,7 +1563,10 @@ layouts:
     cluster_radius: Cluster-Radius
     cluster_minpoints: Kleinstes Cluster
     cluster_maxzoom: Maximaler Zoom für Cluster
+    field: Geodaten-Feld
     invalid_geometry: Ungültige Geometrie
+    find_location: Standort suchen...
+    default_template: Verwenden des Sammlungs-Standards...
 panels:
   metric:
     name: Metrik
