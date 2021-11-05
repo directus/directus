@@ -932,7 +932,6 @@ interfaces:
   presentation-divider:
     divider: Eraldaja
     description: Nimeta ja eralda välju sektsioonideks
-    title_placeholder: Sisesta pealkiri...
     inline_title: Pealkiri joone sees
     inline_title_label: Näita pealkirja keset joont
     margin_top: Ülemine vahe
