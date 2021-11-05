@@ -215,6 +215,13 @@ time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometria (tutte)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -651,6 +658,7 @@ toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
+insights: Approfondimenti
 dashboard: Bacheca
 panel: Pannello
 panel_options: Opzioni del pannello
@@ -989,7 +997,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Il mio progetto...
-    project_logo_note: Sfondo per l'accesso e il logo
     public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
     security_divider_title: Sicurezza
     auth_password_policy:
@@ -1032,7 +1039,6 @@ field_options:
     singular_unit: Singolare
     plural_unit: Plurale
     archive_divider: Archivio
-    archive_field: Campo archiviazione
     archive_field_placeholder: Scegli un campo...
     archive_app_filter: Abilita filtro archiviati in app
     archive_value: Valore impostato all'archiviazione...
@@ -1041,7 +1047,6 @@ field_options:
     sort_field: Scegli un campo...
     accountability_divider: Autorizzazioni
     duplication_divider: Duplicazione
-    item_duplication_fields: Campi coinvolti nella duplicazione
   directus_files:
     title: Un titolo unico...
     description: Una descrizione opzionale...
@@ -1253,6 +1258,7 @@ interfaces:
   presentation-divider:
     divider: Separatore
     description: Etichetta e divide i campi in sezioni
+    title_placeholder: Inserisci un titolo o lascia vuoto per mostrare solo una riga...
     inline_title: Titolo incorporato
     inline_title_label: Mostra titolo all'interno della riga
     margin_top: Margine superiore
