@@ -80,16 +80,16 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return fieldsInCollection.value.find((f: Field) => f.field == geometryField.value);
 		});
 
-		const isGeometryFieldNative = computed(() => geometryFieldData.value?.type == 'geometry');
+		const isGeometryFieldNative = computed(() => geometryFieldData.value?.type.startsWith('geometry'));
 
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
-				({ type, meta }) => type == 'geometry' || meta?.interface == 'map'
+				({ type, meta }) => type.startsWith('geometry') || meta?.interface == 'map'
 			);
 		});
 
 		watch(
-			() => geometryFields.value,
+			geometryFields,
 			(fields) => {
 				if (!geometryField.value && fields.length > 0) {
 					geometryField.value = fields[0].field;
@@ -100,22 +100,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = geometryFieldData.value;
-			if (!field) return undefined;
-			if (isGeometryFieldNative.value) {
-				return {
-					geometryField: field.field,
-					geometryFormat: 'native',
-					geometryType: field.schema?.geometry_type,
-				} as GeometryOptions;
+			if (!field) {
+				return;
 			}
-			if (field.meta && field.meta.interface == 'map' && field.meta.options) {
-				return {
-					geometryField: field.field,
-					geometryFormat: field.meta.options.geometryFormat,
-					geometryType: field.meta.options.geometryType,
-				} as GeometryOptions;
+			const geometryField = field.field;
+			const geometryFormat = isGeometryFieldNative.value ? 'native' : field.meta?.options?.geometryFormat;
+			if (!geometryFormat) {
+				return;
 			}
-			return undefined;
+			return { geometryField, geometryFormat };
 		});
 
 		const template = computed(() => {
@@ -166,13 +159,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		}
 
-		watch(
-			() => cameraOptions.value,
-			() => {
-				shouldUpdateCamera.value = false;
-				locationFilter.value = getLocationFilter();
-			}
-		);
+		watch(cameraOptions, () => {
+			shouldUpdateCamera.value = false;
+			locationFilter.value = getLocationFilter();
+		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
 			sort,
@@ -191,10 +181,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		watch([search, collection, limit, sort], onQueryChange);
 		watch(items, updateGeojson);
 
-		watch(
-			() => geometryField.value,
-			() => (shouldUpdateCamera.value = true)
-		);
+		watch(geometryField, () => (shouldUpdateCamera.value = true));
 
 		function onQueryChange() {
 			shouldUpdateCamera.value = true;
@@ -230,7 +217,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			},
 		});
 
-		watch(() => clusterData.value, updateSource, { immediate: true });
+		watch(clusterData, updateSource, { immediate: true });
 
 		function updateSource() {
 			directusSource.value = merge({}, directusSource.value, {

@@ -26,7 +26,7 @@ export function getGeometryHelper(database?: Knex): KnexSpatial {
 	return geometryHelper!;
 }
 
-class KnexSpatial {
+abstract class KnexSpatial {
 	constructor(protected knex: Knex) {}
 	supported(): boolean | Promise<boolean> {
 		return true;
@@ -38,11 +38,14 @@ class KnexSpatial {
 		return expression.wrap('NOT ', '');
 	}
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		const type = field.schema?.geometry_type ?? 'geometry';
+		const type = field.type.split('.')[1] ?? 'geometry';
 		return table.specificType(field.field, type);
 	}
 	asText(table: string, column: string): Knex.Raw {
 		return this.knex.raw('st_astext(??.??) as ??', [table, column, column]);
+	}
+	asGeoJSON?(table: string, column: string): Knex.Raw {
+		return this.knex.raw('st_asgeojson(??.??) as ??', [table, column, column]);
 	}
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('st_geomfromtext(?, 4326)', text);
@@ -80,6 +83,9 @@ class KnexSpatial_SQLite extends KnexSpatial {
 		const res = await this.knex.select('name').from('pragma_function_list').where({ name: 'spatialite_version' });
 		return res.length > 0;
 	}
+	asGeoJSON(table: string, column: string): Knex.Raw {
+		return this.knex.raw('asgeojson(??.??) as ??', [table, column, column]);
+	}
 }
 class KnexSpatial_PG extends KnexSpatial {
 	async supported() {
@@ -87,7 +93,7 @@ class KnexSpatial_PG extends KnexSpatial {
 		return res.length > 0;
 	}
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		const type = field.schema?.geometry_type ?? 'geometry';
+		const type = field.type.split('.')[1] ?? 'geometry';
 		return table.specificType(field.field, `geometry(${type})`);
 	}
 	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
@@ -107,8 +113,9 @@ class KnexSpatial_MySQL extends KnexSpatial {
 
 class KnexSpatial_Redshift extends KnexSpatial {
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		const type = field.schema?.geometry_type ?? 'geometry';
-		if (type !== 'geometry') field.meta!.special![1] = type;
+		if (field.type.split('.')[1]) {
+			field.meta!.special = [field.type];
+		}
 		return table.specificType(field.field, 'geometry');
 	}
 }
@@ -121,8 +128,9 @@ class KnexSpatial_MSSQL extends KnexSpatial {
 		return expression.wrap(``, ` = 0`);
 	}
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		const type = field.schema?.geometry_type ?? 'geometry';
-		if (type !== 'geometry') field.meta!.special![1] = type;
+		if (field.type.split('.')[1]) {
+			field.meta!.special = [field.type];
+		}
 		return table.specificType(field.field, 'geometry');
 	}
 	asText(table: string, column: string): Knex.Raw {
@@ -142,6 +150,7 @@ class KnexSpatial_MSSQL extends KnexSpatial {
 	collect(table: string, column: string): Knex.Raw {
 		return this.knex.raw('geometry::CollectionAggregate(??.??).STAsText()', [table, column]);
 	}
+	asGeoJSON: undefined;
 }
 
 class KnexSpatial_Oracle extends KnexSpatial {
@@ -152,12 +161,16 @@ class KnexSpatial_Oracle extends KnexSpatial {
 		return expression.wrap(``, ` = 'FALSE'`);
 	}
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
-		const type = field.schema?.geometry_type ?? 'geometry';
-		if (type !== 'geometry') field.meta!.special![1] = type;
+		if (field.type.split('.')[1]) {
+			field.meta!.special = [field.type];
+		}
 		return table.specificType(field.field, 'sdo_geometry');
 	}
 	asText(table: string, column: string): Knex.Raw {
 		return this.knex.raw('sdo_util.to_wktgeometry(??.??) as ??', [table, column, column]);
+	}
+	asGeoJSON(table: string, column: string): Knex.Raw {
+		return this.knex.raw('sdo_util.to_geojson(??.??) as ??', [table, column, column]);
 	}
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('sdo_geometry(?, 4326)', text);
