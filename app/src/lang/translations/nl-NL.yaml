@@ -767,8 +767,6 @@ fields:
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
-    storage_asset_presets: Bestand Voorkeuren
-    storage_asset_transform: Storage Asset Transform
     custom_css: Aangepastte CSS
   directus_fields:
     collection: Collectie naam
@@ -788,7 +786,6 @@ fields:
     enforce_tfa: 2FA vereist
     users: Gebruikers in rol
     module_list: Module Navigatie
-    collection_list: Collectie navigatie
   directus_webhooks:
     name: Naam
     status: Status
@@ -812,9 +809,6 @@ field_options:
     fields:
       icon_name: Icoon
       name_name: Naam
-    collection_list:
-      fields:
-        type_name: Type
     collections_name: Collecties
   directus_users:
     status_dropdown_active: Actief

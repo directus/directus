@@ -10,7 +10,6 @@ import { stripFunction } from '../utils/strip-function';
 import { toArray } from '@directus/shared/utils';
 import { Query } from '@directus/shared/types';
 import getDatabase from './index';
-import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 
 type RunASTOptions = {
@@ -69,24 +68,7 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		let dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
-
-		if (query.union) {
-			const [field, keys] = query.union;
-
-			if (keys.length) {
-				const queries = keys.map((key) => {
-					return knex.select('*').from(
-						dbQuery
-							.clone()
-							.andWhere({ [field]: key })
-							.as('foo')
-					);
-				});
-
-				dbQuery = knex.unionAll(queries);
-			}
-		}
+		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -209,7 +191,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 			alias = fieldNode.fieldKey;
 		}
 
-		if (isNativeGeometry(field)) {
+		if (field.type.startsWith('geometry')) {
 			return helper.asText(table, field.field);
 		}
 
@@ -230,9 +212,7 @@ function getDBQuery(
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	applyQuery(knex, table, dbQuery, queryCopy, schema);
-
-	return dbQuery;
+	return applyQuery(knex, table, dbQuery, queryCopy, schema);
 }
 
 function applyParentFilters(

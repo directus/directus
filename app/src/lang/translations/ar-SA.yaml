@@ -804,9 +804,6 @@ field_options:
       icon_name: أيقونة
       name_name: الاسم
       name_placeholder: أدخل عنوانًا...
-    collection_list:
-      fields:
-        type_name: النوع
     collections_name: مجموعات
   directus_users:
     status_dropdown_active: مفعل

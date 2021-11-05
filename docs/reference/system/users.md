@@ -64,7 +64,7 @@ translations.
 One of `auto`, `light`, `dark`.
 
 `tfa_secret` **string**\
-When TFA is enabled, this holds the
+When TFA is enabled, this holds the secret key for it.
 
 </div>
 </div>

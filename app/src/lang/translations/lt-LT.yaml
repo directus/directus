@@ -691,8 +691,6 @@ fields:
     public_note: Vieša pastaba
     auth_password_policy: Slaptažodžių politika
     auth_login_attempts: Max. bandymų prisijungti kiekis
-    storage_asset_presets: Saugyklos failų ruošiniai
-    storage_asset_transform: Saugyklos failų transformacija
   directus_fields:
     collection: Kolekcijos pavadinimas
     icon: Kolekcijos ikonėlė
@@ -711,7 +709,6 @@ fields:
     enforce_tfa: Reikalinga 2FA
     users: Vartotojai grupėje
     module_list: Modulių navigacija
-    collection_list: Kolekcijų navigacija
   directus_webhooks:
     name: Pavadinimas
     status: Būsena
@@ -732,9 +729,6 @@ field_options:
     fields:
       icon_name: Ikona
       name_name: Pavadinimas
-    collection_list:
-      fields:
-        type_name: Tipas
     collections_name: Kolekcijos
   directus_users:
     status_dropdown_active: Aktyvus

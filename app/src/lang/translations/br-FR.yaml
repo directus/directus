@@ -746,8 +746,6 @@ fields:
     public_note: Kemennadennoù war ar bajenn degemer
     auth_password_policy: Politikerezh ar gerioù-tremen
     auth_login_attempts: Taolioù kevreañ
-    storage_asset_presets: Rakreoliñ ar resktroù el lec'h stokañ
-    storage_asset_transform: Treuzfurmiñ restroù ar stokañ
     custom_css: Personelaat an CSS
   directus_fields:
     collection: Anv an dastumad
@@ -766,12 +764,13 @@ fields:
     enforce_tfa: Ret eo kaout A2F
     users: Izili gant ar roll
     module_list: Modulenn ar Merdeiñ
-    collection_list: Merdeiñ an dastumad
   directus_webhooks:
     name: Anv
     status: Stad
     value: Talvoud
 field_options:
+  directus_settings:
+    mapbox_placeholder: pk.eyJ1Ijo.....
   directus_activity:
     create: Krouiñ
     update: Hizivaat
@@ -791,9 +790,6 @@ field_options:
       icon_name: Arlun
       name_name: Anv
       name_placeholder: Bizskrivit un titl...
-    collection_list:
-      fields:
-        type_name: Seurt
     collections_name: Dastumadoù
   directus_users:
     status_dropdown_active: Oberiat

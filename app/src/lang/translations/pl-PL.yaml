@@ -652,7 +652,6 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
-insights: Insights (beta)
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -941,16 +940,11 @@ fields:
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
-    public_pages: Strony publiczne
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
-    files_and_thumbnails: Pliki i miniatury
-    storage_default_folder: Domyślny folder magazynu
-    storage_asset_presets: Ustawienia magazynu zasobów
-    storage_asset_transform: Przekształcanie zasobów magazynowych
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
   directus_fields:
@@ -971,7 +965,6 @@ fields:
     enforce_tfa: Wymagaj uwierzytelniania dwuskładnikowego
     users: Użytkownicy w roli
     module_list: Moduł Nawigacji
-    collection_list: Kolekcja Nawigacji
   directus_webhooks:
     name: Nazwa
     method: Metoda
@@ -1055,15 +1048,6 @@ field_options:
       name_placeholder: Wprowadź tytuł...
       link_name: Link
       link_placeholder: Względny lub bezwzględny URL...
-    collection_list:
-      group_name_addLabel: Dodaj nową grupę...
-      fields:
-        group_name: Nazwa grupy
-        group_placeholder: Oznacz tę grupę...
-        type_name: Typ
-        choices_always: Zawsze otwarte
-        choices_start_open: Rozpocznij rozwinięty
-        choices_start_collapsed: Rozpocznij zwinięty
     collections_name: Kolekcje
     collections_addLabel: Dodaj kolekcję...
   directus_users:
@@ -1344,7 +1328,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
-    field_hint: Wstawia nowo przesłane pliki w wybranym folderze. Nie wpływa na istniejące pliki, które są zaznaczone.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -1559,7 +1542,10 @@ layouts:
     cluster_radius: Promień klastra
     cluster_minpoints: Minimalny rozmiar klastra
     cluster_maxzoom: Maksymalne powiększenie klastrów
+    field: Pole geoprzestrzenne
     invalid_geometry: Nieprawidłowa geometria
+    find_location: Znajdź lokalizację...
+    default_template: Używanie domyślnej kolekcji...
 panels:
   metric:
     name: Metryczny

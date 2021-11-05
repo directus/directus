@@ -1,13 +1,6 @@
 import { BaseStorage } from './base';
 
 export class LocalStorage extends BaseStorage {
-	private prefix: string;
-
-	constructor(prefix = '') {
-		super();
-		this.prefix = prefix;
-	}
-
 	get(key: string): string | null {
 		const value = localStorage.getItem(this.key(key));
 		if (value !== null) {

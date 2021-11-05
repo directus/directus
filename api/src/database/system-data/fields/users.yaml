@@ -56,7 +56,6 @@ fields:
       iconRight: local_offer
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
