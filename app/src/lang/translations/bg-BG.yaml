@@ -651,6 +651,7 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
+insights: Задълбочен анализ
 dashboard: Табло
 panel: Панел
 panel_options: Настройки на панела
@@ -822,6 +823,7 @@ cancel: Отмяна
 no_upscale: Да не се уголемават, ако са по-малки
 collection: Колекция
 collections: Колекции
+content: Съдържание
 singleton: Сек
 singleton_label: Използване като сам и единствен запис
 system_fields_locked: Системните полета са заключени и не могат да бъдат променяни
@@ -940,13 +942,21 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
+    branding: Стил и брандиране
     public_foreground: Публично изображение
     public_background: Публичен фон
     public_note: Публично съобщение
     auth_password_policy: Политика за пароли
     auth_login_attempts: Брой опити за вход
+    files_and_thumbnails: Файлове и съхранение
+    storage_default_folder: Папка по подразбиране
+    storage_asset_presets: Заготовки за трансформации
+    storage_asset_transform: Позволени трансформации
     overrides: Преопределяне в приложението
     custom_css: Собствен CSS
+    transformations_all: Позволяване на всякакви трансформации
+    transformations_none: Забраняват се трансформациите
+    transformations_presets: Ограничаване само до следните заготовки
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -1329,6 +1339,7 @@ interfaces:
   system-folder:
     folder: Папка
     description: Избор на папка
+    field_hint: Папка за качените файлове. Съществуващите файлове не се променят.
     root_name: Коренова папка
     system_default: По подразбиране
   select-radio:
