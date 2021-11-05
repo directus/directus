@@ -165,7 +165,6 @@ time: เวลา
 timestamp: Timestamp
 uuid: UUID
 hash: ค่าแฮช
-geometry: เรขาคณิต
 not_available_for_type: ไม่มีสำหรับชนิดนี้
 create_translations: สร้างการแปลใหม่
 auto_refresh: รีเฟรซอัตโนมัติ
