@@ -961,7 +961,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Мой проект
-    project_logo_note: Фон логина и логотипа
     public_note_placeholder: Короткое, публичное сообщение, которое поддерживает markdown форматирование...
     security_divider_title: Безопасность
     auth_password_policy:
