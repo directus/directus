@@ -1,5 +1,5 @@
 {
-	"extends": ["config:base", ":disableDependencyDashboard", "schedule:daily"],
+	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly"],
 	"timezone": "America/New_York",
 	"labels": ["Dependencies"],
 	"commitMessage": "{{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}} {{commitMessageSuffix}}",
