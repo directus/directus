@@ -1214,7 +1214,6 @@ interfaces:
   presentation-divider:
     divider: Разделитель
     description: Разделить поля на секции с заголовками
-    title_placeholder: Введите название...
     inline_title: Строчный заголовок
     inline_title_label: Показать заголовок внутри строки
     margin_top: Отступ сверху
