@@ -245,16 +245,18 @@ export class FieldsService {
 			});
 
 			if (field.meta) {
-				await emitter.emitAsync(`fields.create.before`, field, {
-					event: `fields.create.before`,
-					accountability: this.accountability,
-					collection,
-					item: null,
-					action: 'create',
-					payload: field,
-					schema: this.schema,
-					database: trx,
-				});
+				await emitter.emitFilter(
+					`fields.create`,
+					field,
+					{
+						collection: collection,
+					},
+					{
+						database: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			}
 
 			if (field.type && ALIAS_TYPES.includes(field.type) === false) {
@@ -277,16 +279,21 @@ export class FieldsService {
 					{ emitEvents: false }
 				);
 
-				emitAsyncSafe(`fields.create`, {
-					event: `fields.create`,
-					accountability: this.accountability,
-					collection,
-					item: field.field,
-					action: 'create',
-					payload: field,
-					schema: this.schema,
-					database: getDatabase(),
-				});
+				emitter.emitAction(
+					`fields.create`,
+					{
+						payload: field,
+						key: field.field,
+						collection: collection,
+					},
+					{
+						// This hook is called async. If we would pass the transaction here, the hook can be
+						// called after the transaction is done #5460
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			}
 		});
 
@@ -308,27 +315,32 @@ export class FieldsService {
 
 		if (field.meta) {
 			if (record) {
-				await emitter.emitAsync(`fields.update.before`, field, {
-					event: `fields.update.before`,
-					accountability: this.accountability,
-					collection,
-					item: field.field,
-					action: 'update',
-					payload: field,
-					schema: this.schema,
-					database: this.knex,
-				});
+				await emitter.emitFilter(
+					`fields.update`,
+					field,
+					{
+						keys: [field.field],
+						collection: collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			} else {
-				await emitter.emitAsync(`fields.create.before`, field, {
-					event: `fields.create.before`,
-					accountability: this.accountability,
-					collection,
-					item: null,
-					action: 'create',
-					payload: field,
-					schema: this.schema,
-					database: this.knex,
-				});
+				await emitter.emitFilter(
+					`fields.create`,
+					field,
+					{
+						collection: collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			}
 		}
 
@@ -359,16 +371,21 @@ export class FieldsService {
 					{ emitEvents: false }
 				);
 
-				emitAsyncSafe(`fields.update`, {
-					event: `fields.update`,
-					accountability: this.accountability,
-					collection,
-					item: field.field,
-					action: 'update',
-					payload: field,
-					schema: this.schema,
-					database: getDatabase(),
-				});
+				emitter.emitAction(
+					`fields.update`,
+					{
+						payload: field,
+						keys: [field.field],
+						collection: collection,
+					},
+					{
+						// This hook is called async. If we would pass the transaction here, the hook can be
+						// called after the transaction is done #5460
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			} else {
 				await this.itemsService.createOne(
 					{
@@ -379,16 +396,21 @@ export class FieldsService {
 					{ emitEvents: false }
 				);
 
-				emitAsyncSafe(`fields.create`, {
-					event: `fields.create`,
-					accountability: this.accountability,
-					collection,
-					item: field.field,
-					action: 'create',
-					payload: field,
-					schema: this.schema,
-					database: getDatabase(),
-				});
+				emitter.emitAction(
+					`fields.create`,
+					{
+						payload: field,
+						key: field.field,
+						collection: collection,
+					},
+					{
+						// This hook is called async. If we would pass the transaction here, the hook can be
+						// called after the transaction is done #5460
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				);
 			}
 		}
 
