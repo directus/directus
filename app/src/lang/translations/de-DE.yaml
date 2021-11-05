@@ -997,7 +997,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
-    project_logo_note: Login & Logo Hintergrund
     public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
@@ -1040,7 +1039,6 @@ field_options:
     singular_unit: Einzahl-Einheit
     plural_unit: Mehrzahl-Einheit
     archive_divider: Archivieren
-    archive_field: Archivfeld
     archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
@@ -1049,7 +1047,6 @@ field_options:
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
-    item_duplication_fields: Artikel Duplikationsfelder
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
