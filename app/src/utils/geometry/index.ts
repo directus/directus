@@ -33,8 +33,6 @@ export function getBBox(object: AnyGeometry): BBox {
 
 export function getGeometryFormatForType(type: Type): GeometryFormat | undefined {
 	switch (type) {
-		case 'geometry':
-			return 'native';
 		case 'json':
 			return 'geojson';
 		case 'text':
@@ -43,7 +41,7 @@ export function getGeometryFormatForType(type: Type): GeometryFormat | undefined
 		case 'csv':
 			return 'lnglat';
 		default:
-			return undefined;
+			return type.startsWith('geometry') ? 'native' : undefined;
 	}
 }
 

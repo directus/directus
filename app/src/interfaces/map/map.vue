@@ -155,7 +155,7 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
 
-		const geometryType = (props.fieldData?.schema?.geometry_type ?? props.geometryType) as GeometryType;
+		const geometryType = props.geometryType || (props.fieldData?.type.split('.')[1] as GeometryType);
 		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
 
 		const mapboxKey = getSetting('mapbox_key');
@@ -194,17 +194,18 @@ export default defineComponent({
 			geolocate: new GeolocateControl({
 				showUserLocation: false,
 			}),
-			geocoder: !mapboxKey
-				? null
-				: (new MapboxGeocoder({
-						accessToken: mapboxKey,
-						collapsed: true,
-						flyTo: { speed: 1.4 },
-						marker: false,
-						mapboxgl: maplibre as any,
-						placeholder: t('layouts.map.find_location'),
-				  }) as any),
+			geocoder: undefined as MapboxGeocoder | undefined,
 		};
+		if (mapboxKey) {
+			controls.geocoder = new MapboxGeocoder({
+				accessToken: mapboxKey,
+				collapsed: true,
+				flyTo: { speed: 1.4 },
+				marker: false,
+				mapboxgl: maplibre as any,
+				placeholder: t('layouts.map.find_location'),
+			});
+		}
 
 		const tooltipVisible = ref(false);
 		const tooltipMessage = ref('');

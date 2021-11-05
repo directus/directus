@@ -86,13 +86,13 @@ export class FieldsService {
 				return field.field === column.name && field.collection === column.table;
 			});
 
-			const { type, ...info } = getLocalType(column, field);
+			const type = getLocalType(column, field);
 
 			const data = {
 				collection: column.table,
 				field: column.name,
 				type: type,
-				schema: { ...column, ...info },
+				schema: column,
 				meta: field || null,
 			};
 
@@ -124,7 +124,7 @@ export class FieldsService {
 		});
 
 		const aliasFieldsAsField = aliasFields.map((field) => {
-			const { type } = getLocalType(undefined, field);
+			const type = getLocalType(undefined, field);
 
 			const data = {
 				collection: field.collection,
@@ -205,14 +205,14 @@ export class FieldsService {
 			// Do nothing
 		}
 
-		const { type = 'alias', ...info } = getLocalType(column, fieldInfo);
+		const type = getLocalType(column, fieldInfo);
 
 		const data = {
 			collection,
 			field,
 			type,
 			meta: fieldInfo || null,
-			schema: type === 'alias' ? null : { ...column, ...info },
+			schema: type === 'alias' ? null : column,
 		};
 
 		return data;
@@ -467,10 +467,11 @@ export class FieldsService {
 			column = table.dateTime(field.field, { useTz: false });
 		} else if (field.type === 'timestamp') {
 			column = table.timestamp(field.field, { useTz: true });
-		} else if (field.type === 'geometry') {
+		} else if (field.type.startsWith('geometry')) {
 			const helper = getGeometryHelper();
 			column = helper.createColumn(table, field);
 		} else {
+			// @ts-ignore
 			column = table[field.type](field.field);
 		}
 
