@@ -609,8 +609,9 @@ information and roles will be assigned from Active Directory.
 | `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
 | `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
 
-<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. <sup>[2]</sup>
-The scope define the following behaviours:
+<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+
+<sup>[2]</sup> The scope define the following behaviours:
 
 - `base`: Limits the scope to a single object defined by the associated DN.
 - `one`: Searches all objects within the associated DN.
