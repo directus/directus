@@ -40,19 +40,19 @@ fields:
     display_options:
       showAsDot: true
       choices:
-        - text: $t:active
+        - text: $t:field_options.directus_webhooks.status_options_active
           value: active
           foreground: 'var(--primary-10)'
           background: 'var(--primary)'
-        - text: $t:inactive
+        - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
           foreground: 'var(--foreground-normal)'
           background: 'var(--background-normal-alt)'
     options:
       choices:
-        - text: $t:active
+        - text: $t:field_options.directus_webhooks.status_options_active
           value: active
-        - text: $t:inactive
+        - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
     width: half
 

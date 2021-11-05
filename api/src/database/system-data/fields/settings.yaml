@@ -36,7 +36,7 @@ fields:
 
   - field: project_color
     interface: select-color
-    note: $t:field_options.directus_settings.project_logo_note
+    note: $t:field_options.directus_settings.project_color_note
     translations:
       language: en-US
       translations: Brand Color
@@ -44,7 +44,7 @@ fields:
 
   - field: project_logo
     interface: file
-    note: White 40x40 SVG/PNG
+    note: $t:field_options.directus_settings.project_logo_note
     translations:
       language: en-US
       translations: Brand Logo
@@ -170,7 +170,7 @@ fields:
               onlyOnCreate: false
             width: full
         - field: fit
-          name: Fit
+          name: $t:field_options.directus_settings.storage_asset_presets.fit_label
           type: string
           schema:
             is_nullable: false
@@ -217,7 +217,7 @@ fields:
               step: 1
             width: half
         - field: withoutEnlargement
-          name: Upscaling
+          name: $t:field_options.directus_settings.storage_asset_presets.upscaling
           type: boolean
           schema:
             default_value: false
@@ -227,7 +227,7 @@ fields:
             options:
               label: $t:no_upscale
         - field: format
-          name: Format
+          name: $t:format
           type: string
           schema:
             is_nullable: false
@@ -307,7 +307,7 @@ fields:
           meta:
             interface: text-input
             options:
-              placeholder: Enter the basemap name...
+              placeholder: $t:field_options.directus_settings.basemaps_name_placeholder
         - field: type
           name: $t:type
           meta:
