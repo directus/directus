@@ -152,11 +152,11 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(checkIP);
 
-	app.use(sanitizeQuery);
-
 	app.use(cache);
 
 	app.use(schema);
+
+	app.use(sanitizeQuery);
 
 	app.use(getPermissions);
 

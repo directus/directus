@@ -7,6 +7,7 @@ import { validateBatch } from '../middleware/validate-batch';
 import { ActivityService, MetaService } from '../services';
 import { Action } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { loadUserRoleServices } from '../middleware/load-user-role-services';
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.search('/', validateBatch('read'), readHandler, respond);
+router.search('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
 router.get('/', readHandler, respond);
 
 router.get(

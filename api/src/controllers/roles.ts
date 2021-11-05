@@ -6,6 +6,7 @@ import { validateBatch } from '../middleware/validate-batch';
 import { MetaService, RolesService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { loadUserRoleServices } from '../middleware/load-user-role-services';
 
 const router = express.Router();
 
@@ -67,8 +68,8 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.get('/', validateBatch('read'), readHandler, respond);
-router.search('/', validateBatch('read'), readHandler, respond);
+router.get('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
+router.search('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/:pk',
@@ -88,6 +89,7 @@ router.get(
 
 router.patch(
 	'/',
+	loadUserRoleServices,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new RolesService({
@@ -147,6 +149,7 @@ router.patch(
 
 router.delete(
 	'/',
+	loadUserRoleServices,
 	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
 		const service = new RolesService({

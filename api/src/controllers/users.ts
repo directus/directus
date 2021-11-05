@@ -4,9 +4,10 @@ import { InvalidCredentialsException, ForbiddenException, InvalidPayloadExceptio
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService, TFAService } from '../services';
+import { AuthenticationService, MetaService, UsersService, TFAService, RolesService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { loadUserRoleServices } from '../middleware/load-user-role-services';
 
 const router = express.Router();
 
@@ -68,8 +69,8 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.get('/', validateBatch('read'), readHandler, respond);
-router.search('/', validateBatch('read'), readHandler, respond);
+router.get('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
+router.search('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/me',
@@ -159,6 +160,7 @@ router.patch(
 
 router.patch(
 	'/',
+	loadUserRoleServices,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new UsersService({
@@ -218,6 +220,7 @@ router.patch(
 
 router.delete(
 	'/',
+	loadUserRoleServices,
 	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
 		const service = new UsersService({

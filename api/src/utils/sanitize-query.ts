@@ -4,8 +4,15 @@ import { Meta } from '../types';
 import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter, deepMap } from '@directus/shared/utils';
+import { UsersService } from '../services/users';
+import { RolesService } from '../services/roles';
 
-export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
+export async function sanitizeQuery(
+	rawQuery: Record<string, any>,
+	usersService: UsersService,
+	rolesService: RolesService,
+	accountability?: Accountability | null
+): Promise<Query> {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -33,7 +40,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	}
 
 	if (rawQuery.filter) {
-		query.filter = sanitizeFilter(rawQuery.filter, accountability || null);
+		query.filter = await sanitizeFilter(rawQuery.filter, usersService, rolesService, accountability || null);
 	}
 
 	if (rawQuery.offset) {
@@ -59,7 +66,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	if (rawQuery.deep as Record<string, any>) {
 		if (!query.deep) query.deep = {};
 
-		query.deep = sanitizeDeep(rawQuery.deep, accountability);
+		query.deep = sanitizeDeep(rawQuery.deep, usersService, rolesService, accountability);
 	}
 
 	if (rawQuery.alias) {
@@ -113,7 +120,12 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 	return aggregate as Aggregate;
 }
 
-function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
+async function sanitizeFilter(
+	rawFilter: any,
+	usersService: UsersService,
+	rolesService: RolesService,
+	accountability: Accountability | null
+) {
 	let filters: Filter = rawFilter;
 
 	if (typeof rawFilter === 'string') {
@@ -136,7 +148,39 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 		}
 	});
 
-	filters = parseFilter(filters, accountability);
+	const requiredPermissionData = {
+		$CURRENT_USER: [] as string[],
+		$CURRENT_ROLE: [] as string[],
+	};
+	const filterContext: Record<string, any> = {};
+
+	const extractPermissionData = (val: any) => {
+		if (typeof val === 'string' && val.startsWith('$CURRENT_USER.')) {
+			requiredPermissionData.$CURRENT_USER.push(val.replace('$CURRENT_USER.', ''));
+		}
+
+		if (typeof val === 'string' && val.startsWith('$CURRENT_ROLE.')) {
+			requiredPermissionData.$CURRENT_ROLE.push(val.replace('$CURRENT_ROLE.', ''));
+		}
+
+		return val;
+	};
+
+	deepMap(filters, extractPermissionData);
+
+	if (accountability?.user && requiredPermissionData.$CURRENT_USER.length > 0) {
+		filterContext.$CURRENT_USER = await usersService.readOne(accountability?.user, {
+			fields: requiredPermissionData.$CURRENT_USER,
+		});
+	}
+
+	if (accountability?.role && requiredPermissionData.$CURRENT_ROLE.length > 0) {
+		filterContext.$CURRENT_ROLE = await rolesService.readOne(accountability?.role, {
+			fields: requiredPermissionData.$CURRENT_ROLE,
+		});
+	}
+
+	filters = parseFilter(filters, accountability, filterContext);
 
 	return filters;
 }
@@ -170,7 +214,12 @@ function sanitizeMeta(rawMeta: any) {
 	return [rawMeta];
 }
 
-function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
+function sanitizeDeep(
+	deep: Record<string, any>,
+	usersService: UsersService,
+	rolesService: RolesService,
+	accountability?: Accountability | null
+) {
 	const result: Record<string, any> = {};
 
 	if (typeof deep === 'string') {
@@ -193,7 +242,7 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 
 			if (key.startsWith('_')) {
 				// Sanitize query only accepts non-underscore-prefixed query options
-				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, accountability);
+				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, usersService, rolesService, accountability);
 				// ...however we want to keep them for the nested structure of deep, otherwise there's no
 				// way of knowing when to keep nesting and when to stop
 				parsedLevel[key] = Object.values(parsedSubQuery)[0];

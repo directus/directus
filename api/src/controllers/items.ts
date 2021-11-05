@@ -6,6 +6,7 @@ import { validateBatch } from '../middleware/validate-batch';
 import { ItemsService, MetaService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { loadUserRoleServices } from '../middleware/load-user-role-services';
 
 const router = express.Router();
 
@@ -88,7 +89,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.search('/:collection', collectionExists, validateBatch('read'), readHandler, respond);
+router.search('/:collection', collectionExists, loadUserRoleServices, validateBatch('read'), readHandler, respond);
 router.get('/:collection', collectionExists, readHandler, respond);
 
 router.get(
@@ -116,6 +117,7 @@ router.get(
 router.patch(
 	'/:collection',
 	collectionExists,
+	loadUserRoleServices,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
@@ -193,6 +195,7 @@ router.patch(
 router.delete(
 	'/:collection',
 	collectionExists,
+	loadUserRoleServices,
 	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
 		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();

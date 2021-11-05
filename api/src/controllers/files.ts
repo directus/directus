@@ -12,6 +12,7 @@ import { FilesService, MetaService } from '../services';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { toArray } from '@directus/shared/utils';
+import { loadUserRoleServices } from '../middleware/load-user-role-services';
 
 const router = express.Router();
 
@@ -217,8 +218,8 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.get('/', validateBatch('read'), readHandler, respond);
-router.search('/', validateBatch('read'), readHandler, respond);
+router.get('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
+router.search('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/:pk',
@@ -237,6 +238,7 @@ router.get(
 
 router.patch(
 	'/',
+	loadUserRoleServices,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({
@@ -297,6 +299,7 @@ router.patch(
 
 router.delete(
 	'/',
+	loadUserRoleServices,
 	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({

@@ -60,6 +60,8 @@ function get(obj: Record<string, any> | any[], path: string, defaultValue: any) 
 	const pathParts = path.split('.');
 	let val = obj;
 
+	if (!pathParts[pathParts.length - 1]) return null;
+
 	while (pathParts.length) {
 		const key = pathParts.shift();
 

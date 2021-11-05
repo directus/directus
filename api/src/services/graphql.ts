@@ -1192,7 +1192,7 @@ export class GraphQLService {
 		if (this.scope === 'system') collection = `directus_${collection}`;
 
 		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
-		const query = this.getQuery(args, selections || [], info.variableValues);
+		const query = await this.getQuery(args, selections || [], info.variableValues);
 
 		const singleton =
 			collection.endsWith('_items') === false &&
@@ -1333,12 +1333,15 @@ export class GraphQLService {
 	 * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
 	 * Directus' `fields` query for use in the resolver. Also applies variables where appropriate.
 	 */
-	getQuery(
+	async getQuery(
 		rawQuery: Query,
 		selections: readonly SelectionNode[],
 		variableValues: GraphQLResolveInfo['variableValues']
-	): Query {
-		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+	): Promise<Query> {
+		const usersService = new UsersService({ accountability: this.accountability, schema: this.schema });
+		const rolesService = new RolesService({ accountability: this.accountability, schema: this.schema });
+
+		const query: Query = await sanitizeQuery(rawQuery, usersService, rolesService, this.accountability);
 
 		const parseAliases = (selections: readonly SelectionNode[]) => {
 			const aliases: Record<string, string> = {};
@@ -1409,12 +1412,15 @@ export class GraphQLService {
 
 						const args: Record<string, any> = this.parseArgs(selection.arguments, variableValues);
 
+						const usersService = new UsersService({ accountability: this.accountability, schema: this.schema });
+						const rolesService = new RolesService({ accountability: this.accountability, schema: this.schema });
+
 						set(
 							query.deep,
 							current,
 							merge(
 								get(query.deep, current),
-								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
+								mapKeys(sanitizeQuery(args, usersService, rolesService, this.accountability), (value, key) => `_${key}`)
 							)
 						);
 					}
@@ -1457,8 +1463,11 @@ export class GraphQLService {
 	/**
 	 * Resolve the aggregation query based on the requested aggregated fields
 	 */
-	getAggregateQuery(rawQuery: Query, selections: readonly SelectionNode[]): Query {
-		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+	async getAggregateQuery(rawQuery: Query, selections: readonly SelectionNode[]): Promise<Query> {
+		const usersService = new UsersService({ accountability: this.accountability, schema: this.schema });
+		const rolesService = new RolesService({ accountability: this.accountability, schema: this.schema });
+
+		const query: Query = await sanitizeQuery(rawQuery, usersService, rolesService, this.accountability);
 
 		query.aggregate = {};
 
@@ -2427,7 +2436,7 @@ export class GraphQLService {
 							info.fieldNodes[0]?.selectionSet?.selections,
 							info.fragments
 						);
-						const query = this.getQuery(args, selections || [], info.variableValues);
+						const query = await this.getQuery(args, selections || [], info.variableValues);
 
 						return await service.readOne(this.accountability.user, query);
 					},
@@ -2463,7 +2472,7 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = await this.getQuery(args, selections || [], info.variableValues);
 
 							return await service.readOne(primaryKey, query);
 						}
@@ -2494,7 +2503,7 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = await this.getQuery(args, selections || [], info.variableValues);
 
 							return await service.readOne(primaryKey, query);
 						}
@@ -2544,7 +2553,7 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = await this.getQuery(args, selections || [], info.variableValues);
 							return await service.readOne(primaryKey, query);
 						}
 

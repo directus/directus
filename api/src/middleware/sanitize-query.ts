@@ -6,16 +6,23 @@
 import { RequestHandler } from 'express';
 import { sanitizeQuery } from '../utils/sanitize-query';
 import { validateQuery } from '../utils/validate-query';
+import { UsersService } from '../services/users';
+import { RolesService } from '../services/roles';
 
-const sanitizeQueryMiddleware: RequestHandler = (req, res, next) => {
+const sanitizeQueryMiddleware: RequestHandler = async (req, res, next) => {
 	req.sanitizedQuery = {};
 	if (!req.query) return;
 
-	req.sanitizedQuery = sanitizeQuery(
+	const usersService = new UsersService({ schema: req.schema });
+	const rolesService = new RolesService({ schema: req.schema });
+
+	req.sanitizedQuery = await sanitizeQuery(
 		{
 			fields: req.query.fields || '*',
 			...req.query,
 		},
+		usersService,
+		rolesService,
 		req.accountability || null
 	);
 
