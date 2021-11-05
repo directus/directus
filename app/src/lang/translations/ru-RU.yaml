@@ -215,7 +215,6 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_refresh: Авто обновление
