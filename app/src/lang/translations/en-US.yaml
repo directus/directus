@@ -1275,7 +1275,7 @@ interfaces:
   presentation-divider:
     divider: Divider
     description: Label and divide fields into sections
-    title_placeholder: Enter a title...
+    title_placeholder: Enter a title, or leave blank to only show a line...
     inline_title: Inline Title
     inline_title_label: Show title inside line
     margin_top: Margin Top
