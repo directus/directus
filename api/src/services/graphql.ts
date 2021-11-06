@@ -1144,7 +1144,7 @@ export class GraphQLService {
 			query = this.getAggregateQuery(args, selections);
 			collection = collection.slice(0, -11);
 		} else {
-			query = this.getQuery(args, selections, info.variableValues);
+			query = await this.getQuery(args, selections, info.variableValues);
 
 			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 				collection = collection.slice(0, -6);
