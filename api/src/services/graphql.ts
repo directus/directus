@@ -78,6 +78,10 @@ import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 import { generateHash } from '../utils/generate-hash';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import * as exceptions from '../exceptions';
+import * as services from '../services';
+import logger from '../logger';
+import { getSchema } from '../utils/get-schema';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -239,7 +243,8 @@ export class GraphQLService {
 								name: `endpoint_${operationName}`,
 								fields: fields,
 							}),
-							resolve: (_, input) => resolver(_, input),
+							resolve: (_, input) =>
+								resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
 							...(variables && { args: variables }),
 						},
 					});
@@ -256,7 +261,8 @@ export class GraphQLService {
 								name: `endpoint_${operationName}`,
 								fields: fields,
 							}),
-							resolve: (_, input) => resolver(_, input),
+							resolve: (_, input) =>
+								resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
 							...(variables && { args: variables }),
 						},
 					});

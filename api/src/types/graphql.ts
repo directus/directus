@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { DocumentNode } from 'graphql';
 import { ObjectTypeComposerArgumentConfigMap, ObjectTypeComposerFieldConfigMapDefinition } from 'graphql-compose';
+import { ExtensionContext } from '.';
 
 export interface GraphQLParams {
 	query: string | null;
@@ -17,12 +18,20 @@ export interface CustomGraphQLMutation {
 	operationName: string;
 	variables: ObjectTypeComposerArgumentConfigMap<any>;
 	fields: ObjectTypeComposerFieldConfigMapDefinition<any, any>;
-	resolver: (_: any, payload?: { readonly [name: string]: unknown }) => { readonly [name: string]: unknown };
+	resolver: (
+		_: any,
+		payload: { readonly [name: string]: unknown },
+		context: ExtensionContext
+	) => { readonly [name: string]: unknown };
 }
 
 export interface CustomGraphQLQuery {
 	operationName: string;
 	variables: ObjectTypeComposerArgumentConfigMap<any>;
 	fields: ObjectTypeComposerFieldConfigMapDefinition<any, any>;
-	resolver: (_: any, payload?: { readonly [name: string]: unknown }) => { readonly [name: string]: unknown };
+	resolver: (
+		_: any,
+		payload: { readonly [name: string]: unknown },
+		context: ExtensionContext
+	) => { readonly [name: string]: unknown };
 }
