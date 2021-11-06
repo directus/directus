@@ -173,7 +173,6 @@ global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
 show_zero: Показать нулевое
-create_in_advanced_field_creation_mode: Создание расширенного поля
 continue_in_advanced_field_creation_mode: Создание расширенного поля
 sum: Сумма
 sum_distinct: Сумма уникальных
