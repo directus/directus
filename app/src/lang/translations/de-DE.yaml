@@ -173,7 +173,6 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 show_zero: Null anzeigen
-create_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus erstellen
 continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
