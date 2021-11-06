@@ -215,6 +215,11 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
+geometry: Geometria (wszystkie)
+geometry.Point: Punkt
+geometry.Polygon: Wielokąt
+geometry.MultiPoint: Wielopunktowy
+geometry.MultiPolygon: Wielokąt
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -822,6 +827,7 @@ cancel: Anuluj
 no_upscale: Nie skaluj obrazów
 collection: Kolekcja
 collections: Kolekcje
+content: Zawartość
 singleton: Singleton
 singleton_label: Traktuj jako pojedynczy obiekt
 system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
@@ -868,6 +874,7 @@ fields:
     unarchive_value: Niezarchiwizowane wartości
     sort_field: Pole sortowania
     accountability: Śledzenie Aktywności i Wersji
+    archive_field: Pole archiwum
   directus_files:
     $thumbnail: Miniaturka
     title: Tytuł
@@ -928,6 +935,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -939,13 +947,20 @@ fields:
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
+    branding: Marka i Styl
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
+    files_and_thumbnails: Pliki i pamięć
+    storage_default_folder: Domyślny folder
+    storage_asset_presets: Presety transformacji
+    storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    transformations_all: Zezwól na wszystkie transformacje
+    transformations_none: Wyłącz transformacje
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
