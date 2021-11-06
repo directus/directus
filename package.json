@@ -37,7 +37,7 @@
 		"@typescript-eslint/parser": "5.3.0",
 		"axios": "0.24.0",
 		"dockerode": "3.3.1",
-		"eslint": "8.1.0",
+		"eslint": "8.2.0",
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-prettier": "4.0.0",
 		"eslint-plugin-vue": "7.20.0",
@@ -63,7 +63,7 @@
 		"stylelint-order": "5.0.0",
 		"stylelint-scss": "4.0.0",
 		"supertest": "6.1.6",
-		"tedious": "13.0.0",
+		"tedious": "13.2.0",
 		"ts-jest": "27.0.7",
 		"ts-node": "10.4.0"
 	},
@@ -77,6 +77,6 @@
 	},
 	"volta": {
 		"node": "16.13.0",
-		"npm": "8.1.2"
+		"npm": "8.1.3"
 	}
 }
