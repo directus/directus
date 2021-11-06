@@ -59,7 +59,7 @@ export default {
 </script>
 ```
 
-The props you can use in an display are:
+The props you can use in a display are:
 
 - `value` — The value of the parent field.
 - `interface` - The interface of the parent field.

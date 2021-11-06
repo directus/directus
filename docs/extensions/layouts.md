@@ -78,7 +78,7 @@ export default {
 </script>
 ```
 
-The props you can use in an layout are:
+The props you can use in a layout are:
 
 - `collection` — The current collection's name.
 - `selection` (sync) - Any currently selected items.
@@ -119,7 +119,7 @@ the root of the `package.json` file:
 
 ## 3. Develop Your Custom Layout
 
-The layout itself is simply a Vue component, which provides an blank canvas for creating anything you need.
+The layout itself is simply a Vue component, which provides a blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 

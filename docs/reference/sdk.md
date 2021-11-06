@@ -143,7 +143,7 @@ const directus = new Directus(url, init);
 
       <a name="options.auth.autoRefresh"></a>
 
-    - `autoRefresh` [optional] _Boolean_ - Tells SDK ifit should handle refresh tokens automatically. Defaults to
+    - `autoRefresh` [optional] _Boolean_ - Tells SDK if it should handle refresh tokens automatically. Defaults to
       `true`.
     - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
       before the refresh token expires and needs to be refreshed. Defaults to `30000`.
@@ -329,7 +329,7 @@ upload progress (a downside of `fetch`).
 
 The storage is used to load and save token information.
 
-### Custom Implementatin
+### Custom Implementation
 
 It is possible to provide a custom implementation by extending `IStorage`. While, this could be useful for advanced
 usage, it is not needed for most use-cases.
@@ -369,7 +369,8 @@ By default, Directus creates an instance of `Storage` which handles store inform
 
 SDK uses `localStorage` on browsers and the memory itself on Node.js to save tokens. This behavior can be configured in
 [`options.storage.mode`](#options.storage.mode). The `LocalStorage` is only available on browsers and the
-`MemoryStorage` is not persitent, i.e., once you leave the tab or quit the process, you will need to authenticate again.
+`MemoryStorage` is not persistent, i.e., once you leave the tab or quit the process, you will need to authenticate
+again.
 
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#options.storage.prefix) for each
 one.
