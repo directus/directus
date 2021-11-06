@@ -236,36 +236,42 @@ export class GraphQLService {
 				queries.map((query) => {
 					const { operationName, fields, resolver, variables } = query;
 
-					// TODO: handle missing fields before creating mutation
-					schemaComposer.Query.addFields({
-						[operationName]: {
-							type: schemaComposer.createObjectTC({
-								name: `endpoint_${operationName}`,
-								fields: fields,
-							}),
-							resolve: (_, input) =>
-								resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
-							...(variables && { args: variables }),
-						},
-					});
+					if (!operationName || !fields || !resolver) {
+						logger.warn(`Couldn't register custom graphql query "${endpointConfig.id}"`);
+					} else {
+						schemaComposer.Query.addFields({
+							[operationName]: {
+								type: schemaComposer.createObjectTC({
+									name: `endpoint_${operationName}`,
+									fields: fields,
+								}),
+								resolve: (_, input) =>
+									resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
+								...(variables && { args: variables }),
+							},
+						});
+					}
 				});
 			}
 			if (mutations) {
 				mutations.map((mutation) => {
 					const { operationName, fields, resolver, variables } = mutation;
 
-					// TODO: handle missing fields before creating mutation
-					schemaComposer.Mutation.addFields({
-						[operationName]: {
-							type: schemaComposer.createObjectTC({
-								name: `endpoint_${operationName}`,
-								fields: fields,
-							}),
-							resolve: (_, input) =>
-								resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
-							...(variables && { args: variables }),
-						},
-					});
+					if (!operationName || !fields || !resolver) {
+						logger.warn(`Couldn't register custom graphql mutation "${endpointConfig.id}"`);
+					} else {
+						schemaComposer.Mutation.addFields({
+							[operationName]: {
+								type: schemaComposer.createObjectTC({
+									name: `endpoint_${operationName}`,
+									fields: fields,
+								}),
+								resolve: (_, input) =>
+									resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
+								...(variables && { args: variables }),
+							},
+						});
+					}
 				});
 			}
 		});
