@@ -292,7 +292,7 @@ display: Показване
 settings_update_success: Настройките са обновени
 title: Заглавие
 revision_delta_created: Създаден
-revision_delta_created_externally: Създадено отвън
+revision_delta_created_externally: Външно-създаден запис
 revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
 revision_delta_deleted: Изтрито
 revision_delta_reverted: Възстановен
@@ -678,7 +678,7 @@ no_dashboards_copy: Все още нямате нито едно табло.
 no_data: Няма данни
 create_dashboard: Създаване на табло
 dashboard_name: Име на таблото
-full_screen: Пълен Екран
+full_screen: Пълен екран
 edit_panels: Редактиране на панелите
 fit_to_screen: Побиране в екрана
 image_url: URL на изображение
@@ -690,7 +690,7 @@ height: Височина
 source: Източник
 url_placeholder: Въвеждане на URL...
 display_text: Текст за показване
-display_text_placeholder: Въвеждане на текст за показване...
+display_text_placeholder: Въвеждане на текста за показване...
 interface_group_text_and_numbers: Текст и числа
 interface_group_selection: За избиране
 interface_group_relational: Релационни
@@ -747,8 +747,8 @@ wysiwyg_options:
   selectall: Избиране на всички
   table: Таблица
   visualaid: Преглед на невидимите елементи
-  source_code: Редактиране на изходен код
-  fullscreen: Пълен Екран
+  source_code: Редактиране на изходния код
+  fullscreen: Пълен екран
   directionality: Подравняване
 dropdown: Падащо меню
 choices: Възможности
@@ -877,6 +877,8 @@ fields:
     unarchive_value: Стойност при разархивиране
     sort_field: Поле за сортиране
     accountability: Следене за активност и ревизии
+    archive_field: Архивиране по поле
+    item_duplication_fields: Копиране на полета при дублиране
   directus_files:
     $thumbnail: Умалена картинка
     title: Заглавие
@@ -997,6 +999,8 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
+    project_color_note: Фон на логото и вход-а
+    project_logo_note: Бяла 40x40 в SVG или PNG
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
@@ -1004,6 +1008,8 @@ field_options:
       weak_text: Слаба - минимум от 8 символа
       strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
+      fit_label: Напасване
+      upscaling: Уголемяване
       fit:
         contain_text: Напасване (запазване на съотношението)
         cover_text: Обложка (точни размери)
@@ -1014,6 +1020,7 @@ field_options:
     mapbox_key: Токен за mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Основни карти
+    basemaps_name_placeholder: Въвеждане на името на основната карта...
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
@@ -1176,6 +1183,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1258,6 +1266,7 @@ interfaces:
   presentation-divider:
     divider: Разделител
     description: Именуване и разделяне на полетата по секции
+    title_placeholder: Въвеждане на заглавието, или празно само за линия...
     inline_title: Заглавие в линия
     inline_title_label: Вграждане на заглавието в линия
     margin_top: Горно отстояние
@@ -1315,6 +1324,8 @@ interfaces:
     box: Блоков / Вложен
     imageToken: Токен за изображенията
     imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
+    preview: Преглед
+    editor: Редактор
   map:
     map: Географска карта
     description: Избор на местоположение от картата
@@ -1562,6 +1573,7 @@ layouts:
     invalid_geometry: Невалидна геометрия
     find_location: Определяне на местоположение...
     default_template: По подразбиране от колекцията...
+    no_compatible_fields: Няма съвместими полета
 panels:
   metric:
     name: Метричен индикатор
