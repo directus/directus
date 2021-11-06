@@ -178,7 +178,7 @@ global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
 show_zero: Show Zero
-create_in_advanced_field_creation_mode: Create in Advanced Field Creation Mode
+create_in_advanced_field_creation_mode: Create Field in Advanced Mode
 continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
 sum: Sum
 sum_distinct: Sum Distinct
