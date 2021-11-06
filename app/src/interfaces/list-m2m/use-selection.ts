@@ -10,6 +10,7 @@ type UsableSelection = {
 
 export default function useSelection(
 	items: Ref<Record<string, any>[]>,
+	initialItems: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
 ): UsableSelection {
@@ -30,9 +31,22 @@ export default function useSelection(
 	});
 
 	function stageSelection(newSelection: (number | string)[]) {
-		const { junctionField } = relation.value;
+		const { junctionField, junctionPkField } = relation.value;
 
-		const selection = newSelection.map((item) => ({ [junctionField]: item }));
+		const selection = newSelection.map((item) => {
+			const initial = initialItems.value.find((existent) => existent[junctionField][junctionPkField] === item);
+			const draft = items.value.find((draft) => draft[junctionField][junctionPkField] === item);
+
+			return {
+				...initial,
+				...draft,
+				[junctionField]: {
+					...initial?.[junctionPkField],
+					...draft?.[junctionPkField],
+					[junctionPkField]: item,
+				},
+			};
+		});
 
 		if (selection.length === 0) emit(null);
 		else emit(selection);
