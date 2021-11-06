@@ -173,7 +173,6 @@ global: Global
 admins_have_all_permissions: Les administrateurs ont toutes les autorisations
 camera: Appareil photo
 show_zero: Afficher zéro
-create_in_advanced_field_creation_mode: Créer en mode de création de champ avancé
 continue_in_advanced_field_creation_mode: Continuer en mode de création de champ avancé
 sum: Somme
 sum_distinct: Somme distincte
