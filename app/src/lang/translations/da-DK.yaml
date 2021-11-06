@@ -152,7 +152,6 @@ global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
 show_zero: Vis Nul
-create_in_advanced_field_creation_mode: Opret i avanceret feltskabelsestilstand
 continue_in_advanced_field_creation_mode: Fortsæt i avanceret feltskabelsestilstand
 sum: Sum
 sum_distinct: Sum Distinkt
