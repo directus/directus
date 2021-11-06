@@ -80,6 +80,7 @@ export default defineComponent({
 				codemirror = CodeMirror(codemirrorEl.value, {
 					...cmOptions.value,
 					value: stringValue.value,
+					lineWrapping: true,
 				});
 
 				codemirror.setOption('mode', { name: 'javascript ' });
