@@ -307,7 +307,7 @@ export default defineComponent({
 	position: absolute;
 	top: 10px;
 	right: 10px;
-	z-index: 10;
+	z-index: 4;
 	color: var(--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
