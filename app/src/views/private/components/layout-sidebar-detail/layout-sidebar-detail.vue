@@ -55,12 +55,10 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 :deep(.layout-options) {
-	--form-vertical-gap: 24px;
+	--form-vertical-gap: 20px;
+
+	margin-bottom: 4px;
 
 	@include form-grid;
-}
-
-:deep(.layout-options .type-label) {
-	font-size: 1rem;
 }
 </style>
