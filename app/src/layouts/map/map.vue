@@ -282,6 +282,10 @@ export default defineComponent({
 	pointer-events: none;
 }
 
+.render-template {
+	padding-right: 0;
+}
+
 .mapboxgl-ctrl-dropdown {
 	display: flex;
 	align-items: center;
