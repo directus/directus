@@ -280,18 +280,18 @@ While you could create individual fields for each translation, such as `title_en
 
 Let's take a look at a basic example for "Articles":
 
-* `articles` Collection
+* **`articles` Collection**
     * `id` — (Primary Key)
     * `author` — Field that is not translated
     * `date_published` — Field that is not translated
     * `translations` — A O2M relational field to `article_translations`
-* `article_translations` Collection
+* **`article_translations` Collection**
     * `id` — (Primary Key)
     * `article` — The key of the article this belongs to
     * `language` — The language key of this translation
     * `title` — The translated Article Title
     * `text` — The translated Article Text
-* `languages` Collection
+* **`languages` Collection**
     * `language_code` — (Primary Key) eg: "en-US"
     * `name` — The language name, eg: "English"
 
@@ -299,7 +299,7 @@ As you can see above, you add **non-translated** fields, such as the `author` an
 
 ::: tip Translating Parent Fields
 
-If you want to make a parent field translatable, you can choose "Duplicate Field" from its context menu, move it to the translation collection, and then delete the parent field. However, be aware that this does **not** copy over any existing field data/values in the process.
+To make an existing parent field translatable, you can choose "Duplicate Field" from its context menu, move it to the translation collection, and then delete the parent field. However, be aware that this does **not** maintain any existing field values in the process.
 
 :::
 
