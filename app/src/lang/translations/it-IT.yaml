@@ -173,7 +173,6 @@ global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
 show_zero: Mostra zero
-create_in_advanced_field_creation_mode: Crea con la Modalità di Creazione Campo Avanzata
 continue_in_advanced_field_creation_mode: Continua con la Modalità di Creazione Campo Avanzata
 sum: Somma
 sum_distinct: Somma valori unici
