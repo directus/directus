@@ -459,8 +459,8 @@ export class GraphQLService {
 					CollectionTypes[relation.collection]?.addFields({
 						[relation.field]: {
 							type: CollectionTypes[relation.related_collection],
-							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? relation.field];
+							resolve: (obj: Record<string, any>) => {
+								return obj[relation.field];
 							},
 						},
 					});
@@ -469,8 +469,8 @@ export class GraphQLService {
 						CollectionTypes[relation.related_collection]?.addFields({
 							[relation.meta.one_field]: {
 								type: [CollectionTypes[relation.collection]],
-								resolve: (obj: Record<string, any>, _, __, info) => {
-									return obj[info?.path?.key ?? relation.meta!.one_field];
+								resolve: (obj: Record<string, any>) => {
+									return obj[relation.meta!.one_field!];
 								},
 							},
 						});
@@ -482,7 +482,7 @@ export class GraphQLService {
 							type: new GraphQLUnionType({
 								name: `${relation.collection}_${relation.field}_union`,
 								types: relation.meta.one_allowed_collections.map((collection) => CollectionTypes[collection].getType()),
-								resolveType(value, context, info) {
+								resolveType(_, context, info) {
 									let path: (string | number)[] = [];
 									let currentPath = info.path;
 
@@ -503,8 +503,8 @@ export class GraphQLService {
 									return CollectionTypes[collection].getType();
 								},
 							}),
-							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? relation.field];
+							resolve: (obj: Record<string, any>) => {
+								return obj[relation.field];
 							},
 						},
 					});
@@ -1340,20 +1340,6 @@ export class GraphQLService {
 	): Query {
 		const query: Query = sanitizeQuery(rawQuery, this.accountability);
 
-		const parseAliases = (selections: readonly SelectionNode[]) => {
-			const aliases: Record<string, string> = {};
-
-			for (const selection of selections) {
-				if (selection.kind !== 'Field') continue;
-
-				if (selection.alias?.value) {
-					aliases[selection.alias.value] = selection.name.value;
-				}
-			}
-
-			return aliases;
-		};
-
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
 
@@ -1445,7 +1431,7 @@ export class GraphQLService {
 			}
 		};
 
-		query.alias = parseAliases(selections);
+		query.alias = {};
 		query.fields = parseFields(selections);
 		query.filter = replaceFuncs(query.filter);
 
