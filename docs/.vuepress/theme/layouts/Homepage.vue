@@ -334,7 +334,7 @@
 					/>
 				</svg>
 				<h2>Getting Started</h2>
-				<span>Get started with Directus, learning basic concepts and instructions for popular use cases.</span>
+				<span>Installation, an overview of basic concepts, and understanding the Directus ecosystem.</span>
 				<u>Learn More</u>
 			</a>
 			<a href="/app/overview/" class="panel">
