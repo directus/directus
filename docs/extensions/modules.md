@@ -150,7 +150,7 @@ the root of the `package.json` file:
 
 ## 3. Develop Your Custom Module
 
-The module itself is simply a Vue component, which provides an blank canvas for creating anything you need.
+The module itself is simply a Vue component, which provides a blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 

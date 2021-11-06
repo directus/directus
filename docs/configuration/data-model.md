@@ -141,7 +141,7 @@ Collections can be organized in several ways.
 ## Adjusting the Collection Form
 
 The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
-is is highly configurable, with the following field options:
+is highly configurable, with the following field options:
 
 - **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the field's context menu
   or edit drawer.

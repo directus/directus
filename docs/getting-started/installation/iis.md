@@ -52,7 +52,7 @@ A few important points regarding this file:
 2. The iisnode handler `verb` parameter is set to handle all verbs (\*)
 3. The iisnode `node_env` parameter is bound to the environment variable `node_env`
 4. The iisnode `enableXFF` parameter is set to `true`. Since iisnode acts as a reverse proxy, this is required to pass
-   client ip and other details on to the directus server, which directus modules expect and depend on.
+   client IP and other details on to the directus server, which directus modules expect and depend on.
 5. the rewrite rule is in place to send all requests made to this site to the entrypoint, ensuring that directus handles
    the routing and not IIS
 
