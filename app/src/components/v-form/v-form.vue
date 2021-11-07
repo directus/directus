@@ -65,7 +65,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore, useUserStore } from '@/stores/';
-import { Field, FieldRaw, ValidationError, Condition } from '@directus/shared/types';
+import { Field, FieldRaw, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isNil, merge, omit, pick } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
@@ -141,6 +141,7 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
+		const generatedFilterContext = ref(false);
 
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
@@ -196,7 +197,9 @@ export default defineComponent({
 
 		(async () => {
 			if (props.requireFilterContext) {
+				// Prevent applying conditions when generating filter context
 				await generateFilterContext();
+				generatedFilterContext.value = true;
 			}
 		})();
 
@@ -251,7 +254,7 @@ export default defineComponent({
 				};
 
 				const applyConditions = (field: Field) => {
-					if (field.meta && Array.isArray(field.meta?.conditions)) {
+					if (generatedFilterContext.value && field.meta && Array.isArray(field.meta?.conditions)) {
 						const conditions = [...field.meta.conditions].reverse();
 
 						const matchingCondition = conditions.find((condition) => {

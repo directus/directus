@@ -316,6 +316,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	async function validate(item: Item) {
+		// Only generate filter context once when required
 		if (!generatedFilterContext.value) {
 			generatedFilterContext.value = true;
 			await generateFilterContext();
