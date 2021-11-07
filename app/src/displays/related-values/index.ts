@@ -30,6 +30,37 @@ export default defineDisplay({
 					width: 'full',
 				},
 			},
+			{
+				field: 'display_inline',
+				name: '$t:displays.related-values.display_inline',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.related-values.display_inline_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'max_results',
+				name: '$t:displays.related-values.max_results',
+				type: 'integer',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						min: 1,
+						step: 1,
+					},
+				},
+				schema: {
+					default_value: 3,
+				},
+			},
 		];
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],

@@ -1547,6 +1547,9 @@ displays:
   related-values:
     related-values: Related Values
     description: Display relative values
+    display_inline: Display Inline
+    display_inline_label: Display values inline
+    max_results: Inline max. results
   user:
     user: User
     description: Display a directus user
