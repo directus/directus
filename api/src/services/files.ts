@@ -72,42 +72,25 @@ export class FilesService extends ItemsService {
 		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
 		payload.filesize = size;
 
-		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
+		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff', 'image/svg+xml'].includes(payload.type)) {
+			const hasExif = payload.type !== 'image/svg+xml';
+
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			const meta = await sharp(buffer.content, {}).metadata();
+			const dimens = await this.getImageDimensions(buffer.content);
+			const metadata = hasExif ? await this.getImageExif(buffer.content) : null;
 
-			if (meta.orientation && meta.orientation >= 5) {
-				payload.height = meta.width;
-				payload.width = meta.height;
-			} else {
-				payload.width = meta.width;
-				payload.height = meta.height;
+			payload.width = dimens.width;
+			payload.height = dimens.height;
+			payload.metadata = metadata;
+
+			if (metadata?.iptc?.Headline) {
+				payload.title = metadata.iptc.Headline;
 			}
-
-			payload.metadata = {};
-
-			try {
-				payload.metadata = await exifr.parse(buffer.content, {
-					icc: false,
-					iptc: true,
-					ifd1: true,
-					interop: true,
-					translateValues: true,
-					reviveValues: true,
-					mergeOutput: false,
-				});
-				if (payload.metadata?.iptc?.Headline) {
-					payload.title = payload.metadata.iptc.Headline;
-				}
-				if (!payload.description && payload.metadata?.iptc?.Caption) {
-					payload.description = payload.metadata.iptc.Caption;
-				}
-				if (payload.metadata?.iptc?.Keywords) {
-					payload.tags = payload.metadata.iptc.Keywords;
-				}
-			} catch (err: any) {
-				logger.warn(`Couldn't extract metadata from file`);
-				logger.warn(err);
+			if (!payload.description && metadata?.iptc?.Caption) {
+				payload.description = metadata.iptc.Caption;
+			}
+			if (metadata?.iptc?.Keywords) {
+				payload.tags = metadata.iptc.Keywords;
 			}
 		}
 
@@ -215,5 +198,39 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
+	}
+
+	private async getImageDimensions(buffer: Buffer) {
+		const meta = await sharp(buffer, {}).metadata();
+
+		if (meta.orientation && meta.orientation >= 5) {
+			return {
+				height: meta.width,
+				width: meta.height,
+			};
+		} else {
+			return {
+				width: meta.width,
+				height: meta.height,
+			};
+		}
+	}
+
+	private async getImageExif(buffer: Buffer): Promise<File['metadata']> {
+		try {
+			return await exifr.parse(buffer, {
+				icc: false,
+				iptc: true,
+				ifd1: true,
+				interop: true,
+				translateValues: true,
+				reviveValues: true,
+				mergeOutput: false,
+			});
+		} catch (err: any) {
+			logger.warn(`Couldn't extract metadata from file`);
+			logger.warn(err);
+			return {};
+		}
 	}
 }
