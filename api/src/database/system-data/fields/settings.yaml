@@ -77,7 +77,7 @@ fields:
       language: css
       lineNumber: true
       template: |
-        #app {
+        #app, #main-content {
           --border-radius-outline: 0px !important;
           --border-radius: 0px !important;
         }
