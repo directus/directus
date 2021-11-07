@@ -173,6 +173,7 @@ global: Глобален
 admins_have_all_permissions: Администраторите имат всички позволения
 camera: Камера
 show_zero: Показване на нули
+create_in_advanced_field_creation_mode: Създаване на поле в разширен режим
 continue_in_advanced_field_creation_mode: Продълважане в разширен режим
 sum: Сумиране
 sum_distinct: Сумиране на уникалните
@@ -1182,6 +1183,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
