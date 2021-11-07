@@ -38,6 +38,7 @@
 					:model-value="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
 					autofocus
+					:require-filter-context="true"
 					@update:model-value="setJunctionEdits"
 				/>
 
@@ -50,6 +51,7 @@
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:require-filter-context="true"
 			/>
 		</div>
 	</v-drawer>

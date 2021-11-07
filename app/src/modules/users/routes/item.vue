@@ -139,6 +139,7 @@
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
+				:require-filter-context="true"
 			/>
 		</div>
 

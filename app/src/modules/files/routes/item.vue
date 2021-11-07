@@ -139,6 +139,7 @@
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
 				:validation-errors="validationErrors"
+				:require-filter-context="true"
 			/>
 		</div>
 

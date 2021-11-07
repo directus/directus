@@ -8,6 +8,7 @@ export const useUserStore = defineStore({
 	id: 'userStore',
 	state: () => ({
 		currentUser: null as User | null,
+		cachedFilterContext: {} as Record<string, any>,
 		loading: false,
 		error: null,
 	}),
@@ -59,6 +60,29 @@ export const useUserStore = defineStore({
 
 			if (this.currentUser) {
 				this.currentUser.last_page = page;
+			}
+		},
+		async updateFilterContext(requiredPermissionData: Record<string, string[]>) {
+			if (!this.currentUser) return {};
+
+			if (requiredPermissionData.$CURRENT_USER.length > 0) {
+				const { data } = await api.get(`/users/me`, {
+					params: {
+						fields: requiredPermissionData.$CURRENT_USER.join(','),
+					},
+				});
+
+				this.cachedFilterContext.$CURRENT_USER = data.data;
+			}
+
+			if (requiredPermissionData.$CURRENT_ROLE.length > 0) {
+				const { data } = await api.get(`/users/me`, {
+					params: {
+						fields: requiredPermissionData.$CURRENT_ROLE.join(','),
+					},
+				});
+
+				this.cachedFilterContext.$CURRENT_ROLE = data.data.role ?? {};
 			}
 		},
 	},

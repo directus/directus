@@ -7,13 +7,14 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { validatePayload } from '@directus/shared/utils';
+import { validatePayload, deepMap } from '@directus/shared/utils';
 import { Item, Field, LogicalFilterAND } from '@directus/shared/types';
 import { isNil, flatten, merge } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { parseFilter } from '@/utils/parse-filter';
 import { translate } from '@/utils/translate-object-values';
+import { useUserStore } from '@/stores/';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -36,6 +37,8 @@ type UsableItem = {
 };
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
+	const userStore = useUserStore();
+	const generatedFilterContext = ref(false);
 	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
@@ -107,7 +110,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validate(edits.value);
+		const errors = await validate(edits.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -180,7 +183,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			delete newItem[primaryKeyField.value.field];
 		}
 
-		const errors = validate(newItem);
+		const errors = await validate(newItem);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -312,7 +315,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 	}
 
-	function validate(item: Item) {
+	async function validate(item: Item) {
+		if (!generatedFilterContext.value) {
+			generatedFilterContext.value = true;
+			await generateFilterContext();
+		}
+
 		const validationRules = {
 			_and: [],
 		} as LogicalFilterAND;
@@ -323,7 +331,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 				const matchingCondition = conditions.find((condition) => {
 					if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
-					const rule = parseFilter(condition.rule);
+					const rule = parseFilter(condition.rule, userStore.cachedFilterContext);
 					const errors = validatePayload(rule, item, { requireAll: true });
 					return errors.length === 0;
 				});
@@ -371,5 +379,43 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				error.details.map((details) => new FailedValidationException(details).extensions)
 			)
 		);
+	}
+
+	async function generateFilterContext() {
+		const requiredPermissionData = {
+			$CURRENT_USER: [] as string[],
+			$CURRENT_ROLE: [] as string[],
+		};
+
+		const extractPermissionData = (val: any) => {
+			if (typeof val === 'string' && val.startsWith('$CURRENT_USER.')) {
+				const fieldString = val.replace('$CURRENT_USER.', '');
+				if (val && !requiredPermissionData.$CURRENT_USER.includes(fieldString)) {
+					requiredPermissionData.$CURRENT_USER.push(fieldString);
+				}
+			}
+
+			if (typeof val === 'string' && val.startsWith('$CURRENT_ROLE.')) {
+				const fieldString = val.replace('$CURRENT_ROLE.', 'role.');
+				if (val && !requiredPermissionData.$CURRENT_ROLE.includes(fieldString)) {
+					requiredPermissionData.$CURRENT_ROLE.push(fieldString);
+				}
+			}
+
+			return val;
+		};
+
+		const processConditions = (field: Field) => {
+			if (field.meta && Array.isArray(field.meta?.conditions)) {
+				deepMap(
+					field.meta.conditions.map((condition) => condition.rule),
+					extractPermissionData
+				);
+			}
+		};
+
+		fields.value.map((field) => processConditions(field));
+
+		await userStore.updateFilterContext(requiredPermissionData);
 	}
 }

@@ -155,6 +155,7 @@
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
+			:require-filter-context="true"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
