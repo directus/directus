@@ -1,5 +1,5 @@
 import api from '@/api';
-import bytes from 'bytes';
+import prettyBytes from 'pretty-bytes';
 import prettyMS from 'pretty-ms';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 
@@ -60,7 +60,7 @@ export function useProjectInfo(): UsableProjectInfo {
 				type: info.value.os.type,
 				version: info.value.os.version,
 				uptime: prettyMS(info.value.os.uptime * 1000),
-				totalmem: bytes(info.value.os.totalmem),
+				totalmem: prettyBytes(info.value.os.totalmem),
 			},
 		};
 	});
