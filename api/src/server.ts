@@ -106,7 +106,7 @@ export async function createServer(): Promise<http.Server> {
 	async function onShutdown() {
 		emitter.emitAction(
 			'server.stop',
-			{},
+			{ server },
 			{
 				database: getDatabase(),
 				schema: null,
@@ -141,9 +141,7 @@ export async function startServer(): Promise<void> {
 
 			emitter.emitAction(
 				'server.start',
-				{
-					server,
-				},
+				{ server },
 				{
 					database: getDatabase(),
 					schema: null,
