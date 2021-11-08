@@ -3,7 +3,7 @@
 import Dockerode, { ContainerSpec } from 'dockerode';
 import knex from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
-import Listr, { ListrTask } from 'listr';
+import { Listr, ListrTask } from 'listr2';
 import { getDBsToTest } from '../get-dbs-to-test';
 import config, { CONTAINER_PERSISTENCE_FILE } from '../config';
 import globby from 'globby';

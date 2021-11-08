@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import Listr from 'listr';
+import { Listr } from 'listr2';
 import Dockerode from 'dockerode';
 import { getDBsToTest } from '../get-dbs-to-test';
 import config, { CONTAINER_PERSISTENCE_FILE } from '../config';
