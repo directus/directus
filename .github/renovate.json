@@ -2,7 +2,8 @@
 	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly"],
 	"timezone": "America/New_York",
 	"labels": ["Dependencies"],
-	"commitMessage": "{{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}} {{commitMessageSuffix}}",
+	"semanticCommits": "disabled",
+	"separateMajorMinor": false,
 	"force": {
 		"constraints": {
 			"node": ">=16.0.0",
