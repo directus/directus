@@ -17,6 +17,12 @@ export const TYPES = [
 	'hash',
 	'csv',
 	'geometry',
+	'geometry.Point',
+	'geometry.LineString',
+	'geometry.Polygon',
+	'geometry.MultiPoint',
+	'geometry.MultiLineString',
+	'geometry.MultiPolygon',
 	'unknown',
 ] as const;
 
@@ -43,15 +49,3 @@ export const LOCAL_TYPES = [
 	'translations',
 	'group',
 ] as const;
-
-export type LocalTypes =
-	| 'standard'
-	| 'file'
-	| 'files'
-	| 'm2o'
-	| 'o2m'
-	| 'm2m'
-	| 'm2a'
-	| 'presentation'
-	| 'translations'
-	| 'group';

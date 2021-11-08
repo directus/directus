@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="t('page_not_found')">
 		<template #navigation>
-			<collections-navigation />
+			<content-navigation />
 		</template>
 
 		<div class="not-found">
@@ -15,10 +15,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
-import CollectionsNavigation from '../components/navigation.vue';
+import ContentNavigation from '../components/navigation.vue';
 
 export default defineComponent({
-	components: { CollectionsNavigation },
+	components: { ContentNavigation },
 	setup() {
 		const { t } = useI18n();
 		return { t };

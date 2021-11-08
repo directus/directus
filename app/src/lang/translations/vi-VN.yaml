@@ -697,9 +697,6 @@ field_options:
     fields:
       icon_name: Biểu tượng
       name_name: Tên
-    collection_list:
-      fields:
-        type_name: Kiểu
     collections_name: Danh mục
   directus_users:
     status_dropdown_active: Kích hoạt

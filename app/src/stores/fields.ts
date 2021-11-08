@@ -268,19 +268,21 @@ export const useFieldsStore = defineStore({
 		 */
 		getRelationalField(collection: string, fields: string) {
 			const relationsStore = useRelationsStore();
-			const parts = fields.split('.');
+			const [field, ...path] = fields.split('.');
+			if (field.includes(':')) {
+				const [_, collection] = field.split(':');
+				return this.getField(collection, path.join('.'));
+			}
 
-			const relation = relationsStore
-				.getRelationsForField(collection, parts[0])
-				?.find(
-					(relation: Relation) => relation.field === parts[0] || relation.meta?.one_field === parts[0]
-				) as Relation;
+			const relations = relationsStore.getRelationsForField(collection, field);
+			const relation = relations?.find((relation: Relation) => {
+				return relation.field === field || relation.meta?.one_field === field;
+			});
 
 			if (relation === undefined) return false;
 
-			const relatedCollection = relation.field === parts[0] ? relation.related_collection : relation.collection;
-			parts.shift();
-			const relatedField = parts.join('.');
+			const relatedCollection = relation.field === field ? relation.related_collection : relation.collection;
+			const relatedField = path.join('.');
 			return this.getField(relatedCollection, relatedField);
 		},
 	},

@@ -1,6 +1,6 @@
 <template>
 	<v-list-item
-		:to="`/collections/${bookmark.collection}?bookmark=${bookmark.id}`"
+		:to="`/content/${bookmark.collection}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"
 		clickable
@@ -147,7 +147,7 @@ export default defineComponent({
 					let navigateTo: string | null = null;
 
 					if (+route.query?.bookmark === props.bookmark.id) {
-						navigateTo = `/collections/${props.bookmark.collection}`;
+						navigateTo = `/content/${props.bookmark.collection}`;
 					}
 
 					await presetsStore.delete(props.bookmark.id);

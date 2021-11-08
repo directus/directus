@@ -237,8 +237,8 @@ platform. Extremely granular, these filter-based permissions control access for 
 
 ## Presets
 
-Presets store the exact state of a [collection page](#collections) page. They are used to set layout defaults for a
-user, or to define bookmarks that can be used to quickly recall specific datasets.
+Presets store the exact state of a [collection page](#collections). They are used to set layout defaults for a user, or
+to define bookmarks that can be used to quickly recall specific datasets.
 
 #### Relevant Guides
 

@@ -2,15 +2,13 @@
  * @jest-environment node
  */
 
-import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
+import { Directus } from '../../src';
 import { test, timers } from '../utils';
 
 describe('auth (node)', function () {
 	test(`sets default auth mode to json`, async (url) => {
-		const storage = new MemoryStorage();
-		const transport = new AxiosTransport(url, storage);
-		const auth = new Auth(transport, storage);
-		expect(auth.options.mode).toBe('json');
+		const sdk = new Directus(url);
+		expect(sdk.auth.mode).toBe('json');
 	});
 
 	test(`sends default auth mode`, async (url, nock) => {
@@ -24,13 +22,19 @@ describe('auth (node)', function () {
 				},
 			});
 
-		const sdk = new Directus(url);
-		await sdk.auth.login({
-			email: 'wolfulus@gmail.com',
-			password: 'password',
-		});
+		await timers(async ({ tick }) => {
+			const sdk = new Directus(url);
+			const loginPromise = sdk.auth.login({
+				email: 'wolfulus@gmail.com',
+				password: 'password',
+			});
 
-		expect(scope.pendingMocks().length).toBe(0);
+			await tick(2500);
+
+			await loginPromise;
+
+			expect(scope.pendingMocks().length).toBe(0);
+		});
 	});
 
 	test(`authentication should auto refresh after specified period`, async (url, nock) => {
@@ -61,34 +65,24 @@ describe('auth (node)', function () {
 		expect(scope.pendingMocks().length).toBe(2);
 
 		await timers(async ({ tick, flush }) => {
-			const sdk = new Directus(url);
+			const sdk = new Directus(url, { auth: { autoRefresh: true, msRefreshBeforeExpires: 2500 } });
 
-			const loginPromise = sdk.auth.login(
-				{
-					email: 'wolfulus@gmail.com',
-					password: 'password',
-				},
-				{
-					refresh: {
-						auto: true,
-						time: 2500,
-					},
-				}
-			);
+			const loginPromise = sdk.auth.login({
+				email: 'wolfulus@gmail.com',
+				password: 'password',
+			});
 
-			await tick(2000);
+			await tick(2500);
 
 			await loginPromise;
 
 			expect(scope.pendingMocks().length).toBe(1);
-			expect(sdk.auth.expiring).toBe(false);
 			expect(sdk.storage.auth_token).toBe('some_node_access_token');
-			expect(sdk.storage.auth_expires).toBe(107000);
+			expect(sdk.storage.auth_expires).toBe(5000);
 			await tick(5000);
 
 			expect(scope.pendingMocks().length).toBe(0);
 			await flush();
-			expect(sdk.auth.expiring).toBe(true);
 
 			await new Promise((resolve) => {
 				scope.once('replied', () => {
@@ -96,11 +90,9 @@ describe('auth (node)', function () {
 				});
 			});
 
-			expect(sdk.storage.auth_expires).toBe(112000);
 			expect(scope.pendingMocks().length).toBe(0);
 			expect(sdk.storage.auth_token).toBe('a_new_node_access_token');
-			expect(sdk.auth.expiring).toBe(false);
-		}, 100000);
+		});
 	});
 
 	test(`logout sends a refresh token in body`, async (url, nock) => {
@@ -127,17 +119,27 @@ describe('auth (node)', function () {
 				data: {},
 			});
 
-		const sdk = new Directus(url);
+		await timers(async ({ tick }) => {
+			const sdk = new Directus(url);
 
-		await sdk.auth.login({
-			email: 'wolfulus@gmail.com',
-			password: 'password',
+			const loginPromise = sdk.auth.login({
+				email: 'wolfulus@gmail.com',
+				password: 'password',
+			});
+
+			await tick(2500);
+
+			await loginPromise;
+
+			expect(sdk.auth.token).toBe('auth_token');
+
+			const logoutPromise = sdk.auth.logout();
+
+			await tick(2500);
+
+			await logoutPromise;
+
+			expect(sdk.auth.token).toBeNull();
 		});
-
-		expect(sdk.auth.token).toBe('auth_token');
-
-		await sdk.auth.logout();
-
-		expect(sdk.auth.token).toBeNull();
 	});
 });

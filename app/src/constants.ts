@@ -41,7 +41,7 @@ export const COLLECTIONS_DENY_LIST = [
 export const MODULE_BAR_DEFAULT = [
 	{
 		type: 'module',
-		id: 'collections',
+		id: 'content',
 		enabled: true,
 	},
 	{
@@ -57,7 +57,7 @@ export const MODULE_BAR_DEFAULT = [
 	{
 		type: 'module',
 		id: 'insights',
-		enabled: false,
+		enabled: true,
 	},
 	{
 		type: 'module',

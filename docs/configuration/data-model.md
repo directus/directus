@@ -48,13 +48,13 @@ are available:
   - [Updating a Field](#updating-a-field)
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
-  - [Changing Field Order & Layout](/dead)
+  - [Changing Field Order & Layout](#adjusting-the-collection-form)
 - **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
   Translations (see field below).
 - **Note** — A helpful note that explains the collection's purpose
 - **Icon** — The icon used throughout the App when referencing this collection
 - **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A [Field Template](/dead) that creates dynamic titles for the collection's items
+- **Display Template** — A Field Template that creates dynamic titles for the collection's items
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
@@ -141,7 +141,7 @@ Collections can be organized in several ways.
 ## Adjusting the Collection Form
 
 The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
-is is highly configurable, with the following field options:
+is highly configurable, with the following field options:
 
 - **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the field's context menu
   or edit drawer.
@@ -154,10 +154,18 @@ is is highly configurable, with the following field options:
 - **Grouping** — Fields can be organized within different nested groups that are created using the normal Creating a
   Field flow. Different style groupings are available for different use-cases.
 
-## Creating a Field
+## Creating a Field (Standard)
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Under Fields & Layout, click the **Create Field** button
+3. **Choose the desired interface** by clicking on the illustration
+4. Add a **Field Key**, which is also used as the default field name
+5. **Configure the field options**, including the default value, required flag, and interface options
+
+## Creating a Field (Advanced)
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Under Fields & Layout, click the **Create Field in Advanced Mode** button
 3. **Choose the field type**, and follow its setup steps below.
 
 ::: tip Database Columns
@@ -262,6 +270,44 @@ by default, and then only toggle the hidden state of the field in the condition.
 ::: tip Order Matters
 
 The conditions are matched in order. The **last** condition that matches is the one that's used to apply the changes.
+
+:::
+
+## Creating Translated Multilingual Fields
+
+While you could create individual fields for each translation, such as `title_english`, `title_german`, `title_french`,
+and so on, this is not easily extensible, and creates a less than ideal form layout. Instead, you can use the Directus
+_relational_ [Translations O2M](/configuration/relationships/#translations-o2m) interface. This uses a separate
+collection to store an endless number of translations, and a separate collection of languages that can easily be added
+to without having to change the schema.
+
+Let's take a look at a basic example for "Articles":
+
+- **`articles` Collection**
+  - `id` — (Primary Key)
+  - `author` — Field that is not translated
+  - `date_published` — Field that is not translated
+  - `translations` — A O2M relational field to `article_translations`
+- **`article_translations` Collection**
+  - `id` — (Primary Key)
+  - `article` — The key of the article this belongs to
+  - `language` — The language key of this translation
+  - `title` — The translated Article Title
+  - `text` — The translated Article Text
+- **`languages` Collection**
+  - `language_code` — (Primary Key) eg: "en-US"
+  - `name` — The language name, eg: "English"
+
+As you can see above, you add **non-translated** fields, such as the `author` and `publish_date`, to the parent
+collection. Any **multilingual** fields, such as Title or Text, should be added directly to the Translation Collection.
+You can not simply drag or shift fields from the parent to translations, they must be _created_ in the correct
+collection.
+
+::: tip Translating Parent Fields
+
+To make an existing parent field translatable, you can choose "Duplicate Field" from its context menu, move it to the
+translation collection, and then delete the parent field. However, be aware that this does **not** maintain any existing
+field values in the process.
 
 :::
 

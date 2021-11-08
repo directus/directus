@@ -1,8 +1,12 @@
 {
 	"name": "@directus/specs",
-	"version": "9.0.0-rc.100",
+	"version": "9.0.0",
 	"description": "OpenAPI Specification of the Directus API",
 	"main": "index.js",
+	"exports": {
+		".": "./index.js",
+		"./package.json": "./package.json"
+	},
 	"scripts": {
 		"ui:watch": "swagger-ui-watcher src/openapi.yaml",
 		"validate": "swagger-cli validate src/openapi.yaml",

@@ -1,7 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 import PreviewSVG from './preview.svg?raw';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'select-dropdown-m2o',
@@ -13,7 +12,7 @@ export default defineInterface({
 	relational: true,
 	localTypes: ['m2o'],
 	group: 'relational',
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const collection = relations.m2o?.related_collection;
 
 		return [
