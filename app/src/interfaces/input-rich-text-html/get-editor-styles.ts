@@ -4,6 +4,8 @@ function cssVar(name: string) {
 
 export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace'): string {
 	return `
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&display=swap');
+
 body {
 	color: ${cssVar('--foreground-normal')};
 	background-color: ${cssVar('--background-input')};
