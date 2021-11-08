@@ -76,11 +76,11 @@ export class FilesService extends ItemsService {
 			const hasExif = payload.type !== 'image/svg+xml';
 
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			const dimens = await this.getImageDimensions(buffer.content);
+			const dimensions = await this.getImageDimensions(buffer.content);
 			const metadata = hasExif ? await this.getImageExif(buffer.content) : null;
 
-			payload.width = dimens.width;
-			payload.height = dimens.height;
+			payload.width = dimensions.width;
+			payload.height = dimensions.height;
 			payload.metadata = metadata;
 
 			if (metadata?.iptc?.Headline) {
