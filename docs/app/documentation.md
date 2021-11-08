@@ -17,7 +17,6 @@ While the public documentation is organized in six main sections, the in-app doc
 - **Insights** — Covers the functionality of the Insights Module
 - **Documentation** — This is what you're reading right now!
 - **Settings** — An overview of what Administrators have access to within the Settings Module
-- **Help & Support** — Resources for getting help with your project
 - **Backing Directus** — Details on helping support the free and open-source Directus ecosystem
 - **Glossary** — A helpful dictionary of terms specific to this platform
 
