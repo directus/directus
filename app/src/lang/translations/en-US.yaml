@@ -928,6 +928,7 @@ fields:
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
+    project_language: Project Language
     public_pages: Public Pages
     public_foreground: Public Foreground
     public_background: Public Background

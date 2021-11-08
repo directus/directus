@@ -5,6 +5,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import availableLanguages from '@/lang/available-languages.yaml';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -23,13 +24,15 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props) {
+		const { t } = useI18n();
+
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,
 			value: key as string | null,
 		}));
 
 		if (props.includeProjectDefault) {
-			languages.splice(0, 0, { text: 'Project Default', value: null });
+			languages.splice(0, 0, { text: t('fields.directus_settings.project_language'), value: null });
 		}
 
 		return { languages };
