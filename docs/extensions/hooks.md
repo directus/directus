@@ -117,8 +117,8 @@ The context object has the following properties:
 
 | Name                          | Meta                                                |
 | ----------------------------- | --------------------------------------------------- |
-| `server.start`                | --                                                  |
-| `server.stop`                 | --                                                  |
+| `server.start`                | `server`                                            |
+| `server.stop`                 | `server`                                            |
 | `response`                    | `request`, `response`, `ip`, `duration`, `finished` |
 | `auth.login`                  | `payload`, `status`, `user`, `provider`             |
 | `files.upload`                | `payload`, `key`, `collection`                      |
