@@ -515,6 +515,7 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+insights: Insikter
 full_screen: Helskärm
 image_url: Bild-URL
 alt_text: Alternativ text
@@ -647,6 +648,7 @@ batch_delete_confirm: >-
 cancel: Avbryt
 collection: Kollektion
 collections: Kollektioner
+content: Innehåll
 singleton: Singleton
 singleton_label: Behandla som ett enskilt objekt
 system_fields_locked: Systemfälten är låsta och kan inte redigeras
@@ -797,7 +799,7 @@ embed: Bädda in
 fallback_icon: Fallback Ikon
 field: Fält | Fält
 file: Fil
-file_library: Fil bibliotek
+file_library: Filbibliotek
 forgot_password: Glömt lösenord
 hidden: Dold
 icon: Ikon
