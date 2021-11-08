@@ -1549,7 +1549,8 @@ displays:
     description: Display relative values
     display_inline: Display Inline
     display_inline_label: Display values inline
-    max_results: Inline max. results
+    inline_max_results: Inline max. results
+    more_results: '+{count} more'
   user:
     user: User
     description: Display a directus user

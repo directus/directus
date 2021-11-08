@@ -6,13 +6,25 @@
 		:disabled="value.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
-				<span class="label">
+			<div v-if="!displayInline" class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
+				<div class="label">
 					{{ value.length }}
 					<template v-if="value.length >= 100">+</template>
 					{{ unit }}
-				</span>
-			</span>
+				</div>
+			</div>
+
+			<div v-else class="chips-container" @click.stop="toggle">
+				<div class="chips w-full">
+					<div v-for="item in inlineResults" :key="item[primaryKeyField]" class="chip">
+						<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
+					</div>
+
+					<div v-if="value.length > inlineMaxResults">
+						{{ inlineResultsMoreCount }}
+					</div>
+				</div>
+			</div>
 		</template>
 
 		<v-list class="links">
@@ -56,6 +68,14 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		displayInline: {
+			type: Boolean,
+			default: false,
+		},
+		inlineMaxResults: {
+			type: Number,
+			default: 3,
+		},
 	},
 	setup(props) {
 		const { t, te } = useI18n();
@@ -94,7 +114,24 @@ export default defineComponent({
 			return null;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, internalTemplate, unit, localType };
+		const inlineResults = computed(() => {
+			return !props.displayInline ? [] : props.value.slice(0, props.inlineMaxResults);
+		});
+
+		const inlineResultsMoreCount = computed(() => {
+			return t('displays.related-values.more_results', { count: props.value.length - props.inlineMaxResults });
+		});
+
+		return {
+			relatedCollection,
+			localType,
+			primaryKeyField,
+			getLinkForItem,
+			internalTemplate,
+			unit,
+			inlineResults,
+			inlineResultsMoreCount,
+		};
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;
@@ -146,5 +183,34 @@ export default defineComponent({
 	.v-list-item-content {
 		height: var(--v-list-item-min-height);
 	}
+}
+
+.chips-container {
+	width: 100%;
+	height: calc(var(--table-row-height) - 16px);
+}
+
+.chips {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	width: 100%;
+	font-size: 0.9rem;
+
+	.chip {
+		height: calc(var(--table-row-height) - 16px);
+		padding-right: 3px;
+		padding-left: 3px;
+		background-color: var(--background-normal);
+		border-radius: var(--border-radius);
+	}
+}
+</style>
+
+<style lang="scss">
+.chips .chip img {
+	max-height: calc(100% - 8px);
+	margin-right: 5px;
+	margin-left: 2px;
 }
 </style>

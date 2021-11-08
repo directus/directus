@@ -31,7 +31,7 @@ export default defineDisplay({
 				},
 			},
 			{
-				field: 'display_inline',
+				field: 'displayInline',
 				name: '$t:displays.related-values.display_inline',
 				type: 'boolean',
 				meta: {
@@ -46,8 +46,8 @@ export default defineDisplay({
 				},
 			},
 			{
-				field: 'max_results',
-				name: '$t:displays.related-values.max_results',
+				field: 'inlineMaxResults',
+				name: '$t:displays.related-values.inline_max_results',
 				type: 'integer',
 				meta: {
 					width: 'half',
