@@ -1,29 +1,19 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, merge, pick, without } from 'lodash';
+import { clone, cloneDeep, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import Keyv from 'keyv';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import logger from '../logger';
-import { Accountability } from '@directus/shared/types';
-import {
-	AbstractService,
-	AbstractServiceOptions,
-	Action,
-	Item as AnyItem,
-	PermissionsAction,
-	PrimaryKey,
-	Query,
-	SchemaOverview,
-} from '../types';
+import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
+import { AbstractService, AbstractServiceOptions, Action, Item as AnyItem, PrimaryKey, SchemaOverview } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
+import { ActivityService, RevisionsService } from './index';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -34,7 +24,7 @@ export type MutationOptions = {
 	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */
-	onRevisionCreate?: (id: number) => void;
+	onRevisionCreate?: (pk: PrimaryKey) => void;
 
 	/**
 	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
@@ -115,26 +105,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
-			const hooksResult =
+			const payloadAfterHooks =
 				opts?.emitEvents !== false
-					? (
-							await emitter.emitAsync(`${this.eventScope}.create.before`, payload, {
-								event: `${this.eventScope}.create.before`,
-								accountability: this.accountability,
+					? await emitter.emitFilter(
+							`${this.eventScope}.create`,
+							payload,
+							{
 								collection: this.collection,
-								item: null,
-								action: 'create',
-								payload,
-								schema: this.schema,
+							},
+							{
 								database: trx,
-							})
-					  ).filter((val) => val)
-					: [];
-
-			// The events are fired last-to-first based on when they were created. By reversing the
-			// output array of results, we ensure that the augmentations are applied in
-			// "chronological" order
-			const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
+								schema: this.schema,
+								accountability: this.accountability,
+							}
+					  )
+					: payload;
 
 			const payloadWithPresets = this.accountability
 				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
@@ -172,38 +157,44 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecord = {
+				const activityService = new ActivityService({
+					knex: trx,
+					schema: this.schema,
+				});
+
+				const activity = await activityService.createOne({
 					action: Action.CREATE,
 					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
 					item: primaryKey,
-				};
-
-				const activityID = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
+				});
 
 				// If revisions are tracked, create revisions record
 				if (this.schema.collections[this.collection].accountability === 'all') {
-					const revisionRecord = {
-						activity: activityID,
+					const revisionsService = new RevisionsService({
+						knex: trx,
+						schema: this.schema,
+					});
+
+					const revision = await revisionsService.createOne({
+						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
 						data: await payloadService.prepareDelta(payload),
 						delta: await payloadService.prepareDelta(payload),
-					};
-
-					const revisionID = (await trx.insert(revisionRecord).into('directus_revisions').returning('id'))[0] as number;
+					});
 
 					// Make sure to set the parent field of the child-revision rows
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
 
 					if (childrenRevisions.length > 0) {
-						await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
+						await revisionsService.updateMany(childrenRevisions, { parent: revision });
 					}
 
 					if (opts?.onRevisionCreate) {
-						opts.onRevisionCreate(revisionID);
+						opts.onRevisionCreate(revision);
 					}
 				}
 			}
@@ -212,18 +203,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.create`, {
-				event: `${this.eventScope}.create`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: primaryKey,
-				action: 'create',
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				`${this.eventScope}.create`,
+				{
+					payload,
+					key: primaryKey,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
@@ -247,7 +241,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 
 			for (const payload of data) {
-				const primaryKey = await service.createOne(payload, { autoPurgeCache: false });
+				const primaryKey = await service.createOne(payload, { ...(opts || {}), autoPurgeCache: false });
 				primaryKeys.push(primaryKey);
 			}
 
@@ -294,16 +288,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
-		emitAsyncSafe(`${this.eventScope}.read`, {
-			event: `${this.eventScope}.read`,
-			accountability: this.accountability,
-			collection: this.collection,
-			query,
-			action: 'read',
-			payload: records,
-			schema: this.schema,
-			database: getDatabase(),
-		});
+		emitter.emitAction(
+			`${this.eventScope}.read`,
+			{
+				payload: records,
+				query,
+				collection: this.collection,
+			},
+			{
+				database: getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		return records as Item[];
 	}
@@ -398,26 +395,22 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
-		const hooksResult =
+		const payloadAfterHooks =
 			opts?.emitEvents !== false
-				? (
-						await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
-							event: `${this.eventScope}.update.before`,
-							accountability: this.accountability,
+				? await emitter.emitFilter(
+						`${this.eventScope}.update`,
+						payload,
+						{
+							keys,
 							collection: this.collection,
-							item: keys,
-							action: 'update',
-							payload,
-							schema: this.schema,
+						},
+						{
 							database: this.knex,
-						})
-				  ).filter((val) => val)
-				: [];
-
-		// The events are fired last-to-first based on when they were created. By reversing the
-		// output array of results, we ensure that the augmentations are applied in
-		// "chronological" order
-		const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
+							schema: this.schema,
+							accountability: this.accountability,
+						}
+				  )
+				: payload;
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
@@ -457,21 +450,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecords = keys.map((key) => ({
-					action: Action.UPDATE,
-					user: this.accountability!.user,
-					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
-					item: key,
-				}));
+				const activityService = new ActivityService({
+					knex: trx,
+					schema: this.schema,
+				});
 
-				const activityPrimaryKeys: PrimaryKey[] = [];
-
-				for (const activityRecord of activityRecords) {
-					const primaryKey = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
-					activityPrimaryKeys.push(primaryKey);
-				}
+				const activity = await activityService.createMany(
+					keys.map((key) => ({
+						action: Action.UPDATE,
+						user: this.accountability!.user,
+						collection: this.collection,
+						ip: this.accountability!.ip,
+						user_agent: this.accountability!.userAgent,
+						item: key,
+					}))
+				);
 
 				if (this.schema.collections[this.collection].accountability === 'all') {
 					const itemsService = new ItemsService(this.collection, {
@@ -481,28 +474,26 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 					const snapshots = await itemsService.readMany(keys);
 
-					const revisionRecords: {
-						activity: PrimaryKey;
-						collection: string;
-						item: PrimaryKey;
-						data: string;
-						delta: string;
-					}[] = [];
+					const revisionsService = new RevisionsService({
+						knex: trx,
+						schema: this.schema,
+					});
 
-					for (let i = 0; i < activityPrimaryKeys.length; i++) {
-						revisionRecords.push({
-							activity: activityPrimaryKeys[i],
-							collection: this.collection,
-							item: keys[i],
-							data: snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[i]) : JSON.stringify(snapshots),
-							delta: await payloadService.prepareDelta(payloadWithTypeCasting),
-						});
-					}
+					const revisionIDs = await revisionsService.createMany(
+						await Promise.all(
+							activity.map(async (activity, index) => ({
+								activity: activity,
+								collection: this.collection,
+								item: keys[index],
+								data:
+									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
+								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+							}))
+						)
+					);
 
-					for (let i = 0; i < revisionRecords.length; i++) {
-						const revisionID = (
-							await trx.insert(revisionRecords[i]).into('directus_revisions').returning('id')
-						)[0] as number;
+					for (let i = 0; i < revisionIDs.length; i++) {
+						const revisionID = revisionIDs[i];
 
 						if (opts?.onRevisionCreate) {
 							opts.onRevisionCreate(revisionID);
@@ -514,7 +505,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							// with all other revisions on the current level as regular "flat" updates, and
 							// nested revisions as children of this first "root" item.
 							if (childrenRevisions.length > 0) {
-								await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
+								await revisionsService.updateMany(childrenRevisions, { parent: revisionID });
 							}
 						}
 					}
@@ -527,18 +518,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.update`, {
-				event: `${this.eventScope}.update`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'update',
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				`${this.eventScope}.update`,
+				{
+					payload,
+					keys,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		return keys;
@@ -626,34 +620,39 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			await emitter.emitAsync(`${this.eventScope}.delete.before`, {
-				event: `${this.eventScope}.delete.before`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'delete',
-				payload: null,
-				schema: this.schema,
-				database: this.knex,
-			});
+			await emitter.emitFilter(
+				`${this.eventScope}.delete`,
+				keys,
+				{
+					collection: this.collection,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		await this.knex.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecords = keys.map((key) => ({
-					action: Action.DELETE,
-					user: this.accountability!.user,
-					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
-					item: key,
-				}));
+				const activityService = new ActivityService({
+					knex: trx,
+					schema: this.schema,
+				});
 
-				if (activityRecords.length > 0) {
-					await trx.insert(activityRecords).into('directus_activity');
-				}
+				await activityService.createMany(
+					keys.map((key) => ({
+						action: Action.DELETE,
+						user: this.accountability!.user,
+						collection: this.collection,
+						ip: this.accountability!.ip,
+						user_agent: this.accountability!.userAgent,
+						item: key,
+					}))
+				);
 			}
 		});
 
@@ -662,18 +661,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.delete`, {
-				event: `${this.eventScope}.delete`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'delete',
-				payload: null,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				`${this.eventScope}.delete`,
+				{
+					payload: keys,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		return keys;
@@ -727,118 +728,5 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		return await this.createOne(data, opts);
-	}
-
-	/**
-	 * @deprecated Use createOne or createMany instead
-	 */
-	async create(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
-		);
-
-		if (Array.isArray(data)) return this.createMany(data, opts);
-		return this.createOne(data, opts);
-	}
-
-	/**
-	 * @deprecated Use `readOne` or `readMany` instead
-	 */
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
-		logger.warn(
-			'ItemsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
-		);
-
-		if (Array.isArray(key)) {
-			return this.readMany(key, query, { permissionsAction: action });
-		} else {
-			return this.readOne(key, query, { permissionsAction: action });
-		}
-	}
-
-	/**
-	 * @deprecated Use `updateOne` or `updateMany` instead
-	 */
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
-		key?: PrimaryKey | PrimaryKey[]
-	): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.update is deprecated and will be removed before v9.0.0. Use updateOne or updateMany instead.'
-		);
-
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-
-		if (key) {
-			data = Array.isArray(data) ? data[0] : data;
-			if (Array.isArray(key)) return await this.updateMany(key, data);
-			else return await this.updateOne(key, data);
-		}
-
-		const keys: PrimaryKey[] = [];
-
-		await this.knex.transaction(async (trx) => {
-			const itemsService = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			const payloads = toArray(data);
-
-			for (const single of payloads as Partial<Item>[]) {
-				const payload = clone(single);
-				const key = payload[primaryKeyField];
-
-				if (!key) {
-					throw new InvalidPayloadException('Primary key is missing in update payload.');
-				}
-
-				keys.push(key);
-
-				await itemsService.updateOne(key, payload);
-			}
-		});
-
-		return keys;
-	}
-
-	/**
-	 * @deprecated Use `upsertOne` or `upsertMany` instead
-	 */
-	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	upsert(data: Partial<Item>): Promise<PrimaryKey>;
-	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.upsert is deprecated and will be removed before v9.0.0. Use upsertOne or upsertMany instead.'
-		);
-
-		if (Array.isArray(data)) return await this.upsertMany(data);
-		return await this.upsertOne(data);
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
-		);
-
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		else return await this.deleteOne(key);
 	}
 }

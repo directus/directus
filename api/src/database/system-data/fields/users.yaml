@@ -56,7 +56,6 @@ fields:
       iconRight: local_offer
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
@@ -154,7 +153,6 @@ fields:
   - field: provider
     width: half
     interface: select-dropdown
-    readonly: true
     options:
       choices:
         - text: $t:default_provider
@@ -165,4 +163,6 @@ fields:
     options:
       iconRight: account_circle
     interface: input
-    readonly: true
+
+  - field: auth_data
+    hidden: true

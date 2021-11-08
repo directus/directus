@@ -1,16 +1,11 @@
 <template>
 	<div class="form-grid">
-		<div class="field half-left">
-			<div class="type-label">{{ t('interfaces.map.geometry_format') }}</div>
-			<v-input v-model="geometryFormat" :disabled="true" :value="t(`interfaces.map.${compatibleFormat}`)" />
-		</div>
-		<div class="field half-right">
+		<div v-if="!nativeGeometryType && geometryFormat !== 'lnglat'" class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
 				:placeholder="t('any')"
 				:show-deselect="true"
-				:disabled="!!nativeGeometryType || geometryFormat == 'lnglat'"
 				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>
@@ -39,7 +34,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fieldData: {
+		field: {
 			type: Object as PropType<Field>,
 			default: null,
 		},
@@ -52,24 +47,30 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const isGeometry = props.fieldData.type == 'geometry';
-		const nativeGeometryType = isGeometry ? (props.fieldData!.schema!.geometry_type as GeometryType) : undefined;
-		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
-
-		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
-		const geometryType = ref<GeometryType>(
-			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
-		);
+		const nativeGeometryType = computed(() => props.field.type.split('.')[1] as GeometryType);
+		const geometryFormat = computed(() => getGeometryFormatForType(props.field.type));
+		const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
-		watch(
-			[geometryFormat, geometryType, defaultView],
-			() => {
-				const type = geometryFormat.value == 'lnglat' ? 'Point' : geometryType;
-				emit('input', { defaultView, geometryFormat, geometryType: type });
-			},
-			{ immediate: true }
-		);
+		watch(geometryFormat, watchGeometryFormat);
+		watch(nativeGeometryType, watchNativeType);
+		watch([geometryType, defaultView], input, { immediate: true });
+
+		function watchGeometryFormat(format: GeometryFormat | undefined) {
+			if (format === 'lnglat') geometryType.value = 'Point';
+		}
+
+		function watchNativeType(type: GeometryType) {
+			geometryType.value = type;
+		}
+
+		function input() {
+			emit('input', {
+				defaultView,
+				geometryFormat: geometryFormat.value,
+				geometryType: geometryType.value,
+			});
+		}
 
 		const mapContainer = ref<HTMLElement | null>(null);
 		let map: Map;
@@ -106,9 +107,7 @@ export default defineComponent({
 
 		return {
 			t,
-			isGeometry,
 			nativeGeometryType,
-			compatibleFormat,
 			geometryFormat,
 			GEOMETRY_TYPES,
 			geometryType,

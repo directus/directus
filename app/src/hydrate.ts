@@ -45,6 +45,7 @@ export function useStores(
 export async function hydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 	const userStore = useUserStore();
+	const permissionsStore = usePermissionsStore();
 
 	if (appStore.hydrated) return;
 	if (appStore.hydrating) return;
@@ -61,7 +62,10 @@ export async function hydrate(stores = useStores()): Promise<void> {
 		await userStore.hydrate();
 
 		if (userStore.currentUser?.role) {
-			await Promise.all(stores.filter(({ $id }) => $id !== 'userStore').map((store) => store.hydrate?.()));
+			await permissionsStore.hydrate();
+			const hydratedStores = ['userStore', 'permissionsStore'];
+
+			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
 			await registerModules();
 		}
 

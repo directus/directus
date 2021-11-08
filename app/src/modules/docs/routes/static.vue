@@ -16,7 +16,7 @@
 		</template>
 
 		<div class="docs-content selectable">
-			<markdown>{{ markdownWithoutTitle }}</markdown>
+			<router-view @update:title="title = $event" @update:modular-extension="modularExtension = $event" />
 		</div>
 
 		<template #sidebar>
@@ -29,65 +29,22 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, defineAsyncComponent, ref, computed, watch } from 'vue';
-import { useRoute, RouteLocation } from 'vue-router';
+import { defineComponent, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
-
-const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
-
-async function getMarkdownForRoute(route: RouteLocation): Promise<string> {
-	const importDocs = route.meta.import as () => Promise<{ default: string }>;
-
-	const mdModule = await importDocs();
-	return mdModule.default;
-}
 
 export default defineComponent({
 	name: 'StaticDocs',
-	components: { DocsNavigation, Markdown },
+	components: { DocsNavigation },
 	setup() {
 		const { t } = useI18n();
 
 		const route = useRoute();
 
-		const markdown = ref('');
-		const title = computed(() => {
-			const lines = markdown.value.split('\n');
-			const line = lines.find((line) => line.startsWith('# '));
+		const title = ref('Test');
+		const modularExtension = ref(false);
 
-			if (line === undefined) return null;
-
-			return line.substring(2).replaceAll('<small></small>', '').trim();
-		});
-
-		const modularExtension = computed(() => {
-			const lines = markdown.value.split('\n');
-			const line = lines.find((line) => line.startsWith('# '));
-			return line?.includes('<small></small>') || false;
-		});
-
-		const markdownWithoutTitle = computed(() => {
-			const lines = markdown.value.split('\n');
-
-			for (let i = 0; i < lines.length; i++) {
-				if (lines[i].startsWith('# ')) {
-					lines.splice(i, 1);
-					break;
-				}
-			}
-
-			return lines.join('\n');
-		});
-
-		watch(
-			() => route.path,
-			async () => {
-				markdown.value = await getMarkdownForRoute(route);
-			},
-			{ immediate: true, flush: 'post' }
-		);
-
-		return { t, route, markdown, title, markdownWithoutTitle, modularExtension };
+		return { t, route, title, modularExtension };
 	},
 });
 </script>

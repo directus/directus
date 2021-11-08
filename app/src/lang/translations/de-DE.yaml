@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Avatar
 default_provider: Standard
 published: Veröffentlicht
@@ -50,7 +51,7 @@ indeterminate: Unbestimmt
 edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
-db_only_click_to_configure: 'Nur in der Datenbank: Zum Konfigurieren klicken '
+db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
 show_archived_items: Zeige archivierte Elemente
 edited: Bearbeiteter Wert
 required: Erforderlich
@@ -172,6 +173,8 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 show_zero: Null anzeigen
+create_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus erstellen
+continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
 avg: Mittelwert
@@ -199,6 +202,7 @@ boolean: Boolean
 date: Datum
 date_range: Zeitspanne
 datetime: Datum mit Uhrzeit
+dateTime: Datum mit Uhrzeit
 precision: Präzision
 decimal: Dezimal
 float: Float
@@ -231,9 +235,9 @@ new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung durchsuchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
-add_m2o_to_collection: 'n:1 zu "{collection}" hinzufügen'
-add_o2m_to_collection: '1:n zu "{collection}" hinzufügen'
-add_m2m_to_collection: 'n:m zu "{collection}" hinzufügen'
+add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
+add_o2m_to_collection: 'O2M zu "{collection} " hinzufügen'
+add_m2m_to_collection: 'M2M zu "{collection} " hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
@@ -251,6 +255,7 @@ invalid_item: Ungültiges Element
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
+no_translations: Keine Übersetzung
 note: Notiz
 enter_a_value: Gib einen Wert ein...
 enter_a_placeholder: Platzhalter eingeben...
@@ -326,6 +331,8 @@ date-fns_time_no_seconds: 'H:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Minuten
+hours: Stunden
 month: Monat
 year: Jahr
 select_all: Alle auswählen
@@ -347,7 +354,7 @@ cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
 import_label: Importieren
-file_details: Dateiinformationen
+file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
@@ -360,6 +367,7 @@ zoom: Zoom
 download: Herunterladen
 open: Öffnen
 open_in_new_window: In neuem Fenster öffnen
+open_folder: Öffne den "{folder}" Ordner
 foreground_color: Vordergrundfarbe
 background_color: Hintergrundfarbe
 upload_from_device: Datei vom Gerät hochladen
@@ -433,6 +441,10 @@ no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
+activity_item: Aktivitäten-Element
+action: Aktion
+ip_address: IP Adresse
+user_agent: Benutzer-Agent
 webhooks: Webhooks
 decimals: Dezimalstellen
 value_decimals: Wert Dezimalstellen
@@ -518,6 +530,8 @@ all_users: Alle Benutzer
 delete_collection: Sammlung löschen
 update_collection_success: Sammlung aktualisiert
 delete_collection_success: Sammlung gelöscht
+make_collection_visible: Sammlung sichtbar machen
+make_collection_hidden: Sammlung verstecken
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
@@ -540,7 +554,7 @@ font: Schriftart
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
-divider: Divider
+divider: Trenner
 color: Farbe
 circle: Kreis
 empty_item: Leeres Element
@@ -607,7 +621,9 @@ all_files: Alle Dateien
 my_files: Meine Dateien
 recent_files: Zuletzt verwendete Dateien
 create_folder: Ordner erstellen
+edit_folder: Ordner bearbeiten
 folder_name: Ordnername...
+folder_key: Ordnerschlüssel...
 add_file: Datei hinzufügen
 replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
@@ -636,7 +652,6 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
-insights: Einblicke (Beta)
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
@@ -669,6 +684,12 @@ source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
 display_text_placeholder: Anzeigetext eingeben...
+interface_group_text_and_numbers: Text & Zahlen
+interface_group_selection: Auswahl
+interface_group_relational: Beziehung
+interface_group_presentation: Präsentation
+interface_group_groups: Gruppen
+interface_group_other: Andere
 tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
@@ -769,7 +790,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
-  **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
 page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
@@ -788,7 +809,7 @@ page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erste
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
-page_help_insights_overview: '**Insights** — Liste der Dashboards, auf welche Sie Zugriff haben.'
+page_help_insights_overview: '**Einblicke** — Liste der Dashboards, auf welche Sie Zugriff haben.'
 page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
@@ -808,10 +829,12 @@ system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet we
 directus_collection:
   directus_activity: Verantwortungsprotokoll für alle Ereignisse
   directus_collections: Weitere Konfiguration und Metadaten
+  directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
+  directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
@@ -829,7 +852,7 @@ fields:
     timestamp: Aktion am
     user: Aktion von
     comment: Kommentar
-    user_agent: User Agent
+    user_agent: Benutzer-Agent
     ip: IP Adresse
     revisions: Revisionen
   directus_collections:
@@ -897,6 +920,8 @@ fields:
     role: Rolle
     token: Token
     token_placeholder: Einen sicheren Zugangs-Token eingeben...
+    provider: Anbieter
+    external_identifier: Externer Identifikator
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
@@ -904,6 +929,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -915,16 +941,11 @@ fields:
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
-    public_pages: Öffentliche Seiten
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
-    files_and_thumbnails: Dateien & Vorschaubilder
-    storage_default_folder: Standardordner
-    storage_asset_presets: Vorlagen für Dateien
-    storage_asset_transform: Transformierung von Dateien
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
   directus_fields:
@@ -945,12 +966,14 @@ fields:
     enforce_tfa: 2FA erforderlich
     users: Benutzer in Rolle
     module_list: Modulnavigation
-    collection_list: Sammlungsnavigation
   directus_webhooks:
     name: Name
     method: Methode
     status: Status
     data: Daten
+    header: Header
+    value: Wert
+    headers: Request-Headers
     data_label: Ereignisdaten senden
     triggers: Auslöser
     actions: Aktionen
@@ -974,6 +997,7 @@ field_options:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -993,15 +1017,22 @@ field_options:
     hidden_label: Innerhalb der App verstecken
     singleton: Als einzelnes Objekt behandeln
     language: Sprache
-    translation: Übersetzung eingeben...
+    translation: Übersetzung
+    translation_placeholder: Geben Sie eine Übersetzung ein...
+    collection_name: Sammlungsname
+    singular_unit: Einzahl-Einheit
+    plural_unit: Mehrzahl-Einheit
     archive_divider: Archivieren
-    archive_field: Wählen Sie ein Feld...
+    archive_field: Archivfeld
+    archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
     unarchive_value: Gesetzter Wert während der Wiederherstellung...
-    divider: Sortieren
+    sort_divider: Sortieren
     sort_field: Wählen Sie ein Feld...
-    accountability_divider: Verantwortung
+    accountability_divider: Verantwortlichkeit
+    duplication_divider: Duplikation
+    item_duplication_fields: Artikel Duplikationsfelder
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1019,15 +1050,6 @@ field_options:
       name_placeholder: Titel eingeben...
       link_name: Link
       link_placeholder: Relative oder absolute URL...
-    collection_list:
-      group_name_addLabel: Neue Gruppe hinzufügen...
-      fields:
-        group_name: Gruppen-Name
-        group_placeholder: Diese Gruppe benennen...
-        type_name: Typ
-        choices_always: Immer geöffnet
-        choices_start_open: Geöffnet starten
-        choices_start_collapsed: Eingeklappt starten
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
   directus_users:
@@ -1051,6 +1073,10 @@ field_options:
     actions_update: Aktualisieren
     actions_delete: Löschen
     actions_login: Login
+    headers:
+      header: Header
+      value: Wert
+      add: Header hinzufügen
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 no_value: Kein Wert
 do_nothing: Keine Aktion
@@ -1058,6 +1084,9 @@ generate_and_save_uuid: UUID generieren und speichern
 save_current_user_id: Aktuelle Benutzer-ID speichern
 save_current_user_role: Aktuelle Benutzerrolle speichern
 save_current_datetime: Aktuelles Datum/Zeit speichern
+always_open: Immer geöffnet
+start_open: Geöffnet starten
+start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
@@ -1089,7 +1118,7 @@ embed: Einbetten
 fallback_icon: Fallback-Symbol
 field: Feld | Felder
 file: Datei
-file_library: Datei-Browser
+file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 icon: Symbol
@@ -1123,19 +1152,32 @@ settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
-something_went_wrong: Irgendwas ist schief gelaufen...
+something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
 require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
+translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Ein Filterobjekt konfigurieren.
+    add_filter: Filter hinzufügen
+    add_group: Und / Oder Gruppe
+    add_value: Wert hinzufügen
+    all: Alle
+    any: Irgendeiner
+    and: und
+    of_the_following: der folgenden
+    no_rules: Keine konfigurierten Regeln
+    change_value: Klicken um Wert zu ändern
+    placeholder: Regeln hierher ziehen
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
@@ -1200,7 +1242,7 @@ interfaces:
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
   presentation-divider:
-    divider: Divider
+    divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
     inline_title: Inline-Titel
@@ -1266,7 +1308,7 @@ interfaces:
     zoom: Zoom
     geometry_type: Geometrie-Typ
     geometry_format: Geometrie-Format
-    default_view: Standardansicht
+    default_view: Standard-Ansicht
     invalid_options: Ungültige Optionen
     invalid_format: Ungültiges Format ({format})
     unexpected_geometry: Erwartete {expected}, erhielt {got}.
@@ -1276,6 +1318,7 @@ interfaces:
     lnglat: Längengrad, Breitengrad
     wkt: WKT
     wkb: WKB
+    click_to_select: Klicken, um {geometry} auszuwählen
   presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
@@ -1287,8 +1330,7 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
-    field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
-    root_name: Root-Ordner für Dateien
+    root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
     radio-buttons: Radio Buttons
@@ -1344,7 +1386,7 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
-    language_field: Sprachfeld
+    language_field: Sprachindikatorfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1368,7 +1410,7 @@ interfaces:
     results_path: Pfad Ergebnis
     value_path: Wertpfad
     trigger: Trigger
-    rate: Rate
+    rate: Frequenz
   group-raw:
     name: Rohgruppe
     description: Felder so anzeigen wie sie sind
@@ -1381,6 +1423,13 @@ interfaces:
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
 displays:
+  translations:
+    translations: Übersetzungen
+    description: Vorschau der Übersetzungen
+    enable: Aktivieren
+    user_language: Aktuelle Benutzersprache verwenden
+    default_language: Standardsprache
+    language_field: Sprachindikatorfeld
   boolean:
     boolean: Boolean
     description: Ein-/Aus-Status anzeigen
@@ -1490,18 +1539,12 @@ layouts:
     map: Karte
     basemap: Basiskarte
     layers: Ebenen
-    edit_custom_layers: Ebenen bearbeiten
-    cluster_options: Clustering-Optionen
-    cluster: Clustering aktivieren
+    cluster_options: Cluster-Optionen
+    cluster: Cluster Nachbardaten
     cluster_radius: Cluster-Radius
-    cluster_minpoints: Minimale Punkte Clustering
-    cluster_maxzoom: Maximaler Zoom für Clustering
-    field: Dimensionen
+    cluster_minpoints: Kleinstes Cluster
+    cluster_maxzoom: Maximaler Zoom für Cluster
     invalid_geometry: Ungültige Geometrie
-    auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
-    search_this_area: Diesen Bereich durchsuchen
-    clear_data_filter: Datenfilter löschen
-    clear_location_filter: Standortfilter löschen
 panels:
   metric:
     name: Metrik

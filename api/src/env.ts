@@ -30,8 +30,6 @@ const defaults: Record<string, any> = {
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
 
-	SESSION_STORE: 'memory',
-
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
@@ -55,10 +53,9 @@ const defaults: Record<string, any> = {
 	CACHE_AUTO_PURGE: false,
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
+	CACHE_PERMISSIONS: true,
 
 	AUTH_PROVIDERS: '',
-
-	OAUTH_PROVIDERS: '',
 
 	EXTENSIONS_PATH: './extensions',
 
@@ -87,6 +84,8 @@ const typeMap: Record<string, string> = {
 	DB_PASSWORD: 'string',
 	DB_DATABASE: 'string',
 	DB_PORT: 'number',
+
+	DB_EXCLUDE_TABLES: 'array',
 };
 
 let env: Record<string, any> = {

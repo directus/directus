@@ -8,11 +8,12 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { validatePayload } from '@directus/shared/utils';
-import { Filter, Item, Field } from '@directus/shared/types';
+import { Item, Field, LogicalFilterAND } from '@directus/shared/types';
 import { isNil, flatten, merge } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { parseFilter } from '@/utils/parse-filter';
+import { translate } from '@/utils/translate-object-values';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -291,6 +292,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	function setItemValueToResponse(response: AxiosResponse) {
+		if (collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_')) {
+			response.data.data = translate(response.data.data);
+		}
 		if (isBatch.value === false) {
 			item.value = response.data.data;
 		} else {
@@ -310,8 +314,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	function validate(item: Item) {
 		const validationRules = {
-			_and: [] as Filter['_and'],
-		} as Filter;
+			_and: [],
+		} as LogicalFilterAND;
 
 		const applyConditions = (field: Field) => {
 			if (field.meta && Array.isArray(field.meta?.conditions)) {
@@ -348,14 +352,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 		for (const field of requiredFields) {
 			if (isNew.value === true && isNil(field.schema?.default_value)) {
-				validationRules._and!.push({
+				validationRules._and.push({
 					[field.field]: {
 						_submitted: true,
 					},
 				});
 			}
 
-			validationRules._and!.push({
+			validationRules._and.push({
 				[field.field]: {
 					_nnull: true,
 				},

@@ -10,7 +10,8 @@ export default defineInterface({
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
-	groups: ['presentation'],
+	localTypes: ['presentation'],
+	group: 'presentation',
 	options: [
 		{
 			field: 'color',

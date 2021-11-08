@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.color.description',
 	types: ['string'],
 	icon: 'flag',
-	handler: DisplayColor,
+	component: DisplayColor,
 	options: [
 		{
 			field: 'defaultColor',

@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Avatar
 archived: Arhiveeritud
 edit_field: Muuda välja
@@ -31,7 +11,6 @@ field_name_translations: Väljade tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
 add_field: Lisa väli
 role_name: Rolli nimi
-db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 edited: Muudetud väärtus
 required: Nõutud
@@ -156,6 +135,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Kuupäev
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -186,9 +166,6 @@ new_data_alert: 'Sinu andmemudelisse lisatakse:'
 search_collection: Otsi andmekogu...
 new_field: 'Uus väli'
 new_collection: 'Uus kogumik'
-add_m2o_to_collection: 'Lisa mitu-ühele (M2O) seos koguga "{collection}"'
-add_o2m_to_collection: 'Lisa üks-mitmele (O2M) seos koguga "{collection}"'
-add_m2m_to_collection: 'Lisa mitu-mitmele (M2M) seos koguga "{collection}"'
 choose_a_type: Vali Tüüp...
 determined_by_relationship: Määratud suhtega
 add_note: Lisa kasutajaid abistav märkus...
@@ -376,6 +353,9 @@ active: aktiivne
 copy: Kopeeri
 users: Kasutajad
 activity: Tegevus
+action: Tegevus
+ip_address: IP aadress
+user_agent: Kasutaja agent
 webhooks: Webhooks
 field_width: Välja laius
 add_filter: Lisa filter
@@ -748,7 +728,7 @@ fields:
     password: Parool
     avatar: Avatar
     location: Asukoht
-    title: Pealkiri
+    title: Amet
     description: Kirjeldus
     tags: Sildid
     language: Keel
@@ -771,8 +751,6 @@ fields:
     public_note: Avalik märkus
     auth_password_policy: Salasõna reeglid
     auth_login_attempts: Sisselogimise katseid
-    storage_asset_presets: Salvestusruumi eelseadistused
-    storage_asset_transform: Salvestusruumi kirjete töötlus
     custom_css: Kohandatud CSS
   directus_fields:
     collection: Andmekogu nimetus
@@ -792,10 +770,10 @@ fields:
     enforce_tfa: 2FA on nõutav
     users: Kasutajad selles rollis
     module_list: Moodulite näitamine
-    collection_list: Andmekogude näitamine
   directus_webhooks:
     name: Nimi
     status: Staatus
+    value: Väärtus
 field_options:
   directus_activity:
     create: Loo
@@ -807,16 +785,15 @@ field_options:
     collection_setup: Andmekogu seadistus
     singleton: Käsitle üksiku objektina
     language: Keel
+    translation: Tõlge
+    collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
-    divider: Sorteeri
+    sort_divider: Sorteeri
   directus_roles:
     fields:
       icon_name: Ikoon
       name_name: Nimi
       name_placeholder: Sisesta pealkiri...
-    collection_list:
-      fields:
-        type_name: Tüüp
     collections_name: Kogud
   directus_users:
     status_dropdown_active: aktiivne
@@ -825,6 +802,8 @@ field_options:
     status_options_active: aktiivne
     actions_create: Loo
     actions_update: Uuenda
+    headers:
+      value: Väärtus
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID
@@ -900,6 +879,9 @@ value: Väärtus
 view_project: Näita projekti
 report_error: Raporteeri viga
 interfaces:
+  filter:
+    add_filter: Lisa filter
+    all: Kõik
   presentation-links:
     presentation-links: Nuppude lingid
     links: Lingid
@@ -1098,6 +1080,8 @@ interfaces:
     trigger: Päästik
     rate: Hinnang
 displays:
+  translations:
+    translations: Tõlked
   boolean:
     boolean: Boolean
     description: Näita sees/väljas seisu

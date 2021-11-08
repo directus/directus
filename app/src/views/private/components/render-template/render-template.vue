@@ -2,7 +2,7 @@
 	<div ref="templateEl" class="render-template">
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
-			<value-null v-if="part === null || part.value === null" />
+			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
 			<component
 				:is="`display-${part.component}`"
 				v-else-if="typeof part === 'object' && part.component"
@@ -14,6 +14,7 @@
 				:collection="part.collection"
 				:field="part.field"
 			/>
+			<span v-else-if="typeof part === 'string'">{{ translate(part) }}</span>
 			<span v-else>{{ part }}</span>
 		</template>
 	</div>
@@ -27,6 +28,7 @@ import { DisplayConfig, Field } from '@directus/shared/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { translate } from '@/utils/translate-literal';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -99,12 +101,6 @@ export default defineComponent({
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;
 
-					// If the display handler is a function, we parse the value and return the result
-					if (typeof displayInfo.handler === 'function') {
-						const handler = displayInfo.handler;
-						return handler(value, field.meta?.display_options ?? null);
-					}
-
 					return {
 						component: field.meta?.display,
 						options: field.meta?.display_options,
@@ -119,7 +115,7 @@ export default defineComponent({
 				.map((p) => p ?? null)
 		);
 
-		return { parts, templateEl };
+		return { parts, templateEl, translate };
 	},
 });
 </script>

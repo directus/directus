@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'local_offer',
 	component: InterfaceTags,
 	types: ['json', 'csv'],
+	group: 'standard',
 	options: [
 		{
 			field: 'presets',

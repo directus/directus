@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'linear_scale',
 	component: InterfaceSlider,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
+	group: 'other',
 	options: [
 		{
 			field: 'minValue',

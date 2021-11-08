@@ -69,7 +69,6 @@ export default defineModule({
 			},
 		},
 	],
-	order: 15,
 	preRegisterCheck(user, permissions) {
 		const admin = user.role.admin_access;
 		if (admin) return true;

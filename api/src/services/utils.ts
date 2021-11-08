@@ -28,7 +28,7 @@ export class UtilsService {
 		}
 
 		if (this.accountability?.admin !== true) {
-			const permissions = this.schema.permissions.find((permission) => {
+			const permissions = this.accountability?.permissions?.find((permission) => {
 				return permission.collection === collection && permission.action === 'update';
 			});
 

@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Avatar
 edit_field: Edit Kolom
 conditions: Kondisi
@@ -36,7 +16,6 @@ enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentica
 add_field: Tambah Kolom
 role_name: Nama Peran
 branch: Cabang
-db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
 edited: Nilai Diedit
 required: Diperlukan
@@ -161,6 +140,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Tanggal
 datetime: DateTime
+dateTime: DateTime
 decimal: Desimal
 float: Float
 integer: Integer
@@ -191,9 +171,6 @@ new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
-add_m2o_to_collection: 'Tambahkan Many-to-One ke "{collection}"'
-add_o2m_to_collection: 'Tambahkan One-to-Many ke "{collection}"'
-add_m2m_to_collection: 'Tambahkan Many-to-Many ke "{collection}"'
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
@@ -374,6 +351,9 @@ no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini un
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
+action: Aksi
+ip_address: Alamat IP
+user_agent: Agen pengguna
 webhooks: Webhooks
 field_width: Lebar Bidang
 add_filter: Tambah Filter
@@ -557,6 +537,7 @@ fields:
   directus_webhooks:
     name: Nama
     status: Status
+    value: Nilai
 field_options:
   directus_activity:
     create: Buat
@@ -564,18 +545,17 @@ field_options:
   directus_collections:
     language: Bahasa
     archive_divider: Arsip
-    divider: Sortir
+    sort_divider: Sortir
   directus_roles:
     fields:
       icon_name: Ikon
       name_name: Nama
-    collection_list:
-      fields:
-        type_name: Tipe
     collections_name: Pengumpulan
   directus_webhooks:
     actions_create: Buat
     actions_update: Perbarui
+    headers:
+      value: Nilai
 comment: Komentar
 editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
@@ -616,6 +596,9 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
+  filter:
+    add_filter: Tambah Filter
+    all: Semua
   presentation-links:
     primary: Primer
   input-code:
@@ -658,6 +641,8 @@ interfaces:
     modes:
       dropdown: Dropwdown
 displays:
+  translations:
+    translations: Terjemahan
   boolean:
     boolean: Boolean
   collection:
