@@ -9,18 +9,8 @@
 	},
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc --build && echo \"Built successfully\"",
-		"dev": "npm-watch build"
-	},
-	"watch": {
-		"build": {
-			"patterns": [
-				"src/*"
-			],
-			"extensions": "ts",
-			"quiet": true,
-			"silent": true
-		}
+		"build": "tsc --build",
+		"dev": "tsc --build --watch"
 	},
 	"repository": {
 		"type": "git",
@@ -42,12 +32,13 @@
 	},
 	"homepage": "https://github.com/directus/directus#readme",
 	"devDependencies": {
-		"npm-watch": "0.11.0",
 		"typescript": "4.5.2"
 	},
+	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"knex-schema-inspector": "1.6.4",
-		"lodash": "^4.17.21"
+		"knex-schema-inspector": "1.6.4"
 	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
+	"peerDependencies": {
+		"knex": "*"
+	}
 }
