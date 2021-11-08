@@ -141,7 +141,9 @@ export async function startServer(): Promise<void> {
 
 			emitter.emitAction(
 				'server.start',
-				{},
+				{
+					server,
+				},
 				{
 					database: getDatabase(),
 					schema: null,
