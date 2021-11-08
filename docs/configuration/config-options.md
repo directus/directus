@@ -654,10 +654,10 @@ AUTH_ADOBE_ICON="adobe"
 
 ## Email
 
-| Variable          | Description                                                       | Default Value          |
-| ----------------- | ----------------------------------------------------------------- | ---------------------- |
-| `EMAIL_FROM`      | Email address from which emails are sent.                         | `no-reply@directus.io` |
-| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`. | `sendmail`             |
+| Variable          | Description                                                              | Default Value          |
+| ----------------- | ------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_FROM`      | Email address from which emails are sent.                                | `no-reply@directus.io` |
+| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `ses`. | `sendmail`             |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
@@ -687,6 +687,14 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
 | `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
 | `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | `api.mailgun.net` |
+
+### AWS SES (`ses`)
+
+| Variable                                   | Description                  | Default Value |
+| ------------------------------------------ | ---------------------------- | ------------- |
+| `EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID`     | Your AWS SES access key. ID. | --            |
+| `EMAIL_SES_CREDENTIALS__SECRET_ACCESS_KEY` | Your AWS SES secret key.     | --            |
+| `EMAIL_SES_REGION`                         | Your AWS SES region.         | --            |
 
 ## Admin Account
 
