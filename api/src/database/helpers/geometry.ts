@@ -87,6 +87,7 @@ class KnexSpatial_SQLite extends KnexSpatial {
 		return this.knex.raw('asgeojson(??.??) as ??', [table, column, column]);
 	}
 }
+
 class KnexSpatial_PG extends KnexSpatial {
 	async supported() {
 		const res = await this.knex.select('oid').from('pg_proc').where({ proname: 'postgis_version' });
@@ -94,7 +95,7 @@ class KnexSpatial_PG extends KnexSpatial {
 	}
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
 		const type = field.type.split('.')[1] ?? 'geometry';
-		return table.specificType(field.field, `geometry(${type})`);
+		return table.specificType(field.field, `geometry(${type}, 4326)`);
 	}
 	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
@@ -108,6 +109,9 @@ class KnexSpatial_MySQL extends KnexSpatial {
 			`concat('geometrycollection(', group_concat(? separator ', '), ')'`,
 			this.asText(table, column)
 		);
+	}
+	fromText(text: string): Knex.Raw {
+		return this.knex.raw('st_geomfromtext(?)', text);
 	}
 }
 
