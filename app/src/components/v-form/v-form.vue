@@ -222,6 +222,23 @@ export default defineComponent({
 				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
 			});
 
+			const defaultValues = computed(() => {
+				return fields.value.reduce(function (acc, field) {
+					if (
+						field.schema?.default_value !== undefined &&
+						// Ignore autoincremented integer PK field
+						!(
+							field.schema.is_primary_key &&
+							field.schema.data_type === 'integer' &&
+							typeof field.schema.default_value === 'string'
+						)
+					) {
+						acc[field.field] = field.schema?.default_value;
+					}
+					return acc;
+				}, {} as Record<string, any>);
+			});
+
 			const fieldsParsed = computed(() => {
 				if (props.group !== null) return fields.value;
 
@@ -239,6 +256,8 @@ export default defineComponent({
 					return field;
 				};
 
+				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
+
 				const applyConditions = (field: Field) => {
 					if (field.meta && Array.isArray(field.meta?.conditions)) {
 						const conditions = [...field.meta.conditions].reverse();
@@ -247,7 +266,7 @@ export default defineComponent({
 							if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 
 							const rule = parseFilter(condition.rule);
-							const errors = validatePayload(rule, values.value, { requireAll: true });
+							const errors = validatePayload(rule, valuesWithDefaults, { requireAll: true });
 							return errors.length === 0;
 						});
 
