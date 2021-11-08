@@ -119,7 +119,7 @@ export default function getLocalType(
 		if (special.includes('hash')) return 'hash';
 		if (special.includes('csv')) return 'csv';
 		if (special.includes('uuid')) return 'uuid';
-		if (type.startsWith('geometry')) {
+		if (type?.startsWith('geometry')) {
 			return (special[0] as Type) || 'geometry';
 		}
 	}
