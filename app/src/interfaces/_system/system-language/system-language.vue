@@ -16,13 +16,21 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		includeProjectDefault: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	emits: ['input'],
-	setup() {
+	setup(props) {
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,
-			value: key !== 'null' ? key : null,
+			value: key as string | null,
 		}));
+
+		if (props.includeProjectDefault) {
+			languages.splice(0, 0, { text: 'Project Default', value: null });
+		}
 
 		return { languages };
 	},
