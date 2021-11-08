@@ -64,7 +64,9 @@ export async function hydrate(stores = useStores()): Promise<void> {
 			await Promise.all(stores.filter(({ $id }) => $id !== 'userStore').map((store) => store.hydrate?.()));
 			await registerModules();
 
-			await setLanguage(userStore.currentUser?.language);
+			if (userStore.currentUser?.language != null) {
+				await setLanguage(userStore.currentUser.language);
+			}
 		}
 
 		appStore.basemap = getBasemapSources()[0].name;
