@@ -82,8 +82,10 @@ export default defineComponent({
 
 		watch(
 			() => serverStore.info?.project?.project_language,
-			(projectLanguage) => {
-				if (!userStore.currentUser || userStore.currentUser.language === null) setLanguage(projectLanguage ?? 'en-US');
+			async (projectLanguage) => {
+				if (!userStore.currentUser || userStore.currentUser.language === null) {
+					await setLanguage(projectLanguage ?? 'en-US');
+				}
 			}
 		);
 
