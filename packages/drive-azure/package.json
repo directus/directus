@@ -23,9 +23,9 @@
 	],
 	"scripts": {
 		"build": "tsc --project ./tsconfig.json",
-		"cleanup": "run-p cleanup:*",
-		"cleanup:dist": "rimraf ./dist",
-		"cleanup:coverage": "rimraf ./coverage",
+		"cleanup": "concurrently 'npm:cleanup:*'",
+		"cleanup:dist": "del-cli dist",
+		"cleanup:coverage": "del-cli coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
@@ -43,14 +43,13 @@
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
-		"@types/fs-extra": "9.0.13",
 		"@types/jest": "27.0.3",
 		"@types/node": "16.11.9",
 		"@types/normalize-path": "3.0.0",
+		"concurrently": "6.3.0",
+		"del-cli": "4.0.1",
 		"dotenv": "10.0.0",
-		"fs-extra": "10.0.0",
 		"jest": "27.3.1",
-		"npm-run-all": "4.1.5",
 		"ts-jest": "27.0.7",
 		"typescript": "4.5.2"
 	},
