@@ -34,11 +34,13 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"build": "run-p \"build:* -- {@}\" --",
+		"build": "concurrently 'npm:build:*'",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
-		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
+		"cleanup": "del-cli dist",
+		"dev": "concurrently 'npm:dev:*'",
+		"dev:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm -w --preserveWatchOutput --incremental",
+		"dev:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs -w --preserveWatchOutput --incremental",
 		"test": "jest --coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"prepublishOnly": "npm run cleanup && npm run build"
@@ -64,8 +66,9 @@
 		"vue-router": "4"
 	},
 	"devDependencies": {
-		"npm-run-all": "4.1.5",
-		"rimraf": "3.0.2",
+		"concurrently": "6.3.0",
+		"del-cli": "4.0.1",
+		"dotenv": "10.0.0",
 		"tmp": "0.2.1",
 		"typescript": "4.5.2"
 	}
