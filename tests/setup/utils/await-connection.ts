@@ -7,7 +7,9 @@ export async function awaitDatabaseConnection(
 	currentAttempt = 0
 ): Promise<void | null> {
 	try {
-		await database.raw(checkSQL);
+		setTimeout(async () => {
+			await database.raw(checkSQL);
+		}, 500);
 	} catch {
 		if (currentAttempt === 10) {
 			throw new Error(`Couldn't connect to DB`);
