@@ -196,7 +196,8 @@ export default defineComponent({
 
 					const langCode = language[languagesPrimaryKeyField.value.field];
 
-					const initialValue = items.value.find((item) => item[langField] === langCode || item[langField].code === langCode) ?? {};
+					const initialValue =
+						items.value.find((item) => item[langField] === langCode || item[langField].code === langCode) ?? {};
 
 					const edits = props.value?.find((val) => typeof val === 'object' && val[langField] === langCode) as
 						| Record<string, any>
@@ -283,13 +284,8 @@ export default defineComponent({
 					const pkField = translationsPrimaryKeyField.value?.field;
 					const langField = translationsLanguageField.value;
 
-					if (
-						newVal &&
-						newVal !== oldVal
-					) {
-						if (pkField &&
-							typeof oldVal === 'undefined'
-						) {
+					if (newVal && newVal !== oldVal) {
+						if (pkField && typeof oldVal === 'undefined') {
 							for (let i in newVal) {
 								if (typeof newVal[i] === 'object') isSimplificationDisallowed[newVal[i][pkField]] = true;
 							}
@@ -299,13 +295,11 @@ export default defineComponent({
 							loadItems();
 						}
 
-						if (langField &&
-							newVal?.every((item) => typeof item === 'object')
-						) {
+						if (langField && newVal?.every((item) => typeof item === 'object')) {
 							items.value = newVal;
 						}
 					}
-					
+
 					if (newVal === null || newVal.length === 0) {
 						items.value = [];
 					}
@@ -341,7 +335,12 @@ export default defineComponent({
 				const langField = translationsLanguageField.value;
 				if (langField === null) return {};
 
-				return (items.value.find((item) => item[langField] === lang || item[langField].code === lang) as Record<string, any>) ?? {};
+				return (
+					(items.value.find((item) => item[langField] === lang || item[langField].code === lang) as Record<
+						string,
+						any
+					>) ?? {}
+				);
 			}
 
 			function getEditedValue(langRef: string | number | undefined | Ref<string | number | undefined>) {
@@ -351,8 +350,9 @@ export default defineComponent({
 				if (langField === null) return {};
 
 				return (
-					(props.value?.find((item) => typeof item === 'object' && (item[langField] === lang || item[langField].code === lang)) as Record<string, any>) ??
-					{}
+					(props.value?.find(
+						(item) => typeof item === 'object' && (item[langField] === lang || item[langField].code === lang)
+					) as Record<string, any>) ?? {}
 				);
 			}
 
@@ -396,7 +396,9 @@ export default defineComponent({
 				let copyValue = cloneDeep(value.value ?? []);
 
 				if (pkField in values === false) {
-					const newIndex = copyValue.findIndex((item) => typeof item === 'object' && (item[langField] === lang || item[langField].code === lang));
+					const newIndex = copyValue.findIndex(
+						(item) => typeof item === 'object' && (item[langField] === lang || item[langField].code === lang)
+					);
 
 					if (newIndex !== -1) {
 						if (Object.keys(values).length === 1 && langField in values) {
@@ -422,7 +424,8 @@ export default defineComponent({
 							}
 						} else {
 							if (values[pkField] === item[pkField]) {
-								if (!isSimplificationDisallowed[item[pkField]] && 
+								if (
+									!isSimplificationDisallowed[item[pkField]] &&
 									isEqual(initialValues, { ...initialValues, ...values })
 								) {
 									return values[pkField];
