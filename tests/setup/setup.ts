@@ -209,7 +209,11 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 					global.knexInstances.map(({ vendor, knex }) => {
 						return {
 							title: config.names[vendor]!,
-							task: async () => await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL),
+
+							task: async () => {
+								await sleep(5000);
+								await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL);
+							},
 						};
 					}),
 					{ concurrent: true }
@@ -309,3 +313,11 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 
 	console.log('\n');
 };
+
+function sleep(ms: number) {
+	return new Promise<void>((resolve) => {
+		setTimeout(() => {
+			resolve();
+		}, ms);
+	});
+}
