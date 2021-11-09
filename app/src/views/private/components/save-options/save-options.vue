@@ -19,6 +19,10 @@
 				<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>
 				<v-list-item-content>{{ t('save_as_copy') }}</v-list-item-content>
 			</v-list-item>
+			<v-list-item :disabled="disabled" clickable @click="$emit('discard-and-stay')">
+				<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
+				<v-list-item-content>{{ t('discard_changes') }}</v-list-item-content>
+			</v-list-item>
 		</v-list>
 	</v-menu>
 </template>
@@ -35,7 +39,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['save-and-stay', 'save-and-add-new', 'save-as-copy'],
+	emits: ['save-and-stay', 'save-and-add-new', 'save-as-copy', 'discard-and-stay'],
 	setup() {
 		const { t } = useI18n();
 
