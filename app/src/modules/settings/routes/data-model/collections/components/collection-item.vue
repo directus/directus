@@ -5,9 +5,9 @@
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>
 			<router-link
-				v-if="collection.schema"
 				class="collection-name"
-				:to="`/settings/data-model/${collection.collection}`"
+				:to="collection.schema ? `/settings/data-model/${collection.collection}` : ''"
+				@click="collection.schema ? null : $emit('editCollection', collection)"
 			>
 				<v-icon
 					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
@@ -16,14 +16,6 @@
 				/>
 				<span>{{ collection.name }}</span>
 			</router-link>
-			<div v-else class="collection-name" @click="$emit('editCollection', collection)">
-				<v-icon
-					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
-					class="collection-icon"
-					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
-				/>
-				<span>{{ collection.name }}</span>
-			</div>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
 				<v-progress-circular v-if="collapseLoading" small indeterminate />
 				<v-icon
