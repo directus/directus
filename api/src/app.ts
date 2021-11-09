@@ -1,5 +1,5 @@
 import cookieParser from 'cookie-parser';
-import express, { RequestHandler } from 'express';
+import express, { Request, Response, RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
@@ -136,11 +136,14 @@ export default async function createApp(): Promise<express.Application> {
 		const html = await fse.readFile(adminPath, 'utf8');
 		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		app.get('/admin', (req, res) => res.send(htmlWithBase));
-		app.use('/admin', express.static(path.join(adminPath, '..')));
-		app.use('/admin/*', (req, res) => {
+		const noCacheIndexHtmlHandler = (req: Request, res: Response) => {
+			res.setHeader('Cache-Control', 'no-cache');
 			res.send(htmlWithBase);
-		});
+		};
+
+		app.get('/admin', noCacheIndexHtmlHandler);
+		app.use('/admin', express.static(path.join(adminPath, '..')));
+		app.use('/admin/*', noCacheIndexHtmlHandler);
 	}
 
 	// use the rate limiter - all routes for now
