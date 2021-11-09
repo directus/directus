@@ -12,6 +12,18 @@ export default defineInterface({
 	group: 'selection',
 	options: [
 		{
+			field: 'allowAlpha',
+			name: '$t:interfaces.select-color.allow_alpha',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
 			field: 'presets',
 			name: '$t:interfaces.select-color.preset_colors',
 			type: 'string',

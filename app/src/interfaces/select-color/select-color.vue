@@ -7,7 +7,7 @@
 				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
 				:pattern="showAlpha ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
-				maxlength="9"
+				:maxlength="showAlpha ? 9 : 7"
 				@focus="activate"
 			>
 				<template #prepend>
@@ -119,7 +119,7 @@
 				/>
 			</template>
 		</div>
-		<div class="color-data-alphas">
+		<div v-if="allowAlpha" class="color-data-alphas">
 			<div class="color-data-alpha">
 				<v-switch v-model="showAlpha" label="Enable Alpha" @update:model-value="setShowAlpha($event)" />
 			</div>
@@ -220,6 +220,10 @@ export default defineComponent({
 		width: {
 			type: String,
 			required: true,
+		},
+		allowAlpha: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['input'],
