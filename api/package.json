@@ -75,6 +75,7 @@
 		"example.env"
 	],
 	"dependencies": {
+		"@aws-sdk/client-ses": "^3.40.0",
 		"@directus/app": "9.0.0",
 		"@directus/drive": "9.0.0",
 		"@directus/drive-azure": "9.0.0",
