@@ -145,7 +145,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
 
-			const fields = syncRefProperty(layoutQuery, 'fields', () =>
+			const fields = syncRefProperty(
+				layoutQuery,
+				'fields',
 				fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
 					.slice(0, 4)
