@@ -5,7 +5,7 @@
 				v-model="hex"
 				:disabled="disabled"
 				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
-				:pattern="/#([a-f\d]{2}){3,4}/i"
+				:pattern="showAlpha ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
 				maxlength="9"
 				@focus="activate"
@@ -36,11 +36,17 @@
 			</v-input>
 		</template>
 
-		<div class="color-data-inputs" :class="{ stacked: width === 'half' }">
+		<div
+			class="color-data-inputs"
+			:style="{
+				'grid-template-columns': showAlpha ? 'repeat(6, 1fr)' : 'repeat(5, 1fr)',
+			}"
+			:class="{ stacked: width === 'half' }"
+		>
 			<div class="color-data-input color-type">
 				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
-			<template v-if="colorType === 'RGB'">
+			<template v-if="(colorType === 'RGB') | (colorType === 'RGBA')">
 				<v-input
 					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
 					:key="i"
@@ -55,8 +61,20 @@
 					maxlength="3"
 					@update:model-value="setValue('rgb', i, $event)"
 				/>
+				<v-input
+					v-if="showAlpha"
+					type="number"
+					:model-value="alpha"
+					class="color-data-input"
+					pattern="\d*"
+					:min="0"
+					:max="100"
+					:step="1"
+					maxlength="3"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
 			</template>
-			<template v-if="colorType === 'HSL'">
+			<template v-if="(colorType === 'HSL') | (colorType === 'HSLA')">
 				<v-input
 					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
 					:key="i"
@@ -70,23 +88,11 @@
 					maxlength="3"
 					@update:model-value="setValue('hsl', i, $event)"
 				/>
-			</template>
-		</div>
-		<div class="color-data-alphas">
-			<div class="color-data-alpha">
-				<span>Opacity</span>
-				<v-slider
-					:model-value="alpha"
-					:min="0"
-					:max="100"
-					:step="1"
-					@update:model-value="setValue('alpha', 0, $event)"
-				/>
-			</div>
-			<div class="color-data-alpha">
 				<v-input
+					v-if="showAlpha"
 					type="number"
 					:model-value="alpha"
+					class="color-data-input"
 					pattern="\d*"
 					:min="0"
 					:max="100"
@@ -94,9 +100,31 @@
 					maxlength="3"
 					@update:model-value="setValue('alpha', 0, $event)"
 				/>
+			</template>
+		</div>
+		<div class="alpha-switch"></div>
+		<div class="color-data-alphas">
+			<div class="color-data-alpha">
+				<v-switch v-model="showAlpha" label="Enable Alpha" @update:model-value="setShowAlpha($event)" />
+			</div>
+			<div v-if="showAlpha" class="color-data-alpha">
+				<v-slider
+					:model-value="alpha"
+					:min="0"
+					:max="100"
+					:step="1"
+					:style="{
+						'--v-slider-color': 'none',
+						'--background-page': 'none',
+						'--v-slider-fill-color': 'none',
+						'--v-slider-thumb-color': 'var(--foreground-normal)',
+						'--input-bg-image':
+							'linear-gradient(to right, transparent,' + (hex && hex.length === 9 ? hex.slice(0, -2) : hex) + ')',
+					}"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
 			</div>
 		</div>
-		<div></div>
 		<div v-if="presets" class="presets">
 			<v-button
 				v-for="preset in presets"
@@ -183,10 +211,11 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
-		type ColorType = 'RGB' | 'HSL';
+		type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
 
-		const colorTypes = ['RGB', 'HSL'] as ColorType[];
-		const colorType = ref<ColorType>('RGB');
+		const showAlpha = ref<boolean>(false);
+		let colorTypes = showAlpha.value ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
+		const colorType = ref<ColorType>(showAlpha.value ? 'RGBA' : 'RGB');
 
 		function unsetColor() {
 			emit('input', null);
@@ -194,6 +223,25 @@ export default defineComponent({
 
 		function activateColorPicker() {
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
+		}
+
+		function setShowAlpha(val: boolean) {
+			if (val) {
+				colorTypes.value = ['RGBA', 'HSLA'];
+				if (colorType.value === 'RGB' || colorType.value === 'RGBA') {
+					colorType.value = 'RGBA';
+				} else {
+					colorType.value = 'HSLA';
+				}
+			} else {
+				setValue('alpha', 0, 100);
+				if (colorType.value === 'RGB' || colorType.value === 'RGBA') {
+					colorType.value = 'RGB';
+				} else {
+					colorType.value = 'HSL';
+				}
+				colorTypes.value = ['RGB', 'HSL'];
+			}
 		}
 
 		const isValidColor = computed<boolean>(() => rgb.value !== null && props.value !== null);
@@ -217,6 +265,7 @@ export default defineComponent({
 			hsl,
 			hex,
 			alpha,
+			showAlpha,
 			htmlColorInput,
 			activateColorPicker,
 			isValidColor,
@@ -225,6 +274,7 @@ export default defineComponent({
 			setSwatchValue,
 			lowContrast,
 			unsetColor,
+			setShowAlpha,
 		};
 
 		function setValue(type: 'rgb' | 'hsl' | 'alpha', i: number, val: number) {
@@ -269,7 +319,7 @@ export default defineComponent({
 
 			const rgb = computed<number[]>({
 				get() {
-					const arr = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
+					const arr = color.value !== null ? color.value.rgb().array() : showAlpha.value ? [0, 0, 0, 1] : [0, 0, 0];
 					return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
 				},
 				set(newRGB) {
@@ -279,7 +329,7 @@ export default defineComponent({
 
 			const hsl = computed<number[]>({
 				get() {
-					const arr = color.value !== null ? color.value.hsl().array() : [0, 0, 0];
+					const arr = color.value !== null ? color.value.hsl().array() : showAlpha.value ? [0, 0, 0, 1] : [0, 0, 0];
 					return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
 				},
 				set(newHSL) {
@@ -368,7 +418,9 @@ export default defineComponent({
 }
 
 .v-input.html-color-select {
-	display: none;
+	width: 0;
+	height: 0;
+	visibility: hidden;
 }
 
 .color-input {
@@ -378,7 +430,6 @@ export default defineComponent({
 .color-data-inputs {
 	display: grid;
 	grid-gap: 0px;
-	grid-template-columns: repeat(5, 1fr);
 	width: 100%;
 	padding: 12px 10px;
 }
@@ -416,7 +467,7 @@ export default defineComponent({
 }
 
 .color-data-inputs.stacked {
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: repeat(4, 1fr);
 }
 
 .color-data-inputs.stacked .color-type {
@@ -444,20 +495,22 @@ export default defineComponent({
 	--border-radius: 0px 0px 4px 0px;
 }
 
+.alpha-switch {
+	padding: 10px;
+}
+
 .color-data-alphas {
 	display: grid;
 	grid-gap: 12px;
-	grid-template-columns: 1fr 90px;
+	grid-template-columns: 180px 1fr;
+	align-items: baseline;
 	width: 100%;
-	padding: 0 10px 12px 10px;
+	height: 50px;
+	padding: 0 10px 12px;
 }
 
 .color-data-alphas .color-data-alpha {
 	display: grid;
-}
-
-.color-data-alphas .color-data-alpha .v-slider {
-	padding-top: 12px;
 }
 
 .color-data-alphas .color-data-alpha .slider input {
