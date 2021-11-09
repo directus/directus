@@ -253,7 +253,7 @@ export default defineComponent({
 		const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
 		const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
 		const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable');
-		const unique = syncFieldDetailStoreProperty('field.schema.unique');
+		const unique = syncFieldDetailStoreProperty('field.schema.is_unique');
 		const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
 
 		const { t } = useI18n();
