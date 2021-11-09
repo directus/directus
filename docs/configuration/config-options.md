@@ -371,15 +371,15 @@ often possible to cache assets for far longer than you would cache database cont
 
 :::
 
-| Variable                         | Description                                                                                  | Default Value    |
-| -------------------------------- | -------------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                  | Whether or not caching is enabled.                                                           | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>        | How long the cache is persisted.                                                             | `30m`            |
-| `CACHE_CONTROL_S_MAXAGE`         | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value     | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup> | Automatically purge the cache on `create`, `update`, and `delete` actions.                   | `false`          |
-| `CACHE_SCHEMA`<sup>[3]</sup>     | Whether or not the database schema is cached. One of `false`, `true`, or a string time value | `true`           |
-| `CACHE_NAMESPACE`                | How to scope the cache data.                                                                 | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                      | `memory`         |
+| Variable                         | Description                                                                              | Default Value    |
+| -------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`                  | Whether or not caching is enabled.                                                       | `false`          |
+| `CACHE_TTL`<sup>[1]</sup>        | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_CONTROL_S_MAXAGE`         | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup> | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SCHEMA`<sup>[3]</sup>     | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
+| `CACHE_NAMESPACE`                | How to scope the cache data.                                                             | `directus-cache` |
+| `CACHE_STORE`<sup>[4]</sup>      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -605,7 +605,7 @@ information and roles will be assigned from Active Directory.
 | `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                    | `cn`          |
 | `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                  | --            |
 | `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group. | `member`      |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user         | `mail`        |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.        | `mail`        |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
 
@@ -634,6 +634,7 @@ AUTH_GOOGLE_DRIVER="openid"
 AUTH_GOOGLE_CLIENT_ID="<google_application_id>"
 AUTH_GOOGLE_CLIENT_SECRET= "<google_application_secret_key>"
 AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
+AUTH_GOOGLE_IDENTIFIER_KEY="email"
 AUTH_GOOGLE_ICON="google"
 
 AUTH_ADOBE_DRIVER="oauth2"
@@ -653,10 +654,10 @@ AUTH_ADOBE_ICON="adobe"
 
 ## Email
 
-| Variable          | Description                                                       | Default Value          |
-| ----------------- | ----------------------------------------------------------------- | ---------------------- |
-| `EMAIL_FROM`      | Email address from which emails are sent.                         | `no-reply@directus.io` |
-| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`. | `sendmail`             |
+| Variable          | Description                                                              | Default Value          |
+| ----------------- | ------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_FROM`      | Email address from which emails are sent.                                | `no-reply@directus.io` |
+| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `ses`. | `sendmail`             |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
@@ -686,6 +687,14 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
 | `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
 | `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | `api.mailgun.net` |
+
+### AWS SES (`ses`)
+
+| Variable                                   | Description                  | Default Value |
+| ------------------------------------------ | ---------------------------- | ------------- |
+| `EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID`     | Your AWS SES access key. ID. | --            |
+| `EMAIL_SES_CREDENTIALS__SECRET_ACCESS_KEY` | Your AWS SES secret key.     | --            |
+| `EMAIL_SES_REGION`                         | Your AWS SES region.         | --            |
 
 ## Admin Account
 

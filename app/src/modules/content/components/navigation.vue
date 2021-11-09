@@ -1,17 +1,19 @@
 <template>
-	<div class="collections-navigation-wrapper">
+	<div class="content-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
 			<v-input v-model="search" type="search" :placeholder="t('search_collection')" />
 		</div>
 
 		<v-list
 			v-model="activeGroups"
-			scope="collections-navigation"
-			class="collections-navigation"
+			scope="content-navigation"
+			class="content-navigation"
+			tabindex="-1"
 			nav
 			:mandatory="false"
 			:dense="dense"
 			@contextmenu.prevent.stop="activateContextMenu"
+			@focusout="deactivateContextMenu"
 		>
 			<navigation-item
 				v-for="collection in rootItems"
@@ -61,7 +63,6 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const contextMenu = ref();
-		const contextMenuTarget = ref<undefined | string>();
 
 		const rootItems = computed(() => {
 			const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
@@ -83,15 +84,18 @@ export default defineComponent({
 			rootItems,
 			dense,
 			activateContextMenu,
+			deactivateContextMenu,
 			contextMenu,
-			contextMenuTarget,
 			search,
 			showSearch,
 		};
 
-		function activateContextMenu(event: PointerEvent, target?: string) {
-			contextMenuTarget.value = target;
+		function activateContextMenu(event: PointerEvent) {
 			contextMenu.value.activate(event);
+		}
+
+		function deactivateContextMenu() {
+			contextMenu.value.deactivate();
 		}
 	},
 });
@@ -111,13 +115,13 @@ export default defineComponent({
 	}
 }
 
-.collections-navigation-wrapper {
+.content-navigation-wrapper {
 	display: flex;
 	flex-direction: column;
 	min-height: 100%;
 }
 
-.collections-navigation {
+.content-navigation {
 	--v-list-min-height: calc(100% - 64px);
 
 	flex-grow: 1;

@@ -1,7 +1,7 @@
 # Custom Modules <small></small>
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
-> platform. [Learn more about Modules](/concepts/modules/).
+> platform. [Learn more about Modules](/getting-started/glossary/#modules).
 
 ## 1. Setup the Boilerplate
 
@@ -150,7 +150,7 @@ the root of the `package.json` file:
 
 ## 3. Develop Your Custom Module
 
-The module itself is simply a Vue component, which provides an blank canvas for creating anything you need.
+The module itself is simply a Vue component, which provides a blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 

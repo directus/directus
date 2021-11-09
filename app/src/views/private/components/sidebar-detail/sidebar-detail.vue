@@ -80,6 +80,11 @@ body {
 
 	display: contents;
 
+	:deep(.type-label) {
+		margin-bottom: 4px;
+		font-size: 1rem;
+	}
+
 	.toggle {
 		position: relative;
 		display: flex;

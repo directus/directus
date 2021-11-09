@@ -179,7 +179,6 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
@@ -819,16 +818,11 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
-    public_pages: Páginas Públicas
     public_foreground: Primeiro plano público
     public_background: Fundo público
     public_note: Nota pública
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
-    files_and_thumbnails: Arquivos e Miniaturas
-    storage_default_folder: Pasta de Armazenamento Padrão
-    storage_asset_presets: Predefinições de armazenamento
-    storage_asset_transform: Transformação de arquivos
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
   directus_fields:
@@ -849,7 +843,6 @@ fields:
     enforce_tfa: Exigir 2FA
     users: Usuários no cargo
     module_list: Navegação do Módulo
-    collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
     method: Método 
@@ -887,9 +880,6 @@ field_options:
       icon_name: Ícone
       name_name: Nome
       name_placeholder: Insira um título...
-    collection_list:
-      fields:
-        type_name: Tipo
     collections_name: Coleções
   directus_users:
     preferences_divider: Preferências do Usuário
@@ -1061,7 +1051,6 @@ interfaces:
   presentation-divider:
     divider: Divisor
     description: Rotular e dividir campos em seções
-    title_placeholder: Insira um título...
     inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
@@ -1135,7 +1124,6 @@ interfaces:
   system-folder:
     folder: Pasta
     description: Selecionar uma pasta
-    field_hint: Coloca arquivos recém-enviados na pasta selecionada. Não afeta os arquivos existentes que estão selecionados.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1323,8 +1311,6 @@ layouts:
     calendar: Calendário
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
-  map:
-    field: Geometria
 panels:
   label:
     name: Rótulo

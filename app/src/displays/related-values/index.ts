@@ -2,7 +2,6 @@ import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getRelatedCollection from '@/utils/get-related-collection';
-import options from './options.vue';
 import DisplayRelatedValues from './related-values.vue';
 import { useFieldsStore } from '@/stores';
 
@@ -16,7 +15,23 @@ export default defineDisplay({
 	description: '$t:displays.related-values.description',
 	icon: 'settings_ethernet',
 	component: DisplayRelatedValues,
-	options: options,
+	options: ({ relations }) => {
+		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
+
+		return [
+			{
+				field: 'template',
+				name: '$t:display_template',
+				meta: {
+					interface: 'system-display-template',
+					options: {
+						collectionName: relatedCollection,
+					},
+					width: 'full',
+				},
+			},
+		];
+	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a'],
 	fields: (options: Options | null, { field, collection }) => {

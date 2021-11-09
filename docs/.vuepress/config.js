@@ -444,11 +444,6 @@ module.exports = {
 						path: '/extensions/themes',
 						title: 'Themes',
 					},
-					{
-						type: 'page',
-						path: '/extensions/app-translations',
-						title: 'Translations',
-					},
 				],
 			},
 			{

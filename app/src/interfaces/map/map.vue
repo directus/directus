@@ -1,6 +1,13 @@
 <template>
 	<div class="interface-map">
-		<div class="map" :class="{ loading: mapLoading, error: geometryParsingError || geometryOptionsError }">
+		<div
+			class="map"
+			:class="{
+				loading: mapLoading,
+				error: geometryParsingError || geometryOptionsError,
+				'has-selection': selection.length > 0,
+			}"
+		>
 			<div ref="container" />
 		</div>
 		<div
@@ -58,7 +65,7 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, toRefs, computed } from 'vue';
-import {
+import maplibre, {
 	LngLatLike,
 	LngLatBoundsLike,
 	AnimationOptions,
@@ -66,7 +73,6 @@ import {
 	Map,
 	NavigationControl,
 	GeolocateControl,
-	PointLike,
 } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 // @ts-ignore
@@ -149,9 +155,10 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
 
-		const geometryType = (props.fieldData?.schema?.geometry_type ?? props.geometryType) as GeometryType;
+		const geometryType = props.geometryType || (props.fieldData?.type.split('.')[1] as GeometryType);
 		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
 
+		const mapboxKey = getSetting('mapbox_key');
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
@@ -169,14 +176,14 @@ export default defineComponent({
 			geometryOptionsError.value = error;
 		}
 
+		const selection = ref<GeoJSON.Feature[]>([]);
+
 		const location = ref<LngLatLike | null>();
 		const projection = ref<{ x: number; y: number } | null>();
 		function updateProjection() {
 			projection.value = !location.value ? null : map.project(location.value as any);
 		}
 		watch(location, updateProjection);
-
-		const mapboxKey = getSetting('mapbox_key');
 
 		const controls = {
 			draw: new MapboxDraw(getDrawOptions(geometryType)),
@@ -187,15 +194,18 @@ export default defineComponent({
 			geolocate: new GeolocateControl({
 				showUserLocation: false,
 			}),
-			geocoder: !mapboxKey
-				? null
-				: (new MapboxGeocoder({
-						accessToken: mapboxKey,
-						collapsed: true,
-						flyTo: { speed: 1.4 },
-						marker: false,
-				  }) as any),
+			geocoder: undefined as MapboxGeocoder | undefined,
 		};
+		if (mapboxKey) {
+			controls.geocoder = new MapboxGeocoder({
+				accessToken: mapboxKey,
+				collapsed: true,
+				flyTo: { speed: 1.4 },
+				marker: false,
+				mapboxgl: maplibre as any,
+				placeholder: t('layouts.map.find_location'),
+			});
+		}
 
 		const tooltipVisible = ref(false);
 		const tooltipMessage = ref('');
@@ -238,6 +248,7 @@ export default defineComponent({
 			basemap,
 			location,
 			projection,
+			selection,
 		};
 
 		function setupMap(): () => void {
@@ -275,6 +286,7 @@ export default defineComponent({
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
 				map.on('draw.modechange', handleDrawModeChange);
+				map.on('draw.selectionchange', handleSelectionChange);
 				map.on('move', updateProjection);
 				for (const layer of activeLayers) {
 					map.on('mousedown', layer, hideTooltip);
@@ -437,6 +449,10 @@ export default defineComponent({
 			}
 		}
 
+		function handleSelectionChange(event: any) {
+			selection.value = event.features;
+		}
+
 		function handleDrawUpdate() {
 			currentGeometry = getCurrentGeometry();
 			if (!currentGeometry) {
@@ -447,7 +463,7 @@ export default defineComponent({
 			}
 		}
 
-		function handleKeyDown(event) {
+		function handleKeyDown(event: any) {
 			if ([8, 46].includes(event.keyCode)) {
 				controls.draw.trash();
 			}
@@ -476,6 +492,10 @@ export default defineComponent({
 		.maplibregl-map {
 			width: 100%;
 			height: 100%;
+		}
+
+		&:not(.has-selection) :deep(.mapbox-gl-draw_trash) {
+			display: none;
 		}
 	}
 
@@ -528,13 +548,13 @@ export default defineComponent({
 	pointer-events: none;
 }
 
-:deep(.fade-enter-active),
-:deep(.fade-leave-active) {
+.fade-enter-active,
+.fade-leave-active {
 	transition: opacity var(--medium) var(--transition);
 }
 
-:deep(.fade-enter-from),
-:deep(.fade-leave-to) {
+.fade-enter-from,
+.fade-leave-to {
 	opacity: 0;
 }
 </style>

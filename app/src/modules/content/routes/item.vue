@@ -1,5 +1,5 @@
 <template>
-	<collections-not-found
+	<content-not-found
 		v-if="error || (collectionInfo.meta && collectionInfo.meta.singleton === true && primaryKey !== null)"
 	/>
 
@@ -51,7 +51,7 @@
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: t('collections'), to: '/collections' }]"
+				:items="[{ name: t('content'), to: '/content' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
@@ -136,13 +136,14 @@
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
 		</template>
 
 		<template #navigation>
-			<collections-navigation :current-collection="collection" />
+			<content-navigation :current-collection="collection" />
 		</template>
 
 		<v-form
@@ -195,8 +196,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
-import CollectionsNavigation from '../components/navigation.vue';
-import CollectionsNotFound from './not-found.vue';
+import ContentNavigation from '../components/navigation.vue';
+import ContentNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
@@ -211,10 +212,10 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
-	name: 'CollectionsItem',
+	name: 'ContentsItem',
 	components: {
-		CollectionsNavigation,
-		CollectionsNotFound,
+		ContentNavigation,
+		ContentNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
 		SaveOptions,
@@ -385,6 +386,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			templateData,
 			templateDataLoading,
 			archiveTooltip,
@@ -415,7 +417,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: collectionInfo.value?.name,
-					to: `/collections/${props.collection}`,
+					to: `/content/${props.collection}`,
 				},
 			]);
 
@@ -427,7 +429,7 @@ export default defineComponent({
 
 			try {
 				await save();
-				if (props.singleton === false) router.push(`/collections/${props.collection}`);
+				if (props.singleton === false) router.push(`/content/${props.collection}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -443,7 +445,7 @@ export default defineComponent({
 
 				if (props.primaryKey === '+') {
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+					router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 				}
 			} catch {
 				// Save shows unexpected error dialog
@@ -459,7 +461,7 @@ export default defineComponent({
 				if (isNew.value === true) {
 					refresh();
 				} else {
-					router.push(`/collections/${props.collection}/+`);
+					router.push(`/content/${props.collection}/+`);
 				}
 			} catch {
 				// Save shows unexpected error dialog
@@ -469,7 +471,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.push(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+				if (newPrimaryKey) router.push(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -479,7 +481,7 @@ export default defineComponent({
 			try {
 				await remove();
 				edits.value = {};
-				router.push(`/collections/${props.collection}`);
+				router.push(`/content/${props.collection}`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -490,7 +492,7 @@ export default defineComponent({
 				await archive();
 
 				if (isArchived.value === true) {
-					router.push(`/collections/${props.collection}`);
+					router.push(`/content/${props.collection}`);
 				} else {
 					confirmArchive.value = false;
 				}
@@ -504,6 +506,11 @@ export default defineComponent({
 			edits.value = {};
 			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		function revert(values: Record<string, any>) {

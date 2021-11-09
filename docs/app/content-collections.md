@@ -58,7 +58,7 @@ to return data in a custom order.
 
 **[Learn more about Layouts](/getting-started/glossary/#layouts)**
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to browse
 3. Click "Layout Options" in the page sidebar
 4. Choose the desired "Layout" you want to use
@@ -93,21 +93,34 @@ features/options:
 
 ### Calendar Layout
 
+An excellent choice for temporal (date/time) data, this Layout allows you to choose between a Month, Week, Day, and List
+view. The following options are included:
+
+- Display Layout
+- Start Date Field
+- End Date Field
+
 ### Map Layout
+
+For geospatial/geographic data, the Map Layout provides a world map for points, lines, and other geometry. The following
+options are available:
+
+- Basemap
+- Location Field
+- Display Template
+- Enable Clustering
 
 ## Searching Items
 
-**[Learn more about Search](/guides/items/#searching-items)**
-
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to search
 3. Type your search query into the input located in the header
 
 ## Filtering Items
 
-**[Learn more about Filtering](/guides/items/#filtering-items).**
+**[Learn more about Filtering](/configuration/filter-rules/).**
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to filter
 3. Click "Advanced Filter" in the page sidebar
 4. Click the "Add Filter" dropdown and select the field to filter on
@@ -117,9 +130,7 @@ features/options:
 
 ## Bookmarking Item Presets
 
-**[Learn more about Bookmarks](/guides/items/#bookmarking-item-presets)**
-
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to bookmark
 3. Configure the page as desired (eg: layout, options, search, filters, order, etc)
 4. Click the "Create Bookmark" (bookmark icon) button in the header beside the page title

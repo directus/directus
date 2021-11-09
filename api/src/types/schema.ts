@@ -1,4 +1,4 @@
-import { Type, Permission } from '@directus/shared/types';
+import { Type } from '@directus/shared/types';
 import { Relation } from './relation';
 
 export type FieldOverview = {
@@ -32,5 +32,4 @@ export type CollectionsOverview = {
 export type SchemaOverview = {
 	collections: CollectionsOverview;
 	relations: Relation[];
-	permissions: Permission[];
 };
