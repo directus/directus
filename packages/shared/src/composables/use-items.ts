@@ -61,7 +61,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	let currentRequest: CancelTokenSource | null = null;
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
-	const fetchItems = throttle(getItems, 350);
+	const fetchItems = throttle(getItems, 500);
 
 	if (fetchOnInit) {
 		fetchItems();

@@ -144,7 +144,7 @@ It's also worth mentioning that everything is data. Try for example running `dir
 #### Table
 
 The default output format. This is the "pretty" output, you'll most likely want to use this if you're not dealing with
-data in a way you need to pipe it to another command and/or store it it for parsing.
+data in a way you need to pipe it to another command and/or store it for parsing.
 
 This output will output colors and highlight content if it detects you're running in TTL.
 

@@ -4,7 +4,7 @@
 
 import { Auth } from '../../src/base/auth';
 import { ItemsHandler } from '../../src/base/items';
-import { AxiosTransport } from '../../src/base/transport/axios-transport';
+import { Transport } from '../../src/base/transport';
 import { Directus } from '../../src/base';
 import {
 	ActivityHandler,
@@ -36,7 +36,7 @@ describe('sdk', function () {
 	});
 
 	it('has transport', function () {
-		expect(sdk.transport).toBeInstanceOf(AxiosTransport);
+		expect(sdk.transport).toBeInstanceOf(Transport);
 	});
 
 	it('has activity instance', function () {

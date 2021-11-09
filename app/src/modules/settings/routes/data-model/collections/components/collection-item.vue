@@ -1,6 +1,6 @@
 <template>
 	<div class="collection-item">
-		<v-list-item block clickable :class="{ hidden: collection.meta?.hidden }">
+		<v-list-item block dense clickable :class="{ hidden: collection.meta?.hidden }">
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>

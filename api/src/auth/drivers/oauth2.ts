@@ -24,7 +24,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
 
-		if (!authorizeUrl || !accessUrl || !profileUrl || !clientId || !clientSecret || !additionalConfig.provider) {
+		if (!authorizeUrl || !accessUrl || !clientId || !clientSecret || !additionalConfig.provider) {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 
@@ -55,10 +55,13 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 	generateAuthUrl(codeVerifier: string): string {
 		try {
+			const codeChallenge = generators.codeChallenge(codeVerifier);
 			return this.client.authorizationUrl({
 				scope: this.config.scope ?? 'email',
-				code_challenge: generators.codeChallenge(codeVerifier),
+				code_challenge: codeChallenge,
 				code_challenge_method: 'S256',
+				// Some providers require state even with PKCE
+				state: codeChallenge,
 				access_type: 'offline',
 			});
 		} catch (e) {
@@ -85,13 +88,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		let userInfo;
 
 		try {
-			tokenSet = await this.client.grant({
-				grant_type: 'authorization_code',
-				code: payload.code,
-				redirect_uri: this.redirectUrl,
-				code_verifier: payload.codeVerifier,
-			});
-			userInfo = await this.client.userinfo(tokenSet);
+			tokenSet = await this.client.oauthCallback(
+				this.redirectUrl,
+				{ code: payload.code, state: payload.state },
+				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
+			);
+
+			const issuer = this.client.issuer;
+			if (issuer.metadata.userinfo_endpoint) {
+				userInfo = await this.client.userinfo(tokenSet);
+			} else if (tokenSet.id_token) {
+				userInfo = tokenSet.claims();
+			} else {
+				throw new InvalidConfigException('OAuth profile URL not defined', { provider: this.config.provider });
+			}
 		} catch (e) {
 			throw handleError(e);
 		}
@@ -234,13 +244,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				if (!req.query.code) {
-					logger.warn(`Couldn't extract OAuth2 code from query: ${JSON.stringify(req.query)}`);
+				if (!req.query.code || !req.query.state) {
+					logger.warn(`Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,
 					codeVerifier: verifier,
+					state: req.query.state,
 				});
 			} catch (error: any) {
 				logger.warn(error);

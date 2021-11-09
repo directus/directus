@@ -30,8 +30,7 @@ export default defineLayout<LayoutOptions>({
 	component: CalendarLayout,
 	slots: {
 		options: CalendarOptions,
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		sidebar: () => {},
+		sidebar: () => undefined,
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
@@ -62,7 +61,7 @@ export default defineLayout<LayoutOptions>({
 				_and: [
 					{
 						[startDateField.value]: {
-							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
+							_between: [formatISO(calendar.value.view.activeStart), formatISO(calendar.value.view.activeEnd)],
 						},
 					},
 				],
@@ -161,7 +160,7 @@ export default defineLayout<LayoutOptions>({
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
-				contentHeight: 800,
+				height: '100%',
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
@@ -192,7 +191,7 @@ export default defineLayout<LayoutOptions>({
 
 						const endpoint = collection.value.startsWith('directus')
 							? collection.value.substring(9)
-							: `collections/${collection.value}`;
+							: `content/${collection.value}`;
 
 						router.push(`/${endpoint}/${primaryKey}`);
 					}

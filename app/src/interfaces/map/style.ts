@@ -1,6 +1,6 @@
 import { AnyLayer } from 'maplibre-gl';
 import colors from '@/styles/_colors.module.scss';
-const { green, orange, yellow, black, white } = colors;
+const { green, orange, black, white } = colors;
 const color = ['case', ['==', ['get', 'mode'], 'static'], black, ['==', ['get', 'active'], 'true'], orange, green];
 
 export default <AnyLayer[]>[

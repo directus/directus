@@ -4,11 +4,12 @@ import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import { Relation, SchemaOverview } from '../types';
-import { Aggregate, Filter, Query } from '@directus/shared/types';
+import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/types';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getGeometryHelper } from '../database/helpers/geometry';
+import { getDateHelper } from '../database/helpers/date';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -22,7 +23,7 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview,
 	subQuery = false
-): void {
+): Knex.QueryBuilder {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sortField) => {
@@ -54,10 +55,6 @@ export default function applyQuery(
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
-	if (query.filter) {
-		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
-	}
-
 	if (query.search) {
 		applySearch(schema, dbQuery, query.search, collection);
 	}
@@ -67,8 +64,35 @@ export default function applyQuery(
 	}
 
 	if (query.aggregate) {
-		applyAggregate(dbQuery, query.aggregate);
+		applyAggregate(dbQuery, query.aggregate, collection);
 	}
+
+	if (query.union && query.union[1].length > 0) {
+		const [field, keys] = query.union as [string, (string | number)[]];
+
+		const queries = keys.map((key) => {
+			let filter = { [field]: { _eq: key } } as Filter;
+
+			if (query.filter) {
+				if ('_and' in query.filter) {
+					(query.filter as LogicalFilterAND)._and.push(filter);
+					filter = query.filter;
+				} else {
+					filter = {
+						_and: [query.filter, filter],
+					} as LogicalFilterAND;
+				}
+			}
+
+			return knex.select('*').from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
+		});
+
+		dbQuery = knex.unionAll(queries);
+	} else if (query.filter) {
+		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
+	}
+
+	return dbQuery;
 }
 
 /**
@@ -117,13 +141,15 @@ export function applyFilter(
 	rootFilter: Filter,
 	collection: string,
 	subQuery = false
-): void {
+) {
 	const relations: Relation[] = schema.relations;
 
 	const aliasMap: Record<string, string> = {};
 
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
+
+	return rootQuery;
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
@@ -195,7 +221,7 @@ export function applyFilter(
 							.on(
 								`${parentAlias || parentCollection}.${relation.field}`,
 								'=',
-								knex.raw(`CAST(?? AS TEXT)`, `${alias}.${schema.collections[pathScope].primary}`)
+								knex.raw(`CAST(?? AS VARCHAR(255))`, `${alias}.${schema.collections[pathScope].primary}`)
 							)
 							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
 					});
@@ -341,6 +367,22 @@ export function applyFilter(
 				dbQuery[logical].andWhere((query) => {
 					query.where(key, '!=', '');
 				});
+			}
+
+			const dateHelper = getDateHelper();
+
+			const [collection, field] = key.split('.');
+
+			if (collection in schema.collections && field in schema.collections[collection].fields) {
+				const type = schema.collections[collection].fields[field].type;
+
+				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
+					if (Array.isArray(compareValue)) {
+						compareValue = compareValue.map((val) => dateHelper.parseDate(val));
+					} else {
+						compareValue = dateHelper.parseDate(compareValue);
+					}
+				}
 			}
 
 			// The following fields however, require a value to be run. If no value is passed, we
@@ -535,45 +577,45 @@ export async function applySearch(
 	});
 }
 
-export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate): void {
+export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate, collection: string): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
 		if (!fields) continue;
 
 		for (const field of fields) {
 			if (operation === 'avg') {
-				dbQuery.avg(field, { as: `avg->${field}` });
+				dbQuery.avg(`${collection}.${field}`, { as: `avg->${field}` });
 			}
 
 			if (operation === 'avgDistinct') {
-				dbQuery.avgDistinct(field, { as: `avgDistinct->${field}` });
+				dbQuery.avgDistinct(`${collection}.${field}`, { as: `avgDistinct->${field}` });
 			}
 
 			if (operation === 'count') {
 				if (field === '*') {
 					dbQuery.count('*', { as: 'count' });
 				} else {
-					dbQuery.count(field, { as: `count->${field}` });
+					dbQuery.count(`${collection}.${field}`, { as: `count->${field}` });
 				}
 			}
 
 			if (operation === 'countDistinct') {
-				dbQuery.countDistinct(field, { as: `countDistinct->${field}` });
+				dbQuery.countDistinct(`${collection}.${field}`, { as: `countDistinct->${field}` });
 			}
 
 			if (operation === 'sum') {
-				dbQuery.sum(field, { as: `sum->${field}` });
+				dbQuery.sum(`${collection}.${field}`, { as: `sum->${field}` });
 			}
 
 			if (operation === 'sumDistinct') {
-				dbQuery.sumDistinct(field, { as: `sumDistinct->${field}` });
+				dbQuery.sumDistinct(`${collection}.${field}`, { as: `sumDistinct->${field}` });
 			}
 
 			if (operation === 'min') {
-				dbQuery.min(field, { as: `min->${field}` });
+				dbQuery.min(`${collection}.${field}`, { as: `min->${field}` });
 			}
 
 			if (operation === 'max') {
-				dbQuery.max(field, { as: `max->${field}` });
+				dbQuery.max(`${collection}.${field}`, { as: `max->${field}` });
 			}
 		}
 	}

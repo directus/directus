@@ -10,7 +10,6 @@ import { Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import { unflatten } from 'flat';
-import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 import { parse as wktToGeoJSON } from 'wellknown';
 import { generateHash } from '../utils/generate-hash';
@@ -64,7 +63,13 @@ export class PayloadService {
 		},
 		async boolean({ action, value }) {
 			if (action === 'read') {
-				return value === true || value === 1 || value === '1';
+				if (value === true || value === 1 || value === '1') {
+					return true;
+				} else if (value === false || value === 0 || value === '0') {
+					return false;
+				} else if (value === null || value === '') {
+					return null;
+				}
 			}
 
 			return value;
@@ -224,13 +229,11 @@ export class PayloadService {
 
 		const process =
 			action == 'read'
-				? (value: any) => {
-						if (typeof value === 'string') return wktToGeoJSON(value);
-				  }
+				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
 				: (value: any) => helper.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {

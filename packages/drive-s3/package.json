@@ -1,9 +1,13 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.0.0-rc.100",
+	"version": "9.0.0",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"types": "dist/index.d.ts",
 	"keywords": [
 		"storage",
@@ -34,7 +38,7 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"@directus/drive": "9.0.0-rc.100",
+		"@directus/drive": "9.0.0",
 		"aws-sdk": "^2.928.0",
 		"normalize-path": "^3.0.0"
 	},
@@ -42,7 +46,7 @@
 		"@lukeed/uuid": "2.0.0",
 		"@types/fs-extra": "9.0.13",
 		"@types/jest": "27.0.2",
-		"@types/node": "16.11.6",
+		"@types/node": "16.11.7",
 		"@types/normalize-path": "3.0.0",
 		"dotenv": "10.0.0",
 		"fs-extra": "10.0.0",

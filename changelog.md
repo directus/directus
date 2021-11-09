@@ -2,107 +2,342 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0 (November 4, 2021)
+
+### :rocket: Improvements
+
+- **create-directus-project**
+  - [#9496](https://github.com/directus/directus/pull/9496) Don't show all migrations logged on init ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#9491](https://github.com/directus/directus/pull/9491) Remove beta flag from insights ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9490](https://github.com/directus/directus/pull/9490) Remove collection listing option from role settings ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9487](https://github.com/directus/directus/pull/9487) Removes "Collections Navigation" setting from roles detail page ([@YannickMol](https://github.com/YannickMol))
+
+### :bug: Bug Fixes
+
+- **sdk**
+  - [#9502](https://github.com/directus/directus/pull/9502) Fix importing the SDK from a Node ESM environment ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#9501](https://github.com/directus/directus/pull/9501) Prevent negative hashes from being generated ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9494](https://github.com/directus/directus/pull/9494) Move union query application to applyQuery, fix where clause ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9448](https://github.com/directus/directus/pull/9448) Use hash instead of random for default index name ([@faridsaud](https://github.com/faridsaud))
+- **App**
+  - [#9485](https://github.com/directus/directus/pull/9485) Fix presentation-links interfaces ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9484](https://github.com/directus/directus/pull/9484) Fix m2a relations on editing field ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9483](https://github.com/directus/directus/pull/9483) Fix nested system-interface-options usage ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9477](https://github.com/directus/directus/pull/9477) Resolve calendar link to detail page ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9432](https://github.com/directus/directus/pull/9432) Properly handle M2A fields in fieldStore and useFieldTree ([@Oreilles](https://github.com/Oreilles))
+  - [#9420](https://github.com/directus/directus/pull/9420) Fix invalid collection for Interface Display Template for M2M relationships ([@Toilal](https://github.com/Toilal))
+  - [#9407](https://github.com/directus/directus/pull/9407) Fix render template for number template parts (#9406) ([@Toilal](https://github.com/Toilal))
+  - [#9397](https://github.com/directus/directus/pull/9397) Update geometric types and patch new field flow. ([@Oreilles](https://github.com/Oreilles))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#9466](https://github.com/directus/directus/pull/9466) Fixing some type errors in app ([@paescuj](https://github.com/paescuj))
+  - [#9447](https://github.com/directus/directus/pull/9447) Clean up interface options type ([@nickrum](https://github.com/nickrum))
+
+### :memo: Documentation
+
+- [#9497](https://github.com/directus/directus/pull/9497) Small fixes for Hooks documentation ([@tylerforesthauser](https://github.com/tylerforesthauser))
+- [#9489](https://github.com/directus/directus/pull/9489) Clarify hook register function parameter descriptions in docs ([@nickrum](https://github.com/nickrum))
+- [#9486](https://github.com/directus/directus/pull/9486) Fix docs about SDK refactor ([@joselcvarela](https://github.com/joselcvarela))
+- [#9450](https://github.com/directus/directus/pull/9450) fix docs homepage header responsiveness ([@azrikahar](https://github.com/azrikahar))
+
+## v9.0.0-rc.101 (November 3, 2021)
+
+### ⚠️ Breaking Changes
+
+- **Hooks** have an updated way of registering them, that makes an explicit split between actions, filters, init, and scheduler hooks (h/t @smilledge). All the previous functionality is still available, but you will have to update your custom hooks to fit the new structure. Please see [the updated docs](https://docs.directus.io/extensions/hooks/) for more information. (https://github.com/directus/directus/pull/8027)
+- The Collections module has been renamed to Content. If you had a custom module bar override configured in project settings, you might have to re-enable the ~~collections~~ content module. (https://github.com/directus/directus/pull/9441)
+- The type signature for the internal Accountability and SchemaOverview objects have changed slightly. Permissions are now stored under Accountability instead of SchemaOverview. If you were relying on the permissions existing under SchemaOverview, please make sure to update your code to rely on Accountability instead. (https://github.com/directus/directus/pull/9376)
+
+### :sparkles: New Features
+
+- **API**
+  - :warning: [#9376](https://github.com/directus/directus/pull/9376) Allow dynamic user variables to be used with filter rules (cont.) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - :warning: [#9376](https://github.com/directus/directus/pull/9376) Allow dynamic user variables to be used with filter rules (cont.) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :rocket: Improvements
+
+- **App**
+  - [#9446](https://github.com/directus/directus/pull/9446) Rename activity->notifications module ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - :warning: [#9441](https://github.com/directus/directus/pull/9441) Rename Collections Modules to Content Module ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9440](https://github.com/directus/directus/pull/9440) Tweak project-settings page ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9387](https://github.com/directus/directus/pull/9387) Add the generic stroke to notice preview icon ([@azrikahar](https://github.com/azrikahar))
+  - [#9362](https://github.com/directus/directus/pull/9362) remove default color options from labels display ([@benhaynes](https://github.com/benhaynes))
+  - [#9337](https://github.com/directus/directus/pull/9337) Add placeholder to Language Indicator Field for first Translations setup ([@azrikahar](https://github.com/azrikahar))
+  - [#9297](https://github.com/directus/directus/pull/9297) Add shadows to v-menu angles ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#9295](https://github.com/directus/directus/pull/9295) Set calendar height to 100% ([@Oreilles](https://github.com/Oreilles))
+  - [#9292](https://github.com/directus/directus/pull/9292) Update translation icon in interface selector ([@azrikahar](https://github.com/azrikahar))
+  - [#9288](https://github.com/directus/directus/pull/9288) Map layout and interface improvements ([@Oreilles](https://github.com/Oreilles))
+  - [#9285](https://github.com/directus/directus/pull/9285) Filter files by folder when an upload folder is specified in the file interface ([@azrikahar](https://github.com/azrikahar))
+  - [#9282](https://github.com/directus/directus/pull/9282) Prevent file interface from preloading "Choose from Library" drawer ([@azrikahar](https://github.com/azrikahar))
+  - [#9281](https://github.com/directus/directus/pull/9281) Improve disabled interface selector style ([@azrikahar](https://github.com/azrikahar))
+  - [#9271](https://github.com/directus/directus/pull/9271) Context menu improvements ([@azrikahar](https://github.com/azrikahar))
+  - [#9270](https://github.com/directus/directus/pull/9270) Fix: disable sort field for singleton collections ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8497](https://github.com/directus/directus/pull/8497) Fix nullable boolean ([@paulboudewijn](https://github.com/paulboudewijn))
+- **Misc.**
+  - [#9443](https://github.com/directus/directus/pull/9443) Add exports fields to all packages ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#9368](https://github.com/directus/directus/pull/9368) Added fallback to "id_token" info if profile URL not defined ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9307](https://github.com/directus/directus/pull/9307) Feat/custom ldap mail attribute ([@dorianim](https://github.com/dorianim))
+  - [#9305](https://github.com/directus/directus/pull/9305) Add SET NULL to directus_files.uploaded_by constraint ([@jaycammarano](https://github.com/jaycammarano))
+  - [#9289](https://github.com/directus/directus/pull/9289) Added state param to OAuth to make Okta happy ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#8497](https://github.com/directus/directus/pull/8497) Fix nullable boolean ([@paulboudewijn](https://github.com/paulboudewijn))
+  - :warning: [#8027](https://github.com/directus/directus/pull/8027) Rework hook registration ([@nickrum](https://github.com/nickrum))
+
+### :bug: Bug Fixes
+
+- **Misc.**
+  - [#9437](https://github.com/directus/directus/pull/9437) Fix duplicate chat widget injection ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#9425](https://github.com/directus/directus/pull/9425) Fixed SET NULL on directus_files for MSSQL ([@jaycammarano](https://github.com/jaycammarano))
+  - [#9381](https://github.com/directus/directus/pull/9381) Set user token as unique ([@azrikahar](https://github.com/azrikahar))
+  - [#9339](https://github.com/directus/directus/pull/9339) Added user rebinding on reconnect in LDAP ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9318](https://github.com/directus/directus/pull/9318) fix(graphql): remove __typename from selection nodes when present ([@8byr0](https://github.com/8byr0))
+  - [#9314](https://github.com/directus/directus/pull/9314) Fix aggregation needing the table name to avoid ambiguous ([@danilopolani](https://github.com/danilopolani))
+  - [#9310](https://github.com/directus/directus/pull/9310) Update Oracle to support `is_generated` ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9300](https://github.com/directus/directus/pull/9300) Removed empty list check in validateList. ([@Oreilles](https://github.com/Oreilles))
+  - [#9290](https://github.com/directus/directus/pull/9290) Fix geometry support check ([@Oreilles](https://github.com/Oreilles))
+  - [#7774](https://github.com/directus/directus/pull/7774) Fix date on sqlite ([@Nitwel](https://github.com/Nitwel))
+- **App**
+  - [#9414](https://github.com/directus/directus/pull/9414) Fix hover effect on o2m and m2a lists (#9412) ([@Toilal](https://github.com/Toilal))
+  - [#9403](https://github.com/directus/directus/pull/9403) Use primary key as default sort in map layout ([@Oreilles](https://github.com/Oreilles))
+  - [#9401](https://github.com/directus/directus/pull/9401) Fix related value for alias typed fields (#9210) ([@Toilal](https://github.com/Toilal))
+  - [#9393](https://github.com/directus/directus/pull/9393) Fix corresponding field name ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9353](https://github.com/directus/directus/pull/9353) Fix condition to translate directus collections ([@paescuj](https://github.com/paescuj))
+  - [#9349](https://github.com/directus/directus/pull/9349) fix M2A field creation unable to be saved ([@azrikahar](https://github.com/azrikahar))
+  - [#9333](https://github.com/directus/directus/pull/9333) Translations interface fix ([@d1rOn](https://github.com/d1rOn))
+  - [#9324](https://github.com/directus/directus/pull/9324) Fix issues with fields config ([@Nitwel](https://github.com/Nitwel))
+  - [#9301](https://github.com/directus/directus/pull/9301) Fix selection of "Group" field types ([@danilopolani](https://github.com/danilopolani))
+  - [#9291](https://github.com/directus/directus/pull/9291) Show lint errors for code input type JSON ([@azrikahar](https://github.com/azrikahar))
+  - [#9269](https://github.com/directus/directus/pull/9269) Fixed nullable and unique options disabled in advanced field settings ([@Oreilles](https://github.com/Oreilles))
+  - [#8104](https://github.com/directus/directus/pull/8104) Translate system fields when creating new collections ([@azrikahar](https://github.com/azrikahar))
+- **schema**
+  - [#9260](https://github.com/directus/directus/pull/9260) Removed invalid column in mssql schema inspector ([@Oreilles](https://github.com/Oreilles))
+
+### :sponge: Optimizations
+
+- **API**
+  - [#9418](https://github.com/directus/directus/pull/9418) Clean up API exports ([@nickrum](https://github.com/nickrum))
+- **Misc.**
+  - [#9408](https://github.com/directus/directus/pull/9408) Enhance comments in CI workflow ([@paescuj](https://github.com/paescuj))
+  - [#9404](https://github.com/directus/directus/pull/9404) Relocate renovate config to .github ([@paescuj](https://github.com/paescuj))
+  - [#9394](https://github.com/directus/directus/pull/9394) Link to all (open & closed) issues in bug report ([@paescuj](https://github.com/paescuj))
+  - [#9357](https://github.com/directus/directus/pull/9357) Fix eslint warnings ([@paescuj](https://github.com/paescuj))
+  - [#9309](https://github.com/directus/directus/pull/9309) Removed undefined type from LDAP userAccountControl ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9265](https://github.com/directus/directus/pull/9265) Add workflow-dispatch flag to e2e-tests.yml to allow manual workflow runs ([@jaycammarano](https://github.com/jaycammarano))
+  - [#9240](https://github.com/directus/directus/pull/9240) Revise GitHub workflows #2 ([@paescuj](https://github.com/paescuj))
+- **App**
+  - [#9287](https://github.com/directus/directus/pull/9287) Fix lint warnings in app ([@azrikahar](https://github.com/azrikahar))
+
+### :memo: Documentation
+
+- [#9437](https://github.com/directus/directus/pull/9437) Fix duplicate chat widget injection ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#9382](https://github.com/directus/directus/pull/9382) Update tfa_secret description in users.md ([@azrikahar](https://github.com/azrikahar))
+- [#9373](https://github.com/directus/directus/pull/9373) add live chat to public docs ([@benhaynes](https://github.com/benhaynes))
+- [#9354](https://github.com/directus/directus/pull/9354) Fixes broken links in the documentation ([@jaycammarano](https://github.com/jaycammarano))
+- [#9327](https://github.com/directus/directus/pull/9327) Fixes broken docs links ([@jaycammarano](https://github.com/jaycammarano))
+- [#9325](https://github.com/directus/directus/pull/9325) Fixes dead links in docs site. ([@jaycammarano](https://github.com/jaycammarano))
+- [#9321](https://github.com/directus/directus/pull/9321) add content and fix broken links ([@benhaynes](https://github.com/benhaynes))
+- [#9256](https://github.com/directus/directus/pull/9256) Fixed Github oauth config in docs ([@aidenfoxx](https://github.com/aidenfoxx))
+- [#9218](https://github.com/directus/directus/pull/9218) Update config-options.md ([@aidenfoxx](https://github.com/aidenfoxx))
+
+### :package: Dependency Updates
+
+- [#9436](https://github.com/directus/directus/pull/9436) Update dependency pinia to v2.0.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9428](https://github.com/directus/directus/pull/9428) Update dependency pinia to v2.0.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9386](https://github.com/directus/directus/pull/9386) Update fullcalendar monorepo to v5.10.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9385](https://github.com/directus/directus/pull/9385) Update dependency tinymce to v5.10.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9380](https://github.com/directus/directus/pull/9380) Update dependency mime to v3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9378](https://github.com/directus/directus/pull/9378) Update dependency knex to v0.95.13 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9377](https://github.com/directus/directus/pull/9377) Update dependency @types/ldapjs to v2.2.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9370](https://github.com/directus/directus/pull/9370) Update dependency mime to v2.6.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9367](https://github.com/directus/directus/pull/9367) Update gatsby monorepo to v4.1.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9359](https://github.com/directus/directus/pull/9359) Update dependency marked to v3.0.8 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9352](https://github.com/directus/directus/pull/9352) Update dependency @types/sharp to v0.29.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9341](https://github.com/directus/directus/pull/9341) Update vue monorepo to v3.2.21 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9317](https://github.com/directus/directus/pull/9317) Update typescript-eslint monorepo to v5.3.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9293](https://github.com/directus/directus/pull/9293) Update dependency rollup to v2.59.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9221](https://github.com/directus/directus/pull/9221) Update dependency npm to v8.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9202](https://github.com/directus/directus/pull/9202) Update dependency openid-client to v5 ([@renovate[bot]](https://github.com/apps/renovate))
+
+Directus refs/tags/v9.0.0-rc.101
+
 ## v9.0.0-rc.100 (October 29, 2021)
 
 ### :sparkles: New Features
 
 - **App**
-  - [#9109](https://github.com/directus/directus/pull/9109) Add new field flow ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9109](https://github.com/directus/directus/pull/9109) Add new field flow
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **API**
-  - [#9074](https://github.com/directus/directus/pull/9074) LDAP auth provider ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#8855](https://github.com/directus/directus/pull/8855) Add configurable headers for webhooks ([@Jakob-em](https://github.com/Jakob-em))
+  - [#9074](https://github.com/directus/directus/pull/9074) LDAP auth provider
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#8855](https://github.com/directus/directus/pull/8855) Add configurable headers for webhooks
+    ([@Jakob-em](https://github.com/Jakob-em))
 
 ### :rocket: Improvements
 
 - **App**
-  - [#9239](https://github.com/directus/directus/pull/9239) Map interface improvements ([@Oreilles](https://github.com/Oreilles))
-  - [#9184](https://github.com/directus/directus/pull/9184) Add missing options to the files interface ([@Oreilles](https://github.com/Oreilles))
-  - [#9183](https://github.com/directus/directus/pull/9183) Remove toLowerCase for dbSafe fields ([@GrefriT](https://github.com/GrefriT))
-  - [#9115](https://github.com/directus/directus/pull/9115) Feat: allow ctrl click to open new tab on tabular ([@joselcvarela](https://github.com/joselcvarela))
-  - [#9112](https://github.com/directus/directus/pull/9112) Ignore codemirror mode import types ([@Oreilles](https://github.com/Oreilles))
-  - [#9103](https://github.com/directus/directus/pull/9103) Use default filter operator for type in filter input. ([@Oreilles](https://github.com/Oreilles))
-  - [#9041](https://github.com/directus/directus/pull/9041) Use textarea input for textarea placeholder ([@azrikahar](https://github.com/azrikahar))
+  - [#9239](https://github.com/directus/directus/pull/9239) Map interface improvements
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9184](https://github.com/directus/directus/pull/9184) Add missing options to the files interface
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9183](https://github.com/directus/directus/pull/9183) Remove toLowerCase for dbSafe fields
+    ([@GrefriT](https://github.com/GrefriT))
+  - [#9115](https://github.com/directus/directus/pull/9115) Feat: allow ctrl click to open new tab on tabular
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9112](https://github.com/directus/directus/pull/9112) Ignore codemirror mode import types
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9103](https://github.com/directus/directus/pull/9103) Use default filter operator for type in filter input.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9041](https://github.com/directus/directus/pull/9041) Use textarea input for textarea placeholder
+    ([@azrikahar](https://github.com/azrikahar))
 - **API**
-  - :warning: [#9199](https://github.com/directus/directus/pull/9199) Export API dist folder at the root of the package path ([@nickrum](https://github.com/nickrum))
-  - [#9103](https://github.com/directus/directus/pull/9103) Use default filter operator for type in filter input. ([@Oreilles](https://github.com/Oreilles))
-  - [#9059](https://github.com/directus/directus/pull/9059) Added the provider to auth hooks ([@aidenfoxx](https://github.com/aidenfoxx))
+  - :warning: [#9199](https://github.com/directus/directus/pull/9199) Export API dist folder at the root of the package
+    path ([@nickrum](https://github.com/nickrum))
+  - [#9103](https://github.com/directus/directus/pull/9103) Use default filter operator for type in filter input.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9059](https://github.com/directus/directus/pull/9059) Added the provider to auth hooks
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 - **shared**
-  - [#9103](https://github.com/directus/directus/pull/9103) Use default filter operator for type in filter input. ([@Oreilles](https://github.com/Oreilles))
+  - [#9103](https://github.com/directus/directus/pull/9103) Use default filter operator for type in filter input.
+    ([@Oreilles](https://github.com/Oreilles))
 
 ### :bug: Bug Fixes
 
 - **API**
-  - [#9200](https://github.com/directus/directus/pull/9200) Fix generated columns being required.  ([@Oreilles](https://github.com/Oreilles))
-  - [#9186](https://github.com/directus/directus/pull/9186) Set no-cache header on extension sources ([@nickrum](https://github.com/nickrum))
-  - [#9153](https://github.com/directus/directus/pull/9153) Ignore email field in oauth and store email in external_identifier ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#9126](https://github.com/directus/directus/pull/9126) Fix localstorage file deletion ([@paulboudewijn](https://github.com/paulboudewijn))
-  - [#9122](https://github.com/directus/directus/pull/9122) Always cast M2A related primary keys to text. ([@Oreilles](https://github.com/Oreilles))
+  - [#9200](https://github.com/directus/directus/pull/9200) Fix generated columns being required.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9186](https://github.com/directus/directus/pull/9186) Set no-cache header on extension sources
+    ([@nickrum](https://github.com/nickrum))
+  - [#9153](https://github.com/directus/directus/pull/9153) Ignore email field in oauth and store email in
+    external_identifier ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9126](https://github.com/directus/directus/pull/9126) Fix localstorage file deletion
+    ([@paulboudewijn](https://github.com/paulboudewijn))
+  - [#9122](https://github.com/directus/directus/pull/9122) Always cast M2A related primary keys to text.
+    ([@Oreilles](https://github.com/Oreilles))
 - **App**
-  - [#9200](https://github.com/directus/directus/pull/9200) Fix generated columns being required.  ([@Oreilles](https://github.com/Oreilles))
-  - [#9187](https://github.com/directus/directus/pull/9187) Always show folder icon for alias tables (folders) ([@Oreilles](https://github.com/Oreilles))
-  - [#9180](https://github.com/directus/directus/pull/9180) Fix dynamic variables not working anymore in UUID filter ([@Oreilles](https://github.com/Oreilles))
-  - [#9179](https://github.com/directus/directus/pull/9179) Fix dynamic translations import ([@Oreilles](https://github.com/Oreilles))
-  - [#9143](https://github.com/directus/directus/pull/9143) fix time series date field allow list ([@azrikahar](https://github.com/azrikahar))
-  - [#9118](https://github.com/directus/directus/pull/9118) Fix field tree not updating appropriately. ([@Oreilles](https://github.com/Oreilles))
-  - [#9116](https://github.com/directus/directus/pull/9116) Fix filter added twice and remove unnecessary `_and` node. ([@Oreilles](https://github.com/Oreilles))
-  - [#9113](https://github.com/directus/directus/pull/9113) Fix: no options in repeater causes empty page ([@joselcvarela](https://github.com/joselcvarela))
-  - [#9070](https://github.com/directus/directus/pull/9070) Change v-checkbox background color when disabled ([@Oreilles](https://github.com/Oreilles))
-  - [#9067](https://github.com/directus/directus/pull/9067) Do not listen to the clicks of the ghosts ([@Oreilles](https://github.com/Oreilles))
-  - [#9062](https://github.com/directus/directus/pull/9062) Append `access_token` to images in WYSIWYG only once ([@danilopolani](https://github.com/danilopolani))
-  - [#9054](https://github.com/directus/directus/pull/9054) Update SSO links to correctly continue ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9200](https://github.com/directus/directus/pull/9200) Fix generated columns being required.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9187](https://github.com/directus/directus/pull/9187) Always show folder icon for alias tables (folders)
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9180](https://github.com/directus/directus/pull/9180) Fix dynamic variables not working anymore in UUID filter
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9179](https://github.com/directus/directus/pull/9179) Fix dynamic translations import
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9143](https://github.com/directus/directus/pull/9143) fix time series date field allow list
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9118](https://github.com/directus/directus/pull/9118) Fix field tree not updating appropriately.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9116](https://github.com/directus/directus/pull/9116) Fix filter added twice and remove unnecessary `_and` node.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9113](https://github.com/directus/directus/pull/9113) Fix: no options in repeater causes empty page
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9070](https://github.com/directus/directus/pull/9070) Change v-checkbox background color when disabled
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9067](https://github.com/directus/directus/pull/9067) Do not listen to the clicks of the ghosts
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9062](https://github.com/directus/directus/pull/9062) Append `access_token` to images in WYSIWYG only once
+    ([@danilopolani](https://github.com/danilopolani))
+  - [#9054](https://github.com/directus/directus/pull/9054) Update SSO links to correctly continue
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 
 ### :sponge: Optimizations
 
 - **API**
-  - [#9192](https://github.com/directus/directus/pull/9192) Clean up App base url replacement ([@nickrum](https://github.com/nickrum))
-  - [#9058](https://github.com/directus/directus/pull/9058) Improved invalid JWT handling ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9192](https://github.com/directus/directus/pull/9192) Clean up App base url replacement
+    ([@nickrum](https://github.com/nickrum))
+  - [#9058](https://github.com/directus/directus/pull/9058) Improved invalid JWT handling
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 - **App**
-  - [#9190](https://github.com/directus/directus/pull/9190) Clean up App type shims ([@nickrum](https://github.com/nickrum))
+  - [#9190](https://github.com/directus/directus/pull/9190) Clean up App type shims
+    ([@nickrum](https://github.com/nickrum))
 - **Misc.**
-  - [#9011](https://github.com/directus/directus/pull/9011) Revise GitHub workflows ([@paescuj](https://github.com/paescuj))
+  - [#9011](https://github.com/directus/directus/pull/9011) Revise GitHub workflows
+    ([@paescuj](https://github.com/paescuj))
 
 ### :memo: Documentation
 
-- [#9203](https://github.com/directus/directus/pull/9203) Clarified some oauth things in the docs ([@aidenfoxx](https://github.com/aidenfoxx))
-- [#9172](https://github.com/directus/directus/pull/9172) Fixes broken links in docs ([@jaycammarano](https://github.com/jaycammarano))
-- [#9170](https://github.com/directus/directus/pull/9170) Re-add missing oauth docs ([@rijkvanzanten](https://github.com/rijkvanzanten))
-- [#9142](https://github.com/directus/directus/pull/9142) Docs: improve running locally ([@joselcvarela](https://github.com/joselcvarela))
+- [#9203](https://github.com/directus/directus/pull/9203) Clarified some oauth things in the docs
+  ([@aidenfoxx](https://github.com/aidenfoxx))
+- [#9172](https://github.com/directus/directus/pull/9172) Fixes broken links in docs
+  ([@jaycammarano](https://github.com/jaycammarano))
+- [#9170](https://github.com/directus/directus/pull/9170) Re-add missing oauth docs
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#9142](https://github.com/directus/directus/pull/9142) Docs: improve running locally
+  ([@joselcvarela](https://github.com/joselcvarela))
 - [#9071](https://github.com/directus/directus/pull/9071) Docs structure ([@benhaynes](https://github.com/benhaynes))
-- [#9068](https://github.com/directus/directus/pull/9068) Update running-locally.md ([@paulboudewijn](https://github.com/paulboudewijn))
-- [#9063](https://github.com/directus/directus/pull/9063) Update introduction.md ([@paulboudewijn](https://github.com/paulboudewijn))
+- [#9068](https://github.com/directus/directus/pull/9068) Update running-locally.md
+  ([@paulboudewijn](https://github.com/paulboudewijn))
+- [#9063](https://github.com/directus/directus/pull/9063) Update introduction.md
+  ([@paulboudewijn](https://github.com/paulboudewijn))
 
 ### :package: Dependency Updates
 
-- [#9238](https://github.com/directus/directus/pull/9238) Pin dependency @types/ldapjs to 2.2.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9206](https://github.com/directus/directus/pull/9206) Update dependency vite-plugin-md to v0.11.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9205](https://github.com/directus/directus/pull/9205) Update dependency pinia to v2.0.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9195](https://github.com/directus/directus/pull/9195) Update dependency simple-git-hooks to v2.7.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9193](https://github.com/directus/directus/pull/9193) Update dependency vite to v2.6.13 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9181](https://github.com/directus/directus/pull/9181) Update dependency @vitejs/plugin-vue to v1.9.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9177](https://github.com/directus/directus/pull/9177) Update dependency sass to v1.43.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9175](https://github.com/directus/directus/pull/9175) Update dependency lint-staged to v11.2.6 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9174](https://github.com/directus/directus/pull/9174) Update Node.js to v16.13.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9169](https://github.com/directus/directus/pull/9169) Update dependency vite to v2.6.12 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9168](https://github.com/directus/directus/pull/9168) Update dependency stylelint to v14.0.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9159](https://github.com/directus/directus/pull/9159) Update dependency knex-schema-inspector to v1.6.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9155](https://github.com/directus/directus/pull/9155) Update dependency lint-staged to v11.2.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9141](https://github.com/directus/directus/pull/9141) Update dependency micromark to v3.0.7 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9140](https://github.com/directus/directus/pull/9140) Pin dependency stylelint-config-standard to 23.0.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9137](https://github.com/directus/directus/pull/9137) Update Node.js to v16.12.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9136](https://github.com/directus/directus/pull/9136) Update dependency @types/async to v3.2.9 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9133](https://github.com/directus/directus/pull/9133) Update typescript-eslint monorepo to v5.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9132](https://github.com/directus/directus/pull/9132) Update dependency axios to v0.24.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9131](https://github.com/directus/directus/pull/9131) Update dependency pinia to v2.0.0-rc.15 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9121](https://github.com/directus/directus/pull/9121) Update dependency vite to v2.6.11 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9100](https://github.com/directus/directus/pull/9100) Update dependency lint-staged to v11.2.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9096](https://github.com/directus/directus/pull/9096) Update dependency @types/busboy to v0.3.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9091](https://github.com/directus/directus/pull/9091) Update dependency eslint to v8.1.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9090](https://github.com/directus/directus/pull/9090) Update dependency @types/js-yaml to v4.0.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9083](https://github.com/directus/directus/pull/9083) Update dependency ts-node to v10.4.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9042](https://github.com/directus/directus/pull/9042) Update dependency oracledb to v5.3.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9035](https://github.com/directus/directus/pull/9035) Update dependency sass to v1.43.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9026](https://github.com/directus/directus/pull/9026) Update dependency stylelint-config-standard to v23 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#9016](https://github.com/directus/directus/pull/9016) Update dependency stylelint to v14 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9238](https://github.com/directus/directus/pull/9238) Pin dependency @types/ldapjs to 2.2.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9206](https://github.com/directus/directus/pull/9206) Update dependency vite-plugin-md to v0.11.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9205](https://github.com/directus/directus/pull/9205) Update dependency pinia to v2.0.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9195](https://github.com/directus/directus/pull/9195) Update dependency simple-git-hooks to v2.7.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9193](https://github.com/directus/directus/pull/9193) Update dependency vite to v2.6.13
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9181](https://github.com/directus/directus/pull/9181) Update dependency @vitejs/plugin-vue to v1.9.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9177](https://github.com/directus/directus/pull/9177) Update dependency sass to v1.43.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9175](https://github.com/directus/directus/pull/9175) Update dependency lint-staged to v11.2.6
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9174](https://github.com/directus/directus/pull/9174) Update Node.js to v16.13.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9169](https://github.com/directus/directus/pull/9169) Update dependency vite to v2.6.12
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9168](https://github.com/directus/directus/pull/9168) Update dependency stylelint to v14.0.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9159](https://github.com/directus/directus/pull/9159) Update dependency knex-schema-inspector to v1.6.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9155](https://github.com/directus/directus/pull/9155) Update dependency lint-staged to v11.2.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9141](https://github.com/directus/directus/pull/9141) Update dependency micromark to v3.0.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9140](https://github.com/directus/directus/pull/9140) Pin dependency stylelint-config-standard to 23.0.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9137](https://github.com/directus/directus/pull/9137) Update Node.js to v16.12.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9136](https://github.com/directus/directus/pull/9136) Update dependency @types/async to v3.2.9
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9133](https://github.com/directus/directus/pull/9133) Update typescript-eslint monorepo to v5.2.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9132](https://github.com/directus/directus/pull/9132) Update dependency axios to v0.24.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9131](https://github.com/directus/directus/pull/9131) Update dependency pinia to v2.0.0-rc.15
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9121](https://github.com/directus/directus/pull/9121) Update dependency vite to v2.6.11
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9100](https://github.com/directus/directus/pull/9100) Update dependency lint-staged to v11.2.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9096](https://github.com/directus/directus/pull/9096) Update dependency @types/busboy to v0.3.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9091](https://github.com/directus/directus/pull/9091) Update dependency eslint to v8.1.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9090](https://github.com/directus/directus/pull/9090) Update dependency @types/js-yaml to v4.0.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9083](https://github.com/directus/directus/pull/9083) Update dependency ts-node to v10.4.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9042](https://github.com/directus/directus/pull/9042) Update dependency oracledb to v5.3.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9035](https://github.com/directus/directus/pull/9035) Update dependency sass to v1.43.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9026](https://github.com/directus/directus/pull/9026) Update dependency stylelint-config-standard to v23
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9016](https://github.com/directus/directus/pull/9016) Update dependency stylelint to v14
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.99 (October 21, 2021)
 

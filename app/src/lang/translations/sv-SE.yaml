@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: Profilbild
 edit_field: Redigera fält
 item_revision: Revision objekt
@@ -535,6 +515,7 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+insights: Insikter
 full_screen: Helskärm
 image_url: Bild-URL
 alt_text: Alternativ text
@@ -667,6 +648,7 @@ batch_delete_confirm: >-
 cancel: Avbryt
 collection: Kollektion
 collections: Kollektioner
+content: Innehåll
 singleton: Singleton
 singleton_label: Behandla som ett enskilt objekt
 system_fields_locked: Systemfälten är låsta och kan inte redigeras
@@ -746,8 +728,6 @@ fields:
     public_note: Publik anteckning
     auth_password_policy: Policy för lösenord vid inloggning
     auth_login_attempts: Inloggningsförsök
-    storage_asset_presets: Förval för lagringsobjekt
-    storage_asset_transform: Transformering av lagringsobjekt
     custom_css: Custom CSS
   directus_fields:
     collection: Namn kollektion
@@ -767,10 +747,10 @@ fields:
     enforce_tfa: Kräv 2FA
     users: Användare i rollen
     module_list: Navigering för modul
-    collection_list: Navigering för kollektion
   directus_webhooks:
     name: Namn
     status: Status
+    value: Värde
 field_options:
   directus_activity:
     create: Skapa
@@ -787,9 +767,6 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Namn
-    collection_list:
-      fields:
-        type_name: Typ
     collections_name: Kollektioner
   directus_users:
     status_dropdown_active: Aktiv
@@ -797,6 +774,8 @@ field_options:
     status_options_active: Aktiv
     actions_create: Skapa
     actions_update: Uppdatera
+    headers:
+      value: Värde
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 do_nothing: Gör ingenting
 generate_and_save_uuid: Generera och spara UUID
@@ -820,7 +799,7 @@ embed: Bädda in
 fallback_icon: Fallback Ikon
 field: Fält | Fält
 file: Fil
-file_library: Fil bibliotek
+file_library: Filbibliotek
 forgot_password: Glömt lösenord
 hidden: Dold
 icon: Ikon
