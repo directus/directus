@@ -41,8 +41,12 @@ export default defineLayout<LayoutOptions>({
 		const appStore = useAppStore();
 
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
-		const filter = useSync(props, 'filter', emit);
-		const search = useSync(props, 'search', emit);
+		const filter = useSync(props, 'filter', () => {
+			// no emit
+		});
+		const search = useSync(props, 'search', () => {
+			// no emit
+		});
 
 		const { selection, collection } = toRefs(props);
 
