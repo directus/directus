@@ -39,11 +39,28 @@
 		<div
 			class="color-data-inputs"
 			:style="{
-				'grid-template-columns': showAlpha ? 'repeat(6, 1fr)' : 'repeat(5, 1fr)',
+				'grid-template-columns': showAlpha
+					? width === 'half'
+						? 'repeat(4, 1fr)'
+						: 'repeat(6, 1fr)'
+					: width === 'half'
+					? 'repeat(3, 1fr)'
+					: 'repeat(5, 1fr)',
 			}"
 			:class="{ stacked: width === 'half' }"
 		>
-			<div class="color-data-input color-type">
+			<div
+				class="color-data-input color-type"
+				:style="{
+					'grid-column': showAlpha
+						? width === 'half'
+							? '1 / span 4'
+							: '1 / span 2'
+						: width === 'half'
+						? '1 / span 3'
+						: '1 / span 2',
+				}"
+			>
 				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
 			<template v-if="(colorType === 'RGB') | (colorType === 'RGBA')">
@@ -102,7 +119,6 @@
 				/>
 			</template>
 		</div>
-		<div class="alpha-switch"></div>
 		<div class="color-data-alphas">
 			<div class="color-data-alpha">
 				<v-switch v-model="showAlpha" label="Enable Alpha" @update:model-value="setShowAlpha($event)" />
@@ -333,7 +349,7 @@ export default defineComponent({
 					return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
 				},
 				set(newHSL) {
-					setColor(Color.rgb(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
+					setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
 				},
 			});
 
@@ -434,10 +450,6 @@ export default defineComponent({
 	padding: 12px 10px;
 }
 
-.color-data-inputs .color-type {
-	grid-column: 1 / span 2;
-}
-
 .color-data-inputs .color-data-input {
 	--border-radius: 0px;
 }
@@ -464,14 +476,6 @@ export default defineComponent({
 
 .color-data-inputs .color-data-input:last-child {
 	--border-radius: 0px 4px 4px 0px;
-}
-
-.color-data-inputs.stacked {
-	grid-template-columns: repeat(4, 1fr);
-}
-
-.color-data-inputs.stacked .color-type {
-	grid-column: 1 / span 3;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
