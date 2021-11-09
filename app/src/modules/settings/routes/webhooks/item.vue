@@ -37,7 +37,7 @@
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false"
+						v-if="hasEdits === true"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
