@@ -192,7 +192,7 @@
 		"@types/lodash": "4.14.176",
 		"@types/mime-types": "2.1.1",
 		"@types/ms": "0.7.31",
-		"@types/node": "16.11.6",
+		"@types/node": "16.11.7",
 		"@types/node-cron": "2.0.5",
 		"@types/nodemailer": "6.4.4",
 		"@types/object-hash": "2.2.1",
