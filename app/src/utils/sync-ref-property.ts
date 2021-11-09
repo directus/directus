@@ -1,4 +1,3 @@
-import { isFunction } from 'lodash';
 import { computed, Ref, unref } from 'vue';
 
 export function syncRefProperty<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T] | Ref<R[T]>) {
