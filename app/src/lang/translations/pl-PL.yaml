@@ -173,7 +173,7 @@ global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
 show_zero: Pokaż zerowy
-create_in_advanced_field_creation_mode: Utwórz w Zaawansowanym trybie tworzenia pól
+create_in_advanced_field_creation_mode: Utwórz pole w trybie zaawansowanym
 continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
@@ -215,7 +215,11 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
-geometry: Geometria
+geometry: Geometria (wszystkie)
+geometry.Point: Punkt
+geometry.Polygon: Wielokąt
+geometry.MultiPoint: Wielopunktowy
+geometry.MultiPolygon: Wielokąt
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -652,6 +656,7 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
+insights: Statystyki
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -823,6 +828,7 @@ cancel: Anuluj
 no_upscale: Nie skaluj obrazów
 collection: Kolekcja
 collections: Kolekcje
+content: Zawartość
 singleton: Singleton
 singleton_label: Traktuj jako pojedynczy obiekt
 system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
@@ -869,6 +875,8 @@ fields:
     unarchive_value: Niezarchiwizowane wartości
     sort_field: Pole sortowania
     accountability: Śledzenie Aktywności i Wersji
+    archive_field: Pole archiwum
+    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     $thumbnail: Miniaturka
     title: Tytuł
@@ -929,6 +937,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -940,13 +949,21 @@ fields:
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
+    branding: Marka i Styl
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
+    files_and_thumbnails: Pliki i pamięć
+    storage_default_folder: Domyślny folder
+    storage_asset_presets: Presety transformacji
+    storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    transformations_all: Zezwól na wszystkie transformacje
+    transformations_none: Wyłącz transformacje
+    transformations_presets: Ogranicz transformacje do poniższych ustawień
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
@@ -979,7 +996,8 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
-    project_logo_note: Tło logowania i logo
+    project_color_note: Tło logowania i logo
+    project_logo_note: Biały 40x40 SVG/PNG
     public_note_placeholder: Krótka, publiczna wiadomość, która obsługuje formatowanie markdown...
     security_divider_title: Bezpieczeństwo
     auth_password_policy:
@@ -987,6 +1005,8 @@ field_options:
       weak_text: Słabe - co najmniej 8 znaków
       strong_text: Silne – duże / małe litery / cyfry / specjalne
     storage_asset_presets:
+      fit_label: Dopasuj
+      upscaling: Skalowanie
       fit:
         contain_text: Zawiera (współczynnik proporcji zachowania)
         cover_text: Okładka (wymusza dokładny rozmiar)
@@ -996,6 +1016,7 @@ field_options:
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Token dostępu do Mapbox
     basemaps: Podstawowe
+    basemaps_name_placeholder: Wprowadź nazwę mapy bazowej...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
@@ -1021,7 +1042,6 @@ field_options:
     singular_unit: Pojedyncza jednostka
     plural_unit: Liczba mnoga
     archive_divider: Archiwum
-    archive_field: Pole archiwum
     archive_field_placeholder: Wybierz pole...
     archive_app_filter: Włącz filtr archiwum aplikacji
     archive_value: Wartość ustawiona podczas archiwizacji...
@@ -1030,7 +1050,6 @@ field_options:
     sort_field: Wybierz pole...
     accountability_divider: Odpowiedzialność
     duplication_divider: Duplikacja
-    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     title: Unikalny tytuł...
     description: Opcjonalny opis...
@@ -1242,7 +1261,7 @@ interfaces:
   presentation-divider:
     divider: Separator
     description: Etykietowanie i dzielenie pól na sekcje
-    title_placeholder: Wprowadź tytuł...
+    title_placeholder: Wprowadź tytuł, lub pozostaw puste, aby pokazać tylko linię...
     inline_title: Tytuł w linii
     inline_title_label: Pokaż tytuł w linii
     margin_top: Margines górny
@@ -1300,6 +1319,8 @@ interfaces:
     box: Blok / Inline
     imageToken: Token obrazu
     imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    preview: Podgląd
+    editor: Edytor
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1328,6 +1349,7 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
+    field_hint: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -1546,6 +1568,7 @@ layouts:
     invalid_geometry: Nieprawidłowa geometria
     find_location: Znajdź lokalizację...
     default_template: Używanie domyślnej kolekcji...
+    no_compatible_fields: Brak kompatybilnych pól
 panels:
   metric:
     name: Metryczny

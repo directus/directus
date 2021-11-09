@@ -922,7 +922,6 @@ interfaces:
   presentation-divider:
     divider: Jakaja
     description: Merkitse ja jaa kentät osiin
-    title_placeholder: Syötä otsikko...
     inline_title: Rivitetty otsikko
     inline_title_label: Näytä otsikko rivin sisällä
     margin_top: Ylämarginaali

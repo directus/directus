@@ -189,7 +189,6 @@ time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
 auto_refresh: Automatikus frissítés
@@ -939,7 +938,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
-    project_logo_note: Bejelentkezés és logó háttere
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
@@ -1194,7 +1192,6 @@ interfaces:
   presentation-divider:
     divider: Elválasztó
     description: A mezők felcímkézése és szakaszokra osztása
-    title_placeholder: Írjon be egy címet...
     inline_title: Inline cím
     inline_title_label: Cím megjelenítése a soron belül
     margin_top: Felső margó

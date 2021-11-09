@@ -199,7 +199,6 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
-geometry: الأشكال الهندسية
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -924,7 +923,6 @@ interfaces:
     select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
-    title_placeholder: أدخل عنوانًا...
     inline_title_label: أظهر العنوان داخل السطر
     margin_top: الهامش العلوي
     margin_top_label: زيادة الهامش العلوي

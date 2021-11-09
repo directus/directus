@@ -165,7 +165,6 @@ time: เวลา
 timestamp: Timestamp
 uuid: UUID
 hash: ค่าแฮช
-geometry: เรขาคณิต
 not_available_for_type: ไม่มีสำหรับชนิดนี้
 create_translations: สร้างการแปลใหม่
 auto_refresh: รีเฟรซอัตโนมัติ
@@ -974,7 +973,6 @@ interfaces:
   presentation-divider:
     divider: ตัวแบ่ง
     description: แบ่งฟิลด์ออกเป็นส่วนๆ
-    title_placeholder: ป้อนชื่อเรื่อง
     inline_title: ชื่อเรื่องแบบบรรทัดเดียวกัน
     inline_title_label: แสดงชื่อในเส้นแบ่ง
     margin_top: ระยะห่างด้านบน

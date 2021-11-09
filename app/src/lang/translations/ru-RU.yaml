@@ -173,7 +173,6 @@ global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
 show_zero: Показать нулевое
-create_in_advanced_field_creation_mode: Создание расширенного поля
 continue_in_advanced_field_creation_mode: Создание расширенного поля
 sum: Сумма
 sum_distinct: Сумма уникальных
@@ -215,7 +214,6 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_refresh: Авто обновление
@@ -962,7 +960,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Мой проект
-    project_logo_note: Фон логина и логотипа
     public_note_placeholder: Короткое, публичное сообщение, которое поддерживает markdown форматирование...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -1215,7 +1212,6 @@ interfaces:
   presentation-divider:
     divider: Разделитель
     description: Разделить поля на секции с заголовками
-    title_placeholder: Введите название...
     inline_title: Строчный заголовок
     inline_title_label: Показать заголовок внутри строки
     margin_top: Отступ сверху

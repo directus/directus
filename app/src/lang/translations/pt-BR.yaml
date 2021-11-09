@@ -179,7 +179,6 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
@@ -1052,7 +1051,6 @@ interfaces:
   presentation-divider:
     divider: Divisor
     description: Rotular e dividir campos em seções
-    title_placeholder: Insira um título...
     inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
