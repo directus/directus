@@ -119,7 +119,7 @@ export default defineComponent({
 			if (image.value.type.includes('image')) {
 				const fit = props.crop ? 'cover' : 'contain';
 				const url =
-					getRootPath() + `assets/${image.value.id}?key=system-large-` + fit + `&cache-buster=${cacheBuster.value}`;
+					getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
 				return addTokenToURL(url);
 			}
 
