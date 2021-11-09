@@ -233,7 +233,7 @@ export default defineComponent({
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
 		type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
 
-		const showAlpha = ref<boolean>(false);
+		const showAlpha = ref<boolean>(props.value !== null && props.value.length === 9);
 		let colorTypes = showAlpha.value ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
 		const colorType = ref<ColorType>(showAlpha.value ? 'RGBA' : 'RGB');
 
@@ -333,6 +333,7 @@ export default defineComponent({
 				() => props.value,
 				(newValue) => {
 					color.value = newValue !== null ? Color(newValue) : null;
+					showAlpha.value = props.value !== null && props.value.length === 9;
 				},
 				{ immediate: true }
 			);
