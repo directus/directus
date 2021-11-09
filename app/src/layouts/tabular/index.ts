@@ -144,14 +144,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
 			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
-
-			const fields = syncRefProperty(layoutQuery, 'fields', () =>
-				fieldsInCollection.value
+			const fieldsDefaultValue = computed(() => {
+				return fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
 					.slice(0, 4)
 					.map(({ field }: Field) => field)
-					.sort()
-			);
+					.sort();
+			});
+
+			const fields = syncRefProperty(layoutQuery, 'fields', fieldsDefaultValue);
 
 			const fieldsWithRelational = computed(() => {
 				if (!props.collection) return [];
