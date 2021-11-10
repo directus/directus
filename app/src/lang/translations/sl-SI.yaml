@@ -164,7 +164,6 @@ time: Ura
 timestamp: Časovni žig
 uuid: UUID
 hash: Hash
-geometry: Geometrija
 not_available_for_type: Ni na razpolago za ta tip
 create_translations: Ustvari nove prevode
 auto_refresh: Samodejno osveži
@@ -794,16 +793,11 @@ fields:
     project_url: Spletni naslov (URL) projekta
     project_color: Barva projekta
     project_logo: Logo projekta
-    public_pages: Javne strani
     public_foreground: Glavna slika v javnem delu, logo
     public_background: Slika za ozadje v javnem delu
     public_note: Sporočilo v javnem delu
     auth_password_policy: Pravila gesel
     auth_login_attempts: Število poskusov prijave
-    files_and_thumbnails: Datoteke & sličice
-    storage_default_folder: Privzeta mapa za shranjevanje
-    storage_asset_presets: Prednastavitve shrambe
-    storage_asset_transform: Pretvorba elementa
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
   directus_fields:
@@ -824,7 +818,6 @@ fields:
     enforce_tfa: Obvezno 2FA
     users: Uporabniki v vlogi
     module_list: Krmarjenje po modulu
-    collection_list: Krmarjenje po zbirki
   directus_webhooks:
     name: Ime
     method: Metoda
@@ -837,7 +830,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
-    project_logo_note: Ozadje prijave in logotip
     public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
     security_divider_title: Varnost
     auth_password_policy:
@@ -895,15 +887,6 @@ field_options:
       name_placeholder: Vnesite naslov ...
       link_name: Povezava
       link_placeholder: Relativni ali absolutni URL naslov ...
-    collection_list:
-      group_name_addLabel: Dodaj novo skupino ...
-      fields:
-        group_name: Ime skupine
-        group_placeholder: Naziv te skupine ...
-        type_name: Tip
-        choices_always: Vedno odprto
-        choices_start_open: Začni odprto
-        choices_start_collapsed: Začni zaprto
     collections_name: Zbirke
     collections_addLabel: Dodaj zbirko ...
   directus_users:
@@ -1085,7 +1068,6 @@ interfaces:
   presentation-divider:
     divider: Ločilo
     description: Oznaka in delilnik polj v odseke
-    title_placeholder: Vnesite naslov ...
     inline_title: Naslov v vrstici
     inline_title_label: Pokaži naslov v vrsti
     margin_top: Zgornji rob
@@ -1167,7 +1149,6 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Izberi mapo
-    field_hint: Naloži novo datoteko v izbrano mapo. Ne vpliva na obstoječe izbrane datoteke.
     root_name: Korenska mapa knjižnjice
     system_default: Sistemske privzete vrednosti
   select-radio:

@@ -33,7 +33,7 @@
 				:items="fieldOptions"
 				:mandatory="false"
 				:groups-clickable="true"
-				@group-toggle="loadFieldRelations($event.value, 1)"
+				@group-toggle="loadFieldRelations($event.value)"
 				@update:modelValue="addNode($event)"
 			>
 				<template v-if="inline" #prepend>
@@ -48,7 +48,7 @@
 import { get, set, isEmpty, cloneDeep } from 'lodash';
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Filter, FieldFilter } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 import { useFieldTree } from '@/composables/use-field-tree';
@@ -150,20 +150,12 @@ export default defineComponent({
 
 		function addNode(key: string) {
 			if (key === '$group') {
-				innerValue.value = [
-					...innerValue.value,
-					{
-						_and: [],
-					},
-				];
+				innerValue.value = innerValue.value.concat({ _and: [] });
 			} else {
-				const filterObj = {};
-
 				const field = fieldsStore.getField(collection.value, key)!;
 				const operator = getFilterOperatorsForType(field.type)[0];
-				set(filterObj, key, { ['_' + operator]: null });
-
-				innerValue.value = [...innerValue.value, filterObj] as FieldFilter[];
+				const node = set({}, key, { ['_' + operator]: null });
+				innerValue.value = innerValue.value.concat(node);
 			}
 		}
 

@@ -51,6 +51,7 @@ indeterminate: Неопределенный
 edit_collection: Изменить коллекцию
 exclusive: Эксклюзивный
 children: Дочерние элементы
+db_only_click_to_configure: 'Только База данных: Нажмите для настройки'
 show_archived_items: Показать элементы в архиве
 edited: Значение изменено
 required: Необходимые
@@ -172,6 +173,7 @@ global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
 show_zero: Показать нулевое
+continue_in_advanced_field_creation_mode: Создание расширенного поля
 sum: Сумма
 sum_distinct: Сумма уникальных
 avg: Среднее
@@ -212,7 +214,6 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_refresh: Авто обновление
@@ -642,7 +643,6 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
-insights: Аналитика (бета)
 dashboard: Доска
 panel: Панель
 panel_options: Параметры панели
@@ -923,16 +923,11 @@ fields:
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
-    public_pages: Публичные страницы
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
     auth_password_policy: Минимальная сложность пароля
     auth_login_attempts: Попыток войти
-    files_and_thumbnails: Файлы и миниатюры
-    storage_default_folder: Основная папка
-    storage_asset_presets: Пресеты Элементов Хранилища
-    storage_asset_transform: Преобразование Элементов Хранилища
     overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
   directus_fields:
@@ -953,7 +948,6 @@ fields:
     enforce_tfa: Требуется 2FA
     users: Пользователи в Роли
     module_list: Навигация по Модулям
-    collection_list: Навигация по Коллекциям
   directus_webhooks:
     name: Имя
     method: Метод
@@ -966,7 +960,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Мой проект
-    project_logo_note: Фон логина и логотипа
     public_note_placeholder: Короткое, публичное сообщение, которое поддерживает markdown форматирование...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -1030,15 +1023,6 @@ field_options:
       name_placeholder: Введите название...
       link_name: Ссылка
       link_placeholder: Относительный или абсолютный URL...
-    collection_list:
-      group_name_addLabel: Добавить новую группу...
-      fields:
-        group_name: Название группы
-        group_placeholder: Обозначьте эту группу...
-        type_name: Тип
-        choices_always: Всегда открыто
-        choices_start_open: Раскрыта
-        choices_start_collapsed: Начать свернутым
     collections_name: Коллекции
     collections_addLabel: Добавить коллекцию...
   directus_users:
@@ -1228,7 +1212,6 @@ interfaces:
   presentation-divider:
     divider: Разделитель
     description: Разделить поля на секции с заголовками
-    title_placeholder: Введите название...
     inline_title: Строчный заголовок
     inline_title_label: Показать заголовок внутри строки
     margin_top: Отступ сверху
@@ -1310,7 +1293,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
-    field_hint: Папка для новых файлов. Ранее загруженные файлы останутся на месте.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:

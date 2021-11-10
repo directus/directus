@@ -515,6 +515,7 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+insights: Insikter
 full_screen: Helskärm
 image_url: Bild-URL
 alt_text: Alternativ text
@@ -647,6 +648,7 @@ batch_delete_confirm: >-
 cancel: Avbryt
 collection: Kollektion
 collections: Kollektioner
+content: Innehåll
 singleton: Singleton
 singleton_label: Behandla som ett enskilt objekt
 system_fields_locked: Systemfälten är låsta och kan inte redigeras
@@ -726,8 +728,6 @@ fields:
     public_note: Publik anteckning
     auth_password_policy: Policy för lösenord vid inloggning
     auth_login_attempts: Inloggningsförsök
-    storage_asset_presets: Förval för lagringsobjekt
-    storage_asset_transform: Transformering av lagringsobjekt
     custom_css: Custom CSS
   directus_fields:
     collection: Namn kollektion
@@ -747,7 +747,6 @@ fields:
     enforce_tfa: Kräv 2FA
     users: Användare i rollen
     module_list: Navigering för modul
-    collection_list: Navigering för kollektion
   directus_webhooks:
     name: Namn
     status: Status
@@ -768,9 +767,6 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Namn
-    collection_list:
-      fields:
-        type_name: Typ
     collections_name: Kollektioner
   directus_users:
     status_dropdown_active: Aktiv
@@ -803,7 +799,7 @@ embed: Bädda in
 fallback_icon: Fallback Ikon
 field: Fält | Fält
 file: Fil
-file_library: Fil bibliotek
+file_library: Filbibliotek
 forgot_password: Glömt lösenord
 hidden: Dold
 icon: Ikon

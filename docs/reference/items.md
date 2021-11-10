@@ -137,7 +137,7 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-Returns a [item object](#the-item-object) if a valid primary key was provided.
+Returns an [item object](#the-item-object) if a valid primary key was provided.
 
 </div>
 <div class="right">

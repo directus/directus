@@ -1,0 +1,25 @@
+{
+	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly"],
+	"timezone": "America/New_York",
+	"labels": ["Dependencies"],
+	"semanticCommits": "disabled",
+	"separateMajorMinor": false,
+	"force": {
+		"constraints": {
+			"node": ">=16.0.0",
+			"npm": ">=7.0.0"
+		}
+	},
+	"packageRules": [
+		{
+			"matchDatasources": ["npm"],
+			"matchUpdateTypes": ["major"],
+			"groupName": "NPM dependencies (major)"
+		},
+		{
+			"matchDatasources": ["npm"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"groupName": "NPM dependencies (non-major)"
+		}
+	]
+}

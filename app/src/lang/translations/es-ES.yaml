@@ -211,7 +211,6 @@ time: Hora
 timestamp: Marca de Tiempo
 uuid: UUID
 hash: Hash
-geometry: Geometría
 not_available_for_type: No disponible para este Tipo
 create_translations: Crear Traducciones
 auto_refresh: Actualización automática
@@ -857,15 +856,11 @@ fields:
     project_url: URL del Proyecto
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
-    public_pages: Páginas públicas
     public_foreground: Superficie Pública
     public_background: Fondo Público
     public_note: Notas Públicas
     auth_password_policy: Política de Contraseña para Autentificación
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
-    files_and_thumbnails: Archivos y miniaturas
-    storage_asset_presets: Predefinidos de Activos en Almacenamiento
-    storage_asset_transform: Transformación de Activos en Almacenamiento
     custom_css: CSS Personalizado
   directus_fields:
     collection: Nombre de Colección
@@ -885,7 +880,6 @@ fields:
     enforce_tfa: Requiere 2FA
     users: Usuarios en el Rol
     module_list: Navegación en Módulo
-    collection_list: Navegación en Colección
   directus_webhooks:
     name: Nombre
     status: Estado
@@ -919,9 +913,6 @@ field_options:
       icon_name: Ícono
       name_name: Nombre
       name_placeholder: Ingresar un título...
-    collection_list:
-      fields:
-        type_name: Tipo
     collections_name: Colecciones
   directus_users:
     status_dropdown_active: Activo
@@ -1081,7 +1072,6 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta y divide los campos en secciones
-    title_placeholder: Ingresar un título...
     inline_title: Título seguido por línea
     inline_title_label: Mostrar título seguido por línea
     margin_top: Margen superior

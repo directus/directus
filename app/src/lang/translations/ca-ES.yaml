@@ -163,7 +163,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: No disponible per aquest Tipus
 create_translations: Crea traduccions
 auto_refresh: Refrescament automàtic
@@ -789,16 +788,11 @@ fields:
     project_url: URL del projecte
     project_color: Color del projecte
     project_logo: Logotip del projecte
-    public_pages: Pàgines públiques
     public_foreground: Primer pla públic
     public_background: Fons públic
     public_note: Anotació de la vista pública
     auth_password_policy: Política de contrasenyes
     auth_login_attempts: Intents d'autenticació
-    files_and_thumbnails: Fitxers i miniatures
-    storage_default_folder: Carpeta predeterminada d'emmagatzematge
-    storage_asset_presets: Predefinits de recursos d'emmagatzematge
-    storage_asset_transform: Transformació de recursos d'emmagatzematge
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
   directus_fields:
@@ -819,7 +813,6 @@ fields:
     enforce_tfa: Requereix 2FA
     users: Usuaris al rol
     module_list: Navegació dels mòduls
-    collection_list: Navegació de les col·leccions
   directus_webhooks:
     name: Nom
     method: Mètode
@@ -854,10 +847,6 @@ field_options:
       icon_name: Icona
       name_name: Nom
       name_placeholder: Introdueix un títol...
-    collection_list:
-      fields:
-        type_name: Tipus
-        choices_start_open: Comença obert
     collections_name: Col·leccions
   directus_users:
     preferences_divider: Preferències de l'usuari
@@ -1034,7 +1023,6 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta i divideix els camps en seccions
-    title_placeholder: Introdueix un títol...
     inline_title: Títol en línia
     inline_title_label: Mostra el títol dins la línia
     margin_top: Marge superior
@@ -1116,7 +1104,6 @@ interfaces:
   system-folder:
     folder: Carpeta
     description: Selecciona una carpeta
-    field_hint: Insereix els fitxers carregats recentment a la carpeta seleccionada. No afecta els fitxers existents seleccionats.
     root_name: Arrel de la biblioteca de fitxers
     system_default: Predeterminats del sistema
   select-radio:

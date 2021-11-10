@@ -20,6 +20,12 @@ const defaultInterfaceMap: Record<Type, string> = {
 	csv: 'tags',
 	hash: 'input-hash',
 	geometry: 'map',
+	'geometry.Point': 'map',
+	'geometry.LineString': 'map',
+	'geometry.Polygon': 'map',
+	'geometry.MultiPoint': 'map',
+	'geometry.MultiLineString': 'map',
+	'geometry.MultiPolygon': 'map',
 };
 
 export function getDefaultInterfaceForType(type: Type): string {

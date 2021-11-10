@@ -211,12 +211,11 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_presets',
 		action: 'create',
-		validation: [
-			{
-				user: null,
+		validation: {
+			user: {
 				_eq: '$CURRENT_USER',
 			},
-		],
+		},
 	},
 	{
 		collection: 'directus_presets',
