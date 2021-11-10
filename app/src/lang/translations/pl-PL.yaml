@@ -781,6 +781,7 @@ layout_setup: Ustawienia układu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
+discard_all_changes: Odrzuć wszystkie zmiany
 discard_changes_copy: Czy na pewno chcesz odrzucić wszystkie wprowadzone zmiany?
 show_x_axis: Pokaż oś X
 show_y_axis: Pokaż oś Y
