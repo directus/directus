@@ -32,7 +32,7 @@ We recommend aliasing the `start` script to Directus' start for easier deploymen
 ## 2. Install Directus
 
 ```bash
-npm install directus
+npm install --save directus
 ```
 
 ## 3. Setup a Configuration File
