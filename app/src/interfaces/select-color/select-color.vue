@@ -132,7 +132,9 @@
 						'--v-slider-fill-color': 'none',
 						'--v-slider-thumb-color': 'var(--foreground-normal)',
 						'--input-bg-image':
-							'linear-gradient(to right, transparent,' + (hex && hex.length === 9 ? hex.slice(0, -2) : hex) + ')',
+							'linear-gradient(to right, transparent,' +
+							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
+							'), url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==\')',
 					}"
 					@update:model-value="setValue('alpha', 0, $event)"
 				/>
