@@ -16,14 +16,14 @@
 				/>
 				<span>{{ collection.name }}</span>
 			</router-link>
-			<div v-else class="collection-name" @click="$emit('editCollection', collection)">
+			<button v-else class="collection-name" @click="$emit('editCollection', collection)">
 				<v-icon
 					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
 				<span>{{ collection.name }}</span>
-			</div>
+			</button>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
 				<v-progress-circular v-if="collapseLoading" small indeterminate />
 				<v-icon
