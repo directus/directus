@@ -790,6 +790,7 @@ layout_setup: Layout Setup
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
+discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
