@@ -82,6 +82,14 @@ you direct access to your pure and unaltered data. That means you have the optio
 (API, SDK, App) and connect to your data with proper SQL queries. This effectively removes all bottlenecks, latency
 overhead, and proprietary access limitations.
 
+::: warning MS-SQL Limitations
+
+* Only `dbo` scheme is supported; no workaround available.
+* Tables with triggers are not supported; content in those tables cannot be edited via Directus. A workaround is to remove those triggers and use stored procedures via Directus API hooks instead, but documentation is very limited.
+
+:::
+
+
 ## Modular & Extensible
 
 What makes Directus so flexible is that it has been designed from the ground up with complete extensibility, helping
