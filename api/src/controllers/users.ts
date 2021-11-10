@@ -4,7 +4,7 @@ import { InvalidCredentialsException, ForbiddenException, InvalidPayloadExceptio
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService, TFAService, RolesService } from '../services';
+import { AuthenticationService, MetaService, UsersService, TFAService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { loadUserRoleServices } from '../middleware/load-user-role-services';
