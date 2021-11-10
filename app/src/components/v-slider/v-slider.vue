@@ -134,6 +134,7 @@ body {
 			background-image: var(--input-bg-image);
 			cursor: pointer;
 			appearance: none;
+			-webkit-appearance: none;
 
 			&::-webkit-slider-runnable-track {
 				height: 4px;
@@ -151,7 +152,8 @@ body {
 				box-shadow: none;
 			}
 
-			&::-webkit-slider-thumb {
+			&::-webkit-slider-thumb,
+			::-webkit-slider-thumb {
 				position: relative;
 				z-index: 3;
 				width: 8px;
@@ -164,6 +166,7 @@ body {
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				transition: all var(--fast) var(--transition);
 				appearance: none;
+				-webkit-appearance: none;
 			}
 
 			&::-moz-range-thumb {
