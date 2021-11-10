@@ -174,7 +174,7 @@ admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
 show_zero: Mostra zero
 create_in_advanced_field_creation_mode: Crea campo in modalità avanzata
-continue_in_advanced_field_creation_mode: Continua con la Modalità di Creazione Campo Avanzata
+continue_in_advanced_field_creation_mode: Continua in modalità avanzata di creazione del campo
 sum: Somma
 sum_distinct: Somma valori unici
 avg: Media
