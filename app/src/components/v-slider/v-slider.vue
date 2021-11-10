@@ -135,7 +135,6 @@ body {
 			border-radius: 10px;
 			cursor: pointer;
 			appearance: none;
-			appearance: none;
 
 			&::-webkit-slider-runnable-track {
 				height: 4px;
