@@ -154,6 +154,7 @@ key: کلید
 alias: نام مستعار
 bigInteger: عدد صحیح بزرگ
 boolean: بولین
+auto_refresh: تازه نمودن خودکار
 single_file: فیلتر تک
 multiple_files: چندین فیلتر
 m2o_relationship: رابطه بسیار به یک
