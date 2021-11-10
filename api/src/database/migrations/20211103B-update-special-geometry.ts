@@ -1,11 +1,8 @@
 import { Knex } from 'knex';
-// @ts-ignore
-import Client_Oracledb from 'knex/lib/dialects/oracledb';
 
 export async function up(knex: Knex): Promise<void> {
-	const specialKey = knex.client instanceof Client_Oracledb ? '"special"' : 'special';
 	await knex('directus_fields')
-		.update({ special: knex.raw(`REPLACE(${specialKey}, 'geometry,', 'geometry.')`) })
+		.update({ special: knex.raw(`REPLACE(??, 'geometry,', 'geometry.')`, ['special']) })
 		.where('special', 'like', '%geometry,Point%')
 		.orWhere('special', 'like', '%geometry,LineString%')
 		.orWhere('special', 'like', '%geometry,Polygon%')
@@ -15,9 +12,8 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const specialKey = knex.client instanceof Client_Oracledb ? '"special"' : 'special';
 	await knex('directus_fields')
-		.update({ special: knex.raw(`REPLACE(${specialKey}, 'geometry.', 'geometry,')`) })
+		.update({ special: knex.raw(`REPLACE(??, 'geometry.', 'geometry,')`, ['special']) })
 		.where('special', 'like', '%geometry.Point%')
 		.orWhere('special', 'like', '%geometry.LineString%')
 		.orWhere('special', 'like', '%geometry.Polygon%')
