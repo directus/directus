@@ -153,8 +153,7 @@ body {
 				box-shadow: none;
 			}
 
-			&::-webkit-slider-thumb,
-			::-webkit-slider-thumb {
+			&::-webkit-slider-thumb {
 				position: relative;
 				z-index: 3;
 				width: 8px;
