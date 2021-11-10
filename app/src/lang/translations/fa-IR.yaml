@@ -155,6 +155,7 @@ alias: نام مستعار
 bigInteger: عدد صحیح بزرگ
 boolean: بولین
 auto_refresh: تازه نمودن خودکار
+click_here: اینجا کلیک کنید
 single_file: فیلتر تک
 multiple_files: چندین فیلتر
 m2o_relationship: رابطه بسیار به یک
@@ -203,6 +204,20 @@ revision_preview: پیش نمایش ویرایش
 updates_made: حالت ارتقاء
 leave_comment: درج پیغام...
 post_comment_success: دیدگاه منتشر شد
+today: امروز
+yesterday: دیروز
+delete_comment: حذف دیدگاه
+minutes: دقیقه
+hours: ساعت
+month: ماه
+year: سال
+select_all: انتخاب همه
+months:
+  january: فروردین
+  february: اردیبهشت
+  march: اسفند
+  april: تیر
+  october: مهر
 cancel_crop: لغو برش
 original: اصیل و اصلی
 url: نشانی ‌URL
@@ -248,6 +263,7 @@ value_unique: مقدار باید یکتا باشد
 wysiwyg_options:
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
+  selectall: انتخاب همه
 fields:
   directus_collections:
     note: شرح
