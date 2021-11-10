@@ -961,7 +961,7 @@ fields:
     files_and_thumbnails: Файлове и съхранение
     storage_default_folder: Папка по подразбиране
     storage_asset_presets: Заготовки за трансформации
-    storage_asset_transform: Позволени трансформации
+    storage_asset_transform: Позволявания за трансформации
     overrides: Преопределяне в приложението
     custom_css: Собствен CSS
     transformations_all: Позволяване на всякакви трансформации
