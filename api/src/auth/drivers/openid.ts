@@ -98,7 +98,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 			const issuer = client.issuer;
 			if (issuer.metadata.userinfo_endpoint) {
-				userInfo = await client.userinfo(tokenSet);
+				userInfo = await client.userinfo(tokenSet.access_token!);
 			} else {
 				userInfo = tokenSet.claims();
 			}
