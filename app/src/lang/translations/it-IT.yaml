@@ -173,6 +173,7 @@ global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
 show_zero: Mostra zero
+create_in_advanced_field_creation_mode: Crea campo in modalità avanzata
 continue_in_advanced_field_creation_mode: Continua con la Modalità di Creazione Campo Avanzata
 sum: Somma
 sum_distinct: Somma valori unici
@@ -876,6 +877,8 @@ fields:
     unarchive_value: Valore ripristino
     sort_field: Ordina per
     accountability: Monitoraggio Attività e Revisione
+    archive_field: Campo archiviazione
+    item_duplication_fields: Campi coinvolti nella duplicazione
   directus_files:
     $thumbnail: Miniatura
     title: Titolo
@@ -996,6 +999,8 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Il mio progetto...
+    project_color_note: Sfondo per l'accesso e il logo
+    project_logo_note: SVG/PNG 40x40 bianca
     public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
     security_divider_title: Sicurezza
     auth_password_policy:
@@ -1003,6 +1008,8 @@ field_options:
       weak_text: Debole – minimo 8 caratteri
       strong_text: Forte – maiuscole / minuscole / numeri / simboli
     storage_asset_presets:
+      fit_label: Adatta
+      upscaling: Ingrandimento
       fit:
         contain_text: Contieni (preserva le proporzioni)
         cover_text: Ricopri (forza dimensione esatta)
@@ -1013,6 +1020,7 @@ field_options:
     mapbox_key: Access Token di Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Mappe base
+    basemaps_name_placeholder: Inserisci il nome dalla mappa base...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Stile Mapbox
@@ -1175,6 +1183,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1315,6 +1324,8 @@ interfaces:
     box: Blocco / In linea
     imageToken: Token Immagine
     imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+    preview: Anteprima
+    editor: Editor
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
@@ -1562,6 +1573,7 @@ layouts:
     invalid_geometry: Geometria non valida
     find_location: Trova località...
     default_template: Utilizzo della Collezione Predefinita...
+    no_compatible_fields: Nessun campo compatibile
 panels:
   metric:
     name: Metrica
