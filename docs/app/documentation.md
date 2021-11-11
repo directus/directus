@@ -1,13 +1,14 @@
 # Documentation
 
-> An internal set of guides and docs for the installed version of the platform, including an
-> API Reference that is dynamically tailored to your custom schema.
+> An internal set of guides and docs for the installed version of the platform, including an API Reference that is
+> dynamically tailored to your custom schema.
 
 Docs for the latest version of the platform are available via [https://docs.directus.io](https://docs.directus.io), and
 _version-specific_ docs are included within the App itself as a core module. Both sets come from the same source of
 markdown files on [GitHub](https://github.com/directus/directus), making them easy for anyone to work with.
 
-While the public documentation is organized in six main sections, the in-app docs are limited to the following specific pages within **Getting Started** and the **App Guide**.
+While the public documentation is organized in six main sections, the in-app docs are limited to the following specific
+pages within **Getting Started** and the **App Guide**.
 
 - **App Overview** — A high-level overview of the main app components
 - **Content Collections** — Covers the functionality of the Content Module's Collection Page
