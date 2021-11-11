@@ -768,6 +768,7 @@ fields:
     name: Anv
     status: Stad
     value: Talvoud
+    collections: Dastumadoù
 field_options:
   directus_settings:
     mapbox_placeholder: pk.eyJ1Ijo.....
