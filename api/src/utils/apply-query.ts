@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { clone, get, isPlainObject, set } from 'lodash';
+import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
@@ -71,17 +71,19 @@ export default function applyQuery(
 		const [field, keys] = query.union as [string, (string | number)[]];
 
 		const queries = keys.map((key) => {
-			let filter = { [field]: { _eq: key } } as Filter;
+			const unionFilter = { [field]: { _eq: key } } as Filter;
+			let filter: Filter | null | undefined = cloneDeep(query.filter);
 
-			if (query.filter) {
-				if ('_and' in query.filter) {
-					(query.filter as LogicalFilterAND)._and.push(filter);
-					filter = query.filter;
+			if (filter) {
+				if ('_and' in filter) {
+					(filter as LogicalFilterAND)._and.push(unionFilter);
 				} else {
 					filter = {
-						_and: [query.filter, filter],
+						_and: [filter, unionFilter],
 					} as LogicalFilterAND;
 				}
+			} else {
+				filter = unionFilter;
 			}
 
 			return knex.select('*').from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
