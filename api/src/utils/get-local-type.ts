@@ -108,7 +108,7 @@ export default function getLocalType(
 	const database = getDatabase();
 	const databaseClient = getDatabaseClient(database);
 
-	if(!column) return 'alias';
+	if (!column) return 'alias';
 
 	const dataType = column.data_type.toLowerCase();
 	const type = localTypeMap[dataType.split('(')[0]];
