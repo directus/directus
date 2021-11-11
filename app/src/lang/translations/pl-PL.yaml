@@ -254,7 +254,7 @@ multiple_files: Wiele plików
 m2o_relationship: Relacja wiele do jednego
 o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
-m2a_relationship: Relacja wiele do wielu
+m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
 next: Następny
 field_name: Nazwa pola
