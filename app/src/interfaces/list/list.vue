@@ -290,6 +290,7 @@ export default defineComponent({
 				emitValue(props.value.slice(0, -1));
 			}
 
+			edits.value = {};
 			active.value = null;
 		}
 	},
