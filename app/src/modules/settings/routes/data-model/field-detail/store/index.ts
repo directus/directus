@@ -106,7 +106,7 @@ export const useFieldDetailStore = defineStore({
 				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
 				this.localType = getLocalTypeForField(collection, field)!;
 
-				const relations = relationsStore.getRelationsForField(collection, field);
+				const relations = cloneDeep(relationsStore.getRelationsForField(collection, field));
 
 				// o2m relation is the same regardless of type
 				this.relations.o2m = relations.find(
