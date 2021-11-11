@@ -822,6 +822,7 @@ fields:
     data_label: Envia les dades de l'event
     triggers: Disparadors
     actions: Accions
+    collections: Col·leccions
 field_options:
   directus_settings:
     security_divider_title: Seguretat

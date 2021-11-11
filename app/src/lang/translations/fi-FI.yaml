@@ -770,6 +770,7 @@ fields:
     name: Nimi
     status: Tila
     value: Arvo
+    collections: Kokoelmat
 field_options:
   directus_activity:
     create: Luo

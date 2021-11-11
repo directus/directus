@@ -964,6 +964,7 @@ fields:
     storage_asset_transform: Позволявания за трансформации
     overrides: Преопределяне в приложението
     custom_css: Собствен CSS
+    module_bar: Модулна лента
     transformations_all: Позволяване на всякакви трансформации
     transformations_none: Забраняват се трансформациите
     transformations_presets: Ограничаване само до заготовките по-долу
@@ -996,6 +997,7 @@ fields:
     data_label: Изпращане на данните
     triggers: Задействане
     actions: Действия
+    collections: Колекции
 field_options:
   directus_settings:
     project_name_placeholder: Моят проект...

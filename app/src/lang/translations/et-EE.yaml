@@ -799,6 +799,7 @@ fields:
     name: Nimi
     status: Staatus
     value: Väärtus
+    collections: Kogud
 field_options:
   directus_activity:
     create: Loo

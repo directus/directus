@@ -962,6 +962,7 @@ fields:
     storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    module_bar: Pasek modułu
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
@@ -994,6 +995,7 @@ fields:
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
+    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...

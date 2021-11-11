@@ -73,6 +73,8 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
 reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
 fields:
+  directus_settings:
+    module_bar: Модулийн мөр
   directus_fields:
     translation: Талбарын нэрний орчуулга
   directus_roles:

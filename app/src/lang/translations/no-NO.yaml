@@ -449,6 +449,7 @@ fields:
     name: Navn
     status: Status
     value: Verdi
+    collections: Kolleksjoner
 field_options:
   directus_activity:
     create: Opprett

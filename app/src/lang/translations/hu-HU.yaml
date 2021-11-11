@@ -908,6 +908,7 @@ fields:
     auth_login_attempts: Bejelentkezési kísérletek
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
+    module_bar: Modulsáv
   directus_fields:
     collection: Gyűjtemény neve
     icon: Gyűjtemény ikonja
@@ -935,6 +936,7 @@ fields:
     data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
+    collections: Gyűjtemények
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
