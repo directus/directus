@@ -783,6 +783,7 @@ layout_setup: Configurazione Layout
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
+discard_all_changes: Annulla tutte le modifiche
 discard_changes_copy: Sei sicuro di voler annullare tutte le modifiche che hai fatto?
 show_x_axis: Mostra asse X
 show_y_axis: Mostra asse Y
@@ -1183,6 +1184,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
