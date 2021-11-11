@@ -617,6 +617,7 @@ fields:
     name: İsim
     status: Durum
     value: Değer
+    collections: Koleksiyonlar
 field_options:
   directus_activity:
     create: Oluştur

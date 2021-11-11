@@ -55,7 +55,7 @@
 
 				<template #input>
 					<div
-						v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name"
+						v-tooltip="interfaceName ? `${field.name} (${formatTitle(field.type)}) - ${interfaceName}` : field.name"
 						class="label"
 						@click="openFieldDetail"
 					>
@@ -151,6 +151,7 @@ import { Field, InterfaceConfig } from '@directus/shared/types';
 import FieldSelectMenu from './field-select-menu.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	name: 'FieldSelect',
@@ -197,6 +198,7 @@ export default defineComponent({
 		return {
 			t,
 			interfaceName,
+			formatTitle,
 			editActive,
 			setWidth,
 			deleteActive,

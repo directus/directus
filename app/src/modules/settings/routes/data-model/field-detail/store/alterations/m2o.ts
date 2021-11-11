@@ -18,6 +18,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		preventCircularConstraint(updates, state);
 		setTypeToRelatedPrimaryKey(updates, state);
 	}
+
+	if (hasChanged('fields.corresponding')) {
+		setRelatedOneFieldForCorrespondingField(updates);
+	}
 }
 
 export function prepareRelation(updates: StateUpdates, state: State) {
@@ -97,5 +101,15 @@ export function setTypeToRelatedPrimaryKey(updates: StateUpdates, state: State) 
 		set(updates, 'field.type', primaryKeyField.type);
 	} else if (state.collections.related?.fields?.[0]?.type) {
 		set(updates, 'field.type', state.collections.related.fields[0].type);
+	}
+}
+
+export function setRelatedOneFieldForCorrespondingField(updates: StateUpdates) {
+	if (updates?.fields?.corresponding?.field) {
+		set(updates, 'relations.m2o.meta.one_field', updates.fields.corresponding.field);
+	}
+
+	if (!updates.fields?.corresponding) {
+		set(updates, 'relations.m2o.meta.one_field', null);
 	}
 }
