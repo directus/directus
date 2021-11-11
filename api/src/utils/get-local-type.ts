@@ -54,8 +54,6 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	blob: 'binary',
 	mediumblob: 'binary',
 	'int unsigned': 'integer',
-	'tinyint(0)': 'boolean',
-	'tinyint(1)': 'boolean',
 
 	// MS SQL
 	bit: 'boolean',
@@ -110,7 +108,9 @@ export default function getLocalType(
 	const database = getDatabase();
 	const databaseClient = getDatabaseClient(database);
 
-	const type = column ? localTypeMap[column.data_type.toLowerCase().split('(')[0]] : 'alias';
+	const dataType = column?.data_type.toLowerCase();
+
+	const type = column ? localTypeMap[dataType.split('(')[0]] : 'alias';
 
 	const special = field?.special;
 
@@ -125,17 +125,17 @@ export default function getLocalType(
 	}
 
 	/** Handle Postgres numeric decimals */
-	if (column && column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
+	if (dataType === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
 	}
 
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
-	if (column && column.data_type === 'nvarchar' && column.max_length === -1) {
+	if (dataType === 'nvarchar(MAX)') {
 		return 'text';
 	}
 
 	/** Handle Boolean as TINYINT and edgecase MySQL where it still is just tinyint */
-	if (column && databaseClient === 'mysql' && column.data_type.toLowerCase() === 'tinyint') {
+	if (databaseClient === 'mysql' && dataType === 'tinyint(1)') {
 		return 'boolean';
 	}
 
