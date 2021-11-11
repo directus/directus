@@ -3,7 +3,7 @@
 		<v-notice type="info">
 			{{
 				t('permissions_for_role', {
-					action: t(permission.action).toLowerCase(),
+					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
 					role: role ? role.name : t('public_label'),
 				})
 			}}
