@@ -810,6 +810,7 @@ fields:
     name: ชื่อ
     status: สถานะ
     value: ค่า
+    collections: คอลเลกชัน
 field_options:
   directus_settings:
     security_divider_title: ความปลอดภัย
