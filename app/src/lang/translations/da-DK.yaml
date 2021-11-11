@@ -902,6 +902,7 @@ fields:
     auth_password_policy: Auth Adgangskode Politik
     auth_login_attempts: Auth Login Forsøg
     overrides: App Tilsidesættelser
+    module_bar: Modul Bar
   directus_fields:
     collection: Samlingens Navn
     icon: Samlingsikon
@@ -926,6 +927,7 @@ fields:
     data_label: Send Begivenhedsdata
     triggers: Udløsere
     actions: Handlinger
+    collections: Samlinger
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
