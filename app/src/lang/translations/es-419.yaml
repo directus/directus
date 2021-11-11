@@ -862,6 +862,7 @@ fields:
     auth_password_policy: Política de Contraseña para Autentificación
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
     custom_css: CSS Personalizado
+    module_bar: Barra de módulos
   directus_fields:
     collection: Nombre de la Colección
     icon: Icono de la Colección
@@ -887,6 +888,7 @@ fields:
     header: Encabezado
     value: Valor
     actions: Acciones
+    collections: Colecciones
 field_options:
   directus_settings:
     security_divider_title: Seguridad

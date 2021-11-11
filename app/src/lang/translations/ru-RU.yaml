@@ -930,6 +930,7 @@ fields:
     auth_login_attempts: Попыток войти
     overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
+    module_bar: Панель модулей
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
@@ -957,6 +958,7 @@ fields:
     data_label: Отправлять данные о событии
     triggers: Триггеры
     actions: Действия
+    collections: Коллекции
 field_options:
   directus_settings:
     project_name_placeholder: Мой проект

@@ -40,7 +40,8 @@ export default {
 
 - `id` — The unique key for this layout. It is good practice to scope proprietary layouts with an author prefix.
 - `name` — The human-readable name for this layout.
-- `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+  Directus custom icons.
 - `component` — A reference to your Vue component.
 
 ::: tip TypeScript

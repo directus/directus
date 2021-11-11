@@ -781,6 +781,7 @@ layout_setup: Ustawienia układu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
+discard_all_changes: Odrzuć wszystkie zmiany
 discard_changes_copy: Czy na pewno chcesz odrzucić wszystkie wprowadzone zmiany?
 show_x_axis: Pokaż oś X
 show_y_axis: Pokaż oś Y
@@ -961,6 +962,7 @@ fields:
     storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    module_bar: Pasek modułu
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
@@ -993,6 +995,7 @@ fields:
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
+    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...

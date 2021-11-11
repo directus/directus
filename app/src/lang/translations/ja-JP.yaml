@@ -369,6 +369,7 @@ fields:
     name: 名前
     status: ステータス
     value: 値
+    collections: コレクション
 field_options:
   directus_activity:
     create: 作成

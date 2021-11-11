@@ -131,6 +131,21 @@ technically be stored as code in the database, it is far more common to manage t
 The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
 an excellent Digital Asset Management system.
 
+## Icons
+
+### Material Icons
+
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
+outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
+`account_circle_outline`.
+
+### Social Icons
+
+They are Font Awesome 5's brands icons. Full list of icons
+[can be found here](https://fontawesome.com/v5.15/icons?d=gallery&s=brands). When using them as one of the auth provider
+icons, make sure to use underscores, such as `blogger_b` for
+[blogger-b](https://fontawesome.com/v5.15/icons/blogger-b?style=brands) icon.
+
 ## Interfaces
 
 Interfaces determine how you view or interact with a field. In most cases, they offer some sort of input tailored to
