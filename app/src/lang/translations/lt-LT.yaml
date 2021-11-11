@@ -713,6 +713,7 @@ fields:
     name: Pavadinimas
     status: Būsena
     value: Reikšmė
+    collections: Kolekcijos
 field_options:
   directus_activity:
     create: Kurti
