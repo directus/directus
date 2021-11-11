@@ -1,5 +1,29 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikaator
 avatar: Avatar
+default_provider: Vaikimisi
+published: Avaldatud
+draft: Mustand
 archived: Arhiveeritud
 edit_field: Muuda välja
 item_revision: Kirje parandamine
@@ -482,7 +506,7 @@ operators:
 loading: Laadimine...
 drop_to_upload: Lohista üleslaadimiseks
 item: Kirje
-items: Kirjed
+items: kirjet
 upload_file: Lae fail üles
 upload_file_indeterminate: Laen faili...
 upload_file_success: Fail on laetud
@@ -669,6 +693,7 @@ batch_delete_confirm: >-
 cancel: Loobu
 collection: Kogud
 collections: Kogud
+content: Sisu
 singleton: Üksik
 singleton_label: Käsitle üksiku objektina
 system_fields_locked: Süsteemsed välja on lukus ja neid ei saa muuta
@@ -932,7 +957,6 @@ interfaces:
   presentation-divider:
     divider: Eraldaja
     description: Nimeta ja eralda välju sektsioonideks
-    title_placeholder: Sisesta pealkiri...
     inline_title: Pealkiri joone sees
     inline_title_label: Näita pealkirja keset joont
     margin_top: Ülemine vahe
@@ -990,8 +1014,16 @@ interfaces:
     box: Plokk / Tekstisisene
     imageToken: Pildi kood
     imageToken_label: Milline (staatiline) kood lisada piltide allikatele
+    preview: Eelvaade
+    editor: Toimetaja
   map:
+    map: Kaart
+    description: Vali asukoht kaardil
     zoom: Suurenda
+    default_view: Vaikimisi vaade
+    invalid_options: Vigased valikud
+    invalid_format: Vigane formaat ({format})
+    unexpected_geometry: Oodatud väärtuse '{expected}' asemel on '{got}'
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
@@ -1002,6 +1034,8 @@ interfaces:
     no_collection: Andmekogu ei leitud
   system-folder:
     folder: Kaust
+    description: Vali kaust
+    field_hint: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   select-radio:
     radio-buttons: Raadionupud
     description: Vali üks mitmest valikust
@@ -1187,6 +1221,8 @@ layouts:
     calendar: Kalender
     start_date_field: Alguse kuupäev
     end_date_field: Lõpu kuupäev
+  map:
+    map: Kaart
 panels:
   label:
     name: Silt

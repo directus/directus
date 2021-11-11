@@ -18,13 +18,15 @@
 			@updateitempopup="updateItemPopup"
 		/>
 
-		<div
-			v-if="itemPopup.item"
-			class="popup"
-			:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
-		>
-			<render-template :template="template" :item="itemPopup.item" :collection="collection" />
-		</div>
+		<transition name="fade">
+			<div
+				v-if="itemPopup.item"
+				class="popup"
+				:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
+			>
+				<render-template :template="template" :item="itemPopup.item" :collection="collection" />
+			</div>
+		</transition>
 
 		<transition name="fade">
 			<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
@@ -200,7 +202,7 @@ export default defineComponent({
 			default: () => undefined,
 		},
 		itemPopup: {
-			type: [String, Number],
+			type: Object as PropType<{ item?: any; position?: { x: number; y: number } }>,
 			default: () => undefined,
 		},
 		updateItemPopup: {
@@ -337,5 +339,15 @@ export default defineComponent({
 			box-shadow: 0 0 2px 1px rgb(0 0 0 / 0.2);
 		}
 	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

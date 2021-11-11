@@ -173,7 +173,6 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 show_zero: Null anzeigen
-create_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus erstellen
 continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
@@ -215,7 +214,13 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
-geometry: Dimensionen
+geometry: Geometrie (alle)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -652,6 +657,7 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+insights: Einblicke
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
@@ -823,6 +829,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 collection: Sammlung
 collections: Sammlungen
+content: Inhalt
 singleton: Einzelnes Element
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
@@ -929,6 +936,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -941,13 +949,21 @@ fields:
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
+    branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
+    files_and_thumbnails: Dateien & Speicher
+    storage_default_folder: Standardordner
+    storage_asset_presets: Transformations-Voreinstellungen
+    storage_asset_transform: Erlaubte Transformationen
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
+    transformations_all: Alle Transformationen erlauben
+    transformations_none: Transformationen deaktivieren
+    transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon
@@ -980,7 +996,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
-    project_logo_note: Login & Logo Hintergrund
     public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
@@ -1023,7 +1038,6 @@ field_options:
     singular_unit: Einzahl-Einheit
     plural_unit: Mehrzahl-Einheit
     archive_divider: Archivieren
-    archive_field: Archivfeld
     archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
@@ -1032,7 +1046,6 @@ field_options:
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
-    item_duplication_fields: Artikel Duplikationsfelder
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1244,7 +1257,6 @@ interfaces:
   presentation-divider:
     divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
-    title_placeholder: Titel eingeben...
     inline_title: Inline-Titel
     inline_title_label: Titel in Zeile anzeigen
     margin_top: Oberer Rand
@@ -1330,6 +1342,7 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
+    field_hint: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1544,7 +1557,10 @@ layouts:
     cluster_radius: Cluster-Radius
     cluster_minpoints: Kleinstes Cluster
     cluster_maxzoom: Maximaler Zoom für Cluster
+    field: Geodaten-Feld
     invalid_geometry: Ungültige Geometrie
+    find_location: Standort suchen...
+    default_template: Verwenden des Sammlungs-Standards...
 panels:
   metric:
     name: Metrik

@@ -933,7 +933,6 @@ interfaces:
   presentation-divider:
     divider: Dispartier
     description: Tikedennoù ha rannañ ar maeziennoù er c'hevrennoù
-    title_placeholder: Bizskrivit un titl...
     inline_title: Titl en linenn
     inline_title_label: Diskwel an titl e-barzh al linenn
     margin_top: Marz a-us

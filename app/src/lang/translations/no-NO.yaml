@@ -139,7 +139,6 @@ global: Globalt
 admins_have_all_permissions: Administratorer har alle rettigheter
 camera: Kamera
 show_zero: Vis null
-create_in_advanced_field_creation_mode: Opprett i avansert feltopprettingsmodus
 continue_in_advanced_field_creation_mode: Opprett i avansert feltopprettingsmodus
 sum: Sum
 avg: Gjennomsnitt

@@ -192,7 +192,6 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: 几何
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -937,7 +936,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目
-    project_logo_note: 登录和Logo背景
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -1183,7 +1181,6 @@ interfaces:
   presentation-divider:
     divider: 分隔线
     description: 标记字段并分成多个部分
-    title_placeholder: 输入标题...
     inline_title: 行内标题
     inline_title_label: 在行内显示标题
     margin_top: 上边距

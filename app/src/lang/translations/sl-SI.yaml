@@ -164,7 +164,6 @@ time: Ura
 timestamp: Časovni žig
 uuid: UUID
 hash: Hash
-geometry: Geometrija
 not_available_for_type: Ni na razpolago za ta tip
 create_translations: Ustvari nove prevode
 auto_refresh: Samodejno osveži
@@ -831,7 +830,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
-    project_logo_note: Ozadje prijave in logotip
     public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
     security_divider_title: Varnost
     auth_password_policy:
@@ -1070,7 +1068,6 @@ interfaces:
   presentation-divider:
     divider: Ločilo
     description: Oznaka in delilnik polj v odseke
-    title_placeholder: Vnesite naslov ...
     inline_title: Naslov v vrstici
     inline_title_label: Pokaži naslov v vrsti
     margin_top: Zgornji rob

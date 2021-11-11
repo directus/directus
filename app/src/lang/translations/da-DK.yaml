@@ -152,7 +152,6 @@ global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
 show_zero: Vis Nul
-create_in_advanced_field_creation_mode: Opret i avanceret feltskabelsestilstand
 continue_in_advanced_field_creation_mode: Fortsæt i avanceret feltskabelsestilstand
 sum: Sum
 sum_distinct: Sum Distinkt
@@ -194,7 +193,6 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
-geometry: Geometri
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret Oversættelser
 auto_refresh: Opdater Automatisk
@@ -931,7 +929,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
-    project_logo_note: Login- & Logo Baggrund
     public_note_placeholder: En kort, offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
@@ -968,7 +965,6 @@ field_options:
     singular_unit: Ental Enhed
     plural_unit: Flertalsenhed
     archive_divider: Arkiver
-    archive_field: Arkivér Felt
     archive_field_placeholder: Vælg et felt...
     archive_app_filter: Aktiver App Arkivfilter
     archive_value: Værdi sat når arkiverer...
@@ -977,7 +973,6 @@ field_options:
     sort_field: Vælg et felt...
     accountability_divider: Ansvarlighed
     duplication_divider: Duplikering
-    item_duplication_fields: Element Duplikationsfelter
   directus_files:
     title: En unik titel...
     description: En valgfri beskrivelse...
@@ -1179,7 +1174,6 @@ interfaces:
   presentation-divider:
     divider: Opdeler
     description: Etiket og opdel felter i sektioner
-    title_placeholder: Indtast en titel...
     inline_title: Indlejret Titel
     inline_title_label: Vis titel inde i linien
     margin_top: Margen Top

@@ -61,7 +61,7 @@ export default defineLayout<LayoutOptions>({
 				_and: [
 					{
 						[startDateField.value]: {
-							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
+							_between: [formatISO(calendar.value.view.activeStart), formatISO(calendar.value.view.activeEnd)],
 						},
 					},
 				],
