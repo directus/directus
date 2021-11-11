@@ -48,7 +48,7 @@ role_name: ناوی پلە
 branch: لق
 leaf: گەڵا
 indeterminate: دیاری نەکراو
-edit_collection: دەستکاری کۆڵێکشن
+edit_collection: دەستکاری کۆمەڵە
 fields:
   directus_fields:
     translation: وەرگێڕانەکانی ناوی خانە
