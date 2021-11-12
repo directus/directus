@@ -191,6 +191,10 @@ export default defineComponent({
 	margin: 28px 0;
 }
 
+:deep(.v-notice.normal) {
+	background-color: var(--foreground-inverted);
+}
+
 .toggle-advanced {
 	width: 100%;
 	margin-top: 20px;
