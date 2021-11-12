@@ -317,7 +317,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			_and: [],
 		} as LogicalFilterAND;
 
-		const fieldsWithConditions = fields.value.map((field) => applyConditions(rule, field));
+		const fieldsWithConditions = fields.value.map((field) => applyConditions(item, field));
 
 		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
