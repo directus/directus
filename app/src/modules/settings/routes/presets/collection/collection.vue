@@ -253,6 +253,7 @@ export default defineComponent({
 		}
 
 		function onRowClick({ item }: { item: Preset }) {
+			item = ref(item).value;
 			if (selection.value.length === 0) {
 				router.push(`/settings/presets/${item.id}`);
 			} else {
