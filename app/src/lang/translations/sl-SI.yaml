@@ -827,6 +827,7 @@ fields:
     data_label: Pošlji podatke dogodka
     triggers: Sprožilci
     actions: Dejanja
+    collections: Zbirke
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...

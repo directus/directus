@@ -146,6 +146,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@/composables/use-layout';
 import useShortcut from '@/composables/use-shortcut';
 import unsavedChanges from '@/composables/unsaved-changes';
+import { isEqual } from 'lodash';
 
 type FormattedPreset = {
 	id: number;
@@ -378,6 +379,14 @@ export default defineComponent({
 					return values.value.layout_query[values.value.layout];
 				},
 				set(newQuery) {
+					if (
+						values.value.layout_query &&
+						values.value.layout &&
+						isEqual(newQuery, values.value.layout_query[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_query: {
@@ -396,6 +405,14 @@ export default defineComponent({
 					return values.value.layout_options[values.value.layout];
 				},
 				set(newOptions) {
+					if (
+						values.value.layout_options &&
+						values.value.layout &&
+						isEqual(newOptions, values.value.layout_options[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_options: {

@@ -4,6 +4,7 @@ import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
 import { isDynamicVariable } from './is-dynamic-variable';
+import { flattenArrays } from './flatten-arrays';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
@@ -18,7 +19,7 @@ export function parseFilter(
 ): any {
 	if (!filter) return filter;
 
-	return deepMap(filter, applyFilter);
+	return flattenArrays(deepMap(filter, applyFilter));
 
 	function applyFilter(val: any, key: string | number) {
 		if (val === 'true') return true;

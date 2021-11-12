@@ -765,6 +765,7 @@ fields:
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    module_bar: شريط الوحدة
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
@@ -781,6 +782,7 @@ fields:
     name: الاسم
     status: حالة
     value: قيمة
+    collections: مجموعات
 field_options:
   directus_settings:
     security_divider_title: الأمان

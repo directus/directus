@@ -2,11 +2,11 @@
 	<v-input
 		:model-value="modelValue"
 		db-safe
-		:nullable="false"
+		:nullable="nullable"
 		:disabled="disabled"
 		:placeholder="placeholder"
 		:class="{ matches: fieldExists }"
-		@update:model-value="$emit('update:modelValue', $event)"
+		@update:model-value="$emit('update:modelValue', $event.length ? $event : null)"
 	>
 		<template v-if="fields && fields.length > 0 && !disabled" #append>
 			<v-menu show-arrow placement="bottom-end">
@@ -64,6 +64,10 @@ export default defineComponent({
 		placeholder: {
 			type: String,
 			default: () => i18n.global.t('foreign_key') + '...',
+		},
+		nullable: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
