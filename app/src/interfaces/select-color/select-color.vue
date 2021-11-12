@@ -505,8 +505,8 @@ export default defineComponent({
 	grid-gap: 12px;
 	align-items: baseline;
 	width: 100%;
-	height: 50px;
-	padding: 0 14px;
+	height: 45px;
+	padding: 12px 14px;
 }
 
 .color-data-alphas .color-data-alpha {

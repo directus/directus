@@ -135,7 +135,6 @@ body {
 			border-radius: 10px;
 			cursor: pointer;
 			appearance: none;
-			appearance: none;
 
 			&::-webkit-slider-runnable-track {
 				height: 4px;
@@ -165,7 +164,6 @@ body {
 				box-shadow: none;
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				transition: all var(--fast) var(--transition);
-				appearance: none;
 				appearance: none;
 			}
 
