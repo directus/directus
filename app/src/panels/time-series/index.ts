@@ -244,34 +244,6 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'fillType',
-			type: 'string',
-			name: '$t:panels.time_series.fill_type',
-			meta: {
-				interface: 'select-dropdown',
-				width: 'half',
-				options: {
-					choices: [
-						{
-							text: 'Gradient',
-							value: 'gradient',
-						},
-						{
-							text: 'Solid',
-							value: 'solid',
-						},
-						{
-							text: 'Disabled',
-							value: 'disabled',
-						},
-					],
-				},
-			},
-			schema: {
-				default_value: 'gradient',
-			},
-		},
-		{
 			field: 'curveType',
 			type: 'string',
 			name: '$t:panels.time_series.curve_type',
@@ -297,6 +269,34 @@ export default definePanel({
 			},
 			schema: {
 				default_value: 'smooth',
+			},
+		},
+		{
+			field: 'fillType',
+			type: 'string',
+			name: '$t:panels.time_series.fill_type',
+			meta: {
+				interface: 'select-dropdown',
+				width: 'half',
+				options: {
+					choices: [
+						{
+							text: 'Gradient',
+							value: 'gradient',
+						},
+						{
+							text: 'Solid',
+							value: 'solid',
+						},
+						{
+							text: 'Disabled',
+							value: 'disabled',
+						},
+					],
+				},
+			},
+			schema: {
+				default_value: 'gradient',
 			},
 		},
 		{
