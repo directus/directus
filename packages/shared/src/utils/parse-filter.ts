@@ -19,7 +19,7 @@ export function parseFilter(
 ): any {
 	if (!filter) return filter;
 
-	return flattenArrays(deepMap(filter, applyFilter));
+	return flattenArrays(deepMap(filter, applyFilter), ['_in', '_nin', '_between', '_nbetween']);
 
 	function applyFilter(val: any, key: string | number) {
 		if (val === 'true') return true;
