@@ -23,7 +23,6 @@ jobs:
       # - Only files that do not require checks (paths_ignore) have been changed and
       #   workflow run on previous commit has been successful (backtracking)
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
-      skipped_by: ${{ steps.skip_check.outputs.skipped_by }}
     steps:
       - name: Check whether workflow is skippable
         id: skip_check
@@ -59,11 +58,9 @@ jobs:
     with:
       should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
-  # For now, run end-to-end tests only on push events on 'main' branch
-  # (therefore not skippable by successful workflow run which hasn't been triggered by a 'push' event)
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
     uses: directus/directus/.github/workflows/e2e-tests.yml@main
     with:
-      should_skip: ${{ github.event_name != 'push' || (needs.pre_check.outputs.skipped_by && fromJSON(needs.pre_check.outputs.skipped_by).event == 'push') }}
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
