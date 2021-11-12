@@ -8,11 +8,11 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { validatePayload } from '@directus/shared/utils';
-import { Item, Field, LogicalFilterAND } from '@directus/shared/types';
-import { isNil, flatten, merge } from 'lodash';
+import { Item, LogicalFilterAND } from '@directus/shared/types';
+import { isNil, flatten } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { getEndpoint } from '@/utils/get-endpoint';
-import { parseFilter } from '@/utils/parse-filter';
+import { applyConditions } from '@/utils/apply-conditions';
 import { translate } from '@/utils/translate-object-values';
 
 type UsableItem = {
@@ -317,36 +317,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			_and: [],
 		} as LogicalFilterAND;
 
-		const applyConditions = (field: Field) => {
-			if (field.meta && Array.isArray(field.meta?.conditions)) {
-				const conditions = [...field.meta.conditions].reverse();
-
-				const matchingCondition = conditions.find((condition) => {
-					if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
-					const rule = parseFilter(condition.rule);
-					const errors = validatePayload(rule, item, { requireAll: true });
-					return errors.length === 0;
-				});
-
-				if (matchingCondition) {
-					return {
-						...field,
-						meta: merge({}, field.meta || {}, {
-							readonly: matchingCondition.readonly,
-							options: matchingCondition.options,
-							hidden: matchingCondition.hidden,
-							required: matchingCondition.required,
-						}),
-					};
-				}
-
-				return field;
-			} else {
-				return field;
-			}
-		};
-
-		const fieldsWithConditions = fields.value.map((field) => applyConditions(field));
+		const fieldsWithConditions = fields.value.map((field) => applyConditions(rule, field));
 
 		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
