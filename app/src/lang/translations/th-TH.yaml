@@ -165,7 +165,6 @@ time: เวลา
 timestamp: Timestamp
 uuid: UUID
 hash: ค่าแฮช
-geometry: เรขาคณิต
 not_available_for_type: ไม่มีสำหรับชนิดนี้
 create_translations: สร้างการแปลใหม่
 auto_refresh: รีเฟรซอัตโนมัติ
@@ -788,8 +787,6 @@ fields:
     public_note: Public Note
     auth_password_policy: นโยบายในการตั้งรหัสผ่าน
     auth_login_attempts: ความพยายามในการเข้าสู่ระบบ
-    storage_asset_presets: การจัดเก็บที่ตั้งค่าไว้ล่วงหน้า
-    storage_asset_transform: การแปลงพื้นที่จัดเก็บข้อมูล
     custom_css: CSS ที่กำหนดเอง
   directus_fields:
     collection: ชื่อคอลเลกชัน
@@ -809,11 +806,11 @@ fields:
     enforce_tfa: ต้องการ 2FA
     users: ผู้ใช้ในบทบาทนี้
     module_list: รายการโมดูล
-    collection_list: รายการคอลเลกชัน
   directus_webhooks:
     name: ชื่อ
     status: สถานะ
     value: ค่า
+    collections: คอลเลกชัน
 field_options:
   directus_settings:
     security_divider_title: ความปลอดภัย
@@ -836,9 +833,6 @@ field_options:
       icon_name: ไอคอน
       name_name: ชื่อ
       name_placeholder: ป้อนชื่อเรื่อง
-    collection_list:
-      fields:
-        type_name: ชนิด
     collections_name: คอลเลกชัน
   directus_users:
     status_dropdown_active: เปิดใช้งาน
@@ -980,7 +974,6 @@ interfaces:
   presentation-divider:
     divider: ตัวแบ่ง
     description: แบ่งฟิลด์ออกเป็นส่วนๆ
-    title_placeholder: ป้อนชื่อเรื่อง
     inline_title: ชื่อเรื่องแบบบรรทัดเดียวกัน
     inline_title_label: แสดงชื่อในเส้นแบ่ง
     margin_top: ระยะห่างด้านบน

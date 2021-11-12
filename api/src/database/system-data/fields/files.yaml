@@ -27,7 +27,6 @@ fields:
     width: full
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 

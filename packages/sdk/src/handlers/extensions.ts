@@ -8,14 +8,6 @@ export class ExtensionEndpoint implements ITransport {
 	private name: string;
 	private transport: ITransport;
 
-	get url(): string {
-		return this.transport.url;
-	}
-
-	set url(value: string) {
-		this.transport.url = value;
-	}
-
 	constructor(transport: ITransport, name: string) {
 		this.name = name;
 		this.transport = transport;

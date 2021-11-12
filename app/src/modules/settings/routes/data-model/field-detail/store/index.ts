@@ -106,15 +106,16 @@ export const useFieldDetailStore = defineStore({
 				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
 				this.localType = getLocalTypeForField(collection, field)!;
 
-				const relations = relationsStore.getRelationsForField(collection, field);
+				const relations = cloneDeep(relationsStore.getRelationsForField(collection, field));
 
 				// o2m relation is the same regardless of type
 				this.relations.o2m = relations.find(
 					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
 				) as DeepPartial<Relation> | undefined;
 
-				if (['files', 'm2m', 'translations'].includes(this.localType)) {
-					this.relations.m2o = relations.find((relation) => relation !== this.relations.o2m) as
+				if (['files', 'm2m', 'translations', 'm2a'].includes(this.localType)) {
+					// These types rely on directus_relations fields being said, so meta should exist for these particular relations
+					this.relations.m2o = relations.find((relation) => relation.meta?.id !== this.relations.o2m?.meta?.id) as
 						| DeepPartial<Relation>
 						| undefined;
 				} else {

@@ -34,7 +34,8 @@ export default {
 
 - `id` — The unique key for this module. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` — The human-readable name for this module.
-- `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+  Directus custom icons.
 - `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
   serving as the base path.
 
@@ -150,7 +151,7 @@ the root of the `package.json` file:
 
 ## 3. Develop Your Custom Module
 
-The module itself is simply a Vue component, which provides an blank canvas for creating anything you need.
+The module itself is simply a Vue component, which provides a blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 

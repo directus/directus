@@ -747,8 +747,6 @@ fields:
     public_note: Julkinen muistiinpano
     auth_password_policy: Salasanakäytäntö
     auth_login_attempts: Kirjautumisyritykset
-    storage_asset_presets: Tallennustilan sisältöjen esiasetukset
-    storage_asset_transform: Tallennustilan sisältöjen muunnos
     custom_css: Mukautettu CSS
   directus_fields:
     collection: Kokoelman nimi
@@ -768,11 +766,11 @@ fields:
     enforce_tfa: Vaadi 2FA
     users: Käyttäjät roolissa
     module_list: Moduulien navigointi
-    collection_list: Kokoelman navigointi
   directus_webhooks:
     name: Nimi
     status: Tila
     value: Arvo
+    collections: Kokoelmat
 field_options:
   directus_activity:
     create: Luo
@@ -793,9 +791,6 @@ field_options:
       icon_name: Kuvake
       name_name: Nimi
       name_placeholder: Syötä otsikko...
-    collection_list:
-      fields:
-        type_name: Tyyppi
     collections_name: Kokoelmat
   directus_users:
     status_dropdown_active: Aktiivinen
@@ -928,7 +923,6 @@ interfaces:
   presentation-divider:
     divider: Jakaja
     description: Merkitse ja jaa kentät osiin
-    title_placeholder: Syötä otsikko...
     inline_title: Rivitetty otsikko
     inline_title_label: Näytä otsikko rivin sisällä
     margin_top: Ylämarginaali

@@ -62,7 +62,7 @@ export default defineLayout<LayoutOptions>({
 				_and: [
 					{
 						[startDateField.value]: {
-							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
+							_between: [formatISO(calendar.value.view.activeStart), formatISO(calendar.value.view.activeEnd)],
 						},
 					},
 				],
@@ -194,7 +194,7 @@ export default defineLayout<LayoutOptions>({
 
 						const endpoint = collection.value.startsWith('directus')
 							? collection.value.substring(9)
-							: `collections/${collection.value}`;
+							: `content/${collection.value}`;
 
 						router.push(`/${endpoint}/${primaryKey}`);
 					}

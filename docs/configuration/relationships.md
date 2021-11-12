@@ -70,7 +70,7 @@ automatically selected. If you enter the name of a **new** Related Collection (d
 prompted to enter the name of its primary key field, which will default to an auto-increment integer type.
 
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
-the O2M alias (see below) that pairs with with this M2O.
+the O2M alias (see below) that pairs with this M2O.
 
 **Relational Triggers** allow for control over what happens when a relationship is broken. There is one option:
 
@@ -116,7 +116,7 @@ The related field will store the value of this collection's primary key field, s
 reason, when selecting existing fields, options will be disabled if they don't have a matching type.
 
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
-the M2O field (see above) that pairs with with this O2M.
+the M2O field (see above) that pairs with this O2M.
 
 The optional **Sort Field** can be used enable manual reordering of items within this O2M field. This is configured by
 selecting an existing numeric type field (highlights green) from the Related Collection, or entering the name of a new
@@ -246,9 +246,9 @@ Sometimes called a "matrix field" or "replicator". Like the M2M, the M2A is stor
 a [junction collection](/getting-started/glossary/#junction-collections). However, there is one key difference: one side
 of the junction also stores a **collection key**. This combination of collection name and primary key means that you can
 effectively store a reference to _any_ item in the database. You can then artificially limit which collections are valid
-through an related collections "allow list".
+through a related collections "allow list".
 
-An common example of a M2A is a "Page Builder", which has a _Pages_ collection that includes any number of different
+A common example of a M2A is a "Page Builder", which has a _Pages_ collection that includes any number of different
 "section" Collections, such as: "Heading", "Text", and "Image". In this example the junction table will link different
 sections (from different collections) with a page, creating relational layouts.
 

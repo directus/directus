@@ -88,8 +88,6 @@ undone. Please proceed with caution.
 - **IP Access** — An allow-list of IP addresses from which the platform can be accessed, empty allows all
 - **Require 2FA** — Forces all users within this role to use two-factor authentication
 - **Users in Role** — A list of all users within this role
-- **Module Navigation** — Overrides the visible modules
-- **Collection Navigation** — Overrides the collection module's navigation
 
 ## Deleting a Role
 

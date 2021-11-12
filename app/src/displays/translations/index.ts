@@ -3,7 +3,6 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import DisplayTranslations from './translations.vue';
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 type Options = {
 	template: string;
@@ -16,7 +15,7 @@ export default defineDisplay({
 	description: '$t:displays.translations.description',
 	icon: 'translate',
 	component: DisplayTranslations,
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const fieldsStore = useFieldsStore();
 
 		const junctionCollection = relations.o2m?.collection;

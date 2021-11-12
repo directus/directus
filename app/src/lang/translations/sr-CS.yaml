@@ -750,8 +750,6 @@ fields:
     public_note: Opis Projekta
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
-    storage_asset_presets: Izgled prostora za skladištenje
-    storage_asset_transform: Transformacija sredstava za skladištenje
     custom_css: Prilagođeni CSS
   directus_fields:
     collection: Ime Kolekcije
@@ -771,11 +769,11 @@ fields:
     enforce_tfa: Traži 2FA
     users: Svi korisnici ove Uloge
     module_list: Navigacija Modula
-    collection_list: Navigacija Kolekcije
   directus_webhooks:
     name: Ime
     status: Status
     value: Vrijednost
+    collections: Kolekcije
 field_options:
   directus_activity:
     create: Kreiraj
@@ -796,9 +794,6 @@ field_options:
       icon_name: Ikonica
       name_name: Ime
       name_placeholder: Unesi naslov...
-    collection_list:
-      fields:
-        type_name: Tip
     collections_name: Kolekcije
   directus_users:
     status_dropdown_active: Aktivan
@@ -936,7 +931,6 @@ interfaces:
   presentation-divider:
     divider: Djelilac
     description: Označi i podijeli polja u sekcije
-    title_placeholder: Unesi naslov...
     inline_title: Linijski Naslov
     inline_title_label: Prikaži naslov u liniji
     margin_top: Gornja Margina

@@ -8,13 +8,25 @@ let transporter: Transporter;
 export default function getMailer(): Transporter {
 	if (transporter) return transporter;
 
-	if (env.EMAIL_TRANSPORT === 'sendmail') {
+	const transportName = env.EMAIL_TRANSPORT.toLowerCase();
+
+	if (transportName === 'sendmail') {
 		transporter = nodemailer.createTransport({
 			sendmail: true,
 			newline: env.EMAIL_SENDMAIL_NEW_LINE || 'unix',
 			path: env.EMAIL_SENDMAIL_PATH || '/usr/sbin/sendmail',
 		});
-	} else if (env.EMAIL_TRANSPORT.toLowerCase() === 'smtp') {
+	} else if (transportName === 'ses') {
+		const aws = require('@aws-sdk/client-ses');
+
+		const sesOptions: Record<string, unknown> = getConfigFromEnv('EMAIL_SES_');
+
+		const ses = new aws.SES(sesOptions);
+
+		transporter = nodemailer.createTransport({
+			SES: { ses, aws },
+		} as Record<string, unknown>);
+	} else if (transportName === 'smtp') {
 		let auth: boolean | { user?: string; pass?: string } = false;
 
 		if (env.EMAIL_SMTP_USER || env.EMAIL_SMTP_PASSWORD) {
@@ -35,7 +47,7 @@ export default function getMailer(): Transporter {
 			auth,
 			tls,
 		} as Record<string, unknown>);
-	} else if (env.EMAIL_TRANSPORT.toLowerCase() === 'mailgun') {
+	} else if (transportName === 'mailgun') {
 		const mg = require('nodemailer-mailgun-transport');
 		transporter = nodemailer.createTransport(
 			mg({

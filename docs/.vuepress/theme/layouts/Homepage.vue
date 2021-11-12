@@ -334,7 +334,7 @@
 					/>
 				</svg>
 				<h2>Getting Started</h2>
-				<span>Get started with Directus, learning basic concepts and instructions for popular use cases.</span>
+				<span>Installation, an overview of basic concepts, and understanding the Directus ecosystem.</span>
 				<u>Learn More</u>
 			</a>
 			<a href="/app/overview/" class="panel">
@@ -422,6 +422,9 @@
 				</ul>
 			</div>
 		</div>
+		<!-- Start of HubSpot Embed Code -->
+		<script type="text/javascript" id="hs-script-loader" async defer src="//js-na1.hs-scripts.com/20534155.js"></script>
+		<!-- End of HubSpot Embed Code -->
 	</div>
 </template>
 
@@ -578,8 +581,15 @@ export default {
 }
 
 @media (max-width: 700px) {
+	.header .text {
+		top: 20px;
+		right: 20px;
+		bottom: 20px;
+		left: 20px;
+	}
+
 	.header .text h1 {
-		font-size: 42px;
+		font-size: clamp(30px, 7vw, 42px);
 	}
 
 	.panel {

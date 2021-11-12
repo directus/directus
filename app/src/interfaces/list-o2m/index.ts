@@ -1,7 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceListO2M from './list-o2m.vue';
 import PreviewSVG from './preview.svg?raw';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'list-o2m',
@@ -13,7 +12,7 @@ export default defineInterface({
 	localTypes: ['o2m'],
 	group: 'relational',
 	relational: true,
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const collection = relations.o2m?.collection;
 
 		return [

@@ -27,7 +27,7 @@
 							:items="fieldOptions"
 							:mandatory="false"
 							:groups-clickable="true"
-							@group-toggle="loadFieldRelations($event.value, 1)"
+							@group-toggle="loadFieldRelations($event.value)"
 							@update:modelValue="updateField(index, $event)"
 						>
 							<template #preview>{{ getFieldPreview(element) }}</template>
