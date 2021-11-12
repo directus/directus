@@ -105,6 +105,7 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 						},
 					};
 				},
+				...this._options?.transport,
 			});
 		}
 

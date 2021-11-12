@@ -46,9 +46,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const page = syncRefProperty(layoutQuery, 'page', 1);
 		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
-		const sort = syncRefProperty(layoutQuery, 'sort', () =>
-			primaryKeyField.value ? [primaryKeyField.value?.field] : []
-		);
+		const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
+		const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
 
 		const locationFilter = ref<Filter>();
 
@@ -105,10 +104,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 			const geometryField = field.field;
 			const geometryFormat = isGeometryFieldNative.value ? 'native' : field.meta?.options?.geometryFormat;
+			const geometryType = field.schema?.geometry_type ?? field.meta?.options?.geometryType;
 			if (!geometryFormat) {
 				return;
 			}
-			return { geometryField, geometryFormat };
+			return { geometryField, geometryFormat, geometryType };
 		});
 
 		const template = computed(() => {

@@ -155,6 +155,7 @@ fields:
     role: Peranan
   directus_settings:
     project_name: Nama Projek
+    module_bar: Modul.bar
   directus_fields:
     note: Nota
     translation: Terjemahan nama bidang
@@ -165,6 +166,7 @@ fields:
     name: Nama
     status: Status
     value: Nilai
+    collections: Koleksi-koleksi
 field_options:
   directus_activity:
     create: Cipta
