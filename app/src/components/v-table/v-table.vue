@@ -296,7 +296,7 @@ export default defineComponent({
 				})
 				.reduce((acc, val) => (acc += ' ' + val), '');
 
-			if (props.showSelect != 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
+			if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
 			if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
 
 			gridTemplateColumns = gridTemplateColumns + ' 1fr';

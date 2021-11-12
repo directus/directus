@@ -11,7 +11,7 @@
 				<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
 			</th>
 
-			<th v-if="showSelect != 'none'" class="select cell" scope="col">
+			<th v-if="showSelect !== 'none'" class="select cell" scope="col">
 				<v-checkbox
 					v-if="showSelect === 'multiple'"
 					:model-value="allItemsSelected"
