@@ -783,6 +783,7 @@ layout_setup: Настройка на оформление
 unsaved_changes: Има незапазени промени
 unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
 discard_changes: Отмяна на промените
+discard_all_changes: Отмяна на промените
 discard_changes_copy: Сигурни ли сте, че искате да отхвърлите тези промени?
 show_x_axis: Показване на оста по X
 show_y_axis: Показване на оста по Y
@@ -939,7 +940,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    mapping: Картографиране
+    mapping: Картография
     basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
@@ -1002,7 +1003,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
     project_color_note: Фон на логото и вход-а
-    project_logo_note: Бяла 40x40 в SVG или PNG
+    project_logo_note: Бяла 40x40 в SVG или PNG картинка
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
@@ -1185,6 +1186,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
