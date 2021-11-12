@@ -52,7 +52,7 @@ edit_collection: Редактиране на колекцията
 exclusive: Изключително
 children: Дъщерен
 db_only_click_to_configure: 'Само в базата от данни: Натиснете за конфигуриране'
-show_archived_items: Включително архивираните
+show_archived_items: Показване на архивираните записи
 edited: Стойността е редактирана
 required: Задължително
 required_for_app_access: Изисква се за достъп до приложението
@@ -197,7 +197,7 @@ hidden_on_detail: Скриване в детайлния изглед
 disabled_editing_value: Без възможност за редакция
 key: Ключово име
 alias: Псевдоним
-bigInteger: Голямо цяло число
+bigInteger: Голям целочислен
 boolean: Булев
 date: Дата
 date_range: Времеви период
@@ -205,8 +205,8 @@ datetime: Дата и час
 dateTime: Дата и час
 precision: Точност
 decimal: Десетичен
-float: Реално число
-integer: Цяло число
+float: Плаващ
+integer: Целочислен
 json: JSON
 xml: XML
 string: Низ
@@ -215,14 +215,14 @@ time: Час
 timestamp: Времеви печат
 uuid: UUID
 hash: Хеш
-geometry: Геометричен (всичко)
+geometry: Геометричен (всякакъв)
 geometry.Point: Точка
 geometry.LineString: Линия
 geometry.Polygon: Многоъгълник
 geometry.MultiPoint: Множество точки
 geometry.MultiLineString: Множество линии
 geometry.MultiPolygon: Множество многоъгълници
-not_available_for_type: Не е налично за типа
+not_available_for_type: Не е налично за типът
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
 refresh_interval: Интервал за опресняване
@@ -803,7 +803,7 @@ page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
 page_help_settings_project: "**Настройки за проекта** — Глобални конфигурация и настройки на вашият проект."
 page_help_settings_datamodel_collections: >-
-  **Модел на данни: Колекции** — Показване на всички налични колекции. Включително видими, невидими и системни, както и все още неконфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
+  **Модел на данни: Колекции** — Показване на всички налични колекции. Това включва всички видими, невидими, системни, както и все още неконфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
   **Модел на данни: Колекция** — Формуляр за управление на тази колекция и нейните полета.
 page_help_settings_roles_collection: '**Преглед на роли** — Показване на администраторската, публичната и всички собствени роли.'
@@ -878,7 +878,7 @@ fields:
     unarchive_value: Стойност при разархивиране
     sort_field: Поле за сортиране
     accountability: Следене за активност и ревизии
-    archive_field: Архивиране по поле
+    archive_field: Поле за архивен статус
     item_duplication_fields: Копиране на полета при дублиране
   directus_files:
     $thumbnail: Умалена картинка
@@ -923,7 +923,7 @@ fields:
     tfa_secret: Двуфакторна автентикация
     admin_options: Административни настройки
     status: Статус
-    status_draft: Чернови
+    status_draft: В чернова
     status_invited: Поканен
     status_active: Активен
     status_suspended: Спрян
@@ -944,7 +944,7 @@ fields:
     basemaps: Основни карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
-    basemaps_style: Стил на географската карта
+    basemaps_style: Mapbox стил
     mapbox_key: Токен за mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
@@ -985,7 +985,7 @@ fields:
     admin_access: Администраторски достъп
     ip_access: IP адрес
     enforce_tfa: Изисква 2FA
-    users: Потребители към роля
+    users: Потребители към ролята
     module_list: Модули
   directus_webhooks:
     name: Име
@@ -1026,7 +1026,7 @@ field_options:
     basemaps_name_placeholder: Въвеждане на името на основната карта...
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
-    basemaps_style: Стил на географската карта
+    basemaps_style: Mapbox стил
     files_divider_title: Файлове и картинки
     overrides_divider_title: Преопределяне в приложението
   directus_activity:
@@ -1082,7 +1082,7 @@ field_options:
     dropdown_light: Светъл режим
     dropdown_dark: Тъмен режим
     admin_divider: Административни настройки
-    status_dropdown_draft: Чернови
+    status_dropdown_draft: В чернова
     status_dropdown_invited: Поканен
     status_dropdown_active: Активен
     status_dropdown_suspended: Спрян
@@ -1331,7 +1331,7 @@ interfaces:
     editor: Редактор
   map:
     map: Географска карта
-    description: Избор на местоположение от картата
+    description: Избор на местоположение от карта
     zoom: Мащабиране
     geometry_type: Тип
     geometry_format: Формат
@@ -1362,10 +1362,10 @@ interfaces:
     system_default: По подразбиране
   select-radio:
     radio-buttons: Радио бутони
-    description: Един или няколко избора
+    description: Избор измежду един или няколко възможности
   list:
     repeater: Повторение
-    description: Създаване на множество записи със същата структура
+    description: Създаване на множество записи с еднаква структура
     edit_fields: Редактиране на полетата
     add_label: 'Текст за „Създаване“'
     field_name_placeholder: Въвеждане име на полето...
@@ -1406,7 +1406,7 @@ interfaces:
     textarea: Поле за текст
     description: Редактор на многоредов текст в суров вид
   boolean:
-    toggle: Превключване
+    toggle: Превключвател
     description: Превключване между вкл. и изкл.
     label_placeholder: Въвеждане на етикет...
     label_default: Включване
@@ -1428,7 +1428,7 @@ interfaces:
       modal: Диалог
   input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: Редактиране на HTML съдържание
+    description: Визуален редактор на HTML съдържание
     toolbar: Лента с инструменти
     custom_formats: Собтсвени формати
     options_override: Преопределяне на настройки
@@ -1496,7 +1496,7 @@ displays:
   formatted-value:
     formatted-value: Форматирана стойност
     description: Форматиране на текстовата стойност
-    format_title: Формат на заглавие
+    format_title: Заглавен стил
     format_title_label: Автоматично форматиране на регистъра
     bold_label: Използване на удебелен стил
   formatted-json-value:
