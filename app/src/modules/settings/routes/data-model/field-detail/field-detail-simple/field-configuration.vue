@@ -114,7 +114,10 @@ export default defineComponent({
 				if (!chosenInterface.value) return;
 
 				if (interfaceIdsWithHiddenLabel.value.includes(chosenInterface.value.id)) {
-					key.value = `${chosenInterface.value.id}-${nanoid(6).toLowerCase()}`;
+					const simplifiedId = chosenInterface.value.id.includes('-')
+						? chosenInterface.value.id.split('-')[1]
+						: chosenInterface.value.id;
+					key.value = `${simplifiedId}-${nanoid(6).toLowerCase()}`;
 				} else if (oldVal && interfaceIdsWithHiddenLabel.value.includes(oldVal.id)) {
 					key.value = null;
 				}
