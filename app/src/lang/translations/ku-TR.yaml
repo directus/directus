@@ -50,6 +50,8 @@ leaf: گەڵا
 indeterminate: دیاری نەکراو
 edit_collection: دەستکاری کۆمەڵە
 fields:
+  directus_settings:
+    module_bar: شریتی مۆدیوڵەکان
   directus_fields:
     translation: وەرگێڕانەکانی ناوی خانە
   directus_roles:

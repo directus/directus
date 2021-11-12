@@ -751,6 +751,7 @@ fields:
     name: Namn
     status: Status
     value: Värde
+    collections: Kollektioner
 field_options:
   directus_activity:
     create: Skapa

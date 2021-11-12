@@ -825,6 +825,7 @@ fields:
     auth_login_attempts: Tentativas de autenticação
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
+    module_bar: Barra de módulo
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -852,6 +853,7 @@ fields:
     data_label: Enviar Dados do Evento
     triggers: Gatilhos
     actions: Ações
+    collections: Coleções
 field_options:
   directus_settings:
     security_divider_title: Segurança

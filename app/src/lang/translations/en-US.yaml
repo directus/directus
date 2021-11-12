@@ -978,6 +978,7 @@ fields:
     storage_asset_transform: Allowed Transformations
     overrides: App Overrides
     custom_css: Custom CSS
+    module_bar: Module Bar
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
@@ -1010,6 +1011,7 @@ fields:
     data_label: Send Event Data
     triggers: Triggers
     actions: Actions
+    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
