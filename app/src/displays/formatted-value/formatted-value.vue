@@ -142,7 +142,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t, n } = useI18n();
+		const { t, locale } = useI18n();
 
 		const matchedRules = computed(() => {
 			const leftValue = parseFloat(props.value.toString());
@@ -192,9 +192,14 @@ export default defineComponent({
 			if (isNil(props.value) || props.value === '') return null;
 
 			if (['integer', 'bigInteger', 'float', 'decimal'].includes(props.type)) {
+				const hasDecimals = ['float', 'decimal'].includes(props.type);
+				const options = hasDecimals ? { minimumFractionDigits: 2 } : {};
+				const format = new Intl.NumberFormat(locale.value, options).format;
+
 				const { prefix, value, suffix } = props;
-				const number = parseFloat(value.toString());
-				return `${prefix || ''}${n(number)}${suffix || ''}`;
+				const number = hasDecimals ? parseFloat(value.toString()) : parseInt(value.toString());
+
+				return `${prefix || ''}${format(number)}${suffix || ''}`;
 			}
 
 			let value = String(props.value);
