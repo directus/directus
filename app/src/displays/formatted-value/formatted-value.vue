@@ -42,6 +42,10 @@ import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
+		type: {
+			type: String,
+			required: true,
+		},
 		value: {
 			type: [String, Number],
 			default: null,
@@ -187,18 +191,10 @@ export default defineComponent({
 		const displayValue = computed(() => {
 			if (isNil(props.value) || props.value === '') return null;
 
-			if (typeof props.value === 'number') {
-				let value = n(props.value);
-
-				if (props.prefix) {
-					value = `${props.prefix}${value}`;
-				}
-
-				if (props.suffix) {
-					value = `${value}${props.suffix}`;
-				}
-
-				return value;
+			if (['integer', 'bigInteger', 'float', 'decimal'].includes(props.type)) {
+				const { prefix, value, suffix } = props;
+				const number = parseFloat(value.toString());
+				return `${prefix || ''}${n(number)}${suffix || ''}`;
 			}
 
 			let value = String(props.value);
