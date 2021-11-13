@@ -1,8 +1,9 @@
-import { defineDisplay } from '@directus/shared/utils';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
+import { Collection } from '@directus/shared/types';
+import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
+import getRelatedCollection from '@/utils/get-related-collection';
+import findLanguagesCollection from '@/utils/find-languages-collection';
 import DisplayTranslations from './translations.vue';
-import { useFieldsStore, useRelationsStore } from '@/stores';
 
 type Options = {
 	template: string;
@@ -14,14 +15,14 @@ export default defineDisplay({
 	name: '$t:displays.translations.translations',
 	description: '$t:displays.translations.description',
 	icon: 'translate',
+	types: ['alias', 'uuid', 'integer', 'bigInteger'],
+	localTypes: ['translations', 'm2o', 'm2m', 'o2m', 'm2a'],
 	component: DisplayTranslations,
-	options: ({ relations }) => {
+	options: ({ relations, field }) => {
 		const fieldsStore = useFieldsStore();
-
-		const junctionCollection = relations.o2m?.collection;
-		const relatedCollection = relations.m2o?.related_collection;
-
-		const languageFields = relatedCollection ? fieldsStore.getFieldsForCollection(relatedCollection) : [];
+		const templateCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
+		const languagesCollection = findLanguagesCollection(field.collection);
+		const languageFields = languagesCollection ? fieldsStore.getFieldsForCollection(languagesCollection) : [];
 
 		return [
 			{
@@ -30,7 +31,7 @@ export default defineDisplay({
 				meta: {
 					interface: 'system-display-template',
 					options: {
-						collectionName: junctionCollection,
+						collectionName: templateCollection,
 					},
 					width: 'half',
 				},
@@ -74,43 +75,90 @@ export default defineDisplay({
 			},
 		];
 	},
-	types: ['alias'],
-	localTypes: ['translations'],
 	fields: (options: Options | null, { field, collection }) => {
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
-		const relations = relationsStore.getRelationsForField(collection, field);
-
-		const translationsRelation = relations.find(
-			(relation) => relation.related_collection === collection && relation.meta?.one_field === field
+		const collectionsStore = useCollectionsStore();
+		const relatedCollection = getRelatedCollection(collection, field);
+		const relatedCollectionFields = fieldsStore.getFieldsForCollection(relatedCollection);
+		const relatedCollectionInfo =
+			(collectionsStore.collections as Collection[]).find(({ collection: key }) => key === collection) || null;
+		const relatedCollectionPrimaryKeyField = relatedCollectionFields.find(
+			(field) => field.collection === collection && field.schema?.is_primary_key === true
 		);
 
-		const languagesRelation = relations.find((relation) => relation !== translationsRelation);
+		const fieldData = fieldsStore.getField(collection, field);
+		const internalTemplate =
+			options?.template ||
+			relatedCollectionInfo?.meta?.display_template ||
+			`{{ ${relatedCollectionPrimaryKeyField!.field} }}`;
+		const templateFields = getFieldsFromTemplate(internalTemplate);
+		const extraFields: string[] = [];
 
-		const translationCollection = translationsRelation?.related_collection;
-		const languagesCollection = languagesRelation?.related_collection;
-
-		if (!translationCollection || !languagesCollection) return [];
-
-		const translationsPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(translationCollection);
-		const languagesPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(languagesCollection);
-
-		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection)
-			: [];
-
-		if (translationsPrimaryKeyField && !fields.includes(translationsPrimaryKeyField.field)) {
-			fields.push(translationsPrimaryKeyField.field);
+		if (fieldData?.meta?.special?.includes('m2a')) {
+			const relations = relationsStore.getRelationsForField(collection, field);
+			const m2aRelation = relations.find((relation) => relation.meta?.one_allowed_collections?.length);
+			extraFields.push(m2aRelation?.meta?.one_collection_field ?? 'collection');
 		}
 
-		if (languagesRelation?.field && !fields.includes(languagesRelation.field)) {
-			fields.push(`${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
+		templateFields.forEach((templateField) => {
+			const fieldComponents = templateField.split('.');
+			let currentCollection = collection;
+			let fieldPathPrefix = '';
 
-			if (options?.languageField) {
-				fields.push(`${languagesRelation.field}.${options.languageField}`);
+			const isM2a = fieldComponents[0]?.startsWith('item:');
+			if (isM2a) {
+				// in case of m2a start collection from item collection
+				fieldPathPrefix = fieldComponents[0] + '.';
+				currentCollection = fieldPathPrefix.split(/:|\./)[1];
+				fieldComponents.splice(0, 1);
 			}
-		}
 
+			[!isM2a && field, ...fieldComponents].forEach((fieldComponent, i) => {
+				if (!fieldComponent) return;
+
+				const fieldData = fieldsStore.getField(currentCollection, fieldComponent);
+				const relations = relationsStore.getRelationsForField(currentCollection, fieldComponent);
+
+				if (fieldData?.meta?.special?.includes('translations')) {
+					const translationsRelation = relations.find(
+						(relation) =>
+							relation.related_collection === currentCollection && relation.meta?.one_field === fieldComponent
+					);
+					const languagesRelation = relations.find((relation) => relation !== translationsRelation);
+					const languagesCollection = languagesRelation?.related_collection;
+
+					if (!languagesRelation || !languagesCollection) return;
+
+					const basePath =
+						fieldPathPrefix + (fieldComponent !== field ? fieldComponents.slice(0, i).join('.') + '.' : '');
+					const writableFields = fieldsStore
+						.getFieldsForCollection(languagesRelation.collection)
+						.filter((field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false);
+
+					// add writable fields for the progress indicator
+					writableFields.forEach((field) => {
+						extraFields.push(`${basePath}${field.field}`);
+					});
+
+					const languagesPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(languagesCollection);
+
+					if (languagesRelation?.field && !templateFields.includes(languagesRelation.field)) {
+						extraFields.push(`${basePath}${languagesRelation.field}.${languagesPrimaryKeyField!.field}`);
+
+						if (options?.languageField) {
+							extraFields.push(`${basePath}${languagesRelation.field}.${options.languageField}`);
+						}
+					}
+				}
+
+				currentCollection = relations.length
+					? getRelatedCollection(currentCollection, fieldComponent)
+					: currentCollection;
+			});
+		});
+
+		const fields = [...templateFields, ...extraFields].filter((val, i, self) => self.indexOf(val) === i);
 		return fields;
 	},
 });
