@@ -4,23 +4,15 @@
 	<div v-else class="display-formatted" :style="displayStyle">
 		<v-icon v-if="format.iconLeft" class="left" :name="format.iconLeft" :color="format.iconLeftColor" small />
 
-		<a
-			v-if="link"
-			class="link"
-			:href="href"
-			:class="[{ bold }, font]"
-			:style="valueStyle"
-			:target="linkTarget"
-			@click.stop
-		>
-			{{ displayValue }}
-		</a>
-
-		<span v-else class="value" :class="[{ bold }, font]" :style="valueStyle">
+		<span class="value" :class="[{ bold }, font]" :style="valueStyle">
 			{{ displayValue }}
 		</span>
 
 		<v-icon v-if="format.iconRight" class="right" :name="format.iconRight" :color="format.iconRightColor" small />
+
+		<a v-if="link" class="link" :href="href" :target="linkTarget" @click.stop>
+			<v-icon v-tooltip="t('displays.formatted-value.link_tooltip')" class="button" name="launch" small />
+		</a>
 
 		<v-icon
 			v-if="clipboard"
@@ -114,7 +106,7 @@ export default defineComponent({
 		},
 		linkTarget: {
 			type: String,
-			default: '',
+			default: '_blank',
 		},
 		linkEmailSubject: {
 			type: String,
@@ -258,12 +250,14 @@ export default defineComponent({
 	display: flex;
 	flex-grow: 1;
 	overflow: hidden;
-	line-height: 1;
-	white-space: nowrap;
-	text-overflow: ellipsis;
 
-	& .value,
-	& .link {
+	& .value {
+		flex-shrink: 1;
+		overflow: hidden;
+		line-height: 1;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+
 		&.bold {
 			font-weight: 700;
 		}
@@ -279,12 +273,6 @@ export default defineComponent({
 		&.monospace {
 			font-family: var(--family-monospace);
 		}
-	}
-
-	.link {
-		color: var(--primary-110);
-		font-weight: 500;
-		text-decoration: none;
 	}
 
 	.v-icon {
@@ -307,6 +295,16 @@ export default defineComponent({
 				color: var(--green-75);
 			}
 		}
+	}
+}
+
+@media (hover: hover) {
+	.display-formatted .v-icon.button {
+		display: none;
+	}
+
+	.display-formatted:hover .v-icon.button {
+		display: block;
 	}
 }
 </style>

@@ -1537,6 +1537,7 @@ displays:
     format_title: Format Title
     format_title_label: Auto-format casing
     link: Link
+    link_tooltip: Open Link
     no_link: No Link
     link_url: URL
     link_email: Email
