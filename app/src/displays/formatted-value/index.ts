@@ -317,9 +317,7 @@ export default defineDisplay({
 						},
 					},
 				});
-			}
 
-			if (display_options.link === 'url') {
 				options.push({
 					field: 'linkTarget',
 					name: '$t:displays.formatted-value.link_target',
