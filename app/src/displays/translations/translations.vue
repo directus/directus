@@ -1,11 +1,19 @@
 <template>
-	<value-null v-if="!junctionCollection.collection" />
+	<value-null v-if="!relatedCollection.info.value?.collection" />
 	<v-menu v-else show-arrow :disabled="value.length === 0">
 		<template #activator="{ toggle }">
 			<render-template
+				v-if="!displayItem.length"
 				:template="internalTemplate"
 				:item="displayItem"
-				:collection="junctionCollection.collection"
+				:collection="relatedCollection.info.value?.collection"
+				@click.stop="toggle"
+			/>
+			<render-template-list
+				v-else
+				:template="internalTemplate"
+				:items="displayItem"
+				:collection="relatedCollection.info.value?.collection"
 				@click.stop="toggle"
 			/>
 		</template>
@@ -20,7 +28,18 @@
 						</div>
 						<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
 					</div>
-					<render-template :template="internalTemplate" :item="item.item" :collection="junctionCollection.collection" />
+					<render-template
+						v-if="!item.item.length"
+						:template="internalTemplate"
+						:item="item.item"
+						:collection="relatedCollection.info.value?.collection"
+					/>
+					<render-template-list
+						v-else
+						:template="internalTemplate"
+						:items="item.item"
+						:collection="relatedCollection.info.value?.collection"
+					/>
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>
@@ -28,14 +47,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, toRefs } from 'vue';
-import ValueNull from '@/views/private/components/value-null';
-import useRelation from '@/composables/use-m2m';
+import { defineComponent, computed, PropType, ref } from 'vue';
+import { useCollection } from '@directus/shared/composables';
 import { useUserStore } from '@/stores';
-import { notEmpty } from '@/utils/is-empty';
+import getRelatedCollection from '@/utils/get-related-collection';
+import useTranslationsValue from '@/composables/use-translations-value';
+import ValueNull from '@/views/private/components/value-null';
+import RenderTemplateList from '@/views/private/components/render-template-list';
 
 export default defineComponent({
-	components: { ValueNull },
+	components: { ValueNull, RenderTemplateList },
 	props: {
 		collection: {
 			type: String,
@@ -46,7 +67,7 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: [Array] as PropType<Record<string, any>[]>,
+			type: [Array, Object] as PropType<Record<string, any>[] | Record<string, any>>,
 			default: null,
 		},
 		template: {
@@ -71,60 +92,36 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { collection, field } = toRefs(props);
+		const defaultLang = props.userLanguage
+			? useUserStore().currentUser?.language ?? 'en'
+			: props.defaultLanguage || 'en';
+		const relatedCollection = useCollection(getRelatedCollection(props.collection, props.field));
+		const primaryKeyField = ref(relatedCollection?.primaryKeyField);
 
-		const {
-			junctionPrimaryKeyField: primaryKeyField,
-			junctionCollection,
-			relation,
-			junctionFields,
-			relationPrimaryKeyField,
-		} = useRelation(collection, field);
-
+		const translations = useTranslationsValue(
+			props.value,
+			props.field,
+			props.collection,
+			props.languageField,
+			props.defaultLanguage,
+			defaultLang
+		);
 		const internalTemplate = computed(() => {
 			return (
-				props.template || junctionCollection.value?.meta?.display_template || `{{ ${primaryKeyField.value!.field} }}`
+				props.template ||
+				relatedCollection.info.value?.meta?.display_template ||
+				`{{ ${primaryKeyField.value!.field} }}`
 			);
 		});
-
 		const displayItem = computed(() => {
-			const langPkField = relationPrimaryKeyField.value?.field;
-			if (!langPkField) return {};
-
-			let item =
-				props.value.find((val) => val?.[relation.value.field]?.[langPkField] === props.defaultLanguage) ??
-				props.value[0];
-
-			if (props.userLanguage) {
-				const user = useUserStore();
-				item =
-					props.value.find((val) => val?.[relation.value.field]?.[langPkField] === user.currentUser?.language) ?? item;
+			let item = translations.value.find((val) => val.lang === defaultLang);
+			if (props.userLanguage && !item) {
+				// fix match lang between (eg: 'en' - 'en-US')
+				item = translations.value.find((val) => val.lang.startsWith(defaultLang) || defaultLang.startsWith(val.lang));
 			}
-			return item ?? {};
+			return item?.item ?? translations.value[0].item ?? {};
 		});
-
-		const writableFields = computed(() =>
-			junctionFields.value.filter(
-				(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
-			)
-		);
-
-		const translations = computed(() => {
-			return props.value.map((item) => {
-				const filledFields = writableFields.value.filter((field) => {
-					return field.field in item && notEmpty(item?.[field.field]);
-				}).length;
-
-				return {
-					id: item?.[primaryKeyField.value?.field ?? 'id'],
-					lang: item?.[relation.value.field]?.[props.languageField ?? relationPrimaryKeyField.value?.field],
-					progress: Math.round((filledFields / writableFields.value.length) * 100),
-					item,
-				};
-			});
-		});
-
-		return { primaryKeyField, internalTemplate, junctionCollection, displayItem, translations };
+		return { internalTemplate, relatedCollection, displayItem, translations };
 	},
 });
 </script>
