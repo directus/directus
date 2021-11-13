@@ -34,7 +34,15 @@ export class Auth extends IAuth {
 			this.updateStorage<'StaticToken'>({ access_token: this.staticToken, expires: null, refresh_token: null });
 		}
 
-		this.timer = false;
+		if (this.autoRefresh) {
+		  try {
+		    this.autoRefreshJob();
+		  } catch {
+		    // Ignore error
+		  }
+		} else {
+		  this.timer = false;
+		}
 	}
 
 	get storage(): IStorage {
