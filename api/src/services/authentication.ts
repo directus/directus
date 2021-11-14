@@ -174,6 +174,7 @@ export class AuthenticationService {
 				status: 'pending',
 				user: user?.id,
 				provider: providerName,
+				type: 'login',
 			},
 			{
 				database: this.knex,
@@ -274,7 +275,27 @@ export class AuthenticationService {
 
 		const newSessionData = await provider.refresh(clone(user), sessionData as SessionData);
 
-		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
+		const tokenPayload = {
+			id: user.id,
+		};
+
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: user.provider,
+				type: 'refresh',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});

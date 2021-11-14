@@ -1,6 +1,6 @@
 {
 	"name": "create-directus-extension",
-	"version": "9.0.0",
+	"version": "9.0.1",
 	"description": "A small util that will scaffold a Directus extension.",
 	"main": "lib/index.js",
 	"exports": {
@@ -23,8 +23,8 @@
 	"license": "GPL-3.0-only",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"@directus/extensions-sdk": "9.0.0",
-		"@directus/shared": "9.0.0",
+		"@directus/extensions-sdk": "9.0.1",
+		"@directus/shared": "9.0.1",
 		"inquirer": "^8.1.2"
 	}
 }

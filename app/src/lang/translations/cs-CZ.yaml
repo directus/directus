@@ -334,6 +334,7 @@ fields:
     role: Role
   directus_settings:
     project_name: Název projektu
+    module_bar: Panel modulů
   directus_fields:
     note: Poznámka
     hidden: Skryté
@@ -345,6 +346,7 @@ fields:
     name: Jméno
     status: Stav
     value: Hodnota
+    collections: Kategorie
 field_options:
   directus_activity:
     create: Vytořit

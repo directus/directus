@@ -28,7 +28,7 @@
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]">
+			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath]">
 				<v-list-item-content>
 					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
@@ -48,6 +48,7 @@ import getRelatedCollection from '@/utils/get-related-collection';
 import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
 import { getLocalTypeForField } from '../../modules/settings/routes/data-model/get-local-type';
+import { get } from 'lodash';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -80,8 +81,12 @@ export default defineComponent({
 	setup(props) {
 		const { t, te } = useI18n();
 
-		const relatedCollection = computed(() => {
+		const relatedCollectionData = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
+		});
+
+		const relatedCollection = computed(() => {
+			return relatedCollectionData.value.relatedCollection;
 		});
 
 		const localType = computed(() => {
@@ -90,8 +95,14 @@ export default defineComponent({
 
 		const { primaryKeyField } = useCollection(relatedCollection);
 
+		const primaryKeyFieldPath = computed(() => {
+			return relatedCollectionData.value.path
+				? [...relatedCollectionData.value.path, primaryKeyField.value?.field].join('.')
+				: primaryKeyField.value?.field;
+		});
+
 		const internalTemplate = computed(() => {
-			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
+			return props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
 		});
 
 		const unit = computed(() => {
@@ -124,18 +135,18 @@ export default defineComponent({
 
 		return {
 			relatedCollection,
-			localType,
-			primaryKeyField,
+			primaryKeyFieldPath,
 			getLinkForItem,
 			internalTemplate,
 			unit,
+			localType,
 			inlineResults,
 			inlineResultsMoreCount,
 		};
 
 		function getLinkForItem(item: any) {
-			if (!relatedCollection.value || !primaryKeyField.value) return null;
-			const primaryKey = item[primaryKeyField.value.field];
+			if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
+			const primaryKey = get(item, primaryKeyFieldPath.value);
 
 			return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
 		}

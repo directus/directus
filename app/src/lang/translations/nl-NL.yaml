@@ -790,6 +790,7 @@ fields:
     name: Naam
     status: Status
     value: Waarde
+    collections: Collecties
 field_options:
   directus_activity:
     create: Maak

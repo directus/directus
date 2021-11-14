@@ -199,7 +199,6 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
-geometry: الأشكال الهندسية
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -766,6 +765,7 @@ fields:
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    module_bar: شريط الوحدة
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
@@ -782,6 +782,7 @@ fields:
     name: الاسم
     status: حالة
     value: قيمة
+    collections: مجموعات
 field_options:
   directus_settings:
     security_divider_title: الأمان
@@ -924,7 +925,6 @@ interfaces:
     select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
-    title_placeholder: أدخل عنوانًا...
     inline_title_label: أظهر العنوان داخل السطر
     margin_top: الهامش العلوي
     margin_top_label: زيادة الهامش العلوي
