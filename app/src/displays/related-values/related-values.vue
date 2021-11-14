@@ -210,8 +210,8 @@ export default defineComponent({
 
 	.chip {
 		height: calc(var(--table-row-height) - 16px);
-		padding-right: 3px;
-		padding-left: 3px;
+		padding-right: 7px;
+		padding-left: 7px;
 		background-color: var(--background-normal);
 		border-radius: var(--border-radius);
 	}
@@ -219,9 +219,14 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-.chips .chip img {
-	max-height: calc(100% - 8px);
-	margin-right: 5px;
-	margin-left: 2px;
+.chips .chip {
+	.render-template {
+		padding-right: 0;
+	}
+
+	img {
+		max-height: calc(100% - 8px);
+		margin-right: 5px;
+	}
 }
 </style>
