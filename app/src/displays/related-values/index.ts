@@ -17,8 +17,9 @@ export default defineDisplay({
 	component: DisplayRelatedValues,
 	options: ({ relations }) => {
 		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
+		const canDisplayInline = relations.o2m !== undefined || relations.m2m !== undefined;
 
-		return [
+		const fields = [
 			{
 				field: 'template',
 				name: '$t:display_template',
@@ -30,38 +31,45 @@ export default defineDisplay({
 					width: 'full',
 				},
 			},
-			{
-				field: 'displayInline',
-				name: '$t:displays.related-values.display_inline',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:displays.related-values.display_inline_label',
-					},
-				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
-				field: 'inlineMaxResults',
-				name: '$t:displays.related-values.inline_max_results',
-				type: 'integer',
-				meta: {
-					width: 'half',
-					interface: 'input',
-					options: {
-						min: 1,
-						step: 1,
-					},
-				},
-				schema: {
-					default_value: 3,
-				},
-			},
 		];
+
+		if (canDisplayInline) {
+			fields.push(
+				{
+					field: 'displayInline',
+					name: '$t:displays.related-values.display_inline',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+						options: {
+							label: '$t:displays.related-values.display_inline_label',
+						},
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
+					field: 'inlineMaxResults',
+					name: '$t:displays.related-values.inline_max_results',
+					type: 'integer',
+					meta: {
+						width: 'half',
+						interface: 'input',
+						options: {
+							min: 1,
+							step: 1,
+						},
+					},
+					schema: {
+						default_value: 3,
+					},
+				}
+			);
+		}
+
+		return fields;
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a'],
