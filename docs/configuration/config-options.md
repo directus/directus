@@ -371,15 +371,16 @@ often possible to cache assets for far longer than you would cache database cont
 
 :::
 
-| Variable                         | Description                                                                              | Default Value    |
-| -------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                  | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>        | How long the cache is persisted.                                                         | `30m`            |
-| `CACHE_CONTROL_S_MAXAGE`         | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup> | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
-| `CACHE_SCHEMA`<sup>[3]</sup>     | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
-| `CACHE_NAMESPACE`                | How to scope the cache data.                                                             | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
+| Variable                          | Description                                                                              | Default Value    |
+| --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
+| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
+| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
+| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -390,7 +391,7 @@ so you configure it using human readable values (like `2 days`, `7 hrs`, `5m`).
 <sup>[2]</sup> `CACHE_AUTO_PURGE` allows you to keep the Directus API real-time, while still getting the performance
 benefits on quick subsequent reads.
 
-<sup>[3]</sup> `CACHE_SCHEMA` ignores the `CACHE_ENABLED` value.
+<sup>[3]</sup> Not affected by the `CACHE_ENABLED` value.
 
 <sup>[4]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
 Instead, you can use the above `CACHE_STORE` environment variable to use either `memcache` or `redis` as the cache
