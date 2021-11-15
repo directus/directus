@@ -7,7 +7,7 @@
 		<nested-draggable
 			:template="template"
 			:collection="collection"
-			:tree="stagedValues || []"
+			:tree="sortedItems || []"
 			:primary-key-field="primaryKeyField.field"
 			:children-field="relation.meta.one_field"
 			:parent-field="relation.field"
@@ -18,7 +18,7 @@
 		/>
 
 		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableCreate" @click="createNew()">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect" @click="selectDrawer = true">
 				{{ t('add_existing') }}
 			</v-button>
@@ -29,7 +29,7 @@
 			:active="addNewActive"
 			:collection="collection"
 			:primary-key="'+'"
-			:edits="{}"
+			:edits="editsAtStart"
 			:circular-field="relation.field"
 			@input="addNew"
 			@update:active="addNewActive = false"
@@ -49,6 +49,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, onMounted, watch } from 'vue';
+import { sortBy } from 'lodash';
 import { useCollection } from '@directus/shared/composables';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
@@ -104,10 +105,10 @@ export default defineComponent({
 
 		const { relation } = useRelation();
 		const { info, primaryKeyField } = useCollection(relation.value.related_collection!);
-		const { loading, error, stagedValues, fetchValues, emitValue } = useValues();
+		const { loading, error, stagedValues, sortedItems, fetchValues, emitValue } = useValues();
 
 		const { stageSelection, selectDrawer } = useSelection();
-		const { addNewActive, addNew } = useAddNew();
+		const { addNewActive, addNew, editsAtStart, createNew } = useAddNew();
 
 		const template = computed(() => {
 			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value?.field}}}`;
@@ -126,6 +127,7 @@ export default defineComponent({
 			loading,
 			error,
 			stagedValues,
+			sortedItems,
 			fetchValues,
 			primaryKeyField,
 			onDraggableChange,
@@ -136,6 +138,8 @@ export default defineComponent({
 			selectDrawer,
 			addNewActive,
 			addNew,
+			editsAtStart,
+			createNew,
 		};
 
 		function useValues() {
@@ -144,7 +148,16 @@ export default defineComponent({
 
 			const stagedValues = ref<Record<string, any>[]>([]);
 
-			return { loading, error, stagedValues, fetchValues, emitValue, getFieldsToFetch };
+			const sortedItems = computed(() => {
+				const sField = relation.value.meta?.sort_field;
+				if (sField === null) return stagedValues.value;
+
+				const sorted = sortBy(stagedValues.value, [sField]);
+
+				return sorted;
+			});
+
+			return { loading, error, stagedValues, fetchValues, emitValue, getFieldsToFetch, sortedItems };
 
 			async function fetchValues() {
 				if (!props.primaryKey || !relation.value || props.primaryKey === '+') return;
@@ -177,6 +190,7 @@ export default defineComponent({
 					...new Set([
 						primaryKeyField.value?.field,
 						relation.value.meta!.one_field,
+						relation.value.meta!.sort_field,
 						...getFieldsFromTemplate(template.value),
 					]),
 				];
@@ -197,21 +211,7 @@ export default defineComponent({
 			function emitValue(value: Record<string, any>[]) {
 				stagedValues.value = value;
 
-				if (relation.value.meta?.sort_field) {
-					return emit('input', addSort(value));
-				}
-
 				emit('input', value);
-
-				function addSort(value: Record<string, any>[]): Record<string, any>[] {
-					return (value || []).map((item, index) => {
-						return {
-							...item,
-							[relation.value.meta!.sort_field!]: index + 1,
-							[relation.value.meta!.one_field!]: addSort(item[relation.value.meta!.one_field!]),
-						};
-					});
-				}
 			}
 		}
 
@@ -224,7 +224,23 @@ export default defineComponent({
 		}
 
 		function onDraggableChange() {
-			emitValue(stagedValues.value);
+			if (!relation.value.meta?.sort_field) return;
+
+			const sorted = addSort(stagedValues.value);
+
+			stagedValues.value = sorted;
+
+			emit('input', sorted);
+
+			function addSort(value: Record<string, any>[]): Record<string, any>[] {
+				return (value || []).map((item, index) => {
+					return {
+						...item,
+						[relation.value.meta!.sort_field!]: index,
+						[relation.value.meta!.one_field!]: addSort(item[relation.value.meta!.one_field!]),
+					};
+				});
+			}
 		}
 
 		function useSelection() {
@@ -255,6 +271,8 @@ export default defineComponent({
 
 			async function stageSelection(newSelection: (number | string)[]) {
 				loading.value = true;
+
+				const sortField = relation.value.meta?.sort_field;
 
 				const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
 
@@ -289,7 +307,13 @@ export default defineComponent({
 					},
 				});
 
-				const newVal = [...response.data.data, ...stagedValues.value];
+				const newSelectionItems = response.data.data.map((item: Record<string, any>[], i: number) => {
+					const newSort = sortField ? { [sortField]: stagedValues.value.length + i } : null;
+
+					return { ...newSort, ...item };
+				});
+
+				const newVal = [...newSelectionItems, ...stagedValues.value];
 
 				if (newVal.length === 0) emitValue([]);
 				else emitValue(newVal);
@@ -301,10 +325,20 @@ export default defineComponent({
 		function useAddNew() {
 			const addNewActive = ref(false);
 
-			return { addNewActive, addNew };
+			const sortField = relation.value.meta?.sort_field;
+			const editsAtStart = ref<Record<string, any>>({});
+
+			return { addNewActive, addNew, editsAtStart, createNew };
 
 			function addNew(item: Record<string, any>) {
 				emitValue([...stagedValues.value, item]);
+			}
+
+			function createNew() {
+				const newSort = sortField ? { [sortField]: (stagedValues.value || []).length } : null;
+
+				addNewActive.value = true;
+				editsAtStart.value = { ...newSort };
 			}
 		}
 	},
