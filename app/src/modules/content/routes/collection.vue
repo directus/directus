@@ -450,6 +450,7 @@ export default defineComponent({
 		};
 
 		async function refresh() {
+			selection.value = [];
 			await layoutRef.value?.state?.refresh?.();
 		}
 
