@@ -49,6 +49,7 @@ branch: لق
 leaf: گەڵا
 indeterminate: دیاری نەکراو
 edit_collection: دەستکاری کۆمەڵە
+children: وەچەکان
 fields:
   directus_settings:
     module_bar: شریتی مۆدیوڵەکان
