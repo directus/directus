@@ -518,7 +518,7 @@ export default defineComponent({
 				const currentValue = props.value || [];
 
 				const selectionAsJunctionRows = selection.map((key, i) => {
-					const nextSort = sortField ? { [sortField]: currentValue.length + i } : null;
+					const nextSort = sortField ? { [sortField]: i } : null;
 
 					return {
 						...nextSort,
