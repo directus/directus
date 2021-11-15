@@ -49,6 +49,7 @@ branch: لق
 leaf: گەڵا
 indeterminate: دیاری نەکراو
 edit_collection: دەستکاری کۆمەڵە
+exclusive: تایبەت
 children: وەچەکان
 db_only_click_to_configure: 'تەنها بنکەدراو: کرتە بکە بۆ سازاندن'
 show_archived_items: نیشاندانی مادە ئەرشیفکراوەکان
