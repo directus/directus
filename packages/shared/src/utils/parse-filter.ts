@@ -3,7 +3,6 @@ import { Accountability, Filter, User, Role } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { isDynamicVariable } from './is-dynamic-variable';
-import { get } from 'lodash';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
@@ -59,4 +58,10 @@ function parseDynamicVariable(value: any, accountability: Accountability | null,
 		if (value === '$CURRENT_ROLE') return accountability?.role ?? null;
 		return get(context, value, null);
 	}
+}
+
+function get(object: Record<string, any> | any[], path: string, defaultValue: any): any {
+	const [key, ...rest] = path.split('.');
+	const result = Array.isArray(object) ? object.map((entry) => entry[key!]) : object?.[key!];
+	return rest.length === 0 ? result ?? defaultValue : get(result, rest.join('.'), defaultValue);
 }
