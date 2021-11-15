@@ -86,6 +86,7 @@ logoutReason:
   SIGN_OUT: دەرچوون
   SESSION_EXPIRED: دەورە بەسەرچوو
 public_label: گشتی
+public_description: کۆنتڕۆڵکردنی ئەوەی کام دەیتایەی API بەردەستە بەبێ ڕەسەنایەتی.
 fields:
   directus_settings:
     module_bar: شریتی مۆدیوڵەکان
