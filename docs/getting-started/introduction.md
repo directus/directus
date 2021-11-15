@@ -87,6 +87,7 @@ overhead, and proprietary access limitations.
 * Only `dbo` scheme is supported; no workaround available.
 * Tables with triggers are not supported; content in those tables cannot be edited via Directus. A workaround is to remove those triggers and use stored procedures via Directus API hooks instead, but documentation is very limited.
 * Using both the optional fields `uploaded_by` and `modified_by` on a collection will result in a 'multiple cascade paths' exception. Workaround is to use just one of those fields.
+* Composite primary keys aren't supported; no workaround available.
 
 :::
 
