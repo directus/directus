@@ -31,13 +31,15 @@ export default function useSelection(
 	});
 
 	function stageSelection(newSelection: (number | string)[]) {
-		const { junctionField, junctionPkField } = relation.value;
+		const { junctionField, junctionPkField, sortField } = relation.value;
 
-		const selection = newSelection.map((item) => {
+		const selection = newSelection.map((item, i) => {
 			const initial = initialItems.value.find((existent) => existent[junctionField][junctionPkField] === item);
 			const draft = items.value.find((draft) => draft[junctionField][junctionPkField] === item);
+			const nextSort = sortField ? { [sortField]: items.value.length + i } : null;
 
 			return {
+				...nextSort,
 				...initial,
 				...draft,
 				[junctionField]: {
