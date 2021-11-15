@@ -36,7 +36,7 @@ export default function useSelection(
 		const selection = newSelection.map((item, i) => {
 			const initial = initialItems.value.find((existent) => existent[junctionField][junctionPkField] === item);
 			const draft = items.value.find((draft) => draft[junctionField][junctionPkField] === item);
-			const nextSort = sortField ? { [sortField]: items.value.length + i } : null;
+			const nextSort = sortField ? { [sortField]: i } : null;
 
 			return {
 				...nextSort,
