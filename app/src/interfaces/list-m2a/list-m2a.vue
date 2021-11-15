@@ -513,11 +513,15 @@ export default defineComponent({
 			function stageSelection(selection: (number | string)[]) {
 				const { field } = anyRelation.value;
 				const oneCollectionField = anyRelation.value.meta!.one_collection_field!;
+				const sortField = o2mRelation.value.meta?.sort_field;
 
 				const currentValue = props.value || [];
 
-				const selectionAsJunctionRows = selection.map((key) => {
+				const selectionAsJunctionRows = selection.map((key, i) => {
+					const nextSort = sortField ? { [sortField]: currentValue.length + i } : null;
+
 					return {
+						...nextSort,
 						[oneCollectionField]: selectingFrom.value,
 						[field]: key,
 					};
