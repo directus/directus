@@ -277,9 +277,12 @@ export default defineComponent({
 			function onUpload(files: Record<string, any>[]) {
 				showUpload.value = false;
 				if (files.length === 0) return;
-				const { junctionField } = relationInfo.value;
-				const filesAsJunctionRows = files.map((file) => {
+				const { junctionField, sortField } = relationInfo.value;
+				const filesAsJunctionRows = files.map((file, i) => {
+					const nextSort = sortField ? { [sortField]: items.value.length + i } : null;
+
 					return {
+						...nextSort,
 						[junctionField]: file.id,
 					};
 				});
