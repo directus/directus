@@ -502,7 +502,6 @@ export default defineComponent({
 
 					await refresh();
 
-					selection.value = [];
 					confirmDelete.value = false;
 				} catch (err: any) {
 					error.value = err;
@@ -529,7 +528,6 @@ export default defineComponent({
 					});
 
 					confirmArchive.value = false;
-					selection.value = [];
 
 					await refresh();
 				} catch (err: any) {
