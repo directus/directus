@@ -6,7 +6,7 @@
 		:disabled="disabled"
 		:placeholder="placeholder"
 		:class="{ matches: fieldExists }"
-		@update:model-value="$emit('update:modelValue', $event.length ? $event : null)"
+		@update:model-value="$emit('update:modelValue', $event)"
 	>
 		<template v-if="fields && fields.length > 0 && !disabled" #append>
 			<v-menu show-arrow placement="bottom-end">

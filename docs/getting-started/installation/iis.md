@@ -41,6 +41,7 @@ running directus with iisnode
           </rule>
         </rules>
       </rewrite>
+      <httpErrors existingResponse="PassThrough" />
     </system.webServer>
   </location>
 </configuration>
@@ -53,7 +54,8 @@ A few important points regarding this file:
 3. The iisnode `node_env` parameter is bound to the environment variable `node_env`
 4. The iisnode `enableXFF` parameter is set to `true`. Since iisnode acts as a reverse proxy, this is required to pass
    client IP and other details on to the directus server, which directus modules expect and depend on.
-5. the rewrite rule is in place to send all requests made to this site to the entrypoint, ensuring that directus handles
+5. The rewrite rule is in place to send all requests made to this site to the entrypoint, ensuring that directus handles
    the routing and not IIS
+6. The error page response needs to be untouched by IIS for two-factor authentication to work. 
 
 While there are dozens even hundreds of options within IIS, this should help in getting started with Directus on IIS.
