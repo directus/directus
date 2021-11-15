@@ -50,6 +50,41 @@ leaf: گەڵا
 indeterminate: دیاری نەکراو
 edit_collection: دەستکاری کۆمەڵە
 children: وەچەکان
+db_only_click_to_configure: 'تەنها بنکەدراو: کرتە بکە بۆ سازاندن'
+show_archived_items: نیشاندانی مادە ئەرشیفکراوەکان
+edited: بەها دەستکاریکراوە
+required: داواکراوە
+required_for_app_access: داواکراوە بۆ دەستگەیشتن بە ئەپ
+requires_value: پێویستی بە بەهایە
+create_preset: دروستکردنی پێشوەختە
+create_panel: دروستکردنی پانێڵ
+create_role: دروستکردنی پلە
+create_user: دروستکردنی بەکارهێنەر
+delete_panel: سڕینەوەی پانێڵ
+create_webhook: دروستکردنی وێبهووک
+invite_users: بانگهێشتکردنی بەکارهێنەرەکان
+invite: بانگهێشت
+email_already_invited: ئیمەیڵی "{email}" پێشتر بانگهێشتکراوە
+emails: ئیمەیڵەکان
+connection_excellent: پەیوەندی نایاب
+connection_good: پەیوەندی باش
+connection_fair: پەیوەندی خراپ
+connection_poor: پەیوەندی زۆر خراپ
+primary: سەرەکی
+rename_folder: ناولێنانەوەی بوخچە
+delete_folder: سڕینەوەی بوخچە
+prefix: پێشگر
+suffix: پاشگر
+reset_bookmark: ڕێکخستنەوەی نیشانکەر
+rename_bookmark: ناولێنانەوەی نیشانکەر
+update_bookmark: نوێکردنەوەی نیشانکەر
+delete_bookmark: سڕینەوەی نیشانکەر
+delete_bookmark_copy: >-
+  ئایا دڵنیای کە دەتەوێت نیشانکەری "{bookmark}" بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە.
+logoutReason:
+  SIGN_OUT: دەرچوون
+  SESSION_EXPIRED: دەورە بەسەرچوو
+public_label: گشتی
 fields:
   directus_settings:
     module_bar: شریتی مۆدیوڵەکان
@@ -57,3 +92,6 @@ fields:
     translation: وەرگێڕانەکانی ناوی خانە
   directus_roles:
     name: ناوی پلە
+interfaces:
+  presentation-links:
+    primary: سەرەکی
