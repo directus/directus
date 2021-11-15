@@ -61,7 +61,10 @@ function parseDynamicVariable(value: any, accountability: Accountability | null,
 }
 
 function get(object: Record<string, any> | any[], path: string, defaultValue: any): any {
-	const [key, ...rest] = path.split('.');
+	const [key, ...follow] = path.split('.');
 	const result = Array.isArray(object) ? object.map((entry) => entry[key!]) : object?.[key!];
-	return rest.length === 0 ? result ?? defaultValue : get(result, rest.join('.'), defaultValue);
+	if (follow.length > 0) {
+		return get(result, follow.join('.'), defaultValue);
+	}
+	return result;
 }
