@@ -308,7 +308,7 @@ export default defineComponent({
 				});
 
 				const newSelectionItems = response.data.data.map((item: Record<string, any>[], i: number) => {
-					const newSort = sortField ? { [sortField]: stagedValues.value.length + i } : null;
+					const newSort = sortField ? { [sortField]: i } : null;
 
 					return { ...newSort, ...item };
 				});
