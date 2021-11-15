@@ -85,7 +85,6 @@ import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } 
 import {
 	Field,
 	GeometryType,
-	GeometryFormat,
 	GeoJSONParser,
 	GeoJSONSerializer,
 	SimpleGeometry,
