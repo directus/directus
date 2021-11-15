@@ -54,6 +54,8 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	blob: 'binary',
 	mediumblob: 'binary',
 	'int unsigned': 'integer',
+	'tinyint unsigned': 'integer',
+	'smallint unsigned': 'integer',
 	'tinyint(0)': 'boolean',
 	'tinyint(1)': 'boolean',
 
