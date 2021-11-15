@@ -87,6 +87,19 @@ logoutReason:
   SESSION_EXPIRED: دەورە بەسەرچوو
 public_label: گشتی
 public_description: کۆنتڕۆڵکردنی ئەوەی کام دەیتایەی API بەردەستە بەبێ ڕەسەنایەتی.
+not_allowed: ڕێگەپێنەدراوە
+directus_version: وەشانی دایرێکتەس
+node_version: وەشانی نۆد
+node_uptime: چالاکی نۆد
+os_type: جۆری سیستەم
+os_version: وەشانی سیستەم
+os_uptime: چالاکی سیستەم
+os_totalmem: بیرگەی سیستەم
+archive: ئەرشیڤ
+archive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف بکەیت؟
+archive_confirm_count: >-
+  هیچ مادەیەک دیاری نەکراوە| ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیڤ بکەیت؟ | ئایا دڵنیای دەتەوێت ئەم {count} مادەیە ئەرشیڤ بکەیت؟
+reset_system_permissions_to: 'رێکخستنەوەی ڕێپێدانەکانی سیستەم بۆ:'
 fields:
   directus_settings:
     module_bar: شریتی مۆدیوڵەکان
@@ -94,6 +107,9 @@ fields:
     translation: وەرگێڕانەکانی ناوی خانە
   directus_roles:
     name: ناوی پلە
+field_options:
+  directus_collections:
+    archive_divider: ئەرشیڤ
 interfaces:
   presentation-links:
     primary: سەرەکی
