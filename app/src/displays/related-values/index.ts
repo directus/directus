@@ -57,10 +57,21 @@ export default defineDisplay({
 					meta: {
 						width: 'half',
 						interface: 'input',
+						hidden: true,
 						options: {
 							min: 1,
 							step: 1,
 						},
+						conditions: [
+							{
+								rule: {
+									displayInline: {
+										_eq: true,
+									},
+								},
+								hidden: false,
+							},
+						],
 					},
 					schema: {
 						default_value: 3,
