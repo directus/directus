@@ -22,7 +22,11 @@
 				</template>
 			</v-textarea>
 		</template>
-		<v-list></v-list>
+		<v-list v-for="user in users" :key="user.id" class="suggestions">
+			<img v-if="user.avatar" src="" />
+			<img v-else src="" />
+			{{ userName(user) }}
+		</v-list>
 	</v-menu>
 </template>
 
@@ -32,6 +36,7 @@ import { defineComponent, ref, PropType } from 'vue';
 import api from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
+import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -51,18 +56,18 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
-
 		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
 		const showMentionDropDown = ref(false);
 		let lastPressedKey: string;
+		let users = ref({});
+		return { t, newCommentContent, postComment, saving, textarea, watchMentions, showMentionDropDown, users, userName };
 
-		return { t, newCommentContent, postComment, saving, textarea, watchMentions, showMentionDropDown };
-
-		function watchMentions(event) {
+		async function watchMentions(event) {
 			if (event.key === '@') {
+				await getUsers();
 				showMentionDropDown.value = true;
 			}
 			if (event.key === 'Backspace' && lastPressedKey === '@') {
@@ -72,7 +77,9 @@ export default defineComponent({
 				lastPressedKey = newCommentContent.value[newCommentContent.value.length - 1];
 			}
 		}
-
+		async function getUsers() {
+			users.value = (await api.get('/users')).data.data;
+		}
 		async function postComment() {
 			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
 			saving.value = true;
