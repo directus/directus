@@ -43,7 +43,10 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			column_key: string;
 			max_length: number | null;
 		};
-
+		
+		/**
+		* NOTICE: This query is optimized for speed. Please keep this in mind.
+		*/
 		const columns = await this.knex.raw<RawColumn[]>(`
 			WITH "uc" AS (
 				SELECT /*+ materialize */
