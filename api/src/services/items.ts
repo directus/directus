@@ -208,6 +208,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				{
 					payload,
 					key: primaryKey,
+					keys: [primaryKey],
 					collection: this.collection,
 				},
 				{
@@ -664,6 +665,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			emitter.emitAction(
 				`${this.eventScope}.delete`,
 				{
+					keys: keys,
 					payload: keys,
 					collection: this.collection,
 				},
