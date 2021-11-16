@@ -16,7 +16,7 @@
 
 			<div v-else class="chips-container" @click.stop="toggle">
 				<div class="chips w-full">
-					<div v-for="item in inlineResults" :key="item[primaryKeyField]" class="chip">
+					<div v-for="item in inlineResults" :key="item[primaryKeyFieldPath]" class="chip">
 						<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 					</div>
 
