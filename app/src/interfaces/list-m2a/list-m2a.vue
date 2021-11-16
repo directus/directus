@@ -148,7 +148,7 @@ import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { isPlainObject, cloneDeep, uniqBy } from 'lodash';
+import { isPlainObject, cloneDeep } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
