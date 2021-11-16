@@ -194,7 +194,14 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const { o2mRelation, anyRelation, allowedCollections, o2mRelationPrimaryKeyField } = useRelations();
-		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
+		const {
+			fetchValues,
+			previewValues,
+			loading: previewLoading,
+			junctionRowMap,
+			relatedItemValues,
+			initialItems,
+		} = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, selectedPrimaryKeys, stageSelection, deselect } = useSelection();
 		const { currentlyEditing, relatedPrimaryKey, editsAtStart, stageEdits, cancelEdit, editExisting, createNew } =
@@ -290,6 +297,7 @@ export default defineComponent({
 
 		function useValues() {
 			const loading = ref(false);
+			const initialItems = ref<Record<string, any>[]>([]);
 			const relatedItemValues = ref<Record<string, any[]>>({});
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
@@ -377,6 +385,7 @@ export default defineComponent({
 				loading,
 				junctionRowMap,
 				relatedItemValues,
+				initialItems,
 			};
 
 			async function fetchValues() {
@@ -460,6 +469,7 @@ export default defineComponent({
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
+						initialItems.value = junctionInfoResponse.data.data;
 					} else {
 						junctionRowMap.value = [];
 					}
@@ -509,46 +519,70 @@ export default defineComponent({
 		function useSelection() {
 			const selectingFrom = ref<string | null>(null);
 
-			const selectedPrimaryKeys = computed(() => {
-				if (previewValues.value === null) return [];
-
-				const anyRelationField = anyRelation.value.field;
-				const relatedPrimaryKeyField = primaryKeys.value[selectingFrom.value!];
+			const currentCollectionInitials = computed(() => {
 				const oneCollectionField = anyRelation.value.meta!.one_collection_field!;
 
-				const selectedKeys = previewValues.value.reduce((acc, current) => {
-					if (current[oneCollectionField] !== selectingFrom.value) return acc;
+				return (initialItems.value || []).filter((item) => item[oneCollectionField] === selectingFrom.value);
+			});
 
-					const key = current[anyRelationField][relatedPrimaryKeyField] ?? current[anyRelationField];
+			const currentCollectionValues = computed(() => {
+				const oneCollectionField = anyRelation.value.meta!.one_collection_field!;
 
-					if (!key) return acc;
+				return (props.value || []).filter((item) => item[oneCollectionField] === selectingFrom.value);
+			});
 
-					return [...acc, key];
-				}, []) as (number | string)[];
+			const selectedPrimaryKeys = computed(() => {
+				if (previewValues.value === null) return [];
+				const anyRelationField = anyRelation.value.field;
+				const relatedPrimaryKeyField = primaryKeys.value[selectingFrom.value!];
 
-				return selectedKeys;
+				return currentCollectionValues.value.map(
+					(item) => item[anyRelationField][relatedPrimaryKeyField] ?? item[anyRelationField]
+				);
 			});
 
 			return { selectingFrom, selectedPrimaryKeys, stageSelection, deselect };
 
-			function stageSelection(selection: (number | string)[]) {
+			function stageSelection(newSelection: (number | string)[]) {
 				const { field } = anyRelation.value;
 				const oneCollectionField = anyRelation.value.meta!.one_collection_field!;
+				const relatedPrimaryKey = primaryKeys.value[selectingFrom.value!];
+				const sortField = o2mRelation.value.meta?.sort_field;
 
-				const currentValue = props.value || [];
+				const currentValue = previewValues.value || [];
 
-				const selectionAsJunctionRows = selection.map((key) => {
+				const selection = newSelection.map((item, i) => {
+					// Below, abstract equality comparator is used because on m2a relation 'item' is string
+					// while primary key in related collection can be an integer
+					const initial = currentCollectionInitials.value.find(
+						(existent) => (existent[field][relatedPrimaryKey] ?? existent[field]) == item
+					);
+					const draft = currentCollectionValues.value.find(
+						(existent) => (existent[field][relatedPrimaryKey] ?? existent[field]) == item
+					);
+
 					return {
+						...initial,
+						...draft,
 						[oneCollectionField]: selectingFrom.value,
-						[field]: key,
+						[field]: {
+							...initial?.[field],
+							...draft?.[field],
+							[relatedPrimaryKey]: item,
+						},
 					};
 				});
 
-				const newValue = uniqBy([...selectionAsJunctionRows, ...currentValue], (item) =>
-					[item[oneCollectionField], item[field]].join()
-				);
+				let newItems = [
+					...currentValue.filter((item) => item[oneCollectionField] !== selectingFrom.value),
+					...selection,
+				];
 
-				emit('input', newValue);
+				if (sortField)
+					// Override sort, in order to reflect what it is shown
+					newItems = newItems.map((item, i) => ({ ...item, [sortField]: i }));
+
+				emit('input', newItems);
 			}
 
 			function deselect(item: any) {
