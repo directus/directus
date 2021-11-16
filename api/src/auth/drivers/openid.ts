@@ -36,6 +36,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
 				.then((issuer) => {
+					if (!issuer.metadata.response_types_supported?.includes('code')) {
+						reject(new InvalidConfigException(
+							'OpenID provider does not support code flow',
+							{ provider: additionalConfig.provider }
+						));
+					}
+				
 					resolve(
 						new issuer.Client({
 							client_id: clientId,
