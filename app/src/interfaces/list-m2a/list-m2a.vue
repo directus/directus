@@ -117,7 +117,7 @@
 			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
-			:selection="[]"
+			:selection="selectedPrimaryKeys"
 			@input="stageSelection"
 			@update:active="selectingFrom = null"
 		/>
@@ -196,7 +196,7 @@ export default defineComponent({
 		const { o2mRelation, anyRelation, allowedCollections, o2mRelationPrimaryKeyField } = useRelations();
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
-		const { selectingFrom, stageSelection, deselect } = useSelection();
+		const { selectingFrom, selectedPrimaryKeys, stageSelection, deselect } = useSelection();
 		const { currentlyEditing, relatedPrimaryKey, editsAtStart, stageEdits, cancelEdit, editExisting, createNew } =
 			useEdits();
 		const { onSort } = useManualSort();
@@ -208,6 +208,7 @@ export default defineComponent({
 			previewValues,
 			collections,
 			selectingFrom,
+			selectedPrimaryKeys,
 			stageSelection,
 			templates,
 			o2mRelation,
@@ -508,7 +509,27 @@ export default defineComponent({
 		function useSelection() {
 			const selectingFrom = ref<string | null>(null);
 
-			return { selectingFrom, stageSelection, deselect };
+			const selectedPrimaryKeys = computed(() => {
+				if (previewValues.value === null) return [];
+
+				const anyRelationField = anyRelation.value.field;
+				const relatedPrimaryKeyField = primaryKeys.value[selectingFrom.value!];
+				const oneCollectionField = anyRelation.value.meta!.one_collection_field!;
+
+				const selectedKeys = previewValues.value.reduce((acc, current) => {
+					if (current[oneCollectionField] !== selectingFrom.value) return acc;
+
+					const key = current[anyRelationField][relatedPrimaryKeyField] ?? current[anyRelationField];
+
+					if (!key) return acc;
+
+					return [...acc, key];
+				}, []) as (number | string)[];
+
+				return selectedKeys;
+			});
+
+			return { selectingFrom, selectedPrimaryKeys, stageSelection, deselect };
 
 			function stageSelection(selection: (number | string)[]) {
 				const { field } = anyRelation.value;
