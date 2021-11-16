@@ -222,7 +222,7 @@
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
-				@refresh="saveAndRefresh"
+				@refresh="drawerBatchRefresh"
 			/>
 
 			<template #sidebar>
@@ -442,7 +442,7 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
-			saveAndRefresh,
+			drawerBatchRefresh,
 			refresh,
 			refreshInterval,
 			currentLayout,
@@ -454,7 +454,7 @@ export default defineComponent({
 			await layoutRef.value?.state?.refresh?.();
 		}
 
-		async function saveAndRefresh() {
+		async function drawerBatchRefresh() {
 			selection.value = [];
 			await refresh();
 		}
