@@ -331,35 +331,25 @@ The storage is used to load and save token information.
 
 ### Custom Implementation
 
-It is possible to provide a custom implementation by extending `IStorage`. While, this could be useful for advanced
+It is possible to provide a custom implementation by extending `BaseStorage`. While, this could be useful for advanced
 usage, it is not needed for most use-cases.
 
 ```js
-import { IStorage, Directus } from '@directus/sdk';
+import { BaseStorage, Directus } from '@directus/sdk';
 
-class MyStorage extends IStorage {
-	get auth_token() {
-		return this.get('auth_token');
-	}
-	get auth_expires() {
-		return Number(this.get('auth_expires'));
-	}
-	get auth_refresh_token() {
-		return this.get('auth_refresh_token');
-	}
-
+class SessionStorage extends BaseStorage {
 	get(key) {
-		return '';
+		return sessionStorage.getItem(key);
 	}
 	set(key, value) {
-		return value;
+		return sessionStorage.setItem(key, value);
 	}
 	delete(key) {
-		return null;
+		return sessionStorage.removeItem(key);
 	}
 }
 
-const directus = new Directus('http://directus.example.com', { storage: new MyStorage() });
+const directus = new Directus('http://directus.example.com', { storage: new SessionStorage() });
 ```
 
 ### Directus Implementation
