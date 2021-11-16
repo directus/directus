@@ -148,7 +148,7 @@ import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { isPlainObject, cloneDeep } from 'lodash';
+import { isPlainObject, cloneDeep, uniqBy } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
@@ -544,7 +544,11 @@ export default defineComponent({
 					};
 				});
 
-				emit('input', [...currentValue, ...selectionAsJunctionRows]);
+				const newValue = uniqBy([...selectionAsJunctionRows, ...currentValue], (item) =>
+					[item[oneCollectionField], item[field]].join()
+				);
+
+				emit('input', newValue);
 			}
 
 			function deselect(item: any) {
