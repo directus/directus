@@ -1,23 +1,29 @@
 <template>
-	<v-textarea
-		ref="textarea"
-		v-model="newCommentContent"
-		class="new-comment"
-		:placeholder="t('leave_comment')"
-		expand-on-focus
-	>
-		<template #append>
-			<v-button
-				:disabled="!newCommentContent || newCommentContent.length === 0"
-				:loading="saving"
-				class="post-comment"
-				x-small
-				@click="postComment"
+	<v-menu :trigger="'keyDown'" :trigger-key-pressed="showMentionDropDown">
+		<template #activator>
+			<v-textarea
+				ref="textarea"
+				v-model="newCommentContent"
+				class="new-comment"
+				:placeholder="t('leave_comment')"
+				expand-on-focus
+				@keydown="watchMentions"
 			>
-				{{ t('submit') }}
-			</v-button>
+				<template #append>
+					<v-button
+						:disabled="!newCommentContent || newCommentContent.length === 0"
+						:loading="saving"
+						class="post-comment"
+						x-small
+						@click="postComment"
+					>
+						{{ t('submit') }}
+					</v-button>
+				</template>
+			</v-textarea>
 		</template>
-	</v-textarea>
+		<v-list></v-list>
+	</v-menu>
 </template>
 
 <script lang="ts">
@@ -50,8 +56,22 @@ export default defineComponent({
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
+		const showMentionDropDown = ref(false);
+		let lastPressedKey: string;
 
-		return { t, newCommentContent, postComment, saving, textarea };
+		return { t, newCommentContent, postComment, saving, textarea, watchMentions, showMentionDropDown };
+
+		function watchMentions(event) {
+			if (event.key === '@') {
+				showMentionDropDown.value = true;
+			}
+			if (event.key === 'Backspace' && lastPressedKey === '@') {
+				showMentionDropDown.value = false;
+			}
+			if (typeof newCommentContent.value === 'string') {
+				lastPressedKey = newCommentContent.value[newCommentContent.value.length - 1];
+			}
+		}
 
 		async function postComment() {
 			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
