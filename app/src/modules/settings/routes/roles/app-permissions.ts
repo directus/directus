@@ -120,6 +120,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 			'avatar',
 			'language',
 			'theme',
+			'tfa_secret',
 		],
 	},
 	{
@@ -276,6 +277,18 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 			'tfa_secret',
 			'status',
 			'role',
+		],
+	},
+	{
+		collection: 'directus_users',
+		action: 'update',
+		permissions: {
+			id: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+		fields: [
+			'tfa_secret',
 		],
 	},
 ];
