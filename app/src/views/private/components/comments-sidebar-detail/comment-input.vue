@@ -1,5 +1,5 @@
 <template>
-	<v-menu :trigger="'keyDown'" :trigger-key-pressed="showMentionDropDown">
+	<v-menu v-model="showMentionDropDown">
 		<template #activator>
 			<v-textarea
 				ref="textarea"
@@ -7,7 +7,6 @@
 				class="new-comment"
 				:placeholder="t('leave_comment')"
 				expand-on-focus
-				@keydown="watchMentions"
 			>
 				<template #append>
 					<v-button
@@ -22,7 +21,7 @@
 				</template>
 			</v-textarea>
 		</template>
-		<v-list v-for="user in users" :key="user.id" class="suggestions">
+		<v-list v-for="user in users" :key="user.id" class="suggestions" @click="insertUsername(user)">
 			<img v-if="user.avatar" src="" />
 			<img v-else src="" />
 			{{ userName(user) }}
@@ -32,12 +31,16 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, ComponentPublicInstance, watch } from 'vue';
 import api from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
 import { userName } from '@/utils/user-name';
+import { useCaret } from '@/composables/use-caret';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { throttle } from 'lodash';
+import axios, { CancelTokenSource } from 'axios';
+import { User } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -56,30 +59,117 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
-		const textarea = ref<HTMLElement>();
+		const textarea = ref<ComponentPublicInstance>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
 		const showMentionDropDown = ref(false);
-		let lastPressedKey: string;
-		let users = ref({});
-		return { t, newCommentContent, postComment, saving, textarea, watchMentions, showMentionDropDown, users, userName };
+		let users = ref<User[]>([]);
+		let selectionStart: number | null = null;
+		let selectionEnd: number | null = null;
 
-		async function watchMentions(event) {
-			if (event.key === '@') {
-				await getUsers();
-				showMentionDropDown.value = true;
+		const { caretPosition } = useCaret(textarea);
+
+		watch(caretPosition, (newPosition) => {
+			const text = newCommentContent.value;
+			if (text === null || newPosition === undefined) return;
+
+			let word = '';
+			let countBefore = newPosition - 1;
+			let countAfter = newPosition;
+
+			if (text.charAt(countBefore) !== ' ') {
+				while (countBefore >= 0 && text.charAt(countBefore) !== ' ') {
+					word = text.charAt(countBefore) + word;
+					countBefore--;
+				}
 			}
-			if (event.key === 'Backspace' && lastPressedKey === '@') {
+
+			while (countAfter < text.length && text.charAt(countAfter) !== ' ') {
+				word = word + text.charAt(countAfter);
+				countAfter++;
+			}
+
+			if (word.startsWith('@') === false) {
 				showMentionDropDown.value = false;
+				return;
 			}
-			if (typeof newCommentContent.value === 'string') {
-				lastPressedKey = newCommentContent.value[newCommentContent.value.length - 1];
+
+			showMentionDropDown.value = true;
+			loadUsers(word.substr(1));
+
+			selectionStart = countBefore + 1;
+			selectionEnd = countAfter;
+		});
+
+		let cancelToken: CancelTokenSource | null = null;
+
+		const loadUsers = throttle(async (name: string) => {
+			if (cancelToken !== null) {
+				cancelToken.cancel();
 			}
+
+			cancelToken = axios.CancelToken.source();
+
+			const filter = {
+				_or: [
+					{
+						id: {
+							_starts_with: name,
+						},
+					},
+					{
+						first_name: {
+							_starts_with: name,
+						},
+					},
+					{
+						last_name: {
+							_starts_with: name,
+						},
+					},
+					{
+						email: {
+							_starts_with: name,
+						},
+					},
+				],
+			};
+
+			try {
+				const result = await api.get('/users', {
+					params: {
+						filter: name === '' ? undefined : filter,
+					},
+					cancelToken: cancelToken.token,
+				});
+
+				users.value = result.data.data;
+			} catch (e) {
+				return e;
+			}
+		}, 2);
+
+		return {
+			t,
+			newCommentContent,
+			postComment,
+			saving,
+			textarea,
+			showMentionDropDown,
+			users,
+			userName,
+			caretPosition,
+			insertUsername,
+		};
+
+		function insertUsername(user: User) {
+			if (newCommentContent.value === null || selectionStart === null || selectionEnd === null) return;
+
+			newCommentContent.value =
+				newCommentContent.value.slice(0, selectionStart) + '@' + user.id + newCommentContent.value.slice(selectionEnd);
 		}
-		async function getUsers() {
-			users.value = (await api.get('/users')).data.data;
-		}
+
 		async function postComment() {
 			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
 			saving.value = true;
