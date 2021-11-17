@@ -84,10 +84,11 @@ export class Auth extends IAuth {
 	}
 
 	async refresh(): Promise<AuthResult | false> {
+		const refresh_token = this._storage.auth_refresh_token;
 		this.resetStorage();
 
 		const response = await this._transport.post<AuthResult>('/auth/refresh', {
-			refresh_token: this.mode === 'json' ? this._storage.auth_refresh_token : undefined,
+			refresh_token: this.mode === 'json' ? refresh_token : undefined,
 		});
 
 		this.updateStorage<'DynamicToken'>(response.data!);
