@@ -21,9 +21,6 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 		await installDatabase(database);
 
-		logger.info('Running migrations...');
-		await runMigrations(database, 'latest');
-
 		const schema = await getSchema();
 
 		if (skipAdminInit == null) {
@@ -31,6 +28,9 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 		} else {
 			logger.info('Skipping creation of default Admin user and role...');
 		}
+		
+		logger.info('Running migrations...');
+		await runMigrations(database, 'latest');
 
 		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
 			const settingsService = new SettingsService({ schema });
