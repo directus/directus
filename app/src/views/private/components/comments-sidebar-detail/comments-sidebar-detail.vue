@@ -25,10 +25,11 @@ import { defineComponent, ref } from 'vue';
 import api from '@/api';
 import { Activity, ActivityByDate } from './types';
 import CommentInput from './comment-input.vue';
-import { groupBy, orderBy } from 'lodash';
+import { groupBy, orderBy, flatten } from 'lodash';
 import formatLocalized from '@/utils/localized-format';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
 import CommentItem from './comment-item.vue';
+import { userName } from '@/utils/user-name';
 
 export default defineComponent({
 	components: { CommentInput, CommentItem },
@@ -87,14 +88,13 @@ export default defineComponent({
 
 					count.value = response.data.data.length;
 
-					const activityByDate = groupBy(response.data.data, (activity: Activity) => {
+					const sanitizedComments = await replaceUserIds(response.data.data);
+					const activityByDate = groupBy(sanitizedComments, (activity: Activity) => {
 						// activity's timestamp date is in iso-8601
 						const date = new Date(new Date(activity.timestamp).toDateString());
 						return date;
 					});
-
 					const activityGrouped: ActivityByDate[] = [];
-
 					for (const [key, value] of Object.entries(activityByDate)) {
 						const date = new Date(key);
 						const today = isToday(date);
@@ -102,12 +102,10 @@ export default defineComponent({
 						const thisYear = isThisYear(date);
 
 						let dateFormatted: string;
-
 						if (today) dateFormatted = t('today');
 						else if (yesterday) dateFormatted = t('yesterday');
 						else if (thisYear) dateFormatted = await formatLocalized(date, String(t('date-fns_date_short_no_year')));
 						else dateFormatted = await formatLocalized(date, String(t('date-fns_date_short')));
-
 						activityGrouped.push({
 							date: date,
 							dateFormatted: String(dateFormatted),
@@ -126,6 +124,38 @@ export default defineComponent({
 			async function refresh() {
 				await getActivity();
 			}
+		}
+		async function replaceUserIds(comments: Record<string, any>) {
+			let userIds: any[] = [];
+
+			comments.forEach((comment) => {
+				const regex = /@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
+				userIds.push(comment.comment.match(regex));
+			});
+
+			const uniqIds: string[] = [...new Set(flatten(userIds))];
+
+			const idFilters = uniqIds.map((id) => {
+				return { id: { _eq: id.substr(1) } };
+			});
+			const response = await api.get('/users', {
+				params: {
+					filter: { _or: idFilters },
+					fields: ['first_name', 'last_name', 'email', 'id'],
+				},
+			});
+			const userObjects: Record<string, any> = {};
+
+			response.data.data.map((user) => {
+				userObjects[user.id] = user;
+			});
+			comments.forEach((comment, index) => {
+				const regex = /@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
+				userIds[index].forEach((id) => {
+					comment.comment = comment.comment.replace(id, `@${userName(userObjects[id.substr(1)])}`);
+				});
+			});
+			return comments;
 		}
 	},
 });
