@@ -26,7 +26,7 @@ export function parseFilter(
 		} else {
 			result[key] = parseFilter(value, accountability, context);
 		}
-		return result as Filter;
+		return result;
 	}, {} as any);
 }
 
@@ -66,5 +66,5 @@ function get(object: Record<string, any> | any[], path: string, defaultValue: an
 	if (follow.length > 0) {
 		return get(result, follow.join('.'), defaultValue);
 	}
-	return result;
+	return result ?? defaultValue;
 }
