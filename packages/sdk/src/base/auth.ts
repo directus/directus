@@ -16,12 +16,13 @@ export class Auth extends IAuth {
 
 	private _storage: IStorage;
 	private _transport: ITransport;
-	private timer: ReturnType<typeof setTimeout> | false;
+	private timer: ReturnType<typeof setTimeout> | null;
 	private passwords?: PasswordsHandler;
 
 	constructor(options: AuthOptions) {
 		super();
 
+		this.timer = null;
 		this._transport = options.transport;
 		this._storage = options.storage;
 
@@ -32,16 +33,8 @@ export class Auth extends IAuth {
 		if (options?.staticToken) {
 			this.staticToken = options?.staticToken;
 			this.updateStorage<'StaticToken'>({ access_token: this.staticToken, expires: null, refresh_token: null });
-		}
-
-		if (this.autoRefresh) {
-		  try {
-		    this.autoRefreshJob();
-		  } catch {
-		    // Ignore error
-		  }
-		} else {
-		  this.timer = false;
+		} else if (this.autoRefresh) {
+			this.autoRefreshJob();
 		}
 	}
 
@@ -61,6 +54,12 @@ export class Auth extends IAuth {
 		return (this.passwords = this.passwords || new PasswordsHandler(this._transport));
 	}
 
+	private resetStorage() {
+		this._storage.auth_token = null;
+		this._storage.auth_refresh_token = null;
+		this._storage.auth_expires = null;
+	}
+
 	private updateStorage<T extends AuthTokenType>(result: AuthStorage<T>) {
 		this._storage.auth_token = result.access_token;
 		this._storage.auth_refresh_token = result.refresh_token ?? null;
@@ -70,6 +69,8 @@ export class Auth extends IAuth {
 	private autoRefreshJob() {
 		if (!this.autoRefresh) return;
 		if (!this._storage.auth_expires) return;
+
+		if (this.timer) clearTimeout(this.timer);
 
 		const msWaitUntilRefresh = this._storage.auth_expires - this.msRefreshBeforeExpires;
 
@@ -83,11 +84,15 @@ export class Auth extends IAuth {
 	}
 
 	async refresh(): Promise<AuthResult | false> {
+		this.resetStorage();
+
 		const response = await this._transport.post<AuthResult>('/auth/refresh', {
 			refresh_token: this.mode === 'json' ? this._storage.auth_refresh_token : undefined,
 		});
 
 		this.updateStorage<'DynamicToken'>(response.data!);
+
+		if (this.autoRefresh) this.autoRefreshJob();
 
 		return {
 			access_token: response.data!.access_token,
@@ -97,6 +102,8 @@ export class Auth extends IAuth {
 	}
 
 	async login(credentials: AuthCredentials): Promise<AuthResult> {
+		this.resetStorage();
+
 		const response = await this._transport.post<AuthResult>(
 			'/auth/login',
 			{ mode: this.mode, ...credentials },
