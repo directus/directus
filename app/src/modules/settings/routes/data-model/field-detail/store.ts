@@ -543,6 +543,10 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 						state.newRows = {
 							[relatedCollection]: [
 								{
+									code: 'ar-SA',
+									name: 'Arabic',
+								},
+								{
 									code: 'en-US',
 									name: 'English',
 								},

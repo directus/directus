@@ -4,13 +4,15 @@ import availableLanguages from './available-languages.yaml';
 import datetimeFormats from './date-formats.yaml';
 import numberFormats from './number-formats.yaml';
 import enUSBase from './translations/en-US.yaml';
+import arSABase from './translations/ar-SA.yaml';
 
 export const i18n = createI18n({
 	legacy: false,
-	locale: 'en-US',
-	fallbackLocale: 'en-US',
+	locale: 'ar-SA',
+	fallbackLocale: 'ar-SA',
 	messages: {
-		'en-US': enUSBase,
+		'ar-SA': arSABase,
+		//'en-US': enUSBase,
 	},
 	silentTranslationWarn: true,
 	datetimeFormats,
@@ -19,7 +21,7 @@ export const i18n = createI18n({
 
 export type Language = keyof typeof availableLanguages;
 
-export const loadedLanguages: Language[] = ['en-US'];
+export const loadedLanguages: Language[] = ['ar-SA'];
 
 export function translateAPIError(error: RequestError | string): string {
 	const defaultMsg = i18n.global.t('unexpected_error');

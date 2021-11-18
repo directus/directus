@@ -16,12 +16,12 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item href="https://github.com/directus/directus/releases" class="version">
+		<!-- <v-list-item href="https://github.com/directus/directus/releases" class="version">
 			<v-list-item-icon><v-icon name="directus" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow class="version" :text="`Directus ${version}`" />
 			</v-list-item-content>
-		</v-list-item>
+		</v-list-item> -->
 	</v-list>
 </template>
 
@@ -79,6 +79,7 @@ Node: ${parsedInfo.value?.node.version}
 			`;
 
 			return [
+				/*
 				{
 					icon: 'bug_report',
 					name: t('report_bug'),
@@ -91,6 +92,7 @@ Node: ${parsedInfo.value?.node.version}
 					href: 'https://github.com/directus/directus/discussions/new',
 					outline: true,
 				},
+        */
 			];
 		});
 

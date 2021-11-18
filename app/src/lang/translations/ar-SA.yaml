@@ -20,10 +20,19 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 avatar: الصورةالرمزية
+default_provider: الافتراضي
+published: نُشرت
+draft: مسودة
+archived: مؤرشف
+modules: الوحدات
+module_bar: شريط الوحدة
+tile_size: حجم اللوحة
 edit_field: تعديل الحقل
 conditions: الشروط
 maps: الخرائط
+item_creation: إنشاء العناصر
 item_revision: التعديلات على العنصر
+enter_a_name: أدخل اسم...
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
@@ -48,8 +57,10 @@ required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
 requires_value: قيمة مطلوبة
 create_preset: إنشاء إعدادات مسبقة
+create_panel: إنشاء لوحة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
+delete_panel: حذف اللوحة
 create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
 invite: دعوة
@@ -141,7 +152,10 @@ fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
 presentation_and_aliases: Presentation & Aliases
+revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: بسم الله الرحمن الرحيم.
+changes_made: Below are the specific changes made in this revision.
+no_relational_data: Keep in mind that relational data is not included here.
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -150,12 +164,25 @@ field_create_success: 'حقل تم إنشاؤه: "{field}"'
 field_update_success: 'حقل تم إنشاؤه: "{field}"'
 duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+aggregate_function: Aggregate Function
+aggregate_precision: Aggregate Precision
+group_aggregation: Group Aggregation
+group_precision: Group Precision
 global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
+show_zero: إظهار صفر
+sum: مجموع
+sum_distinct: Sum Distinct
+avg: متوسط
+avg_distinct: Average Distinct
+count: عدد
+count_distinct: عدد مميز
+min: الحد الأدنى
+max: الحد الأقصى
 exposure: التعرض
 shutter: الغالق
-iso: ISO
+iso: ايزو
 focal_length: البعد البؤري
 schema_setup_key: اسم عمود قاعدة بيانات هذا الحقل ومفتاح API
 create_field: إنشاء حقل
@@ -170,7 +197,9 @@ alias: اسم مستعار
 bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
+date_range: نطق التاريخ
 datetime: الوقت و التاريخ
+precision: دقة
 decimal: عشري
 float: عشري
 integer: رقم صحيح
@@ -208,6 +237,8 @@ add_m2m_to_collection: 'إضافة كثيرين إلى كثيرين ل "{collect
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
+add_link: Add Link
+custom_link: Custom Link
 default_value: القيمة الافتراضية
 standard_field: حقل قياسي
 single_file: ملف واحد
@@ -237,6 +268,7 @@ raw_value: قيمة خام
 edit_raw_value: تعديل القيمة الخام
 enter_raw_value: أدخل قيمة سطر...
 clear_value: إزالة القيمة
+clear_changes: Clear Changes
 reset_to_default: إعادة تعيين إلى الافتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
@@ -256,6 +288,7 @@ revision_delta_reverted: تمت الإستعادة
 revision_delta_other: تنقيح
 revision_delta_by: '{date} بواسطة {user}'
 private_user: خصخصة المستخدم
+creation_preview: Creation Preview
 revision_preview: معاينة التعديلات
 updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
@@ -287,8 +320,12 @@ interface_label: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
+date-fns_date: PPP
 date-fns_time: 'ساعات: دقائق: ثواني'
 date-fns_time_no_seconds: 'س:دد ص'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
 month: شهر
 year: سنة
 select_all: تحديد الكل
@@ -375,6 +412,7 @@ no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
+no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 all_items: كافة العناصر
 any: أي
 csv: CSV
@@ -386,12 +424,21 @@ relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
 display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
 select_a_collection: حدد مجموعة
+select_a_field: Select a Field
 active: مفعل
+move_to: نقل إلى...
 copy: نسخ
+copy_to: نسخ إلى...
+no_other_dashboards_copy: You don't have any other Dashboards yet.
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
 webhooks: روابط الويب (Webhooks)
+decimals: Decimals
+value_decimals: Value Decimals
+min_value: Min Value
+max_value: Max Value
+automatic: Automatic
 field_width: عرض الحقل
 add_filter: إضافة فلتر
 upper_limit: الحد الأقصى...
@@ -439,8 +486,10 @@ errors:
   RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   USER_SUSPENDED: المستخدم موقوف
   CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
+  UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
+  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
   UNKNOWN: خطأ غير متوقع
 security: الأمان
 value_hashed: تم تجزئة القيمة بشكل آمن
@@ -452,10 +501,12 @@ presets: الإعدادات المسبقة
 unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
+no_app_access: No App Access
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
 password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
+filter: فلترة
 editing_image: تحرير صورة
 square: مربع
 free: حر
@@ -478,6 +529,7 @@ visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
 show_hidden_collections: أظهر المجموعات المخفية
 hide_hidden_collections: اخفي المجموعات المخفية
+show_header: Show Header
 unmanaged_collections: مجموعات غير مهيأة
 system_collections: مجموعات النظام
 placeholder: مكان محجوز
@@ -493,6 +545,7 @@ color: لون
 circle: دائرة
 empty_item: عنصر فارغ
 log_in_with: 'تسجيل الدخول باستخدام {provider}'
+conditional_styles: Conditional Styles
 advanced_settings: إعدادات متقدمة
 advanced_filter: تصفية متقدمة
 delete_advanced_filter: حذف التصفية
@@ -522,6 +575,8 @@ operators:
   has: تتضمن هذه الوسوم
   intersects: تداخلات
   nintersects: لا يتقاطع
+  intersects_bbox: Intersects bounding box
+  nintersects_bbox: Doesn't intersect bounding box
 loading: جار التحميل...
 drop_to_upload: إسقاط إلى التحميل
 item: عنصر
@@ -534,6 +589,7 @@ upload_files_success: 'عدد الصور التي تم تحميلها {count}'
 upload_pending: التحميل معلق
 drag_file_here: السحب والإفلات الملف هنا
 click_to_browse: انقر للتصفح
+interface_options: خيارات الواجهة
 layout_options: خيارات التصميم
 rows: الصفوف
 columns: أعمدة
@@ -572,40 +628,99 @@ read: قراءة
 update: تحديث
 select_fields: حدد حقول
 format_text: تنسيق النص
+format_value: تنسيق القيمة
+abbreviate_value: Abbreviate Value
+operator: Operator
+bold: عريض
+toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
+insights: تحليل البيانات (تجريبي)
+dashboard: لوحة التحكم
+panel: Panel
+panel_options: خيارات اللوحة
+panel_header: Panel Header
+panel_name_placeholder: Name this panel...
+panel_note_placeholder: Optional details about this panel...
+panel_delete_confirm: Are you sure you want to delete this panel? This action can not be undone.
+dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
+edit_dashboard: Edit Dashboard
+delete_dashboard: Delete Dashboard
+visible: مرئي
+prefix_placeholder: Text before value...
+suffix_placeholder: Text after value...
+decimals_placeholder: Number of decimal places...
+no_dashboards: No Dashboards
+no_dashboards_copy: You don’t have any Dashboards yet.
+no_data: No Data
+create_dashboard: Create Dashboard
+dashboard_name: Dashboard Name
+full_screen: Full Screen
+edit_panels: تحرير اللوحات
+fit_to_screen: Fit to Screen
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
+quality: الجودة
 width: العرض
 height: الارتفاع
 source: مصدر
 url_placeholder: أدخل عنوان الرابط
 display_text: عرض النص
+display_text_placeholder: Enter a display text...
+tooltip: تلميح الأداة
+tooltip_placeholder: Enter a tooltip...
 unlimited: غير محدود
 open_link_in: افتح الرابط في
+new_tab: New tab
+current_tab: Current tab
 wysiwyg_options:
+  aligncenter: Align Center
+  alignjustify: Align Justify
   alignleft: محاذاة إلى اليسار
+  alignnone: Align None
   alignright: محاذاة إلى اليمين
   forecolor: لون الواجهة
   backcolor: لون الخلفية
+  bold: عريض
   italic: خط مائل
   underline: مسطر
+  strikethrough: Strikethrough
+  subscript: Subscript
+  superscript: Superscript
   codeblock: نص برمجي
+  blockquote: اقتباس
+  bullist: Bullet List
+  numlist: Numbered List
+  hr: Horizontal Rule
   link: إضافة/تحرير الرابط
   unlink: إزالة الرابط
+  media: Add/Edit Media
   image: إضافة/تحرير الصورة
   copy: نسخ
   cut: قص
   paste: لصق
+  heading: عنوان
+  h1: عنوان 1
+  h2: عنوان 2
+  h3: عنوان 3
+  h4: Heading 4
+  h5: عنوان 5
+  h6: Heading 6
   fontselect: تحديد الخط
   fontsizeselect: حدد حجم الخط
+  indent: Indent
+  outdent: Outdent
+  undo: Undo
+  redo: Redo
   remove: احذف
   removeformat: إزالة التنسيق
   selectall: تحديد الكل
   table: الجدول
   visualaid: عرض العناصر غير المرئية
+  source_code: Edit Source Code
+  fullscreen: Full Screen
   directionality: الاتجاهية
 dropdown: قائمة منسدلة
 choices: الخيارات
@@ -630,15 +745,21 @@ one_or_more_options_are_missing: واحد أو أكثر من الخيارات م
 scope: مجال
 select: حدد...
 layout: نموذج العرض
+tree_view: Tree View
 changes_are_permanent: التغييرات دائمة
 preset_name_placeholder: يعمل كإعداد افتراضي عندما يكون فارغًا...
+preset_search_placeholder: Search query...
 editing_preset: تحرير الإعداد المسبق
 layout_preview: معاينة نموذج العرض
 layout_setup: إعداد نموذج العرض
 unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
+discard_changes_copy: Are you sure you want to discard all the changes made?
+show_x_axis: عرض المحور X
+show_y_axis: Show Y Axis
 keep_editing: استمر في التحرير
+page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
 page_help_collections_collection: >-
   **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_collections_item: >-
@@ -667,17 +788,39 @@ page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإن
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
+page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
+page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
+activity_feed: Activity Feed
 add_new: إضافة جديدة
 create_new: أنشئ جديد
 all: الجميع
+none: لا يوجد
 no_layout_collection_selected_yet: لم يتم تحديد نموذج عرض/مجموعة بعد
 batch_delete_confirm: >-
   لم يتم اختيار عناصر | هل أنت متأكد أنك تريد حذف هذا البند؟ لا يمكن التراجع عن هذا الإجراء. | هل تريد بالتأكيد حذف هذه {count} عنصر ؟ لا يمكن التراجع عن هذا الإجراء.
 cancel: إلغاء
+no_upscale: Don't upscale images
 collection: المجموعة
 collections: مجموعات
+singleton: Singleton
 singleton_label: معاملته ككائن واحد
 system_fields_locked: حقول النظام مقفلة ولا يمكن تعديلها
+directus_collection:
+  directus_activity: Accountability logs for all events
+  directus_collections: Additional collection configuration and metadata
+  directus_fields: Additional field configuration and metadata
+  directus_files: Metadata for all managed file assets
+  directus_folders: Provides virtual directories for files
+  directus_migrations: What version of the database you're using
+  directus_permissions: Access permissions for each role
+  directus_presets: Presets for collection defaults and bookmarks
+  directus_relations: Relationship configuration and metadata
+  directus_revisions: Data snapshots for all activity
+  directus_roles: Permission groups for system users
+  directus_sessions: User session information
+  directus_settings: Project configuration options
+  directus_users: System users for the platform
+  directus_webhooks: Configuration for event-based HTTP requests
 fields:
   directus_activity:
     item: المفتاح الأساسي للعنصر
@@ -696,7 +839,9 @@ fields:
     color: لون
     display_template: عرض القالب
     hidden: مخفي
+    singleton: Singleton
     translations: ترجمات تسمية المجموعات
+    archive_app_filter: Archive App Filter
     archive_value: أرشفة القيمة
     unarchive_value: إلغاء أرشفة القيمة
     sort_field: فرز الحقل
@@ -711,6 +856,7 @@ fields:
     filename_disk: اسم الملف (القرص)
     filename_download: اسم الملف (تحميل)
     metadata: البيانات التعريفية
+    type: Mime Type
     filesize: حجم الملف
     modified_by: تم التعديل بواسطة
     modified_on: التعديل في
@@ -734,78 +880,204 @@ fields:
     title: العنوان
     description: التفاصيل
     tags: الوسوم
+    user_preferences: User Preferences
     language: لغة
     theme: السمة
+    theme_auto: Automatic (Based on System)
+    theme_light: Light Mode
+    theme_dark: Dark Mode
     tfa_secret: التحقق بخطوتين
+    admin_options: Admin Options
     status: حالة
+    status_draft: مسودة
+    status_invited: Invited
     status_active: مفعل
+    status_suspended: Suspended
+    status_archived: Archived
     role: الدور
+    token: Token
+    token_placeholder: Enter a secure access token...
     last_page: آخر صفحة
     last_access: آخر وصول
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps: Basemaps
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
+    mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    additional_transforms: Additional Transformations
     project_name: اسم المشروع
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    public_pages: Public Pages
+    public_foreground: Public Foreground
+    public_background: Public Background
+    public_note: Public Note
+    auth_password_policy: Auth Password Policy
+    auth_login_attempts: Auth Login Attempts
+    files_and_thumbnails: Files & Thumbnails
+    storage_default_folder: Storage Default Folder
+    storage_asset_presets: Storage Asset Presets
+    storage_asset_transform: Storage Asset Transform
+    overrides: App Overrides
+    custom_css: Custom CSS
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
     note: ملحوظة
     hidden: مخفي
+    singleton: Singleton
     translation: ترجمة اسم الحقل
     display_template: قالب
   directus_roles:
     name: إسم الدور
     icon: أيقونة الدور
     description: التفاصيل
+    app_access: App Access
+    admin_access: Admin Access
+    ip_access: IP Access
+    enforce_tfa: Require 2FA
     users: المستخدمون في الدور
+    module_list: Module Navigation
+    collection_list: Collection Navigation
   directus_webhooks:
     name: الاسم
+    method: Method
     status: حالة
+    data: Data
+    data_label: Send Event Data
+    triggers: Triggers
+    actions: Actions
 field_options:
   directus_settings:
+    project_name_placeholder: My project...
+    project_logo_note: Login & Logo Background
+    public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: الأمان
+    auth_password_policy:
+      none_text: None – Not Recommended
+      weak_text: Weak – Minimum 8 Characters
+      strong_text: Strong – Upper / Lowercase / Numbers / Special
+    storage_asset_presets:
+      fit:
+        contain_text: Contain (preserve aspect ratio)
+        cover_text: Cover (forces exact size)
+        fit_text: Fit inside
+        outside_text: Fit outside
+    additional_transforms: Additional Transformations
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
+    files_divider_title: Files & Thumbnails
+    overrides_divider_title: App Overrides
   directus_activity:
+    login: Login
     create: انشاء
     update: تحديث
+    delete: Delete
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
     do_not_track_anything: عدم تتبع أي شيء
     collection_setup: لا توجد مجموعات الإعداد
+    note_placeholder: A description of this collection...
+    hidden_label: Hide within the App
     singleton: معاملته ككائن واحد
     language: لغة
+    translation: Enter a translation...
     archive_divider: أرشفة
+    archive_field: Choose a field...
+    archive_app_filter: Enable App Archive Filter
+    archive_value: Value set when archiving...
+    unarchive_value: Value set when unarchiving...
     divider: رتب
+    sort_field: Choose a field...
+    accountability_divider: Accountability
+  directus_files:
+    title: A unique title...
+    description: An optional description...
+    location: An optional location...
+    storage_divider: File Naming
+    filename_disk: Name on disk storage...
+    filename_download: Name when downloading...
   directus_roles:
+    name: The unique name for this role...
+    description: A description of this role...
+    ip_access: Add allowed IP addresses, leave empty to allow all...
     fields:
       icon_name: أيقونة
       name_name: الاسم
       name_placeholder: أدخل عنوانًا...
+      link_name: Link
+      link_placeholder: Relative or absolute URL...
     collection_list:
+      group_name_addLabel: Add New Group...
       fields:
+        group_name: Group Name
+        group_placeholder: Label this group...
         type_name: النوع
+        choices_always: Always Open
+        choices_start_open: Start Open
+        choices_start_collapsed: Start Collapsed
     collections_name: مجموعات
+    collections_addLabel: Add Collection...
   directus_users:
+    preferences_divider: User Preferences
+    dropdown_auto: Automatic (Based on System)
+    dropdown_light: Light Mode
+    dropdown_dark: Dark Mode
+    admin_divider: Admin Options
+    status_dropdown_draft: مسودة
+    status_dropdown_invited: Invited
     status_dropdown_active: مفعل
+    status_dropdown_suspended: Suspended
+    status_dropdown_archived: Archived
+    token: Enter a secure access token...
   directus_webhooks:
     status_options_active: مفعل
     status_options_inactive: غير نشط
+    data_label: Send Event Data
+    triggers_divider: Triggers
     actions_create: انشاء
     actions_update: تحديث
+    actions_delete: Delete
+    actions_login: Login
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
+no_value: No value
 do_nothing: لا تفعل شيئا
+generate_and_save_uuid: Generate and Save UUID
+save_current_user_id: Save Current User ID
 save_current_user_role: احفظ دور المستخدم الحالي
 save_current_datetime: أحفظ التاريخ/الوقت الحالي
+block: Block
+inline: Inline
 comment: تعليق
+relational_triggers: Relational Triggers
 referential_action_field_label_m2o: عند حذف {collection}...
 referential_action_field_label_o2m: عند إلغاء تحديد {collection}...
 referential_action_no_action: منع الحذف
 referential_action_cascade: حذف العنصر {collection} (تسلسلي)
+referential_action_set_null: Nullify the {field} field
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
+continue_label: Continue
+continue_as: >-
+  {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: 'دور {role}'
 creating_webhook: إنشاء Webhook
+default_label: Default
+delete_label: Delete
 delete_are_you_sure: >-
   هذا الإجراء دائم ولا يمكن التراجع عنه. هل أنت متأكد من رغبتك في المتابعة؟
 delete_field_are_you_sure: >-
@@ -816,6 +1088,7 @@ duplicate: مكرر
 limit: الحد
 email: البريد الإلكتروني
 embed: تضمين
+fallback_icon: Fallback Icon
 field: حقل | حقول
 file: ملف
 file_library: مكتبة الملفات
@@ -823,6 +1096,8 @@ forgot_password: نسيت كلمة المرور
 hidden: مخفي
 icon: أيقونة
 info: معلومات
+normal: Normal
+success: Success
 warning: تحذير
 danger: خطر
 junction_collection: مجموعة تلاقي
@@ -830,6 +1105,7 @@ latency: وقت الإستجابة
 login: تسجيل الدخول
 my_activity: نشاطي
 not_authenticated: لم تتم المصادقة
+authenticated: Authenticated
 options: خيارات
 otp: كلمة السر لمرة واحدة OTP
 password: كلمة المرور
@@ -854,17 +1130,41 @@ sort_direction: الترتيب وفق الإتجاه
 sort_asc: ترتيب تصاعدي
 sort_desc: ترتيب تنازلي
 template: قالب
+require_value_to_be_set: Require value to be set
 translation: الترجمة
 value: قيمة
 view_project: عرض المشروع
+weeks: { }
 report_error: الإبلاغ عن خطأ
+start: Start
 interfaces:
   filter:
+    name: Filter
+    description: Configure a filter object.
     add_filter: إضافة فلتر
+    add_group: And / Or group
+    add_value: Add Value
     all: الجميع
     any: أي
+    and: و
+    of_the_following: of the following
+    no_rules: No configured rules
+    change_value: Click to change value
+    placeholder: Drag rules here
+  group-accordion:
+    name: Accordion
+    description: Display fields or groups as accordion sections
+    start: Start
+    all_closed: All Closed
+    first_opened: First Opened
+    all_opened: All Opened
+    accordion_mode: Accordion Mode
+    max_one_section_open: Max 1 Section Open
   presentation-links:
+    presentation-links: Button Links
     links: روابط
+    description: Configurable link buttons for launching dynamic URLs
+    style: Style
     primary: الأساسي
     link: روابط
     button: أزرار
@@ -872,8 +1172,16 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: مربعات الاختيار
     description: اختر بين خيارات متعددة عبر مربعات الاختيار
+    allow_other: Allow Other
     show_more: 'أظهر {count} أكثر'
     items_shown: العناصر المعروضة
+  select-multiple-checkbox-tree:
+    name: Checkboxes (Tree)
+    description: Choose between multiple options via nested checkboxes
+    value_combining: Value Combining
+    value_combining_note: Controls what value is stored when nested selections are made.
+    show_all: Show All
+    show_selected: Show Selected
   input-code:
     code: نص برمجي
     description: كتابة أو مشاركة الكود البرمجي
@@ -881,8 +1189,12 @@ interfaces:
     placeholder: أدخل الكود هنا...
   system-collection:
     collection: المجموعة
+    description: Select between existing collections
+    include_system_collections: Include System Collections
   system-collections:
     collections: مجموعات
+    description: Select between existing collections
+    include_system_collections: Include System Collections
   select-color:
     color: لون
     description: أدخل أو حدد قيمة اللون
@@ -893,6 +1205,7 @@ interfaces:
   datetime:
     datetime: التاريخ والوقت
     description: أدخل التواريخ والأوقات
+    include_seconds: Include Seconds
     set_to_now: اضبط على الآن
     use_24: استخدم تنسيق 24 ساعة
   system-display-template:
@@ -903,14 +1216,18 @@ interfaces:
     select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
+    description: Label and divide fields into sections
     title_placeholder: أدخل عنوانًا...
+    inline_title: Inline Title
     inline_title_label: أظهر العنوان داخل السطر
     margin_top: الهامش العلوي
     margin_top_label: زيادة الهامش العلوي
   select-dropdown:
     description: حدد قيمة من القائمة المنسدلة
     choices_placeholder: أضف خيار جديد
+    allow_other: Allow Other
     allow_other_label: السماح بقيم أخرى
+    allow_none: Allow None
     allow_none_label: لا يسمح بتحديد
     choices_name_placeholder: أدخل اسم...
     choices_value_placeholder: أدخل قيمة...
@@ -925,6 +1242,7 @@ interfaces:
     description: حدد أو ارفع ملفات متعددة
   input-hash:
     hash: الهاش
+    description: Enter a value to be hashed
     masked: مقنع
     masked_label: إخفاء القيم الحقيقية
   select-icon:
@@ -936,47 +1254,115 @@ interfaces:
     description: حدد أو ارفع صورة
   system-interface:
     interface: الواجهة
+    description: Select an existing interface
+    placeholder: Select an interface...
+  system-interface-options:
+    interface-options: Interface Options
+    description: A modal for selecting options of an interface
+  list-m2m:
+    many-to-many: Many to Many
+    description: Select multiple related junction items
   select-dropdown-m2o:
+    many-to-one: Many to One
     description: حدد عنصر واحد ذو صلة
     display_template: عرض القالب
   input-rich-text-md:
+    markdown: Markdown
     description: أدخل و معاينة markdown
+    customSyntax: Custom Blocks
+    customSyntax_label: Add custom syntax types
+    customSyntax_add: Add custom syntax
+    box: Block / Inline
+    imageToken: Image Token
+    imageToken_label: What (static) token to append to image sources
   map:
+    map: Map
+    description: Select a location on a map
     zoom: تكبير/تصغير
+    geometry_type: Geometry type
+    geometry_format: Geometry format
+    default_view: Default view
+    invalid_options: Invalid options
+    invalid_format: Invalid format ({format})
+    unexpected_geometry: Expected {expected}, got {got}.
+    fit_bounds: Fit view to data
+    native: Native
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
+  presentation-notice:
+    notice: Notice
+    description: Display a short notice
+    text: Enter notice content here...
   list-o2m:
+    one-to-many: One to Many
     description: حدد عدة عناصر ذات صلة
+    no_collection: The collection could not be found
   system-folder:
     folder: مجلد
+    description: Select a folder
+    field_hint: Puts newly uploaded files in selected folder. Does not affect existing files that are selected.
+    root_name: File Library Root
+    system_default: System Defaults
   select-radio:
+    radio-buttons: Radio Buttons
     description: حدد اختيار واحد من خيارات متعددة
   list:
+    repeater: Repeater
+    description: Create multiple entries of the same structure
     edit_fields: تعديل الحقول
+    add_label: '"Create New" Label'
     field_name_placeholder: أدخل اسم الحقل...
+    field_note_placeholder: Enter field note...
   slider:
     slider: شريط
+    description: Select a number using a slider
     always_show_value: إظهار القيمة دائمًا
   tags:
     tags: الوسوم
     description: حدد أو أضف وسوم
+    whitespace: Whitespace
+    hyphen: Replace with hyphen
+    underscore: Replace with underscore
+    remove: Remove whitespace
+    capitalization: Capitalization
+    uppercase: Convert Uppercase
+    lowercase: Convert Lowercase
     auto_formatter: استخدام التنسيق التلقائي للعنوان
     alphabetize: رتب أبجديا
     alphabetize_label: فرض الترتيب الأبجدي
     add_tags: إضافة وسوم...
   input:
+    input: Input
     description: أدخل قيمة يدوياً
+    trim: Trim
+    trim_label: Trim the start and end
     mask: مقنع
     mask_label: إخفاء القيمة الحقيقية
+    clear: Cleared Value
+    clear_label: Save as empty string
     minimum_value: أدنى قيمة
     maximum_value: أقصى قيمة
+    step_interval: Step Interval
+    slug: Slugify
     slug_label: اجعل رابط القيمة المدخلة آمن
   input-multiline:
+    textarea: Textarea
     description: أدخل النص المتعدد الأسطر
   boolean:
+    toggle: Toggle
     description: التبديل بين تشغيل وإيقاف التشغيل
+    label_placeholder: Enter a label...
     label_default: تمكين
   translations:
     display_template: عرض القالب
     no_collection: لا توجد مجموعة
+    toggle_split_view: Toggle Split View
+    language_field: Language Field
+  list-o2m-tree-view:
+    description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: مستخدم
     description: حدد مستخدم directus موجود
@@ -984,17 +1370,39 @@ interfaces:
     modes:
       auto: تلقائي
       dropdown: قائمة منسدلة
+      modal: Modal
   input-rich-text-html:
+    wysiwyg: WYSIWYG
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
     options_override: تجاوز الخيارات
   input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: A search typeahead for external API values.
+    results_path: Results Path
+    value_path: Value Path
+    trigger: Trigger
     rate: معدل
+  group-raw:
+    name: Raw Group
+    description: Render the fields as-is
+  group-detail:
+    name: Detail Group
+    description: Render the fields as a collapsable section
+    show_header: Show Group Header
+    header_icon: Header Icon
+    header_color: Header Color
+    start_open: Start Open
+    start_closed: Start Closed
 displays:
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل
+    label_on: Label On
+    label_on_placeholder: Enter an on label...
+    label_off: Label Off
+    label_off_placeholder: Enter an off label...
     icon_on: تشغيل الأيقونة
     icon_off: إيقاف الأيقونة
     color_on: تشغيل اللون
@@ -1011,6 +1419,8 @@ displays:
     datetime: التاريخ والوقت
     description: عرض القيم المتصلة بالوقت
     format: التنسيق
+    format_note: >-
+      The custom format accepts the __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: طويل
     short: قصير
     relative: نسبي
@@ -1025,26 +1435,42 @@ displays:
     formatted-value: قيمة منسقة
     description: عرض نسخة منسقة من النص
     format_title: تنسيق العنوان
+    format_title_label: Auto-format casing
+    bold_label: Use bold style
+  formatted-json-value:
+    formatted-json-value: Formatted JSON value
+    description: Display a formatted version of the object
   icon:
     icon: أيقونة
     description: عرض أيقونة
     filled: مملوء
+    filled_label: Use the filled variant
   image:
     image: صورة
     description: عرض معاينة صغيرة للصورة
     circle: دائرة
     circle_label: عرض كدائرة
   labels:
+    labels: Labels
+    description: Display either a single or a list of labels
+    default_foreground: Default Foreground
+    default_background: Default Background
+    format_label: Format each label
     show_as_dot: أظهر كنقطة
     choices_value_placeholder: أدخل قيمة...
     choices_text_placeholder: أدخل نص...
   mime-type:
+    mime-type: MIME Type
     description: أظهر MIME-Type الملف
+    extension_only: Extension Only
     extension_only_label: أظهر ملحق الملف فقط
   rating:
     rating: التقييم
+    description: Visualize a number as stars relative to the max-value
     simple: بسيط
     simple_label: أظهر النجوم بصيغة بسيطة
+  raw:
+    raw: Raw Value
   related-values:
     related-values: القيم ذات الصلة
     description: اعرض القيم ذات الصلة
@@ -1059,6 +1485,9 @@ layouts:
   cards:
     cards: البطاقات
     image_source: مصدر الصورة
+    image_fit: Image Fit
+    crop: Crop
+    contain: Contain
     title: العنوان
     subtitle: الترجمة
   tabular:
@@ -1073,7 +1502,34 @@ layouts:
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
   map:
+    map: Map
+    basemap: Basemap
+    layers: Layers
+    edit_custom_layers: Edit Layers
+    cluster_options: Clustering options
+    cluster: Activate clustering
+    cluster_radius: Cluster radius
+    cluster_minpoints: Cluster minimum size
+    cluster_maxzoom: Maximum zoom for clustering
     field: الأشكال الهندسية
+    invalid_geometry: Invalid geometry
+    auto_location_filter: Always filter data to view bounds
+    search_this_area: Search this area
+    clear_data_filter: Clear Data Filter
+    clear_location_filter: Clear Location Filter
 panels:
+  metric:
+    name: Metric
+    description: Show a single value based on a query
+    field: Field
+  time_series:
+    name: Time Series
+    description: Render a line chart based on values over time
+    date_field: Date Field
+    value_field: Value Field
   label:
     name: تسمية
+    description: Show some text
+  list:
+    name: List
+    description: Filter and list fields from a collection
