@@ -778,6 +778,7 @@ layout_setup: Configuration de la mise en page
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
+discard_all_changes: Ignorer toutes les modifications
 discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
 show_x_axis: Montrer &Axes 3D
 show_y_axis: Montrer &Axes 3D
@@ -872,6 +873,7 @@ fields:
     unarchive_value: Valeur au désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
+    archive_field: Champ d'archivage
   directus_files:
     $thumbnail: Miniature
     title: Titre
@@ -994,6 +996,7 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
+    project_logo_note: Blanc 40x40 SVG/PNG
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -1312,6 +1315,7 @@ interfaces:
     box: Bloc / Inline
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
+    preview: Prévisualiser
   map:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
