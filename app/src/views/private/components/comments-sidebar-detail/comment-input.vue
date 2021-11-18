@@ -116,23 +116,8 @@ export default defineComponent({
 
 			cancelToken = axios.CancelToken.source();
 			const regex = /([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
-
-			let id: Record<string, any> = {
-				id: {
-					_starts_with: name,
-				},
-			};
-			if (name.match(regex)) {
-				id = {
-					id: {
-						_in: name,
-					},
-				};
-			}
-
-			const filter = {
+			const filter: Record<string, any> = {
 				_or: [
-					id,
 					{
 						first_name: {
 							_starts_with: name,
@@ -150,7 +135,13 @@ export default defineComponent({
 					},
 				],
 			};
-
+			if (name.match(regex)) {
+				filter['_or'].push({
+					id: {
+						_in: name,
+					},
+				});
+			}
 			try {
 				const result = await api.get('/users', {
 					params: {
@@ -159,7 +150,6 @@ export default defineComponent({
 					},
 					cancelToken: cancelToken.token,
 				});
-
 				users.value = result.data.data;
 			} catch (e) {
 				return e;
