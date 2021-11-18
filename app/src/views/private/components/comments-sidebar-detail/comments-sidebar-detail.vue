@@ -12,7 +12,7 @@
 			<v-divider>{{ group.dateFormatted }}</v-divider>
 
 			<template v-for="item in group.activity" :key="item.id">
-				<comment-item :refresh="refresh" :activity="item" />
+				<comment-item :refresh="refresh" :activity="item" :user-ids="userIds" />
 			</template>
 		</template>
 	</sidebar-detail>
@@ -29,7 +29,6 @@ import { groupBy, orderBy, flatten } from 'lodash';
 import formatLocalized from '@/utils/localized-format';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
 import CommentItem from './comment-item.vue';
-import { userName } from '@/utils/user-name';
 
 export default defineComponent({
 	components: { CommentInput, CommentItem },
@@ -46,19 +45,21 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const { activity, loading, error, refresh, count } = useActivity(props.collection, props.primaryKey);
+		const { activity, loading, error, refresh, count, userIds } = useActivity(props.collection, props.primaryKey);
 
-		return { t, activity, loading, error, refresh, count };
+		return { t, activity, loading, error, refresh, count, userIds };
 
 		function useActivity(collection: string, primaryKey: string | number) {
+			const regex = /(@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
 			const activity = ref<ActivityByDate[] | null>(null);
 			const count = ref(0);
 			const error = ref(null);
 			const loading = ref(false);
+			const userIds = ref({});
 
 			getActivity();
 
-			return { activity, error, loading, refresh, count };
+			return { activity, error, loading, refresh, count, userIds };
 
 			async function getActivity() {
 				error.value = null;
@@ -87,13 +88,17 @@ export default defineComponent({
 					});
 
 					count.value = response.data.data.length;
-
-					const sanitizedComments = await replaceUserIds(response.data.data);
-					const activityByDate = groupBy(sanitizedComments, (activity: Activity) => {
+					const activityByDate = groupBy(response.data.data, (activity: Activity) => {
 						// activity's timestamp date is in iso-8601
 						const date = new Date(new Date(activity.timestamp).toDateString());
 						return date;
 					});
+
+					userIds.value = await loadUserIds(response.data.data);
+					response.data.data.forEach((comment: Record<string, any>) => {
+						comment.comment = comment.comment.split(regex);
+					});
+
 					const activityGrouped: ActivityByDate[] = [];
 					for (const [key, value] of Object.entries(activityByDate)) {
 						const date = new Date(key);
@@ -125,16 +130,18 @@ export default defineComponent({
 				await getActivity();
 			}
 		}
-		async function replaceUserIds(comments: Record<string, any>) {
-			let userIds: any[] = [];
 
-			comments.forEach((comment) => {
-				const regex = /@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
+		async function loadUserIds(comments: Record<string, any>) {
+			const regex = /(@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
+
+			let userIds: any[] = [];
+			comments.forEach((comment: Record<string, any>) => {
 				userIds.push(comment.comment.match(regex));
 			});
 
-			const uniqIds: string[] = [...new Set(flatten(userIds))];
-
+			const uniqIds: string[] = [...new Set(flatten(userIds))].filter((id) => {
+				if (id) return id;
+			});
 			const idFilters = uniqIds.map((id) => {
 				return { id: { _eq: id.substr(1) } };
 			});
@@ -146,16 +153,10 @@ export default defineComponent({
 			});
 			const userObjects: Record<string, any> = {};
 
-			response.data.data.map((user) => {
+			response.data.data.map((user: Record<string, any>) => {
 				userObjects[user.id] = user;
 			});
-			comments.forEach((comment, index) => {
-				const regex = /@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
-				userIds[index].forEach((id) => {
-					comment.comment = comment.comment.replace(id, `@${userName(userObjects[id.substr(1)])}`);
-				});
-			});
-			return comments;
+			return userObjects;
 		}
 	},
 });

@@ -22,9 +22,13 @@
 			</v-textarea>
 		</template>
 		<v-list v-for="user in users" :key="user.id" class="suggestions" @click="insertUsername(user)">
-			<img v-if="user.avatar" src="" />
-			<img v-else src="" />
-			{{ userName(user) }}
+			<v-avatar x-small>
+				<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
+				<v-icon v-else name="person_outline" />
+			</v-avatar>
+			<div>
+				{{ userName(user) }}
+			</div>
 		</v-list>
 	</v-menu>
 </template>
@@ -32,7 +36,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType, ComponentPublicInstance, watch } from 'vue';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
 import { userName } from '@/utils/user-name';
@@ -41,6 +45,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { throttle } from 'lodash';
 import axios, { CancelTokenSource } from 'axios';
 import { User } from '@directus/shared/types';
+import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
 	props: {
@@ -161,8 +166,13 @@ export default defineComponent({
 			userName,
 			caretPosition,
 			insertUsername,
+			avatarSource,
 		};
 
+		function avatarSource(url: string) {
+			if (url === null) return '';
+			return addTokenToURL(getRootPath() + `assets/${url}?key=system-small-cover`);
+		}
 		function insertUsername(user: User) {
 			if (newCommentContent.value === null || selectionStart === null || selectionEnd === null) return;
 
@@ -248,5 +258,10 @@ export default defineComponent({
 	position: absolute;
 	right: 8px;
 	bottom: 8px;
+}
+
+.suggestions {
+	display: flex;
+	flex-direction: row;
 }
 </style>

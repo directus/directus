@@ -22,8 +22,21 @@
 			</template>
 		</v-textarea>
 
-		<div v-else class="content">
-			<span v-md="activity.comment" class="selectable" />
+		<div v-for="excerpt in activity.comment" v-else :key="excerpt.id" class="content">
+			<span v-if="excerpt.match(regex)" class="user-name">
+				<user-popover v-if="excerpt" :user="excerpt.substr(1)">
+					<span>
+						<template v-if="excerpt">
+							{{ replaceUserIds(excerpt) }}
+						</template>
+
+						<template v-else>
+							{{ t('private_user') }}
+						</template>
+					</span>
+				</user-popover>
+			</span>
+			<span v-else v-md="excerpt" class="selectable" />
 
 			<!-- @TODO: Dynamically add element below if the comment overflows -->
 			<!-- <div v-if="activity.id == 204" class="expand-text">
@@ -39,6 +52,7 @@ import { defineComponent, PropType, ref, watch, ComponentPublicInstance } from '
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import useShortcut from '@/composables/use-shortcut';
+import { userName } from '@/utils/user-name';
 
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -54,8 +68,16 @@ export default defineComponent({
 			type: Function as PropType<() => void>,
 			required: true,
 		},
+		userIds: {
+			type: Object,
+			require: true,
+			default: () => {
+				return {};
+			},
+		},
 	},
 	setup(props) {
+		const regex = /(@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
 		const { t } = useI18n();
 
 		const textarea = ref<ComponentPublicInstance>();
@@ -64,7 +86,13 @@ export default defineComponent({
 
 		useShortcut('meta+enter', saveEdits, textarea);
 
-		return { t, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
+		return { t, edits, editing, savingEdits, saveEdits, cancelEditing, textarea, regex, replaceUserIds };
+
+		function replaceUserIds(excerpt: Record<string, any>) {
+			if (!props.userIds[excerpt.substr(1)]) return excerpt;
+			excerpt = excerpt.replace(excerpt, `@${userName(props.userIds[excerpt.substr(1)])}`);
+			return excerpt;
+		}
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);
@@ -199,6 +227,10 @@ export default defineComponent({
 
 .comment-item:hover :deep(.comment-header .header-right .more) {
 	opacity: 1;
+}
+
+.user-name {
+	color: var(--primary);
 }
 
 .buttons {
