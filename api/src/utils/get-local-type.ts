@@ -54,6 +54,10 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	blob: 'binary',
 	mediumblob: 'binary',
 	'int unsigned': 'integer',
+	'tinyint unsigned': 'integer',
+	'smallint unsigned': 'integer',
+	'mediumint unsigned': 'integer',
+	'bigint unsigned': 'integer',
 
 	// MS SQL
 	bit: 'boolean',
