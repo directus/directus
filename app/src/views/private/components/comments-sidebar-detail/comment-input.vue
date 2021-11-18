@@ -188,7 +188,11 @@ export default defineComponent({
 			if (newCommentContent.value === null || selectionStart === null || selectionEnd === null) return;
 
 			newCommentContent.value =
-				newCommentContent.value.slice(0, selectionStart) + '@' + user.id + newCommentContent.value.slice(selectionEnd);
+				newCommentContent.value.slice(0, selectionStart) +
+				'@' +
+				user.id +
+				newCommentContent.value.slice(selectionEnd) +
+				' ';
 		}
 
 		async function postComment() {
