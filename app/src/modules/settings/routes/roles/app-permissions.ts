@@ -287,7 +287,7 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 				_eq: '$CURRENT_USER',
 			},
 		},
-		fields: [
+		fields:	[
 			'tfa_secret',
 		],
 	},
