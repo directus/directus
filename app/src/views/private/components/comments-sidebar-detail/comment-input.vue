@@ -21,12 +21,12 @@
 				</template>
 			</v-textarea>
 		</template>
-		<v-list v-for="user in users" :key="user.id" class="suggestions" @click="insertUsername(user)">
+		<v-list v-for="user in users" id="suggestions" :key="user.id" @click="insertUsername(user)">
 			<v-avatar x-small>
 				<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
 				<v-icon v-else name="person_outline" />
 			</v-avatar>
-			<div>
+			<div class="spacer">
 				{{ userName(user) }}
 			</div>
 		</v-list>
@@ -115,14 +115,24 @@ export default defineComponent({
 			}
 
 			cancelToken = axios.CancelToken.source();
+			const regex = /([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
+
+			let id: Record<string, any> = {
+				id: {
+					_starts_with: name,
+				},
+			};
+			if (name.match(regex)) {
+				id = {
+					id: {
+						_in: name,
+					},
+				};
+			}
 
 			const filter = {
 				_or: [
-					{
-						id: {
-							_starts_with: name,
-						},
-					},
+					id,
 					{
 						first_name: {
 							_starts_with: name,
@@ -144,7 +154,8 @@ export default defineComponent({
 			try {
 				const result = await api.get('/users', {
 					params: {
-						filter: name === '' ? undefined : filter,
+						filter: name === '' || !name ? undefined : filter,
+						fields: ['first_name', 'last_name', 'email', 'id', 'avatar'],
 					},
 					cancelToken: cancelToken.token,
 				});
@@ -260,8 +271,13 @@ export default defineComponent({
 	bottom: 8px;
 }
 
-.suggestions {
+.spacer {
+	margin-inline-start: 10px;
+}
+
+#suggestions {
 	display: flex;
 	flex-direction: row;
+	overflow-x: hidden;
 }
 </style>
