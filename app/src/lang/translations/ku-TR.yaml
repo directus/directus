@@ -49,6 +49,57 @@ branch: لق
 leaf: گەڵا
 indeterminate: دیاری نەکراو
 edit_collection: دەستکاری کۆمەڵە
+exclusive: تایبەت
+children: وەچەکان
+db_only_click_to_configure: 'تەنها بنکەدراو: کرتە بکە بۆ سازاندن'
+show_archived_items: نیشاندانی مادە ئەرشیفکراوەکان
+edited: بەها دەستکاریکراوە
+required: داواکراوە
+required_for_app_access: داواکراوە بۆ دەستگەیشتن بە ئەپ
+requires_value: پێویستی بە بەهایە
+create_preset: دروستکردنی پێشوەختە
+create_panel: دروستکردنی پانێڵ
+create_role: دروستکردنی پلە
+create_user: دروستکردنی بەکارهێنەر
+delete_panel: سڕینەوەی پانێڵ
+create_webhook: دروستکردنی وێبهووک
+invite_users: بانگهێشتکردنی بەکارهێنەرەکان
+invite: بانگهێشت
+email_already_invited: ئیمەیڵی "{email}" پێشتر بانگهێشتکراوە
+emails: ئیمەیڵەکان
+connection_excellent: پەیوەندی نایاب
+connection_good: پەیوەندی باش
+connection_fair: پەیوەندی خراپ
+connection_poor: پەیوەندی زۆر خراپ
+primary: سەرەکی
+rename_folder: ناولێنانەوەی بوخچە
+delete_folder: سڕینەوەی بوخچە
+prefix: پێشگر
+suffix: پاشگر
+reset_bookmark: ڕێکخستنەوەی نیشانکەر
+rename_bookmark: ناولێنانەوەی نیشانکەر
+update_bookmark: نوێکردنەوەی نیشانکەر
+delete_bookmark: سڕینەوەی نیشانکەر
+delete_bookmark_copy: >-
+  ئایا دڵنیای کە دەتەوێت نیشانکەری "{bookmark}" بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە.
+logoutReason:
+  SIGN_OUT: دەرچوون
+  SESSION_EXPIRED: دەورە بەسەرچوو
+public_label: گشتی
+public_description: کۆنتڕۆڵکردنی ئەوەی کام دەیتایەی API بەردەستە بەبێ ڕەسەنایەتی.
+not_allowed: ڕێگەپێنەدراوە
+directus_version: وەشانی دایرێکتەس
+node_version: وەشانی نۆد
+node_uptime: چالاکی نۆد
+os_type: جۆری سیستەم
+os_version: وەشانی سیستەم
+os_uptime: چالاکی سیستەم
+os_totalmem: بیرگەی سیستەم
+archive: ئەرشیڤ
+archive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف بکەیت؟
+archive_confirm_count: >-
+  هیچ مادەیەک دیاری نەکراوە| ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیڤ بکەیت؟ | ئایا دڵنیای دەتەوێت ئەم {count} مادەیە ئەرشیڤ بکەیت؟
+reset_system_permissions_to: 'رێکخستنەوەی ڕێپێدانەکانی سیستەم بۆ:'
 fields:
   directus_settings:
     module_bar: شریتی مۆدیوڵەکان
@@ -56,3 +107,9 @@ fields:
     translation: وەرگێڕانەکانی ناوی خانە
   directus_roles:
     name: ناوی پلە
+field_options:
+  directus_collections:
+    archive_divider: ئەرشیڤ
+interfaces:
+  presentation-links:
+    primary: سەرەکی
