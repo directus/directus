@@ -193,6 +193,13 @@ export default defineComponent({
 				user.id +
 				newCommentContent.value.slice(selectionEnd) +
 				' ';
+
+			setTimeout(() => {
+				const textarea = document.querySelector('textarea');
+				textarea?.focus();
+				if (!selectionStart && selectionStart != 0) return;
+				textarea?.setSelectionRange(selectionStart + 38, selectionStart + 38);
+			});
 		}
 
 		async function postComment() {
