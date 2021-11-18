@@ -90,7 +90,7 @@ public_description: Contrôle quelles sont les données API disponibles sans aut
 not_allowed: Non autorisé
 directus_version: Version de Directus
 node_version: Version de Node
-node_uptime: Temps de disponibilité de Node
+node_uptime: Temps de disponibilité du nœud
 os_type: Type d'OS
 os_version: Version de l'OS
 os_uptime: Temps de disponibilité de l'OS
@@ -210,7 +210,7 @@ json: JSON
 xml: XML
 string: Chaine de caractères
 text: Texte
-time: Date et heure
+time: Heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
