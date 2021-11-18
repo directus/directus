@@ -81,6 +81,9 @@ export default function getDatabase(): Knex {
 			const run = promisify(conn.run.bind(conn));
 			await run('PRAGMA foreign_keys = ON');
 
+			const loadExtension = promisify(conn.loadExtension.bind(conn));
+			const loaded = await loadExtension('mod_spatialite').catch(() => undefined);
+
 			callback(null, conn);
 		};
 	}
