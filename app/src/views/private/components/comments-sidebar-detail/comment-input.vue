@@ -1,14 +1,14 @@
 <template>
 	<v-menu v-model="showMentionDropDown">
 		<template #activator>
-			<span
+			<div
 				ref="textarea"
 				contenteditable="true"
 				class="new-comment"
 				:placeholder="t('leave_comment')"
 				expand-on-focus
-			>
-				<!-- <template #append>
+			/>
+			<!-- <template #append>
 					<v-button
 						:disabled="!newCommentContent || newCommentContent.length === 0"
 						:loading="saving"
@@ -19,7 +19,6 @@
 						{{ t('submit') }}
 					</v-button>
 				</template> -->
-			</span>
 		</template>
 		<v-list v-for="user in users" id="suggestions" :key="user.id" @click="insertUsername(user)">
 			<v-avatar x-small>
@@ -35,7 +34,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType, ComponentPublicInstance, watch } from 'vue';
+import { defineComponent, ref, PropType, watch } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
@@ -73,16 +72,15 @@ export default defineComponent({
 		let users = ref<User[]>([]);
 		let selectionStart: number | null = null;
 		let selectionEnd: number | null = null;
-
 		const { caretPosition } = useCaret(textarea);
 
-		const {addBlock} = useTemplate(textarea, newCommentContent, /(\{\{.*?\}\})/g, (blockText) => {
-			const block = document.createElement('button')
+		const { addBlock } = useTemplate(textarea, newCommentContent, /(\B@.*)/gi, (blockText) => {
+			const block = document.createElement('button');
 
-			block.innerText = blockText
+			block.innerText = blockText;
 
-			return block
-		})
+			return block;
+		});
 
 		watch(caretPosition, (newPosition) => {
 			const text = newCommentContent.value;
@@ -124,7 +122,7 @@ export default defineComponent({
 			}
 
 			cancelToken = axios.CancelToken.source();
-			const regex = /([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
+			const regex = /(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})/gi;
 			let filter: Record<string, any> = {
 				_or: [
 					{
@@ -193,11 +191,11 @@ export default defineComponent({
 				newCommentContent.value.slice(selectionEnd) +
 				' ';
 			setTimeout(() => {
-			const textarea = document.querySelector('textarea');
-			textarea?.focus();
-			if (!selectionStart && selectionStart != 0) return;
-			textarea?.setSelectionRange(selectionStart + 38, selectionStart + 38)}
-			)
+				const textarea = document.querySelector('textarea');
+				textarea?.focus();
+				if (!selectionStart && selectionStart != 0) return;
+				textarea?.setSelectionRange(selectionStart + 38, selectionStart + 38);
+			});
 		}
 
 		async function postComment() {
@@ -231,12 +229,25 @@ export default defineComponent({
 
 <style scoped>
 .new-comment {
-	min-height: 100px;
 	display: block;
+	flex-grow: 1;
+	width: 100%;
+	height: 100%;
+	height: var(--input-height);
+	min-height: 100px;
+	padding: 5px;
+	overflow: scroll;
+	white-space: pre;
+	background-color: var(--background-input);
+	border: var(--border-width) solid var(--border-normal);
+	border-radius: var(--border-radius);
+	transition: border-color var(--fast) var(--transition);
 }
 
-.new-comment :deep(.expand-on-focus textarea) {
+.new-comment:focus {
 	position: relative;
+	overflow: scroll;
+	border-color: var(--primary);
 	transition: margin-bottom var(--fast) var(--transition);
 }
 

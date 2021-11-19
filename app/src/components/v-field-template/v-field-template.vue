@@ -3,11 +3,7 @@
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
-					<span
-						ref="contentEl"
-						class="content"
-						:contenteditable="!disabled"
-					>
+					<span ref="contentEl" class="content" :contenteditable="!disabled">
 						<span class="text" />
 					</span>
 					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
@@ -26,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
+import { defineComponent, toRefs, ref, PropType } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
@@ -69,15 +65,15 @@ export default defineComponent({
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const contentEl = ref<HTMLElement>();
-		const text = useSync(props, 'modelValue', emit)
+		const text = useSync(props, 'modelValue', emit);
 
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
 		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
-		const {addBlock} = useTemplate(contentEl, text, /(\{\{.*?\}\})/g, (blockText) => {
-			const block = document.createElement('button')
+		const { addBlock } = useTemplate(contentEl, text, /(\{\{.*?\}\})/g, (blockText) => {
+			const block = document.createElement('button');
 
 			const fieldPath = blockText.replaceAll(/(\{|\})/g, '').split('.');
 
@@ -89,15 +85,15 @@ export default defineComponent({
 
 			if (!field) return block;
 
-			block.innerText = field.name
+			block.innerText = field.name;
 
-			return block
-		})
+			return block;
+		});
 
 		return { menuActive, treeList, contentEl, loadFieldRelations, addBlock, addField };
 
 		function addField(fieldKey: string) {
-			addBlock(`{{${fieldKey}}}`)
+			addBlock(`{{${fieldKey}}}`);
 		}
 
 		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {

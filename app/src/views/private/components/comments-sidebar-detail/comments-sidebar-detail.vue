@@ -94,7 +94,7 @@ export default defineComponent({
 						return date;
 					});
 
-					userIds.value = await loadUserIds(response.data.data);
+					userIds.value = await loadUserIds(response.data.data, regex);
 					response.data.data.forEach((comment: Record<string, any>) => {
 						comment.comment = comment.comment.split(regex);
 					});
@@ -131,9 +131,7 @@ export default defineComponent({
 			}
 		}
 
-		async function loadUserIds(comments: Record<string, any>) {
-			const regex = /(@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
-
+		async function loadUserIds(comments: Record<string, any>, regex: RegExp) {
 			let userIds: any[] = [];
 			comments.forEach((comment: Record<string, any>) => {
 				userIds.push(comment.comment.match(regex));
