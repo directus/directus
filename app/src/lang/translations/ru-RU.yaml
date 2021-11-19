@@ -173,6 +173,7 @@ global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
 show_zero: Показать нулевое
+create_in_advanced_field_creation_mode: Создать поле в расширенном режиме
 continue_in_advanced_field_creation_mode: Создание расширенного поля
 sum: Сумма
 sum_distinct: Сумма уникальных
@@ -214,6 +215,13 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
+geometry: Геометрия (Все)
+geometry.Point: Точка
+geometry.LineString: LineString
+geometry.Polygon: Многоугольник
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: Мультиполигон
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_refresh: Авто обновление
@@ -233,6 +241,9 @@ new_data_alert: 'В вашей модели данных будет создан
 search_collection: Поиск коллекций...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
+add_m2o_to_collection: 'Добавить M2O в "{collection}"'
+add_o2m_to_collection: 'Добавить O2M в "{collection}"'
+add_m2m_to_collection: 'Добавить M2M в "{collection}"'
 choose_a_type: Выберите Тип...
 determined_by_relationship: Определяется отношением
 add_note: Добавить заметку для пользователей...
@@ -362,6 +373,7 @@ zoom: Масштаб
 download: Загрузить
 open: Открыть
 open_in_new_window: Открыть в новом окне
+open_folder: Открыть папку "{folder}"
 foreground_color: Цвет Переднего Плана
 background_color: Цвет Фона
 upload_from_device: Загрузить Файл с Устройства
@@ -435,6 +447,7 @@ no_other_dashboards_copy: У вас пока нет других Досок.
 inactive: Неактивный
 users: Пользователи
 activity: Активность
+activity_item: Элемент деятельности
 action: Действие
 ip_address: IP-адрес
 user_agent: Пользовательский агент
@@ -523,6 +536,7 @@ all_users: Все пользователи
 delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
+make_collection_visible: Сделать коллекцию видимой
 make_collection_hidden: Сделать коллекцию скрытой
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
@@ -615,6 +629,7 @@ recent_files: Недавние Файлы
 create_folder: Создать Папку
 edit_folder: Изменить папку
 folder_name: Название Папки...
+folder_key: Ключ папки...
 add_file: Добавить Файл
 replace_file: Заменить Файл
 no_results: Нет результатов
@@ -643,6 +658,7 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
+insights: Прогнозы
 dashboard: Доска
 panel: Панель
 panel_options: Параметры панели
@@ -675,6 +691,11 @@ source: Источник
 url_placeholder: Введите адрес url...
 display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
+interface_group_text_and_numbers: Текст и номера
+interface_group_selection: Выделенное
+interface_group_relational: Относительный
+interface_group_presentation: Презентация
+interface_group_groups: Группы
 interface_group_other: Другие
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
@@ -762,6 +783,7 @@ layout_setup: Настройка Макета
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
+discard_all_changes: Отменить Все Изменения
 discard_changes_copy: Вы хотите отменить все внесённые изменения?
 show_x_axis: Показать ось X
 show_y_axis: Показать ось Y
@@ -809,16 +831,19 @@ cancel: Отмена
 no_upscale: Не масштабировать изображения
 collection: Коллекция
 collections: Коллекции
+content: Содержание
 singleton: Синглтон
 singleton_label: Считать одним объектом
 system_fields_locked: Системные поля заблокированы и не могут быть изменены
 directus_collection:
   directus_activity: Журналы отчетности по всем событиям
   directus_collections: Дополнительные настройки коллекции и метаданные
+  directus_dashboards: Панели инструментов в модуле Insights
   directus_fields: Дополнительные настройки полей и метаданные
   directus_files: Метаданные для всех управляемых файлов
   directus_folders: Предоставляет виртуальные папки для файлов
   directus_migrations: Какую версию базы данных вы используете
+  directus_panels: Индивидуальные панели мониторинга
   directus_permissions: Права доступа для каждой роли
   directus_presets: Пресеты для коллекций по умолчанию и закладки
   directus_relations: Настройки связей и метаданные
@@ -853,6 +878,8 @@ fields:
     unarchive_value: Значение для извлеченных из архива
     sort_field: Поле сортировки
     accountability: Отслеживание активности и редакций
+    archive_field: Архивировать поле
+    item_duplication_fields: Поля дублирования предметов
   directus_files:
     $thumbnail: Миниатюра
     title: Название
@@ -904,6 +931,8 @@ fields:
     role: Роль
     token: Ключ доступа
     token_placeholder: Укажите достаточно защищенный ключ доступа
+    provider: Провайдер
+    external_identifier: Внешний Идентификатор
     last_page: Последняя Страница
     last_access: Последний Доступ
   directus_settings:
@@ -911,6 +940,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Отображения
     basemaps: Основа карты
     basemaps_raster: Растр
     basemaps_tile: Растр TileJSON

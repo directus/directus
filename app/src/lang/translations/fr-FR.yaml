@@ -90,7 +90,7 @@ public_description: Contrôle quelles sont les données API disponibles sans aut
 not_allowed: Non autorisé
 directus_version: Version de Directus
 node_version: Version de Node
-node_uptime: Temps de disponibilité de Node
+node_uptime: Temps de disponibilité du nœud
 os_type: Type d'OS
 os_version: Version de l'OS
 os_uptime: Temps de disponibilité de l'OS
@@ -173,6 +173,7 @@ global: Global
 admins_have_all_permissions: Les administrateurs ont toutes les autorisations
 camera: Appareil photo
 show_zero: Afficher zéro
+create_in_advanced_field_creation_mode: Créer un champ en Mode Avancé
 continue_in_advanced_field_creation_mode: Continuer en mode de création de champ avancé
 sum: Somme
 sum_distinct: Somme distincte
@@ -210,13 +211,17 @@ json: JSON
 xml: XML
 string: Chaine de caractères
 text: Texte
-time: Date et heure
+time: Heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
 geometry: Géométrie (tous)
 geometry.Point: Point
+geometry.LineString: LineString
 geometry.Polygon: Polygone
+geometry.MultiPoint: Multipoint
+geometry.MultiLineString: Chaine MultiLine
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
@@ -778,6 +783,7 @@ layout_setup: Configuration de la mise en page
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
+discard_all_changes: Ignorer toutes les modifications
 discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
 show_x_axis: Montrer &Axes 3D
 show_y_axis: Montrer &Axes 3D
@@ -872,6 +878,8 @@ fields:
     unarchive_value: Valeur au désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
+    archive_field: Champ d'archivage
+    item_duplication_fields: Champs de duplication d'éléments
   directus_files:
     $thumbnail: Miniature
     title: Titre
@@ -994,6 +1002,8 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
+    project_color_note: Fond de connexion et de logo
+    project_logo_note: Blanc 40x40 SVG/PNG
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -1001,6 +1011,8 @@ field_options:
       weak_text: Faible - 8 caractères minimum
       strong_text: Fort – Majuscules / minuscules / chiffres / spéciaux
     storage_asset_presets:
+      fit_label: Ajusté
+      upscaling: Mise à l'échelle
       fit:
         contain_text: Contient (préserver le rapport d'aspect)
         cover_text: Couverture (force la taille exacte)
@@ -1011,6 +1023,7 @@ field_options:
     mapbox_key: Jeton d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Carte de base
+    basemaps_name_placeholder: Entrez le nom de la carte...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
@@ -1173,6 +1186,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1255,6 +1269,7 @@ interfaces:
   presentation-divider:
     divider: Séparateur
     description: Étiqueter et diviser les champs dans les sections
+    title_placeholder: Entrez un titre, ou laissez vide pour n'afficher qu'une seule ligne...
     inline_title: Titre en ligne
     inline_title_label: Afficher le titre à l'intérieur de la ligne
     margin_top: Marge supérieure
@@ -1312,6 +1327,8 @@ interfaces:
     box: Bloc / Inline
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
+    preview: Prévisualiser
+    editor: Éditeur
   map:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
@@ -1559,6 +1576,7 @@ layouts:
     invalid_geometry: Géométrie invalide
     find_location: Trouver l'emplacement ...
     default_template: Utilisation de la collection par défaut ...
+    no_compatible_fields: Aucun champ compatible
 panels:
   metric:
     name: Indicateurs
