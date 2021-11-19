@@ -35,18 +35,22 @@ export default defineDisplay({
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a'],
 	fields: (options: Options | null, { field, collection }) => {
-		const relatedCollection = getRelatedCollection(collection, field);
+		const { relatedCollection, path } = getRelatedCollection(collection, field);
 		const fieldsStore = useFieldsStore();
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
 
 		if (!relatedCollection) return [];
 
 		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection as unknown as string)
+			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection)
 			: [];
 
-		if (primaryKeyField && !fields.includes(primaryKeyField.field)) {
-			fields.push(primaryKeyField.field);
+		if (primaryKeyField) {
+			const primaryKeyFieldValue = path ? [...path, primaryKeyField.field].join('.') : primaryKeyField.field;
+
+			if (!fields.includes(primaryKeyFieldValue)) {
+				fields.push(primaryKeyFieldValue);
+			}
 		}
 
 		return fields;

@@ -104,7 +104,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 			const geometryField = field.field;
 			const geometryFormat = isGeometryFieldNative.value ? 'native' : field.meta?.options?.geometryFormat;
-			const geometryType = field.schema?.geometry_type ?? field.meta?.options?.geometryType;
+			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
 			if (!geometryFormat) {
 				return;
 			}
