@@ -1,14 +1,14 @@
 <template>
 	<v-menu v-model="showMentionDropDown">
 		<template #activator>
-			<v-textarea
+			<span
 				ref="textarea"
-				v-model="newCommentContent"
+				contenteditable="true"
 				class="new-comment"
 				:placeholder="t('leave_comment')"
 				expand-on-focus
 			>
-				<template #append>
+				<!-- <template #append>
 					<v-button
 						:disabled="!newCommentContent || newCommentContent.length === 0"
 						:loading="saving"
@@ -18,8 +18,8 @@
 					>
 						{{ t('submit') }}
 					</v-button>
-				</template>
-			</v-textarea>
+				</template> -->
+			</span>
 		</template>
 		<v-list v-for="user in users" id="suggestions" :key="user.id" @click="insertUsername(user)">
 			<v-avatar x-small>
@@ -46,6 +46,7 @@ import { throttle } from 'lodash';
 import axios, { CancelTokenSource } from 'axios';
 import { User } from '@directus/shared/types';
 import { getRootPath } from '@/utils/get-root-path';
+import useTemplate from '@/composables/use-template';
 
 export default defineComponent({
 	props: {
@@ -64,7 +65,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
-		const textarea = ref<ComponentPublicInstance>();
+		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
@@ -74,6 +75,14 @@ export default defineComponent({
 		let selectionEnd: number | null = null;
 
 		const { caretPosition } = useCaret(textarea);
+
+		const {addBlock} = useTemplate(textarea, newCommentContent, /(\{\{.*?\}\})/g, (blockText) => {
+			const block = document.createElement('button')
+
+			block.innerText = blockText
+
+			return block
+		})
 
 		watch(caretPosition, (newPosition) => {
 			const text = newCommentContent.value;
@@ -183,11 +192,12 @@ export default defineComponent({
 				user.id +
 				newCommentContent.value.slice(selectionEnd) +
 				' ';
-
+			setTimeout(() => {
 			const textarea = document.querySelector('textarea');
 			textarea?.focus();
 			if (!selectionStart && selectionStart != 0) return;
-			textarea?.setSelectionRange(selectionStart + 38, selectionStart + 38);
+			textarea?.setSelectionRange(selectionStart + 38, selectionStart + 38)}
+			)
 		}
 
 		async function postComment() {
@@ -220,6 +230,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.new-comment {
+	min-height: 100px;
+	display: block;
+}
+
 .new-comment :deep(.expand-on-focus textarea) {
 	position: relative;
 	transition: margin-bottom var(--fast) var(--transition);
