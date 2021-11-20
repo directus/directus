@@ -783,6 +783,9 @@ unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Realmente desea salir de esta página?'
 discard_changes: Descartar Cambios
 discard_all_changes: Descartar Todos los Cambios
+discard_changes_copy: '¿Seguro que quiere descartar todos los cambios?'
+show_x_axis: Mostrar eje X
+show_y_axis: Mostrar eje Y
 keep_editing: Seguir Editando
 page_help_collections_collection: >-
   **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
