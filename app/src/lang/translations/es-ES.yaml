@@ -166,11 +166,14 @@ field_update_success: 'Campo Actualizado: "{field}"'
 duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
 language: Idioma
 aggregate_function: Función de agregado
+group_aggregation: Agregación de grupo
 group_precision: Precisión del grupo
 global: Global
 admins_have_all_permissions: Los Administradores tienen todos los permisos
 camera: Cámara
 show_zero: Mostrar cero
+create_in_advanced_field_creation_mode: Crear campo en modo avanzado
+continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
 sum: Suma
 sum_distinct: Sumar Diferentes
 avg: Media
@@ -211,6 +214,13 @@ time: Hora
 timestamp: Marca de Tiempo
 uuid: UUID
 hash: Hash
+geometry: Geometría (Todo)
+geometry.Point: Punto
+geometry.LineString: Linea
+geometry.Polygon: Polígono
+geometry.MultiPoint: Multipunto
+geometry.MultiLineString: MultiLinea
+geometry.MultiPolygon: MultiPolígono
 not_available_for_type: No disponible para este Tipo
 create_translations: Crear Traducciones
 auto_refresh: Actualización automática
@@ -231,6 +241,7 @@ search_collection: Buscar colección...
 new_field: 'Nuevo Campo'
 new_collection: 'Colección Nueva'
 add_m2o_to_collection: 'Añadir M2O a "{collection}"'
+add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
 add_m2m_to_collection: 'Añadir M2M a "{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinado por la Relación
@@ -361,6 +372,7 @@ zoom: Zoom
 download: Descargar
 open: Abrir
 open_in_new_window: Abrir en Nueva Ventana
+open_folder: Abrir carpeta "{folder}"
 foreground_color: Color de Letra
 background_color: Color de Fondo
 upload_from_device: Subir Archivo desde Dispositivo
@@ -581,6 +593,9 @@ operators:
   all: Contiene estas llaves
   has: Contiene alguna de estas llaves
   intersects: Intersección
+  nintersects: No se intersecta
+  intersects_bbox: Caja delimitadora de intersecciones
+  nintersects_bbox: No intersecta la caja delimitadora
 loading: Cargando...
 drop_to_upload: Arrastrar para Subir
 item: Elemento
@@ -611,7 +626,9 @@ all_files: Todos los Archivos
 my_files: Mis Archivos
 recent_files: Archivos Recientes
 create_folder: Crear Directorio
+edit_folder: Editar Carpeta
 folder_name: Nombre del Directorio...
+folder_key: Clave de carpeta...
 add_file: Agregar Archivo
 replace_file: Reemplazar Archivo
 no_results: Sin Resultados
@@ -624,6 +641,7 @@ user: Usuario
 no_presets: Sin Predefinidos
 no_presets_copy: Los Predefinidos o Marcadores no se han guardado aún.
 no_presets_cta: Agregar Predefinido
+presets_only: Sólo Ajustes
 create: Crear
 on_create: Al Crear
 on_update: Al Actualizar
@@ -631,26 +649,53 @@ read: Leer
 update: Actualización
 select_fields: Seleccionar Campos
 format_text: Formatear Texto
+format_value: Formatear Valor
+abbreviate_value: Abreviar valor
+operator: Operador
 bold: Negrita
 toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+insights: Informes
+dashboard: Panel de control
+panel: Panel
+panel_options: Opciones del Panel
+panel_header: Encabezado del Panel
+panel_name_placeholder: Nombre este panel...
+panel_note_placeholder: Detalles opcionales sobre este panel...
+panel_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta acción no se puede deshacer.'
+dashboard_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta acción no se puede deshacer.'
+edit_dashboard: Editar panel de control
+delete_dashboard: Eliminar el panel
 visible: Visible
 prefix_placeholder: Texto antes del valor...
 suffix_placeholder: Texto después del valor...
+decimals_placeholder: Número de decimales...
+no_dashboards: No hay paneles
+no_dashboards_copy: Aún no tienes un Panel.
 no_data: Sin datos
+create_dashboard: Crear un Panel
+dashboard_name: Nombre del Panel
 full_screen: Pantalla Completa
+edit_panels: Editar Panel
 fit_to_screen: Ajustar a la pantalla
 image_url: Url de la imagen
 alt_text: Texto Alternativo
 media: Medios
+quality: Calidad
 width: Ancho
 height: Alto
 source: Fuente
 url_placeholder: Introduzca una url...
 display_text: Mostrar texto
 display_text_placeholder: Introduzca un texto de visualización...
+interface_group_text_and_numbers: Texto y Números
+interface_group_selection: Selección
+interface_group_relational: Relacional
+interface_group_presentation: Presentación
+interface_group_groups: Grupos
+interface_group_other: Otro
 tooltip: Sugerencia
 tooltip_placeholder: Introduzca una sugerencia...
 unlimited: Ilimitado
@@ -737,6 +782,7 @@ layout_setup: Configuración del Diseño
 unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Realmente desea salir de esta página?'
 discard_changes: Descartar Cambios
+discard_all_changes: Descartar Todos los Cambios
 keep_editing: Seguir Editando
 page_help_collections_collection: >-
   **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
