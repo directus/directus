@@ -85,10 +85,10 @@ const getPermissions: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		if (env.CACHE_PERMISSIONS !== false) {
 			await systemCache.set(cacheKey, { permissions, containDynamicData });
-		}
 
-		if (containDynamicData && env.CACHE_ENABLED !== false) {
-			await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
+			if (containDynamicData && env.CACHE_ENABLED !== false) {
+				await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
+			}
 		}
 
 		permissions = processPermissions(req, permissions, filterContext);
