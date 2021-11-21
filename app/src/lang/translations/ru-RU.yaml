@@ -953,11 +953,15 @@ fields:
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
+    branding: Брендинг
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
     auth_password_policy: Минимальная сложность пароля
     auth_login_attempts: Попыток войти
+    files_and_thumbnails: Хранилище файлов
+    storage_default_folder: Папка по умолчанию
+    storage_asset_presets: Предустановка перехода
     overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
     module_bar: Панель модулей
