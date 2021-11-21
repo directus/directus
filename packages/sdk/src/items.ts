@@ -1,3 +1,4 @@
+import { FilterOperator } from '@directus/shared/types';
 import { ID } from './types';
 
 export type Field = string;
@@ -49,33 +50,19 @@ export type DeepQueryMany<T> = {
 
 export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
 
-export type FilterOperators =
-	| '_eq'
-	| '_neq'
-	| '_contains'
-	| '_ncontains'
-	| '_in'
-	| '_nin'
-	| '_gt'
-	| '_gte'
-	| '_lt'
-	| '_lte'
-	| '_null'
-	| '_nnull'
-	| '_empty'
-	| '_nempty'
-	| '_intersects'
-	| '_nintersects'
-	| '_intersects_bbox'
-	| '_nintersects_bbox';
+export type LogicalFilterAnd<T> = { _and?: Filter<T>[] };
+export type LogicalFilterOr<T> = { _or?: Filter<T>[] };
+export type LogicalFilter<T> = LogicalFilterAnd<T> | LogicalFilterOr<T>;
 
-export type FilterOperator<T, K extends keyof T> = {
-	[O in FilterOperators]?: Filter<T> | T[K];
+export type FieldFilterOperator<T, K extends keyof T> = {
+	[O in `_${FilterOperator}`]?: T[K];
 };
 
-export type Filter<T> = {
-	[K in keyof T]?: FilterOperator<T, K> | string | boolean | number | string[] | Record<string, any>;
+export type FieldFilter<T> = {
+	[K in keyof T]?: FieldFilterOperator<T, K> | FieldFilter<T[K]>;
 };
+
+export type Filter<T> = LogicalFilter<T> | FieldFilter<T>;
 
 /**
  * CRUD at its finest
