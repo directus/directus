@@ -461,7 +461,7 @@ field_width: Ширина поля
 add_filter: Добавить Фильтр
 upper_limit: Верхний предел...
 lower_limit: Нижний предел...
-user_directory: Папка Пользователей
+user_directory: Пользователи
 documentation: Документация
 sidebar: Боковая панель
 duration: Продолжительность
@@ -814,7 +814,7 @@ page_help_settings_presets_item: >-
   **Карточка Пресета** — Форма для управления пресетами закладок и коллекций по умолчанию.
 page_help_settings_webhooks_collection: '**Просмотр Веб-хуков** — Список всех веб-хуков в проекте.'
 page_help_settings_webhooks_item: '**Карточка Веб-хука** — Форма для создания и управления вебхуками проекта.'
-page_help_users_collection: '**Папка Пользователей** — Список всех системных пользователей в этом проекте.'
+page_help_users_collection: '**Пользователи** — Список всех системных пользователей в этом проекте.'
 page_help_users_item: >-
   **Карточка Пользователя** — Управляйте данными вашего аккаунта или просматривайте данные других пользователей.
 page_help_insights_overview: '**Аналитики** — список досок, к которым у вас есть доступ.'
@@ -831,7 +831,7 @@ cancel: Отмена
 no_upscale: Не масштабировать изображения
 collection: Коллекция
 collections: Коллекции
-content: Содержание
+content: Контент
 singleton: Синглтон
 singleton_label: Считать одним объектом
 system_fields_locked: Системные поля заблокированы и не могут быть изменены
@@ -961,10 +961,14 @@ fields:
     auth_login_attempts: Попыток войти
     files_and_thumbnails: Хранилище файлов
     storage_default_folder: Папка по умолчанию
-    storage_asset_presets: Предустановка перехода
+    storage_asset_presets: Пресеты трансформации
+    storage_asset_transform: Разрешенные трансформации
     overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
     module_bar: Панель модулей
+    transformations_all: Разрешить все трансформации
+    transformations_none: Отключить трансформации
+    transformations_presets: Ограничить преобразования для пресетов ниже
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
@@ -988,7 +992,9 @@ fields:
     method: Метод
     status: Статус
     data: Данные
+    header: Header
     value: Значение
+    headers: Заголовки запроса
     data_label: Отправлять данные о событии
     triggers: Триггеры
     actions: Действия
@@ -996,6 +1002,7 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Мой проект
+    project_color_note: Логин и фон логотипа
     public_note_placeholder: Короткое, публичное сообщение, которое поддерживает markdown форматирование...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -1083,7 +1090,9 @@ field_options:
     actions_delete: Удалить
     actions_login: Войти
     headers:
+      header: Header
       value: Значение
+      add: Добавить заголовок
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
 no_value: Нет значения
 do_nothing: Ничего не Делать
@@ -1305,10 +1314,15 @@ interfaces:
     box: Блок / Строчный элемент
     imageToken: Ключ изображения
     imageToken_label: Статичный ключ, добавляемый к адресам изображений
+    preview: Предпросмотр
+    editor: Редактор
   map:
     map: Карта
     description: Указать место на карте
     zoom: Масштаб
+    geometry_type: Тип геометрии
+    geometry_format: Формат геометрии
+    default_view: Вид по умолчанию
     invalid_options: Некорректные настройки
     invalid_format: Некорректный формат ({format})
     unexpected_geometry: Ожидалось {expected}, а встретилось {got}.
@@ -1318,6 +1332,7 @@ interfaces:
     lnglat: Долгота, широта (Lon, Lat)
     wkt: WKT
     wkb: WKB
+    click_to_select: Нажмите, чтобы выбрать {geometry}
   presentation-notice:
     notice: Уведомление
     description: Показать короткое уведомление
@@ -1541,6 +1556,7 @@ layouts:
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
     invalid_geometry: Некорректная геометрия
+    find_location: Найти локацию...
 panels:
   metric:
     name: Метрика
