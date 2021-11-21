@@ -54,7 +54,7 @@ children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для настройки'
 show_archived_items: Показать элементы в архиве
 edited: Значение изменено
-required: Необходимые
+required: Обязательно
 required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
 create_preset: Создать Пресет
