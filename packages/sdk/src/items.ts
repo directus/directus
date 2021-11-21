@@ -50,8 +50,8 @@ export type DeepQueryMany<T> = {
 
 export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
 
-export type LogicalFilterAnd<T> = { _and?: Filter<T>[] };
-export type LogicalFilterOr<T> = { _or?: Filter<T>[] };
+export type LogicalFilterAnd<T> = { _and: Filter<T>[] };
+export type LogicalFilterOr<T> = { _or: Filter<T>[] };
 export type LogicalFilter<T> = LogicalFilterAnd<T> | LogicalFilterOr<T>;
 
 export type FieldFilterOperator<T, K extends keyof T> = {
