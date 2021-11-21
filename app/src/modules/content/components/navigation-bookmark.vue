@@ -154,7 +154,7 @@ export default defineComponent({
 					deleteActive.value = false;
 
 					if (navigateTo) {
-						router.push(navigateTo);
+						router.replace(navigateTo);
 					}
 				} catch (err: any) {
 					unexpectedError(err);
