@@ -54,22 +54,27 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 		if (!selection?.length) {
 			if (collectionField) newVal = (items.value || []).filter((item) => item[collectionField] !== selectingFrom.value);
 		} else {
-			newVal = selection.map((item, i) => {
+			const existent = (items.value || []).filter((item) => !selection.includes(getPrimaryKey(item)));
+
+			newVal = [...existent, ...selection].map((item, i) => {
 				const initial = (initialItems.value || []).find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
 				const draft = (items.value || []).find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
+				const relatedPrimaryKey = getPrimaryKey(item);
+
+				const relationRelationship = relatedPrimaryKey ? { [relationPkField]: relatedPrimaryKey } : null;
 
 				return {
 					...initial,
 					...draft,
 					...(sortField ? { [sortField]: draft?.[sortField] ?? i } : null),
 					...(type === 'm2a' ? { [collectionField]: selectingFrom.value } : null),
-					...(['o2m', 'm2o'].includes(type) ? { [relationPkField]: getPrimaryKey(item) } : null),
+					...(['o2m', 'm2o'].includes(type) ? relationRelationship : null),
 					...(['m2m', 'm2a'].includes(type)
 						? {
-								[junctionField]: {
-									...initial?.[junctionField],
-									...draft?.[junctionField],
-									[relationPkField]: getPrimaryKey(item),
+								[relatedField]: {
+									...initial?.[relatedField],
+									...draft?.[relatedField],
+									...(relatedPrimaryKey ? relationRelationship : null),
 								},
 						  }
 						: null),
