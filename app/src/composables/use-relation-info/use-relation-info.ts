@@ -6,13 +6,14 @@ import { useCollection } from '@directus/shared/composables';
 export type RelationInfo = {
 	collection: string;
 	collectionField: string;
-	junctionPkField: string;
-	relationPkField: string;
-	junctionField: string;
-	sortField: string;
 	junctionCollection: string;
-	relationCollection: string;
+	junctionField: string;
+	junctionPkField: string;
 	relatedCollections: string[];
+	relationCollection: string;
+	relationPkField: string;
+	relationDisplayTemplate: string;
+	sortField: string;
 	type: 'm2o' | 'o2m' | 'm2m' | 'm2a';
 };
 
@@ -115,6 +116,7 @@ export function useRelationInfo({ collection, field }: In): Out {
 			relatedCollections: relatedCollections.value.map((collection) => collection?.collection),
 			relationCollection: relationCollection.value!.collection,
 			relationPkField: relationPrimaryKeyField?.value?.field,
+			relationDisplayTemplate: relationCollection?.value?.meta?.display_template,
 			sortField: junction.value?.meta?.sort_field as string,
 			type: type.value,
 		} as RelationInfo;
