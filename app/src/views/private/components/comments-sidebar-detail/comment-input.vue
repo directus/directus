@@ -1,13 +1,7 @@
 <template>
 	<v-menu v-model="showMentionDropDown">
 		<template #activator>
-			<div
-				ref="textarea"
-				contenteditable="true"
-				class="new-comment"
-				:placeholder="t('leave_comment')"
-				expand-on-focus
-			/>
+			<v-template-input :regex="/(\B@.*)/gi" :activator="showMentionDropDown" :insertion-fn="selectOption" />
 			<!-- <template #append>
 					<v-button
 						:disabled="!newCommentContent || newCommentContent.length === 0"
@@ -20,7 +14,16 @@
 					</v-button>
 				</template> -->
 		</template>
-		<v-list v-for="user in users" id="suggestions" :key="user.id" @click="insertUsername(user)">
+		<v-list
+			v-for="user in users"
+			id="suggestions"
+			:key="user.id"
+			@click="
+				() => {
+					selectedUser = user;
+				}
+			"
+		>
 			<v-avatar x-small>
 				<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
 				<v-icon v-else name="person_outline" />
@@ -45,9 +48,10 @@ import { throttle } from 'lodash';
 import axios, { CancelTokenSource } from 'axios';
 import { User } from '@directus/shared/types';
 import { getRootPath } from '@/utils/get-root-path';
-import useTemplate from '@/composables/use-template';
+import vTemplateInput from '@/components/v-template-input.vue';
 
 export default defineComponent({
+	components: { vTemplateInput },
 	props: {
 		refresh: {
 			type: Function as PropType<() => void>,
@@ -72,15 +76,16 @@ export default defineComponent({
 		let users = ref<User[]>([]);
 		let selectionStart: number | null = null;
 		let selectionEnd: number | null = null;
+		let selectedUser = ref<User>();
 		const { caretPosition } = useCaret(textarea);
 
-		const { addBlock } = useTemplate(textarea, newCommentContent, /(\B@.*)/gi, (blockText) => {
-			const block = document.createElement('button');
+		async function selectOption(match: string) {
+			showMentionDropDown.value = true;
+			await loadUsers(match.substr(1));
+			// wait until selectedUser changes, return insertUser()
 
-			block.innerText = blockText;
-
-			return block;
-		});
+			return insertUsername();
+		}
 
 		watch(caretPosition, (newPosition) => {
 			const text = newCommentContent.value;
@@ -120,7 +125,6 @@ export default defineComponent({
 			if (cancelToken !== null) {
 				cancelToken.cancel();
 			}
-
 			cancelToken = axios.CancelToken.source();
 			const regex = /(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})/gi;
 			let filter: Record<string, any> = {
@@ -170,32 +174,29 @@ export default defineComponent({
 			saving,
 			textarea,
 			showMentionDropDown,
+			selectOption,
 			users,
 			userName,
 			caretPosition,
 			insertUsername,
 			avatarSource,
+			selectedUser,
 		};
 
 		function avatarSource(url: string) {
 			if (url === null) return '';
 			return addTokenToURL(getRootPath() + `assets/${url}?key=system-small-cover`);
 		}
-		function insertUsername(user: User) {
-			if (newCommentContent.value === null || selectionStart === null || selectionEnd === null) return;
-
-			newCommentContent.value =
-				newCommentContent.value.slice(0, selectionStart) +
-				'@' +
-				user.id +
-				newCommentContent.value.slice(selectionEnd) +
-				' ';
-			setTimeout(() => {
-				const textarea = document.querySelector('textarea');
-				textarea?.focus();
-				if (!selectionStart && selectionStart != 0) return;
-				textarea?.setSelectionRange(selectionStart + 38, selectionStart + 38);
-			});
+		function insertUsername() {
+			if (!selectedUser.value) {
+				setTimeout(insertUsername, 0);
+			} else {
+				const button = document.createElement('button');
+				button.setAttribute('dataset-preview', selectedUser.value.id);
+				button.innerText = userName(selectedUser.value);
+				selectedUser.value = undefined;
+				return button;
+			}
 		}
 
 		async function postComment() {

@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
+import { userName } from '@/utils/user-name';
 import { defineComponent } from 'vue';
-import dompurify from 'dompurify';
 
 export default defineComponent({
 	props: {
@@ -20,8 +20,18 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		activator: {
+			type: Boolean,
+			default: false,
+		},
+		insertionFn: {
+			type: Function,
+			default: (match: Element) => {
+				return match;
+			},
+		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'update:activator'],
 	setup(props, { emit }) {
 		return { onInput };
 
@@ -33,16 +43,32 @@ export default defineComponent({
 			emit('update:modelValue', textContent);
 
 			// Loop over every child element recursively
-			// Ignore "button" with predefined class ('preview'?)
+			// Ignore "button" with predefined class ('preview'?) add an attribute
 			// Replace inner text of element with wrapped button when regex is encountered
 			// Use whatever is in use-template.ts for inspiration
-			replaceDeep(input.children);
+			// we want to set the button innertext in a selectOption() function
+			// this regex match should fire that function instead of creating the button right away
+			replaceDeep(input);
 		}
 
-		function replaceDeep(children: HTMLCollection) {
-			for (const child of children) {
-				if (child.children) {
-					replaceDeep(children);
+		function replaceDeep(parent: HTMLElement | Element): void {
+			if (parent.tagName === 'BUTTON' && parent.hasAttribute('dataset-preview')) return;
+
+			if (parent.children.length === 0 || parent.children[0].tagName === 'BR') {
+				parent.innerHTML.split(props.regex).forEach(async (part) => {
+					if (props.regex.test(part)) {
+						// element needs to be returned in here so that we know where to insert the element.
+						// insertionFn() needs to pause and allow the user to select from the drop down.
+
+						parent.appendChild(await props.insertionFn(part));
+					}
+				});
+				return;
+			}
+
+			for (const child of parent.children) {
+				if (child.children.length > 0) {
+					replaceDeep(child);
 				}
 			}
 		}

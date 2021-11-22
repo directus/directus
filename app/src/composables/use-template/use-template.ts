@@ -177,8 +177,6 @@ export function useTemplate(
 		// 	return;
 		// }
 
-		// if getInputValue() saves to value and onInput() saves it to text.value when would it ever not equal
-		// but when it doesnt have that it appends to the start
 		if (/* text.value !== getInputValue() &&*/ text.value) {
 			contentEl.value.innerHTML = '';
 			text.value.split(regex).forEach((part) => {
