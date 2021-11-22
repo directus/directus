@@ -17,7 +17,7 @@ type Out = {
 };
 
 export function useSelection({ items, initialItems, relationInfo, emit }: In): Out {
-	const { collectionField, sortField, junctionField, junctionPkField, relationPkField, type } = relationInfo.value;
+	const { collectionField, sortField, relatedField, junctionPkField, relationPkField, type } = relationInfo.value;
 
 	const selectModalActive = ref(false);
 	const selectingFrom = ref<string | null>(null);
@@ -29,9 +29,9 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 
 		if (['string', 'number'].includes(typeof item)) return item;
 
-		if (['o2m', 'm2o'].includes(type)) return item[relationPkField];
+		if (['o2m', 'm2o'].includes(type)) return item?.[relationPkField] ?? null;
 
-		if (['m2m', 'm2a'].includes(type)) return item[junctionField][relationPkField];
+		if (['m2m', 'm2a'].includes(type)) return item?.[relatedField]?.[relationPkField] ?? null;
 
 		return null;
 	};
