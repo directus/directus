@@ -17,17 +17,7 @@ import { get, set } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
 
-import * as global from './alterations/global';
-import * as file from './alterations/file';
-import * as files from './alterations/files';
-import * as group from './alterations/group';
-import * as m2a from './alterations/m2a';
-import * as m2m from './alterations/m2m';
-import * as m2o from './alterations/m2o';
-import * as o2m from './alterations/o2m';
-import * as presentation from './alterations/presentation';
-import * as standard from './alterations/standard';
-import * as translations from './alterations/translations';
+import * as alterations from './alterations';
 import { getLocalTypeForField } from '../../get-local-type';
 import api from '@/api';
 
@@ -136,47 +126,19 @@ export const useFieldDetailStore = defineStore({
 			const helperFn = { hasChanged, getCurrent };
 
 			if (hasChanged('field.meta.interface')) {
-				global.setLocalTypeForInterface(updates);
-				global.setTypeForInterface(updates, this);
+				alterations.global.setLocalTypeForInterface(updates);
+				alterations.global.setTypeForInterface(updates, this);
 			}
 
 			if (hasChanged('localType')) {
-				global.resetSchema(updates, this);
-				global.resetRelations(updates);
-				global.setSpecialForLocalType(updates);
+				alterations.global.resetSchema(updates, this);
+				alterations.global.resetRelations(updates);
+				alterations.global.setSpecialForLocalType(updates);
 			}
 
-			switch (getCurrent('localType')) {
-				case 'file':
-					file.applyChanges(updates, this, helperFn);
-					break;
-				case 'files':
-					files.applyChanges(updates, this, helperFn);
-					break;
-				case 'group':
-					group.applyChanges(updates, this, helperFn);
-					break;
-				case 'm2a':
-					m2a.applyChanges(updates, this, helperFn);
-					break;
-				case 'm2m':
-					m2m.applyChanges(updates, this, helperFn);
-					break;
-				case 'm2o':
-					m2o.applyChanges(updates, this, helperFn);
-					break;
-				case 'o2m':
-					o2m.applyChanges(updates, this, helperFn);
-					break;
-				case 'presentation':
-					presentation.applyChanges(updates, this, helperFn);
-					break;
-				case 'standard':
-					standard.applyChanges(updates, this, helperFn);
-					break;
-				case 'translations':
-					translations.applyChanges(updates, this, helperFn);
-					break;
+			if (updates.localType) {
+				const alteration = alterations[updates.localType];
+				alteration.applyChanges(updates, this, helperFn);
 			}
 
 			this.$patch(updates);
