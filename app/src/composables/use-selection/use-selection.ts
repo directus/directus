@@ -29,9 +29,9 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 
 		if (['string', 'number'].includes(typeof item)) return item;
 
-		if (['o2m', 'm2o'].includes(type)) return [item[relationPkField]];
+		if (['o2m', 'm2o'].includes(type)) return item[relationPkField];
 
-		if (['m2m', 'm2a'].includes(type)) return [item[junctionField][relationPkField]];
+		if (['m2m', 'm2a'].includes(type)) return item[junctionField][relationPkField];
 
 		return null;
 	};
@@ -40,7 +40,9 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 		const newVal = (items.value || []).flatMap((item) => {
 			if (collectionField && item[collectionField] !== selectingFrom.value) return [];
 
-			return getPrimaryKey(item) || [];
+			const primaryKey = getPrimaryKey(item);
+
+			return primaryKey ? [primaryKey] : [];
 		});
 
 		return newVal;
@@ -51,9 +53,9 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 			? (items.value || []).filter((item) => item[collectionField] !== selectingFrom.value)
 			: items.value || [];
 
-		const newVal = [...previousItems, ...selection].map((item, i) => {
-			const initial = (initialItems.value || []).find((existent) => getPrimaryKey(existent) === item);
-			const draft = (items.value || []).find((draft) => getPrimaryKey(draft) === item);
+			const newVal = [...previousItems, ...selection].map((item, i) => {
+				const initial = (initialItems.value || []).find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
+				const draft = (items.value || []).find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
 
 			return {
 				...initial,
