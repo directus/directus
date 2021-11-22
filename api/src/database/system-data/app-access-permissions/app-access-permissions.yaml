@@ -72,6 +72,13 @@
 - collection: directus_settings
   action: read
 
+- collection: directus_notifications
+  action: read
+  permissions:
+    id:
+      _eq: $CURRENT_USER
+  fields: '*'
+
 - collection: directus_users
   action: read
   permissions:
