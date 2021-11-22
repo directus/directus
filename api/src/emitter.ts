@@ -47,6 +47,7 @@ class Emitter {
 
 	public emitAction(event: string, meta: Record<string, any>, context: HookContext): void {
 		const events = this.eventsToEmit(event, meta);
+		meta['action'] = event; // use in webhook ActionHandler
 		for (const event of events) {
 			this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
 				logger.warn(`An error was thrown while executing action "${event}"`);
