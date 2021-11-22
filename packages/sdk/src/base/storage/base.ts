@@ -4,23 +4,27 @@ export type StorageOptions = {
 	prefix?: string;
 };
 
+const KEY_AUTH_TOKEN: string = 'auth_token';
+const KEY_AUTH_REFRESH_TOKEN: string = 'auth_refresh_token';
+const KEY_AUTH_EXPIRES: string = 'auth_token';
+
 export abstract class BaseStorage extends IStorage {
 	protected prefix: string;
 
 	get auth_token(): string | null {
-		return this.get('auth_token');
+		return this.get(KEY_AUTH_TOKEN);
 	}
 
 	set auth_token(value: string | null) {
 		if (value === null) {
-			this.delete('auth_token');
+			this.delete(KEY_AUTH_TOKEN);
 		} else {
-			this.set('auth_token', value);
+			this.set(KEY_AUTH_TOKEN, value);
 		}
 	}
 
 	get auth_expires(): number | null {
-		const value = this.get('auth_expires');
+		const value = this.get(KEY_AUTH_EXPIRES);
 		if (value === null) {
 			return null;
 		}
@@ -29,21 +33,21 @@ export abstract class BaseStorage extends IStorage {
 
 	set auth_expires(value: number | null) {
 		if (value === null) {
-			this.delete('auth_expires');
+			this.delete(KEY_AUTH_EXPIRES);
 		} else {
-			this.set('auth_expires', value!.toString());
+			this.set(KEY_AUTH_EXPIRES, value!.toString());
 		}
 	}
 
 	get auth_refresh_token(): string | null {
-		return this.get('auth_refresh_token');
+		return this.get(KEY_AUTH_REFRESH_TOKEN);
 	}
 
 	set auth_refresh_token(value: string | null) {
 		if (value === null) {
-			this.delete('auth_refresh_token');
+			this.delete(KEY_AUTH_REFRESH_TOKEN);
 		} else {
-			this.set('auth_refresh_token', value);
+			this.set(KEY_AUTH_REFRESH_TOKEN, value);
 		}
 	}
 
