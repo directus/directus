@@ -4,9 +4,11 @@ export type StorageOptions = {
 	prefix?: string;
 };
 
-const KEY_AUTH_TOKEN: string = 'auth_token';
-const KEY_AUTH_REFRESH_TOKEN: string = 'auth_refresh_token';
-const KEY_AUTH_EXPIRES: string = 'auth_token';
+enum Keys {
+  AuthToken = 'auth_token',
+  RefreshToken = 'auth_refresh_token',
+  Expires = 'auth_expires'
+}
 
 export abstract class BaseStorage extends IStorage {
 	protected prefix: string;
