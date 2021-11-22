@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!relation" type="warning">
+	<v-notice v-if="!relationInfo.relationCollection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="one-to-many">
@@ -21,7 +21,7 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!relation.meta.sort_field"
+				:disabled="!relationInfo.sortField"
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
@@ -32,14 +32,12 @@
 						:disabled="disabled || updateAllowed === false"
 						@click="editItem(element)"
 					>
-						<v-icon
-							v-if="relation.meta.sort_field"
-							name="drag_handle"
-							class="drag-handle"
-							left
-							@click.stop="() => {}"
+						<v-icon v-if="relationInfo.sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<render-template
+							:collection="relationInfo.relationCollection"
+							:item="element"
+							:template="templateWithDefaults"
 						/>
-						<render-template :collection="relation.collection" :item="element" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
 					</v-list-item>
@@ -59,10 +57,10 @@
 		<drawer-item
 			v-if="!disabled"
 			:active="currentlyEditing !== null"
-			:collection="relatedCollection.collection"
+			:collection="relationInfo.relationCollection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
-			:circular-field="relation.field"
+			:circular-field="relationInfo.junctionField"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -70,10 +68,10 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relatedCollection.collection"
+			:collection="relationInfo.relationCollection"
 			:selection="selectedPrimaryKeys"
 			multiple
-			@input="$emit('input', $event.length > 0 ? $event : null)"
+			@input="stageSelection"
 		/>
 	</div>
 </template>
@@ -82,17 +80,18 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, PropType } from 'vue';
 import api from '@/api';
-import { useCollection } from '@directus/shared/composables';
-import { useCollectionsStore, useRelationsStore, useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
-import { Field, Relation } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 import { get, isEqual, sortBy } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { useRelationInfo } from '@/composables/use-relation-info';
+import { useSelection } from '@/composables/use-selection';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -134,42 +133,42 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const relationsStore = useRelationsStore();
-		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const permissionsStore = usePermissionsStore();
 		const userStore = useUserStore();
 
-		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
+		const { relationInfo } = useRelationInfo({ collection: props.collection, field: props.field });
 
 		const templateWithDefaults = computed(
-			() =>
-				props.template ||
-				relatedCollection.value.meta?.display_template ||
-				`{{${fieldsStore.getPrimaryKeyFieldForCollection(relation.value.collection).field}}}`
+			() => props.template || relationInfo.value.relationDisplayTemplate || `{{${relationInfo.value.relationPkField}}`
 		);
 
 		const fields = computed(() =>
-			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relatedCollection.value.collection)
+			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relationInfo.value.relationCollection)
 		);
 
-		const { items, loading } = usePreview();
+		const { items, initialItems, loading } = usePreview();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
-		const { selectModalActive, selectedPrimaryKeys } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection({
+			items,
+			initialItems,
+			relationInfo,
+			emit: emitter,
+		});
 
 		const { createAllowed, updateAllowed } = usePermissions();
 
 		return {
 			t,
-			relation,
+			relationInfo,
 			loading,
 			currentlyEditing,
 			editItem,
-			relatedCollection,
 			editsAtStart,
 			stageEdits,
 			cancelEdit,
+			stageSelection,
 			selectModalActive,
 			deleteItem,
 			items,
@@ -184,12 +183,16 @@ export default defineComponent({
 			updateAllowed,
 		};
 
+		function emitter(newVal: any | any[] | null) {
+			emit('input', newVal);
+		}
+
 		function getItemFromIndex(index: number) {
 			return (sortedItems.value || items.value)[index];
 		}
 
 		function getNewItems() {
-			const pkField = relatedPrimaryKeyField.value?.field;
+			const pkField = relationInfo.value.relationPkField;
 			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === false) as Record<
 				string,
@@ -198,7 +201,7 @@ export default defineComponent({
 		}
 
 		function getUpdatedItems() {
-			const pkField = relatedPrimaryKeyField.value?.field;
+			const pkField = relationInfo.value.relationPkField;
 			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === true) as Record<
 				string,
@@ -207,7 +210,7 @@ export default defineComponent({
 		}
 
 		function getPrimaryKeys() {
-			const pkField = relatedPrimaryKeyField.value?.field;
+			const pkField = relationInfo.value.relationPkField;
 			if (props.value === null || !pkField) return [];
 			return props.value
 				.map((item) => {
@@ -221,7 +224,7 @@ export default defineComponent({
 		}
 
 		function deleteItem(item: Record<string, any>) {
-			const relatedPrimKey = relatedPrimaryKeyField.value?.field;
+			const relatedPrimKey = relationInfo.value.relationPkField;
 			if (props.value === null || !relatedPrimKey) return;
 
 			if (relatedPrimKey in item === false) {
@@ -246,13 +249,13 @@ export default defineComponent({
 		}
 
 		function useSort() {
-			const sort = ref({ by: relation.value.meta?.sort_field || fields.value[0], desc: false });
+			const sort = ref({ by: relationInfo.value.sortField || fields.value[0], desc: false });
 
 			function sortItems(newItems: Record<string, any>[]) {
-				if (!relation.value.meta?.sort_field) return;
+				if (!relationInfo.value.sortField) return;
 
 				const itemsSorted = newItems.map((item, i) => {
-					item[relation.value.meta!.sort_field!] = i;
+					item[relationInfo.value.sortField] = i;
 					return item;
 				});
 
@@ -260,36 +263,19 @@ export default defineComponent({
 			}
 
 			const sortedItems = computed(() => {
-				if (!relation.value.meta?.sort_field || sort.value.by !== relation.value.meta?.sort_field) return items.value;
+				if (!relationInfo.value.sortField || sort.value.by !== relationInfo.value.sortField) return items.value;
 
 				const desc = sort.value.desc;
-				const sorted = sortBy(items.value, [relation.value.meta.sort_field]);
+				const sorted = sortBy(items.value, [relationInfo.value.sortField]);
 				return desc ? sorted.reverse() : sorted;
 			});
 
 			return { sort, sortItems, sortedItems };
 		}
 
-		/**
-		 * Holds info about the current relationship, like related collection, primary key field
-		 * of the other collection etc
-		 */
-		function useRelation() {
-			const relation = computed<Relation>(() => {
-				return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
-			});
-
-			const relatedCollection = computed(() => {
-				return collectionsStore.getCollection(relation.value.collection)!;
-			});
-
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);
-
-			return { relation, relatedCollection, relatedPrimaryKeyField };
-		}
-
 		function usePreview() {
 			const loading = ref(false);
+			const initialItems = ref<Record<string, any>[]>([]);
 			const items = ref<Record<string, any>[]>([]);
 
 			watch(
@@ -298,7 +284,7 @@ export default defineComponent({
 					if (isEqual(newVal, oldVal)) return;
 
 					loading.value = true;
-					const pkField = relatedPrimaryKeyField.value?.field;
+					const pkField = relationInfo.value.relationPkField;
 					if (!pkField) return;
 
 					const fieldsList = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
@@ -307,15 +293,15 @@ export default defineComponent({
 						fieldsList.push(pkField);
 					}
 
-					if (relation.value.meta?.sort_field && fieldsList.includes(relation.value.meta.sort_field) === false)
-						fieldsList.push(relation.value.meta.sort_field);
+					if (relationInfo.value.sortField && fieldsList.includes(relationInfo.value.sortField) === false)
+						fieldsList.push(relationInfo.value.sortField);
 
-					const fieldsToFetch = addRelatedPrimaryKeyToFields(relatedCollection.value.collection, fieldsList);
+					const fieldsToFetch = addRelatedPrimaryKeyToFields(relationInfo.value.relationCollection, fieldsList);
 
 					try {
-						const endpoint = relatedCollection.value.collection.startsWith('directus_')
-							? `/${relatedCollection.value.collection.substring(9)}`
-							: `/items/${relatedCollection.value.collection}`;
+						const endpoint = relationInfo.value.relationCollection.startsWith('directus_')
+							? `/${relationInfo.value.relationCollection.substring(9)}`
+							: `/items/${relationInfo.value.relationCollection}`;
 
 						const primaryKeys = getPrimaryKeys();
 
@@ -349,6 +335,8 @@ export default defineComponent({
 								return item;
 							})
 							.concat(...newItems);
+
+						if (!initialItems.value) initialItems.value = [...items.value];
 					} catch (err: any) {
 						unexpectedError(err);
 					} finally {
@@ -358,7 +346,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { items, loading };
+			return { items, initialItems, loading };
 		}
 
 		function useEdits() {
@@ -372,15 +360,15 @@ export default defineComponent({
 			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
 
 			function editItem(item: any) {
-				const pkField = relatedPrimaryKeyField.value?.field;
+				const pkField = relationInfo.value.relationPkField;
 				if (!pkField) return;
 				const hasPrimaryKey = pkField in item;
 
 				const edits = (props.value || []).find(
 					(edit: any) =>
 						typeof edit === 'object' &&
-						relatedPrimaryKeyField.value?.field &&
-						edit[relatedPrimaryKeyField.value?.field] === item[relatedPrimaryKeyField.value?.field]
+						relationInfo.value.relationPkField &&
+						edit[relationInfo.value.relationPkField] === item[relationInfo.value.relationPkField]
 				);
 
 				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
@@ -388,7 +376,7 @@ export default defineComponent({
 			}
 
 			function stageEdits(edits: any) {
-				const pkField = relatedPrimaryKeyField.value?.field;
+				const pkField = relationInfo.value.relationPkField;
 				if (!pkField) return;
 
 				const newValue = (props.value || []).map((item) => {
@@ -427,21 +415,8 @@ export default defineComponent({
 			}
 		}
 
-		function useSelection() {
-			const selectModalActive = ref(false);
-
-			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-				const pkField = relatedPrimaryKeyField.value?.field;
-				if (items.value === null || !pkField) return [];
-
-				return items.value.filter((currentItem) => pkField in currentItem).map((currentItem) => currentItem[pkField]);
-			});
-
-			return { selectModalActive, selectedPrimaryKeys };
-		}
-
 		function getDefaultFields(): string[] {
-			const fields = fieldsStore.getFieldsForCollection(relatedCollection.value.collection);
+			const fields = fieldsStore.getFieldsForCollection(relationInfo.value.relationCollection);
 			return fields.slice(0, 3).map((field: Field) => field.field);
 		}
 
@@ -451,7 +426,8 @@ export default defineComponent({
 				if (admin) return true;
 
 				return !!permissionsStore.permissions.find(
-					(permission) => permission.action === 'create' && permission.collection === relatedCollection.value.collection
+					(permission) =>
+						permission.action === 'create' && permission.collection === relationInfo.value.relationCollection
 				);
 			});
 
@@ -460,7 +436,8 @@ export default defineComponent({
 				if (admin) return true;
 
 				return !!permissionsStore.permissions.find(
-					(permission) => permission.action === 'update' && permission.collection === relatedCollection.value.collection
+					(permission) =>
+						permission.action === 'update' && permission.collection === relationInfo.value.relationCollection
 				);
 			});
 
