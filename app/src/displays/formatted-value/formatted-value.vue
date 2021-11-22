@@ -1,7 +1,7 @@
 <template>
 	<value-null v-if="displayValue === null || displayValue === undefined" />
 
-	<div v-else class="display-formatted" :style="displayStyle">
+	<div v-else class="display-formatted">
 		<v-icon v-if="format.iconLeft" class="left" :name="format.iconLeft" :color="format.iconLeftColor" small />
 
 		<span class="value" :class="[{ bold }, font]" :style="valueStyle">
@@ -32,11 +32,6 @@ export default defineComponent({
 		value: {
 			type: [String, Number],
 			default: null,
-		},
-		textAlign: {
-			type: String,
-			default: 'left',
-			validator: (value: string) => ['left', 'center', 'right'].includes(value),
 		},
 		bold: {
 			type: Boolean,
@@ -152,12 +147,6 @@ export default defineComponent({
 			});
 		});
 
-		const displayStyle = computed(() => {
-			const justifyContent = { left: 'flex-start', center: 'center', right: 'flex-end' }[props.textAlign];
-			const alignItems = 'center';
-			return { justifyContent, alignItems };
-		});
-
 		const valueStyle = computed(() => {
 			return { color: format.value.color };
 		});
@@ -218,7 +207,7 @@ export default defineComponent({
 			}
 		});
 
-		return { t, format, displayValue, href, displayStyle, valueStyle };
+		return { t, format, displayValue, href, valueStyle };
 	},
 });
 </script>
@@ -254,13 +243,13 @@ export default defineComponent({
 	}
 
 	.v-icon {
+		flex-shrink: 0;
+
 		&.left {
-			flex-shrink: 0;
 			margin-right: 2px;
 		}
 
 		&.right {
-			flex-shrink: 0;
 			margin-left: 2px;
 		}
 

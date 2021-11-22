@@ -44,26 +44,6 @@ export default defineDisplay({
 				},
 			},
 			{
-				field: 'textAlign',
-				name: '$t:displays.formatted-value.text_align',
-				type: 'string',
-				meta: {
-					interface: 'select-dropdown',
-					width: 'half',
-					options: {
-						choices: [
-							{ text: '$t:displays.formatted-value.text_align_left', value: 'left' },
-							{ text: '$t:displays.formatted-value.text_align_center', value: 'center' },
-							{ text: '$t:displays.formatted-value.text_align_right', value: 'right' },
-						],
-						allowOther: false,
-					},
-				},
-				schema: {
-					default_value: 'left',
-				},
-			},
-			{
 				field: 'color',
 				name: '$t:displays.formatted-value.color',
 				type: 'string',
