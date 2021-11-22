@@ -81,7 +81,7 @@ export type FieldFilter<T> = {
 	[K in keyof T]?: FieldFilterOperator<T, K> | FieldFilter<T[K]>;
 };
 
-export type Filter<T> = LogicalFilter<T> | FieldFilter<T>;
+export type Filter<T> = LogicalFilter<T> | FieldFilter<T extends Array<unknown> ? T[number] : T>;
 
 /**
  * CRUD at its finest
