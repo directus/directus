@@ -13,15 +13,6 @@
 		<a v-if="link" class="link" :href="href" :target="linkTarget" @click.stop>
 			<v-icon v-tooltip="t('displays.formatted-value.link_tooltip')" class="button" name="launch" small />
 		</a>
-
-		<v-icon
-			v-if="clipboard"
-			v-tooltip="t('displays.formatted-value.clipboard_tooltip')"
-			class="button"
-			name="copy"
-			small
-			@click.stop="copyValue"
-		/>
 	</div>
 </template>
 
@@ -128,10 +119,6 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
-		clipboard: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	setup(props) {
 		const { t, locale } = useI18n();
@@ -236,11 +223,7 @@ export default defineComponent({
 			}
 		});
 
-		return { t, format, displayValue, href, displayStyle, valueStyle, copyValue };
-
-		function copyValue() {
-			navigator.clipboard.writeText(props.value.toString());
-		}
+		return { t, format, displayValue, href, displayStyle, valueStyle };
 	},
 });
 </script>

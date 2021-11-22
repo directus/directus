@@ -11,21 +11,6 @@ export default defineDisplay({
 	options: ({ field }) => {
 		const options = [
 			{
-				field: 'clipboard',
-				name: '$t:displays.formatted-value.clipboard',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:displays.formatted-value.clipboard_label',
-					},
-				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
 				field: 'bold',
 				name: '$t:displays.formatted-value.bold',
 				type: 'boolean',
