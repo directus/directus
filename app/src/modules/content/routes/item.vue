@@ -481,7 +481,7 @@ export default defineComponent({
 			try {
 				await remove();
 				edits.value = {};
-				router.push(`/content/${props.collection}`);
+				router.replace(`/content/${props.collection}`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}

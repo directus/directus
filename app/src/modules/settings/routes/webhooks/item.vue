@@ -210,7 +210,7 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/webhooks`);
+			router.replace(`/settings/webhooks`);
 		}
 
 		function discardAndLeave() {
