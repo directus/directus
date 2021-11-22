@@ -44,15 +44,15 @@
 	},
 	"devDependencies": {
 		"@types/fs-extra": "9.0.13",
-		"@types/jest": "27.0.2",
-		"@types/node": "16.11.7",
+		"@types/jest": "27.0.3",
+		"@types/node": "16.11.9",
 		"@types/normalize-path": "3.0.0",
 		"dotenv": "10.0.0",
 		"fs-extra": "10.0.0",
 		"jest": "27.3.1",
 		"npm-run-all": "4.1.5",
 		"ts-jest": "27.0.7",
-		"typescript": "4.4.4"
+		"typescript": "4.5.2"
 	},
 	"publishConfig": {
 		"access": "public"
