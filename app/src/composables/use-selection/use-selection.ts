@@ -61,7 +61,7 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 				return {
 					...initial,
 					...draft,
-					...(sortField ? { [sortField]: i } : null),
+					...(sortField ? { [sortField]: draft?.[sortField] ?? i } : null),
 					...(type === 'm2a' ? { [collectionField]: selectingFrom.value } : null),
 					...(['o2m', 'm2o'].includes(type) ? { [relationPkField]: getPrimaryKey(item) } : null),
 					...(['m2m', 'm2a'].includes(type)
