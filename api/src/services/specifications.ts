@@ -1,28 +1,27 @@
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Collection,
-	Field,
-	Permission,
-	Relation,
-	SchemaOverview,
-	types,
-} from '../types';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
 import formatTitle from '@directus/format-title';
+import openapi from '@directus/specs';
+import { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
-import { RelationsService } from './relations';
-import env from '../env';
-import { OpenAPIObject, PathItemObject, OperationObject, TagObject, SchemaObject } from 'openapi3-ts';
-
+import {
+	OpenAPIObject,
+	OperationObject,
+	ParameterObject,
+	PathItemObject,
+	ReferenceObject,
+	SchemaObject,
+	TagObject,
+} from 'openapi3-ts';
 // @ts-ignore
 import { version } from '../../package.json';
-import openapi from '@directus/specs';
-
-import { Knex } from 'knex';
-import database from '../database';
+import getDatabase from '../database';
+import env from '../env';
+import { AbstractServiceOptions, Collection, Relation, SchemaOverview } from '../types';
+import { Accountability, Field, Type, Permission } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
+import { CollectionsService } from './collections';
+import { FieldsService } from './fields';
+import { GraphQLService } from './graphql';
+import { RelationsService } from './relations';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -33,33 +32,33 @@ export class SpecificationService {
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
 
-	oas: OASService;
+	oas: OASSpecsService;
+	graphql: GraphQLSpecsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService(options);
 
-		this.oas = new OASService(
-			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
-			{
-				fieldsService: this.fieldsService,
-				collectionsService: this.collectionsService,
-				relationsService: this.relationsService,
-			}
-		);
+		this.oas = new OASSpecsService(options, {
+			fieldsService: this.fieldsService,
+			collectionsService: this.collectionsService,
+			relationsService: this.relationsService,
+		});
+
+		this.graphql = new GraphQLSpecsService(options);
 	}
 }
 
 interface SpecificationSubService {
-	generate: () => Promise<any>;
+	generate: (_?: any) => Promise<any>;
 }
 
-class OASService implements SpecificationSubService {
+class OASSpecsService implements SpecificationSubService {
 	accountability: Accountability | null;
 	knex: Knex;
 	schema: SchemaOverview;
@@ -81,7 +80,7 @@ class OASService implements SpecificationSubService {
 		}
 	) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.fieldsService = fieldsService;
@@ -92,8 +91,8 @@ class OASService implements SpecificationSubService {
 	async generate() {
 		const collections = await this.collectionsService.readByQuery();
 		const fields = await this.fieldsService.readAll();
-		const relations = (await this.relationsService.readByQuery({})) as Relation[];
-		const permissions = this.schema.permissions;
+		const relations = (await this.relationsService.readAll()) as Relation[];
+		const permissions = this.accountability?.permissions ?? [];
 
 		const tags = await this.generateTags(collections);
 		const paths = await this.generatePaths(permissions, tags);
@@ -163,7 +162,7 @@ class OASService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = tag.hasOwnProperty('x-collection') === false || tag['x-collection'].startsWith('directus_');
+			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
@@ -175,7 +174,7 @@ class OASService implements SpecificationSubService {
 
 							const hasPermission =
 								this.accountability?.admin === true ||
-								tag.hasOwnProperty('x-collection') === false ||
+								'x-collection' in tag === false ||
 								!!permissions.find(
 									(permission) =>
 										permission.collection === tag['x-collection'] &&
@@ -183,7 +182,14 @@ class OASService implements SpecificationSubService {
 								);
 
 							if (hasPermission) {
-								paths[path][method] = operation;
+								if ('parameters' in pathItem) {
+									paths[path][method] = {
+										...operation,
+										parameters: [...(pathItem.parameters ?? []), ...(operation?.parameters ?? [])],
+									};
+								} else {
+									paths[path][method] = operation;
+								}
 							}
 						}
 					}
@@ -211,6 +217,7 @@ class OASService implements SpecificationSubService {
 								{
 									description: listBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
+									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase['parameters']) : [],
 									operationId: `${this.getActionForMethod(method)}${tag.name}`,
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
@@ -222,11 +229,11 @@ class OASService implements SpecificationSubService {
 																{
 																	type: 'array',
 																	items: {
-																		$ref: `#/components/schema/${tag.name}`,
+																		$ref: `#/components/schemas/${tag.name}`,
 																	},
 																},
 																{
-																	$ref: `#/components/schema/${tag.name}`,
+																	$ref: `#/components/schemas/${tag.name}`,
 																},
 															],
 														},
@@ -244,7 +251,7 @@ class OASService implements SpecificationSubService {
 																	properties: {
 																		data: {
 																			items: {
-																				$ref: `#/components/schema/${tag.name}`,
+																				$ref: `#/components/schemas/${tag.name}`,
 																			},
 																		},
 																	},
@@ -267,13 +274,15 @@ class OASService implements SpecificationSubService {
 									description: detailBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
 									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
+									parameters:
+										'parameters' in detailBase ? this.filterCollectionFromParams(detailBase['parameters']) : [],
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
 												content: {
 													'application/json': {
 														schema: {
-															$ref: `#/components/schema/${tag.name}`,
+															$ref: `#/components/schemas/${tag.name}`,
 														},
 													},
 												},
@@ -289,7 +298,7 @@ class OASService implements SpecificationSubService {
 																	properties: {
 																		data: {
 																			items: {
-																				$ref: `#/components/schema/${tag.name}`,
+																				$ref: `#/components/schemas/${tag.name}`,
 																			},
 																		},
 																	},
@@ -366,6 +375,12 @@ class OASService implements SpecificationSubService {
 		return components;
 	}
 
+	private filterCollectionFromParams(
+		parameters: (ParameterObject | ReferenceObject)[]
+	): (ParameterObject | ReferenceObject)[] {
+		return parameters.filter((param) => param?.$ref !== '#/components/parameters/Collection');
+	}
+
 	private getActionForMethod(method: string): 'create' | 'read' | 'update' | 'delete' {
 		switch (method) {
 			case 'post':
@@ -388,8 +403,8 @@ class OASService implements SpecificationSubService {
 
 		const relation = relations.find(
 			(relation) =>
-				(relation.many_collection === field.collection && relation.many_field === field.field) ||
-				(relation.one_collection === field.collection && relation.one_field === field.field)
+				(relation.collection === field.collection && relation.field === field.field) ||
+				(relation.related_collection === field.collection && relation.meta?.one_field === field.field)
 		);
 
 		if (!relation) {
@@ -405,9 +420,9 @@ class OASService implements SpecificationSubService {
 			});
 
 			if (relationType === 'm2o') {
-				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.one_collection);
+				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.related_collection);
 				const relatedPrimaryKeyField = fields.find(
-					(field) => field.collection === relation.one_collection && field.schema?.is_primary_key
+					(field) => field.collection === relation.related_collection && field.schema?.is_primary_key
 				);
 
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
@@ -421,9 +436,9 @@ class OASService implements SpecificationSubService {
 					},
 				];
 			} else if (relationType === 'o2m') {
-				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.many_collection);
+				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.collection);
 				const relatedPrimaryKeyField = fields.find(
-					(field) => field.collection === relation.many_collection && field.schema?.is_primary_key
+					(field) => field.collection === relation.collection && field.schema?.is_primary_key
 				);
 
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
@@ -440,7 +455,7 @@ class OASService implements SpecificationSubService {
 					],
 				};
 			} else if (relationType === 'm2a') {
-				const relatedTags = tags.filter((tag) => relation.one_allowed_collections!.includes(tag['x-collection']));
+				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
 				propertyObject.items = {
@@ -460,19 +475,32 @@ class OASService implements SpecificationSubService {
 	}
 
 	private fieldTypes: Record<
-		typeof types[number],
+		Type,
 		{
 			type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
 			format?: string;
 			items?: any;
 		}
 	> = {
+		alias: {
+			type: 'string',
+		},
 		bigInteger: {
 			type: 'integer',
 			format: 'int64',
 		},
+		binary: {
+			type: 'string',
+			format: 'binary',
+		},
 		boolean: {
 			type: 'boolean',
+		},
+		csv: {
+			type: 'array',
+			items: {
+				type: 'string',
+			},
 		},
 		date: {
 			type: 'string',
@@ -488,6 +516,9 @@ class OASService implements SpecificationSubService {
 		float: {
 			type: 'number',
 			format: 'float',
+		},
+		hash: {
+			type: 'string',
 		},
 		integer: {
 			type: 'integer',
@@ -512,22 +543,57 @@ class OASService implements SpecificationSubService {
 			type: 'string',
 			format: 'timestamp',
 		},
-		binary: {
-			type: 'string',
-			format: 'binary',
+		unknown: {
+			type: undefined,
 		},
 		uuid: {
 			type: 'string',
 			format: 'uuid',
 		},
-		csv: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
+		geometry: {
+			type: 'object',
 		},
-		hash: {
-			type: 'string',
+		'geometry.Point': {
+			type: 'object',
+		},
+		'geometry.LineString': {
+			type: 'object',
+		},
+		'geometry.Polygon': {
+			type: 'object',
+		},
+		'geometry.MultiPoint': {
+			type: 'object',
+		},
+		'geometry.MultiLineString': {
+			type: 'object',
+		},
+		'geometry.MultiPolygon': {
+			type: 'object',
 		},
 	};
+}
+
+class GraphQLSpecsService implements SpecificationSubService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+
+	items: GraphQLService;
+	system: GraphQLService;
+
+	constructor(options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || getDatabase();
+		this.schema = options.schema;
+
+		this.items = new GraphQLService({ ...options, scope: 'items' });
+		this.system = new GraphQLService({ ...options, scope: 'system' });
+	}
+
+	async generate(scope: 'items' | 'system') {
+		if (scope === 'items') return this.items.getSchema('sdl');
+		if (scope === 'system') return this.system.getSchema('sdl');
+		return null;
+	}
 }

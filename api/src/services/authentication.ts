@@ -1,25 +1,25 @@
-import database from '../database';
 import jwt from 'jsonwebtoken';
-import argon2 from 'argon2';
-import { nanoid } from 'nanoid';
-import ms from 'ms';
-import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
-import { Session, Accountability, AbstractServiceOptions, Action, SchemaOverview } from '../types';
 import { Knex } from 'knex';
-import { ActivityService } from '../services/activity';
+import ms from 'ms';
+import { nanoid } from 'nanoid';
+import getDatabase from '../database';
+import emitter from '../emitter';
 import env from '../env';
-import { authenticator } from 'otplib';
-import emitter, { emitAsyncSafe } from '../emitter';
-import { omit } from 'lodash';
+import { getAuthProvider } from '../auth';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
+import { createRateLimiter } from '../rate-limiter';
+import { ActivityService } from './activity';
+import { TFAService } from './tfa';
+import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { SettingsService } from './settings';
+import { clone, cloneDeep, omit } from 'lodash';
+import { performance } from 'perf_hooks';
+import { stall } from '../utils/stall';
+import logger from '../logger';
 
-type AuthenticateOptions = {
-	email: string;
-	password?: string;
-	ip?: string | null;
-	userAgent?: string | null;
-	otp?: string;
-	[key: string]: any;
-};
+const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
 export class AuthenticationService {
 	knex: Knex;
@@ -28,7 +28,7 @@ export class AuthenticationService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.activityService = new ActivityService({ knex: this.knex, schema: options.schema });
 		this.schema = options.schema;
@@ -40,101 +40,171 @@ export class AuthenticationService {
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
 	 */
-	async authenticate(options: AuthenticateOptions) {
-		const { email, password, ip, userAgent, otp } = options;
+	async login(
+		providerName: string = DEFAULT_AUTH_PROVIDER,
+		payload: Record<string, any>,
+		otp?: string
+	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
+		const STALL_TIME = 100;
+		const timeStart = performance.now();
 
-		const hookPayload = omit(options, 'password', 'otp');
+		const provider = getAuthProvider(providerName);
 
-		const user = await database
-			.select('id', 'password', 'role', 'tfa_secret', 'status')
+		const user = await this.knex
+			.select<User & { tfa_secret: string | null }>(
+				'id',
+				'first_name',
+				'last_name',
+				'email',
+				'password',
+				'status',
+				'role',
+				'tfa_secret',
+				'provider',
+				'external_identifier',
+				'auth_data'
+			)
 			.from('directus_users')
-			.where({ email })
+			.where('id', await provider.getUserID(cloneDeep(payload)))
+			.andWhere('provider', providerName)
 			.first();
 
-		await emitter.emitAsync('auth.login.before', hookPayload, {
-			event: 'auth.login.before',
-			action: 'login',
-			schema: this.schema,
-			payload: hookPayload,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
+		const updatedPayload = await emitter.emitFilter(
+			'auth.login',
+			payload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', hookPayload, {
-				event: 'auth.login',
-				action: 'login',
-				schema: this.schema,
-				payload: hookPayload,
-				accountability: this.accountability,
-				status,
-				user: user?.id,
-				database: this.knex,
-			});
+			emitter.emitAction(
+				'auth.login',
+				{
+					payload: updatedPayload,
+					status,
+					user: user?.id,
+					provider: providerName,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		};
 
-		if (!user || user.status !== 'active') {
+		if (user?.status !== 'active') {
 			emitStatus('fail');
-			throw new InvalidCredentialsException();
+
+			if (user?.status === 'suspended') {
+				await stall(STALL_TIME, timeStart);
+				throw new UserSuspendedException();
+			} else {
+				await stall(STALL_TIME, timeStart);
+				throw new InvalidCredentialsException();
+			}
 		}
 
-		if (password !== undefined) {
-			if (!user.password) {
-				emitStatus('fail');
-				throw new InvalidCredentialsException();
-			}
+		const settingsService = new SettingsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
 
-			if ((await argon2.verify(user.password, password)) === false) {
-				emitStatus('fail');
-				throw new InvalidCredentialsException();
+		const { auth_login_attempts: allowedAttempts } = await settingsService.readSingleton({
+			fields: ['auth_login_attempts'],
+		});
+
+		if (allowedAttempts !== null) {
+			loginAttemptsLimiter.points = allowedAttempts;
+
+			try {
+				await loginAttemptsLimiter.consume(user.id);
+			} catch {
+				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+				user.status = 'suspended';
+
+				// This means that new attempts after the user has been re-activated will be accepted
+				await loginAttemptsLimiter.set(user.id, 0, 0);
 			}
+		}
+
+		let sessionData: SessionData = null;
+
+		try {
+			sessionData = await provider.login(clone(user), cloneDeep(updatedPayload));
+		} catch (e) {
+			emitStatus('fail');
+			await stall(STALL_TIME, timeStart);
+			throw e;
 		}
 
 		if (user.tfa_secret && !otp) {
 			emitStatus('fail');
+			await stall(STALL_TIME, timeStart);
 			throw new InvalidOTPException(`"otp" is required`);
 		}
 
 		if (user.tfa_secret && otp) {
-			const otpValid = await this.verifyOTP(user.id, otp);
+			const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
+			const otpValid = await tfaService.verifyOTP(user.id, otp);
 
 			if (otpValid === false) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidOTPException(`"otp" is invalid`);
 			}
 		}
 
-		const payload = {
+		const tokenPayload = {
 			id: user.id,
 		};
 
-		/**
-		 * @TODO
-		 * Sign token with combination of server secret + user password hash
-		 * That way, old tokens are immediately invalidated whenever the user changes their password
-		 */
-		const accessToken = jwt.sign(payload, env.SECRET as string, {
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+				type: 'login',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
 		});
 
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
-		await database('directus_sessions').insert({
+		await this.knex('directus_sessions').insert({
 			token: refreshToken,
 			user: user.id,
 			expires: refreshTokenExpiration,
-			ip,
-			user_agent: userAgent,
+			ip: this.accountability?.ip,
+			user_agent: this.accountability?.userAgent,
+			data: sessionData && JSON.stringify(sessionData),
 		});
 
-		await database('directus_sessions').delete().where('expires', '<', new Date());
+		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
 
 		if (this.accountability) {
-			await this.activityService.create({
-				action: Action.AUTHENTICATE,
+			await this.activityService.createOne({
+				action: Action.LOGIN,
 				user: user.id,
 				ip: this.accountability.ip,
 				user_agent: this.accountability.userAgent,
@@ -143,7 +213,15 @@ export class AuthenticationService {
 			});
 		}
 
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
+
 		emitStatus('success');
+
+		if (allowedAttempts !== null) {
+			await loginAttemptsLimiter.set(user.id, 0, 0);
+		}
+
+		await stall(STALL_TIME, timeStart);
 
 		return {
 			accessToken,
@@ -153,82 +231,158 @@ export class AuthenticationService {
 		};
 	}
 
-	async refresh(refreshToken: string) {
+	async refresh(refreshToken: string): Promise<Record<string, any>> {
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
 		}
 
-		const record = await database
-			.select<Session & { email: string; id: string }>(
-				'directus_sessions.*',
-				'directus_users.email',
-				'directus_users.id'
+		const record = await this.knex
+			.select<Session & User>(
+				's.expires',
+				's.data',
+				'u.id',
+				'u.first_name',
+				'u.last_name',
+				'u.email',
+				'u.password',
+				'u.status',
+				'u.role',
+				'u.provider',
+				'u.external_identifier',
+				'u.auth_data'
 			)
-			.from('directus_sessions')
-			.where({ 'directus_sessions.token': refreshToken })
-			.leftJoin('directus_users', 'directus_sessions.user', 'directus_users.id')
+			.from('directus_sessions as s')
+			.innerJoin('directus_users as u', 's.user', 'u.id')
+			.where('s.token', refreshToken)
 			.first();
 
-		if (!record || !record.email || record.expires < new Date()) {
+		if (!record || record.expires < new Date()) {
 			throw new InvalidCredentialsException();
 		}
 
-		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
+		let { data: sessionData } = record;
+		const user = omit(record, 'data');
+
+		if (typeof sessionData === 'string') {
+			try {
+				sessionData = JSON.parse(sessionData);
+			} catch {
+				logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+			}
+		}
+
+		const provider = getAuthProvider(user.provider);
+
+		const newSessionData = await provider.refresh(clone(user), sessionData as SessionData);
+
+		const tokenPayload = {
+			id: user.id,
+		};
+
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: user.provider,
+				type: 'refresh',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
 		});
 
 		const newRefreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
 		await this.knex('directus_sessions')
-			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
+			.update({
+				token: newRefreshToken,
+				expires: refreshTokenExpiration,
+				data: newSessionData && JSON.stringify(newSessionData),
+			})
 			.where({ token: refreshToken });
+
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
 
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
 			expires: ms(env.ACCESS_TOKEN_TTL as string),
-			id: record.id,
+			id: user.id,
 		};
 	}
 
-	async logout(refreshToken: string) {
-		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
-	}
+	async logout(refreshToken: string): Promise<void> {
+		const record = await this.knex
+			.select<User & Session>(
+				'u.id',
+				'u.first_name',
+				'u.last_name',
+				'u.email',
+				'u.password',
+				'u.status',
+				'u.role',
+				'u.provider',
+				'u.external_identifier',
+				'u.auth_data',
+				's.data'
+			)
+			.from('directus_sessions as s')
+			.innerJoin('directus_users as u', 's.user', 'u.id')
+			.where('s.token', refreshToken)
+			.first();
 
-	generateTFASecret() {
-		const secret = authenticator.generateSecret();
-		return secret;
-	}
+		if (record) {
+			let { data: sessionData } = record;
+			const user = omit(record, 'data');
 
-	async generateOTPAuthURL(pk: string, secret: string) {
-		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
-		const name = `${user.first_name} ${user.last_name}`;
-		return authenticator.keyuri(name, 'Directus', secret);
-	}
+			if (typeof sessionData === 'string') {
+				try {
+					sessionData = JSON.parse(sessionData);
+				} catch {
+					logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+				}
+			}
 
-	async verifyOTP(pk: string, otp: string): Promise<boolean> {
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+			const provider = getAuthProvider(user.provider);
+			await provider.logout(clone(user), sessionData as SessionData);
 
-		if (!user.tfa_secret) {
-			throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
+			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
-
-		const secret = user.tfa_secret;
-		return authenticator.check(otp, secret);
 	}
 
-	async verifyPassword(pk: string, password: string) {
-		const userRecord = await this.knex.select('password').from('directus_users').where({ id: pk }).first();
+	async verifyPassword(userID: string, password: string): Promise<void> {
+		const user = await this.knex
+			.select<User>(
+				'id',
+				'first_name',
+				'last_name',
+				'email',
+				'password',
+				'status',
+				'role',
+				'provider',
+				'external_identifier',
+				'auth_data'
+			)
+			.from('directus_users')
+			.where('id', userID)
+			.first();
 
-		if (!userRecord || !userRecord.password) {
+		if (!user) {
 			throw new InvalidCredentialsException();
 		}
 
-		if ((await argon2.verify(userRecord.password, password)) === false) {
-			throw new InvalidCredentialsException();
-		}
-
-		return true;
+		const provider = getAuthProvider(user.provider);
+		await provider.verify(clone(user), password);
 	}
 }

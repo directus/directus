@@ -1,78 +1,68 @@
-import { RouteConfig } from 'vue-router';
-import { replaceRoutes } from '@/router';
+import { router } from '@/router';
+import { usePermissionsStore, useUserStore } from '@/stores';
+import { getRootPath } from '@/utils/get-root-path';
+import RouterPass from '@/utils/router-passthrough';
 import { getModules } from './index';
-import { useUserStore, usePermissionsStore } from '@/stores';
-import api from '@/api';
+import { ModuleConfig } from '@directus/shared/types';
 
-const modules = getModules();
-let loadedModules: any = [];
+const { modulesRaw } = getModules();
 
-export async function loadModules() {
-	const context = require.context('.', true, /^.*index\.ts$/);
+let queuedModules: ModuleConfig[] = [];
 
-	loadedModules = context
-		.keys()
-		.map((key) => context(key))
-		.map((mod) => mod.default)
-		.filter((m) => m);
+export async function loadModules(): Promise<void> {
+	const moduleModules = import.meta.globEager('./*/index.ts');
+
+	const modules: ModuleConfig[] = Object.values(moduleModules).map((module) => module.default);
 
 	try {
-		const customResponse = await api.get('/extensions/modules');
+		const customModules: { default: ModuleConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-module')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/index.js`);
 
-		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
-			for (const customKey of customResponse.data.data) {
-				try {
-					const module = await import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`);
-					module.default.routes = module.default.routes.map((route: RouteConfig) => {
-						if (route.path) {
-							route.path = `/${module.default.id}/${route.path}`;
-						}
-
-						return route;
-					});
-					loadedModules.push(module.default);
-				} catch (err) {
-					console.warn(`Couldn't load custom module "${customKey}"`);
-					console.warn(err);
-				}
-			}
-		}
-	} catch {
+		modules.push(...customModules.default);
+	} catch (err: any) {
+		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom modules`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
+
+	queuedModules = modules;
 }
 
-export async function register() {
+export async function register(): Promise<void> {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
-	const registeredModules = loadedModules.filter((mod: any) => {
-		if (!userStore.state.currentUser) return false;
+	const registeredModules = [];
+
+	for (const mod of queuedModules) {
+		if (!userStore.currentUser) continue;
 
 		if (mod.preRegisterCheck) {
-			return mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.state.permissions);
+			const allowed = await mod.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+			if (allowed) registeredModules.push(mod);
+		} else {
+			registeredModules.push(mod);
 		}
-
-		return true;
-	});
-
-	const moduleRoutes = registeredModules
-		.map((module: any) => module.routes)
-		.filter((r: any) => r)
-		.flat() as RouteConfig[];
-
-	replaceRoutes((routes) => insertBeforeProjectWildcard(routes, moduleRoutes));
-
-	modules.value = registeredModules;
-
-	function insertBeforeProjectWildcard(currentRoutes: RouteConfig[], routesToBeAdded: RouteConfig[]) {
-		// Find the index of the /* route, so we can insert the module routes right above that
-		const wildcardIndex = currentRoutes.findIndex((route) => route.path === '/*');
-		return [...currentRoutes.slice(0, wildcardIndex), ...routesToBeAdded, ...currentRoutes.slice(wildcardIndex)];
 	}
+
+	for (const module of registeredModules) {
+		router.addRoute({
+			name: module.id,
+			path: `/${module.id}`,
+			component: RouterPass,
+			children: module.routes,
+		});
+	}
+
+	modulesRaw.value = registeredModules;
 }
 
-export function unregister() {
-	replaceRoutes((routes) => routes);
-	modules.value = [];
+export function unregister(): void {
+	for (const module of modulesRaw.value) {
+		router.removeRoute(module.id);
+	}
+
+	modulesRaw.value = [];
 }

@@ -1,5 +1,5 @@
 <template>
-	<v-list large>
+	<v-list nav>
 		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
 			<v-list-item v-for="n in 4" :key="n">
 				<v-skeleton-loader type="list-item-icon" />
@@ -7,14 +7,21 @@
 		</template>
 
 		<div class="folders">
-			<v-item-group scope="files-navigation" multiple v-model="openFolders">
-				<v-list-group to="/files" value="root" scope="files-navigation" exact disable-groupable-parent>
+			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
+				<v-list-group
+					to="/files"
+					:active="currentFolder === null"
+					value="root"
+					scope="files-navigation"
+					exact
+					disable-groupable-parent
+				>
 					<template #activator>
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
 						<v-list-item-content>
-							<v-text-overflow :text="$t('file_library')" />
+							<v-text-overflow :text="t('file_library')" />
 						</v-list-item-content>
 					</template>
 
@@ -30,41 +37,38 @@
 
 		<v-divider />
 
-		<v-list-item to="/files/all" exact>
+		<v-list-item to="/files/all">
 			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('all_files')" />
+				<v-text-overflow :text="t('all_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/mine" exact>
+		<v-list-item to="/files/mine">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('my_files')" />
+				<v-text-overflow :text="t('my_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/recent" exact>
+		<v-list-item to="/files/recent">
 			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('recent_files')" />
+				<v-text-overflow :text="t('recent_files')" />
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import useFolders from '../composables/use-folders';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, watch } from 'vue';
+import useFolders, { Folder } from '@/composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';
 
 export default defineComponent({
 	components: { NavigationFolder },
-	model: {
-		prop: 'currentFolder',
-		event: 'filter',
-	},
 	props: {
 		currentFolder: {
 			type: String,
@@ -72,20 +76,22 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { nestedFolders, folders, error, loading, openFolders } = useFolders();
 
 		setOpenFolders();
 
 		watch(() => props.currentFolder, setOpenFolders);
 
-		return { folders, nestedFolders, error, loading, openFolders };
+		return { t, folders, nestedFolders, error, loading, openFolders };
 
 		function setOpenFolders() {
 			if (!folders.value) return [];
 			if (!openFolders?.value) return [];
 
 			const shouldBeOpen: string[] = [];
-			const folder = folders.value.find((folder) => folder.id === props.currentFolder);
+			const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
 
 			if (folder && folder.parent) parseFolder(folder.parent);
 
@@ -105,7 +111,7 @@ export default defineComponent({
 				if (!folders.value) return;
 				shouldBeOpen.push(id);
 
-				const folder = folders.value.find((folder) => folder.id === id);
+				const folder = folders.value.find((folder: Folder) => folder.id === id);
 
 				if (folder && folder.parent) {
 					parseFolder(folder.parent);
@@ -125,7 +131,7 @@ export default defineComponent({
 	width: 100%;
 	overflow-x: hidden;
 
-	::v-deep .v-list-item-content {
+	:deep(.v-list-item-content) {
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;

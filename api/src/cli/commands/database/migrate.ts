@@ -1,24 +1,24 @@
 import run from '../../../database/migrations/run';
+import getDatabase from '../../../database';
+import logger from '../../../logger';
 
-import ora from 'ora';
-
-export default async function migrate(direction: 'latest' | 'up' | 'down') {
-	const database = require('../../../database').default;
+export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
+	const database = getDatabase();
 
 	try {
-		const spinnerDriver = ora('Running migrations...').start();
+		logger.info('Running migrations...');
+
 		await run(database, direction);
-		spinnerDriver.stop();
 
 		if (direction === 'down') {
-			console.log('✨ Downgrade successful');
+			logger.info('Downgrade successful');
 		} else {
-			console.log('✨ Database up to date');
+			logger.info('Database up to date');
 		}
 		database.destroy();
 		process.exit();
-	} catch (err) {
-		console.log(err);
+	} catch (err: any) {
+		logger.error(err);
 		database.destroy();
 		process.exit(1);
 	}

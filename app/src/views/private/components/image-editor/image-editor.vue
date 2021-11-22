@@ -1,18 +1,24 @@
 <template>
-	<v-drawer v-model="_active" class="modal" :title="$t('editing_image')" persistent @cancel="_active = false">
+	<v-drawer
+		v-model="internalActive"
+		class="modal"
+		:title="t('editing_image')"
+		persistent
+		@cancel="internalActive = false"
+	>
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
 		<template #subtitle>
-			<span class="warning">{{ $t('changes_are_permanent') }}</span>
+			<span class="warning">{{ t('changes_are_permanent') }}</span>
 		</template>
 
-		<div class="loader" v-if="loading">
+		<div v-if="loading" class="loader">
 			<v-progress-circular indeterminate />
 		</div>
 
-		<v-notice type="error" v-else-if="error">error</v-notice>
+		<v-notice v-else-if="error" type="error">error</v-notice>
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
@@ -21,7 +27,7 @@
 
 			<div class="toolbar">
 				<div
-					v-tooltip.top.inverted="$t('drag_mode')"
+					v-tooltip.top.inverted="t('drag_mode')"
 					class="drag-mode toolbar-button"
 					@click="dragMode = dragMode === 'crop' ? 'move' : 'crop'"
 				>
@@ -29,71 +35,77 @@
 					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
 				</div>
 
-				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.top.inverted="$t('rotate')" />
+				<v-icon v-tooltip.top.inverted="t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
 
-				<v-icon name="flip_horizontal" @click="flip('horizontal')" v-tooltip.top.inverted="$t('flip_horizontal')" />
+				<v-icon
+					v-tooltip.top.inverted="t('flip_horizontal')"
+					name="flip_horizontal"
+					clickable
+					@click="flip('horizontal')"
+				/>
 
-				<v-icon name="flip_vertical" @click="flip('vertical')" v-tooltip.top.inverted="$t('flip_vertical')" />
+				<v-icon v-tooltip.top.inverted="t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
 
 				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon :name="aspectRatioIcon" @click="toggle" v-tooltip.top.inverted="$t('aspect_ratio')" />
+						<v-icon v-tooltip.top.inverted="t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
 
 					<v-list>
-						<v-list-item @click="aspectRatio = 16 / 9" :active="aspectRatio === 16 / 9">
+						<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
 							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
 							<v-list-item-content>16:9</v-list-item-content>
 						</v-list-item>
-						<v-list-item @click="aspectRatio = 3 / 2" :active="aspectRatio === 3 / 2">
+						<v-list-item clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
 							<v-list-item-icon><v-icon name="crop_3_2" /></v-list-item-icon>
 							<v-list-item-content>3:2</v-list-item-content>
 						</v-list-item>
-						<v-list-item @click="aspectRatio = 5 / 4" :active="aspectRatio === 5 / 4">
+						<v-list-item clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
 							<v-list-item-icon><v-icon name="crop_5_4" /></v-list-item-icon>
 							<v-list-item-content>5:4</v-list-item-content>
 						</v-list-item>
-						<v-list-item @click="aspectRatio = 7 / 5" :active="aspectRatio === 7 / 5">
+						<v-list-item clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
 							<v-list-item-icon><v-icon name="crop_7_5" /></v-list-item-icon>
 							<v-list-item-content>7:5</v-list-item-content>
 						</v-list-item>
-						<v-list-item @click="aspectRatio = 1 / 1" :active="aspectRatio === 1 / 1">
+						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
 							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('square') }}</v-list-item-content>
+							<v-list-item-content>{{ t('square') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item @click="aspectRatio = NaN" :active="aspectRatio === NaN">
+						<v-list-item clickable :active="aspectRatio === NaN" @click="aspectRatio = NaN">
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('free') }}</v-list-item-content>
+							<v-list-item-content>{{ t('free') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item
 							v-if="imageData"
-							@click="aspectRatio = imageData.width / imageData.height"
+							clickable
 							:active="aspectRatio === imageData.width / imageData.height"
+							@click="aspectRatio = imageData.width / imageData.height"
 						>
 							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('original') }}</v-list-item-content>
+							<v-list-item-content>{{ t('original') }}</v-list-item-content>
 						</v-list-item>
 					</v-list>
 				</v-menu>
 
 				<div class="spacer" />
 
-				<div class="dimensions" v-if="imageData">
-					{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
+				<div v-if="imageData" class="dimensions">
+					{{ n(imageData.width) }}x{{ n(imageData.height) }}
 					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
 						->
-						{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
+						{{ n(newDimensions.width) }}x{{ n(newDimensions.height) }}
 					</template>
 				</div>
 
-				<button class="toolbar-button cancel" v-show="cropping" @click="cropping = false">
-					{{ $t('cancel_crop') }}
+				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
+					{{ t('cancel_crop') }}
 				</button>
 			</div>
 		</div>
 
 		<template #actions>
-			<v-button @click="save" :loading="saving" icon rounded v-tooltip.bottom="$t('save')">
+			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -101,15 +113,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, reactive } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch, computed, reactive, nextTick } from 'vue';
 import api from '@/api';
-import Vue from 'vue';
 
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 
 type Image = {
 	type: string;
@@ -120,30 +133,29 @@ type Image = {
 };
 
 export default defineComponent({
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
 	props: {
 		id: {
 			type: String,
 			required: true,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
 	},
+	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
+		const { t, n } = useI18n();
+
 		const localActive = ref(false);
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
-				return props.active === undefined ? localActive.value : props.active;
+				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 
@@ -161,7 +173,7 @@ export default defineComponent({
 			cropping,
 		} = useCropper();
 
-		watch(_active, (isActive) => {
+		watch(internalActive, (isActive) => {
 			if (isActive === true) {
 				fetchImage();
 			} else {
@@ -176,11 +188,13 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return addTokenToURL(`/assets/${props.id}?${nanoid()}`);
+			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
 		});
 
 		return {
-			_active,
+			t,
+			n,
+			internalActive,
 			loading,
 			error,
 			imageData,
@@ -228,7 +242,7 @@ export default defineComponent({
 					});
 
 					imageData.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					loading.value = false;
@@ -254,8 +268,8 @@ export default defineComponent({
 						try {
 							await api.patch(`/files/${props.id}`, formData);
 							emit('refresh');
-							_active.value = false;
-						} catch (err) {
+							internalActive.value = false;
+						} catch (err: any) {
 							unexpectedError(err);
 						} finally {
 							saving.value = false;
@@ -264,7 +278,7 @@ export default defineComponent({
 			}
 
 			async function onImageLoad() {
-				await Vue.nextTick();
+				await nextTick();
 				initCropper();
 			}
 		}
@@ -312,7 +326,6 @@ export default defineComponent({
 						return 'crop_square';
 					case imageData.value.width / imageData.value.height:
 						return 'crop_original';
-					case NaN:
 					default:
 						return 'crop_free';
 				}
@@ -477,13 +490,13 @@ export default defineComponent({
 
 .toolbar-button {
 	padding: 8px;
-	background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgb(255 255 255 / 0.2);
 	border-radius: var(--border-radius);
 	cursor: pointer;
 	transition: background-color var(--fast) var(--transition);
 
 	&:hover {
-		background-color: rgba(255, 255, 255, 0.15);
+		background-color: rgb(255 255 255 / 0.15);
 	}
 }
 

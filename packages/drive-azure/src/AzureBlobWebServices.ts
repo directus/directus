@@ -53,8 +53,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
-	protected _fullPath(filePath: string) {
-		return path.join(this.$root, filePath);
+	protected _fullPath(filePath: string): string {
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	public async copy(src: string, dest: string): Promise<Response> {
@@ -69,7 +69,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 			const result = await poller.pollUntilDone();
 
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, src);
 		}
 	}
@@ -80,7 +80,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		try {
 			const result = await this.$containerClient.getBlockBlobClient(location).deleteIfExists();
 			return { raw: result, wasDeleted: result.succeeded };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -95,21 +95,19 @@ export class AzureBlobWebServicesStorage extends Storage {
 		try {
 			const result = await this.$containerClient.getBlockBlobClient(location).exists();
 			return { exists: result, raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
 
 	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
-		location = this._fullPath(location);
-
 		try {
 			const bufferResult = await this.getBuffer(location);
 			return {
 				content: bufferResult.content.toString(encoding),
 				raw: bufferResult.raw,
 			};
-		} catch (e) {
+		} catch (e: any) {
 			throw new FileNotFound(e, location);
 		}
 	}
@@ -120,7 +118,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		try {
 			const client = this.$containerClient.getBlobClient(location);
 			return { content: await client.downloadToBuffer(), raw: client };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -145,7 +143,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 
 			const sasUrl = client.url + '?' + blobSAS;
 			return { signedUrl: sasUrl, raw: client };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -160,7 +158,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 				modified: props.lastModified as Date,
 				raw: props,
 			};
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -187,7 +185,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 				.catch((error) => {
 					intermediateStream.emit('error', error);
 				});
-		} catch (error) {
+		} catch (error: any) {
 			intermediateStream.emit('error', error);
 		}
 
@@ -215,20 +213,26 @@ export class AzureBlobWebServicesStorage extends Storage {
 		return { raw: result };
 	}
 
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public async put(
+		location: string,
+		content: Buffer | NodeJS.ReadableStream | string,
+		type?: string
+	): Promise<Response> {
 		location = this._fullPath(location);
 
 		const blockBlobClient = this.$containerClient.getBlockBlobClient(location);
 
 		try {
 			if (isReadableStream(content)) {
-				const result = await blockBlobClient.uploadStream(content as Readable);
+				const result = await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {
+					blobHTTPHeaders: { blobContentType: type ?? 'application/octet-stream' },
+				});
 				return { raw: result };
 			}
 
 			const result = await blockBlobClient.upload(content, content.length);
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -247,7 +251,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 					path: (blob.name as string).substring(this.$root.length),
 				};
 			}
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, prefix);
 		}
 	}

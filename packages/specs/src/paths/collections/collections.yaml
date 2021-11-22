@@ -3,11 +3,11 @@ get:
   description: Returns a list of the collections available in the project.
   operationId: getCollections
   parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/Offset"
-    - $ref: "../../openapi.yaml#/components/parameters/Single"
-    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -17,11 +17,11 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/Collections"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+                  $ref: '../../openapi.yaml#/components/schemas/Collections'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Collections
 
@@ -30,7 +30,7 @@ post:
   description: Create a new collection in Directus.
   operationId: createCollection
   parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       application/json:
@@ -44,7 +44,9 @@ post:
               example: my_collection
             fields:
               type: array
-              description: The fields contained in this collection. See the fields reference for more information. Each individual field requires field, type, and interface to be provided.
+              description:
+                The fields contained in this collection. See the fields reference for more information. Each individual
+                field requires field, type, and interface to be provided.
               items:
                 type: object
             icon:
@@ -71,7 +73,8 @@ post:
               type: boolean
               example: false
             translation:
-              description: Key value pairs of how to show this collection's name in different languages in the admin app.
+              description:
+                Key value pairs of how to show this collection's name in different languages in the admin app.
               type: string
               example: null
               nullable: true
@@ -101,18 +104,18 @@ post:
               example: null
               nullable: true
   responses:
-    "200":
+    '200':
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Collections"
+                $ref: '../../openapi.yaml#/components/schemas/Collections'
       description: Successful request
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Collections

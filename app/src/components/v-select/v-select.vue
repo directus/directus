@@ -1,39 +1,45 @@
 <template>
 	<v-menu
-		:disabled="disabled"
 		class="v-select"
+		:disabled="disabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
+		:placement="placement"
 	>
 		<template #activator="{ toggle, active }">
-			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue }" @click="toggle">
-				{{ displayValue || placeholder }}
+			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue, label, active }" @click="toggle">
+				<slot name="preview">{{ displayValue || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
-			<v-input
-				v-else
-				:full-width="fullWidth"
-				readonly
-				:value="displayValue"
-				@click="toggle"
-				:placeholder="placeholder"
-				:disabled="disabled"
-				:active="active"
-			>
-				<template #prepend><slot name="prepend" /></template>
-				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
-			</v-input>
+			<slot v-else name="preview">
+				<v-input
+					:full-width="fullWidth"
+					readonly
+					:model-value="displayValue"
+					clickable
+					:placeholder="placeholder"
+					:disabled="disabled"
+					:active="active"
+					@click="toggle"
+				>
+					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
+					<template #append>
+						<v-icon name="expand_more" :class="{ active }" />
+						<slot name="append" />
+					</template>
+				</v-input>
+			</slot>
 		</template>
 
-		<v-list class="list">
+		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
 			<template v-if="showDeselect">
-				<v-list-item @click="$emit('input', null)" :disabled="value === null">
+				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ multiple ? $t('deselect_all') : $t('deselect') }}
+						{{ multiple ? t('deselect_all') : t('deselect') }}
 					</v-list-item-content>
 					<v-list-item-icon v-if="multiple === false">
 						<v-icon name="close" />
@@ -42,75 +48,68 @@
 				<v-divider />
 			</template>
 
-			<template v-for="(item, index) in _items">
-				<v-divider :key="index" v-if="item.divider === true" />
-
-				<v-list-item
+			<template v-for="(item, index) in internalItems" :key="index">
+				<select-list-item-group
+					v-if="item.children"
+					:item="item"
+					:model-value="modelValue"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
+				<select-list-item
 					v-else
-					:key="item.text + item.value"
-					:active="multiple ? (value || []).includes(item.value) : value === item.value"
-					:disabled="item.disabled"
-					@click="multiple ? null : $emit('input', item.value)"
-				>
-					<v-list-item-icon v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon">
-						<v-icon :name="item.icon" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
-						<v-checkbox
-							v-else
-							:inputValue="value || []"
-							:label="item.text"
-							:value="item.value"
-							@change="$emit('input', $event.length > 0 ? $event : null)"
-						/>
-					</v-list-item-content>
-				</v-list-item>
+					:model-value="modelValue"
+					:item="item"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
 			</template>
 
 			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
 				<v-list-item-content>
 					<input
-						class="other-input"
-						@focus="otherValue ? $emit('input', otherValue) : null"
 						v-model="otherValue"
-						:placeholder="$t('other')"
+						class="other-input"
+						:placeholder="t('other')"
+						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
 				</v-list-item-content>
 			</v-list-item>
 
 			<template v-if="allowOther && multiple === true">
 				<v-list-item
-					v-for="otherValue in otherValues"
-					:key="otherValue.key"
-					:active="(value || []).includes(otherValue.value)"
+					v-for="otherVal in otherValues"
+					:key="otherVal.key"
+					:active="(modelValue || []).includes(otherVal.value)"
 					@click.stop
 				>
 					<v-list-item-icon>
 						<v-checkbox
-							:inputValue="value || []"
-							:value="otherValue.value"
-							@change="$emit('input', $event.length > 0 ? $event : null)"
+							:model-value="modelValue || []"
+							:value="otherVal.value"
+							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-icon>
 					<v-list-item-content>
 						<input
-							class="other-input"
-							:value="otherValue.value"
-							:placeholder="$t('other')"
 							v-focus
-							@input="setOtherValue(otherValue.key, $event.target.value)"
-							@blur="otherValue.value.length === 0 && setOtherValue(otherValue.key, null)"
+							class="other-input"
+							:value="otherVal.value"
+							:placeholder="t('other')"
+							@input="setOtherValue(otherVal.key, $event.target.value)"
+							@blur="otherVal.value.length === 0 && setOtherValue(otherVal.key, null)"
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
-						<v-icon name="close" @click="setOtherValue(otherValue.key, null)" />
+						<v-icon name="close" clickable @click="setOtherValue(otherVal.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 
 				<v-list-item @click.stop="addOtherValue()">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('other') }}</v-list-item-content>
+					<v-list-item-content>{{ t('other') }}</v-list-item-content>
 				</v-list-item>
 			</template>
 		</v-list>
@@ -118,14 +117,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, toRefs, Ref } from '@vue/composition-api';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, toRefs, Ref } from 'vue';
 import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
+import { get } from 'lodash';
+import SelectListItemGroup from './select-list-item-group.vue';
+import SelectListItem from './select-list-item.vue';
+import { Option } from './types';
+import { Placement } from '@popperjs/core';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
 
 export default defineComponent({
+	components: { SelectListItemGroup, SelectListItem },
 	props: {
 		items: {
 			type: Array as PropType<ItemsRaw>,
@@ -143,13 +148,29 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		value: {
+		itemDisabled: {
+			type: String,
+			default: 'disabled',
+		},
+		itemSelectable: {
+			type: String,
+			default: 'selectable',
+		},
+		itemChildren: {
+			type: String,
+			default: 'children',
+		},
+		modelValue: {
 			type: [Array, String, Number, Boolean] as PropType<InputValue>,
 			default: null,
 		},
 		multiple: {
 			type: Boolean,
 			default: false,
+		},
+		mandatory: {
+			type: Boolean,
+			default: true,
 		},
 		placeholder: {
 			type: String,
@@ -179,24 +200,38 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		label: {
+			type: Boolean,
+			default: false,
+		},
 		multiplePreviewThreshold: {
 			type: Number,
 			default: 3,
 		},
+		placement: {
+			type: String as PropType<Placement>,
+			default: 'bottom',
+		},
 	},
+	emits: ['update:modelValue', 'group-toggle'],
 	setup(props, { emit }) {
-		const { _items } = useItems();
+		const { t } = useI18n();
+
+		const { internalItems } = useItems();
 		const { displayValue } = useDisplayValue();
-		const { value } = toRefs(props);
-		const { otherValue, usesOtherValue } = useCustomSelection(value as Ref<string>, _items, emit);
+		const { modelValue } = toRefs(props);
+		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
+			emit('update:modelValue', value)
+		);
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
-			value as Ref<string[]>,
-			_items,
-			emit
+			modelValue as Ref<string[]>,
+			internalItems,
+			(value) => emit('update:modelValue', value)
 		);
 
 		return {
-			_items,
+			t,
+			internalItems,
 			displayValue,
 			otherValue,
 			usesOtherValue,
@@ -206,8 +241,8 @@ export default defineComponent({
 		};
 
 		function useItems() {
-			const _items = computed(() => {
-				const items = props.items.map((item) => {
+			const internalItems = computed(() => {
+				const parseItem = (item: Record<string, any>): Option => {
 					if (typeof item === 'string') {
 						return {
 							text: item,
@@ -215,63 +250,82 @@ export default defineComponent({
 						};
 					}
 
-					if (item.divider === true) return { divider: true };
+					if (item.divider === true) return { value: null, divider: true };
+
+					const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
 
 					return {
-						text: item[props.itemText],
-						value: item[props.itemValue],
-						icon: item[props.itemIcon],
-						disabled: item.disabled,
+						text: get(item, props.itemText),
+						value: get(item, props.itemValue),
+						icon: get(item, props.itemIcon),
+						disabled: get(item, props.itemDisabled),
+						selectable: get(item, props.itemSelectable),
+						children,
 					};
-				});
+				};
+
+				const items = props.items.map(parseItem);
 
 				return items;
 			});
 
-			return { _items };
+			return { internalItems };
 		}
 
 		function useDisplayValue() {
 			const displayValue = computed(() => {
-				if (Array.isArray(props.value)) {
-					if (props.value.length < props.multiplePreviewThreshold) {
-						return props.value
+				if (Array.isArray(props.modelValue)) {
+					if (props.modelValue.length < props.multiplePreviewThreshold) {
+						return props.modelValue
 							.map((value) => {
 								return getTextForValue(value) || value;
 							})
 							.join(', ');
 					} else {
-						const itemCount = _items.value.length + otherValues.value.length;
-						const selectionCount = props.value.length;
+						const itemCount = internalItems.value.length + otherValues.value.length;
+						const selectionCount = props.modelValue.length;
 
 						if (itemCount === selectionCount) {
-							return i18n.t('all_items');
+							return t('all_items');
 						} else {
-							return i18n.tc('item_count', selectionCount);
+							return t('item_count', selectionCount);
 						}
 					}
 				}
 
-				return getTextForValue(props.value) || props.value;
+				return getTextForValue(props.modelValue) || props.modelValue;
 			});
 
 			return { displayValue };
 
 			function getTextForValue(value: string | number) {
-				return _items.value.find((item) => item.value === value)?.['text'];
+				return findValue(internalItems.value);
+
+				function findValue(choices: Option[]): string | undefined {
+					let textValue: string | undefined = choices.find((item) => item.value === value)?.['text'];
+
+					for (const choice of choices) {
+						if (!textValue) {
+							if (choice.children) {
+								textValue = findValue(choice.children);
+							}
+						}
+					}
+
+					return textValue;
+				}
 			}
 		}
 	},
 });
 </script>
 
-<style>
-body {
+<style scoped lang="scss">
+:global(body) {
 	--v-select-font-family: var(--family-sans-serif);
+	--v-select-placeholder-color: var(--foreground-subdued);
 }
-</style>
 
-<style lang="scss" scoped>
 .list {
 	--v-list-min-width: 0;
 }
@@ -284,19 +338,19 @@ body {
 	--v-input-font-family: var(--v-select-font-family);
 
 	cursor: pointer;
+}
 
-	.v-icon {
-		transition: transform var(--medium) var(--transition-out);
+.v-input .v-icon {
+	transition: transform var(--medium) var(--transition-out);
+}
 
-		&.active {
-			transform: scaleY(-1);
-			transition-timing-function: var(--transition-in);
-		}
-	}
+.v-input .v-icon.active {
+	transform: scaleY(-1);
+	transition-timing-function: var(--transition-in);
+}
 
-	::v-deep input {
-		cursor: pointer;
-	}
+.v-input :deep(input) {
+	cursor: pointer;
 }
 
 .other-input {
@@ -312,13 +366,27 @@ body {
 	width: max-content;
 	padding-right: 18px;
 	cursor: pointer;
+}
 
-	.v-icon {
-		position: absolute;
-	}
+.inline-display.label {
+	padding: 4px 8px;
+	padding-right: 26px;
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+	transition: color var(--fast) var(--transition);
 
-	&.placeholder {
-		color: var(--foreground-subdued);
+	&:hover,
+	&.active {
+		color: var(--foreground);
 	}
+}
+
+.inline-display .v-icon {
+	position: absolute;
+}
+
+.inline-display.placeholder {
+	color: var(--v-select-placeholder-color);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div class="revision-item" @click="$emit('click')" :class="{ last }">
+	<div class="revision-item" :class="{ last }" @click="$emit('click')">
 		<div class="header">
 			<span class="dot" :class="revision.activity.action" />
 			{{ headerMessage }}
@@ -8,18 +8,18 @@
 			<span class="time">{{ time }}</span>
 			–
 			<user-popover v-if="revision.activity.user" class="user" :user="revision.activity.user.id">
-				<router-link :to="`/users/${revision.activity.user.id}`">{{ user }}</router-link>
+				<span>{{ user }}</span>
 			</user-popover>
 
-			<span v-else>{{ $t('private_user') }}</span>
+			<span v-else>{{ t('private_user') }}</span>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
-import i18n from '@/lang';
 import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
 
@@ -34,7 +34,10 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['click'],
 	setup(props) {
+		const { t } = useI18n();
+
 		const revisionCount = computed(() => {
 			return Object.keys(props.revision.delta).length;
 		});
@@ -42,20 +45,20 @@ export default defineComponent({
 		const headerMessage = computed(() => {
 			switch (props.revision.activity.action.toLowerCase()) {
 				case 'create':
-					return i18n.t('revision_delta_created');
+					return t('revision_delta_created');
 				case 'update':
-					return i18n.tc('revision_delta_updated', revisionCount.value);
+					return t('revision_delta_updated', revisionCount.value);
 				case 'delete':
-					return i18n.t('revision_delta_deleted');
+					return t('revision_delta_deleted');
 				case 'revert':
-					return i18n.t('revision_delta_reverted');
+					return t('revision_delta_reverted');
 				default:
-					return i18n.t('revision_delta_other');
+					return t('revision_delta_other');
 			}
 		});
 
 		const time = computed(() => {
-			return format(new Date(props.revision.activity.timestamp), String(i18n.t('date-fns_time')));
+			return format(new Date(props.revision.activity.timestamp), String(t('date-fns_time')));
 		});
 
 		const user = computed(() => {
@@ -63,10 +66,10 @@ export default defineComponent({
 				return userName(props.revision.activity.user);
 			}
 
-			return i18n.t('private_user');
+			return t('private_user');
 		});
 
-		return { headerMessage, time, user };
+		return { t, headerMessage, time, user };
 	},
 });
 </script>
@@ -74,7 +77,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .revision-item {
 	position: relative;
-	margin-bottom: 16px;
+	margin-bottom: 12px;
 	margin-left: 16px;
 
 	.header {
@@ -123,7 +126,7 @@ export default defineComponent({
 		top: -4px;
 		left: -24px;
 		z-index: 1;
-		width: calc(100% + 28px);
+		width: calc(100% + 32px);
 		height: calc(100% + 10px);
 		background-color: var(--background-normal-alt);
 		border-radius: var(--border-radius);
@@ -135,6 +138,7 @@ export default defineComponent({
 
 	&:hover {
 		cursor: pointer;
+
 		.header {
 			.dot {
 				border-color: var(--background-normal-alt);
@@ -159,6 +163,11 @@ export default defineComponent({
 	}
 
 	.user {
+		span {
+			margin: -6px;
+			padding: 6px;
+		}
+
 		&:hover {
 			color: var(--foreground-normal);
 		}

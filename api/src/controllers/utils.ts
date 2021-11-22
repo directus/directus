@@ -1,12 +1,15 @@
-import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { nanoid } from 'nanoid';
-import { InvalidQueryException, InvalidPayloadException } from '../exceptions';
 import argon2 from 'argon2';
-import collectionExists from '../middleware/collection-exists';
-import { UtilsService, RevisionsService } from '../services';
+import { Router } from 'express';
 import Joi from 'joi';
+import { nanoid } from 'nanoid';
+import { ForbiddenException, InvalidPayloadException, InvalidQueryException } from '../exceptions';
+import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
+import { RevisionsService, UtilsService, ImportService } from '../services';
+import asyncHandler from '../utils/async-handler';
+import Busboy, { BusboyHeaders } from 'busboy';
+import { flushCaches } from '../cache';
+import { generateHash } from '../utils/generate-hash';
 
 const router = Router();
 
@@ -29,7 +32,7 @@ router.post(
 			throw new InvalidPayloadException(`"string" is required`);
 		}
 
-		const hash = await argon2.hash(req.body.string);
+		const hash = await generateHash(req.body.string);
 
 		return res.json({ data: hash });
 	})
@@ -85,6 +88,57 @@ router.post(
 		next();
 	}),
 	respond
+);
+
+router.post(
+	'/import/:collection',
+	collectionExists,
+	asyncHandler(async (req, res, next) => {
+		const service = new ImportService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		let headers: BusboyHeaders;
+
+		if (req.headers['content-type']) {
+			headers = req.headers as BusboyHeaders;
+		} else {
+			headers = {
+				...req.headers,
+				'content-type': 'application/octet-stream',
+			};
+		}
+
+		const busboy = new Busboy({ headers });
+
+		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+			try {
+				await service.import(req.params.collection, mimetype, fileStream);
+			} catch (err: any) {
+				return next(err);
+			}
+
+			return res.status(200).end();
+		});
+
+		busboy.on('error', (err: Error) => next(err));
+
+		req.pipe(busboy);
+	})
+);
+
+router.post(
+	'/cache/clear',
+	asyncHandler(async (req, res) => {
+		if (req.accountability?.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		await flushCaches();
+
+		res.status(200).end();
+	})
 );
 
 export default router;

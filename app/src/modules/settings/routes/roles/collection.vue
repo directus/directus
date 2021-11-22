@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('settings_permissions')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_permissions')">
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_role')">
+			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -19,8 +19,8 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_roles_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
@@ -33,21 +33,21 @@
 				:loading="loading"
 				@click:row="navigateToRole"
 			>
-				<template #item.icon="{ item }">
+				<template #[`item.icon`]="{ item }">
 					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
 				</template>
 
-				<template #item.name="{ item }">
+				<template #[`item.name`]="{ item }">
 					<span class="name" :class="{ public: item.public }">
 						{{ item.name }}
 					</span>
 				</template>
 
-				<template #item.count="{ item }">
+				<template #[`item.count`]="{ item }">
 					<value-null v-if="item.public" />
 				</template>
 
-				<template #item.description="{ item }">
+				<template #[`item.description`]="{ item }">
 					<span class="description">{{ item.description }}</span>
 				</template>
 			</v-table>
@@ -57,15 +57,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 
-import { i18n } from '@/lang';
 import api from '@/api';
-import marked from 'marked';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 type Role = {
@@ -76,10 +75,14 @@ type Role = {
 };
 
 export default defineComponent({
-	name: 'roles-collection',
+	name: 'RolesCollection',
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const roles = ref<Role[]>([]);
 		const loading = ref(false);
 
@@ -92,21 +95,21 @@ export default defineComponent({
 				align: 'left',
 			},
 			{
-				text: i18n.t('name'),
+				text: t('name'),
 				value: 'name',
 				sortable: false,
 				width: 140,
 				align: 'left',
 			},
 			{
-				text: i18n.t('users'),
+				text: t('users'),
 				value: 'count',
 				sortable: false,
 				width: 140,
 				align: 'left',
 			},
 			{
-				text: i18n.t('description'),
+				text: t('description'),
 				value: 'description',
 				sortable: false,
 				width: 470,
@@ -120,7 +123,7 @@ export default defineComponent({
 			return `/settings/roles/+`;
 		});
 
-		return { marked, loading, roles, tableHeaders, addNewLink, navigateToRole };
+		return { t, loading, roles, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
 			loading.value = true;
@@ -133,9 +136,9 @@ export default defineComponent({
 				roles.value = [
 					{
 						public: true,
-						name: i18n.t('public'),
+						name: t('public_label'),
 						icon: 'public',
-						description: i18n.t('public_description'),
+						description: t('public_description'),
 						id: 'public',
 					},
 					...response.data.data.map((role: any) => {
@@ -145,14 +148,14 @@ export default defineComponent({
 						};
 					}),
 				];
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}
 		}
 
-		function navigateToRole(item: Role) {
+		function navigateToRole({ item }: { item: Role }) {
 			router.push(`/settings/roles/${item.id}`);
 		}
 	},

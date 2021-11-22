@@ -12,7 +12,7 @@ export default [
 	'iPad',
 	'iPhone',
 	'iPod',
-	'MacOS',
+	'macOS',
 	'M2M',
 	'M2O',
 	'McDonalds',

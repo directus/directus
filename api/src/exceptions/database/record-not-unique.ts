@@ -1,13 +1,17 @@
-import { BaseException } from '../base';
+import { BaseException } from '@directus/shared/exceptions';
 
 type Extensions = {
 	collection: string;
-	field: string;
+	field: string | null;
 	invalid?: string;
 };
 
 export class RecordNotUniqueException extends BaseException {
-	constructor(field: string, extensions?: Extensions) {
-		super(`Field "${field}" has to be unique.`, 400, 'RECORD_NOT_UNIQUE', extensions);
+	constructor(field: string | null, extensions?: Extensions) {
+		if (field) {
+			super(`Field "${field}" has to be unique.`, 400, 'RECORD_NOT_UNIQUE', extensions);
+		} else {
+			super(`Field has to be unique.`, 400, 'RECORD_NOT_UNIQUE', extensions);
+		}
 	}
 }

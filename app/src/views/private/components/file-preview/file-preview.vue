@@ -1,20 +1,12 @@
 <template>
-	<div class="file-preview" v-if="type">
+	<div v-if="type && !imgError" class="file-preview">
 		<div
 			v-if="type === 'image'"
 			class="image"
 			:class="{ svg: isSVG, 'max-size': inModal === false }"
 			@click="$emit('click')"
 		>
-			<img
-				:src="src"
-				:width="width"
-				:height="height"
-				:style="{
-					maxWidth: width ? width + 'px' : '100%',
-				}"
-				:alt="title"
-			/>
+			<img :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 			<v-icon v-if="inModal === false" name="upload" />
 		</div>
 
@@ -25,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -54,7 +46,10 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['click'],
 	setup(props) {
+		const imgError = ref(false);
+
 		const type = computed<'image' | 'video' | 'audio' | null>(() => {
 			if (props.mime === null) return null;
 
@@ -75,7 +70,7 @@ export default defineComponent({
 
 		const isSVG = computed(() => props.mime.includes('svg'));
 
-		return { type, isSVG };
+		return { type, isSVG, imgError };
 	},
 });
 </script>
@@ -93,8 +88,7 @@ img,
 video,
 audio {
 	width: 100%;
-	height: 100%;
-	max-height: 100%;
+	max-height: 500px;
 	object-fit: contain;
 	border-radius: var(--border-radius);
 }
@@ -113,7 +107,6 @@ audio {
 	img {
 		z-index: 1;
 		display: block;
-		max-height: inherit;
 		margin: 0 auto;
 	}
 
@@ -123,7 +116,7 @@ audio {
 		bottom: 12px;
 		z-index: 2;
 		color: white;
-		text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
+		text-shadow: 0px 0px 8px rgb(0 0 0 / 0.75);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
@@ -139,5 +132,10 @@ audio {
 	padding: 64px;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
+
+	&.max-size img {
+		// Max height - padding * 2
+		max-height: calc(75vh - 128px);
+	}
 }
 </style>

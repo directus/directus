@@ -1,15 +1,16 @@
-import { Knex } from 'knex';
 import fse from 'fs-extra';
-import path from 'path';
 import yaml from 'js-yaml';
-import { types } from '../../types';
-import { isObject, merge } from 'lodash';
+import { Knex } from 'knex';
+import { isObject } from 'lodash';
+import path from 'path';
+import { Type, Field } from '@directus/shared/types';
+import { getGeometryHelper } from '../helpers/geometry';
 
 type TableSeed = {
 	table: string;
 	columns: {
 		[column: string]: {
-			type?: typeof types[number];
+			type?: Type;
 			primary?: boolean;
 			nullable?: boolean;
 			default?: any;
@@ -25,7 +26,7 @@ type TableSeed = {
 	};
 };
 
-export default async function runSeed(database: Knex) {
+export default async function runSeed(database: Knex): Promise<void> {
 	const exists = await database.schema.hasTable('directus_collections');
 
 	if (exists) {
@@ -45,6 +46,8 @@ export default async function runSeed(database: Knex) {
 			for (const [columnName, columnInfo] of Object.entries(seedData.columns)) {
 				let column: Knex.ColumnBuilder;
 
+				if (columnInfo.type === 'alias' || columnInfo.type === 'unknown') return;
+
 				if (columnInfo.type === 'string') {
 					column = tableBuilder.string(columnName, columnInfo.length);
 				} else if (columnInfo.increments) {
@@ -53,7 +56,11 @@ export default async function runSeed(database: Knex) {
 					column = tableBuilder.string(columnName);
 				} else if (columnInfo.type === 'hash') {
 					column = tableBuilder.string(columnName, 255);
+				} else if (columnInfo.type?.startsWith('geometry')) {
+					const helper = getGeometryHelper();
+					column = helper.createColumn(tableBuilder, { field: columnName, type: columnInfo.type } as Field);
 				} else {
+					// @ts-ignore
 					column = tableBuilder[columnInfo.type!](columnName);
 				}
 

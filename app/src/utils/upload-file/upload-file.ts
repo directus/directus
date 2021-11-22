@@ -1,8 +1,7 @@
 import api from '@/api';
-import i18n from '@/lang';
-import { notify } from '@/utils/notify';
-
 import emitter, { Events } from '@/events';
+import { i18n } from '@/lang';
+import { notify } from '@/utils/notify';
 import { unexpectedError } from '../unexpected-error';
 
 export default async function uploadFile(
@@ -13,7 +12,7 @@ export default async function uploadFile(
 		preset?: Record<string, any>;
 		fileId?: string;
 	}
-) {
+): Promise<any> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
 
@@ -40,7 +39,7 @@ export default async function uploadFile(
 
 		if (options?.notifications) {
 			notify({
-				title: i18n.t('upload_file_success'),
+				title: i18n.global.t('upload_file_success'),
 				type: 'success',
 			});
 		}
@@ -48,7 +47,7 @@ export default async function uploadFile(
 		emitter.emit(Events.upload);
 
 		return response.data.data;
-	} catch (err) {
+	} catch (err: any) {
 		unexpectedError(err);
 	}
 

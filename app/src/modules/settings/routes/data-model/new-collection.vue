@@ -1,89 +1,90 @@
 <template>
 	<v-drawer
-		:title="$t('creating_new_collection')"
-		:active="true"
+		:title="t('creating_new_collection')"
+		:model-value="isOpen"
 		class="new-collection"
 		persistent
-		@cancel="$router.push('/settings/data-model')"
-		:sidebar-label="$t(currentTab)"
+		:sidebar-label="t(currentTab[0])"
+		@cancel="router.push('/settings/data-model')"
 	>
 		<template #sidebar>
-			<v-tabs vertical v-model="currentTab">
-				<v-tab value="collection_setup">{{ $t('collection_setup') }}</v-tab>
+			<v-tabs v-model="currentTab" vertical>
+				<v-tab value="collection_setup">{{ t('collection_setup') }}</v-tab>
 				<v-tab value="optional_system_fields" :disabled="!collectionName">
-					{{ $t('optional_system_fields') }}
+					{{ t('optional_system_fields') }}
 				</v-tab>
 			</v-tabs>
 		</template>
 
-		<v-tabs-items class="content" v-model="currentTab">
+		<v-tabs-items v-model="currentTab" class="content">
 			<v-tab-item value="collection_setup">
-				<v-notice type="info">{{ $t('creating_collection_info') }}</v-notice>
+				<v-notice type="info">{{ t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
 					<div class="field half">
 						<div class="type-label">
-							{{ $t('name') }}
-							<v-icon class="required" v-tooltip="$t('required')" name="star" sup />
+							{{ t('name') }}
+							<v-icon v-tooltip="t('required')" class="required" name="star" sup />
 						</div>
 						<v-input
+							v-model="collectionName"
 							autofocus
 							class="monospace"
-							v-model="collectionName"
 							db-safe
-							:placeholder="$t('a_unique_table_name')"
+							:placeholder="t('a_unique_table_name')"
 						/>
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ $t('singleton') }}</div>
-						<v-checkbox block :label="$t('singleton_label')" v-model="singleton" />
+						<div class="type-label">{{ t('singleton') }}</div>
+						<v-checkbox v-model="singleton" block :label="t('singleton_label')" />
 					</div>
 					<v-divider class="full" />
 					<div class="field half">
-						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input
-							class="monospace"
-							v-model="primaryKeyFieldName"
-							db-safe
-							:placeholder="$t('a_unique_column_name')"
-						/>
+						<div class="type-label">{{ t('primary_key_field') }}</div>
+						<v-input v-model="primaryKeyFieldName" class="monospace" db-safe :placeholder="t('a_unique_column_name')" />
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ $t('type') }}</div>
+						<div class="type-label">{{ t('type') }}</div>
 						<v-select
+							v-model="primaryKeyFieldType"
 							:items="[
 								{
-									text: $t('auto_increment_integer'),
+									text: t('auto_increment_integer'),
 									value: 'auto_int',
 								},
 								{
-									text: $t('generated_uuid'),
+									text: t('generated_uuid'),
 									value: 'uuid',
 								},
 								{
-									text: $t('manual_string'),
+									text: t('manual_string'),
 									value: 'manual',
 								},
 							]"
-							v-model="primaryKeyFieldType"
 						/>
 					</div>
 				</div>
 			</v-tab-item>
 			<v-tab-item value="optional_system_fields">
-				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
+				<v-notice type="info">{{ t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
-					<div class="field" v-for="(info, field, index) in systemFields" :key="field" :class="index % 2 === 0 ? 'half':'half-right'">
-						<div class="type-label">{{ $t(info.label) }}</div>
+					<div
+						v-for="(info, field, index) in systemFields"
+						:key="field"
+						class="field"
+						:class="index % 2 === 0 ? 'half' : 'half-right'"
+					>
+						<div class="type-label">{{ t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
 							class="monospace"
 							:class="{ active: info.enabled }"
-							@click.native="info.enabled = true"
+							:disabled="info.inputDisabled"
+							@focus="info.enabled = true"
 						>
 							<template #prepend>
-								<v-checkbox v-model="info.enabled" />
+								<v-checkbox v-model="info.enabled" :disabled="info.inputDisabled" />
 							</template>
 
 							<template #append>
@@ -97,22 +98,22 @@
 
 		<template #actions>
 			<v-button
-				:disabled="!collectionName || collectionName.length === 0"
 				v-if="currentTab[0] === 'collection_setup'"
-				@click="currentTab = ['optional_system_fields']"
-				v-tooltip.bottom="$t('next')"
+				v-tooltip.bottom="t('next')"
+				:disabled="!collectionName || collectionName.length === 0"
 				icon
 				rounded
+				@click="currentTab = ['optional_system_fields']"
 			>
 				<v-icon name="arrow_forward" />
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'optional_system_fields'"
-				@click="save"
+				v-tooltip.bottom="t('finish_setup')"
 				:loading="saving"
-				v-tooltip.bottom="$t('finish_setup')"
 				icon
 				rounded
+				@click="save"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -121,20 +122,74 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { cloneDeep } from 'lodash';
+import { defineComponent, ref, reactive, watch } from 'vue';
 import api from '@/api';
-import { Field, Relation } from '@/types';
+import { Field, Relation } from '@directus/shared/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
-import router from '@/router';
-import i18n from '@/lang';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { DeepPartial } from '@directus/shared/types';
+
+const defaultSystemFields = {
+	status: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'status',
+		label: 'status',
+		icon: 'flag',
+	},
+	sort: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'sort',
+		label: 'sort',
+		icon: 'low_priority',
+	},
+	dateCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_created',
+		label: 'created_on',
+		icon: 'access_time',
+	},
+	userCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_created',
+		label: 'created_by',
+		icon: 'account_circle',
+	},
+	dateUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_updated',
+		label: 'updated_on',
+		icon: 'access_time',
+	},
+	userUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_updated',
+		label: 'updated_by',
+		icon: 'account_circle',
+	},
+};
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+
+		const isOpen = useDialogRoute();
 
 		const currentTab = ref(['collection_setup']);
 
@@ -149,48 +204,16 @@ export default defineComponent({
 		const archiveValue = ref<string>();
 		const unarchiveValue = ref<string>();
 
-		const systemFields = reactive({
-			status: {
-				enabled: false,
-				name: 'status',
-				label: 'status',
-				icon: 'flag',
-			},
-			sort: {
-				enabled: false,
-				name: 'sort',
-				label: 'sort',
-				icon: 'low_priority',
-			},
-			dateCreated: {
-				enabled: false,
-				name: 'date_created',
-				label: 'created_on',
-				icon: 'access_time',
-			},
-			userCreated: {
-				enabled: false,
-				name: 'user_created',
-				label: 'created_by',
-				icon: 'account_circle',
-			},
-			dateUpdated: {
-				enabled: false,
-				name: 'date_updated',
-				label: 'updated_on',
-				icon: 'access_time',
-			},
-			userUpdated: {
-				enabled: false,
-				name: 'user_updated',
-				label: 'updated_by',
-				icon: 'account_circle',
-			},
-		});
+		const systemFields = reactive(cloneDeep(defaultSystemFields));
 
 		const saving = ref(false);
 
+		watch(() => singleton.value, setOptionsForSingleton);
+
 		return {
+			t,
+			router,
+			isOpen,
 			currentTab,
 			save,
 			systemFields,
@@ -201,6 +224,11 @@ export default defineComponent({
 			singleton,
 		};
 
+		function setOptionsForSingleton() {
+			systemFields.sort = { ...defaultSystemFields.sort };
+			systemFields.sort.inputDisabled = singleton.value;
+		}
+
 		async function save() {
 			saving.value = true;
 
@@ -208,6 +236,7 @@ export default defineComponent({
 				await api.post(`/collections`, {
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
+					schema: {},
 					meta: {
 						sort_field: sortField.value,
 						archive_field: archiveField.value,
@@ -220,7 +249,10 @@ export default defineComponent({
 				const relations = getSystemRelations();
 
 				if (relations.length > 0) {
-					await api.post('/relations', relations);
+					for (const relation of relations) {
+						await api.post('/relations', relation);
+					}
+
 					await relationsStore.hydrate();
 				}
 
@@ -228,12 +260,12 @@ export default defineComponent({
 				await fieldsStore.hydrate();
 
 				notify({
-					title: i18n.t('collection_created'),
+					title: t('collection_created'),
 					type: 'success',
 				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;
@@ -248,7 +280,7 @@ export default defineComponent({
 					meta: {
 						hidden: true,
 						readonly: true,
-						interface: 'text-input',
+						interface: 'input',
 						special: ['uuid'],
 					},
 					schema: {
@@ -262,7 +294,7 @@ export default defineComponent({
 					field: primaryKeyFieldName.value,
 					type: 'string',
 					meta: {
-						interface: 'text-input',
+						interface: 'input',
 						readonly: false,
 						hidden: false,
 					},
@@ -278,7 +310,7 @@ export default defineComponent({
 					type: 'integer',
 					meta: {
 						hidden: true,
-						interface: 'numeric',
+						interface: 'input',
 						readonly: true,
 					},
 					schema: {
@@ -302,20 +334,20 @@ export default defineComponent({
 						options: {
 							choices: [
 								{
-									text: 'Published',
+									text: '$t:published',
 									value: 'published',
 								},
 								{
-									text: 'Draft',
+									text: '$t:draft',
 									value: 'draft',
 								},
 								{
-									text: 'Archived',
+									text: '$t:archived',
 									value: 'archived',
 								},
 							],
 						},
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						display: 'labels',
 						display_options: {
 							showAsDot: true,
@@ -352,7 +384,7 @@ export default defineComponent({
 					field: systemFields.sort.name,
 					type: 'integer',
 					meta: {
-						interface: 'numeric',
+						interface: 'input',
 						hidden: true,
 					},
 					schema: {},
@@ -367,9 +399,9 @@ export default defineComponent({
 					type: 'uuid',
 					meta: {
 						special: ['user-created'],
-						interface: 'user',
+						interface: 'select-dropdown-m2o',
 						options: {
-							display: 'both',
+							template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
 						},
 						display: 'user',
 						readonly: true,
@@ -405,9 +437,9 @@ export default defineComponent({
 					type: 'uuid',
 					meta: {
 						special: ['user-updated'],
-						interface: 'user',
+						interface: 'select-dropdown-m2o',
 						options: {
-							display: 'both',
+							template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
 						},
 						display: 'user',
 						readonly: true,
@@ -445,21 +477,23 @@ export default defineComponent({
 
 			if (systemFields.userCreated.enabled === true) {
 				relations.push({
-					many_collection: collectionName.value!,
-					many_field: systemFields.userCreated.name,
-					many_primary: primaryKeyFieldName.value,
-					one_collection: 'directus_users',
-					one_primary: 'id',
+					collection: collectionName.value!,
+					field: systemFields.userCreated.name,
+					related_collection: 'directus_users',
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				});
 			}
 
 			if (systemFields.userUpdated.enabled === true) {
 				relations.push({
-					many_collection: collectionName.value!,
-					many_field: systemFields.userUpdated.name,
-					many_primary: primaryKeyFieldName.value,
-					one_collection: 'directus_users',
-					one_primary: 'id',
+					collection: collectionName.value!,
+					field: systemFields.userUpdated.name,
+					related_collection: 'directus_users',
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				});
 			}
 
@@ -480,20 +514,16 @@ export default defineComponent({
 	@include form-grid;
 }
 
-.system {
-	::v-deep .v-input {
-		.input {
-			color: var(--foreground-subdued);
-		}
+.system :deep(.v-input .input) {
+	color: var(--foreground-subdued);
+}
 
-		&.active .input {
-			color: var(--foreground-normal);
-		}
-	}
+.system :deep(.v-input .active .input) {
+	color: var(--foreground-normal);
+}
 
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
-	}
+.system .v-icon {
+	--v-icon-color: var(--foreground-subdued);
 }
 
 .spacer {

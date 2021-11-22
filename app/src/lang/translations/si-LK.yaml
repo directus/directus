@@ -1,6 +1,10 @@
 ---
+group: සමූහය
 all: සියල්ල
 cancel: අවලංගු කරන්න
+interfaces:
+  filter:
+    all: සියල්ල
 layouts:
   cards:
     subtitle: උපසිරැසිය

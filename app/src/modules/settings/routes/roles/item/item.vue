@@ -1,57 +1,59 @@
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
-		<template #headline>{{ $t('settings_permissions') }}</template>
+	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false" @esc="confirmDelete = false">
+			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
 						:disabled="item === null"
 						@click="on"
-						v-tooltip.bottom="$t('delete')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="t('invite_users')"
 				rounded
 				icon
-				@click="userInviteModalActive = true"
-				v-tooltip.bottom="$t('invite_users')"
 				class="invite-user"
+				@click="userInviteModalActive = true"
 			>
 				<v-icon name="person_add" />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="t('save')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="$t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -65,18 +67,18 @@
 
 		<div class="roles">
 			<v-notice v-if="adminEnabled" type="info">
-				{{ $t('admins_have_all_permissions') }}
+				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
 			<v-form
+				v-model="edits"
 				collection="directus_roles"
 				:primary-key="primaryKey"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
-				v-model="edits"
 			/>
 		</div>
 
@@ -84,23 +86,39 @@
 			<role-info-sidebar-detail :role="item" />
 			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../../components/navigation.vue';
-import router from '@/router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
-import { useUserStore, usePermissionsStore } from '@/stores/';
+import { useUserStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
+import useShortcut from '@/composables/use-shortcut';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
-	name: 'roles-item',
+	name: 'RolesItem',
 	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview, UsersInvite },
 	props: {
 		primaryKey: {
@@ -113,8 +131,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 
@@ -145,7 +166,32 @@ export default defineComponent({
 			return !!values.app_access;
 		});
 
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) saveAndStay();
+		});
+
+		const isSavable = computed(() => {
+			if (hasEdits.value === true) return true;
+			return hasEdits.value;
+		});
+
+		unsavedChanges(isSavable);
+
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
+
 		return {
+			t,
 			item,
 			loading,
 			error,
@@ -160,6 +206,10 @@ export default defineComponent({
 			adminEnabled,
 			userInviteModalActive,
 			appAccess,
+			isSavable,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		/**
@@ -168,6 +218,11 @@ export default defineComponent({
 		 * update the userstore to make sure the role information is accurate with the latest changes
 		 * in case we're changing the current user's role
 		 */
+
+		async function saveAndStay() {
+			await save();
+			await userStore.hydrate();
+		}
 
 		async function saveAndQuit() {
 			await save();
@@ -178,6 +233,13 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			await remove();
 			router.push(`/settings/roles`);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });

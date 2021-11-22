@@ -1,25 +1,25 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayJsonValue from './formatted-json-value.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'formatted-json-value',
-	name: i18n.t('displays.formatted-json-value.formatted-json-value'),
-	description: i18n.t('displays.formatted-json-value.description'),
-	types: ['json'],
+	name: '$t:displays.formatted-json-value.formatted-json-value',
+	description: '$t:displays.formatted-json-value.description',
+	types: ['json', 'geometry'],
 	icon: 'settings_ethernet',
-	handler: DisplayJsonValue,
+	component: DisplayJsonValue,
 	options: [
 		{
 			field: 'format',
-			name: i18n.t('display_template'),
+			name: '$t:display_template',
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '{{ field }}',
 				},
 			},
 		},
 	],
-}));
+});

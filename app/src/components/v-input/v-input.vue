@@ -1,30 +1,27 @@
 <template>
-	<div
-		class="v-input"
-		@click="$emit('click', $event)"
-		:class="{ 'full-width': fullWidth, 'has-click': hasClick, disabled: disabled }"
-	>
+	<div class="v-input" :class="classes" @click="$emit('click', $event)">
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
-			<slot name="prepend-outer" :value="value" :disabled="disabled" />
+			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
 		<div class="input" :class="{ disabled, active }">
 			<div v-if="$slots.prepend" class="prepend">
-				<slot name="prepend" :value="value" :disabled="disabled" />
+				<slot name="prepend" :value="modelValue" :disabled="disabled" />
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
 				<input
-					v-bind="$attrs"
+					ref="input"
 					v-focus="autofocus"
-					v-on="_listeners"
+					v-bind="attributes"
+					:placeholder="placeholder"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="value"
-					ref="input"
+					:value="modelValue === null ? '' : String(modelValue)"
+					v-on="listeners"
 				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
@@ -33,29 +30,32 @@
 					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
-					@click="stepUp"
+					clickable
 					:disabled="!isStepUpAllowed"
+					@click="stepUp"
 				/>
 				<v-icon
 					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
-					@click="stepDown"
+					clickable
 					:disabled="!isStepDownAllowed"
+					@click="stepDown"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
-				<slot name="append" :value="value" :disabled="disabled" />
+				<slot name="append" :value="modelValue" :disabled="disabled" />
 			</div>
 		</div>
 		<div v-if="$slots['append-outer']" class="append-outer">
-			<slot name="append-outer" :value="value" :disabled="disabled" />
+			<slot name="append-outer" :value="modelValue" :disabled="disabled" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
+import { omit } from 'lodash';
 import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
@@ -66,6 +66,10 @@ export default defineComponent({
 			default: false,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		clickable: {
 			type: Boolean,
 			default: false,
 		},
@@ -81,7 +85,11 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		value: {
+		placeholder: {
+			type: [String, Number],
+			default: null,
+		},
+		modelValue: {
 			type: [String, Number],
 			default: null,
 		},
@@ -135,34 +143,54 @@ export default defineComponent({
 			default: 'off',
 		},
 	},
-	setup(props, { emit, listeners }) {
+	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
+	setup(props, { emit, attrs }) {
 		const input = ref<HTMLInputElement | null>(null);
 
-		const _listeners = computed(() => ({
-			...listeners,
+		const listeners = computed(() => ({
 			input: emitValue,
 			keydown: processValue,
-			blur: trimIfEnabled,
+			blur: (e: Event) => {
+				trimIfEnabled();
+				if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
+			},
+			focus: (e: PointerEvent) => emit('focus', e),
 		}));
+		const attributes = computed(() => omit(attrs, ['class']));
 
-		const hasClick = computed(() => {
-			return listeners.click !== undefined;
-		});
+		const classes = computed(() => [
+			{
+				'full-width': props.fullWidth,
+				'has-click': props.clickable,
+				disabled: props.disabled,
+			},
+			...((attrs.class || '') as string).split(' '),
+		]);
 
 		const isStepUpAllowed = computed(() => {
-			return props.disabled === false && (props.max === null || parseInt(String(props.value), 10) < props.max);
+			return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
 		});
 
 		const isStepDownAllowed = computed(() => {
-			return props.disabled === false && (props.min === null || parseInt(String(props.value), 10) > props.min);
+			return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
 		});
 
-		return { _listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
+		return { listeners, attributes, classes, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
 			const key = event.key.toLowerCase();
-			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'tab'];
+			const systemKeys = [
+				'meta',
+				'shift',
+				'alt',
+				'backspace',
+				'tab',
+				'arrowup',
+				'arrowdown',
+				'arrowleft',
+				'arrowright',
+			];
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.slug === true) {
@@ -198,36 +226,35 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.value && props.trim) {
-				emit('input', String(props.value).trim());
+			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
+				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}
 
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
-			if (props.nullable === true && !value) {
-				emit('input', null);
+			if (props.nullable === true && value === '') {
+				emit('update:modelValue', null);
 				return;
 			}
 
 			if (props.type === 'number') {
-				emit('input', Number(value));
+				emit('update:modelValue', Number(value));
 			} else {
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
-					value = slugify(value, { separator: props.slugSeparator });
+					value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
 					if (endsWithSpace) value += props.slugSeparator;
 				}
 
 				if (props.dbSafe === true) {
-					value = value.toLowerCase();
 					value = value.replace(/\s/g, '_');
 					// Replace é -> e etc
 					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 				}
 
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
@@ -238,7 +265,7 @@ export default defineComponent({
 			input.value.stepUp();
 
 			if (input.value.value != null) {
-				return emit('input', Number(input.value.value));
+				return emit('update:modelValue', Number(input.value.value));
 			}
 		}
 
@@ -249,9 +276,9 @@ export default defineComponent({
 			input.value.stepDown();
 
 			if (input.value.value) {
-				return emit('input', Number(input.value.value));
+				return emit('update:modelValue', Number(input.value.value));
 			} else {
-				return emit('input', props.min || 0);
+				return emit('update:modelValue', props.min || 0);
 			}
 		}
 	},
@@ -283,6 +310,7 @@ body {
 	}
 
 	.input {
+		position: relative;
 		display: flex;
 		flex-grow: 1;
 		align-items: center;
@@ -361,6 +389,7 @@ body {
 		}
 
 		.append {
+			flex-shrink: 0;
 			margin-left: 8px;
 		}
 	}
@@ -384,7 +413,7 @@ body {
 		&::-webkit-outer-spin-button,
 		&::-webkit-inner-spin-button {
 			margin: 0;
-			-webkit-appearance: none;
+			appearance: none;
 		}
 
 		&:focus {
@@ -392,8 +421,9 @@ body {
 		}
 
 		/* Firefox */
+
 		&[type='number'] {
-			-moz-appearance: textfield;
+			appearance: textfield;
 		}
 	}
 
@@ -414,6 +444,7 @@ body {
 
 		input {
 			pointer-events: none;
+
 			.prefix,
 			.suffix {
 				color: var(--foreground-subdued);

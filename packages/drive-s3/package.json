@@ -1,9 +1,13 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.0.0-rc.51",
+	"version": "9.0.1",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"types": "dist/index.d.ts",
 	"keywords": [
 		"storage",
@@ -25,34 +29,31 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc -b tsconfig.json",
-		"dev": "npm-watch build"
-	},
-	"watch": {
-		"build": {
-			"patterns": [
-				"src/*"
-			],
-			"ignore": "dist",
-			"extensions": "ts",
-			"silent": true,
-			"quiet": true
-		}
+		"build": "tsc --project ./tsconfig.json",
+		"cleanup": "run-p cleanup:*",
+		"cleanup:dist": "rimraf ./dist",
+		"cleanup:coverage": "rimraf ./coverage",
+		"test:watch": "jest --coverage --watchAll",
+		"test": "jest --coverage",
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"aws-sdk": "^2.680.0",
+		"@directus/drive": "9.0.1",
+		"aws-sdk": "^2.928.0",
 		"normalize-path": "^3.0.0"
 	},
-	"peerDependencies": {
-		"@directus/drive": "9.0.0-rc.51"
-	},
 	"devDependencies": {
-		"@directus/drive": "9.0.0-rc.51",
-		"@types/fs-extra": "^9.0.1",
-		"@types/normalize-path": "^3.0.0",
-		"fs-extra": "^9.0.0",
-		"npm-watch": "^0.9.0",
-		"typescript": "^4.2.3"
+		"@lukeed/uuid": "2.0.0",
+		"@types/fs-extra": "9.0.13",
+		"@types/jest": "27.0.2",
+		"@types/node": "16.11.7",
+		"@types/normalize-path": "3.0.0",
+		"dotenv": "10.0.0",
+		"fs-extra": "10.0.0",
+		"jest": "27.3.1",
+		"npm-run-all": "4.1.5",
+		"ts-jest": "27.0.7",
+		"typescript": "4.4.4"
 	},
 	"publishConfig": {
 		"access": "public"
@@ -64,5 +65,5 @@
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
-	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
+	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
 }

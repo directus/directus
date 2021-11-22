@@ -1,44 +1,35 @@
-import registerComponent from '@/utils/register-component/';
+import { getRootPath } from '@/utils/get-root-path';
+import { App } from 'vue';
 import { getInterfaces } from './index';
-import { Component } from 'vue';
-import api from '@/api';
+import { InterfaceConfig } from '@directus/shared/types';
 
-const interfaces = getInterfaces();
+const { interfacesRaw } = getInterfaces();
 
-export async function registerInterfaces() {
-	const context = require.context('.', true, /^.*index\.ts$/);
+export async function registerInterfaces(app: App): Promise<void> {
+	const interfaceModules = import.meta.globEager('./*/**/index.ts');
 
-	const modules = context
-		.keys()
-		.map((key) => context(key))
-		.map((mod) => mod.default)
-		.filter((m) => m);
+	const interfaces: InterfaceConfig[] = Object.values(interfaceModules).map((module) => module.default);
 
 	try {
-		const customResponse = await api.get('/extensions/interfaces');
+		const customInterfaces: { default: InterfaceConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-interface')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/interfaces/index.js`);
 
-		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
-			for (const customKey of customResponse.data.data) {
-				try {
-					const module = await import(/* webpackIgnore: true */ `/extensions/interfaces/${customKey}/index.js`);
-					modules.push(module.default);
-				} catch (err) {
-					console.warn(`Couldn't load custom interface "${customKey}"`);
-					console.warn(err);
-				}
-			}
-		}
-	} catch {
+		interfaces.push(...customInterfaces.default);
+	} catch (err: any) {
+		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom interfaces`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
-	interfaces.value = modules;
+	interfacesRaw.value = interfaces;
 
-	interfaces.value.forEach((inter) => {
-		registerComponent('interface-' + inter.id, inter.component);
+	interfacesRaw.value.forEach((inter: InterfaceConfig) => {
+		app.component(`interface-${inter.id}`, inter.component);
 
-		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {
-			registerComponent(`interface-options-${inter.id}`, inter.options as Component);
+		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false && inter.options !== null) {
+			app.component(`interface-options-${inter.id}`, inter.options);
 		}
 	});
 }

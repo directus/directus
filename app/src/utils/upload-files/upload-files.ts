@@ -1,6 +1,6 @@
-import uploadFile from '@/utils/upload-file';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
+import uploadFile from '@/utils/upload-file';
 import { unexpectedError } from '../unexpected-error';
 
 export default async function uploadFiles(
@@ -9,8 +9,9 @@ export default async function uploadFiles(
 		onProgressChange?: (percentages: number[]) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
+		folder?: string;
 	}
-) {
+): Promise<File[] | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
 
@@ -29,13 +30,13 @@ export default async function uploadFiles(
 
 		if (options?.notifications) {
 			notify({
-				title: i18n.t('upload_files_success', { count: files.length }),
+				title: i18n.global.t('upload_files_success', { count: files.length }),
 				type: 'success',
 			});
 		}
 
 		return uploadedFiles;
-	} catch (err) {
+	} catch (err: any) {
 		unexpectedError(err);
 	}
 }

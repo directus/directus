@@ -1,10 +1,8 @@
-import { TranslateResult } from 'vue-i18n';
-
 export type FancySelectItem = {
 	icon: string;
 	value: string | number;
-	text: string | TranslateResult;
-	description?: string | TranslateResult;
+	text: string;
+	description?: string;
 	divider?: boolean;
 	iconRight?: string;
 };

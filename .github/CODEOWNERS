@@ -1,0 +1,13 @@
+* @rijkvanzanten
+
+/docs/*.md @benhaynes
+
+/packages/sdk @joselcvarela
+
+/packages/shared @nickrum
+/packages/extensions-sdk @nickrum
+/packages/create-directus-extension @nickrum
+/app/vite.config.js @nickrum
+
+/tests @jaycammarano
+*.test.ts @jaycammarano

@@ -1,12 +1,24 @@
-import storage from '../storage';
-import sharp, { ResizeOptions } from 'sharp';
-import database from '../database';
-import path from 'path';
+import { Range, StatResponse } from '@directus/drive';
+import { Semaphore } from 'async-mutex';
 import { Knex } from 'knex';
-import { Accountability, AbstractServiceOptions, Transformation } from '../types';
+import { contentType } from 'mime-types';
+import hash from 'object-hash';
+import path from 'path';
+import sharp from 'sharp';
+import getDatabase from '../database';
+import env from '../env';
+import { IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
+import storage from '../storage';
+import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { AuthorizationService } from './authorization';
-import { Range } from '@directus/drive';
-import { RangeNotSatisfiableException } from '../exceptions';
+import * as TransformationUtils from '../utils/transformations';
+
+sharp.concurrency(1);
+
+// Note: don't put this in the service. The service can be initialized in multiple places, but they
+// should all share the same semaphore instance.
+const semaphore = new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
 
 export class AssetsService {
 	knex: Knex;
@@ -14,12 +26,16 @@ export class AssetsService {
 	authorizationService: AuthorizationService;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.authorizationService = new AuthorizationService(options);
 	}
 
-	async getAsset(id: string, transformation: Transformation, range?: Range) {
+	async getAsset(
+		id: string,
+		transformation: TransformationParams | TransformationPreset,
+		range?: Range
+	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
 		const publicSettings = await this.knex
 			.select('project_logo', 'public_background', 'public_foreground')
 			.from('directus_settings')
@@ -31,7 +47,7 @@ export class AssetsService {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = await database.select('*').from('directus_files').where({ id }).first();
+		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
 
 		if (range) {
 			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {
@@ -40,17 +56,22 @@ export class AssetsService {
 		}
 
 		const type = file.type;
+		const transforms = TransformationUtils.resolvePreset(transformation, file);
 
 		// We can only transform JPEG, PNG, and WebP
-		if (Object.keys(transformation).length > 0 && ['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
-			const resizeOptions = this.parseTransformation(transformation);
+		if (type && transforms.length > 0 && ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].includes(type)) {
+			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
 			const assetFilename =
 				path.basename(file.filename_disk, path.extname(file.filename_disk)) +
-				this.getAssetSuffix(transformation) +
-				path.extname(file.filename_disk);
+				getAssetSuffix(transforms) +
+				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
 
 			const { exists } = await storage.disk(file.storage).exists(assetFilename);
+
+			if (maybeNewFormat) {
+				file.type = contentType(assetFilename) || null;
+			}
 
 			if (exists) {
 				return {
@@ -60,47 +81,48 @@ export class AssetsService {
 				};
 			}
 
-			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
-			const transformer = sharp().rotate().resize(resizeOptions);
-			if (transformation.quality) {
-				transformer.toFormat(type.substring(6), { quality: Number(transformation.quality) });
+			// Check image size before transforming. Processing an image that's too large for the
+			// system memory will kill the API. Sharp technically checks for this too in it's
+			// limitInputPixels, but we should have that check applied before starting the read streams
+			const { width, height } = file;
+
+			if (
+				!width ||
+				!height ||
+				width > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION ||
+				height > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION
+			) {
+				throw new IllegalAssetTransformation(
+					`Image is too large to be transformed, or image size couldn't be determined.`
+				);
 			}
 
-			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
+			return await semaphore.runExclusive(async () => {
+				const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
+				const transformer = sharp({
+					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
+					sequentialRead: true,
+				}).rotate();
 
-			return {
-				stream: storage.disk(file.storage).getStream(assetFilename, range),
-				stat: await storage.disk(file.storage).getStat(assetFilename),
-				file,
-			};
+				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
+
+				await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
+
+				return {
+					stream: storage.disk(file.storage).getStream(assetFilename, range),
+					stat: await storage.disk(file.storage).getStat(assetFilename),
+					file,
+				};
+			});
 		} else {
 			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
 			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}
 	}
-
-	private parseTransformation(transformation: Transformation): ResizeOptions {
-		const resizeOptions: ResizeOptions = {};
-
-		if (transformation.width) resizeOptions.width = Number(transformation.width);
-		if (transformation.height) resizeOptions.height = Number(transformation.height);
-		if (transformation.fit) resizeOptions.fit = transformation.fit;
-		if (transformation.withoutEnlargement)
-			resizeOptions.withoutEnlargement = Boolean(transformation.withoutEnlargement);
-
-		return resizeOptions;
-	}
-
-	private getAssetSuffix(transformation: Transformation) {
-		if (Object.keys(transformation).length === 0) return '';
-
-		return (
-			'__' +
-			Object.entries(transformation)
-				.sort((a, b) => (a[0] > b[0] ? 1 : -1))
-				.map((e) => e.join('_'))
-				.join(',')
-		);
-	}
 }
+
+const getAssetSuffix = (transforms: Transformation[]) => {
+	if (Object.keys(transforms).length === 0) return '';
+	return `__${hash(transforms)}`;
+};

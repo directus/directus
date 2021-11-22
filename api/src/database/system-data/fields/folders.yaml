@@ -2,7 +2,7 @@ table: directus_folders
 
 fields:
   - field: id
-    interface: text-input
+    interface: input
     special: uuid
     width: half
 
@@ -11,4 +11,3 @@ fields:
 
   - field: name
     width: full
-

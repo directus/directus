@@ -1,49 +1,51 @@
-import { defineModule } from '@/modules/define';
-import { RouteConfig } from 'vue-router';
-import files, { Directory } from '@directus/docs';
-import StaticDocs from './routes/static.vue';
+import { defineModule } from '@directus/shared/utils';
+import docs, { DocsRoutes } from '@directus/docs';
+import { RouteRecordRaw } from 'vue-router';
 import NotFound from './routes/not-found.vue';
+import StaticDocs from './routes/static.vue';
 
-export default defineModule(({ i18n }) => {
-	const routes: RouteConfig[] = [
+export default defineModule({
+	id: 'docs',
+	name: '$t:documentation',
+	icon: 'help_outline',
+	routes: [
 		{
-			path: '/',
-			redirect: '/getting-started/introduction/',
+			path: '',
+			component: StaticDocs,
+			children: [
+				{
+					path: '',
+					redirect: '/docs/app/overview',
+				},
+				...getRoutes(docs),
+			],
 		},
-		...parseRoutes(files),
 		{
-			path: '/*',
+			path: ':_(.+)+',
 			component: NotFound,
 		},
-	];
-
-	return {
-		id: 'docs',
-		name: 'documentation',
-		icon: 'info',
-		routes,
-		order: 20,
-	};
-
-	function parseRoutes(directory: Directory): RouteConfig[] {
-		const routes: RouteConfig[] = [];
-
-		for (const doc of directory.children) {
-			if (doc.type === 'file') {
-				routes.push({
-					path: '/' + doc.path.replace('.md', ''),
-					component: StaticDocs,
-				});
-			} else if (doc.type === 'directory') {
-				if (doc.path && doc.children && doc.children.length > 0)
-					routes.push({
-						path: '/' + doc.path.replace('.md', ''),
-						redirect: '/' + doc.children![0].path.replace('.md', ''),
-					});
-
-				routes.push(...parseRoutes(doc));
-			}
-		}
-		return routes;
-	}
+	],
 });
+
+function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
+	const updatedRoutes: RouteRecordRaw[] = [];
+
+	for (const route of routes) {
+		if (!('children' in route)) {
+			updatedRoutes.push({
+				name: `docs-${route.path.replace('/', '-')}`,
+				path: route.path,
+				component: route.import,
+			});
+		} else {
+			updatedRoutes.push({
+				path: route.path,
+				redirect: `/docs/${route.children[0].path}`,
+			});
+
+			updatedRoutes.push(...getRoutes(route.children));
+		}
+	}
+
+	return updatedRoutes;
+}

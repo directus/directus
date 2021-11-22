@@ -1,6 +1,6 @@
-import { requireYAML } from '../../../utils/require-yaml';
-import { Permission } from '../../../types';
 import { merge } from 'lodash';
+import { Permission } from '@directus/shared/types';
+import { requireYAML } from '../../../utils/require-yaml';
 
 const defaults: Partial<Permission> = {
 	role: null,
@@ -8,7 +8,6 @@ const defaults: Partial<Permission> = {
 	validation: null,
 	presets: null,
 	fields: ['*'],
-	limit: null,
 	system: true,
 };
 

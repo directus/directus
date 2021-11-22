@@ -1,3 +1,0 @@
-# Creating Translated Fields
-
-> TK

@@ -4,13 +4,16 @@
 #
 # Ports:
 #   Postgres:        5100
-#   MySQL:           5101
+#   MySQL (8):       5101
 #   MariaDB:         5102
 #   MS SQL:          5103
 #   Oracle:          5104
 #   Redis:           5105
 #   Minio (S3):      5106
 #   Azure            5107
+#   MySQL (5.7):     5108
+#   Memcached:       5109
+#   Keycloak:        5110
 #
 # Credentials:
 #   Postgres:
@@ -47,11 +50,18 @@
 #     Name:          devstoreaccount1
 #     Key:           Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
 #     Container:     devstoreaccount1
+#
+#   Memcached
+#     n/a
+#
+#   Keycloak
+#     User:          admin
+#     Password:      secret
 
 version: '3.1'
 services:
   postgres:
-    image: postgres:12-alpine
+    image: postgis/postgis:13-3.1-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -68,7 +78,7 @@ services:
       - 5101:3306
 
   maria:
-    image: mariadb:10.5
+    image: mariadb:10.6
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -107,3 +117,27 @@ services:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
       - 5107:10000
+
+  mysql5:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 5108:3306
+
+  memcached:
+    image: memcached:latest
+    ports:
+      - 5109:11211
+
+  keycloak:
+    image: jboss/keycloak:latest
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: secret
+      DB_ADDR: ''
+      DB_VENDOR: h2
+
+    ports:
+      - 5110:8080

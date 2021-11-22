@@ -1,24 +1,24 @@
 <template>
-	<ul class="v-list" :class="{ large }">
+	<ul class="v-list" :class="{ nav, dense }">
 		<slot />
 	</ul>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
-	model: {
-		prop: 'activeItems',
-		event: 'input',
-	},
 	props: {
-		activeItems: {
+		modelValue: {
 			type: Array as PropType<(number | string)[]>,
-			default: () => [],
+			default: null,
 		},
-		large: {
+		nav: {
+			type: Boolean,
+			default: false,
+		},
+		dense: {
 			type: Boolean,
 			default: false,
 		},
@@ -30,20 +30,30 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		scope: {
+			type: String,
+			default: 'v-list',
+		},
 	},
+	emits: ['update:modelValue', 'toggle'],
 	setup(props, { emit }) {
-		const { activeItems, multiple, mandatory } = toRefs(props);
+		const { modelValue, multiple, mandatory } = toRefs(props);
+
 		useGroupableParent(
 			{
-				selection: activeItems,
+				selection: modelValue,
 				onSelectionChange: (newSelection) => {
-					emit('input', newSelection);
+					emit('update:modelValue', newSelection);
+				},
+				onToggle: (item) => {
+					emit('toggle', item);
 				},
 			},
 			{
 				mandatory,
 				multiple,
-			}
+			},
+			props.scope
 		);
 
 		return {};
@@ -51,9 +61,10 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-list-padding: 4px 0;
+	--v-list-border-radius: var(--border-radius);
 	--v-list-max-height: none;
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;
@@ -64,9 +75,7 @@ body {
 	--v-list-background-color-hover: var(--background-normal);
 	--v-list-background-color-active: var(--background-normal);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-list {
 	position: static;
 	display: block;
@@ -78,15 +87,16 @@ body {
 	overflow: auto;
 	color: var(--v-list-color);
 	line-height: 22px;
-	border-radius: var(--border-radius);
+	list-style: none;
+	border-radius: var(--v-list-border-radius);
+}
 
-	&.large {
-		--v-list-padding: 12px;
-	}
+.nav {
+	--v-list-padding: 12px;
+}
 
-	::v-deep .v-divider {
-		max-width: calc(100% - 16px);
-		margin: 8px;
-	}
+:slotted(.v-divider) {
+	max-width: calc(100% - 16px);
+	margin: 8px;
 }
 </style>

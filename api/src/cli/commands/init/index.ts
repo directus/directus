@@ -1,24 +1,21 @@
 import chalk from 'chalk';
-import inquirer from 'inquirer';
-import { databaseQuestions } from './questions';
-import { drivers, getDriverForClient } from '../../utils/drivers';
-import createEnv from '../../utils/create-env';
-import { v4 as uuidV4 } from 'uuid';
 import execa from 'execa';
-import ora from 'ora';
-
-import argon2 from 'argon2';
-
-import runSeed from '../../../database/seeds/run';
-import runMigrations from '../../../database/migrations/run';
-
-import createDBConnection, { Credentials } from '../../utils/create-db-connection';
+import inquirer from 'inquirer';
 import { Knex } from 'knex';
+import ora from 'ora';
+import { v4 as uuidV4 } from 'uuid';
+import runMigrations from '../../../database/migrations/run';
+import runSeed from '../../../database/seeds/run';
+import createDBConnection, { Credentials } from '../../utils/create-db-connection';
+import createEnv from '../../utils/create-env';
+import { drivers, getDriverForClient } from '../../utils/drivers';
+import { databaseQuestions } from './questions';
+import { generateHash } from '../../../utils/generate-hash';
 
-export default async function init(options: Record<string, any>) {
+export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
 
-	let { client } = await inquirer.prompt([
+	const { client } = await inquirer.prompt([
 		{
 			type: 'list',
 			name: 'client',
@@ -39,7 +36,7 @@ export default async function init(options: Record<string, any>) {
 
 	async function trySeed(): Promise<{ credentials: Credentials; db: Knex }> {
 		const credentials: Credentials = await inquirer.prompt(
-			(databaseQuestions[dbClient] as any[]).map((question: Function) =>
+			(databaseQuestions[dbClient] as any[]).map((question: ({ client, filepath }: any) => any) =>
 				question({ client: dbClient, filepath: rootPath })
 			)
 		);
@@ -48,21 +45,18 @@ export default async function init(options: Record<string, any>) {
 
 		try {
 			await runSeed(db);
-			await runMigrations(db, 'latest');
-		} catch (err) {
-			console.log();
-			console.log('Something went wrong while seeding the database:');
-			console.log();
-			console.log(`${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}`);
-			console.log();
-			console.log('Please try again');
-			console.log();
+			await runMigrations(db, 'latest', false);
+		} catch (err: any) {
+			process.stdout.write('\nSomething went wrong while seeding the database:\n');
+			process.stdout.write(`\n${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}\n`);
+			process.stdout.write('\nPlease try again\n\n');
+
 			attemptsRemaining--;
 
 			if (attemptsRemaining > 0) {
 				return await trySeed();
 			} else {
-				console.log(`Couldn't seed the database. Exiting.`);
+				process.stdout.write("Couldn't seed the database. Exiting.\n");
 				process.exit(1);
 			}
 		}
@@ -72,10 +66,7 @@ export default async function init(options: Record<string, any>) {
 
 	await createEnv(dbClient, credentials!, rootPath);
 
-	console.log();
-	console.log();
-
-	console.log(`Create your first admin user:`);
+	process.stdout.write('\nCreate your first admin user:\n\n');
 
 	const firstUser = await inquirer.prompt([
 		{
@@ -89,10 +80,14 @@ export default async function init(options: Record<string, any>) {
 			name: 'password',
 			message: 'Password',
 			mask: '*',
+			validate: (input: string | null) => {
+				if (input === null || input === '') throw new Error('The password cannot be empty!');
+				return true;
+			},
 		},
 	]);
 
-	firstUser.password = await argon2.hash(firstUser.password);
+	firstUser.password = await generateHash(firstUser.password);
 
 	const userID = uuidV4();
 	const roleID = uuidV4();
@@ -117,15 +112,11 @@ export default async function init(options: Record<string, any>) {
 
 	await db.destroy();
 
-	console.log(`
-Your project has been created at ${chalk.green(rootPath)}.
-
-The configuration can be found in ${chalk.green(rootPath + '/.env')}
-
-Start Directus by running:
-  ${chalk.blue('cd')} ${rootPath}
-  ${chalk.blue('npx directus')} start
-`);
+	process.stdout.write(`\nYour project has been created at ${chalk.green(rootPath)}.\n`);
+	process.stdout.write(`\nThe configuration can be found in ${chalk.green(rootPath + '/.env')}\n`);
+	process.stdout.write(`\nStart Directus by running:\n`);
+	process.stdout.write(`  ${chalk.blue('cd')} ${rootPath}\n`);
+	process.stdout.write(`  ${chalk.blue('npx directus')} start\n`);
 
 	process.exit(0);
 }

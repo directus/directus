@@ -5,17 +5,17 @@
 			<span v-else>{{ value }}</span>
 		</span>
 
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
 		value: {
-			type: [String, Number],
+			type: [Boolean, String, Number],
 			default: null,
 		},
 		dot: {
@@ -46,8 +46,8 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style lang="scss" scoped>
+:global(body) {
 	--v-badge-color: var(--white);
 	--v-badge-background-color: var(--danger);
 	--v-badge-border-color: var(--background-page);
@@ -55,15 +55,13 @@ body {
 	--v-badge-offset-y: 0px;
 	--v-badge-size: 16px;
 }
-</style>
 
-<style lang="scss" scoped>
 .v-badge {
 	position: relative;
 	display: inline-block;
 
 	&.bordered {
-		--v-badge-size: 20px;
+		--v-badge-size: 18px;
 	}
 
 	&.dot {
@@ -87,8 +85,8 @@ body {
 		height: var(--v-badge-size);
 		padding: 0 5px;
 		color: var(--v-badge-color);
-		font-weight: 600;
-		font-size: 11px;
+		font-weight: 800;
+		font-size: 9px;
 		background-color: var(--v-badge-background-color);
 		border-radius: calc(var(--v-badge-size) / 2);
 
@@ -102,12 +100,21 @@ body {
 			bottom: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-y));
 		}
 
-		&.dot * {
-			display: none;
+		&.bordered {
+			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color))
+				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color)) drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color))
+				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color));
 		}
 
-		&.bordered {
-			border: 2px solid var(--v-badge-border-color);
+		&.dot {
+			width: var(--v-badge-size);
+			min-width: 0;
+			height: var(--v-badge-size);
+			border: 0;
+
+			* {
+				display: none;
+			}
 		}
 	}
 }

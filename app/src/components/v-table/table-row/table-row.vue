@@ -1,36 +1,48 @@
 <template>
 	<tr
 		class="table-row"
-		:class="{ subdued, clickable: hasClickListener }"
-		@click="$emit('click', $event)"
+		:class="{ subdued: subdued, clickable: hasClickListener }"
 		:style="{
 			'--table-row-height': height + 2 + 'px',
 			'--table-row-line-height': 1,
 		}"
+		@click="$emit('click', $event)"
 	>
-		<td v-if="showManualSort" class="manual cell">
+		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
+
 		<td v-if="showSelect" class="select cell" @click.stop>
-			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
+			<v-checkbox :model-value="isSelected" @update:model-value="$emit('item-selected', $event)" />
 		</td>
-		<td class="cell" :class="getClassesForCell(header)" v-for="header in headers" :key="header.value">
+
+		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
 			<slot :name="`item.${header.value}`" :item="item">
-				<v-text-overflow v-if="get(item, header.value)" :text="get(item, header.value)" />
+				<v-text-overflow
+					v-if="
+						header.value.split('.').reduce((acc, val) => {
+							return acc[val];
+						}, item)
+					"
+					:text="
+						header.value.split('.').reduce((acc, val) => {
+							return acc[val];
+						}, item)
+					"
+				/>
 				<value-null v-else />
 			</slot>
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$scopedSlots['item-append']" class="append cell" @click.stop>
+		<td v-if="$slots['item-append']" class="append cell" @click.stop>
 			<slot name="item-append" />
 		</td>
 	</tr>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
-import { get } from 'lodash';
+import { defineComponent, PropType } from 'vue';
 import { Header } from '../types';
 
 export default defineComponent({
@@ -72,26 +84,7 @@ export default defineComponent({
 			default: 48,
 		},
 	},
-	setup(props, { emit }) {
-		return { getClassesForCell, toggleSelect, get };
-
-		function getClassesForCell(header: Header) {
-			const classes: string[] = [];
-
-			if (header.align) {
-				classes.push(`align-${header.align}`);
-			}
-
-			return classes;
-		}
-
-		function toggleSelect() {
-			emit('item-selected', {
-				item: props.item,
-				value: !props.isSelected,
-			});
-		}
-	},
+	emits: ['click', 'item-selected'],
 });
 </script>
 
@@ -109,10 +102,10 @@ export default defineComponent({
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color);
-		border-bottom: 2px solid var(--border-subdued);
+		border-bottom: var(--border-width) solid var(--border-subdued);
 
 		&:last-child {
-			padding: 0 12px 0 12px;
+			padding: 0 12px;
 		}
 
 		&.select {

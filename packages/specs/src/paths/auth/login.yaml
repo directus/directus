@@ -22,14 +22,14 @@ post:
               example: password
             mode:
               type: string
-              enum: ["json", cookie]
-              default: "json"
+              enum: ['json', cookie]
+              default: 'json'
               description: Choose between retrieving the token as a string, or setting it as a cookie.
             otp:
               type: string
               description: If 2FA is enabled, you need to pass the one time password.
   responses:
-    "200":
+    '200':
       description: Successful authentification
       content:
         application/json:

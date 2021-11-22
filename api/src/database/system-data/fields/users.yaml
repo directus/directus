@@ -2,26 +2,26 @@ table: directus_users
 
 fields:
   - field: first_name
-    interface: text-input
+    interface: input
     options:
       iconRight: account_circle
     width: half
 
   - field: last_name
-    interface: text-input
+    interface: input
     options:
       iconRight: account_circle
     width: half
 
   - field: email
-    interface: text-input
+    interface: input
     options:
       iconRight: email
     width: half
 
   - field: password
     special: hash,conceal
-    interface: hash
+    interface: input-hash
     options:
       iconRight: lock
       masked: true
@@ -33,19 +33,19 @@ fields:
     display: image
 
   - field: location
-    interface: text-input
+    interface: input
     options:
       iconRight: place
     width: half
 
   - field: title
-    interface: text-input
+    interface: input
     options:
       iconRight: work
     width: half
 
   - field: description
-    interface: textarea
+    interface: input-multiline
     width: full
 
   - field: tags
@@ -56,16 +56,17 @@ fields:
       iconRight: local_offer
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
   - field: preferences_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: face
-      title: User Preferences
-    special: alias
+      title: $t:fields.directus_users.user_preferences
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: language
@@ -73,49 +74,51 @@ fields:
     width: half
 
   - field: theme
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
         - value: auto
-          text: Automatic (Based on System)
+          text: $t:fields.directus_users.theme_auto
         - value: light
-          text: Light Mode
+          text: $t:fields.directus_users.theme_light
         - value: dark
-          text: Dark Mode
+          text: $t:fields.directus_users.theme_dark
     width: half
 
   - field: tfa_secret
-    interface: tfa-setup
+    interface: system-mfa-setup
     special: conceal
     width: half
 
   - field: admin_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: verified_user
-      title: Admin Options
+      title: $t:fields.directus_users.admin_options
       color: '#E35169'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: status
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
-        - text: Draft
+        - text: $t:fields.directus_users.status_draft
           value: draft
-        - text: Invited
+        - text: $t:fields.directus_users.status_invited
           value: invited
-        - text: Active
+        - text: $t:fields.directus_users.status_active
           value: active
-        - text: Suspended
+        - text: $t:fields.directus_users.status_suspended
           value: suspended
-        - text: Archived
+        - text: $t:fields.directus_users.status_archived
           value: archived
     width: half
 
   - field: role
-    interface: many-to-one
+    interface: select-dropdown-m2o
     options:
       template: '{{ name }}'
     special: m2o
@@ -128,12 +131,12 @@ fields:
     interface: token
     options:
       iconRight: vpn_key
-      placeholder: Enter a secure access token...
+      placeholder: $t:fields.directus_users.token_placeholder
     width: full
 
   - field: id
     special: uuid
-    interface: text-input
+    interface: input
     options:
       iconRight: vpn_key
     width: full
@@ -146,3 +149,20 @@ fields:
     display: datetime
     display_options:
       relative: true
+
+  - field: provider
+    width: half
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:default_provider
+          value: default
+
+  - field: external_identifier
+    width: half
+    options:
+      iconRight: account_circle
+    interface: input
+
+  - field: auth_data
+    hidden: true

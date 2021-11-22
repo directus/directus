@@ -1,20 +1,17 @@
-import { defineModule } from '@/modules/define';
+import { defineModule } from '@directus/shared/utils';
+import AddNew from './routes/add-new.vue';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
-import AddNew from './routes/add-new.vue';
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'files',
-	name: 'file_library',
+	name: '$t:file_library',
 	icon: 'folder',
 	routes: [
 		{
 			name: 'files-collection',
-			path: '/',
+			path: '',
 			component: Collection,
-			props: (route) => ({
-				queryFilters: route.query,
-			}),
 			children: [
 				{
 					path: '+',
@@ -26,34 +23,52 @@ export default defineModule(({ i18n }) => ({
 			],
 		},
 		{
-			path: '/all',
-			component: Collection,
-			props: () => ({
-				special: 'all',
-			}),
-		},
-		{
-			path: '/mine',
-			component: Collection,
-			props: () => ({
-				special: 'mine',
-			}),
-		},
-		{
-			path: '/recent',
-			component: Collection,
-			props: () => ({
-				special: 'recent',
-			}),
-		},
-		{
 			name: 'files-item',
-			path: '/:primaryKey',
+			path: ':primaryKey',
 			component: Item,
 			props: true,
 		},
+		{
+			path: 'folders',
+			redirect: '/files',
+		},
+		{
+			name: 'folders-collection',
+			path: 'folders/:folder',
+			component: Collection,
+			props: true,
+			children: [
+				{
+					path: '+',
+					name: 'add-file-folder',
+					components: {
+						addNew: AddNew,
+					},
+				},
+			],
+		},
+		{
+			path: 'all',
+			component: Collection,
+			props: {
+				special: 'all',
+			},
+		},
+		{
+			path: 'mine',
+			component: Collection,
+			props: {
+				special: 'mine',
+			},
+		},
+		{
+			path: 'recent',
+			component: Collection,
+			props: {
+				special: 'recent',
+			},
+		},
 	],
-	order: 15,
 	preRegisterCheck(user, permissions) {
 		const admin = user.role.admin_access;
 		if (admin) return true;
@@ -63,4 +78,4 @@ export default defineModule(({ i18n }) => ({
 		);
 		return !!permission;
 	},
-}));
+});

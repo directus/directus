@@ -1,93 +1,32 @@
 <template>
-	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
-		<portal to="layout-options">
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
-				<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
-			</div>
-
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.cards.title') }}</div>
-				<v-field-template :collection="collection" v-model="title" />
-			</div>
-
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.cards.subtitle') }}</div>
-				<v-field-template :collection="collection" v-model="subtitle" />
-			</div>
-
-			<v-detail class="field">
-				<template #title>{{ $t('layout_setup') }}</template>
-
-				<div class="nested-options">
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.cards.image_fit') }}</div>
-						<v-select
-							v-model="imageFit"
-							:disabled="imageSource === null"
-							:items="[
-								{
-									text: $t('layouts.cards.crop'),
-									value: 'crop',
-								},
-								{
-									text: $t('layouts.cards.contain'),
-									value: 'contain',
-								},
-							]"
-						/>
-					</div>
-
-					<div class="field">
-						<div class="type-label">{{ $t('fallback_icon') }}</div>
-						<interface-icon v-model="icon" />
-					</div>
-				</div>
-			</v-detail>
-		</portal>
-
-		<portal to="sidebar">
-			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
-		</portal>
-
-		<portal to="actions:prepend">
-			<transition name="fade">
-				<span class="item-count" v-if="itemCount">{{ showingCount }}</span>
-			</transition>
-		</portal>
-
+	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
 		<template v-if="loading || itemCount > 0">
 			<cards-header
-				@select-all="selectAll"
+				v-model:size="sizeWritable"
+				v-model:selection="selectionWritable"
+				v-model:sort="sortWritable"
 				:fields="fieldsInCollection"
-				:size.sync="size"
-				:selection.sync="_selection"
-				:sort.sync="sort"
+				@select-all="selectAll"
 			/>
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
-				<template v-if="loading">
-					<card v-for="n in 6" :key="`loader-${n}`" item-key="loading" loading />
-				</template>
-
 				<card
-					v-else
 					v-for="item in items"
-					:item-key="primaryKeyField.field"
 					:key="item[primaryKeyField.field]"
+					v-model="selectionWritable"
+					:item-key="primaryKeyField.field"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
 					:item="item"
-					:select-mode="selectMode || (_selection && _selection.length > 0)"
+					:select-mode="selectMode || (selection && selection.length > 0)"
 					:to="getLinkForItem(item)"
 					:readonly="readonly"
-					v-model="_selection"
 				>
-					<template #title v-if="title">
+					<template v-if="title" #title>
 						<render-template :collection="collection" :item="item" :template="title" />
 					</template>
-					<template #subtitle v-if="subtitle">
+					<template v-if="subtitle" #subtitle>
 						<render-template :collection="collection" :item="item" :template="subtitle" />
 					</template>
 				</card>
@@ -100,71 +39,55 @@
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
-						:value="page"
-						@input="toPage"
+						:model-value="page"
+						@update:model-value="toPage"
 					/>
 				</div>
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
-					<span>{{ $t('per_page') }}</span>
-					<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
+					<span>{{ t('per_page') }}</span>
+					<v-select
+						:model-value="`${limit}`"
+						:items="['25', '50', '100', '250', '500', '1000']"
+						inline
+						@update:model-value="limitWritable = +$event"
+					/>
 				</div>
 			</div>
 		</template>
 
-		<v-info v-else-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error :error="error" />
 
-				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
-					{{ $t('reset_page_preferences') }}
+				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
+					{{ t('reset_page_preferences') }}
 				</v-button>
 			</template>
 		</v-info>
 
-		<slot v-else-if="itemCount === 0 && activeFilterCount > 0" name="no-results" />
+		<slot v-else-if="itemCount === 0 && (filter || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
-import { Filter } from '@/types';
-import useSync from '@/composables/use-sync/';
-import useCollection from '@/composables/use-collection/';
-import useItems from '@/composables/use-items';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, watch, PropType, ref, inject, Ref } from 'vue';
+
 import Card from './components/card.vue';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
-import { useRelationsStore } from '@/stores/';
-
 import CardsHeader from './components/header.vue';
-import i18n from '@/lang';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import useElementSize from '@/composables/use-element-size';
-import { clone } from 'lodash';
-
-type Item = Record<string, any>;
-
-type layoutOptions = {
-	size?: number;
-	icon?: string;
-	imageSource?: string;
-	title?: string;
-	subtitle?: string;
-	imageFit?: 'crop' | 'contain';
-};
-
-type layoutQuery = {
-	fields?: string[];
-	sort?: string;
-	limit?: number;
-	page?: number;
-};
+import { Field, Item } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
+import { Collection } from '@/types';
+import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { Card, CardsHeader },
+	inheritAttrs: false,
 	props: {
 		collection: {
 			type: String,
@@ -172,297 +95,147 @@ export default defineComponent({
 		},
 		selection: {
 			type: Array as PropType<Item[]>,
-			default: undefined,
-		},
-		layoutOptions: {
-			type: Object as PropType<layoutOptions>,
-			default: null,
-		},
-		layoutQuery: {
-			type: Object as PropType<layoutQuery>,
-			default: null,
-		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			default: () => [],
+			required: true,
 		},
 		selectMode: {
 			type: Boolean,
-			default: false,
-		},
-		file: {
-			type: Object as PropType<File>,
-			default: null,
-		},
-		searchQuery: {
-			type: String as PropType<string | null>,
-			default: null,
+			required: true,
 		},
 		readonly: {
 			type: Boolean,
-			default: false,
+			required: true,
 		},
-		resetPreset: {
+		items: {
+			type: Array as PropType<Item[]>,
+			required: true,
+		},
+		loading: {
+			type: Boolean,
+			required: true,
+		},
+		error: {
+			type: Object as PropType<any>,
+			default: null,
+		},
+		totalPages: {
+			type: Number,
+			required: true,
+		},
+		page: {
+			type: Number,
+			required: true,
+		},
+		toPage: {
+			type: Function as PropType<(newPage: number) => void>,
+			required: true,
+		},
+		itemCount: {
+			type: Number,
+			default: null,
+		},
+		fieldsInCollection: {
+			type: Array as PropType<Item[]>,
+			required: true,
+		},
+		limit: {
+			type: Number,
+			required: true,
+		},
+		size: {
+			type: Number,
+			required: true,
+		},
+		primaryKeyField: {
+			type: Object as PropType<Field>,
+			default: null,
+		},
+		icon: {
+			type: String,
+			required: true,
+		},
+		imageSource: {
+			type: String,
+			default: null,
+		},
+		title: {
+			type: String,
+			default: null,
+		},
+		subtitle: {
+			type: String,
+			default: null,
+		},
+		getLinkForItem: {
+			type: Function as PropType<(item: Record<string, any>) => string | undefined>,
+			required: true,
+		},
+		imageFit: {
+			type: String,
+			required: true,
+		},
+		sort: {
+			type: Array as PropType<string[]>,
+			required: true,
+		},
+		info: {
+			type: Object as PropType<Collection>,
+			default: null,
+		},
+		isSingleRow: {
+			type: Boolean,
+			required: true,
+		},
+		width: {
+			type: Number,
+			required: true,
+		},
+		selectAll: {
+			type: Function as PropType<() => void>,
+			required: true,
+		},
+		resetPresetAndRefresh: {
 			type: Function as PropType<() => Promise<void>>,
+			required: true,
+		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
+		search: {
+			type: String,
 			default: null,
 		},
 	},
+	emits: ['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width'],
 	setup(props, { emit }) {
-		const relationsStore = useRelationsStore();
+		const { t } = useI18n();
+
+		const selectionWritable = useSync(props, 'selection', emit);
+		const limitWritable = useSync(props, 'limit', emit);
+		const sizeWritable = useSync(props, 'size', emit);
+		const sortWritable = useSync(props, 'sort', emit);
+
+		const mainElement = inject<Ref<Element | undefined>>('main-element');
 
 		const layoutElement = ref<HTMLElement>();
-		const mainElement = inject('main-element', ref<Element | null>(null));
-
-		const _selection = useSync(props, 'selection', emit);
-		const _layoutOptions = useSync(props, 'layoutOptions', emit);
-		const _layoutQuery = useSync(props, 'layoutQuery', emit);
-		const _filters = useSync(props, 'filters', emit);
-		const _searchQuery = useSync(props, 'searchQuery', emit);
-
-		const { collection } = toRefs(props);
-		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
-
-		const fileFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => {
-				if (field.field === '$file') return true;
-
-				const relation = relationsStore.state.relations.find((relation) => {
-					return (
-						relation.many_collection === props.collection &&
-						relation.many_field === field.field &&
-						relation.one_collection === 'directus_files'
-					);
-				});
-
-				return !!relation;
-			});
-		});
-
-		const { size, icon, imageSource, title, subtitle, imageFit } = uselayoutOptions();
-		const { sort, limit, page, fields } = uselayoutQuery();
-
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields: fields,
-			filters: _filters,
-			searchQuery: _searchQuery as any,
-		});
-
-		const newLink = computed(() => {
-			return `/collections/${collection.value}/+`;
-		});
-
-		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
-				if (itemCount.value === 1) {
-					return i18n.t('one_filtered_item');
-				}
-				return i18n.t('start_end_of_count_filtered_items', {
-					start: i18n.n((+page.value - 1) * limit.value + 1),
-					end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: i18n.n(itemCount.value || 0),
-				});
-			}
-			if (itemCount.value === 1) {
-				return i18n.t('one_item');
-			}
-			return i18n.t('start_end_of_count_items', {
-				start: i18n.n((+page.value - 1) * limit.value + 1),
-				end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: i18n.n(itemCount.value || 0),
-			});
-		});
 
 		const { width } = useElementSize(layoutElement);
 
-		const isSingleRow = computed(() => {
-			const cardsWidth = items.value.length * (size.value * 40) + (items.value.length - 1) * 24;
-			return cardsWidth <= width.value;
+		watch(
+			() => props.page,
+			() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
+		);
+
+		watch(width, () => {
+			emit('update:width', width.value);
 		});
 
-		const activeFilterCount = computed(() => {
-			return _filters.value.filter((filter) => !filter.locked).length;
-		});
-
-		return {
-			_selection,
-			items,
-			loading,
-			error,
-			totalPages,
-			page,
-			toPage,
-			itemCount,
-			totalCount,
-			fieldsInCollection,
-			limit,
-			size,
-			primaryKeyField,
-			icon,
-			fileFields,
-			imageSource,
-			title,
-			subtitle,
-			getLinkForItem,
-			imageFit,
-			sort,
-			_filters,
-			newLink,
-			info,
-			showingCount,
-			isSingleRow,
-			width,
-			layoutElement,
-			activeFilterCount,
-			refresh,
-			selectAll,
-			resetPresetAndRefresh,
-		};
-
-		async function resetPresetAndRefresh() {
-			await props?.resetPreset?.();
-			refresh();
-		}
-
-		function refresh() {
-			getItems();
-		}
-
-		function toPage(newPage: number) {
-			page.value = newPage;
-			mainElement.value?.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
-		}
-
-		function uselayoutOptions() {
-			const size = createViewOption<number>('size', 4);
-			const icon = createViewOption('icon', 'box');
-			const title = createViewOption<string>('title', null);
-			const subtitle = createViewOption<string>('subtitle', null);
-			const imageSource = createViewOption<string>('imageSource', fileFields.value[0]?.field ?? null);
-			const imageFit = createViewOption<string>('imageFit', 'crop');
-
-			return { size, icon, imageSource, title, subtitle, imageFit };
-
-			function createViewOption<T>(key: keyof layoutOptions, defaultValue: any) {
-				return computed<T>({
-					get() {
-						return _layoutOptions.value?.[key] !== undefined ? _layoutOptions.value?.[key] : defaultValue;
-					},
-					set(newValue: T) {
-						_layoutOptions.value = {
-							..._layoutOptions.value,
-							[key]: newValue,
-						};
-					},
-				});
-			}
-		}
-
-		function uselayoutQuery() {
-			const page = computed({
-				get() {
-					return _layoutQuery.value?.page || 1;
-				},
-				set(newPage: number) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
-						page: newPage,
-					};
-				},
-			});
-
-			const sort = computed({
-				get() {
-					return _layoutQuery.value?.sort || primaryKeyField.value.field;
-				},
-				set(newSort: string) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
-						page: 1,
-						sort: newSort,
-					};
-				},
-			});
-
-			const limit = computed({
-				get() {
-					return _layoutQuery.value?.limit || 25;
-				},
-				set(newLimit: number) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
-						page: 1,
-						limit: newLimit,
-					};
-				},
-			});
-
-			const fields = computed<string[]>(() => {
-				if (!primaryKeyField.value) return [];
-				const fields = [primaryKeyField.value.field];
-
-				if (imageSource.value) {
-					fields.push(`${imageSource.value}.modified_on`);
-					fields.push(`${imageSource.value}.type`);
-					fields.push(`${imageSource.value}.filename_disk`);
-					fields.push(`${imageSource.value}.storage`);
-					fields.push(`${imageSource.value}.id`);
-				}
-
-				if (props.collection === 'directus_files' && imageSource.value === '$file') {
-					fields.push('modified_on');
-					fields.push('type');
-				}
-
-				if (sort.value) {
-					const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
-
-					if (fields.includes(sortField) === false) {
-						fields.push(sortField);
-					}
-				}
-
-				const titleSubtitleFields: string[] = [];
-
-				if (title.value) {
-					titleSubtitleFields.push(...getFieldsFromTemplate(title.value));
-				}
-
-				if (subtitle.value) {
-					titleSubtitleFields.push(...getFieldsFromTemplate(subtitle.value));
-				}
-
-				return [...fields, ...adjustFieldsForDisplays(titleSubtitleFields, props.collection)];
-			});
-
-			return { sort, limit, page, fields };
-		}
-
-		function getLinkForItem(item: Record<string, any>) {
-			if (!primaryKeyField.value) return;
-			return `/collections/${props.collection}/${item[primaryKeyField.value!.field]}`;
-		}
-
-		function selectAll() {
-			if (!primaryKeyField.value) return;
-			emit(
-				'update:selection',
-				clone(items.value).map((item: any) => item[primaryKeyField.value.field])
-			);
-		}
+		return { t, selectionWritable, limitWritable, sizeWritable, sortWritable, layoutElement };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-@import '@/styles/mixins/form-grid';
-
 .layout-cards {
 	padding: var(--content-padding);
 	padding-top: 0;
@@ -504,32 +277,6 @@ export default defineComponent({
 			color: var(--foreground-normal);
 		}
 	}
-}
-
-.item-count {
-	position: relative;
-	display: none;
-	margin: 0 8px;
-	color: var(--foreground-subdued);
-	white-space: nowrap;
-
-	@include breakpoint(small) {
-		display: inline;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity var(--medium) var(--transition);
-}
-
-.fade-enter,
-.fade-leave-to {
-	opacity: 0;
-}
-
-.nested-options {
-	@include form-grid;
 }
 
 .reset-preset {

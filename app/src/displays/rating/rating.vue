@@ -3,7 +3,7 @@
 		<v-icon small name="star" />
 		{{ value }}
 	</span>
-	<div v-else class="rating detailed" v-tooltip.bottom.start="value">
+	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
 		<div class="active" :style="ratingPercentage">
 			<v-icon v-for="index in starCount" :key="index" small name="star" />
 		</div>
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 
 type InterfaceOptions = {
 	minValue: number;
@@ -25,7 +25,7 @@ type InterfaceOptions = {
 export default defineComponent({
 	props: {
 		value: {
-			type: Number,
+			type: [String, Number],
 			default: null,
 		},
 		simple: {
@@ -45,7 +45,7 @@ export default defineComponent({
 		});
 
 		const ratingPercentage = computed(() => ({
-			width: (props.value / starCount.value) * 100 + '%',
+			width: (Number(props.value) / starCount.value) * 100 + '%',
 		}));
 
 		return { starCount, ratingPercentage };
@@ -61,7 +61,7 @@ export default defineComponent({
 		padding: 2px 6px 2px 4px;
 		color: #ffc107;
 		font-weight: 600;
-		background-color: rgba(255, 193, 7, 0.15);
+		background-color: rgb(255 193 7 / 0.15);
 		border-radius: var(--border-radius);
 
 		.v-icon {
@@ -72,6 +72,7 @@ export default defineComponent({
 	&.detailed {
 		position: relative;
 		width: min-content;
+
 		.active {
 			position: relative;
 			z-index: 2;
@@ -80,6 +81,7 @@ export default defineComponent({
 			overflow: hidden;
 			color: #ffc107;
 		}
+
 		.inactive {
 			position: absolute;
 			top: 0;

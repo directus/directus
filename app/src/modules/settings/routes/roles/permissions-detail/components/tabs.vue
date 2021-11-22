@@ -1,5 +1,5 @@
 <template>
-	<v-tabs vertical v-model="_currentTab">
+	<v-tabs v-model="internalCurrentTab" vertical>
 		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
 			<span class="text">{{ tab.text }}</span>
 			<span class="dot" :class="{ on: tab.hasValue }" />
@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import useSync from '@/composables/use-sync';
+import { defineComponent } from 'vue';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -22,10 +22,11 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:currentTab'],
 	setup(props, { emit }) {
-		const _currentTab = useSync(props, 'currentTab', emit);
+		const internalCurrentTab = useSync(props, 'currentTab', emit);
 
-		return { _currentTab };
+		return { internalCurrentTab };
 	},
 });
 </script>

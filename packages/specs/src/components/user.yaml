@@ -48,7 +48,7 @@ properties:
     example: null
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Files"
+      - $ref: '../openapi.yaml#/components/schemas/Files'
     nullable: true
   language:
     description: The user's language used in Directus.
@@ -74,14 +74,14 @@ properties:
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Roles"
+      - $ref: '../openapi.yaml#/components/schemas/Roles'
   token:
     description: Static token for the user.
     type: string
     nullable: true
   last_acces:
     description: When this user used the API last.
-    example: "2020-05-31T14:32:37Z"
+    example: '2020-05-31T14:32:37Z'
     type: string
     nullable: true
     format: date-time

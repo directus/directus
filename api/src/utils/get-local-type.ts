@@ -1,104 +1,143 @@
-import { FieldMeta, types, SchemaOverview } from '../types';
+import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
+import { FieldMeta, Type } from '@directus/shared/types';
+import { getDatabaseClient } from '../database';
+import getDatabase from '../database';
 
-/**
- * Typemap graciously provided by @gpetrov
- */
-const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: boolean }> = {
+const localTypeMap: Record<string, Type | 'unknown'> = {
 	// Shared
-	boolean: { type: 'boolean' },
-	tinyint: { type: 'boolean' },
-	smallint: { type: 'integer' },
-	mediumint: { type: 'integer' },
-	int: { type: 'integer' },
-	integer: { type: 'integer' },
-	serial: { type: 'integer' },
-	bigint: { type: 'bigInteger' },
-	bigserial: { type: 'bigInteger' },
-	clob: { type: 'text' },
-	tinytext: { type: 'text' },
-	mediumtext: { type: 'text' },
-	longtext: { type: 'text' },
-	text: { type: 'text' },
-	varchar: { type: 'string' },
-	longvarchar: { type: 'string' },
-	varchar2: { type: 'string' },
-	nvarchar: { type: 'string' },
-	image: { type: 'binary' },
-	ntext: { type: 'text' },
-	char: { type: 'string' },
-	date: { type: 'date' },
-	datetime: { type: 'dateTime' },
-	dateTime: { type: 'dateTime' },
-	timestamp: { type: 'timestamp' },
-	time: { type: 'time' },
-	float: { type: 'float' },
-	double: { type: 'float' },
-	'double precision': { type: 'float' },
-	real: { type: 'float' },
-	decimal: { type: 'decimal' },
-	numeric: { type: 'integer' },
+	boolean: 'boolean',
+	tinyint: 'integer',
+	smallint: 'integer',
+	mediumint: 'integer',
+	int: 'integer',
+	integer: 'integer',
+	serial: 'integer',
+	bigint: 'bigInteger',
+	bigserial: 'bigInteger',
+	clob: 'text',
+	tinytext: 'text',
+	mediumtext: 'text',
+	longtext: 'text',
+	text: 'text',
+	varchar: 'string',
+	longvarchar: 'string',
+	varchar2: 'string',
+	nvarchar: 'string',
+	image: 'binary',
+	ntext: 'text',
+	char: 'string',
+	date: 'date',
+	datetime: 'dateTime',
+	dateTime: 'dateTime',
+	timestamp: 'timestamp',
+	time: 'time',
+	float: 'float',
+	double: 'float',
+	'double precision': 'float',
+	real: 'float',
+	decimal: 'decimal',
+	numeric: 'integer',
+
+	// Geometries
+	geometry: 'geometry',
+	point: 'geometry.Point',
+	linestring: 'geometry.LineString',
+	polygon: 'geometry.Polygon',
+	multipoint: 'geometry.MultiPoint',
+	multilinestring: 'geometry.MultiLineString',
+	multipolygon: 'geometry.MultiPolygon',
 
 	// MySQL
-	string: { type: 'text' },
-	year: { type: 'integer' },
-	blob: { type: 'binary' },
-	mediumblob: { type: 'binary' },
+	string: 'text',
+	year: 'integer',
+	blob: 'binary',
+	mediumblob: 'binary',
+	'int unsigned': 'integer',
+	'tinyint(0)': 'boolean',
+	'tinyint(1)': 'boolean',
 
 	// MS SQL
-	bit: { type: 'boolean' },
-	smallmoney: { type: 'float' },
-	money: { type: 'float' },
-	datetimeoffset: { type: 'dateTime', useTimezone: true },
-	datetime2: { type: 'dateTime' },
-	smalldatetime: { type: 'dateTime' },
-	nchar: { type: 'text' },
-	binary: { type: 'binary' },
-	varbinary: { type: 'binary' },
+	bit: 'boolean',
+	smallmoney: 'float',
+	money: 'float',
+	datetimeoffset: 'timestamp',
+	datetime2: 'dateTime',
+	smalldatetime: 'dateTime',
+	nchar: 'text',
+	binary: 'binary',
+	varbinary: 'binary',
+	uniqueidentifier: 'uuid',
 
 	// Postgres
-	json: { type: 'json' },
-	uuid: { type: 'uuid' },
-	int2: { type: 'integer' },
-	serial4: { type: 'integer' },
-	int4: { type: 'integer' },
-	serial8: { type: 'integer' },
-	int8: { type: 'integer' },
-	bool: { type: 'boolean' },
-	'character varying': { type: 'string' },
-	character: { type: 'string' },
-	interval: { type: 'string' },
-	_varchar: { type: 'string' },
-	bpchar: { type: 'string' },
-	timestamptz: { type: 'timestamp' },
-	'timestamp with time zone': { type: 'timestamp', useTimezone: true },
-	'timestamp without time zone': { type: 'dateTime' },
-	timetz: { type: 'time' },
-	'time with time zone': { type: 'time', useTimezone: true },
-	'time without time zone': { type: 'time' },
-	float4: { type: 'float' },
-	float8: { type: 'float' },
+	json: 'json',
+	jsonb: 'json',
+	uuid: 'uuid',
+	int2: 'integer',
+	serial4: 'integer',
+	int4: 'integer',
+	serial8: 'integer',
+	int8: 'integer',
+	bool: 'boolean',
+	'character varying': 'string',
+	character: 'string',
+	interval: 'string',
+	_varchar: 'string',
+	bpchar: 'string',
+	timestamptz: 'timestamp',
+	'timestamp with time zone': 'timestamp',
+	'timestamp with local time zone': 'timestamp',
+	'timestamp without time zone': 'dateTime',
+	'timestamp without local time zone': 'dateTime',
+	timetz: 'time',
+	'time with time zone': 'time',
+	'time without time zone': 'time',
+	float4: 'float',
+	float8: 'float',
+
+	// Oracle
+	number: 'integer',
+	sdo_geometry: 'geometry',
+
+	// SQLite
+	integerfirst: 'integer',
 };
 
 export default function getLocalType(
-	column: SchemaOverview['tables'][string]['columns'][string] | Column,
-	field?: FieldMeta
-): typeof types[number] | 'unknown' {
-	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
+	column?: SchemaOverview[string]['columns'][string] | Column,
+	field?: { special?: FieldMeta['special'] }
+): Type | 'unknown' {
+	const database = getDatabase();
+	const databaseClient = getDatabaseClient(database);
+
+	const type = column ? localTypeMap[column.data_type.toLowerCase().split('(')[0]] : 'alias';
+
+	const special = field?.special;
+
+	if (special) {
+		if (special.includes('json')) return 'json';
+		if (special.includes('hash')) return 'hash';
+		if (special.includes('csv')) return 'csv';
+		if (special.includes('uuid')) return 'uuid';
+		if (type.startsWith('geometry')) {
+			return (special[0] as Type) || 'geometry';
+		}
+	}
 
 	/** Handle Postgres numeric decimals */
-	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
+	if (column && column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
 	}
 
-	if (field?.special?.includes('json')) return 'json';
-	if (field?.special?.includes('hash')) return 'hash';
-	if (field?.special?.includes('csv')) return 'csv';
-	if (field?.special?.includes('uuid')) return 'uuid';
-
-	if (type) {
-		return type.type;
+	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
+	if (column && column.data_type === 'nvarchar' && column.max_length === -1) {
+		return 'text';
 	}
 
-	return 'unknown';
+	/** Handle Boolean as TINYINT and edgecase MySQL where it still is just tinyint */
+	if (column && databaseClient === 'mysql' && column.data_type.toLowerCase() === 'tinyint') {
+		return 'boolean';
+	}
+
+	return type ?? 'unknown';
 }

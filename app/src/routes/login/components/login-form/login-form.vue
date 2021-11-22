@@ -1,30 +1,28 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="$t('email')" />
-		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="$t('password')" />
+		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
 		<transition-expand>
-			<v-input type="text" :placeholder="$t('otp')" v-if="requiresTFA" v-model="otp" />
+			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
 		</transition-expand>
 
-		<v-notice type="warning" v-if="error">
+		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="loggingIn" large>{{ $t('sign_in') }}</v-button>
+			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
 			<router-link to="/reset-password" class="forgot-password">
-				{{ $t('forgot_password') }}
+				{{ t('forgot_password') }}
 			</router-link>
 		</div>
-
-		<sso-links />
 	</form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
-import router from '@/router';
-import ssoLinks from '../sso-links.vue';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, watch, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
@@ -37,12 +35,22 @@ type Credentials = {
 };
 
 export default defineComponent({
-	components: { ssoLinks },
-	setup() {
+	props: {
+		provider: {
+			type: String,
+			required: true,
+		},
+	},
+	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
+		const { provider } = toRefs(props);
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
-		const error = ref<RequestError | null>(null);
+		const error = ref<RequestError | string | null>(null);
 		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
 		const userStore = useUserStore();
@@ -51,7 +59,20 @@ export default defineComponent({
 			if (requiresTFA.value === true) requiresTFA.value = false;
 		});
 
+		watch(provider, () => {
+			email.value = null;
+			password.value = null;
+			error.value = null;
+			otp.value = null;
+			requiresTFA.value = false;
+		});
+
 		const errorFormatted = computed(() => {
+			// Show "Wrong username or password" for wrongly formatted emails as well
+			if (error.value === 'INVALID_PAYLOAD') {
+				return translateAPIError('INVALID_CREDENTIALS');
+			}
+
 			if (error.value) {
 				return translateAPIError(error.value);
 			}
@@ -59,6 +80,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			errorFormatted,
 			error,
 			email,
@@ -85,19 +107,16 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials);
+				await login(credentials, provider.value);
 
 				// Stores are hydrated after login
-				const lastPage = userStore.state.currentUser?.last_page;
-				router.push(lastPage || '/collections');
-			} catch (err) {
-				if (
-					err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' &&
-					requiresTFA.value === false
-				) {
+				const lastPage = userStore.currentUser?.last_page;
+				router.push(lastPage || '/content');
+			} catch (err: any) {
+				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 					requiresTFA.value = true;
 				} else {
-					error.value = err;
+					error.value = err.response?.data?.errors?.[0]?.extensions?.code || err;
 				}
 			} finally {
 				loggingIn.value = false;
@@ -122,6 +141,7 @@ export default defineComponent({
 .forgot-password {
 	color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
+
 	&:hover {
 		color: var(--foreground-normal);
 	}

@@ -1,4 +1,4 @@
-import { BaseException } from './base';
+import { BaseException } from '@directus/shared/exceptions';
 
 export class InvalidQueryException extends BaseException {
 	constructor(message: string) {

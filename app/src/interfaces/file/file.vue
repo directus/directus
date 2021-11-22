@@ -1,27 +1,27 @@
 <template>
 	<div class="file">
-		<v-menu attached :disabled="disabled || loading">
+		<v-menu attached :disabled="loading">
 			<template #activator="{ toggle }">
 				<div>
-					<v-skeleton-loader type="input" v-if="loading" />
+					<v-skeleton-loader v-if="loading" type="input" />
 					<v-input
 						v-else
-						@click="toggle"
+						clickable
 						readonly
-						:placeholder="$t('no_file_selected')"
-						:disabled="disabled"
-						:value="file && file.title"
+						:placeholder="t('no_file_selected')"
+						:model-value="file && file.title"
+						@click="toggle"
 					>
 						<template #prepend>
 							<div
 								class="preview"
 								:class="{
 									'has-file': file,
-									'is-svg': file && file.type.includes('svg'),
+									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
 								<img v-if="imageThumbnail" :src="imageThumbnail" :alt="file.title" />
-								<span class="extension" v-else-if="fileExtension">
+								<span v-else-if="fileExtension" class="extension">
 									{{ fileExtension }}
 								</span>
 								<v-icon v-else name="folder_open" />
@@ -29,8 +29,14 @@
 						</template>
 						<template #append>
 							<template v-if="file">
-								<v-icon name="open_in_new" class="edit" v-tooltip="$t('edit')" @click.stop="editDrawerActive = true" />
-								<v-icon class="deselect" name="close" @click.stop="$emit('input', null)" v-tooltip="$t('deselect')" />
+								<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editDrawerActive = true" />
+								<v-icon
+									v-if="!disabled"
+									v-tooltip="t('deselect')"
+									class="deselect"
+									name="close"
+									@click.stop="$emit('input', null)"
+								/>
 							</template>
 							<v-icon v-else name="attach_file" />
 						</template>
@@ -42,56 +48,63 @@
 				<template v-if="file">
 					<v-list-item :download="file.filename_download" :href="assetURL">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
+						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
-					<v-divider />
+					<v-divider v-if="!disabled" />
 				</template>
-				<v-list-item @click="activeDialog = 'upload'">
-					<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
-					<v-list-item-content>
-						{{ $t(file ? 'replace_from_device' : 'upload_from_device') }}
-					</v-list-item-content>
-				</v-list-item>
+				<template v-if="!disabled">
+					<v-list-item clickable @click="activeDialog = 'upload'">
+						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
+						</v-list-item-content>
+					</v-list-item>
 
-				<v-list-item @click="activeDialog = 'choose'">
-					<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-					<v-list-item-content>
-						{{ $t(file ? 'replace_from_library' : 'choose_from_library') }}
-					</v-list-item-content>
-				</v-list-item>
+					<v-list-item clickable @click="activeDialog = 'choose'">
+						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
+						</v-list-item-content>
+					</v-list-item>
 
-				<v-list-item @click="activeDialog = 'url'">
-					<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
-					<v-list-item-content>
-						{{ $t(file ? 'replace_from_url' : 'import_from_url') }}
-					</v-list-item-content>
-				</v-list-item>
+					<v-list-item clickable @click="activeDialog = 'url'">
+						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ t(file ? 'replace_from_url' : 'import_from_url') }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
 			</v-list>
 		</v-menu>
 
 		<drawer-item
-			v-if="!disabled && file"
-			:active.sync="editDrawerActive"
+			v-if="file"
+			v-model:active="editDrawerActive"
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
 			@input="stageEdits"
 		/>
 
-		<v-dialog :active="activeDialog === 'upload'" @esc="activeDialog = null" @toggle="activeDialog = null">
+		<v-dialog
+			:model-value="activeDialog === 'upload'"
+			@esc="activeDialog = null"
+			@update:model-value="activeDialog = null"
+		>
 			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="onUpload" from-url />
+					<v-upload from-url :folder="folder" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="activeDialog = null" secondary>{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="activeDialog = null">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<drawer-collection
+			v-if="activeDialog === 'choose'"
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
 			@update:active="activeDialog = null"
@@ -99,22 +112,22 @@
 		/>
 
 		<v-dialog
-			:active="activeDialog === 'url'"
-			@toggle="activeDialog = null"
-			@esc="activeDialog = null"
+			:model-value="activeDialog === 'url'"
 			:persistent="urlLoading"
+			@update:model-value="activeDialog = null"
+			@esc="activeDialog = null"
 		>
 			<v-card>
-				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
+				<v-card-title>{{ t('import_from_url') }}</v-card-title>
 				<v-card-text>
-					<v-input :placeholder="$t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
+					<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
-						{{ $t('cancel') }}
+					<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
+						{{ t('cancel') }}
 					</v-button>
-					<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
-						{{ $t('import') }}
+					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+						{{ t('import_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -123,7 +136,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
@@ -143,15 +157,22 @@ export default defineComponent({
 	components: { DrawerCollection, DrawerItem },
 	props: {
 		value: {
-			type: [String, Object],
+			type: [String, Object] as PropType<string | Record<string, any>>,
 			default: null,
 		},
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
+		folder: {
+			type: String,
+			default: undefined,
+		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, file, fetchFile } = useFile();
 
@@ -163,7 +184,7 @@ export default defineComponent({
 		});
 
 		const assetURL = computed(() => {
-			const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+			const id = typeof props.value === 'string' ? props.value : props.value?.id;
 			return addTokenToURL(getRootPath() + `assets/${id}`);
 		});
 
@@ -180,6 +201,7 @@ export default defineComponent({
 		const editDrawerActive = ref(false);
 
 		return {
+			t,
 			activeDialog,
 			setSelection,
 			loading,
@@ -229,7 +251,7 @@ export default defineComponent({
 					} else {
 						file.value = response.data.data;
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -272,6 +294,9 @@ export default defineComponent({
 				try {
 					const response = await api.post(`/files/import`, {
 						url: url.value,
+						data: {
+							folder: props.folder,
+						},
 					});
 
 					file.value = response.data.data;
@@ -279,7 +304,7 @@ export default defineComponent({
 					activeDialog.value = null;
 					url.value = '';
 					emit('input', file.value?.id);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -343,7 +368,7 @@ export default defineComponent({
 
 		img {
 			object-fit: contain;
-			filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
+			filter: drop-shadow(0px 0px 8px rgb(0 0 0 / 0.25));
 		}
 	}
 }

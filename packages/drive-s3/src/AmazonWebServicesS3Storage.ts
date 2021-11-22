@@ -35,10 +35,10 @@ export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3;
 	protected $bucket: string;
 	protected $root: string;
+	protected $acl?: string;
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const S3 = require('aws-sdk/clients/s3');
 
 		this.$driver = new S3({
@@ -49,13 +49,14 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 		this.$bucket = config.bucket;
 		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
+		this.$acl = config.acl;
 	}
 
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
-	protected _fullPath(filePath: string) {
-		return path.join(this.$root, filePath);
+	protected _fullPath(filePath: string): string {
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	/**
@@ -63,18 +64,19 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 */
 	public async copy(src: string, dest: string): Promise<Response> {
 		src = this._fullPath(src);
-		dest = this._fullPath(src);
+		dest = this._fullPath(dest);
 
 		const params = {
 			Key: dest,
 			Bucket: this.$bucket,
 			CopySource: `/${this.$bucket}/${src}`,
+			ACL: this.$acl,
 		};
 
 		try {
 			const result = await this.$driver.copyObject(params).promise();
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, src, this.$bucket);
 		}
 	}
@@ -91,7 +93,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 			const result = await this.$driver.deleteObject(params).promise();
 			// Amazon does not inform the client if anything was deleted.
 			return { raw: result, wasDeleted: null };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
 		}
 	}
@@ -114,7 +116,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		try {
 			const result = await this.$driver.headObject(params).promise();
 			return { exists: true, raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			if (e.statusCode === 404) {
 				return { exists: false, raw: e };
 			} else {
@@ -127,8 +129,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns the file contents.
 	 */
 	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
-		location = this._fullPath(location);
-
 		const bufferResult = await this.getBuffer(location);
 
 		return {
@@ -152,7 +152,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 			const body = result.Body as Buffer;
 
 			return { content: body, raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
 		}
 	}
@@ -174,7 +174,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 			const result = await this.$driver.getSignedUrlPromise('getObject', params);
 			return { signedUrl: result, raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
 		}
 	}
@@ -194,7 +194,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 				modified: result.LastModified as Date,
 				raw: result,
 			};
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
 		}
 	}
@@ -208,7 +208,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params: S3.GetObjectRequest = {
 			Key: location,
 			Bucket: this.$bucket,
-			Range: range ? `${range.start}-${range.end || ''}` : undefined,
+			Range: range ? `bytes=${range.start}-${range.end || ''}` : undefined,
 		};
 
 		return this.$driver.getObject(params).createReadStream();
@@ -247,15 +247,25 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public async put(
+		location: string,
+		content: Buffer | NodeJS.ReadableStream | string,
+		type?: string
+	): Promise<Response> {
 		location = this._fullPath(location);
 
-		const params = { Key: location, Body: content, Bucket: this.$bucket };
+		const params = {
+			Key: location,
+			Body: content,
+			Bucket: this.$bucket,
+			ACL: this.$acl,
+			ContentType: type ? type : '',
+		};
 
 		try {
 			const result = await this.$driver.upload(params).promise();
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
 		}
 	}
@@ -289,7 +299,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 						path: path.substring(this.$root.length),
 					};
 				}
-			} catch (e) {
+			} catch (e: any) {
 				throw handleError(e, prefix, this.$bucket);
 			}
 		} while (continuationToken);
@@ -301,4 +311,5 @@ export interface AmazonWebServicesS3StorageConfig extends ClientConfiguration {
 	secret: string;
 	bucket: string;
 	root?: string;
+	acl?: string;
 }

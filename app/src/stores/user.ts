@@ -1,11 +1,10 @@
-import { createStore } from 'pinia';
 import api from '@/api';
 import { useLatencyStore } from '@/stores';
-
-import { User } from '@/types';
+import { User } from '@directus/shared/types';
 import { userName } from '@/utils/user-name';
+import { defineStore } from 'pinia';
 
-export const useUserStore = createStore({
+export const useUserStore = defineStore({
 	id: 'userStore',
 	state: () => ({
 		currentUser: null as User | null,
@@ -13,34 +12,34 @@ export const useUserStore = createStore({
 		error: null,
 	}),
 	getters: {
-		fullName(state) {
-			if (state.currentUser === null) return null;
-			return userName(state.currentUser);
+		fullName(): string | null {
+			if (this.currentUser === null) return null;
+			return userName(this.currentUser);
 		},
-		isAdmin(state) {
-			return state.currentUser?.role.admin_access === true || false;
+		isAdmin(): boolean {
+			return this.currentUser?.role.admin_access === true || false;
 		},
 	},
 	actions: {
 		async hydrate() {
-			this.state.loading = true;
+			this.loading = true;
 
 			try {
 				const { data } = await api.get(`/users/me`, {
 					params: {
-						fields: '*,avatar.*,role.*',
+						fields: '*,avatar.id,role.*',
 					},
 				});
 
-				this.state.currentUser = data.data;
-			} catch (error) {
-				this.state.error = error;
+				this.currentUser = data.data;
+			} catch (error: any) {
+				this.error = error;
 			} finally {
-				this.state.loading = false;
+				this.loading = false;
 			}
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		async trackPage(page: string) {
 			const latencyStore = useLatencyStore();
@@ -58,8 +57,8 @@ export const useUserStore = createStore({
 				latency: end - start,
 			});
 
-			if (this.state.currentUser) {
-				this.state.currentUser.last_page = page;
+			if (this.currentUser) {
+				this.currentUser.last_page = page;
 			}
 		},
 	},

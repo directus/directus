@@ -1,18 +1,10 @@
+import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
-
-type MySQLError = {
-	message: string;
-	code: string;
-	errno: number;
-	sqlMessage: string;
-	sqlState: string;
-	index: number;
-	sql: string;
-};
+import { ValueTooLongException } from '../value-too-long';
+import { MySQLError } from './types';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',
@@ -20,9 +12,11 @@ enum MySQLErrorCodes {
 	ER_DATA_TOO_LONG = 'ER_DATA_TOO_LONG',
 	NOT_NULL_VIOLATION = 'ER_BAD_NULL_ERROR',
 	FOREIGN_KEY_VIOLATION = 'ER_NO_REFERENCED_ROW_2',
+	ER_INVALID_USE_OF_NULL = 'ER_INVALID_USE_OF_NULL',
+	WARN_DATA_TRUNCATED = 'WARN_DATA_TRUNCATED',
 }
 
-export function extractError(error: MySQLError) {
+export function extractError(error: MySQLError): MySQLError | Error {
 	switch (error.code) {
 		case MySQLErrorCodes.UNIQUE_VIOLATION:
 			return uniqueViolation(error);
@@ -34,30 +28,71 @@ export function extractError(error: MySQLError) {
 			return notNullViolation(error);
 		case MySQLErrorCodes.FOREIGN_KEY_VIOLATION:
 			return foreignKeyViolation(error);
+		// Note: MariaDB throws data truncated for null value error
+		case MySQLErrorCodes.ER_INVALID_USE_OF_NULL:
+		case MySQLErrorCodes.WARN_DATA_TRUNCATED:
+			return containsNullValues(error);
 	}
+
 	return error;
 }
 
 function uniqueViolation(error: MySQLError) {
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenQuotes = /'([^']+)'/g;
 	const matches = error.sqlMessage.match(betweenQuotes);
 
 	if (!matches) return error;
 
-	const collection = matches[1].slice(1, -1).split('.')[0];
-	const field = matches[1].slice(1, -1).split('.')[1];
-	const invalid = matches[0].slice(1, -1);
+	/**
+	 * MySQL's error doesn't return the field name in the error. In case the field is created through
+	 * Directus (/ Knex), the key name will be `<collection>_<field>_unique` in which case we can pull
+	 * the field name from the key name
+	 */
 
-	return new RecordNotUniqueException(field, {
-		collection,
-		field,
-		invalid,
-	});
+	/** MySQL 8+ style error message */
+	if (matches[1].includes('.')) {
+		const collection = matches[1].slice(1, -1).split('.')[0];
+
+		let field = null;
+
+		const indexName = matches[1].slice(1, -1).split('.')[1];
+
+		if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
+			field = indexName.slice(collection.length + 1, -7);
+		}
+
+		const invalid = matches[0].slice(1, -1);
+
+		return new RecordNotUniqueException(field, {
+			collection,
+			field,
+			invalid,
+		});
+	} else {
+		/** MySQL 5.7 style error message */
+		const indexName = matches[1].slice(1, -1);
+
+		const collection = indexName.split('_')[0];
+
+		let field = null;
+
+		if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
+			field = indexName.slice(collection.length + 1, -7);
+		}
+
+		const invalid = matches[0].slice(1, -1);
+
+		return new RecordNotUniqueException(field, {
+			collection,
+			field,
+			invalid,
+		});
+	}
 }
 
 function numericValueOutOfRange(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
 	const quoteMatches = error.sqlMessage.match(betweenQuotes);
@@ -74,8 +109,8 @@ function numericValueOutOfRange(error: MySQLError) {
 }
 
 function valueLimitViolation(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
 	const quoteMatches = error.sqlMessage.match(betweenQuotes);
@@ -92,8 +127,8 @@ function valueLimitViolation(error: MySQLError) {
 }
 
 function notNullViolation(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
 	const quoteMatches = error.sqlMessage.match(betweenQuotes);
@@ -110,8 +145,8 @@ function notNullViolation(error: MySQLError) {
 }
 
 function foreignKeyViolation(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenParens = /\(([^)]+)\)/g;
 
 	const tickMatches = error.sqlMessage.match(betweenTicks);
 	const parenMatches = error.sql.match(betweenParens);
@@ -127,4 +162,18 @@ function foreignKeyViolation(error: MySQLError) {
 		field,
 		invalid,
 	});
+}
+
+function containsNullValues(error: MySQLError) {
+	const betweenTicks = /`([^`]+)`/g;
+
+	// Normally, we shouldn't read from the executed SQL. In this case, we're altering a single
+	// column, so we shouldn't have the problem where multiple columns are altered at the same time
+	const tickMatches = error.sql.match(betweenTicks);
+
+	if (!tickMatches) return error;
+
+	const field = tickMatches[1].slice(1, -1);
+
+	return new ContainsNullValuesException(field);
 }

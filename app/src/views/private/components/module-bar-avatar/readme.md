@@ -9,13 +9,17 @@ Renders the avatar and shows the sign out button on hover.
 ```
 
 ## Props
+
 n/a
 
 ## Events
+
 n/a
 
 ## Slots
+
 n/a
 
 ## CSS Variables
+
 n/a

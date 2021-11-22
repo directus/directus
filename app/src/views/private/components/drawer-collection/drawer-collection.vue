@@ -1,41 +1,56 @@
 <template>
-	<v-drawer v-model="_active" :title="$t('select_item')" @cancel="cancel">
-		<template #actions>
-			<search-input v-model="searchQuery" />
-
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<component
-			:is="`layout-${localLayout}`"
-			:collection="collection"
-			:selection="_selection"
-			:filters="filters"
-			:layout-query.sync="localQuery"
-			:layout-options.sync="localOptions"
-			:search-query="searchQuery"
-			@update:selection="onSelect"
-			select-mode
-			class="layout"
-		>
-			<template #no-results>
-				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+	<component
+		:is="layoutWrapper"
+		v-slot="{ layoutState }"
+		v-model:selection="layoutSelection"
+		v-model:layout-options="localOptions"
+		v-model:layout-query="localQuery"
+		:filter="layoutFilter"
+		:search="search"
+		:collection="collection"
+		select-mode
+	>
+		<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
+			<template #subtitle>
+				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 			</template>
 
-			<template #no-items>
-				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded icon secondary disabled>
+					<v-icon :name="collectionInfo.icon" :color="collectionInfo.color" />
+				</v-button>
 			</template>
-		</component>
-	</v-drawer>
+
+			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
+
+			<template #actions>
+				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
+
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<component :is="`layout-${localLayout}`" class="layout" v-bind="layoutState">
+				<template #no-results>
+					<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+				</template>
+
+				<template #no-items>
+					<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+				</template>
+			</component>
+		</v-drawer>
+	</component>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs, watch } from '@vue/composition-api';
-import { Filter } from '@/types';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
+import { Filter } from '@directus/shared/types';
 import usePreset from '@/composables/use-preset';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
+import { useLayout } from '@/composables/use-layout';
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
@@ -57,20 +72,23 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			default: () => [],
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
 		},
 	},
+	emits: ['update:active', 'input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { save, cancel } = useActions();
-		const { _active } = useActiveState();
-		const { _selection, localSelection, onSelect } = useSelection();
+		const { internalActive } = useActiveState();
+		const { internalSelection, onSelect } = useSelection();
 
 		const { collection } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
-		const { layout, layoutOptions, layoutQuery, searchQuery } = usePreset(collection);
+		const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = usePreset(collection, ref(null), true);
 
 		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values
@@ -78,24 +96,51 @@ export default defineComponent({
 		const localOptions = ref(layoutOptions.value);
 		const localQuery = ref(layoutQuery.value);
 
+		const layoutSelection = computed<any>({
+			get() {
+				return internalSelection.value;
+			},
+			set(newFilters) {
+				onSelect(newFilters);
+			},
+		});
+
+		const { layoutWrapper } = useLayout(layout);
+
+		const layoutFilter = computed({
+			get() {
+				if (!props.filter) return presetFilter.value;
+				if (!presetFilter.value) return props.filter;
+
+				return {
+					_and: [props.filter, presetFilter.value],
+				};
+			},
+			set(newFilter: Filter | null) {
+				presetFilter.value = newFilter;
+			},
+		});
+
 		return {
+			t,
 			save,
 			cancel,
-			_active,
-			_selection,
-			localSelection,
-			onSelect,
+			internalActive,
+			layoutWrapper,
+			layoutSelection,
+			layoutFilter,
 			localLayout,
 			localOptions,
 			localQuery,
 			collectionInfo,
-			searchQuery,
+			search,
+			presetFilter,
 		};
 
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -105,13 +150,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useSelection() {
 			const localSelection = ref<(string | number)[] | null>(null);
 
-			const _selection = computed({
+			const internalSelection = computed({
 				get() {
 					if (localSelection.value === null) {
 						return props.selection;
@@ -131,7 +176,7 @@ export default defineComponent({
 				}
 			);
 
-			return { _selection, localSelection, onSelect };
+			return { internalSelection, onSelect };
 
 			function onSelect(newSelection: (string | number)[]) {
 				if (newSelection.length === 0) {
@@ -151,12 +196,12 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
-				emit('input', _selection.value);
-				_active.value = false;
+				emit('input', internalSelection.value);
+				internalActive.value = false;
 			}
 
 			function cancel() {
-				_active.value = false;
+				internalActive.value = false;
 			}
 		}
 	},

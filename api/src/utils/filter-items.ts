@@ -1,4 +1,4 @@
-import { Query } from '../types';
+import { Query } from '@directus/shared/types';
 import generateJoi from './generate-joi';
 
 /*
@@ -6,7 +6,7 @@ import generateJoi from './generate-joi';
  existing array of items has to be filtered using the same filter syntax as used in the ast-to-sql flow
  */
 
-export function filterItems(items: Record<string, any>[], filter: Query['filter']) {
+export function filterItems(items: Record<string, any>[], filter: Query['filter']): Record<string, any>[] {
 	if (!filter) return items;
 
 	return items.filter((item) => {

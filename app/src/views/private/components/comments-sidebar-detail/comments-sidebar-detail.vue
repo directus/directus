@@ -1,36 +1,34 @@
 <template>
-	<sidebar-detail :title="$t('comments')" icon="chat_bubble_outline" :badge="count || null">
+	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
-		<v-progress-linear indeterminate v-if="loading" />
+		<v-progress-linear v-if="loading" indeterminate />
 
 		<div v-else-if="!activity || activity.length === 0" class="empty">
-			<div class="content">{{ $t('no_comments') }}</div>
+			<div class="content">{{ t('no_comments') }}</div>
 		</div>
 
-		<template v-else v-for="group in activity">
-			<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
+		<template v-for="group in activity" v-else :key="group.date.toString()">
+			<v-divider>{{ group.dateFormatted }}</v-divider>
 
-			<template v-for="item in group.activity">
-				<comment-item :refresh="refresh" :activity="item" :key="item.id" />
+			<template v-for="item in group.activity" :key="item.id">
+				<comment-item :refresh="refresh" :activity="item" />
 			</template>
 		</template>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref } from 'vue';
 
 import api from '@/api';
 import { Activity, ActivityByDate } from './types';
 import CommentInput from './comment-input.vue';
-import { groupBy } from 'lodash';
-import i18n from '@/lang';
+import { groupBy, orderBy } from 'lodash';
 import formatLocalized from '@/utils/localized-format';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
-import { TranslateResult } from 'vue-i18n';
 import CommentItem from './comment-item.vue';
-import { orderBy } from 'lodash';
 
 export default defineComponent({
 	components: { CommentInput, CommentItem },
@@ -45,15 +43,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { activity, loading, error, refresh, count } = useActivity(props.collection, props.primaryKey);
 
-		return {
-			activity,
-			loading,
-			error,
-			refresh,
-			count,
-		};
+		return { t, activity, loading, error, refresh, count };
 
 		function useActivity(collection: string, primaryKey: string | number) {
 			const activity = ref<ActivityByDate[] | null>(null);
@@ -107,13 +101,12 @@ export default defineComponent({
 						const yesterday = isYesterday(date);
 						const thisYear = isThisYear(date);
 
-						let dateFormatted: TranslateResult;
+						let dateFormatted: string;
 
-						if (today) dateFormatted = i18n.t('today');
-						else if (yesterday) dateFormatted = i18n.t('yesterday');
-						else if (thisYear)
-							dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short_no_year')));
-						else dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short')));
+						if (today) dateFormatted = t('today');
+						else if (yesterday) dateFormatted = t('yesterday');
+						else if (thisYear) dateFormatted = await formatLocalized(date, String(t('date-fns_date_short_no_year')));
+						else dateFormatted = await formatLocalized(date, String(t('date-fns_date_short')));
 
 						activityGrouped.push({
 							date: date,
@@ -123,7 +116,7 @@ export default defineComponent({
 					}
 
 					activity.value = orderBy(activityGrouped, ['date'], ['desc']);
-				} catch (error) {
+				} catch (error: any) {
 					error.value = error;
 				} finally {
 					loading.value = false;

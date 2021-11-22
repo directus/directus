@@ -1,25 +1,39 @@
 <template>
-	<v-dialog :active="active" @toggle="$emit('toggle', $event)" @esc="$emit('toggle', false)">
+	<v-dialog
+		:model-value="modelValue"
+		@update:model-value="$emit('update:modelValue', $event)"
+		@esc="$emit('update:modelValue', false)"
+	>
 		<v-card>
-			<v-card-title>{{ $t('invite_users') }}</v-card-title>
+			<v-card-title>{{ t('invite_users') }}</v-card-title>
 
 			<v-card-text>
 				<div class="grid">
 					<div class="field">
-						<div class="type-label">{{ $t('emails') }}</div>
-						<v-textarea v-model="emails" :placeholder="$t('email_examples')" />
+						<div class="type-label">{{ t('emails') }}</div>
+						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
-					<div class="field" v-if="role === null">
-						<div class="type-label">{{ $t('role') }}</div>
+					<div v-if="role === null" class="field">
+						<div class="type-label">{{ t('role') }}</div>
 						<v-select v-model="roleSelected" :items="roles" />
 					</div>
+					<v-notice v-if="uniqueValidationErrors.length > 0" class="field" type="danger">
+						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
+							<template v-if="err.extensions.invalid">
+								{{ t('email_already_invited', { email: err.extensions.invalid }) }}
+							</template>
+							<template v-else-if="i === 0">
+								{{ t('validationError.unique') }}
+							</template>
+						</div>
+					</v-notice>
 				</div>
 			</v-card-text>
 
 			<v-card-actions>
-				<v-button secondary @click="$emit('toggle', false)">{{ $t('cancel') }}</v-button>
-				<v-button @click="inviteUsers" :disabled="emails === null || emails.length === 0" :loading="loading">
-					{{ $t('invite') }}
+				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('cancel') }}</v-button>
+				<v-button :disabled="emails === null || emails.length === 0" :loading="loading" @click="inviteUsers">
+					{{ t('invite') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -27,19 +41,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch } from 'vue';
 import api from '@/api';
-import { useNotificationsStore } from '@/stores';
-import i18n from '@/lang';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { APIError } from '@/types';
 
 export default defineComponent({
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -48,21 +58,25 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const notifications = useNotificationsStore();
+		const { t } = useI18n();
+
 		const emails = ref<string>('');
 		const roles = ref<Record<string, any>[]>([]);
 		const roleSelected = ref<string | null>(props.role);
 		const loading = ref(false);
 
+		const uniqueValidationErrors = ref([]);
+
 		watch(
-			() => props.active,
+			() => props.modelValue,
 			() => {
 				loadRoles();
 			}
 		);
 
-		return { emails, inviteUsers, roles, roleSelected, loading };
+		return { t, emails, inviteUsers, roles, roleSelected, loading, uniqueValidationErrors };
 
 		async function inviteUsers() {
 			loading.value = true;
@@ -79,9 +93,19 @@ export default defineComponent({
 				});
 
 				emails.value = '';
-				emit('toggle', false);
-			} catch (err) {
-				unexpectedError(err);
+				emit('update:modelValue', false);
+			} catch (err: any) {
+				uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
+					return error.extensions?.code === 'RECORD_NOT_UNIQUE';
+				});
+
+				const otherErrors = err?.response?.data?.errors?.filter(
+					(err: APIError) => err?.extensions?.code !== 'RECORD_NOT_UNIQUE'
+				);
+
+				if (otherErrors.length > 0) {
+					otherErrors.forEach((err: APIError) => unexpectedError(err));
+				}
 			} finally {
 				loading.value = false;
 			}

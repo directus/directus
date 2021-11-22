@@ -12,4 +12,4 @@ get:
             example: pong
       description: Successful request
   tags:
-  - Server
+    - Server

@@ -1,24 +1,44 @@
 ---
+avatar: Avatar
+default_provider: Implicit
+published: Publicat
+draft: Ciornă
+archived: Arhivat
+modules: Module
+module_bar: Bară module
 edit_field: Editează câmp
+conditions: Condiții
+maps: Hărţi
+item_creation: Creare articol
 item_revision: Revizuire element
+enter_a_name: Introduceți un nume...
 duplicate_field: Duplicare câmp
 half_width: Jumătate de lăţime
 full_width: Lăţime totală
+group: Grup
+and: Şi
+or: Sau
 fill_width: Umple lăţime
 field_name_translations: Traducerile numelui câmpului
 enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
 add_field: Adaugă câmp
 role_name: Nume de rol
-db_only_click_to_configure: 'Doar baza de date: Apăsaţi pentru a configura '
+branch: Ramură
+leaf: Frunză
+edit_collection: Editează colecția
+exclusive: Exclusiv
+children: Copii
+db_only_click_to_configure: 'Doar baza de date: apăsați pentru configurare'
 show_archived_items: Arată elementele arhivate
+edited: Valoare editată
 required: Necesar
+required_for_app_access: Necesar pentru acces aplicaţie
 requires_value: Necesită valoare
 create_preset: Creează presetare
 create_role: Creează Rol
 create_user: Creează utilizator
 create_webhook: Creează Webhook
 invite_users: Invită utilizatori
-email_examples: 'admin@exemplu.com, utilizator@exemplu.com...'
 invite: Invită
 emails: E-mailuri
 connection_excellent: Conexiune excelentă
@@ -36,7 +56,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
-public: Public
 public_description: Controlează ce date API sunt disponibile fără autentificare.
 not_allowed: Nu este permis
 directus_version: Versiune Directus
@@ -68,6 +87,9 @@ comments: Comentarii
 create_collection: Creează Colecție
 users: Utilizatori
 activity: Activitate
+action: Acţiune
+ip_address: Adresă IP
+user_agent: User Agent
 duration: Durată
 status: Stare
 bookmarks: Semne de carte
@@ -78,6 +100,8 @@ operators:
   contains: Conține
 role: Rol
 create: Creează
+width: Lățime
+height: Înălţime
 wysiwyg_options:
   table: Tabel
 choices: Opțiuni
@@ -134,16 +158,29 @@ fields:
     tfa_secret: Autentificare în doi pași
     status: Stare
     role: Rol
+  directus_settings:
+    module_bar: Bară module
   directus_fields:
     hidden: Ascuns
     translation: Traducerile numelui câmpului
   directus_roles:
     name: Nume de rol
     description: Descriere
+  directus_webhooks:
+    status: Stare
+    collections: Colecții
+field_options:
+  directus_activity:
+    create: Creează
+  directus_collections:
+    archive_divider: Arhivează
+  directus_roles:
+    fields:
+      icon_name: Iconiță
+    collections_name: Colecții
+  directus_webhooks:
+    actions_create: Creează
 comment: Comentariu
-continue: Continuă
-default: Implicit
-delete: Ştergeţi
 delete_field_are_you_sure: >-
   Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.
 description: Descriere
@@ -157,13 +194,15 @@ icon: Iconiță
 info: Info
 password: Parolă
 interfaces:
-  collection:
+  filter:
+    all: Tot
+  system-collection:
     collection: Colecție
-  collections:
+  system-collections:
     collections: Colecții
   files:
     files: Fişiere
-  icon:
+  select-icon:
     icon: Iconiță
   tags:
     tags: Etichete

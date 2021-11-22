@@ -4,7 +4,6 @@ import { InvalidConfig, DriverNotSupported } from './exceptions';
 import { StorageManagerConfig, StorageManagerDiskConfig, StorageManagerSingleDiskConfig } from './types';
 
 interface StorageConstructor<T extends Storage = Storage> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	new (...args: any[]): T;
 }
 
@@ -103,7 +102,7 @@ export default class StorageManager {
 	/**
 	 * Register a custom driver.
 	 */
-	public registerDriver<T extends Storage>(name: string, driver: StorageConstructor<T>): void {
+	registerDriver<T extends Storage>(name: string, driver: StorageConstructor<T>): void {
 		this._drivers.set(name, driver);
 	}
 }

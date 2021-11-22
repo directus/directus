@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -79,6 +79,7 @@ export default defineComponent({
 .content {
 	max-width: 300px;
 	color: var(--foreground-subdued);
+	line-height: 22px;
 
 	&:not(:last-child) {
 		margin-bottom: 24px;

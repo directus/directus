@@ -1,35 +1,37 @@
 <template>
 	<v-drawer
-		v-model="_active"
-		:title="$t('editing_in_batch', { count: primaryKeys.length })"
+		v-model="internalActive"
+		:title="t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
 	>
 		<template #actions>
-			<v-button @click="save" icon rounded :loading="saving" v-tooltip.bottom="$t('save')">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :loading="saving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
 		<div class="drawer-batch-content">
-			<v-form :collection="collection" v-model="_edits" batch-mode primary-key="+" />
+			<v-form
+				v-model="internalEdits"
+				:collection="collection"
+				batch-mode
+				primary-key="+"
+				:validation-errors="validationErrors"
+			/>
 		</div>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, PropType, toRefs } from 'vue';
 import api from '@/api';
-
-import useCollection from '@/composables/use-collection';
-import { useFieldsStore, useRelationsStore } from '@/stores';
-import i18n from '@/lang';
-import { Relation, Field } from '@/types';
+import { VALIDATION_TYPES } from '@/constants';
+import { APIError } from '@/types';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	model: {
-		prop: 'edits',
-	},
 	props: {
 		active: {
 			type: Boolean,
@@ -48,30 +50,22 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:active', 'refresh'],
 	setup(props, { emit }) {
-		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
+		const { t } = useI18n();
 
-		const { _edits } = useEdits();
-		const { _active } = useActiveState();
-		const { save, cancel, saving } = useActions();
+		const { internalEdits } = useEdits();
+		const { internalActive } = useActiveState();
+		const { save, cancel, saving, validationErrors } = useActions();
 
 		const { collection } = toRefs(props);
 
-		const { info: collectionInfo } = useCollection(collection);
-
-		return {
-			_active,
-			_edits,
-			save,
-			saving,
-			cancel,
-		};
+		return { t, internalActive, internalEdits, save, saving, cancel, validationErrors };
 
 		function useEdits() {
 			const localEdits = ref<Record<string, any>>({});
 
-			const _edits = computed<Record<string, any>>({
+			const internalEdits = computed<Record<string, any>>({
 				get() {
 					if (props.edits !== undefined) {
 						return {
@@ -87,13 +81,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _edits };
+			return { internalEdits };
 		}
 
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -103,38 +97,56 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useActions() {
 			const saving = ref(false);
-			const error = ref<any>(null);
+			const validationErrors = ref([]);
 
-			return { save, cancel, saving };
+			const endpoint = computed(() => {
+				return collection.value.startsWith('directus_')
+					? `/${collection.value.substring(9)}`
+					: `/items/${collection.value}`;
+			});
+
+			return { save, cancel, saving, validationErrors };
 
 			async function save() {
 				saving.value = true;
 
 				try {
-					await api.patch(`/items/${props.collection}`, {
+					await api.patch(endpoint.value, {
 						keys: props.primaryKeys,
-						data: _edits.value,
+						data: internalEdits.value,
 					});
 
 					emit('refresh');
 
-					_active.value = false;
-					_edits.value = {};
-				} catch (err) {
-					error.value = err;
+					internalActive.value = false;
+					internalEdits.value = {};
+				} catch (err: any) {
+					validationErrors.value = err.response.data.errors
+						.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
+						.map((err: APIError) => {
+							return err.extensions;
+						});
+
+					const otherErrors = err.response.data.errors.filter(
+						(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+					);
+
+					if (otherErrors.length > 0) {
+						otherErrors.forEach(unexpectedError);
+					}
 				} finally {
 					saving.value = false;
 				}
 			}
 
 			function cancel() {
-				_active.value = false;
-				_edits.value = {};
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 		}
 	},

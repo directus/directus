@@ -7,10 +7,9 @@ A small installer util that will create a directory, add boilerplate folders, an
 This package is meant to be used through `npx` or `yarn`:
 
 ```
-npx create-directus-project my-project
+npm init directus-project my-project
 ```
 
 ```
 yarn create directus-project my-project
 ```
-

@@ -1,27 +1,31 @@
 <template>
-	<sidebar-detail icon="save_alt" :title="$t('export_data')">
+	<sidebar-detail icon="save_alt" :title="t('export_data')">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ $t('format') }}</p>
+				<p class="type-label">{{ t('format') }}</p>
 				<v-select
+					v-model="format"
 					:items="[
 						{
-							text: $t('csv'),
+							text: t('csv'),
 							value: 'csv',
 						},
 						{
-							text: $t('json'),
+							text: t('json'),
 							value: 'json',
 						},
+						{
+							text: t('xml'),
+							value: 'xml',
+						},
 					]"
-					v-model="format"
 				/>
-				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
+				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
 			</div>
 
 			<div class="field full">
 				<v-button full-width @click="exportData">
-					{{ $t('export_collection', { collection: collection.name }) }}
+					{{ t('export_collection', { collection: collectionName }) }}
 				</v-button>
 			</div>
 		</div>
@@ -29,61 +33,82 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
-import { Collection } from '@/types';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType, computed } from 'vue';
+import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { useCollectionsStore } from '@/stores/';
+
+type LayoutQuery = {
+	fields?: string[];
+	sort?: string;
+	limit?: number;
+};
 
 export default defineComponent({
 	props: {
 		layoutQuery: {
-			type: Object,
-			default: () => ({}),
+			type: Object as PropType<LayoutQuery>,
+			default: (): LayoutQuery => ({}),
 		},
-		searchQuery: {
-			type: String,
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
+		search: {
+			type: String as PropType<string | null>,
 			default: null,
 		},
 		collection: {
-			type: Object as PropType<Collection>,
+			type: String,
 			required: true,
 		},
 	},
+
 	setup(props) {
+		const { t } = useI18n();
+
 		const format = ref('csv');
 		const useFilters = ref(true);
+		const collectionsStore = useCollectionsStore();
+		const collectionName = computed(() => collectionsStore.getCollection(props.collection).name);
 
-		return { format, useFilters, exportData };
+		return { t, format, useFilters, exportData, collectionName };
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection.collection}`;
+			const endpoint = props.collection.startsWith('directus_')
+				? `${props.collection.substring(9)}`
+				: `items/${props.collection}`;
+			const url = getRootPath() + endpoint;
 
-			let params: Record<string, any> = {
-				access_token: api.defaults.headers.Authorization.substring(7),
+			let params: Record<string, unknown> = {
+				access_token: api.defaults.headers.common['Authorization'].substring(7),
+				export: format.value || 'json',
 			};
 
-			if (format.value === 'csv') {
-				params.export = 'csv';
-			} else {
-				params.export = 'json';
-			}
-
 			if (useFilters.value === true) {
-				params = {
-					...params,
-					...props.layoutQuery,
-				};
+				if (props.layoutQuery?.sort) params.sort = props.layoutQuery.sort;
+				if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
+				if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
 
-				if (props.searchQuery) {
-					params.search = props.searchQuery;
+				if (props.search) params.search = props.search;
+
+				if (props.filter) {
+					params.filter = props.filter;
+				}
+
+				if (props.search) {
+					params.search = props.search;
 				}
 			}
 
-			const qs = Object.keys(params)
-				.map((key) => `${key}=${params[key]}`)
-				.join('&');
+			const exportUrl = api.getUri({
+				url,
+				params,
+			});
 
-			window.open(`${url}?${qs}`);
+			window.open(exportUrl);
 		}
 	},
 });
@@ -103,6 +128,10 @@ export default defineComponent({
 }
 
 .v-checkbox {
+	width: 100%;
 	margin-top: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 </style>

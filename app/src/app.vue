@@ -1,13 +1,13 @@
 <template>
-	<div id="app" :style="brandStyle">
+	<div id="directus" :style="brandStyle">
 		<transition name="fade">
-			<div class="hydrating" v-if="hydrating">
+			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />
 			</div>
 		</transition>
 
-		<v-info v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error :error="error" />
@@ -16,65 +16,45 @@
 
 		<router-view v-else-if="!hydrating" />
 
-		<portal-target name="dialog-outlet" transition="transition-dialog" multiple />
-		<portal-target name="menu-outlet" transition="transition-bounce" multiple />
-
-		<mounting-portal mount-to="#custom-css" target-tag="style">{{ customCSS }}</mounting-portal>
+		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch, computed, provide } from '@vue/composition-api';
-import * as stores from '@/stores';
-import api, { addTokenToURL } from '@/api';
-import axios from 'axios';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted } from 'vue';
+import { useAppStore, useUserStore, useServerStore } from '@/stores';
+import { startIdleTracking, stopIdleTracking } from './idle';
+import useSystem from '@/composables/use-system';
 
-import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
 	setup() {
-		const { useAppStore, useUserStore, useServerStore } = stores;
+		const { t } = useI18n();
 
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
 
-		const { hydrating, sidebarOpen } = toRefs(appStore.state);
+		const { hydrating } = toRefs(appStore);
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': serverStore.state.info?.project?.project_color || 'var(--primary)',
+				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
 			};
 		});
 
-		watch(
-			[() => serverStore.state.info?.project?.project_color, () => serverStore.state.info?.project?.project_logo],
-			() => {
-				const hasCustomLogo = !!serverStore.state.info?.project?.project_logo;
-				setFavicon(serverStore.state.info?.project?.project_color || '#00C897', hasCustomLogo);
-			}
-		);
+		onMounted(() => startIdleTracking());
+		onUnmounted(() => stopIdleTracking());
 
-		const { width } = useWindowSize();
+		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
+			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
+			setFavicon(serverStore.info?.project?.project_color || '#00C897', hasCustomLogo);
+		});
 
 		watch(
-			width,
-			(newWidth, oldWidth) => {
-				if (newWidth === null || newWidth === 0) return;
-				if (newWidth === oldWidth) return;
-
-				if (newWidth >= 1424) {
-					if (sidebarOpen.value === false) sidebarOpen.value = true;
-				} else {
-					if (sidebarOpen.value === true) sidebarOpen.value = false;
-				}
-			},
-			{ immediate: true }
-		);
-
-		watch(
-			() => userStore.state.currentUser,
+			() => userStore.currentUser,
 			(newUser) => {
 				document.body.classList.remove('dark');
 				document.body.classList.remove('light');
@@ -93,35 +73,31 @@ export default defineComponent({
 		);
 
 		watch(
-			() => serverStore.state.info?.project?.project_name,
+			() => serverStore.info?.project?.project_name,
 			(projectName) => {
 				document.title = projectName || 'Directus';
 			}
 		);
 
 		const customCSS = computed(() => {
-			return serverStore.state?.info?.project?.custom_css || '';
+			return serverStore.info?.project?.custom_css || '';
 		});
 
-		const error = computed(() => appStore.state.error);
+		const error = computed(() => appStore.error);
 
-		/**
-		 * This allows custom extensions to use the apps internals
-		 */
-		provide('system', {
-			...stores,
-			api,
-			axios,
-			addTokenToURL,
-		});
+		useSystem();
 
-		return { hydrating, brandStyle, error, customCSS };
+		return { t, hydrating, brandStyle, error, customCSS };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-#app {
+:global(#app) {
+	height: 100%;
+}
+
+#directus {
 	height: 100%;
 }
 
@@ -133,7 +109,7 @@ export default defineComponent({
 	justify-content: center;
 	width: 100%;
 	height: 100%;
-	background: rgba(255, 255, 255, 0.5);
+	background: rgb(255 255 255 / 0.5);
 	backdrop-filter: blur(10px);
 }
 
@@ -142,7 +118,7 @@ export default defineComponent({
 	transition: opacity var(--medium) var(--transition);
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
 }

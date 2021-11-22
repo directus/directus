@@ -1,11 +1,11 @@
 <template>
-	<v-item-group class="sidebar-detail-group" v-model="openDetail" scope="sidebar-detail" :mandatory="mandatory">
+	<v-item-group v-model="openDetail" class="sidebar-detail-group" scope="sidebar-detail" :mandatory="mandatory">
 		<slot />
 	</v-item-group>
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, watch } from '@vue/composition-api';
+import { defineComponent, nextTick, ref, watch } from 'vue';
 export default defineComponent({
 	props: {
 		sidebarOpen: {

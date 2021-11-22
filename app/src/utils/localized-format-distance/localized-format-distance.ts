@@ -1,5 +1,5 @@
-import formatDistanceOriginal from 'date-fns/formatDistance';
 import getDateFNSLocale from '@/utils/get-date-fns-locale';
+import formatDistanceOriginal from 'date-fns/formatDistance';
 
 type LocalizedFormatDistance = (...a: Parameters<typeof formatDistanceOriginal>) => Promise<string>;
 

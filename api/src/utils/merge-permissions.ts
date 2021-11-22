@@ -1,5 +1,5 @@
-import { Permission } from '../types';
-import { merge, omit, flatten } from 'lodash';
+import { flatten, merge, omit } from 'lodash';
+import { Permission, LogicalFilterOR } from '@directus/shared/types';
 
 export function mergePermissions(...permissions: Permission[][]): Permission[] {
 	const allPermissions = flatten(permissions);
@@ -25,12 +25,11 @@ function mergePerm(currentPerm: Permission, newPerm: Permission) {
 	let validation = currentPerm.validation;
 	let fields = currentPerm.fields;
 	let presets = currentPerm.presets;
-	let limit = currentPerm.limit;
 
 	if (newPerm.permissions) {
 		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === '_or') {
 			permissions = {
-				_or: [...currentPerm.permissions._or, newPerm.permissions],
+				_or: [...(currentPerm.permissions as LogicalFilterOR)._or, newPerm.permissions],
 			};
 		} else if (currentPerm.permissions) {
 			permissions = {
@@ -46,7 +45,7 @@ function mergePerm(currentPerm: Permission, newPerm: Permission) {
 	if (newPerm.validation) {
 		if (currentPerm.validation && Object.keys(currentPerm.validation)[0] === '_or') {
 			validation = {
-				_or: [...currentPerm.validation._or, newPerm.validation],
+				_or: [...(currentPerm.validation as LogicalFilterOR)._or, newPerm.validation],
 			};
 		} else if (currentPerm.validation) {
 			validation = {
@@ -73,16 +72,11 @@ function mergePerm(currentPerm: Permission, newPerm: Permission) {
 		presets = merge({}, presets, newPerm.presets);
 	}
 
-	if (newPerm.limit && newPerm.limit > (currentPerm.limit || 0)) {
-		limit = newPerm.limit;
-	}
-
 	return {
 		...currentPerm,
 		permissions,
 		validation,
 		fields,
 		presets,
-		limit,
 	};
 }

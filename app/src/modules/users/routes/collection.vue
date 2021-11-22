@@ -1,236 +1,268 @@
 <template>
-	<private-view :title="title">
-		<template #headline v-if="breadcrumb">
-			<v-breadcrumb :items="breadcrumb" />
-		</template>
+	<component
+		:is="layoutWrapper"
+		ref="layoutRef"
+		v-slot="{ layoutState }"
+		v-model:selection="selection"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		:filter="mergeFilters(filter, roleFilter)"
+		:filter-user="filter"
+		:filter-system="roleFilter"
+		:search="search"
+		collection="directus_users"
+		:reset-preset="resetPreset"
+	>
+		<private-view :title="title">
+			<template v-if="breadcrumb" #headline>
+				<v-breadcrumb :items="breadcrumb" />
+			</template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="people_alt" outline />
-			</v-button>
-		</template>
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded disabled icon secondary>
+					<v-icon name="people_alt" outline />
+				</v-button>
+			</template>
 
-		<template #actions:prepend>
-			<portal-target name="actions:prepend" />
-		</template>
+			<template #actions:prepend>
+				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
+			</template>
 
-		<template #actions>
-			<search-input v-model="searchQuery" />
+			<template #actions>
+				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						:disabled="batchDeleteAllowed !== true"
-						rounded
-						icon
-						class="action-delete"
-						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+							:disabled="batchDeleteAllowed !== true"
+							rounded
+							icon
+							class="action-delete"
+							@click="on"
+						>
+							<v-icon name="delete" outline />
+						</v-button>
+					</template>
+
+					<v-card>
+						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-if="selection.length > 1"
+					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
+					rounded
+					icon
+					class="action-batch"
+					:disabled="batchEditAllowed === false"
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
+					v-if="canInviteUsers"
+					v-tooltip.bottom="t('invite_users')"
+					rounded
+					icon
+					class="invite-user"
+					@click="userInviteModalActive = true"
+				>
+					<v-icon name="person_add" />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					rounded
+					icon
+					:to="addNewLink"
+					:disabled="createAllowed === false"
+				>
+					<v-icon name="add" />
+				</v-button>
+			</template>
+
+			<template #navigation>
+				<users-navigation :current-role="role" />
+			</template>
+
+			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
+
+			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
+				<template #no-results>
+					<v-info v-if="!filter && !search" :title="t('user_count', 0)" icon="people_alt" center>
+						{{ t('no_users_copy') }}
+
+						<template v-if="canInviteUsers" #append>
+							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+								{{ t('create_user') }}
+							</v-button>
+						</template>
+					</v-info>
+
+					<v-info v-else :title="t('no_results')" icon="search" center>
+						{{ t('no_results_copy') }}
+
+						<template #append>
+							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+						</template>
+					</v-info>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+				<template #no-items>
+					<v-info :title="t('user_count', 0)" icon="people_alt" center>
+						{{ t('no_users_copy') }}
 
-					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
-						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						<template v-if="canInviteUsers" #append>
+							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+								{{ t('create_user') }}
+							</v-button>
+						</template>
+					</v-info>
+				</template>
+			</component>
 
-			<v-button
-				rounded
-				icon
-				class="action-batch"
-				:disabled="batchEditAllowed === false"
-				@click="batchEditActive = true"
-				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-			>
-				<v-icon name="edit" outline />
-			</v-button>
+			<drawer-batch
+				v-model:active="batchEditActive"
+				:primary-keys="selection"
+				collection="directus_users"
+				@refresh="refresh"
+			/>
 
-			<v-button
-				v-if="canInviteUsers"
-				rounded
-				icon
-				@click="userInviteModalActive = true"
-				v-tooltip.bottom="$t('invite_users')"
-				class="invite-user"
-			>
-				<v-icon name="person_add" />
-			</v-button>
-
-			<v-button
-				rounded
-				icon
-				:to="addNewLink"
-				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
-				:disabled="createAllowed === false"
-			>
-				<v-icon name="add" />
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<users-navigation :current-role="queryFilters && queryFilters.role" />
-		</template>
-
-		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @toggle="refresh" />
-
-		<component
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout}`"
-			collection="directus_users"
-			:selection.sync="selection"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
-			:filters="_filters"
-			:search-query="searchQuery"
-			:reset-preset="resetPreset"
-			@update:filters="filters = $event"
-		>
-			<template #no-results>
-				<v-info :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
-
-					<template #append>
-						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
-					</template>
-				</v-info>
+			<template #sidebar>
+				<sidebar-detail icon="info_outline" :title="t('information')" close>
+					<div v-md="t('page_help_users_collection')" class="page-description" />
+				</sidebar-detail>
+				<layout-sidebar-detail v-model="layout">
+					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
+				</layout-sidebar-detail>
+				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<export-sidebar-detail
+					collection="directus_users"
+					:filter="mergeFilters(filter, roleFilter)"
+					:search="search"
+				/>
 			</template>
-
-			<template #no-items>
-				<v-info :title="$tc('user_count', 0)" icon="people_alt" center>
-					{{ $t('no_users_copy') }}
-
-					<template #append>
-						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('create_user') }}</v-button>
-					</template>
-				</v-info>
-			</template>
-		</component>
-
-		<drawer-batch
-			:primary-keys="selection"
-			:active.sync="batchEditActive"
-			collection="directus_users"
-			@refresh="refresh"
-		/>
-
-		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
-			</sidebar-detail>
-			<layout-sidebar-detail @input="layout = $event" :value="layout" />
-			<portal-target name="sidebar" />
-		</template>
-	</private-view>
+		</private-view>
+	</component>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
-import { i18n } from '@/lang';
 import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useUserStore, usePermissionsStore } from '@/stores';
-import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
+import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
+import { Role } from '@directus/shared/types';
+import { mergeFilters } from '@directus/shared/utils';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
 };
 
 export default defineComponent({
-	name: 'users-collection',
+	name: 'UsersCollection',
 	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite, DrawerBatch },
 	props: {
-		queryFilters: {
-			type: Object as PropType<Record<string, string>>,
+		role: {
+			type: String,
 			default: null,
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { roles } = useNavigation();
-		const layoutRef = ref<LayoutComponent | null>(null);
 		const userInviteModalActive = ref(false);
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 
+		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_users'));
+		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 		const { addNewLink } = useLinks();
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const _filters = computed(() => {
-			if (props.queryFilters !== null) {
-				const urlFilters = [];
-
-				for (const [field, value] of Object.entries(props.queryFilters)) {
-					urlFilters.push({
-						locked: true,
-						operator: 'eq',
-						field,
-						value,
-					});
-				}
-
-				return [...urlFilters, ...filters.value];
+		const roleFilter = computed(() => {
+			if (props.role !== null) {
+				return {
+					_and: [
+						{
+							role: {
+								_eq: props.role,
+							},
+						},
+					],
+				};
 			}
 
-			return filters.value;
+			return null;
 		});
 
 		const canInviteUsers = computed(() => {
-			const isAdmin = !!userStore.state.currentUser?.role?.admin_access;
+			const isAdmin = !!userStore.currentUser?.role?.admin_access;
 
 			if (isAdmin) return true;
 
-			const usersCreatePermission = permissionsStore.state.permissions.find(
+			const usersCreatePermission = permissionsStore.permissions.find(
 				(permission) => permission.collection === 'directus_users' && permission.action === 'create'
 			);
-			const rolesReadPermission = permissionsStore.state.permissions.find(
+			const rolesReadPermission = permissionsStore.permissions.find(
 				(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
 			);
 
 			return !!usersCreatePermission && !!rolesReadPermission;
 		});
 
+		const { layoutWrapper } = useLayout(layout);
+
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
+		onBeforeRouteLeave(() => {
+			selection.value = [];
+		});
+		onBeforeRouteUpdate(() => {
+			selection.value = [];
+		});
+
 		return {
+			t,
 			canInviteUsers,
-			_filters,
 			addNewLink,
 			breadcrumb,
 			title,
-			filters,
 			layoutRef,
+			layoutWrapper,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
-			marked,
+			search,
 			clearFilters,
 			userInviteModalActive,
 			refresh,
@@ -243,10 +275,13 @@ export default defineComponent({
 			batchDelete,
 			deleteError,
 			batchEditActive,
+			filter,
+			roleFilter,
+			mergeFilters,
 		};
 
 		async function refresh() {
-			await layoutRef.value?.refresh();
+			await layoutRef.value?.state?.refresh?.();
 		}
 
 		function useBatch() {
@@ -269,12 +304,13 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
-					await layoutRef.value?.refresh?.();
+					await refresh();
 
 					selection.value = [];
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}
@@ -283,7 +319,7 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				return `/users/+`;
+				return props.role ? `/users/roles/${props.role}/+` : '/users/+';
 			});
 
 			return { addNewLink };
@@ -291,55 +327,55 @@ export default defineComponent({
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
-				if (!props.queryFilters?.role) return null;
+				if (!props.role) return null;
 
 				return [
 					{
-						name: i18n.t('user_directory'),
+						name: t('user_directory'),
 						to: `/users`,
 					},
 				];
 			});
 
 			const title = computed(() => {
-				if (!props.queryFilters?.role) return i18n.t('user_directory');
-				return roles.value?.find((role) => role.id === props.queryFilters.role)?.name;
+				if (!props.role) return t('user_directory');
+				return roles.value?.find((role: Role) => role.id === props.role)?.name;
 			});
 
 			return { breadcrumb, title };
 		}
 
 		function clearFilters() {
-			filters.value = [];
-			searchQuery.value = null;
+			filter.value = null;
+			search.value = null;
 		}
 
 		function usePermissions() {
 			const batchEditAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const updatePermissions = permissionsStore.state.permissions.find(
+				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === 'directus_users'
 				);
 				return !!updatePermissions;
 			});
 
 			const batchDeleteAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const deletePermissions = permissionsStore.state.permissions.find(
+				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
 				);
 				return !!deletePermissions;
 			});
 
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const createPermissions = permissionsStore.state.permissions.find(
+				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_users'
 				);
 				return !!createPermissions;

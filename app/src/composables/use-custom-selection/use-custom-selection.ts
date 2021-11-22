@@ -1,9 +1,16 @@
-import { Ref, ref, computed, watch } from '@vue/composition-api';
 import { nanoid } from 'nanoid';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
-type EmitFunction = (event: string, ...args: any[]) => void;
+type UsableCustomSelection = {
+	otherValue: Ref<string | null>;
+	usesOtherValue: ComputedRef<boolean>;
+};
 
-export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>, emit: EmitFunction) {
+export function useCustomSelection(
+	currentValue: Ref<string>,
+	items: Ref<any[]>,
+	emit: (event: string | null) => void
+): UsableCustomSelection {
 	const localOtherValue = ref('');
 
 	const otherValue = computed({
@@ -13,10 +20,10 @@ export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>,
 		set(newValue: string | null) {
 			if (newValue === null) {
 				localOtherValue.value = '';
-				emit('input', null);
+				emit(null);
 			} else {
 				localOtherValue.value = newValue;
-				emit('input', newValue);
+				emit(newValue);
 			}
 		},
 	});
@@ -34,12 +41,22 @@ export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>,
 	return { otherValue, usesOtherValue };
 }
 
-export function useCustomSelectionMultiple(currentValues: Ref<string[]>, items: Ref<any[]>, emit: EmitFunction) {
-	type OtherValue = {
-		key: string;
-		value: string;
-	};
+type OtherValue = {
+	key: string;
+	value: string;
+};
 
+type UsableCustomSelectionMultiple = {
+	otherValues: Ref<OtherValue[]>;
+	addOtherValue: (value?: string) => void;
+	setOtherValue: (key: string, newValue: string | null) => void;
+};
+
+export function useCustomSelectionMultiple(
+	currentValues: Ref<string[]>,
+	items: Ref<any[]>,
+	emit: (event: string[] | null) => void
+): UsableCustomSelectionMultiple {
 	const otherValues = ref<OtherValue[]>([]);
 
 	watch(currentValues, (newValue) => {
@@ -86,9 +103,9 @@ export function useCustomSelectionMultiple(currentValues: Ref<string[]>, items: 
 			otherValues.value = otherValues.value.filter((o) => o.key !== key);
 
 			if (valueWithoutPrevious.length === 0) {
-				emit('input', null);
+				emit(null);
 			} else {
-				emit('input', valueWithoutPrevious);
+				emit(valueWithoutPrevious);
 			}
 		} else {
 			otherValues.value = otherValues.value.map((otherValue) => {
@@ -98,7 +115,7 @@ export function useCustomSelectionMultiple(currentValues: Ref<string[]>, items: 
 
 			const newEmitValue = [...valueWithoutPrevious, newValue];
 
-			emit('input', newEmitValue);
+			emit(newEmitValue);
 		}
 	}
 }

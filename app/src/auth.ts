@@ -1,18 +1,22 @@
-import { RawLocation } from 'vue-router';
 import api from '@/api';
-import { hydrate, dehydrate } from '@/hydrate';
-import router from '@/router';
+import { dehydrate, hydrate } from '@/hydrate';
+import { router } from '@/router';
 import { useAppStore } from '@/stores';
+import { RouteLocationRaw } from 'vue-router';
+import { idleTracker } from './idle';
+import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 
 export type LoginCredentials = {
-	email: string;
+	identifier?: string;
+	email?: string;
 	password: string;
+	otp?: string;
 };
 
-export async function login(credentials: LoginCredentials) {
+export async function login(credentials: LoginCredentials, provider: string): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post(`/auth/login`, {
+	const response = await api.post<any>(provider !== DEFAULT_AUTH_PROVIDER ? `/auth/login/${provider}` : '/auth/login', {
 		...credentials,
 		mode: 'cookie',
 	});
@@ -20,7 +24,7 @@ export async function login(credentials: LoginCredentials) {
 	const accessToken = response.data.data.access_token;
 
 	// Add the header to the API handler for every request
-	api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+	api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
 	// Refresh the token 10 seconds before the access token expires. This means the user will stay
 	// logged in without any noticable hickups or delays
@@ -28,41 +32,99 @@ export async function login(credentials: LoginCredentials) {
 	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 	// for tokens that last > 24 days. Ref #4054
 	if (response.data.data.expires <= 2100000000) {
-		setTimeout(() => refresh(), response.data.data.expires - 10000);
+		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
-	appStore.state.authenticated = true;
+	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
+	appStore.authenticated = true;
 
 	await hydrate();
 }
 
 let refreshTimeout: any;
+let idle = false;
+let isRefreshing = false;
+let firstRefresh = true;
 
-export async function refresh({ navigate }: LogoutOptions = { navigate: true }) {
+// Prevent the auto-refresh when the app isn't in use
+idleTracker.on('idle', () => {
+	clearTimeout(refreshTimeout);
+	idle = true;
+});
+
+idleTracker.on('hide', () => {
+	clearTimeout(refreshTimeout);
+	idle = true;
+});
+
+// Restart the autorefresh process when the app is used (again)
+idleTracker.on('active', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
+
+idleTracker.on('show', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
+
+export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+	// Allow refresh during initial page load
+	if (firstRefresh) firstRefresh = false;
+	// Skip if not logged in
+	else if (!api.defaults.headers.common['Authorization']) return;
+
+	// Prevent concurrent refreshes
+	if (isRefreshing) return;
+
 	const appStore = useAppStore();
 
+	// Skip refresh if access token is still fresh
+	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
+		// Set a fresh timeout as it is cleared by idleTracker's idle or hide event
+		clearTimeout(refreshTimeout);
+		refreshTimeout = setTimeout(() => refresh(), appStore.accessTokenExpiry - 10000 - Date.now());
+		return;
+	}
+
+	isRefreshing = true;
+
 	try {
-		const response = await api.post('/auth/refresh');
+		const response = await api.post<any>('/auth/refresh', undefined, {
+			transformRequest(data, headers) {
+				// This seems wrongly typed in Axios itself..
+				delete (headers?.common as unknown as Record<string, string>)?.['Authorization'];
+				return data;
+			},
+		});
 
 		const accessToken = response.data.data.access_token;
 
 		// Add the header to the API handler for every request
-		api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+		api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
-		// logged in without any noticable hickups or delays
-		if (refreshTimeout) clearTimeout(refreshTimeout);
+		// logged in without any notable hiccups or delays
+		clearTimeout(refreshTimeout);
 
 		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 		// for tokens that last > 24 days. Ref #4054
 		if (response.data.data.expires <= 2100000000) {
 			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		}
-		appStore.state.authenticated = true;
+
+		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
+		appStore.authenticated = true;
 
 		return accessToken;
-	} catch (error) {
+	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
+	} finally {
+		isRefreshing = false;
 	}
 }
 
@@ -79,7 +141,7 @@ export type LogoutOptions = {
 /**
  * Everything that should happen when someone logs out, or is logged out through an external factor
  */
-export async function logout(optionsRaw: LogoutOptions = {}) {
+export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 	const appStore = useAppStore();
 
 	const defaultOptions: Required<LogoutOptions> = {
@@ -87,7 +149,9 @@ export async function logout(optionsRaw: LogoutOptions = {}) {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	delete api.defaults.headers.Authorization;
+	delete api.defaults.headers.common['Authorization'];
+
+	clearTimeout(refreshTimeout);
 
 	const options = { ...defaultOptions, ...optionsRaw };
 
@@ -96,12 +160,12 @@ export async function logout(optionsRaw: LogoutOptions = {}) {
 		await api.post(`/auth/logout`);
 	}
 
-	appStore.state.authenticated = false;
+	appStore.authenticated = false;
 
 	await dehydrate();
 
 	if (options.navigate === true) {
-		const location: RawLocation = {
+		const location: RouteLocationRaw = {
 			path: `/login`,
 			query: { reason: options.reason },
 		};

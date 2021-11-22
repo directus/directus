@@ -1,11 +1,13 @@
 <template>
 	<div class="v-detail" :class="{ disabled }">
-		<v-divider @click.native="_active = !_active">
-			<v-icon v-if="!disabled" :name="_active ? 'unfold_less' : 'unfold_more'" small />
-			<slot name="title">{{ label }}</slot>
-		</v-divider>
+		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
+			<v-divider @click="internalActive = !internalActive">
+				<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
+				<slot name="title">{{ label }}</slot>
+			</v-divider>
+		</slot>
 		<transition-expand>
-			<div v-if="_active">
+			<div v-if="internalActive">
 				<slot />
 			</div>
 		</transition-expand>
@@ -13,23 +15,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
-
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
 		label: {
 			type: String,
-			default: i18n.t('toggle'),
+			default: i18n.global.t('toggle'),
 		},
 		startOpen: {
 			type: Boolean,
@@ -40,23 +37,36 @@ export default defineComponent({
 			default: false,
 		},
 	},
-
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const localActive = ref(props.startOpen);
-		const _active = computed({
+
+		const internalActive = computed({
 			get() {
-				if (props.active !== undefined) {
-					return props.active;
+				if (props.modelValue !== undefined) {
+					return props.modelValue;
 				}
 				return localActive.value;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 
-		return { _active };
+		return { internalActive, enable, disable, toggle };
+
+		function enable() {
+			internalActive.value = true;
+		}
+
+		function disable() {
+			internalActive.value = false;
+		}
+
+		function toggle() {
+			internalActive.value = !internalActive.value;
+		}
 	},
 });
 </script>
@@ -69,8 +79,10 @@ export default defineComponent({
 
 .v-detail:not(.disabled) .v-divider {
 	--v-divider-label-color: var(--foreground-subdued);
+
 	&:hover {
 		--v-divider-label-color: var(--foreground-normal-alt);
+
 		cursor: pointer;
 	}
 }

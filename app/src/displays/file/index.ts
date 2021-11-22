@@ -1,13 +1,14 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayFile from './file.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'file',
-	name: i18n.t('displays.file.file'),
-	description: i18n.t('displays.file.description'),
+	name: '$t:displays.file.file',
+	description: '$t:displays.file.description',
 	icon: 'insert_drive_file',
-	handler: DisplayFile,
+	component: DisplayFile,
 	types: ['uuid'],
+	localTypes: ['file'],
 	options: [],
-	fields: ['data', 'type', 'title'],
-}));
+	fields: ['id', 'type', 'title'],
+});

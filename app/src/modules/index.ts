@@ -1,12 +1,9 @@
-import { ref, Ref } from '@vue/composition-api';
-import { ModuleConfig } from './types';
+import { shallowRef, Ref } from 'vue';
+import { ModuleConfig } from '@directus/shared/types';
 
-let modules: Ref<ModuleConfig[]>;
+const modulesRaw: Ref<ModuleConfig[]> = shallowRef([]);
+const modules: Ref<ModuleConfig[]> = shallowRef([]);
 
-export function getModules() {
-	if (!modules) {
-		modules = ref([]);
-	}
-
-	return modules;
+export function getModules(): { modules: Ref<ModuleConfig[]>; modulesRaw: Ref<ModuleConfig[]> } {
+	return { modules, modulesRaw };
 }

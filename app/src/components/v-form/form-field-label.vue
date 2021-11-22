@@ -1,22 +1,24 @@
 <template>
-	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError }">
+	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
 		<v-checkbox
 			v-if="batchMode"
-			:input-value="batchActive"
+			:model-value="batchActive"
 			:value="field.field"
-			@change="$emit('toggle-batch', field)"
+			@update:model-value="$emit('toggle-batch', field)"
 		/>
-		<span @click="toggle" v-tooltip="edited ? $t('edited') : null">
+		<span v-tooltip="edited ? t('edited') : null" class="field-name" @click="toggle">
 			{{ field.name }}
-			<v-icon class="required" sup name="star" v-if="field.schema && field.schema.is_nullable === false" />
+			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
+		<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
-import { Field } from '@/types/';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from 'vue';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -52,6 +54,19 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	emits: ['toggle-batch'],
+	setup() {
+		const { t } = useI18n();
+		return { t };
 	},
 });
 </script>
@@ -73,6 +88,11 @@ export default defineComponent({
 		margin-right: 4px;
 	}
 
+	.v-chip {
+		margin: 0;
+		margin-left: 8px;
+	}
+
 	.required {
 		--v-icon-color: var(--primary);
 
@@ -82,7 +102,7 @@ export default defineComponent({
 	.ctx-arrow {
 		position: absolute;
 		top: -3px;
-		right: -20px;
+		right: -24px;
 		color: var(--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -102,13 +122,19 @@ export default defineComponent({
 		&::before {
 			position: absolute;
 			top: 7px;
-			left: -12px;
+			left: -7px;
 			display: block;
-			width: 6px;
-			height: 6px;
+			width: 4px;
+			height: 4px;
 			background-color: var(--foreground-subdued);
 			border-radius: 4px;
 			content: '';
+			pointer-events: none;
+		}
+
+		.field-name {
+			margin-left: -16px;
+			padding-left: 16px;
 		}
 	}
 }

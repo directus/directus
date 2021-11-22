@@ -2,20 +2,21 @@
 	<div>
 		<v-notice type="info">
 			{{
-				$t('presets_for_role', {
-					action: $t(permission.action).toLowerCase(),
-					role: role ? role.name : $t('public'),
+				t('presets_for_role', {
+					action: t(permission.action).toLowerCase(),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
-		<interface-code v-model="presets" language="json" type="json" />
+		<interface-input-code :value="presets" language="json" type="json" @input="presets = $event" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Permission, Role } from '@/types';
-import useSync from '@/composables/use-sync';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
+import { Permission, Role } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -28,22 +29,25 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
-		const _permission = useSync(props, 'permission', emit);
+		const { t } = useI18n();
+
+		const internalPermission = useSync(props, 'permission', emit);
 
 		const presets = computed({
 			get() {
-				return _permission.value.presets;
+				return internalPermission.value.presets;
 			},
 			set(newPresets: Record<string, any> | null) {
-				_permission.value = {
-					..._permission.value,
+				internalPermission.value = {
+					...internalPermission.value,
 					presets: newPresets,
 				};
 			},
 		});
 
-		return { presets };
+		return { t, presets };
 	},
 });
 </script>

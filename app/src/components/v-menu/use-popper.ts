@@ -1,20 +1,21 @@
-import { createPopper } from '@popperjs/core/lib/popper-base';
-import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
-import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
+import { createPopper } from '@popperjs/core/lib/popper-lite';
+import { Instance, Modifier, Placement } from '@popperjs/core';
+import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
 import eventListeners from '@popperjs/core/lib/modifiers/eventListeners';
-import arrow from '@popperjs/core/lib/modifiers/arrow';
 import flip from '@popperjs/core/lib/modifiers/flip';
 import offset from '@popperjs/core/lib/modifiers/offset';
-import { Instance, Placement, Modifier } from '@popperjs/core';
-
-import { onUnmounted, ref, Ref, watch } from '@vue/composition-api';
+import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
+import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
+import { onUnmounted, ref, Ref, watch } from 'vue';
 
 export function usePopper(
 	reference: Ref<HTMLElement | null>,
 	popper: Ref<HTMLElement | null>,
-	options: Readonly<Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean }>>>
-) {
+	options: Readonly<
+		Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean; offsetY: number; offsetX: number }>>
+	>
+): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
 	const styles = ref({});
 	const arrowStyles = ref({});
@@ -45,16 +46,14 @@ export function usePopper(
 
 	function start() {
 		return new Promise((resolve) => {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
 				placement: options.value.attached ? 'bottom-start' : options.value.placement,
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
 			popperInstance.value.forceUpdate();
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			observer.observe(popper.value!, {
-				attributes: true,
+				attributes: false,
 				childList: true,
 				characterData: true,
 				subtree: true,
@@ -68,24 +67,18 @@ export function usePopper(
 	}
 
 	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
-		const modifiers: Partial<Modifier<string, any>>[] = [
+		const modifiers: Modifier<string, any>[] = [
 			popperOffsets,
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, 0] : [0, 8],
+					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? 8],
 				},
 			},
 			{
 				...preventOverflow,
 				options: {
 					padding: 8,
-				},
-			},
-			{
-				name: 'arrow',
-				options: {
-					padding: 6,
 				},
 			},
 			computeStyles,
@@ -112,7 +105,12 @@ export function usePopper(
 		];
 
 		if (options.value.arrow === true) {
-			modifiers.push(arrow);
+			modifiers.push({
+				...arrow,
+				options: {
+					padding: 6,
+				},
+			});
 		}
 
 		if (options.value.attached === true) {

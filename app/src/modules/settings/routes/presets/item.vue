@@ -1,134 +1,152 @@
 <template>
-	<private-view :title="$t('editing_preset')">
-		<template #headline>{{ $t('settings_presets') }}</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="backLink">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
+	<component
+		:is="layoutWrapper"
+		v-slot="{ layoutState }"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		:filter="layoutFilter"
+		:search="search"
+		:collection="values.collection"
+		readonly
+	>
+		<private-view :title="t('editing_preset')">
+			<template #headline>
+				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
+			</template>
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded icon exact :to="backLink">
+					<v-icon name="arrow_back" />
+				</v-button>
+			</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
+			<template #navigation>
+				<settings-navigation />
+			</template>
 
-		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						:disabled="preset === null || id === '+'"
-						@click="on"
-						v-tooltip.bottom="$t('delete')"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
-				</template>
+			<template #actions>
+				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="t('delete_label')"
+							rounded
+							icon
+							class="action-delete"
+							:disabled="preset === null || id === '+'"
+							@click="on"
+						>
+							<v-icon name="delete" outline />
+						</v-button>
+					</template>
 
+					<v-card>
+						<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-tooltip.bottom="t('save')"
+					icon
+					rounded
+					:disabled="hasEdits === false"
+					:loading="saving"
+					@click="save"
+				>
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<div class="preset-item">
+				<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
+
+				<div class="layout">
+					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
+						<template #no-results>
+							<v-info :title="t('no_results')" icon="search" center>
+								{{ t('no_results_copy') }}
+							</v-info>
+						</template>
+
+						<template #no-items>
+							<v-info :title="t('item_count', 0)" center>
+								{{ t('no_items_copy') }}
+							</v-info>
+						</template>
+					</component>
+
+					<v-notice v-else>
+						{{ t('no_layout_collection_selected_yet') }}
+					</v-notice>
+				</div>
+			</div>
+
+			<template #sidebar>
+				<sidebar-detail icon="info_outline" :title="t('information')" close>
+					<div v-md="t('page_help_settings_presets_item')" class="page-description" />
+				</sidebar-detail>
+
+				<div class="layout-sidebar">
+					<sidebar-detail icon="search" :title="t('search')">
+						<v-input v-model="search" :placeholder="t('preset_search_placeholder')"></v-input>
+					</sidebar-detail>
+
+					<component
+						:is="`layout-sidebar-${values.layout}`"
+						v-if="values.layout && values.collection"
+						v-bind="layoutState"
+					/>
+
+					<sidebar-detail icon="layers" :title="t('layout_options')">
+						<div class="layout-options">
+							<component
+								:is="`layout-options-${values.layout}`"
+								v-if="values.layout && values.collection"
+								v-bind="layoutState"
+							/>
+						</div>
+					</sidebar-detail>
+				</div>
+			</template>
+
+			<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
-
+					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+					<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="discardAndLeave">
+							{{ t('discard_changes') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
-						</v-button>
+						<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-
-			<v-button
-				icon
-				rounded
-				:disabled="hasEdits === false"
-				:loading="saving"
-				@click="save"
-				v-tooltip.bottom="$t('save')"
-			>
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="preset-item">
-			<v-form :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" v-model="edits" />
-
-			<div class="layout">
-				<component
-					v-if="values.layout && values.collection"
-					:is="`layout-${values.layout}`"
-					:collection="values.collection"
-					:layout-options.sync="layoutOptions"
-					:layout-query.sync="layoutQuery"
-					:filters="values.filters || []"
-					:search-query="searchQuery"
-					@update:filters="updateFilters"
-					readonly
-				>
-					<template #no-results>
-						<v-info :title="$t('no_results')" icon="search" center>
-							{{ $t('no_results_copy') }}
-						</v-info>
-					</template>
-
-					<template #no-items>
-						<v-info :title="$tc('item_count', 0)" center>
-							{{ $t('no_items_copy') }}
-						</v-info>
-					</template>
-				</component>
-
-				<v-notice v-else>
-					{{ $t('no_layout_collection_selected_yet') }}
-				</v-notice>
-			</div>
-		</div>
-
-		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_presets_item'))" />
-			</sidebar-detail>
-
-			<sidebar-detail icon="search" :title="$t('search')" class="layout-sidebar">
-				<v-input v-model="searchQuery" :placeholder="$t('preset_search_placeholder')"></v-input>
-			</sidebar-detail>
-
-			<portal-target class="layout-sidebar" name="sidebar" />
-
-			<sidebar-detail class="layout-sidebar" icon="layers" :title="$t('layout_options')">
-				<div class="layout-options">
-					<portal-target name="layout-options" class="portal-contents" />
-				</div>
-			</sidebar-detail>
-		</template>
-	</private-view>
+		</private-view>
+	</component>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import { Preset, Filter } from '@/types';
+import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
-import i18n from '@/lang';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import router from '@/router';
-import marked from 'marked';
-import { userName } from '@/utils/user-name';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-type User = {
-	id: number;
-	name: string;
-};
-
-type Role = {
-	id: number;
-	name: string;
-};
+import { useLayout } from '@/composables/use-layout';
+import useShortcut from '@/composables/use-shortcut';
+import unsavedChanges from '@/composables/unsaved-changes';
+import { isEqual } from 'lodash';
 
 type FormattedPreset = {
 	id: number;
@@ -141,7 +159,7 @@ type FormattedPreset = {
 	layout_query: Record<string, any> | null;
 
 	layout_options: Record<string, any> | null;
-	filters: readonly Filter[] | null;
+	filter: Filter | null;
 };
 
 export default defineComponent({
@@ -153,33 +171,62 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
-		const layouts = getLayouts();
+		const { layouts } = getLayouts();
 		const { backLink } = useLinks();
 
 		const isNew = computed(() => props.id === '+');
 
-		const { loading: usersLoading, users } = useUsers();
-		const { loading: rolesLoading, roles } = useRoles();
-		const { loading: presetLoading, preset } = usePreset();
+		const { loading, preset } = usePreset();
 		const { fields } = useForm();
-		const {
-			edits,
-			hasEdits,
-			initialValues,
-			values,
-			layoutQuery,
-			layoutOptions,
-			updateFilters,
-			searchQuery,
-		} = useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, search } = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
-		const loading = computed(() => usersLoading.value || presetLoading.value || rolesLoading.value);
+		const layoutFilter = computed<any>({
+			get() {
+				return values.value.filter ?? null;
+			},
+			set(newFilters) {
+				updateFilters(newFilters);
+			},
+		});
+
+		const layout = computed(() => values.value.layout);
+
+		const { layoutWrapper } = useLayout(layout);
+
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) save();
+		});
+
+		const isSavable = computed(() => {
+			if (hasEdits.value === true) return true;
+			return hasEdits.value;
+		});
+
+		unsavedChanges(isSavable);
+
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
 		return {
+			t,
 			backLink,
 			loading,
 			preset,
@@ -189,15 +236,20 @@ export default defineComponent({
 			initialValues,
 			saving,
 			save,
+			layoutWrapper,
 			layoutQuery,
 			layoutOptions,
+			layoutFilter,
 			hasEdits,
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
-			marked,
 			updateFilters,
-			searchQuery,
+			search,
+			isSavable,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		function useSave() {
@@ -216,14 +268,16 @@ export default defineComponent({
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
 				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
-				if (edits.value.filters) editsParsed.filters = edits.value.filters;
+				if (edits.value.filter) editsParsed.filter = edits.value.filter;
 				editsParsed.search = edits.value.search;
 
 				if (edits.value.scope) {
 					if (edits.value.scope.startsWith('role_')) {
 						editsParsed.role = edits.value.scope.substring(5);
+						editsParsed.user = null;
 					} else if (edits.value.scope.startsWith('user_')) {
 						editsParsed.user = edits.value.scope.substring(5);
+						editsParsed.role = null;
 					} else {
 						editsParsed.role = null;
 						editsParsed.user = null;
@@ -240,7 +294,7 @@ export default defineComponent({
 					await presetsStore.hydrate();
 
 					edits.value = {};
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					saving.value = false;
@@ -261,7 +315,7 @@ export default defineComponent({
 				try {
 					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleting.value = false;
@@ -270,13 +324,22 @@ export default defineComponent({
 		}
 
 		function useValues() {
-			const edits = ref<any>({});
+			const edits = ref<Record<string, any>>({});
 
 			const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 			const initialValues = computed(() => {
-				if (isNew.value === true) return {};
-				if (preset.value === null) return {};
+				const defaultValues = {
+					collection: null,
+					layout: 'tabular',
+					search: null,
+					scope: 'all',
+					layout_query: null,
+					layout_options: null,
+					filter: null,
+				};
+				if (isNew.value === true) return defaultValues;
+				if (preset.value === null) return defaultValues;
 
 				let scope = 'all';
 
@@ -287,7 +350,6 @@ export default defineComponent({
 				}
 
 				const value: FormattedPreset = {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					id: preset.value.id!,
 					collection: preset.value.collection,
 					layout: preset.value.layout,
@@ -296,7 +358,7 @@ export default defineComponent({
 					scope: scope,
 					layout_query: preset.value.layout_query,
 					layout_options: preset.value.layout_options,
-					filters: preset.value.filters,
+					filter: preset.value.filter,
 				};
 
 				return value;
@@ -309,7 +371,7 @@ export default defineComponent({
 				};
 			});
 
-			const layoutQuery = computed({
+			const layoutQuery = computed<any>({
 				get() {
 					if (!values.value.layout_query) return null;
 					if (!values.value.layout) return null;
@@ -317,17 +379,25 @@ export default defineComponent({
 					return values.value.layout_query[values.value.layout];
 				},
 				set(newQuery) {
+					if (
+						values.value.layout_query &&
+						values.value.layout &&
+						isEqual(newQuery, values.value.layout_query[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_query: {
 							...edits.value.layout_query,
-							[values.value.layout]: newQuery,
+							[values.value.layout || 'tabular']: newQuery,
 						},
 					};
 				},
 			});
 
-			const layoutOptions = computed({
+			const layoutOptions = computed<any>({
 				get() {
 					if (!values.value.layout_options) return null;
 					if (!values.value.layout) return null;
@@ -335,17 +405,25 @@ export default defineComponent({
 					return values.value.layout_options[values.value.layout];
 				},
 				set(newOptions) {
+					if (
+						values.value.layout_options &&
+						values.value.layout &&
+						isEqual(newOptions, values.value.layout_options[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_options: {
 							...edits.value.layout_options,
-							[values.value.layout]: newOptions,
+							[values.value.layout || 'tabular']: newOptions,
 						},
 					};
 				},
 			});
 
-			const searchQuery = computed({
+			const search = computed<string | null>({
 				get() {
 					return values.value.search;
 				},
@@ -357,12 +435,12 @@ export default defineComponent({
 				},
 			});
 
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, searchQuery };
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, search };
 
-			function updateFilters(newFilters: Filter) {
+			function updateFilters(newFilter: Filter) {
 				edits.value = {
 					...edits.value,
-					filters: newFilters,
+					filter: newFilter,
 				};
 			}
 		}
@@ -384,7 +462,7 @@ export default defineComponent({
 					const response = await api.get(`/presets/${props.id}`);
 
 					preset.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -400,96 +478,18 @@ export default defineComponent({
 			return { backLink };
 		}
 
-		function useUsers() {
-			const loading = ref(false);
-			const users = ref<User[] | null>(null);
-
-			fetchUsers();
-
-			return { loading, users };
-
-			async function fetchUsers() {
-				loading.value = true;
-
-				try {
-					const response = await api.get(`/users`, {
-						params: {
-							fields: ['email', 'first_name', 'last_name', 'id'],
-						},
-					});
-
-					users.value = response.data.data.map((user: any) => ({
-						name: userName(user),
-						id: user.id,
-					}));
-				} catch (err) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
-			}
-		}
-
-		function useRoles() {
-			const loading = ref(false);
-			const roles = ref<Role[] | null>(null);
-
-			fetchRoles();
-
-			return { loading, roles };
-
-			async function fetchRoles() {
-				loading.value = true;
-
-				try {
-					const response = await api.get(`/roles`, {
-						params: {
-							fields: ['name', 'id'],
-						},
-					});
-
-					roles.value = response.data.data;
-				} catch (err) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
-			}
-		}
-
 		function useForm() {
-			const scopeChoices = computed(() => {
-				if (usersLoading.value || rolesLoading.value) return [];
-
-				const options = [
-					{
-						text: i18n.t('global') + ': ' + i18n.t('all'),
-						value: 'all',
-					},
-				];
-
-				roles.value?.forEach((role) => {
-					options.push({ text: i18n.t('role') + ': ' + role.name, value: `role_${role.id}` });
-				});
-
-				users.value?.forEach((user) => {
-					options.push({ text: i18n.t('user') + ': ' + user.name, value: `user_${user.id}` });
-				});
-
-				return options;
-			});
-
 			const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
 
 			const fields = computed(() => [
 				{
 					field: 'collection',
-					name: i18n.t('collection'),
+					name: t('collection'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
-							choices: collectionsStore.state.collections
+							choices: collectionsStore.collections
 								.map((collection) => ({
 									text: collection.name,
 									value: collection.collection,
@@ -505,22 +505,19 @@ export default defineComponent({
 				},
 				{
 					field: 'scope',
-					name: i18n.t('scope'),
+					name: t('scope'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
-						options: {
-							choices: scopeChoices.value,
-						},
+						interface: 'system-scope',
 						width: 'half',
 					},
 				},
 				{
 					field: 'layout',
-					name: i18n.t('layout'),
+					name: t('layout'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
 							choices: layouts.value.map((layout) => ({
 								text: layout.name,
@@ -532,26 +529,25 @@ export default defineComponent({
 				},
 				{
 					field: 'name',
-					name: i18n.t('name'),
+					name: t('name'),
 					type: 'string',
 					meta: {
-						interface: 'text-input',
+						interface: 'input',
 						width: 'half',
 						options: {
-							placeholder: i18n.t('preset_name_placeholder'),
+							placeholder: t('preset_name_placeholder'),
 						},
 					},
 				},
 				{
 					field: 'divider',
-					name: i18n.t('divider'),
+					name: t('divider'),
 					type: 'alias',
 					meta: {
-						interface: 'divider',
+						interface: 'presentation-divider',
 						width: 'fill',
 						options: {
-							title: i18n.t('layout_preview'),
-							color: '#00C897',
+							title: t('layout_preview'),
 							icon: 'visibility',
 						},
 					},
@@ -559,6 +555,13 @@ export default defineComponent({
 			]);
 
 			return { fields };
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });
@@ -597,24 +600,22 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--primary);
-	--sidebar-detail-color: var(--primary);
-	--sidebar-detail-color-active: var(--primary);
+	--sidebar-detail-icon-color: var(--warning);
+	--sidebar-detail-color: var(--warning);
+	--sidebar-detail-color-active: var(--warning);
 	--form-vertical-gap: 24px;
-}
 
-.portal-contents {
 	display: contents;
 }
 
-.layout-options ::v-deep {
+:deep(.layout-options) {
 	--form-vertical-gap: 24px;
 
-	.type-label {
-		font-size: 1rem;
-	}
-
 	@include form-grid;
+}
+
+:deep(.layout-options .type-label) {
+	font-size: 1rem;
 }
 
 .subdued {

@@ -1,9 +1,7 @@
-import VueI18n from 'vue-i18n';
-
 export type Alignment = 'left' | 'center' | 'right';
 
 export type HeaderRaw = {
-	text: string | VueI18n.TranslateResult;
+	text: string;
 	value: string;
 	align?: Alignment;
 	sortable?: boolean;

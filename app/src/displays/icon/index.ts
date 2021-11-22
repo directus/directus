@@ -1,22 +1,22 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayIcon from './icon.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'icon',
-	name: i18n.t('displays.icon.icon'),
-	description: i18n.t('displays.icon.description'),
+	name: '$t:displays.icon.icon',
+	description: '$t:displays.icon.description',
 	icon: 'insert_emoticon',
-	handler: DisplayIcon,
+	component: DisplayIcon,
 	options: [
 		{
 			field: 'filled',
-			name: i18n.t('displays.icon.filled'),
+			name: '$t:displays.icon.filled',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				width: 'half',
 				options: {
-					label: i18n.t('displays.icon.filled_label'),
+					label: '$t:displays.icon.filled_label',
 				},
 			},
 			schema: {
@@ -25,13 +25,13 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'color',
-			name: i18n.t('color'),
+			name: '$t:color',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 		},
 	],
 	types: ['string'],
-}));
+});

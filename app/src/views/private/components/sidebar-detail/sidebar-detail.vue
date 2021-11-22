@@ -1,15 +1,15 @@
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button class="toggle" @click="toggle" :class="{ open: active }">
+		<button class="toggle" :class="{ open: active }" @click="toggle">
 			<div class="icon">
-				<v-badge bordered :value="badge" :disabled="!badge">
+				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" outline />
 				</v-badge>
 			</div>
-			<div class="title" v-show="sidebarOpen">
+			<div v-show="sidebarOpen" class="title">
 				{{ title }}
 			</div>
-			<div class="icon" v-if="!close">
+			<div v-if="!close" class="icon">
 				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" outline />
 			</div>
 		</button>
@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs } from 'vue';
 import { useAppStore } from '@/stores';
 import { useGroupable } from '@/composables/groupable';
 
@@ -42,7 +42,7 @@ export default defineComponent({
 			required: true,
 		},
 		badge: {
-			type: [String, Number],
+			type: [Boolean, String, Number],
 			default: null,
 		},
 		close: {
@@ -56,7 +56,7 @@ export default defineComponent({
 			group: 'sidebar-detail',
 		});
 		const appStore = useAppStore();
-		const { sidebarOpen } = toRefs(appStore.state);
+		const { sidebarOpen } = toRefs(appStore);
 		return { active, toggle, sidebarOpen };
 	},
 });
@@ -80,13 +80,18 @@ body {
 
 	display: contents;
 
+	:deep(.type-label) {
+		margin-bottom: 4px;
+		font-size: 1rem;
+	}
+
 	.toggle {
 		position: relative;
 		display: flex;
 		flex-shrink: 0;
 		justify-content: space-between;
 		width: 100%;
-		height: 64px;
+		height: 60px;
 		color: var(--sidebar-detail-color);
 		background-color: var(--background-normal-alt);
 
@@ -96,13 +101,14 @@ body {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: 64px;
+			width: 60px;
 			height: 100%;
 		}
 
 		&.open,
 		&:hover {
 			color: var(--sidebar-detail-color-active);
+
 			.icon {
 				--v-icon-color: var(--sidebar-detail-color-active);
 			}
@@ -117,8 +123,8 @@ body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 64px;
-		height: 64px;
+		width: 60px;
+		height: 60px;
 		color: var(--foreground-normal);
 		cursor: pointer;
 		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
@@ -157,15 +163,14 @@ body {
 
 	.content {
 		padding: 16px;
-		::v-deep {
-			.page-description {
-				margin-bottom: 8px;
-				color: var(--foreground-subdued);
 
-				a {
-					color: var(--primary);
-				}
-			}
+		:deep(.page-description) {
+			margin-bottom: 8px;
+			color: var(--foreground-subdued);
+		}
+
+		:deep(.page-description a) {
+			color: var(--primary);
 		}
 	}
 

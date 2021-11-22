@@ -1,11 +1,12 @@
 <template>
-	<transition-group name="dialog">
+	<transition-group name="dialog" tag="span" v-bind="$attrs">
 		<slot />
 	</transition-group>
 </template>
 
 <style lang="scss">
-/** @NOTE this is not scoped on purpose. The children are outside of the tree (portal) */
+/** @NOTE this is not scoped on purpose. The children are outside of the tree (teleport) */
+
 .dialog-enter-active,
 .dialog-leave-active {
 	transition: opacity var(--slow) var(--transition);
@@ -21,7 +22,7 @@
 	}
 }
 
-.dialog-enter,
+.dialog-enter-from,
 .dialog-leave-to {
 	opacity: 0;
 

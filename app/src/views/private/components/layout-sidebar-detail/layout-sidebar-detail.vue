@@ -1,36 +1,41 @@
 <template>
-	<sidebar-detail icon="layers" :title="$t('layout_options')">
+	<sidebar-detail icon="layers" :title="t('layout_options')">
 		<div class="layout-options">
 			<div class="field">
-				<div class="type-label">{{ $t('layout') }}</div>
-				<v-select :items="layouts" item-text="name" item-value="id" item-icon="icon" v-model="layout">
+				<div class="type-label">{{ t('layout') }}</div>
+				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
 					<template v-if="currentLayout.icon" #prepend>
 						<v-icon :name="currentLayout.icon" />
 					</template>
 				</v-select>
 			</div>
 
-			<portal-target name="layout-options" class="portal-contents" />
+			<slot />
 		</div>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
-		value: {
+		modelValue: {
 			type: String,
 			default: 'tabular',
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const layouts = getLayouts();
+		const { t } = useI18n();
+
+		const { layouts } = getLayouts();
 
 		const currentLayout = computed(() => {
-			const layout = layouts.value.find((layout) => layout.id === props.value);
+			const layout = layouts.value.find((layout) => layout.id === props.modelValue);
 
 			if (layout === undefined) {
 				return layouts.value.find((layout) => layout.id === 'tabular');
@@ -39,16 +44,9 @@ export default defineComponent({
 			return layout;
 		});
 
-		const layout = computed({
-			get() {
-				return props.value;
-			},
-			set(newType: string) {
-				emit('input', newType);
-			},
-		});
+		const layout = useSync(props, 'modelValue', emit);
 
-		return { currentLayout, layouts, layout };
+		return { t, currentLayout, layouts, layout };
 	},
 });
 </script>
@@ -56,16 +54,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.portal-contents {
-	display: contents;
-}
+:deep(.layout-options) {
+	--form-vertical-gap: 20px;
 
-.layout-options ::v-deep {
-	--form-vertical-gap: 24px;
-
-	.type-label {
-		font-size: 1rem;
-	}
+	margin-bottom: 4px;
 
 	@include form-grid;
 }

@@ -1,14 +1,14 @@
 <template>
-	<header class="header-bar" ref="headerEl" :class="{ collapsed: collapsed }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')" v-if="$listeners.primary">
+	<header ref="headerEl" class="header-bar" :class="{ collapsed, small }">
+		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
 
-		<div class="title-outer-prepend" v-if="$scopedSlots['title-outer:prepend']">
+		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
 
-		<div class="title-container" :class="{ full: !$scopedSlots['title-outer:append'] }">
+		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
 			<div class="headline">
 				<slot name="headline" />
 			</div>
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from '../header-bar-actions';
 
 export default defineComponent({
@@ -55,7 +55,12 @@ export default defineComponent({
 			type: String,
 			default: 'menu',
 		},
+		small: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	emits: ['primary', 'toggle:sidebar'],
 	setup() {
 		const headerEl = ref<Element>();
 
@@ -63,7 +68,7 @@ export default defineComponent({
 
 		const observer = new IntersectionObserver(
 			([e]) => {
-				collapsed.value = e.intersectionRatio < 1;
+				collapsed.value = e.boundingClientRect.y === -1;
 			},
 			{ threshold: [1] }
 		);
@@ -82,8 +87,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .header-bar {
 	position: sticky;
 	top: -1px;
@@ -93,15 +96,15 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: 65px;
+	height: 61px;
 	margin: 0;
-	padding: 0 12px;
+	padding: 0 10px;
 	background-color: var(--background-page);
 	box-shadow: 0;
-	transition: box-shadow var(--medium) var(--transition);
+	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
 
 	.nav-toggle {
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
@@ -109,7 +112,7 @@ export default defineComponent({
 	.title-outer-prepend {
 		display: none;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: block;
 		}
 	}
@@ -124,7 +127,7 @@ export default defineComponent({
 		margin-left: 16px;
 		overflow: hidden;
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			max-width: 70%;
 		}
 
@@ -132,7 +135,7 @@ export default defineComponent({
 			margin-right: 12px;
 			padding-right: 0;
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				margin-right: 20px;
 				padding-right: 20px;
 			}
@@ -143,11 +146,13 @@ export default defineComponent({
 			top: 2px;
 			left: 0;
 			color: var(--foreground-subdued);
+			font-weight: 600;
+			font-size: 12px;
 			white-space: nowrap;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				top: -2px;
 			}
 		}
@@ -168,8 +173,18 @@ export default defineComponent({
 		}
 	}
 
+	&.small {
+		top: 0;
+		height: 60px;
+	}
+
+	&.small .title-container .headline {
+		opacity: 0;
+		pointer-events: none;
+	}
+
 	&.collapsed {
-		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
+		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 
 		.title-container {
 			.headline {
@@ -187,14 +202,17 @@ export default defineComponent({
 		flex-shrink: 0;
 		margin-left: 8px;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
 
-	@include breakpoint(small) {
-		margin: 24px 0;
+	@media (min-width: 600px) {
 		padding: 0 32px;
+
+		&:not(.small) {
+			margin: 24px 0;
+		}
 	}
 }
 </style>

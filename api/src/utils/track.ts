@@ -1,22 +1,20 @@
 import axios from 'axios';
-import os from 'os';
-import { machineId } from 'node-machine-id';
 import ms from 'ms';
-
-import logger from '../logger';
-
-import env from '../env';
+import { machineId } from 'node-machine-id';
+import os from 'os';
 // @ts-ignore
 import { version } from '../../package.json';
+import env from '../env';
+import logger from '../logger';
 
-export async function track(event: string) {
+export async function track(event: string): Promise<void> {
 	if (env.TELEMETRY !== false) {
 		const info = await getEnvInfo(event);
 
 		try {
 			await axios.post('https://telemetry.directus.io/', info);
-		} catch (err) {
-			if ('DIRECTUS_DEV' in process.env) {
+		} catch (err: any) {
+			if (env.NODE_ENV === 'development') {
 				logger.error(err);
 			}
 		}
@@ -29,7 +27,7 @@ async function getEnvInfo(event: string) {
 		event: event,
 		project_id: env.KEY,
 		machine_id: await machineId(),
-		environment: process.env.NODE_ENV,
+		environment: env.NODE_ENV,
 		stack: 'node',
 		os: {
 			arch: os.arch(),
@@ -56,8 +54,8 @@ async function getEnvInfo(event: string) {
 		email: {
 			transport: env.EMAIL_TRANSPORT,
 		},
-		oauth: {
-			providers: env.OAUTH_PROVIDERS.split(',')
+		auth: {
+			providers: env.AUTH_PROVIDERS.split(',')
 				.map((v: string) => v.trim())
 				.filter((v: string) => v),
 		},

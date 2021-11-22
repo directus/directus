@@ -1,28 +1,9 @@
-import VueI18n from 'vue-i18n';
-
-type Translations = {
-	language: string;
-	translation: string;
-};
-
-export interface CollectionRaw {
-	collection: string;
-	meta: {
-		note: string | null;
-		hidden: boolean;
-		singleton: boolean;
-		icon: string | null;
-		translations: Translations[] | null;
-		display_template: string | null;
-		sort_field: string | null;
-		archive_field: string | null;
-		archive_value: string | null;
-		unarchive_value: string | null;
-		archive_app_filter: boolean;
-	} | null;
-	schema: Record<string, any>;
-}
+import { Collection as CollectionRaw, CollectionType } from '@directus/shared/types';
+import { TranslateResult } from 'vue-i18n';
 
 export interface Collection extends CollectionRaw {
-	name: string | VueI18n.TranslateResult;
+	name: string | TranslateResult;
+	icon: string;
+	type: CollectionType;
+	color?: string | null;
 }

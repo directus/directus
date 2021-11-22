@@ -1,43 +1,45 @@
-import { ItemsService } from './items';
-import { Item, PrimaryKey, AbstractServiceOptions } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey, Webhook } from '../types';
 import { register } from '../webhooks';
+import { ItemsService, MutationOptions } from './items';
 
-export class WebhooksService extends ItemsService {
+export class WebhooksService extends ItemsService<Webhook> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_webhooks', options);
 	}
 
-	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const result = await super.create(data);
-
+	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const result = await super.createOne(data, opts);
 		await register();
-
 		return result;
 	}
 
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
-		key?: PrimaryKey | PrimaryKey[]
-	): Promise<PrimaryKey | PrimaryKey[]> {
-		const result = await super.update(data, key as any);
-
+	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const result = await super.createMany(data, opts);
 		await register();
-
 		return result;
 	}
 
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const result = await super.delete(key as any);
-
+	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const result = await super.updateOne(key, data, opts);
 		await register();
+		return result;
+	}
 
+	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const result = await super.updateMany(keys, data, opts);
+		await register();
+		return result;
+	}
+
+	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		const result = await super.deleteOne(key, opts);
+		await register();
+		return result;
+	}
+
+	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const result = await super.deleteMany(keys, opts);
+		await register();
 		return result;
 	}
 }

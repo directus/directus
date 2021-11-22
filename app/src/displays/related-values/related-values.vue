@@ -1,35 +1,42 @@
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="['o2m', 'm2m', 'm2a', 'translations'].includes(type.toLowerCase())"
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType.toLowerCase())"
 		show-arrow
 		:disabled="value.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
-				<span class="label">{{ $tc('item_count', value.length) }}</span>
+			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
+				<span class="label">
+					{{ value.length }}
+					<template v-if="value.length >= 100">+</template>
+					{{ unit }}
+				</span>
 			</span>
 		</template>
 
-		<v-list>
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
+		<v-list class="links">
+			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath]">
 				<v-list-item-content>
-					<render-template :template="_template" :item="item" :collection="relatedCollection" />
+					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 				<v-list-item-icon>
-					<v-icon name="launch" small />
+					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
 	</v-menu>
-	<render-template v-else :template="_template" :item="value" :collection="relatedCollection" />
+	<render-template v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, Ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
+import { getLocalTypeForField } from '../../modules/settings/routes/data-model/get-local-type';
+import { get } from 'lodash';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -43,40 +50,68 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: [Array, Object] as PropType<any | any[]>,
+			type: [Array, Object] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		template: {
 			type: String,
 			default: null,
 		},
-		type: {
-			type: String,
-			required: true,
-		},
 	},
 	setup(props) {
-		const relatedCollection = computed(() => {
+		const { t, te } = useI18n();
+
+		const relatedCollectionData = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
 		});
 
-		const primaryKeyField = computed(() => {
-			if (relatedCollection.value !== null) {
-				return useCollection(relatedCollection as Ref<string>).primaryKeyField.value;
+		const relatedCollection = computed(() => {
+			return relatedCollectionData.value.relatedCollection;
+		});
+
+		const localType = computed(() => {
+			return getLocalTypeForField(props.collection, props.field);
+		});
+
+		const { primaryKeyField } = useCollection(relatedCollection);
+
+		const primaryKeyFieldPath = computed(() => {
+			return relatedCollectionData.value.path
+				? [...relatedCollectionData.value.path, primaryKeyField.value?.field].join('.')
+				: primaryKeyField.value?.field;
+		});
+
+		const internalTemplate = computed(() => {
+			return props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
+		});
+
+		const unit = computed(() => {
+			if (Array.isArray(props.value)) {
+				if (props.value.length === 1) {
+					if (te(`collection_names_singular.${relatedCollection.value}`)) {
+						return t(`collection_names_singular.${relatedCollection.value}`);
+					} else {
+						return t('item');
+					}
+				} else {
+					if (te(`collection_names_plural.${relatedCollection.value}`)) {
+						return t(`collection_names_plural.${relatedCollection.value}`);
+					} else {
+						return t('items');
+					}
+				}
 			}
+
+			return null;
 		});
 
-		const _template = computed(() => {
-			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
-		});
-
-		return { relatedCollection, primaryKeyField, getLinkForItem, _template };
+		return { relatedCollection, primaryKeyFieldPath, getLinkForItem, internalTemplate, unit, localType };
 
 		function getLinkForItem(item: any) {
-			if (!relatedCollection.value || !primaryKeyField.value) return null;
-			const primaryKey = item[primaryKeyField.value.field];
+			if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
+			const primaryKey = get(item, primaryKeyFieldPath.value);
 
-			return `/collections/${relatedCollection.value}/${primaryKey}`;
+			return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
 		}
 	},
 });
@@ -116,5 +151,11 @@ export default defineComponent({
 
 .subdued {
 	color: var(--foreground-subdued);
+}
+
+.links {
+	.v-list-item-content {
+		height: var(--v-list-item-min-height);
+	}
 }
 </style>

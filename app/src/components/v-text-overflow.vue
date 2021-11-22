@@ -1,11 +1,12 @@
 <template>
-	<div class="v-text-overflow" ref="el" v-tooltip="hasEllipsis && text">
-		{{ text }}
+	<div ref="el" v-tooltip="hasEllipsis && text" class="v-text-overflow">
+		<v-highlight v-if="highlight" :query="highlight" :text="text" />
+		<template v-else>{{ text }}</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({
@@ -13,6 +14,10 @@ export default defineComponent({
 		text: {
 			type: [String, Number, Array, Object, Boolean],
 			required: true,
+		},
+		highlight: {
+			type: String,
+			default: null,
 		},
 	},
 	setup() {

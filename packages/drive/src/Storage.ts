@@ -17,7 +17,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local"
 	 */
-	append(location: string, content: Buffer | string): Promise<Response> {
+	append(_location: string, _content: Buffer | string): Promise<Response> {
 		throw new MethodNotSupported('append', this.constructor.name);
 	}
 
@@ -26,7 +26,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	copy(src: string, dest: string): Promise<Response> {
+	copy(_src: string, _dest: string): Promise<Response> {
 		throw new MethodNotSupported('copy', this.constructor.name);
 	}
 
@@ -38,7 +38,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	delete(location: string): Promise<DeleteResponse> {
+	delete(_location: string): Promise<DeleteResponse> {
 		throw new MethodNotSupported('delete', this.constructor.name);
 	}
 
@@ -56,7 +56,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	exists(location: string): Promise<ExistsResponse> {
+	exists(_location: string): Promise<ExistsResponse> {
 		throw new MethodNotSupported('exists', this.constructor.name);
 	}
 
@@ -65,7 +65,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	get(location: string, encoding?: string): Promise<ContentResponse<string>> {
+	get(_location: string, _encoding?: string): Promise<ContentResponse<string>> {
 		throw new MethodNotSupported('get', this.constructor.name);
 	}
 
@@ -74,7 +74,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+	getBuffer(_location: string): Promise<ContentResponse<Buffer>> {
 		throw new MethodNotSupported('getBuffer', this.constructor.name);
 	}
 
@@ -83,7 +83,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "s3", "gcs", "azure"
 	 */
-	getSignedUrl(location: string, options?: SignedUrlOptions): Promise<SignedUrlResponse> {
+	getSignedUrl(_location: string, _options?: SignedUrlOptions): Promise<SignedUrlResponse> {
 		throw new MethodNotSupported('getSignedUrl', this.constructor.name);
 	}
 
@@ -92,7 +92,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	getStat(location: string): Promise<StatResponse> {
+	getStat(_location: string): Promise<StatResponse> {
 		throw new MethodNotSupported('getStat', this.constructor.name);
 	}
 
@@ -101,7 +101,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	getStream(location: string, range?: Range): NodeJS.ReadableStream {
+	getStream(_location: string, _range?: Range): NodeJS.ReadableStream {
 		throw new MethodNotSupported('getStream', this.constructor.name);
 	}
 
@@ -112,7 +112,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "s3", "gcs", "azure"
 	 */
-	getUrl(location: string): string {
+	getUrl(_location: string): string {
 		throw new MethodNotSupported('getUrl', this.constructor.name);
 	}
 
@@ -121,7 +121,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	move(src: string, dest: string): Promise<Response> {
+	move(_src: string, _dest: string): Promise<Response> {
 		throw new MethodNotSupported('move', this.constructor.name);
 	}
 
@@ -131,7 +131,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	put(_location: string, _content: Buffer | NodeJS.ReadableStream | string, _type?: string): Promise<Response> {
 		throw new MethodNotSupported('put', this.constructor.name);
 	}
 
@@ -140,7 +140,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local"
 	 */
-	prepend(location: string, content: Buffer | string): Promise<Response> {
+	prepend(_location: string, _content: Buffer | string): Promise<Response> {
 		throw new MethodNotSupported('prepend', this.constructor.name);
 	}
 
@@ -149,7 +149,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	flatList(prefix?: string): AsyncIterable<FileListResponse> {
+	flatList(_prefix?: string): AsyncIterable<FileListResponse> {
 		throw new MethodNotSupported('flatList', this.constructor.name);
 	}
 }

@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
-import useCollection from '@/composables/use-collection';
+import { defineComponent, toRefs } from 'vue';
+import { useCollection } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {

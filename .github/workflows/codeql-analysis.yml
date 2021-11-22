@@ -1,0 +1,39 @@
+name: CodeQL Analysis
+
+on:
+  workflow_call:
+    inputs:
+      should_skip:
+        required: false
+        type: string
+  schedule:
+    - cron: '42 23 * * 5'
+
+jobs:
+  analyze:
+    name: Analyze
+    if: inputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - javascript
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v1

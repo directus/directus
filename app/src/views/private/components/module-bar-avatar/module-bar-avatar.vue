@@ -1,33 +1,33 @@
 <template>
-	<v-hover class="module-bar-avatar" v-slot="{ hover }">
+	<v-hover v-slot="{ hover }" class="module-bar-avatar">
 		<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 			<template #activator="{ on }">
 				<v-button
-					@click="on"
+					v-tooltip.right="t('sign_out')"
 					tile
 					icon
 					x-large
 					:class="{ show: hover }"
 					class="sign-out"
-					v-tooltip.right="$t('sign_out')"
+					@click="on"
 				>
 					<v-icon name="logout" />
 				</v-button>
 			</template>
 
 			<v-card>
-				<v-card-title>{{ $t('sign_out_confirm') }}</v-card-title>
+				<v-card-title>{{ t('sign_out_confirm') }}</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="signOutActive = !signOutActive">
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
-					<v-button :to="signOutLink">{{ $t('sign_out') }}</v-button>
+					<v-button :to="signOutLink">{{ t('sign_out') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<router-link :to="userProfileLink">
-			<v-avatar tile large v-tooltip.right="userFullName" :class="{ 'no-avatar': !avatarURL }">
+			<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
 				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
 				<v-icon v-else name="account_circle" outline />
 			</v-avatar>
@@ -36,28 +36,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
 import { useUserStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const userStore = useUserStore();
 
 		const signOutActive = ref(false);
 
 		const avatarURL = computed<string | null>(() => {
-			if (userStore.state.currentUser === null) return null;
-			if (userStore.state.currentUser.avatar === null) return null;
+			if (userStore.currentUser === null) return null;
+			if (userStore.currentUser.avatar === null) return null;
 
-			return addTokenToURL(getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=system-medium-cover`);
+			return addTokenToURL(getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
 
 		const userProfileLink = computed<string>(() => {
-			const id = userStore.state.currentUser?.id;
-			const role = userStore.state.currentUser?.role?.id;
-
+			const id = userStore.currentUser?.id;
 			return `/users/${id}`;
 		});
 
@@ -67,7 +68,7 @@ export default defineComponent({
 
 		const userFullName = userStore.fullName;
 
-		return { userFullName, avatarURL, userProfileLink, signOutActive, signOutLink };
+		return { t, userFullName, avatarURL, userProfileLink, signOutActive, signOutLink };
 	},
 });
 </script>
@@ -84,7 +85,7 @@ export default defineComponent({
 		overflow: visible;
 
 		.avatar-image {
-			opacity: 0.5;
+			opacity: 0.8;
 			transition: opacity var(--fast) var(--transition);
 		}
 
@@ -124,7 +125,12 @@ export default defineComponent({
 		position: absolute;
 		top: 0;
 		left: 0;
+		transform: translateY(-100%);
 		transition: transform var(--fast) var(--transition);
+
+		@media (min-width: 960px) {
+			transform: translateY(0);
+		}
 
 		&.show {
 			transform: translateY(-100%);

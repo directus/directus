@@ -1,4 +1,4 @@
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 
 export const appRecommendedPermissions: Partial<Permission>[] = [
 	{
@@ -21,6 +21,54 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 	},
 	{
 		collection: 'directus_files',
+		action: 'delete',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_dashboards',
+		action: 'create',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_dashboards',
+		action: 'read',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_dashboards',
+		action: 'update',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_dashboards',
+		action: 'delete',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
+		action: 'create',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
+		action: 'read',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
+		action: 'update',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
 		action: 'delete',
 		permissions: {},
 		fields: ['*'],
@@ -52,7 +100,27 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		collection: 'directus_users',
 		action: 'read',
 		permissions: {},
-		fields: ['*'],
+	},
+	{
+		collection: 'directus_users',
+		action: 'update',
+		permissions: {
+			id: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+		fields: [
+			'first_name',
+			'last_name',
+			'email',
+			'password',
+			'location',
+			'title',
+			'description',
+			'avatar',
+			'language',
+			'theme',
+		],
 	},
 	{
 		collection: 'directus_roles',
@@ -142,12 +210,11 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_presets',
 		action: 'create',
-		validation: [
-			{
-				user: null,
+		validation: {
+			user: {
 				_eq: '$CURRENT_USER',
 			},
-		],
+		},
 	},
 	{
 		collection: 'directus_presets',

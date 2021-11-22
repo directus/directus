@@ -6,3 +6,13 @@
 export type Item = Record<string, any>;
 
 export type PrimaryKey = string | number;
+
+export type Alterations = {
+	create: {
+		[key: string]: any;
+	}[];
+	update: {
+		[key: string]: any;
+	}[];
+	delete: (number | string)[];
+};

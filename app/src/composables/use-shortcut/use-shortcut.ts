@@ -1,5 +1,4 @@
-import { onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
-import Vue from 'vue';
+import { ComponentPublicInstance, onMounted, onUnmounted, Ref, ref } from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
 
@@ -21,8 +20,8 @@ document.body.addEventListener('keyup', (event: KeyboardEvent) => {
 export default function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
-	reference: Ref<HTMLElement | undefined> | Ref<Vue | undefined> = ref(document.body)
-) {
+	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(document.body)
+): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
@@ -41,7 +40,7 @@ export default function useShortcut(
 
 	onMounted(() => {
 		[shortcuts].flat().forEach((shortcut) => {
-			if (handlers.hasOwnProperty(shortcut)) {
+			if (shortcut in handlers) {
 				handlers[shortcut].unshift(callback);
 			} else {
 				handlers[shortcut] = [callback];
@@ -51,7 +50,7 @@ export default function useShortcut(
 
 	onUnmounted(() => {
 		[shortcuts].flat().forEach((shortcut) => {
-			if (handlers.hasOwnProperty(shortcut)) {
+			if (shortcut in handlers) {
 				handlers[shortcut] = handlers[shortcut].filter((f) => f !== callback);
 
 				if (handlers[shortcut].length === 0) {
@@ -71,7 +70,7 @@ function mapKeys(key: KeyboardEvent) {
 
 	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
 
-	keyString = map.hasOwnProperty(keyString) ? map[keyString] : keyString;
+	keyString = keyString in map ? map[keyString] : keyString;
 	keyString = keyString.toLowerCase();
 
 	return keyString;
@@ -92,14 +91,12 @@ function callHandlers(event: KeyboardEvent) {
 		for (let i = 0; i < value.length; i++) {
 			let cancel = false;
 
-			value[i](event, cancelNext);
+			value[i](event, () => {
+				cancel = true;
+			});
 
 			// if cancelNext is called, discontinue going through the queue.
 			if (typeof cancel === 'boolean' && cancel) break;
-
-			function cancelNext() {
-				cancel = true;
-			}
 		}
 	});
 }

@@ -1,11 +1,12 @@
 import express from 'express';
-import asyncHandler from '../utils/async-handler';
 import Joi from 'joi';
-import { InvalidPayloadException, InvalidCredentialsException, ForbiddenException } from '../exceptions';
-import { UsersService, MetaService, AuthenticationService } from '../services';
-import useCollection from '../middleware/use-collection';
+import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
+import useCollection from '../middleware/use-collection';
+import { validateBatch } from '../middleware/validate-batch';
+import { AuthenticationService, MetaService, UsersService, TFAService } from '../services';
 import { PrimaryKey } from '../types';
+import asyncHandler from '../utils/async-handler';
 
 const router = express.Router();
 
@@ -18,12 +19,26 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = await service.create(req.body);
+
+		const savedKeys: PrimaryKey[] = [];
+
+		if (Array.isArray(req.body)) {
+			const keys = await service.createMany(req.body);
+			savedKeys.push(...keys);
+		} else {
+			const key = await service.createOne(req.body);
+			savedKeys.push(key);
+		}
 
 		try {
-			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: item || null };
-		} catch (error) {
+			if (Array.isArray(req.body)) {
+				const items = await service.readMany(savedKeys, req.sanitizedQuery);
+				res.locals.payload = { data: items };
+			} else {
+				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
+				res.locals.payload = { data: item };
+			}
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -36,26 +51,25 @@ router.post(
 	respond
 );
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new UsersService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const item = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_users', req.sanitizedQuery);
+	const item = await service.readByQuery(req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_users', req.sanitizedQuery);
 
-		res.locals.payload = { data: item || null, meta };
-		return next();
-	}),
-	respond
-);
+	res.locals.payload = { data: item || null, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/me',
@@ -70,9 +84,9 @@ router.get(
 		});
 
 		try {
-			const item = await service.readByKey(req.accountability.user, req.sanitizedQuery);
+			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				res.locals.payload = { data: { id: req.accountability.user } };
 				return next();
@@ -95,7 +109,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const items = await service.readByKey(req.params.pk, req.sanitizedQuery);
+		const items = await service.readOne(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = { data: items || null };
 		return next();
@@ -114,8 +128,9 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = await service.update(req.body, req.accountability.user);
-		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+
+		const primaryKey = await service.updateOne(req.accountability.user, req.body);
+		const item = await service.readOne(primaryKey, req.sanitizedQuery);
 
 		res.locals.payload = { data: item || null };
 		return next();
@@ -135,7 +150,40 @@ router.patch(
 		}
 
 		const service = new UsersService({ schema: req.schema });
-		await service.update({ last_page: req.body.last_page }, req.accountability.user);
+		await service.updateOne(req.accountability.user, { last_page: req.body.last_page });
+
+		return next();
+	}),
+	respond
+);
+
+router.patch(
+	'/',
+	validateBatch('update'),
+	asyncHandler(async (req, res, next) => {
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		let keys: PrimaryKey[] = [];
+
+		if (req.body.keys) {
+			keys = await service.updateMany(req.body.keys, req.body.data);
+		} else {
+			keys = await service.updateByQuery(req.body.query, req.body.data);
+		}
+
+		try {
+			const result = await service.readMany(keys, req.sanitizedQuery);
+			res.locals.payload = { data: result };
+		} catch (error: any) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
 
 		return next();
 	}),
@@ -150,12 +198,12 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.update(req.body, req.params.pk);
+		const primaryKey = await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -170,16 +218,20 @@ router.patch(
 
 router.delete(
 	'/',
+	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
-		if (!req.body || Array.isArray(req.body) === false) {
-			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
-		}
-
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.delete(req.body as PrimaryKey[]);
+
+		if (Array.isArray(req.body)) {
+			await service.deleteMany(req.body);
+		} else if (req.body.keys) {
+			await service.deleteMany(req.body.keys);
+		} else {
+			await service.deleteByQuery(req.body.query);
+		}
 
 		return next();
 	}),
@@ -194,7 +246,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.delete(req.params.pk);
+		await service.deleteOne(req.params.pk);
 
 		return next();
 	}),
@@ -244,7 +296,7 @@ router.post(
 );
 
 router.post(
-	'/me/tfa/enable/',
+	'/me/tfa/generate/',
 	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
@@ -254,7 +306,7 @@ router.post(
 			throw new InvalidPayloadException(`"password" is required`);
 		}
 
-		const service = new UsersService({
+		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -265,9 +317,36 @@ router.post(
 		});
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
-		const { url, secret } = await service.enableTFA(req.accountability.user);
+		const { url, secret } = await service.generateTFA(req.accountability.user);
 
 		res.locals.payload = { data: { secret, otpauth_url: url } };
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/me/tfa/enable/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		if (!req.body.secret) {
+			throw new InvalidPayloadException(`"secret" is required`);
+		}
+
+		if (!req.body.otp) {
+			throw new InvalidPayloadException(`"otp" is required`);
+		}
+
+		const service = new TFAService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret);
+
 		return next();
 	}),
 	respond
@@ -284,16 +363,12 @@ router.post(
 			throw new InvalidPayloadException(`"otp" is required`);
 		}
 
-		const service = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const authService = new AuthenticationService({
+		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
+		const otpValid = await service.verifyOTP(req.accountability.user, req.body.otp);
 
 		if (otpValid === false) {
 			throw new InvalidPayloadException(`"otp" is invalid`);

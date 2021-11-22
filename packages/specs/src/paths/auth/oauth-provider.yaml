@@ -14,11 +14,13 @@ get:
     - name: redirect
       in: query
       required: false
-      description: Where to redirect on successful login.<br/>If set the authentication details are set inside cookies otherwise a JSON is returned.
+      description:
+        Where to redirect on successful login.<br/>If set the authentication details are set inside cookies otherwise a
+        JSON is returned.
       schema:
         type: string
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -32,5 +34,5 @@ get:
                 properties:
                   token:
                     type: string
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
