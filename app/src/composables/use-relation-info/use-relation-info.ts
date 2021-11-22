@@ -9,7 +9,9 @@ export type RelationInfo = {
 	junctionCollection: string;
 	junctionField: string;
 	junctionPkField: string;
+	junctionDisplayTemplate: string;
 	relatedCollections: string[];
+	relatedField: string;
 	relationCollection: string;
 	relationPkField: string;
 	relationDisplayTemplate: string;
@@ -88,7 +90,7 @@ export function useRelationInfo({ collection, field }: In): Out {
 
 	const collectionField = computed(() => relation.value?.meta?.one_collection_field);
 
-	const junctionField = computed(() => junction.value?.meta?.junction_field || relation?.value?.meta?.one_field);
+	const relatedField = computed(() => junction.value?.meta?.junction_field || relation?.value?.meta?.one_field);
 
 	const type = computed(() => {
 		if (!relation.value) return null;
@@ -111,9 +113,11 @@ export function useRelationInfo({ collection, field }: In): Out {
 			collection,
 			collectionField: collectionField.value,
 			junctionCollection: junctionCollection.value?.collection,
-			junctionField: junctionField.value as string,
+			junctionField: junction.value?.field,
 			junctionPkField: junctionPrimaryKeyField?.value?.field,
+			junctionDisplayTemplate: junctionCollection?.value?.meta?.display_template,
 			relatedCollections: relatedCollections.value.map((collection) => collection?.collection),
+			relatedField: relatedField.value,
 			relationCollection: relationCollection.value!.collection,
 			relationPkField: relationPrimaryKeyField?.value?.field,
 			relationDisplayTemplate: relationCollection?.value?.meta?.display_template,
