@@ -5,7 +5,7 @@ import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { cloneDeep, get, merge } from 'lodash';
 import { Ref, ref, watch } from 'vue';
-import { RelationInfo } from '@/composables/use-m2m';
+import { RelationInfo } from '@/composables/use-relation-info';
 import { getEndpoint } from '@/utils/get-endpoint';
 
 type UsablePreview = {
@@ -44,14 +44,14 @@ export default function usePreview(
 			}
 
 			loading.value = true;
-			const { junctionField, relationPkField, junctionPkField, relationCollection } = relation.value;
-			if (junctionField === null) return;
+			const { junctionField, junctionPkField, relationCollection, relationPkField, relatedField } = relation.value;
+			if (relatedField === null) return;
 
 			// Load the junction items so we have access to the id's in the related collection
 			const junctionItems = await loadRelatedIds();
 
 			const relatedPrimaryKeys = junctionItems.reduce((acc, junction) => {
-				const id = get(junction, junctionField);
+				const id = get(junction, relatedField);
 				if (id !== null) acc.push(id);
 				return acc;
 			}, []) as (string | number)[];
@@ -70,12 +70,12 @@ export default function usePreview(
 				// Insert the related items into the junction items
 				responseData = responseData.map((data) => {
 					const id = get(data, relationPkField);
-					const junction = junctionItems.find((junction) => junction[junctionField] === id);
+					const junction = junctionItems.find((junction) => junction[relatedField] === id);
 
 					if (junction === undefined || id === undefined) return;
 
 					const newJunction = cloneDeep(junction);
-					newJunction[junctionField] = data;
+					newJunction[relatedField] = data;
 					return newJunction;
 				}) as Record<string, any>[];
 
@@ -87,7 +87,8 @@ export default function usePreview(
 					.map((item) => {
 						const updatedItem = updatedItems.find(
 							(updated) =>
-								get(updated, [junctionField, junctionPkField]) === get(item, [junctionField, junctionPkField])
+								// use differentdefault value to prevent match undefined or null
+								get(updated, [relatedField, relationPkField], 0) === get(item, [relatedField, relationPkField], 1)
 						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
@@ -161,7 +162,7 @@ export default function usePreview(
 	}
 
 	async function loadRelatedIds() {
-		const { junctionPkField, junctionField, relationPkField, junctionCollection } = relation.value;
+		const { junctionPkField, relationPkField, junctionCollection, relatedField, sortField } = relation.value;
 
 		try {
 			let data: Record<string, any>[] = [];
@@ -171,16 +172,15 @@ export default function usePreview(
 				const filteredFields = getJunctionFields();
 
 				if (filteredFields.includes(junctionPkField) === false) filteredFields.push(junctionPkField);
-				if (filteredFields.includes(junctionField) === false) filteredFields.push(junctionField);
+				if (filteredFields.includes(relatedField) === false) filteredFields.push(relatedField);
 
-				if (relation.value.sortField !== null && filteredFields.includes(relation.value.sortField) === false)
-					filteredFields.push(relation.value.sortField);
+				if (sortField !== null && filteredFields.includes(sortField) === false) filteredFields.push(sortField);
 
 				data = await request(junctionCollection, filteredFields, junctionPkField, primaryKeys);
 			}
 
 			const updatedItems = getUpdatedItems().map((item) => ({
-				[junctionField]: item[junctionField][relationPkField],
+				[relatedField]: item[relatedField][relationPkField],
 			}));
 
 			// Add all items that already had the id of it's related item

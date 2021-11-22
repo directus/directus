@@ -1,6 +1,6 @@
 import { Ref, ref } from 'vue';
 import { get, isEqual } from 'lodash';
-import { RelationInfo } from '@/composables/use-m2m';
+import { RelationInfo } from '@/composables/use-relation-info';
 
 type UsableEdit = {
 	currentlyEditing: Ref<string | number | null>;
@@ -25,16 +25,16 @@ export default function useEdit(
 	const editsAtStart = ref<Record<string, any>>({});
 
 	function editItem(item: any) {
-		const { relationPkField, junctionField, junctionPkField } = relation.value;
+		const { relationPkField, relatedField, junctionPkField } = relation.value;
 
 		editModalActive.value = true;
 		editsAtStart.value = item;
 		currentlyEditing.value = get(item, [junctionPkField], null);
-		relatedPrimaryKey.value = get(item, [junctionField, relationPkField], null);
+		relatedPrimaryKey.value = get(item, [relatedField, relationPkField], null);
 	}
 
 	function stageEdits(edits: any) {
-		const { relationPkField, junctionField, junctionPkField } = relation.value;
+		const { relationPkField, relatedField, junctionPkField } = relation.value;
 
 		const newValue = (value.value || []).map((item) => {
 			if (currentlyEditing.value !== null) {
@@ -50,8 +50,8 @@ export default function useEdit(
 			if (relatedPrimaryKey.value != null) {
 				const id = relatedPrimaryKey.value;
 
-				if (get(item, [junctionField], null) === id) return edits;
-				if (get(item, [junctionField, relationPkField], null) === id) return edits;
+				if (get(item, [relatedField], null) === id) return edits;
+				if (get(item, [relatedField, relationPkField], null) === id) return edits;
 			}
 
 			if (isEqual(editsAtStart.value, item)) {

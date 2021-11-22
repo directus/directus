@@ -1,6 +1,6 @@
 import { get, has, isEqual } from 'lodash';
 import { Ref } from 'vue';
-import { RelationInfo } from '@/composables/use-m2m';
+import { RelationInfo } from '@/composables/use-relation-info';
 
 type UsableActions = {
 	getJunctionItem: (id: string | number) => string | number | Record<string, any> | null;
@@ -33,33 +33,31 @@ export default function useActions(
 
 	// Returns all items that have no junction item yet, but an related item does exist.
 	function getNewSelectedItems() {
-		const { junctionField } = relation.value;
+		const { relatedField } = relation.value;
 
-		if (value.value === null || junctionField === null) return [];
+		if (value.value === null || relatedField === null) return [];
 
 		return value.value.filter(
-			(item) => typeof item === 'object' && junctionField in item && typeof item[junctionField] !== 'object'
+			(item) => typeof item === 'object' && relatedField in item && typeof item[relatedField] !== 'object'
 		) as Record<string, any>[];
 	}
 
 	// Returns all items that do not have an existing junction and related item.
 	function getNewItems() {
-		const { junctionField, relationPkField } = relation.value;
+		const { junctionPkField, relatedField } = relation.value;
 
-		if (value.value === null || junctionField === null) return [];
+		if (value.value === null || relatedField === null) return [];
 
-		return value.value.filter(
-			(item) => typeof get(item, junctionField) === 'object' && has(item, [junctionField, relationPkField]) === false
-		) as Record<string, any>[];
+		return value.value.filter((item) => typeof item === 'object' && !item[junctionPkField]) as Record<string, any>[];
 	}
 
 	// Returns a list of items which related or junction item does exist but had changes.
 	function getUpdatedItems() {
-		const { junctionField, relationPkField } = relation.value;
+		const { relatedField, relationPkField } = relation.value;
 
-		if (value.value === null || junctionField === null) return [];
+		if (value.value === null || relatedField === null) return [];
 
-		return value.value.filter((item) => has(item, [junctionField, relationPkField])) as Record<string, any>[];
+		return value.value.filter((item) => has(item, [relatedField, relationPkField])) as Record<string, any>[];
 	}
 
 	// Returns only items that do not have any changes what so ever.
@@ -88,11 +86,11 @@ export default function useActions(
 	function getRelatedPrimaryKeys() {
 		if (value.value === null) return [];
 
-		const { junctionField, relationPkField } = relation.value;
+		const { relatedField, relationPkField } = relation.value;
 
 		return value.value.reduce((acc: any[], item) => {
-			const relatedId = get(item, junctionField) as number | string | undefined;
-			const deepRelatedId = get(item, [junctionField, relationPkField]) as number | string | undefined;
+			const relatedId = get(item, relatedField) as number | string | undefined;
+			const deepRelatedId = get(item, [relatedField, relationPkField]) as number | string | undefined;
 
 			if (relatedId !== undefined) acc.push(relatedId);
 			else if (deepRelatedId !== undefined) acc.push(deepRelatedId);
@@ -101,17 +99,17 @@ export default function useActions(
 	}
 
 	function getJunctionFromRelatedId(id: string | number, items: Record<string, any>[]) {
-		const { relationPkField, junctionField } = relation.value;
+		const { relationPkField, relatedField } = relation.value;
 
-		return items.find((item) => get(item, [junctionField, relationPkField]) === id) || null;
+		return items.find((item) => get(item, [relatedField, relationPkField]) === id) || null;
 	}
 
 	function deleteItem(deletingItem: Record<string, any>) {
 		if (value.value === null) return;
-		const { junctionField, relationPkField, junctionPkField } = relation.value;
+		const { relatedField, relationPkField, junctionPkField } = relation.value;
 
 		const junctionId = get(deletingItem, junctionPkField) as number | string | undefined;
-		const relatedId = get(deletingItem, [junctionField, relationPkField]) as number | string | undefined;
+		const relatedId = get(deletingItem, [relatedField, relationPkField]) as number | string | undefined;
 
 		const newValue = value.value.filter((item) => {
 			if (junctionId !== undefined) {
@@ -123,14 +121,14 @@ export default function useActions(
 			}
 
 			if (relatedId !== undefined) {
-				const itemRelatedId = get(item, [junctionField, relationPkField]);
+				const itemRelatedId = get(item, [relatedField, relationPkField]);
 				if (['string', 'number'].includes(typeof itemRelatedId)) {
 					return itemRelatedId !== relatedId;
 				}
 
-				const junctionFieldId = get(item, [junctionField]);
-				if (['string', 'number'].includes(typeof junctionFieldId)) {
-					return junctionFieldId !== relatedId;
+				const relatedFieldId = get(item, [relatedField]);
+				if (['string', 'number'].includes(typeof relatedFieldId)) {
+					return relatedFieldId !== relatedId;
 				}
 			}
 

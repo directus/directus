@@ -1,7 +1,7 @@
 import { Sort } from '@/components/v-table/types';
 import { sortBy } from 'lodash';
 import { computed, ComputedRef, Ref, ref } from 'vue';
-import { RelationInfo } from '@/composables/use-m2m';
+import { RelationInfo } from '@/composables/use-relation-info';
 
 type UsableSort = {
 	sort: Ref<Sort>;

@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!junction || !relation" type="warning">
+	<v-notice v-if="!relationInfo.junctionCollection || !relationInfo.relationCollection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="many-to-many">
@@ -21,20 +21,14 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!junction.meta.sort_field"
+				:disabled="!relationInfo.sortField"
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
 					<v-list-item :dense="sortedItems.length > 4" block clickable @click="editItem(element)">
-						<v-icon
-							v-if="junction.meta.sort_field"
-							name="drag_handle"
-							class="drag-handle"
-							left
-							@click.stop="() => {}"
-						/>
+						<v-icon v-if="relationInfo.sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template
-							:collection="junctionCollection.collection"
+							:collection="relationInfo.junctionCollection"
 							:item="element"
 							:template="templateWithDefaults"
 						/>
@@ -58,9 +52,9 @@
 			:collection="relationInfo.junctionCollection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
-			:junction-field="relationInfo.junctionField"
+			:junction-field="relationInfo.relatedField"
 			:edits="editsAtStart"
-			:circular-field="junction.field"
+			:circular-field="relationInfo.junctionField"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -68,7 +62,7 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relationCollection.collection"
+			:collection="relationInfo.relationCollection"
 			:selection="selectedPrimaryKeys"
 			multiple
 			@input="stageSelection"
@@ -85,14 +79,14 @@ import { get } from 'lodash';
 import Draggable from 'vuedraggable';
 
 import useActions from './use-actions';
-import useRelation from '@/composables/use-m2m';
 import usePreview from './use-preview';
 import useEdit from './use-edit';
 import usePermissions from './use-permissions';
-import useSelection from './use-selection';
 import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { useSelection } from '@/composables/use-selection';
+import { useRelationInfo } from '@/composables/use-relation-info';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -134,15 +128,15 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { value, collection, field } = toRefs(props);
+		const { value } = toRefs(props);
 
-		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
+		const { relationInfo } = useRelationInfo({ collection: props.collection, field: props.field });
 
 		const templateWithDefaults = computed(() => {
 			if (props.template) return props.template;
-			if (junctionCollection.value.meta?.display_template) return junctionCollection.value.meta.display_template;
+			if (relationInfo.value.junctionDisplayTemplate) return relationInfo.value.junctionDisplayTemplate;
 
-			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
+			let relatedDisplayTemplate = relationInfo.value.relationDisplayTemplate;
 			if (relatedDisplayTemplate) {
 				const regex = /({{.*?}})/g;
 				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -150,7 +144,7 @@ export default defineComponent({
 				for (const part of parts) {
 					if (part.startsWith('{{') === false) continue;
 					const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const newPart = `{{${relation.value.field}.${key}}}`;
+					const newPart = `{{${relationInfo.value.relatedField}.${key}}}`;
 
 					relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
 				}
@@ -158,11 +152,11 @@ export default defineComponent({
 				return relatedDisplayTemplate;
 			}
 
-			return `{{${relation.value.field}.${relationInfo.value.relationPkField}}}`;
+			return `{{${relationInfo.value.relatedField}.${relationInfo.value.relationPkField}}}`;
 		});
 
 		const fields = computed(() =>
-			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), junctionCollection.value.collection)
+			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relationInfo.value.junctionCollection)
 		);
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
@@ -184,27 +178,27 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
 			useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection({
 			items,
 			initialItems,
 			relationInfo,
-			emitter
-		);
+			emit: emitter,
+		});
 
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
-		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
+		const { createAllowed, selectAllowed } = usePermissions(
+			relationInfo.value.junctionCollection,
+			relationInfo.value.relationCollection
+		);
 
 		return {
 			t,
-			junction,
-			relation,
+			relationInfo,
 			tableHeaders,
 			loading,
 			currentlyEditing,
 			editItem,
-			junctionCollection,
-			relationCollection,
 			editsAtStart,
 			stageEdits,
 			cancelEdit,
@@ -213,7 +207,6 @@ export default defineComponent({
 			deleteItem,
 			selectedPrimaryKeys,
 			items,
-			relationInfo,
 			relatedPrimaryKey,
 			get,
 			editModalActive,
@@ -225,7 +218,7 @@ export default defineComponent({
 			selectAllowed,
 		};
 
-		function emitter(newVal: any[] | null) {
+		function emitter(newVal: any | any[] | null) {
 			emit('input', newVal);
 		}
 	},

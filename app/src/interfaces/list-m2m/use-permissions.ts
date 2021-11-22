@@ -1,10 +1,9 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { Collection } from '@directus/shared/types';
-import { computed, Ref, ComputedRef } from 'vue';
+import { computed, ComputedRef } from 'vue';
 
 export default function usePermissions(
-	junctionCollection: Ref<Collection>,
-	relationCollection: Ref<Collection>
+	junctionCollection: string,
+	relationCollection: string
 ): { createAllowed: ComputedRef<boolean>; selectAllowed: ComputedRef<boolean> } {
 	const permissionsStore = usePermissionsStore();
 	const userStore = useUserStore();
@@ -14,11 +13,11 @@ export default function usePermissions(
 		if (admin) return true;
 
 		const hasJunctionPermissions = !!permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === junctionCollection.value.collection
+			(permission) => permission.action === 'create' && permission.collection === junctionCollection
 		);
 
 		const hasRelatedPermissions = !!permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === relationCollection.value.collection
+			(permission) => permission.action === 'create' && permission.collection === relationCollection
 		);
 
 		return hasJunctionPermissions && hasRelatedPermissions;
@@ -29,7 +28,7 @@ export default function usePermissions(
 		if (admin) return true;
 
 		const hasJunctionPermissions = !!permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === junctionCollection.value.collection
+			(permission) => permission.action === 'create' && permission.collection === junctionCollection
 		);
 
 		return hasJunctionPermissions;
