@@ -1,10 +1,10 @@
 <template>
-	<div class="v-template-input" :class="{ multiline }" contenteditable="true" @input="onInput" />
+	<div class="v-template-input" :class="{ multiline }" contenteditable="true" @input="processText" />
 </template>
 
 <script lang="ts">
-import { userName } from '@/utils/user-name';
 import { defineComponent } from 'vue';
+import { position } from 'caret-pos';
 
 export default defineComponent({
 	props: {
@@ -20,57 +20,34 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		activator: {
-			type: Boolean,
-			default: false,
-		},
-		insertionFn: {
-			type: Function,
-			default: (match: Element) => {
-				return match;
-			},
-		},
 	},
-	emits: ['update:modelValue', 'update:activator'],
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		return { onInput };
+		return { processText };
 
-		function onInput(event: InputEvent) {
+		function processText(event: KeyboardEvent) {
 			const input = event.target as HTMLDivElement;
 
-			const textContent = input.innerText;
+			let newHTML = input.innerHTML;
 
-			emit('update:modelValue', textContent);
+			const matches = newHTML.match(props.regex);
 
-			// Loop over every child element recursively
-			// Ignore "button" with predefined class ('preview'?) add an attribute
-			// Replace inner text of element with wrapped button when regex is encountered
-			// Use whatever is in use-template.ts for inspiration
-			// we want to set the button innertext in a selectOption() function
-			// this regex match should fire that function instead of creating the button right away
-			replaceDeep(input);
-		}
+			if (matches) {
+				const caretPos = position(input).pos;
 
-		function replaceDeep(parent: HTMLElement | Element): void {
-			if (parent.tagName === 'BUTTON' && parent.hasAttribute('dataset-preview')) return;
-
-			if (parent.children.length === 0 || parent.children[0].tagName === 'BR') {
-				parent.innerHTML.split(props.regex).forEach(async (part) => {
-					if (props.regex.test(part)) {
-						// element needs to be returned in here so that we know where to insert the element.
-						// insertionFn() needs to pause and allow the user to select from the drop down.
-
-						parent.appendChild(await props.insertionFn(part));
-					}
-				});
-				return;
-			}
-
-			for (const child of parent.children) {
-				if (child.children.length > 0) {
-					replaceDeep(child);
+				for (const match of matches ?? []) {
+					newHTML = newHTML.replace(
+						new RegExp(`(${match})(?!</button>)`),
+						` <button class="preview" data-preview="Preview Text" contenteditable="false">${match}</button> `
+					);
 				}
+
+				input.innerHTML = newHTML;
+
+				position(input, caretPos + 2);
 			}
+
+			emit('update:modelValue', input.innerText);
 		}
 	},
 });
@@ -78,10 +55,12 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .v-template-input {
-	min-height: var(--input-height);
+	min-height: var(--input-height-tall);
 	padding: var(--input-padding);
 	color: var(--foreground-normal);
 	font-family: var(--family-sans-serif);
+	white-space: pre-wrap;
+	word-wrap: normal;
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -101,6 +80,7 @@ export default defineComponent({
 		user-select: text;
 
 		&::before {
+			display: block;
 			font-size: 1rem;
 			content: attr(data-preview);
 		}

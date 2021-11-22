@@ -1,7 +1,9 @@
 <template>
 	<v-menu v-model="showMentionDropDown">
 		<template #activator>
-			<v-template-input :regex="/(\B@.*)/gi" :activator="showMentionDropDown" :insertion-fn="selectOption" />
+			<v-template-input
+				:regex="/(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})(?!\<\/button\>)/gi"
+			/>
 			<!-- <template #append>
 					<v-button
 						:disabled="!newCommentContent || newCommentContent.length === 0"

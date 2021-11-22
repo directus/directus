@@ -101,5 +101,8 @@
 		"vue-router": "4.0.12",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
+	},
+	"dependencies": {
+		"caret-pos": "^2.0.0"
 	}
 }
