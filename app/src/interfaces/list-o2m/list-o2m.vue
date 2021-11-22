@@ -60,7 +60,7 @@
 			:collection="relationInfo.relationCollection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
-			:circular-field="relationInfo.junctionField"
+			:circular-field="relationInfo.relatedField"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
