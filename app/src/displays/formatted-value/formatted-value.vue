@@ -51,10 +51,6 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		backgroundColor: {
-			type: String,
-			default: null,
-		},
 		iconLeft: {
 			type: String,
 			default: null,
@@ -146,10 +142,9 @@ export default defineComponent({
 		});
 
 		const format = computed(() => {
-			const { color, backgroundColor, iconLeft, iconLeftColor, iconRight, iconRightColor } = props;
+			const { color, iconLeft, iconLeftColor, iconRight, iconRightColor } = props;
 			return matchedRules.value.reduce((format, rule) => Object.assign({}, format, rule), {
 				color,
-				backgroundColor,
 				iconLeft,
 				iconLeftColor,
 				iconRight,

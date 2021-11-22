@@ -73,15 +73,6 @@ export default defineDisplay({
 				},
 			},
 			{
-				field: 'backgroundColor',
-				name: '$t:displays.formatted-value.background_color',
-				type: 'string',
-				meta: {
-					interface: 'select-color',
-					width: 'half',
-				},
-			},
-			{
 				field: 'iconLeft',
 				name: '$t:displays.formatted-value.icon_left',
 				type: 'string',
