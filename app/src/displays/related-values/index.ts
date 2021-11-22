@@ -33,7 +33,7 @@ export default defineDisplay({
 		];
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a'],
+	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
 	fields: (options: Options | null, { field, collection }) => {
 		const { relatedCollection, path } = getRelatedCollection(collection, field);
 		const fieldsStore = useFieldsStore();
