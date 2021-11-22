@@ -184,7 +184,7 @@ create_translations: Criar Traduções
 auto_refresh: Atualização automática
 refresh_interval: Intervalo de atualização
 no_refresh: Não atualizar
-refresh_interval_seconds: Atualizar automaticamente a cada segundo, a cada {seconds} segundos
+refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
 refresh_interval_minutes: A cada minuto, a cada {minutes} minutos
 auto_generate: Gerar automaticamente
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.

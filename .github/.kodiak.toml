@@ -3,3 +3,4 @@ version = 1
 [merge]
 method = "squash"
 delete_branch_on_merge = true
+automerge_label = "Automerge"
