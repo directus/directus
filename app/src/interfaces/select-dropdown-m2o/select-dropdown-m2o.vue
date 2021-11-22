@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!relation" type="warning">
+	<v-notice v-if="!relationInfo.relationCollection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="!displayTemplate" type="warning">
@@ -20,7 +20,7 @@
 					<template v-if="currentItem" #input>
 						<div class="preview">
 							<render-template
-								:collection="relatedCollection.collection"
+								:collection="relationInfo.relationCollection"
 								:item="currentItem"
 								:template="displayTemplate"
 							/>
@@ -52,13 +52,13 @@
 				<template v-else>
 					<v-list-item
 						v-for="item in items"
-						:key="item[relatedPrimaryKeyField.field]"
-						:active="value === item[relatedPrimaryKeyField.field]"
+						:key="item[relationInfo.relationPkField]"
+						:active="value === item[relationInfo.relationPkField]"
 						clickable
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							<render-template :collection="relatedCollection.collection" :template="displayTemplate" :item="item" />
+							<render-template :collection="relationInfo.relationCollection" :template="displayTemplate" :item="item" />
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -68,18 +68,18 @@
 		<drawer-item
 			v-if="!disabled"
 			v-model:active="editModalActive"
-			:collection="relatedCollection.collection"
+			:collection="relationInfo.relationCollection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
-			:circular-field="relation.meta?.one_field"
+			:circular-field="relationInfo.junctionField"
 			@input="stageEdits"
 		/>
 
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relatedCollection.collection"
-			:selection="selection"
+			:collection="relationInfo.relationCollection"
+			:selection="selectedPrimaryKeys"
 			@input="stageSelection"
 		/>
 	</div>
@@ -88,7 +88,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
-import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import { useCollection } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import api from '@/api';
@@ -96,6 +95,8 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { useRelationInfo } from '@/composables/use-relation-info';
+import { useSelection } from '@/composables/use-selection';
 
 /**
  * @NOTE
@@ -139,17 +140,20 @@ export default defineComponent({
 
 		const { collection } = toRefs(props);
 
-		const relationsStore = useRelationsStore();
-		const collectionsStore = useCollectionsStore();
-
-		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { usesMenu, menuActive } = useMenu();
 		const { info: collectionInfo } = useCollection(collection);
-		const { selection, stageSelection, selectModalActive } = useSelection();
+		const { relationInfo } = useRelationInfo({ collection: props.collection, field: props.field });
 		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
 		const { totalCount, loading: itemsLoading, fetchItems, items } = useItems();
 
-		const { setCurrent, currentItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
+		const { setCurrent, currentItem, initialItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
+
+		const { selectedPrimaryKeys, stageSelection, selectModalActive } = useSelection({
+			initialItems: ref([initialItem]),
+			items: ref([currentItem]),
+			relationInfo,
+			emit: emitter,
+		});
 
 		const { edits, stageEdits } = useEdits();
 
@@ -165,9 +169,8 @@ export default defineComponent({
 			loadingCurrent,
 			menuActive,
 			onPreviewClick,
-			relatedCollection,
-			relation,
-			selection,
+			relationInfo,
+			selectedPrimaryKeys,
 			selectModalActive,
 			setCurrent,
 			totalCount,
@@ -177,10 +180,14 @@ export default defineComponent({
 			edits,
 			stageEdits,
 			editModalActive,
-			relatedPrimaryKeyField,
 		};
 
+		function emitter(newVal: any | null) {
+			emit('input', newVal);
+		}
+
 		function useCurrent() {
+			const initialItem = ref<Record<string, any> | null>(null);
 			const currentItem = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
 
@@ -191,7 +198,7 @@ export default defineComponent({
 					// of the item and fetch it from the API to render the preview
 					if (
 						newValue !== null &&
-						newValue !== currentItem.value?.[relatedPrimaryKeyField.value!.field] &&
+						newValue !== currentItem.value?.[relationInfo.value.relationPkField] &&
 						(typeof newValue === 'string' || typeof newValue === 'number')
 					) {
 						fetchCurrent();
@@ -210,42 +217,43 @@ export default defineComponent({
 			const currentPrimaryKey = computed<string | number>(() => {
 				if (!currentItem.value) return '+';
 				if (!props.value) return '+';
-				if (!relatedPrimaryKeyField.value) return '+';
+				if (!relationInfo.value.relationPkField) return '+';
 
 				if (typeof props.value === 'number' || typeof props.value === 'string') {
 					return props.value!;
 				}
 
-				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in (props.value ?? {})) {
-					return props.value?.[relatedPrimaryKeyField.value.field] ?? '+';
+				if (typeof props.value === 'object' && relationInfo.value.relationPkField in (props.value ?? {})) {
+					return props.value?.[relationInfo.value.relationPkField] ?? '+';
 				}
 
 				return '+';
 			});
 
-			return { setCurrent, currentItem, loading, currentPrimaryKey };
+			return { setCurrent, initialItem, currentItem, loading, currentPrimaryKey };
 
 			function setCurrent(item: Record<string, any>) {
-				if (!relatedPrimaryKeyField.value) return;
+				if (!relationInfo.value.relationPkField) return;
 				currentItem.value = item;
-				emit('input', item[relatedPrimaryKeyField.value.field]);
+				emit('input', item[relationInfo.value.relationPkField]);
 			}
 
 			async function fetchCurrent() {
-				if (!relatedPrimaryKeyField.value || !relatedCollection.value) return;
+				if (!relationInfo.value.relationPkField || !relationInfo.value.relationCollection) return;
+				if (typeof props.value === 'object') return;
 
 				loading.value = true;
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
-					fields.push(relatedPrimaryKeyField.value.field);
+				if (fields.includes(relationInfo.value.relationPkField) === false) {
+					fields.push(relationInfo.value.relationPkField);
 				}
 
 				try {
-					const endpoint = relatedCollection.value.collection.startsWith('directus_')
-						? `/${relatedCollection.value.collection.substring(9)}/${props.value}`
-						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(props.value!)}`;
+					const endpoint = relationInfo.value.relationCollection.startsWith('directus_')
+						? `/${relationInfo.value.relationCollection.substring(9)}/${props.value}`
+						: `/items/${relationInfo.value.relationCollection}/${encodeURIComponent(props.value!)}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -254,6 +262,8 @@ export default defineComponent({
 					});
 
 					currentItem.value = response.data.data;
+
+					if (!initialItem.value) initialItem.value = response.data.data;
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
@@ -268,29 +278,32 @@ export default defineComponent({
 			const items = ref<Record<string, any>[] | null>(null);
 			const loading = ref(false);
 
-			watch(relatedCollection, () => {
-				fetchTotalCount();
-				items.value = null;
-			});
+			watch(
+				() => relationInfo.value.relationCollection,
+				() => {
+					fetchTotalCount();
+					items.value = null;
+				}
+			);
 
 			return { totalCount, fetchItems, items, loading };
 
 			async function fetchItems() {
 				if (items.value !== null) return;
-				if (!relatedCollection.value || !relatedPrimaryKeyField.value) return;
+				if (!relationInfo.value.relationCollection || !relationInfo.value.relationPkField) return;
 
 				loading.value = true;
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
-					fields.push(relatedPrimaryKeyField.value.field);
+				if (fields.includes(relationInfo.value.relationPkField) === false) {
+					fields.push(relationInfo.value.relationPkField);
 				}
 
 				try {
-					const endpoint = relatedCollection.value.collection.startsWith('directus_')
-						? `/${relatedCollection.value.collection.substring(9)}`
-						: `/items/${relatedCollection.value.collection}`;
+					const endpoint = relationInfo.value.relationCollection.startsWith('directus_')
+						? `/${relationInfo.value.relationCollection.substring(9)}`
+						: `/items/${relationInfo.value.relationCollection}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -308,11 +321,11 @@ export default defineComponent({
 			}
 
 			async function fetchTotalCount() {
-				if (!relatedCollection.value) return;
+				if (!relationInfo.value.relationCollection) return;
 
-				const endpoint = relatedCollection.value.collection.startsWith('directus_')
-					? `/${relatedCollection.value.collection.substring(9)}`
-					: `/items/${relatedCollection.value.collection}`;
+				const endpoint = relationInfo.value.relationCollection.startsWith('directus_')
+					? `/${relationInfo.value.relationCollection.substring(9)}`
+					: `/items/${relationInfo.value.relationCollection}`;
 
 				const response = await api.get(endpoint, {
 					params: {
@@ -323,23 +336,6 @@ export default defineComponent({
 
 				totalCount.value = response.data.meta.total_count;
 			}
-		}
-
-		function useRelation() {
-			const relation = computed(() => {
-				return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
-			});
-
-			const relatedCollection = computed(() => {
-				if (!relation.value?.related_collection) return null;
-				return collectionsStore.getCollection(relation.value.related_collection)!;
-			});
-
-			const relatedCollectionName = computed(() => relatedCollection.value?.collection ?? null);
-
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollectionName);
-
-			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
 
 		function useMenu() {
@@ -359,15 +355,15 @@ export default defineComponent({
 		function usePreview() {
 			const displayTemplate = computed(() => {
 				if (props.template !== null) return props.template;
-				return collectionInfo.value?.meta?.display_template || `{{ ${relatedPrimaryKeyField?.value?.field || ''} }}`;
+				return collectionInfo.value?.meta?.display_template || `{{ ${relationInfo.value.relationPkField || ''} }}`;
 			});
 
 			const requiredFields = computed(() => {
-				if (!displayTemplate.value || !relatedCollection.value) return null;
+				if (!displayTemplate.value || !relationInfo.value.relationCollection) return null;
 
 				return adjustFieldsForDisplays(
 					getFieldsFromTemplate(displayTemplate.value),
-					relatedCollection.value.collection
+					relationInfo.value.relationCollection
 				);
 			});
 
@@ -386,35 +382,6 @@ export default defineComponent({
 			}
 		}
 
-		function useSelection() {
-			const selectModalActive = ref(false);
-
-			const selection = computed<(number | string)[]>(() => {
-				if (!props.value) return [];
-				if (!relatedPrimaryKeyField.value) return [];
-
-				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in (props.value ?? {})) {
-					return [props.value![relatedPrimaryKeyField.value.field]];
-				}
-
-				if (typeof props.value === 'string' || typeof props.value === 'number') {
-					return [props.value!];
-				}
-
-				return [];
-			});
-
-			return { selection, stageSelection, selectModalActive };
-
-			function stageSelection(newSelection: (number | string)[]) {
-				if (newSelection.length === 0) {
-					emit('input', null);
-				} else {
-					emit('input', newSelection[0]);
-				}
-			}
-		}
-
 		function useEdits() {
 			const edits = computed(() => {
 				// If the current value isn't a primitive, it means we've already staged some changes
@@ -429,18 +396,18 @@ export default defineComponent({
 			return { edits, stageEdits };
 
 			function stageEdits(newEdits: Record<string, any>) {
-				if (!relatedPrimaryKeyField.value) return;
+				if (!relationInfo.value.relationPkField) return;
 
 				// Make sure we stage the primary key if it exists. This is needed to have the API
 				// update the existing item instead of create a new one
 				if (currentPrimaryKey.value && currentPrimaryKey.value !== '+') {
 					emit('input', {
-						[relatedPrimaryKeyField.value.field]: currentPrimaryKey.value,
+						[relationInfo.value.relationPkField]: currentPrimaryKey.value,
 						...newEdits,
 					});
 				} else {
-					if (relatedPrimaryKeyField.value.field in newEdits && newEdits[relatedPrimaryKeyField.value.field] === '+') {
-						delete newEdits[relatedPrimaryKeyField.value.field];
+					if (relationInfo.value.relationPkField in newEdits && newEdits[relationInfo.value.relationPkField] === '+') {
+						delete newEdits[relationInfo.value.relationPkField];
 					}
 
 					emit('input', newEdits);
