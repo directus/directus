@@ -2,30 +2,29 @@
 	<v-menu v-model="showMentionDropDown">
 		<template #activator>
 			<v-template-input
-				:regex="/(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})(?!\<\/button\>)/gi"
+				v-model="newCommentContent"
+				capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
+				multiline
+				trigger-character="@"
+				:items="userPreviews"
+				@trigger="triggerSearch"
+				@deactivate="showMentionDropDown = false"
 			/>
-			<!-- <template #append>
-					<v-button
-						:disabled="!newCommentContent || newCommentContent.length === 0"
-						:loading="saving"
-						class="post-comment"
-						x-small
-						@click="postComment"
-					>
-						{{ t('submit') }}
-					</v-button>
-				</template> -->
 		</template>
-		<v-list
-			v-for="user in users"
-			id="suggestions"
-			:key="user.id"
-			@click="
-				() => {
-					selectedUser = user;
-				}
-			"
-		>
+
+		<!-- <template #append>
+			<v-button
+				:disabled="!newCommentContent || newCommentContent.length === 0"
+				:loading="saving"
+				class="post-comment"
+				x-small
+				@click="postComment"
+			>
+				{{ t('submit') }}
+			</v-button>
+		</template> -->
+
+		<v-list v-for="user in searchResult" id="suggestions" :key="user.id" @click="insertUser(user)">
 			<v-avatar x-small>
 				<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
 				<v-icon v-else name="person_outline" />
@@ -39,7 +38,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType, watch } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
@@ -51,6 +50,7 @@ import axios, { CancelTokenSource } from 'axios';
 import { User } from '@directus/shared/types';
 import { getRootPath } from '@/utils/get-root-path';
 import vTemplateInput from '@/components/v-template-input.vue';
+import { cloneDeep } from 'lodash';
 
 export default defineComponent({
 	components: { vTemplateInput },
@@ -72,54 +72,16 @@ export default defineComponent({
 		const { t } = useI18n();
 		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
+
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
 		const showMentionDropDown = ref(false);
-		let users = ref<User[]>([]);
-		let selectionStart: number | null = null;
-		let selectionEnd: number | null = null;
-		let selectedUser = ref<User>();
+
+		const searchResult = ref<User[]>([]);
+		let triggerSearchQuery = '';
+		const userPreviews = ref<Record<string, string>>({});
+
 		const { caretPosition } = useCaret(textarea);
-
-		async function selectOption(match: string) {
-			showMentionDropDown.value = true;
-			await loadUsers(match.substr(1));
-			// wait until selectedUser changes, return insertUser()
-
-			return insertUsername();
-		}
-
-		watch(caretPosition, (newPosition) => {
-			const text = newCommentContent.value;
-			if (text === null || newPosition === undefined) return;
-
-			let word = '';
-			let countBefore = newPosition - 1;
-			let countAfter = newPosition;
-
-			if (text.charAt(countBefore) !== ' ') {
-				while (countBefore >= 0 && text.charAt(countBefore) !== ' ') {
-					word = text.charAt(countBefore) + word;
-					countBefore--;
-				}
-			}
-
-			while (countAfter < text.length && text.charAt(countAfter) !== ' ') {
-				word = word + text.charAt(countAfter);
-				countAfter++;
-			}
-
-			if (word.startsWith('@') === false) {
-				showMentionDropDown.value = false;
-				return;
-			}
-
-			showMentionDropDown.value = true;
-			loadUsers(word.substr(1));
-
-			selectionStart = countBefore + 1;
-			selectionEnd = countAfter;
-		});
 
 		let cancelToken: CancelTokenSource | null = null;
 
@@ -127,8 +89,11 @@ export default defineComponent({
 			if (cancelToken !== null) {
 				cancelToken.cancel();
 			}
+
 			cancelToken = axios.CancelToken.source();
+
 			const regex = /(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})/gi;
+
 			let filter: Record<string, any> = {
 				_or: [
 					{
@@ -148,6 +113,7 @@ export default defineComponent({
 					},
 				],
 			};
+
 			if (name.match(regex)) {
 				filter = {
 					id: {
@@ -155,6 +121,7 @@ export default defineComponent({
 					},
 				};
 			}
+
 			try {
 				const result = await api.get('/users', {
 					params: {
@@ -163,11 +130,20 @@ export default defineComponent({
 					},
 					cancelToken: cancelToken.token,
 				});
-				users.value = result.data.data;
+
+				const newUsers = cloneDeep(userPreviews.value);
+
+				result.data.data.forEach((user: any) => {
+					newUsers[user.id] = userName(user);
+				});
+
+				userPreviews.value = newUsers;
+
+				searchResult.value = result.data.data;
 			} catch (e) {
 				return e;
 			}
-		}, 2);
+		}, 200);
 
 		return {
 			t,
@@ -176,29 +152,29 @@ export default defineComponent({
 			saving,
 			textarea,
 			showMentionDropDown,
-			selectOption,
-			users,
-			userName,
+			searchResult,
 			caretPosition,
-			insertUsername,
 			avatarSource,
-			selectedUser,
+			userName,
+			triggerSearch,
+			insertUser,
+			userPreviews,
 		};
+
+		function insertUser(user: Record<string, any>) {
+			newCommentContent.value = (newCommentContent.value ?? '').replace('@' + triggerSearchQuery, '@' + user.id);
+		}
+
+		function triggerSearch(searchQuery: string) {
+			triggerSearchQuery = searchQuery;
+
+			showMentionDropDown.value = true;
+			loadUsers(searchQuery);
+		}
 
 		function avatarSource(url: string) {
 			if (url === null) return '';
 			return addTokenToURL(getRootPath() + `assets/${url}?key=system-small-cover`);
-		}
-		function insertUsername() {
-			if (!selectedUser.value) {
-				setTimeout(insertUsername, 0);
-			} else {
-				const button = document.createElement('button');
-				button.setAttribute('dataset-preview', selectedUser.value.id);
-				button.innerText = userName(selectedUser.value);
-				selectedUser.value = undefined;
-				return button;
-			}
 		}
 
 		async function postComment() {
@@ -212,7 +188,7 @@ export default defineComponent({
 					comment: newCommentContent.value,
 				});
 
-				await props.refresh();
+				props.refresh();
 
 				newCommentContent.value = null;
 
