@@ -4,9 +4,7 @@
 	<div v-else class="display-formatted">
 		<v-icon v-if="format.iconLeft" class="left" :name="format.iconLeft" :color="format.iconLeftColor" small />
 
-		<span class="value" :class="[{ bold }, font]" :style="valueStyle">
-			{{ displayValue }}
-		</span>
+		<span class="value" :class="[{ bold }, font]" :style="valueStyle">{{ prefix }}{{ displayValue }}{{ suffix }}</span>
 
 		<v-icon v-if="format.iconRight" class="right" :name="format.iconRight" :color="format.iconRightColor" small />
 
@@ -112,7 +110,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t, locale } = useI18n();
+		const { t, n } = useI18n();
 
 		const matchedRules = computed(() => {
 			const leftValue = parseFloat(props.value.toString());
@@ -156,13 +154,11 @@ export default defineComponent({
 
 			if (['integer', 'bigInteger', 'float', 'decimal'].includes(props.type)) {
 				const hasDecimals = ['float', 'decimal'].includes(props.type);
-				const options = hasDecimals ? { minimumFractionDigits: 2 } : {};
-				const format = new Intl.NumberFormat(locale.value, options).format;
 
 				const { prefix, value, suffix } = props;
 				const number = hasDecimals ? parseFloat(value.toString()) : parseInt(value.toString());
 
-				return `${prefix || ''}${format(number)}${suffix || ''}`;
+				return n(number);
 			}
 
 			let value = String(props.value);

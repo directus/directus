@@ -11,6 +11,32 @@ export default defineDisplay({
 	options: ({ field }) => {
 		const options = [
 			{
+				field: 'prefix',
+				name: '$t:displays.formatted-value.prefix',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						label: '$t:displays.formatted-value.prefix_label',
+						trim: false,
+					},
+				},
+			},
+			{
+				field: 'suffix',
+				name: '$t:displays.formatted-value.suffix',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						label: '$t:displays.formatted-value.suffix_label',
+						trim: false,
+					},
+				},
+			},
+			{
 				field: 'bold',
 				name: '$t:displays.formatted-value.bold',
 				type: 'boolean',
@@ -89,34 +115,6 @@ export default defineDisplay({
 		];
 
 		if (['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
-			options.push({
-				field: 'prefix',
-				name: '$t:displays.formatted-value.prefix',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'input',
-					options: {
-						label: '$t:displays.formatted-value.prefix_label',
-						trim: false,
-					},
-				},
-			});
-
-			options.push({
-				field: 'suffix',
-				name: '$t:displays.formatted-value.suffix',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'input',
-					options: {
-						label: '$t:displays.formatted-value.suffix_label',
-						trim: false,
-					},
-				},
-			});
-
 			options.push({
 				field: 'formatRules',
 				name: '$t:displays.formatted-value.format_rules',
