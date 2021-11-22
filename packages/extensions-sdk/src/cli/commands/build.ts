@@ -26,7 +26,15 @@ import { getLanguageFromPath, isLanguage } from '../utils/languages';
 import { Language } from '../types';
 import loadConfig from '../utils/load-config';
 
-type BuildOptions = { type: string; input: string; output: string; language: string; force: boolean; watch: boolean; sourceMaps: boolean };
+type BuildOptions = {
+	type: string;
+	input: string;
+	output: string;
+	language: string;
+	force: boolean;
+	watch: boolean;
+	sourceMaps: boolean;
+};
 
 export default async function build(options: BuildOptions): Promise<void> {
 	const packagePath = path.resolve('package.json');
@@ -184,7 +192,7 @@ function getRollupOutputOptions(type: ExtensionType, output: string, options: Bu
 			file: output,
 			format: 'cjs',
 			exports: 'default',
-			sourcemap: options.sourceMaps
+			sourcemap: options.sourceMaps,
 		};
 	}
 }
