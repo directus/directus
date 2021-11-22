@@ -49,37 +49,39 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 	});
 
 	function stageSelection(selection: (number | string)[]) {
-		const previousItems = collectionField
-			? (items.value || []).filter((item) => item[collectionField] !== selectingFrom.value)
-			: items.value || [];
+		let newVal = null;
 
-			const newVal = [...previousItems, ...selection].map((item, i) => {
+		if (!selection?.length) {
+			if (collectionField) newVal = (items.value || []).filter((item) => item[collectionField] !== selectingFrom.value);
+		} else {
+			newVal = selection.map((item, i) => {
 				const initial = (initialItems.value || []).find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
 				const draft = (items.value || []).find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
 
-			return {
-				...initial,
-				...draft,
-				...(sortField ? { [sortField]: i } : null),
-				...(type === 'm2a' ? { [collectionField]: selectingFrom.value } : null),
-				...(['o2m', 'm2o'].includes(type) ? { [relationPkField]: getPrimaryKey(item) } : null),
-				...(['m2m', 'm2a'].includes(type)
-					? {
-							[junctionField]: {
-								...initial?.[junctionField],
-								...draft?.[junctionField],
-								[relationPkField]: getPrimaryKey(item),
-							},
-					  }
-					: null),
-			};
-		});
+				return {
+					...initial,
+					...draft,
+					...(sortField ? { [sortField]: i } : null),
+					...(type === 'm2a' ? { [collectionField]: selectingFrom.value } : null),
+					...(['o2m', 'm2o'].includes(type) ? { [relationPkField]: getPrimaryKey(item) } : null),
+					...(['m2m', 'm2a'].includes(type)
+						? {
+								[junctionField]: {
+									...initial?.[junctionField],
+									...draft?.[junctionField],
+									[relationPkField]: getPrimaryKey(item),
+								},
+						  }
+						: null),
+				};
+			});
+		}
 
-		if (!newVal?.length) return emit(null);
+		if (type === 'o2m') return emit(newVal?.length ? newVal : []);
 
-		if (type === 'm2o') return emit(newVal.pop()?.['id']);
+		if (type === 'm2o') return emit(newVal?.length ? newVal.pop()?.['id'] : null);
 
-		emit(newVal);
+		emit(newVal?.length ? newVal : null);
 	}
 
 	function deselect(toDeselect: Record<string, any>) {
