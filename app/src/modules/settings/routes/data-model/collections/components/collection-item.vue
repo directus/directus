@@ -1,29 +1,24 @@
 <template>
 	<div class="collection-item">
-		<v-list-item block dense clickable :class="{ hidden: collection.meta?.hidden }">
+		<v-list-item
+			block
+			dense
+			clickable
+			:class="{ hidden: collection.meta?.hidden }"
+			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
+			@click="!collection.schema ? $emit('editCollection', $event) : null"
+		>
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>
-			<router-link
-				v-if="collection.schema"
-				class="collection-name"
-				:to="`/settings/data-model/${collection.collection}`"
-			>
+			<div class="collection-name">
 				<v-icon
 					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
 				<span>{{ collection.name }}</span>
-			</router-link>
-			<button v-else class="collection-name" @click="$emit('editCollection', collection)">
-				<v-icon
-					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
-					class="collection-icon"
-					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
-				/>
-				<span>{{ collection.name }}</span>
-			</button>
+			</div>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
 				<v-progress-circular v-if="collapseLoading" small indeterminate />
 				<v-icon
