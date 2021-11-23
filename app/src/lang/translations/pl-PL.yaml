@@ -254,7 +254,7 @@ multiple_files: Wiele plików
 m2o_relationship: Relacja wiele do jednego
 o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
-m2a_relationship: Relacja wiele do wielu
+m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
 next: Następny
 field_name: Nazwa pola
@@ -332,7 +332,7 @@ delete_comment: Usuń komentarz
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_date_short: 'D MMM u'
+date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minuty
@@ -781,6 +781,7 @@ layout_setup: Ustawienia układu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
+discard_all_changes: Odrzuć wszystkie zmiany
 discard_changes_copy: Czy na pewno chcesz odrzucić wszystkie wprowadzone zmiany?
 show_x_axis: Pokaż oś X
 show_y_axis: Pokaż oś Y
@@ -961,6 +962,7 @@ fields:
     storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    module_bar: Pasek modułu
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
@@ -993,6 +995,7 @@ fields:
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
+    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...

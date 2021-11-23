@@ -158,6 +158,8 @@ fields:
     tfa_secret: Autentificare în doi pași
     status: Stare
     role: Rol
+  directus_settings:
+    module_bar: Bară module
   directus_fields:
     hidden: Ascuns
     translation: Traducerile numelui câmpului
@@ -166,6 +168,7 @@ fields:
     description: Descriere
   directus_webhooks:
     status: Stare
+    collections: Colecții
 field_options:
   directus_activity:
     create: Creează

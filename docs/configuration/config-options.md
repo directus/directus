@@ -371,15 +371,16 @@ often possible to cache assets for far longer than you would cache database cont
 
 :::
 
-| Variable                         | Description                                                                              | Default Value    |
-| -------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                  | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>        | How long the cache is persisted.                                                         | `30m`            |
-| `CACHE_CONTROL_S_MAXAGE`         | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup> | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
-| `CACHE_SCHEMA`<sup>[3]</sup>     | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
-| `CACHE_NAMESPACE`                | How to scope the cache data.                                                             | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
+| Variable                          | Description                                                                              | Default Value    |
+| --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
+| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
+| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
+| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -390,7 +391,7 @@ so you configure it using human readable values (like `2 days`, `7 hrs`, `5m`).
 <sup>[2]</sup> `CACHE_AUTO_PURGE` allows you to keep the Directus API real-time, while still getting the performance
 benefits on quick subsequent reads.
 
-<sup>[3]</sup> `CACHE_SCHEMA` ignores the `CACHE_ENABLED` value.
+<sup>[3]</sup> Not affected by the `CACHE_ENABLED` value.
 
 <sup>[4]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
 Instead, you can use the above `CACHE_STORE` environment variable to use either `memcache` or `redis` as the cache
@@ -559,19 +560,19 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that va
 
 #### OAuth 2.0
 
-| Variable                                    | Description                                                                        | Default Value    |
-| ------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                         | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAuth secret for the external service.                                             | --               |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                  | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                    | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                      | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | The user profile information URL of the external service.                          | --               |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to find the email address.                            | `email`          |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Will default to `EMAIL_KEY`. | --               |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                            | `false`          |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                    | --               |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                                           | `account_circle` |
+| Variable                                    | Description                                                                                                                        | Default Value    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                                                                         | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAuth secret for the external service.                                                                                             | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                                                                  | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                                                                    | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                                                                      | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | The user profile information URL of the external service.                                                                          | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to find the email address.                                                                            | `email`          |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Will default to `EMAIL_KEY`.                                                 | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                            | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle` |
 
 #### OpenID
 
@@ -579,35 +580,43 @@ OpenID is an authentication protocol built on OAuth 2.0, and should be preferred
 OpenID offers better user verification and consistent profile information, allowing for more complete user
 registrations.
 
-| Variable                                    | Description                                                       | Default Value          |
-| ------------------------------------------- | ----------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                       | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                           | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request. | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                  | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.            | `sub`                  |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.           | `false`                |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                   | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                   | --                     |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link.                          | `account_circle`       |
+| Variable                                    | Description                                                                                                                        | Default Value          |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                                                                                        | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                                                                                            | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                                                                  | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                                                                                   | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.                                                                             | `sub`                  |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                            | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                                                                                    | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle`       |
 
 ### LDAP (`ldap`)
 
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                          | Description                                        | Default Value |
-| --------------------------------- | -------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                               | --            |
-| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.       | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                | --            |
-| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                   | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                    | `cn`          |
-| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                  | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group. | `member`      |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.        | `mail`        |
+| Variable                          | Description                                                            | Default Value |
+| --------------------------------- | ---------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                                                   | --            |
+| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.                           | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                                    | --            |
+| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                                       | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                                        | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`      | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
+| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                                      | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group.                     | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+
+<sup>[2]</sup> The scope defines the following behaviors:
+
+- `base`: Limits the scope to a single object defined by the associated DN.
+- `one`: Searches all objects within the associated DN.
+- `sub`: Searches all objects and sub-objects within the associated DN.
 
 ### Example: LDAP
 

@@ -301,6 +301,7 @@ fields:
     role: Роль
   directus_settings:
     project_name: Назва проекту
+    module_bar: Панель модулів
   directus_fields:
     note: Примітка
     hidden: Приховано
@@ -313,6 +314,7 @@ fields:
     name: Назва
     status: Статус
     value: Значення
+    collections: Колекції
 field_options:
   directus_activity:
     create: Створити

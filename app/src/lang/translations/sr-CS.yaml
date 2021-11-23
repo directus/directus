@@ -773,6 +773,7 @@ fields:
     name: Ime
     status: Status
     value: Vrijednost
+    collections: Kolekcije
 field_options:
   directus_activity:
     create: Kreiraj

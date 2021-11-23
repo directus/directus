@@ -211,7 +211,8 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 							title: config.names[vendor]!,
 
 							task: async () => {
-								await sleep(5000);
+								// Give the database image some time to startup before checking the connection
+								await sleep(15000);
 								await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL);
 							},
 						};

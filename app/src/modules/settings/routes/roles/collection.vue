@@ -130,7 +130,12 @@ export default defineComponent({
 
 			try {
 				const response = await api.get(`/roles`, {
-					params: { limit: -1, fields: 'id,name,description,icon,users.id', sort: 'name' },
+					params: {
+						limit: -1,
+						fields: 'id,name,description,icon,users.id',
+						deep: { users: { _aggregate: { count: 'id' } } },
+						sort: 'name',
+					},
 				});
 
 				roles.value = [
@@ -144,7 +149,7 @@ export default defineComponent({
 					...response.data.data.map((role: any) => {
 						return {
 							...role,
-							count: (role.users || []).length,
+							count: role.users[0]?.count.id || 0,
 						};
 					}),
 				];

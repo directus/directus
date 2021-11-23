@@ -32,7 +32,8 @@ export default {
 - `id` — The unique key for this display. It is good practice to scope proprietary displays with an author prefix.
 - `name` — The human-readable name for this display.
 - `description` — A short description (<80 characters) of this display shown in the App.
-- `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+  Directus custom icons.
 - `component` — A reference to your Vue component.
 - `types` — A CSV of supported [types](/getting-started/glossary/#types).
 

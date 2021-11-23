@@ -906,6 +906,7 @@ fields:
     auth_login_attempts: 尝试认证登录次数
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
+    module_bar: 模块栏
   directus_fields:
     collection: 模型名称
     icon: 图标
@@ -933,6 +934,7 @@ fields:
     data_label: 发送事件数据
     triggers: 触发条件
     actions: 操作
+    collections: 数据模型
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目

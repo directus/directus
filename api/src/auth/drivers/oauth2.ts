@@ -96,7 +96,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 			const issuer = this.client.issuer;
 			if (issuer.metadata.userinfo_endpoint) {
-				userInfo = await this.client.userinfo(tokenSet);
+				userInfo = await this.client.userinfo(tokenSet.access_token!);
 			} else if (tokenSet.id_token) {
 				userInfo = tokenSet.claims();
 			} else {
@@ -145,8 +145,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User, sessionData: SessionData): Promise<SessionData> {
-		return this.refresh(user, sessionData);
+	async login(user: User): Promise<SessionData> {
+		return this.refresh(user, null);
 	}
 
 	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {

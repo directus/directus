@@ -276,9 +276,9 @@ export default defineComponent({
 					await api.delete(`/folders/${props.folder.id}`);
 
 					if (newParent) {
-						router.push(`/files/folders/${newParent}`);
+						router.replace(`/files/folders/${newParent}`);
 					} else {
-						router.push('/files');
+						router.replace('/files');
 					}
 
 					deleteActive.value = false;
