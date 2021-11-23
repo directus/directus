@@ -1,39 +1,38 @@
 <template>
-	<v-menu v-model="showMentionDropDown">
-		<template #activator>
-			<v-template-input
-				v-model="newCommentContent"
-				capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
-				multiline
-				trigger-character="@"
-				:items="userPreviews"
-				@trigger="triggerSearch"
-				@deactivate="showMentionDropDown = false"
-			/>
-		</template>
+	<div class="input-container">
+		<v-menu v-model="showMentionDropDown">
+			<template #activator>
+				<v-template-input
+					v-model="newCommentContent"
+					capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
+					multiline
+					trigger-character="@"
+					:items="userPreviews"
+					@trigger="triggerSearch"
+					@deactivate="showMentionDropDown = false"
+				/>
+			</template>
 
-		<!-- <template #append>
-			<v-button
-				:disabled="!newCommentContent || newCommentContent.length === 0"
-				:loading="saving"
-				class="post-comment"
-				x-small
-				@click="postComment"
-			>
-				{{ t('submit') }}
-			</v-button>
-		</template> -->
-
-		<v-list v-for="user in searchResult" id="suggestions" :key="user.id" @click="insertUser(user)">
-			<v-avatar x-small>
-				<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
-				<v-icon v-else name="person_outline" />
-			</v-avatar>
-			<div class="spacer">
-				{{ userName(user) }}
-			</div>
-		</v-list>
-	</v-menu>
+			<v-list v-for="user in searchResult" id="suggestions" :key="user.id" @click="insertUser(user)">
+				<v-avatar x-small>
+					<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
+					<v-icon v-else name="person_outline" />
+				</v-avatar>
+				<div class="spacer">
+					{{ userName(user) }}
+				</div>
+			</v-list>
+		</v-menu>
+		<v-button
+			:disabled="!newCommentContent || newCommentContent.length === 0"
+			:loading="saving"
+			class="post-comment"
+			x-small
+			@click="postComment"
+		>
+			{{ t('submit') }}
+		</v-button>
+	</div>
 </template>
 
 <script lang="ts">
@@ -207,6 +206,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.input-container {
+	position: relative;
+	padding: 0px;
+}
+
 .new-comment {
 	display: block;
 	flex-grow: 1;
@@ -269,7 +273,7 @@ export default defineComponent({
 	color: var(--primary);
 }
 
-.new-comment .post-comment {
+.post-comment {
 	position: absolute;
 	right: 8px;
 	bottom: 8px;
