@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificador
 avatar: Imagem de Perfil
 default_provider: Padrão
 published: Publicado
@@ -30,6 +51,7 @@ indeterminate: Indeterminado
 edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
+db_only_click_to_configure: 'Apenas banco de dados: Clique p/ configurar'
 show_archived_items: Mostrar itens arquivados
 edited: Valor editado
 required: Obrigatório
@@ -149,6 +171,14 @@ group_aggregation: Grupo de agregação
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmera
+show_zero: Mostrar zero
+create_in_advanced_field_creation_mode: Criar campo no modo avançado
+continue_in_advanced_field_creation_mode: Continuar a criação do campo no modo avançado
+sum: Soma
+sum_distinct: Soma distinta
+avg: Média
+min: Mínimo
+max: Máximo
 exposure: Exposição
 shutter: Obturador
 iso: ISO
@@ -168,6 +198,7 @@ boolean: Boolean
 date: Data
 datetime: DateTime
 dateTime: DateTime
+precision: Precisão
 decimal: Decimal
 float: Float
 integer: Integer
@@ -179,13 +210,15 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometria (Todos)
+geometry.Polygon: Polígono
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
 refresh_interval: Intervalo de atualização
 no_refresh: Não atualizar
 refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
-refresh_interval_minutes: A cada minuto, a cada {minutes} minutos
+refresh_interval_minutes: A cada minuto | A cada {minutes} minutos
 auto_generate: Gerar automaticamente
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
@@ -201,6 +234,8 @@ new_collection: 'Nova Coleção'
 choose_a_type: Escolha um tipo...
 determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
+add_link: Adicionar link
+custom_link: Link personalizado
 default_value: Valor padrão
 standard_field: Campo Padrão
 single_file: Arquivo único
@@ -213,6 +248,7 @@ invalid_item: Item inválido
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
+no_translations: Nenhuma tradução
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Adicionar um placeholder...
@@ -288,6 +324,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutos
+hours: Horas
 month: Mês
 year: Ano
 select_all: Selecionar todos
@@ -322,6 +360,7 @@ zoom: Zoom
 download: Download
 open: Abrir
 open_in_new_window: Abrir em nova janela
+open_folder: Abrir pasta "{folder}"
 foreground_color: Cor da fonte
 background_color: Cor de fundo
 upload_from_device: Carregar do dispositivo
@@ -374,6 +413,7 @@ no_files_copy: Ainda não há arquivos aqui.
 user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
+no_webhooks_copy: Nenhum webhook foi configurado ainda. Comece criando um abaixo.
 all_items: Todos os itens
 any: Qualquer
 csv: CSV
@@ -585,11 +625,14 @@ read: Leitura
 update: Alteração
 select_fields: Selecionar campos
 format_text: Formatar texto
+operator: Operador
 bold: Negrito
 toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+insights: Estatísticas
+dashboard: Painel
 full_screen: Tela cheia
 image_url: URL da Imagem
 alt_text: Texto Alternativo
