@@ -133,7 +133,7 @@ export default defineComponent({
 					params: {
 						limit: -1,
 						fields: 'id,name,description,icon,users.id',
-						deep: { users: { _aggregate: { count: 'id' } } },
+						deep: { users: { _aggregate: { count: 'id' }, _groupBy: ['id'] } },
 						sort: 'name',
 					},
 				});
