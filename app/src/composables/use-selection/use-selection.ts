@@ -54,9 +54,13 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 		if (!selection?.length) {
 			if (collectionField) newVal = (items.value || []).filter((item) => item[collectionField] !== selectingFrom.value);
 		} else {
-			const existent = (items.value || []).filter((item) => !selection.includes(getPrimaryKey(item)));
+			const createNewItems = (items.value || []).filter((item) => {
+				if (['o2m', 'm2o'].includes(type)) return !item?.[relationPkField];
 
-			newVal = [...existent, ...selection].map((item, i) => {
+				if (['m2m', 'm21'].includes(type)) return !item?.[relatedField]?.[relationPkField];
+			});
+
+			newVal = [...createNewItems, ...selection].map((item, i) => {
 				const initial = (initialItems.value || []).find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
 				const draft = (items.value || []).find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
 				const relatedPrimaryKey = getPrimaryKey(item);
