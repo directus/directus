@@ -136,7 +136,7 @@ export const useFieldDetailStore = defineStore({
 				alterations.global.setSpecialForLocalType(updates);
 			}
 
-			const localType = getCurrent('localType') as typeof LOCAL_TYPES[number];
+			const localType = getCurrent('localType') as typeof LOCAL_TYPES[number] | undefined;
 			if (localType) {
 				alterations[localType].applyChanges(updates, this, helperFn);
 			}
