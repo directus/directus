@@ -8,7 +8,6 @@ export default async function start(): Promise<void> {
 
 	try {
 		await installSeeds(database);
-		await runMigrations(database, 'latest');
 		database.destroy();
 		process.exit(0);
 	} catch (err: any) {
