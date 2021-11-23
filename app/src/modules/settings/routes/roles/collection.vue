@@ -132,7 +132,7 @@ export default defineComponent({
 				const response = await api.get(`/roles`, {
 					params: {
 						limit: -1,
-						fields: 'id,name,description,icon,users.id',
+						fields: 'id,name,description,icon,users.role',
 						deep: { users: { _aggregate: { count: 'id' } } },
 						sort: 'name',
 					},
