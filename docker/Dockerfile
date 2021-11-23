@@ -20,7 +20,6 @@ RUN rm *.tgz
 FROM node:${NODE_VERSION}
 
 ARG VERSION
-ARG REPOSITORY=directus/directus
 
 LABEL directus.version="${VERSION}"
 
@@ -36,6 +35,8 @@ RUN \
   # Upgrade system and install 'ssmtp' to be able to send mails
   apk upgrade --no-cache && apk add --no-cache \
   ssmtp \
+  libspatialite \
+  && ln -s /usr/lib/mod_spatialite.so.7 /usr/lib/mod_spatialite.so \
   # Create directory for Directus with corresponding ownership
   # (can be omitted on newer Docker versions since WORKDIR below will do the same)
   && mkdir /directus && chown node:node /directus

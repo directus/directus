@@ -5,7 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { Credentials } from '../create-db-connection';
-import { drivers } from '../drivers';
+import { drivers, Client } from '../drivers';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -23,11 +23,7 @@ const defaults = {
 	},
 };
 
-export default async function createEnv(
-	client: keyof typeof drivers,
-	credentials: Credentials,
-	directory: string
-): Promise<void> {
+export default async function createEnv(client: Client, credentials: Credentials, directory: string): Promise<void> {
 	const config: Record<string, any> = {
 		...defaults,
 		database: {

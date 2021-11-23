@@ -1,15 +1,9 @@
-export const drivers = {
-	pg: 'PostgreSQL / Redshift',
-	mysql: 'MySQL / MariaDB / Aurora',
-	sqlite3: 'SQLite',
-	mssql: 'Microsoft SQL Server',
-	oracledb: 'Oracle Database (Alpha)',
-};
+export const drivers = [
+	{ value: 'pg', name: 'PostgreSQL / Redshift' },
+	{ value: 'mysql', name: 'MySQL / MariaDB / Aurora' },
+	{ value: 'sqlite3', name: 'SQLite' },
+	{ value: 'mssql', name: 'Microsoft SQL Server' },
+	{ value: 'oracledb', name: 'Oracle Database (Alpha)' },
+] as const;
 
-export function getDriverForClient(client: string): keyof typeof drivers | null {
-	for (const [key, value] of Object.entries(drivers)) {
-		if (value === client) return key as keyof typeof drivers;
-	}
-
-	return null;
-}
+export type Client = typeof drivers[number]['value'];

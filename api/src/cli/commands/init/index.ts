@@ -8,26 +8,29 @@ import runMigrations from '../../../database/migrations/run';
 import runSeed from '../../../database/seeds/run';
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 import createEnv from '../../utils/create-env';
-import { drivers, getDriverForClient } from '../../utils/drivers';
+import { drivers, Client } from '../../utils/drivers';
 import { databaseQuestions } from './questions';
 import { generateHash } from '../../../utils/generate-hash';
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
 
-	const { client } = await inquirer.prompt([
+	const { client } = await inquirer.prompt<{ client: Client }>([
 		{
 			type: 'list',
 			name: 'client',
 			message: 'Choose your database client',
-			choices: Object.values(drivers),
+			choices: drivers,
 		},
 	]);
 
-	const dbClient = getDriverForClient(client)!;
-
 	const spinnerDriver = ora('Installing Database Driver...').start();
-	await execa('npm', ['install', dbClient, '--production']);
+	if (client === 'sqlite3') {
+		const pkg = 'mapbox/node-sqlite3#918052b538b0effe6c4a44c74a16b2749c08a0d2';
+		await execa('npm', ['install', '--production', '--build-from-source', pkg]);
+	} else {
+		await execa('npm', ['install', '--production', client]);
+	}
 	spinnerDriver.stop();
 
 	let attemptsRemaining = 5;
@@ -36,12 +39,12 @@ export default async function init(): Promise<void> {
 
 	async function trySeed(): Promise<{ credentials: Credentials; db: Knex }> {
 		const credentials: Credentials = await inquirer.prompt(
-			(databaseQuestions[dbClient] as any[]).map((question: ({ client, filepath }: any) => any) =>
-				question({ client: dbClient, filepath: rootPath })
+			(databaseQuestions[client] as any[]).map((question: ({ client, filepath }: any) => any) =>
+				question({ client, filepath: rootPath })
 			)
 		);
 
-		const db = createDBConnection(dbClient, credentials!);
+		const db = createDBConnection(client, credentials!);
 
 		try {
 			await runSeed(db);
@@ -64,7 +67,7 @@ export default async function init(): Promise<void> {
 		return { credentials, db };
 	}
 
-	await createEnv(dbClient, credentials!, rootPath);
+	await createEnv(client, credentials!, rootPath);
 
 	process.stdout.write('\nCreate your first admin user:\n\n');
 

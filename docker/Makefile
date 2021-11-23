@@ -5,7 +5,6 @@ tag=latest
 cmd=
 user=directus
 registry=docker.io
-repository=directus/directus
 
 .PHONY: build-images
 
@@ -14,7 +13,6 @@ build-images:
 	npm run pack
 	docker build \
 		--build-arg VERSION=$(version) \
-		--build-arg REPOSITORY=$(repository) \
 		-t directus:temp \
 		-f ./Dockerfile \
 		..
