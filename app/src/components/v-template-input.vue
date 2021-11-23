@@ -72,7 +72,7 @@ export default defineComponent({
 			}
 
 			if (word.startsWith(props.triggerCharacter)) {
-				emit('trigger', word.substring(props.triggerCharacter.length));
+				emit('trigger', { searchQuery: word.substring(props.triggerCharacter.length), caretPosition: caretPos });
 				hasTriggered = true;
 			} else {
 				if (hasTriggered) {

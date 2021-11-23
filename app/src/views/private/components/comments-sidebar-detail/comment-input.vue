@@ -77,8 +77,9 @@ export default defineComponent({
 		const showMentionDropDown = ref(false);
 
 		const searchResult = ref<User[]>([]);
-		let triggerSearchQuery = '';
 		const userPreviews = ref<Record<string, string>>({});
+
+		let triggerCaretPosition = 0;
 
 		const { caretPosition } = useCaret(textarea);
 
@@ -161,11 +162,30 @@ export default defineComponent({
 		};
 
 		function insertUser(user: Record<string, any>) {
-			newCommentContent.value = (newCommentContent.value ?? '').replace('@' + triggerSearchQuery, '@' + user.id);
+			const text = newCommentContent.value;
+			if (!text) return;
+
+			let countBefore = triggerCaretPosition - 1;
+			let countAfter = triggerCaretPosition;
+
+			if (text.charAt(countBefore) !== ' ') {
+				while (countBefore >= 0 && text.charAt(countBefore) !== ' ') {
+					countBefore--;
+				}
+			}
+
+			while (countAfter < text.length && text.charAt(countAfter) !== ' ') {
+				countAfter++;
+			}
+
+			const before = text.substring(0, countBefore);
+			const after = text.substring(countAfter);
+
+			newCommentContent.value = before + '@' + user.id + after;
 		}
 
-		function triggerSearch(searchQuery: string) {
-			triggerSearchQuery = searchQuery;
+		function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; caretPosition: number }) {
+			triggerCaretPosition = caretPosition;
 
 			showMentionDropDown.value = true;
 			loadUsers(searchQuery);
