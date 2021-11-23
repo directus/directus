@@ -22,7 +22,7 @@
 				:search="search"
 			/>
 
-			<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+			<v-menu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
 				<v-list-item clickable @click="showHidden = !showHidden">
 					<v-list-item-icon>
 						<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
@@ -73,6 +73,9 @@ export default defineComponent({
 
 		const dense = computed(() => collectionsStore.visibleCollections.length > 5);
 		const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
+		const hasHiddenCollections = computed(
+			() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length
+		);
 
 		return {
 			t,
@@ -82,6 +85,7 @@ export default defineComponent({
 			dense,
 			search,
 			showSearch,
+			hasHiddenCollections,
 		};
 	},
 });
