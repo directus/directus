@@ -3,7 +3,14 @@
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
-					<span ref="contentEl" class="content" :contenteditable="!disabled">
+					<span
+						ref="contentEl"
+						class="content"
+						:contenteditable="!disabled"
+						@keydown="onKeyDown"
+						@input="onInput"
+						@click="onClick"
+					>
 						<span class="text" />
 					</span>
 					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
@@ -22,13 +29,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, PropType } from 'vue';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
 import { useFieldTree } from '@/composables/use-field-tree';
-import useTemplate from '@/composables/use-template';
-import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -64,36 +69,136 @@ export default defineComponent({
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const contentEl = ref<HTMLElement>();
-		const text = useSync(props, 'modelValue', emit);
+		const contentEl = ref<HTMLElement | null>(null);
 
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
 		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
-		const { addBlock } = useTemplate(contentEl, text, /(\{\{.*?\}\})/g, (blockText) => {
-			const block = document.createElement('button');
+		watch(() => props.modelValue, setContent, { immediate: true });
 
-			const fieldPath = blockText.replaceAll(/(\{|\})/g, '').split('.');
-
-			for (let i = 0; i < fieldPath.length; i++) {
-				loadFieldRelations(fieldPath.slice(0, i).join('.'));
+		onMounted(() => {
+			if (contentEl.value) {
+				contentEl.value.addEventListener('selectstart', onSelect);
+				setContent();
 			}
-
-			const field = findTree(treeList.value, fieldPath);
-
-			if (!field) return block;
-
-			block.innerText = field.name;
-
-			return block;
 		});
 
-		return { menuActive, treeList, contentEl, loadFieldRelations, addBlock, addField };
+		onUnmounted(() => {
+			if (contentEl.value) {
+				contentEl.value.removeEventListener('selectstart', onSelect);
+			}
+		});
+
+		return { menuActive, treeList, addField, onInput, contentEl, onClick, loadFieldRelations, onKeyDown };
+
+		function onInput() {
+			if (!contentEl.value) return;
+
+			const valueString = getInputValue();
+			emit('update:modelValue', valueString);
+		}
+
+		function onClick(event: MouseEvent) {
+			const target = event.target as HTMLElement;
+
+			if (target.tagName.toLowerCase() !== 'button') return;
+
+			const field = target.dataset.field;
+			emit('update:modelValue', props.modelValue.replace(`{{${field}}}`, ''));
+
+			const before = target.previousElementSibling;
+			const after = target.nextElementSibling;
+
+			if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
+
+			target.remove();
+			joinElements(before, after);
+			window.getSelection()?.removeAllRanges();
+			onInput();
+		}
+
+		function onKeyDown(event: KeyboardEvent) {
+			if (event.key === '{' || event.key === '}') {
+				event.preventDefault();
+				menuActive.value = true;
+			}
+
+			if (contentEl.value?.innerHTML === '') {
+				contentEl.value.innerHTML = '<span class="text"></span>';
+			}
+		}
+
+		function onSelect() {
+			if (!contentEl.value) return;
+			const selection = window.getSelection();
+			if (!selection || selection.rangeCount <= 0) return;
+			const range = selection.getRangeAt(0);
+			if (!range) return;
+			const start = range.startContainer;
+
+			if (
+				!(start instanceof HTMLElement && start.classList.contains('text')) &&
+				!start.parentElement?.classList.contains('text')
+			) {
+				selection.removeAllRanges();
+				const range = new Range();
+				let textSpan = null;
+
+				for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
+					const child = contentEl.value.children[i];
+					if (child.classList.contains('text')) {
+						textSpan = child;
+					}
+				}
+
+				if (!textSpan) {
+					textSpan = document.createElement('span');
+					textSpan.classList.add('text');
+					contentEl.value.appendChild(textSpan);
+				}
+
+				range.setStart(textSpan, 0);
+				selection.addRange(range);
+			}
+		}
 
 		function addField(fieldKey: string) {
-			addBlock(`{{${fieldKey}}}`);
+			if (!contentEl.value) return;
+
+			const field = findTree(treeList.value, fieldKey.split('.'));
+
+			if (!field) return;
+
+			const button = document.createElement('button');
+			button.dataset.field = fieldKey;
+			button.setAttribute('contenteditable', 'false');
+			button.innerText = String(field.name);
+
+			if (window.getSelection()?.rangeCount == 0) {
+				const range = document.createRange();
+				range.selectNodeContents(contentEl.value.children[0]);
+				window.getSelection()?.addRange(range);
+			}
+
+			const range = window.getSelection()?.getRangeAt(0);
+			if (!range) return;
+			range.deleteContents();
+
+			const end = splitElements();
+
+			if (end) {
+				contentEl.value.insertBefore(button, end);
+				window.getSelection()?.removeAllRanges();
+			} else {
+				contentEl.value.appendChild(button);
+				const span = document.createElement('span');
+				span.classList.add('text');
+				contentEl.value.appendChild(span);
+			}
+
+			onInput();
 		}
 
 		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
@@ -104,6 +209,89 @@ export default defineComponent({
 			if (fieldObject === undefined) return undefined;
 			if (fieldSections.length === 1) return fieldObject;
 			return findTree(fieldObject.children, fieldSections.slice(1));
+		}
+
+		function joinElements(first: HTMLElement, second: HTMLElement) {
+			first.innerText += second.innerText;
+			second.remove();
+		}
+
+		function splitElements() {
+			const range = window.getSelection()?.getRangeAt(0);
+			if (!range) return;
+
+			const textNode = range.startContainer;
+			if (textNode.nodeType !== Node.TEXT_NODE) return;
+			const start = textNode.parentElement;
+			if (!start || !(start instanceof HTMLSpanElement) || !start.classList.contains('text')) return;
+
+			const startOffset = range.startOffset;
+
+			const left = start.textContent?.substr(0, startOffset) || '';
+			const right = start.textContent?.substr(startOffset) || '';
+
+			start.innerText = left;
+
+			const nextSpan = document.createElement('span');
+			nextSpan.classList.add('text');
+			nextSpan.innerText = right;
+			contentEl.value?.insertBefore(nextSpan, start.nextSibling);
+			return nextSpan;
+		}
+
+		function getInputValue() {
+			if (!contentEl.value) return null;
+
+			const value = Array.from(contentEl.value.childNodes).reduce((acc, node) => {
+				const el = node as HTMLElement;
+				const tag = el.tagName;
+
+				if (tag && tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+				else if ('textContent' in el) return (acc += el.textContent);
+
+				return (acc += '');
+			}, '');
+
+			if (props.nullable === true && value === '') {
+				return null;
+			}
+
+			return value;
+		}
+
+		function setContent() {
+			if (!contentEl.value) return;
+
+			if (props.modelValue === null || props.modelValue === '') {
+				contentEl.value.innerHTML = '<span class="text"></span>';
+				return;
+			}
+
+			if (props.modelValue !== getInputValue()) {
+				const regex = /({{.*?}})/g;
+
+				const newInnerHTML = props.modelValue
+					.split(regex)
+					.map((part) => {
+						if (part.startsWith('{{') === false) {
+							return `<span class="text">${part}</span>`;
+						}
+						const fieldKey = part.replace(/({|})/g, '').trim();
+						const fieldPath = fieldKey.split('.');
+
+						for (let i = 0; i < fieldPath.length; i++) {
+							loadFieldRelations(fieldPath.slice(0, i).join('.'));
+						}
+
+						const field = findTree(treeList.value, fieldPath);
+
+						if (!field) return '';
+
+						return `<button contenteditable="false" data-field="${fieldKey}" disabled="${props.disabled}">${field.name}</button>`;
+					})
+					.join('');
+				contentEl.value.innerHTML = newInnerHTML;
+			}
 		}
 	},
 });
