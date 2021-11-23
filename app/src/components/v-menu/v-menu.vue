@@ -326,6 +326,7 @@ body {
 	z-index: 1;
 	width: 10px;
 	height: 10px;
+	overflow: hidden;
 	border-radius: 2px;
 	box-shadow: none;
 }
@@ -349,7 +350,7 @@ body {
 	bottom: -6px;
 
 	&::after {
-		bottom: 2px;
+		bottom: 3px;
 		box-shadow: 2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
@@ -358,7 +359,7 @@ body {
 	top: -6px;
 
 	&::after {
-		top: 2px;
+		top: 3px;
 		box-shadow: -2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
