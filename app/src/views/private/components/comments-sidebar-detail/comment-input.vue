@@ -189,7 +189,7 @@ export default defineComponent({
 
 				props.refresh();
 
-				newCommentContent.value = null;
+				newCommentContent.value = '';
 
 				notify({
 					title: t('post_comment_success'),
