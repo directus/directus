@@ -321,7 +321,7 @@ export default defineComponent({
 						const updatedItems = getUpdatedItems();
 						const newItems = getNewItems();
 
-						items.value = existingItems
+						const mergedItems = existingItems
 							.map((item) => {
 								const updatedItem = updatedItems.find((updated) => updated[pkField] === item[pkField]);
 
@@ -336,7 +336,9 @@ export default defineComponent({
 							})
 							.concat(...newItems);
 
-						if (!initialItems.value) initialItems.value = [...items.value];
+						items.value = mergedItems;
+
+						if (!initialItems.value.length) initialItems.value = [...mergedItems];
 					} catch (err: any) {
 						unexpectedError(err);
 					} finally {
