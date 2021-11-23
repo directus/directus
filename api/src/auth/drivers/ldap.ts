@@ -295,12 +295,12 @@ export class LDAPAuthDriver extends AuthDriver {
 			});
 
 			client.bind(user.external_identifier!, password, (err: Error | null) => {
-				client.destroy();
 				if (err) {
 					reject(handleError(err));
-					return;
+				} else {
+					resolve();
 				}
-				resolve();
+				client.destroy();
 			});
 		});
 	}
