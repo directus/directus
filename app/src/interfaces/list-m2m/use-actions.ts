@@ -53,11 +53,11 @@ export default function useActions(
 
 	// Returns a list of items which related or junction item does exist but had changes.
 	function getUpdatedItems() {
-		const { relatedField, relationPkField } = relation.value;
+		const { relatedField, junctionPkField } = relation.value;
 
 		if (value.value === null || relatedField === null) return [];
 
-		return value.value.filter((item) => has(item, [relatedField, relationPkField])) as Record<string, any>[];
+		return value.value.filter((item) => typeof item === 'object' && item[junctionPkField]) as Record<string, any>[];
 	}
 
 	// Returns only items that do not have any changes what so ever.
