@@ -64,6 +64,7 @@
 					v-tooltip="t('db_only_click_to_configure')"
 					class="collection-row hidden"
 					block
+					dense
 					clickable
 				>
 					<v-list-item-icon>
