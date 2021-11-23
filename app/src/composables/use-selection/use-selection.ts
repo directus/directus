@@ -66,23 +66,22 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 				const relatedPrimaryKey = getPrimaryKey(item);
 
 				const relationRelationship = relatedPrimaryKey ? { [relationPkField]: relatedPrimaryKey } : null;
+				const sort = sortField ? { [sortField]: draft?.[sortField] ?? i } : null;
+				const collection = type === 'm2a' ? { [collectionField]: selectingFrom.value } : null;
 
-				return {
-					...initial,
-					...draft,
-					...(sortField ? { [sortField]: draft?.[sortField] ?? i } : null),
-					...(type === 'm2a' ? { [collectionField]: selectingFrom.value } : null),
-					...(['o2m', 'm2o'].includes(type) ? relationRelationship : null),
-					...(['m2m', 'm2a'].includes(type)
-						? {
-								[relatedField]: {
-									...initial?.[relatedField],
-									...draft?.[relatedField],
-									...(relatedPrimaryKey ? relationRelationship : null),
-								},
-						  }
-						: null),
-				};
+				if (['o2m', 'm2o'].includes(type)) return { ...initial, ...draft, ...sort, ...relationRelationship };
+
+				if (['m2m', 'm2a'].includes(type))
+					return {
+						...initial,
+						...draft,
+						...sort,
+						...collection,
+						[relatedField]: {
+							...draft?.[relatedField],
+							...relationRelationship,
+						},
+					};
 			});
 		}
 
