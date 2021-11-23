@@ -27,15 +27,15 @@ export class ActivityService extends ItemsService {
 
 			const mentions = uniq(data.comment.match(usersRegExp) ?? []);
 
+			const sender = await this.usersService.readOne(this.accountability!.user!, {
+				fields: ['id', 'first_name', 'last_name', 'email'],
+			});
+
 			for (const mention of mentions) {
 				const userID = mention.substring(1);
 
 				const user = await this.usersService.readOne(userID, {
 					fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
-				});
-
-				const sender = await this.usersService.readOne(this.accountability!.user!, {
-					fields: ['id', 'first_name', 'last_name', 'email'],
 				});
 
 				const accountability: Accountability = {
@@ -51,6 +51,8 @@ export class ActivityService extends ItemsService {
 				const usersService = new UsersService({ schema: this.schema, accountability });
 
 				try {
+					await authorizationService.checkAccess('read', data.collection, data.item);
+
 					const templateData = await usersService.readByQuery({
 						fields: ['id', 'first_name', 'last_name', 'email'],
 						filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
@@ -78,7 +80,6 @@ ${comment}
 
 <a href="${env.PUBLIC_URL}/admin/content/${data.collection}/${data.item}">Click here to view.</a>
 `;
-					await authorizationService.checkAccess('read', data.collection, data.item);
 
 					await this.notificationsService.createOne({
 						recipient: userID,
