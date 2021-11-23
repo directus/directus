@@ -1,4 +1,3 @@
-import runMigrations from '../../../database/migrations/run';
 import installSeeds from '../../../database/seeds/run';
 import getDatabase from '../../../database';
 import logger from '../../../logger';
