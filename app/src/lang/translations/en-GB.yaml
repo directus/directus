@@ -889,25 +889,63 @@ fields:
     storage: Storage
     filename_disk: Filename (Disk)
     filename_download: Filename (Download)
+    metadata: Metadata
+    type: Mime Type
+    filesize: Filesize
+    modified_by: Modified By
     modified_on: Modified On
     created_on: Created On
     created_by: Created By
     embed: Embed
+    uploaded_by: Uploaded By
     folder: Folder
+    width: Width
+    uploaded_on: Uploaded On
+    height: Height
     charset: Charset
     duration: Duration
   directus_users:
+    first_name: First Name
+    last_name: Last Name
+    email: Email
+    password: Password
+    avatar: Avatar
     location: Location
     title: Title
     description: Description
     tags: Tags
+    user_preferences: User Preferences
     language: Language
+    theme: Theme
+    theme_auto: Automatic (Based on System)
+    theme_light: Light Mode
+    theme_dark: Dark Mode
+    tfa_secret: Two-Factor Authentication
+    admin_options: Admin Options
+    status: Status
+    status_draft: Draft
     status_invited: Invited
     status_active: Active
+    status_suspended: Suspended
+    status_archived: Archived
     role: Role
+    token: Token
+    token_placeholder: Enter a secure access token...
+    provider: Provider
+    external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: Mapping
+    basemaps: Basemaps
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
+    mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Additional Transformations
@@ -968,8 +1006,17 @@ field_options:
     project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
+    auth_password_policy:
+      none_text: None – Not Recommended
+      weak_text: Weak – Minimum 8 Characters
+      strong_text: Strong – Upper / Lowercase / Numbers / Special
     storage_asset_presets:
+      fit_label: Fit
+      upscaling: Upscaling
       fit:
+        contain_text: Contain (preserve aspect ratio)
+        cover_text: Cover (forces exact size)
+        fit_text: Fit inside
         outside_text: Fit outside
     additional_transforms: Additional Transformations
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
@@ -1106,6 +1153,7 @@ warning: Warning
 danger: Danger
 junction_collection: Junction Collection
 latency: Latency
+login: Log in
 my_activity: My Activity
 not_authenticated: Not Authenticated
 authenticated: Authenticated
@@ -1138,6 +1186,7 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 interfaces:
@@ -1239,6 +1288,10 @@ interfaces:
     description: Select multiple values from a dropdown
   file:
     file: File
+    description: Select or upload a file
+  files:
+    files: Files
+    description: Select or upload multiple files
   input-hash:
     hash: Hash
     description: Enter a value to be hashed
@@ -1260,11 +1313,46 @@ interfaces:
     description: A modal for selecting options of an interface
   list-m2m:
     many-to-many: Many to Many
+    description: Select multiple related junction items
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Select a single related item
     display_template: Display Template
+  input-rich-text-md:
+    markdown: Markdown
+    description: Enter and preview markdown
+    customSyntax: Custom Blocks
+    customSyntax_label: Add custom syntax types
+    customSyntax_add: Add custom syntax
+    box: Block / Inline
+    imageToken: Image Token
+    imageToken_label: What (static) token to append to image sources
+    preview: Preview
+    editor: Editor
   map:
+    map: Map
+    description: Select a location on a map
     zoom: Zoom
+    geometry_type: Geometry Type
+    geometry_format: Geometry Format
+    default_view: Default View
+    invalid_options: Invalid options
+    invalid_format: Invalid format ({format})
+    unexpected_geometry: Expected {expected}, got {got}.
+    fit_bounds: Fit view to data
+    native: Native
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Click to select {geometry}
+  presentation-notice:
+    notice: Notice
+    description: Display a short notice
+    text: Enter notice content here...
   list-o2m:
+    one-to-many: One to Many
+    description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
     folder: Folder
@@ -1329,8 +1417,10 @@ interfaces:
     language_field: Language Indicator Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: User
+    description: Select an existing directus user
     select_mode: Select Mode
     modes:
       auto: Auto

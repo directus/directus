@@ -34,7 +34,7 @@ maps: Mapas
 item_creation: Criação de ítem
 item_revision: Revisão do item
 enter_a_name: Insira um nome...
-duplicate_field: Campo duplicado
+duplicate_field: Duplicar campo
 half_width: Meia largura
 full_width: Largura total
 group: Grupos
@@ -113,7 +113,7 @@ validationError:
   neq: O valor não pode ser {invalid}
   in: O valor tem de ser um de {valid}
   nin: O valor não pode ser um de {invalid}
-  contains: O valor tem de conter {substring}
+  contains: O valor precisa conter {substring}
   ncontains: O valor não pode conter {substring}
   gt: O valor tem de ser maior que {valid}
   gte: O valor tem de ser maior ou igual a {valid}
@@ -211,6 +211,7 @@ timestamp: Timestamp
 uuid: UUID
 hash: Hash
 geometry: Geometria (Todos)
+geometry.Point: Ponto
 geometry.Polygon: Polígono
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
@@ -437,9 +438,11 @@ action: Ação
 ip_address: Endereço de IP
 user_agent: Agente de Usuário
 webhooks: Webhooks
+decimals: Decimais
 value_decimals: Valores decimais
 min_value: Valor mínimo
 max_value: Valor máximo
+automatic: Automático
 field_width: Largura do campo
 add_filter: Adicionar filtro
 upper_limit: Limite superior...
@@ -490,6 +493,7 @@ errors:
   UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro inesperado
   NOT_NULL_VIOLATION: Valor não pode ser nulo
+  ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
   UNKNOWN: Erro inesperado
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
@@ -506,6 +510,7 @@ no_app_access_copy: Este usuário não tem permissão para usar o admin app.
 password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
+filter: Filtro
 editing_image: Editando Imagem
 square: Quadrado
 free: Livre
@@ -633,7 +638,21 @@ icon_off: Ícone desligado
 label: Rótulo
 insights: Estatísticas
 dashboard: Painel
+panel_name_placeholder: Nomeie este painel...
+panel_note_placeholder: Detalhes opcionais sobre este painel...
+panel_delete_confirm: Tem certeza que deseja deletar este painel? Esta ação não pode ser desfeita.
+dashboard_delete_confirm: Tem certeza que deseja deletar este painel inteiro? Esta ação não pode ser desfeita.
+edit_dashboard: Editar painel
+delete_dashboard: Excluir painel
+visible: Visível
+no_dashboards: Sem painéis
+no_dashboards_copy: Você ainda não tem nenhum painel.
+no_data: Sem dados
+create_dashboard: Criar painel
+dashboard_name: Nome do painel
 full_screen: Tela cheia
+edit_panels: Editar painéis
+fit_to_screen: Ajustar à tela
 image_url: URL da Imagem
 alt_text: Texto Alternativo
 media: Mídia
@@ -644,6 +663,9 @@ source: Código
 url_placeholder: Digite uma URL...
 display_text: Texto de Exibição
 display_text_placeholder: Digite um texto de exibição...
+interface_group_text_and_numbers: Texto e números
+interface_group_selection: Seleção
+interface_group_relational: Relacional
 tooltip: Dica
 tooltip_placeholder: Insira uma dica de ferramenta...
 unlimited: Ilimitado
@@ -730,6 +752,8 @@ layout_setup: Configuração de Layout
 unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
+show_x_axis: Mostrar eixo X
+show_y_axis: Mostrar eixo Y
 keep_editing: Continuar editando
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
@@ -768,6 +792,7 @@ no_layout_collection_selected_yet: Nenhum layout/coleção selecionado ainda
 batch_delete_confirm: >-
   Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
 cancel: Cancelar
+no_upscale: Não ampliar imagens
 collection: Coleção
 collections: Coleções
 singleton: Singleton
@@ -849,6 +874,7 @@ fields:
     role: Função
     token: Token
     token_placeholder: Digite um token de acesso seguro...
+    provider: Provedor
     last_page: Última página
     last_access: Último acesso
   directus_settings:
@@ -861,11 +887,14 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
+    branding: Marca e estilo
     public_foreground: Primeiro plano público
     public_background: Fundo público
     public_note: Nota pública
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
+    files_and_thumbnails: Arquivos e armazenamento
+    storage_default_folder: Pasta padrão
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
     module_bar: Barra de módulo
@@ -899,9 +928,16 @@ fields:
     collections: Coleções
 field_options:
   directus_settings:
+    project_name_placeholder: Meu projeto...
+    project_logo_note: 40x40 SVG/PNG (Branco)
     security_divider_title: Segurança
     auth_password_policy:
       none_text: Nenhum – Não Recomendado
+    storage_asset_presets:
+      fit_label: Ajustar
+      fit:
+        fit_text: Ajustar dentro
+        outside_text: Ajustar fora
     additional_transforms: Transformações Adicionais
     files_divider_title: Arquivos e Miniaturas
     overrides_divider_title: Substituições de Aplicativos
@@ -1026,12 +1062,14 @@ sort_desc: Ordenação Decrescente
 template: Template
 require_value_to_be_set: Valor a ser definido é requerido
 translation: Tradução
+translation_placeholder: Insira uma tradução...
 value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
 start: Início
 interfaces:
   filter:
+    name: Filtro
     add_filter: Adicionar filtro
     all: Tudo
     any: Qualquer
@@ -1251,6 +1289,9 @@ interfaces:
 displays:
   translations:
     translations: Traduções
+    description: Pré-visualizar traduções
+    enable: Habilitar
+    default_language: Idioma padrão
   boolean:
     boolean: Boolean
     description: Exibir estados ativados e desativados
@@ -1357,5 +1398,7 @@ layouts:
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
 panels:
+  metric:
+    name: Métrico
   label:
     name: Rótulo
