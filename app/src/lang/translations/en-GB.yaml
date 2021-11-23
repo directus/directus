@@ -1,1 +1,252 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifier
+avatar: Avatar
+default_provider: Default
+published: Published
+draft: Draft
+archived: Archived
+modules: Modules
+module_bar: Module Bar
+tile_size: Tile Size
+edit_field: Edit Field
+conditions: Conditions
+maps: Maps
+item_creation: Item Creation
+item_revision: Item Revision
+enter_a_name: Enter a Name...
+duplicate_field: Duplicate Field
+half_width: Half Width
+full_width: Full Width
+group: Group
+and: And
+or: Or
+fill_width: Fill Width
+field_name_translations: Field Name Translations
+enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
+add_field: Add Field
+role_name: Role Name
+branch: Branch
+leaf: Leaf
+indeterminate: Indeterminate
+edit_collection: Edit Collection
+exclusive: Exclusive
+children: Children
+db_only_click_to_configure: 'Database Only: Click to Configure'
+show_archived_items: Show Archived Items
+edited: Value Edited
+required: Required
+required_for_app_access: Required for App Access
+requires_value: Requires value
+create_preset: Create Preset
+create_panel: Create Panel
+create_role: Create Role
+create_user: Create User
+delete_panel: Delete Panel
+create_webhook: Create Webhook
+invite_users: Invite Users
+invite: Invite
+email_already_invited: Email "{email}" has already been invited
+emails: Emails
+connection_excellent: Excellent Connection
+connection_good: Good Connection
+connection_fair: Fair Connection
+connection_poor: Poor Connection
+primary: Primary
+rename_folder: Rename Folder
+delete_folder: Delete Folder
+prefix: Prefix
+suffix: Suffix
+reset_bookmark: Reset Bookmark
+rename_bookmark: Rename Bookmark
+update_bookmark: Update Bookmark
+delete_bookmark: Delete Bookmark
+delete_bookmark_copy: >-
+  Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
+logoutReason:
+  SIGN_OUT: Signed out
+  SESSION_EXPIRED: Session expired
+public_label: Public
+public_description: Controls what API data is available without authenticating.
+not_allowed: Not Allowed
+directus_version: Directus Version
+node_version: Node Version
+node_uptime: Node Uptime
+os_type: OS Type
+os_version: OS Version
+os_uptime: OS Uptime
+os_totalmem: OS Memory
+archive: Archive
+archive_confirm: Are you sure you want to archive this item?
+archive_confirm_count: >-
+  No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count} items?
+reset_system_permissions_to: 'Reset System Permissions to:'
+reset_system_permissions_copy: This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
+the_following_are_minimum_permissions: The following are minimum permissions required when "App Access" is enabled. You can extend permissions beyond this, but not below.
+app_access_minimum: App Access Minimum
+recommended_defaults: Recommended Defaults
+unarchive: Unarchive
+unarchive_confirm: Are you sure you want to unarchive this item?
+nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+unknown_validation_errors: 'There were validation errors for the following hidden fields:'
+validationError:
+  eq: Value has to be {valid}
+  neq: Value can't be {invalid}
+  in: Value has to be one of {valid}
+  nin: Value can't be one of {invalid}
+  contains: Value has to contain {substring}
+  ncontains: Value can't contain {substring}
+  gt: Value has to be greater than {valid}
+  gte: Value has to be greater than or equal to {valid}
+  lt: Value has to be less than {valid}
+  lte: Value has to be less than or equal to {valid}
+  empty: Value has to be empty
+  nempty: Value can't be empty
+  null: Value has to be null
+  nnull: Value can't be null
+  required: Value is required
+  unique: Value has to be unique
+  regex: Value doesn't have the correct format
+all_access: All Access
+no_access: No Access
+use_custom: Use Custom
+nullable: Nullable
+allow_null_value: Allow NULL value
+allow_multiple: Allow Multiple
+allow_multiple_to_be_open: Allow Multiple to be Opened
+enter_value_to_replace_nulls: Please enter a new value to replace any NULLs currently within this field.
+field_standard: Standard
+field_presentation: Presentation & Aliases
+field_file: Single File
+field_files: Multiple Files
+field_m2o: M2O Relationship
+field_m2a: M2A Relationship
+field_o2m: O2M Relationship
+field_m2m: M2M Relationship
+field_translations: Translations
+field_group: Field Group
+item_permissions: Item Permissions
+field_permissions: Field Permissions
+field_validation: Field Validation
+field_presets: Field Presets
+permissions_for_role: 'Items the {role} Role can {action}.'
+fields_for_role: 'Fields the {role} Role can {action}.'
+validation_for_role: 'Field {action} rules the {role} Role must obey.'
+presets_for_role: 'Field value defaults for the {role} Role.'
+presentation_and_aliases: Presentation & Aliases
+revision_post_create: Here is what this item looked like when it was created.
+revision_post_update: Here is what this item looked like after the update.
+changes_made: Below are the specific changes made in this revision.
+integer: Integer
+json: JSON
+xml: XML
+string: String
+text: Text
+time: Time
+timestamp: Timestamp
+uuid: UUID
+hash: Hash
+geometry: Geometry (All)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
+not_available_for_type: Not Available for this Type
+create_translations: Create Translations
+auto_refresh: Auto Refresh
+refresh_interval: Refresh Interval
+no_refresh: Do not refresh
+refresh_interval_seconds: Refresh Instantly | Every Second | Every {seconds} Seconds
+refresh_interval_minutes: Every Minute | Every {minutes} Minutes
+auto_generate: Auto-Generate
+this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
+click_here: Click here
+to_manually_setup_translations: to manually setup translations.
+click_to_manage_translated_fields: >-
+  There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage it. | There are {count} translated fields. Click here to manage them.
+fields_group: Fields Group
+no_collections_found: No collections found.
+new_data_alert: 'The following will be created within your Data Model:'
+search_collection: Search Collection...
+new_field: 'New Field'
+new_collection: 'New Collection'
+add_m2o_to_collection: 'Add M2O to "{collection}"'
+add_o2m_to_collection: 'Add O2M to "{collection}"'
+add_m2m_to_collection: 'Add M2M to "{collection}"'
+choose_a_type: Choose a Type...
+determined_by_relationship: Determined by Relationship
+add_note: Add a helpful note for users...
+add_link: Add Link
+custom_link: Custom Link
+default_value: Default Value
+standard_field: Standard Field
+single_file: Single File
+multiple_files: Multiple Files
+m2o_relationship: Many to One Relationship
+o2m_relationship: One to Many Relationship
+m2m_relationship: Many to Many Relationship
+m2a_relationship: Many to Any Relationship
+this_collection: This Collection
+related_collection: Related Collection
+related_collections: Related Collections
+translations_collection: Translation Collection
+languages_collection: Languages Collection
+export_data: Export Data
+format: Format
+use_current_filters_settings: Use Current Filters & Settings
+export_collection: 'Export {collection}'
+last_page: Last Page
+last_access: Last Access
+fill_template: Fill with Template Value
+a_unique_table_name: A unique table name...
+a_unique_column_name: A unique column name...
+enable_custom_values: Enable custom values
+submit: Submit
+move_to_folder: Move to Folder
+move: Move
+system: System
+errors:
+  NOT_NULL_VIOLATION: Value can't be null
+value_unique: Value has to be unique
+fields:
+  directus_users:
+    last_page: Last Page
+    last_access: Last Access
+  directus_settings:
+    module_bar: Module Bar
+  directus_fields:
+    translation: Field Name Translations
+  directus_roles:
+    name: Role Name
+field_options:
+  directus_collections:
+    archive_divider: Archive
+interfaces:
+  presentation-links:
+    primary: Primary
+  input-hash:
+    hash: Hash
+displays:
+  datetime:
+    format: Format
