@@ -136,6 +136,7 @@
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -385,6 +386,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			templateData,
 			templateDataLoading,
 			archiveTooltip,
@@ -479,7 +481,7 @@ export default defineComponent({
 			try {
 				await remove();
 				edits.value = {};
-				router.push(`/content/${props.collection}`);
+				router.replace(`/content/${props.collection}`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -504,6 +506,11 @@ export default defineComponent({
 			edits.value = {};
 			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		function revert(values: Record<string, any>) {

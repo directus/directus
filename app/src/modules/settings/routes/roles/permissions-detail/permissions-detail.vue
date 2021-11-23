@@ -179,9 +179,10 @@ export default defineComponent({
 		async function close() {
 			if (permission.value && isPermissionEmpty(permission.value)) {
 				await api.delete(`/permissions/${permission.value.id}`);
+				router.replace(`/settings/roles/${props.roleKey || 'public'}`);
+			} else {
+				router.push(`/settings/roles/${props.roleKey || 'public'}`);
 			}
-
-			router.push(`/settings/roles/${props.roleKey || 'public'}`);
 		}
 
 		async function load() {

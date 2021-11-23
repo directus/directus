@@ -1,10 +1,10 @@
 import { Knex } from 'knex';
-import { clone, get, isPlainObject, set } from 'lodash';
+import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import { Relation, SchemaOverview } from '../types';
-import { Aggregate, Filter, Query } from '@directus/shared/types';
+import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/types';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
@@ -23,7 +23,7 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview,
 	subQuery = false
-): void {
+): Knex.QueryBuilder {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sortField) => {
@@ -55,10 +55,6 @@ export default function applyQuery(
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
-	if (query.filter) {
-		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
-	}
-
 	if (query.search) {
 		applySearch(schema, dbQuery, query.search, collection);
 	}
@@ -70,6 +66,35 @@ export default function applyQuery(
 	if (query.aggregate) {
 		applyAggregate(dbQuery, query.aggregate, collection);
 	}
+
+	if (query.union && query.union[1].length > 0) {
+		const [field, keys] = query.union as [string, (string | number)[]];
+
+		const queries = keys.map((key) => {
+			const unionFilter = { [field]: { _eq: key } } as Filter;
+			let filter: Filter | null | undefined = cloneDeep(query.filter);
+
+			if (filter) {
+				if ('_and' in filter) {
+					(filter as LogicalFilterAND)._and.push(unionFilter);
+				} else {
+					filter = {
+						_and: [filter, unionFilter],
+					} as LogicalFilterAND;
+				}
+			} else {
+				filter = unionFilter;
+			}
+
+			return knex.select('*').from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
+		});
+
+		dbQuery = knex.unionAll(queries);
+	} else if (query.filter) {
+		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
+	}
+
+	return dbQuery;
 }
 
 /**
@@ -118,13 +143,15 @@ export function applyFilter(
 	rootFilter: Filter,
 	collection: string,
 	subQuery = false
-): void {
+) {
 	const relations: Relation[] = schema.relations;
 
 	const aliasMap: Record<string, string> = {};
 
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
+
+	return rootQuery;
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
@@ -196,7 +223,7 @@ export function applyFilter(
 							.on(
 								`${parentAlias || parentCollection}.${relation.field}`,
 								'=',
-								knex.raw(`CAST(?? AS TEXT)`, `${alias}.${schema.collections[pathScope].primary}`)
+								knex.raw(`CAST(?? AS CHAR(255))`, `${alias}.${schema.collections[pathScope].primary}`)
 							)
 							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
 					});

@@ -53,9 +53,18 @@ module.exports = function registerHook({ filter }, { exceptions }) {
 };
 ```
 
-The first parameter of the filter register function is the event name. The second parameter is the modifiable payload.
-The third argument is an event-specific meta object. The fourth argument is a context object with the following
-properties:
+The filter register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives three parameters:
+
+- The modifiable payload
+- An event-specific meta object
+- A context object
+
+The context object has the following properties:
 
 - `database` — The current database transaction
 - `schema` — The current API schema in use
@@ -63,19 +72,19 @@ properties:
 
 #### Available Events
 
-| Name                          | Payload              | Meta                         |
-| ----------------------------- | -------------------- | ---------------------------- |
-| `request.not_found`           | `false`              | `request`, `response`        |
-| `request.error`               | The request errors   | --                           |
-| `database.error`              | The database error   | `client`                     |
-| `auth.login`                  | The login payload    | `status`, `user`, `provider` |
-| `auth.jwt`                    | The auth token       | `status`, `user`, `provider` |
-| `(<collection>.)items.create` | The new item         | `collection`                 |
-| `(<collection>.)items.update` | The updated item     | `keys`, `collection`         |
-| `(<collection>.)items.delete` | The keys of the item | `collection`                 |
-| `<system-collection>.create`  | The new item         | `collection`                 |
-| `<system-collection>.update`  | The updated item     | `keys`, `collection`         |
-| `<system-collection>.delete`  | The keys of the item | `collection`                 |
+| Name                          | Payload              | Meta                                 |
+| ----------------------------- | -------------------- | ------------------------------------ |
+| `request.not_found`           | `false`              | `request`, `response`                |
+| `request.error`               | The request errors   | --                                   |
+| `database.error`              | The database error   | `client`                             |
+| `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
+| `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
+| `(<collection>.)items.create` | The new item         | `collection`                         |
+| `(<collection>.)items.update` | The updated item     | `keys`, `collection`                 |
+| `(<collection>.)items.delete` | The keys of the item | `collection`                         |
+| `<system-collection>.create`  | The new item         | `collection`                         |
+| `<system-collection>.update`  | The updated item     | `keys`, `collection`                 |
+| `<system-collection>.delete`  | The keys of the item | `collection`                         |
 
 ::: tip System Collections
 
@@ -88,8 +97,17 @@ properties:
 
 An action event executes after a certain event and receives some data related to the event.
 
-The first parameter of the action register function is the event name. The second argument is an event-specific meta
-object. The third argument is a context object with the following properties:
+The action register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives two parameters:
+
+- An event-specific meta object
+- A context object
+
+The context object has the following properties:
 
 - `database` — The current database transaction
 - `schema` — The current API schema in use
@@ -99,8 +117,8 @@ object. The third argument is a context object with the following properties:
 
 | Name                          | Meta                                                |
 | ----------------------------- | --------------------------------------------------- |
-| `server.start`                | --                                                  |
-| `server.stop`                 | --                                                  |
+| `server.start`                | `server`                                            |
+| `server.stop`                 | `server`                                            |
 | `response`                    | `request`, `response`, `ip`, `duration`, `finished` |
 | `auth.login`                  | `payload`, `status`, `user`, `provider`             |
 | `files.upload`                | `payload`, `key`, `collection`                      |
@@ -124,8 +142,14 @@ object. The third argument is a context object with the following properties:
 An init event executes at a certain point within the lifecycle of Directus. Init events can be used to inject logic into
 internal services.
 
-The first parameter of the init register function is the event name. The second parameter is an event-specific meta
-object.
+The init register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives one parameters:
+
+- An event-specific meta object
 
 #### Available Events
 
@@ -145,7 +169,7 @@ object.
 ### Schedule
 
 A schedule event executes at certain points in time. This is supported through
-[`node-cron`](https://www.npmjs.com/package/node-cron). To set this up, provide a cron statement as the first argument
+[`node-cron`](https://www.npmjs.com/package/node-cron). To set this up, provide a cron statement as the first parameter
 to the `schedule()` function, for example `schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or
 `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday). See example below:
 
@@ -236,7 +260,7 @@ module.exports = function registerHook({ filter, action }, { services, exception
 			throw new ServiceUnavailableException(error);
 		}
 
-		input[0].syncedWithExample = true;
+		input.syncedWithExample = true;
 
 		return input;
 	});
@@ -244,7 +268,7 @@ module.exports = function registerHook({ filter, action }, { services, exception
 	// Force everything to be admin-only at all times
 	const adminOnly = async (_, { accountability }) => {
 		if (accountability.admin !== true) throw new ForbiddenException();
-	});
+	};
 
 	action('items.create', adminOnly);
 	action('items.read', adminOnly);

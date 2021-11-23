@@ -73,20 +73,8 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		// Before we fetch the available geometry types, we'll have to ensure PostGIS exists
 		// in the first place. If we don't, the transaction would error out due to the exception in
 		// SQL, which we can't catch in JS.
-		const hasPostGIS = (
-			await this.knex.raw(
-				`SELECT EXISTS (
-				SELECT
-				FROM
-					pg_proc p
-					JOIN pg_namespace n ON p.pronamespace = n.oid
-				WHERE
-					n.nspname IN(?)
-					AND p.oid::regprocedure::varchar = 'postgis_version()'
-			);`,
-				[this.explodedSchema.join(',')]
-			)
-		)?.rows?.[0]?.exists;
+		const hasPostGIS =
+			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
 
 		if (hasPostGIS) {
 			const result = await this.knex.raw<{ rows: RawGeometryColumn[] }>(
@@ -122,6 +110,9 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = { columns: {}, primary: <any>undefined };
 			}
+			if (['point', 'polygon'].includes(column.data_type)) {
+				column.data_type = 'unknown';
+			}
 			overview[column.table_name].columns[column.column_name] = column;
 		}
 
@@ -147,9 +138,17 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		if (!columns?.length) {
 			return columns;
 		}
-		try {
-			await this.knex.raw('select postgis_version()');
-		} catch {
+
+		for (const column of Array.isArray(columns) ? columns : [columns]) {
+			if (['point', 'polygon'].includes(column.data_type)) {
+				column.data_type = 'unknown';
+			}
+		}
+
+		const hasPostGIS =
+			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
+
+		if (!hasPostGIS) {
 			return columns;
 		}
 
@@ -174,9 +173,6 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			query.andWhere('f_table_name', table);
 		}
 		if (column) {
-			if (['point', 'polygon'].includes(columns.data_type)) {
-				columns.data_type = 'unknown';
-			}
 			const geometry = await query.andWhere('f_geometry_column', column).first();
 			if (geometry) {
 				columns.data_type = geometry.data_type;
@@ -184,9 +180,6 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		}
 		const geometries = await query;
 		for (const column of columns) {
-			if (['point', 'polygon'].includes(column.data_type)) {
-				column.data_type = 'unknown';
-			}
 			const geometry = geometries.find((geometry) => {
 				return column.name == geometry.name && column.table == geometry.table;
 			});

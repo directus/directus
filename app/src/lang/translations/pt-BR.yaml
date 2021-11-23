@@ -179,13 +179,12 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
 refresh_interval: Intervalo de atualização
 no_refresh: Não atualizar
-refresh_interval_seconds: Atualizar automaticamente a cada segundo, a cada {seconds} segundos
+refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
 refresh_interval_minutes: A cada minuto, a cada {minutes} minutos
 auto_generate: Gerar automaticamente
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
@@ -826,6 +825,7 @@ fields:
     auth_login_attempts: Tentativas de autenticação
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
+    module_bar: Barra de módulo
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -844,7 +844,6 @@ fields:
     enforce_tfa: Exigir 2FA
     users: Usuários no cargo
     module_list: Navegação do Módulo
-    collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
     method: Método 
@@ -854,6 +853,7 @@ fields:
     data_label: Enviar Dados do Evento
     triggers: Gatilhos
     actions: Ações
+    collections: Coleções
 field_options:
   directus_settings:
     security_divider_title: Segurança
@@ -882,9 +882,6 @@ field_options:
       icon_name: Ícone
       name_name: Nome
       name_placeholder: Insira um título...
-    collection_list:
-      fields:
-        type_name: Tipo
     collections_name: Coleções
   directus_users:
     preferences_divider: Preferências do Usuário
@@ -1056,7 +1053,6 @@ interfaces:
   presentation-divider:
     divider: Divisor
     description: Rotular e dividir campos em seções
-    title_placeholder: Insira um título...
     inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior

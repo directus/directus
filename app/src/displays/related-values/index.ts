@@ -1,7 +1,6 @@
 import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 import getRelatedCollection from '@/utils/get-related-collection';
 import DisplayRelatedValues from './related-values.vue';
 import { useFieldsStore } from '@/stores';
@@ -16,7 +15,7 @@ export default defineDisplay({
 	description: '$t:displays.related-values.description',
 	icon: 'settings_ethernet',
 	component: DisplayRelatedValues,
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
 
 		return [
@@ -34,20 +33,24 @@ export default defineDisplay({
 		];
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a'],
+	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
 	fields: (options: Options | null, { field, collection }) => {
-		const relatedCollection = getRelatedCollection(collection, field);
+		const { relatedCollection, path } = getRelatedCollection(collection, field);
 		const fieldsStore = useFieldsStore();
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
 
 		if (!relatedCollection) return [];
 
 		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection as unknown as string)
+			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection)
 			: [];
 
-		if (primaryKeyField && !fields.includes(primaryKeyField.field)) {
-			fields.push(primaryKeyField.field);
+		if (primaryKeyField) {
+			const primaryKeyFieldValue = path ? [...path, primaryKeyField.field].join('.') : primaryKeyField.field;
+
+			if (!fields.includes(primaryKeyFieldValue)) {
+				fields.push(primaryKeyFieldValue);
+			}
 		}
 
 		return fields;

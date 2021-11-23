@@ -192,7 +192,6 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: 几何
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -622,7 +621,6 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
-insights: 洞察(测试)
 dashboard: 控制面板
 panel: 面板
 panel_options: 选项
@@ -908,6 +906,7 @@ fields:
     auth_login_attempts: 尝试认证登录次数
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
+    module_bar: 模块栏
   directus_fields:
     collection: 模型名称
     icon: 图标
@@ -926,7 +925,6 @@ fields:
     enforce_tfa: 请求两步验证
     users: 角色中的用户
     module_list: 模块导航
-    collection_list: 模型导航
   directus_webhooks:
     name: 名称
     method: 方法
@@ -936,10 +934,10 @@ fields:
     data_label: 发送事件数据
     triggers: 触发条件
     actions: 操作
+    collections: 数据模型
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目
-    project_logo_note: 登录和Logo背景
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -1002,15 +1000,6 @@ field_options:
       name_placeholder: 输入标题...
       link_name: 链接
       link_placeholder: 相对或绝对的 URL...
-    collection_list:
-      group_name_addLabel: 新建分组...
-      fields:
-        group_name: 分组名称
-        group_placeholder: 分组标签
-        type_name: 类型
-        choices_always: 总是展开
-        choices_start_open: 默认打开
-        choices_start_collapsed: 默认收起
     collections_name: 数据模型
     collections_addLabel: 添加到模型...
   directus_users:
@@ -1194,7 +1183,6 @@ interfaces:
   presentation-divider:
     divider: 分隔线
     description: 标记字段并分成多个部分
-    title_placeholder: 输入标题...
     inline_title: 行内标题
     inline_title_label: 在行内显示标题
     margin_top: 上边距

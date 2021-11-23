@@ -85,7 +85,6 @@ import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } 
 import {
 	Field,
 	GeometryType,
-	GeometryFormat,
 	GeoJSONParser,
 	GeoJSONSerializer,
 	SimpleGeometry,
@@ -131,10 +130,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		geometryFormat: {
-			type: String as PropType<GeometryFormat>,
-			default: undefined,
-		},
 		geometryType: {
 			type: String as PropType<GeometryType>,
 			default: undefined,
@@ -155,8 +150,8 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
 
-		const geometryType = (props.fieldData?.schema?.geometry_type ?? props.geometryType) as GeometryType;
-		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
+		const geometryType = props.geometryType || (props.fieldData?.type.split('.')[1] as GeometryType);
+		const geometryFormat = getGeometryFormatForType(props.type)!;
 
 		const mapboxKey = getSetting('mapbox_key');
 		const basemaps = getBasemapSources();
@@ -194,17 +189,18 @@ export default defineComponent({
 			geolocate: new GeolocateControl({
 				showUserLocation: false,
 			}),
-			geocoder: !mapboxKey
-				? null
-				: (new MapboxGeocoder({
-						accessToken: mapboxKey,
-						collapsed: true,
-						flyTo: { speed: 1.4 },
-						marker: false,
-						mapboxgl: maplibre as any,
-						placeholder: t('layouts.map.find_location'),
-				  }) as any),
+			geocoder: undefined as MapboxGeocoder | undefined,
 		};
+		if (mapboxKey) {
+			controls.geocoder = new MapboxGeocoder({
+				accessToken: mapboxKey,
+				collapsed: true,
+				flyTo: { speed: 1.4 },
+				marker: false,
+				mapboxgl: maplibre as any,
+				placeholder: t('layouts.map.find_location'),
+			});
+		}
 
 		const tooltipVisible = ref(false);
 		const tooltipMessage = ref('');

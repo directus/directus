@@ -101,7 +101,7 @@ async function getDatabaseSchema(
 					defaultValue: getDefaultValue(column) ?? null,
 					nullable: column.is_nullable ?? true,
 					generated: column.is_generated ?? false,
-					type: getLocalType(column).type,
+					type: getLocalType(column),
 					dbType: column.data_type,
 					precision: column.numeric_precision || null,
 					scale: column.numeric_scale || null,
@@ -132,7 +132,7 @@ async function getDatabaseSchema(
 		const existing = result.collections[field.collection].fields[field.field];
 		const column = schemaOverview[field.collection].columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
-		const { type = 'alias' } = existing && column ? getLocalType(column, { special }) : {};
+		const type = (existing && getLocalType(column, { special })) || 'alias';
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,

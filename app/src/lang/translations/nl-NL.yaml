@@ -786,11 +786,11 @@ fields:
     enforce_tfa: 2FA vereist
     users: Gebruikers in rol
     module_list: Module Navigatie
-    collection_list: Collectie navigatie
   directus_webhooks:
     name: Naam
     status: Status
     value: Waarde
+    collections: Collecties
 field_options:
   directus_activity:
     create: Maak
@@ -810,9 +810,6 @@ field_options:
     fields:
       icon_name: Icoon
       name_name: Naam
-    collection_list:
-      fields:
-        type_name: Type
     collections_name: Collecties
   directus_users:
     status_dropdown_active: Actief

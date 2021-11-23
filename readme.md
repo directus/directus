@@ -18,14 +18,6 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 <br>
 
-## 🚧 Release Candidate
-
-This is _pre-release_ software. While we're providing migrations between versions, changes may occur at any time, and
-certain features might be missing or broken. You can follow along with
-[the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements.
-
-<br>
-
 ## ⚙️ Installation
 
 Create a new Directus project by running the following npm command:

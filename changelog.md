@@ -2,6 +2,215 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.1 (November 11, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#9732](https://github.com/directus/directus/pull/9732) Add missing translations
+    ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#9706](https://github.com/directus/directus/pull/9706) Add field type to field select tooltip
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9674](https://github.com/directus/directus/pull/9674) Clean up save-options
+    ([@licitdev](https://github.com/licitdev))
+  - [#9644](https://github.com/directus/directus/pull/9644) Allow for discarding of changes without leaving
+    ([@licitdev](https://github.com/licitdev))
+  - [#9638](https://github.com/directus/directus/pull/9638) Show items for all days in calendar layout
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9618](https://github.com/directus/directus/pull/9618) Import 'Fira Mono' & 'Merriweather' into WYSIWYG
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9558](https://github.com/directus/directus/pull/9558) Data model dense
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#9557](https://github.com/directus/directus/pull/9557) Sidebar styling ([@benhaynes](https://github.com/benhaynes))
+  - [#9555](https://github.com/directus/directus/pull/9555) remove extra popup padding
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#9554](https://github.com/directus/directus/pull/9554) small text update
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#9532](https://github.com/directus/directus/pull/9532) divider title placeholder
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#9504](https://github.com/directus/directus/pull/9504) fix repeater field names title format
+    ([@azrikahar](https://github.com/azrikahar))
+- **API**
+  - [#9625](https://github.com/directus/directus/pull/9625) Add support for AWS SES mailer transport
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9616](https://github.com/directus/directus/pull/9616) Expose server instance in action hook 'server.start'
+    ([@gkielwasser](https://github.com/gkielwasser))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#9738](https://github.com/directus/directus/pull/9738) Fix relations lookup in m2m/m2a advanced edit existing
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9735](https://github.com/directus/directus/pull/9735) Fix make sort field null if empty in relationships
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9711](https://github.com/directus/directus/pull/9711) Apply cloneDeep to relations in FieldDetailStore
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9708](https://github.com/directus/directus/pull/9708) Ensure update of one_field in m2o
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9662](https://github.com/directus/directus/pull/9662) Patch parameter type for syncRefProperty
+    ([@licitdev](https://github.com/licitdev))
+  - [#9632](https://github.com/directus/directus/pull/9632) Fix field schema unique option
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9615](https://github.com/directus/directus/pull/9615) Fix unexpected camera update and unavailable clustering
+    option in map ([@Oreilles](https://github.com/Oreilles))
+  - [#9612](https://github.com/directus/directus/pull/9612) fixes: #9568 ([@benhaynes](https://github.com/benhaynes))
+  - [#9609](https://github.com/directus/directus/pull/9609) Fix existing files drawer selection
+    ([@licitdev](https://github.com/licitdev))
+  - [#9593](https://github.com/directus/directus/pull/9593) Include default values when validating field conditions
+    ([@licitdev](https://github.com/licitdev))
+  - [#9588](https://github.com/directus/directus/pull/9588) Fix repeater interface template
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9584](https://github.com/directus/directus/pull/9584) Fix presets layout query/options edits on load
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9548](https://github.com/directus/directus/pull/9548) Fix lose data on M2M
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9537](https://github.com/directus/directus/pull/9537) Fix missing and wrong translations
+    ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#9530](https://github.com/directus/directus/pull/9530) fix elements z-index higher than app header bar
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9522](https://github.com/directus/directus/pull/9522) Remove quotes on string values in raw display
+    ([@paescuj](https://github.com/paescuj))
+  - [#9451](https://github.com/directus/directus/pull/9451) Fix m2m links in related values to target related collection
+    ([@Toilal](https://github.com/Toilal))
+- **API**
+  - [#9726](https://github.com/directus/directus/pull/9726) Fix nested union query filter
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9677](https://github.com/directus/directus/pull/9677) Exclude hidden Oracle SYS columns
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9666](https://github.com/directus/directus/pull/9666) [API] m2a filtering fix ([@d1rOn](https://github.com/d1rOn))
+  - [#9661](https://github.com/directus/directus/pull/9661) Emit `auth.jwt` on refresh
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9652](https://github.com/directus/directus/pull/9652) Fix relation not having collection and field values
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#9635](https://github.com/directus/directus/pull/9635) Fixed Oracle special geometry migration
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9629](https://github.com/directus/directus/pull/9629) Don't cache root index.html
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9621](https://github.com/directus/directus/pull/9621) Fix MySQL wkt conversion and fix SRID for Postgres geometry
+    columns ([@Oreilles](https://github.com/Oreilles))
+  - [#9598](https://github.com/directus/directus/pull/9598) Use "access_token" with "openid-client" to fix Facebook auth
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+- **Misc.**
+  - [#9656](https://github.com/directus/directus/pull/9656) Add wait to await database
+    ([@jaycammarano](https://github.com/jaycammarano))
+- **sdk**
+  - [#9535](https://github.com/directus/directus/pull/9535) Include the ESM entrypoint when publishing to npm
+    ([@nickrum](https://github.com/nickrum))
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#9594](https://github.com/directus/directus/pull/9594) Fix PR title for major updates from renovate
+    ([@paescuj](https://github.com/paescuj))
+  - [#9517](https://github.com/directus/directus/pull/9517) Add note about Directus version in bug report
+    ([@paescuj](https://github.com/paescuj))
+  - [#9514](https://github.com/directus/directus/pull/9514) Update Docker installation documentation
+    ([@paescuj](https://github.com/paescuj))
+  - [#9509](https://github.com/directus/directus/pull/9509) Update package-lock.json & fix warning from eslint
+    ([@paescuj](https://github.com/paescuj))
+  - [#9508](https://github.com/directus/directus/pull/9508) Revert "Schedule Renovate on a daily basis for now (#9488)"
+    ([@paescuj](https://github.com/paescuj))
+- **Docker**
+  - [#9512](https://github.com/directus/directus/pull/9512) No 'latest' Docker tag on pre-releases anymore
+    ([@paescuj](https://github.com/paescuj))
+
+### :memo: Documentation
+
+- [#9689](https://github.com/directus/directus/pull/9689) Add references for social & material icons
+  ([@azrikahar](https://github.com/azrikahar))
+- [#9657](https://github.com/directus/directus/pull/9657) Use Postgis image in docker-compose example from the docs
+  ([@Oreilles](https://github.com/Oreilles))
+- [#9616](https://github.com/directus/directus/pull/9616) Expose server instance in action hook 'server.start'
+  ([@gkielwasser](https://github.com/gkielwasser))
+- [#9612](https://github.com/directus/directus/pull/9612) fixes: #9568 ([@benhaynes](https://github.com/benhaynes))
+- [#9611](https://github.com/directus/directus/pull/9611) fix in-app docs homepage
+  ([@benhaynes](https://github.com/benhaynes))
+- [#9610](https://github.com/directus/directus/pull/9610) update in-app docs nav
+  ([@benhaynes](https://github.com/benhaynes))
+- [#9608](https://github.com/directus/directus/pull/9608) link updates ([@benhaynes](https://github.com/benhaynes))
+- [#9607](https://github.com/directus/directus/pull/9607) collections to content
+  ([@benhaynes](https://github.com/benhaynes))
+- [#9606](https://github.com/directus/directus/pull/9606) clean up in-app docs
+  ([@benhaynes](https://github.com/benhaynes))
+- [#9605](https://github.com/directus/directus/pull/9605) doc app links should not point externally
+  ([@benhaynes](https://github.com/benhaynes))
+- [#9553](https://github.com/directus/directus/pull/9553) Minor docs fixes ([@azrikahar](https://github.com/azrikahar))
+- [#9514](https://github.com/directus/directus/pull/9514) Update Docker installation documentation
+  ([@paescuj](https://github.com/paescuj))
+- [#9513](https://github.com/directus/directus/pull/9513) Remove note about RC in the readme
+  ([@paescuj](https://github.com/paescuj))
+
+### :package: Dependency Updates
+
+- [#9585](https://github.com/directus/directus/pull/9585) Update NPM dependencies (non-major)
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9506](https://github.com/directus/directus/pull/9506) Update NPM dependencies (non-major)
+  ([@renovate[bot]](https://github.com/apps/renovate))
+
+## v9.0.0 (November 4, 2021)
+
+### :rocket: Improvements
+
+- **create-directus-project**
+  - [#9496](https://github.com/directus/directus/pull/9496) Don't show all migrations logged on init
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#9491](https://github.com/directus/directus/pull/9491) Remove beta flag from insights
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9490](https://github.com/directus/directus/pull/9490) Remove collection listing option from role settings
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9487](https://github.com/directus/directus/pull/9487) Removes "Collections Navigation" setting from roles detail
+    page ([@YannickMol](https://github.com/YannickMol))
+
+### :bug: Bug Fixes
+
+- **sdk**
+  - [#9502](https://github.com/directus/directus/pull/9502) Fix importing the SDK from a Node ESM environment
+    ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#9501](https://github.com/directus/directus/pull/9501) Prevent negative hashes from being generated
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9494](https://github.com/directus/directus/pull/9494) Move union query application to applyQuery, fix where clause
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9448](https://github.com/directus/directus/pull/9448) Use hash instead of random for default index name
+    ([@faridsaud](https://github.com/faridsaud))
+- **App**
+  - [#9485](https://github.com/directus/directus/pull/9485) Fix presentation-links interfaces
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9484](https://github.com/directus/directus/pull/9484) Fix m2a relations on editing field
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9483](https://github.com/directus/directus/pull/9483) Fix nested system-interface-options usage
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9477](https://github.com/directus/directus/pull/9477) Resolve calendar link to detail page
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9432](https://github.com/directus/directus/pull/9432) Properly handle M2A fields in fieldStore and useFieldTree
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9420](https://github.com/directus/directus/pull/9420) Fix invalid collection for Interface Display Template for
+    M2M relationships ([@Toilal](https://github.com/Toilal))
+  - [#9407](https://github.com/directus/directus/pull/9407) Fix render template for number template parts (#9406)
+    ([@Toilal](https://github.com/Toilal))
+  - [#9397](https://github.com/directus/directus/pull/9397) Update geometric types and patch new field flow.
+    ([@Oreilles](https://github.com/Oreilles))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#9466](https://github.com/directus/directus/pull/9466) Fixing some type errors in app
+    ([@paescuj](https://github.com/paescuj))
+  - [#9447](https://github.com/directus/directus/pull/9447) Clean up interface options type
+    ([@nickrum](https://github.com/nickrum))
+
+### :memo: Documentation
+
+- [#9497](https://github.com/directus/directus/pull/9497) Small fixes for Hooks documentation
+  ([@tylerforesthauser](https://github.com/tylerforesthauser))
+- [#9489](https://github.com/directus/directus/pull/9489) Clarify hook register function parameter descriptions in docs
+  ([@nickrum](https://github.com/nickrum))
+- [#9486](https://github.com/directus/directus/pull/9486) Fix docs about SDK refactor
+  ([@joselcvarela](https://github.com/joselcvarela))
+- [#9450](https://github.com/directus/directus/pull/9450) fix docs homepage header responsiveness
+  ([@azrikahar](https://github.com/azrikahar))
+
 ## v9.0.0-rc.101 (November 3, 2021)
 
 ### ⚠️ Breaking Changes

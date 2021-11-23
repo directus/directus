@@ -369,6 +369,7 @@ fields:
     name: 名前
     status: ステータス
     value: 値
+    collections: コレクション
 field_options:
   directus_activity:
     create: 作成
@@ -384,9 +385,6 @@ field_options:
     fields:
       icon_name: アイコン
       name_name: 名前
-    collection_list:
-      fields:
-        type_name: タイプ
     collections_name: コレクション
   directus_webhooks:
     actions_create: 作成
