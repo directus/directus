@@ -1,6 +1,6 @@
 <template>
 	<div class="input-container">
-		<v-menu v-model="showMentionDropDown">
+		<v-menu v-model="showMentionDropDown" attached>
 			<template #activator>
 				<v-template-input
 					v-model="newCommentContent"
@@ -13,31 +13,42 @@
 				/>
 			</template>
 
-			<v-list v-for="user in searchResult" id="suggestions" :key="user.id" @click="insertUser(user)">
-				<v-avatar x-small>
-					<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
-					<v-icon v-else name="person_outline" />
-				</v-avatar>
-				<div class="spacer">
-					{{ userName(user) }}
-				</div>
+			<v-list>
+				<v-list-item v-for="user in searchResult" id="suggestions" :key="user.id" clickable @click="insertUser(user)">
+					<v-list-item-icon>
+						<v-avatar x-small>
+							<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
+							<v-icon v-else name="person_outline" />
+						</v-avatar>
+					</v-list-item-icon>
+
+					<v-list-item-content>
+						{{ userName(user) }}
+					</v-list-item-content>
+				</v-list-item>
 			</v-list>
 		</v-menu>
-		<v-button
-			:disabled="!newCommentContent || newCommentContent.length === 0"
-			:loading="saving"
-			class="post-comment"
-			x-small
-			@click="postComment"
-		>
-			{{ t('submit') }}
-		</v-button>
+
+		<div class="buttons">
+			<v-button v-if="existingComment" class="cancel" x-small secondary @click="$emit('cancel')">
+				{{ t('cancel') }}
+			</v-button>
+			<v-button
+				:disabled="!newCommentContent || newCommentContent.length === 0"
+				:loading="saving"
+				class="post-comment"
+				x-small
+				@click="postComment"
+			>
+				{{ t('submit') }}
+			</v-button>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, watch } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
@@ -66,18 +77,51 @@ export default defineComponent({
 			type: [Number, String],
 			required: true,
 		},
+		existingComment: {
+			type: Object,
+			default: null,
+		},
+		previews: {
+			type: Object as PropType<Record<string, string>>,
+			default: null,
+		},
 	},
+	emits: ['cancel'],
 	setup(props) {
 		const { t } = useI18n();
 		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 
-		const newCommentContent = ref<string | null>(null);
+		const newCommentContent = ref<string | null>(props.existingComment?.comment ?? null);
+
+		watch(
+			() => props.existingComment,
+			() => {
+				if (props.existingComment?.comment) {
+					newCommentContent.value = props.existingComment.comment;
+				}
+			},
+			{ immediate: true }
+		);
+
 		const saving = ref(false);
 		const showMentionDropDown = ref(false);
 
 		const searchResult = ref<User[]>([]);
 		const userPreviews = ref<Record<string, string>>({});
+
+		watch(
+			() => props.previews,
+			() => {
+				if (props.previews) {
+					userPreviews.value = {
+						...userPreviews.value,
+						...props.previews,
+					};
+				}
+			},
+			{ immediate: true }
+		);
 
 		let triggerCaretPosition = 0;
 
@@ -92,7 +136,7 @@ export default defineComponent({
 
 			cancelToken = axios.CancelToken.source();
 
-			const regex = /(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})/gi;
+			const regex = /\s@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;
 
 			let filter: Record<string, any> = {
 				_or: [
@@ -181,7 +225,7 @@ export default defineComponent({
 			const before = text.substring(0, countBefore);
 			const after = text.substring(countAfter);
 
-			newCommentContent.value = before + '@' + user.id + after;
+			newCommentContent.value = before + ' @' + user.id + after;
 		}
 
 		function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; caretPosition: number }) {
@@ -201,11 +245,17 @@ export default defineComponent({
 			saving.value = true;
 
 			try {
-				await api.post(`/activity/comment`, {
-					collection: props.collection,
-					item: props.primaryKey,
-					comment: newCommentContent.value,
-				});
+				if (props.existingComment) {
+					await api.patch(`/activity/comment/${props.existingComment.id}`, {
+						comment: newCommentContent.value,
+					});
+				} else {
+					await api.post(`/activity/comment`, {
+						collection: props.collection,
+						item: props.primaryKey,
+						comment: newCommentContent.value,
+					});
+				}
 
 				props.refresh();
 
@@ -225,7 +275,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .input-container {
 	position: relative;
 	padding: 0px;
@@ -293,10 +343,14 @@ export default defineComponent({
 	color: var(--primary);
 }
 
-.post-comment {
+.buttons {
 	position: absolute;
 	right: 8px;
 	bottom: 8px;
+
+	> * + * {
+		margin-left: 8px;
+	}
 }
 
 .spacer {

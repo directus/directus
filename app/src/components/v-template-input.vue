@@ -1,9 +1,16 @@
 <template>
-	<div ref="input" class="v-template-input" :class="{ multiline }" contenteditable="true" @input="processText" />
+	<div
+		ref="input"
+		class="v-template-input"
+		:class="{ multiline }"
+		contenteditable="true"
+		tabindex="1"
+		@input="processText"
+	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue';
+import { defineComponent, PropType, ref, watch, onMounted } from 'vue';
 import { position } from 'caret-pos';
 
 export default defineComponent({
@@ -46,6 +53,12 @@ export default defineComponent({
 			}
 		);
 
+		onMounted(() => {
+			if (props.modelValue && props.modelValue !== input.value!.innerText) {
+				parseHTML(props.modelValue);
+			}
+		});
+
 		return { processText, input };
 
 		function processText(event: KeyboardEvent) {
@@ -55,23 +68,13 @@ export default defineComponent({
 
 			const text = input.innerText ?? '';
 
-			let word = '';
-			let countBefore = caretPos - 1;
-			let countAfter = caretPos;
+			let endPos = text.indexOf(' ', caretPos);
+			if (endPos == -1) endPos = text.length;
+			const result = /\S+$/.exec(text.slice(0, endPos));
+			let word = result ? result[0] : null;
+			if (word) word = word.replace(/[\s'";:,./?\\-]$/, '');
 
-			if (text.charAt(countBefore) !== ' ') {
-				while (countBefore >= 0 && text.charAt(countBefore) !== ' ') {
-					word = text.charAt(countBefore) + word;
-					countBefore--;
-				}
-			}
-
-			while (countAfter < text.length && text.charAt(countAfter) !== ' ') {
-				word = word + text.charAt(countAfter);
-				countAfter++;
-			}
-
-			if (word.startsWith(props.triggerCharacter)) {
+			if (word?.startsWith(props.triggerCharacter)) {
 				emit('trigger', { searchQuery: word.substring(props.triggerCharacter.length), caretPosition: caretPos });
 				hasTriggered = true;
 			} else {
@@ -86,12 +89,12 @@ export default defineComponent({
 			emit('update:modelValue', input.innerText);
 		}
 
-		function parseHTML(textContent?: string) {
+		function parseHTML(innerText?: string) {
 			if (!input.value) return;
 
-			let newHTML = textContent ?? input.value.innerHTML;
+			let newHTML = innerText ?? input.value.innerHTML ?? '';
 
-			const caretPos = position(input.value).pos;
+			const caretPos = window.getSelection()?.rangeCount ? position(input.value).pos : 0;
 
 			const matches = newHTML.match(new RegExp(`${props.captureGroup}(?!</mark>)`, 'gi'));
 
@@ -106,9 +109,18 @@ export default defineComponent({
 				}
 			}
 
-			input.value.innerHTML = newHTML;
+			if (input.value.innerHTML !== newHTML) {
+				input.value.innerHTML = newHTML;
+				const delta = newHTML.length - input.value.innerHTML.length;
 
-			position(input.value, caretPos);
+				const newPosition = caretPos + delta;
+
+				if (newPosition >= newHTML.length || newPosition < 0) {
+					position(input.value, newHTML.length - 1);
+				} else {
+					position(input.value, caretPos + delta);
+				}
+			}
 		}
 	},
 });
@@ -116,9 +128,10 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .v-template-input {
-	min-height: var(--input-height);
-	max-height: 350px;
+	position: relative;
+	height: var(--input-height);
 	padding: var(--input-padding);
+	padding-bottom: 32px;
 	overflow: hidden;
 	color: var(--foreground-normal);
 	font-family: var(--family-sans-serif);
@@ -129,9 +142,9 @@ export default defineComponent({
 	transition: border-color var(--fast) var(--transition);
 
 	&.multiline {
-		min-height: var(--input-height-tall);
+		height: var(--input-height-tall);
 		overflow-y: auto;
-		white-space: normal;
+		white-space: pre-line;
 	}
 
 	&:hover {
@@ -144,7 +157,8 @@ export default defineComponent({
 
 	:deep(.preview) {
 		display: inline-block;
-		padding: 4px 8px;
+		margin: 2px;
+		padding: 2px 4px;
 		color: var(--primary);
 		font-size: 0;
 		line-height: 1;
