@@ -43,11 +43,11 @@
 		"@rollup/plugin-json": "4.1.0",
 		"@rollup/plugin-node-resolve": "13.0.6",
 		"rimraf": "3.0.2",
-		"rollup": "2.59.0",
+		"rollup": "2.60.1",
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",
-		"rollup-plugin-typescript2": "0.30.0",
-		"typescript": "4.4.4"
+		"rollup-plugin-typescript2": "0.31.0",
+		"typescript": "4.5.2"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
 }

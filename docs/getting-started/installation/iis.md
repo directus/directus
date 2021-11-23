@@ -1,11 +1,15 @@
 # IIS (Internet Information Services)
 
-Deploying directus to IIS will require [iisnode](https://github.com/Azure/iisnode), an entrypoint file, and some
+Deploying directus to IIS will require [iisnode](https://github.com/Azure/iisnode), the IIS URL Rewrite module, an entrypoint file, and some
 specific web.config configurations.
 
-# iisnode
+## iisnode
 
 iisnode can be downloaded from the [azure/iisnode releases](https://github.com/Azure/iisnode/releases) page.
+
+## IIS URL Rewrite module
+
+The URL Rewrite module can be downloaded from the [Microsoft IIS website](https://www.iis.net/downloads/microsoft/url-rewrite).
 
 ## Entrypoint
 
