@@ -49,7 +49,7 @@
 <script lang="ts">
 import LanguageSelect from './language-select.vue';
 import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } from 'vue';
-import { useFieldsStore, useRelationsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, useUserStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
@@ -86,9 +86,9 @@ export default defineComponent({
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { collection, field } = toRefs(props);
-		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
+
+		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
 
 		const { width } = useWindowSize();
@@ -164,7 +164,6 @@ export default defineComponent({
 			firstItem,
 			secondItem,
 			updateValue,
-			relationsStore,
 			firstItemInitial,
 			secondItemInitial,
 			splitViewAvailable,
@@ -281,7 +280,7 @@ export default defineComponent({
 					if (
 						newVal &&
 						newVal !== oldVal &&
-						newVal?.every((item) => typeof item === 'string' || typeof item === 'number' || typeof item === 'object')
+						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
 					) {
 						loadItems();
 					}
@@ -355,7 +354,7 @@ export default defineComponent({
 					});
 
 					items.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 					unexpectedError(err);
 				} finally {

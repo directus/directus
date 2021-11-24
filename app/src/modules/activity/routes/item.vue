@@ -39,7 +39,7 @@
 				<v-icon name="launch" />
 			</v-button>
 
-			<v-button v-tooltip.bottom="t('done')" to="/notifications" icon rounded>
+			<v-button v-tooltip.bottom="t('done')" to="/activity" icon rounded>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -132,7 +132,7 @@ export default defineComponent({
 		}
 
 		function close() {
-			router.push('/notifications');
+			router.push('/activity');
 		}
 	},
 });
