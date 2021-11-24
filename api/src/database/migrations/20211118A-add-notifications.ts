@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('sender').notNullable().references('id').inTable('directus_users');
 		table.string('subject').notNullable();
 		table.text('message');
-		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
+		table.string('collection', 64);
 		table.string('item');
 	});
 

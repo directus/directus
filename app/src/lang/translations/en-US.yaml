@@ -863,6 +863,7 @@ directus_collection:
   directus_migrations: What version of the database you're using
   directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
+  directus_notifications: Notifications sent to users
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
