@@ -15,9 +15,9 @@
 Use filter hooks when you want the hook to fire before the event. Use action hooks when you want the hook to fire after
 the event.
 
-Hooks can impact performance when not carefully implemented. Filter hooks happen before the event fires making them much
-more susceptible to performance issues. Hooks on `read` actions can also impact performance since a single request can
-result in many database reads.
+Hooks can impact performance when not carefully implemented. Filter hooks happen before the event fires, making them
+much more susceptible to performance issues. Hooks on `read` actions can also impact performance since a single request
+can result in many database reads.
 
 ### Action
 
@@ -248,7 +248,7 @@ Event names consist of multiple scopes delimited by a dot:
 ```
 
 Using the example from step 2, `action()` is the hook type and it receives two arguments. `items.create` is the API
-event that should trigger the hook. It also recieves a callback function that says what the hook should do when the API
+event that should trigger the hook. It also receives a callback function that says what the hook should do when the API
 event occurs.
 
 ```js
