@@ -69,6 +69,7 @@
 		"apexcharts": "3.30.0",
 		"axios": "0.24.0",
 		"base-64": "1.0.0",
+		"caret-pos": "^2.0.0",
 		"codemirror": "5.64.0",
 		"copyfiles": "2.4.1",
 		"cropperjs": "1.5.12",
@@ -101,8 +102,5 @@
 		"vue-router": "4.0.12",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
-	},
-	"dependencies": {
-		"caret-pos": "^2.0.0"
 	}
 }
