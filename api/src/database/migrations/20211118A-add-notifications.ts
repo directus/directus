@@ -4,6 +4,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_notifications', (table) => {
 		table.increments();
 		table.timestamp('timestamp').notNullable();
+		table.string('status').defaultTo('inbox');
 		table.uuid('recipient').references('id').inTable('directus_users').notNullable();
 		table.uuid('sender').references('id').inTable('directus_users');
 		table.string('subject').notNullable();

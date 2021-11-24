@@ -67,6 +67,8 @@ create_webhook: Create Webhook
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
+subject: Subject
+inbox: Inbox
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
@@ -433,6 +435,9 @@ user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
+no_notifications: No Notifications
+no_notifications_copy: You're all caught up!
+activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV

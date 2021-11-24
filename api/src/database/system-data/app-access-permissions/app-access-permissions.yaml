@@ -75,9 +75,16 @@
 - collection: directus_notifications
   action: read
   permissions:
-    id:
+    recipient:
       _eq: $CURRENT_USER
   fields: '*'
+
+- collection: directus_notifications
+  action: update
+  permissions:
+    recipient:
+      _eq: $CURRENT_USER
+  fields: 'status'
 
 - collection: directus_users
   action: read

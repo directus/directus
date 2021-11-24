@@ -84,7 +84,7 @@ ${comment}
 					await this.notificationsService.createOne({
 						recipient: userID,
 						sender: this.accountability?.user,
-						subject: 'You were mentioned!',
+						subject: `You were mentioned in ${data.collection}`,
 						message,
 						collection: data.collection,
 						item: data.item,
