@@ -1,6 +1,6 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;
@@ -241,6 +241,7 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 
 function generateFields(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
 	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
 	const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(state.collection!);
 	const junctionCollection = getCurrent('relations.o2m.collection');
 	const junctionCurrent = getCurrent('relations.o2m.field');
@@ -249,6 +250,13 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 	const relatedCollection = getCurrent('relations.m2o.related_collection');
 	const relatedPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection) ?? getCurrent('collections.related.fields[0]');
+	const existsJunctionRelated = relationsStore.relations.find(
+		(relation) => relation.collection === junctionCollection && relation.field === junctionRelated
+	);
+
+	if (existsJunctionRelated) {
+		set(updates, 'relations.m2o.meta.one_field', existsJunctionRelated.meta?.one_field);
+	}
 
 	if (junctionCollection && junctionCurrent && fieldExists(junctionCollection, junctionCurrent) === false) {
 		set(updates, 'fields.junctionCurrent', {
