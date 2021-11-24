@@ -26,7 +26,7 @@
 					v-tooltip="collapseTooltip"
 					:name="collapseIcon"
 					:clickable="nestedCollections.length > 0"
-					@click.stop="toggleCollapse"
+					@click.stop.prevent="toggleCollapse"
 				/>
 				<v-icon v-else :name="collapseIcon" />
 			</template>
