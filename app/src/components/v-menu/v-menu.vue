@@ -1,5 +1,5 @@
 <template>
-	<div class="v-menu" @click="onClick" @keydown="onKeyDown">
+	<div class="v-menu" @click="onClick">
 		<div
 			ref="activator"
 			class="v-menu-activator"
@@ -86,10 +86,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		triggerKeyPressed: {
-			type: Boolean,
-			default: false,
-		},
 		showArrow: {
 			type: Boolean,
 			default: false,
@@ -167,12 +163,11 @@ export default defineComponent({
 			}
 		});
 
-		const { onClick, onPointerEnter, onPointerLeave, onKeyDown } = useEvents();
+		const { onClick, onPointerEnter, onPointerLeave } = useEvents();
 
 		const hoveringOnPopperContent = ref(false);
 
 		return {
-			onKeyDown,
 			id,
 			activator,
 			popper,
@@ -275,21 +270,12 @@ export default defineComponent({
 				}, props.delay)
 			);
 
-			return { onClick, onPointerLeave, onPointerEnter, onKeyDown };
+			return { onClick, onPointerLeave, onPointerEnter };
 
 			function onClick() {
 				if (props.trigger !== 'click') return;
 
 				toggle();
-			}
-
-			function onKeyDown() {
-				if (props.trigger !== 'keyDown') return;
-				if (props.triggerKeyPressed) {
-					isActive.value = true;
-				} else {
-					isActive.value = false;
-				}
 			}
 
 			function onPointerEnter() {
