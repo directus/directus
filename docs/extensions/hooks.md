@@ -40,11 +40,7 @@ The context object has the following properties:
 
 Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
 
-Below is an example of how to check a create event's payload.
-
-Below is how to modify a create event.
-
-Below is an example of how you can cancel a `create` event by throwing a standard Directus exception.
+Below is an example of canceling a `create` event by throwing a standard Directus exception.
 
 ```js
 module.exports = function registerHook({ filter }, { exceptions }) {
@@ -81,9 +77,6 @@ The context object has the following properties:
 
 An init event executes at a defined point within the lifecycle of Directus. Use init event objects to inject logic into
 internal services. A common use case for the init event is to be able to
-
-init are for powerusers app === express app not admin app track api usage, server init adds global middleware adding
-custom cli commands
 
 The init register function receives two parameters:
 
