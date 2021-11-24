@@ -97,7 +97,7 @@ export default defineComponent({
 		trigger: {
 			type: String,
 			default: null,
-			validator: (val: string) => ['hover', 'click'].includes(val),
+			validator: (val: string) => ['hover', 'click', 'keyDown'].includes(val),
 		},
 		delay: {
 			type: Number,
