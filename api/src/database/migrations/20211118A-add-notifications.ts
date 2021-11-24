@@ -12,8 +12,18 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
 		table.string('item');
 	});
+
+	await knex.schema.alterTable('directus_users', (table) => {
+		table.boolean('email_notifications').defaultTo(true);
+	});
+
+	await knex('directus_users').update({ email_notifications: true });
 }
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.dropTable('directus_notifications');
+
+	await knex.schema.alterTable('directus_users', (table) => {
+		table.dropColumn('email_notifications');
+	});
 }

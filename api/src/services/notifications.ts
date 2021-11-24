@@ -29,9 +29,9 @@ export class NotificationsService extends ItemsService {
 
 	async sendEmail(data: Partial<Notification>) {
 		if (data.recipient) {
-			const user = await this.usersService.readOne(data.recipient, { fields: ['email'] });
+			const user = await this.usersService.readOne(data.recipient, { fields: ['email', 'email_notifications'] });
 
-			if (user.email) {
+			if (user.email && user.email_notifications === true) {
 				await this.mailService.send({
 					template: {
 						name: 'base',
