@@ -5,11 +5,11 @@ export async function up(knex: Knex): Promise<void> {
 		table.increments();
 		table.timestamp('timestamp').notNullable();
 		table.string('status').defaultTo('inbox');
-		table.uuid('recipient').notNullable();
-		table.uuid('sender');
+		table.uuid('recipient').notNullable().references('id').inTable('directus_users').onDelete('CASCADE');
+		table.uuid('sender').notNullable().references('id').inTable('directus_users');
 		table.string('subject').notNullable();
 		table.text('message');
-		table.string('collection', 64);
+		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
 		table.string('item');
 	});
 }
