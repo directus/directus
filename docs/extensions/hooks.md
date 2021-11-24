@@ -16,7 +16,7 @@ Use filter hooks when you want the hook to fire before the event. Use action hoo
 the event.
 
 Hooks can impact performance when not carefully implemented. Filter hooks happen before the event fires making them much
-more susceptible to performance issues. Hooks on `read` actions can also impact performance since single request can
+more susceptible to performance issues. Hooks on `read` actions can also impact performance since a single request can
 result in many database reads.
 
 ### Action
@@ -40,15 +40,20 @@ The context object has the following properties:
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
-```js
-module.exports = function registerHook({ action }) {
-	action('server.start', async (input) => {
-		if (LOGIC_TO_CANCEL_EVENT) {
-			throw new InvalidPayloadException(WHAT_IS_WRONG);
-		}
+An example of restricting CRUD events to administrator accounts:
 
-		return input;
-	});
+```js
+module.exports = function registerHook({ action, { exceptions } }) {
+	const { ForbiddenException } = exceptions;
+
+	const adminOnly = async (_, { accountability }) => {
+		if (accountability.admin !== true) throw new ForbiddenException();
+	};
+
+	action('items.create', adminOnly);
+	action('items.read', adminOnly);
+	action('items.update', adminOnly);
+	action('items.delete', adminOnly);
 };
 ```
 
@@ -189,7 +194,8 @@ module.exports = function registerHook({ schedule }) {
 ### 1. Create a Hook File
 
 Custom hooks are dynamically loaded from within your extensions folder. By default, this directory is located at
-`/extensions`, but it can be configured within your project's env file to be located anywhere.
+`/extensions`, but it can be configured within your project's env file to be located anywhere. The hook-id is the name
+of your hook.
 
 #### Default Standalone Hook Location
 
@@ -197,38 +203,7 @@ Custom hooks are dynamically loaded from within your extensions folder. By defau
 /extensions/hooks/<hook-id>/index.js
 ```
 
-### 2. Define the Event
-
-Next, you will want to define your event. You can trigger your custom hook with any of the platform's many API events.
-An event is defined by its type and its name.
-
-Event names consist of multiple scopes delimited by a dot:
-
-```
-<scope>.<scope>...
-// eg: items.create
-// eg: users.update
-// eg: auth.login
-// eg: routes.custom.before
-```
-
-### 3. Register your Hook
-
-Each custom hook is registered to its event scope using a function with the following format:
-
-```js
-const axios = require('axios');
-
-module.exports = function registerHook({ action }) {
-	action('items.create', () => {
-		axios.post('http://example.com/webhook');
-	});
-};
-```
-
-### 4. Develop your Custom Hook
-
-#### Register Function
+### 2. Register your Hook
 
 The `registerHook` function receives an object containing the type-specific register functions as the first parameter:
 
@@ -246,7 +221,47 @@ A second parameter is a context object with the following properties:
 - `env` — Parsed environment variables
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
-### 5. Restart the API
+Each custom hook is registered to its event scope using a function with the following format:
+
+```js
+const axios = require('axios');
+
+module.exports = function registerHook({ action }) {
+	action('items.create', () => {
+		axios.post('http://example.com/webhook');
+	});
+};
+```
+
+### 3. Develop your Custom Hook
+
+Trigger your custom hook with any of the platform's many API events.
+
+Event names consist of multiple scopes delimited by a dot:
+
+```
+<scope>.<scope>...
+// eg: items.create
+// eg: users.update
+// eg: auth.login
+// eg: routes.custom.before
+```
+
+Using the example from step 2, `action()` is the hook type and it receives two arguments. `items.create` is the API
+event that should trigger the hook. It also recieves a callback function that says what the hook should do when the API
+event occurs.
+
+```js
+const axios = require('axios');
+
+module.exports = function registerHook({ action }) {
+	action('items.create', () => {
+		axios.post('http://example.com/webhook');
+	});
+};
+```
+
+### 4. Restart the API
 
 To deploy your hook, restart the API by running:
 
