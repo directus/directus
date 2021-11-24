@@ -15,6 +15,10 @@
 Use filter hooks when you want the hook to fire before the event. Use action hooks when you want the hook to fire after
 the event.
 
+Hooks can impact performance when not carefully implemented. Filter hooks happen before the event fires making them much
+more susceptible to performance issues. Hooks on `read` actions can also impact performance since single request can
+result in many database reads.
+
 ### Action
 
 An action event executes after a defined event and receives data related to the event. Use actions hooks when you need
@@ -35,6 +39,18 @@ The context object has the following properties:
 - `database` — The current database transaction
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
+
+```js
+module.exports = function registerHook({ action }) {
+	action('server.start', async (input) => {
+		if (LOGIC_TO_CANCEL_EVENT) {
+			throw new InvalidPayloadException(WHAT_IS_WRONG);
+		}
+
+		return input;
+	});
+};
+```
 
 ### Filter
 
@@ -76,7 +92,7 @@ The context object has the following properties:
 ### Init
 
 An init event executes at a defined point within the lifecycle of Directus. Use init event objects to inject logic into
-internal services. A common use case for the init event is to be able to
+internal services.
 
 The init register function receives two parameters:
 
@@ -196,8 +212,6 @@ Event names consist of multiple scopes delimited by a dot:
 // eg: routes.custom.before
 ```
 
-There are four event types to choose between.
-
 ### 3. Register your Hook
 
 Each custom hook is registered to its event scope using a function with the following format:
@@ -213,9 +227,6 @@ module.exports = function registerHook({ action }) {
 ```
 
 ### 4. Develop your Custom Hook
-
-> Hooks can impact performance when not carefully implemented. This is especially true for filter hooks (as these are
-> blocking) and hooks on `read` actions, as a single request can result in a large number of database reads.
 
 #### Register Function
 
