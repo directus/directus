@@ -66,6 +66,7 @@ import { FoldersService } from './folders';
 import { ItemsService } from './items';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
+import { NotificationsService } from './notifications';
 import { RelationsService } from './relations';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
@@ -197,6 +198,7 @@ export class GraphQLService {
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
+
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
@@ -1519,6 +1521,8 @@ export class GraphQLService {
 				return new PermissionsService(opts);
 			case 'directus_presets':
 				return new PresetsService(opts);
+			case 'directus_notifications':
+				return new NotificationsService(opts);
 			case 'directus_revisions':
 				return new RevisionsService(opts);
 			case 'directus_roles':
