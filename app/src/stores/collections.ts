@@ -10,6 +10,7 @@ import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { isEqual, orderBy, omit } from 'lodash';
+import { useRelationsStore } from './relations';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
