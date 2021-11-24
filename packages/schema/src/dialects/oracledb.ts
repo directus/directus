@@ -44,6 +44,9 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			max_length: number | null;
 		};
 
+		/**
+		 * NOTICE: This query is optimized for speed. Please keep this in mind.
+		 */
 		const columns = await this.knex.raw<RawColumn[]>(`
 			WITH "uc" AS (
 				SELECT /*+ materialize */
@@ -51,8 +54,16 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 					"ucc"."COLUMN_NAME",
 					"uc"."CONSTRAINT_TYPE"
 				FROM "USER_CONSTRAINTS" "uc"
-				INNER JOIN "USER_CONS_COLUMNS" "ucc" ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
-				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
+				INNER JOIN (
+					SELECT
+						"COLUMN_NAME",
+						"CONSTRAINT_NAME",
+						COUNT(*) OVER(PARTITION BY "CONSTRAINT_NAME") "INDEX_COLUMN_COUNT"
+					FROM "USER_CONS_COLUMNS"
+				) "ucc"
+					ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
+					AND "uc"."CONSTRAINT_TYPE" = 'P'
+					AND "ucc"."INDEX_COLUMN_COUNT" = 1
 			)
 			SELECT
 				"c"."TABLE_NAME" "table_name",
@@ -66,7 +77,8 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				"c"."CHAR_LENGTH" "max_length",
 				"c"."VIRTUAL_COLUMN" "is_generated"
 			FROM "USER_TAB_COLS" "c"
-			LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
+			LEFT JOIN "uc" "ct"
+				ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
 				AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
 			WHERE "c"."HIDDEN_COLUMN" = 'NO'
 		`);
