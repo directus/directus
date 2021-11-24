@@ -10,7 +10,7 @@ import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { isEqual, orderBy, omit } from 'lodash';
-import { useFieldsStore, useRelationsStore } from '.';
+import { useRelationsStore } from './relations';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
@@ -93,7 +93,6 @@ export const useCollectionsStore = defineStore({
 			});
 		},
 		async upsertCollection(collection: string, values: DeepPartial<Collection & { fields: Field[] }>) {
-			const fieldsStore = useFieldsStore();
 			const existing = this.getCollection(collection);
 
 			// Strip out any fields the app might've auto-generated at some point
@@ -122,8 +121,6 @@ export const useCollectionsStore = defineStore({
 				}
 			} catch (err: any) {
 				unexpectedError(err);
-			} finally {
-				await fieldsStore.hydrate();
 			}
 		},
 		async updateCollection(collection: string, updates: DeepPartial<Collection>) {
