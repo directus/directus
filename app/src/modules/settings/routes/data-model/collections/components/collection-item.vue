@@ -1,10 +1,17 @@
 <template>
 	<div class="collection-item">
-		<v-list-item block dense clickable :class="{ hidden: collection.meta?.hidden }">
+		<v-list-item
+			block
+			dense
+			clickable
+			:class="{ hidden: collection.meta?.hidden }"
+			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
+			@click="!collection.schema ? $emit('editCollection', $event) : null"
+		>
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>
-			<div class="collection-name" @click="openCollection(collection)">
+			<div class="collection-name">
 				<v-icon
 					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
 					class="collection-icon"
@@ -19,7 +26,7 @@
 					v-tooltip="collapseTooltip"
 					:name="collapseIcon"
 					:clickable="nestedCollections.length > 0"
-					@click="toggleCollapse"
+					@click.stop.prevent="toggleCollapse"
 				/>
 				<v-icon v-else :name="collapseIcon" />
 			</template>
@@ -52,7 +59,6 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import CollectionOptions from './collection-options.vue';
 import { Collection } from '@/types';
-import { useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import { useCollectionsStore } from '@/stores';
 import { DeepPartial } from '@directus/shared/types';
@@ -79,7 +85,6 @@ export default defineComponent({
 	emits: ['setNestedSort', 'editCollection'],
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
-		const router = useRouter();
 		const { t } = useI18n();
 
 		const nestedCollections = computed(() =>
@@ -116,7 +121,6 @@ export default defineComponent({
 
 		return {
 			collapseIcon,
-			openCollection,
 			onGroupSortChange,
 			nestedCollections,
 			update,
@@ -140,7 +144,7 @@ export default defineComponent({
 
 			try {
 				await update({ meta: { collapse: newCollapse } });
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				collapseLoading.value = false;
@@ -149,14 +153,6 @@ export default defineComponent({
 
 		async function update(updates: DeepPartial<Collection>) {
 			await collectionsStore.updateCollection(props.collection.collection, updates);
-		}
-
-		function openCollection(collection: Collection) {
-			if (collection.schema) {
-				router.push(`/settings/data-model/${collection.collection}`);
-			} else {
-				emit('editCollection', collection);
-			}
 		}
 
 		function onGroupSortChange(collections: Collection[]) {
