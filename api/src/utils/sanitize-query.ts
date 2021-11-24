@@ -114,7 +114,7 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
-	let filters: Filter = rawFilter;
+	let filters: Filter | null = rawFilter;
 
 	if (typeof rawFilter === 'string') {
 		try {
@@ -136,9 +136,7 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 		}
 	});
 
-	filters = parseFilter(filters, accountability);
-
-	return filters;
+	return parseFilter(filters, accountability);
 }
 
 function sanitizeLimit(rawLimit: any) {
