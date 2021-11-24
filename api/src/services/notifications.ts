@@ -16,7 +16,6 @@ export class NotificationsService extends ItemsService {
 
 	async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.sendEmail(data);
-
 		return super.createOne(data, opts);
 	}
 

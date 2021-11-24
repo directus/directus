@@ -6,7 +6,6 @@ fields:
     special: date-created
   - field: recipient
   - field: sender
-    special: user-created
   - field: subject
   - field: message
   - field: collection

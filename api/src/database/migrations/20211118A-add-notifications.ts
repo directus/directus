@@ -5,12 +5,12 @@ export async function up(knex: Knex): Promise<void> {
 		table.increments();
 		table.timestamp('timestamp').notNullable();
 		table.string('status').defaultTo('inbox');
-		table.uuid('recipient').references('id').inTable('directus_users').notNullable();
-		table.uuid('sender').references('id').inTable('directus_users');
+		table.uuid('recipient').notNullable();
+		table.uuid('sender');
 		table.string('subject').notNullable();
 		table.text('message');
-		table.string('collection', 64).references('collection').inTable('directus_collections');
-		table.string('item'); // Any ID
+		table.string('collection', 64);
+		table.string('item');
 	});
 }
 
