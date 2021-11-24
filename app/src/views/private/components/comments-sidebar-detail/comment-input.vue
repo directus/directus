@@ -53,7 +53,6 @@ import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
 import { userName } from '@/utils/user-name';
-import { useCaret } from '@/composables/use-caret';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { throttle } from 'lodash';
 import axios, { CancelTokenSource } from 'axios';
@@ -125,8 +124,6 @@ export default defineComponent({
 
 		let triggerCaretPosition = 0;
 
-		const { caretPosition } = useCaret(textarea);
-
 		let cancelToken: CancelTokenSource | null = null;
 
 		const loadUsers = throttle(async (name: string) => {
@@ -197,7 +194,6 @@ export default defineComponent({
 			textarea,
 			showMentionDropDown,
 			searchResult,
-			caretPosition,
 			avatarSource,
 			userName,
 			triggerSearch,
