@@ -13,6 +13,7 @@
 				>
 					<div class="preview">
 						<template v-if="inter.preview">
+							<!-- eslint-disable-next-line vue/no-v-html -->
 							<span v-if="isSVG(inter.preview)" v-html="inter.preview" />
 							<img v-else :src="inter.preview" alt="" />
 						</template>
@@ -232,16 +233,18 @@ export default defineComponent({
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 8px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--primary-50));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-50);
+	--v-icon-color: var(--primary-75);
 
 	display: block;
 	padding: 8px 16px;
+	background-color: var(--background-page);
+	border: 2px solid var(--primary);
 	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-50);
+	box-shadow: 0 0 8px var(--primary-75);
 }
 
 .interface:hover .preview {
@@ -254,7 +257,15 @@ export default defineComponent({
 }
 
 .interface.gray .preview {
+	--primary: var(--foreground-subdued);
+	--primary-50: var(--foreground-subdued);
+
 	background-color: var(--background-subdued);
-	filter: grayscale(1);
+}
+
+.interface.gray .preview .fallback {
+	--v-icon-color: var(--foreground-subdued);
+
+	box-shadow: 0 0 8px var(--foreground-subdued);
 }
 </style>

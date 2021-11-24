@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: آواتار
 default_provider: پیش‌فرض
 published: منتشر شد
@@ -174,6 +154,8 @@ key: کلید
 alias: نام مستعار
 bigInteger: عدد صحیح بزرگ
 boolean: بولین
+auto_refresh: تازه نمودن خودکار
+click_here: اینجا کلیک کنید
 single_file: فیلتر تک
 multiple_files: چندین فیلتر
 m2o_relationship: رابطه بسیار به یک
@@ -222,6 +204,20 @@ revision_preview: پیش نمایش ویرایش
 updates_made: حالت ارتقاء
 leave_comment: درج پیغام...
 post_comment_success: دیدگاه منتشر شد
+today: امروز
+yesterday: دیروز
+delete_comment: حذف دیدگاه
+minutes: دقیقه
+hours: ساعت
+month: ماه
+year: سال
+select_all: انتخاب همه
+months:
+  january: فروردین
+  february: اردیبهشت
+  march: اسفند
+  april: تیر
+  october: مهر
 cancel_crop: لغو برش
 original: اصیل و اصلی
 url: نشانی ‌URL
@@ -267,6 +263,7 @@ value_unique: مقدار باید یکتا باشد
 wysiwyg_options:
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
+  selectall: انتخاب همه
 fields:
   directus_collections:
     note: شرح
@@ -278,6 +275,8 @@ fields:
   directus_users:
     title: عنوان
     language: زبان
+  directus_settings:
+    module_bar: ماژول
   directus_fields:
     note: شرح
     translation: ترجمه‌های نام فیلد
@@ -292,9 +291,6 @@ field_options:
   directus_roles:
     fields:
       name_name: نام
-    collection_list:
-      fields:
-        type_name: نوع
 limit: محدوده
 interfaces:
   presentation-links:

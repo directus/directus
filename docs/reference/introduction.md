@@ -22,21 +22,21 @@ Which one you choose is ultimately up to you.
 
 ## Authentication
 
-By default, all data in the system is off limits for unauthenticated users. To gain access to protected data, you must
+By default, all data in the system is off-limits for unauthenticated users. To gain access to protected data, you must
 [include an access token with every request](/reference/authentication/#access-tokens), or
-[configure permissions for the public role](/concepts/roles/#public-role).
+[configure permissions for the public role](/getting-started/quickstart/#_6-set-role-public-permissions).
 
 Useful references:
 
 - [Authenticating into the API](/reference/authentication/)
-- [Login endpoint reference](reference/authentication/#login)
+- [Login endpoint reference](/reference/authentication/#login)
 
 ## Relational Data
 
 Directus only retrieves the fields in your items that explicitly have been requested. Relational data can be retrieved
-nested by using the [the `fields` parameter](/reference/query/#fields) in REST, or regular nested queries in GraphQL.
-This allows you to retrieve the author of your article included in the articles data, or fetch related log entry points
-for your app's analytics data for example.
+nested by using [the `fields` parameter](/reference/query/#fields) in REST, or regular nested queries in GraphQL. This
+allows you to retrieve the author of your article included in the articles data, or fetch related log entry points for
+your app's analytics data for example.
 
 ### Creating / Updating / Deleting
 
@@ -239,7 +239,7 @@ or to rely on a different method altogether. As of right now, we've chosen
 While we recognize this is still a draft spec, the SEARCH method has been used extensively before in the WebDAV world
 ([spec](https://tools.ietf.org/html/rfc5323)), and compared to the other available options, it feels like the "cleanest"
 and most correct to handle this moving forward. As with everything else, if you have any ideas, opinions, or concerns,
-[we'd love to hear your thoughts](http://github.com/directus/directus/discussions/new).
+[we'd love to hear your thoughts](https://github.com/directus/directus/discussions/new).
 
 Useful reading:
 

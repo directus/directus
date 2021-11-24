@@ -1,7 +1,7 @@
 # Custom Modules <small></small>
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
-> platform. [Learn more about Modules](/concepts/modules/).
+> platform. [Learn more about Modules](/getting-started/glossary/#modules).
 
 ## 1. Setup the Boilerplate
 
@@ -34,7 +34,8 @@ export default {
 
 - `id` — The unique key for this module. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` — The human-readable name for this module.
-- `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+  Directus custom icons.
 - `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
   serving as the base path.
 
@@ -150,7 +151,7 @@ the root of the `package.json` file:
 
 ## 3. Develop Your Custom Module
 
-The module itself is simply a Vue component, which provides an blank canvas for creating anything you need.
+The module itself is simply a Vue component, which provides a blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 

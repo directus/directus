@@ -1,7 +1,7 @@
 # Custom Displays <small></small>
 
 > Displays are small inline components that allow you to create new ways of viewing field values throughout the App.
-> [Learn more about Displays](/concepts/displays/).
+> [Learn more about Displays](/getting-started/glossary/#displays).
 
 ## 1. Setup the Boilerplate
 
@@ -32,9 +32,10 @@ export default {
 - `id` — The unique key for this display. It is good practice to scope proprietary displays with an author prefix.
 - `name` — The human-readable name for this display.
 - `description` — A short description (<80 characters) of this display shown in the App.
-- `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+  Directus custom icons.
 - `component` — A reference to your Vue component.
-- `types` — A CSV of supported [types](/concepts/types/).
+- `types` — A CSV of supported [types](/getting-started/glossary/#types).
 
 ::: tip
 
@@ -59,7 +60,7 @@ export default {
 </script>
 ```
 
-The props you can use in an display are:
+The props you can use in a display are:
 
 - `value` — The value of the parent field.
 - `interface` - The interface of the parent field.

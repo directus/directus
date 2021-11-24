@@ -29,8 +29,8 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/configuration/installation/digitalocean-app-platform/) or
-[AWS Elastic Beanstalk](/configuration/installation/aws)
+[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/) or
+[AWS Elastic Beanstalk](/getting-started/installation/aws)
 
 ::: tip First User
 
@@ -144,7 +144,7 @@ It's also worth mentioning that everything is data. Try for example running `dir
 #### Table
 
 The default output format. This is the "pretty" output, you'll most likely want to use this if you're not dealing with
-data in a way you need to pipe it to another command and/or store it it for parsing.
+data in a way you need to pipe it to another command and/or store it for parsing.
 
 This output will output colors and highlight content if it detects you're running in TTL.
 

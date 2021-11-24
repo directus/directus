@@ -7,8 +7,9 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> All data within the platform is private by default. The [public role](#) can be configured to expose data without
-> authentication, or you can pass an access token to the API to access private data.
+> All data within the platform is private by default. The
+> [public role](/configuration/users-roles-permissions/#configuring-public-permissions) can be configured to expose data
+> without authentication, or you can pass an access token to the API to access private data.
 
 </div>
 

@@ -36,6 +36,15 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
 				.then((issuer) => {
+					const supportedTypes = issuer.metadata.response_types_supported as string[] | undefined;
+					if (!supportedTypes?.includes('code')) {
+						reject(
+							new InvalidConfigException('OpenID provider does not support required code flow', {
+								provider: additionalConfig.provider,
+							})
+						);
+					}
+
 					resolve(
 						new issuer.Client({
 							client_id: clientId,
@@ -56,10 +65,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	async generateAuthUrl(codeVerifier: string): Promise<string> {
 		try {
 			const client = await this.client;
+			const codeChallenge = generators.codeChallenge(codeVerifier);
 			return client.authorizationUrl({
 				scope: this.config.scope ?? 'openid profile email',
-				code_challenge: generators.codeChallenge(codeVerifier),
+				code_challenge: codeChallenge,
 				code_challenge_method: 'S256',
+				// Some providers require state even with PKCE
+				state: codeChallenge,
 				access_type: 'offline',
 			});
 		} catch (e) {
@@ -89,10 +101,16 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const client = await this.client;
 			tokenSet = await client.callback(
 				this.redirectUrl,
-				{ code: payload.code },
-				{ code_verifier: payload.codeVerifier }
+				{ code: payload.code, state: payload.state },
+				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
-			userInfo = await client.userinfo(tokenSet);
+
+			const issuer = client.issuer;
+			if (issuer.metadata.userinfo_endpoint) {
+				userInfo = await client.userinfo(tokenSet.access_token!);
+			} else {
+				userInfo = tokenSet.claims();
+			}
 		} catch (e) {
 			throw handleError(e);
 		}
@@ -140,8 +158,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User, sessionData: SessionData): Promise<SessionData> {
-		return this.refresh(user, sessionData);
+	async login(user: User): Promise<SessionData> {
+		return this.refresh(user, null);
 	}
 
 	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
@@ -240,13 +258,14 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`openid.${providerName}`);
 
-				if (!req.query.code) {
-					logger.warn(`Couldn't extract OAuth2 code from query: ${JSON.stringify(req.query)}`);
+				if (!req.query.code || !req.query.state) {
+					logger.warn(`Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,
 					codeVerifier: verifier,
+					state: req.query.state,
 				});
 			} catch (error: any) {
 				logger.warn(error);

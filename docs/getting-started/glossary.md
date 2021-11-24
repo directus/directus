@@ -70,18 +70,6 @@ This means there is also the possibility of supporting other datastores in the f
 MongoDB, or even third-party data services like Firebase or Heroku. However these options are _fundamentally_ different
 from the relational SQL databases we currently support, and so more research is needed.
 
-## Database Mirroring
-
-**Instead of using a predefined “one-size-fits-all” data model to store your content, Directus “mirrors” your actual SQL
-database in real-time.** The principle is akin to a database client (like _phpMyAdmin_), but includes far more advanced
-tools, and is safe and intuitive enough for non-technical users. This approach has many unique advantages:
-
-- A custom (pure) SQL database schema, tailored to your exact requirements
-- Significant performance improvements through optimizations and indexing
-- Complete transparency, portability, and security for your data
-- Direct database access and the full power of raw/complex SQL queries
-- Allows importing existing databases, unaltered and without any migrations
-
 ## Displays
 
 Displays are the smaller, read-only counterpart to [Interfaces](#interfaces), defining how a field's data will be
@@ -120,7 +108,7 @@ migrations to promote data between them.
 The platform has been built to be modular and extensible. This helps keep the core codebase simple and clean (see the
 [80/20 Rule](/contributing/introduction/#feature-requests)), while allowing the flexibility needed to satisfy all
 use-cases... no matter how complex. There are many different types of supported extensions, each offering a way to
-deeply customize, override, or extend the core platform. [Learn more about Extension Types](#).
+deeply customize, override, or extend the core platform. [Learn more about Extensions](/extensions/introduction/).
 
 ## Fields
 
@@ -142,6 +130,21 @@ As you might have guessed, files includes images, videos, PDFs, text documents, 
 technically be stored as code in the database, it is far more common to manage them as individual assets on a "drive".
 The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
 an excellent Digital Asset Management system.
+
+## Icons
+
+### Material Icons
+
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
+outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
+`account_circle_outline`.
+
+### Social Icons
+
+They are Font Awesome 5's brands icons. Full list of icons
+[can be found here](https://fontawesome.com/v5.15/icons?d=gallery&s=brands). When using them as one of the auth provider
+icons, make sure to use underscores, such as `blogger_b` for
+[blogger-b](https://fontawesome.com/v5.15/icons/blogger-b?style=brands) icon.
 
 ## Interfaces
 
@@ -169,9 +172,9 @@ Items are referenced (both individually and relationally) by their unique [prima
 
 #### Relevant Guides
 
-- [Creating an Item](/guides/items/#creating-an-item)
+- [Creating an Item](/app/content-collections/#creating-an-item)
 - [Archiving an Item](/app/content-items/#archiving-an-item)
-- [Reordering Items](/guides/items/#reordering-items)
+- [Manually Sorting Items](/app/content-collections/#manually-sorting-items)
 - [Deleting an Item](/app/content-items/#deleting-an-item)
 
 ## Junction Collections
@@ -239,7 +242,8 @@ two main ways to achieve multitenancy:
 ## Panels
 
 Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a
-[Dashboard](#dashboards) and can be positioned and resized as needed. [Panels are a Modular Extension Type](#).
+[Dashboard](#dashboards) and can be positioned and resized as needed.
+[Panels are a Modular Extension Type](/extensions/panels/).
 
 ## Permissions
 
@@ -248,8 +252,8 @@ platform. Extremely granular, these filter-based permissions control access for 
 
 ## Presets
 
-Presets store the exact state of a [collection page](#collections) page. They are used to set layout defaults for a
-user, or to define bookmarks that can be used to quickly recall specific datasets.
+Presets store the exact state of a [collection page](#collections). They are used to set layout defaults for a user, or
+to define bookmarks that can be used to quickly recall specific datasets.
 
 #### Relevant Guides
 
@@ -269,13 +273,13 @@ often called `id`.
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](/dead)
-- [Configuring a Project](/dead)
+- [Creating a Project](/getting-started/installation/)
+- [Configuring a Project](/configuration/config-options/)
 - [Adjusting Project Settings](/configuration/project-settings/)
-- [Upgrading a Project](/dead)
-- [Backing-up a Project](/dead)
-- [Migrating a Project](/dead)
-- [Deleting a Project](/dead)
+- [Upgrading a Project](/configuration/upgrades-migrations/)
+- [Backing-up a Project](/configuration/upgrades-migrations/#backing-up-a-project)
+- [Migrating a Project](/configuration/upgrades-migrations/#migrating-a-project)
+- [Deleting a Project](/configuration/upgrades-migrations/#deleting-a-project)
 
 ## Relationships
 

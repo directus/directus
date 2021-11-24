@@ -1,13 +1,13 @@
+import { Router } from 'express';
 import argon2 from 'argon2';
+import ms from 'ms';
+import Joi from 'joi';
 import { AuthDriver } from '../auth';
 import { User, SessionData } from '../../types';
 import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
 import { AuthenticationService } from '../../services';
-import { Router } from 'express';
-import Joi from 'joi';
 import asyncHandler from '../../utils/async-handler';
 import env from '../../env';
-import ms from 'ms';
 import { respond } from '../../middleware/respond';
 
 export class LocalAuthDriver extends AuthDriver {

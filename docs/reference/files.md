@@ -87,8 +87,8 @@ exist, it is dynamically generated and immediately returned.
 
 ### Preset Transformations
 
-- **`key`** — This **key** of the [Storage Asset Preset](/guides/files#creating-thumbnail-presets), a shortcut for the
-  below parameters
+- **`key`** — This **key** of the [Storage Asset Preset](/configuration/project-settings/#files-thumbnails), a shortcut
+  for the below parameters
 
 ### Custom Transformations
 
@@ -399,7 +399,7 @@ Upload/create a new file.
 
 To upload a file, use `multipart/form-data` as the encoding type, instead of JSON.
 
-The file contents has to to be provided in a part called `file`. All other properties of
+The file contents has to be provided in a part called `file`. All other properties of
 [the file object](#the-file-object) can be provided as parts as well.
 
 ::: tip Order Matters

@@ -24,8 +24,8 @@ Each preset saves all of the information needed to recreate a view of the collec
 - **Layout** — The Layout the preset applies to
 - **Layout Query** — Order direction, order field, pagination, etc
 - **Layout Options** — The configuration of all layout options
-- **Search** — Any fulltext search query applied
-- **Filters** — Any advanced fitlers applied
+- **Search** — Any full-text search query applied
+- **Filters** — Any advanced filters applied
 - **User** — Optional; scopes to a specific user
 - **Role** — Optional; scopes to a specific role
 - **Bookmark Name** — Optional; determines if the preset is a bookmark
@@ -35,7 +35,7 @@ Each preset saves all of the information needed to recreate a view of the collec
 It's important to be aware of the difference between a collection's _defaults_ and its _bookmarks_, both of which are
 configured by presets. A _default_ is how a user will initially view the collection detail without any further
 customization, while a _bookmark_ is a named dataset that can be recalled at any point via the
-[collection navigation](/guides/roles/#customizing-the-collection-navigation).
+[navigation bar](/app/overview/#_2-navigation-bar).
 
 :::
 

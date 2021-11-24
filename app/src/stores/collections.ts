@@ -135,9 +135,12 @@ export const useCollectionsStore = defineStore({
 			}
 		},
 		async deleteCollection(collection: string) {
+			const relationsStore = useRelationsStore();
+
 			try {
 				await api.delete(`/collections/${collection}`);
 				await this.hydrate();
+				await relationsStore.hydrate();
 				notify({
 					type: 'success',
 					title: i18n.global.t('delete_collection_success'),

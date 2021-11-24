@@ -19,8 +19,8 @@
 	>
 		<input-component
 			:is="interfaceType"
-			:choices="fieldInfo.meta?.options?.choices"
-			:type="fieldInfo.type"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value"
 			@input="value = $event"
 		/>
@@ -34,10 +34,10 @@
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
-				:type="fieldInfo.type"
+				:type="fieldInfo?.type ?? 'unknown'"
 				:value="val"
 				:focus="false"
-				:choices="fieldInfo.meta?.options?.choices"
+				:choices="choices"
 				@input="setValueAt(index, $event)"
 			/>
 		</div>
@@ -46,16 +46,16 @@
 	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))" class="between">
 		<input-component
 			:is="interfaceType"
-			:choices="fieldInfo.meta?.options?.choices"
-			:type="fieldInfo.type"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[0]"
 			@input="setValueAt(0, $event)"
 		/>
 		<div class="and">{{ t('interfaces.filter.and') }}</div>
 		<input-component
 			:is="interfaceType"
-			:choices="fieldInfo.meta?.options?.choices"
-			:type="fieldInfo.type"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[1]"
 			@input="setValueAt(1, $event)"
 		/>
@@ -70,6 +70,7 @@ import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
 import { FieldFilter } from '@directus/shared/types';
 import { fieldToFilter, getComparator, getField } from './utils';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { InputComponent },
@@ -145,13 +146,15 @@ export default defineComponent({
 			},
 		});
 
+		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? {}));
+
+		return { t, choices, fieldInfo, interfaceType, value, setValueAt, getComparator };
+
 		function setValueAt(index: number, newVal: any) {
 			let newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
 			newArray[index] = newVal;
 			value.value = newArray;
 		}
-
-		return { t, fieldInfo, interfaceType, value, setValueAt, getComparator };
 	},
 });
 </script>
