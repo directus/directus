@@ -2,6 +2,143 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.1.0 (November 24, 2021)
+
+### :sparkles: New Features
+
+- **API**
+  - [#9861](https://github.com/directus/directus/pull/9861) Add notifications system and support user mentions in
+    comments ([@jaycammarano](https://github.com/jaycammarano))
+- **App**
+  - [#9861](https://github.com/directus/directus/pull/9861) Add notifications system and support user mentions in
+    comments ([@jaycammarano](https://github.com/jaycammarano))
+
+### :rocket: Improvements
+
+- **App**
+  - [#10009](https://github.com/directus/directus/pull/10009) Fix color picker position
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9989](https://github.com/directus/directus/pull/9989) Support file/files in related-values display
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9959](https://github.com/directus/directus/pull/9959) Use router.replace() to prevent invalid history navigations
+    ([@licitdev](https://github.com/licitdev))
+  - [#9834](https://github.com/directus/directus/pull/9834) use aggregate count for users in roles view
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9763](https://github.com/directus/directus/pull/9763) Relationship field-detail: use `nullable` on `sort` instead
+    of condition ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9756](https://github.com/directus/directus/pull/9756) Improvement: DRY on applyConditions
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9533](https://github.com/directus/directus/pull/9533) Fix M2O display inside M2M relations
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9334](https://github.com/directus/directus/pull/9334) Add context menu directive
+    ([@azrikahar](https://github.com/azrikahar))
+- **sdk**
+  - [#9965](https://github.com/directus/directus/pull/9965) Add logical operators to the SDK's Filter type
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9777](https://github.com/directus/directus/pull/9777) SDK: Start auth refresh job when constructor is initialised
+    ([@joeinnes](https://github.com/joeinnes))
+- **API**
+  - [#9964](https://github.com/directus/directus/pull/9964) Fix issue with OAuth setting incorrect initial session data
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9921](https://github.com/directus/directus/pull/9921) Email updates ([@benhaynes](https://github.com/benhaynes))
+  - [#9862](https://github.com/directus/directus/pull/9862) Throw if OpenID provider doesn't support code flow
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9529](https://github.com/directus/directus/pull/9529) Added scope support to LDAP group and user search
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+- **Extensions**
+  - [#9932](https://github.com/directus/directus/pull/9932) Adding sourceMap flag to extensions-sdk cli
+    ([@johnhuffsmith](https://github.com/johnhuffsmith))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10021](https://github.com/directus/directus/pull/10021) Fix tag interface always allowing other values
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#10005](https://github.com/directus/directus/pull/10005) Fix hidden folders/collections (#9207)
+    ([@nazarhanov](https://github.com/nazarhanov))
+  - [#9994](https://github.com/directus/directus/pull/9994) Fix roles aggregate query for users count
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9992](https://github.com/directus/directus/pull/9992) Fix impossibility to save M2M (alterations not triggered)
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9983](https://github.com/directus/directus/pull/9983) Fix date usage in pl-PL
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9982](https://github.com/directus/directus/pull/9982) Allow reordering between groups in data model
+    ([@licitdev](https://github.com/licitdev))
+  - [#9924](https://github.com/directus/directus/pull/9924) Fix indeterminate properties in advanded field creation
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9914](https://github.com/directus/directus/pull/9914) Fix wrong date filter in calendar layout
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9890](https://github.com/directus/directus/pull/9890) Fix render-template not working for M2M relationship
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9804](https://github.com/directus/directus/pull/9804) Refactor parseFilter to only flatten filter entries that
+    need it ([@Oreilles](https://github.com/Oreilles))
+  - [#9803](https://github.com/directus/directus/pull/9803) Fix translations input issues
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9792](https://github.com/directus/directus/pull/9792) Fix: Make sort visible by default on relationships
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9789](https://github.com/directus/directus/pull/9789) Fix reuse same M2M junction fields
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9750](https://github.com/directus/directus/pull/9750) Remove geometryFormat from map interface options.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#9505](https://github.com/directus/directus/pull/9505) Fix timeseries for precision by week
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9392](https://github.com/directus/directus/pull/9392) Fix create relation after collection deletion
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9220](https://github.com/directus/directus/pull/9220) Fix create M2M field concurrency
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#9056](https://github.com/directus/directus/pull/9056) Fix click event for unconfigured tables
+    ([@azrikahar](https://github.com/azrikahar))
+- **API**
+  - [#10005](https://github.com/directus/directus/pull/10005) Fix hidden folders/collections (#9207)
+    ([@nazarhanov](https://github.com/nazarhanov))
+  - [#9996](https://github.com/directus/directus/pull/9996) Fix deep groupBy
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9993](https://github.com/directus/directus/pull/9993) Fix LDAP race condition
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#9599](https://github.com/directus/directus/pull/9599) Fix unexpected types
+    ([@GrefriT](https://github.com/GrefriT))
+- **schema**
+  - [#9822](https://github.com/directus/directus/pull/9822) Handle composite primary keys
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#10020](https://github.com/directus/directus/pull/10020) Hide Kodiak status when no automerge label
+    ([@paescuj](https://github.com/paescuj))
+  - [#9981](https://github.com/directus/directus/pull/9981) Capitalize automerge label
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#9762](https://github.com/directus/directus/pull/9762) Enable E2E Tests on PRs
+    ([@paescuj](https://github.com/paescuj))
+
+### :memo: Documentation
+
+- [#10033](https://github.com/directus/directus/pull/10033) Reorganize the Hooks Documentation
+  ([@jaycammarano](https://github.com/jaycammarano))
+- [#9998](https://github.com/directus/directus/pull/9998) Update iis.md
+  ([@paulboudewijn](https://github.com/paulboudewijn))
+- [#9891](https://github.com/directus/directus/pull/9891) Docs SDK: Improve usage example
+  ([@joselcvarela](https://github.com/joselcvarela))
+- [#9865](https://github.com/directus/directus/pull/9865) Docs SDK: `BaseStorage` instead of `IStorage`
+  ([@joselcvarela](https://github.com/joselcvarela))
+- [#9836](https://github.com/directus/directus/pull/9836) Prevent interpolation for url variable
+  ([@azrikahar](https://github.com/azrikahar))
+- [#9800](https://github.com/directus/directus/pull/9800) Update documentation for project settings
+  ([@azrikahar](https://github.com/azrikahar))
+- [#9799](https://github.com/directus/directus/pull/9799) Fix docs tables overflow
+  ([@azrikahar](https://github.com/azrikahar))
+- [#9766](https://github.com/directus/directus/pull/9766) Update iis.md
+  ([@paulboudewijn](https://github.com/paulboudewijn))
+- [#9529](https://github.com/directus/directus/pull/9529) Added scope support to LDAP group and user search
+  ([@aidenfoxx](https://github.com/aidenfoxx))
+
+### :package: Dependency Updates
+
+- [#9969](https://github.com/directus/directus/pull/9969) Update mariadb Docker tag to v10.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#9968](https://github.com/directus/directus/pull/9968) Update NPM dependencies (non-major)
+  ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.1 (November 11, 2021)
 
 ### :rocket: Improvements
