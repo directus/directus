@@ -274,7 +274,7 @@ export default defineComponent({
 			);
 
 			return value.replace(regex, (_, pre, matchedUrl, post) => {
-				const matched = new URL(matchedUrl);
+				const matched = new URL(matchedUrl.replace(/&amp;/g, '&'));
 				const params = new URLSearchParams(matched.search);
 
 				if (!token) {
@@ -337,6 +337,7 @@ export default defineComponent({
 				statusbar: false,
 				menubar: false,
 				convert_urls: false,
+				image_dimensions: false,
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
