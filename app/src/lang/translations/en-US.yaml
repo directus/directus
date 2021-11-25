@@ -1209,6 +1209,15 @@ weeks: {}
 report_error: Report Error
 start: Start
 interfaces:
+  iframe:
+    iframe: iFrame
+    description: Render iFrame component
+    url_attribute: URL
+    width_attribute: Width
+    height_attribute: Height
+  hwfaak-event-sections:
+    name: Event Sections
+    description: Render Tickets Event Sections
   filter:
     name: Filter
     description: Configure a filter object.
