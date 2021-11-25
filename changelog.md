@@ -2,6 +2,14 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.1.1 (November 24, 2021)
+
+### :bug: Bug Fixes
+
+- **Docker**
+  - [#10038](https://github.com/directus/directus/pull/10038) Fix dependency listing
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
 ## v9.1.0 (November 24, 2021)
 
 ### :sparkles: New Features
