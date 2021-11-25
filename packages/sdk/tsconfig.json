@@ -5,6 +5,7 @@
 		"module": "es2015",
 		"moduleResolution": "node",
 		"declaration": true,
+		"declarationDir": "dist/types",
 		"declarationMap": true,
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,
