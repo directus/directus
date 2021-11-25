@@ -8,9 +8,8 @@ export default defineDisplay({
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	component: DisplayFormattedValue,
-	options: ({ field }) => {
+	options: ({ collection, field }) => {
 		const display_options = field.meta.display_options || {};
-
 		const options = [
 			{
 				field: 'prefix',
@@ -176,27 +175,29 @@ export default defineDisplay({
 				meta: {
 					interface: 'list',
 					options: {
-						template: '{{operator}}',
+						template: '{{name}}',
 						fields: [
 							{
-								field: 'operator',
-								name: '$t:displays.formatted-value.format_rules_operator',
+								field: 'filter',
+								name: '$t:displays.formatted-value.format_rules_filter',
+								type: 'json',
 								meta: {
-									width: 'half',
-									interface: 'select-dropdown',
+									interface: 'system-filter',
 									options: {
-										choices: [
-											{ text: '$t:operators.lt', value: 'lt' },
-											{ text: '$t:operators.lte', value: 'lte' },
-											{ text: '$t:operators.gt', value: 'gt' },
-											{ text: '$t:operators.gte', value: 'gte' },
-											{ text: '$t:operators.eq', value: 'eq' },
-											{ text: '$t:operators.neq', value: 'neq' },
-										],
+										collectionName: collection,
 									},
 								},
-								schema: {
-									default_value: 'lt',
+							},
+							{
+								field: 'name',
+								name: '$t:displays.formatted-value.format_rules_name',
+								type: 'string',
+								meta: {
+									width: 'half',
+									interface: 'input',
+									options: {
+										label: '$t:displays.formatted-value.format_rules_name_label',
+									},
 								},
 							},
 							{

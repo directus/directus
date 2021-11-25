@@ -1532,6 +1532,10 @@ displays:
     suffix: Suffix
     suffix_label: Appended Text
     format_rules: Format Rules
+    format_rules_name: Name
+    format_rules_name_label: Rule Name
+    format_rules_filter: Filter
+    format_rules_filter_label: Filter
     format_title: Format Title
     format_title_label: Auto-format casing
     link: Link

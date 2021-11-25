@@ -17,12 +17,18 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
+import { validatePayload } from '@directus/shared/utils';
+import { parseFilter } from '@/utils/parse-filter';
 import { decode } from 'html-entities';
 import { useI18n } from 'vue-i18n';
 import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
+		item: {
+			type: Object,
+			required: true,
+		},
 		type: {
 			type: String,
 			required: true,
@@ -89,24 +95,11 @@ export default defineComponent({
 		const { t, n } = useI18n();
 
 		const matchedRules = computed(() => {
-			const leftValue = parseFloat(props.value.toString());
-			return (props.formatRules || []).filter((rule) => {
-				const rightValue = parseFloat(rule.value);
-				switch (rule.operator) {
-					case 'lt':
-						return leftValue < rightValue;
-					case 'lte':
-						return leftValue <= rightValue;
-					case 'gt':
-						return leftValue > rightValue;
-					case 'gte':
-						return leftValue >= rightValue;
-					case 'eq':
-						return leftValue == rightValue;
-					case 'neq':
-						return leftValue != rightValue;
-				}
-				return false;
+			return (props.formatRules || []).filter((formatRule) => {
+				if (!formatRule.rule || Object.keys(formatRule.rule).length !== 1) return;
+				const rule = parseFilter(formatRule.rule);
+				const errors = validatePayload(rule, props.item, { requireAll: true });
+				return errors.length === 0;
 			});
 		});
 
