@@ -66,6 +66,8 @@ create_webhook: Crea webhook
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
+subject: Oggetto
+inbox: Inbox
 emails: Email
 connection_excellent: Connessione Eccellente
 connection_good: Connessione Buona
@@ -427,6 +429,9 @@ user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
 no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
+no_notifications: Nessuna notifica
+no_notifications_copy: È tutto!
+activity_log: Log delle attività
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
@@ -845,6 +850,7 @@ directus_collection:
   directus_migrations: Quale versione del database stai usando
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
   directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_notifications: Notifiche inviate agli utenti
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
   directus_revisions: Snapshot dei dati per tutte le attività
@@ -1186,6 +1192,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
