@@ -6,7 +6,7 @@
 			clickable
 			:class="{ hidden: collection.meta?.hidden }"
 			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
-			@click="!collection.schema ? $emit('editCollection', $event) : null"
+			@click="!collection.schema ? $emit('editCollection', collection) : null"
 		>
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
