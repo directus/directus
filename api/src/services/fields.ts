@@ -19,11 +19,12 @@ import getLocalType from '../utils/get-local-type';
 import { toArray } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
-import { getGeometryHelper } from '../database/helpers/geometry';
+import { getHelpers, Helpers } from '../database/helpers';
 import Keyv from 'keyv';
 
 export class FieldsService {
 	knex: Knex;
+	helpers: Helpers;
 	accountability: Accountability | null;
 	itemsService: ItemsService;
 	payloadService: PayloadService;
@@ -34,6 +35,7 @@ export class FieldsService {
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
+		this.helpers = getHelpers(this.knex);
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
@@ -468,8 +470,7 @@ export class FieldsService {
 		} else if (field.type === 'timestamp') {
 			column = table.timestamp(field.field, { useTz: true });
 		} else if (field.type.startsWith('geometry')) {
-			const helper = getGeometryHelper();
-			column = helper.createColumn(table, field);
+			column = this.helpers.st.createColumn(table, field);
 		} else {
 			// @ts-ignore
 			column = table[field.type](field.field);
