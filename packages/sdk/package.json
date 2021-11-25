@@ -6,23 +6,19 @@
 		"type": "git",
 		"url": "https://github.com/directus/directus.git"
 	},
-	"main": "./dist/index.js",
+	"main": "dist/sdk.cjs.js",
 	"exports": {
 		".": {
-			"import": {
-				"node": "./index.mjs",
-				"default": "./dist/sdk.esm.js"
-			},
-			"require": "./dist/index.js"
+			"import": "./dist/sdk.bundler.mjs",
+			"require": "./dist/sdk.cjs.js"
 		},
 		"./package.json": "./package.json"
 	},
-	"module": "./dist/sdk.esm.js",
-	"unpkg": "./dist/sdk.esm.min.js",
-	"types": "./dist/index.d.ts",
+	"module": "dist/sdk.bundler.mjs",
+	"unpkg": "dist/sdk.global.min.js",
+	"types": "dist/types/index.d.ts",
 	"files": [
-		"dist",
-		"index.mjs"
+		"dist"
 	],
 	"scripts": {
 		"prebuild": "npm run cleanup",
