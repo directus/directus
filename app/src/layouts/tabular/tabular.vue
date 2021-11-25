@@ -33,6 +33,7 @@
 					:type="header.field.type"
 					:collection="collection"
 					:field="header.field.field"
+					:item="item"
 				/>
 			</template>
 
