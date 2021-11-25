@@ -314,7 +314,7 @@ export default defineComponent({
 
 				try {
 					await api.delete(`/presets/${props.id}`);
-					router.push(`/settings/presets`);
+					router.replace(`/settings/presets`);
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {

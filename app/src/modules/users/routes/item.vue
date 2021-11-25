@@ -432,7 +432,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/users`);
+				router.replace(`/users`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
