@@ -28,7 +28,11 @@ type UsableImage = {
 	imageButton: ImageButton;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableImage {
+export default function useImage(
+	editor: Ref<any>,
+	isEditorDirty: Ref<boolean>,
+	imageToken: Ref<string | undefined>
+): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
@@ -101,6 +105,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 			...(img.height ? { height: img.height.toString() } : {}),
 		});
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
+		isEditorDirty.value = true;
 		editor.value.selection.setContent(imageHtml);
 		closeImageDrawer();
 	}

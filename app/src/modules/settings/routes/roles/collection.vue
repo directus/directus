@@ -132,8 +132,15 @@ export default defineComponent({
 				const response = await api.get(`/roles`, {
 					params: {
 						limit: -1,
-						fields: 'id,name,description,icon,users.role',
-						deep: { users: { _aggregate: { count: 'id' } } },
+						fields: ['id', 'name', 'description', 'icon', 'users'],
+						deep: {
+							users: {
+								_aggregate: { count: 'id' },
+								_groupBy: ['role'],
+								_sort: 'role',
+								_limit: -1,
+							},
+						},
 						sort: 'name',
 					},
 				});

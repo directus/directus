@@ -302,7 +302,9 @@ export default defineComponent({
 }
 
 .v-input.html-color-select {
-	display: none;
+	width: 0;
+	height: 0;
+	visibility: hidden;
 }
 
 .color-input {

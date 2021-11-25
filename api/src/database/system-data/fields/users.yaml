@@ -90,6 +90,11 @@ fields:
     special: conceal
     width: half
 
+  - field: email_notifications
+    interface: boolean
+    width: half
+    special: boolean
+
   - field: admin_divider
     interface: presentation-divider
     options:

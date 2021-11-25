@@ -1,11 +1,10 @@
 <template>
 	<v-list-item
+		v-context-menu="'contextMenu'"
 		:to="`/content/${bookmark.collection}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"
 		clickable
-		@contextmenu.prevent.stop="activateContextMenu"
-		@focusout="deactivateContextMenu"
 	>
 		<v-list-item-icon><v-icon name="bookmark_outline" /></v-list-item-icon>
 		<v-list-item-content>
@@ -83,7 +82,6 @@ export default defineComponent({
 		const router = useRouter();
 		const route = useRoute();
 
-		const contextMenu = ref();
 		const userStore = useUserStore();
 		const presetsStore = usePresetsStore();
 
@@ -94,7 +92,6 @@ export default defineComponent({
 
 		return {
 			t,
-			contextMenu,
 			isMine,
 			renameActive,
 			renameValue,
@@ -104,8 +101,6 @@ export default defineComponent({
 			deleteValue,
 			deleteSave,
 			deleteSaving,
-			activateContextMenu,
-			deactivateContextMenu,
 		};
 
 		function useRenameBookmark() {
@@ -162,14 +157,6 @@ export default defineComponent({
 					deleteSaving.value = false;
 				}
 			}
-		}
-
-		function activateContextMenu(event: PointerEvent) {
-			contextMenu.value.activate(event);
-		}
-
-		function deactivateContextMenu() {
-			contextMenu.value.deactivate();
 		}
 	},
 });

@@ -173,6 +173,8 @@ export const useFieldDetailStore = defineStore({
 				for (const collection of Object.keys(this.items)) {
 					await api.post(`/items/${collection}`, this.items[collection]);
 				}
+
+				await fieldsStore.hydrate();
 			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
