@@ -9,6 +9,8 @@ export default defineDisplay({
 	icon: 'text_format',
 	component: DisplayFormattedValue,
 	options: ({ field }) => {
+		const display_options = field.meta.display_options || {};
+
 		const options = [
 			{
 				field: 'prefix',
@@ -49,24 +51,6 @@ export default defineDisplay({
 				},
 				schema: {
 					default_value: false,
-				},
-			},
-			{
-				field: 'font',
-				name: '$t:displays.formatted-value.font',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{ text: '$t:displays.formatted-value.font_sans_serif', value: 'sans-serif' },
-							{ text: '$t:displays.formatted-value.font_serif', value: 'serif' },
-							{ text: '$t:displays.formatted-value.font_monospace', value: 'monospace' },
-						],
-					},
-				},
-				schema: {
-					default_value: 'sans-serif',
 				},
 			},
 			{
@@ -112,7 +96,77 @@ export default defineDisplay({
 					interface: 'select-color',
 				},
 			},
+			{
+				field: 'font',
+				name: '$t:displays.formatted-value.font',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{ text: '$t:displays.formatted-value.font_sans_serif', value: 'sans-serif' },
+							{ text: '$t:displays.formatted-value.font_serif', value: 'serif' },
+							{ text: '$t:displays.formatted-value.font_monospace', value: 'monospace' },
+						],
+					},
+				},
+				schema: {
+					default_value: 'sans-serif',
+				},
+			},
 		];
+
+		if (['string', 'text'].includes(field.type)) {
+			options.push({
+				field: 'formatTitle',
+				name: '$t:displays.formatted-value.format_title',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.format_title_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			});
+		}
+
+		options.push({
+			field: 'link',
+			name: '$t:displays.formatted-value.link',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: '$t:displays.formatted-value.link_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		});
+
+		if (display_options.link) {
+			options.push({
+				field: 'linkTemplate',
+				name: '$t:displays.formatted-value.link_template',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						label: '$t:displays.formatted-value.link_template_label',
+					},
+				},
+				schema: {
+					default_value: '{{value}}',
+				},
+			});
+		}
 
 		if (['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
 			options.push({
@@ -146,29 +200,8 @@ export default defineDisplay({
 								},
 							},
 							{
-								field: 'value',
-								name: '$t:value',
-								type: 'number',
-								meta: {
-									interface: 'input',
-									options: {
-										step: 'any',
-									},
-									width: 'half',
-								},
-							},
-							{
 								field: 'color',
 								name: '$t:displays.formatted-value.color',
-								type: 'string',
-								meta: {
-									interface: 'select-color',
-									width: 'half',
-								},
-							},
-							{
-								field: 'backgroundColor',
-								name: '$t:displays.formatted-value.background_color',
 								type: 'string',
 								meta: {
 									interface: 'select-color',
@@ -213,161 +246,6 @@ export default defineDisplay({
 					},
 				},
 			});
-		}
-
-		if (['string', 'text'].includes(field.type)) {
-			options.push({
-				field: 'formatTitle',
-				name: '$t:displays.formatted-value.format_title',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:displays.formatted-value.format_title_label',
-					},
-				},
-				schema: {
-					default_value: false,
-				},
-			});
-
-			options.push({
-				field: 'link',
-				name: '$t:displays.formatted-value.link',
-				type: 'string',
-				meta: {
-					interface: 'select-dropdown',
-					width: 'half',
-					options: {
-						choices: [
-							{ text: '$t:displays.formatted-value.no_link', value: '' },
-							{ text: '$t:displays.formatted-value.link_url', value: 'url' },
-							{ text: '$t:displays.formatted-value.link_email', value: 'email' },
-							{ text: '$t:displays.formatted-value.link_tel', value: 'tel' },
-							{ text: '$t:displays.formatted-value.link_whatsapp', value: 'whatsapp' },
-						],
-						allowOther: false,
-					},
-				},
-				schema: {
-					default_value: '',
-				},
-			});
-
-			const display_options = field.meta.display_options || {};
-
-			if (display_options.link) {
-				options.push({
-					field: 'linkText',
-					name: '$t:displays.formatted-value.link_text',
-					type: 'string',
-					meta: {
-						width: 'half',
-						interface: 'input',
-						options: {
-							label: '$t:displays.formatted-value.link_text_label',
-							trim: true,
-						},
-					},
-				});
-
-				options.push({
-					field: 'linkTarget',
-					name: '$t:displays.formatted-value.link_target',
-					type: 'string',
-					meta: {
-						interface: 'select-dropdown',
-						width: 'half',
-						options: {
-							choices: [
-								{ text: '$t:displays.formatted-value.link_target_blank', value: '_blank' },
-								{ text: '$t:displays.formatted-value.link_target_self', value: '_self' },
-								{ text: '$t:displays.formatted-value.link_target_parent', value: '_parent' },
-								{ text: '$t:displays.formatted-value.link_target_top', value: '_top' },
-							],
-							allowOther: false,
-						},
-					},
-					schema: {
-						default_value: '_blank',
-					},
-				});
-			}
-
-			if (display_options.link === 'email') {
-				options.push({
-					field: 'linkEmailSubject',
-					name: '$t:displays.formatted-value.link_email_subject',
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input',
-						options: {
-							label: '$t:displays.formatted-value.link_email_subject_label',
-							trim: true,
-						},
-					},
-				});
-
-				options.push({
-					field: 'linkEmailBody',
-					name: '$t:displays.formatted-value.link_email_body',
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input-multiline',
-						options: {
-							label: '$t:displays.formatted-value.link_email_body_label',
-							trim: true,
-						},
-					},
-				});
-
-				options.push({
-					field: 'linkEmailCC',
-					name: '$t:displays.formatted-value.link_email_cc',
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input',
-						options: {
-							label: '$t:displays.formatted-value.link_email_cc_label',
-							trim: true,
-						},
-					},
-				});
-
-				options.push({
-					field: 'linkEmailBCC',
-					name: '$t:displays.formatted-value.link_email_bcc',
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input',
-						options: {
-							label: '$t:displays.formatted-value.link_email_bcc_label',
-							trim: true,
-						},
-					},
-				});
-			}
-
-			if (display_options.link === 'whatsapp') {
-				options.push({
-					field: 'linkWhatsappText',
-					name: '$t:displays.formatted-value.link_whatsapp_text',
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input-multiline',
-						options: {
-							label: '$t:displays.formatted-value.link_whatsapp_text_label',
-							trim: true,
-						},
-					},
-				});
-			}
 		}
 
 		return options;

@@ -8,7 +8,7 @@
 
 		<v-icon v-if="format.iconRight" class="right" :name="format.iconRight" :color="format.iconRightColor" small />
 
-		<a v-if="link" class="link" :href="href" :target="linkTarget" @click.stop>
+		<a v-if="link" class="link" :href="href" :target="target" @click.stop>
 			<v-icon v-tooltip="t('displays.formatted-value.link_tooltip')" class="button" name="launch" small />
 		</a>
 	</div>
@@ -77,36 +77,12 @@ export default defineComponent({
 			default: false,
 		},
 		link: {
-			type: String,
-			default: '',
+			type: Boolean,
+			default: false,
 		},
-		linkText: {
+		linkTemplate: {
 			type: String,
-			default: '',
-		},
-		linkTarget: {
-			type: String,
-			default: '_blank',
-		},
-		linkEmailSubject: {
-			type: String,
-			default: '',
-		},
-		linkEmailBody: {
-			type: String,
-			default: '',
-		},
-		linkEmailCC: {
-			type: String,
-			default: '',
-		},
-		linkEmailBCC: {
-			type: String,
-			default: '',
-		},
-		linkWhatsappText: {
-			type: String,
-			default: '',
+			default: '{{value}}',
 		},
 	},
 	setup(props) {
@@ -155,17 +131,13 @@ export default defineComponent({
 			if (['integer', 'bigInteger', 'float', 'decimal'].includes(props.type)) {
 				const hasDecimals = ['float', 'decimal'].includes(props.type);
 
-				const { prefix, value, suffix } = props;
+				const { value } = props;
 				const number = hasDecimals ? parseFloat(value.toString()) : parseInt(value.toString());
 
 				return n(number);
 			}
 
 			let value = String(props.value);
-
-			if (props.link) {
-				return props.linkText || value;
-			}
 
 			// Strip out all HTML tags
 			value = value.replace(/(<([^>]+)>)/gi, '');
@@ -181,29 +153,18 @@ export default defineComponent({
 		});
 
 		const href = computed(() => {
-			if (props.link === 'url') {
-				return props.value;
-			} else if (props.link === 'email') {
-				const params = Object.entries({
-					subject: props.linkEmailSubject,
-					body: props.linkEmailBody,
-					cc: props.linkEmailCC,
-					bcc: props.linkEmailBCC,
-				})
-					.filter(([_, value]) => value)
-					.map(([param, value]) => `${param}=${encodeURIComponent(value)}`);
+			if (isNil(props.value) || props.value === '' || !props.link) return null;
 
-				return `mailto:${props.value}?${params.join('&')}`;
-			} else if (props.link === 'tel') {
-				return `tel:${props.value}`;
-			} else if (props.link === 'whatsapp') {
-				return `https://wa.me/${props.value}?text=${encodeURIComponent(props.linkWhatsappText)}`;
-			} else {
-				return '#';
-			}
+			return props.linkTemplate.replace(/({{\s*value\s*}})/g, props.value.toString());
 		});
 
-		return { t, format, displayValue, href, valueStyle };
+		const target = computed(() => {
+			if (isNil(href.value) || href.value === '') return null;
+			if (href.value[0] === '/') return '_self';
+			else return '_blank';
+		});
+
+		return { t, format, displayValue, href, target, valueStyle };
 	},
 });
 </script>
@@ -212,6 +173,7 @@ export default defineComponent({
 .display-formatted {
 	display: flex;
 	flex-grow: 1;
+	align-items: center;
 	overflow: hidden;
 
 	& .value {

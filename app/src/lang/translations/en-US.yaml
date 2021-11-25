@@ -1510,10 +1510,6 @@ displays:
   formatted-value:
     formatted-value: Formatted Value
     description: Display a formatted version of the text
-    text_align: Text Align
-    text_align_left: Left
-    text_align_center: Center
-    text_align_right: Right
     bold: Bold
     bold_label: Use bold style
     font: Font
@@ -1521,14 +1517,10 @@ displays:
     font_serif: Serif
     font_monospace: Monospace
     color: Color
-    background_color: Background Color
     icon_left: Icon Before
     icon_left_color: Icon Before Color
     icon_right: Icon After
     icon_right_color: Icon After Color
-    clipboard: Clipboard
-    clipboard_label: Copy to clipboard
-    clipboard_tooltip: Copy to clipboard
     prefix: Prefix
     prefix_label: Prepend text
     suffix: Suffix
@@ -1537,29 +1529,10 @@ displays:
     format_title: Format Title
     format_title_label: Auto-format casing
     link: Link
+    link_label: Show link
     link_tooltip: Open Link
-    no_link: No Link
-    link_url: URL
-    link_email: Email
-    link_tel: Phone
-    link_whatsapp: WhatsApp
-    link_text: Link Text
-    link_text_label: Link Text
-    link_target: Link Target
-    link_target_blank: _blank
-    link_target_self: _self
-    link_target_parent: _parent
-    link_target_top: _top
-    link_email_subject: Email Subject
-    link_email_subject_label: Email Subject
-    link_email_body: Email Body
-    link_email_body_label: Email Body
-    link_email_cc: Email CC
-    link_email_cc_label: Email CC
-    link_email_bcc: Email BCC
-    link_email_bcc_label: Email BCC
-    link_whatsapp_text: WhatsApp Text
-    link_whatsapp_text_label: WhatsApp Text
+    link_template: Link template
+    link_template_label: Link template
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
