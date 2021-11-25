@@ -100,11 +100,7 @@ export default function useImage(
 	function saveImage() {
 		const img = imageSelection.value;
 		if (img === null) return;
-		const resizedImageUrl = addQueryToPath(img.imageUrl, {
-			...(img.width ? { width: img.width.toString() } : {}),
-			...(img.height ? { height: img.height.toString() } : {}),
-		});
-		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
+		const imageHtml = `<img src="${img.imageUrl}" alt="${img.alt}" width="${img.width}" height="${img.height}" />`;
 		isEditorDirty.value = true;
 		editor.value.selection.setContent(imageHtml);
 		closeImageDrawer();

@@ -1460,6 +1460,20 @@ interfaces:
     slider: Slider
     description: Select a number using a slider
     always_show_value: Always show value
+  table:
+    table: Table
+    description: Render JSON in a table format
+    edit_columns: Edit Columns
+    auto_detect_columns: Auto detect columns
+  iframe:
+    iframe: iFrame
+    description: Render iFrame component
+    url_attribute: URL
+    width_attribute: Width
+    height_attribute: Height
+  hwfaak-event-sections:
+    name: Event Sections
+    description: Render Tickets Event Sections
   tags:
     tags: Tags
     description: Select or add tags

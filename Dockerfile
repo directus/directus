@@ -26,6 +26,8 @@ FROM node:${NODE_VERSION}
 #ENV TNS_ADMIN /usr/lib/instantclient
 #ENV ORACLE_HOME /usr/lib/instantclient
 
+RUN apk --no-cache add --virtual builds-deps build-base python3
+
 WORKDIR /directus
 
 COPY . .
@@ -34,6 +36,7 @@ RUN apk add --update python3 make g++\
    && rm -rf /var/cache/apk/*
 
 RUN npm install
+RUN npm run build
 
 WORKDIR /directus/api
 

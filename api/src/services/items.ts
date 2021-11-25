@@ -102,6 +102,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							`${this.eventScope}.create`,
 							payload,
 							{
+								event: `${this.eventScope}.create`,
 								collection: this.collection,
 							},
 							{
@@ -198,7 +199,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				`${this.eventScope}.create`,
 				{
 					payload,
-					key: primaryKey,
+					item: primaryKey,
+					action: 'create',
+					event: `${this.eventScope}.create`,
 					collection: this.collection,
 				},
 				{
@@ -298,6 +301,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			{
 				payload: filteredRecords,
 				query,
+				action: 'read',
+				event: `${this.eventScope}.read`,
 				collection: this.collection,
 			},
 			{
@@ -384,7 +389,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						`${this.eventScope}.update`,
 						payload,
 						{
-							keys,
+							item: keys,
+							action: 'update',
+							event: `${this.eventScope}.update`,
 							collection: this.collection,
 						},
 						{
@@ -505,7 +512,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				`${this.eventScope}.update`,
 				{
 					payload,
-					keys,
+					item: keys,
+					action: 'update',
+					event: `${this.eventScope}.update`,
 					collection: this.collection,
 				},
 				{
@@ -607,6 +616,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				`${this.eventScope}.delete`,
 				keys,
 				{
+					item: keys,
+					action: 'delete',
+					event: `${this.eventScope}.delete`,
 					collection: this.collection,
 				},
 				{
@@ -648,6 +660,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				`${this.eventScope}.delete`,
 				{
 					payload: keys,
+					item: keys,
+					action: 'delete',
 					collection: this.collection,
 				},
 				{

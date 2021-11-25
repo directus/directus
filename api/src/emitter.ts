@@ -28,7 +28,7 @@ export class Emitter {
 
 		let updatedPayload = payload;
 		for (const listener of listeners) {
-			const result = await listener(updatedPayload, meta, context);
+			const result = await listener({ ...updatedPayload, meta }, meta, context);
 
 			if (result !== undefined) {
 				updatedPayload = result;

@@ -68,7 +68,6 @@ export default defineComponent({
 					type: meta.type,
 					meta,
 				}));
-
 				emit('input', {
 					...(props.value || {}),
 					fields: fields,

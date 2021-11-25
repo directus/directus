@@ -243,7 +243,6 @@ export default defineComponent({
 					if (i === index) {
 						return updatedValues;
 					}
-
 					return item;
 				})
 			);
