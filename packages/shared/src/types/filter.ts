@@ -1,4 +1,4 @@
-import {Role, User} from "./users";
+import { Role, User } from "./users";
 
 export type FilterOperator =
 	| 'eq'
@@ -66,6 +66,6 @@ export type ParseFilterContext = {
 	// The user can add any custom fields to user
 	$CURRENT_USER?: User & Record<string, any>;
 	$CURRENT_ROLE?: Role & Record<string, any>;
-	// The current item, only during validations
+	// The current item
 	$ITEM?: Record<string, any>;
 };
