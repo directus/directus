@@ -1,8 +1,7 @@
+import { DatabaseHelper } from '../types';
 import { Knex } from 'knex';
 
-export abstract class DateHelper {
-	constructor(protected knex: Knex) {}
-
+export abstract class DateHelper extends DatabaseHelper {
 	abstract year(table: string, column: string): Knex.Raw;
 	abstract month(table: string, column: string): Knex.Raw;
 	abstract week(table: string, column: string): Knex.Raw;
