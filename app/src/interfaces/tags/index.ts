@@ -58,7 +58,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: false,
+				default_value: true,
 			},
 		},
 		{
