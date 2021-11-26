@@ -1,8 +1,6 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { FieldMeta, Type } from '@directus/shared/types';
-import { getDatabaseClient } from '../database';
-import getDatabase from '../database';
 
 const localTypeMap: Record<string, Type | 'unknown'> = {
 	// Shared
@@ -109,9 +107,6 @@ export default function getLocalType(
 	column?: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
 ): Type | 'unknown' {
-	const database = getDatabase();
-	const databaseClient = getDatabaseClient(database);
-
 	if (!column) return 'alias';
 
 	const dataType = column.data_type.toLowerCase();
@@ -137,11 +132,6 @@ export default function getLocalType(
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
 	if (dataType === 'nvarchar(MAX)') {
 		return 'text';
-	}
-
-	/** Handle Boolean as TINYINT and edgecase MySQL where it still is just tinyint */
-	if (databaseClient === 'mysql' && dataType === 'tinyint(1)') {
-		return 'boolean';
 	}
 
 	return type ?? 'unknown';
