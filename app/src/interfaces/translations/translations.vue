@@ -54,7 +54,7 @@ import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep, isEqual, assign } from 'lodash';
+import { cloneDeep, isEqual, assign, isNil } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
 import { useWindowSize } from '@/composables/use-window-size';
 import useRelation from '@/composables/use-m2m';
@@ -279,7 +279,7 @@ export default defineComponent({
 				(newVal, oldVal) => {
 					if (
 						newVal &&
-						newVal !== oldVal &&
+						isNil(newVal) !== isNil(oldVal) &&
 						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
 					) {
 						loadItems();
