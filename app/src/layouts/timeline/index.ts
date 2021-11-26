@@ -1,4 +1,4 @@
-import { defineLayout, filtersToQuery } from '@directus/shared/utils';
+import { defineLayout } from '@directus/shared/utils';
 import TimelineLayout from './timeline.vue';
 import TimelineOptions from './options.vue';
 import TimelineSidebar from './sidebar.vue';
@@ -13,7 +13,8 @@ import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery, Day, Event } from './types';
 import { getRootPath } from '@/utils/get-root-path';
 import api, { addTokenToURL } from '@/api';
-import { AppFilter } from '@directus/shared/types';
+import { getEndpoint } from '@/utils/get-endpoint';
+import { Filter } from '@directus/shared/types';
 
 export type UseEvents = (
 	day: Ref<Day>,
@@ -29,19 +30,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	slots: {
 		options: TimelineOptions,
 		sidebar: TimelineSidebar,
-		actions: () => {
-			return undefined;
-		},
+		actions: () => undefined,
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
 
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
-		// const layoutQuery = useSync(props, 'layoutQuery', emit);
-		const filters = useSync(props, 'filters', emit);
-		// const searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, filter } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -125,19 +121,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const days = ref<Day[]>([]);
 			const loading = ref(false);
 
-			const filter = computed(() => {
-				return [
-					...filters.value,
-					{
-						field: dateField.value,
-						operator: 'between',
-						value: `$NOW(${(page.value - 2) * 30 + 1} days),$NOW(${(page.value - 1) * 30} days)`,
+			const daysFilter = computed(() => {
+				if (!dateField.value) {
+					return filter.value;
+				}
+
+				const daysRange = {
+					[dateField.value]: {
+						_between: [`$NOW(${(page.value - 2) * 30 + 1} days)`, `$NOW(${(page.value - 1) * 30} days)`],
 					},
-				] as AppFilter[];
+				};
+
+				return {
+					_and: [filter.value, daysRange],
+				};
 			});
 
 			watch(
-				[page, collection, filter],
+				[page, collection, daysFilter],
 				() => {
 					fetchDays();
 				},
@@ -147,19 +148,17 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return { days, fetchDays, loading };
 
 			async function fetchDays() {
-				const collectionPath = collection.value?.startsWith('directus_')
-					? collection.value.substr(9)
-					: `items/${collection.value}`;
-
 				loading.value = true;
 
-				const result = await api.get(`/${collectionPath}`, {
+				const result = await api.get(getEndpoint(collection.value!), {
 					params: {
-						groupBy: `year(${dateField.value}),month(${dateField.value}),day(${dateField.value})`,
-						'aggregate[count]': '*',
+						groupBy: [`year(${dateField.value})`, `month(${dateField.value})`, `day(${dateField.value})`],
+						aggregate: {
+							count: '*',
+						},
 						limit: -1,
-						sort: sort.value,
-						...filtersToQuery(filter.value),
+						// sort: sort.value,
+						filter: daysFilter.value,
 					},
 				});
 
@@ -178,28 +177,30 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const loading = ref(false);
 			const events = ref<Event[]>([]);
 
-			const filter = computed(() => {
-				return [
-					...filters.value,
-					{
-						field: `year(${dateField.value})`,
-						operator: 'eq',
-						value: day.value.year,
-					},
-					{
-						field: `month(${dateField.value})`,
-						operator: 'eq',
-						value: day.value.month,
-					},
-					{
-						field: `day(${dateField.value})`,
-						operator: 'eq',
-						value: day.value.day,
-					},
-				] as AppFilter[];
+			const eventsFilter = computed(() => {
+				return {
+					_and: [
+						filter.value,
+						{
+							[`year(${dateField.value})`]: {
+								_eq: day.value.year,
+							},
+						},
+						{
+							[`month(${dateField.value})`]: {
+								_eq: day.value.month,
+							},
+						},
+						{
+							[`day(${dateField.value})`]: {
+								_eq: day.value.day,
+							},
+						},
+					],
+				} as Filter;
 			});
 
-			watch([collection, day, fields, filter], () => {
+			watch([collection, day, fields, eventsFilter], () => {
 				fetchEvents(true);
 			});
 
@@ -213,22 +214,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (visible.value === false) return;
 				if (limit.value === events.value.length && reload === false) return;
 
-				const collectionPath = collection.value?.startsWith('directus_')
-					? collection.value.substr(9)
-					: `items/${collection.value}`;
-
 				loading.value = true;
 
 				const offset = reload ? 0 : events.value.length;
 				const eventlimit = reload ? limit.value : limit.value - events.value.length;
 
-				const result = await api.get(`/${collectionPath}`, {
+				const result = await api.get(getEndpoint(collection.value!), {
 					params: {
 						offset,
 						limit: eventlimit,
 						fields: fields.value,
 						sort: sort.value,
-						...filtersToQuery(filter.value),
+						filter: eventsFilter.value,
 					},
 				});
 

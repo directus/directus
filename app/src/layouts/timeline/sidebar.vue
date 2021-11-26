@@ -1,18 +1,13 @@
 <template>
 	<filter-sidebar-detail v-model="filtersWritable" :collection="collection" :loading="loading" />
-	<export-sidebar-detail
-		:layout-query="layoutQuery"
-		:filters="filters"
-		:search-query="searchQuery"
-		:collection="collection"
-	/>
+	<export-sidebar-detail :layout-query="layoutQuery" :filters="filters" :search="search" :collection="collection" />
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 
 import { LayoutQuery } from './types';
-import { AppFilter } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
@@ -27,10 +22,10 @@ export default defineComponent({
 			default: () => ({}),
 		},
 		filters: {
-			type: Array as PropType<AppFilter[]>,
-			default: () => [],
+			type: Object as PropType<Filter>,
+			default: null,
 		},
-		searchQuery: {
+		search: {
 			type: String as PropType<string | null>,
 			default: null,
 		},
