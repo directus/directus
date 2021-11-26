@@ -1,14 +1,8 @@
 import { REGEX_BETWEEN_PARENS } from '../constants';
-import { Accountability, Filter, User, Role } from '../types';
+import { Accountability, Filter, ParseFilterContext } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { isDynamicVariable } from './is-dynamic-variable';
-
-type ParseFilterContext = {
-	// The user can add any custom fields to user
-	$CURRENT_USER?: User & Record<string, any>;
-	$CURRENT_ROLE?: Role & Record<string, any>;
-};
 
 export function parseFilter(
 	filter: Filter | null,
@@ -49,15 +43,10 @@ function parseDynamicVariable(value: any, accountability: Accountability | null,
 		return new Date();
 	}
 
-	if (value.startsWith('$CURRENT_USER')) {
-		if (value === '$CURRENT_USER') return accountability?.user ?? null;
-		return get(context, value, null);
-	}
+	if (value === '$CURRENT_USER') return accountability?.user ?? null;
+	if (value === '$CURRENT_ROLE') return accountability?.role ?? null;
 
-	if (value.startsWith('$CURRENT_ROLE')) {
-		if (value === '$CURRENT_ROLE') return accountability?.role ?? null;
-		return get(context, value, null);
-	}
+	return get(context, value, null);
 }
 
 function get(object: Record<string, any> | any[], path: string, defaultValue: any): any {

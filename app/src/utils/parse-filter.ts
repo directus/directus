@@ -1,9 +1,8 @@
 import { useUserStore } from '@/stores';
-import { Accountability } from '@directus/shared/types';
+import { Accountability, Filter, ParseFilterContext } from '@directus/shared/types';
 import { parseFilter as parseFilterShared } from '@directus/shared/utils';
-import { Filter } from '@directus/shared/types';
 
-export function parseFilter(filter: Filter | null): Filter {
+export function parseFilter(filter: Record<string, any>, context: ParseFilterContext = {}): Filter {
 	const userStore = useUserStore();
 
 	if (!userStore.currentUser) return filter ?? {};
@@ -13,5 +12,5 @@ export function parseFilter(filter: Filter | null): Filter {
 		user: userStore.currentUser.id,
 	};
 
-	return parseFilterShared(filter, accountability) ?? {};
+	return parseFilterShared(filter, accountability, context) ?? {};
 }

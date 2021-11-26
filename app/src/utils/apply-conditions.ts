@@ -9,7 +9,7 @@ export function applyConditions(item: Record<string, any>, field: Field) {
 
 		const matchingCondition = conditions.find((condition) => {
 			if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
-			const rule = parseFilter(condition.rule);
+			const rule = parseFilter(condition.rule, { $ITEM: item });
 			const errors = validatePayload(rule, item, { requireAll: true });
 			return errors.length === 0;
 		});
