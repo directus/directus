@@ -45,6 +45,7 @@ create_webhook: 创建Web钩子
 invite_users: 邀请用户
 invite: 邀请
 email_already_invited: 电子邮件 "{email}" 已被邀请
+subject: 主題
 emails: 邮箱
 connection_excellent: 优秀的连接状态
 connection_good: 好的连接状态
