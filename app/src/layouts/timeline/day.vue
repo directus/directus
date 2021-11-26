@@ -137,7 +137,7 @@ export default defineComponent({
 		};
 
 		function toEvent(event: Event) {
-			router.push(`/collections/${props.collection}/${event.id}`);
+			router.push(`/content/${props.collection}/${event.id}`);
 		}
 
 		function loadMore() {
