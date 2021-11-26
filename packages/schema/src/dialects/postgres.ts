@@ -5,7 +5,24 @@ import { SchemaInspector } from '../types/schema';
 
 export default class Postgres extends KnexPostgres implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {
-		const [columnsResult, primaryKeysResult, geometryColumnsResult] = await Promise.all([
+		type RawColumn = {
+			table_name: string;
+			column_name: string;
+			default_value: string;
+			data_type: string;
+			max_length: number | null;
+			is_identity: boolean;
+			is_nullable: boolean;
+			is_generated: boolean;
+		};
+
+		type RawGeometryColumn = {
+			table_name: string;
+			column_name: string;
+			data_type: string;
+		};
+
+		const [columnsResult, primaryKeysResult] = await Promise.all([
 			// Only select columns from BASE TABLEs to exclude views (Postgres views
 			// cannot have primary keys so they cannot be used)
 			this.knex.raw(
@@ -15,6 +32,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           , c.column_default as default_value
           , c.data_type
 			 		, c.character_maximum_length as max_length
+          , c.is_generated = 'ALWAYS' is_generated
           , CASE WHEN c.is_identity = 'YES' THEN true ELSE false END is_identity
           , CASE WHEN c.is_nullable = 'YES' THEN true ELSE false END is_nullable
         FROM
@@ -43,34 +61,43 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           AND pg_attribute.attrelid = pg_class.oid
           AND pg_attribute.attnum = ANY (pg_index.indkey)
           AND indisprimary
+          AND indnkeyatts = 1
       `,
 				[this.explodedSchema.join(',')]
 			),
-			this.knex
-				.raw(
-					`
-		WITH geometries as (
-			select * from geometry_columns
-			union
-			select * from geography_columns
-		)
-        SELECT f_table_name as table_name
-			, f_geometry_column as column_name
-			, type as data_type
-        FROM geometries g
-        JOIN information_schema.tables t
-	        ON g.f_table_name = t.table_name
-	        AND t.table_type = 'BASE TABLE'
-        WHERE f_table_schema in (?)
-      `,
-					[this.explodedSchema.join(',')]
-				)
-				.catch(() => undefined),
 		]);
 
-		const columns = columnsResult.rows;
+		const columns: RawColumn[] = columnsResult.rows;
 		const primaryKeys = primaryKeysResult.rows;
-		const geometryColumns = geometryColumnsResult?.rows || [];
+		let geometryColumns: RawGeometryColumn[] = [];
+
+		// Before we fetch the available geometry types, we'll have to ensure PostGIS exists
+		// in the first place. If we don't, the transaction would error out due to the exception in
+		// SQL, which we can't catch in JS.
+		const hasPostGIS =
+			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
+
+		if (hasPostGIS) {
+			const result = await this.knex.raw<{ rows: RawGeometryColumn[] }>(
+				`WITH geometries as (
+					select * from geometry_columns
+					union
+					select * from geography_columns
+				)
+				SELECT f_table_name as table_name
+					, f_geometry_column as column_name
+					, type as data_type
+				FROM geometries g
+				JOIN information_schema.tables t
+					ON g.f_table_name = t.table_name
+					AND t.table_type = 'BASE TABLE'
+				WHERE f_table_schema in (?)
+				`,
+				[this.explodedSchema.join(',')]
+			);
+
+			geometryColumns = result.rows;
+		}
 
 		const overview: SchemaOverview = {};
 
@@ -83,6 +110,9 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = { columns: {}, primary: <any>undefined };
+			}
+			if (['point', 'polygon'].includes(column.data_type)) {
+				column.data_type = 'unknown';
 			}
 			overview[column.table_name].columns[column.column_name] = column;
 		}
@@ -109,9 +139,17 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		if (!columns?.length) {
 			return columns;
 		}
-		try {
-			await this.knex.raw('select postgis_version()');
-		} catch {
+
+		for (const column of Array.isArray(columns) ? columns : [columns]) {
+			if (['point', 'polygon'].includes(column.data_type)) {
+				column.data_type = 'unknown';
+			}
+		}
+
+		const hasPostGIS =
+			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
+
+		if (!hasPostGIS) {
 			return columns;
 		}
 
@@ -136,9 +174,6 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			query.andWhere('f_table_name', table);
 		}
 		if (column) {
-			if (['point', 'polygon'].includes(columns.data_type)) {
-				columns.data_type = 'unknown';
-			}
 			const geometry = await query.andWhere('f_geometry_column', column).first();
 			if (geometry) {
 				columns.data_type = geometry.data_type;
@@ -146,9 +181,6 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		}
 		const geometries = await query;
 		for (const column of columns) {
-			if (['point', 'polygon'].includes(column.data_type)) {
-				column.data_type = 'unknown';
-			}
 			const geometry = geometries.find((geometry) => {
 				return column.name == geometry.name && column.table == geometry.table;
 			});

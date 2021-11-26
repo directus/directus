@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceInputMultiline from './input-multiline.vue';
+import Preview from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'input-multiline',
@@ -8,6 +9,7 @@ export default defineInterface({
 	icon: 'text_fields',
 	component: InterfaceInputMultiline,
 	types: ['text'],
+	group: 'standard',
 	options: [
 		{
 			field: 'placeholder',
@@ -15,7 +17,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'input',
+				interface: 'input-multiline',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},
@@ -71,4 +73,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: Preview,
 });

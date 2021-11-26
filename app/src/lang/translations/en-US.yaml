@@ -20,14 +20,19 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+identifier: Identifier
+avatar: Avatar
+default_provider: Default
 published: Published
 draft: Draft
 archived: Archived
+modules: Modules
 module_bar: Module Bar
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
+item_creation: Item Creation
 item_revision: Item Revision
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
@@ -47,7 +52,7 @@ indeterminate: Indeterminate
 edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
-db_only_click_to_configure: 'Database Only: Click to Configure '
+db_only_click_to_configure: 'Database Only: Click to Configure'
 show_archived_items: Show Archived Items
 edited: Value Edited
 required: Required
@@ -60,10 +65,10 @@ create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 invite_users: Invite Users
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
+subject: Subject
+inbox: Inbox
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
@@ -155,6 +160,7 @@ fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
 presentation_and_aliases: Presentation & Aliases
+revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
@@ -174,6 +180,8 @@ global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
 show_zero: Show Zero
+create_in_advanced_field_creation_mode: Create Field in Advanced Mode
+continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
 sum: Sum
 sum_distinct: Sum Distinct
 avg: Average
@@ -201,6 +209,7 @@ boolean: Boolean
 date: Date
 date_range: Date Range
 datetime: DateTime
+dateTime: DateTime
 precision: Precision
 decimal: Decimal
 float: Float
@@ -213,7 +222,13 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry
+geometry: Geometry (All)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -234,9 +249,9 @@ new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
 new_field: 'New Field'
 new_collection: 'New Collection'
-add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
-add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
-add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
+add_m2o_to_collection: 'Add M2O to "{collection}"'
+add_o2m_to_collection: 'Add O2M to "{collection}"'
+add_m2m_to_collection: 'Add M2M to "{collection}"'
 choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
@@ -254,6 +269,7 @@ invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations
+no_translations: No Translations
 note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
@@ -291,6 +307,7 @@ revision_delta_reverted: Reverted
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 private_user: Private User
+creation_preview: Creation Preview
 revision_preview: Revision Preview
 updates_made: Updates Made
 leave_comment: Leave a comment...
@@ -328,6 +345,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutes
+hours: Hours
 month: Month
 year: Year
 select_all: Select All
@@ -362,6 +381,7 @@ zoom: Zoom
 download: Download
 open: Open
 open_in_new_window: Open in New Window
+open_folder: Open "{folder}" folder
 foreground_color: Foreground Color
 background_color: Background Color
 upload_from_device: Upload File from Device
@@ -415,6 +435,9 @@ user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
+no_notifications: No Notifications
+no_notifications_copy: You're all caught up!
+activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV
@@ -435,6 +458,10 @@ no_other_dashboards_copy: You don't have any other Dashboards yet.
 inactive: Inactive
 users: Users
 activity: Activity
+activity_item: Activity Item
+action: Action
+ip_address: IP Address
+user_agent: User Agent
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -520,6 +547,8 @@ all_users: All Users
 delete_collection: Delete Collection
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
+make_collection_visible: Make Collection Visible
+make_collection_hidden: Make Collection Hidden
 start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
@@ -610,7 +639,9 @@ all_files: All Files
 my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
+edit_folder: Edit Folder
 folder_name: Folder Name...
+folder_key: Folder Key...
 add_file: Add File
 replace_file: Replace File
 no_results: No Results
@@ -639,7 +670,7 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
-insights: Insights (Beta)
+insights: Insights
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -672,6 +703,12 @@ source: Source
 url_placeholder: Enter an url...
 display_text: Display Text
 display_text_placeholder: Enter a display text...
+interface_group_text_and_numbers: Text & Numbers
+interface_group_selection: Selection
+interface_group_relational: Relational
+interface_group_presentation: Presentation
+interface_group_groups: Groups
+interface_group_other: Other
 tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
@@ -758,6 +795,7 @@ layout_setup: Layout Setup
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
+discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
@@ -811,17 +849,21 @@ cancel: Cancel
 no_upscale: Don't upscale images
 collection: Collection
 collections: Collections
+content: Content
 singleton: Singleton
 singleton_label: Treat as single object
 system_fields_locked: System fields are locked and can't be edited
 directus_collection:
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
+  directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
+  directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
+  directus_notifications: Notifications sent to users
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -845,6 +887,7 @@ fields:
     collection: Collection
     icon: Icon
     note: Note
+    color: Color
     display_template: Display Template
     hidden: Hidden
     singleton: Singleton
@@ -854,6 +897,8 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    archive_field: Archive Field
+    item_duplication_fields: Item Duplication Fields
   directus_files:
     $thumbnail: Thumbnail
     title: Title
@@ -905,6 +950,8 @@ fields:
     role: Role
     token: Token
     token_placeholder: Enter a secure access token...
+    provider: Provider
+    external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
   directus_settings:
@@ -912,6 +959,8 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Mapping
+    basemaps: Basemaps
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -923,18 +972,22 @@ fields:
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
-    public_pages: Public Pages
+    branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
-    files_and_thumbnails: Files & Thumbnails
-    storage_default_folder: Storage Default Folder
-    storage_asset_presets: Storage Asset Presets
-    storage_asset_transform: Storage Asset Transform
+    files_and_thumbnails: Files & Storage
+    storage_default_folder: Default Folder
+    storage_asset_presets: Transformation Presets
+    storage_asset_transform: Allowed Transformations
     overrides: App Overrides
     custom_css: Custom CSS
+    module_bar: Module Bar
+    transformations_all: Allow all transformations
+    transformations_none: Disable transformations
+    transformations_presets: Limit transformations to presets below
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
@@ -953,19 +1006,23 @@ fields:
     enforce_tfa: Require 2FA
     users: Users in Role
     module_list: Module Navigation
-    collection_list: Collection Navigation
   directus_webhooks:
     name: Name
     method: Method
     status: Status
     data: Data
+    header: Header
+    value: Value
+    headers: Request Headers
     data_label: Send Event Data
     triggers: Triggers
     actions: Actions
+    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
-    project_logo_note: Login & Logo Background
+    project_color_note: Login & Logo Background
+    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -973,6 +1030,8 @@ field_options:
       weak_text: Weak – Minimum 8 Characters
       strong_text: Strong – Upper / Lowercase / Numbers / Special
     storage_asset_presets:
+      fit_label: Fit
+      upscaling: Upscaling
       fit:
         contain_text: Contain (preserve aspect ratio)
         cover_text: Cover (forces exact size)
@@ -982,6 +1041,8 @@ field_options:
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
+    basemaps_name_placeholder: Enter the basemap name...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -1001,15 +1062,20 @@ field_options:
     hidden_label: Hide within the App
     singleton: Treat as single object
     language: Language
-    translation: Enter a translation...
+    translation: Translation
+    translation_placeholder: Enter a translation...
+    collection_name: Collection Name
+    singular_unit: Singular Unit
+    plural_unit: Plural Unit
     archive_divider: Archive
-    archive_field: Choose a field...
+    archive_field_placeholder: Choose a field...
     archive_app_filter: Enable App Archive Filter
     archive_value: Value set when archiving...
     unarchive_value: Value set when unarchiving...
-    divider: Sort
+    sort_divider: Sort
     sort_field: Choose a field...
     accountability_divider: Accountability
+    duplication_divider: Duplication
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1027,15 +1093,6 @@ field_options:
       name_placeholder: Enter a title...
       link_name: Link
       link_placeholder: Relative or absolute URL...
-    collection_list:
-      group_name_addLabel: Add New Group...
-      fields:
-        group_name: Group Name
-        group_placeholder: Label this group...
-        type_name: Type
-        choices_always: Always Open
-        choices_start_open: Start Open
-        choices_start_collapsed: Start Collapsed
     collections_name: Collections
     collections_addLabel: Add Collection...
   directus_users:
@@ -1059,6 +1116,10 @@ field_options:
     actions_update: Update
     actions_delete: Delete
     actions_login: Login
+    headers:
+      header: Header
+      value: Value
+      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
@@ -1066,6 +1127,9 @@ generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
 save_current_user_role: Save Current User Role
 save_current_datetime: Save Current Date/Time
+always_open: Always Open
+start_open: Start Open
+start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
@@ -1138,12 +1202,26 @@ sort_desc: Sort Descending
 template: Template
 require_value_to_be_set: Require value to be set
 translation: Translation
+translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 weeks: {}
 report_error: Report Error
 start: Start
 interfaces:
+  filter:
+    name: Filter
+    description: Configure a filter object.
+    add_filter: Add Filter
+    add_group: And / Or group
+    add_value: Add Value
+    all: All
+    any: Any
+    and: and
+    of_the_following: of the following
+    no_rules: No configured rules
+    change_value: Click to change value
+    placeholder: Drag rules here
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections
@@ -1210,7 +1288,7 @@ interfaces:
   presentation-divider:
     divider: Divider
     description: Label and divide fields into sections
-    title_placeholder: Enter a title...
+    title_placeholder: Enter a title, or leave blank to only show a line...
     inline_title: Inline Title
     inline_title_label: Show title inside line
     margin_top: Margin Top
@@ -1268,13 +1346,15 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
+    preview: Preview
+    editor: Editor
   map:
     map: Map
     description: Select a location on a map
     zoom: Zoom
-    geometry_type: Geometry type
-    geometry_format: Geometry format
-    default_view: Default view
+    geometry_type: Geometry Type
+    geometry_format: Geometry Format
+    default_view: Default View
     invalid_options: Invalid options
     invalid_format: Invalid format ({format})
     unexpected_geometry: Expected {expected}, got {got}.
@@ -1284,6 +1364,7 @@ interfaces:
     lnglat: Longitude, Latitude
     wkt: WKT
     wkb: WKB
+    click_to_select: Click to select {geometry}
   presentation-notice:
     notice: Notice
     description: Display a short notice
@@ -1295,7 +1376,7 @@ interfaces:
   system-folder:
     folder: Folder
     description:  Select a folder
-    field_hint: Puts newly uploaded files in selected folder. Does not affect existing files that are selected.
+    field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:
@@ -1352,7 +1433,7 @@ interfaces:
     display_template: Display Template
     no_collection: No Collection
     toggle_split_view: Toggle Split View
-    language_field: Language Field
+    language_field: Language Indicator Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -1389,6 +1470,13 @@ interfaces:
     start_open: Start Open
     start_closed: Start Closed
 displays:
+  translations:
+    translations: Translations
+    description: Preview translations
+    enable: Enable
+    user_language: Use Current User Language
+    default_language: Default Language
+    language_field: Language Indicator Field
   boolean:
     boolean: Boolean
     description: Display on and off states
@@ -1506,18 +1594,16 @@ layouts:
     map: Map
     basemap: Basemap
     layers: Layers
-    edit_custom_layers: Edit Layers
     cluster_options: Clustering options
-    cluster: Activate clustering
+    cluster: Cluster Nearby Data
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
-    field: Geometry
+    field: Geospatial Field
     invalid_geometry: Invalid geometry
-    auto_location_filter: Always filter data to view bounds
-    search_this_area: Search this area
-    clear_data_filter: Clear Data Filter
-    clear_location_filter: Clear Location Filter
+    find_location: Find location...
+    default_template: Using Collection Default...
+    no_compatible_fields: No compatible fields
 
 panels:
   metric:

@@ -83,7 +83,7 @@ export default defineComponent({
 			default: () => [],
 		},
 		group: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 

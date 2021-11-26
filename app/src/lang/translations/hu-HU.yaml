@@ -1,35 +1,21 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+avatar: Profilkép
+default_provider: Alapértelmezett
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
+modules: Modulok
+module_bar: Modulsáv
+tile_size: Csempeméret
 edit_field: Mező szerkesztése
 conditions: Feltételek
 maps: Térképek
+item_creation: Elem létrehozása
 item_revision: Nézet revíziója
+enter_a_name: Adjon meg egy nevet...
 duplicate_field: Mező másolása
 half_width: Fél szélesség
 full_width: Teljes szélesség
-limit: Korlát
 group: Csoport
 and: És
 or: Vagy
@@ -44,18 +30,19 @@ indeterminate: Meghatározatlan
 edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
-db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához '
+db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához'
 show_archived_items: Archivált elemek megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
 required_for_app_access: Alkalmazás-hozzáféréshez szükséges
 requires_value: Kötelező érték
 create_preset: Alapértelmezés létrehozása
+create_panel: Panel létrehozása
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
+delete_panel: Panel törlése
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
 emails: Emailek
@@ -145,6 +132,10 @@ fields_for_role: 'A {role} szerepkör mezői a következő funkciót hajthatják
 validation_for_role: 'A {action} mező szabályozza a {role} szerepek által követendő viselkedést.'
 presets_for_role: 'A {role} szerepkör mezőértékeinek alapértelmezései.'
 presentation_and_aliases: Prezentációk és Aliasok
+revision_post_create: Ez az elem így nézett ki létrehozásakor.
+revision_post_update: Ez az elem így nézett ki a frissítés után.
+changes_made: A revízió végrehajtása soránz az alábbi változások történtek.
+no_relational_data: Ne feledje, hogy a relációs adatok nem tartoznak ide.
 hide_field_on_detail: Mező elrejtése a Részleteken
 show_field_on_detail: Mező megjelenítése a Részleteken
 delete_field: Mező törlése
@@ -153,9 +144,19 @@ field_create_success: 'Létrehozott mező: "{field}"'
 field_update_success: 'Módosított mező: "{field}"'
 duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
+aggregate_function: Aggregáló függvény
+aggregate_precision: Aggregálás pontossága
+group_aggregation: Csoport aggregáció
+group_precision: Csoport precízió
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
+show_zero: Zéró megjelenítése
+sum: Össz.
+avg: Átlag
+count: Mennyiség
+min: Min.
+max: Max.
 exposure: Megvilágítás
 shutter: Exponálógomb
 iso: ISO
@@ -173,7 +174,10 @@ alias: Álnév
 bigInteger: Nagy egész számok
 boolean: Logikai
 date: Dátum
+date_range: Dátum intervallum
 datetime: Dátum és idő
+dateTime: Dátum és idő
+precision: Pontosság
 decimal: Tizedes szám
 float: Törtszám
 integer: Egész szám
@@ -185,7 +189,6 @@ time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
 auto_refresh: Automatikus frissítés
@@ -205,12 +208,11 @@ new_data_alert: 'A következők jönnek létre az Adatmodelledben:'
 search_collection: Keresés a Gyűjteményben...
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
-add_m2o_to_collection: 'Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_o2m_to_collection: 'Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_m2m_to_collection: 'Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
 choose_a_type: Válassz típust...
 determined_by_relationship: A kapcsolat által meghatározott
 add_note: Felhasználóknak szóló hasznos megjegyzés hozzáadása...
+add_link: Link hozzáadása
+custom_link: Egyéni link
 default_value: Alapértelmezett érték
 standard_field: Általános mező
 single_file: Egyetlen fájl
@@ -223,6 +225,7 @@ invalid_item: Érvénytelen elem
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
+no_translations: Nincsenek fordítások
 note: Jegyzet
 enter_a_value: Adjon meg egy értéket...
 enter_a_placeholder: Adjon meg egy helyőrzőt...
@@ -240,6 +243,7 @@ raw_value: Nyers érték
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
 clear_value: Érték törlése
+clear_changes: Változások törlése
 reset_to_default: Visszaállítás alaphelyzetbe
 undo_changes: Változások visszavonása
 notifications: Értesítések
@@ -259,6 +263,7 @@ revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
 revision_delta_by: '{date} {user} által'
 private_user: Privát felhasználó
+creation_preview: Létrehozás előnézete
 revision_preview: Felülvizsgálati előnézet
 updates_made: Végrehajtott frissítések
 leave_comment: Hozzászólás írása...
@@ -296,6 +301,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM. d.
+minutes: Perc
+hours: Óra
 month: hónap
 year: év
 select_all: Összes kijelölése
@@ -330,6 +337,7 @@ zoom: Nagyítás
 download: Letöltés
 open: Megnyitás
 open_in_new_window: Megnyitás új ablakban
+open_folder: Nyissa meg a "{folder}" mappát
 foreground_color: Előtérszín
 background_color: Háttérszín
 upload_from_device: Fájl feltöltése Eszközről
@@ -372,6 +380,7 @@ report_bug: Hibajelentés
 request_feature: Funkció ajánlása
 interface_not_found: 'Hiányzó interfész: "{interface}".'
 reset_interface: Felhasználói felület visszaállítása
+display_not_found: 'A "{display}" nézet nem található.'
 reset_display: Megjelenés alaphelyzetbe
 list-m2a: Builder (M2A)
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
@@ -381,6 +390,7 @@ no_files_copy: Nincsenek fileok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
+no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
 all_items: Minden elem
 any: Bármely
 csv: CSV
@@ -392,11 +402,24 @@ relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
 display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
+select_a_field: Válasszon egy mezőt
 active: Aktív
+move_to: Áthelyezés ide...
+copy: Másolás
+copy_to: Másolás ide...
+no_other_dashboards_copy: Önnek még nincs másik irányítópultja.
 inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
+activity_item: Aktivitás elem
+action: Művelet
+ip_address: IP cím
+user_agent: Felhasználói ügynök
 webhooks: Webhookok
+decimals: Decimálisok
+min_value: Min. érték
+max_value: Max. érték
+automatic: Automatikus
 field_width: Mező szélessége
 add_filter: Szűrő hozzáadása
 upper_limit: Felső határ...
@@ -447,6 +470,7 @@ errors:
   UNPROCESSABLE_ENTITY: Feldolgozhatatlan entitás
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
   NOT_NULL_VIOLATION: Az érték nem lehet null
+  ILLEGAL_ASSET_TRANSFORMATION: A forráskép túl nagy az előnézethez
   UNKNOWN: Váratlan hiba történt
 security: Biztonság
 value_hashed: Biztonságosan hashelt érték
@@ -463,6 +487,7 @@ no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás haszná
 password_reset_sent: Küldtünk egy biztonságos linket a jelszó visszaállításához
 password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
+filter: Szűrő
 editing_image: Kép szerkesztése
 square: Négyzet
 free: Szabadon választott
@@ -474,6 +499,8 @@ all_users: Összes felhasználó
 delete_collection: Gyűjtemény törlése
 update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
+make_collection_visible: A Gyűjtemény legyen látható
+make_collection_hidden: A Gyűjtemény legyen rejtett
 start_end_of_count_items: '{start}-{end} {count} elemből'
 start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
@@ -485,6 +512,7 @@ visible_collections: Látható gyűjtemények
 hidden_collections: Rejtett gyűjtemények
 show_hidden_collections: Rejtett gyűjtemények mutatása
 hide_hidden_collections: Rejtett gyűjtemények elrejtése
+show_header: Fejléc megjelenítése
 unmanaged_collections: Nem beállított gyűjtemények
 system_collections: Rendszer gyűjtemények
 placeholder: Helyőrző
@@ -500,6 +528,7 @@ color: Szín
 circle: Kör
 empty_item: Üres elem
 log_in_with: 'Bejelentkezés {provider} profillal'
+conditional_styles: Feltételes stílusok
 advanced_settings: Haladó beállítások
 advanced_filter: Bővített szűrés
 delete_advanced_filter: Szűrő törlése
@@ -553,13 +582,17 @@ value_unique: Egyedi érték szükséges
 all_activity: Minden Tevékenység
 create_item: Elem létrehozása
 display_template: Megjelenítési sablon
+language_display_template: Nyelvi megjelenítés sablon
+translations_display_template: Fordítások megjelenítése sablon
 n_items_selected: 'Nincs elem kiválasztva | 1 elem van kiválasztva | {n} elem van kiválasztva'
 per_page: oldalanként
 all_files: Minden fájl
 my_files: A saját fájljaim
 recent_files: Legutóbbi fájlok
 create_folder: Mappa létrehozása
+edit_folder: Mappa szerkesztése
 folder_name: Mappa neve...
+folder_key: Mappa kulcsa...
 add_file: Fájl hozzáadása
 replace_file: Fájl cseréje
 no_results: Nincs találat
@@ -580,11 +613,36 @@ read: Olvasás
 update: Frissítés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
+format_value: Érték formázása
+abbreviate_value: Érték rövidítése
+operator: Operátor
 bold: Félkövér
 toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+dashboard: Irányítópult
+panel: Panel
+panel_options: Panel beállításai
+panel_header: Panel fejléce
+panel_name_placeholder: Nevezze el a panelt...
+panel_note_placeholder: Opcionális részletek erről a panelről...
+panel_delete_confirm: Biztosan törölni szeretné ezt a panelt? Ez a művelet nem vonható vissza.
+dashboard_delete_confirm: Biztosan törölni kívánja ezt az irányítópultot? Ez a művelet nem vonható vissza.
+edit_dashboard: Irányítópult szerkesztése
+delete_dashboard: Irányítópult törlése
+visible: Látható
+prefix_placeholder: Érték előtti szöveg...
+suffix_placeholder: Érték utáni szöveg...
+decimals_placeholder: Decimális helyek száma...
+no_dashboards: Nincs irányítópult
+no_dashboards_copy: Önnek egy irányítópultja sincs még.
+no_data: Nincs adat
+create_dashboard: Irányítópult létrehozása
+dashboard_name: Irányítópult neve
+full_screen: Teljes képernyő
+edit_panels: Panel szerkesztése
+fit_to_screen: Képernyőhöz igazítva
 image_url: Kép URL
 alt_text: Alternatív szöveg
 media: Média
@@ -681,6 +739,9 @@ layout_setup: További beállítások
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
+discard_changes_copy: Biztos benne, hogy elveti az összes eddig végrehajtott változtatásokat?
+show_x_axis: X tengely megjelenítése
+show_y_axis: Y tengely megjelenítése
 keep_editing: Szerkesztés folytatása
 page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
 page_help_collections_collection: >-
@@ -711,6 +772,8 @@ page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookj
 page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
 page_help_users_item: >-
   **Felhasználó részletei** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
+page_help_insights_overview: '**Betekintés** - A műszerfalak listája, amelyekhez hozzáférhet.'
+page_help_insights_dashboard: '**Irányítópult** — Munkaterület egy vagy több panel kezeléséhez'
 activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
@@ -726,6 +789,21 @@ collections: Gyűjtemények
 singleton: Egyedüli
 singleton_label: Egyetlen objektumként kezelendő
 system_fields_locked: A rendszermezők zároltak és nem szerkeszthetők
+directus_collection:
+  directus_activity: Az összes esemény elszámoltathatósági naplója
+  directus_collections: Gyűjtemény további konfigurációja és metaadatok
+  directus_fields: Mező további konfigurációja és metaadatok
+  directus_files: Metaadatok az összes kezelt fájleszközhöz
+  directus_folders: Virtuális könyvtárakat biztosít a fájlok számára
+  directus_migrations: Az adatbázis melyik verzióját használja
+  directus_presets: Gyűjtemény és könyvjelzők alapértelmezései
+  directus_relations: Reláció konfigurációja és metaadatok
+  directus_revisions: Pillanatkép minden tevékenységhez
+  directus_roles: Jogosultsági csoportok rendszerfelhasználók számára
+  directus_sessions: Felhasználói munkamenet-információk
+  directus_settings: Projekt konfigurációs lehetőségek
+  directus_users: A platform rendszerhasználói
+  directus_webhooks: Konfiguráció eseményalapú HTTP-kérésekhez
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
@@ -741,9 +819,11 @@ fields:
     collection: Gyűjtemény
     icon: Ikon
     note: Jegyzet
+    color: Szín
     display_template: Megjelenítési sablon
     hidden: Rejtett
     singleton: Egyedüli
+    translations: Gyűjteménynevek fordítása
     archive_app_filter: Szűrő archíválása
     archive_value: Archív érték
     unarchive_value: Archiválás megszüntetése utáni érték
@@ -800,6 +880,8 @@ fields:
     role: Szerepkör
     token: Token
     token_placeholder: Írja be a biztonságos hozzáférés tokenjét...
+    provider: Szolgáltató
+    external_identifier: Külső azonosító
     last_page: Utolsó oldal
     last_access: Utolsó hozzáférés
   directus_settings:
@@ -807,6 +889,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Alaptérkép
     basemaps_raster: Raszter
     basemaps_tile: Raszter TileJSON
     basemaps_style: Mapbox stílus
@@ -818,18 +901,14 @@ fields:
     project_url: Projekt webcíme
     project_color: Projekt színe
     project_logo: Projekt logója
-    public_pages: Nyilvános oldalak
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
     auth_password_policy: Hitelesítési jelszóházirend
     auth_login_attempts: Bejelentkezési kísérletek
-    files_and_thumbnails: Fájlok és miniatűrök
-    storage_default_folder: Tároló alapértelmezett mappája
-    storage_asset_presets: Tárolóeszköz alapbeállításai
-    storage_asset_transform: Tárolóeszközök transzformáció
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
+    module_bar: Modulsáv
   directus_fields:
     collection: Gyűjtemény neve
     icon: Gyűjtemény ikonja
@@ -847,19 +926,20 @@ fields:
     ip_access: IP cím
     enforce_tfa: 2FA megkövetelése
     users: Felhasználók a szerepkörben
-    collection_list: Gyűjtemény navigáció
+    module_list: Modul navigáció felülbírálása
   directus_webhooks:
     name: Név
     method: Metódus
     status: Állapot
     data: Adat
+    value: Érték
     data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
+    collections: Gyűjtemények
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
-    project_logo_note: Bejelentkezés és logó háttere
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
@@ -876,6 +956,7 @@ field_options:
     transforms_note: 'A Sharp módszer neve és argumentumai. További információért lásd: https://sharp.pixelplumbing.com/api-constructor'
     mapbox_key: Mapbox hozzáférési token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Alaptérkép
     basemaps_raster: Raszter
     basemaps_tile: Raszter TileJSON
     basemaps_style: Mapbox stílus
@@ -895,13 +976,15 @@ field_options:
     hidden_label: Legyen rejtett az alkalmazásban
     singleton: Egyetlen objektumként kezelendő
     language: Nyelv
-    translation: Fordítás megadása...
+    translation: Fordítás
+    translation_placeholder: Fordítás megadása...
+    collection_name: Gyűjtemény neve
     archive_divider: Archiválás
-    archive_field: Mező kiválasztása...
+    archive_field_placeholder: Mező kiválasztása...
     archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
     archive_value: Archiváláskor beállított érték...
     unarchive_value: Az archiválás visszavonásakor beállított érték...
-    divider: Rendezés
+    sort_divider: Rendezés
     sort_field: Mező kiválasztása...
   directus_files:
     title: Egy egyedi cím...
@@ -919,15 +1002,6 @@ field_options:
       name_placeholder: Írjon be egy címet...
       link_name: Hivatkozás
       link_placeholder: Relatív vagy abszolút URL...
-    collection_list:
-      group_name_addLabel: Új csoport hozzáadása...
-      fields:
-        group_name: Csoportnév
-        group_placeholder: Címkézze fel ezt a csoportot...
-        type_name: Típus
-        choices_always: Mindig nyitva
-        choices_start_open: Indíts nyitva!
-        choices_start_collapsed: Kezdetben összecsukva
     collections_name: Gyűjtemények
     collections_addLabel: Gyűjtemény hozzáadása...
   directus_users:
@@ -951,12 +1025,18 @@ field_options:
     actions_update: Frissítés
     actions_delete: Törlés
     actions_login: Bejelentkezés
+    headers:
+      value: Érték
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
+no_value: Hiányzó érték
 do_nothing: Ne tegyen semmit
 generate_and_save_uuid: UUID generálása és mentése
 save_current_user_id: Jelenlegi felhasználói azonosító mentése
 save_current_user_role: Jelenlegi felhasználói szerepkör mentése
 save_current_datetime: Aktuális dátum/idő mentése
+always_open: Mindig nyitva
+start_open: Indíts nyitva!
+start_collapsed: Kezdetben összecsukva
 block: Blokk
 inline: Inline
 comment: Hozzászólás
@@ -982,6 +1062,7 @@ delete_field_are_you_sure: >-
 description: Leírás
 done: Kész
 duplicate: Duplikálás
+limit: Korlát
 email: Email
 embed: Beágyazás
 fallback_icon: Tartalék ikon
@@ -1028,13 +1109,29 @@ sort_desc: Csökkenő sorrend
 template: Sablon
 require_value_to_be_set: Az érték beállítása kötelező
 translation: Fordítás
+translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
+start: Start
 interfaces:
+  filter:
+    name: Szűrő
+    description: Szűrőobjektum konfigurálása.
+    add_filter: Szűrő hozzáadása
+    add_group: És / Vagy csoport
+    add_value: Érték hozzáadása
+    all: Összes
+    any: Bármely
+    and: és
+    of_the_following: a következőkből
+    no_rules: Nincsenek szabályok konfigurálva
+    change_value: Klikkeljen az érték megváltoztatásához
+    placeholder: Húzza ide a szabályokat
   group-accordion:
     name: Harmonika
     description: Mezőcsoportok megjelenítése harmonika nézetben
+    start: Start
     all_closed: Mind bezárva
     first_opened: Első nyitva
     all_opened: Mind nyitva
@@ -1097,7 +1194,6 @@ interfaces:
   presentation-divider:
     divider: Elválasztó
     description: A mezők felcímkézése és szakaszokra osztása
-    title_placeholder: Írjon be egy címet...
     inline_title: Inline cím
     inline_title_label: Cím megjelenítése a soron belül
     margin_top: Felső margó
@@ -1159,9 +1255,6 @@ interfaces:
     map: Térkép
     description: Hely megadása térképen
     zoom: Nagyítás
-    geometry_type: Geometria típusa
-    geometry_format: Geometria formátuma
-    default_view: Alapértelmezett nézet
     invalid_options: Érvénytelen opciók
     invalid_format: Érvénytelen formátum ({format})
     unexpected_geometry: 'Elvárt: {expected}, kapott: {got}.'
@@ -1182,7 +1275,6 @@ interfaces:
   system-folder:
     folder: Könyvtár
     description: Válasszon egy mappát
-    field_hint: Az újonnan feltöltött fájlokat a kiválasztott mappába helyezi. Nem érinti a kiválasztott, de már létező fájlokat.
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
   select-radio:
@@ -1217,6 +1309,7 @@ interfaces:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!
     trim: Vágás
+    trim_label: Vágja le a kezdetét és a végét
     mask: Maszkolt
     mask_label: Valós érték elrejtése
     clear: Törölt érték
@@ -1237,6 +1330,7 @@ interfaces:
   translations:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
+    toggle_split_view: Osztott nézet váltása
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
     recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
@@ -1262,6 +1356,7 @@ interfaces:
     trigger: Eseményindító
     rate: Értékelés
   group-raw:
+    name: Nyers csoport
     description: A mezők megjelenítése a jelenlegi állapotnak megfelelően
   group-detail:
     description: A mezők renderelése összecsukható szakaszként
@@ -1271,6 +1366,8 @@ interfaces:
     start_open: Indíts nyitva!
     start_closed: Indíts zárva!
 displays:
+  translations:
+    translations: Fordítások
   boolean:
     boolean: Logikai
     description: Be- és kikapcsolt állapotok megjelenítése
@@ -1380,13 +1477,24 @@ layouts:
     map: Térkép
     basemap: Alaptérkép
     layers: Rétegek
-    edit_custom_layers: Rétegek szerkesztése
     cluster_options: Klaszterezés beállításai
-    cluster: Klaszterezés aktiválása
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
-    field: Geometria
     invalid_geometry: Érvénytelen geometria
-    auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
-    search_this_area: Keresés ezen a területen
+panels:
+  metric:
+    name: Metrikus
+    description: Egyetlen érték megjelenítése egy lekérdezés alapján
+    field: Mező
+  time_series:
+    name: Idősorok
+    description: Vonaldiagram megjelenítése az időbeli értékek alapján
+    date_field: Dátummező
+    value_field: Érték mező
+  label:
+    name: Címke
+    description: Szöveg megjelenítése
+  list:
+    name: Lista
+    description: Mezők szűrése és listázása egy gyűjteményből

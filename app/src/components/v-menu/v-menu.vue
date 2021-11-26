@@ -28,6 +28,7 @@
 						handler: deactivate,
 						middleware: onClickOutsideMiddleware,
 						disabled: isActive === false || closeOnClick === false,
+						events: ['click'],
 					}"
 					class="v-menu-popper"
 					:class="{ active: isActive, attached }"
@@ -96,9 +97,17 @@ export default defineComponent({
 		trigger: {
 			type: String,
 			default: null,
-			validator: (val: string) => ['hover', 'click'].includes(val),
+			validator: (val: string) => ['hover', 'click', 'keyDown'].includes(val),
 		},
 		delay: {
+			type: Number,
+			default: 0,
+		},
+		offsetY: {
+			type: Number,
+			default: 8,
+		},
+		offsetX: {
 			type: Number,
 			default: 0,
 		},
@@ -134,9 +143,11 @@ export default defineComponent({
 			reference,
 			popper,
 			computed(() => ({
-				placement: props.placement as Placement,
+				placement: props.placement,
 				attached: props.attached,
 				arrow: props.showArrow,
+				offsetY: props.offsetY,
+				offsetX: props.offsetX,
 			}))
 		);
 
@@ -310,17 +321,17 @@ body {
 }
 
 .arrow,
-.arrow::before,
 .arrow::after {
 	position: absolute;
 	z-index: 1;
 	width: 10px;
 	height: 10px;
+	overflow: hidden;
 	border-radius: 2px;
+	box-shadow: none;
 }
 
 .arrow {
-	&::before,
 	&::after {
 		background: var(--card-face-color);
 		transform: rotate(45deg) scale(0);
@@ -329,15 +340,9 @@ body {
 		content: '';
 	}
 
-	&.active::before,
 	&.active::after {
 		transform: rotate(45deg) scale(1);
 		transition: transform var(--medium) var(--transition-in);
-	}
-
-	&::after {
-		background: var(--card-face-color);
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -345,8 +350,8 @@ body {
 	bottom: -6px;
 
 	&::after {
-		bottom: 2px;
-		box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		bottom: 3px;
+		box-shadow: 2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -354,8 +359,8 @@ body {
 	top: -6px;
 
 	&::after {
-		top: 2px;
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		top: 3px;
+		box-shadow: -2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -364,7 +369,7 @@ body {
 
 	&::after {
 		left: 2px;
-		box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: -2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -373,7 +378,7 @@ body {
 
 	&::after {
 		right: 2px;
-		box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: 2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -385,7 +390,7 @@ body {
 	background-color: var(--card-face-color);
 	border: none;
 	border-radius: var(--border-radius);
-	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgba(var(--card-shadow-color), 0.05);
+	box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgb(var(--card-shadow-color), 0.05);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;

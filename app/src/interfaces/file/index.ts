@@ -8,7 +8,8 @@ export default defineInterface({
 	icon: 'note_add',
 	component: InterfaceFile,
 	types: ['uuid'],
-	groups: ['file'],
+	localTypes: ['file'],
+	group: 'relational',
 	relational: true,
 	options: [
 		{

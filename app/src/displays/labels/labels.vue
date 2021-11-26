@@ -16,13 +16,7 @@
 			</v-chip>
 		</template>
 		<template v-else>
-			<display-color
-				v-for="item in items"
-				:key="item.value"
-				v-tooltip="item.text"
-				:value="item.background"
-				:default-color="defaultBackground"
-			/>
+			<display-color v-for="item in items" :key="item.value" v-tooltip="item.text" :value="item.background" />
 		</template>
 	</div>
 </template>
@@ -31,6 +25,7 @@
 import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
 import { translate } from '@/utils/translate-object-values';
+import { isEmpty } from 'lodash';
 
 type Choice = {
 	value: string;
@@ -57,14 +52,6 @@ export default defineComponent({
 			type: Array as PropType<Choice[]>,
 			default: () => [],
 		},
-		defaultBackground: {
-			type: String,
-			default: '#eceff1',
-		},
-		defaultForeground: {
-			type: String,
-			default: '#263238',
-		},
 		type: {
 			type: String,
 			required: true,
@@ -75,7 +62,7 @@ export default defineComponent({
 		const items = computed(() => {
 			let items: string[];
 
-			if (props.value === null) items = [];
+			if (isEmpty(props.value)) items = [];
 			else if (props.type === 'string') items = [props.value as string];
 			else items = props.value as string[];
 
@@ -98,15 +85,15 @@ export default defineComponent({
 					return {
 						value: item,
 						text: itemStringValue,
-						foreground: props.defaultForeground,
-						background: props.defaultBackground,
+						foreground: 'var(--foreground-normal)',
+						background: 'var(--background-normal)',
 					};
 				} else {
 					return translate({
 						value: item,
 						text: choice.text || itemStringValue,
-						foreground: choice.foreground || props.defaultForeground,
-						background: choice.background || props.defaultBackground,
+						foreground: choice.foreground || 'var(--foreground-normal)',
+						background: choice.background || 'var(--background-normal)',
 					});
 				}
 			});

@@ -1,4 +1,6 @@
 ---
+avatar: Foto
+default_provider: Predeterminat
 draft: Esborrany
 archived: Arxivat
 edit_field: Edita el camp
@@ -8,7 +10,6 @@ item_revision: Revisió de l'element
 duplicate_field: Camp duplicat
 half_width: Mitja amplada
 full_width: Amplada Completa
-limit: Límit
 group: Grup
 and: I
 or: O
@@ -22,7 +23,6 @@ leaf: Fulla
 indeterminate: Indeterminat
 exclusive: Exclusiu
 children: Fills
-db_only_click_to_configure: 'Base de dades només: Feu clic per configurar '
 show_archived_items: Mostra els elements arxivats
 edited: Valor editat
 required: Requerit
@@ -33,7 +33,6 @@ create_role: Crea un rol
 create_user: Crear usuari
 create_webhook: Crear Webhook
 invite_users: Convidar usuaris
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Convida
 email_already_invited: El correu "{email}" ja s'ha convidat
 emails: Correus electrònics
@@ -152,6 +151,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Data
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -163,7 +163,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: No disponible per aquest Tipus
 create_translations: Crea traduccions
 auto_refresh: Refrescament automàtic
@@ -183,9 +182,6 @@ new_data_alert: 'Es crearà el següent en el teu Model de dades:'
 search_collection: Cerca la col·lecció...
 new_field: 'Nou camp'
 new_collection: 'Nova col·lecció'
-add_m2o_to_collection: 'Afegeix Molts-a-Un a "{collection}"'
-add_o2m_to_collection: 'Afegeix Un-a-Molts a "{collection}"'
-add_m2m_to_collection: 'Afegeix Molts-a-Molts a "{collection}"'
 choose_a_type: Tria un tipus...
 determined_by_relationship: Determinat per la relació
 add_note: Afegiu una nota útil per als usuaris...
@@ -372,9 +368,13 @@ display_template_not_setup: L'opció de plantilla de disposió no està configur
 collection_field_not_setup: L'opció de camp de col·lecció no està configurada
 select_a_collection: Selecciona una col·lecció
 active: Activa
+copy: Copia
 inactive: Inactiva
 users: Usuaris
 activity: Activitat
+action: Acció
+ip_address: Adreça IP
+user_agent: Agent de l'usuari
 webhooks: Webhooks
 field_width: Amplada del camp
 add_filter: Afegeix un filtre
@@ -566,6 +566,7 @@ toggle: Canvia
 icon_on: Icona activada
 icon_off: Icona desactivada
 label: Etiqueta
+full_screen: Pantalla completa
 image_url: URL de la imatge
 alt_text: Text alternatiu
 media: Mèdia
@@ -663,7 +664,6 @@ unsaved_changes: Canvis no desats
 unsaved_changes_copy: Estàs segur que vols sortir d'aquesta pàgina?
 discard_changes: Descarta els canvis
 keep_editing: Continua editant
-page_help_collections_overview: '** Visió general de les col·leccions **: Llistes de totes les col·leccions a les quals tens accés.'
 page_help_collections_collection: >-
   ** Cerca elements **: Llista de tots els elements de {collection} als quals tens accés. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes diferents configuracions per accedir-hi ràpidament.
 page_help_collections_item: >-
@@ -721,6 +721,7 @@ fields:
     collection: Coŀlecció
     icon: Icona
     note: Nota
+    color: Color
     display_template: Mostra la plantilla
     hidden: Amagat
     singleton: Singleton
@@ -787,16 +788,11 @@ fields:
     project_url: URL del projecte
     project_color: Color del projecte
     project_logo: Logotip del projecte
-    public_pages: Pàgines públiques
     public_foreground: Primer pla públic
     public_background: Fons públic
     public_note: Anotació de la vista pública
     auth_password_policy: Política de contrasenyes
     auth_login_attempts: Intents d'autenticació
-    files_and_thumbnails: Fitxers i miniatures
-    storage_default_folder: Carpeta predeterminada d'emmagatzematge
-    storage_asset_presets: Predefinits de recursos d'emmagatzematge
-    storage_asset_transform: Transformació de recursos d'emmagatzematge
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
   directus_fields:
@@ -817,15 +813,16 @@ fields:
     enforce_tfa: Requereix 2FA
     users: Usuaris al rol
     module_list: Navegació dels mòduls
-    collection_list: Navegació de les col·leccions
   directus_webhooks:
     name: Nom
     method: Mètode
     status: Estat
     data: Dades
+    value: Valor
     data_label: Envia les dades de l'event
     triggers: Disparadors
     actions: Accions
+    collections: Col·leccions
 field_options:
   directus_settings:
     security_divider_title: Seguretat
@@ -842,17 +839,15 @@ field_options:
     collection_setup: Configuració de la col·lecció
     singleton: Tracta com un objecte únic
     language: Idioma
+    translation: Traducció
+    collection_name: Nom de la col·lecció
     archive_divider: Arxiu
-    divider: Ordre
+    sort_divider: Ordre
   directus_roles:
     fields:
       icon_name: Icona
       name_name: Nom
       name_placeholder: Introdueix un títol...
-    collection_list:
-      fields:
-        type_name: Tipus
-        choices_start_open: Comença obert
     collections_name: Col·leccions
   directus_users:
     preferences_divider: Preferències de l'usuari
@@ -873,12 +868,15 @@ field_options:
     actions_create: Crear
     actions_update: Actualitzar
     actions_delete: Elimina
+    headers:
+      value: Valor
 no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
 do_nothing: No facis res
 generate_and_save_uuid: Genera i Desa UUID
 save_current_user_id: Desa el ID d'usuari actual
 save_current_user_role: Desa el rol d'usuari actual
 save_current_datetime: Desa la Data/Hora actual
+start_open: Comença obert
 block: Block
 inline: Inline
 comment: Comentari
@@ -904,6 +902,7 @@ delete_field_are_you_sure: >-
 description: Descripció
 done: Fet
 duplicate: Duplicat
+limit: Límit
 email: Correu electrònic
 embed: Inclou
 fallback_icon: Icona de reserva
@@ -955,6 +954,10 @@ view_project: Veure el projecte
 report_error: Notifica un error
 start: Comença
 interfaces:
+  filter:
+    add_filter: Afegeix un filtre
+    all: Tots
+    any: Qualsevol
   group-accordion:
     name: Acordió
     description: Mostra els camps o els grups com a seccions de l'acordió
@@ -1021,7 +1024,6 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta i divideix els camps en seccions
-    title_placeholder: Introdueix un títol...
     inline_title: Títol en línia
     inline_title_label: Mostra el títol dins la línia
     margin_top: Marge superior
@@ -1083,9 +1085,6 @@ interfaces:
     map: Mapa
     description: Selecciona una localització al mapa
     zoom: Zoom
-    geometry_type: Tipus geometria
-    geometry_format: Format geometria
-    default_view: Vista predeterminada
     invalid_options: Opcions no vàlides
     invalid_format: Format no vàlid ({format})
     unexpected_geometry: Esperat {expected}, obtingut {got}.
@@ -1106,7 +1105,6 @@ interfaces:
   system-folder:
     folder: Carpeta
     description: Selecciona una carpeta
-    field_hint: Insereix els fitxers carregats recentment a la carpeta seleccionada. No afecta els fitxers existents seleccionats.
     root_name: Arrel de la biblioteca de fitxers
     system_default: Predeterminats del sistema
   select-radio:
@@ -1198,6 +1196,8 @@ interfaces:
     start_open: Comença obert
     start_closed: Comená tancat
 displays:
+  translations:
+    translations: Traduccions
   boolean:
     boolean: Boolean
     description: Mostra els estats Activat i desactivat
@@ -1307,11 +1307,11 @@ layouts:
     map: Mapa
     basemap: Mapa base
     layers: Capes
-    edit_custom_layers: Edita capes
     cluster_options: Opcions de clustering
-    cluster: Activa el clustering
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
-    field: Geometria
     invalid_geometry: Geometria invàlida
+panels:
+  label:
+    name: Etiqueta

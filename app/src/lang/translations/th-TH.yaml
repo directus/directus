@@ -1,24 +1,5 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+avatar: ภาพประจำตัว
 published: เผยแพร่แล้ว
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
@@ -27,7 +8,6 @@ item_revision: ประวัติรายการ
 duplicate_field: สำเนาฟิลด์
 half_width: กว้างครึ่งหนึ่ง
 full_width: กว้างเต็มหน้า
-limit: ขีดจำกัด
 group: กลุ่ม
 and: และ
 or: หรือ
@@ -42,7 +22,6 @@ indeterminate: คลุมเครือ
 edit_collection: แก้ไขคอลเลกชัน
 exclusive: เฉพาะ
 children: ลูก
-db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
 show_archived_items: แสดงรายการเก็บถาวร
 edited: ค่าที่ถูกแก้ไข
 required: จำเป็นต้องระบุ
@@ -53,7 +32,6 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 create_webhook: สร้างเว็บฮุก
 invite_users: เชิญชวนผู้ใช้งาน
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
 emails: อีเมล
@@ -175,6 +153,7 @@ bigInteger: Big Integer
 boolean: ค่าบูลีน
 date: วันที่
 datetime: วันที่และเวลา
+dateTime: วันที่และเวลา
 decimal: เลขฐานสิบ
 float: เลขทศนิยม
 integer: จำนวนเต็ม
@@ -186,7 +165,6 @@ time: เวลา
 timestamp: Timestamp
 uuid: UUID
 hash: ค่าแฮช
-geometry: เรขาคณิต
 not_available_for_type: ไม่มีสำหรับชนิดนี้
 create_translations: สร้างการแปลใหม่
 auto_refresh: รีเฟรซอัตโนมัติ
@@ -206,9 +184,6 @@ new_data_alert: 'สิ่งเหล่านี้จะถูกสร้า
 search_collection: ค้นหาตาราง...
 new_field: 'สร้างฟิลด์ใหม่'
 new_collection: 'คอลเลกชันใหม่'
-add_m2o_to_collection: 'เพิ่ม Many-to-One ให้ "{collection}"'
-add_o2m_to_collection: 'เพิ่ม One-to-Many ให้ "{collection}"'
-add_m2m_to_collection: 'เพิ่ม Many-to-Many ให้ "{collection}"'
 choose_a_type: เลือกชนิด...
 determined_by_relationship: กำหนดโดยความสัมพันธ์
 add_note: เพิ่มโน้ตเพื่อแนะนำผู้ใช้
@@ -396,9 +371,13 @@ display_template_not_setup: การตั้งค่าของการแ�
 collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
 select_a_collection: เลือกคอลเลกชัน
 active: เปิดใช้งาน
+copy: คัดลอก
 inactive: ไม่ใช้งาน
 users: ผู้ใช้
 activity: กิจกรรม
+action: ดำเนินการ
+ip_address: หมายเลขไอพี
+user_agent: ตัวแทนของผู้ใช้
 webhooks: Webhooks
 field_width: ความกว้างของฟิลด์
 add_filter: เพิ่มตัวกรอง
@@ -590,6 +569,7 @@ toggle: สลับ
 icon_on: แสดงไอคอน
 icon_off: ไม่แสดงไอคอน
 label: ป้าย
+full_screen: เต็มจอ
 image_url: URL ของรูปภาพ
 alt_text: ข้อความแสดงแทน
 media: สื่อ
@@ -687,7 +667,6 @@ unsaved_changes: ไม่ได้บันทึกการเปลี่ย
 unsaved_changes_copy: คุณแน่ใจว่าต้องการออกจากหน้านี้?
 discard_changes: ยกเลิกการเปลี่ยนแปลง
 keep_editing: แก้ไขต่อไป
-page_help_collections_overview: '**ภาพรวมของคอลเลกชัน** — รายการของคอลเลกชันที่คุณเข้าถึง'
 page_help_collections_collection: >-
   **รายการที่เรียกดู** — รายการของ {collection} ที่คุณเรียกดู สามารถปรับแต่งเค้าโครง, การกรอง, และการเรียงเพื่อปรับแต่งมุมมองในแบบที่ต้องการ, และสามารถสร้างเป็นบุ๊คมาร์กเพื่อเข้าถึงการตั้งค่าเหล่านี้ได้อย่างรวดเร็ว
 page_help_collections_item: >-
@@ -745,6 +724,7 @@ fields:
     collection: คอลเลกชัน
     icon: ไอคอน
     note: หมายเหตุ
+    color: สี
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
     singleton: Singleton
@@ -807,8 +787,6 @@ fields:
     public_note: Public Note
     auth_password_policy: นโยบายในการตั้งรหัสผ่าน
     auth_login_attempts: ความพยายามในการเข้าสู่ระบบ
-    storage_asset_presets: การจัดเก็บที่ตั้งค่าไว้ล่วงหน้า
-    storage_asset_transform: การแปลงพื้นที่จัดเก็บข้อมูล
     custom_css: CSS ที่กำหนดเอง
   directus_fields:
     collection: ชื่อคอลเลกชัน
@@ -828,10 +806,11 @@ fields:
     enforce_tfa: ต้องการ 2FA
     users: ผู้ใช้ในบทบาทนี้
     module_list: รายการโมดูล
-    collection_list: รายการคอลเลกชัน
   directus_webhooks:
     name: ชื่อ
     status: สถานะ
+    value: ค่า
+    collections: คอลเลกชัน
 field_options:
   directus_settings:
     security_divider_title: ความปลอดภัย
@@ -845,16 +824,15 @@ field_options:
     collection_setup: การตั้งค่าคอลเลกชัน
     singleton: ทำเสมือนว่ามีออปเจ็คเดียว
     language: ภาษา
+    translation: แปลภาษา
+    collection_name: ชื่อคอลเลกชัน
     archive_divider: เก็บถาวร
-    divider: เรียง
+    sort_divider: เรียง
   directus_roles:
     fields:
       icon_name: ไอคอน
       name_name: ชื่อ
       name_placeholder: ป้อนชื่อเรื่อง
-    collection_list:
-      fields:
-        type_name: ชนิด
     collections_name: คอลเลกชัน
   directus_users:
     status_dropdown_active: เปิดใช้งาน
@@ -863,6 +841,8 @@ field_options:
     status_options_inactive: ไม่ใช้งาน
     actions_create: สร้าง
     actions_update: แก้ไข
+    headers:
+      value: ค่า
 no_fields_in_collection: 'ยังไม่มีฟิลด์ใน {collection}'
 do_nothing: ไม่ต้องทำอะไร
 generate_and_save_uuid: สร้างและบันทึก UUID โดยอัตโนมัติ
@@ -890,6 +870,7 @@ delete_field_are_you_sure: >-
 description: รายละเอียด
 done: เรียบร้อยแล้ว
 duplicate: ทำสำเนา
+limit: ขีดจำกัด
 email: อีเมล
 embed: ฝัง
 fallback_icon: Fallback ไอคอน
@@ -939,6 +920,10 @@ value: ค่า
 view_project: ดูโครงการ
 report_error: แจ้งข้อผิดพลาด
 interfaces:
+  filter:
+    add_filter: เพิ่มตัวกรอง
+    all: ทั้งหมด
+    any: ใด ๆ
   presentation-links:
     presentation-links: ปุ่มลิงก์
     links: ลิงค์
@@ -989,7 +974,6 @@ interfaces:
   presentation-divider:
     divider: ตัวแบ่ง
     description: แบ่งฟิลด์ออกเป็นส่วนๆ
-    title_placeholder: ป้อนชื่อเรื่อง
     inline_title: ชื่อเรื่องแบบบรรทัดเดียวกัน
     inline_title_label: แสดงชื่อในเส้นแบ่ง
     margin_top: ระยะห่างด้านบน
@@ -1137,6 +1121,8 @@ interfaces:
     trigger: Trigger
     rate: ' ให้คะแนน'
 displays:
+  translations:
+    translations: การแปลภาษา
   boolean:
     boolean: ค่าบูลีน
     description: แสดงสถานะ เปิด และปิด
@@ -1242,5 +1228,6 @@ layouts:
     calendar: ปฏิทิน
     start_date_field: ฟิลด์วันที่เริ่มต้น
     end_date_field: ฟิลด์วันที่สิ้นสุด
-  map:
-    field: เรขาคณิต
+panels:
+  label:
+    name: ป้าย

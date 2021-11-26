@@ -56,10 +56,11 @@ export default async function runSeed(database: Knex): Promise<void> {
 					column = tableBuilder.string(columnName);
 				} else if (columnInfo.type === 'hash') {
 					column = tableBuilder.string(columnName, 255);
-				} else if (columnInfo.type === 'geometry') {
+				} else if (columnInfo.type?.startsWith('geometry')) {
 					const helper = getGeometryHelper();
-					column = helper.createColumn(tableBuilder, { field: columnName } as Field);
+					column = helper.createColumn(tableBuilder, { field: columnName, type: columnInfo.type } as Field);
 				} else {
+					// @ts-ignore
 					column = tableBuilder[columnInfo.type!](columnName);
 				}
 

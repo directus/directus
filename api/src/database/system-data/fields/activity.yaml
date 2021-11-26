@@ -10,8 +10,6 @@ fields:
   - field: action
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       choices:
         - text: $t:field_options.directus_activity.create
           value: create
@@ -26,7 +24,7 @@ fields:
           foreground: 'var(--danger)'
           background: 'var(--danger-25)'
         - text: $t:field_options.directus_activity.login
-          value: authenticate
+          value: login
           foreground: 'var(--purple)'
           background: 'var(--purple-25)'
     width: half

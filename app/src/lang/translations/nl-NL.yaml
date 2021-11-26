@@ -1,4 +1,5 @@
 ---
+avatar: Profielafbeelding
 edit_field: Veld Bewerken
 conditions: Voorwaarden
 item_revision: Item revisie
@@ -18,7 +19,6 @@ leaf: Blad
 indeterminate: Onbepaald
 exclusive: Exclusief
 children: Onderliggende
-db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
 show_archived_items: Toon Gearchiveerde Items
 edited: Waarde bewerkt
 required: Vereist
@@ -29,7 +29,6 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 create_webhook: Webhook Aanmaken
 invite_users: Gebruikers Uitnodigen
-email_examples: "admin{'@'}example.com, gebruiker{'@'}example.com..."
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
 emails: E-mails
@@ -146,6 +145,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimaal
 float: Float
 integer: Integer
@@ -176,9 +176,6 @@ new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 search_collection: Collectie doorzoeken...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
-add_m2o_to_collection: 'Many-to-one toevoegen aan "{collection}"'
-add_o2m_to_collection: 'One-to-many toevoegen aan "{collection}"'
-add_m2m_to_collection: 'Many-to-many toevoegen aan "{collection}"'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
@@ -364,8 +361,12 @@ display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
 active: Actief
+copy: Kopieer
 users: Gebruikers
 activity: Activiteit
+action: Actie
+ip_address: IP Adres
+user_agent: User Agent
 webhooks: Webhooks
 field_width: Veld breedte
 add_filter: Filter toevoegen
@@ -549,6 +550,7 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+full_screen: Volledig scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
 media: Media
@@ -645,7 +647,6 @@ unsaved_changes: Niet-opgeslagen wijzigingen
 unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
 discard_changes: Wijzigingen ongedaan maken
 keep_editing: Blijf wijzigen
-page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
 page_help_collections_collection: >-
   **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_collections_item: >-
@@ -703,6 +704,7 @@ fields:
     collection: Collectie
     icon: Icoon
     note: Notitie
+    color: Kleur
     display_template: Weergavesjabloon
     hidden: Verborgen
     singleton: Singleton
@@ -765,8 +767,6 @@ fields:
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
-    storage_asset_presets: Bestand Voorkeuren
-    storage_asset_transform: Storage Asset Transform
     custom_css: Aangepastte CSS
   directus_fields:
     collection: Collectie naam
@@ -786,10 +786,11 @@ fields:
     enforce_tfa: 2FA vereist
     users: Gebruikers in rol
     module_list: Module Navigatie
-    collection_list: Collectie navigatie
   directus_webhooks:
     name: Naam
     status: Status
+    value: Waarde
+    collections: Collecties
 field_options:
   directus_activity:
     create: Maak
@@ -801,15 +802,14 @@ field_options:
     collection_setup: Collectie setup
     singleton: Behandel als één object
     language: Taal
+    translation: Vertaling
+    collection_name: Collectie naam
     archive_divider: Archiveren
-    divider: Sorteren
+    sort_divider: Sorteren
   directus_roles:
     fields:
       icon_name: Icoon
       name_name: Naam
-    collection_list:
-      fields:
-        type_name: Type
     collections_name: Collecties
   directus_users:
     status_dropdown_active: Actief
@@ -817,6 +817,8 @@ field_options:
     status_options_active: Actief
     actions_create: Maak
     actions_update: Updaten
+    headers:
+      value: Waarde
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID
@@ -889,6 +891,9 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
+  filter:
+    add_filter: Filter toevoegen
+    all: Alle
   presentation-links:
     primary: Primair
   input-code:
@@ -1013,6 +1018,8 @@ interfaces:
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
 displays:
+  translations:
+    translations: Vertalingen
   boolean:
     boolean: Boolean
     description: Toon aan/uit status
@@ -1116,3 +1123,6 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+panels:
+  label:
+    name: Label

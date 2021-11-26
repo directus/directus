@@ -11,12 +11,21 @@ interface HTMLExpandElement extends HTMLElement {
 	};
 }
 
-export default function (expandedParentClass = '', xAxis = false): Record<string, any> {
+export default function (
+	expandedParentClass = '',
+	xAxis = false,
+	emit: (
+		event: 'beforeEnter' | 'enter' | 'afterEnter' | 'enterCancelled' | 'leave' | 'afterLeave' | 'leaveCancelled',
+		...args: any[]
+	) => void
+): Record<string, any> {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
 	const offsetProperty = `offset${capitalizeFirst(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
 	return {
 		beforeEnter(el: HTMLExpandElement) {
+			emit('beforeEnter');
+
 			el._parent = el.parentNode as (Node & ParentNode & HTMLElement) | null;
 			el._initialStyle = {
 				transition: el.style.transition,
@@ -27,6 +36,8 @@ export default function (expandedParentClass = '', xAxis = false): Record<string
 		},
 
 		enter(el: HTMLExpandElement) {
+			emit('enter');
+
 			const initialStyle = el._initialStyle;
 			if (!initialStyle) return;
 			const offset = `${el[offsetProperty]}px`;
@@ -51,10 +62,19 @@ export default function (expandedParentClass = '', xAxis = false): Record<string
 			});
 		},
 
-		afterEnter: resetStyles,
-		enterCancelled: resetStyles,
+		afterEnter(el: HTMLExpandElement) {
+			emit('afterEnter');
+			resetStyles(el);
+		},
+
+		enterCancelled(el: HTMLExpandElement) {
+			emit('enterCancelled');
+			resetStyles(el);
+		},
 
 		leave(el: HTMLExpandElement) {
+			emit('leave');
+
 			el._initialStyle = {
 				transition: '',
 				visibility: '',
@@ -69,16 +89,25 @@ export default function (expandedParentClass = '', xAxis = false): Record<string
 			requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
 		},
 
-		afterLeave,
-		leaveCancelled: afterLeave,
-	};
+		afterLeave(el: HTMLExpandElement) {
+			emit('afterLeave');
 
-	function afterLeave(el: HTMLExpandElement) {
-		if (expandedParentClass && el._parent) {
-			el._parent.classList.remove(expandedParentClass);
-		}
-		resetStyles(el);
-	}
+			if (expandedParentClass && el._parent) {
+				el._parent.classList.remove(expandedParentClass);
+			}
+
+			resetStyles(el);
+		},
+		leaveCancelled(el: HTMLExpandElement) {
+			emit('leaveCancelled');
+
+			if (expandedParentClass && el._parent) {
+				el._parent.classList.remove(expandedParentClass);
+			}
+
+			resetStyles(el);
+		},
+	};
 
 	function resetStyles(el: HTMLExpandElement) {
 		if (!el._initialStyle) return;

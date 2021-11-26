@@ -49,11 +49,11 @@ import ms from 'ms';
 import { getCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { BaseException } from '@directus/shared/exceptions';
-import { listExtensions } from '../extensions';
-import { Accountability } from '@directus/shared/types';
-import { AbstractServiceOptions, Action, Aggregate, GraphQLParams, Item, Query, SchemaOverview } from '../types';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
+import { getExtensionManager } from '../extensions';
+import { Accountability, Query, Aggregate } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, GraphQLParams, Item, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
@@ -66,16 +66,19 @@ import { FoldersService } from './folders';
 import { ItemsService } from './items';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
+import { NotificationsService } from './notifications';
 import { RelationsService } from './relations';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
 import { ServerService } from './server';
 import { SettingsService } from './settings';
 import { SpecificationService } from './specifications';
+import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 import { generateHash } from '../utils/generate-hash';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -184,13 +187,18 @@ export class GraphQLService {
 		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
 		const schema = {
-			read: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['read']),
-			create: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['create']),
-			update: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['update']),
-			delete: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['delete']),
+			read:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['read']),
+			create:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['create']),
+			update:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['update']),
+			delete:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['delete']),
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
+
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
@@ -408,8 +416,8 @@ export class GraphQLService {
 						acc[field.field] = {
 							type,
 							description: field.note,
-							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? field.field];
+							resolve: (obj: Record<string, any>) => {
+								return obj[field.field];
 							},
 						};
 
@@ -877,6 +885,13 @@ export class GraphQLService {
 					type: [AggregatedFunctions[collection.collection]],
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
+						filter: ReadableCollectionFilterTypes[collection.collection],
+						search: {
+							type: GraphQLString,
+						},
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
@@ -1362,7 +1377,7 @@ export class GraphQLService {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
 
-					current = selection.alias?.value ?? selection.name.value;
+					current = selection.name.value;
 
 					if (parent) {
 						current = `${parent}.${current}`;
@@ -1411,7 +1426,7 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
-		const replaceFuncs = (filter?: Filter): undefined | Filter => {
+		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
 			if (!filter) return filter;
 
 			return replaceFuncDeep(filter);
@@ -1460,10 +1475,13 @@ export class GraphQLService {
 			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
 
 			query.aggregate[aggregateProperty] =
-				aggregationGroup.selectionSet?.selections.map((selectionNode) => {
-					selectionNode = selectionNode as FieldNode;
-					return selectionNode.name.value;
-				}) ?? [];
+				aggregationGroup.selectionSet?.selections
+					// filter out graphql pointers, like __typename
+					.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
+					.map((selectionNode) => {
+						selectionNode = selectionNode as FieldNode;
+						return selectionNode.name.value;
+					}) ?? [];
 		}
 
 		validateQuery(query);
@@ -1503,6 +1521,8 @@ export class GraphQLService {
 				return new PermissionsService(opts);
 			case 'directus_presets':
 				return new PresetsService(opts);
+			case 'directus_notifications':
+				return new NotificationsService(opts);
 			case 'directus_revisions':
 				return new RevisionsService(opts);
 			case 'directus_roles':
@@ -1658,12 +1678,16 @@ export class GraphQLService {
 						modules: new GraphQLList(GraphQLString),
 					},
 				}),
-				resolve: async () => ({
-					interfaces: listExtensions('interface'),
-					displays: listExtensions('display'),
-					layouts: listExtensions('layout'),
-					modules: listExtensions('module'),
-				}),
+				resolve: async () => {
+					const extensionManager = getExtensionManager();
+
+					return {
+						interfaces: extensionManager.listExtensions('interface'),
+						displays: extensionManager.listExtensions('display'),
+						layouts: extensionManager.listExtensions('layout'),
+						modules: extensionManager.listExtensions('module'),
+					};
+				},
 			},
 			server_specs_oas: {
 				type: GraphQLJSON,
@@ -1752,11 +1776,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const result = await authenticationService.authenticate({
-						...args,
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-					});
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
@@ -1888,7 +1908,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1909,7 +1929,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1925,15 +1945,11 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const authService = new AuthenticationService({
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-					const otpValid = await authService.verifyOTP(this.accountability.user, args.otp);
+					const otpValid = await service.verifyOTP(this.accountability.user, args.otp);
 					if (otpValid === false) {
 						throw new InvalidPayloadException(`"otp" is invalid`);
 					}
@@ -1998,10 +2014,10 @@ export class GraphQLService {
 						throw new ForbiddenException();
 					}
 
-					const { cache, schemaCache } = getCache();
+					const { cache, systemCache } = getCache();
 
 					await cache?.clear();
-					await schemaCache?.clear();
+					await systemCache.clear();
 
 					return;
 				},

@@ -7,7 +7,7 @@ import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
 import { RevisionsService, UtilsService, ImportService } from '../services';
 import asyncHandler from '../utils/async-handler';
-import Busboy from 'busboy';
+import Busboy, { BusboyHeaders } from 'busboy';
 import { flushCaches } from '../cache';
 import { generateHash } from '../utils/generate-hash';
 
@@ -99,7 +99,18 @@ router.post(
 			schema: req.schema,
 		});
 
-		const busboy = new Busboy({ headers: req.headers });
+		let headers: BusboyHeaders;
+
+		if (req.headers['content-type']) {
+			headers = req.headers as BusboyHeaders;
+		} else {
+			headers = {
+				...req.headers,
+				'content-type': 'application/octet-stream',
+			};
+		}
+
+		const busboy = new Busboy({ headers });
 
 		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
 			try {

@@ -1,4 +1,5 @@
 ---
+avatar: Άβαταρ
 edit_field: Επεξεργασία Πεδίου
 item_revision: Αναθεώρηση Αντικειμένου
 duplicate_field: Αντίγραφο Πεδίου
@@ -11,7 +12,6 @@ add_field: Προσθήκη Πεδίου
 role_name: Όνομα Ρόλου
 exclusive: Αποκλειστικά
 children: Παιδιά
-db_only_click_to_configure: 'Βάση δεδομένων μόνο: Κάντε κλικ για ρύθμιση '
 show_archived_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
 edited: Η Τιμή Επεξεργάστηκε
 required: Υποχρεωτικό
@@ -113,6 +113,9 @@ comments: Σχόλια
 create_collection: Δημιουργία Συλλογής
 users: Χρήστες
 activity: Δραστηριότητα
+action: Ενέργεια
+ip_address: Διεύθυνση IP
+user_agent: Πράκτορας χρήστη
 field_width: Πλάτος πεδίου
 duration: Διάρκεια
 status: Κατάσταση
@@ -205,11 +208,14 @@ fields:
   directus_webhooks:
     name: Όνομα
     status: Κατάσταση
+    value: Τιμή
+    collections: Συλλογές
 field_options:
   directus_activity:
     create: Δημιουργία
     update: Ενημέρωση
   directus_collections:
+    translation: Μετάφραση
     archive_divider: Αρχειοθέτηση
   directus_roles:
     fields:
@@ -219,6 +225,8 @@ field_options:
   directus_webhooks:
     actions_create: Δημιουργία
     actions_update: Ενημέρωση
+    headers:
+      value: Τιμή
 comment: Σχόλιο
 delete_field_are_you_sure: >-
   Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.
@@ -248,6 +256,8 @@ settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
 interfaces:
+  filter:
+    all: Όλα
   presentation-links:
     primary: Κυρίως
   system-collection:

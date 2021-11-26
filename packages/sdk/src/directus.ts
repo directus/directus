@@ -38,11 +38,17 @@ export type DirectusTypes = {
 	users: undefined;
 };
 
-export interface IDirectus<T extends TypeMap> {
+export interface IDirectusBase {
+	readonly url: string;
 	readonly auth: IAuth;
 	readonly storage: IStorage;
 	readonly transport: ITransport;
+	readonly server: ServerHandler;
+	readonly utils: UtilsHandler;
+	readonly graphql: GraphQLHandler;
+}
 
+export interface IDirectus<T extends TypeMap> extends IDirectusBase {
 	readonly activity: ActivityHandler<TypeOf<T, 'directus_activity'>>;
 	readonly collections: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
 	readonly files: FilesHandler<TypeOf<T, 'directus_files'>>;
@@ -55,9 +61,6 @@ export interface IDirectus<T extends TypeMap> {
 	readonly roles: RolesHandler<TypeOf<T, 'directus_roles'>>;
 	readonly users: UsersHandler<TypeOf<T, 'directus_users'>>;
 	readonly settings: SettingsHandler<TypeOf<T, 'directus_settings'>>;
-	readonly server: ServerHandler;
-	readonly utils: UtilsHandler;
-	readonly graphql: GraphQLHandler;
 
 	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I>;
 	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I>;

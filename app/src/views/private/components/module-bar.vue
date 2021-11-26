@@ -23,6 +23,7 @@
 				<v-icon :name="modulePart.icon" outline />
 			</v-button>
 		</div>
+
 		<module-bar-avatar />
 	</div>
 </template>
@@ -60,10 +61,10 @@ export default defineComponent({
 					if (modulePart.type === 'link') {
 						const link = omit<Record<string, any>>(modulePart, ['url']);
 
-						if (modulePart.url.startsWith('http')) {
-							link.href = modulePart.url;
-						} else {
+						if (modulePart.url.startsWith('/')) {
 							link.to = modulePart.url;
+						} else {
+							link.href = modulePart.url;
 						}
 
 						return translate(link);
@@ -74,7 +75,7 @@ export default defineComponent({
 					return {
 						...modulePart,
 						...registeredModules.value.find((module) => module.id === modulePart.id),
-						to: module.link === undefined ? `/${module.id}` : '',
+						to: `/${module.id}`,
 					};
 				});
 		});

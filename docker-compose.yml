@@ -13,6 +13,7 @@
 #   Azure            5107
 #   MySQL (5.7):     5108
 #   Memcached:       5109
+#   Keycloak:        5110
 #
 # Credentials:
 #   Postgres:
@@ -52,6 +53,10 @@
 #
 #   Memcached
 #     n/a
+#
+#   Keycloak
+#     User:          admin
+#     Password:      secret
 
 version: '3.1'
 services:
@@ -73,7 +78,7 @@ services:
       - 5101:3306
 
   maria:
-    image: mariadb:10.6
+    image: mariadb:10.7
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -125,3 +130,14 @@ services:
     image: memcached:latest
     ports:
       - 5109:11211
+
+  keycloak:
+    image: jboss/keycloak:latest
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: secret
+      DB_ADDR: ''
+      DB_VENDOR: h2
+
+    ports:
+      - 5110:8080

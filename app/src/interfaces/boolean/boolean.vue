@@ -30,7 +30,7 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.global.t('enabled'),
+			default: () => i18n.global.t('enabled'),
 		},
 		iconOn: {
 			type: String,

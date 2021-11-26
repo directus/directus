@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.93",
+	"version": "9.1.2",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -39,7 +39,9 @@
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
-    "prepublishOnly": "npm run cleanup && npm run build"
+		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll",
+		"prepublishOnly": "npm run cleanup && npm run build"
 	},
 	"author": "Nicola Krumschmidt",
 	"maintainers": [
@@ -64,6 +66,7 @@
 	"devDependencies": {
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
-		"typescript": "4.4.3"
+		"tmp": "0.2.1",
+		"typescript": "4.5.2"
 	}
 }

@@ -1,4 +1,6 @@
 ---
+avatar: Avatar
+default_provider: Privzeto
 draft: Osnutek
 archived: Arhivirano
 edit_field: Uredi polje
@@ -8,7 +10,6 @@ item_revision: Revizija postavke
 duplicate_field: Podvajanje polja
 half_width: Polovična širina
 full_width: Polna širina
-limit: Omejitev
 group: Skupina
 and: in
 or: ali
@@ -23,7 +24,6 @@ indeterminate: Nedoločeno
 edit_collection: Uredi zbirko
 exclusive: Ekskluzivno
 children: Podrejeni
-db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
 show_archived_items: Prikaži arhivirane opombe
 edited: Urejena vrednost
 required: Zahtevano
@@ -34,7 +34,6 @@ create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
 create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
 emails: E-pošte
@@ -153,6 +152,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: Datum in ura
+dateTime: Datum in ura
 decimal: Decimalno število
 float: Float
 integer: Integer
@@ -164,7 +164,6 @@ time: Ura
 timestamp: Časovni žig
 uuid: UUID
 hash: Hash
-geometry: Geometrija
 not_available_for_type: Ni na razpolago za ta tip
 create_translations: Ustvari nove prevode
 auto_refresh: Samodejno osveži
@@ -184,9 +183,6 @@ new_data_alert: 'Naslednje bo generirano v podatkovnem modelu:'
 search_collection: Iskalna zbirka ...
 new_field: 'Novo polje'
 new_collection: 'Nova zbirka'
-add_m2o_to_collection: 'Dodaj več-na-ena v "{collection}"'
-add_o2m_to_collection: 'Dodaj ena-na-več v "{collection}"'
-add_m2m_to_collection: 'Dodaj več-na-več v "{collection}"'
 choose_a_type: Izberite tip ...
 determined_by_relationship: Določeno s povezavo
 add_note: Dodaj opombo za uporabnike ...
@@ -373,9 +369,13 @@ display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
 active: Aktivno
+copy: Kopiraj
 inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
+action: Dejanje
+ip_address: IP naslov
+user_agent: Brskalnik
 webhooks: Prožilci
 field_width: Širina polja
 add_filter: Dodaj filter
@@ -567,6 +567,7 @@ toggle: Preklopi
 icon_on: Prikaži ikono
 icon_off: Skrij ikono
 label: Oznaka
+full_screen: Celozaslonski način
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
 media: Medijska datoteka
@@ -664,7 +665,6 @@ unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
 keep_editing: Nadaljuj urejanje
-page_help_collections_overview: '**Pregled zbirk** - Spisek vseh zbirk, do katerih imate dostop.'
 page_help_collections_collection: >-
   **Brskaj zapise** - Pokaže vse {collection} zapise, do katerih imate dostop. Uredite postavitev, filter in razvrščanje za prilagojen pogled in shranite te nastavitve kot zaznamek za hiter dostop.
 page_help_collections_item: >-
@@ -723,6 +723,7 @@ fields:
     collection: Zbirka
     icon: Ikona
     note: Opomba
+    color: Barva
     display_template: Prikaži predlogo
     hidden: Skrito
     singleton: En zapis
@@ -792,16 +793,11 @@ fields:
     project_url: Spletni naslov (URL) projekta
     project_color: Barva projekta
     project_logo: Logo projekta
-    public_pages: Javne strani
     public_foreground: Glavna slika v javnem delu, logo
     public_background: Slika za ozadje v javnem delu
     public_note: Sporočilo v javnem delu
     auth_password_policy: Pravila gesel
     auth_login_attempts: Število poskusov prijave
-    files_and_thumbnails: Datoteke & sličice
-    storage_default_folder: Privzeta mapa za shranjevanje
-    storage_asset_presets: Prednastavitve shrambe
-    storage_asset_transform: Pretvorba elementa
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
   directus_fields:
@@ -822,19 +818,19 @@ fields:
     enforce_tfa: Obvezno 2FA
     users: Uporabniki v vlogi
     module_list: Krmarjenje po modulu
-    collection_list: Krmarjenje po zbirki
   directus_webhooks:
     name: Ime
     method: Metoda
     status: Stanje
     data: Podatki
+    value: Vrednost
     data_label: Pošlji podatke dogodka
     triggers: Sprožilci
     actions: Dejanja
+    collections: Zbirke
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
-    project_logo_note: Ozadje prijave in logotip
     public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
     security_divider_title: Varnost
     auth_password_policy:
@@ -865,13 +861,14 @@ field_options:
     hidden_label: Skrij v aplikaciji
     singleton: Obravnavaj kot en objekt
     language: Jezik
-    translation: Vnesite prevod ...
+    translation: Prevod
+    collection_name: Ime zbirke
     archive_divider: Arhiviraj
-    archive_field: Izberite polje ...
+    archive_field_placeholder: Izberite polje ...
     archive_app_filter: Omogoči aplikacijski arhivski filter
     archive_value: Nastavljena vrednost pri arhiviranju ...
     unarchive_value: Nastavljena vrednost pri dearhiviranju ...
-    divider: Razvrsti
+    sort_divider: Razvrsti
     sort_field: Izberite polje ...
     accountability_divider: Odgovornost
   directus_files:
@@ -891,15 +888,6 @@ field_options:
       name_placeholder: Vnesite naslov ...
       link_name: Povezava
       link_placeholder: Relativni ali absolutni URL naslov ...
-    collection_list:
-      group_name_addLabel: Dodaj novo skupino ...
-      fields:
-        group_name: Ime skupine
-        group_placeholder: Naziv te skupine ...
-        type_name: Tip
-        choices_always: Vedno odprto
-        choices_start_open: Začni odprto
-        choices_start_collapsed: Začni zaprto
     collections_name: Zbirke
     collections_addLabel: Dodaj zbirko ...
   directus_users:
@@ -923,12 +911,17 @@ field_options:
     actions_update: Posodobi
     actions_delete: Izbriši
     actions_login: Prijava
+    headers:
+      value: Vrednost
 no_fields_in_collection: 'Zbirka {collection} še nima polj'
 do_nothing: Ne stori ničesar
 generate_and_save_uuid: Ustvari in shrani UUID
 save_current_user_id: Shrani ID uporabnika
 save_current_user_role: Shrani vlogo uporabnika
 save_current_datetime: Shrani datum in uro
+always_open: Vedno odprto
+start_open: Začni odprto
+start_collapsed: Začni zaprto
 block: Blokiraj
 inline: V vrstici
 comment: Komentar
@@ -954,6 +947,7 @@ delete_field_are_you_sure: >-
 description: Opis
 done: Opravljeno
 duplicate: Dvojnik
+limit: Omejitev
 email: E-pošta
 embed: Vstavi
 fallback_icon: Nadomestna ikona
@@ -1005,6 +999,10 @@ view_project: Poglej projekt
 report_error: Sporoči napako
 start: Začetek
 interfaces:
+  filter:
+    add_filter: Dodaj filter
+    all: Vse
+    any: Katerokoli
   group-accordion:
     name: Harmonika
     description: Prikaži polja ali skupine kot segmente harmonike
@@ -1071,7 +1069,6 @@ interfaces:
   presentation-divider:
     divider: Ločilo
     description: Oznaka in delilnik polj v odseke
-    title_placeholder: Vnesite naslov ...
     inline_title: Naslov v vrstici
     inline_title_label: Pokaži naslov v vrsti
     margin_top: Zgornji rob
@@ -1133,9 +1130,6 @@ interfaces:
     map: Zemljevid
     description: Izberite lokacijo
     zoom: Povečaj
-    geometry_type: Tip geometrije
-    geometry_format: Geometrijski format
-    default_view: Privzeti pogled
     invalid_options: Neveljavne možnosti
     invalid_format: Neveljavna oblika ({format})
     unexpected_geometry: Pričakovano {expected}, vsebina {got}.
@@ -1156,7 +1150,6 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Izberi mapo
-    field_hint: Naloži novo datoteko v izbrano mapo. Ne vpliva na obstoječe izbrane datoteke.
     root_name: Korenska mapa knjižnjice
     system_default: Sistemske privzete vrednosti
   select-radio:
@@ -1248,6 +1241,8 @@ interfaces:
     start_open: Začni odprto
     start_closed: Začni zaprto
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Pokaži prižgano / ugasnjeno stanje
@@ -1357,11 +1352,11 @@ layouts:
     map: Zemljevid
     basemap: Osnovni zemljevid
     layers: Plasti
-    edit_custom_layers: Uredi plasti
     cluster_options: Možnosti gruče
-    cluster: Aktiviraj gruče
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
-    field: Geometrija
     invalid_geometry: Neveljavna geometrija
+panels:
+  label:
+    name: Oznaka

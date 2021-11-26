@@ -88,18 +88,20 @@ export async function applySnapshot(
 		}
 
 		const relationsService = new RelationsService({ knex: trx, schema: await getSchema({ database: trx }) });
-
-		for (const { collection, field, diff } of snapshotDiff.relations) {
+		for (const { collection, field, diff, related_collection } of snapshotDiff.relations) {
 			if (diff?.[0].kind === 'N') {
 				await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
 			}
 
 			if (diff?.[0].kind === 'E') {
-				const updates = diff.reduce((acc, edit) => {
-					if (edit.kind !== 'E') return acc;
-					set(acc, edit.path!, edit.rhs);
-					return acc;
-				}, {});
+				const updates = diff.reduce(
+					(acc, edit) => {
+						if (edit.kind !== 'E') return acc;
+						set(acc, edit.path!, edit.rhs);
+						return acc;
+					},
+					{ collection, field, related_collection }
+				);
 
 				await relationsService.updateOne(collection, field, updates);
 			}
