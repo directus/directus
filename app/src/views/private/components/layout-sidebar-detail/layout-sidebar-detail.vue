@@ -18,7 +18,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { getLayouts } from '@/layouts';
+import { getLayouts, getLayout } from '@/layouts';
 import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
@@ -34,15 +34,7 @@ export default defineComponent({
 
 		const { layouts } = getLayouts();
 
-		const currentLayout = computed(() => {
-			const layout = layouts.value.find((layout) => layout.id === props.modelValue);
-
-			if (layout === undefined) {
-				return layouts.value.find((layout) => layout.id === 'tabular');
-			}
-
-			return layout;
-		});
+		const currentLayout = computed(() => getLayout(props.modelValue) ?? getLayout('tabular'));
 
 		const layout = useSync(props, 'modelValue', emit);
 

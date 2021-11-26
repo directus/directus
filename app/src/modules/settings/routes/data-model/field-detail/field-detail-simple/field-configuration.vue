@@ -16,7 +16,7 @@
 						{{ t('type') }}
 					</div>
 
-					<v-select v-model="type" :items="typeOptions" :disabled="typeOptions.length === 1" />
+					<v-select v-model="type" :items="typeOptions" :disabled="typeDisabled" />
 				</div>
 
 				<div class="field half-left">
@@ -56,7 +56,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
@@ -82,9 +82,7 @@ export default defineComponent({
 		const { readyToSave, saving, localType, collection } = storeToRefs(fieldDetail);
 		const { t } = useI18n();
 
-		const { interfaces } = getInterfaces();
-
-		const chosenInterface = computed(() => interfaces.value.find((inter) => inter.id === props.chosenInterface));
+		const chosenInterface = computed(() => getInterface(props.chosenInterface));
 
 		const typeOptions = computed(() => {
 			if (!chosenInterface.value) return [];
@@ -94,6 +92,8 @@ export default defineComponent({
 				value: type,
 			}));
 		});
+
+		const typeDisabled = computed(() => typeOptions.value.length === 1 || localType.value !== 'standard');
 
 		const key = syncFieldDetailStoreProperty('field.field');
 		const type = syncFieldDetailStoreProperty('field.type');
@@ -105,6 +105,7 @@ export default defineComponent({
 			key,
 			t,
 			type,
+			typeDisabled,
 			typeOptions,
 			defaultValue,
 			required,

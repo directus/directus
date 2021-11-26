@@ -20,7 +20,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { InterfaceConfig } from '@directus/shared/types';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
@@ -39,8 +39,6 @@ export default defineComponent({
 
 		const { field, interfacesForType } = storeToRefs(fieldDetailStore);
 		const type = computed(() => field.value.type);
-
-		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {
 			const recommendedInterfacesPerType: { [type: string]: string[] } = {
@@ -96,9 +94,7 @@ export default defineComponent({
 			return recommendedItems;
 		});
 
-		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === interfaceID.value);
-		});
+		const selectedInterface = computed(() => getInterface(interfaceID.value));
 
 		return { t, selectItems, selectedInterface, interfaceID, options };
 	},

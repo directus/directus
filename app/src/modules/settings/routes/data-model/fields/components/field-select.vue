@@ -141,7 +141,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
@@ -178,16 +178,13 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
-		const { interfaces } = getInterfaces();
 
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
-		const interfaceName = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
-		});
+		const interfaceName = computed(() => getInterface(props.field.meta?.interface)?.name);
 
 		const hidden = computed(() => props.field.meta?.hidden === true);
 
