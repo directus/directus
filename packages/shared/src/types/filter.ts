@@ -1,4 +1,4 @@
-import { Role, User } from "./users";
+import { Role, User } from './users';
 
 export type FilterOperator =
 	| 'eq'
