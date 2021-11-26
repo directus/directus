@@ -1192,6 +1192,7 @@ translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
 view_project: Просмотр Проекта
+weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
@@ -1419,6 +1420,7 @@ interfaces:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
     toggle_split_view: Переключить Раздельный Вид
+    language_field: Языковое поле
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Дерево можно выбрать для рекурсивных отношений
@@ -1461,6 +1463,7 @@ displays:
     enable: Включить
     user_language: Использовать текущий язык пользователя
     default_language: Язык по умолчанию
+    language_field: Языковое поле
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл
@@ -1571,11 +1574,15 @@ layouts:
     basemap: Основа карты
     layers: Слои
     cluster_options: Настройки кластеров
+    cluster: Ближайшие данные кластера
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
+    field: Геопространственное поле
     invalid_geometry: Некорректная геометрия
     find_location: Найти локацию...
+    default_template: Использование коллекции по умолчанию...
+    no_compatible_fields: Нет совместимых полей
 panels:
   metric:
     name: Метрика
