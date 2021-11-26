@@ -66,6 +66,8 @@ create_webhook: Създаване на уеб-кука
 invite_users: Покана до потребители
 invite: Поканване
 email_already_invited: Вече е изпратена покана в пощата на „{email}“
+subject: Относно
+inbox: Входящи
 emails: Имейли
 connection_excellent: Връзката е отлична
 connection_good: Връзката е добра
@@ -427,6 +429,9 @@ user_count: 'Няма потребители | Един потребител | {
 no_users_copy: Все още няма потребители в тази роля.
 webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
 no_webhooks_copy: Няма зададени уеб-куки. Натиснете бутона по-долу за да започнете.
+no_notifications: Няма известия
+no_notifications_copy: Всичко е прегледано!
+activity_log: Журнал на активността
 all_items: Всички записи
 any: Който и да е
 csv: CSV
@@ -845,6 +850,7 @@ directus_collection:
   directus_migrations: Версия на базата данни която се използва
   directus_panels: Панели в таблото на задълбочения анализ
   directus_permissions: Позволения за роли
+  directus_notifications: Известия, изпратени до потребителите
   directus_presets: Заготовки на началните стойности и отметките за колекциите
   directus_relations: Релационни настройки и мета данни
   directus_revisions: Моментни данни за цялата активност
@@ -1186,6 +1192,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
