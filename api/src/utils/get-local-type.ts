@@ -135,7 +135,7 @@ export default function getLocalType(
 	}
 
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
-	if (dataType === 'nvarchar(MAX)') {
+	if (column.data_type === 'nvarchar' && column.max_length === -1) {
 		return 'text';
 	}
 
