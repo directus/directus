@@ -9,6 +9,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
+import { getGeometryHelper } from './helpers/geometry';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -152,7 +153,7 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqlite' | 'oracle' | 'mssql' {
+export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqlite' | 'oracle' | 'mssql' | 'redshift' {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
@@ -167,6 +168,8 @@ export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqli
 			return 'oracle';
 		case 'Client_MSSQL':
 			return 'mssql';
+		case 'Client_Redshift':
+			return 'redshift';
 	}
 
 	throw new Error(`Couldn't extract database client`);
@@ -219,32 +222,18 @@ export async function validateMigrations(): Promise<boolean> {
 export async function validateDatabaseExtensions(): Promise<void> {
 	const database = getDatabase();
 	const databaseClient = getDatabaseClient(database);
-
-	if (databaseClient === 'postgres') {
-		let available = false;
-		let installed = false;
-
-		const exists = await database.raw(`SELECT name FROM pg_available_extensions WHERE name = 'postgis';`);
-
-		if (exists.rows.length > 0) {
-			available = true;
-		}
-
-		if (available) {
-			try {
-				await database.raw(`SELECT PostGIS_version();`);
-				installed = true;
-			} catch {
-				installed = false;
-			}
-		}
-
-		if (available === false) {
-			logger.warn(`PostGIS isn't installed. Geometry type support will be limited.`);
-		} else if (available === true && installed === false) {
-			logger.warn(
-				`PostGIS is installed, but hasn't been activated on this database. Geometry type support will be limited.`
-			);
+	const geometryHelper = getGeometryHelper(database);
+	const geometrySupport = await geometryHelper.supported();
+	if (!geometrySupport) {
+		switch (databaseClient) {
+			case 'postgres':
+				logger.warn(`PostGIS isn't installed. Geometry type support will be limited.`);
+				break;
+			case 'sqlite':
+				logger.warn(`Spatialite isn't installed. Geometry type support will be limited.`);
+				break;
+			default:
+				logger.warn(`Geometry type not supported on ${databaseClient}`);
 		}
 	}
 }

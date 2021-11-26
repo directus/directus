@@ -6,7 +6,7 @@ import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
@@ -124,16 +124,19 @@ export class FilesService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		emitAsyncSafe(`files.upload`, {
-			event: `files.upload`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: primaryKey,
-			action: 'upload',
-			payload,
-			schema: this.schema,
-			database: this.knex,
-		});
+		emitter.emitAction(
+			'files.upload',
+			{
+				payload,
+				key: primaryKey,
+				collection: this.collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		return primaryKey;
 	}
@@ -142,7 +145,7 @@ export class FilesService extends ItemsService {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		const fileCreatePermissions = this.schema.permissions.find(
+		const fileCreatePermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
 
@@ -212,38 +215,5 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
-	}
-
-	/**
-	 * @deprecated Use `uploadOne` instead
-	 */
-	async upload(
-		stream: NodeJS.ReadableStream,
-		data: Partial<File> & { filename_download: string; storage: string },
-		primaryKey?: PrimaryKey
-	): Promise<PrimaryKey> {
-		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
-
-		return await this.uploadOne(stream, data, primaryKey);
-	}
-
-	/**
-	 * @deprecated Use `importOne` instead
-	 */
-	async import(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		return await this.importOne(importURL, body);
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'FilesService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
-		);
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		return await this.deleteOne(key);
 	}
 }

@@ -14,9 +14,13 @@ fields:
     interface: select-dropdown
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
-      choices: null
+      choices:
+        - value: POST
+          foreground: 'var(--primary)'
+          background: 'var(--primary-25)'
+        - value: GET
+          foreground: 'var(--secondary)'
+          background: 'var(--secondary-25)'
       format: false
     options:
       choices:
@@ -34,23 +38,21 @@ fields:
     interface: select-dropdown
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       showAsDot: true
       choices:
-        - text: $t:active
+        - text: $t:field_options.directus_webhooks.status_options_active
           value: active
           foreground: 'var(--primary-10)'
           background: 'var(--primary)'
-        - text: $t:inactive
+        - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
           foreground: 'var(--foreground-normal)'
           background: 'var(--background-normal-alt)'
     options:
       choices:
-        - text: $t:active
+        - text: $t:field_options.directus_webhooks.status_options_active
           value: active
-        - text: $t:inactive
+        - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
     width: half
 
@@ -61,6 +63,27 @@ fields:
     special: boolean
     width: half
     display: boolean
+
+  - field: headers
+    special: json
+    interface: list
+    options:
+      template: '{{ header }}: {{ value }}'
+      addLabel: $t:field_options.directus_webhooks.headers.add
+      fields:
+        - field: header
+          name: $t:field_options.directus_webhooks.headers.header
+          type: string
+          meta:
+            interface: input
+            width: half
+        - field: value
+          name: $t:field_options.directus_webhooks.headers.value
+          type: string
+          meta:
+            interface: input
+            width: half
+    width: full
 
   - field: triggers_divider
     interface: presentation-divider
@@ -86,8 +109,6 @@ fields:
     width: full
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       choices:
         - text: $t:create
           value: create
@@ -112,7 +133,5 @@ fields:
     width: full
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       choices: null
       format: false

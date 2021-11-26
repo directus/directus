@@ -141,6 +141,9 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 													'KEY=directus-test',
 													'SECRET=directus-test',
 													'TELEMETRY=false',
+													'CACHE_SCHEMA=false',
+													'CACHE_ENABLED=false',
+													'RATE_LIMITER_ENABLED=false',
 												],
 												HostConfig: {
 													Links:
@@ -206,7 +209,12 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 					global.knexInstances.map(({ vendor, knex }) => {
 						return {
 							title: config.names[vendor]!,
-							task: async () => await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL),
+
+							task: async () => {
+								// Give the database image some time to startup before checking the connection
+								await sleep(15000);
+								await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL);
+							},
 						};
 					}),
 					{ concurrent: true }
@@ -269,6 +277,25 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 			},
 		},
 		{
+			title: 'Migrate and seed databases',
+			task: async () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => {
+								const database = knex(config.knexConfig[vendor]!);
+								await database.migrate.latest();
+								await database.seed.run();
+								await database.destroy();
+							},
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
+		},
+		{
 			skip: () => !jestConfig.watch,
 			title: 'Persist container info',
 			task: () => {
@@ -287,3 +314,11 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 
 	console.log('\n');
 };
+
+function sleep(ms: number) {
+	return new Promise<void>((resolve) => {
+		setTimeout(() => {
+			resolve();
+		}, ms);
+	});
+}

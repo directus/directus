@@ -56,7 +56,6 @@ fields:
       iconRight: local_offer
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
@@ -90,6 +89,11 @@ fields:
     interface: system-mfa-setup
     special: conceal
     width: half
+
+  - field: email_notifications
+    interface: boolean
+    width: half
+    special: boolean
 
   - field: admin_divider
     interface: presentation-divider
@@ -154,7 +158,6 @@ fields:
   - field: provider
     width: half
     interface: select-dropdown
-    readonly: true
     options:
       choices:
         - text: $t:default_provider
@@ -165,4 +168,6 @@ fields:
     options:
       iconRight: account_circle
     interface: input
-    readonly: true
+
+  - field: auth_data
+    hidden: true

@@ -127,16 +127,14 @@ fields:
 field_options:
   directus_collections:
     language: 언어
-  directus_roles:
-    collection_list:
-      fields:
-        type_name: 타입
 interfaces:
   select-dropdown:
     choices_value_placeholder: 값 입력
   system-interface:
     interface: 인터페이스
 displays:
+  translations:
+    translations: 번역
   datetime:
     format: 형식
   labels:

@@ -1,4 +1,3 @@
-import { useCollection } from '@directus/shared/composables';
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
 import { debounce, isEqual } from 'lodash';
@@ -9,8 +8,8 @@ type UsablePreset = {
 	layout: Ref<string | null>;
 	layoutOptions: Ref<Record<string, any>>;
 	layoutQuery: Ref<Record<string, any>>;
-	filters: Ref<readonly Filter[]>;
-	searchQuery: Ref<string | null>;
+	filter: Ref<Filter | null>;
+	search: Ref<string | null>;
 	refreshInterval: Ref<number | null>;
 	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
 	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
@@ -33,7 +32,7 @@ export function usePreset(
 
 	const busy = ref(false);
 
-	const { info: collectionInfo } = useCollection(collection);
+	// const { info: collectionInfo } = useCollection(collection);
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
@@ -71,7 +70,7 @@ export function usePreset(
 
 	/**
 	 * If no bookmark is present, save periodically to the DB,
-	 * otherwhise update the saved status if changes where made.
+	 * otherwise update the saved status if changes where made.
 	 */
 	function handleChanges() {
 		if (bookmarkExists.value) {
@@ -139,14 +138,14 @@ export function usePreset(
 		},
 	});
 
-	const filters = computed({
+	const filter = computed<Filter | null>({
 		get() {
-			return localPreset.value.filters || [];
+			return localPreset.value.filter ?? null;
 		},
-		set(val: readonly Filter[]) {
+		set(val: Filter | null) {
 			localPreset.value = {
 				...localPreset.value,
-				filters: val,
+				filter: val,
 			};
 
 			handleChanges();
@@ -167,7 +166,7 @@ export function usePreset(
 		},
 	});
 
-	const searchQuery = computed<string | null>({
+	const search = computed<string | null>({
 		get() {
 			return localPreset.value.search || null;
 		},
@@ -201,8 +200,8 @@ export function usePreset(
 		layout,
 		layoutOptions,
 		layoutQuery,
-		filters,
-		searchQuery,
+		filter,
+		search,
 		refreshInterval,
 		savePreset,
 		saveCurrentAsBookmark,
@@ -230,7 +229,7 @@ export function usePreset(
 			layout_query: null,
 			layout_options: null,
 			layout: 'tabular',
-			filters: null,
+			filter: null,
 			search: null,
 			refresh_interval: null,
 		};
@@ -258,20 +257,20 @@ export function usePreset(
 			};
 		}
 
-		if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
-			localPreset.value = {
-				...localPreset.value,
-				filters: localPreset.value.filters || [
-					{
-						key: 'hide-archived',
-						field: collectionInfo.value.meta.archive_field,
-						operator: 'neq',
-						value: collectionInfo.value.meta.archive_value!,
-						locked: true,
-					},
-				],
-			};
-		}
+		// if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
+		// 	localPreset.value = {
+		// 		...localPreset.value,
+		// 		filter: localPreset.value.filter || [
+		// 			{
+		// 				key: 'hide-archived',
+		// 				field: collectionInfo.value.meta.archive_field,
+		// 				operator: 'neq',
+		// 				value: collectionInfo.value.meta.archive_value!,
+		// 				locked: true,
+		// 			},
+		// 		],
+		// 	};
+		// }
 	}
 
 	/**

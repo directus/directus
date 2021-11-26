@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { clone, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import logger from '../logger';
-import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview } from '../types';
+import { Query } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
@@ -82,21 +82,23 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		if (policyRegExString) {
-			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
-			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
+		if (!policyRegExString) {
+			return;
+		}
 
-			for (const password of passwords) {
-				if (regex.test(password) === false) {
-					throw new FailedValidationException({
-						message: `Provided password doesn't match password policy`,
-						path: ['password'],
-						type: 'custom.pattern.base',
-						context: {
-							value: password,
-						},
-					});
-				}
+		const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
+		const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
+
+		for (const password of passwords) {
+			if (!regex.test(password)) {
+				throw new FailedValidationException({
+					message: `Provided password doesn't match password policy`,
+					path: ['password'],
+					type: 'custom.pattern.base',
+					context: {
+						value: password,
+					},
+				});
 			}
 		}
 	}
@@ -141,16 +143,6 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy(passwords);
 		}
 
-		for (const user of data) {
-			if (user.provider !== undefined) {
-				throw new InvalidPayloadException(`You can't set the "provider" value manually.`);
-			}
-
-			if (user.external_identifier !== undefined) {
-				throw new InvalidPayloadException(`You can't set the "external_identifier" value manually.`);
-			}
-		}
-
 		return await super.createMany(data, opts);
 	}
 
@@ -183,7 +175,14 @@ export class UsersService extends ItemsService {
 		}
 
 		if (data.email) {
-			await this.checkUniqueEmails([data.email]);
+			if (keys.length > 1) {
+				throw new RecordNotUniqueException('email', {
+					collection: 'directus_users',
+					field: 'email',
+					invalid: data.email,
+				});
+			}
+			await this.checkUniqueEmails([data.email], keys[0]);
 		}
 
 		if (data.password) {
@@ -218,8 +217,10 @@ export class UsersService extends ItemsService {
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		await this.checkRemainingAdminExistence(keys);
-		await super.deleteMany(keys, opts);
 
+		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+
+		await super.deleteMany(keys, opts);
 		return keys;
 	}
 
@@ -362,72 +363,5 @@ export class UsersService extends ItemsService {
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' });
-	}
-
-	/**
-	 * @deprecated Use `createOne` or `createMany` instead
-	 */
-	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'UsersService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
-		);
-
-		if (Array.isArray(data)) return this.createMany(data);
-		return this.createOne(data);
-	}
-
-	/**
-	 * @deprecated Use `updateOne` or `updateMany` instead
-	 */
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
-		key?: PrimaryKey | PrimaryKey[]
-	): Promise<PrimaryKey | PrimaryKey[]> {
-		if (Array.isArray(key)) return await this.updateMany(key, data);
-		else if (key) await this.updateOne(key, data);
-
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-
-		const keys: PrimaryKey[] = [];
-
-		await this.knex.transaction(async (trx) => {
-			const itemsService = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			const payloads = toArray(data);
-
-			for (const single of payloads as Partial<Item>[]) {
-				const payload = clone(single);
-				const key = payload[primaryKeyField];
-
-				if (!key) {
-					throw new InvalidPayloadException('Primary key is missing in update payload.');
-				}
-
-				keys.push(key);
-
-				await itemsService.updateOne(key, payload);
-			}
-		});
-
-		return keys;
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		return await this.deleteOne(key);
 	}
 }

@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifiant
 avatar: Avatar
 default_provider: Défaut
 published: Publié
@@ -50,7 +51,7 @@ indeterminate: Indéterminé
 edit_collection: Modifier la collection
 exclusive: Exclusif
 children: Les enfants
-db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
+db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer'
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
 required: Obligatoire
@@ -65,6 +66,8 @@ create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
+subject: Sujet
+inbox: Boite de réception
 emails: E-mails
 connection_excellent: Excellente connexion
 connection_good: Bonne connexion
@@ -89,7 +92,7 @@ public_description: Contrôle quelles sont les données API disponibles sans aut
 not_allowed: Non autorisé
 directus_version: Version de Directus
 node_version: Version de Node
-node_uptime: Temps de disponibilité de Node
+node_uptime: Temps de disponibilité du nœud
 os_type: Type d'OS
 os_version: Version de l'OS
 os_uptime: Temps de disponibilité de l'OS
@@ -172,6 +175,8 @@ global: Global
 admins_have_all_permissions: Les administrateurs ont toutes les autorisations
 camera: Appareil photo
 show_zero: Afficher zéro
+create_in_advanced_field_creation_mode: Créer un champ en Mode Avancé
+continue_in_advanced_field_creation_mode: Continuer en mode de création de champ avancé
 sum: Somme
 sum_distinct: Somme distincte
 avg: Moyenne
@@ -199,19 +204,26 @@ boolean: Booléen
 date: Date
 date_range: Plage de dates
 datetime: Date et heure
+dateTime: Date et heure
 precision: Précision
 decimal: Décimale
-float: Décimal
+float: Nombre flottant
 integer: Entier
 json: JSON
 xml: XML
 string: Chaine de caractères
 text: Texte
-time: Date et heure
+time: Heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
-geometry: Géométrie
+geometry: Géométrie (tous)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygone
+geometry.MultiPoint: Multipoint
+geometry.MultiLineString: Chaine MultiLine
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
@@ -251,6 +263,7 @@ invalid_item: Élément invalide
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
+no_translations: Aucune traduction
 note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un placeholder...
@@ -326,6 +339,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minutes
+hours: Heures
 month: Mois
 year: Année
 select_all: Tout sélectionner
@@ -360,6 +375,7 @@ zoom: Zoom
 download: Télécharger
 open: Ouvrir
 open_in_new_window: Ouvrir dans une nouvelle fenêtre
+open_folder: Ouvrir le dossier "{folder}"
 foreground_color: Couleur du premier plan
 background_color: Couleur de fond
 upload_from_device: Télécharger un fichier depuis l'appareil
@@ -413,6 +429,9 @@ user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
 webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
 no_webhooks_copy: Aucun webhooks n'a encore été configuré. Commencez par en créer un ci-dessous.
+no_notifications: Aucune notification
+no_notifications_copy: Vous êtes à jour !
+activity_log: Journal d’activité
 all_items: Tous les éléments
 any: N'importe quel
 csv: CSV
@@ -433,9 +452,13 @@ no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
+activity_item: Flux d'activité
+action: Action
+ip_address: Adresse IP
+user_agent: Agent utilisateur
 webhooks: Webhooks
 decimals: Décimales
-value_decimals: Valeur décimales
+value_decimals: Valeur décimale
 min_value: Valeur minimale
 max_value: Valeur max
 automatic: Automatique
@@ -518,6 +541,8 @@ all_users: Tous les utilisateurs
 delete_collection: Supprimer la collection
 update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
+make_collection_visible: Rendre la collection visible
+make_collection_hidden: Rendre la collection cachée
 start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
 one_item: '1 élément'
@@ -607,7 +632,9 @@ all_files: Tous les fichiers
 my_files: Mes fichiers
 recent_files: Fichiers Récents
 create_folder: Créer un Dossier
+edit_folder: Modifier le dossier
 folder_name: Nom du dossier...
+folder_key: Clé du dossier...
 add_file: Ajouter un fichier
 replace_file: Remplacer le fichier
 no_results: Aucun résultat
@@ -636,7 +663,7 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
-insights: Connaissances (Beta)
+insights: Analyses
 dashboard: Dashboard
 panel: Panneau
 panel_options: Options de panneau
@@ -644,7 +671,21 @@ panel_header: En-tête de panneau
 panel_name_placeholder: Nommez ce panneau...
 panel_note_placeholder: Détails facultatifs sur ce panneau...
 panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
+dashboard_delete_confirm: Êtes-vous sûr de vouloir supprimer ce membre ? Cette action ne peut pas être annulée.
+edit_dashboard: Modifier le tableau de bord
+delete_dashboard: Supprimer
+visible: Visible
+prefix_placeholder: Texte avant la valeur...
+suffix_placeholder: Texte avant la valeur...
+decimals_placeholder: Nombre de décimales
+no_dashboards: Tableaux de bord
+no_dashboards_copy: Tu n'as pas encore de rapport.
+no_data: Pas de donnée
+create_dashboard: Créer Dashboard
+dashboard_name: Nom du Dashboard
 full_screen: Plein écran
+edit_panels: Modifier pièce
+fit_to_screen: Ajuster à l'écran
 image_url: Url de l’image
 alt_text: Texte alternatif
 media: Média
@@ -655,6 +696,12 @@ source: Source
 url_placeholder: Entrez une url...
 display_text: Afficher le texte
 display_text_placeholder: Entrez un texte d'affichage...
+interface_group_text_and_numbers: Texte et nombres
+interface_group_selection: Sélection
+interface_group_relational: Relationnel
+interface_group_presentation: Présentation
+interface_group_groups: Groupes
+interface_group_other: Autre
 tooltip: Info-bulle
 tooltip_placeholder: Entrez une infobulle ...
 unlimited: Illimité
@@ -741,7 +788,12 @@ layout_setup: Configuration de la mise en page
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
+discard_all_changes: Ignorer toutes les modifications
+discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
+show_x_axis: Montrer &Axes 3D
+show_y_axis: Montrer &Axes 3D
 keep_editing: Continuer l’édition
+page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
   **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_collections_item: >-
@@ -770,6 +822,8 @@ page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
+page_help_insights_overview: '**Aperçus** — Liste des tableaux de bord auxquels vous avez accès.'
+page_help_insights_dashboard: '**Tableau de bord** — Espace de travail pour gérer un ou plusieurs panneaux'
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Nouveau
@@ -782,17 +836,21 @@ cancel: Annuler
 no_upscale: Ne pas agrandir les images
 collection: Collection
 collections: Collections
+content: Contenu
 singleton: Singleton
 singleton_label: Est un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 directus_collection:
   directus_activity: Journaux de responsabilité pour tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
+  directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
+  directus_panels: Panneaux individuels dans les tableaux de bord Insights
   directus_permissions: Sélectionner les permissions pour chaque groupe
+  directus_notifications: Notifications envoyées aux utilisateurs
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -826,6 +884,8 @@ fields:
     unarchive_value: Valeur au désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
+    archive_field: Champ d'archivage
+    item_duplication_fields: Champs de duplication d'éléments
   directus_files:
     $thumbnail: Miniature
     title: Titre
@@ -870,13 +930,15 @@ fields:
     admin_options: Options d'Administration
     status: État
     status_draft: Brouillon
-    status_invited: Invité·e
+    status_invited: Invité
     status_active: Actif
     status_suspended: Suspendu
     status_archived: Archivé
     role: Rôle
     token: Token
     token_placeholder: Entrez un jeton d'accès sécurisé...
+    provider: Fournisseur
+    external_identifier: Identifiant externe
     last_page: Dernière page
     last_access: Dernier accès
   directus_settings:
@@ -884,6 +946,8 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Cartographie
+    basemaps: Cartes de base
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
@@ -895,18 +959,22 @@ fields:
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
-    public_pages: Pages Publiques
+    branding: Image de marque et style
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
     auth_password_policy: Politique des mots de passe
     auth_login_attempts: Tentatives de connexion
-    files_and_thumbnails: Fichiers et miniatures
-    storage_default_folder: Dossier de stockage par défaut
-    storage_asset_presets: Préréglages des fichiers dans le stockage
-    storage_asset_transform: Transformation des fichiers du stockage
+    files_and_thumbnails: Fichiers et stockage
+    storage_default_folder: Dossier par défaut
+    storage_asset_presets: Préréglages de transformation
+    storage_asset_transform: Transformations autorisées
     overrides: Remplacer les applications
     custom_css: Personnalisation du CSS
+    module_bar: Barre de modules
+    transformations_all: Autoriser toutes les transformations
+    transformations_none: Désactiver les transformations
+    transformations_presets: Limiter les transformations aux présélections ci-dessous
   directus_fields:
     collection: Nom de la Collection
     icon: Icône de Collection
@@ -925,19 +993,23 @@ fields:
     enforce_tfa: Nécessite A2F
     users: Membres avec le rôle
     module_list: Module de Navigation
-    collection_list: Navigation de la collection
   directus_webhooks:
     name: Nom
     method: Méthode
     status: État
     data: Données
+    header: En-tête
+    value: Valeur
+    headers: En-têtes de requête
     data_label: Envoyer les données de l'événement
     triggers: Déclencheurs
     actions: Actions
+    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
-    project_logo_note: Connexion et arrière-plan du logo
+    project_color_note: Fond de connexion et de logo
+    project_logo_note: Blanc 40x40 SVG/PNG
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -945,6 +1017,8 @@ field_options:
       weak_text: Faible - 8 caractères minimum
       strong_text: Fort – Majuscules / minuscules / chiffres / spéciaux
     storage_asset_presets:
+      fit_label: Ajusté
+      upscaling: Mise à l'échelle
       fit:
         contain_text: Contient (préserver le rapport d'aspect)
         cover_text: Couverture (force la taille exacte)
@@ -954,6 +1028,8 @@ field_options:
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     mapbox_key: Jeton d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Carte de base
+    basemaps_name_placeholder: Entrez le nom de la carte...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
@@ -973,15 +1049,20 @@ field_options:
     hidden_label: Cacher dans l'application
     singleton: Est un objet unique
     language: Langue
-    translation: Entrez une nouvelle traduction...
+    translation: Traduction
+    translation_placeholder: Entrez une nouvelle traduction...
+    collection_name: Nom de la Collection
+    singular_unit: Unité singulière
+    plural_unit: Unité plurielle
     archive_divider: Archiver
-    archive_field: Choisissez un champ...
+    archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Activer le filtre des archives d'applications
     archive_value: Valeur définie lors de l'archivage...
     unarchive_value: Valeur définie lors de la désarchivage...
-    divider: Trier
+    sort_divider: Trier
     sort_field: Choisissez un champ...
     accountability_divider: Responsabilité
+    duplication_divider: Duplication
   directus_files:
     title: Un titre unique...
     description: Une description optionnelle...
@@ -999,14 +1080,6 @@ field_options:
       name_placeholder: Entrez un titre...
       link_name: Lien
       link_placeholder: URL relative ou absolue...
-    collection_list:
-      group_name_addLabel: Ajouter un nouveau groupe...
-      fields:
-        group_name: Nom du groupe
-        group_placeholder: Étiquetez ce groupe...
-        type_name: Type
-        choices_always: Toujours ouvert
-        choices_start_collapsed: Commencer à réduire
     collections_name: Collections
     collections_addLabel: Ajouter une collection...
   directus_users:
@@ -1016,7 +1089,7 @@ field_options:
     dropdown_dark: Mode sombre
     admin_divider: Options d'Administration
     status_dropdown_draft: Brouillon
-    status_dropdown_invited: Invité·e
+    status_dropdown_invited: Invité
     status_dropdown_active: Actif
     status_dropdown_suspended: Suspendu
     status_dropdown_archived: Archivé
@@ -1030,6 +1103,10 @@ field_options:
     actions_update: Mettre à jour
     actions_delete: Supprimer
     actions_login: Identifiant
+    headers:
+      header: En-tête
+      value: Valeur
+      add: Ajouter l'en-tête
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 no_value: Aucune valeur
 do_nothing: Ne rien faire
@@ -1037,6 +1114,9 @@ generate_and_save_uuid: Générer et Enregistrer l'UUID
 save_current_user_id: Enregistrer l'ID de l'utilisateur actuel
 save_current_user_role: Enregistrer le rôle utilisateur actuel
 save_current_datetime: Enregistrer la date/heure actuelle
+always_open: Toujours ouvert
+start_open: Démarrer Ouverture
+start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
 comment: Commentaire
@@ -1109,16 +1189,26 @@ sort_desc: Tri décroissant
 template: Modèle
 require_value_to_be_set: Nécessite que la valeur soit définie
 translation: Traduction
+translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
   filter:
     name: Filtre
+    description: Configurer un objet filtre.
     add_filter: Ajouter un filtre
+    add_group: Et / ou groupe
+    add_value: Ajouter une valeur
     all: Tout
     any: N'importe quel
+    and: et
+    of_the_following: parmi les suivants
+    no_rules: Configurer les règles
+    change_value: Cliquez pour modifier le nom
+    placeholder: Glisser les fichiers ici
   group-accordion:
     name: Accordéon
     description: Afficher les champs ou les groupes en tant que sections d'accordéon
@@ -1185,7 +1275,7 @@ interfaces:
   presentation-divider:
     divider: Séparateur
     description: Étiqueter et diviser les champs dans les sections
-    title_placeholder: Entrez un titre...
+    title_placeholder: Entrez un titre, ou laissez vide pour n'afficher qu'une seule ligne...
     inline_title: Titre en ligne
     inline_title_label: Afficher le titre à l'intérieur de la ligne
     margin_top: Marge supérieure
@@ -1243,12 +1333,14 @@ interfaces:
     box: Bloc / Inline
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
+    preview: Prévisualiser
+    editor: Éditeur
   map:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
     zoom: Zoom
     geometry_type: Type de géométrie
-    geometry_format: Format géométrique
+    geometry_format: Forme géométrique
     default_view: Vue par défaut
     invalid_options: Options non valides
     invalid_format: Format invalide ({format})
@@ -1259,6 +1351,7 @@ interfaces:
     lnglat: Longitude, Latitude
     wkt: WKT
     wkb: WKB
+    click_to_select: Cliquez pour sélectionner {geometry}
   presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
@@ -1270,7 +1363,7 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
-    field_hint: Met les fichiers récemment téléchargés dans le dossier sélectionné. Cela n'affecte pas les fichiers existants qui sont sélectionnés.
+    field_hint: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
@@ -1326,6 +1419,8 @@ interfaces:
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
+    toggle_split_view: Basculer en vue spatiale
+    language_field: Champ d'indicateur de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
     recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
@@ -1356,8 +1451,19 @@ interfaces:
   group-detail:
     name: Détail du groupe
     description: Rendre les champs comme une section pliable
+    show_header: En-tête de groupe
+    header_icon: Icônes de l'en-tête 
     header_color: Couleur d'en-tête
+    start_open: Démarrer Ouverture
+    start_closed: Commencer réduit
 displays:
+  translations:
+    translations: Traductions
+    description: Aperçu des traductions
+    enable: Activer
+    user_language: Utiliser la langue actuelle de l'utilisateur
+    default_language: Langue par défaut
+    language_field: Champ d'indicateur de langue
   boolean:
     boolean: Booléen
     description: Afficher les états sélectionnés et désélectionnés
@@ -1465,8 +1571,31 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
-    field: Géométrie
-    search_this_area: Chercher dans cette zone
+    basemap: Carte de base
+    layers: Afficher...
+    cluster_options: Options de regroupement
+    cluster: Cluster les données à proximité
+    cluster_radius: Rayon de grappe
+    cluster_minpoints: Taille minimale du cluster
+    cluster_maxzoom: Zoom maximum pour la grappe
+    field: Champ géospatial
+    invalid_geometry: Géométrie invalide
+    find_location: Trouver l'emplacement ...
+    default_template: Utilisation de la collection par défaut ...
+    no_compatible_fields: Aucun champ compatible
 panels:
+  metric:
+    name: Indicateurs
+    description: Afficher une seule valeur basée sur une requête
+    field: Champ
+  time_series:
+    name: Séries de temps
+    description: Rendre un graphique de ligne basé sur les valeurs au fil du temps
+    date_field: Champ date
+    value_field: Type de champ
   label:
     name: Étiquette
+    description: Afficher le texte de base
+  list:
+    name: Liste
+    description: Filtrer et lister les champs d'une collection

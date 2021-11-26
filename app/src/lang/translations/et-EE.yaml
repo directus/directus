@@ -19,7 +19,11 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifikaator
 avatar: Avatar
+default_provider: Vaikimisi
+published: Avaldatud
+draft: Mustand
 archived: Arhiveeritud
 edit_field: Muuda välja
 item_revision: Kirje parandamine
@@ -31,7 +35,6 @@ field_name_translations: Väljade tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
 add_field: Lisa väli
 role_name: Rolli nimi
-db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 edited: Muudetud väärtus
 required: Nõutud
@@ -156,6 +159,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Kuupäev
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -186,9 +190,6 @@ new_data_alert: 'Sinu andmemudelisse lisatakse:'
 search_collection: Otsi andmekogu...
 new_field: 'Uus väli'
 new_collection: 'Uus kogumik'
-add_m2o_to_collection: 'Lisa mitu-ühele (M2O) seos koguga "{collection}"'
-add_o2m_to_collection: 'Lisa üks-mitmele (O2M) seos koguga "{collection}"'
-add_m2m_to_collection: 'Lisa mitu-mitmele (M2M) seos koguga "{collection}"'
 choose_a_type: Vali Tüüp...
 determined_by_relationship: Määratud suhtega
 add_note: Lisa kasutajaid abistav märkus...
@@ -376,6 +377,9 @@ active: aktiivne
 copy: Kopeeri
 users: Kasutajad
 activity: Tegevus
+action: Tegevus
+ip_address: IP aadress
+user_agent: Kasutaja agent
 webhooks: Webhooks
 field_width: Välja laius
 add_filter: Lisa filter
@@ -502,7 +506,7 @@ operators:
 loading: Laadimine...
 drop_to_upload: Lohista üleslaadimiseks
 item: Kirje
-items: Kirjed
+items: kirjet
 upload_file: Lae fail üles
 upload_file_indeterminate: Laen faili...
 upload_file_success: Fail on laetud
@@ -689,6 +693,7 @@ batch_delete_confirm: >-
 cancel: Loobu
 collection: Kogud
 collections: Kogud
+content: Sisu
 singleton: Üksik
 singleton_label: Käsitle üksiku objektina
 system_fields_locked: Süsteemsed välja on lukus ja neid ei saa muuta
@@ -748,7 +753,7 @@ fields:
     password: Parool
     avatar: Avatar
     location: Asukoht
-    title: Pealkiri
+    title: Amet
     description: Kirjeldus
     tags: Sildid
     language: Keel
@@ -771,8 +776,6 @@ fields:
     public_note: Avalik märkus
     auth_password_policy: Salasõna reeglid
     auth_login_attempts: Sisselogimise katseid
-    storage_asset_presets: Salvestusruumi eelseadistused
-    storage_asset_transform: Salvestusruumi kirjete töötlus
     custom_css: Kohandatud CSS
   directus_fields:
     collection: Andmekogu nimetus
@@ -792,10 +795,11 @@ fields:
     enforce_tfa: 2FA on nõutav
     users: Kasutajad selles rollis
     module_list: Moodulite näitamine
-    collection_list: Andmekogude näitamine
   directus_webhooks:
     name: Nimi
     status: Staatus
+    value: Väärtus
+    collections: Kogud
 field_options:
   directus_activity:
     create: Loo
@@ -807,16 +811,15 @@ field_options:
     collection_setup: Andmekogu seadistus
     singleton: Käsitle üksiku objektina
     language: Keel
+    translation: Tõlge
+    collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
-    divider: Sorteeri
+    sort_divider: Sorteeri
   directus_roles:
     fields:
       icon_name: Ikoon
       name_name: Nimi
       name_placeholder: Sisesta pealkiri...
-    collection_list:
-      fields:
-        type_name: Tüüp
     collections_name: Kogud
   directus_users:
     status_dropdown_active: aktiivne
@@ -825,6 +828,8 @@ field_options:
     status_options_active: aktiivne
     actions_create: Loo
     actions_update: Uuenda
+    headers:
+      value: Väärtus
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID
@@ -953,7 +958,6 @@ interfaces:
   presentation-divider:
     divider: Eraldaja
     description: Nimeta ja eralda välju sektsioonideks
-    title_placeholder: Sisesta pealkiri...
     inline_title: Pealkiri joone sees
     inline_title_label: Näita pealkirja keset joont
     margin_top: Ülemine vahe
@@ -1011,8 +1015,16 @@ interfaces:
     box: Plokk / Tekstisisene
     imageToken: Pildi kood
     imageToken_label: Milline (staatiline) kood lisada piltide allikatele
+    preview: Eelvaade
+    editor: Toimetaja
   map:
+    map: Kaart
+    description: Vali asukoht kaardil
     zoom: Suurenda
+    default_view: Vaikimisi vaade
+    invalid_options: Vigased valikud
+    invalid_format: Vigane formaat ({format})
+    unexpected_geometry: Oodatud väärtuse '{expected}' asemel on '{got}'
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
@@ -1023,6 +1035,8 @@ interfaces:
     no_collection: Andmekogu ei leitud
   system-folder:
     folder: Kaust
+    description: Vali kaust
+    field_hint: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   select-radio:
     radio-buttons: Raadionupud
     description: Vali üks mitmest valikust
@@ -1101,6 +1115,8 @@ interfaces:
     trigger: Päästik
     rate: Hinnang
 displays:
+  translations:
+    translations: Tõlked
   boolean:
     boolean: Boolean
     description: Näita sees/väljas seisu
@@ -1206,6 +1222,8 @@ layouts:
     calendar: Kalender
     start_date_field: Alguse kuupäev
     end_date_field: Lõpu kuupäev
+  map:
+    map: Kaart
 panels:
   label:
     name: Silt

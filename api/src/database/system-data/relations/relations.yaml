@@ -82,3 +82,9 @@ data:
   - many_collection: directus_panels
     many_field: user_created
     one_collection: directus_users
+  - many_collection: directus_notifications
+    many_field: recipient
+    one_collection: directus_users
+  - many_collection: directus_notifications
+    many_field: sender
+    one_collection: directus_users

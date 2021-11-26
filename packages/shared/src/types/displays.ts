@@ -20,6 +20,6 @@ export interface DisplayConfig {
 	component: Component;
 	options: DeepPartial<Field>[] | Component | null;
 	types: readonly Type[];
-	groups?: readonly LocalType[];
+	localTypes?: readonly LocalType[];
 	fields?: string[] | DisplayFieldsFunction;
 }

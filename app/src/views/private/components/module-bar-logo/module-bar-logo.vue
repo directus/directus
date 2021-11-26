@@ -1,10 +1,10 @@
 <template>
 	<component
 		:is="url ? 'a' : 'div'"
-		ref="noopener noreferer"
 		v-tooltip.right="urlTooltip"
 		:href="url"
-		target="_blank"
+		:target="url ? '_blank' : undefined"
+		:rel="url ? 'noopener noreferrer' : undefined"
 		class="module-bar-logo"
 		:class="{ loading: showLoader }"
 	>
@@ -74,7 +74,7 @@ export default defineComponent({
 .module-bar-logo {
 	--v-progress-linear-height: 2px;
 	--v-progress-linear-color: var(--white);
-	--v-progress-linear-background-color: rgba(255, 255, 255, 0.5);
+	--v-progress-linear-background-color: rgb(255 255 255 / 0.5);
 
 	position: relative;
 	display: flex;

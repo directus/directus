@@ -135,7 +135,7 @@ export default defineComponent({
 			if (codemirror) {
 				const lang = props.language.toLowerCase();
 
-				if (lang === 'json') {
+				if (props.type === 'json' || lang === 'json') {
 					// @ts-ignore
 					await import('codemirror/mode/javascript/javascript.js');
 
@@ -237,7 +237,7 @@ export default defineComponent({
 				defaultOptions,
 				{
 					lineNumbers: props.lineNumber,
-					readOnly: false,
+					readOnly: props.disabled ? 'nocursor' : false,
 					mode: props.language,
 					placeholder: props.placeholder,
 				},
@@ -307,7 +307,7 @@ export default defineComponent({
 	position: absolute;
 	top: 10px;
 	right: 10px;
-	z-index: 10;
+	z-index: 4;
 	color: var(--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);

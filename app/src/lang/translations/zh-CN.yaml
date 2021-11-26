@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 avatar: 头像
 default_provider: 默认值
 published: 已发布
@@ -50,7 +30,7 @@ indeterminate: 不确定的状态
 edit_collection: 编辑模型
 exclusive: 唯一的
 children: 子页面
-db_only_click_to_configure: '仅限数据库：点击配置 '
+db_only_click_to_configure: '仅限数据库：点击配置'
 show_archived_items: 显示存档项目
 edited: 已编辑的值
 required: 必填
@@ -199,6 +179,7 @@ boolean: Boolean
 date: Date
 date_range: 时间段
 datetime: DateTime
+dateTime: DateTime
 precision: 精度
 decimal: Decimal
 float: Float
@@ -211,7 +192,6 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: 几何
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -231,9 +211,6 @@ new_data_alert: '以下将在您的模型中创建：'
 search_collection: 搜索模型...
 new_field: '新建字段'
 new_collection: '新建模型'
-add_m2o_to_collection: '添加多对一到"{collection}"'
-add_o2m_to_collection: '添加一到多个到 "{collection}"'
-add_m2m_to_collection: '添加多对多到"{collection}"'
 choose_a_type: 选择类型...
 determined_by_relationship: 由关系确定
 add_note: 为用户添加有用的注释...
@@ -251,6 +228,7 @@ invalid_item: 无效条目
 next: 下一步
 field_name: 字段名
 translations: 翻译
+no_translations: 无翻译
 note: 注释
 enter_a_value: 请输入值...
 enter_a_placeholder: 输入占位符...
@@ -326,6 +304,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: 分
+hours: 时
 month: 月
 year: 年
 select_all: 全选
@@ -360,6 +340,7 @@ zoom: 缩放
 download: 下载
 open: 打开
 open_in_new_window: 在新窗口中打开
+open_folder: 打开 "{folder}" 文件夹
 foreground_color: 前景色
 background_color: 背景色
 upload_from_device: 从设备中上传文件
@@ -433,6 +414,10 @@ no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
 users: 用户
 activity: 活动
+activity_item: 活动项
+action: 操作
+ip_address: IP 地址
+user_agent: 用户代理（User Agent）
 webhooks: Webhook
 decimals: 小数
 value_decimals: 小数的值
@@ -636,7 +621,6 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
-insights: 洞察(测试)
 dashboard: 控制面板
 panel: 面板
 panel_options: 选项
@@ -915,18 +899,14 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
-    public_pages: 公开页面
     public_foreground: 公共前景
     public_background: 公共背景
     public_note: 公共便笺
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
-    files_and_thumbnails: 文件和缩略图
-    storage_default_folder: 默认存储文件夹
-    storage_asset_presets: 存储资产预设
-    storage_asset_transform: 存储资产转换
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
+    module_bar: 模块栏
   directus_fields:
     collection: 模型名称
     icon: 图标
@@ -945,19 +925,19 @@ fields:
     enforce_tfa: 请求两步验证
     users: 角色中的用户
     module_list: 模块导航
-    collection_list: 模型导航
   directus_webhooks:
     name: 名称
     method: 方法
     status: 状态
     data: 数据
+    value: 值
     data_label: 发送事件数据
     triggers: 触发条件
     actions: 操作
+    collections: 数据模型
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目
-    project_logo_note: 登录和Logo背景
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -993,13 +973,14 @@ field_options:
     hidden_label: 在管理菜单中隐藏
     singleton: 视为单个对象
     language: 语言
-    translation: 请输入翻译...
+    translation: 翻译
+    collection_name: 模型名称
     archive_divider: 存档
-    archive_field: 选择字段...
+    archive_field_placeholder: 选择字段...
     archive_app_filter: 启用归档功能
     archive_value: 归档时设定的值...
     unarchive_value: 解除归档时设定的值...
-    divider: 排序
+    sort_divider: 排序
     sort_field: 选择字段...
     accountability_divider: 访问控制
   directus_files:
@@ -1019,15 +1000,6 @@ field_options:
       name_placeholder: 输入标题...
       link_name: 链接
       link_placeholder: 相对或绝对的 URL...
-    collection_list:
-      group_name_addLabel: 新建分组...
-      fields:
-        group_name: 分组名称
-        group_placeholder: 分组标签
-        type_name: 类型
-        choices_always: 总是展开
-        choices_start_open: 默认打开
-        choices_start_collapsed: 默认收起
     collections_name: 数据模型
     collections_addLabel: 添加到模型...
   directus_users:
@@ -1051,6 +1023,8 @@ field_options:
     actions_update: 更新
     actions_delete: 删除
     actions_login: 登录
+    headers:
+      value: 值
 no_fields_in_collection: '集合 {collection} 中没有任何字段'
 no_value: 没有值
 do_nothing: 什么都不做
@@ -1058,6 +1032,9 @@ generate_and_save_uuid: 生成并保存 UUID
 save_current_user_id: 保存当前用户 ID
 save_current_user_role: 保存当前用户角色
 save_current_datetime: 保存当前日期/时间
+always_open: 总是展开
+start_open: 默认打开
+start_collapsed: 默认收起
 block: 阻止
 inline: 内联
 comment: 注释
@@ -1206,7 +1183,6 @@ interfaces:
   presentation-divider:
     divider: 分隔线
     description: 标记字段并分成多个部分
-    title_placeholder: 输入标题...
     inline_title: 行内标题
     inline_title_label: 在行内显示标题
     margin_top: 上边距
@@ -1268,9 +1244,6 @@ interfaces:
     map: 地图
     description: 选择地图上的位置
     zoom: 缩放
-    geometry_type: 几何类型
-    geometry_format: 几何格式
-    default_view: 默认视图
     invalid_options: 无效选项
     invalid_format: 无效格式 ({format})
     unexpected_geometry: 需要 {expected}，但收到 {got}。
@@ -1291,7 +1264,6 @@ interfaces:
   system-folder:
     folder: 文件夹
     description: 选择文件夹
-    field_hint: 将新上传的文件放入选中的文件夹。不影响已选中的现有文件。
     root_name: 文件管理
     system_default: 系统默认
   select-radio:
@@ -1348,7 +1320,6 @@ interfaces:
     display_template: 显示模板
     no_collection: 暂无模型
     toggle_split_view: 切换视图
-    language_field: 语言字段
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -1385,6 +1356,8 @@ interfaces:
     start_open: 默认打开
     start_closed: 默认收起
 displays:
+  translations:
+    translations: 翻译
   boolean:
     boolean: Boolean
     description: 显示开启或关闭状态
@@ -1494,18 +1467,11 @@ layouts:
     map: 地图
     basemap: 底图
     layers: 图层
-    edit_custom_layers: 编辑图层
     cluster_options: 集群选项
-    cluster: 开启集群中
     cluster_radius: 集群半径
     cluster_minpoints: 集群最小尺寸
     cluster_maxzoom: 集群的最大缩放
-    field: 几何
     invalid_geometry: 无效几何图形
-    auto_location_filter: 总是筛选数据以查看边框
-    search_this_area: 搜索此区域
-    clear_data_filter: 清除过滤器
-    clear_location_filter: 清除过滤器
 panels:
   metric:
     name: 公制

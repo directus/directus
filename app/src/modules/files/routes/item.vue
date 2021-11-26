@@ -99,9 +99,11 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true || saveAllowed === true"
+						v-if="hasEdits === true && saveAllowed === true"
+						:disabled-options="['save-and-add-new']"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -328,6 +330,7 @@ export default defineComponent({
 			deleting,
 			saveAndStay,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			editActive,
 			revisionsDrawerDetail,
@@ -401,16 +404,23 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(to.value);
+				router.replace(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
+				confirmDelete.value = false;
 			}
 		}
 
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		function downloadFile() {

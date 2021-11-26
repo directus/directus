@@ -2,9 +2,9 @@
 	<div>
 		<v-list-item
 			v-if="folder.children === undefined"
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
-			@contextmenu.prevent.stop="activateContextMenu"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -14,12 +14,12 @@
 
 		<v-list-group
 			v-else
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
 			:value="folder.id"
 			scope="files-navigation"
 			disable-groupable-parent
-			@contextmenu.prevent.stop="activateContextMenu"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -144,8 +144,6 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const contextMenu = ref();
-
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
@@ -165,8 +163,6 @@ export default defineComponent({
 			deleteActive,
 			deleteSave,
 			deleteSaving,
-			contextMenu,
-			activateContextMenu,
 		};
 
 		function useRenameFolder() {
@@ -273,9 +269,9 @@ export default defineComponent({
 					await api.delete(`/folders/${props.folder.id}`);
 
 					if (newParent) {
-						router.push(`/files/folders/${newParent}`);
+						router.replace(`/files/folders/${newParent}`);
 					} else {
-						router.push('/files');
+						router.replace('/files');
 					}
 
 					deleteActive.value = false;
@@ -286,10 +282,6 @@ export default defineComponent({
 					deleteSaving.value = false;
 				}
 			}
-		}
-
-		function activateContextMenu(event: PointerEvent) {
-			contextMenu.value.activate(event);
 		}
 	},
 });

@@ -1,6 +1,8 @@
 <template>
 	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
-		<template #headline>{{ t('settings_permissions') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
@@ -230,7 +232,7 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/roles`);
+			router.replace(`/settings/roles`);
 		}
 
 		function discardAndLeave() {
