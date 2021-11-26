@@ -886,6 +886,9 @@ export class GraphQLService {
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
 						filter: ReadableCollectionFilterTypes[collection.collection],
+						limit: {
+							type: GraphQLInt,
+						},
 						search: {
 							type: GraphQLString,
 						},
