@@ -12,6 +12,9 @@ export default defineInterface({
 	group: 'selection',
 	options: ({ field }) => {
 		if (field.type === 'date') {
+			if (field.meta?.options) {
+				field.meta.options = {};
+			}
 			return [];
 		}
 
