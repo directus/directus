@@ -66,6 +66,8 @@ create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
+subject: Sujet
+inbox: Boite de réception
 emails: E-mails
 connection_excellent: Excellente connexion
 connection_good: Bonne connexion
@@ -205,7 +207,7 @@ datetime: Date et heure
 dateTime: Date et heure
 precision: Précision
 decimal: Décimale
-float: Décimal
+float: Nombre flottant
 integer: Entier
 json: JSON
 xml: XML
@@ -427,6 +429,9 @@ user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
 webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
 no_webhooks_copy: Aucun webhooks n'a encore été configuré. Commencez par en créer un ci-dessous.
+no_notifications: Aucune notification
+no_notifications_copy: Vous êtes à jour !
+activity_log: Journal d’activité
 all_items: Tous les éléments
 any: N'importe quel
 csv: CSV
@@ -453,7 +458,7 @@ ip_address: Adresse IP
 user_agent: Agent utilisateur
 webhooks: Webhooks
 decimals: Décimales
-value_decimals: Valeur décimales
+value_decimals: Valeur décimale
 min_value: Valeur minimale
 max_value: Valeur max
 automatic: Automatique
@@ -845,6 +850,7 @@ directus_collection:
   directus_migrations: Quelle version de la base de données que vous utilisez
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
   directus_permissions: Sélectionner les permissions pour chaque groupe
+  directus_notifications: Notifications envoyées aux utilisateurs
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -1186,6 +1192,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
