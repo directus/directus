@@ -14,15 +14,17 @@
 				</div>
 			</div>
 
-			<div v-else class="chips-container" @click.stop="toggle">
-				<div class="chips w-full">
-					<div v-for="item in inlineResults" :key="item[primaryKeyFieldPath]" class="chip">
-						<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
-					</div>
+			<div v-else class="chips" @click.stop="toggle">
+				<v-chip v-for="item in inlineResults" :key="item[primaryKeyFieldPath]" x-small>
+					<render-template
+						:template="internalTemplate"
+						:item="item"
+						:collection="junctionCollection ?? relatedCollection"
+					/>
+				</v-chip>
 
-					<div v-if="value.length > inlineMaxResults">
-						{{ inlineResultsMoreCount }}
-					</div>
+				<div v-if="value.length > inlineMaxResults">
+					{{ inlineResultsMoreCount }}
 				</div>
 			</div>
 		</template>
@@ -217,25 +219,17 @@ export default defineComponent({
 	width: 100%;
 	font-size: 0.9rem;
 
-	.chip {
-		height: calc(var(--table-row-height) - 16px);
-		padding-right: 7px;
-		padding-left: 7px;
-		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
-	}
-}
-</style>
+	> .v-chip {
+		height: 100%;
 
-<style lang="scss">
-.chips .chip {
-	.render-template {
-		padding-right: 0;
-	}
+		.render-template {
+			padding-right: 0;
+		}
 
-	img {
-		max-height: calc(100% - 8px);
-		margin-right: 5px;
+		img {
+			max-height: calc(100% - 8px);
+			margin-right: 5px;
+		}
 	}
 }
 </style>
