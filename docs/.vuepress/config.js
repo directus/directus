@@ -87,6 +87,11 @@ module.exports = {
 							},
 							{
 								type: 'page',
+								path: '/getting-started/installation/cloudron',
+								title: 'Cloudron',
+							},
+							{
+								type: 'page',
 								path: '/getting-started/installation/cli',
 								title: 'CLI',
 							},

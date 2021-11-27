@@ -1,5 +1,7 @@
 ---
 avatar: Avatari
+draft: Luonnos
+modules: Moduulit
 edit_field: Muokkaa kenttää
 item_revision: Kohteen versio
 duplicate_field: Monista kenttä
@@ -41,6 +43,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Kirjauduttu ulos
   SESSION_EXPIRED: Istunto vanheutunut
+public_label: Julkinen
 public_description: Määrittää mitä API-tietoja on saatavilla ilman autentikointia.
 not_allowed: Ei sallittu
 directus_version: Directus-versio
@@ -116,6 +119,7 @@ language: Kieli
 global: Yleinen
 admins_have_all_permissions: Ylläpitäjillä on kaikki oikeudet
 camera: Kamera
+max: Maks.
 exposure: Valotus
 shutter: Suljin
 iso: ISO
@@ -168,6 +172,7 @@ new_collection: 'Uusi kokoelma'
 choose_a_type: Valitse tyyppi...
 determined_by_relationship: Suhteen määrittämä
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
+add_link: Lisää linkki
 default_value: Oletusarvo
 standard_field: Vakiokenttä
 single_file: Yksittäinen tiedosto
@@ -338,6 +343,7 @@ no_files_copy: Täällä ei ole tiedostoja.
 user_count: 'Ei käyttäjiä | Yksi käyttäjä | {count} käyttäjää'
 no_users_copy: Tässä roolissa ei ole vielä käyttäjiä.
 webhooks_count: 'Ei webhookkeja | Yksi webhookki | {count} webhookkia'
+activity_log: Tapahtumaloki
 all_items: Kaikki kohteet
 csv: CSV
 no_collections: Ei kokoelmia
@@ -514,6 +520,7 @@ no_results_copy: Säädä tai tyhjennä hakusuodattimet nähdäksesi tulokset.
 clear_filters: Tyhjennä suodattimet
 saves_automatically: Tallentaa automaattisesti
 role: Rooli
+rule: Sääntö
 user: Käyttäjänimi
 no_presets: Ei esiasetuksia
 no_presets_copy: Esiasetuksia tai kirjanmerkkejä ei ole vielä tallennettu.
@@ -732,6 +739,7 @@ fields:
     theme: Teema
     tfa_secret: Kaksivaiheinen todennus
     status: Tila
+    status_draft: Luonnos
     status_active: Aktiivinen
     role: Rooli
     token: Token
@@ -793,6 +801,7 @@ field_options:
       name_placeholder: Syötä otsikko...
     collections_name: Kokoelmat
   directus_users:
+    status_dropdown_draft: Luonnos
     status_dropdown_active: Aktiivinen
   directus_webhooks:
     status_options_active: Aktiivinen
@@ -981,6 +990,7 @@ interfaces:
     imageToken: Kuvatunnus
     imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   map:
+    map: Kartta
     zoom: Lähennä
   presentation-notice:
     notice: Ilmoitus
@@ -1177,6 +1187,8 @@ layouts:
     calendar: Kalenteri
     start_date_field: Aloituspäivämäärän kenttä
     end_date_field: Päättymispäivämäärän kenttä
+  map:
+    map: Kartta
 panels:
   label:
     name: Tunniste
