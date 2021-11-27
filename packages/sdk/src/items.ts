@@ -69,13 +69,19 @@ export type FilterOperators =
 	| '_intersects_bbox'
 	| '_nintersects_bbox';
 
-export type FilterOperator<T, K extends keyof T> = {
-	[O in FilterOperators]?: Filter<T> | T[K];
+export type LogicalFilterAnd<T> = { _and: Filter<T>[] };
+export type LogicalFilterOr<T> = { _or: Filter<T>[] };
+export type LogicalFilter<T> = LogicalFilterAnd<T> | LogicalFilterOr<T>;
+
+export type FieldFilterOperator<T, K extends keyof T> = {
+	[O in FilterOperators]?: T[K];
 };
 
-export type Filter<T> = {
-	[K in keyof T]?: FilterOperator<T, K> | string | boolean | number | string[] | Record<string, any>;
+export type FieldFilter<T> = {
+	[K in keyof T]?: FieldFilterOperator<T, K> | FieldFilter<T[K]>;
 };
+
+export type Filter<T> = LogicalFilter<T> | FieldFilter<T extends Array<unknown> ? T[number] : T>;
 
 /**
  * CRUD at its finest

@@ -217,8 +217,10 @@ export class UsersService extends ItemsService {
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		await this.checkRemainingAdminExistence(keys);
-		await super.deleteMany(keys, opts);
 
+		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+
+		await super.deleteMany(keys, opts);
 		return keys;
 	}
 

@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.0.1",
+	"version": "9.1.2",
 	"description": "",
 	"main": "dist/index.js",
 	"exports": {
@@ -33,10 +33,10 @@
 	"license": "ISC",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
-		"directory-tree": "3.0.0",
+		"directory-tree": "3.0.1",
 		"fs-extra": "10.0.0",
 		"lodash.get": "4.4.2",
-		"micromark": "3.0.7",
+		"micromark": "3.0.8",
 		"npm-watch": "0.11.0",
 		"slugify": "1.6.2",
 		"vuepress": "1.8.2",

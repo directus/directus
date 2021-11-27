@@ -48,12 +48,12 @@ export class MailService {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
-		const from = options.from || (env.EMAIL_FROM as string);
+		const defaultTemplateData = await this.getDefaultTemplateData();
+
+		const from = `${defaultTemplateData.projectName} <${options.from || (env.EMAIL_FROM as string)}>`;
 
 		if (template) {
 			let templateData = template.data;
-
-			const defaultTemplateData = await this.getDefaultTemplateData();
 
 			templateData = {
 				...defaultTemplateData,
