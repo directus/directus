@@ -18,6 +18,7 @@
 		"cms",
 		"mysql",
 		"postgresql",
+		"cockroachdb",
 		"sqlite",
 		"framework",
 		"vue"

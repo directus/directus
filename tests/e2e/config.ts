@@ -97,6 +97,17 @@ const config: Config = {
 				},
 			},
 		},
+		cockroachdb: {
+			name: `directus-test-database-cockroachdb-${process.pid}`,
+			Image: 'cockroachdb/cockroach:latest-v21.1',
+			Hostname: `directus-test-database-cockroachdb-${process.pid}`,
+			Env: [], // TODO defaultdb is created initially - perhaps another one?
+			HostConfig: {
+				PortBindings: {
+					'26257/tcp': [{ HostPort: '6005' }],
+				},
+			},
+		},
 		sqlite3: false,
 	},
 	knexConfig: {

@@ -31,7 +31,8 @@
 		"knex",
 		"schema",
 		"mysql",
-		"postgresql",
+    "postgresql",
+    "cockroachdb",
 		"sqlite3",
 		"javascript"
 	],
