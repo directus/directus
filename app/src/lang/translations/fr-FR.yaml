@@ -196,7 +196,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Réinitialiser les préférences de la page
 hidden_field: Champ caché
 hidden_on_detail: Caché dans les détails
-disabled_editing_value: Désactiver la modification de la valeur
+disabled_editing_value: Valeur non modifiable
 key: Clé
 alias: Alias
 bigInteger: Grand entier
@@ -698,7 +698,7 @@ display_text: Afficher le texte
 display_text_placeholder: Entrez un texte d'affichage...
 interface_group_text_and_numbers: Texte et nombres
 interface_group_selection: Sélection
-interface_group_relational: Relationnel
+interface_group_relational: Relations
 interface_group_presentation: Présentation
 interface_group_groups: Groupes
 interface_group_other: Autre
@@ -778,7 +778,7 @@ one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 select: Sélectionner...
 layout: Mise en page
-tree_view: Vue Arborescente
+tree_view: Arborescence
 changes_are_permanent: Les modifications sont irréversibles
 preset_name_placeholder: Sert par défaut quand il est vide...
 preset_search_placeholder: Recherche...
@@ -1187,7 +1187,7 @@ sort_direction: Ordre de tri
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
-require_value_to_be_set: Nécessite que la valeur soit définie
+require_value_to_be_set: La valeur est requise
 translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
@@ -1228,7 +1228,7 @@ interfaces:
     button: Boutons
     error: Impossible d’effectuer cette action
   select-multiple-checkbox:
-    checkboxes: Cases à cocher
+    checkboxes: Cases à cocher (choix multiples)
     description: Choisissez entre plusieurs options via les cases à cocher
     allow_other: Autoriser d'autres valeurs
     show_more: 'Afficher {count} de plus'
@@ -1412,7 +1412,7 @@ interfaces:
     textarea: Zone de texte
     description: Entrez le texte brut en multiligne
   boolean:
-    toggle: Activer/Désactiver
+    toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
     label_placeholder: Entrer un libellé...
     label_default: Activé
@@ -1439,14 +1439,14 @@ interfaces:
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
   input-autocomplete-api:
-    input-autocomplete-api: Champ Autocomplété (API)
+    input-autocomplete-api: Champ avec autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.
     results_path: Chemin des résultats
     value_path: Chemin de la valeur
     trigger: Déclencheur
     rate: Débit
   group-raw:
-    name: Groupe brut
+    name: Groupe sans format
     description: Rendre les champs tels qu'ils sont
   group-detail:
     name: Détail du groupe
