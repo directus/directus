@@ -320,7 +320,7 @@ use_current_filters_settings: Utiliser les filtres et paramètres actuels
 export_collection: 'Exporter {collection}'
 last_page: Dernière page
 last_access: Dernier accès
-fill_template: Remplir avec la valeur du modèle
+fill_template: Remplir avec un exemple
 a_unique_table_name: Un nom de table unique...
 a_unique_column_name: Un nom de colonne unique...
 enable_custom_values: Activer les valeurs personnalisées
@@ -969,7 +969,7 @@ fields:
     storage_default_folder: Dossier par défaut
     storage_asset_presets: Préréglages de transformation
     storage_asset_transform: Transformations autorisées
-    overrides: Remplacer les applications
+    overrides: Personnalisations de l'application
     custom_css: Personnalisation du CSS
     module_bar: Barre de modules
     transformations_all: Autoriser toutes les transformations
@@ -1034,7 +1034,7 @@ field_options:
     basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
     files_divider_title: Fichiers et miniatures
-    overrides_divider_title: Remplacer les applications
+    overrides_divider_title: Personnalisations de l'application
   directus_activity:
     login: Identifiant
     create: Créer
