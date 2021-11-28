@@ -112,13 +112,13 @@ export default function usePreview(
 	watch(
 		() => fields.value,
 		() => {
-			const { junctionField, junctionCollection } = relation.value;
+			const { relatedField, relationCollection } = relation.value;
 
 			tableHeaders.value = (
-				fields.value.length > 0 ? fields.value : getDefaultFields().map((field) => `${junctionField}.${field}`)
+				fields.value.length > 0 ? fields.value : getDefaultFields().map((field) => `${relatedField}.${field}`)
 			)
 				.map((fieldKey) => {
-					const field = fieldsStore.getField(junctionCollection, fieldKey);
+					const field = fieldsStore.getField(relationCollection, fieldKey);
 
 					if (!field) return null;
 
@@ -148,11 +148,11 @@ export default function usePreview(
 	return { tableHeaders, items, initialItems, loading, error };
 
 	function getRelatedFields(fields: string[]) {
-		const { junctionField } = relation.value;
+		const { relatedField } = relation.value;
 
 		return fields.reduce((acc: string[], field) => {
 			const sections = field.split('.');
-			if (junctionField === sections[0] && sections.length >= 2) acc.push(sections.slice(1).join('.'));
+			if (relatedField === sections[0] && sections.length >= 2) acc.push(sections.slice(1).join('.'));
 			return acc;
 		}, []);
 	}
