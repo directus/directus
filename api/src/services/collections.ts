@@ -122,12 +122,14 @@ export class CollectionsService {
 					return field;
 				});
 
-				await trx.schema.createTable(payload.collection, (table) => {
-					for (const field of payload.fields!) {
-						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-							fieldsService.addColumnToTable(table, field);
+				await this.knex.transaction(async (createTrx) => {
+					await createTrx.schema.createTable(payload.collection, (table) => {
+						for (const field of payload.fields!) {
+							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+								fieldsService.addColumnToTable(table, field);
+							}
 						}
-					}
+					});
 				});
 
 				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
