@@ -33,7 +33,7 @@ conditions: Conditions
 maps: Cartes
 item_creation: Création d'article
 item_revision: Historique de l'article
-enter_a_name: Entrez un nom...
+enter_a_name: Saisir un nom...
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
