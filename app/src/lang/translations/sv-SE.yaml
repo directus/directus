@@ -165,10 +165,16 @@ field_create_success: 'Skapade fältet: "{field}"'
 field_update_success: 'Uppdaterade fältet: "{field}"'
 duplicate_where_to: Vart vill du duplicera det här fältet någonstans?
 language: Språk
+aggregate_function: Funktion för aggregering
+aggregate_precision: Precision för aggregering
+group_aggregation: Aggregera grupp
+group_precision: Precision för grupp
 global: Global
 admins_have_all_permissions: Administratörer har alla behörigheter
 camera: Kamera
 show_zero: Visa noll
+create_in_advanced_field_creation_mode: Skapa ett fält i avancerat läge
+continue_in_advanced_field_creation_mode: Fortsätta skapa ett fält i avancerat läge
 sum: Summa
 sum_distinct: Summa distinkt
 avg: Genomsnitt
@@ -273,6 +279,7 @@ raw_value: Obearbetat värde
 edit_raw_value: Redigera obearbetat värde
 enter_raw_value: Ange obearbetat värde...
 clear_value: Rensa fält
+clear_changes: Rensa ändringar
 reset_to_default: Återställ till förval
 undo_changes: Ångra ändringar
 notifications: Aviseringar
@@ -302,6 +309,7 @@ item_delete_success: Objekt raderat | Objekt raderade
 this_collection: Den här kollektionen
 related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
+translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
 export_data: Exportera data
 format: Format
@@ -497,6 +505,7 @@ errors:
   USER_SUSPENDED: Användare avstängd
   INTERNAL_SERVER_ERROR: Oväntat fel
   NOT_NULL_VIOLATION: Värdet kan inte vara null
+  ILLEGAL_ASSET_TRANSFORMATION: Bildkälla för stor för att förhandsgranska
   UNKNOWN: Oväntat fel
 security: Säkerhet
 value_hashed: Värde säkert hashat
@@ -625,6 +634,7 @@ user: Användare
 no_presets: Inga förval
 no_presets_copy: Inga förval eller bokmärken har sparats ännu.
 no_presets_cta: Lägg till förval
+presets_only: Endast förval
 create: Skapa
 on_create: Vid skapande
 on_update: Vid uppdatering
@@ -632,6 +642,8 @@ read: Läsning
 update: Uppdatera
 select_fields: Välj fält
 format_text: Formatera text
+format_value: Formatera värde
+abbreviate_value: Förkorta värde
 bold: Fet
 toggle: Växla
 icon_on: Ikon på
@@ -767,6 +779,7 @@ discard_changes_copy: Är du säker på att du vill ignorera alla ändringar som
 show_x_axis: Visa X-axeln
 show_y_axis: Visa Y-axeln
 keep_editing: Fortsätt redigera
+page_help_collections_overview: '**Översikt kollektioner** — Lista över alla kollektioner du har tillgång till.'
 page_help_collections_collection: >-
   **Bläddra bland objekt** — Listar alla {collection} objekt du har tillgång till. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
 page_help_collections_item: >-
@@ -806,6 +819,7 @@ no_layout_collection_selected_yet: Ingen layout/kollektion vald ännu
 batch_delete_confirm: >-
   Inga objekt har valts | Är du säker på att du vill radera det här objektet? Den här åtgärden kan inte ångras. | Är du säker på att du vill radera de här {count} objekten? Den här åtgärden kan inte ångras.
 cancel: Avbryt
+no_upscale: Skala inte upp bilder
 collection: Kollektion
 collections: Kollektioner
 content: Innehåll
@@ -813,8 +827,15 @@ singleton: Singleton
 singleton_label: Behandla som ett enskilt objekt
 system_fields_locked: Systemfälten är låsta och kan inte redigeras
 directus_collection:
+  directus_activity: Ansvarsloggar för alla händelser
   directus_dashboards: Kontrollpaneler i insights modulen
   directus_panels: Individuella paneler inom Insights kontrollpaneler
+  directus_revisions: Ögonblicksbilder för all aktivitet
+  directus_roles: Behörighetsgrupper för systemanvändare
+  directus_sessions: Information om användarsessioner
+  directus_settings: Projektets konfigurationsalternativ
+  directus_users: Systemanvändare för plattformen
+  directus_webhooks: Konfiguration för eventbaserade HTTP-anrop
 fields:
   directus_activity:
     item: Primärnyckel för objekt
@@ -838,6 +859,7 @@ fields:
     archive_value: Arkivera värde
     unarchive_value: Avarkivera värde
     sort_field: Sortera fält
+    archive_field: Arkivera fält
   directus_files:
     $thumbnail: Miniatyrbild
     title: Rubrik
@@ -872,16 +894,34 @@ fields:
     title: Rubrik
     description: Beskrivning
     tags: Etiketter
+    user_preferences: Användarinställningar
     language: Språk
     theme: Tema
+    theme_auto: Automatisk (baserat på system)
+    theme_light: Ljust läge
+    theme_dark: Mörkt läge
     tfa_secret: Tvåfaktorsautentisering
+    admin_options: Admin-alternativ
     status: Status
+    status_draft: Utkast
+    status_invited: Inbjuden
     status_active: Aktiv
+    status_suspended: Avstängd
+    status_archived: Arkiverad
     role: Roll
     token: Token
+    token_placeholder: Ange ett säkert åtkomsttoken...
+    provider: Leverantör
+    external_identifier: Extern identifierare
     last_page: Sista sidan
     last_access: Senaste åtkomsten
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
     project_name: Projektnamn
     project_url: Projektets URL
     project_color: Projektets färg
@@ -891,7 +931,13 @@ fields:
     public_note: Publik anteckning
     auth_password_policy: Policy för lösenord vid inloggning
     auth_login_attempts: Inloggningsförsök
+    files_and_thumbnails: Filer och lagring
+    storage_default_folder: Förvald mapp
+    storage_asset_transform: Tillåtna transformationer
     custom_css: Custom CSS
+    transformations_all: Tillåt alla transformationer
+    transformations_none: Inaktivera transformationer
+    transformations_presets: Begränsa transformationer till inställningarna nedan
   directus_fields:
     collection: Namn kollektion
     icon: Ikon kollektion
@@ -912,48 +958,131 @@ fields:
     module_list: Navigering för modul
   directus_webhooks:
     name: Namn
+    method: Metod
     status: Status
     value: Värde
+    headers: Headers för anrop
+    data_label: Skicka händelsedata
+    triggers: Utlösare
+    actions: Åtgärder
     collections: Kollektioner
 field_options:
   directus_settings:
+    project_name_placeholder: Mitt projekt...
+    project_color_note: Inloggning & logotyp bakgrund
+    project_logo_note: Vit 40x40 SVG/PNG
+    public_note_placeholder: Ett kort, offentligt meddelande som stödjer formatering av markdown...
     security_divider_title: Säkerhet
+    auth_password_policy:
+      none_text: Ingen – Rekommenderas ej
+      weak_text: Svag – minst 8 tecken
+      strong_text: Starkt – Versaler / Gemener / Siffror / Specialtecken
+    storage_asset_presets:
+      fit_label: Passa
+      upscaling: Uppskalning
+      fit:
+        contain_text: Bevara (bevara bildförhållandet)
+        cover_text: Fyll (tvingar exakt storlek)
+        fit_text: Passa inuti
+        outside_text: Passa utanför
+    additional_transforms: Ytterligare Transformationer
+    transforms_note: Skarpa metodens namn och dess argument. Se https://sharp.pixelplumbing.com/api-constructor för mer information.
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
   directus_activity:
+    login: Inloggning
     create: Skapa
     update: Uppdatera
+    delete: Radera
   directus_collections:
+    track_activity_revisions: Spåra aktivitet och revisioner
+    only_track_activity: Spåra endast aktivitet
+    do_not_track_anything: Spåra ingenting
     collection_setup: Konfiguration av kollektion
+    note_placeholder: En beskrivning av kollektionen...
+    hidden_label: Dölj i appen
     singleton: Behandla som ett enskilt objekt
     language: Språk
     translation: Översättning
+    translation_placeholder: Ange en översättning...
     collection_name: Namn kollektion
+    singular_unit: Enhet för singular
+    plural_unit: Enhet för plural
     archive_divider: Arkivera
+    archive_field_placeholder: Välj ett fält...
+    archive_value: Värde som sätts vid arkivering...
+    unarchive_value: Värde som sätts vid avarkivering...
     sort_divider: Sortera
+    sort_field: Välj ett fält...
+    accountability_divider: Ansvarsskyldighet
+    duplication_divider: Duplicering
+  directus_files:
+    title: En unik titel...
+    description: En valfri beskrivning...
+    location: En valfri plats...
+    storage_divider: Namngivning av fil
+    filename_disk: Namn på disk...
+    filename_download: Namn vid nedladdning...
   directus_roles:
+    name: Unikt namn för denna roll...
+    description: Beskrivning av rollen...
+    ip_access: Lägg till tillåtna IP-adresser, lämna tomt för att tillåta alla...
     fields:
       icon_name: Ikon
       name_name: Namn
+      name_placeholder: Ange en titel...
+      link_name: Länk
+      link_placeholder: Relativ eller absolut URL...
     collections_name: Kollektioner
+    collections_addLabel: Lägg till kollektion...
   directus_users:
+    preferences_divider: Användarinställningar
+    dropdown_auto: Automatisk (baserat på system)
+    dropdown_light: Ljust läge
+    dropdown_dark: Mörkt läge
+    admin_divider: Admin-alternativ
+    status_dropdown_draft: Utkast
+    status_dropdown_invited: Inbjuden
     status_dropdown_active: Aktiv
+    status_dropdown_suspended: Avstängd
+    status_dropdown_archived: Arkiverad
+    token: Ange ett säkert åtkomsttoken...
   directus_webhooks:
     status_options_active: Aktiv
     status_options_inactive: Inaktiv
+    data_label: Skicka händelsedata
+    triggers_divider: Utlösare
     actions_create: Skapa
     actions_update: Uppdatera
+    actions_delete: Radera
     headers:
       value: Värde
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
+no_value: Inget värde
 do_nothing: Gör ingenting
 generate_and_save_uuid: Generera och spara UUID
 save_current_user_id: Spara nuvarande användar-ID
 save_current_user_role: Spara aktuell användarroll
 save_current_datetime: Spara aktuellt datum/tid
+always_open: Alltid öppen
+start_open: Start öppen
+start_collapsed: Start ihopfälld
 block: Blockera
 inline: Infogad
 comment: Kommentera
+referential_action_field_label_m2o: Vid radering av {collection}...
+referential_action_field_label_o2m: Vid avmarkering av {collection}...
+referential_action_no_action: Förhindra radering
+referential_action_cascade: Radera objektet {collection} (överlappa)
+referential_action_set_default: Sätt {field} till standardvärde
+choose_action: Välj åtgärd
+continue_label: Fortsätt
+continue_as: >-
+  {name} är redan inloggad. Om det är du, tryck fortsätt.
 editing_role: '{role} roll'
 creating_webhook: Skapar Webhook
+default_label: Standard
+delete_label: Radera
 delete_are_you_sure: >-
   Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
 delete_field_are_you_sure: >-
@@ -961,6 +1090,7 @@ delete_field_are_you_sure: >-
 description: Beskrivning
 done: Klart
 duplicate: Duplicera
+limit: Gräns
 email: E-post
 embed: Bädda in
 fallback_icon: Fallback Ikon
@@ -1005,19 +1135,63 @@ sort_direction: Sorteringsordning
 sort_asc: Sortera stigande
 sort_desc: Sortera fallande
 template: Mall
+require_value_to_be_set: Kräv att värde ska anges
 translation: Översättning
+translation_placeholder: Ange en översättning...
 value: Värde
 view_project: Visa projekt
 report_error: Rapportera fel
+start: Starta
 interfaces:
   filter:
     name: Filtrera
+    description: Konfigurera ett filterobjekt.
     add_filter: Lägg till filter
+    add_group: Och / Eller grupp
+    add_value: Lägg till värde
     all: Alla
+    any: Valfri
+    and: och
+    of_the_following: av följande
+    no_rules: Inga regler konfigurerade
+    change_value: Klicka för att ändra värde
+    placeholder: Dra regler hit
+  group-accordion:
+    name: Dragspel
+    description: Visa fält eller grupper som dragspels-sektioner
+    start: Starta
+    all_closed: Alla stängda
+    first_opened: Öppnad först
+    all_opened: Alla öppnade
+    accordion_mode: Läge för dragspel
+    max_one_section_open: Max 1 sektion öppen
   presentation-links:
+    presentation-links: Knappens länkar
+    links: Länkar
+    description: Konfigurerbara knappar med länk för att öppna dynamiska URL:er
+    style: Stil
     primary: Primär
+    link: Länkar
+    button: Knappar
+    error: Kan inte utföra åtgärd
+  select-multiple-checkbox:
+    checkboxes: Kryssrutor
+    description: Välj mellan flera alternativ via kryssrutor
+    allow_other: Tillåt annan
+    show_more: 'Visa {count} till'
+    items_shown: Objekt som visas
+  select-multiple-checkbox-tree:
+    name: Kryssrutor (Träd)
+    description: Välj mellan flera alternativ via nästlade kryssrutor
+    value_combining: Kombinera värde
+    value_combining_note: Kontrollerar vilket värde som lagras när nästlade val görs.
+    show_all: Visa alla
+    show_selected: Visa markerade
   input-code:
     code: Kod
+    description: Skriv eller dela kod-snippets
+    line_number: Radnummer
+    placeholder: Ange kod här...
   system-collection:
     collection: Kollektion
     description: Välj mellan befintliga kollektioner
@@ -1028,6 +1202,11 @@ interfaces:
     include_system_collections: Inkludera systemets kollektioner
   select-color:
     color: Färg
+    description: Ange eller välj ett färgvärde
+    placeholder: Välj en färg...
+    preset_colors: Förinställda färger
+    preset_colors_add_label: Lägg till ny färg...
+    name_placeholder: Ange färgnamn...
   datetime:
     datetime: Datum och tid
     description: Ange datum och tider
@@ -1041,6 +1220,7 @@ interfaces:
   presentation-divider:
     divider: Avdelare
   select-dropdown:
+    allow_other: Tillåt annan
     choices_value_placeholder: Ange ett värde...
   file:
     file: Fil
@@ -1058,6 +1238,8 @@ interfaces:
     interface: Gränssnitt
   select-dropdown-m2o:
     display_template: Visningsmall
+  input-rich-text-md:
+    markdown: Markdown
   map:
     zoom: Zooma
   system-folder:
