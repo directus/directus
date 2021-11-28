@@ -1220,10 +1220,17 @@ interfaces:
     select_a_collection: Välj en kollektion
   presentation-divider:
     divider: Avdelare
+    inline_title: Infogad titel
+    inline_title_label: Visa rubrik inuti raden
     margin_top: Marginal topp
     margin_top_label: Öka marginal topp
   select-dropdown:
+    description: Välj ett värde från flervalslista
+    choices_placeholder: Lägg till ett nytt alternativ
     allow_other: Tillåt annan
+    allow_other_label: Tillåt andra värden
+    allow_none: Tillåt inga
+    allow_none_label: Tillåt inga val
     choices_name_placeholder: Ange ett namn...
     choices_value_placeholder: Ange ett värde...
   select-multiple-dropdown:
@@ -1261,6 +1268,7 @@ interfaces:
     display_template: Visningsmall
   input-rich-text-md:
     markdown: Markdown
+    imageToken: Bildnyckel
     preview: Förhandsgranska
   map:
     zoom: Zooma
@@ -1268,12 +1276,35 @@ interfaces:
     invalid_format: Ogiltigt format ({format})
     unexpected_geometry: Förväntade {expected}, fick {got}.
     fit_bounds: Anpassa vy till data
+    geojson: GeoJSON
+    lnglat: Longitud, latitud
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Klicka för att välja {geometry}
+  presentation-notice:
+    notice: Notis
+    description: Visa en kort notis
+    text: Ange notisens innehåll här...
+  list-o2m:
+    one-to-many: One to Many
+    description: Välj flera relaterade objekt
+    no_collection: Kollektionen kunde inte hittas
   system-folder:
     folder: Mapp
+    description: Välj en mapp
+    field_hint: Mapp för uppladdade filer. Påverkar inte befintliga filer.
+    root_name: Filbibliotek
+    system_default: Systemstandard
+  select-radio:
+    radio-buttons: Radioknappar
+    description: Välj ett av flera val
   list:
+    repeater: Repeterare
+    description: Skapa flera poster av samma struktur
     edit_fields: Redigera fält
     add_label: 'Etikett för "Skapa nytt"'
     field_name_placeholder: Ange fältnamn...
+    field_note_placeholder: Ange fältanteckning...
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage
@@ -1312,9 +1343,19 @@ interfaces:
     wysiwyg: WYSIWYG
     description: En textredigerare som skriver HTML-innehåll
     toolbar: Verktygsfält
+  group-detail:
+    name: Detalj grupp
+    header_icon: Ikon sidhuvud
+    header_color: Färg sidhuvud
+    start_open: Start öppen
+    start_closed: Start stängd
 displays:
   translations:
     translations: Översättningar
+    description: Förhandsgranska översättningar
+    enable: Aktivera
+    user_language: Använd nuvarande användarspråk
+    default_language: Förvalt språk
   boolean:
     boolean: Boolean
     description: Visa på och av lägen
@@ -1416,6 +1457,15 @@ layouts:
     comfortable: Bekväm
     compact: Kompakt
     cozy: Mysig
+  calendar:
+    calendar: Kalender
+    start_date_field: Fält för startdatum
+    end_date_field: Fält för slutdatum
+  map:
+    map: Karta
+    basemap: Basemap
+    layers: Lager
+    find_location: Hitta plats...
 panels:
   metric:
     name: Metrisk
