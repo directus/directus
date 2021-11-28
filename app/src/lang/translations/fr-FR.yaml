@@ -36,11 +36,11 @@ item_revision: Historique de l'article
 enter_a_name: Saisir un nom...
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
-full_width: Largeur de colonne
+full_width: Toute la largeur
 group: Groupe
 and: Et
 or: Ou
-fill_width: Pleine largeur
+fill_width: Remplir l'espace
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
@@ -681,7 +681,7 @@ decimals_placeholder: Nombre de décimales
 no_dashboards: Tableaux de bord
 no_dashboards_copy: Tu n'as pas encore de rapport.
 no_data: Pas de donnée
-create_dashboard: Créer Dashboard
+create_dashboard: Créer un tableau de bord
 dashboard_name: Nom du Dashboard
 full_screen: Plein écran
 edit_panels: Modifier le panneau
