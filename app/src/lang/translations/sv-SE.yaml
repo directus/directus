@@ -1268,10 +1268,13 @@ interfaces:
     display_template: Visningsmall
   input-rich-text-md:
     markdown: Markdown
+    box: Block / Infogad
     imageToken: Bildnyckel
+    imageToken_label: Token (statiskt) att lägga till på bildkällor
     preview: Förhandsgranska
   map:
     zoom: Zooma
+    default_view: Förvald vy
     invalid_options: Ogiltiga alternativ
     invalid_format: Ogiltigt format ({format})
     unexpected_geometry: Förväntade {expected}, fick {got}.
@@ -1324,13 +1327,29 @@ interfaces:
     alphabetize_label: Tvinga alfabetisk ordning
     add_tags: Lägg till taggar...
   input:
+    trim: Beskär
+    trim_label: Beskär start och slut
     mask: Maskerad
+    mask_label: Dölj det verkliga värdet
+    clear: Rensat värde
+    clear_label: Spara som tom sträng
+    minimum_value: Minsta värde
+    maximum_value: Maximalt värde
+    step_interval: Steg intervall
+    slug: Slugify
+    slug_label: Gör inmatat värde URL säkert
+  input-multiline:
+    textarea: Textfält
+    description: Ange fritext på flera rader
   boolean:
     toggle: Växla
+    description: Växla mellan på och av
+    label_placeholder: Ange en etikett...
     label_default: Aktiverad
   translations:
     display_template: Visningsmall
     no_collection: Ingen kollektion
+    toggle_split_view: Visa/dölj delad vy
   user:
     user: Användare
     description: Välj en befintlig Directus användare
