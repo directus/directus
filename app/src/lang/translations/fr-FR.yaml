@@ -255,9 +255,9 @@ default_value: Valeur par défaut
 standard_field: Champ standard
 single_file: Fichier unique
 multiple_files: Fichiers multiples
-m2o_relationship: Relation Many-to-One
-o2m_relationship: Relation One-to-Many
-m2m_relationship: Relation Many-to-Many
+m2o_relationship: Relation Plusieurs à un
+o2m_relationship: Relation Un à plusieurs
+m2m_relationship: Relation Plusieurs à plusieurs
 m2a_relationship: Relation Many-to-Any
 invalid_item: Élément invalide
 next: Suivant
@@ -445,9 +445,9 @@ collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
 select_a_field: Sélectionnez un champ
 active: Actif
-move_to: Déménager à...
+move_to: Déplacer vers...
 copy: Copier
-copy_to: Déménager à...
+copy_to: Copier vers...
 no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
@@ -684,7 +684,7 @@ no_data: Pas de donnée
 create_dashboard: Créer Dashboard
 dashboard_name: Nom du Dashboard
 full_screen: Plein écran
-edit_panels: Modifier pièce
+edit_panels: Modifier le panneau
 fit_to_screen: Ajuster à l'écran
 image_url: Url de l’image
 alt_text: Texte alternatif
@@ -878,7 +878,7 @@ fields:
     display_template: Modèle d'affichage
     hidden: Caché
     singleton: Singleton
-    translations: Traductions de nommage de collection
+    translations: Traductions des noms de collections
     archive_app_filter: Filtrer les valeurs archivées dans l'application
     archive_value: Valeur pour archivage
     unarchive_value: Valeur au désarchivage
@@ -959,7 +959,7 @@ fields:
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
-    branding: Image de marque et style
+    branding: Apparence et style
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
@@ -1052,8 +1052,8 @@ field_options:
     translation: Traduction
     translation_placeholder: Entrez une nouvelle traduction...
     collection_name: Nom de la Collection
-    singular_unit: Unité singulière
-    plural_unit: Unité plurielle
+    singular_unit: Au singulier
+    plural_unit: Au pluriel
     archive_divider: Archiver
     archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Activer le filtre des archives d'applications
@@ -1115,7 +1115,7 @@ save_current_user_id: Enregistrer l'ID de l'utilisateur actuel
 save_current_user_role: Enregistrer le rôle utilisateur actuel
 save_current_datetime: Enregistrer la date/heure actuelle
 always_open: Toujours ouvert
-start_open: Démarrer Ouverture
+start_open: Ouvert par défaut
 start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
@@ -1212,16 +1212,16 @@ interfaces:
   group-accordion:
     name: Accordéon
     description: Afficher les champs ou les groupes en tant que sections d'accordéon
-    start: Début
+    start: Comportement initial
     all_closed: Tous fermés
-    first_opened: Premier consulté
+    first_opened: Premier élément ouvert
     all_opened: Tous ouverts
     accordion_mode: Mode Accordion
     max_one_section_open: Max 1 section ouverte
   presentation-links:
-    presentation-links: Bouton de liens
+    presentation-links: Bouton avec lien
     links: Liens
-    description: Boutons de lien configurables pour le lancement d'URL dynamiques
+    description: Bouton avec lien paramétrable pour appeler une URL
     style: Style
     primary: Primaire
     link: Liens
@@ -1275,7 +1275,7 @@ interfaces:
   presentation-divider:
     divider: Séparateur
     description: Étiqueter et diviser les champs dans les sections
-    title_placeholder: Entrez un titre, ou laissez vide pour n'afficher qu'une seule ligne...
+    title_placeholder: Entrez un titre, ou laissez vide pour afficher seulement une ligne...
     inline_title: Titre en ligne
     inline_title_label: Afficher le titre à l'intérieur de la ligne
     margin_top: Marge supérieure
@@ -1318,14 +1318,14 @@ interfaces:
     interface-options: Options d'interface
     description: Une popup pour sélectionner les options d'une interface
   list-m2m:
-    many-to-many: Many to Many
+    many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
   select-dropdown-m2o:
-    many-to-one: Many to One
+    many-to-one: Plusieurs à un
     description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
   input-rich-text-md:
-    markdown: Markdown
+    markdown: Éditeur Markdown
     description: Saisir et prévisualiser le markdown
     customSyntax: Blocs personnalisés
     customSyntax_label: Ajouter des types de syntaxe personnalisés
@@ -1395,7 +1395,7 @@ interfaces:
     alphabetize_label: Forcer l'ordre alphabétique
     add_tags: Ajouter des tags...
   input:
-    input: Entrée
+    input: Texte simple
     description: Entrer manuellement une valeur
     trim: Supprimer les espaces aux extrémités
     trim_label: Enlever les espaces au début et à la fin
@@ -1409,7 +1409,7 @@ interfaces:
     slug: Transformer en Slug
     slug_label: Rendre l'URL de la valeur sécurisée
   input-multiline:
-    textarea: Zone de texte
+    textarea: Multi-lignes
     description: Entrez le texte brut en multiligne
   boolean:
     toggle: Case à cocher
@@ -1433,7 +1433,7 @@ interfaces:
       dropdown: Liste déroulante
       modal: Modal
   input-rich-text-html:
-    wysiwyg: WYSIWYG
+    wysiwyg: Éditeur avancé
     description: Un éditeur de texte enrichi pour écrire du contenu HTML
     toolbar: Barre d’outils
     custom_formats: Formats personnalisés
@@ -1449,13 +1449,13 @@ interfaces:
     name: Groupe sans format
     description: Rendre les champs tels qu'ils sont
   group-detail:
-    name: Détail du groupe
+    name: Regroupement
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
     header_icon: Icônes de l'en-tête 
     header_color: Couleur d'en-tête
-    start_open: Démarrer Ouverture
-    start_closed: Commencer réduit
+    start_open: Ouvert par défaut
+    start_closed: Fermé par défaut
 displays:
   translations:
     translations: Traductions
