@@ -1075,6 +1075,7 @@ referential_action_field_label_m2o: Vid radering av {collection}...
 referential_action_field_label_o2m: Vid avmarkering av {collection}...
 referential_action_no_action: Förhindra radering
 referential_action_cascade: Radera objektet {collection} (överlappa)
+referential_action_set_null: Nullifiera fältet {field}
 referential_action_set_default: Sätt {field} till standardvärde
 choose_action: Välj åtgärd
 continue_label: Fortsätt
@@ -1216,10 +1217,14 @@ interfaces:
     use_24: Använd 24-timmars format
   system-display-template:
     display-template: Visningsmall
+    description: Blanda statisk text och dynamiska fältvärden
+    collection_field: Kollektionens fält
     collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
     select_a_collection: Välj en kollektion
   presentation-divider:
     divider: Avdelare
+    description: Märk och dela upp fält i sektioner
+    title_placeholder: Ange en titel, eller lämna tomt för att bara visa en rad...
     inline_title: Infogad titel
     inline_title_label: Visa rubrik inuti raden
     margin_top: Marginal topp
@@ -1260,25 +1265,34 @@ interfaces:
     placeholder: Välj ett gränssnitt...
   system-interface-options:
     interface-options: Alternativ för gränssnitt
+    description: En popup för att välja alternativ för ett gränssnitt
   list-m2m:
     many-to-many: Many to Many
+    description: Välj flera relaterade kopplingsobjekt
   select-dropdown-m2o:
     many-to-one: Many to One
     description: Välj ett relaterat objekt
     display_template: Visningsmall
   input-rich-text-md:
     markdown: Markdown
+    description: Ange och förhandsgranska markdown
+    customSyntax: Anpassade block
+    customSyntax_label: Lägg till anpassade syntaxtyper
+    customSyntax_add: Lägg till anpassad syntax
     box: Block / Infogad
     imageToken: Bildnyckel
     imageToken_label: Token (statiskt) att lägga till på bildkällor
     preview: Förhandsgranska
+    editor: Redigerare
   map:
+    map: Karta
     zoom: Zooma
     default_view: Förvald vy
     invalid_options: Ogiltiga alternativ
     invalid_format: Ogiltigt format ({format})
     unexpected_geometry: Förväntade {expected}, fick {got}.
     fit_bounds: Anpassa vy till data
+    native: Inbyggt
     geojson: GeoJSON
     lnglat: Longitud, latitud
     wkt: WKT
@@ -1327,6 +1341,8 @@ interfaces:
     alphabetize_label: Tvinga alfabetisk ordning
     add_tags: Lägg till taggar...
   input:
+    input: Inmatning
+    description: Ange ett värde manuellt
     trim: Beskär
     trim_label: Beskär start och slut
     mask: Maskerad
@@ -1362,6 +1378,14 @@ interfaces:
     wysiwyg: WYSIWYG
     description: En textredigerare som skriver HTML-innehåll
     toolbar: Verktygsfält
+    custom_formats: Anpassade format
+    options_override: Skriv över alternativ
+  input-autocomplete-api:
+    results_path: Sökväg för resultat
+    trigger: Utlösare
+    rate: Begränsning
+  group-raw:
+    name: Avskalad grupp
   group-detail:
     name: Detalj grupp
     header_icon: Ikon sidhuvud
