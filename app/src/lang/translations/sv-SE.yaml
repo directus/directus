@@ -1055,6 +1055,7 @@ field_options:
     actions_create: Skapa
     actions_update: Uppdatera
     actions_delete: Radera
+    actions_login: Inloggning
     headers:
       value: Värde
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
@@ -1219,9 +1220,15 @@ interfaces:
     select_a_collection: Välj en kollektion
   presentation-divider:
     divider: Avdelare
+    margin_top: Marginal topp
+    margin_top_label: Öka marginal topp
   select-dropdown:
     allow_other: Tillåt annan
+    choices_name_placeholder: Ange ett namn...
     choices_value_placeholder: Ange ett värde...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Flervalslista (flera)
+    description: Välj flera värden från flervalslista
   file:
     file: Fil
     description: Välj eller ladda upp en fil
@@ -1230,20 +1237,43 @@ interfaces:
     description: Välj eller ladda upp flera filer
   input-hash:
     hash: Hash
+    description: Ange ett värde som ska hashas
+    masked: Maskerad
+    masked_label: Dölj det riktiga värdet
   select-icon:
     icon: Ikon
+    description: Välj en ikon från en flervalslista
+    search_for_icon: Sök efter en ikon...
   file-image:
     image: Bild
+    description: Välj eller ladda upp en bild
   system-interface:
     interface: Gränssnitt
+    description: Välj ett befintligt gränssnitt
+    placeholder: Välj ett gränssnitt...
+  system-interface-options:
+    interface-options: Alternativ för gränssnitt
+  list-m2m:
+    many-to-many: Many to Many
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Välj ett relaterat objekt
     display_template: Visningsmall
   input-rich-text-md:
     markdown: Markdown
+    preview: Förhandsgranska
   map:
     zoom: Zooma
+    invalid_options: Ogiltiga alternativ
+    invalid_format: Ogiltigt format ({format})
+    unexpected_geometry: Förväntade {expected}, fick {got}.
+    fit_bounds: Anpassa vy till data
   system-folder:
     folder: Mapp
+  list:
+    edit_fields: Redigera fält
+    add_label: 'Etikett för "Skapa nytt"'
+    field_name_placeholder: Ange fältnamn...
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage
@@ -1262,6 +1292,8 @@ interfaces:
     alphabetize: Alfabetisera
     alphabetize_label: Tvinga alfabetisk ordning
     add_tags: Lägg till taggar...
+  input:
+    mask: Maskerad
   boolean:
     toggle: Växla
     label_default: Aktiverad
@@ -1276,6 +1308,10 @@ interfaces:
       auto: Automatisk
       dropdown: Rullgardinsmeny
       modal: Popup
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: En textredigerare som skriver HTML-innehåll
+    toolbar: Verktygsfält
 displays:
   translations:
     translations: Översättningar
