@@ -43,6 +43,8 @@ field_name_translations: Översättningar fältnamn
 enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
 add_field: Lägg till fält
 role_name: Rollens namn
+branch: Gren
+leaf: Blad
 indeterminate: Obestämd
 edit_collection: Redigera samling
 exclusive: Exklusiv
@@ -54,12 +56,16 @@ required: Obligatoriskt
 required_for_app_access: Krävs för tillgång till applikationen
 requires_value: Kräver ett värde
 create_preset: Skapa förval
+create_panel: Skapa panel
 create_role: Skapa roll
 create_user: Skapa användare
+delete_panel: Ta bort panel
 create_webhook: Skapa webhook
 invite_users: Bjud in användare
 invite: Bjud in
 email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
+subject: Ämne
+inbox: Inkorg
 emails: E-postadresser
 connection_excellent: Utmärkt anslutning
 connection_good: Bra anslutning
@@ -79,6 +85,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Utloggad
   SESSION_EXPIRED: Sessionen har upphört
+public_label: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
 not_allowed: Inte tillåtet
 directus_version: Directus Version
@@ -122,6 +129,10 @@ validationError:
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
+allow_null_value: Tillåt NULL-värde
+allow_multiple: Tillåt flera
+allow_multiple_to_be_open: Tillåt flera att öppnas
+enter_value_to_replace_nulls: Ange ett nytt värde för att ersätta alla NULL som finns i detta fält.
 field_standard: Standard
 field_presentation: Presentation & alias
 field_file: Enskild fil
@@ -131,6 +142,7 @@ field_m2a: M2A Relationship
 field_o2m: O2M Relation
 field_m2m: M2M Relation
 field_translations: Översättningar
+field_group: Fältgrupp
 item_permissions: Behörigheter för objekt
 field_permissions: Behörigheter för fält
 field_validation: Validering av fält
@@ -140,6 +152,9 @@ fields_for_role: 'Fält {role} rollen kan {action}.'
 validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
 presets_for_role: 'Förvalt fältvärde för rollen {role}.'
 presentation_and_aliases: Presentation & alias
+revision_post_create: Så här såg objektet ut när det skapades.
+revision_post_update: Så här såg objektet ut efter uppdateringen.
+changes_made: Nedan följer de specifika ändringarna i denna revision.
 hide_field_on_detail: Dölj fältet på detaljnivå
 show_field_on_detail: Visa fältet på detaljnivå
 delete_field: Radera fält
@@ -151,6 +166,14 @@ language: Språk
 global: Global
 admins_have_all_permissions: Administratörer har alla behörigheter
 camera: Kamera
+sum: Summa
+sum_distinct: Summa distinkt
+avg: Genomsnitt
+avg_distinct: Genomsnitt distinkt
+count: Antal
+count_distinct: Antal distinkt
+min: Min
+max: Max
 exposure: Exponering
 shutter: Slutare
 iso: ISO
@@ -168,18 +191,28 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Datum
+date_range: Datumintervall
 datetime: DateTime
 dateTime: DateTime
+precision: Precision
 decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Text
 time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometri (alla)
+geometry.Point: Punkt
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: Multipoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Inte tillgänglig för denna typ
 create_translations: Skapa översättningar
 auto_refresh: Uppdatera automatiskt
@@ -196,11 +229,17 @@ click_to_manage_translated_fields: >-
 fields_group: Fältens grupp
 no_collections_found: Inga kollektioner hittades.
 new_data_alert: 'Följande kommer att skapas inom din datamodell:'
+search_collection: Sök i kollektion...
 new_field: 'Nytt fält'
 new_collection: 'Ny kollektion'
+add_m2o_to_collection: 'Lägg till M2O i "{collection}"'
+add_o2m_to_collection: 'Lägg till O2M i "{collection}"'
+add_m2m_to_collection: 'Lägg till M2M i "{collection}"'
 choose_a_type: Välj en typ...
 determined_by_relationship: Bestämd av relation
 add_note: Lägg till kommentar för användare...
+add_link: Lägg till länk
+custom_link: Anpassad länk
 default_value: Standardvärde
 standard_field: Standardfält
 single_file: Enskild fil
@@ -285,6 +324,7 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minuter
 month: Månad
 year: År
 select_all: Markera alla
@@ -376,7 +416,10 @@ display_template_not_setup: Visningsmallens alternativ är felaktigt konfigurera
 collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
 select_a_collection: Välj en kollektion
 active: Aktiv
+move_to: Flytta till...
 copy: Kopiera
+copy_to: Kopiera till...
+inactive: Inaktiv
 users: Användare
 activity: Händelser
 action: Åtgärd
@@ -392,6 +435,7 @@ documentation: Dokumentation
 sidebar: Sidokolumn
 duration: Varaktighet
 charset: Teckenuppsättning
+second: sekund
 file_moved: Fil flyttad
 collection_created: Kollektion skapad
 modified_on: Ändrad den
@@ -482,6 +526,7 @@ color: Färg
 circle: Cirkel
 empty_item: Tomt objekt
 log_in_with: 'Logga in med {provider}'
+advanced_settings: Avancerade inställningar
 advanced_filter: Avancerat filter
 delete_advanced_filter: Ta bort filter
 change_advanced_filter_operator: Ändra operatör
@@ -498,14 +543,22 @@ operators:
   nnull: Är inte null
   contains: Innehåller
   ncontains: Innehåller ej
+  starts_with: Börjar med
+  nstarts_with: Börjar inte med
+  ends_with: Slutar med
+  nends_with: Slutar inte med
   between: Är mellan
   nbetween: Är inte mellan
   empty: Är tom
   nempty: Är inte tom
   all: Innehåller dessa nycklar
   has: Innehåller några av dessa nycklar
+  intersects: Korsar
+  nintersects: Korsar inte
 loading: Laddar...
 drop_to_upload: Släpp för att ladda upp
+item: Objekt
+items: Objekt
 upload_file: Ladda upp fil
 upload_file_indeterminate: Laddar upp fil...
 upload_file_success: Fil uppladdad
@@ -514,6 +567,7 @@ upload_files_success: '{count} filer uppladdade'
 upload_pending: Väntande uppladdning
 drag_file_here: Dra och släpp en fil här
 click_to_browse: Klicka för att bläddra
+interface_options: Alternativ för gränssnitt
 layout_options: Layout alternativ
 rows: Rader
 columns: Kolumner
@@ -811,6 +865,7 @@ field_options:
     status_dropdown_active: Aktiv
   directus_webhooks:
     status_options_active: Aktiv
+    status_options_inactive: Inaktiv
     actions_create: Skapa
     actions_update: Uppdatera
     headers:
