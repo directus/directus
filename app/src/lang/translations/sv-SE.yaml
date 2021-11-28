@@ -129,6 +129,7 @@ validationError:
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
+nullable: Nullable
 allow_null_value: Tillåt NULL-värde
 allow_multiple: Tillåt flera
 allow_multiple_to_be_open: Tillåt flera att öppnas
@@ -155,6 +156,7 @@ presentation_and_aliases: Presentation & alias
 revision_post_create: Så här såg objektet ut när det skapades.
 revision_post_update: Så här såg objektet ut efter uppdateringen.
 changes_made: Nedan följer de specifika ändringarna i denna revision.
+no_relational_data: Tänk på att relationsdata inte ingår här.
 hide_field_on_detail: Dölj fältet på detaljnivå
 show_field_on_detail: Visa fältet på detaljnivå
 delete_field: Radera fält
@@ -166,6 +168,7 @@ language: Språk
 global: Global
 admins_have_all_permissions: Administratörer har alla behörigheter
 camera: Kamera
+show_zero: Visa noll
 sum: Summa
 sum_distinct: Summa distinkt
 avg: Genomsnitt
@@ -252,6 +255,7 @@ invalid_item: Ogiltigt objekt
 next: Nästa
 field_name: Fältnamn
 translations: Översättningar
+no_translations: Inga översättningar
 note: Anteckning
 enter_a_value: Ange ett värde...
 enter_a_placeholder: Ange en platshållare...
@@ -325,6 +329,7 @@ date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minuter
+hours: Timmar
 month: Månad
 year: År
 select_all: Markera alla
@@ -345,6 +350,7 @@ drag_mode: Dra läge
 cancel_crop: Avbryt beskärning
 original: Ursprunglig
 url: URL
+import_label: Importera
 file_details: Fildetaljer
 dimensions: Dimensioner
 size: Storlek
@@ -358,6 +364,7 @@ zoom: Zooma
 download: Ladda ner
 open: Öppna
 open_in_new_window: Öppna i nytt fönster
+open_folder: Öppna "{folder}" mapp
 foreground_color: Förgrundsfärg
 background_color: Bakgrundsfärg
 upload_from_device: Ladda upp fil från enhet
@@ -384,6 +391,10 @@ save_and_create_new: Spara och skapa ny
 save_and_stay: Spara och stanna
 save_as_copy: Spara som kopia
 add_existing: Lägg till befintlig
+creating_items: Skapar objekt
+enable_create_button: Aktivera skapa knapp
+selecting_items: Markerar objekt
+enable_select_button: Aktivera markerings knapp
 comments: Kommentarer
 no_comments: Inga kommentarer ännu
 click_to_expand: Klicka för att expandera
@@ -398,6 +409,7 @@ interface_not_found: 'Gränssnittet "{interface}" hittades inte.'
 reset_interface: Återställ gränssnitt
 display_not_found: 'Vyn "{display}" hittades inte.'
 reset_display: Återställ visning
+list-m2a: Byggare (M2A)
 item_count: 'Inga objekt | Ett objekt | {count} objekt'
 no_items_copy: Det finns inga objekt i denna kollektion ännu.
 file_count: 'Inga filer | En fil | {count} filer'
@@ -405,6 +417,10 @@ no_files_copy: Det finns inga filer här.
 user_count: 'Inga användare | En användare | {count} användare'
 no_users_copy: Det finns inga användare i denna roll ännu.
 webhooks_count: 'Inga webhooks | En webhook | {count} webhooks'
+no_webhooks_copy: Inga webhooks har konfigurerats ännu. Kom igång genom att skapa en nedan.
+no_notifications: Inga notifikationer
+no_notifications_copy: Inget nytt!
+activity_log: Aktivitetslogg
 all_items: Alla objekt
 csv: CSV
 no_collections: Inga kollektioner
@@ -415,10 +431,12 @@ relationship_not_setup: Relationen har inte konfigurerats korrekt
 display_template_not_setup: Visningsmallens alternativ är felaktigt konfigurerad
 collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
 select_a_collection: Välj en kollektion
+select_a_field: Välj ett fält
 active: Aktiv
 move_to: Flytta till...
 copy: Kopiera
 copy_to: Kopiera till...
+no_other_dashboards_copy: Du har inga andra kontrollpaneler än.
 inactive: Inaktiv
 users: Användare
 activity: Händelser
@@ -426,6 +444,11 @@ action: Åtgärd
 ip_address: IP-adress
 user_agent: Användaragent
 webhooks: Webhooks
+decimals: Decimaler
+value_decimals: Värde decimaler
+min_value: Minsta värde
+max_value: Maxvärde
+automatic: Automatisk
 field_width: Fältbredd
 add_filter: Lägg till filter
 upper_limit: Övre gräns...
@@ -475,6 +498,7 @@ errors:
   INTERNAL_SERVER_ERROR: Oväntat fel
   NOT_NULL_VIOLATION: Värdet kan inte vara null
   UNKNOWN: Oväntat fel
+security: Säkerhet
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
 create_bookmark: Skapa bokmärke
@@ -489,6 +513,7 @@ no_app_access_copy: Den här användaren får inte använda administratörs-appe
 password_reset_sent: Vi har skickat en säker länk till dig för att återställa ditt lösenord
 password_reset_successful: Lösenordet har återställts
 back: Tillbaka
+filter: Filtrera
 editing_image: Redigerar bild
 square: Kvadrat
 free: Valfri
@@ -511,6 +536,7 @@ visible_collections: Synliga kollektioner
 hidden_collections: Dolda kollektioner
 show_hidden_collections: Visa dolda kollektioner
 hide_hidden_collections: Dölj dolda kollektioner
+show_header: Visa sidhuvud
 unmanaged_collections: Okonfigurerade kollektioner
 system_collections: Systemets kollektioner
 placeholder: Platshållare
@@ -526,6 +552,7 @@ color: Färg
 circle: Cirkel
 empty_item: Tomt objekt
 log_in_with: 'Logga in med {provider}'
+conditional_styles: Villkorade stilar
 advanced_settings: Avancerade inställningar
 advanced_filter: Avancerat filter
 delete_advanced_filter: Ta bort filter
@@ -583,7 +610,9 @@ all_files: Alla filer
 my_files: Mina filer
 recent_files: Senaste filer
 create_folder: Skapa mapp
+edit_folder: Redigera mapp
 folder_name: Mappens namn...
+folder_key: Mappens nyckel...
 add_file: Lägg till fil
 replace_file: Ersätt fil
 no_results: Inga resultat
@@ -591,6 +620,7 @@ no_results_copy: Justera eller rensa sökfilter för att se resultat.
 clear_filters: Rensa filter
 saves_automatically: Sparar automatiskt
 role: Roll
+rule: Regel
 user: Användare
 no_presets: Inga förval
 no_presets_copy: Inga förval eller bokmärken har sparats ännu.
@@ -608,16 +638,44 @@ icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
 insights: Insikter
+dashboard: Kontrollpanel
+panel: Panel
+panel_options: Alternativ för panel
+panel_header: Panelens sidhuvud
+panel_name_placeholder: Namnge denna panel...
+panel_note_placeholder: Valfri information om denna panel...
+panel_delete_confirm: Är du säker på att du vill ta bort denna panel? Denna åtgärd kan inte ångras.
+dashboard_delete_confirm: Är du säker på att du vill radera kontrollpanelen? Denna åtgärd kan inte ångras.
+edit_dashboard: Redigera kontrollpanel
+delete_dashboard: Radera kontrollpanel
+visible: Synlig
+prefix_placeholder: Text före värde...
+suffix_placeholder: Text efter värde...
+decimals_placeholder: Antal decimaler...
+no_dashboards: Inga kontrollpaneler
+no_dashboards_copy: Du har inga kontrollpaneler än.
+no_data: Ingen data
+create_dashboard: Skapa kontrollpanel
+dashboard_name: Kontrollpanelens namn
 full_screen: Helskärm
+edit_panels: Redigera paneler
+fit_to_screen: Anpassa till skärm
 image_url: Bild-URL
 alt_text: Alternativ text
 media: Media
+quality: Kvalitet
 width: Bredd
 height: Höjd
 source: Källa
 url_placeholder: Ange en webbadress...
 display_text: Visningstext
 display_text_placeholder: Ange en visningstext...
+interface_group_text_and_numbers: Text & Nummer
+interface_group_selection: Markering
+interface_group_relational: Relation
+interface_group_presentation: Presentation
+interface_group_groups: Grupper
+interface_group_other: Övrigt
 tooltip: Inforuta
 tooltip_placeholder: Ange en inforuta...
 unlimited: Obegränsad
@@ -681,6 +739,8 @@ adding_user: Lägger till användare
 unknown_user: Okänd användare
 creating_in: 'Skapar objekt i {collection}'
 editing_in: 'Redigerar objekt i {collection}'
+creating_unit: 'Skapar {unit}'
+editing_unit: 'Redigerar {unit}'
 editing_in_batch: 'Massredigerar {count} objekt'
 no_options_available: Inga tillgängliga alternativ
 settings_data_model: Datamodell
@@ -688,11 +748,13 @@ settings_permissions: Roller & behörigheter
 settings_project: Projektinställningar
 settings_webhooks: Webhooks
 settings_presets: Förinställningar & bokmärken
+one_or_more_options_are_missing: Ett eller flera alternativ saknas
 scope: Omfattning
 select: Välj...
 layout: Layout
 tree_view: Trädvy
 changes_are_permanent: Ändringar är permanenta
+preset_name_placeholder: Används som standard om tom...
 preset_search_placeholder: Sök...
 editing_preset: Redigerar förval
 layout_preview: Förhandsgranska layout
@@ -700,6 +762,10 @@ layout_setup: Konfiguration av layout
 unsaved_changes: Osparade ändringar
 unsaved_changes_copy: Är du säker på att du vill lämna denna sida?
 discard_changes: Ignorera ändringar
+discard_all_changes: Ignorera alla ändringar
+discard_changes_copy: Är du säker på att du vill ignorera alla ändringar som gjorts?
+show_x_axis: Visa X-axeln
+show_y_axis: Visa Y-axeln
 keep_editing: Fortsätt redigera
 page_help_collections_collection: >-
   **Bläddra bland objekt** — Listar alla {collection} objekt du har tillgång till. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
@@ -729,6 +795,8 @@ page_help_settings_webhooks_item: '**Detaljvy webhook** — Ett formulär för a
 page_help_users_collection: '**Användarkatalog** — Listar alla systemanvändare i detta projekt.'
 page_help_users_item: >-
   **Användarinformation** — Hantera din kontoinformation eller visa information om andra användare.
+page_help_insights_overview: '**Insights** — Lista över kontrollpaneler du har tillgång till.'
+page_help_insights_dashboard: '**Kontrollpanel** — Arbetsyta för att hantera en eller flera paneler'
 activity_feed: Aktivitetsflöde
 add_new: Lägg till ny
 create_new: Skapa ny
@@ -744,6 +812,9 @@ content: Innehåll
 singleton: Singleton
 singleton_label: Behandla som ett enskilt objekt
 system_fields_locked: Systemfälten är låsta och kan inte redigeras
+directus_collection:
+  directus_dashboards: Kontrollpaneler i insights modulen
+  directus_panels: Individuella paneler inom Insights kontrollpaneler
 fields:
   directus_activity:
     item: Primärnyckel för objekt
@@ -845,6 +916,8 @@ fields:
     value: Värde
     collections: Kollektioner
 field_options:
+  directus_settings:
+    security_divider_title: Säkerhet
   directus_activity:
     create: Skapa
     update: Uppdatera
@@ -938,6 +1011,7 @@ view_project: Visa projekt
 report_error: Rapportera fel
 interfaces:
   filter:
+    name: Filtrera
     add_filter: Lägg till filter
     all: Alla
   presentation-links:
@@ -1125,5 +1199,17 @@ layouts:
     compact: Kompakt
     cozy: Mysig
 panels:
+  metric:
+    name: Metrisk
+    description: Visa ett enskilt värde baserat på en query
+    field: Fält
+  time_series:
+    description: Rendera ett linjediagram baserat på värden över tid
+    date_field: Datumfält
+    value_field: Värdefält
   label:
     name: Etikett
+    description: Visa lite text
+  list:
+    name: Lista
+    description: Filtrera och lista fält från en kollektion
