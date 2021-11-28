@@ -3,7 +3,7 @@ import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { cloneDeep, get, merge } from 'lodash';
+import { cloneDeep, get, isEqual, merge } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 import { RelationInfo } from '@/composables/use-relation-info';
 import { getEndpoint } from '@/utils/get-endpoint';
@@ -37,7 +37,9 @@ export default function usePreview(
 
 	watch(
 		() => value.value,
-		async (newVal) => {
+		async (newVal, oldVal) => {
+			if (isEqual(newVal, oldVal)) return;
+
 			if (newVal === null) {
 				items.value = [];
 				return;
