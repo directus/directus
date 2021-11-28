@@ -447,7 +447,9 @@ export class CollectionsService {
 						.where({ id: relation.meta!.id });
 				}
 
-				await trx.schema.dropTable(collectionKey);
+				await this.knex.transaction(async (createTrx) => {
+					await createTrx.schema.dropTable(collectionKey);
+				});
 			}
 		});
 
