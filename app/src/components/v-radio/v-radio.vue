@@ -51,7 +51,7 @@ export default defineComponent({
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
-			return props.modelValue === props.value;
+			return (props.modelValue === null ? '' : String(props.modelValue)) === props.value;
 		});
 
 		const icon = computed<string>(() => {
