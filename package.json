@@ -80,6 +80,6 @@
         "npm": "8.1.4"
     },
     "publishConfig": {
-        "@eliteproxy7:registry": "https://npm.pkg.github.com"
+        "@hrayrmirzoyan:directus": "https://npm.pkg.github.com"
     }
 }
