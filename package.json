@@ -78,5 +78,8 @@
     "volta": {
         "node": "16.13.0",
         "npm": "8.1.4"
+    },
+    "publishConfig": {
+        "@eliteproxy7:registry": "https://npm.pkg.github.com"
     }
 }
