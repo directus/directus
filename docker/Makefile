@@ -5,7 +5,7 @@ tag=latest
 cmd=
 user=hrayrmirzoyan
 registry=docker.io
-repository=eliteproxy7/directus
+repository=hrayrmirzoyan/directus
 
 .PHONY: build-images
 
