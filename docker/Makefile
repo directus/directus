@@ -3,9 +3,9 @@ SHELL=bash
 version=$(shell git describe --tags --abbrev=0)
 tag=latest
 cmd=
-user=directus
+user=hrayrmirzoyan
 registry=docker.io
-repository=directus/directus
+repository=eliteproxy7/directus
 
 .PHONY: build-images
 
