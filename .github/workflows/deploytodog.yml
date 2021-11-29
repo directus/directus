@@ -35,7 +35,8 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
      # Deploy to DO
+      - name: Digital Ocean Deploy App
       - uses: jjst/action-digitalocean-deploy-app@v2
-      with:
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        with:
+           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
