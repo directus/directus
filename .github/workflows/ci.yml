@@ -40,7 +40,7 @@ jobs:
   lint:
     name: Lint
     needs: pre_check
-    uses: directus/directus/.github/workflows/lint.yml@main
+    uses: eliteproxy7/directus/.github/workflows/lint.yml@main
     with:
       should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
