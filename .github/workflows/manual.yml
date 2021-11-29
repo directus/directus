@@ -29,4 +29,4 @@ jobs:
     - name: npm version and publish
       # You may pin to the exact commit or the version.
       # uses: geemanjs/conventional-changelog-npm-publish@a26986243d264754300667d336430c978998ccb4
-      uses: geemanjs/conventional-changelog-npm-publish@1.0.0   
+      # uses: eliteproxy7/directus@1.0.1-beta.1   
