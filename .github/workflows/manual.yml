@@ -1,0 +1,32 @@
+# This is a basic workflow that is manually triggered
+
+name: MPM Publish Test
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'NPM Publish Test'
+        # Default value if no value is explicitly provided
+        default: 'World'
+        # Input has to be provided for the workflow to run
+        required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  publish:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: npm version and publish
+      # You may pin to the exact commit or the version.
+      # uses: geemanjs/conventional-changelog-npm-publish@a26986243d264754300667d336430c978998ccb4
+      uses: geemanjs/conventional-changelog-npm-publish@1.0.0   
