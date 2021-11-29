@@ -9,6 +9,7 @@ export type FieldNode = {
 	collection: string;
 	relatedCollection?: string;
 	key: string;
+	divider?: boolean;
 	children?: FieldNode[];
 };
 
@@ -45,11 +46,29 @@ export function useFieldTree(
 		const fields = fieldsStore
 			.getFieldsForCollection(collection!)
 			.concat(injectedFields || [])
-			.filter((field: Field) => !field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
-			.filter(filter)
-			.flatMap((field) => makeNode(field, parent));
+			.filter(
+				(field: Field) =>
+					field.meta?.special?.includes('group') ||
+					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+			);
 
-		return fields.length ? fields : undefined;
+		const baseFields = fields.filter((field: Field) => !field.meta?.group);
+
+		for (const [index, field] of baseFields.entries()) {
+			const groupFields = fields
+				.filter((groupField: Field) => groupField.meta?.group === field.field)
+				.sort((a, b) => {
+					if (!a.meta?.sort || !b.meta?.sort) return 0;
+					return a.meta.sort - b.meta.sort;
+				});
+			if (groupFields.length > 0) {
+				baseFields.splice(index + 1, 0, ...groupFields);
+			}
+		}
+
+		const sortedFields = baseFields.filter(filter).flatMap((field) => makeNode(field, parent));
+
+		return fields.length ? sortedFields : undefined;
 	}
 
 	function getRelatedCollections(field: Field): string[] {
@@ -71,6 +90,17 @@ export function useFieldTree(
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
 		const context = parent ? parent.key + '.' : '';
+
+		if (field.meta?.special?.includes('group')) {
+			return {
+				name: field.meta?.interface !== 'group-raw' ? field.name : '',
+				field: field.field,
+				collection: field.collection,
+				key: context + field.field,
+				divider: true,
+			};
+		}
+
 		if (relatedCollections.length <= 1) {
 			return {
 				name: field.name,

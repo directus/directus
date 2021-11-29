@@ -3,5 +3,6 @@ export type FieldTree = {
 	name: string;
 	key: string;
 	disabled?: boolean;
+	divider?: boolean;
 	children?: FieldTree[];
 };
