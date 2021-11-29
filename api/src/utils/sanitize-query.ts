@@ -124,18 +124,6 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 		}
 	}
 
-	filters = deepMap(filters, (val) => {
-		try {
-			const parsed = JSON.parse(val);
-
-			if (typeof parsed == 'number' && !Number.isSafeInteger(parsed)) return val;
-
-			return parsed;
-		} catch {
-			return val;
-		}
-	});
-
 	return parseFilter(filters, accountability);
 }
 
