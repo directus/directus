@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     # Skip this step in forks
-    if: ${{ github.repository_owner == 'directus' }}
+    if: ${{ github.repository_owner == 'eliteproxy7' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
