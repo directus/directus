@@ -264,7 +264,7 @@ export default defineComponent({
 					type: 'success',
 				});
 
-				router.push(`/settings/data-model/${collectionName.value}`);
+				router.replace(`/settings/data-model/${collectionName.value}`);
 			} catch (err: any) {
 				unexpectedError(err);
 			} finally {

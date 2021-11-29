@@ -4,6 +4,7 @@ import { getLocalTypeForField } from '../../modules/settings/routes/data-model/g
 
 export interface RelatedCollectionData {
 	relatedCollection: string;
+	junctionCollection?: string;
 	path?: string[];
 }
 
@@ -18,6 +19,7 @@ export default function getRelatedCollection(collection: string, field: string):
 		if (localType == 'm2m' && relations.length > 1) {
 			return {
 				relatedCollection: relations[1].related_collection!,
+				junctionCollection: relations[0].collection,
 				path: [relations[1].field],
 			};
 		}

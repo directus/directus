@@ -206,6 +206,7 @@ body {
 			--content-padding: 16px;
 			--content-padding-bottom: 32px;
 
+			position: relative;
 			flex-grow: 1;
 			overflow: auto;
 

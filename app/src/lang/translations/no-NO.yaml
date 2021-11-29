@@ -1,13 +1,37 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Profilbilde
+default_provider: Standard
 published: Publisert
 draft: Utkast
 archived: Arkivert
 modules: Moduler
+module_bar: Modul Bar
 edit_field: Rediger felt
 conditions: Betingelser
 maps: Kart
 item_revision: Element revisjoner
+enter_a_name: Angi et navn...
 duplicate_field: Dupliser felt
 half_width: Halv vidde
 full_width: Fullbredde
@@ -20,7 +44,10 @@ enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autenti
 add_field: Legg til felt
 role_name: Rollenavn
 branch: Gren
+leaf: Blad
+indeterminate: Ubestemt
 edit_collection: Rediger samling
+exclusive: Eksklusiv
 children: Barn
 db_only_click_to_configure: 'Kun database: Klikk for å konfigurere'
 show_archived_items: Vis arkiverte elementer
@@ -37,6 +64,8 @@ create_webhook: Lag Webhook
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
+subject: Emne
+inbox: Innboks
 emails: E-post
 connection_excellent: Utmerket tilkobling
 connection_good: God tilkobling
@@ -143,6 +172,8 @@ continue_in_advanced_field_creation_mode: Opprett i avansert feltopprettingsmodu
 sum: Sum
 avg: Gjennomsnitt
 count: Antall
+min: Min
+max: Maks
 exposure: Eksponering
 shutter: Utløser
 iso: ISO
@@ -160,17 +191,20 @@ alias: Alias
 bigInteger: Stort heltall
 boolean: Sann/usann
 date: Dato
+date_range: Periode
 datetime: Dato og tid
 dateTime: Dato og tid
 decimal: Desimaltall
 float: Flyttall
 integer: Heltall
 json: JSON
+xml: XML
 string: Tekststreng
 text: Tekst
 time: Tid
 timestamp: Tidsstempel
 uuid: UUID
+hash: Hash
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
 auto_refresh: Automatisk oppdatering
@@ -277,6 +311,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: d MMM
+minutes: Minutter
+hours: Timer
 month: Måned
 year: År
 select_all: Merk alt
@@ -295,14 +331,26 @@ months:
   december: desember
 drag_mode: Dra modus
 cancel_crop: Avbryt beskjæring
+original: Opprinnelig
+url: URL
+import_label: Importer
+file_details: Fil detaljer
+dimensions: Dimensjoner
+size: Størrelse
 created: Opprettet
 owner: Eier
 name: Navn
 created_by: Opprettet av
 created_on: Opprettet den
+generated_uuid: Generert UUID
 save_and_stay: Lagre og fortsett
 save_as_copy: Lagre som kopi
+add_existing: Legge til eksisterende
+creating_items: Oppretter elementer
 comments: Kommentarer
+no_items: Ingen elementer
+disabled: Deaktivert
+information: Informasjon
 request_feature: Foreslå ny funksjon
 item_count: 'Ingen elementer | Ett element | {count} elementer'
 no_files_copy: Det er ingen filer her.
@@ -320,11 +368,19 @@ display_template_not_setup: Visningsmalen alternativet er feilkonfigurert
 collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
 select_a_collection: Velg en Kolleksjon
 active: Aktiv
+copy: Kopier
+copy_to: Kopier til...
+no_other_dashboards_copy: Du har ingen andre dashbord ennå.
+inactive: Inaktiv
 users: Brukere
 activity: Aktivitet
+activity_item: Aktivitetselement
 ip_address: IP-addresse
 user_agent: Brukeragent
 webhooks: Webhooks
+min_value: Min. verdi
+max_value: Maks verdi
+automatic: Automatisk
 field_width: Feltbredde
 add_filter: Legg til filter
 upper_limit: Øvre grense...
@@ -334,6 +390,7 @@ documentation: Dokumentasjon
 sidebar: Sidepanel
 duration: Varighet
 charset: Charset
+second: sekund
 file_moved: Fil Flyttet
 collection_created: Kolleksjon opprettet
 modified_on: Modifisert den
@@ -363,9 +420,22 @@ errors:
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_OTP: Feil engangspassord
+  ITEM_NOT_FOUND: Element ikke funnet
   NOT_NULL_VIOLATION: Verdien kan ikke være null
 bookmarks: Bokmerke
+copy_details: Kopier detaljer
+no_app_access: Ingen app-tilgang
+no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
+password_reset_sent: Vi har sendt deg en sikker lenke for å tilbakestille passordet ditt
+password_reset_successful: Passord tilbakestilt
 back: Tilbake
+filter: Filter
+editing_image: Redigerer bilde
+square: Firkant
+flip_horizontal: Vend horisontalt
+flip_vertical: Vend vertikalt
+rotate: Rotér
+all_users: Alle brukere
 operators:
   lt: Mindre enn
   gt: Større enn
@@ -438,6 +508,7 @@ fields:
     last_access: Siste tilgang
   directus_settings:
     project_name: Prosjektnavn
+    module_bar: Modul Bar
   directus_fields:
     note: Notat
     hidden: Skjult
@@ -467,6 +538,7 @@ field_options:
     status_dropdown_active: Aktiv
   directus_webhooks:
     status_options_active: Aktiv
+    status_options_inactive: Inaktiv
     actions_create: Opprett
     actions_update: Oppdater
     headers:
@@ -509,6 +581,7 @@ something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
   filter:
+    name: Filter
     add_filter: Legg til filter
     all: Alle
   presentation-links:
@@ -526,6 +599,8 @@ interfaces:
     file: Fil
   files:
     files: Filer
+  input-hash:
+    hash: Hash
   select-icon:
     icon: Ikon
   system-interface:

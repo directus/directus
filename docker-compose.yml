@@ -78,7 +78,7 @@ services:
       - 5101:3306
 
   maria:
-    image: mariadb:10.6
+    image: mariadb:10.7
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus

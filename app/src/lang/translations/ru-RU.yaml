@@ -66,6 +66,8 @@ create_webhook: Создать веб-хук
 invite_users: Пригласить пользователей
 invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
+subject: Тема
+inbox: Входящие
 emails: Email-адреса
 connection_excellent: Отличное Подключение
 connection_good: Хорошее соединение
@@ -427,6 +429,9 @@ user_count: 'Нет Пользователей | Один Пользовател
 no_users_copy: В этой роли пока нет пользователей.
 webhooks_count: 'Нет Веб-хуков | Один Веб-хук | {count} Веб-хуков'
 no_webhooks_copy: Веб-хуки еще не настроены. Начните с создания одного из них ниже.
+no_notifications: Нет уведомлений
+no_notifications_copy: У вас всё получилось!
+activity_log: Журнал событий
 all_items: Все Элементы
 any: Любой
 csv: CSV
@@ -845,6 +850,7 @@ directus_collection:
   directus_migrations: Какую версию базы данных вы используете
   directus_panels: Индивидуальные панели мониторинга
   directus_permissions: Права доступа для каждой роли
+  directus_notifications: Уведомления, отправленные пользователям
   directus_presets: Пресеты для коллекций по умолчанию и закладки
   directus_relations: Настройки связей и метаданные
   directus_revisions: Снимки данных для всех действий
@@ -1003,6 +1009,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Мой проект
     project_color_note: Логин и фон логотипа
+    project_logo_note: Белый 40х40 SVG/PNG
     public_note_placeholder: Короткое, публичное сообщение, которое поддерживает markdown форматирование...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -1010,6 +1017,8 @@ field_options:
       weak_text: Слабый – минимум 8 символов
       strong_text: Крепкий – строчные, прописные, цифры, специальные
     storage_asset_presets:
+      fit_label: Подогнать по размеру
+      upscaling: Увеличение
       fit:
         contain_text: Вместить (с сохранением пропорций)
         cover_text: Покрыть (точный размер)
@@ -1020,6 +1029,7 @@ field_options:
     mapbox_key: Токен доступа Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Основа карты
+    basemaps_name_placeholder: Введите название базовой карты...
     basemaps_raster: Растр
     basemaps_tile: Raster TileJSON
     basemaps_style: Стиль Mapbox
@@ -1040,7 +1050,10 @@ field_options:
     singleton: Считать одним объектом
     language: Язык
     translation: Перевод
+    translation_placeholder: Введите перевод...
     collection_name: Название Коллекции
+    singular_unit: Единичный блок
+    plural_unit: Множественное число
     archive_divider: Архив
     archive_field_placeholder: Выберите поле...
     archive_app_filter: Включить фильтр архива приложения
@@ -1049,6 +1062,7 @@ field_options:
     sort_divider: Сортировать
     sort_field: Выберите поле...
     accountability_divider: Подотчетность
+    duplication_divider: Дублирование
   directus_files:
     title: Уникальное название...
     description: Описание (необязательно)...
@@ -1175,8 +1189,10 @@ sort_desc: По Убыванию
 template: Шаблон
 require_value_to_be_set: Требовать установки значения
 translation: Перевод
+translation_placeholder: Введите перевод...
 value: Значение
 view_project: Просмотр Проекта
+weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
@@ -1189,7 +1205,9 @@ interfaces:
     all: Все
     any: Любой
     and: и
+    of_the_following: из следующих (follow)
     no_rules: Правила не установлены
+    change_value: Нажмите, чтобы изменить значение
     placeholder: Перетащите правила сюда
   group-accordion:
     name: Аккордеон
@@ -1257,6 +1275,7 @@ interfaces:
   presentation-divider:
     divider: Разделитель
     description: Разделить поля на секции с заголовками
+    title_placeholder: Введите название, или оставьте пустым, чтобы показать только строку...
     inline_title: Строчный заголовок
     inline_title_label: Показать заголовок внутри строки
     margin_top: Отступ сверху
@@ -1344,6 +1363,7 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
+    field_hint: Папка для загруженных файлов. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:
@@ -1400,6 +1420,7 @@ interfaces:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
     toggle_split_view: Переключить Раздельный Вид
+    language_field: Языковое поле
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Дерево можно выбрать для рекурсивных отношений
@@ -1442,6 +1463,7 @@ displays:
     enable: Включить
     user_language: Использовать текущий язык пользователя
     default_language: Язык по умолчанию
+    language_field: Языковое поле
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл
@@ -1552,11 +1574,15 @@ layouts:
     basemap: Основа карты
     layers: Слои
     cluster_options: Настройки кластеров
+    cluster: Ближайшие данные кластера
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
+    field: Геопространственное поле
     invalid_geometry: Некорректная геометрия
     find_location: Найти локацию...
+    default_template: Использование коллекции по умолчанию...
+    no_compatible_fields: Нет совместимых полей
 panels:
   metric:
     name: Метрика
