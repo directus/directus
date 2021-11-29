@@ -80,6 +80,6 @@
         "npm": "8.1.4"
     },
     "publishConfig": {
-        "@hrayrmirzoyan:directus": "https://npm.pkg.github.com"
+        "@hrayrmirzoyan:directus_pim": "https://npm.pkg.github.com"
     }
 }
