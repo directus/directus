@@ -17,17 +17,17 @@ jobs:
       fail-fast: false
       matrix:
         db:
-          - mssql
-          - mysql
+          # - mssql
+          #  - mysql
           - postgres
-          - maria
+          # - maria
           # - sqlite3
         node-version:
           # - 12-alpine
           # - 14-alpine
           - 16-alpine
     env:
-      CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
+      CACHED_IMAGE: ghcr.io/eliteproxy7/directus-e2e-test-cache:${{ matrix.node-version }}
     steps:
       - name: Login to GitHub container registry
         uses: docker/login-action@v1
@@ -64,7 +64,7 @@ jobs:
 
       - name: Push updated test image
         # Only push the new cache image on the main branch once per node version
-        if: github.ref == 'refs/heads/main' && github.repository == 'directus/directus' && matrix.db == 'postgres'
+        if: github.ref == 'refs/heads/main' && github.repository == 'elteproxy7/directus' && matrix.db == 'postgres'
         run: |
           docker tag directus-test-image $CACHED_IMAGE
           docker push $CACHED_IMAGE || true
