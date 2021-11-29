@@ -38,7 +38,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field, InterfaceConfig } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 import { getInterface } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 

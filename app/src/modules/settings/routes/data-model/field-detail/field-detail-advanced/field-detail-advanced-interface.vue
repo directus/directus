@@ -22,7 +22,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { getInterface } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
-import { InterfaceConfig } from '@directus/shared/types';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';

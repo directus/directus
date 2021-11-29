@@ -24,7 +24,7 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
-import { DisplayConfig, Field } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
