@@ -14,7 +14,7 @@ type UsableEdit = {
 
 export default function useEdit(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
-	relation: Ref<RelationInfo>,
+	relationInfo: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
 ): UsableEdit {
 	const editModalActive = ref(false);
@@ -25,23 +25,27 @@ export default function useEdit(
 	const editsAtStart = ref<Record<string, any>>({});
 
 	function editItem(item: any) {
-		const { relationPkField, relatedField, junctionPkField } = relation.value;
+		const { relation, relatedField, junction } = relationInfo.value;
+
+		if (!relation || !junction) return;
 
 		editModalActive.value = true;
 		editsAtStart.value = item;
-		currentlyEditing.value = get(item, [junctionPkField], null);
-		relatedPrimaryKey.value = get(item, [relatedField, relationPkField], null);
+		currentlyEditing.value = get(item, [junction.primaryKeyField], null);
+		relatedPrimaryKey.value = get(item, [relatedField, relation.primaryKeyField], null);
 	}
 
 	function stageEdits(edits: any) {
-		const { relationPkField, relatedField, junctionPkField } = relation.value;
+		const { relation, relatedField, junction } = relationInfo.value;
+
+		if (!relation || !junction) return null;
 
 		const newValue = (value.value || []).map((item) => {
 			if (currentlyEditing.value !== null) {
 				const id = currentlyEditing.value;
 
-				if (typeof item === 'object' && junctionPkField in item) {
-					if (item[junctionPkField] === id) return edits;
+				if (typeof item === 'object' && junction.primaryKeyField in item) {
+					if (item[junction.primaryKeyField] === id) return edits;
 				} else if (['number', 'string'].includes(typeof item)) {
 					if (item === id) return edits;
 				}
@@ -51,7 +55,7 @@ export default function useEdit(
 				const id = relatedPrimaryKey.value;
 
 				if (get(item, [relatedField], null) === id) return edits;
-				if (get(item, [relatedField, relationPkField], null) === id) return edits;
+				if (get(item, [relatedField, relation.primaryKeyField], null) === id) return edits;
 			}
 
 			if (isEqual(editsAtStart.value, item)) {

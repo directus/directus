@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!relationInfo.relationCollection" type="warning">
+	<v-notice v-if="!relationInfo.relation?.collection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="!displayTemplate" type="warning">
@@ -20,7 +20,7 @@
 					<template v-if="currentItem" #input>
 						<div class="preview">
 							<render-template
-								:collection="relationInfo.relationCollection"
+								:collection="relationInfo.relation.collection"
 								:item="currentItem"
 								:template="displayTemplate"
 							/>
@@ -52,13 +52,17 @@
 				<template v-else>
 					<v-list-item
 						v-for="item in items"
-						:key="item[relationInfo.relationPkField]"
-						:active="value === item[relationInfo.relationPkField]"
+						:key="item[relationInfo.relation.primaryKeyField]"
+						:active="value === item[relationInfo.relation.primaryKeyField]"
 						clickable
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							<render-template :collection="relationInfo.relationCollection" :template="displayTemplate" :item="item" />
+							<render-template
+								:collection="relationInfo.relation.collection"
+								:template="displayTemplate"
+								:item="item"
+							/>
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -68,7 +72,7 @@
 		<drawer-item
 			v-if="!disabled"
 			v-model:active="editModalActive"
-			:collection="relationInfo.relationCollection"
+			:collection="relationInfo.relation.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			:circular-field="relationInfo.junctionField"
@@ -78,7 +82,7 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relationInfo.relationCollection"
+			:collection="relationInfo.relation.collection"
 			:selection="selectedPrimaryKeys"
 			@input="stageSelection"
 		/>
@@ -194,11 +198,15 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(newValue) => {
+					const { relation } = relationInfo.value;
+
+					if (!relation) return;
+
 					// When the newly configured value is a primitive, assume it's the primary key
 					// of the item and fetch it from the API to render the preview
 					if (
 						newValue !== null &&
-						newValue !== currentItem.value?.[relationInfo.value.relationPkField] &&
+						newValue !== currentItem.value?.[relation.primaryKeyField] &&
 						(typeof newValue === 'string' || typeof newValue === 'number')
 					) {
 						fetchCurrent(newValue);
@@ -212,28 +220,27 @@ export default defineComponent({
 
 					// If value is already fullfilled, let's fetch all necessary
 					// fields for display template
-					else if (
-						!currentItem.value &&
-						typeof newValue === 'object' &&
-						newValue[relatedPrimaryKeyField.value!.field]
-					) {
-						fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
+					else if (!currentItem.value && typeof newValue === 'object' && newValue[relation.primaryKeyField]) {
+						fetchCurrent(newValue[relation.primaryKeyField]);
 					}
 				},
 				{ immediate: true }
 			);
 
 			const currentPrimaryKey = computed<string | number>(() => {
+				const { relation } = relationInfo.value;
+
+				if (!relation) return;
+
 				if (!currentItem.value) return '+';
 				if (!props.value) return '+';
-				if (!relationInfo.value.relationPkField) return '+';
 
 				if (typeof props.value === 'number' || typeof props.value === 'string') {
 					return props.value!;
 				}
 
-				if (typeof props.value === 'object' && relationInfo.value.relationPkField in (props.value ?? {})) {
-					return props.value?.[relationInfo.value.relationPkField] ?? '+';
+				if (typeof props.value === 'object' && relation.primaryKeyField in (props.value ?? {})) {
+					return props.value?.[relation.primaryKeyField] ?? '+';
 				}
 
 				return '+';
@@ -242,26 +249,31 @@ export default defineComponent({
 			return { setCurrent, initialItem, currentItem, loading, currentPrimaryKey };
 
 			function setCurrent(item: Record<string, any>) {
-				if (!relationInfo.value.relationPkField) return;
+				const { relation } = relationInfo.value;
+
+				if (!relation) return;
+
 				currentItem.value = item;
-				emit('input', item[relationInfo.value.relationPkField]);
+				emit('input', item[relation.primaryKeyField]);
 			}
 
 			async function fetchCurrent(key: string | number) {
-				if (!relationInfo.value.relationPkField || !relationInfo.value.relationCollection) return;
+				const { relation } = relationInfo.value;
+
+				if (!relation) return;
 
 				loading.value = true;
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(relationInfo.value.relationPkField) === false) {
-					fields.push(relationInfo.value.relationPkField);
+				if (fields.includes(relation.primaryKeyField) === false) {
+					fields.push(relation.primaryKeyField);
 				}
 
 				try {
-					const endpoint = relationInfo.value.relationCollection.startsWith('directus_')
-						? `/${relationInfo.value.relationCollection.substring(9)}/${key}`
-						: `/items/${relationInfo.value.relationCollection}/${encodeURIComponent(key)}`;
+					const endpoint = relation.collection.startsWith('directus_')
+						? `/${relation.collection.substring(9)}/${key}`
+						: `/items/${relation.collection}/${encodeURIComponent(key)}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -287,7 +299,7 @@ export default defineComponent({
 			const loading = ref(false);
 
 			watch(
-				() => relationInfo.value.relationCollection,
+				() => relationInfo.value.relation?.collection,
 				() => {
 					fetchTotalCount();
 					items.value = null;
@@ -298,20 +310,23 @@ export default defineComponent({
 
 			async function fetchItems() {
 				if (items.value !== null) return;
-				if (!relationInfo.value.relationCollection || !relationInfo.value.relationPkField) return;
+
+				const { relation } = relationInfo.value;
+
+				if (!relation) return;
 
 				loading.value = true;
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(relationInfo.value.relationPkField) === false) {
-					fields.push(relationInfo.value.relationPkField);
+				if (fields.includes(relation.primaryKeyField) === false) {
+					fields.push(relation.primaryKeyField);
 				}
 
 				try {
-					const endpoint = relationInfo.value.relationCollection.startsWith('directus_')
-						? `/${relationInfo.value.relationCollection.substring(9)}`
-						: `/items/${relationInfo.value.relationCollection}`;
+					const endpoint = relation.collection.startsWith('directus_')
+						? `/${relation.collection.substring(9)}`
+						: `/items/${relation.collection}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -329,11 +344,13 @@ export default defineComponent({
 			}
 
 			async function fetchTotalCount() {
-				if (!relationInfo.value.relationCollection) return;
+				const { relation } = relationInfo.value;
 
-				const endpoint = relationInfo.value.relationCollection.startsWith('directus_')
-					? `/${relationInfo.value.relationCollection.substring(9)}`
-					: `/items/${relationInfo.value.relationCollection}`;
+				if (!relation) return;
+
+				const endpoint = relation.collection.startsWith('directus_')
+					? `/${relation.collection.substring(9)}`
+					: `/items/${relation.collection}`;
 
 				const response = await api.get(endpoint, {
 					params: {
@@ -362,17 +379,22 @@ export default defineComponent({
 
 		function usePreview() {
 			const displayTemplate = computed(() => {
+				const { relation } = relationInfo.value;
+
+				if (!relation) return;
+
 				if (props.template !== null) return props.template;
-				return collectionInfo.value?.meta?.display_template || `{{ ${relationInfo.value.relationPkField || ''} }}`;
+				return collectionInfo.value?.meta?.display_template || `{{ ${relation.primaryKeyField || ''} }}`;
 			});
 
 			const requiredFields = computed(() => {
-				if (!displayTemplate.value || !relationInfo.value.relationCollection) return null;
+				const { relation } = relationInfo.value;
 
-				return adjustFieldsForDisplays(
-					getFieldsFromTemplate(displayTemplate.value),
-					relationInfo.value.relationCollection
-				);
+				if (!relation) return;
+
+				if (!displayTemplate.value || !relation.collection) return null;
+
+				return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), relation.collection);
 			});
 
 			return { onPreviewClick, displayTemplate, requiredFields };
@@ -404,18 +426,22 @@ export default defineComponent({
 			return { edits, stageEdits };
 
 			function stageEdits(newEdits: Record<string, any>) {
-				if (!relationInfo.value.relationPkField) return;
+				const { relation } = relationInfo.value;
+
+				if (!relation) return;
+
+				if (!relation.primaryKeyField) return;
 
 				// Make sure we stage the primary key if it exists. This is needed to have the API
 				// update the existing item instead of create a new one
 				if (currentPrimaryKey.value && currentPrimaryKey.value !== '+') {
 					emit('input', {
-						[relationInfo.value.relationPkField]: currentPrimaryKey.value,
+						[relation.primaryKeyField]: currentPrimaryKey.value,
 						...newEdits,
 					});
 				} else {
-					if (relationInfo.value.relationPkField in newEdits && newEdits[relationInfo.value.relationPkField] === '+') {
-						delete newEdits[relationInfo.value.relationPkField];
+					if (relation.primaryKeyField in newEdits && newEdits[relation.primaryKeyField] === '+') {
+						delete newEdits[relation.primaryKeyField];
 					}
 
 					emit('input', newEdits);

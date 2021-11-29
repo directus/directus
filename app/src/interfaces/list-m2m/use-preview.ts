@@ -19,7 +19,7 @@ type UsablePreview = {
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	fields: Ref<string[]>,
-	relation: Ref<RelationInfo>,
+	relationInfo: Ref<RelationInfo>,
 	getNewSelectedItems: () => Record<string, any>[],
 	getUpdatedItems: () => Record<string, any>[],
 	getNewItems: () => Record<string, any>[],
@@ -46,8 +46,9 @@ export default function usePreview(
 			}
 
 			loading.value = true;
-			const { relationCollection, relationPkField, relatedField } = relation.value;
-			if (relatedField === null) return;
+			const { relation, relatedField } = relationInfo.value;
+
+			if (!relation || !relatedField) return;
 
 			// Load the junction items so we have access to the id's in the related collection
 			const junctionItems = await loadRelatedIds();
@@ -60,18 +61,23 @@ export default function usePreview(
 
 			const filteredFields = [...(fields.value.length > 0 ? getRelatedFields(fields.value) : getDefaultFields())];
 
-			if (filteredFields.includes(relationPkField) === false) filteredFields.push(relationPkField);
+			if (filteredFields.includes(relation.primaryKeyField) === false) filteredFields.push(relation.primaryKeyField);
 
 			try {
 				let responseData: Record<string, any>[] = [];
 
 				if (relatedPrimaryKeys.length > 0) {
-					responseData = await request(relationCollection, filteredFields, relationPkField, relatedPrimaryKeys);
+					responseData = await request(
+						relation.collection,
+						filteredFields,
+						relation.primaryKeyField,
+						relatedPrimaryKeys
+					);
 				}
 
 				// Insert the related items into the junction items
 				responseData = responseData.map((data) => {
-					const id = get(data, relationPkField);
+					const id = get(data, relation.primaryKeyField);
 					const junction = junctionItems.find((junction) => junction[relatedField] === id);
 
 					if (junction === undefined || id === undefined) return;
@@ -90,7 +96,8 @@ export default function usePreview(
 						const updatedItem = updatedItems.find(
 							(updated) =>
 								// use differentdefault value to prevent match undefined or null
-								get(updated, [relatedField, relationPkField], 0) === get(item, [relatedField, relationPkField], 1)
+								get(updated, [relatedField, relation.primaryKeyField], 0) ===
+								get(item, [relatedField, relation.primaryKeyField], 1)
 						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
@@ -114,13 +121,15 @@ export default function usePreview(
 	watch(
 		() => fields.value,
 		() => {
-			const { relatedField, relationCollection } = relation.value;
+			const { relatedField, relation } = relationInfo.value;
+
+			if (!relation) return;
 
 			tableHeaders.value = (
 				fields.value.length > 0 ? fields.value : getDefaultFields().map((field) => `${relatedField}.${field}`)
 			)
 				.map((fieldKey) => {
-					const field = fieldsStore.getField(relationCollection, fieldKey);
+					const field = fieldsStore.getField(relation.collection, fieldKey);
 
 					if (!field) return null;
 
@@ -150,7 +159,7 @@ export default function usePreview(
 	return { tableHeaders, items, initialItems, loading, error };
 
 	function getRelatedFields(fields: string[]) {
-		const { relatedField } = relation.value;
+		const { relatedField } = relationInfo.value;
 
 		return fields.reduce((acc: string[], field) => {
 			const sections = field.split('.');
@@ -164,7 +173,9 @@ export default function usePreview(
 	}
 
 	async function loadRelatedIds() {
-		const { junctionPkField, relationPkField, junctionCollection, relatedField, sortField } = relation.value;
+		const { relation, junction, relatedField, sortField } = relationInfo.value;
+
+		if (!junction || !relation) return [];
 
 		try {
 			let data: Record<string, any>[] = [];
@@ -173,16 +184,16 @@ export default function usePreview(
 			if (primaryKeys.length > 0) {
 				const filteredFields = getJunctionFields();
 
-				if (filteredFields.includes(junctionPkField) === false) filteredFields.push(junctionPkField);
+				if (filteredFields.includes(junction.primaryKeyField) === false) filteredFields.push(junction.primaryKeyField);
 				if (filteredFields.includes(relatedField) === false) filteredFields.push(relatedField);
 
 				if (sortField !== null && filteredFields.includes(sortField) === false) filteredFields.push(sortField);
 
-				data = await request(junctionCollection, filteredFields, junctionPkField, primaryKeys);
+				data = await request(junction.collection, filteredFields, junction.primaryKeyField, primaryKeys);
 			}
 
 			const updatedItems = getUpdatedItems().map((item) => ({
-				[relatedField]: item[relatedField][relationPkField],
+				[relatedField]: item[relatedField][relation.primaryKeyField],
 			}));
 
 			// Add all items that already had the id of it's related item
@@ -213,7 +224,10 @@ export default function usePreview(
 	}
 
 	function getDefaultFields(): string[] {
-		const fields = fieldsStore.getFieldsForCollection(relation.value.relationCollection);
+		const { relation } = relationInfo.value;
+		if (!relation) return [];
+
+		const fields = fieldsStore.getFieldsForCollection(relation.collection);
 		return fields.slice(0, 3).map((field: Field) => field.field);
 	}
 }

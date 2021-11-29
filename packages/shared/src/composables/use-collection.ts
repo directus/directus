@@ -2,7 +2,8 @@ import { useStores } from './use-system';
 import { Collection, Field } from '../types';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
-type UsableCollection = {
+export type UsableCollection = {
+	collection: Ref<string | null>;
 	info: ComputedRef<Collection | null>;
 	fields: ComputedRef<Field[]>;
 	defaults: Record<string, any>;
@@ -11,6 +12,7 @@ type UsableCollection = {
 	sortField: ComputedRef<string | null>;
 	isSingleton: ComputedRef<boolean>;
 	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
+	displayTemplate: ComputedRef<string | null>;
 };
 
 export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
@@ -70,5 +72,20 @@ export function useCollection(collectionKey: string | Ref<string | null>): Usabl
 		return info.value.meta.accountability;
 	});
 
-	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton, accountabilityScope };
+	const displayTemplate = computed(() => {
+		return info.value?.meta?.display_template ?? null;
+	});
+
+	return {
+		collection,
+		info,
+		fields,
+		defaults,
+		primaryKeyField,
+		userCreatedField,
+		sortField,
+		isSingleton,
+		accountabilityScope,
+		displayTemplate,
+	};
 }

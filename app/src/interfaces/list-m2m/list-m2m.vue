@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!relationInfo.junctionCollection || !relationInfo.relationCollection" type="warning">
+	<v-notice v-if="!relationInfo.junction.collection || !relationInfo.relation.collection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="many-to-many">
@@ -28,7 +28,7 @@
 					<v-list-item :dense="sortedItems.length > 4" block clickable @click="editItem(element)">
 						<v-icon v-if="relationInfo.sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template
-							:collection="relationInfo.junctionCollection"
+							:collection="relationInfo.junction.collection"
 							:item="element"
 							:template="templateWithDefaults"
 						/>
@@ -49,7 +49,7 @@
 		<drawer-item
 			v-if="!disabled"
 			:active="editModalActive"
-			:collection="relationInfo.junctionCollection"
+			:collection="relationInfo.junction.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.relatedField"
@@ -62,7 +62,7 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relationInfo.relationCollection"
+			:collection="relationInfo.relation.collection"
 			:selection="selectedPrimaryKeys"
 			multiple
 			@input="stageSelection"
@@ -134,9 +134,9 @@ export default defineComponent({
 
 		const templateWithDefaults = computed(() => {
 			if (props.template) return props.template;
-			if (relationInfo.value.junctionDisplayTemplate) return relationInfo.value.junctionDisplayTemplate;
+			if (relationInfo.value.junction?.displayTemplate) return relationInfo.value.junction.displayTemplate;
 
-			let relatedDisplayTemplate = relationInfo.value.relationDisplayTemplate;
+			let relatedDisplayTemplate = relationInfo.value.relation?.displayTemplate;
 			if (relatedDisplayTemplate) {
 				const regex = /({{.*?}})/g;
 				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -152,11 +152,14 @@ export default defineComponent({
 				return relatedDisplayTemplate;
 			}
 
-			return `{{${relationInfo.value.relatedField}.${relationInfo.value.relationPkField}}}`;
+			return `{{${relationInfo.value.relatedField}.${relationInfo.value.relation?.primaryKeyField}}}`;
 		});
 
 		const fields = computed(() =>
-			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relationInfo.value.junctionCollection)
+			adjustFieldsForDisplays(
+				getFieldsFromTemplate(templateWithDefaults.value),
+				relationInfo.value.junction?.collection ?? ''
+			)
 		);
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
@@ -188,8 +191,8 @@ export default defineComponent({
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		const { createAllowed, selectAllowed } = usePermissions(
-			relationInfo.value.junctionCollection,
-			relationInfo.value.relationCollection
+			relationInfo.value.junction?.collection ?? '',
+			relationInfo.value.relation?.collection ?? ''
 		);
 
 		return {

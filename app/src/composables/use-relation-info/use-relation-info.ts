@@ -1,20 +1,23 @@
 import { computed, ComputedRef } from 'vue';
-import { useCollectionsStore, useRelationsStore } from '@/stores/';
+import { useRelationsStore } from '@/stores/';
 import { Relation } from '@directus/shared/types';
-import { useCollection } from '@directus/shared/composables';
+import { UsableCollection, useCollection } from '@directus/shared/composables';
+
+type RelationInfoCollection = {
+	collection: string;
+	primaryKeyField: string;
+	displayTemplate: string;
+	sortField: string;
+};
 
 export type RelationInfo = {
-	collection: string;
 	collectionField: string;
-	junctionCollection: string;
+	collection: string;
 	junctionField: string;
-	junctionPkField: string;
-	junctionDisplayTemplate: string;
-	relatedCollections: string[];
+	junction: RelationInfoCollection | null;
 	relatedField: string;
-	relationCollection: string;
-	relationPkField: string;
-	relationDisplayTemplate: string;
+	related: RelationInfoCollection[];
+	relation: RelationInfoCollection | null;
 	sortField: string;
 	type: 'm2o' | 'o2m' | 'm2m' | 'm2a';
 };
@@ -30,7 +33,6 @@ type Out = {
 
 export function useRelationInfo({ collection, field }: In): Out {
 	const relationsStore = useRelationsStore();
-	const collectionsStore = useCollectionsStore();
 
 	const relations = computed(() => {
 		return relationsStore.getRelationsForField(collection, field) as Relation[];
@@ -64,33 +66,43 @@ export function useRelationInfo({ collection, field }: In): Out {
 	const junctionCollection = computed(() => {
 		if (!junction.value) return null;
 
-		return collectionsStore.getCollection(junction.value.collection)!;
+		const collection = useCollection(junction.value.collection);
+
+		return {
+			collection: collection.collection.value ?? '',
+			displayTemplate: collection.displayTemplate.value ?? '',
+			primaryKeyField: collection.primaryKeyField.value?.field ?? '',
+			sortField: collection.sortField.value ?? '',
+		} as RelationInfoCollection;
 	});
 
 	const relatedCollections = computed(() => {
-		if (relation.value?.related_collection) return [collectionsStore.getCollection(relation.value.related_collection)];
+		let collections: UsableCollection[] = [];
+
+		if (relation.value?.related_collection) collections = [useCollection(relation.value.related_collection)];
 
 		if (relation.value?.meta?.one_allowed_collections)
-			return relation.value.meta.one_allowed_collections.map((collection) =>
-				collectionsStore.getCollection(collection)
-			);
+			collections = relation.value.meta.one_allowed_collections.map((collection) => useCollection(collection));
 
-		return [];
+		return collections.map((collection) => {
+			return {
+				collection: collection.collection.value ?? '',
+				displayTemplate: collection.displayTemplate.value ?? '',
+				primaryKeyField: collection.primaryKeyField.value?.field ?? '',
+				sortField: collection.sortField.value ?? '',
+			} as RelationInfoCollection;
+		});
 	});
 
-	const relationCollection = computed(() => relatedCollections.value[0]);
-
-	const { primaryKeyField: junctionPrimaryKeyField = null } = junctionCollection.value
-		? useCollection(junctionCollection.value.collection)
-		: {};
-
-	const { primaryKeyField: relationPrimaryKeyField = null } = relationCollection.value
-		? useCollection(relationCollection.value.collection)
-		: {};
+	const relationCollection = computed(() => relatedCollections.value[0] ?? null);
 
 	const collectionField = computed(() => relation.value?.meta?.one_collection_field);
 
+	const junctionField = computed(() => junction.value?.field);
+
 	const relatedField = computed(() => junction.value?.meta?.junction_field || relation?.value?.meta?.one_field);
+
+	const sortField = computed(() => junction.value?.meta?.sort_field);
 
 	const type = computed(() => {
 		if (!relation.value) return null;
@@ -110,18 +122,14 @@ export function useRelationInfo({ collection, field }: In): Out {
 
 	const relationInfo = computed(() => {
 		return {
-			collection,
 			collectionField: collectionField.value,
-			junctionCollection: junctionCollection.value?.collection,
-			junctionField: junction.value?.field,
-			junctionPkField: junctionPrimaryKeyField?.value?.field,
-			junctionDisplayTemplate: junctionCollection?.value?.meta?.display_template,
-			relatedCollections: relatedCollections.value.map((collection) => collection?.collection),
+			collection,
+			junctionField: junctionField.value,
+			junction: junctionCollection.value,
 			relatedField: relatedField.value,
-			relationCollection: relationCollection.value!.collection,
-			relationPkField: relationPrimaryKeyField?.value?.field,
-			relationDisplayTemplate: relationCollection?.value?.meta?.display_template,
-			sortField: junction.value?.meta?.sort_field as string,
+			related: relatedCollections.value,
+			relation: relationCollection.value,
+			sortField: sortField.value,
 			type: type.value,
 		} as RelationInfo;
 	});
