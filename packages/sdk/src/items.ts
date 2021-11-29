@@ -74,7 +74,7 @@ export type LogicalFilterOr<T> = { _or: Filter<T>[] };
 export type LogicalFilter<T> = LogicalFilterAnd<T> | LogicalFilterOr<T>;
 
 export type FieldFilterOperator<T, K extends keyof T> = {
-	[O in FilterOperators]?: T[K];
+	[O in FilterOperators]?: T[K] | Array<T[K]>;
 };
 
 export type FieldFilter<T> = {
