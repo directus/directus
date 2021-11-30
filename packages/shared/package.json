@@ -39,8 +39,8 @@
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "del-cli dist",
 		"dev": "concurrently 'npm:dev:*'",
-		"dev:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm -w --preserveWatchOutput --incremental",
-		"dev:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs -w --preserveWatchOutput --incremental",
+		"dev:esm": "npm run build:esm -- --watch --preserveWatchOutput --incremental",
+		"dev:cjs": "npm run build:cjs -- --watch --preserveWatchOutput --incremental",
 		"test": "jest --coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"prepublishOnly": "npm run cleanup && npm run build"

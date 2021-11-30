@@ -10,7 +10,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc --build",
-		"dev": "tsc --build --watch"
+		"dev": "npm run build -- --watch"
 	},
 	"repository": {
 		"type": "git",
