@@ -56,7 +56,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 					COUNT(*) OVER(PARTITION BY "uc"."CONSTRAINT_NAME") "CONSTRAINT_COUNT"
 				FROM "USER_CONSTRAINTS" "uc"
 				INNER JOIN "USER_CONS_COLUMNS" "ucc"
-					  ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
+					ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
 				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
 			)
 			SELECT
