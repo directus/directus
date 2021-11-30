@@ -62,88 +62,105 @@ export default defineComponent({
 			}
 
 			if (input.value) {
-				input.value.addEventListener('click', checkCaretPosition);
-				input.value.addEventListener('keydown', checkCaretPosition);
+				input.value.addEventListener('click', checkClick);
+				input.value.addEventListener('keydown', checkKeyDown);
+				input.value.addEventListener('keyup', checkKeyUp);
 			}
 		});
 
 		onUnmounted(() => {
 			if (input.value) {
-				input.value.removeEventListener('click', checkCaretPosition);
-				input.value.removeEventListener('keydown', checkCaretPosition);
+				input.value.removeEventListener('click', checkClick);
+				input.value.removeEventListener('keydown', checkKeyDown);
+				input.value.removeEventListener('keyup', checkKeyUp);
 			}
 		});
 
 		return { processText, input };
 
-		function checkCaretPosition(event: any) {
+		function checkKeyDown(event: any) {
 			const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
 
-			if (event?.type === 'keydown') {
-				if (event.code === 'Enter') {
+			if (event.code === 'Enter') {
+				event.preventDefault();
+
+				input.value!.innerText =
+					input.value!.innerText.substring(0, caretPos) +
+					(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
+						? '\n\n'
+						: '\n') +
+					input.value!.innerText.substring(caretPos);
+				parseHTML();
+				position(input.value!, caretPos + 1);
+			} else if (event.code === 'ArrowLeft' && !event.shiftKey) {
+				const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 					event.preventDefault();
 
-					input.value!.innerText =
-						input.value!.innerText.substring(0, caretPos) +
-						(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
-							? '\n\n'
-							: '\n') +
-						input.value!.innerText.substring(caretPos);
+					position(input.value!, matchedPositions[checkCaretPos - 1] - 1);
+				}
+			} else if (event.code === 'ArrowRight' && !event.shiftKey) {
+				const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
+					event.preventDefault();
+
+					position(input.value!, matchedPositions[checkCaretPos + 1] + 1);
+				}
+			} else if (event.code === 'Backspace') {
+				const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
+					event.preventDefault();
+
+					input.value!.innerText = (
+						input.value!.innerText.substring(0, matchedPositions[checkCaretPos - 1]) +
+						input.value!.innerText.substring(caretPos)
+					).replaceAll(String.fromCharCode(160), ' ');
+
 					parseHTML();
-					position(input.value!, caretPos + 1);
-				} else if (event.code === 'ArrowLeft' && !event.shiftKey) {
-					let checkCaretPos = matchedPositions.indexOf(caretPos - 1);
-					if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
-						event.preventDefault();
-
-						position(input.value!, matchedPositions[checkCaretPos - 1] - 1);
-					}
-				} else if (event.code === 'ArrowRight' && !event.shiftKey) {
-					let checkCaretPos = matchedPositions.indexOf(caretPos + 1);
-					if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
-						event.preventDefault();
-
-						position(input.value!, matchedPositions[checkCaretPos + 1] + 1);
-					}
-				} else if (event.code === 'Backspace') {
-					let checkCaretPos = matchedPositions.indexOf(caretPos - 1);
-					if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
-						event.preventDefault();
-
-						input.value!.innerText = (
-							input.value!.innerText.substring(0, matchedPositions[checkCaretPos - 1]) +
-							input.value!.innerText.substring(caretPos)
-						).replaceAll(String.fromCharCode(160), ' ');
-
-						parseHTML();
-						position(input.value!, matchedPositions[checkCaretPos - 1]);
-						emit('update:modelValue', input.value!.innerText);
-					}
-				} else if (event.code === 'Delete') {
-					let checkCaretPos = matchedPositions.indexOf(caretPos + 1);
-					if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
-						event.preventDefault();
-
-						input.value!.innerText = (
-							input.value!.innerText.substring(0, caretPos) +
-							input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
-						).replaceAll(String.fromCharCode(160), ' ');
-
-						parseHTML();
-						position(input.value!, caretPos);
-						emit('update:modelValue', input.value!.innerText);
-					}
+					position(input.value!, matchedPositions[checkCaretPos - 1]);
+					emit('update:modelValue', input.value!.innerText);
 				}
-			} else if (event?.type === 'click') {
-				let checkCaretPos = matchedPositions.indexOf(caretPos);
-				if (checkCaretPos !== -1) {
-					if (checkCaretPos % 2 === 0) {
-						position(input.value!, caretPos - 1);
-					} else {
-						position(input.value!, caretPos + 1);
-					}
+			} else if (event.code === 'Delete') {
+				const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 					event.preventDefault();
+
+					input.value!.innerText = (
+						input.value!.innerText.substring(0, caretPos) +
+						input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
+					).replaceAll(String.fromCharCode(160), ' ');
+
+					parseHTML();
+					position(input.value!, caretPos);
+					emit('update:modelValue', input.value!.innerText);
 				}
+			}
+		}
+
+		function checkKeyUp(event: any) {
+			const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+
+			if ((event.code === 'ArrowUp' || event.code === 'ArrowDown') && !event.shiftKey) {
+				const checkCaretPos = matchedPositions.indexOf(caretPos);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
+					position(input.value!, matchedPositions[checkCaretPos] + 1);
+				} else if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
+					position(input.value!, matchedPositions[checkCaretPos] - 1);
+				}
+			}
+		}
+
+		function checkClick(event: any) {
+			const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+
+			const checkCaretPos = matchedPositions.indexOf(caretPos);
+			if (checkCaretPos !== -1) {
+				if (checkCaretPos % 2 === 0) {
+					position(input.value!, caretPos - 1);
+				} else {
+					position(input.value!, caretPos + 1);
+				}
+				event.preventDefault();
 			}
 		}
 
