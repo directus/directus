@@ -143,7 +143,7 @@ export default defineComponent({
 			() =>
 				props.template ||
 				relationInfo.value.relation?.displayTemplate ||
-				`{{${relationInfo.value.relation?.primaryKeyField}}`
+				`{{${relationInfo.value.relation?.primaryKey.field}}`
 		);
 
 		const fields = computed(() =>
@@ -198,7 +198,7 @@ export default defineComponent({
 		}
 
 		function getNewItems() {
-			const pkField = relationInfo.value.relation?.primaryKeyField;
+			const pkField = relationInfo.value.relation?.primaryKey.field;
 			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === false) as Record<
 				string,
@@ -207,7 +207,7 @@ export default defineComponent({
 		}
 
 		function getUpdatedItems() {
-			const pkField = relationInfo.value.relation?.primaryKeyField;
+			const pkField = relationInfo.value.relation?.primaryKey.field;
 			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === true) as Record<
 				string,
@@ -216,7 +216,7 @@ export default defineComponent({
 		}
 
 		function getPrimaryKeys() {
-			const pkField = relationInfo.value.relation?.primaryKeyField;
+			const pkField = relationInfo.value.relation?.primaryKey.field;
 			if (props.value === null || !pkField) return [];
 			return props.value
 				.map((item) => {
@@ -230,7 +230,7 @@ export default defineComponent({
 		}
 
 		function deleteItem(item: Record<string, any>) {
-			const relatedPrimKey = relationInfo.value.relation?.primaryKeyField;
+			const relatedPrimKey = relationInfo.value.relation?.primaryKey.field;
 			if (props.value === null || !relatedPrimKey) return;
 
 			if (relatedPrimKey in item === false) {
@@ -290,7 +290,7 @@ export default defineComponent({
 					if (isEqual(newVal, oldVal)) return;
 
 					loading.value = true;
-					const pkField = relationInfo.value.relation?.primaryKeyField;
+					const pkField = relationInfo.value.relation?.primaryKey.field;
 					if (!pkField) return;
 
 					const fieldsList = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
@@ -368,15 +368,15 @@ export default defineComponent({
 			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
 
 			function editItem(item: any) {
-				const pkField = relationInfo.value.relation?.primaryKeyField;
+				const pkField = relationInfo.value.relation?.primaryKey.field;
 				if (!pkField) return;
 				const hasPrimaryKey = pkField in item;
 
 				const edits = (props.value || []).find(
 					(edit: any) =>
 						typeof edit === 'object' &&
-						relationInfo.value.relation?.primaryKeyField &&
-						edit[relationInfo.value.relation?.primaryKeyField] === item[relationInfo.value.relation?.primaryKeyField]
+						relationInfo.value.relation?.primaryKey.field &&
+						edit[relationInfo.value.relation?.primaryKey.field] === item[relationInfo.value.relation?.primaryKey.field]
 				);
 
 				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
@@ -384,7 +384,7 @@ export default defineComponent({
 			}
 
 			function stageEdits(edits: any) {
-				const pkField = relationInfo.value.relation?.primaryKeyField;
+				const pkField = relationInfo.value.relation?.primaryKey.field;
 				if (!pkField) return;
 
 				const newValue = (props.value || []).map((item) => {

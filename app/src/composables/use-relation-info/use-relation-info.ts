@@ -1,11 +1,11 @@
 import { computed, ComputedRef } from 'vue';
 import { useRelationsStore } from '@/stores/';
-import { Relation } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { UsableCollection, useCollection } from '@directus/shared/composables';
 
 type RelationInfoCollection = {
 	collection: string;
-	primaryKeyField: string;
+	primaryKey: Field;
 	displayTemplate: string;
 	sortField: string;
 };
@@ -71,7 +71,7 @@ export function useRelationInfo({ collection, field }: In): Out {
 		return {
 			collection: collection.collection.value ?? '',
 			displayTemplate: collection.displayTemplate.value ?? '',
-			primaryKeyField: collection.primaryKeyField.value?.field ?? '',
+			primaryKey: collection.primaryKeyField.value,
 			sortField: collection.sortField.value ?? '',
 		} as RelationInfoCollection;
 	});
@@ -88,7 +88,7 @@ export function useRelationInfo({ collection, field }: In): Out {
 			return {
 				collection: collection.collection.value ?? '',
 				displayTemplate: collection.displayTemplate.value ?? '',
-				primaryKeyField: collection.primaryKeyField.value?.field ?? '',
+				primaryKey: collection.primaryKeyField.value,
 				sortField: collection.sortField.value ?? '',
 			} as RelationInfoCollection;
 		});

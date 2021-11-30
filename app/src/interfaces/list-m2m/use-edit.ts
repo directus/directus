@@ -31,8 +31,8 @@ export default function useEdit(
 
 		editModalActive.value = true;
 		editsAtStart.value = item;
-		currentlyEditing.value = get(item, [junction.primaryKeyField], null);
-		relatedPrimaryKey.value = get(item, [relatedField, relation.primaryKeyField], null);
+		currentlyEditing.value = get(item, [junction.primaryKey.field], null);
+		relatedPrimaryKey.value = get(item, [relatedField, relation.primaryKey.field], null);
 	}
 
 	function stageEdits(edits: any) {
@@ -44,8 +44,8 @@ export default function useEdit(
 			if (currentlyEditing.value !== null) {
 				const id = currentlyEditing.value;
 
-				if (typeof item === 'object' && junction.primaryKeyField in item) {
-					if (item[junction.primaryKeyField] === id) return edits;
+				if (typeof item === 'object' && junction.primaryKey.field in item) {
+					if (item[junction.primaryKey.field] === id) return edits;
 				} else if (['number', 'string'].includes(typeof item)) {
 					if (item === id) return edits;
 				}
@@ -55,7 +55,7 @@ export default function useEdit(
 				const id = relatedPrimaryKey.value;
 
 				if (get(item, [relatedField], null) === id) return edits;
-				if (get(item, [relatedField, relation.primaryKeyField], null) === id) return edits;
+				if (get(item, [relatedField, relation.primaryKey.field], null) === id) return edits;
 			}
 
 			if (isEqual(editsAtStart.value, item)) {

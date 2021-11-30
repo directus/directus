@@ -152,7 +152,7 @@ export default defineComponent({
 				return relatedDisplayTemplate;
 			}
 
-			return `{{${relationInfo.value.relatedField}.${relationInfo.value.relation?.primaryKeyField}}}`;
+			return `{{${relationInfo.value.relatedField}.${relationInfo.value.relation?.primaryKey.field}}}`;
 		});
 
 		const fields = computed(() =>

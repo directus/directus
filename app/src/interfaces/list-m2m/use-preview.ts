@@ -61,7 +61,7 @@ export default function usePreview(
 
 			const filteredFields = [...(fields.value.length > 0 ? getRelatedFields(fields.value) : getDefaultFields())];
 
-			if (filteredFields.includes(relation.primaryKeyField) === false) filteredFields.push(relation.primaryKeyField);
+			if (filteredFields.includes(relation.primaryKey.field) === false) filteredFields.push(relation.primaryKey.field);
 
 			try {
 				let responseData: Record<string, any>[] = [];
@@ -70,14 +70,14 @@ export default function usePreview(
 					responseData = await request(
 						relation.collection,
 						filteredFields,
-						relation.primaryKeyField,
+						relation.primaryKey.field,
 						relatedPrimaryKeys
 					);
 				}
 
 				// Insert the related items into the junction items
 				responseData = responseData.map((data) => {
-					const id = get(data, relation.primaryKeyField);
+					const id = get(data, relation.primaryKey.field);
 					const junction = junctionItems.find((junction) => junction[relatedField] === id);
 
 					if (junction === undefined || id === undefined) return;
@@ -96,8 +96,8 @@ export default function usePreview(
 						const updatedItem = updatedItems.find(
 							(updated) =>
 								// use differentdefault value to prevent match undefined or null
-								get(updated, [relatedField, relation.primaryKeyField], 0) ===
-								get(item, [relatedField, relation.primaryKeyField], 1)
+								get(updated, [relatedField, relation.primaryKey.field], 0) ===
+								get(item, [relatedField, relation.primaryKey.field], 1)
 						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
@@ -184,16 +184,17 @@ export default function usePreview(
 			if (primaryKeys.length > 0) {
 				const filteredFields = getJunctionFields();
 
-				if (filteredFields.includes(junction.primaryKeyField) === false) filteredFields.push(junction.primaryKeyField);
+				if (filteredFields.includes(junction.primaryKey.field) === false)
+					filteredFields.push(junction.primaryKey.field);
 				if (filteredFields.includes(relatedField) === false) filteredFields.push(relatedField);
 
 				if (sortField !== null && filteredFields.includes(sortField) === false) filteredFields.push(sortField);
 
-				data = await request(junction.collection, filteredFields, junction.primaryKeyField, primaryKeys);
+				data = await request(junction.collection, filteredFields, junction.primaryKey.field, primaryKeys);
 			}
 
 			const updatedItems = getUpdatedItems().map((item) => ({
-				[relatedField]: item[relatedField][relation.primaryKeyField],
+				[relatedField]: item[relatedField][relation.primaryKey.field],
 			}));
 
 			// Add all items that already had the id of it's related item

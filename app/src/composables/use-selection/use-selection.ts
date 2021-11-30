@@ -17,7 +17,7 @@ type Out = {
 };
 
 export function useSelection({ items, initialItems, relationInfo, emit }: In): Out {
-	const { collectionField, sortField, relatedField, junctionPkField, relationPkField, type } = relationInfo.value;
+	const { collectionField, sortField, relatedField, junction, related, relation, type } = relationInfo.value;
 
 	const selectModalActive = ref(false);
 	const selectingFrom = ref<string | null>(null);
@@ -25,13 +25,21 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 	const getPrimaryKey = (itemOrValue: any) => {
 		const item = itemOrValue.value !== undefined ? itemOrValue.value : itemOrValue;
 
-		if (item == null) return null; // strict equality not used to handle undefined / null
+		if (!relation || item == null) return null; // strict equality not used to handle undefined / null
 
 		if (['string', 'number'].includes(typeof item)) return item;
 
-		if (['o2m', 'm2o'].includes(type)) return item?.[relationPkField] ?? null;
+		if (['o2m', 'm2o'].includes(type)) return item?.[relation.primaryKey.field] ?? null;
 
-		if (['m2m', 'm2a'].includes(type)) return item?.[relatedField]?.[relationPkField] ?? null;
+		if (['m2m'].includes(type))
+			return item?.[relatedField]?.[relation.primaryKey.field] ?? item?.[relatedField] ?? null;
+
+		if (['m2a'].includes(type)) {
+			const relationPkField =
+				related.find((relation) => relation.collection === item[collectionField])?.primaryKey.field ?? '';
+
+			return item?.[relatedField]?.[relationPkField] ?? item?.[relatedField] ?? null;
+		}
 
 		return null;
 	};
@@ -64,8 +72,13 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 				const initial = (initialItems.value || []).find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
 				const draft = (items.value || []).find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
 				const relatedPrimaryKey = getPrimaryKey(item);
+				const relationPrimaryKeyField = (
+					type === 'm2a' ? related.find((relation) => relation.collection === selectingFrom.value) : relation
+				)?.primaryKey.field;
 
-				const relationRelationship = relatedPrimaryKey ? { [relationPkField]: relatedPrimaryKey } : null;
+				if (!relationPrimaryKeyField) return;
+
+				const relationRelationship = relatedPrimaryKey ? { [relationPrimaryKeyField]: relatedPrimaryKey } : null;
 				const sort = sortField ? { [sortField]: draft?.[sortField] ?? i } : null;
 				const collection = type === 'm2a' ? { [collectionField]: selectingFrom.value } : null;
 

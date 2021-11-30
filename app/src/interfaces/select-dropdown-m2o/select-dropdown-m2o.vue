@@ -52,8 +52,8 @@
 				<template v-else>
 					<v-list-item
 						v-for="item in items"
-						:key="item[relationInfo.relation.primaryKeyField]"
-						:active="value === item[relationInfo.relation.primaryKeyField]"
+						:key="item[relationInfo.relation.primaryKey.field]"
+						:active="value === item[relationInfo.relation.primaryKey.field]"
 						clickable
 						@click="setCurrent(item)"
 					>
@@ -206,7 +206,7 @@ export default defineComponent({
 					// of the item and fetch it from the API to render the preview
 					if (
 						newValue !== null &&
-						newValue !== currentItem.value?.[relation.primaryKeyField] &&
+						newValue !== currentItem.value?.[relation.primaryKey.field] &&
 						(typeof newValue === 'string' || typeof newValue === 'number')
 					) {
 						fetchCurrent(newValue);
@@ -220,8 +220,8 @@ export default defineComponent({
 
 					// If value is already fullfilled, let's fetch all necessary
 					// fields for display template
-					else if (!currentItem.value && typeof newValue === 'object' && newValue[relation.primaryKeyField]) {
-						fetchCurrent(newValue[relation.primaryKeyField]);
+					else if (!currentItem.value && typeof newValue === 'object' && newValue[relation.primaryKey.field]) {
+						fetchCurrent(newValue[relation.primaryKey.field]);
 					}
 				},
 				{ immediate: true }
@@ -239,8 +239,8 @@ export default defineComponent({
 					return props.value!;
 				}
 
-				if (typeof props.value === 'object' && relation.primaryKeyField in (props.value ?? {})) {
-					return props.value?.[relation.primaryKeyField] ?? '+';
+				if (typeof props.value === 'object' && relation.primaryKey.field in (props.value ?? {})) {
+					return props.value?.[relation.primaryKey.field] ?? '+';
 				}
 
 				return '+';
@@ -254,7 +254,7 @@ export default defineComponent({
 				if (!relation) return;
 
 				currentItem.value = item;
-				emit('input', item[relation.primaryKeyField]);
+				emit('input', item[relation.primaryKey.field]);
 			}
 
 			async function fetchCurrent(key: string | number) {
@@ -266,8 +266,8 @@ export default defineComponent({
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(relation.primaryKeyField) === false) {
-					fields.push(relation.primaryKeyField);
+				if (fields.includes(relation.primaryKey.field) === false) {
+					fields.push(relation.primaryKey.field);
 				}
 
 				try {
@@ -319,8 +319,8 @@ export default defineComponent({
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(relation.primaryKeyField) === false) {
-					fields.push(relation.primaryKeyField);
+				if (fields.includes(relation.primaryKey.field) === false) {
+					fields.push(relation.primaryKey.field);
 				}
 
 				try {
@@ -384,7 +384,7 @@ export default defineComponent({
 				if (!relation) return;
 
 				if (props.template !== null) return props.template;
-				return collectionInfo.value?.meta?.display_template || `{{ ${relation.primaryKeyField || ''} }}`;
+				return collectionInfo.value?.meta?.display_template || `{{ ${relation.primaryKey.field || ''} }}`;
 			});
 
 			const requiredFields = computed(() => {
@@ -430,18 +430,18 @@ export default defineComponent({
 
 				if (!relation) return;
 
-				if (!relation.primaryKeyField) return;
+				if (!relation.primaryKey.field) return;
 
 				// Make sure we stage the primary key if it exists. This is needed to have the API
 				// update the existing item instead of create a new one
 				if (currentPrimaryKey.value && currentPrimaryKey.value !== '+') {
 					emit('input', {
-						[relation.primaryKeyField]: currentPrimaryKey.value,
+						[relation.primaryKey.field]: currentPrimaryKey.value,
 						...newEdits,
 					});
 				} else {
-					if (relation.primaryKeyField in newEdits && newEdits[relation.primaryKeyField] === '+') {
-						delete newEdits[relation.primaryKeyField];
+					if (relation.primaryKey.field in newEdits && newEdits[relation.primaryKey.field] === '+') {
+						delete newEdits[relation.primaryKey.field];
 					}
 
 					emit('input', newEdits);

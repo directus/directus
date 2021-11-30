@@ -27,7 +27,7 @@ export default function useActions(
 		return (
 			value.value.find(
 				(item) =>
-					get(item, junction.primaryKeyField) === id || (['string', 'number'].includes(typeof item), item === id)
+					get(item, junction.primaryKey.field) === id || (['string', 'number'].includes(typeof item), item === id)
 			) || null
 		);
 	}
@@ -49,7 +49,7 @@ export default function useActions(
 
 		if (!junction || value.value === null || relatedField === null) return [];
 
-		return value.value.filter((item) => typeof item === 'object' && !item[junction.primaryKeyField]) as Record<
+		return value.value.filter((item) => typeof item === 'object' && !item[junction.primaryKey.field]) as Record<
 			string,
 			any
 		>[];
@@ -61,7 +61,7 @@ export default function useActions(
 
 		if (!junction || value.value === null || relatedField === null) return [];
 
-		return value.value.filter((item) => typeof item === 'object' && item[junction.primaryKeyField]) as Record<
+		return value.value.filter((item) => typeof item === 'object' && item[junction.primaryKey.field]) as Record<
 			string,
 			any
 		>[];
@@ -81,7 +81,7 @@ export default function useActions(
 		if (!junction || value.value === null) return [];
 
 		return value.value.reduce((acc: any[], item) => {
-			const deepId = get(item, [junction.primaryKeyField]) as number | string | undefined;
+			const deepId = get(item, [junction.primaryKey.field]) as number | string | undefined;
 
 			if (['string', 'number'].includes(typeof item)) acc.push(item);
 			else if (deepId !== undefined) acc.push(deepId);
@@ -97,7 +97,7 @@ export default function useActions(
 
 		return value.value.reduce((acc: any[], item) => {
 			const relatedId = get(item, relatedField) as number | string | undefined;
-			const deepRelatedId = get(item, [relatedField, relation.primaryKeyField]) as number | string | undefined;
+			const deepRelatedId = get(item, [relatedField, relation.primaryKey.field]) as number | string | undefined;
 
 			if (relatedId !== undefined) acc.push(relatedId);
 			else if (deepRelatedId !== undefined) acc.push(deepRelatedId);
@@ -110,7 +110,7 @@ export default function useActions(
 
 		if (!relation) return [];
 
-		return items.find((item) => get(item, [relatedField, relation.primaryKeyField]) === id) || null;
+		return items.find((item) => get(item, [relatedField, relation.primaryKey.field]) === id) || null;
 	}
 
 	function deleteItem(deletingItem: Record<string, any>) {
@@ -119,20 +119,20 @@ export default function useActions(
 
 		if (!relation || !junction) return [];
 
-		const junctionId = get(deletingItem, junction.primaryKeyField) as number | string | undefined;
-		const relatedId = get(deletingItem, [relatedField, relation.primaryKeyField]) as number | string | undefined;
+		const junctionId = get(deletingItem, junction.primaryKey.field) as number | string | undefined;
+		const relatedId = get(deletingItem, [relatedField, relation.primaryKey.field]) as number | string | undefined;
 
 		const newValue = value.value.filter((item) => {
 			if (junctionId !== undefined) {
 				if (typeof item === 'object') {
-					return get(item, [junction.primaryKeyField]) !== junctionId;
+					return get(item, [junction.primaryKey.field]) !== junctionId;
 				} else {
 					return item !== junctionId;
 				}
 			}
 
 			if (relatedId !== undefined) {
-				const itemRelatedId = get(item, [relatedField, relation.primaryKeyField]);
+				const itemRelatedId = get(item, [relatedField, relation.primaryKey.field]);
 				if (['string', 'number'].includes(typeof itemRelatedId)) {
 					return itemRelatedId !== relatedId;
 				}
