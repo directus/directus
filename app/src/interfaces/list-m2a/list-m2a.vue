@@ -139,7 +139,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, ref, watch } from 'vue';
+import { defineComponent, computed, PropType, ref, watch, toRefs } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
 import { Relation } from '@directus/shared/types';
 import { Collection } from '@/types';
@@ -189,10 +189,12 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const { collection, field } = toRefs(props);
 		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 
+		const { relationInfo } = useRelationInfo({ collection, field });
 		const { o2mRelation, anyRelation, allowedCollections, o2mRelationPrimaryKeyField } = useRelations();
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();

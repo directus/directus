@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from 'vue';
+import { computed, ComputedRef, Ref } from 'vue';
 import { useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@directus/shared/types';
 import { UsableCollection, useCollection } from '@directus/shared/composables';
@@ -23,8 +23,8 @@ export type RelationInfo = {
 };
 
 type In = {
-	collection: string;
-	field: string;
+	collection: Ref<string>;
+	field: Ref<string>;
 };
 
 type Out = {
@@ -35,7 +35,7 @@ export function useRelationInfo({ collection, field }: In): Out {
 	const relationsStore = useRelationsStore();
 
 	const relations = computed(() => {
-		return relationsStore.getRelationsForField(collection, field) as Relation[];
+		return relationsStore.getRelationsForField(collection.value, field.value) as Relation[];
 	});
 
 	const junction = computed(() => {
@@ -45,7 +45,7 @@ export function useRelationInfo({ collection, field }: In): Out {
 
 		return (
 			(relations.value.find(
-				(relation) => relation.related_collection === collection && relation.meta?.one_field === field
+				(relation) => relation.related_collection === collection.value && relation.meta?.one_field === field.value
 			) as Relation) || null
 		);
 	});
@@ -112,9 +112,9 @@ export function useRelationInfo({ collection, field }: In): Out {
 			else return 'm2m';
 		}
 
-		if (relation.value?.meta?.one_collection === collection) {
-			if (relation.value?.meta?.one_field === field) return 'o2m';
-			if (relation.value?.meta?.many_field === field) return 'm2o';
+		if (relation.value?.meta?.one_collection === collection.value) {
+			if (relation.value?.meta?.one_field === field.value) return 'o2m';
+			if (relation.value?.meta?.many_field === field.value) return 'm2o';
 		}
 
 		return null;
@@ -123,7 +123,7 @@ export function useRelationInfo({ collection, field }: In): Out {
 	const relationInfo = computed(() => {
 		return {
 			collectionField: collectionField.value,
-			collection,
+			collection: collection.value,
 			junctionField: junctionField.value,
 			junction: junctionCollection.value,
 			relatedField: relatedField.value,

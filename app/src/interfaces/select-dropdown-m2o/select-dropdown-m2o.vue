@@ -142,11 +142,11 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { collection } = toRefs(props);
+		const { collection, field } = toRefs(props);
 
 		const { usesMenu, menuActive } = useMenu();
 		const { info: collectionInfo } = useCollection(collection);
-		const { relationInfo } = useRelationInfo({ collection: props.collection, field: props.field });
+		const { relationInfo } = useRelationInfo({ collection, field });
 		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
 		const { totalCount, loading: itemsLoading, fetchItems, items } = useItems();
 

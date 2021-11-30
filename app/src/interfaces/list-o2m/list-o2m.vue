@@ -78,7 +78,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch, PropType } from 'vue';
+import { defineComponent, ref, computed, watch, PropType, toRefs } from 'vue';
 import api from '@/api';
 import { useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
@@ -133,11 +133,13 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const { collection, field } = toRefs(props);
+
 		const fieldsStore = useFieldsStore();
 		const permissionsStore = usePermissionsStore();
 		const userStore = useUserStore();
 
-		const { relationInfo } = useRelationInfo({ collection: props.collection, field: props.field });
+		const { relationInfo } = useRelationInfo({ collection, field });
 
 		const templateWithDefaults = computed(
 			() =>

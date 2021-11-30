@@ -128,9 +128,9 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { value } = toRefs(props);
+		const { value, collection, field } = toRefs(props);
 
-		const { relationInfo } = useRelationInfo({ collection: props.collection, field: props.field });
+		const { relationInfo } = useRelationInfo({ collection, field });
 
 		const templateWithDefaults = computed(() => {
 			if (props.template) return props.template;
