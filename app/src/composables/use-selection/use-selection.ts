@@ -2,8 +2,8 @@ import { computed, ComputedRef, Ref, ref } from 'vue';
 import { RelationInfo } from '@/composables/use-relation-info';
 
 type In = {
-	items: Ref<Record<string, any>[] | null>;
-	initialItems: Ref<Record<string, any>[] | null>;
+	items: Ref<Record<string, any> | Record<string, any>[] | null>;
+	initialItems: Ref<Record<string, any> | Record<string, any>[] | null>;
 	relationInfo: Ref<RelationInfo>;
 	emit: (newVal: Record<string, any>[] | Record<string, any> | null) => void;
 };
@@ -18,6 +18,18 @@ type Out = {
 
 export function useSelection({ items, initialItems, relationInfo, emit }: In): Out {
 	const { collectionField, sortField, relatedField, junction, related, relation, type } = relationInfo.value;
+
+	const sanitizedItems = computed(() => {
+		if (Array.isArray(items.value)) return items.value;
+
+		return items.value ? [items.value] : [];
+	});
+
+	const sanitizedInitialItems = computed(() => {
+		if (Array.isArray(initialItems.value)) return initialItems.value;
+
+		return initialItems.value ? [initialItems.value] : [];
+	});
 
 	const selectModalActive = ref(false);
 	const selectingFrom = ref<string | null>(null);
@@ -45,8 +57,8 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 	};
 
 	const selectedPrimaryKeys = computed(() => {
-		const newVal = (items.value || []).flatMap((item) => {
-			if (collectionField && item[collectionField] !== selectingFrom.value) return [];
+		const newVal = sanitizedItems.value.flatMap((item) => {
+			if (type === 'm2a' && item[collectionField] !== selectingFrom.value) return [];
 
 			const primaryKey = getPrimaryKey(item);
 
@@ -60,17 +72,28 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 		let newVal = null;
 
 		if (!selection?.length) {
-			if (collectionField) newVal = (items.value || []).filter((item) => item[collectionField] !== selectingFrom.value);
+			if (type === 'm2a') newVal = sanitizedItems.value.filter((item) => item[collectionField] !== selectingFrom.value);
 		} else {
-			const createNewItems = (items.value || []).filter((item) => {
-				if (['o2m', 'm2o'].includes(type)) return !item?.[relationPkField];
+			const createNewItems = sanitizedItems.value.filter((item) => {
+				if (!relation) return;
 
-				if (['m2m', 'm21'].includes(type)) return !item?.[relatedField]?.[relationPkField];
+				if (['o2m', 'm2o'].includes(type)) return !item?.[relation.primaryKey.field];
+
+				if (['m2m'].includes(type)) return !item?.[relatedField]?.[relation.primaryKey.field];
+
+				if (['m2a'].includes(type)) {
+					const relationPkField = related.find((relation) => relation.collection === item[collectionField])?.primaryKey
+						.field;
+
+					if (!relationPkField) return null;
+
+					return !item?.[relatedField]?.[relationPkField];
+				}
 			});
 
 			newVal = [...createNewItems, ...selection].map((item, i) => {
-				const initial = (initialItems.value || []).find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
-				const draft = (items.value || []).find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
+				const initial = sanitizedInitialItems.value.find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
+				const draft = sanitizedItems.value.find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
 				const relatedPrimaryKey = getPrimaryKey(item);
 				const relationPrimaryKeyField = (
 					type === 'm2a' ? related.find((relation) => relation.collection === selectingFrom.value) : relation
@@ -106,9 +129,11 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 	}
 
 	function deselect(toDeselect: Record<string, any>) {
-		const newVal = (items.value || []).filter((item) => {
-			const isSameCollection = collectionField ? item[collectionField] === selectingFrom.value : true;
-			const isSameJunctionId = toDeselect[junctionPkField] == item[junctionPkField];
+		const newVal = sanitizedItems.value.filter((item) => {
+			if (!junction) return;
+
+			const isSameCollection = type === 'm2a' ? item[collectionField] === selectingFrom.value : true;
+			const isSameJunctionId = toDeselect[junction?.primaryKey.field] == item[junction?.primaryKey.field];
 
 			return !(isSameCollection && isSameJunctionId);
 		});

@@ -153,8 +153,8 @@ export default defineComponent({
 		const { setCurrent, currentItem, initialItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
 		const { selectedPrimaryKeys, stageSelection, selectModalActive } = useSelection({
-			initialItems: ref([initialItem]),
-			items: ref([currentItem]),
+			initialItems: initialItem,
+			items: currentItem,
 			relationInfo,
 			emit: emitter,
 		});
