@@ -202,23 +202,23 @@ export default defineComponent({
 		};
 
 		function insertUser(user: Record<string, any>) {
-			const text = newCommentContent.value;
+			const text = newCommentContent.value?.replaceAll(String.fromCharCode(160), ' ');
 			if (!text) return;
 
 			let countBefore = triggerCaretPosition - 1;
 			let countAfter = triggerCaretPosition;
 
-			if (text.charAt(countBefore) !== ' ') {
-				while (countBefore >= 0 && text.charAt(countBefore) !== ' ') {
+			if (text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
+				while (countBefore >= 0 && text.charAt(countBefore) !== ' ' && text.charCodeAt(countBefore) !== 10) {
 					countBefore--;
 				}
 			}
 
-			while (countAfter < text.length && text.charAt(countAfter) !== ' ') {
+			while (countAfter < text.length && text.charAt(countAfter) !== ' ' && text.charCodeAt(countBefore) !== 10) {
 				countAfter++;
 			}
 
-			const before = text.substring(0, countBefore);
+			const before = text.substring(0, countBefore + (text.charAt(countBefore) === '\n' ? 1 : 0));
 			const after = text.substring(countAfter);
 
 			newCommentContent.value = before + ' @' + user.id + after;

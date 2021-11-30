@@ -66,10 +66,13 @@ export class ActivityService extends ItemsService {
 					let comment = data.comment;
 
 					for (const mention of mentions) {
-						comment = comment.replace(mention, userPreviews[mention.substring(1)] ?? '@Unknown User');
+						comment = comment.replace(
+							new RegExp(`${mention}`, 'gm'),
+							userPreviews[mention.substring(1)] ?? '@Unknown User'
+						);
 					}
 
-					comment = `> ${comment}`;
+					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
 					const message = `
 Hello ${userName(user)},
