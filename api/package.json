@@ -74,6 +74,9 @@
 		"README.md",
 		"example.env"
 	],
+	"peerDependencies": {
+		"@directus/extensions-sdk": "^9.0.0"
+	},
 	"dependencies": {
 		"@aws-sdk/client-ses": "^3.40.0",
 		"@directus/app": "9.1.2",
