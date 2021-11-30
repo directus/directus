@@ -2,6 +2,31 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.1.2 (November 25, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#10051](https://github.com/directus/directus/pull/10051) fix notifications button hover color on dark theme
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10057](https://github.com/directus/directus/pull/10057) Fix mysql duplicates
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#10050](https://github.com/directus/directus/pull/10050) fix roles aggregation query to fit all db vendors
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10048](https://github.com/directus/directus/pull/10048) Set isEditorDirty flag to track edits in wysiwyg html
+    editor ([@licitdev](https://github.com/licitdev))
+  - [#10040](https://github.com/directus/directus/pull/10040) Fix data model folders edit dialog
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :memo: Documentation
+
+- [#3456](https://github.com/directus/directus/pull/3456) Add cloudron as installation method
+  ([@gramakri](https://github.com/gramakri))
+
 ## v9.1.1 (November 24, 2021)
 
 ### :bug: Bug Fixes

@@ -66,6 +66,8 @@ create_webhook: Create Webhook
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
+subject: Subject
+inbox: Inbox
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
@@ -427,6 +429,9 @@ user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
+no_notifications: No Notifications
+no_notifications_copy: You're all caught up!
+activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV
@@ -845,6 +850,7 @@ directus_collection:
   directus_migrations: What version of the database you're using
   directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
+  directus_notifications: Notifications sent to users
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -1186,6 +1192,7 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 interfaces:

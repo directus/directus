@@ -148,6 +148,7 @@ export default defineComponent({
 
 	.notifications {
 		--v-button-color: var(--module-icon);
+		--v-button-color-hover: var(--white);
 		--v-button-background-color: var(--module-background);
 		--v-button-background-color-hover: var(--module-background);
 	}
