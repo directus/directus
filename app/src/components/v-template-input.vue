@@ -86,15 +86,15 @@ export default defineComponent({
 
 				if (hasTriggered) {
 					emit('enter');
-					hasTriggered = false;
 				} else {
-					input.value!.innerText =
+					parseHTML(
 						input.value!.innerText.substring(0, caretPos) +
-						(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
-							? '\n\n'
-							: '\n') +
-						input.value!.innerText.substring(caretPos);
-					parseHTML();
+							(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
+								? '\n\n'
+								: '\n') +
+							input.value!.innerText.substring(caretPos),
+						true
+					);
 					position(input.value!, caretPos + 1);
 				}
 			} else if (event.code === 'ArrowUp' && !event.shiftKey) {
@@ -129,11 +129,13 @@ export default defineComponent({
 					event.preventDefault();
 
 					const newCaretPos = matchedPositions[checkCaretPos - 1];
-					input.value!.innerText = (
-						input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)
-					).replaceAll(String.fromCharCode(160), ' ');
-
-					parseHTML();
+					parseHTML(
+						(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
+							String.fromCharCode(160),
+							' '
+						),
+						true
+					);
 					position(input.value!, newCaretPos);
 					emit('update:modelValue', input.value!.innerText);
 				}
@@ -142,12 +144,13 @@ export default defineComponent({
 				if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 					event.preventDefault();
 
-					input.value!.innerText = (
-						input.value!.innerText.substring(0, caretPos) +
-						input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
-					).replaceAll(String.fromCharCode(160), ' ');
-
-					parseHTML();
+					parseHTML(
+						(
+							input.value!.innerText.substring(0, caretPos) +
+							input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
+						).replaceAll(String.fromCharCode(160), ' '),
+						true
+					);
 					position(input.value!, caretPos);
 					emit('update:modelValue', input.value!.innerText);
 				}
@@ -219,6 +222,7 @@ export default defineComponent({
 
 			if (innerText !== undefined) {
 				input.value.innerText = innerText;
+				hasTriggered = false;
 			}
 
 			let newHTML = input.value.innerText;
