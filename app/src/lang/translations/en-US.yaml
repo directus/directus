@@ -1429,6 +1429,8 @@ interfaces:
   boolean:
     toggle: Toggle
     description: Switch between on and off
+    color_on: Color On
+    color_off: Color Off
     label_placeholder: Enter a label...
     label_default: Enabled
   translations:
