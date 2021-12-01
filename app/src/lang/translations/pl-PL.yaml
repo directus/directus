@@ -66,6 +66,8 @@ create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
+subject: Temat
+inbox: Skrzynka odbiorcza
 emails: E-maile
 connection_excellent: Doskonałe połączenie
 connection_good: Dobre połączenie
@@ -425,6 +427,9 @@ user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
 no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
+no_notifications: Brak powiadomień
+no_notifications_copy: Jesteś na bieżąco z wiadomościami!
+activity_log: Dziennik aktywności
 all_items: Wszystkie elementy
 any: Dowolny
 csv: CSV
@@ -843,6 +848,7 @@ directus_collection:
   directus_migrations: Jaką wersję bazy danych używasz
   directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
+  directus_notifications: Powiadomienia wysłane do użytkowników
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
   directus_revisions: Zrzuty danych dla wszystkich działań
