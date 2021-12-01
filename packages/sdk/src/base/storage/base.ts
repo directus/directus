@@ -5,28 +5,28 @@ export type StorageOptions = {
 };
 
 enum Keys {
-  AuthToken = 'auth_token',
-  RefreshToken = 'auth_refresh_token',
-  Expires = 'auth_expires'
+	AuthToken = 'auth_token',
+	RefreshToken = 'auth_refresh_token',
+	Expires = 'auth_expires',
 }
 
 export abstract class BaseStorage extends IStorage {
 	protected prefix: string;
 
 	get auth_token(): string | null {
-		return this.get(KEY_AUTH_TOKEN);
+		return this.get(Keys.AuthToken);
 	}
 
 	set auth_token(value: string | null) {
 		if (value === null) {
-			this.delete(KEY_AUTH_TOKEN);
+			this.delete(Keys.AuthToken);
 		} else {
-			this.set(KEY_AUTH_TOKEN, value);
+			this.set(Keys.AuthToken, value);
 		}
 	}
 
 	get auth_expires(): number | null {
-		const value = this.get(KEY_AUTH_EXPIRES);
+		const value = this.get(Keys.Expires);
 		if (value === null) {
 			return null;
 		}
@@ -35,21 +35,21 @@ export abstract class BaseStorage extends IStorage {
 
 	set auth_expires(value: number | null) {
 		if (value === null) {
-			this.delete(KEY_AUTH_EXPIRES);
+			this.delete(Keys.Expires);
 		} else {
-			this.set(KEY_AUTH_EXPIRES, value!.toString());
+			this.set(Keys.Expires, value!.toString());
 		}
 	}
 
 	get auth_refresh_token(): string | null {
-		return this.get(KEY_AUTH_REFRESH_TOKEN);
+		return this.get(Keys.RefreshToken);
 	}
 
 	set auth_refresh_token(value: string | null) {
 		if (value === null) {
-			this.delete(KEY_AUTH_REFRESH_TOKEN);
+			this.delete(Keys.RefreshToken);
 		} else {
-			this.set(KEY_AUTH_REFRESH_TOKEN, value);
+			this.set(Keys.RefreshToken, value);
 		}
 	}
 
