@@ -103,7 +103,7 @@ export default defineDisplay({
 			fields.push(translationsPrimaryKeyField.field);
 		}
 
-		if (languagesRelation?.field && !fields.includes(languagesRelation.field)) {
+		if (languagesRelation && languagesPrimaryKeyField && !fields.includes(languagesRelation.field)) {
 			fields.push(`${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
 
 			if (options?.languageField) {
