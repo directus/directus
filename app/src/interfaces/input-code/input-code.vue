@@ -51,6 +51,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		lineWrapping: {
+			type: Boolean,
+			default: false,
+		},
 		placeholder: {
 			type: String,
 			default: null,
@@ -80,7 +84,6 @@ export default defineComponent({
 				codemirror = CodeMirror(codemirrorEl.value, {
 					...cmOptions.value,
 					value: stringValue.value,
-					lineWrapping: true,
 				});
 
 				codemirror.setOption('mode', { name: 'javascript ' });
@@ -238,6 +241,7 @@ export default defineComponent({
 				defaultOptions,
 				{
 					lineNumbers: props.lineNumber,
+					lineWrapping: props.lineWrapping,
 					readOnly: props.disabled ? 'nocursor' : false,
 					mode: props.language,
 					placeholder: props.placeholder,
