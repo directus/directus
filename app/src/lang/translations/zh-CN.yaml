@@ -1316,6 +1316,8 @@ interfaces:
   boolean:
     toggle: 切换
     description: 开启或关闭
+    color_on: 启用颜色
+    color_off: 禁用颜色
     label_placeholder: 输入标签...
     label_default: 已启用
   translations:
