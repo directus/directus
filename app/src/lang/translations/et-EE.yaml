@@ -1085,6 +1085,8 @@ interfaces:
   boolean:
     toggle: Lülita
     description: Lülita sisse ja välja
+    color_on: '"Sees" värv'
+    color_off: '"Väljas" värv'
     label_placeholder: Sisesta silt...
     label_default: lubatud
   translations:
