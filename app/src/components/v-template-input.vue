@@ -36,7 +36,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['update:modelValue', 'trigger', 'deactivate'],
+	emits: ['update:modelValue', 'trigger', 'deactivate', 'up', 'down', 'enter'],
 	setup(props, { emit }) {
 		const input = ref<HTMLDivElement>();
 
@@ -84,14 +84,31 @@ export default defineComponent({
 			if (event.code === 'Enter') {
 				event.preventDefault();
 
-				input.value!.innerText =
-					input.value!.innerText.substring(0, caretPos) +
-					(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
-						? '\n\n'
-						: '\n') +
-					input.value!.innerText.substring(caretPos);
-				parseHTML();
-				position(input.value!, caretPos + 1);
+				if (hasTriggered) {
+					emit('enter');
+					hasTriggered = false;
+				} else {
+					input.value!.innerText =
+						input.value!.innerText.substring(0, caretPos) +
+						(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
+							? '\n\n'
+							: '\n') +
+						input.value!.innerText.substring(caretPos);
+					parseHTML();
+					position(input.value!, caretPos + 1);
+				}
+			} else if (event.code === 'ArrowUp' && !event.shiftKey) {
+				if (hasTriggered) {
+					event.preventDefault();
+
+					emit('up');
+				}
+			} else if (event.code === 'ArrowDown' && !event.shiftKey) {
+				if (hasTriggered) {
+					event.preventDefault();
+
+					emit('down');
+				}
 			} else if (event.code === 'ArrowLeft' && !event.shiftKey) {
 				const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
 				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
