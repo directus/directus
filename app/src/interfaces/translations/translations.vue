@@ -18,6 +18,7 @@
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:autofocus="autofocus"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 			<v-divider />
@@ -81,6 +82,10 @@ export default defineComponent({
 		value: {
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
+		},
+		autofocus: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['input'],
