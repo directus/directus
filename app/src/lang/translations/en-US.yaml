@@ -1457,7 +1457,6 @@ interfaces:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
     results_path: Results Path
-    text_path: Text Path
     value_path: Value Path
     trigger: Trigger
     rate: Rate
