@@ -872,6 +872,8 @@ interfaces:
     add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
+    color_on: Spalva, kai įjungta
+    color_off: Spalva, kai išjungta
     label_default: Įjungtas
   translations:
     display_template: Rodymo šablonas

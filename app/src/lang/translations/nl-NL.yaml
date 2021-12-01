@@ -999,6 +999,8 @@ interfaces:
     maximum_value: Maximale waarde
   boolean:
     toggle: Schakel
+    color_on: Kleur Aan
+    color_off: Kleur uit
     label_placeholder: Voer een label in...
     label_default: Ingeschakeld
   translations:

@@ -995,6 +995,8 @@ interfaces:
   boolean:
     toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
+    color_on: تشغيل اللون
+    color_off: إيقاف اللون
     label_default: تمكين
   translations:
     display_template: عرض القالب

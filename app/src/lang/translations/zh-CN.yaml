@@ -939,6 +939,7 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目
+    project_color_note: 登录和标志背景
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -1315,6 +1316,8 @@ interfaces:
   boolean:
     toggle: 切换
     description: 开启或关闭
+    color_on: 启用颜色
+    color_off: 禁用颜色
     label_placeholder: 输入标签...
     label_default: 已启用
   translations:

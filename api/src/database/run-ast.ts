@@ -9,8 +9,8 @@ import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
 import { toArray } from '@directus/shared/utils';
 import { Query } from '@directus/shared/types';
-import getDatabase from './index';
-import { getGeometryHelper } from '../database/helpers/geometry';
+import getDatabase from '.';
+import { getHelpers } from '../database/helpers';
 
 type RunASTOptions = {
 	/**
@@ -174,7 +174,7 @@ async function parseCurrentLevel(
 }
 
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
-	const helper = getGeometryHelper();
+	const helpers = getHelpers(knex);
 
 	return function (fieldNode: FieldNode | M2ONode): Knex.Raw<string> {
 		let field;
@@ -192,7 +192,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		}
 
 		if (field.type.startsWith('geometry')) {
-			return helper.asText(table, field.field);
+			return helpers.st.asText(table, field.field);
 		}
 
 		return getColumn(knex, table, fieldNode.name, alias);

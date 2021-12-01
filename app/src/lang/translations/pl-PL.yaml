@@ -1409,6 +1409,8 @@ interfaces:
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
+    color_on: Kolor włączony
+    color_off: Kolor wyłączony
     label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:

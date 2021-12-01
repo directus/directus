@@ -1257,6 +1257,8 @@ interfaces:
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
+    color_on: Cor ligada
+    color_off: Cor desligada
     label_placeholder: Insira um rótulo...
     label_default: Habilitado
   translations:

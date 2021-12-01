@@ -24,8 +24,8 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
-import { DisplayConfig, Field } from '@directus/shared/types';
-import { getDisplays } from '@/displays';
+import { Field } from '@directus/shared/types';
+import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
@@ -52,7 +52,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
-		const { displays } = getDisplays();
 
 		const templateEl = ref<HTMLElement>();
 
@@ -96,7 +95,7 @@ export default defineComponent({
 					// No need to render the empty display overhead in this case
 					if (display === 'raw') return value;
 
-					const displayInfo = displays.value.find((display: DisplayConfig) => display.id === field.meta?.display);
+					const displayInfo = getDisplay(field.meta?.display);
 
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;

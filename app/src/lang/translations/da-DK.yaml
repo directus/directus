@@ -1303,6 +1303,8 @@ interfaces:
   boolean:
     toggle: Skift
     description: Skift mellem tænd og sluk
+    color_on: Farve Til
+    color_off: Farve Fra
     label_placeholder: Indtast en etiket...
     label_default: Aktiveret
   translations:

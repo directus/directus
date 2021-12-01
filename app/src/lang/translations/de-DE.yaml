@@ -1395,6 +1395,8 @@ interfaces:
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
+    color_on: Farbe Ein
+    color_off: Farbe Aus
     label_placeholder: Label eingeben...
     label_default: Aktiviert
   translations:

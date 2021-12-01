@@ -452,6 +452,16 @@ module.exports = {
 				],
 			},
 			{
+				title: 'Guides',
+				children: [
+					{
+						type: 'page',
+						path: '/guides/sso',
+						title: 'Single Sign-On (SSO)',
+					},
+				],
+			},
+			{
 				title: 'Contributing',
 				children: [
 					{
