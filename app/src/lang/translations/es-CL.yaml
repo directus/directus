@@ -1235,6 +1235,8 @@ interfaces:
   boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
+    color_on: Color para Activo
+    color_off: Color para Inactivo
     label_placeholder: Ingresar una etiqueta...
     label_default: Habilitado
   translations:
