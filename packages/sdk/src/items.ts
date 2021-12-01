@@ -49,36 +49,35 @@ export type DeepQueryMany<T> = {
 
 export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
 
-export type FilterOperators =
-	| '_eq'
-	| '_neq'
-	| '_contains'
-	| '_ncontains'
-	| '_in'
-	| '_nin'
-	| '_gt'
-	| '_gte'
-	| '_lt'
-	| '_lte'
-	| '_null'
-	| '_nnull'
-	| '_empty'
-	| '_nempty'
-	| '_intersects'
-	| '_nintersects'
-	| '_intersects_bbox'
-	| '_nintersects_bbox';
+export type FilterOperators<T> = {
+	_eq?: T;
+	_neq?: T;
+	_gt?: T;
+	_gte?: T;
+	_lt?: T;
+	_lte?: T;
+	_in?: T[];
+	_nin?: T[];
+	_between?: [T, T];
+	_nbetween?: [T, T];
+	_contains?: T;
+	_ncontains?: T;
+	_empty?: boolean;
+	_nempty?: boolean;
+	_nnull?: boolean;
+	_null?: boolean;
+	_intersects?: T;
+	_nintersects?: T;
+	_intersects_bbox?: T;
+	_nintersects_bbox?: T;
+};
 
 export type LogicalFilterAnd<T> = { _and: Filter<T>[] };
 export type LogicalFilterOr<T> = { _or: Filter<T>[] };
 export type LogicalFilter<T> = LogicalFilterAnd<T> | LogicalFilterOr<T>;
 
-export type FieldFilterOperator<T, K extends keyof T> = {
-	[O in FilterOperators]?: T[K];
-};
-
 export type FieldFilter<T> = {
-	[K in keyof T]?: FieldFilterOperator<T, K> | FieldFilter<T[K]>;
+	[K in keyof T]?: FilterOperators<T[K]> | FieldFilter<T[K]>;
 };
 
 export type Filter<T> = LogicalFilter<T> | FieldFilter<T extends Array<unknown> ? T[number] : T>;
