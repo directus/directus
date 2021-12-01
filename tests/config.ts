@@ -226,7 +226,7 @@ const config: Config = {
 	},
 	names: {
 		postgres: 'Postgres',
-		postgres10: 'Postgres',
+		postgres10: 'Postgres (10)',
 		mysql: 'MySQL',
 		maria: 'MariaDB',
 		mssql: 'MS SQL Server',
