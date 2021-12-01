@@ -3,7 +3,7 @@ import logger from '../logger';
 import { Meta } from '../types';
 import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
-import { parseFilter, deepMap } from '@directus/shared/utils';
+import { parseFilter } from '@directus/shared/utils';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};

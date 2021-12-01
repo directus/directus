@@ -16,20 +16,33 @@ export function parseFilter(
 	accountability: Accountability | null,
 	context: ParseFilterContext = {}
 ): Filter | null {
-	if (!filter) return null;
-	if (!isObjectLike(filter)) return filter;
-	return Object.entries(filter).reduce((result, [key, value]) => {
-		if (['_or', '_and'].includes(String(key))) {
-			result[key] = value.map((filter: Filter) => parseFilter(filter, accountability, context));
-		} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
-			result[key] = toArray(value).flatMap((value) => parseFilterValue(value, accountability, context));
-		} else if (String(key).startsWith('_')) {
-			result[key] = parseFilterValue(value, accountability, context);
-		} else {
-			result[key] = parseFilter(value, accountability, context);
-		}
-		return result;
-	}, {} as any);
+	if (filter === null || filter === undefined) {
+		return null;
+	}
+	if (!isObjectLike(filter)) {
+		return { _eq: parseFilterValue(filter, accountability, context) };
+	}
+	const filters = Object.entries(filter).map((entry) => parseFilterEntry(entry, accountability, context));
+	if (filters.length > 1) {
+		return { _and: filters };
+	}
+	return filters[0] ?? null;
+}
+
+function parseFilterEntry(
+	[key, value]: [string, any],
+	accountability: Accountability | null,
+	context: ParseFilterContext
+): Filter {
+	if (['_or', '_and'].includes(String(key))) {
+		return { [key]: value.map((filter: Filter) => parseFilter(filter, accountability, context)) };
+	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
+		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
+	} else if (String(key).startsWith('_')) {
+		return { [key]: parseFilterValue(value, accountability, context) };
+	} else {
+		return { [key]: parseFilter(value, accountability, context) } as Filter;
+	}
 }
 
 function parseFilterValue(value: any, accountability: Accountability | null, context: ParseFilterContext) {
