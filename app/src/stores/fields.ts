@@ -241,7 +241,8 @@ export const useFieldsStore = defineStore({
 		getFieldsForCollection(collection: string): Field[] {
 			return orderBy(
 				this.fields.filter((field) => field.collection === collection),
-				[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)]
+				[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)],
+				['desc', 'asc']
 			);
 		},
 		getFieldsForCollectionAlphabetical(collection: string): Field[] {

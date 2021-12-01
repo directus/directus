@@ -3,7 +3,7 @@ import logger from '../logger';
 import { Meta } from '../types';
 import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
-import { parseFilter, deepMap } from '@directus/shared/utils';
+import { parseFilter } from '@directus/shared/utils';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -123,18 +123,6 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 			logger.warn('Invalid value passed for filter query parameter.');
 		}
 	}
-
-	filters = deepMap(filters, (val) => {
-		try {
-			const parsed = JSON.parse(val);
-
-			if (typeof parsed == 'number' && !Number.isSafeInteger(parsed)) return val;
-
-			return parsed;
-		} catch {
-			return val;
-		}
-	});
 
 	return parseFilter(filters, accountability);
 }

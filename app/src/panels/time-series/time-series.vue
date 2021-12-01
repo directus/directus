@@ -8,7 +8,7 @@ import api from '@/api';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
-import { isEqual, isNil } from 'lodash';
+import { isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
@@ -111,13 +111,11 @@ export default defineComponent({
 		});
 
 		watch(
-			[() => props, () => props.showHeader, () => props.height],
-			(newVal, oldVal) => {
-				if (isEqual(newVal, oldVal) === false) {
-					fetchData();
-					chart.value?.destroy();
-					setupChart();
-				}
+			() => props,
+			() => {
+				fetchData();
+				chart.value?.destroy();
+				setupChart();
 			},
 			{ deep: true }
 		);
