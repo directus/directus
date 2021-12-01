@@ -30,9 +30,9 @@ function setSpecialForType(updates: StateUpdates) {
 }
 
 function updateInterface(updates: StateUpdates, fn: HelperFunctions) {
-	const interfayce = getInterface(fn.getCurrent('field.meta.interface'));
+	const interface_ = getInterface(fn.getCurrent('field.meta.interface'));
 	const type = updates.field?.type;
-	if (type && !interfayce?.types.includes(type)) {
+	if (type && !interface_?.types.includes(type)) {
 		set(updates, 'field.meta.interface', undefined);
 	}
 }
