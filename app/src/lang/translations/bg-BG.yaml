@@ -1413,6 +1413,8 @@ interfaces:
   boolean:
     toggle: Превключвател
     description: Превключване между вкл. и изкл.
+    color_on: Активен цвят
+    color_off: Неактивен цвят
     label_placeholder: Въвеждане на етикет...
     label_default: Включване
   translations:
