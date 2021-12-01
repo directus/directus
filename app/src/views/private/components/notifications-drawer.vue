@@ -55,7 +55,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAppStore, useUserStore, useNotificationsStore } from '@/stores';
+import { useAppStore, useUserStore, useNotificationsStore, useCollectionsStore } from '@/stores';
 import { storeToRefs } from 'pinia';
 import { Notification } from '@directus/shared/types';
 import api from '@/api';
@@ -78,6 +78,7 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 		const notificationsStore = useNotificationsStore();
+		const collectionsStore = useCollectionsStore();
 
 		const router = useRouter();
 
@@ -187,7 +188,14 @@ export default defineComponent({
 		}
 
 		function onRowClick({ item }: { item: Item; event: PointerEvent }) {
-			router.push(`/content/${item.collection}/${item.item}`);
+			const collection = collectionsStore.getCollection(item.collection);
+
+			if (collection?.meta?.singleton) {
+				router.push(`/content/${item.collection}`);
+			} else {
+				router.push(`/content/${item.collection}/${item.item}`);
+			}
+
 			notificationsDrawerOpen.value = false;
 		}
 	},
