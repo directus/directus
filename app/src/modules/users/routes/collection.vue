@@ -168,6 +168,7 @@ import api from '@/api';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
@@ -241,6 +242,13 @@ export default defineComponent({
 		const { layoutWrapper } = useLayout(layout);
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+
+		onBeforeRouteLeave(() => {
+			selection.value = [];
+		});
+		onBeforeRouteUpdate(() => {
+			selection.value = [];
+		});
 
 		return {
 			t,

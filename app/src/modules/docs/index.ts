@@ -7,7 +7,7 @@ import StaticDocs from './routes/static.vue';
 export default defineModule({
 	id: 'docs',
 	name: '$t:documentation',
-	icon: 'info',
+	icon: 'help_outline',
 	routes: [
 		{
 			path: '',
@@ -15,7 +15,7 @@ export default defineModule({
 			children: [
 				{
 					path: '',
-					redirect: '/docs/getting-started/introduction/',
+					redirect: '/docs/app/overview',
 				},
 				...getRoutes(docs),
 			],

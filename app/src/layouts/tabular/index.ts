@@ -4,7 +4,7 @@ import TabularOptions from './options.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { ref, computed, inject, watch, toRefs } from 'vue';
+import { ref, computed, watch, toRefs } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@directus/shared/types';
@@ -34,8 +34,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const router = useRouter();
 
-		const mainElement = inject('main-element', ref<Element | null>(null));
-
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
@@ -45,7 +43,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
-		watch([collection, search, limit, sort], () => (page.value = 1));
 
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
@@ -134,10 +131,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function toPage(newPage: number) {
 			page.value = newPage;
-			mainElement.value?.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
 		}
 
 		function selectAll() {
@@ -149,16 +142,17 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function useItemOptions() {
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
-			const sort = syncRefProperty(layoutQuery, 'sort', primaryKeyField.value ? [primaryKeyField.value?.field] : []);
-			const fields = syncRefProperty(
-				layoutQuery,
-				'fields',
-				fieldsInCollection.value
+			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
+			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
+			const fieldsDefaultValue = computed(() => {
+				return fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
 					.slice(0, 4)
 					.map(({ field }: Field) => field)
-					.sort()
-			);
+					.sort();
+			});
+
+			const fields = syncRefProperty(layoutQuery, 'fields', fieldsDefaultValue);
 
 			const fieldsWithRelational = computed(() => {
 				if (!props.collection) return [];
@@ -170,7 +164,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value?.[0].startsWith('-')) {
+				if (!sort.value?.[0]) {
+					return null;
+				} else if (sort.value?.[0].startsWith('-')) {
 					return { by: sort.value[0].substring(1), desc: true };
 				} else {
 					return { by: sort.value[0], desc: false };
@@ -263,7 +259,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				getFieldDisplay,
 			};
 
-			function onRowClick(item: Item) {
+			function onRowClick({ item, event }: { item: Item; event: PointerEvent }) {
 				if (props.readonly === true || !primaryKeyField.value) return;
 
 				const primaryKey = item[primaryKeyField.value.field];
@@ -275,12 +271,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						selection.value = selection.value.filter((item) => item !== primaryKey);
 					}
 				} else {
-					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					const next = router.resolve(`/content/${collection.value}/${encodeURIComponent(primaryKey)}`);
+
+					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
+					else router.push(next);
 				}
 			}
 
 			function onSortChange(newSort: { by: string; desc: boolean }) {
 				let sortString = newSort.by;
+				if (!newSort.by) {
+					sort.value = [];
+					return;
+				}
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}

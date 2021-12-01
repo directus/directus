@@ -14,7 +14,7 @@ body:
           required: true
         - label: I'm on [the latest version of Directus](https://github.com/directus/directus/releases).
           required: true
-        - label: There's [no other issue](https://github.com/directus/directus/issues) that already describes my problem.
+        - label: There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes my problem.
           required: true
   - type: textarea
     attributes:
@@ -28,11 +28,15 @@ body:
       description: Steps to reproduce the behavior. Contributors should be able to follow the steps provided in order to reproduce the bug.
     validations:
       required: true
+  - type: textarea
+    attributes:
+      label: Errors Shown
+      description: Are there any errors logged in the browser console, or terminal where you're running Directus?
   - type: input
     id: directus-version
     attributes:
       label: What version of Directus are you using?
-      description: 'For example: v9.1.4'
+      description: 'Version is displayed under "Settings". For example: 9.0.1'
     validations:
       required: true
   - type: input

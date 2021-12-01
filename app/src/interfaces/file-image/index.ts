@@ -8,7 +8,8 @@ export default defineInterface({
 	icon: 'insert_photo',
 	component: InterfaceFileImage,
 	types: ['uuid'],
-	groups: ['file'],
+	localTypes: ['file'],
+	group: 'relational',
 	relational: true,
 	options: [
 		{
@@ -16,12 +17,27 @@ export default defineInterface({
 			name: '$t:interfaces.system-folder.folder',
 			type: 'uuid',
 			meta: {
-				width: 'full',
+				width: 'half',
 				interface: 'system-folder',
 				note: '$t:interfaces.system-folder.field_hint',
 			},
 			schema: {
 				default_value: undefined,
+			},
+		},
+		{
+			field: 'crop',
+			name: '$t:interfaces.file-image.crop',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: '$t:interfaces.file-image.crop_label',
+				},
+			},
+			schema: {
+				default_value: true,
 			},
 		},
 	],

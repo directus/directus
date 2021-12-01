@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: English
 avatar: الصورةالرمزية
 default_provider: الإفتراضي
 published: تم نشره
@@ -50,7 +51,6 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
-db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
 show_archived_items: أظهر العناصر المؤرشفة
 edited: تم تعديل القيمة
 required: مطلوب
@@ -187,6 +187,7 @@ bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
 datetime: الوقت و التاريخ
+dateTime: الوقت و التاريخ
 decimal: عشري
 float: عشري
 integer: رقم صحيح
@@ -198,7 +199,6 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
-geometry: الأشكال الهندسية
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -218,9 +218,6 @@ new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيان�
 search_collection: مجموعة البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
-add_m2o_to_collection: 'إضافة كثيرين إلى واحد ل "{collection}"'
-add_o2m_to_collection: 'إضافة واحد إلى كثيرين ل "{collection}"'
-add_m2m_to_collection: 'إضافة كثيرين إلى كثيرين ل "{collection}"'
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
@@ -407,6 +404,9 @@ copy: نسخ
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+action: الإجراء
+ip_address: عنوان IP
+user_agent: وكيل المستخدم
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
 add_filter: إضافة فلتر
@@ -765,6 +765,7 @@ fields:
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    module_bar: شريط الوحدة
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
@@ -780,6 +781,8 @@ fields:
   directus_webhooks:
     name: الاسم
     status: حالة
+    value: قيمة
+    collections: مجموعات
 field_options:
   directus_settings:
     security_divider_title: الأمان
@@ -793,16 +796,15 @@ field_options:
     collection_setup: لا توجد مجموعات الإعداد
     singleton: معاملته ككائن واحد
     language: لغة
+    translation: الترجمة
+    collection_name: اسم المجموعة
     archive_divider: أرشفة
-    divider: رتب
+    sort_divider: رتب
   directus_roles:
     fields:
       icon_name: أيقونة
       name_name: الاسم
       name_placeholder: أدخل عنوانًا...
-    collection_list:
-      fields:
-        type_name: النوع
     collections_name: مجموعات
   directus_users:
     status_dropdown_active: مفعل
@@ -811,6 +813,8 @@ field_options:
     status_options_inactive: غير نشط
     actions_create: انشاء
     actions_update: تحديث
+    headers:
+      value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
@@ -921,7 +925,6 @@ interfaces:
     select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
-    title_placeholder: أدخل عنوانًا...
     inline_title_label: أظهر العنوان داخل السطر
     margin_top: الهامش العلوي
     margin_top_label: زيادة الهامش العلوي
@@ -992,6 +995,8 @@ interfaces:
   boolean:
     toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
+    color_on: تشغيل اللون
+    color_off: إيقاف اللون
     label_default: تمكين
   translations:
     display_template: عرض القالب
@@ -1011,6 +1016,8 @@ interfaces:
   input-autocomplete-api:
     rate: معدل
 displays:
+  translations:
+    translations: الترجمة
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل
@@ -1091,8 +1098,6 @@ layouts:
     calendar: تقويم
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
-  map:
-    field: الأشكال الهندسية
 panels:
   label:
     name: تسمية

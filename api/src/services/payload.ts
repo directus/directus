@@ -1,7 +1,7 @@
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit, isNil } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -10,8 +10,7 @@ import { Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import { unflatten } from 'flat';
-import { isNativeGeometry } from '../utils/geometry';
-import { getGeometryHelper } from '../database/helpers/geometry';
+import { getHelpers, Helpers } from '../database/helpers';
 import { parse as wktToGeoJSON } from 'wellknown';
 import { generateHash } from '../utils/generate-hash';
 
@@ -34,12 +33,14 @@ type Transformers = {
 export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
+	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
+		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 
@@ -64,7 +65,13 @@ export class PayloadService {
 		},
 		async boolean({ action, value }) {
 			if (action === 'read') {
-				return value === true || value === 1 || value === '1';
+				if (value === true || value === 1 || value === '1') {
+					return true;
+				} else if (value === false || value === 0 || value === '0') {
+					return false;
+				} else if (value === null || value === '') {
+					return null;
+				}
 			}
 
 			return value;
@@ -124,7 +131,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		let processedPayload = toArray(payload);
+		const processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -166,13 +173,25 @@ export class PayloadService {
 			});
 		}
 
-		processedPayload = processedPayload.map((item: Record<string, any>) => unflatten(item, { delimiter: '->' }));
+		if (action === 'read') {
+			this.processAggregates(processedPayload);
+		}
 
 		if (Array.isArray(payload)) {
 			return processedPayload;
 		}
 
 		return processedPayload[0];
+	}
+
+	processAggregates(payload: Partial<Item>[]) {
+		const aggregateKeys = Object.keys(payload[0]).filter((key) => key.includes('->'));
+		if (aggregateKeys.length) {
+			for (const item of payload) {
+				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				aggregateKeys.forEach((key) => delete item[key]);
+			}
+		}
 	}
 
 	async processField(
@@ -208,17 +227,13 @@ export class PayloadService {
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
-		const helper = getGeometryHelper();
-
 		const process =
 			action == 'read'
-				? (value: any) => {
-						if (typeof value === 'string') return wktToGeoJSON(value);
-				  }
-				: (value: any) => helper.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
+				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
+				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
@@ -399,12 +414,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -467,12 +482,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -568,7 +583,7 @@ export class PayloadService {
 
 				savedPrimaryKeys.push(
 					...(await itemsService.upsertMany(recordsToUpsert, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					}))
 				);
 
@@ -598,7 +613,7 @@ export class PayloadService {
 						query,
 						{ [relation.field]: null },
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -616,7 +631,7 @@ export class PayloadService {
 							[relation.field]: parent || payload[currentPrimaryKeyField],
 						})),
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -632,7 +647,7 @@ export class PayloadService {
 								[relation.field]: parent || payload[currentPrimaryKeyField],
 							},
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}
@@ -663,7 +678,7 @@ export class PayloadService {
 							query,
 							{ [relation.field]: null },
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}

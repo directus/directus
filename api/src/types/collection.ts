@@ -10,11 +10,12 @@ export type CollectionMeta = {
 	translations: Record<string, string>;
 	item_duplication_fields: string[] | null;
 	accountability: 'all' | 'accountability' | null;
+	group: string | null;
 };
 
 export type Collection = {
 	collection: string;
 	fields?: Field[];
 	meta: CollectionMeta | null;
-	schema: Table;
+	schema: Table | null;
 };

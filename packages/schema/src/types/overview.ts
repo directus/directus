@@ -7,6 +7,7 @@ export type SchemaOverview = {
 				column_name: string;
 				default_value: any;
 				is_nullable: boolean;
+				is_generated: boolean;
 				data_type: string;
 				numeric_precision?: number | null;
 				numeric_scale?: number | null;

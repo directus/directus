@@ -1,6 +1,6 @@
 import { get, has, isEqual } from 'lodash';
 import { Ref } from 'vue';
-import { RelationInfo } from './use-relation';
+import { RelationInfo } from '@/composables/use-m2m';
 
 type UsableActions = {
 	getJunctionItem: (id: string | number) => string | number | Record<string, any> | null;

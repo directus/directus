@@ -5,12 +5,13 @@ import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { cloneDeep, get, merge } from 'lodash';
 import { Ref, ref, watch } from 'vue';
-import { RelationInfo } from './use-relation';
+import { RelationInfo } from '@/composables/use-m2m';
 import { getEndpoint } from '@/utils/get-endpoint';
 
 type UsablePreview = {
 	tableHeaders: Ref<Header[]>;
 	items: Ref<Record<string, any>[]>;
+	initialItems: Ref<Record<string, any>[]>;
 	loading: Ref<boolean>;
 	error: Ref<any>;
 };
@@ -30,6 +31,7 @@ export default function usePreview(
 	const fieldsStore = useFieldsStore();
 	const tableHeaders = ref<Header[]>([]);
 	const loading = ref(false);
+	const initialItems = ref<Record<string, any>[]>([]);
 	const items = ref<Record<string, any>[]>([]);
 	const error = ref<any>(null);
 
@@ -92,6 +94,8 @@ export default function usePreview(
 					})
 					.concat(...newItems);
 
+				if (!initialItems.value.length) initialItems.value = responseData;
+
 				items.value = responseData;
 			} catch (err: any) {
 				error.value = err;
@@ -140,7 +144,7 @@ export default function usePreview(
 		{ immediate: true }
 	);
 
-	return { tableHeaders, items, loading, error };
+	return { tableHeaders, items, initialItems, loading, error };
 
 	function getRelatedFields(fields: string[]) {
 		const { junctionField } = relation.value;

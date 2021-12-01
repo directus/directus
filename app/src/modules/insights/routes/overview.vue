@@ -166,7 +166,7 @@ export default defineComponent({
 			md,
 		};
 
-		function navigateToDashboard(dashboard: Dashboard) {
+		function navigateToDashboard({ item: dashboard }: { item: Dashboard }) {
 			router.push(`/insights/${dashboard.id}`);
 		}
 

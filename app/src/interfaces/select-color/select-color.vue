@@ -282,7 +282,7 @@ export default defineComponent({
 .presets {
 	display: flex;
 	width: 100%;
-	padding: 0px 8px 14px 8px;
+	padding: 0px 8px 14px;
 }
 
 .presets .preset {
@@ -302,7 +302,9 @@ export default defineComponent({
 }
 
 .v-input.html-color-select {
-	display: none;
+	width: 0;
+	height: 0;
+	visibility: hidden;
 }
 
 .color-input {

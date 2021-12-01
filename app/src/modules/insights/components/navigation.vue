@@ -1,5 +1,5 @@
 <template>
-	<v-list large>
+	<v-list nav>
 		<v-button v-if="navItems.length === 0" full-width outlined dashed @click="$emit('create')">
 			{{ t('create_dashboard') }}
 		</v-button>

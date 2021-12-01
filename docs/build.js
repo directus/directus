@@ -7,7 +7,7 @@ console.log('Building docs...');
 
 const tree = dirTree('.', {
 	extensions: /\.md$/,
-	exclude: /(node_modules|.vuepress|.vscode|dist)/,
+	exclude: /(node_modules|.vuepress|.vscode|dist|README.md)/,
 	normalizePath: true,
 	attributes: ['type', 'extension'],
 });

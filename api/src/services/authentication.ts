@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import getDatabase from '../database';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
@@ -14,9 +14,10 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge, clone, cloneDeep } from 'lodash';
+import { clone, cloneDeep, omit } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
+import logger from '../logger';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
@@ -60,39 +61,44 @@ export class AuthenticationService {
 				'role',
 				'tfa_secret',
 				'provider',
-				'external_identifier'
+				'external_identifier',
+				'auth_data'
 			)
 			.from('directus_users')
 			.where('id', await provider.getUserID(cloneDeep(payload)))
 			.andWhere('provider', providerName)
 			.first();
 
-		const updatedPayload = await emitter.emitAsync('auth.login.before', {
-			event: 'auth.login.before',
-			action: 'login',
-			schema: this.schema,
-			payload: payload,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
-
-		if (updatedPayload) {
-			payload = updatedPayload.length > 0 ? updatedPayload.reduce((acc, val) => merge(acc, val), {}) : payload;
-		}
+		const updatedPayload = await emitter.emitFilter(
+			'auth.login',
+			payload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', {
-				event: 'auth.login',
-				action: 'login',
-				schema: this.schema,
-				payload: payload,
-				accountability: this.accountability,
-				status,
-				user: user?.id,
-				database: this.knex,
-			});
+			emitter.emitAction(
+				'auth.login',
+				{
+					payload: updatedPayload,
+					status,
+					user: user?.id,
+					provider: providerName,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		};
 
 		if (user?.status !== 'active') {
@@ -133,7 +139,7 @@ export class AuthenticationService {
 		let sessionData: SessionData = null;
 
 		try {
-			sessionData = await provider.login(clone(user), cloneDeep(payload));
+			sessionData = await provider.login(clone(user), cloneDeep(updatedPayload));
 		} catch (e) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -157,27 +163,27 @@ export class AuthenticationService {
 			}
 		}
 
-		let tokenPayload = {
+		const tokenPayload = {
 			id: user.id,
 		};
 
-		const customClaims = await emitter.emitAsync('auth.jwt.before', tokenPayload, {
-			event: 'auth.jwt.before',
-			action: 'jwt',
-			schema: this.schema,
-			payload: tokenPayload,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+				type: 'login',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
-		if (customClaims) {
-			tokenPayload =
-				customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), tokenPayload) : tokenPayload;
-		}
-
-		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
@@ -191,7 +197,7 @@ export class AuthenticationService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
-			data: sessionData,
+			data: sessionData && JSON.stringify(sessionData),
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
@@ -242,7 +248,8 @@ export class AuthenticationService {
 				'u.status',
 				'u.role',
 				'u.provider',
-				'u.external_identifier'
+				'u.external_identifier',
+				'u.auth_data'
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -253,12 +260,42 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const { data: sessionData, ...user } = record;
+		let { data: sessionData } = record;
+		const user = omit(record, 'data');
+
+		if (typeof sessionData === 'string') {
+			try {
+				sessionData = JSON.parse(sessionData);
+			} catch {
+				logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+			}
+		}
 
 		const provider = getAuthProvider(user.provider);
-		await provider.refresh(clone(user), sessionData);
 
-		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
+		const newSessionData = await provider.refresh(clone(user), sessionData as SessionData);
+
+		const tokenPayload = {
+			id: user.id,
+		};
+
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: user.provider,
+				type: 'refresh',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
@@ -267,7 +304,11 @@ export class AuthenticationService {
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
 		await this.knex('directus_sessions')
-			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
+			.update({
+				token: newRefreshToken,
+				expires: refreshTokenExpiration,
+				data: newSessionData && JSON.stringify(newSessionData),
+			})
 			.where({ token: refreshToken });
 
 		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
@@ -292,6 +333,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
+				'u.auth_data',
 				's.data'
 			)
 			.from('directus_sessions as s')
@@ -300,10 +342,19 @@ export class AuthenticationService {
 			.first();
 
 		if (record) {
-			const { data: sessionData, ...user } = record;
+			let { data: sessionData } = record;
+			const user = omit(record, 'data');
+
+			if (typeof sessionData === 'string') {
+				try {
+					sessionData = JSON.parse(sessionData);
+				} catch {
+					logger.warn(`Session data isn't valid JSON: ${sessionData}`);
+				}
+			}
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout(clone(user), sessionData);
+			await provider.logout(clone(user), sessionData as SessionData);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
@@ -320,7 +371,8 @@ export class AuthenticationService {
 				'status',
 				'role',
 				'provider',
-				'external_identifier'
+				'external_identifier',
+				'auth_data'
 			)
 			.from('directus_users')
 			.where('id', userID)

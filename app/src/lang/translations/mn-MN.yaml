@@ -24,7 +24,6 @@ indeterminate: Тодорхойгүй
 edit_collection: Багцыг засах
 exclusive: Онцгой
 children: Хүүхэд
-db_only_click_to_configure: 'Зөвхөн дата баазад хамаатай: Дарж өөрчилнө үү '
 show_archived_items: Архивласан зүйлсийг харах
 edited: Зассан утга
 required: Зайлшгүй
@@ -74,6 +73,8 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
 reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
 fields:
+  directus_settings:
+    module_bar: Модулийн мөр
   directus_fields:
     translation: Талбарын нэрний орчуулга
   directus_roles:

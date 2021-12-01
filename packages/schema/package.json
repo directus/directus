@@ -1,8 +1,12 @@
 {
 	"name": "@directus/schema",
-	"version": "9.0.0-rc.96",
+	"version": "9.1.2",
 	"description": "Utility for extracting information about existing DB schema",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc --build && echo \"Built successfully\"",
@@ -39,10 +43,10 @@
 	"homepage": "https://github.com/directus/directus#readme",
 	"devDependencies": {
 		"npm-watch": "0.11.0",
-		"typescript": "4.4.4"
+		"typescript": "4.5.2"
 	},
 	"dependencies": {
-		"knex-schema-inspector": "1.6.2",
+		"knex-schema-inspector": "^1.6.6",
 		"lodash": "^4.17.21"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"

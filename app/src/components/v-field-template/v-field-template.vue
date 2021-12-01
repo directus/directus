@@ -22,7 +22,7 @@
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value, 1)">
+		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value)">
 			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
@@ -52,7 +52,7 @@ export default defineComponent({
 		},
 		collection: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		depth: {
 			type: Number,
@@ -277,11 +277,19 @@ export default defineComponent({
 							return `<span class="text">${part}</span>`;
 						}
 						const fieldKey = part.replace(/({|})/g, '').trim();
-						const field = findTree(treeList.value, fieldKey.split('.'));
+						const fieldPath = fieldKey.split('.');
+
+						for (let i = 0; i < fieldPath.length; i++) {
+							loadFieldRelations(fieldPath.slice(0, i).join('.'));
+						}
+
+						const field = findTree(treeList.value, fieldPath);
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${fieldKey}" disabled="${props.disabled}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}" ${props.disabled ? 'disabled' : ''}>${
+							field.name
+						}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;

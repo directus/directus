@@ -61,7 +61,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	let currentRequest: CancelTokenSource | null = null;
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
-	const fetchItems = throttle(getItems, 350);
+	const fetchItems = throttle(getItems, 500);
 
 	if (fetchOnInit) {
 		fetchItems();
@@ -77,11 +77,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 			if (!newCollection || !query) return;
 
-			if (newFilter !== oldFilter || newLimit !== oldLimit || newSort !== oldSort || newSearch !== oldSearch) {
+			if (
+				!isEqual(newFilter, oldFilter) ||
+				!isEqual(newSort, oldSort) ||
+				newLimit !== oldLimit ||
+				newSearch !== oldSearch
+			) {
 				page.value = 1;
 			}
 
-			if (isEqual(newCollection, oldCollection) === false) {
+			if (newCollection !== oldCollection) {
 				reset();
 			}
 

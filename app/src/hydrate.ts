@@ -14,6 +14,7 @@ import {
 	useServerStore,
 	useSettingsStore,
 	useUserStore,
+	useNotificationsStore,
 } from '@/stores';
 
 type GenericStore = {
@@ -37,6 +38,7 @@ export function useStores(
 		useRelationsStore,
 		usePermissionsStore,
 		useInsightsStore,
+		useNotificationsStore,
 	]
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
@@ -60,11 +62,11 @@ export async function hydrate(stores = useStores()): Promise<void> {
 		 * else.
 		 */
 		await userStore.hydrate();
-		await permissionsStore.hydrate();
-
-		const hydratedStores = ['userStore', 'permissionsStore'];
 
 		if (userStore.currentUser?.role) {
+			await permissionsStore.hydrate();
+			const hydratedStores = ['userStore', 'permissionsStore'];
+
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
 			await registerModules();
 

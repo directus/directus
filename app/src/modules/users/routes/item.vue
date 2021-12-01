@@ -89,6 +89,7 @@
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -305,7 +306,13 @@ export default defineComponent({
 		];
 
 		const fieldsFiltered = computed(() => {
-			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
+			return fields.value.filter((field: Field) => {
+				// These fields should only be editable when creating new users
+				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
+					field.meta.readonly = true;
+				}
+				return !fieldsDenyList.includes(field.field);
+			});
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
@@ -337,6 +344,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			revisionsDrawerDetail,
 			previewLoading,
@@ -424,7 +432,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/users`);
+				router.replace(`/users`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -486,7 +494,13 @@ export default defineComponent({
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		async function toggleArchive() {

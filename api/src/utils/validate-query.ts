@@ -103,7 +103,7 @@ function validateFilterPrimitive(value: any, key: string) {
 		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
 	}
 
-	if (typeof value === 'number' && Number.isNaN(value)) {
+	if (typeof value === 'number' && (Number.isNaN(value) || !Number.isSafeInteger(value))) {
 		throw new InvalidQueryException(`The filter value for "${key}" is not a valid number`);
 	}
 
@@ -125,6 +125,7 @@ function validateList(value: any, key: string) {
 }
 
 function validateBoolean(value: any, key: string) {
+	if (value === null) return true;
 	if (typeof value !== 'boolean') {
 		throw new InvalidQueryException(`"${key}" has to be a boolean`);
 	}
@@ -133,6 +134,7 @@ function validateBoolean(value: any, key: string) {
 }
 
 function validateGeometry(value: any, key: string) {
+	if (value === null) return true;
 	try {
 		stringify(value);
 	} catch {

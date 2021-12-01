@@ -10,17 +10,26 @@
 	<input
 		v-else-if="is === 'interface-input'"
 		ref="inputEl"
-		type="search"
+		type="text"
 		:pattern="inputPattern"
 		:value="value"
 		:style="{ width }"
 		placeholder="--"
-		@input="emitValueDebounced($event.target.value)"
+		@input="emitValue($event.target.value)"
+	/>
+	<v-select
+		v-else-if="is === 'select'"
+		inline
+		:items="choices"
+		:model-value="value"
+		:placeholder="t('select')"
+		allow-other
+		@update:model-value="emitValue($event)"
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
 			<v-icon
-				v-if="type === 'geometry' || type === 'json'"
+				v-if="type.startsWith('geometry') || type === 'json'"
 				class="preview"
 				:name="type === 'json' ? 'integration_instructions' : 'map'"
 				@click="toggle"
@@ -28,22 +37,20 @@
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component
-				:is="is"
-				class="input-component"
-				small
-				:type="type"
-				:value="value"
-				@input="emitValueDebounced($event)"
-			/>
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
 		</div>
 	</v-menu>
 </template>
 
 <script lang="ts">
-import { debounce } from 'lodash';
 import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+type Choice = {
+	text: string;
+	value: string | number;
+	children?: Choice[];
+};
 
 export default defineComponent({
 	props: {
@@ -62,6 +69,10 @@ export default defineComponent({
 		focus: {
 			type: Boolean,
 			default: true,
+		},
+		choices: {
+			type: Array as PropType<Choice[]>,
+			default: () => [],
 		},
 	},
 	emits: ['input'],
@@ -103,15 +114,22 @@ export default defineComponent({
 			if (props.focus) inputEl.value?.focus();
 		});
 
-		const emitValueDebounced = debounce((val: unknown) => emitValue(val), 250);
-
-		return { displayValue, width, t, emitValueDebounced, inputEl, inputPattern };
+		return { displayValue, width, t, emitValue, inputEl, inputPattern };
 
 		function emitValue(val: unknown) {
 			if (val === '') {
-				emit('input', null);
-			} else {
-				emit('input', val);
+				return emit('input', null);
+			}
+
+			if (
+				typeof val === 'string' &&
+				['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix))
+			) {
+				return emit('input', val);
+			}
+
+			if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
+				return emit('input', val);
 			}
 		}
 	},

@@ -31,7 +31,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: [Boolean, Array],
-			default: false,
+			default: null,
 		},
 		label: {
 			type: String,
@@ -86,6 +86,8 @@ export default defineComponent({
 
 		const icon = computed<string>(() => {
 			if (props.indeterminate === true) return props.iconIndeterminate;
+			if (props.checked === null && props.modelValue === null) return props.iconIndeterminate;
+
 			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 
@@ -175,9 +177,14 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
+		background-color: var(--background-page);
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: all var(--fast) var(--transition);
+
+		&:disabled {
+			background-color: var(--background-subdued);
+		}
 
 		&::before {
 			position: absolute;
@@ -206,22 +213,38 @@ body {
 		}
 	}
 
+	&:not(:disabled):not(.indeterminate) {
+		.label {
+			color: var(--foreground-normal);
+		}
+
+		&.block {
+			&::before {
+				opacity: 0.1;
+			}
+		}
+	}
+
 	&:not(:disabled):not(.indeterminate).checked {
 		.checkbox {
 			--v-icon-color: var(--v-checkbox-color);
-		}
-
-		.label {
-			color: var(--foreground-normal);
 		}
 
 		&.block {
 			.label {
 				color: var(--v-checkbox-color);
 			}
+		}
+	}
 
-			&::before {
-				opacity: 0.1;
+	&:not(:disabled):not(.indeterminate):not(.checked) {
+		.checkbox {
+			--v-icon-color: var(--v-checkbox-unchecked-color);
+		}
+
+		&.block {
+			.label {
+				color: var(--v-checkbox-unchecked-color);
 			}
 		}
 	}

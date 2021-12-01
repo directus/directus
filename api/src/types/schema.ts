@@ -1,10 +1,11 @@
-import { Type, Permission } from '@directus/shared/types';
+import { Type } from '@directus/shared/types';
 import { Relation } from './relation';
 
 export type FieldOverview = {
 	field: string;
 	defaultValue: any;
 	nullable: boolean;
+	generated: boolean;
 	type: Type | 'unknown' | 'alias';
 	dbType: string | null;
 	precision: number | null;
@@ -31,5 +32,4 @@ export type CollectionsOverview = {
 export type SchemaOverview = {
 	collections: CollectionsOverview;
 	relations: Relation[];
-	permissions: Permission[];
 };

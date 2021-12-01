@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+.vs
 .vscode
 .env
 .env.*
@@ -17,5 +18,6 @@ dist
 *.tsbuildinfo
 .e2e-containers.json
 coverage
+TODO
 schema.yaml
 schema.json
