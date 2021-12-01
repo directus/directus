@@ -3,6 +3,7 @@ import { Accountability, Filter, User, Role } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { isDynamicVariable } from './is-dynamic-variable';
+import { isObjectLike } from 'lodash';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
@@ -16,6 +17,7 @@ export function parseFilter(
 	context: ParseFilterContext = {}
 ): Filter | null {
 	if (!filter) return null;
+	if (!isObjectLike(filter)) return filter;
 	return Object.entries(filter).reduce((result, [key, value]) => {
 		if (['_or', '_and'].includes(String(key))) {
 			result[key] = value.map((filter: Filter) => parseFilter(filter, accountability, context));
