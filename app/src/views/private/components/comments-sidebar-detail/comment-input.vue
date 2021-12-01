@@ -209,12 +209,12 @@ export default defineComponent({
 			let countAfter = triggerCaretPosition;
 
 			if (text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
-				while (countBefore >= 0 && text.charAt(countBefore) !== ' ' && text.charCodeAt(countBefore) !== 10) {
+				while (countBefore >= 0 && text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
 					countBefore--;
 				}
 			}
 
-			while (countAfter < text.length && text.charAt(countAfter) !== ' ' && text.charCodeAt(countBefore) !== 10) {
+			while (countAfter < text.length && text.charAt(countAfter) !== ' ' && text.charAt(countAfter) !== '\n') {
 				countAfter++;
 			}
 

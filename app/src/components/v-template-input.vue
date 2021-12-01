@@ -111,13 +111,13 @@ export default defineComponent({
 				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 					event.preventDefault();
 
+					const newCaretPos = matchedPositions[checkCaretPos - 1];
 					input.value!.innerText = (
-						input.value!.innerText.substring(0, matchedPositions[checkCaretPos - 1]) +
-						input.value!.innerText.substring(caretPos)
+						input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)
 					).replaceAll(String.fromCharCode(160), ' ');
 
 					parseHTML();
-					position(input.value!, matchedPositions[checkCaretPos - 1]);
+					position(input.value!, newCaretPos);
 					emit('update:modelValue', input.value!.innerText);
 				}
 			} else if (event.code === 'Delete') {
@@ -172,7 +172,8 @@ export default defineComponent({
 			const text = input.innerText ?? '';
 
 			let endPos = text.indexOf(' ', caretPos);
-			if (endPos == -1) endPos = text.length;
+			if (endPos === -1) endPos = text.indexOf('\n', caretPos);
+			if (endPos === -1) endPos = text.length;
 			const result = /\S+$/.exec(text.slice(0, endPos));
 			let word = result ? result[0] : null;
 			if (word) word = word.replace(/[\s'";:,./?\\-]$/, '');
