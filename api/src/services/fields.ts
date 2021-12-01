@@ -244,57 +244,53 @@ export class FieldsService {
 				schema: this.schema,
 			});
 
-			if (field.meta) {
-				await emitter.emitFilter(
-					`fields.create`,
-					field,
-					{
-						collection: collection,
-					},
-					{
-						database: trx,
-						schema: this.schema,
-						accountability: this.accountability,
-					}
-				);
-			}
+			const hookAdjustedField = await emitter.emitFilter(
+				`fields.create`,
+				field,
+				{
+					collection: collection,
+				},
+				{
+					database: trx,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 
-			if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+			if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 				if (table) {
-					this.addColumnToTable(table, field as Field);
+					this.addColumnToTable(table, hookAdjustedField as Field);
 				} else {
 					await trx.schema.alterTable(collection, (table) => {
-						this.addColumnToTable(table, field as Field);
+						this.addColumnToTable(table, hookAdjustedField as Field);
 					});
 				}
 			}
 
-			if (field.meta) {
+			if (hookAdjustedField.meta) {
 				await itemsService.createOne(
 					{
-						...field.meta,
+						...hookAdjustedField.meta,
 						collection: collection,
-						field: field.field,
+						field: hookAdjustedField.field,
 					},
 					{ emitEvents: false }
 				);
-
-				emitter.emitAction(
-					`fields.create`,
-					{
-						payload: field,
-						key: field.field,
-						collection: collection,
-					},
-					{
-						// This hook is called async. If we would pass the transaction here, the hook can be
-						// called after the transaction is done #5460
-						database: getDatabase(),
-						schema: this.schema,
-						accountability: this.accountability,
-					}
-				);
 			}
+
+			emitter.emitAction(
+				`fields.create`,
+				{
+					payload: hookAdjustedField,
+					key: hookAdjustedField.field,
+					collection: collection,
+				},
+				{
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		});
 
 		if (this.cache && env.CACHE_AUTO_PURGE) {
@@ -309,48 +305,31 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
+		const hookAdjustedField = await emitter.emitFilter(
+			`fields.update`,
+			field,
+			{
+				keys: [field.field],
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
 		const record = field.meta
 			? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 			: null;
 
-		if (field.meta) {
-			if (record) {
-				await emitter.emitFilter(
-					`fields.update`,
-					field,
-					{
-						keys: [field.field],
-						collection: collection,
-					},
-					{
-						database: this.knex,
-						schema: this.schema,
-						accountability: this.accountability,
-					}
-				);
-			} else {
-				await emitter.emitFilter(
-					`fields.create`,
-					field,
-					{
-						collection: collection,
-					},
-					{
-						database: this.knex,
-						schema: this.schema,
-						accountability: this.accountability,
-					}
-				);
-			}
-		}
+		if (hookAdjustedField.schema) {
+			const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
-		if (field.schema) {
-			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
-
-			if (!isEqual(existingColumn, field.schema)) {
+			if (!isEqual(existingColumn, hookAdjustedField.schema)) {
 				try {
 					await this.knex.schema.alterTable(collection, (table) => {
-						if (!field.schema) return;
+						if (!hookAdjustedField.schema) return;
 						this.addColumnToTable(table, field, existingColumn);
 					});
 				} catch (err: any) {
@@ -359,57 +338,25 @@ export class FieldsService {
 			}
 		}
 
-		if (field.meta) {
+		if (hookAdjustedField.meta) {
 			if (record) {
 				await this.itemsService.updateOne(
 					record.id,
 					{
-						...field.meta,
+						...hookAdjustedField.meta,
 						collection: collection,
-						field: field.field,
+						field: hookAdjustedField.field,
 					},
 					{ emitEvents: false }
-				);
-
-				emitter.emitAction(
-					`fields.update`,
-					{
-						payload: field,
-						keys: [field.field],
-						collection: collection,
-					},
-					{
-						// This hook is called async. If we would pass the transaction here, the hook can be
-						// called after the transaction is done #5460
-						database: getDatabase(),
-						schema: this.schema,
-						accountability: this.accountability,
-					}
 				);
 			} else {
 				await this.itemsService.createOne(
 					{
-						...field.meta,
+						...hookAdjustedField.meta,
 						collection: collection,
-						field: field.field,
+						field: hookAdjustedField.field,
 					},
 					{ emitEvents: false }
-				);
-
-				emitter.emitAction(
-					`fields.create`,
-					{
-						payload: field,
-						key: field.field,
-						collection: collection,
-					},
-					{
-						// This hook is called async. If we would pass the transaction here, the hook can be
-						// called after the transaction is done #5460
-						database: getDatabase(),
-						schema: this.schema,
-						accountability: this.accountability,
-					}
 				);
 			}
 		}
@@ -419,6 +366,20 @@ export class FieldsService {
 		}
 
 		await this.systemCache.clear();
+
+		emitter.emitAction(
+			`fields.update`,
+			{
+				payload: hookAdjustedField,
+				keys: [hookAdjustedField.field],
+				collection: collection,
+			},
+			{
+				database: getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		return field.field;
 	}
