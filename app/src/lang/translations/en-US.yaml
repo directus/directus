@@ -1612,6 +1612,8 @@ panels:
     description: Render a line chart based on values over time
     date_field: Date Field
     value_field: Value Field
+    fill_type: Fill Type
+    curve_type: Curve Type
   label:
     name: Label
     description: Show some text

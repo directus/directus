@@ -68,6 +68,14 @@ export default defineComponent({
 			type: String,
 			default: '#00C897',
 		},
+		fillType: {
+			type: String,
+			default: 'gradient',
+		},
+		curveType: {
+			type: String,
+			default: 'smooth',
+		},
 		decimals: {
 			type: Number,
 			default: 0,
@@ -236,7 +244,7 @@ export default defineComponent({
 			chart.value = new ApexCharts(chartEl.value, {
 				colors: [props.color ? props.color : '#00C897'],
 				chart: {
-					type: 'area',
+					type: props.fillType === 'disabled' ? 'line' : 'area',
 					height: '100%',
 					toolbar: {
 						show: false,
@@ -252,7 +260,7 @@ export default defineComponent({
 				},
 				series: [],
 				stroke: {
-					curve: 'smooth',
+					curve: props.curveType,
 					width: 2,
 					lineCap: 'round',
 				},
@@ -263,7 +271,7 @@ export default defineComponent({
 					},
 				},
 				fill: {
-					type: 'gradient',
+					type: props.fillType === 'disabled' ? 'solid' : props.fillType,
 					gradient: {
 						colorStops: [
 							[
