@@ -14,7 +14,7 @@
 		>
 			<insights-panel
 				v-for="panel in panels"
-				:key="panel.id"
+				:key="getSimpleHashForPanel(panel)"
 				:panel="panel"
 				:edit-mode="editMode"
 				:now="now"
@@ -29,6 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
+import { omit } from 'lodash';
 import { Panel } from '@/types';
 import InsightsPanel from '../components/panel.vue';
 import { useElementSize } from '@/composables/use-element-size';
@@ -117,11 +118,23 @@ export default defineComponent({
 			};
 		});
 
-		return { workspaceSize, workspaceBoxSize, mainElement, zoomScale };
+		return { workspaceSize, workspaceBoxSize, mainElement, zoomScale, getSimpleHashForPanel };
 
 		function getVar(cssVar: string) {
 			if (!mainElement.value) return;
 			return getComputedStyle(mainElement.value).getPropertyValue(cssVar).trim();
+		}
+
+		function getSimpleHashForPanel(panel: Panel & { _coordinates: [number, number][] }) {
+			const trackedProperties = omit(panel, ['position_x', 'position_y', '_coordinates']);
+			const str = JSON.stringify(trackedProperties);
+
+			let hash = 0;
+			for (let i = 0; i < str.length; hash &= hash) {
+				hash = 31 * hash + str.charCodeAt(i++);
+			}
+
+			return Math.abs(hash).toString(16);
 		}
 	},
 });
