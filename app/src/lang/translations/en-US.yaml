@@ -67,6 +67,8 @@ create_webhook: Create Webhook
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
+subject: Subject
+inbox: Inbox
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
@@ -178,7 +180,7 @@ global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
 show_zero: Show Zero
-create_in_advanced_field_creation_mode: Create in Advanced Field Creation Mode
+create_in_advanced_field_creation_mode: Create Field in Advanced Mode
 continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
 sum: Sum
 sum_distinct: Sum Distinct
@@ -433,6 +435,9 @@ user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
+no_notifications: No Notifications
+no_notifications_copy: You're all caught up!
+activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV
@@ -790,6 +795,7 @@ layout_setup: Layout Setup
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
+discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
@@ -857,6 +863,7 @@ directus_collection:
   directus_migrations: What version of the database you're using
   directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
+  directus_notifications: Notifications sent to users
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -890,6 +897,8 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    archive_field: Archive Field
+    item_duplication_fields: Item Duplication Fields
   directus_files:
     $thumbnail: Thumbnail
     title: Title
@@ -975,6 +984,7 @@ fields:
     storage_asset_transform: Allowed Transformations
     overrides: App Overrides
     custom_css: Custom CSS
+    module_bar: Module Bar
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
@@ -1007,10 +1017,12 @@ fields:
     data_label: Send Event Data
     triggers: Triggers
     actions: Actions
+    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
-    project_logo_note: Login & Logo Background
+    project_color_note: Login & Logo Background
+    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -1018,6 +1030,8 @@ field_options:
       weak_text: Weak – Minimum 8 Characters
       strong_text: Strong – Upper / Lowercase / Numbers / Special
     storage_asset_presets:
+      fit_label: Fit
+      upscaling: Upscaling
       fit:
         contain_text: Contain (preserve aspect ratio)
         cover_text: Cover (forces exact size)
@@ -1028,6 +1042,7 @@ field_options:
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basemaps
+    basemaps_name_placeholder: Enter the basemap name...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
@@ -1053,7 +1068,6 @@ field_options:
     singular_unit: Singular Unit
     plural_unit: Plural Unit
     archive_divider: Archive
-    archive_field: Archive Field
     archive_field_placeholder: Choose a field...
     archive_app_filter: Enable App Archive Filter
     archive_value: Value set when archiving...
@@ -1062,7 +1076,6 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
-    item_duplication_fields: Item Duplication Fields
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1275,7 +1288,7 @@ interfaces:
   presentation-divider:
     divider: Divider
     description: Label and divide fields into sections
-    title_placeholder: Enter a title...
+    title_placeholder: Enter a title, or leave blank to only show a line...
     inline_title: Inline Title
     inline_title_label: Show title inside line
     margin_top: Margin Top
@@ -1310,6 +1323,8 @@ interfaces:
   file-image:
     image: Image
     description: Select or upload an image
+    crop: Crop to Fit
+    crop_label: Crop image as needed
   system-interface:
     interface: Interface
     description: Select an existing interface
@@ -1333,6 +1348,8 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
+    preview: Preview
+    editor: Editor
   map:
     map: Map
     description: Select a location on a map
@@ -1412,6 +1429,8 @@ interfaces:
   boolean:
     toggle: Toggle
     description: Switch between on and off
+    color_on: Color On
+    color_off: Color Off
     label_placeholder: Enter a label...
     label_default: Enabled
   translations:
@@ -1581,6 +1600,7 @@ layouts:
     invalid_geometry: Invalid geometry
     find_location: Find location...
     default_template: Using Collection Default...
+    no_compatible_fields: No compatible fields
 
 panels:
   metric:

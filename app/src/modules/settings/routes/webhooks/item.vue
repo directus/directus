@@ -37,10 +37,11 @@
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false"
+						v-if="hasEdits === true"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -178,6 +179,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			title,
 			validationErrors,
@@ -208,7 +210,7 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/webhooks`);
+			router.replace(`/settings/webhooks`);
 		}
 
 		function discardAndLeave() {
@@ -216,6 +218,11 @@ export default defineComponent({
 			edits.value = {};
 			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 	},
 });

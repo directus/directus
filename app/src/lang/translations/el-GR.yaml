@@ -209,6 +209,7 @@ fields:
     name: Όνομα
     status: Κατάσταση
     value: Τιμή
+    collections: Συλλογές
 field_options:
   directus_activity:
     create: Δημιουργία

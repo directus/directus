@@ -8,11 +8,12 @@ import api from '@/api';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
-import { isEqual, isNil } from 'lodash';
+import { isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { getEndpoint } from '@/utils/get-endpoint';
+import { addWeeks } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -110,13 +111,11 @@ export default defineComponent({
 		});
 
 		watch(
-			[() => props, () => props.showHeader, () => props.height],
-			(newVal, oldVal) => {
-				if (isEqual(newVal, oldVal) === false) {
-					fetchData();
-					chart.value?.destroy();
-					setupChart();
-				}
+			() => props,
+			() => {
+				fetchData();
+				chart.value?.destroy();
+				setupChart();
 			},
 			{ deep: true }
 		);
@@ -180,7 +179,10 @@ export default defineComponent({
 			function toISO(metric: Record<string, any>) {
 				const year = metric[`${props.dateField}_year`];
 				const month = padZero(metric[`${props.dateField}_month`] ?? 1);
-				const day = padZero(metric[`${props.dateField}_day`] ?? 1);
+				const week = metric[`${props.dateField}_week`];
+				const day = week
+					? padZero(getFirstDayOfNWeeksForYear(week, year))
+					: padZero(metric[`${props.dateField}_day`] ?? 1);
 				const hour = padZero(metric[`${props.dateField}_hour`] ?? 0);
 				const minute = padZero(metric[`${props.dateField}_minute`] ?? 0);
 				const second = padZero(metric[`${props.dateField}_second`] ?? 0);
@@ -189,6 +191,10 @@ export default defineComponent({
 
 				function padZero(value: number) {
 					return String(value).padStart(2, '0');
+				}
+
+				function getFirstDayOfNWeeksForYear(numberOfWeeks: number, year: number) {
+					return addWeeks(new Date(year, 0, 1), numberOfWeeks).getDate();
 				}
 			}
 
@@ -201,6 +207,9 @@ export default defineComponent({
 						break;
 					case 'month':
 						groups = ['year', 'month'];
+						break;
+					case 'week':
+						groups = ['year', 'month', 'week'];
 						break;
 					case 'day':
 						groups = ['year', 'month', 'day'];

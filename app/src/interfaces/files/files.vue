@@ -82,7 +82,7 @@
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
-			:selection="[]"
+			:selection="selectedPrimaryKeys"
 			multiple
 			@input="stageSelection"
 		/>
@@ -202,7 +202,7 @@ export default defineComponent({
 			emitter
 		);
 
-		const { tableHeaders, items, loading } = usePreview(
+		const { tableHeaders, items, initialItems, loading } = usePreview(
 			value,
 			fields,
 			relationInfo,
@@ -215,7 +215,12 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
 			useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive } = useSelection(items, relationInfo, emitter);
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(
+			items,
+			initialItems,
+			relationInfo,
+			emitter
+		);
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
@@ -243,6 +248,7 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			deleteItem,
+			selectedPrimaryKeys,
 			items,
 			relationInfo,
 			relatedPrimaryKey,

@@ -122,8 +122,8 @@
 			<div class="spacer"></div>
 
 			<v-item-group v-model="view" class="view" mandatory rounded>
-				<v-button x-small value="editor">Editor</v-button>
-				<v-button x-small value="preview">Preview</v-button>
+				<v-button x-small value="editor">{{ t('interfaces.input-rich-text-md.editor') }}</v-button>
+				<v-button x-small value="preview">{{ t('interfaces.input-rich-text-md.preview') }}</v-button>
 			</v-item-group>
 		</div>
 

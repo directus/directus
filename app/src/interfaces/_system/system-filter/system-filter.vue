@@ -48,7 +48,7 @@
 import { get, set, isEmpty, cloneDeep } from 'lodash';
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Filter, FieldFilter } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 import { useFieldTree } from '@/composables/use-field-tree';

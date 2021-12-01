@@ -51,40 +51,23 @@ export function setTypeForInterface(updates: StateUpdates, state: State) {
  * the local type is standard
  */
 export function setSpecialForLocalType(updates: StateUpdates) {
-	if (updates?.localType === 'o2m') {
-		set(updates, 'field.meta.special', ['o2m']);
-	}
-
-	if (updates?.localType === 'm2m') {
-		set(updates, 'field.meta.special', ['m2m']);
-	}
-
-	if (updates?.localType === 'm2a') {
-		set(updates, 'field.meta.special', ['m2a']);
-	}
-
-	if (updates?.localType === 'm2o') {
-		set(updates, 'field.meta.special', ['m2o']);
-	}
-
-	if (updates?.localType === 'translations') {
-		set(updates, 'field.meta.special', ['translations']);
-	}
-
-	if (updates?.localType === 'file') {
-		set(updates, 'field.meta.special', ['file']);
-	}
-
-	if (updates?.localType === 'files') {
-		set(updates, 'field.meta.special', ['files']);
-	}
-
-	if (updates?.localType === 'presentation') {
-		set(updates, 'field.meta.special', ['alias', 'no-data']);
-	}
-
-	if (updates?.localType === 'group') {
-		set(updates, 'field.meta.special', ['alias', 'no-data', 'group']);
+	const localType = updates?.localType;
+	switch (localType) {
+		case 'o2m':
+		case 'm2m':
+		case 'm2a':
+		case 'm2o':
+		case 'translations':
+		case 'file':
+		case 'files':
+			set(updates, 'field.meta.special', [localType]);
+			break;
+		case 'presentation':
+			set(updates, 'field.meta.special', ['alias', 'no-data']);
+			break;
+		case 'group':
+			set(updates, 'field.meta.special', ['alias', 'no-data', 'group']);
+			break;
 	}
 }
 

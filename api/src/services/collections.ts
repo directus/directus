@@ -195,11 +195,27 @@ export class CollectionsService {
 		meta.push(...systemCollectionRows);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = this.accountability
+			const collectionsGroups: { [key: string]: string } = meta.reduce(
+				(meta, item) => ({
+					...meta,
+					[item.collection]: item.group,
+				}),
+				{}
+			);
+
+			let collectionsYouHavePermissionToRead: string[] = this.accountability
 				.permissions!.filter((permission) => {
 					return permission.action === 'read';
 				})
 				.map(({ collection }) => collection);
+
+			for (const collection of collectionsYouHavePermissionToRead) {
+				const group = collectionsGroups[collection];
+				if (group) collectionsYouHavePermissionToRead.push(group);
+				delete collectionsGroups[collection];
+			}
+
+			collectionsYouHavePermissionToRead = [...new Set([...collectionsYouHavePermissionToRead])];
 
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
