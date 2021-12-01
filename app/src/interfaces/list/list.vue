@@ -213,7 +213,8 @@ export default defineComponent({
 		}
 
 		function trackEdits(updatedValues: any) {
-			Object.assign(edits.value, updatedValues);
+			const combinedValues = Object.assign({}, defaults.value, updatedValues);
+			Object.assign(edits.value, combinedValues);
 		}
 
 		function checkDiscard() {
@@ -289,6 +290,7 @@ export default defineComponent({
 				emitValue(props.value.slice(0, -1));
 			}
 
+			edits.value = {};
 			active.value = null;
 		}
 	},
