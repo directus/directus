@@ -1,5 +1,5 @@
 <template>
-	<div class="image" :class="[width, { crop: crop }]">
+	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
