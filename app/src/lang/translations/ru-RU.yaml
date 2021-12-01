@@ -1192,7 +1192,6 @@ translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
 view_project: Просмотр Проекта
-weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
