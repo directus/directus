@@ -1360,6 +1360,8 @@ interfaces:
   boolean:
     toggle: Växla
     description: Växla mellan på och av
+    color_on: Färg på
+    color_off: Färg av
     label_placeholder: Ange en etikett...
     label_default: Aktiverad
   translations:

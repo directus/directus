@@ -1050,6 +1050,8 @@ interfaces:
   boolean:
     toggle: Vaihda
     description: Vaihda päälle ja pois päältä
+    color_on: Päällä-väri
+    color_off: Pois päältä -väri
     label_placeholder: Syötä tunniste...
     label_default: Käytössä
   translations:
