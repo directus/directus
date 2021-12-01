@@ -18,7 +18,7 @@
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
-				autofocus
+				:autofocus="autofocus"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 			<v-divider />
