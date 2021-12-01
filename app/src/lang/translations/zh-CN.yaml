@@ -45,6 +45,7 @@ create_webhook: 创建Web钩子
 invite_users: 邀请用户
 invite: 邀请
 email_already_invited: 电子邮件 "{email}" 已被邀请
+subject: 主題
 emails: 邮箱
 connection_excellent: 优秀的连接状态
 connection_good: 好的连接状态
@@ -906,6 +907,7 @@ fields:
     auth_login_attempts: 尝试认证登录次数
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
+    module_bar: 模块栏
   directus_fields:
     collection: 模型名称
     icon: 图标
@@ -933,9 +935,11 @@ fields:
     data_label: 发送事件数据
     triggers: 触发条件
     actions: 操作
+    collections: 数据模型
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目
+    project_color_note: 登录和标志背景
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -1312,6 +1316,8 @@ interfaces:
   boolean:
     toggle: 切换
     description: 开启或关闭
+    color_on: 启用颜色
+    color_off: 禁用颜色
     label_placeholder: 输入标签...
     label_default: 已启用
   translations:

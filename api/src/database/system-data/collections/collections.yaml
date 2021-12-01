@@ -63,3 +63,5 @@ data:
     note: $t:directus_collection.directus_dashboards
   - collection: directus_panels
     note: $t:directus_collection.directus_panels
+  - collection: directus_notifications
+    note: $t:directus_collection.directus_notifications

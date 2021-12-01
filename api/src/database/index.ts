@@ -9,7 +9,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
-import { getGeometryHelper } from './helpers/geometry';
+import { getHelpers } from './helpers';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -221,11 +221,11 @@ export async function validateMigrations(): Promise<boolean> {
  */
 export async function validateDatabaseExtensions(): Promise<void> {
 	const database = getDatabase();
-	const databaseClient = getDatabaseClient(database);
-	const geometryHelper = getGeometryHelper(database);
-	const geometrySupport = await geometryHelper.supported();
+	const client = getDatabaseClient(database);
+	const helpers = getHelpers(database);
+	const geometrySupport = await helpers.st.supported();
 	if (!geometrySupport) {
-		switch (databaseClient) {
+		switch (client) {
 			case 'postgres':
 				logger.warn(`PostGIS isn't installed. Geometry type support will be limited.`);
 				break;
@@ -233,7 +233,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 				logger.warn(`Spatialite isn't installed. Geometry type support will be limited.`);
 				break;
 			default:
-				logger.warn(`Geometry type not supported on ${databaseClient}`);
+				logger.warn(`Geometry type not supported on ${client}`);
 		}
 	}
 }

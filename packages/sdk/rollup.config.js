@@ -5,56 +5,96 @@ import typescript from 'rollup-plugin-typescript2';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
 
-function target(format) {
+import pkg from './package.json';
+
+const globalName = 'formatTitle';
+
+const configs = {
+	global: {
+		file: pkg.unpkg,
+		format: 'iife',
+		target: 'es5',
+		mode: 'production',
+		browser: true,
+	},
+	browser: {
+		file: pkg.module.replace('bundler', 'esm'),
+		format: 'es',
+		target: 'es2018',
+		mode: 'production',
+		browser: true,
+	},
+	bundler: {
+		file: pkg.module,
+		format: 'es',
+		target: 'es2018',
+		mode: 'development',
+	},
+	cjs: {
+		file: pkg.main,
+		format: 'cjs',
+		target: 'es2018',
+		mode: 'development',
+	},
+};
+
+function createConfig({
+	file,
+	format,
+	target,
+	mode,
+	browser = false,
+	external = Object.fromEntries(Object.keys(pkg.dependencies || {}).map((x) => [x, x])),
+}) {
+	const isProduction = mode === 'production';
+
 	const config = {
 		input: 'src/index.ts',
 		output: {
-			name: 'Directus',
-			file: `./dist/sdk.${format}.js`,
+			file: isProduction && !file.endsWith('.min.js') ? file.replace('.js', '.min.js') : file,
 			format,
 			exports: 'auto',
 			sourcemap: true,
-			globals: ['axios'],
+		},
+		external: Object.keys(external),
+		watch: {
+			include: 'src/**/*',
 		},
 		plugins: [
 			json(),
-			resolve({
-				browser: true,
-			}),
 			typescript({
-				tsconfig: 'tsconfig.json',
+				useTsconfigDeclarationDir: true,
 				tsconfigOverride: {
 					compilerOptions: {
-						module: 'ES2015',
+						target,
+						lib: [target],
 					},
 				},
 			}),
+			resolve({ browser }),
 			commonjs(),
 			sourceMaps(),
 		],
 	};
-	return [
-		config,
-		{
-			...config,
-			output: {
-				...config.output,
-				file: config.output.file.replace(/\.js$/, '.min.js'),
-			},
-			plugins: [
-				...config.plugins,
-				terser({
-					ecma: 2015,
-				}),
-			],
-		},
-	];
+
+	if (format === 'iife') {
+		config.output.name = globalName;
+		config.output.globals = external;
+	}
+
+	if (isProduction) {
+		config.plugins.push(
+			terser({
+				ecma: target.replace('es', ''),
+			})
+		);
+	}
+
+	return config;
 }
 
-export default [
-	// Browser targets
-	...target('iife'),
-	...target('umd'),
-	...target('esm'),
-	...target('system'),
-];
+function createConfigs(configs) {
+	return Object.keys(configs).map((key) => createConfig(configs[key]));
+}
+
+export default createConfigs(configs);

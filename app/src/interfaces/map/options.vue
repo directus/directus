@@ -1,6 +1,6 @@
 <template>
 	<div class="form-grid">
-		<div v-if="!nativeGeometryType && geometryFormat !== 'lnglat'" class="field half-left">
+		<div v-if="!nativeGeometryType && field.type !== 'csv'" class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
@@ -20,8 +20,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { GEOMETRY_TYPES } from '@directus/shared/constants';
-import { Field, GeometryType, GeometryFormat, GeometryOptions } from '@directus/shared/types';
-import { getGeometryFormatForType } from '@/utils/geometry';
+import { Field, GeometryType, GeometryOptions } from '@directus/shared/types';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
@@ -48,16 +47,15 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const nativeGeometryType = computed(() => props.field.type.split('.')[1] as GeometryType);
-		const geometryFormat = computed(() => getGeometryFormatForType(props.field.type));
 		const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
-		watch(geometryFormat, watchGeometryFormat);
+		watch(() => props.field.type, watchType);
 		watch(nativeGeometryType, watchNativeType);
 		watch([geometryType, defaultView], input, { immediate: true });
 
-		function watchGeometryFormat(format: GeometryFormat | undefined) {
-			if (format === 'lnglat') geometryType.value = 'Point';
+		function watchType(type: string | undefined) {
+			if (type === 'csv') geometryType.value = 'Point';
 		}
 
 		function watchNativeType(type: GeometryType) {
@@ -67,7 +65,6 @@ export default defineComponent({
 		function input() {
 			emit('input', {
 				defaultView,
-				geometryFormat: geometryFormat.value,
 				geometryType: geometryType.value,
 			});
 		}
@@ -108,7 +105,6 @@ export default defineComponent({
 		return {
 			t,
 			nativeGeometryType,
-			geometryFormat,
 			GEOMETRY_TYPES,
 			geometryType,
 			mapContainer,

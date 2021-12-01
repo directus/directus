@@ -822,6 +822,7 @@ fields:
     data_label: Envia les dades de l'event
     triggers: Disparadors
     actions: Accions
+    collections: Col·leccions
 field_options:
   directus_settings:
     security_divider_title: Seguretat
@@ -1154,6 +1155,8 @@ interfaces:
   boolean:
     toggle: Canvia
     description: Canvia entre Encés i apagat
+    color_on: Color activat
+    color_off: Color desactivat
     label_placeholder: Introdueix una etiqueta...
     label_default: Habilitat
   translations:

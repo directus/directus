@@ -150,6 +150,7 @@
 			ref="form"
 			:key="collection"
 			v-model="edits"
+			:autofocus="isNew"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
@@ -481,7 +482,7 @@ export default defineComponent({
 			try {
 				await remove();
 				edits.value = {};
-				router.push(`/content/${props.collection}`);
+				router.replace(`/content/${props.collection}`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}

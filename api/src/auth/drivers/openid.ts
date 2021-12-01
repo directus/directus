@@ -36,6 +36,15 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
 				.then((issuer) => {
+					const supportedTypes = issuer.metadata.response_types_supported as string[] | undefined;
+					if (!supportedTypes?.includes('code')) {
+						reject(
+							new InvalidConfigException('OpenID provider does not support required code flow', {
+								provider: additionalConfig.provider,
+							})
+						);
+					}
+
 					resolve(
 						new issuer.Client({
 							client_id: clientId,
@@ -149,8 +158,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User, sessionData: SessionData): Promise<SessionData> {
-		return this.refresh(user, sessionData);
+	async login(user: User): Promise<SessionData> {
+		return this.refresh(user, null);
 	}
 
 	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {

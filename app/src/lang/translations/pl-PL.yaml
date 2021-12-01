@@ -66,6 +66,8 @@ create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
+subject: Temat
+inbox: Skrzynka odbiorcza
 emails: E-maile
 connection_excellent: Doskonałe połączenie
 connection_good: Dobre połączenie
@@ -254,7 +256,7 @@ multiple_files: Wiele plików
 m2o_relationship: Relacja wiele do jednego
 o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
-m2a_relationship: Relacja wiele do wielu
+m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
 next: Następny
 field_name: Nazwa pola
@@ -425,6 +427,9 @@ user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
 no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
+no_notifications: Brak powiadomień
+no_notifications_copy: Jesteś na bieżąco z wiadomościami!
+activity_log: Dziennik aktywności
 all_items: Wszystkie elementy
 any: Dowolny
 csv: CSV
@@ -843,6 +848,7 @@ directus_collection:
   directus_migrations: Jaką wersję bazy danych używasz
   directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
+  directus_notifications: Powiadomienia wysłane do użytkowników
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
   directus_revisions: Zrzuty danych dla wszystkich działań
@@ -962,6 +968,7 @@ fields:
     storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    module_bar: Pasek modułu
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
@@ -994,6 +1001,7 @@ fields:
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
+    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
@@ -1401,6 +1409,8 @@ interfaces:
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
+    color_on: Kolor włączony
+    color_off: Kolor wyłączony
     label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:

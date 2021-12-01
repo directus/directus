@@ -17,7 +17,7 @@
 							{{ t('type') }}
 						</div>
 
-						<v-select v-model="type" :items="typeOptions" :disabled="typeOptions.length === 1" />
+						<v-select v-model="type" :items="typeOptions" :disabled="typeDisabled" />
 					</div>
 
 					<div class="field half-left">
@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch } from 'vue';
-import { getInterfaces } from '@/interfaces';
+import { getInterface, getInterfaces } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
@@ -85,9 +85,7 @@ export default defineComponent({
 		const { readyToSave, saving, localType, collection } = storeToRefs(fieldDetail);
 		const { t } = useI18n();
 
-		const { interfaces } = getInterfaces();
-
-		const chosenInterface = computed(() => interfaces.value.find((inter) => inter.id === props.chosenInterface));
+		const chosenInterface = computed(() => getInterface(props.chosenInterface));
 
 		const typeOptions = computed(() => {
 			if (!chosenInterface.value) return [];
@@ -98,11 +96,15 @@ export default defineComponent({
 			}));
 		});
 
+		const typeDisabled = computed(() => typeOptions.value.length === 1 || localType.value !== 'standard');
+
 		const key = syncFieldDetailStoreProperty('field.field');
 		const type = syncFieldDetailStoreProperty('field.type');
 		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
 		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
+
+		const { interfaces } = getInterfaces();
 
 		const interfaceIdsWithHiddenLabel = computed(() =>
 			interfaces.value.filter((inter) => inter.hideLabel === true).map((inter) => inter.id)
@@ -129,6 +131,7 @@ export default defineComponent({
 			key,
 			t,
 			type,
+			typeDisabled,
 			typeOptions,
 			defaultValue,
 			required,

@@ -1,5 +1,5 @@
 {
-	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly"],
+	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly", ":prHourlyLimitNone"],
 	"timezone": "America/New_York",
 	"labels": ["Dependencies"],
 	"semanticCommits": "disabled",

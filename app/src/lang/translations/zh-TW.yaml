@@ -612,6 +612,7 @@ fields:
     name: 名稱
     status: 狀態
     value: 值
+    collections: 資料集
 field_options:
   directus_activity:
     create: 新建
