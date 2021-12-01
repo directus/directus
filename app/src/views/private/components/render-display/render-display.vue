@@ -16,9 +16,8 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { getDisplays } from '@/displays';
+import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import { DisplayConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -57,10 +56,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { displays } = getDisplays();
-		const displayInfo = computed(
-			() => displays.value.find((display: DisplayConfig) => display.id === props.display) || null
-		);
+		const displayInfo = computed(() => getDisplay(props.display));
 		return { displayInfo };
 	},
 });

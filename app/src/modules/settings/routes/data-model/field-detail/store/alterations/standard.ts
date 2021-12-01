@@ -1,4 +1,5 @@
 import { HelperFunctions, State, StateUpdates } from '../types';
+import { getInterface } from '@/interfaces';
 import { set } from 'lodash';
 
 export function applyChanges(updates: StateUpdates, _state: State, helperFn: HelperFunctions) {
@@ -6,10 +7,11 @@ export function applyChanges(updates: StateUpdates, _state: State, helperFn: Hel
 
 	if (hasChanged('field.type')) {
 		setSpecialForType(updates);
+		updateInterface(updates, helperFn);
 	}
 }
 
-export function setSpecialForType(updates: StateUpdates) {
+function setSpecialForType(updates: StateUpdates) {
 	const type = updates.field?.type;
 	switch (type) {
 		case 'uuid':
@@ -24,5 +26,13 @@ export function setSpecialForType(updates: StateUpdates) {
 			break;
 		default:
 			set(updates, 'field.meta.special', null);
+	}
+}
+
+function updateInterface(updates: StateUpdates, fn: HelperFunctions) {
+	const interface_ = getInterface(fn.getCurrent('field.meta.interface'));
+	const type = updates.field?.type;
+	if (type && !interface_?.types.includes(type)) {
+		set(updates, 'field.meta.interface', undefined);
 	}
 }
