@@ -1257,6 +1257,7 @@ interfaces:
     code: Code
     description: Write or share code snippets
     line_number: Line Number
+    line_wrapping: Line Wrapping
     placeholder: Enter code here...
   system-collection:
     collection: Collection
