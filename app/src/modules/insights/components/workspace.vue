@@ -33,6 +33,7 @@ import { omit } from 'lodash';
 import { Panel } from '@/types';
 import InsightsPanel from '../components/panel.vue';
 import { useElementSize } from '@/composables/use-element-size';
+import { getSimpleHash } from '@directus/shared/utils';
 
 export default defineComponent({
 	name: 'InsightsWorkspace',
@@ -127,14 +128,7 @@ export default defineComponent({
 
 		function getSimpleHashForPanel(panel: Panel & { _coordinates: [number, number][] }) {
 			const trackedProperties = omit(panel, ['position_x', 'position_y', '_coordinates']);
-			const str = JSON.stringify(trackedProperties);
-
-			let hash = 0;
-			for (let i = 0; i < str.length; hash &= hash) {
-				hash = 31 * hash + str.charCodeAt(i++);
-			}
-
-			return Math.abs(hash).toString(16);
+			return getSimpleHash(JSON.stringify(trackedProperties));
 		}
 	},
 });
