@@ -176,7 +176,7 @@ export default defineComponent({
 			const showRaw = ref(false);
 
 			const type = computed(() => {
-				return getJSType(props.field.type);
+				return getJSType(props.field);
 			});
 
 			const rawValue = computed({
