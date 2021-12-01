@@ -4,7 +4,7 @@ import { useFieldsStore } from '@/stores/';
 import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { cloneDeep, get, isEqual, merge } from 'lodash';
-import { Ref, ref, watch } from 'vue';
+import { ComputedRef, Ref, ref, watch } from 'vue';
 import { RelationInfo } from '@/composables/use-relation-info';
 import { getEndpoint } from '@/utils/get-endpoint';
 
@@ -19,7 +19,7 @@ type UsablePreview = {
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	fields: Ref<string[]>,
-	relationInfo: Ref<RelationInfo>,
+	relationInfo: ComputedRef<RelationInfo>,
 	getNewSelectedItems: () => Record<string, any>[],
 	getUpdatedItems: () => Record<string, any>[],
 	getNewItems: () => Record<string, any>[],
@@ -44,6 +44,8 @@ export default function usePreview(
 				items.value = [];
 				return;
 			}
+
+			debugger;
 
 			loading.value = true;
 			const { relation, relatedField } = relationInfo.value;

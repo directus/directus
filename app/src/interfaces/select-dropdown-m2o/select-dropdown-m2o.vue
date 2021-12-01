@@ -30,7 +30,7 @@
 					<template v-if="!disabled" #append>
 						<template v-if="currentItem">
 							<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editModalActive = true" />
-							<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', null)" />
+							<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="deselect(currentItem)" />
 						</template>
 						<template v-else>
 							<v-icon v-tooltip="t('create_item')" class="add" name="add" @click.stop="editModalActive = true" />
@@ -152,7 +152,7 @@ export default defineComponent({
 
 		const { setCurrent, currentItem, initialItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
-		const { selectedPrimaryKeys, stageSelection, selectModalActive } = useSelection({
+		const { deselect, selectedPrimaryKeys, stageSelection, selectModalActive } = useSelection({
 			initialItems: initialItem,
 			items: currentItem,
 			relationInfo,
@@ -184,6 +184,7 @@ export default defineComponent({
 			edits,
 			stageEdits,
 			editModalActive,
+			deselect,
 		};
 
 		function emitter(newVal: any | null) {

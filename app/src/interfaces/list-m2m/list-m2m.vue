@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!relationInfo.junction.collection || !relationInfo.relation.collection" type="warning">
+	<v-notice v-if="!relationInfo.junction?.collection || !relationInfo.relation?.collection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="many-to-many">
@@ -28,12 +28,12 @@
 					<v-list-item :dense="sortedItems.length > 4" block clickable @click="editItem(element)">
 						<v-icon v-if="relationInfo.sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template
-							:collection="relationInfo.junction.collection"
+							:collection="relationInfo.junction?.collection"
 							:item="element"
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(element)" />
+						<v-icon v-if="!disabled" name="close" @click.stop="deselect(element)" />
 					</v-list-item>
 				</template>
 			</draggable>
@@ -49,7 +49,7 @@
 		<drawer-item
 			v-if="!disabled"
 			:active="editModalActive"
-			:collection="relationInfo.junction.collection"
+			:collection="relationInfo.junction?.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.relatedField"
@@ -62,7 +62,7 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relationInfo.relation.collection"
+			:collection="relationInfo.relation?.collection"
 			:selection="selectedPrimaryKeys"
 			multiple
 			@input="stageSelection"
@@ -162,7 +162,7 @@ export default defineComponent({
 			)
 		);
 
-		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
+		const { getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
 			value,
 			relationInfo,
 			emitter
@@ -181,7 +181,7 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
 			useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection({
+		const { deselect, stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection({
 			items,
 			initialItems,
 			relationInfo,
@@ -190,10 +190,7 @@ export default defineComponent({
 
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
-		const { createAllowed, selectAllowed } = usePermissions(
-			relationInfo.value.junction?.collection ?? '',
-			relationInfo.value.relation?.collection ?? ''
-		);
+		const { createAllowed, selectAllowed } = usePermissions(relationInfo);
 
 		return {
 			t,
@@ -207,7 +204,7 @@ export default defineComponent({
 			cancelEdit,
 			stageSelection,
 			selectModalActive,
-			deleteItem,
+			deselect,
 			selectedPrimaryKeys,
 			items,
 			relatedPrimaryKey,

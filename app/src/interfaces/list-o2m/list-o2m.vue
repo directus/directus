@@ -39,7 +39,7 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
+						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deselect(element)" />
 					</v-list-item>
 				</template>
 			</draggable>
@@ -158,7 +158,7 @@ export default defineComponent({
 		const { items, initialItems, loading } = usePreview();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { sort, sortItems, sortedItems } = useSort();
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection({
+		const { deselect, stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection({
 			items,
 			initialItems,
 			relationInfo,
@@ -178,7 +178,7 @@ export default defineComponent({
 			cancelEdit,
 			stageSelection,
 			selectModalActive,
-			deleteItem,
+			deselect,
 			items,
 			sortItems,
 			selectedPrimaryKeys,
@@ -229,31 +229,6 @@ export default defineComponent({
 					}
 				})
 				.filter((i) => i);
-		}
-
-		function deleteItem(item: Record<string, any>) {
-			const relatedPrimKey = relationInfo.value.relation?.primaryKey.field;
-			if (props.value === null || !relatedPrimKey) return;
-
-			if (relatedPrimKey in item === false) {
-				emit(
-					'input',
-					props.value.filter((val) => isEqual(item, val) === false)
-				);
-				return;
-			}
-
-			const id = item[relatedPrimKey];
-			emit(
-				'input',
-				props.value.filter((item) => {
-					if (typeof item === 'number' || typeof item === 'string') return item !== id;
-					if (typeof item === 'object' && relatedPrimKey in item) {
-						return item[relatedPrimKey] !== id;
-					}
-					return true;
-				})
-			);
 		}
 
 		function useSort() {

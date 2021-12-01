@@ -16,8 +16,8 @@ type Out = {
 	deselect: (item: Record<string, any>) => void;
 };
 
-export function useSelection({ items, initialItems, relationInfo, emit }: In): Out {
-	const { collectionField, sortField, relatedField, junction, related, relation, type } = relationInfo.value;
+export function useSelection({ items, relationInfo, emit }: In): Out {
+	const { collectionField, relatedField, junction, related, relation, type } = relationInfo.value;
 
 	const sanitizedItems = computed(() => {
 		if (Array.isArray(items.value)) return items.value;
@@ -25,32 +25,35 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 		return items.value ? [items.value] : [];
 	});
 
-	const sanitizedInitialItems = computed(() => {
-		if (Array.isArray(initialItems.value)) return initialItems.value;
-
-		return initialItems.value ? [initialItems.value] : [];
-	});
-
 	const selectModalActive = ref(false);
 	const selectingFrom = ref<string | null>(null);
+	const primaryKeyTypes = ['string', 'number'];
 
 	const getPrimaryKey = (itemOrValue: any) => {
 		const item = itemOrValue.value !== undefined ? itemOrValue.value : itemOrValue;
 
 		if (!relation || item == null) return null; // strict equality not used to handle undefined / null
 
-		if (['string', 'number'].includes(typeof item)) return item;
+		if (primaryKeyTypes.includes(typeof item)) return item;
 
-		if (['o2m', 'm2o'].includes(type)) return item?.[relation.primaryKey.field] ?? null;
+		if (['o2m', 'm2o'].includes(type)) {
+			if (primaryKeyTypes.includes(typeof item?.[relation.primaryKey.field])) return item?.[relation.primaryKey.field];
 
-		if (['m2m'].includes(type))
-			return item?.[relatedField]?.[relation.primaryKey.field] ?? item?.[relatedField] ?? null;
+			return null;
+		}
 
-		if (['m2a'].includes(type)) {
+		if (['m2m', 'm2a'].includes(type)) {
 			const relationPkField =
-				related.find((relation) => relation.collection === item[collectionField])?.primaryKey.field ?? '';
+				type === 'm2m'
+					? relation.primaryKey.field
+					: related.find((relation) => relation.collection === item[collectionField])?.primaryKey.field ?? '';
 
-			return item?.[relatedField]?.[relationPkField] ?? item?.[relatedField] ?? null;
+			if (primaryKeyTypes.includes(typeof item?.[relatedField]?.[relationPkField]))
+				return item?.[relatedField]?.[relationPkField];
+
+			if (primaryKeyTypes.includes(typeof item?.[relatedField])) return item?.[relatedField];
+
+			return null;
 		}
 
 		return null;
@@ -69,57 +72,21 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 	});
 
 	function stageSelection(selection: (number | string)[]) {
-		let newVal = null;
+		const selectionItems = selection.map((primaryKey) => {
+			const relationPrimaryKeyField = (
+				type === 'm2a' ? related.find((relation) => relation.collection === selectingFrom.value) : relation
+			)?.primaryKey.field;
 
-		if (!selection?.length) {
-			if (type === 'm2a') newVal = sanitizedItems.value.filter((item) => item[collectionField] !== selectingFrom.value);
-		} else {
-			const createNewItems = sanitizedItems.value.filter((item) => {
-				if (!relation) return;
+			if (!relationPrimaryKeyField) return;
 
-				if (['o2m', 'm2o'].includes(type)) return !item?.[relation.primaryKey.field];
+			const relationRelationship = { [relationPrimaryKeyField]: primaryKey };
 
-				if (['m2m'].includes(type)) return !item?.[relatedField]?.[relation.primaryKey.field];
+			if (['o2m', 'm2o'].includes(type)) return { ...relationRelationship };
 
-				if (['m2a'].includes(type)) {
-					const relationPkField = related.find((relation) => relation.collection === item[collectionField])?.primaryKey
-						.field;
+			if (['m2m', 'm2a'].includes(type)) return { [relatedField]: { ...relationRelationship } };
+		});
 
-					if (!relationPkField) return null;
-
-					return !item?.[relatedField]?.[relationPkField];
-				}
-			});
-
-			newVal = [...createNewItems, ...selection].map((item, i) => {
-				const initial = sanitizedInitialItems.value.find((existent) => getPrimaryKey(existent) === getPrimaryKey(item));
-				const draft = sanitizedItems.value.find((draft) => getPrimaryKey(draft) === getPrimaryKey(item));
-				const relatedPrimaryKey = getPrimaryKey(item);
-				const relationPrimaryKeyField = (
-					type === 'm2a' ? related.find((relation) => relation.collection === selectingFrom.value) : relation
-				)?.primaryKey.field;
-
-				if (!relationPrimaryKeyField) return;
-
-				const relationRelationship = relatedPrimaryKey ? { [relationPrimaryKeyField]: relatedPrimaryKey } : null;
-				const sort = sortField ? { [sortField]: draft?.[sortField] ?? i } : null;
-				const collection = type === 'm2a' ? { [collectionField]: selectingFrom.value } : null;
-
-				if (['o2m', 'm2o'].includes(type)) return { ...initial, ...draft, ...sort, ...relationRelationship };
-
-				if (['m2m', 'm2a'].includes(type))
-					return {
-						...initial,
-						...draft,
-						...sort,
-						...collection,
-						[relatedField]: {
-							...draft?.[relatedField],
-							...relationRelationship,
-						},
-					};
-			});
-		}
+		const newVal = [...sanitizedItems.value, ...selectionItems];
 
 		if (type === 'o2m') return emit(newVal?.length ? newVal : []);
 
@@ -129,16 +96,17 @@ export function useSelection({ items, initialItems, relationInfo, emit }: In): O
 	}
 
 	function deselect(toDeselect: Record<string, any>) {
+		if (type === 'm2o') return emit(null);
+
 		const newVal = sanitizedItems.value.filter((item) => {
 			if (!junction) return;
 
-			const isSameCollection = type === 'm2a' ? item[collectionField] === selectingFrom.value : true;
 			const isSameJunctionId = toDeselect[junction?.primaryKey.field] == item[junction?.primaryKey.field];
 
-			return !(isSameCollection && isSameJunctionId);
+			return !isSameJunctionId;
 		});
 
-		emit(newVal.length === 0 ? null : newVal);
+		emit(newVal?.length ? newVal : []);
 	}
 
 	return { stageSelection, deselect, selectingFrom, selectModalActive, selectedPrimaryKeys };

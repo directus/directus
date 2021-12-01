@@ -1,17 +1,17 @@
 <template>
 	<div class="m2a-builder">
-		<div v-if="previewLoading && !previewValues" class="loader">
+		<div v-if="previewLoading && !items" class="loader">
 			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
-		<v-list v-else>
-			<v-notice v-if="previewValues.length === 0">
+		<v-list v-else-if="items">
+			<v-notice v-if="items.length === 0">
 				{{ t('no_items') }}
 			</v-notice>
 
 			<draggable
 				:force-fallback="true"
-				:model-value="previewValues"
+				:model-value="items"
 				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.meta || !o2mRelation.meta.sort_field"
@@ -21,7 +21,7 @@
 					<v-list-item
 						v-if="allowedCollections.includes(element[anyRelation.meta.one_collection_field])"
 						block
-						:dense="previewValues.length > 4"
+						:dense="items.length > 4"
 						clickable
 						@click="editExisting((value || [])[element.$index])"
 					>
@@ -45,24 +45,14 @@
 							:item="element[anyRelation.field]"
 						/>
 						<div class="spacer" />
-						<v-icon
-							v-if="!disabled"
-							class="clear-icon"
-							name="clear"
-							@click.stop="deselect((value || [])[element.$index])"
-						/>
+						<v-icon v-if="!disabled" class="clear-icon" name="clear" @click.stop="deselect(element)" />
 					</v-list-item>
 
 					<v-list-item v-else block>
 						<v-icon class="invalid-icon" name="warning" left />
 						<span>{{ t('invalid_item') }}</span>
 						<div class="spacer" />
-						<v-icon
-							v-if="!disabled"
-							class="clear-icon"
-							name="clear"
-							@click.stop="deselect((value || [])[element.$index])"
-						/>
+						<v-icon v-if="!disabled" class="clear-icon" name="clear" @click.stop="deselect(element)" />
 					</v-list-item>
 				</template>
 			</draggable>
@@ -117,7 +107,7 @@
 			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
-			:selection="[]"
+			:selection="selectedPrimaryKeys"
 			@input="stageSelection"
 			@update:active="selectingFrom = null"
 		/>
@@ -148,10 +138,12 @@ import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { isPlainObject, cloneDeep } from 'lodash';
+import { isPlainObject, cloneDeep, isEqual } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
+import { useRelationInfo } from '@/composables/use-relation-info';
+import { useSelection } from '@/composables/use-selection';
 
 export default defineComponent({
 	components: { DrawerCollection, DrawerItem, Draggable },
@@ -190,24 +182,29 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const { collection, field } = toRefs(props);
+
 		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 
 		const { relationInfo } = useRelationInfo({ collection, field });
+
 		const { o2mRelation, anyRelation, allowedCollections, o2mRelationPrimaryKeyField } = useRelations();
-		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
-		const { selectingFrom, stageSelection, deselect } = useSelection();
+		const { items, loading: previewLoading, relatedItemValues, initialItems } = useValues();
 		const { currentlyEditing, relatedPrimaryKey, editsAtStart, stageEdits, cancelEdit, editExisting, createNew } =
 			useEdits();
 		const { onSort } = useManualSort();
-
-		watch(props, fetchValues, { immediate: true, deep: true });
+		const { selectingFrom, stageSelection, deselect, selectedPrimaryKeys } = useSelection({
+			items,
+			initialItems,
+			relationInfo,
+			emit: emitter,
+		});
 
 		return {
 			t,
-			previewValues,
+			items,
 			collections,
 			selectingFrom,
 			stageSelection,
@@ -227,7 +224,12 @@ export default defineComponent({
 			hideDragImage,
 			onSort,
 			allowedCollections,
+			selectedPrimaryKeys,
 		};
+
+		function emitter(newVal: any | any[] | null) {
+			emit('input', newVal);
+		}
 
 		function useRelations() {
 			const relationsForField = computed<Relation[]>(() => {
@@ -242,7 +244,7 @@ export default defineComponent({
 			);
 
 			const o2mRelationPrimaryKeyField = computed<string>(() => {
-				return fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.collection).field;
+				return fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.collection)?.field ?? '';
 			});
 
 			const allowedCollections = computed(() => anyRelation.value.meta!.one_allowed_collections!);
@@ -269,7 +271,7 @@ export default defineComponent({
 				const keys: Record<string, string> = {};
 
 				for (const collection of Object.values(collections.value)) {
-					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection).field!;
+					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)?.field ?? '';
 				}
 
 				return keys;
@@ -280,7 +282,7 @@ export default defineComponent({
 
 				for (const collection of Object.values(collections.value)) {
 					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection);
-					templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField.field}}}`;
+					templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField?.field ?? ''}}}`;
 				}
 
 				return templates;
@@ -292,96 +294,105 @@ export default defineComponent({
 		function useValues() {
 			const loading = ref(false);
 			const relatedItemValues = ref<Record<string, any[]>>({});
+			const initialItems = ref<Record<string, any>[]>([]);
+			const items = ref<Record<string, any>[] | null>(null);
 
-			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
-			// what related item for pre-saved-unchanged-items
-			const junctionRowMap = ref<any[]>();
+			watch(
+				() => props.value,
+				async function (newVal, oldVal) {
+					if (items.value && isEqual(newVal, oldVal)) return;
 
-			const previewValues = computed(() => {
-				// Need to wait until junctionRowMap got properly populated
-				if (junctionRowMap.value === undefined) {
-					return [];
-				}
+					const junctionRowMap = await fetchValues();
 
-				// Convert all string/number junction rows into junction row records from the map so we can inject the
-				// related values
-				const values = cloneDeep(props.value || [])
-					.map((val, index) => {
-						const junctionKey = isPlainObject(val) ? val[o2mRelationPrimaryKeyField.value] : val;
+					// Convert all string/number junction rows into junction row records from the map so we can inject the
+					// related values
+					const values = cloneDeep(props.value || [])
+						.map((val, index) => {
+							const junctionKey = isPlainObject(val) ? val[o2mRelationPrimaryKeyField.value] : val;
 
-						const savedValues = (junctionRowMap.value || []).find(
-							(junctionRow) => junctionRow[o2mRelationPrimaryKeyField.value] === junctionKey
-						);
+							const savedValues = (junctionRowMap || []).find(
+								(junctionRow) => junctionRow[o2mRelationPrimaryKeyField.value] === junctionKey
+							);
 
-						if (isPlainObject(val)) {
-							return {
-								...savedValues,
-								...val,
-								$index: index,
-							};
-						} else {
-							if (savedValues === undefined) {
-								return null;
-							}
-
-							return {
-								...savedValues,
-								$index: index,
-							};
-						}
-					})
-					.filter((val) => val)
-					.map((val) => {
-						// Find and nest the related item values for use in the preview
-						const collection = val[anyRelation.value.meta!.one_collection_field!];
-
-						const key = isPlainObject(val[anyRelation.value.field])
-							? val[anyRelation.value.field][primaryKeys.value[collection]]
-							: val[anyRelation.value.field];
-
-						const item = relatedItemValues.value[collection]?.find(
-							(item) => item[primaryKeys.value[collection]] == key
-						);
-
-						// When this item is created new and it has a uuid / auto increment id, there's no key to lookup
-						if (key && item) {
-							if (isPlainObject(val[anyRelation.value.field])) {
-								val[anyRelation.value.field] = {
-									...item,
-									...val[anyRelation.value.field],
+							if (isPlainObject(val)) {
+								return {
+									...savedValues,
+									...val,
+									$index: index,
 								};
 							} else {
-								val[anyRelation.value.field] = cloneDeep(item);
+								if (savedValues === undefined) {
+									return null;
+								}
+
+								return {
+									...savedValues,
+									$index: index,
+								};
 							}
-						}
+						})
+						.filter((val) => val)
+						.map((val) => {
+							// Find and nest the related item values for use in the preview
+							const collection = val[anyRelation.value.meta!.one_collection_field!];
 
-						return val;
-					});
+							const key = isPlainObject(val[anyRelation.value.field])
+								? val[anyRelation.value.field][primaryKeys.value[collection]]
+								: val[anyRelation.value.field];
 
-				if (o2mRelation.value?.meta?.sort_field) {
-					return [
-						...values
-							.filter((val) => o2mRelation.value.meta!.sort_field! in val)
-							.sort((a, b) => a[o2mRelation.value.meta!.sort_field!] - b[o2mRelation.value.meta!.sort_field!]), // sort by sort field if it exists
-						...values
-							.filter((val) => o2mRelation.value.meta!.sort_field! in val === false)
-							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
-					];
-				} else {
-					return [...values.sort((a, b) => a.$index - b.$index)];
-				}
-			});
+							const item = relatedItemValues.value[collection]?.find(
+								(item) => item[primaryKeys.value[collection]] == key
+							);
+
+							// When this item is created new and it has a uuid / auto increment id, there's no key to lookup
+							if (key && item) {
+								if (isPlainObject(val[anyRelation.value.field])) {
+									val[anyRelation.value.field] = {
+										...item,
+										...val[anyRelation.value.field],
+									};
+								} else {
+									val[anyRelation.value.field] = cloneDeep(item);
+								}
+							}
+
+							return val;
+						});
+
+					let newItems = [];
+
+					if (o2mRelation.value?.meta?.sort_field) {
+						newItems = [
+							...values
+								.filter((val) => o2mRelation.value.meta!.sort_field! in val)
+								.sort((a, b) => a[o2mRelation.value.meta!.sort_field!] - b[o2mRelation.value.meta!.sort_field!]), // sort by sort field if it exists
+							...values
+								.filter((val) => o2mRelation.value.meta!.sort_field! in val === false)
+								.sort((a, b) => a.$index - b.$index), // sort the rest with $index
+						];
+					} else {
+						newItems = [...values.sort((a, b) => a.$index - b.$index)];
+					}
+
+					items.value = [...newItems];
+
+					if (!initialItems.value?.length && items.value?.length) initialItems.value = [...newItems];
+				},
+				{ immediate: true }
+			);
 
 			return {
 				fetchValues,
-				previewValues,
+				items,
 				loading,
-				junctionRowMap,
 				relatedItemValues,
+				initialItems,
 			};
 
 			async function fetchValues() {
 				if (props.value === null) return;
+
+				let junctionRowMap: Record<string, any>[] = [];
 
 				loading.value = true;
 
@@ -459,10 +470,21 @@ export default defineComponent({
 								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.field]);
 							}
 						}
+						const { collectionField, relatedField, related } = relationInfo.value;
 
-						junctionRowMap.value = junctionInfoResponse.data.data;
+						junctionRowMap = junctionInfoResponse.data.data.map((item: Record<string, any>) => {
+							const primaryKeyType =
+								related.find((relation) => relation.collection === item[collectionField])?.primaryKey?.type ?? null;
+
+							let value;
+							if (primaryKeyType && ['integer', 'bigInteger'].includes(primaryKeyType))
+								value = Number(item[relatedField]);
+							else value = String(item[relatedField]);
+
+							return { ...item, [relatedField]: value };
+						});
 					} else {
-						junctionRowMap.value = [];
+						junctionRowMap = [];
 					}
 
 					// Fetch all related items from their individual endpoints using the fields from their templates
@@ -504,35 +526,8 @@ export default defineComponent({
 				} finally {
 					loading.value = false;
 				}
-			}
-		}
 
-		function useSelection() {
-			const selectingFrom = ref<string | null>(null);
-
-			return { selectingFrom, stageSelection, deselect };
-
-			function stageSelection(selection: (number | string)[]) {
-				const { field } = anyRelation.value;
-				const oneCollectionField = anyRelation.value.meta!.one_collection_field!;
-
-				const currentValue = props.value || [];
-
-				const selectionAsJunctionRows = selection.map((key) => {
-					return {
-						[oneCollectionField]: selectingFrom.value,
-						[field]: key,
-					};
-				});
-
-				emit('input', [...currentValue, ...selectionAsJunctionRows]);
-			}
-
-			function deselect(item: any) {
-				emit(
-					'input',
-					(props.value || []).filter((current) => current !== item)
-				);
+				return junctionRowMap;
 			}
 		}
 
@@ -585,9 +580,11 @@ export default defineComponent({
 			function editExisting(item: Record<string, any>) {
 				// Edit a saved item
 				if (typeof item === 'string' || typeof item === 'number') {
-					const junctionRow = (junctionRowMap.value || []).find((row) => {
+					const junctionRow = (initialItems.value || []).find((row) => {
 						return row[o2mRelationPrimaryKeyField.value] == item;
 					});
+
+					if (!junctionRow) return;
 
 					const collection = junctionRow[anyRelation.value.meta!.one_collection_field!];
 					const relatedKey = isPlainObject(junctionRow[anyRelation.value.field])
@@ -630,8 +627,8 @@ export default defineComponent({
 					[anyRelation.value.field]: {},
 				};
 
-				if (previewValues.value && o2mRelation.value?.meta?.sort_field) {
-					const maxSort = Math.max(-1, ...previewValues.value.map((val) => val[o2mRelation.value.meta!.sort_field!]));
+				if (items.value && o2mRelation.value?.meta?.sort_field) {
+					const maxSort = Math.max(-1, ...items.value.map((val) => val[o2mRelation.value.meta!.sort_field!]));
 					newItem[o2mRelation.value.meta!.sort_field!] = maxSort + 1;
 				}
 

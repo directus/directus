@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!junction || !relation" type="warning">
+	<v-notice v-if="!relationInfo.junction?.collection || !relationInfo.relation?.collection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="many-to-many">
@@ -21,20 +21,14 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!junction.meta.sort_field"
+				:disabled="!relationInfo"
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
 					<v-list-item :dense="sortedItems.length > 4" block clickable @click="editItem(element)">
-						<v-icon
-							v-if="junction.meta.sort_field"
-							name="drag_handle"
-							class="drag-handle"
-							left
-							@click.stop="() => {}"
-						/>
+						<v-icon v-if="relationInfo.sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template
-							:collection="junctionCollection.collection"
+							:collection="relationInfo.junction?.collection"
 							:item="element"
 							:template="templateWithDefaults"
 						/>
@@ -55,18 +49,18 @@
 		<drawer-item
 			v-if="!disabled"
 			:active="editModalActive"
-			:collection="relationInfo.junctionCollection"
+			:collection="relationInfo.junction?.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField"
 			:edits="editsAtStart"
-			:circular-field="junction.field"
+			:circular-field="relationInfo.relatedField"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		>
 			<template #actions>
 				<v-button
-					v-if="currentlyEditing !== '+' && relationCollection.collection === 'directus_files'"
+					v-if="currentlyEditing !== '+' && relationInfo.collection === 'directus_files'"
 					secondary
 					rounded
 					icon
@@ -81,7 +75,7 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relationCollection.collection"
+			:collection="relationInfo.relation?.collection"
 			:selection="selectedPrimaryKeys"
 			multiple
 			@input="stageSelection"
@@ -110,16 +104,16 @@ import { get } from 'lodash';
 import Draggable from 'vuedraggable';
 
 import useActions from '../list-m2m/use-actions';
-import useRelation from '@/composables/use-m2m';
 import usePreview from '../list-m2m/use-preview';
 import useEdit from '../list-m2m/use-edit';
-import useSelection from '../list-m2m/use-selection';
 import useSort from '../list-m2m/use-sort';
 import usePermissions from '../list-m2m/use-permissions';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
+import { useRelationInfo } from '@/composables/use-relation-info';
+import { useSelection } from '@/composables/use-selection';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -167,13 +161,19 @@ export default defineComponent({
 
 		const { value, collection, field } = toRefs(props);
 
-		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
+		const { relationInfo } = useRelationInfo({
+			collection,
+			field,
+		});
 
 		const templateWithDefaults = computed(() => {
 			if (props.template) return props.template;
-			if (junctionCollection.value.meta?.display_template) return junctionCollection.value.meta.display_template;
 
-			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
+			const { junction, relation, relatedField } = relationInfo.value;
+
+			if (junction?.displayTemplate) return junction.displayTemplate;
+
+			let relatedDisplayTemplate = relation?.displayTemplate;
 			if (relatedDisplayTemplate) {
 				const regex = /({{.*?}})/g;
 				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -181,7 +181,7 @@ export default defineComponent({
 				for (const part of parts) {
 					if (part.startsWith('{{') === false) continue;
 					const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const newPart = `{{${relation.value.field}.${key}}}`;
+					const newPart = `{{${relatedField}.${key}}}`;
 
 					relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
 				}
@@ -189,11 +189,14 @@ export default defineComponent({
 				return relatedDisplayTemplate;
 			}
 
-			return `{{${relation.value.field}.${relationInfo.value.relationPkField}}}`;
+			return `{{${relatedField}.${relation?.primaryKey.field}}}`;
 		});
 
 		const fields = computed(() =>
-			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), junctionCollection.value.collection)
+			adjustFieldsForDisplays(
+				getFieldsFromTemplate(templateWithDefaults.value),
+				relationInfo.value.junction?.collection ?? ''
+			)
 		);
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
@@ -215,33 +218,30 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
 			useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection({
 			items,
 			initialItems,
 			relationInfo,
-			emitter
-		);
+			emit: emitter,
+		});
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
-		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
+		const { createAllowed, selectAllowed } = usePermissions(relationInfo);
 
 		const { showUpload, onUpload } = useUpload();
 
 		const downloadUrl = computed(() => {
-			if (relatedPrimaryKey.value === null || relationCollection.value.collection !== 'directus_files') return;
+			if (relatedPrimaryKey.value === null || relationInfo.value.relation?.collection !== 'directus_files') return;
 			return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
 		});
 
 		return {
 			t,
-			junction,
-			relation,
+			relationInfo,
 			tableHeaders,
 			loading,
 			currentlyEditing,
 			editItem,
-			junctionCollection,
-			relationCollection,
 			editsAtStart,
 			stageEdits,
 			cancelEdit,
@@ -250,7 +250,6 @@ export default defineComponent({
 			deleteItem,
 			selectedPrimaryKeys,
 			items,
-			relationInfo,
 			relatedPrimaryKey,
 			get,
 			editModalActive,
@@ -265,7 +264,7 @@ export default defineComponent({
 			downloadUrl,
 		};
 
-		function emitter(newVal: any[] | null) {
+		function emitter(newVal: any | any[] | null) {
 			emit('input', newVal);
 		}
 
@@ -276,15 +275,25 @@ export default defineComponent({
 
 			function onUpload(files: Record<string, any>[]) {
 				showUpload.value = false;
-				if (files.length === 0) return;
-				const { junctionField } = relationInfo.value;
+				const { relatedField, relation, sortField } = relationInfo.value;
+				if (!relation?.primaryKey || files.length === 0) return;
+
 				const filesAsJunctionRows = files.map((file) => {
 					return {
-						[junctionField]: file.id,
+						[relatedField]: {
+							[relation?.primaryKey.field]: file.id,
+						},
 					};
 				});
 
-				emit('input', [...(props.value || []), ...filesAsJunctionRows]);
+				const newVal = [...(props.value || []), ...filesAsJunctionRows].map((value: any, i) => {
+					return {
+						...value,
+						...(sortField ? { [sortField]: value?.[sortField] ?? i } : null),
+					};
+				});
+
+				emit('input', newVal);
 			}
 		}
 	},
