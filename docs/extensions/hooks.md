@@ -40,23 +40,6 @@ The context object has the following properties:
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
-An example of restricting CRUD events to administrator accounts:
-
-```js
-module.exports = function registerHook({ action, { exceptions } }) {
-	const { ForbiddenException } = exceptions;
-
-	const adminOnly = async (_, { accountability }) => {
-		if (accountability.admin !== true) throw new ForbiddenException();
-	};
-
-	action('items.create', adminOnly);
-	action('items.read', adminOnly);
-	action('items.update', adminOnly);
-	action('items.delete', adminOnly);
-};
-```
-
 ### Filter
 
 Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
@@ -276,7 +259,7 @@ npx directus start
 ```js
 const axios = require('axios');
 
-module.exports = function registerHook({ filter, action }, { services, exceptions }) {
+module.exports = function registerHook({ filter }, { services, exceptions }) {
 	const { MailService } = services;
 	const { ServiceUnavailableException, ForbiddenException } = exceptions;
 
@@ -305,15 +288,5 @@ module.exports = function registerHook({ filter, action }, { services, exception
 
 		return input;
 	});
-
-	// Force everything to be admin-only at all times
-	const adminOnly = async (_, { accountability }) => {
-		if (accountability.admin !== true) throw new ForbiddenException();
-	};
-
-	action('items.create', adminOnly);
-	action('items.read', adminOnly);
-	action('items.update', adminOnly);
-	action('items.delete', adminOnly);
 };
 ```
