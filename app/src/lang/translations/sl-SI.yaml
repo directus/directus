@@ -1200,6 +1200,8 @@ interfaces:
   boolean:
     toggle: Preklopi
     description: Preklopi
+    color_on: Barva da
+    color_off: Barva ne
     label_placeholder: Vnesite oznako ...
     label_default: Omogočeno
   translations:
