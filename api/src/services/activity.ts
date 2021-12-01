@@ -68,6 +68,7 @@ export class ActivityService extends ItemsService {
 
 					for (const mention of mentions) {
 						const uuid = mention.substring(1);
+						// We only match on UUIDs in the first place. This is just an extra sanity check
 						if (validateUUID(uuid) === false) continue;
 						comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
 					}

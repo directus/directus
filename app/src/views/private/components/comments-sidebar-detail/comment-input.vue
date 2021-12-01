@@ -22,7 +22,7 @@
 					id="suggestions"
 					:key="user.id"
 					clickable
-					:dashed="index === selectedKeyboardIndex"
+					:active="index === selectedKeyboardIndex"
 					@click="insertUser(user)"
 				>
 					<v-list-item-icon>
