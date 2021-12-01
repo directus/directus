@@ -10,6 +10,7 @@ import logger from '../logger';
 import { userName } from '../utils/user-name';
 import { uniq } from 'lodash';
 import env from '../env';
+import validateUUID from 'uuid-validate';
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
@@ -66,10 +67,9 @@ export class ActivityService extends ItemsService {
 					let comment = data.comment;
 
 					for (const mention of mentions) {
-						comment = comment.replace(
-							new RegExp(`${mention}`, 'gm'),
-							userPreviews[mention.substring(1)] ?? '@Unknown User'
-						);
+						const uuid = mention.substring(1);
+						if (validateUUID(uuid) === false) continue;
+						comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
 					}
 
 					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
