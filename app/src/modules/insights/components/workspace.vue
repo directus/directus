@@ -29,7 +29,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
-import { omit } from 'lodash';
 import { Panel } from '@/types';
 import InsightsPanel from '../components/panel.vue';
 import { useElementSize } from '@/composables/use-element-size';
