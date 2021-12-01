@@ -183,27 +183,14 @@ export function usePreset(
 
 	function initLocalPreset() {
 		const preset = { layout: 'tabular' };
+
 		if (bookmark.value === null) {
 			assign(preset, presetsStore.getPresetForCollection(collection.value));
 		} else if (bookmarkExists.value) {
 			assign(preset, presetsStore.getBookmark(Number(bookmark.value)));
 		}
-		localPreset.value = preset;
 
-		// if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
-		// 	localPreset.value = {
-		// 		...localPreset.value,
-		// 		filter: localPreset.value.filter || [
-		// 			{
-		// 				key: 'hide-archived',
-		// 				field: collectionInfo.value.meta.archive_field,
-		// 				operator: 'neq',
-		// 				value: collectionInfo.value.meta.archive_value!,
-		// 				locked: true,
-		// 			},
-		// 		],
-		// 	};
-		// }
+		localPreset.value = preset;
 	}
 
 	/**
