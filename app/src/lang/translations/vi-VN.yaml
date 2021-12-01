@@ -666,6 +666,7 @@ fields:
   directus_settings:
     project_name: Tên Dự Án
     auth_password_policy: Quy định về mật khẩu
+    module_bar: Thanh công cụ
   directus_fields:
     icon: Biểu tượng của Danh mục
     note: Ghi chú
@@ -679,6 +680,7 @@ fields:
     name: Tên
     status: Trạng thái
     value: Giá trị
+    collections: Danh mục
 field_options:
   directus_settings:
     security_divider_title: Bảo mật

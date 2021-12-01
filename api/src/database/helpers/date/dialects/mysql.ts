@@ -1,13 +1,7 @@
+import { DateHelper } from '../types';
 import { Knex } from 'knex';
-import { HelperFn } from '../types';
 
-export class HelperMySQL implements HelperFn {
-	private knex: Knex;
-
-	constructor(knex: Knex) {
-		this.knex = knex;
-	}
-
+export class DateHelperMySQL extends DateHelper {
 	year(table: string, column: string): Knex.Raw {
 		return this.knex.raw('YEAR(??.??)', [table, column]);
 	}

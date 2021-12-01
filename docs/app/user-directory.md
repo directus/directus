@@ -9,7 +9,7 @@
 ## Browsing Users
 
 Lists all users of the project, with a navigation that allows quick access to the different role groups. This page has
-the same functionality as other [Collection Pages](/app/content-collections/).
+the same functionality as other [Content Pages](/app/content-collections/).
 
 ## Viewing a User
 
@@ -36,6 +36,7 @@ by default.
 - **Language** — The preferred App language/locale
 - **Theme** — Light or Dark mode (or based on system preferences)
 - **Multi-Factor Authentication** — Configuration for MFA
+- **Email Notifications** - Receive emails for notifications
 
 The sidebar's info component also includes the following readonly details:
 
@@ -46,6 +47,5 @@ The sidebar's info component also includes the following readonly details:
 ::: tip System Fields
 
 Administrators have access to additional system fields.
-[Learn More](/configuration/users-roles-permissions/#configuring-a-user)
 
 :::

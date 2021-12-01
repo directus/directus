@@ -14,6 +14,7 @@ import {
 	useServerStore,
 	useSettingsStore,
 	useUserStore,
+	useNotificationsStore,
 } from '@/stores';
 
 type GenericStore = {
@@ -37,6 +38,7 @@ export function useStores(
 		useRelationsStore,
 		usePermissionsStore,
 		useInsightsStore,
+		useNotificationsStore,
 	]
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];

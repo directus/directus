@@ -1,6 +1,6 @@
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
-import { debounce, isEqual } from 'lodash';
+import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsablePreset = {
@@ -81,6 +81,11 @@ export function usePreset(
 		}
 	}
 
+	function updatePreset(preset: Partial<Preset>, immediate?: boolean) {
+		localPreset.value = assign({}, localPreset.value, preset);
+		immediate ? savePreset() : handleChanges();
+	}
+
 	watch([collection, bookmark], () => {
 		initLocalPreset();
 	});
@@ -90,18 +95,10 @@ export function usePreset(
 			if (!localPreset.value.layout) return null;
 			return localPreset.value.layout_options?.[localPreset.value.layout] || null;
 		},
-		set(val) {
-			if (!localPreset.value.layout) return null;
-
-			localPreset.value = {
-				...localPreset.value,
-				layout_options: {
-					...localPreset.value.layout_options,
-					[localPreset.value.layout]: val,
-				},
-			};
-
-			handleChanges();
+		set(options) {
+			if (localPreset.value.layout) {
+				updatePreset({ layout_options: { [localPreset.value.layout]: options } });
+			}
 		},
 	});
 
@@ -110,89 +107,36 @@ export function usePreset(
 			if (!localPreset.value.layout) return null;
 			return localPreset.value.layout_query?.[localPreset.value.layout] || null;
 		},
-		set(val) {
-			if (!localPreset.value.layout) return null;
-			localPreset.value = {
-				...localPreset.value,
-				layout_query: {
-					...localPreset.value.layout_query,
-					[localPreset.value.layout]: val,
-				},
-			};
-
-			handleChanges();
+		set(query) {
+			if (localPreset.value.layout) {
+				updatePreset({ layout_query: { [localPreset.value.layout]: query } });
+			}
 		},
 	});
 
 	const layout = computed<string | null>({
-		get() {
-			return localPreset.value.layout || 'tabular';
-		},
-		set(val) {
-			localPreset.value = {
-				...localPreset.value,
-				layout: val,
-			};
-
-			handleChanges();
-		},
+		get: () => localPreset.value.layout || 'tabular',
+		set: (layout) => updatePreset({ layout }),
 	});
 
 	const filter = computed<Filter | null>({
-		get() {
-			return localPreset.value.filter ?? null;
-		},
-		set(val: Filter | null) {
-			localPreset.value = {
-				...localPreset.value,
-				filter: val,
-			};
-
-			handleChanges();
-		},
+		get: () => localPreset.value.filter ?? null,
+		set: (filter) => updatePreset({ filter }),
 	});
 
 	const refreshInterval = computed<number | null>({
-		get() {
-			return localPreset.value.refresh_interval || null;
-		},
-		set(val) {
-			localPreset.value = {
-				...localPreset.value,
-				refresh_interval: val,
-			};
-
-			handleChanges();
-		},
+		get: () => localPreset.value.refresh_interval || null,
+		set: (refresh_interval) => updatePreset({ refresh_interval }),
 	});
 
 	const search = computed<string | null>({
-		get() {
-			return localPreset.value.search || null;
-		},
-		set(val) {
-			localPreset.value = {
-				...localPreset.value,
-				search: val,
-			};
-
-			handleChanges();
-		},
+		get: () => localPreset.value.search || null,
+		set: (search) => updatePreset({ search }),
 	});
 
 	const bookmarkTitle = computed<string | null>({
-		get() {
-			return localPreset.value?.bookmark || null;
-		},
-		set(newTitle: string | null) {
-			localPreset.value = {
-				...localPreset.value,
-				bookmark: newTitle,
-			};
-
-			// This'll save immediately
-			savePreset();
-		},
+		get: () => localPreset.value?.bookmark || null,
+		set: (bookmark) => updatePreset({ bookmark }, true),
 	});
 
 	return {
@@ -224,53 +168,29 @@ export function usePreset(
 	}
 
 	async function resetPreset() {
-		localPreset.value = {
-			...localPreset.value,
-			layout_query: null,
-			layout_options: null,
-			layout: 'tabular',
-			filter: null,
-			search: null,
-			refresh_interval: null,
-		};
-
-		await savePreset();
+		updatePreset(
+			{
+				layout_query: null,
+				layout_options: null,
+				layout: 'tabular',
+				filter: null,
+				search: null,
+				refresh_interval: null,
+			},
+			true
+		);
 	}
 
 	function initLocalPreset() {
+		const preset = { layout: 'tabular' };
+
 		if (bookmark.value === null) {
-			localPreset.value = {
-				...presetsStore.getPresetForCollection(collection.value),
-			};
-		} else {
-			if (bookmarkExists.value === false) return;
-
-			localPreset.value = {
-				...presetsStore.getBookmark(Number(bookmark.value)),
-			};
+			assign(preset, presetsStore.getPresetForCollection(collection.value));
+		} else if (bookmarkExists.value) {
+			assign(preset, presetsStore.getBookmark(Number(bookmark.value)));
 		}
 
-		if (!localPreset.value.layout) {
-			localPreset.value = {
-				...localPreset.value,
-				layout: 'tabular',
-			};
-		}
-
-		// if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
-		// 	localPreset.value = {
-		// 		...localPreset.value,
-		// 		filter: localPreset.value.filter || [
-		// 			{
-		// 				key: 'hide-archived',
-		// 				field: collectionInfo.value.meta.archive_field,
-		// 				operator: 'neq',
-		// 				value: collectionInfo.value.meta.archive_value!,
-		// 				locked: true,
-		// 			},
-		// 		],
-		// 	};
-		// }
+		localPreset.value = preset;
 	}
 
 	/**

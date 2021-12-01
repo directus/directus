@@ -8,7 +8,8 @@
 		:indeterminate="value === null"
 		:disabled="disabled"
 		:style="{
-			'--v-checkbox-color': color,
+			'--v-checkbox-color': colorOn,
+			'--v-checkbox-unchecked-color': colorOff,
 		}"
 		@update:model-value="$emit('input', $event)"
 	/>
@@ -40,9 +41,13 @@ export default defineComponent({
 			type: String,
 			default: 'check_box_outline_blank',
 		},
-		color: {
+		colorOn: {
 			type: String,
 			default: '#00C897',
+		},
+		colorOff: {
+			type: String,
+			default: '#B0BEC5',
 		},
 	},
 	emits: ['input'],
