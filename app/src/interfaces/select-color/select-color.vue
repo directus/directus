@@ -5,9 +5,9 @@
 				v-model="hex"
 				:disabled="disabled"
 				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
-				:pattern="allowAlpha ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
+				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
-				:maxlength="allowAlpha ? 9 : 7"
+				:maxlength="opacity ? 9 : 7"
 				@focus="activate"
 			>
 				<template #prepend>
@@ -39,7 +39,7 @@
 		<div
 			class="color-data-inputs"
 			:style="{
-				'grid-template-columns': allowAlpha
+				'grid-template-columns': opacity
 					? width === 'half'
 						? 'repeat(4, 1fr)'
 						: 'repeat(6, 1fr)'
@@ -52,7 +52,7 @@
 			<div
 				class="color-data-input color-type"
 				:style="{
-					'grid-column': allowAlpha
+					'grid-column': opacity
 						? width === 'half'
 							? '1 / span 4'
 							: '1 / span 2'
@@ -79,7 +79,7 @@
 					@update:model-value="setValue('rgb', i, $event)"
 				/>
 				<v-input
-					v-if="allowAlpha"
+					v-if="opacity"
 					type="number"
 					:model-value="alpha"
 					class="color-data-input"
@@ -106,7 +106,7 @@
 					@update:model-value="setValue('hsl', i, $event)"
 				/>
 				<v-input
-					v-if="allowAlpha"
+					v-if="opacity"
 					type="number"
 					:model-value="alpha"
 					class="color-data-input"
@@ -119,7 +119,7 @@
 				/>
 			</template>
 		</div>
-		<div v-if="allowAlpha" class="color-data-alphas">
+		<div v-if="opacity" class="color-data-alphas">
 			<div class="color-data-alpha">
 				<v-slider
 					:model-value="alpha"
@@ -220,7 +220,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		allowAlpha: {
+		opacity: {
 			type: Boolean,
 			default: false,
 		},
@@ -232,8 +232,8 @@ export default defineComponent({
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
 		type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
 
-		let colorTypes = props.allowAlpha ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
-		const colorType = ref<ColorType>(props.allowAlpha ? 'RGBA' : 'RGB');
+		let colorTypes = props.opacity ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
+		const colorType = ref<ColorType>(props.opacity ? 'RGBA' : 'RGB');
 
 		function unsetColor() {
 			emit('input', null);
@@ -336,7 +336,7 @@ export default defineComponent({
 
 			const rgb = computed<number[]>({
 				get() {
-					const arr = color.value !== null ? color.value.rgb().array() : props.allowAlpha ? [0, 0, 0, 1] : [0, 0, 0];
+					const arr = color.value !== null ? color.value.rgb().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
 					return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
 				},
 				set(newRGB) {
@@ -346,7 +346,7 @@ export default defineComponent({
 
 			const hsl = computed<number[]>({
 				get() {
-					const arr = color.value !== null ? color.value.hsl().array() : props.allowAlpha ? [0, 0, 0, 1] : [0, 0, 0];
+					const arr = color.value !== null ? color.value.hsl().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
 					return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
 				},
 				set(newHSL) {

@@ -12,8 +12,8 @@ export default defineInterface({
 	group: 'selection',
 	options: [
 		{
-			field: 'allowAlpha',
-			name: '$t:interfaces.select-color.allow_alpha',
+			field: 'opacity',
+			name: '$t:interfaces.select-color.opacity',
 			type: 'boolean',
 			meta: {
 				width: 'half',
