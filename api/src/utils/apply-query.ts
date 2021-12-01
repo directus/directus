@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { clone, get, isPlainObject, set } from 'lodash';
+import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
@@ -8,8 +8,7 @@ import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/typ
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
-import { getGeometryHelper } from '../database/helpers/geometry';
-import { getDateHelper } from '../database/helpers/date';
+import { getHelpers } from '../database/helpers';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -71,17 +70,19 @@ export default function applyQuery(
 		const [field, keys] = query.union as [string, (string | number)[]];
 
 		const queries = keys.map((key) => {
-			let filter = { [field]: { _eq: key } } as Filter;
+			const unionFilter = { [field]: { _eq: key } } as Filter;
+			let filter: Filter | null | undefined = cloneDeep(query.filter);
 
-			if (query.filter) {
-				if ('_and' in query.filter) {
-					(query.filter as LogicalFilterAND)._and.push(filter);
-					filter = query.filter;
+			if (filter) {
+				if ('_and' in filter) {
+					(filter as LogicalFilterAND)._and.push(unionFilter);
 				} else {
 					filter = {
-						_and: [query.filter, filter],
+						_and: [filter, unionFilter],
 					} as LogicalFilterAND;
 				}
+			} else {
+				filter = unionFilter;
 			}
 
 			return knex.select('*').from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
@@ -142,6 +143,7 @@ export function applyFilter(
 	collection: string,
 	subQuery = false
 ) {
+	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
 
 	const aliasMap: Record<string, string> = {};
@@ -221,7 +223,7 @@ export function applyFilter(
 							.on(
 								`${parentAlias || parentCollection}.${relation.field}`,
 								'=',
-								knex.raw(`CAST(?? AS VARCHAR(255))`, `${alias}.${schema.collections[pathScope].primary}`)
+								knex.raw(`CAST(?? AS CHAR(255))`, `${alias}.${schema.collections[pathScope].primary}`)
 							)
 							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
 					});
@@ -369,8 +371,6 @@ export function applyFilter(
 				});
 			}
 
-			const dateHelper = getDateHelper();
-
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -378,9 +378,9 @@ export function applyFilter(
 
 				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
 					if (Array.isArray(compareValue)) {
-						compareValue = compareValue.map((val) => dateHelper.parseDate(val));
+						compareValue = compareValue.map((val) => helpers.date.parse(val));
 					} else {
-						compareValue = dateHelper.parseDate(compareValue);
+						compareValue = helpers.date.parse(compareValue);
 					}
 				}
 			}
@@ -477,21 +477,19 @@ export function applyFilter(
 				dbQuery[logical].whereNotBetween(selectionRaw, value);
 			}
 
-			const geometryHelper = getGeometryHelper();
-
 			if (operator == '_intersects') {
-				dbQuery[logical].whereRaw(geometryHelper.intersects(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
 			}
 
 			if (operator == '_nintersects') {
-				dbQuery[logical].whereRaw(geometryHelper.nintersects(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
 			}
 			if (operator == '_intersects_bbox') {
-				dbQuery[logical].whereRaw(geometryHelper.intersects_bbox(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
 			}
 
 			if (operator == '_nintersects_bbox') {
-				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
 			}
 		}
 

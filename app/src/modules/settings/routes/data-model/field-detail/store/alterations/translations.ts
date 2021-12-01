@@ -34,7 +34,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 			'relations.o2m.field',
 			'relations.m2o.field',
 			'relations.m2o.related_collection',
-			'relations.o2m.meta?.sort_field',
+			'relations.o2m.meta.sort_field',
 		].some(hasChanged)
 	) {
 		generateCollections(updates, state, helperFn);
@@ -258,7 +258,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 			type: 'integer',
 			schema: {},
 			meta: {
-				hidden: true,
+				hidden: false,
 			},
 		});
 	} else {

@@ -1,5 +1,5 @@
 import cookieParser from 'cookie-parser';
-import express, { RequestHandler } from 'express';
+import express, { Request, Response, RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
@@ -17,6 +17,7 @@ import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
 import panelsRouter from './controllers/panels';
+import notificationsRouter from './controllers/notifications';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -136,11 +137,14 @@ export default async function createApp(): Promise<express.Application> {
 		const html = await fse.readFile(adminPath, 'utf8');
 		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		app.get('/admin', (req, res) => res.send(htmlWithBase));
-		app.use('/admin', express.static(path.join(adminPath, '..')));
-		app.use('/admin/*', (req, res) => {
+		const noCacheIndexHtmlHandler = (req: Request, res: Response) => {
+			res.setHeader('Cache-Control', 'no-cache');
 			res.send(htmlWithBase);
-		});
+		};
+
+		app.get('/admin', noCacheIndexHtmlHandler);
+		app.use('/admin', express.static(path.join(adminPath, '..')));
+		app.use('/admin/*', noCacheIndexHtmlHandler);
 	}
 
 	// use the rate limiter - all routes for now
@@ -177,6 +181,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/files', filesRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/notifications', notificationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);

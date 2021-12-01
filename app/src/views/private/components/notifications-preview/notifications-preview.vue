@@ -3,7 +3,7 @@
 		<transition-expand tag="div">
 			<div v-if="modelValue" class="inline">
 				<div class="padding-box">
-					<router-link class="link" to="/notifications" :class="{ 'has-items': lastFour.length > 0 }">
+					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
 						{{ t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">
@@ -17,10 +17,10 @@
 			v-tooltip.left="t('notifications')"
 			:active="modelValue"
 			class="toggle"
-			icon="notifications"
+			icon="pending_actions"
 			@click="$emit('update:modelValue', !modelValue)"
 		>
-			{{ t('notifications') }}
+			{{ t('activity_log') }}
 		</sidebar-button>
 	</div>
 </template>

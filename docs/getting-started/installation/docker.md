@@ -65,7 +65,7 @@ version: '3'
 services:
   database:
     container_name: database
-    image: postgres:12
+    image: postgis/postgis:13-master
     volumes:
       - ./data/database:/var/lib/postgresql/data
     networks:
