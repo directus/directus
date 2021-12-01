@@ -30,6 +30,7 @@
 					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
+					tabindex="-1"
 					clickable
 					:disabled="!isStepUpAllowed"
 					@click="stepUp"
@@ -38,6 +39,7 @@
 					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
+					tabindex="-1"
 					clickable
 					:disabled="!isStepDownAllowed"
 					@click="stepDown"
