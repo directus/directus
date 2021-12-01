@@ -1091,6 +1091,8 @@ interfaces:
   boolean:
     toggle: สลับ
     description: สลับระหว่าง เปิด และ ปิด
+    color_on: แสดงสี
+    color_off: ไม่แสดงสี
     label_placeholder: กรอกชื่อ...
     label_default: เปิดใช้งาน
   translations:
