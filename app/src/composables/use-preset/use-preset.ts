@@ -1,6 +1,6 @@
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
-import { assign, debounce, isEqual } from 'lodash';
+import { assign, merge, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsablePreset = {
@@ -86,6 +86,11 @@ export function usePreset(
 		immediate ? savePreset() : handleChanges();
 	}
 
+	function updatePresetDeeo(preset: Partial<Preset>, immediate?: boolean) {
+		localPreset.value = merge({}, localPreset.value, preset);
+		immediate ? savePreset() : handleChanges();
+	}
+
 	watch([collection, bookmark], () => {
 		initLocalPreset();
 	});
@@ -97,7 +102,7 @@ export function usePreset(
 		},
 		set(options) {
 			if (localPreset.value.layout) {
-				updatePreset({ layout_options: { [localPreset.value.layout]: options } });
+				updatePresetDeeo({ layout_options: { [localPreset.value.layout]: options } });
 			}
 		},
 	});
@@ -109,7 +114,7 @@ export function usePreset(
 		},
 		set(query) {
 			if (localPreset.value.layout) {
-				updatePreset({ layout_query: { [localPreset.value.layout]: query } });
+				updatePresetDeeo({ layout_query: { [localPreset.value.layout]: query } });
 			}
 		},
 	});
