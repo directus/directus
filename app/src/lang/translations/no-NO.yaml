@@ -30,6 +30,7 @@ module_bar: Modul Bar
 edit_field: Rediger felt
 conditions: Betingelser
 maps: Kart
+item_creation: Objekt opprettelse
 item_revision: Element revisjoner
 enter_a_name: Angi et navn...
 duplicate_field: Dupliser felt
@@ -339,7 +340,19 @@ dimensions: Dimensjoner
 size: Størrelse
 created: Opprettet
 owner: Eier
+background_color: Bakgrunnsfarge
+upload_from_device: Last opp fil fra enhet
+choose_from_library: Velg fil fra bibliotek
+import_from_url: Importer fil fra URL
+replace_from_device: Erstatt fil fra enhet
+replace_from_library: Erstatt fil fra bibliotek
+replace_from_url: Erstatt fil fra URL
+no_file_selected: Ingen fil valgt
+download_file: Last ned fil
+collection_key: Nøkkel Samling
 name: Navn
+primary_key_field: Hovednøkkelfelt (Automatic Translation)
+type: Type
 created_by: Opprettet av
 created_on: Opprettet den
 generated_uuid: Generert UUID
@@ -453,6 +466,7 @@ read: Les
 update: Oppdater
 select_fields: Velg felter
 wysiwyg_options:
+  backcolor: Bakgrunnsfarge
   remove: Fjern
   selectall: Merk alt
   table: Tabell
