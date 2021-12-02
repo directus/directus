@@ -66,6 +66,8 @@ create_webhook: Crear un webhook(conección)
 invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
+subject: Sujeto
+inbox: Buzón
 emails: Correos electrónicos
 connection_excellent: La conexión es excelente
 connection_good: La conexión es buena
@@ -166,6 +168,7 @@ field_update_success: 'Campo Actualizado: "{field}"'
 duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
 language: Idioma
 aggregate_function: Función de agregado
+aggregate_precision: Precisión agregada
 group_aggregation: Agregación de grupo
 group_precision: Precisión del grupo
 global: Global
@@ -426,6 +429,9 @@ user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
 webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
 no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando uno a continuación.
+no_notifications: Sin notificaciones
+no_notifications_copy: '¡Estás al día!'
+activity_log: Registro de actividad
 all_items: Todos los Elementos
 any: Cualquiera
 csv: CSV
@@ -787,6 +793,7 @@ discard_changes_copy: '¿Seguro que quiere descartar todos los cambios?'
 show_x_axis: Mostrar eje X
 show_y_axis: Mostrar eje Y
 keep_editing: Sigue editando
+page_help_collections_overview: '**Resumen de Colecciones** — Lista de todas las colecciones a las que tienes acceso.'
 page_help_collections_collection: >-
   **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_collections_item: >-
@@ -815,6 +822,8 @@ page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crea
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
+page_help_insights_overview: '**Diseños** — Lista de paneles a los que tienes acceso.'
+page_help_insights_dashboard: '**Panel de control** — Espacio de trabajo para administrar uno o más paneles'
 activity_feed: Actividad
 add_new: Añadir Nuevo
 create_new: Crear Nuevo
@@ -824,13 +833,32 @@ no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
   No se han seleccionado elementos | ¿Está seguro de que desea eliminar este elemento? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estos {count} ítems? Esta acción no puede deshacerse.
 cancel: Cancelar
+no_upscale: No mejorar imágenes
 collection: Colección
 collections: Colecciones
+content: Contenido
 singleton: Singleton
 singleton_label: Tratar como un sólo objeto
 system_fields_locked: Los campos del sistema están bloqueados y no pueden ser editados
 directus_collection:
+  directus_activity: Registros de contabilidad para todos los eventos
+  directus_collections: Configuración adicional de colección y metadatos
+  directus_dashboards: Panel de control dentro del módulo Insights
+  directus_fields: Configuración adicional de campos y metadatos
+  directus_files: Metadatos para todos los archivos gestionados
+  directus_folders: Proporciona directorios virtuales para archivos
+  directus_migrations: Qué versión de la base de datos estás usando
+  directus_panels: Paneles individuales dentro de los paneles de Individual
+  directus_permissions: Permisos de acceso para cada rol
+  directus_notifications: Notificaciones enviadas a usuarios
+  directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
+  directus_revisions: Capturas de datos para toda la actividad
+  directus_roles: Grupos de permisos para usuarios del sistema
+  directus_sessions: Información de sesión de usuario
+  directus_settings: Opciones de configuración del proyecto
+  directus_users: Usuarios del sistema para la plataforma
+  directus_webhooks: Configuración de peticiones HTTP basadas en eventos
 fields:
   directus_activity:
     item: Clave primaria del ítem
@@ -856,6 +884,8 @@ fields:
     unarchive_value: Desarchivar valor
     sort_field: Campo Ordenamiento
     accountability: Actividad y seguimiento de revisión
+    archive_field: Campo de archivo
+    item_duplication_fields: Campos de duplicación de elementos
   directus_files:
     $thumbnail: Miniatura
     title: Título
@@ -890,26 +920,54 @@ fields:
     title: Título
     description: Descripción
     tags: Etiquetas
+    user_preferences: Preferencias de usuario
     language: Idioma
     theme: Tema
+    theme_auto: Automático (basado en el sistema)
+    theme_light: Modo luz
+    theme_dark: Modo Oscuro
     tfa_secret: Autenticación de dos factores
+    admin_options: Opciones de Admin
     status: Estado
+    status_invited: Invitado
     status_active: Activo
+    status_suspended: Suspendido
+    status_archived: Archivado
     role: Rol
     token: Token
+    token_placeholder: Introduzca un token de acceso seguro...
+    provider: Proveedor
+    external_identifier: Identificador externo
     last_page: Última Página
     last_access: Último Acceso
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: Mapeo
+    basemaps: Mapas basales
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Estilo Mapbox
+    mapbox_key: Token de acceso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
+    additional_transforms: Transformaciones adicionales
     project_name: Nombre de proyecto
     project_url: URL del Proyecto
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
+    branding: Marca y estilo
     public_foreground: Superficie Pública
     public_background: Fondo Público
     public_note: Notas Públicas
     auth_password_policy: Política de Contraseña para Autentificación
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
+    files_and_thumbnails: Archivos y almacenamiento
+    storage_default_folder: Carpeta por defecto
+    storage_asset_presets: Ajustes de transformación
+    storage_asset_transform: Transformaciones permitidas
     custom_css: CSS Personalizado
     module_bar: Barra de módulos
   directus_fields:
@@ -941,7 +999,14 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Seguridad
+    additional_transforms: Transformaciones adicionales
+    transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
+    mapbox_key: Token de acceso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Mapas basales
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Estilo Mapbox
     files_divider_title: Archivos y miniaturas
   directus_activity:
     login: Iniciar sesión
@@ -966,8 +1031,15 @@ field_options:
       name_placeholder: Ingresar un título...
     collections_name: Colecciones
   directus_users:
+    preferences_divider: Preferencias de usuario
+    dropdown_auto: Automático (basado en el sistema)
+    dropdown_light: Modo luz
+    dropdown_dark: Modo Oscuro
+    admin_divider: Opciones de Admin
     status_dropdown_active: Activo
+    status_dropdown_suspended: Suspendido
     status_dropdown_archived: Archivado
+    token: Introduzca un token de acceso seguro...
   directus_webhooks:
     status_options_active: Activo
     status_options_inactive: Inactivo
