@@ -264,3 +264,48 @@ th, td
       padding-left 0
 
 @require 'mobile.styl'
+
+
+
+@media (prefers-color-scheme: dark)
+  html, body
+    color #b3c4cc !important;
+    background #263238 !important;
+    hr
+      border-top 2px solid #455a64 !important;
+    .navbar
+      background-color #2d3a41 !important;
+    .sidebar
+      border-right 1px solid #455a64 !important;
+      background #2e3c43 !important;
+    tr
+      &:nth-child(2n)
+        background #3a4b53
+    .algolia-search-wrapper
+      filter invert(1)
+      .algolia-autocomplete
+        .algolia-docsearch-suggestion
+          .algolia-docsearch-suggestion--category-header
+            background #b32f66
+        .algolia-docsearch-suggestion--highlight
+          color #b32f66
+    .custom-block
+      &.success
+        background-color #294a4b
+      &.warning
+        background-color #43483c
+      &.danger
+        background-color #403e47
+
+    h1, h2, h3
+      color #cfd8dc !important;
+
+    th, td
+      border-color #455a64 !important;
+
+    p, .sidebar-heading, a.sidebar-link
+      color #b3c4cc !important;
+
+    .custom-block.tip, div[class*="language-"], .theme-default-content code
+      background-color #2d3a41 !important;
+      color #b3c4cc !important;
