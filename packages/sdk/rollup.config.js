@@ -4,70 +4,65 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
+import dts from 'rollup-plugin-dts';
 
 import pkg from './package.json';
 
-const globalName = 'formatTitle';
+const globalName = 'DirectusSdk';
 
 const configs = {
 	global: {
-		file: pkg.unpkg,
+		file: pkg.unpkg.replace('esm', 'global'),
 		format: 'iife',
 		target: 'es5',
-		mode: 'production',
 		browser: true,
 	},
 	browser: {
-		file: pkg.module.replace('bundler', 'esm'),
+		file: pkg.unpkg,
 		format: 'es',
-		target: 'es2018',
-		mode: 'production',
 		browser: true,
+		external: false,
 	},
 	bundler: {
 		file: pkg.module,
 		format: 'es',
-		target: 'es2018',
-		mode: 'development',
+		dev: true,
 	},
 	cjs: {
 		file: pkg.main,
 		format: 'cjs',
-		target: 'es2018',
-		mode: 'development',
+		dev: true,
 	},
 };
 
 function createConfig({
 	file,
 	format,
-	target,
-	mode,
+	target = null,
+	dev = false,
 	browser = false,
 	external = Object.fromEntries(Object.keys(pkg.dependencies || {}).map((x) => [x, x])),
 }) {
-	const isProduction = mode === 'production';
-
 	const config = {
 		input: 'src/index.ts',
 		output: {
-			file: isProduction && !file.endsWith('.min.js') ? file.replace('.js', '.min.js') : file,
+			file,
 			format,
 			exports: 'auto',
 			sourcemap: true,
 		},
-		external: Object.keys(external),
+		external: external ? Object.keys(external) : undefined,
 		watch: {
 			include: 'src/**/*',
 		},
 		plugins: [
 			json(),
 			typescript({
-				useTsconfigDeclarationDir: true,
 				tsconfigOverride: {
 					compilerOptions: {
-						target,
-						lib: [target],
+						...(target ? { target, lib: [target] } : {}),
+						declaration: false,
+						declarationMap: false,
 					},
 				},
 			}),
@@ -79,13 +74,13 @@ function createConfig({
 
 	if (format === 'iife') {
 		config.output.name = globalName;
-		config.output.globals = external;
+		config.output.globals = external ?? {};
 	}
 
-	if (isProduction) {
+	if (!dev) {
 		config.plugins.push(
 			terser({
-				ecma: target.replace('es', ''),
+				ecma: target?.replace('es', '') ?? '2019',
 			})
 		);
 	}
@@ -94,7 +89,13 @@ function createConfig({
 }
 
 function createConfigs(configs) {
-	return Object.keys(configs).map((key) => createConfig(configs[key]));
+	const typesConfig = {
+		input: 'src/index.ts',
+		output: [{ file: pkg.types, format: 'es' }],
+		plugins: [dts()],
+	};
+
+	return [...Object.keys(configs).map((key) => createConfig(configs[key])), typesConfig];
 }
 
 export default createConfigs(configs);
