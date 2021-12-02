@@ -1192,6 +1192,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1243,6 +1244,7 @@ interfaces:
     code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
+    line_wrapping: Linea di margine
     placeholder: Inserisci il codice qui...
   system-collection:
     collection: Raccolta
@@ -1309,6 +1311,8 @@ interfaces:
   file-image:
     image: Immagine
     description: Seleziona o carica un'immagine
+    crop: Ritaglia a adatta
+    crop_label: Ritaglia l'immagine come necessario
   system-interface:
     interface: Interfaccia
     description: Seleziona un'interfaccia esistente
@@ -1594,6 +1598,8 @@ panels:
     description: Disegna un grafico a linee basato su valori nel tempo
     date_field: Campo data
     value_field: Campo valore
+    fill_type: Tipo di riempimento
+    curve_type: Tipo di curva
   label:
     name: Etichetta
     description: Mostra del testo
