@@ -86,7 +86,7 @@ export function usePreset(
 		immediate ? savePreset() : handleChanges();
 	}
 
-	function updatePresetDeeo(preset: Partial<Preset>, immediate?: boolean) {
+	function updatePresetDeep(preset: Partial<Preset>, immediate?: boolean) {
 		localPreset.value = merge({}, localPreset.value, preset);
 		immediate ? savePreset() : handleChanges();
 	}
@@ -102,7 +102,7 @@ export function usePreset(
 		},
 		set(options) {
 			if (localPreset.value.layout) {
-				updatePresetDeeo({ layout_options: { [localPreset.value.layout]: options } });
+				updatePresetDeep({ layout_options: { [localPreset.value.layout]: options } });
 			}
 		},
 	});
@@ -114,7 +114,7 @@ export function usePreset(
 		},
 		set(query) {
 			if (localPreset.value.layout) {
-				updatePresetDeeo({ layout_query: { [localPreset.value.layout]: query } });
+				updatePresetDeep({ layout_query: { [localPreset.value.layout]: query } });
 			}
 		},
 	});
