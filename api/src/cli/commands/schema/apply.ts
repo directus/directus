@@ -10,6 +10,7 @@ import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
 import { applySnapshot } from '../../../utils/apply-snapshot';
 import { flushCaches } from '../../../cache';
+import { DiffArray } from 'deep-diff';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
@@ -70,6 +71,8 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 						message += `\n  - ${chalk.red('Delete')} ${collection}`;
 					} else if (diff[0]?.kind === 'N') {
 						message += `\n  - ${chalk.green('Create')} ${collection}`;
+					} else if (diff[0]?.kind === 'A') {
+						message += `\n  - ${chalk.blue('Update')} ${collection}`;
 					}
 				}
 			}
@@ -91,6 +94,8 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
 					} else if (diff[0]?.kind === 'N') {
 						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
+					} else if (diff[0]?.kind === 'A') {
+						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 					}
 				}
 			}
@@ -100,7 +105,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 
 				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
 					if (diff[0]?.kind === 'E') {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field} -> ${related_collection}`;
+						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
 							if (change.kind === 'E') {
@@ -109,9 +114,18 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 							}
 						}
 					} else if (diff[0]?.kind === 'D') {
-						message += `\n  - ${chalk.red('Delete')} ${collection}.${field} -> ${related_collection}`;
+						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
 					} else if (diff[0]?.kind === 'N') {
-						message += `\n  - ${chalk.green('Create')} ${collection}.${field} -> ${related_collection}`;
+						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
+					} else if (diff[0]?.kind === 'A') {
+						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+					} else {
+						continue;
+					}
+
+					// Related collection doesn't exist for m2a relationship types
+					if (related_collection) {
+						message += `-> ${related_collection}`;
 					}
 				}
 			}
