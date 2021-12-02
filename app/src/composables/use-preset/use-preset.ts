@@ -1,6 +1,6 @@
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
-import { assign, merge, debounce, isEqual } from 'lodash';
+import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsablePreset = {
