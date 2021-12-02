@@ -353,6 +353,7 @@ collection_key: Nøkkel Samling
 name: Navn
 primary_key_field: Hovednøkkelfelt (Automatic Translation)
 type: Type
+creating_new_collection: Oppretter ny samling
 created_by: Opprettet av
 created_on: Opprettet den
 generated_uuid: Generert UUID
@@ -365,12 +366,24 @@ no_items: Ingen elementer
 disabled: Deaktivert
 information: Informasjon
 request_feature: Foreslå ny funksjon
+interface_not_found: 'Grensesnitt "{interface}" ble ikke funnet.'
+reset_interface: Tilbakestill grensesnitt
+display_not_found: 'Vis "{display}" ikke funnet.'
+reset_display: Tilbakestill visning
+list-m2a: Bygger (M2A)
 item_count: 'Ingen elementer | Ett element | {count} elementer'
+no_items_copy: Det er ingen gjenstander i denne samlingen ennå.
+file_count: 'Ingen filer ″One File ε {count} Filer'
 no_files_copy: Det er ingen filer her.
 user_count: 'Ingen brukere | En bruker | {count} brukere'
 no_users_copy: Det er ingen brukere i denne rollen enda.
 webhooks_count: 'Ingen Webhooks | En Webhook | {count} Webhooks'
+no_webhooks_copy: Ingen webhooks er konfigurert ennå. Kom i gang ved å opprette en nedenfor.
+no_notifications: Ingen varslinger
+no_notifications_copy: Ingen varslinger!
+activity_log: Aktivitetslogg
 all_items: Alle elementer
+any: Noen
 csv: CSV
 no_collections: Ingen kolleksjoner
 create_collection: Opprett kolleksjon
@@ -380,7 +393,9 @@ relationship_not_setup: Relasjonen er ikke konfigurert riktig
 display_template_not_setup: Visningsmalen alternativet er feilkonfigurert
 collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
 select_a_collection: Velg en Kolleksjon
+select_a_field: Velg ett felt
 active: Aktiv
+move_to: Flytt til...
 copy: Kopier
 copy_to: Kopier til...
 no_other_dashboards_copy: Du har ingen andre dashbord ennå.
@@ -388,9 +403,12 @@ inactive: Inaktiv
 users: Brukere
 activity: Aktivitet
 activity_item: Aktivitetselement
+action: Handling
 ip_address: IP-addresse
 user_agent: Brukeragent
 webhooks: Webhooks
+decimals: Desimaler
+value_decimals: Verdi desimaler
 min_value: Min. verdi
 max_value: Maks verdi
 automatic: Automatisk
@@ -433,9 +451,28 @@ errors:
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_OTP: Feil engangspassord
+  INVALID_PAYLOAD: Invalid payload
+  INVALID_QUERY: Ugyldig spørring
+  ITEM_LIMIT_REACHED: Elementgrense er nådd
   ITEM_NOT_FOUND: Element ikke funnet
+  ROUTE_NOT_FOUND: Ikke funnet
+  RECORD_NOT_UNIQUE: Duplikat verdi oppdaget
+  USER_SUSPENDED: Bruker Suspendert
+  CONTAINS_NULL_VALUES: Feltet inneholder nullverdier
+  UNPROCESSABLE_ENTITY: Ubehandlebar enhet
+  INTERNAL_SERVER_ERROR: Uventet feil
   NOT_NULL_VIOLATION: Verdien kan ikke være null
+  ILLEGAL_ASSET_TRANSFORMATION: Bildekilden er for stor til å forhåndsvise
+  UNKNOWN: Uventet feil
+security: Sikkerhet
+value_hashed: Sikker verdi Hastet
+bookmark_name: Bokmerkenavn...
+create_bookmark: Lag bokmerke
+edit_bookmark: Rediger bokmerke
 bookmarks: Bokmerke
+presets: Forhåndsinnstillinger
+unexpected_error: Uventet feil
+unexpected_error_copy: En uventet feil oppstod, vennligst forsøk igjen.
 copy_details: Kopier detaljer
 no_app_access: Ingen app-tilgang
 no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
@@ -445,10 +482,25 @@ back: Tilbake
 filter: Filter
 editing_image: Redigerer bilde
 square: Firkant
+free: Gratis
 flip_horizontal: Vend horisontalt
 flip_vertical: Vend vertikalt
+aspect_ratio: Størrelsesforhold
 rotate: Rotér
 all_users: Alle brukere
+delete_collection: Slett samlingen
+update_collection_success: Oppdatert samling
+delete_collection_success: Slettet samling
+make_collection_visible: Gjør samlingen synlig
+make_collection_hidden: Gjør samlingen skjult
+start_end_of_count_items: '{start}–{end} av {count} artikler'
+start_end_of_count_filtered_items: '{start}–{end} av {count} filtrerte artikler'
+one_item: '1 element'
+one_filtered_item: '1 filtrert element'
+delete_collection_are_you_sure: >-
+  Er du sikker på at du vil slette denne samlingen? Dette vil slette samlingen og alle elementene i den. Denne handlingen er permanent.
+collections_shown: Samlinger vises
+visible_collections: Synlige samlinger
 operators:
   lt: Mindre enn
   gt: Større enn
@@ -536,6 +588,8 @@ fields:
     value: Verdi
     collections: Kolleksjoner
 field_options:
+  directus_settings:
+    security_divider_title: Sikkerhet
   directus_activity:
     create: Opprett
     update: Oppdater
@@ -598,6 +652,7 @@ interfaces:
     name: Filter
     add_filter: Legg til filter
     all: Alle
+    any: Noen
   presentation-links:
     primary: Primær
   system-collection:
