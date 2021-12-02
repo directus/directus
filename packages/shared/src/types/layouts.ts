@@ -26,6 +26,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	filter: Filter | null;
 	search: string | null;
 	selectMode: boolean;
+	showSelect: ShowSelect;
 	readonly: boolean;
 	resetPreset?: () => Promise<void>;
 	clearFilters?: () => void;
