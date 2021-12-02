@@ -86,11 +86,6 @@ export function usePreset(
 		immediate ? savePreset() : handleChanges();
 	}
 
-	function updatePresetDeep(preset: Partial<Preset>, immediate?: boolean) {
-		localPreset.value = merge({}, localPreset.value, preset);
-		immediate ? savePreset() : handleChanges();
-	}
-
 	watch([collection, bookmark], () => {
 		initLocalPreset();
 	});
@@ -101,8 +96,9 @@ export function usePreset(
 			return localPreset.value.layout_options?.[localPreset.value.layout] || null;
 		},
 		set(options) {
-			if (localPreset.value.layout) {
-				updatePresetDeep({ layout_options: { [localPreset.value.layout]: options } });
+			const { layout, layout_options } = localPreset.value;
+			if (layout) {
+				updatePreset({ layout_options: assign(layout_options, { [layout]: options }) });
 			}
 		},
 	});
@@ -113,8 +109,9 @@ export function usePreset(
 			return localPreset.value.layout_query?.[localPreset.value.layout] || null;
 		},
 		set(query) {
-			if (localPreset.value.layout) {
-				updatePresetDeep({ layout_query: { [localPreset.value.layout]: query } });
+			const { layout, layout_query } = localPreset.value;
+			if (layout) {
+				updatePreset({ layout_options: assign(layout_query, { [layout]: query }) });
 			}
 		},
 	});
