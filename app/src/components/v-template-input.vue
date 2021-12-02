@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch, onMounted } from 'vue';
+import { defineComponent, PropType, ref, watch, onMounted, onUnmounted } from 'vue';
 import { position } from 'caret-pos';
 
 export default defineComponent({
@@ -36,11 +36,14 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['update:modelValue', 'trigger', 'deactivate'],
+	emits: ['update:modelValue', 'trigger', 'deactivate', 'up', 'down', 'enter'],
 	setup(props, { emit }) {
 		const input = ref<HTMLDivElement>();
 
 		let hasTriggered = false;
+		let matchedPositions: number[] = [];
+		let previousInnerTextLength = 0;
+		let previousCaretPos = 0;
 
 		watch(
 			() => props.modelValue,
@@ -48,7 +51,7 @@ export default defineComponent({
 				if (!input.value) return;
 
 				if (newText !== input.value.innerText) {
-					parseHTML(newText);
+					parseHTML(newText, true);
 				}
 			}
 		);
@@ -57,19 +60,140 @@ export default defineComponent({
 			if (props.modelValue && props.modelValue !== input.value!.innerText) {
 				parseHTML(props.modelValue);
 			}
+
+			if (input.value) {
+				input.value.addEventListener('click', checkClick);
+				input.value.addEventListener('keydown', checkKeyDown);
+				input.value.addEventListener('keyup', checkKeyUp);
+			}
+		});
+
+		onUnmounted(() => {
+			if (input.value) {
+				input.value.removeEventListener('click', checkClick);
+				input.value.removeEventListener('keydown', checkKeyDown);
+				input.value.removeEventListener('keyup', checkKeyUp);
+			}
 		});
 
 		return { processText, input };
 
+		function checkKeyDown(event: any) {
+			const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+
+			if (event.code === 'Enter') {
+				event.preventDefault();
+
+				if (hasTriggered) {
+					emit('enter');
+				} else {
+					parseHTML(
+						input.value!.innerText.substring(0, caretPos) +
+							(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
+								? '\n\n'
+								: '\n') +
+							input.value!.innerText.substring(caretPos),
+						true
+					);
+					position(input.value!, caretPos + 1);
+				}
+			} else if (event.code === 'ArrowUp' && !event.shiftKey) {
+				if (hasTriggered) {
+					event.preventDefault();
+
+					emit('up');
+				}
+			} else if (event.code === 'ArrowDown' && !event.shiftKey) {
+				if (hasTriggered) {
+					event.preventDefault();
+
+					emit('down');
+				}
+			} else if (event.code === 'ArrowLeft' && !event.shiftKey) {
+				const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
+					event.preventDefault();
+
+					position(input.value!, matchedPositions[checkCaretPos - 1] - 1);
+				}
+			} else if (event.code === 'ArrowRight' && !event.shiftKey) {
+				const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
+					event.preventDefault();
+
+					position(input.value!, matchedPositions[checkCaretPos + 1] + 1);
+				}
+			} else if (event.code === 'Backspace') {
+				const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
+					event.preventDefault();
+
+					const newCaretPos = matchedPositions[checkCaretPos - 1];
+					parseHTML(
+						(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
+							String.fromCharCode(160),
+							' '
+						),
+						true
+					);
+					position(input.value!, newCaretPos);
+					emit('update:modelValue', input.value!.innerText);
+				}
+			} else if (event.code === 'Delete') {
+				const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
+					event.preventDefault();
+
+					parseHTML(
+						(
+							input.value!.innerText.substring(0, caretPos) +
+							input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
+						).replaceAll(String.fromCharCode(160), ' '),
+						true
+					);
+					position(input.value!, caretPos);
+					emit('update:modelValue', input.value!.innerText);
+				}
+			}
+		}
+
+		function checkKeyUp(event: any) {
+			const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+
+			if ((event.code === 'ArrowUp' || event.code === 'ArrowDown') && !event.shiftKey) {
+				const checkCaretPos = matchedPositions.indexOf(caretPos);
+				if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
+					position(input.value!, matchedPositions[checkCaretPos] + 1);
+				} else if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
+					position(input.value!, matchedPositions[checkCaretPos] - 1);
+				}
+			}
+		}
+
+		function checkClick(event: any) {
+			const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+
+			const checkCaretPos = matchedPositions.indexOf(caretPos);
+			if (checkCaretPos !== -1) {
+				if (checkCaretPos % 2 === 0) {
+					position(input.value!, caretPos - 1);
+				} else {
+					position(input.value!, caretPos + 1);
+				}
+				event.preventDefault();
+			}
+		}
+
 		function processText(event: KeyboardEvent) {
 			const input = event.target as HTMLDivElement;
 
-			const caretPos = position(input).pos;
+			const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
 
 			const text = input.innerText ?? '';
 
 			let endPos = text.indexOf(' ', caretPos);
-			if (endPos == -1) endPos = text.length;
+			if (endPos === -1) endPos = text.indexOf('\n', caretPos);
+			if (endPos === -1) endPos = text.length;
 			const result = /\S+$/.exec(text.slice(0, endPos));
 			let word = result ? result[0] : null;
 			if (word) word = word.replace(/[\s'";:,./?\\-]$/, '');
@@ -89,38 +213,87 @@ export default defineComponent({
 			emit('update:modelValue', input.innerText);
 		}
 
-		function parseHTML(innerText?: string) {
+		function parseHTML(innerText?: string, isDirectInput = false) {
 			if (!input.value) return;
 
-			let newHTML = innerText ?? input.value.innerHTML ?? '';
+			if (input.value.innerText === '\n') {
+				input.value.innerText = '';
+			}
 
-			const caretPos = window.getSelection()?.rangeCount ? position(input.value).pos : 0;
+			if (innerText !== undefined) {
+				input.value.innerText = innerText;
+				hasTriggered = false;
+			}
 
+			let newHTML = input.value.innerText;
+
+			const caretPos = isDirectInput
+				? previousCaretPos
+				: window.getSelection()?.rangeCount
+				? position(input.value).pos
+				: 0;
+
+			let lastMatchIndex = 0;
 			const matches = newHTML.match(new RegExp(`${props.captureGroup}(?!</mark>)`, 'gi'));
+			matchedPositions = [];
 
 			if (matches) {
 				for (const match of matches ?? []) {
-					newHTML = newHTML.replace(
-						new RegExp(`(${match})(?!</mark>)`),
-						`&nbsp;<mark class="preview" data-preview="${
-							props.items[match.substring(props.triggerCharacter.length)]
-						}" contenteditable="false">${match}</mark>&nbsp;`
-					);
+					let replaceSpaceBefore = '';
+					let replaceSpaceAfter = '';
+					let addSpaceBefore = '';
+					let addSpaceAfter = '';
+
+					let htmlMatchIndex = newHTML.indexOf(match, lastMatchIndex);
+					const charCodeBefore = newHTML.charCodeAt(htmlMatchIndex - 1);
+					const charCodeAfter = newHTML.charCodeAt(htmlMatchIndex + match.length);
+
+					if (charCodeBefore === 32) {
+						replaceSpaceBefore = ' ';
+						addSpaceBefore = '&nbsp;';
+					} else if (charCodeBefore !== 160) {
+						addSpaceBefore = '&nbsp;';
+					}
+
+					if (charCodeAfter === 32) {
+						replaceSpaceAfter = ' ';
+						addSpaceAfter = '&nbsp;';
+					} else if (charCodeAfter !== 160) {
+						addSpaceAfter = '&nbsp;';
+					}
+
+					let searchString = replaceSpaceBefore + match + replaceSpaceAfter;
+					let replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
+						props.items[match.substring(props.triggerCharacter.length)]
+					}" contenteditable="false">${match}</mark>${addSpaceAfter}`;
+
+					newHTML = newHTML.replace(new RegExp(`(${searchString})(?!</mark>)`), replacementString);
+					lastMatchIndex = htmlMatchIndex + replacementString.length - searchString.length;
 				}
 			}
 
-			if (input.value.innerHTML !== newHTML) {
+			if (input.value.innerHTML !== newHTML.replaceAll(String.fromCharCode(160), '&nbsp;')) {
 				input.value.innerHTML = newHTML;
-				const delta = newHTML.length - input.value.innerHTML.length;
 
+				const delta = input.value.innerText.length - previousInnerTextLength;
 				const newPosition = caretPos + delta;
 
-				if (newPosition >= newHTML.length || newPosition < 0) {
-					position(input.value, newHTML.length - 1);
+				if (newPosition > input.value.innerText.length || newPosition < 0) {
+					position(input.value, input.value.innerText.length);
 				} else {
-					position(input.value, caretPos + delta);
+					position(input.value, newPosition);
 				}
 			}
+
+			lastMatchIndex = 0;
+			for (const match of matches ?? []) {
+				let matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
+				matchedPositions.push(matchIndex, matchIndex + match.length);
+				lastMatchIndex = matchIndex + match.length;
+			}
+
+			previousInnerTextLength = input.value.innerText.length;
+			previousCaretPos = caretPos;
 		}
 	},
 });
@@ -144,7 +317,7 @@ export default defineComponent({
 	&.multiline {
 		height: var(--input-height-tall);
 		overflow-y: auto;
-		white-space: pre-line;
+		white-space: pre-wrap;
 	}
 
 	&:hover {

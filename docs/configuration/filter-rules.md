@@ -8,7 +8,7 @@
 ## Syntax
 
 - **Field** — Any valid root field, [relational field](#relational), or [logical operator](#logical-operators)
-- **Operator** — Any valid [API operator](#supported-operators) prefaced with an underscore
+- **Operator** — Any valid [filter operator](#filter-operators)
 - **Value** — Any valid static value, or [dynamic variable](#dynamic-variables)
 
 ```
@@ -81,7 +81,7 @@ The following operators are **only available in validation permissions**:
 | `_submitted`            | Field has to be submitted |
 | `_regex` <sup>[2]</sup> | Field has to match regex  |
 
-<sup>[1]</sup> Only available on Geometry types\
+<sup>[1]</sup> Only available on Geometry types.\
 <sup>[2]</sup> JavaScript "flavor" regex. Make sure to escape backslashes.
 
 ## Relational

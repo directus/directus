@@ -1045,6 +1045,8 @@ interfaces:
   boolean:
     toggle: Enaouiñ/Lazhañ
     description: Gwintañ etre an enaouiñ hag al lazhañ
+    color_on: Liv aktivet
+    color_off: Liv diaktivet
     label_placeholder: Bizskrivañ ar skridennad...
     label_default: Enaouet
   translations:

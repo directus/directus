@@ -222,7 +222,7 @@
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
-				@refresh="refresh"
+				@refresh="drawerBatchRefresh"
 			/>
 
 			<template #sidebar>
@@ -442,6 +442,7 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
+			drawerBatchRefresh,
 			refresh,
 			refreshInterval,
 			currentLayout,
@@ -451,6 +452,11 @@ export default defineComponent({
 
 		async function refresh() {
 			await layoutRef.value?.state?.refresh?.();
+		}
+
+		async function drawerBatchRefresh() {
+			selection.value = [];
+			await refresh();
 		}
 
 		function useBreadcrumb() {
@@ -499,9 +505,9 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
+					selection.value = [];
 					await refresh();
 
-					selection.value = [];
 					confirmDelete.value = false;
 				} catch (err: any) {
 					error.value = err;
@@ -527,10 +533,10 @@ export default defineComponent({
 						},
 					});
 
-					confirmArchive.value = false;
 					selection.value = [];
-
 					await refresh();
+
+					confirmArchive.value = false;
 				} catch (err: any) {
 					error.value = err;
 				} finally {

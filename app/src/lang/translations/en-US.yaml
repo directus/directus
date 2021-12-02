@@ -1257,6 +1257,7 @@ interfaces:
     code: Code
     description: Write or share code snippets
     line_number: Line Number
+    line_wrapping: Line Wrapping
     placeholder: Enter code here...
   system-collection:
     collection: Collection
@@ -1323,6 +1324,8 @@ interfaces:
   file-image:
     image: Image
     description: Select or upload an image
+    crop: Crop to Fit
+    crop_label: Crop image as needed
   system-interface:
     interface: Interface
     description: Select an existing interface
@@ -1427,6 +1430,8 @@ interfaces:
   boolean:
     toggle: Toggle
     description: Switch between on and off
+    color_on: Color On
+    color_off: Color Off
     label_placeholder: Enter a label...
     label_default: Enabled
   translations:
@@ -1608,6 +1613,8 @@ panels:
     description: Render a line chart based on values over time
     date_field: Date Field
     value_field: Value Field
+    fill_type: Fill Type
+    curve_type: Curve Type
   label:
     name: Label
     description: Show some text

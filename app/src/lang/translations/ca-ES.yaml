@@ -1155,6 +1155,8 @@ interfaces:
   boolean:
     toggle: Canvia
     description: Canvia entre Encés i apagat
+    color_on: Color activat
+    color_off: Color desactivat
     label_placeholder: Introdueix una etiqueta...
     label_default: Habilitat
   translations:

@@ -1305,6 +1305,8 @@ interfaces:
   file-image:
     image: Obraz
     description: Wybierz lub prześlij plik
+    crop: Przytnij aby dopasować
+    crop_label: Przytnij obraz w razie potrzeby
   system-interface:
     interface: Interfejs
     description: Wybierz istniejący interfejs
@@ -1409,6 +1411,8 @@ interfaces:
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
+    color_on: Kolor włączony
+    color_off: Kolor wyłączony
     label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:
@@ -1588,6 +1592,8 @@ panels:
     description: Renderowanie wykresu liniowego na podstawie wartości w czasie
     date_field: Pole daty
     value_field: Pole wartości
+    fill_type: Typ wypełnienia
+    curve_type: Typ Krzywej
   label:
     name: Etykieta
     description: Pokaż tekst

@@ -341,6 +341,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/reference/system/notifications',
+						title: 'Notifications',
+					},
+					{
+						type: 'page',
 						path: '/reference/system/permissions',
 						title: 'Permissions',
 					},
@@ -448,6 +453,16 @@ module.exports = {
 						type: 'page',
 						path: '/extensions/themes',
 						title: 'Themes',
+					},
+				],
+			},
+			{
+				title: 'Guides',
+				children: [
+					{
+						type: 'page',
+						path: '/guides/sso',
+						title: 'Single Sign-On (SSO)',
 					},
 				],
 			},

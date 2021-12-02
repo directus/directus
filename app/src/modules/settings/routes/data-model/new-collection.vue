@@ -480,9 +480,7 @@ export default defineComponent({
 					collection: collectionName.value!,
 					field: systemFields.userCreated.name,
 					related_collection: 'directus_users',
-					schema: {
-						on_delete: 'SET NULL',
-					},
+					schema: {},
 				});
 			}
 
@@ -491,9 +489,7 @@ export default defineComponent({
 					collection: collectionName.value!,
 					field: systemFields.userUpdated.name,
 					related_collection: 'directus_users',
-					schema: {
-						on_delete: 'SET NULL',
-					},
+					schema: {},
 				});
 			}
 

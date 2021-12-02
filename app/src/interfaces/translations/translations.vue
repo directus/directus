@@ -18,6 +18,7 @@
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:autofocus="autofocus"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 			<v-divider />
@@ -54,7 +55,7 @@ import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep, isEqual, assign } from 'lodash';
+import { cloneDeep, isEqual, assign, isNil } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
 import { useWindowSize } from '@/composables/use-window-size';
 import useRelation from '@/composables/use-m2m';
@@ -81,6 +82,10 @@ export default defineComponent({
 		value: {
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
+		},
+		autofocus: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['input'],
@@ -279,7 +284,7 @@ export default defineComponent({
 				(newVal, oldVal) => {
 					if (
 						newVal &&
-						newVal !== oldVal &&
+						isNil(newVal) !== isNil(oldVal) &&
 						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
 					) {
 						loadItems();

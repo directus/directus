@@ -10,7 +10,7 @@ import { Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import { unflatten } from 'flat';
-import { getGeometryHelper } from '../database/helpers/geometry';
+import { getHelpers, Helpers } from '../database/helpers';
 import { parse as wktToGeoJSON } from 'wellknown';
 import { generateHash } from '../utils/generate-hash';
 
@@ -33,12 +33,14 @@ type Transformers = {
 export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
+	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
+		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 
@@ -225,12 +227,10 @@ export class PayloadService {
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
-		const helper = getGeometryHelper();
-
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
-				: (value: any) => helper.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
+				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
