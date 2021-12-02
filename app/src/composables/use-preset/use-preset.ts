@@ -111,7 +111,7 @@ export function usePreset(
 		set(query) {
 			const { layout, layout_query } = localPreset.value;
 			if (layout) {
-				updatePreset({ layout_options: assign(layout_query, { [layout]: query }) });
+				updatePreset({ layout_query: assign(layout_query, { [layout]: query }) });
 			}
 		},
 	});
