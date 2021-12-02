@@ -66,6 +66,8 @@ create_webhook: Crear Webhook
 invite_users: Invitar Usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
+subject: Sujeto
+inbox: Buzón
 emails: Correos Electrónicos
 connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
@@ -426,6 +428,7 @@ user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
 webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
 no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando uno a continuación.
+activity_log: Registro de actividad
 all_items: Todos los Elementos
 any: Cualquiera
 csv: CSV
@@ -826,10 +829,12 @@ batch_delete_confirm: >-
 cancel: Cancelar
 collection: Colección
 collections: Colecciones
+content: Contenido
 singleton: Singleton
 singleton_label: Tratar como un sólo objeto
 system_fields_locked: Los campos del sistema están bloqueados y no pueden ser editados
 directus_collection:
+  directus_migrations: Qué versión de la base de datos estás usando
   directus_relations: Configuración de relaciones y metadatos
 fields:
   directus_activity:
@@ -900,6 +905,10 @@ fields:
     last_page: Última Página
     last_access: Último Acceso
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
     mapbox_placeholder: pk.eyJ1Ijo.....
     project_name: Nombre del Proyecto
     project_url: URL del Proyecto
@@ -941,6 +950,7 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Seguridad
+    transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     mapbox_placeholder: pk.eyJ1Ijo.....
     files_divider_title: Archivos y miniaturas
   directus_activity:

@@ -219,18 +219,54 @@ unique: Унікальне
 updated_on: Оновлене
 updated_by: Оновлено
 primary_key: Первинний ключ
+foreign_key: Чужерідна клавіша
+finish_setup: Завершити налаштування
+dismiss: Відмінити
+raw_value: Необроблене значення
+edit_raw_value: Змінити необроблене значення
+enter_raw_value: Введіть необроблене значення...
 clear_value: Очистити значення
+clear_changes: Очистити зміни
 reset_to_default: Відновити налаштування за умовчанням
 undo_changes: Відмінити зміни
 notifications: Сповіщення
+show_all_activity: Показати всю активність
 page_not_found: Сторінку не знайдено
 page_not_found_body: Здається, сторінка яку ви шукаєте, не існує.
+confirm_revert: Підтвердити повернення
+confirm_revert_body: Це поверне елемент до вибраного стану.
+display: Відображати
+settings_update_success: Налаштування оновлено
 title: Заголовок
+revision_delta_created: Створено
+revision_delta_created_externally: Створено ззовні
+revision_delta_updated: 'Оновлено 1 поле | Оновлено {count} полів'
 revision_delta_deleted: Видалено
+revision_delta_reverted: Відновлено
+revision_delta_other: Редакція
+revision_delta_by: '{date} {user}'
+private_user: Приватний користувач
+creation_preview: Попередній перегляд створення
+revision_preview: Перегляд редакції
+updates_made: Зроблено оновлень
 leave_comment: Залишити коментар...
+post_comment_success: Коментар опубліковано
+item_create_success: Елемент створено | Елементи створено
+item_update_success: Елемент оновлено | Елементи оновлено
+item_delete_success: Елемент видалено | Елементи видалено
 this_collection: Ця колекція
 related_collection: Пов'язана колекція
+related_collections: Схожі колекції
+translations_collection: Колекція перекладів
+languages_collection: Колекція мов
+export_data: Експорт даних
 format: Формат
+use_current_filters_settings: Використовувати поточні фільтри та налаштування
+export_collection: 'Експортувати {collection}'
+last_page: Остання сторінка
+last_access: Останній доступ
+fill_template: Заповнити значення шаблону
+a_unique_table_name: Унікальна назва таблиці...
 submit: Підтвердити
 months:
   january: Січень
@@ -246,10 +282,12 @@ months:
   november: Листопад
   december: Грудень
 size: Розмір
+created: Створено
 checksum: Контрольна сума
 owner: Власник
 download: Завантажити
 name: Назва
+primary_key_field: Первинне ключове поле
 created_by: Автор
 created_on: Створено
 save_and_stay: Зберегти і Залишитись
@@ -294,17 +332,37 @@ operators:
   empty: Порожньо
 loading: Завантаження...
 value_unique: Значення повинно бути унікальним
+folder_key: Ключ папки...
+add_file: Додати файл
+replace_file: Замінити файл
 no_results: Нічого не знайдено
+no_results_copy: Регулювати або очистити фільтри пошуку, щоб побачити результати.
+clear_filters: Очистити фільтри
+saves_automatically: Автоматично зберігається
 role: Роль
+rule: Правило
 user: Користувач
+no_presets: Без шаблонів
+no_presets_copy: Шаблони або закладки ще не були збережені.
+no_presets_cta: Додати шаблон
+presets_only: Тільки шаблони
 create: Створити
 on_update: При оновленні
 read: Прочитайте
 update: Оновити
 select_fields: Обрати поля
+format_text: Форматувати текст
+format_value: Форматувати значення
+abbreviate_value: Скоротити значення
+operator: Оператор
+bold: Напівжирний
+toggle: Переключити
+icon_on: Підключити іконку
+icon_off: Відключити іконку
 width: Ширина
 height: Висота
 wysiwyg_options:
+  bold: Напівжирний
   codeblock: Код
   remove: Видалити
   table: Таблиця
@@ -373,6 +431,8 @@ fields:
     tfa_secret: Двофакторна автентифікація
     status: Статус
     role: Роль
+    last_page: Остання сторінка
+    last_access: Останній доступ
   directus_settings:
     project_name: Назва проекту
     module_bar: Панель модулів
@@ -477,6 +537,8 @@ interfaces:
     icon: Іконка
   tags:
     tags: Теги
+  boolean:
+    toggle: Переключити
   user:
     user: Користувач
     modes:
@@ -484,6 +546,9 @@ interfaces:
 displays:
   translations:
     translations: Переклади
+  boolean:
+    icon_on: Підключити іконку
+    icon_off: Відключити іконку
   collection:
     collection: Колекція
   color:
