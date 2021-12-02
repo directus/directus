@@ -18,7 +18,11 @@
 		<v-list class="links">
 			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath]">
 				<v-list-item-content>
-					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
+					<render-template
+						:template="internalTemplate"
+						:item="item"
+						:collection="junctionCollection ?? relatedCollection"
+					/>
 				</v-list-item-content>
 				<v-list-item-icon>
 					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
@@ -69,6 +73,10 @@ export default defineComponent({
 			return relatedCollectionData.value.relatedCollection;
 		});
 
+		const junctionCollection = computed(() => {
+			return relatedCollectionData.value.junctionCollection;
+		});
+
 		const localType = computed(() => {
 			return getLocalTypeForField(props.collection, props.field);
 		});
@@ -105,7 +113,15 @@ export default defineComponent({
 			return null;
 		});
 
-		return { relatedCollection, primaryKeyFieldPath, getLinkForItem, internalTemplate, unit, localType };
+		return {
+			relatedCollection,
+			junctionCollection,
+			primaryKeyFieldPath,
+			getLinkForItem,
+			internalTemplate,
+			unit,
+			localType,
+		};
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;

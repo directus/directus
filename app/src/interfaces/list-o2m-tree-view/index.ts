@@ -16,7 +16,7 @@ export default defineInterface({
 
 		return [
 			{
-				field: 'template',
+				field: 'displayTemplate',
 				name: '$t:display_template',
 				meta: {
 					interface: 'system-display-template',

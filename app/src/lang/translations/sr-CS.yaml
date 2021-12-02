@@ -1048,6 +1048,8 @@ interfaces:
   boolean:
     toggle: Isključi / Uključi
     description: Prebaci između uključeno i isključeno
+    color_on: Boja Uključena
+    color_off: Boja Isključena
     label_placeholder: Unesi ime...
     label_default: Omogućen
   translations:

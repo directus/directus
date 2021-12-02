@@ -66,6 +66,8 @@ create_webhook: Crea webhook
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
+subject: Oggetto
+inbox: Inbox
 emails: Email
 connection_excellent: Connessione Eccellente
 connection_good: Connessione Buona
@@ -427,6 +429,9 @@ user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
 no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
+no_notifications: Nessuna notifica
+no_notifications_copy: È tutto!
+activity_log: Log delle attività
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
@@ -845,6 +850,7 @@ directus_collection:
   directus_migrations: Quale versione del database stai usando
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
   directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_notifications: Notifiche inviate agli utenti
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
   directus_revisions: Snapshot dei dati per tutte le attività
@@ -1238,6 +1244,7 @@ interfaces:
     code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
+    line_wrapping: Linea di margine
     placeholder: Inserisci il codice qui...
   system-collection:
     collection: Raccolta
@@ -1304,6 +1311,8 @@ interfaces:
   file-image:
     image: Immagine
     description: Seleziona o carica un'immagine
+    crop: Ritaglia a adatta
+    crop_label: Ritaglia l'immagine come necessario
   system-interface:
     interface: Interfaccia
     description: Seleziona un'interfaccia esistente
@@ -1408,6 +1417,8 @@ interfaces:
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato
+    color_on: Colore attivato
+    color_off: Colore Disattivato
     label_placeholder: Inserisci un'etichetta...
     label_default: Abilitato
   translations:
@@ -1587,6 +1598,8 @@ panels:
     description: Disegna un grafico a linee basato su valori nel tempo
     date_field: Campo data
     value_field: Campo valore
+    fill_type: Tipo di riempimento
+    curve_type: Tipo di curva
   label:
     name: Etichetta
     description: Mostra del testo

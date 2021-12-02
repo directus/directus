@@ -91,3 +91,8 @@ icon) button located in the header.
 4. Click "Comments" in the page sidebar
 5. Type your message within the input
 6. Click the "Submit" button
+
+### Mentions
+
+You can also mention any user by typing `@` along with their name or email in your comment. They will then receive a
+notification which will direct them to your comment.

@@ -1,28 +1,24 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.1",
+	"version": "9.1.2",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git"
 	},
-	"main": "./dist/index.js",
+	"main": "dist/sdk.cjs.js",
 	"exports": {
 		".": {
-			"import": {
-				"node": "./index.mjs",
-				"default": "./dist/sdk.esm.js"
-			},
-			"require": "./dist/index.js"
+			"import": "./dist/sdk.bundler.mjs",
+			"require": "./dist/sdk.cjs.js"
 		},
 		"./package.json": "./package.json"
 	},
-	"module": "./dist/sdk.esm.js",
-	"unpkg": "./dist/sdk.esm.min.js",
-	"types": "./dist/index.d.ts",
+	"module": "dist/sdk.bundler.mjs",
+	"unpkg": "dist/sdk.global.min.js",
+	"types": "dist/types/index.d.ts",
 	"files": [
-		"dist",
-		"index.mjs"
+		"dist"
 	],
 	"scripts": {
 		"prebuild": "npm run cleanup",
@@ -57,22 +53,22 @@
 		"@rollup/plugin-commonjs": "21.0.1",
 		"@rollup/plugin-json": "4.1.0",
 		"@rollup/plugin-node-resolve": "13.0.6",
-		"@types/jest": "27.0.2",
+		"@types/jest": "27.0.3",
 		"argon2": "0.28.2",
 		"dotenv": "10.0.0",
 		"jest": "27.3.1",
 		"jest-environment-jsdom": "27.3.1",
-		"nock": "13.2.0",
+		"nock": "13.2.1",
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
-		"rollup": "2.59.0",
+		"rollup": "2.60.1",
 		"rollup-plugin-copy": "3.4.0",
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",
-		"rollup-plugin-typescript2": "0.30.0",
+		"rollup-plugin-typescript2": "0.31.0",
 		"ts-jest": "27.0.7",
 		"ts-node": "10.4.0",
-		"typescript": "4.4.4"
+		"typescript": "4.5.2"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
 }

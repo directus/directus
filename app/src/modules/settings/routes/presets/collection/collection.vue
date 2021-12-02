@@ -92,7 +92,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
-import { getLayouts } from '@/layouts';
+import { getLayout } from '@/layouts';
 import { useRouter } from 'vue-router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
@@ -123,7 +123,6 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const { layouts } = getLayouts();
 		const collectionsStore = useCollectionsStore();
 
 		const selection = ref<Preset[]>([]);
@@ -175,7 +174,7 @@ export default defineComponent({
 					}
 
 					const collection = collectionsStore.getCollection(preset.collection)?.name;
-					const layout = layouts.value.find((l) => l.id === preset.layout)?.name;
+					const layout = getLayout(preset.layout)?.name;
 
 					return {
 						id: preset.id,

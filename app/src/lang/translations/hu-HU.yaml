@@ -1325,6 +1325,8 @@ interfaces:
   boolean:
     toggle: Váltás
     description: Be- és kikapcsolás közti váltás
+    color_on: Szín be
+    color_off: Szín ki
     label_placeholder: Címke beírása...
     label_default: Engedélyezve
   translations:
