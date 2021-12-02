@@ -252,7 +252,9 @@ export default defineComponent({
 		}
 
 		function onRowClick({ item }: { item: Preset }) {
+			// This ensures that the type signature the item matches the ones in selection
 			item = ref(item).value;
+
 			if (selection.value.length === 0) {
 				router.push(`/settings/presets/${item.id}`);
 			} else {
