@@ -1192,6 +1192,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1243,6 +1244,7 @@ interfaces:
     code: Код
     description: Редактор на програмен код и откъси
     line_number: Номериране на редовете
+    line_wrapping: Пренасяне на редовете
     placeholder: Въвеждане на кода...
   system-collection:
     collection: Колекция
@@ -1309,6 +1311,8 @@ interfaces:
   file-image:
     image: Изображение
     description: Избор или качване на изображение
+    crop: Изрязване
+    crop_label: Изрязване до необходимото
   system-interface:
     interface: Интерфейс
     description: Избор на съществуващ интерфейс
@@ -1594,6 +1598,8 @@ panels:
     description: Изобразяване на лийена диаграма спрямо стойностите през времето
     date_field: Поле за дата
     value_field: Поле за стойност
+    fill_type: Вид на запълване
+    curve_type: Вид на кривата
   label:
     name: Етикет
     description: Показване на някакъв текст
