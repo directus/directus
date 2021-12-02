@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
-		"target": "ES2015",
-		"lib": ["ES2015", "DOM"],
-		"module": "es2015",
+		"target": "ES2019",
+		"lib": ["ES2019", "DOM"],
+		"module": "ES2015",
 		"moduleResolution": "node",
 		"declaration": true,
 		"declarationDir": "dist/types",
@@ -26,8 +26,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
-		"rootDir": "./src",
-		"outDir": "./dist"
+		"rootDir": "./src"
 	},
 	"include": ["./src/**/*.ts"]
 }
