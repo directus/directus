@@ -10,7 +10,6 @@ import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
 import { applySnapshot } from '../../../utils/apply-snapshot';
 import { flushCaches } from '../../../cache';
-import { DiffArray } from 'deep-diff';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
