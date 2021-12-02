@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Ідентифікатор
 avatar: Аватар
 default_provider: За замовчуванням
 published: Опубліковано
@@ -30,6 +51,7 @@ indeterminate: Не вдалось визначити
 edit_collection: Редагувати збірку
 exclusive: Винятково
 children: Дочірні елементи
+db_only_click_to_configure: 'Можливе використання лише бази даних: натисніть для налаштування'
 show_archived_items: Показати архівні елементи
 edited: Значення відредаговано
 required: Обов'язкове
@@ -44,6 +66,8 @@ create_webhook: Створити вебхук
 invite_users: Запросити друзів
 invite: Запросити
 email_already_invited: Користувача "{email}" вже запрошено
+subject: Тема
+inbox: Вхідні повідомлення
 emails: Електронні адреси
 connection_excellent: Ідеальне з'єднання
 connection_good: Хороше з'єднання
@@ -106,6 +130,7 @@ validationError:
   regex: Значення має некоректний формат
 all_access: Повний доступ
 no_access: Немає доступу
+use_custom: Використайте Користувацькі налаштування
 nullable: Дозволити NULL значення
 allow_null_value: Дозволити NULL значення
 allow_multiple: Дозволити кілька
@@ -124,26 +149,75 @@ item_permissions: Дозволи елемента
 field_permissions: Дозволи Поля
 field_validation: Валідація Поля
 field_presets: Пресети Полів
+presets_for_role: 'Значення поля за замовчуванням для ролі {role}.'
+presentation_and_aliases: Подання та Аліаси
+revision_post_create: Ось як виглядав цей елемент після його створення.
+revision_post_update: Ось як виглядав цей елемент після його оновлення.
+changes_made: Нижче наведені конкретні зміни, внесені цією редакцією.
+no_relational_data: Майте на увазі, що реляційні дані тут не включені.
+hide_field_on_detail: Сховати поле в подробицях
+show_field_on_detail: Показати поле в подробицях
 delete_field: Видалити поле
+fields_and_layout: Поля та схема
+field_create_success: 'Створено поле: "{field}"'
+field_update_success: 'Оновлено поле: "{field}"'
+duplicate_where_to: Куди б ви хотіли дублювати це поле?
 language: Мова
+aggregate_function: Функція об'эднання
+aggregate_precision: Точність об'єднання
+group_aggregation: Об'єднання групи
+group_precision: Точність групи
 global: Глобальний
+admins_have_all_permissions: Адміністратори мають усі права доступу
 camera: Камера
 show_zero: Показати нуль
+create_in_advanced_field_creation_mode: Створити поле в розширеному режимі
+continue_in_advanced_field_creation_mode: Продовжити у розширеному режимі створення поля
 sum: Сума
+sum_distinct: Зіткнення
+avg: Середнє
+avg_distinct: Середній збіг
+count: Кількість
+count_distinct: Розрахунок відмінностей
+min: Мінімум
+max: Максимум
+exposure: Контакт
+shutter: Витримка
+iso: ISO
+focal_length: Фокусна відстань
+schema_setup_key: Назва стовпця в базі даних цього поля та ключ API
 create_field: Створення поля
+creating_new_field: 'Нове поле ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Скинути налаштування сторінки
+hidden_field: Приховане поле
 hidden_on_detail: Приховано на деталі
+disabled_editing_value: Вимкнути редагування значення
+key: Клавіша
+alias: Ім'я користувача
 date: Дата
+date_range: Період
 decimal: Десятки
 text: Текст
 time: Час
 auto_generate: Автоматично згенерувати
 add_note: Додайте інформативну нотатку для користувачів...
 default_value: Значення за замовчуванням
+multiple_files: Кілька файлів
+invalid_item: Недійсний елемент
 next: Уперед
+field_name: Назва поля
+translations: Переклади
+no_translations: Нема перекладів
 note: Примітка
+enter_a_value: Введіть значення...
+enter_a_placeholder: Введіть заповнювач...
 length: Довжина
+precision_scale: Точність і шкала
 readonly: Тільки читання
 unique: Унікальне
+updated_on: Оновлене
+updated_by: Оновлено
 primary_key: Первинний ключ
 clear_value: Очистити значення
 reset_to_default: Відновити налаштування за умовчанням
@@ -393,6 +467,8 @@ interfaces:
     datetime: Дата й час
   presentation-divider:
     divider: Розділювач
+  select-dropdown:
+    choices_value_placeholder: Введіть значення...
   file:
     file: Файл
   files:
@@ -406,6 +482,8 @@ interfaces:
     modes:
       dropdown: Випадаюче меню
 displays:
+  translations:
+    translations: Переклади
   collection:
     collection: Колекція
   color:
@@ -419,6 +497,8 @@ displays:
     filesize: Розмір файлу
   icon:
     icon: Іконка
+  labels:
+    choices_value_placeholder: Введіть значення...
   user:
     user: Користувач
     avatar: Аватар
