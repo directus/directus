@@ -1,4 +1,4 @@
-import { flatten, merge, omit } from 'lodash';
+import { flatten, merge, omit, isEmpty } from 'lodash';
 import { Permission, LogicalFilterOR } from '@directus/shared/types';
 
 export function mergePermissions(...permissions: Permission[][]): Permission[] {
@@ -26,12 +26,12 @@ function mergePerm(currentPerm: Permission, newPerm: Permission) {
 	let fields = currentPerm.fields;
 	let presets = currentPerm.presets;
 
-	if (newPerm.permissions) {
+	if (newPerm.permissions && !isEmpty(newPerm.permissions)) {
 		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === '_or') {
 			permissions = {
 				_or: [...(currentPerm.permissions as LogicalFilterOR)._or, newPerm.permissions],
 			};
-		} else if (currentPerm.permissions) {
+		} else if (currentPerm.permissions && !isEmpty(currentPerm.permissions)) {
 			permissions = {
 				_or: [currentPerm.permissions, newPerm.permissions],
 			};
