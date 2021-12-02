@@ -415,6 +415,7 @@ user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
 no_webhooks_copy: Nenhum webhook foi configurado ainda. Comece criando um abaixo.
+activity_log: Registro de atividades
 all_items: Todos os itens
 any: Qualquer
 csv: CSV
