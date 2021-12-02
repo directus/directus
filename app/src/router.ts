@@ -89,7 +89,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			await hydrate();
 			return to.fullPath;
 		} else {
-			return '/login';
+			if (to.fullPath) {
+				return '/login?redirect=' + encodeURIComponent(to.fullPath);
+			} else {
+				return '/login';
+			}
 		}
 	}
 };
