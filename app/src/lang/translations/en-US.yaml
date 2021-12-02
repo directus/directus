@@ -1461,6 +1461,7 @@ interfaces:
     description: A search typeahead for external API values.
     results_path: Results Path
     value_path: Value Path
+    text_path: Text Path
     trigger: Trigger
     rate: Rate
   group-raw:
