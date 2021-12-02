@@ -197,6 +197,7 @@ key: Клавіша
 alias: Ім'я користувача
 date: Дата
 date_range: Період
+precision: Точність
 decimal: Десятки
 text: Текст
 time: Час
@@ -359,6 +360,15 @@ bold: Напівжирний
 toggle: Переключити
 icon_on: Підключити іконку
 icon_off: Відключити іконку
+label: Ярлик
+insights: Статистика
+dashboard: Панель приладів
+panel: Панель
+panel_options: Налаштування панелі
+panel_header: Заголовок панелі
+panel_name_placeholder: Назвіть цю панель...
+panel_note_placeholder: Деталі налаштування стосовно цієї панелі...
+panel_delete_confirm: Ви впевнені, що хочете видалити цю панель? Цю дію не можна буде скасувати.
 width: Ширина
 height: Висота
 wysiwyg_options:
@@ -582,3 +592,6 @@ layouts:
     comfortable: Комфортна
     compact: Компактна
     cozy: Зручна
+panels:
+  label:
+    name: Ярлик
