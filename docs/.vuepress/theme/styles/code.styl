@@ -3,35 +3,35 @@
     padding 0.25rem 0.5rem
     margin 0
     font-size 0.85em
-    background-color #F0F4F9
+    background-color var(--background-subdued)
     border-radius 3px
     .token
       &.deleted
-        color #EC5975
+        color var(--danger-90)
       &.inserted
-        color $accentColor
+        color var(--primary)
 
 {$contentClass}
   pre, pre[class*="language-"]
     line-height 1.4
     padding 1.25rem 1.5rem
     margin 0.85rem 0
-    background-color $codeBgColor
+    background-color var(--background-normal)
     border-radius 6px
     overflow auto
     code
-      color #172940
+      color var(--foreground-normal-alt)
       padding 0
       background-color transparent
       border-radius 0
 	pre[class*="language-"]
-		border 2px solid $borderColor
+		border 2px solid var(--border-subdued)
 		max-width 100%
 		overflow-x auto
 
 div[class*="language-"]
   position relative
-  background-color $codeBgColor
+  background-color var(--background-normal)
   border-radius 6px
   .highlight-lines
     user-select none
@@ -98,7 +98,7 @@ div[class*="language-"]
       height 100%
       border-radius 6px 0 0 6px
       border-right 1px solid rgba(0, 0, 0, 66%)
-      background-color $codeBgColor
+      background-color var(--background-normal)
 
 
 for lang in $codeLang
@@ -147,7 +147,7 @@ div[class~="language-php"]:before
 
 code[class*="language-"],
 pre[class*="language-"] {
-	color: #A2B5CD;
+	color: var(--foreground-subdued);
 	background: none;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 	font-size: 1em;
@@ -177,7 +177,7 @@ pre[class*="language-"] {
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-	background: #172940;
+	background: var(--foreground-normal-alt);
 }
 
 /* Inline code */
@@ -192,35 +192,35 @@ pre[class*="language-"] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-	color: #A2B5CD;
+	color: var(--foreground-subdued);
 }
 
 .token.punctuation {
-	color: #A2B5CD;
+	color: var(--foreground-subdued);
 }
 
 .token.tag,
 .token.attr-name,
 .token.namespace,
 .token.deleted {
-	color: #e35169;
+	color: var(--danger);
 }
 
 .token.function-name {
-	color: #fab00e;
+	color: var(--warning);
 }
 
 .token.boolean,
 .token.number,
 .token.function {
-	color: #e35169;
+	color: var(--danger);
 }
 
 .token.property,
 .token.class-name,
 .token.constant,
 .token.symbol {
-	color: #68b0f4;
+	color: var(--secondary);
 }
 
 .token.selector,
@@ -228,7 +228,7 @@ pre[class*="language-"] {
 .token.atrule,
 .token.keyword,
 .token.builtin {
-	color: #8da3e4;
+	color: var(--secondary-75);
 }
 
 .token.string,
@@ -236,13 +236,13 @@ pre[class*="language-"] {
 .token.attr-value,
 .token.regex,
 .token.variable {
-	color: #00C897;
+	color: var(--primary);
 }
 
 .token.operator,
 .token.entity,
 .token.url {
-	color: #68b0f4;
+	color: var(--secondary);
 }
 
 .token.important,
