@@ -182,23 +182,13 @@ export default defineComponent({
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
 			const key = event.key.toLowerCase();
-			const systemKeys = [
-				'meta',
-				'shift',
-				'alt',
-				'backspace',
-				'tab',
-				'arrowup',
-				'arrowdown',
-				'arrowleft',
-				'arrowright',
-			];
+			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.slug === true) {
 				const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
 
-				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key);
+				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 				if (isAllowed === false) {
 					event.preventDefault();
