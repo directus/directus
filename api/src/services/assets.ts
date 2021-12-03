@@ -7,7 +7,7 @@ import path from 'path';
 import sharp from 'sharp';
 import getDatabase from '../database';
 import env from '../env';
-import { IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
+import { IllegalAssetTransformation, RangeNotSatisfiableException, ForbiddenException } from '../exceptions';
 import storage from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import { Accountability } from '@directus/shared/types';
@@ -48,6 +48,16 @@ export class AssetsService {
 		}
 
 		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
+
+		if (!file) {
+			throw new ForbiddenException();
+		}
+
+		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
+
+		if (!exists) {
+			throw new ForbiddenException();
+		}
 
 		if (range) {
 			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {
