@@ -153,12 +153,7 @@
 			<div class="spacer"></div>
 
 			<v-item-group v-model="view" class="view" mandatory rounded>
-				<v-button
-					x-small
-					value="editor"
-					:class="[{ active: view[0] !== 'preview' }]"
-					:text="t(`input-rich-text-md.edit`)"
-				>
+				<v-button x-small value="editor" :class="[{ active: view[0] !== 'preview' }]">
 					{{ t('interfaces.input-rich-text-md.edit') }}
 				</v-button>
 				<v-button x-small value="preview" :class="[{ active: view[0] === 'preview' }]">
