@@ -1,6 +1,6 @@
 <template>
 	<content-not-found
-		v-if="error || (collectionInfo.meta && collectionInfo.meta.singleton === true && primaryKey !== null)"
+		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
 	<private-view v-else :title="title">
