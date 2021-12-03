@@ -982,6 +982,7 @@ interfaces:
   input-rich-text-md:
     markdown: Smanjenje
     description: Unesi i pregledaj opcije smanjenja
+    edit: Izmijeni
     customSyntax: Prilagođeni Blokovi
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu

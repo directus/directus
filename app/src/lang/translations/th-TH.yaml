@@ -1025,6 +1025,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: กรอกและดู Markdown ล่วงหน้าก่อน
+    edit: แก้ไข
     customSyntax: บล็อกที่ออกแบบเอง
     customSyntax_label: เพิ่ม syntax ที่ออกแบบเอง
     customSyntax_add: เพิ่ม syntax ที่ออกแบบเอง

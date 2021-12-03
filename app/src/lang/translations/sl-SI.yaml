@@ -1120,6 +1120,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Vnos in predogled markdown-a
+    edit: Uredi
     customSyntax: Bloki po meri
     customSyntax_label: Dodaj posebno vrsto sintakse
     customSyntax_add: Dodaj prilagojeno sintakso
