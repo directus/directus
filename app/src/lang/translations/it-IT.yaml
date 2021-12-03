@@ -1329,14 +1329,14 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Inserisci e visualizza in anteprima markdown
+    edit: Modifica
+    preview: Anteprima
     customSyntax: Blocchi Personalizzati
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
     imageToken: Token Immagine
     imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
-    preview: Anteprima
-    editor: Editor
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
