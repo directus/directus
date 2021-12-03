@@ -1335,7 +1335,7 @@ interfaces:
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
-    map: Tuile
+    map: Carte
     description: Sélectionnez un emplacement sur une carte
     zoom: Zoom
     geometry_type: Type de géométrie
@@ -1571,7 +1571,7 @@ layouts:
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
   map:
-    map: Tuile
+    map: Carte
     basemap: Carte de base
     layers: Afficher...
     cluster_options: Options de regroupement
