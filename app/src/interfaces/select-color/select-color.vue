@@ -91,7 +91,7 @@
 					@update:model-value="setValue('alpha', 0, $event)"
 				/>
 			</template>
-			<template v-if="(colorType === 'HSL') | (colorType === 'HSLA')">
+			<template v-if="colorType === 'HSL' || colorType === 'HSLA'">
 				<v-input
 					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
 					:key="i"
