@@ -1246,6 +1246,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
+    edit: Editar
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
     customSyntax_add: Añadir sintaxis personalizada
