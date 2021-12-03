@@ -1192,6 +1192,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1331,6 +1332,8 @@ interfaces:
     description: Inserisci e visualizza in anteprima markdown
     edit: Modifica
     preview: Anteprima
+    editorFont: Carattere dell'editor
+    previewFont: Anteprima carattere
     customSyntax: Blocchi Personalizzati
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
@@ -1447,6 +1450,7 @@ interfaces:
     description: Una ricerca durante la digitazione per valori API esterni.
     results_path: Percorso dei risultati
     value_path: Percorso del valore
+    text_path: Percorso del testo
     trigger: Trigger
     rate: Intervallo
   group-raw:
