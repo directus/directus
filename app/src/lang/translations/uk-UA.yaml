@@ -217,9 +217,33 @@ geometry.Polygon: Полігон
 not_available_for_type: Не доступно для цього типу
 create_translations: Створити переклади
 auto_refresh: Автооновлення
+refresh_interval: Оновити інтервал
+no_refresh: Не оновляти
+refresh_interval_seconds: Постійно оновляти | Кожну секунду | Кожні {seconds} секунд
+refresh_interval_minutes: Кожну хвилину | Кожні {minutes} хвилин
 auto_generate: Автоматично згенерувати
+this_will_auto_setup_fields_relations: Це автоматично налаштує всі необхідні поля і відносини.
+click_here: Натисніть тут
+to_manually_setup_translations: для ручного налаштування перекладів.
+click_to_manage_translated_fields: >-
+  Тут ще немає перекладених полів. Натисніть тут щоб створити їх. | Тут є одне перекладене поле. Натисніть тут щоб змініити його. | Тут є {count} перекладених полів. Натисніть сюди, щоб змінити їх.
+fields_group: Група полів
+no_collections_found: Колекцій не знайдено.
+new_data_alert: 'Наступне буде створено в межах вашої моделі даних:'
+search_collection: Пошук колекцій...
+new_field: 'Нове поле'
+new_collection: 'Нова колекція'
+add_m2o_to_collection: 'Додати М2О до "{collection}"'
+add_o2m_to_collection: 'Додати O2M до "{collection}"'
+add_m2m_to_collection: 'Додати M2M до "{collection}"'
+choose_a_type: Оберіть тип...
+determined_by_relationship: Визначено зв'язком
 add_note: Додайте інформативну нотатку для користувачів...
+add_link: Додати посилання
+custom_link: Спеціальне посилання
 default_value: Значення за замовчуванням
+standard_field: Стандартне поле
+single_file: Один файл
 multiple_files: Кілька файлів
 invalid_item: Недійсний елемент
 next: Уперед
@@ -303,17 +327,67 @@ created: Створено
 checksum: Контрольна сума
 owner: Власник
 download: Завантажити
+background_color: Колір заднього фону
+upload_from_device: Завантажити файл з пристрою
+choose_from_library: Обрати файл з бібліотеки
+import_from_url: Імпортувати файл з URL
+replace_from_device: Замінити файл з пристрою
+replace_from_library: Замінити файл з бібліотеки
+replace_from_url: Замінити файл з URL
+no_file_selected: Файл не обрано
+download_file: Завантажити файл
+collection_key: Клавіша колекції
 name: Назва
 primary_key_field: Первинне ключове поле
+type: Тип
+creating_new_collection: Створення нової колекції
 created_by: Автор
 created_on: Створено
+creating_collection_info: Назвіть колекцію і налаштуйте її унікальну клавішу...
+creating_collection_system: Увімкніть та перейменуйте будь-яке з цих опціональних полів.
+auto_increment_integer: Автозбільшення цілого числа
+generated_uuid: Створене UUID
+manual_string: Введений вручну рядок
+save_and_create_new: Зберігти і створити новий
 save_and_stay: Зберегти і Залишитись
 save_as_copy: Зберегти копію
+add_existing: Добати вже існуючий
+creating_items: Створення об'єктів
+enable_create_button: Увімкнути кнопку "створення"
+selecting_items: Обрані об'єкти
+enable_select_button: Підключити кнопку "обрати"
 comments: Коментарі
+no_comments: Коментарів ще немає
+click_to_expand: Натисніть щоб розгорнути
+select_item: Обрати об'єкт
+no_items: Об'єктів немає
+search_items: Пошук об'єктів...
+disabled: Вимкнено
+information: Інформація
+report_bug: Звіт про помилку
 request_feature: Запит на нову функцію
+interface_not_found: 'Інтерфейс "{interface}" не знайдено.'
+reset_interface: Скинути інтерфейс
+display_not_found: 'Дисплей "{display}" не знайдено.'
+reset_display: Скинути дисплей
+list-m2a: Білдер (М2А)
 item_count: 'Немає елементів | Один елемент | {count} елементів'
+no_items_copy: Ще немає об'єктів в цій колекції.
+file_count: 'Файлів немає | Один файл | {count} файлів'
+no_files_copy: Файлів не знайдено.
+user_count: 'Користувачів немає | Один користувач | {count} користувачів'
+no_users_copy: Ще немає користувачів в цій ролі.
+webhooks_count: 'Немає веб-хуків | Один веб-хук | {count} вебхуків'
+no_webhooks_copy: Ще не налаштовано жодного веб-хука. Розпочніть зі створення одного нижче.
+no_notifications: Немає сповіщень
+no_notifications_copy: У вас все налаштовано!
+activity_log: Журнал активності
+all_items: Всі об'єкти
+any: Будь-які
 csv: CSV
+no_collections: Немає колекцій
 create_collection: Створити колекцію
+no_collections_copy_admin: В вас ще немає колекцій. Натисніть кнопку нижче, щоб розпочати.
 users: Користувачі
 activity: Активність
 action: Дія
@@ -327,11 +401,48 @@ modified_on: Час зміни
 status: Статус
 remove: Видалити
 errors:
+  INVALID_PAYLOAD: Невірне навантаження
+  INVALID_QUERY: Невірний запит
+  ITEM_LIMIT_REACHED: Досягнуто ліміту об'єктів
+  ITEM_NOT_FOUND: Об'єкт не знайдений
   ROUTE_NOT_FOUND: Не знайдено
+  RECORD_NOT_UNIQUE: Виявлено ідентичне значення
+  USER_SUSPENDED: Користувача призупинено
+  CONTAINS_NULL_VALUES: Поле містить нульові значення
+  UNPROCESSABLE_ENTITY: Неможливо обробити запит
+  INTERNAL_SERVER_ERROR: Неочікувана помилка
   NOT_NULL_VIOLATION: Значення не може бути null
+  ILLEGAL_ASSET_TRANSFORMATION: Джерело зображення надто велике для попереднього перегляду
+  UNKNOWN: Неочікувана помилка
+security: Захист
+value_hashed: Значення надійно видалені
+bookmark_name: Назва закладки...
 create_bookmark: Створити закладку
+edit_bookmark: Редагувати закладку
 bookmarks: Закладки
+presets: Шаблони
+unexpected_error: Неочікувана помилка
+unexpected_error_copy: Сталася неочікувана помилка. Будь ласка, повторіть спробу пізніше.
+copy_details: Копіювати деталі
+no_app_access: Немає доступу до додатку
+no_app_access_copy: В цього користувача нема дозволу на використовування додатку адміністратора.
+password_reset_sent: Ми надіслали вам електронного листа із посиланням для відновлення пароля
+password_reset_successful: Пароль успішно оновлено
 back: Назад
+filter: Фільтр
+editing_image: Редагування зображення
+square: Квадрат
+free: Вільне
+flip_horizontal: Віддзеркалити по горизонталі
+flip_vertical: Віддзеркалити по вертикалі
+aspect_ratio: Співвідношення сторін
+rotate: Повернути
+all_users: Всі користувачі
+delete_collection: Видалити колекцію
+update_collection_success: Оновити колекцію
+delete_collection_success: Видалити колекцію
+make_collection_visible: Зробити колекцію видимою
+make_collection_hidden: Приховати колекцію
 placeholder: Заповнювач
 icon_left: Значок ліворуч
 icon_right: Значок праворуч
@@ -388,6 +499,7 @@ panel_delete_confirm: Ви впевнені, що хочете видалити 
 width: Ширина
 height: Висота
 wysiwyg_options:
+  backcolor: Колір заднього фону
   bold: Напівжирний
   codeblock: Код
   remove: Видалити
@@ -476,6 +588,8 @@ fields:
     value: Значення
     collections: Колекції
 field_options:
+  directus_settings:
+    security_divider_title: Захист
   directus_activity:
     create: Створити
     update: Оновити
@@ -538,7 +652,9 @@ translation: Переклад
 value: Значення
 interfaces:
   filter:
+    name: Фільтр
     all: Все
+    any: Будь-які
   presentation-links:
     primary: Стандартно
   input-code:
