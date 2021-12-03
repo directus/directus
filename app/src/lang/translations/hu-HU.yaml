@@ -1245,6 +1245,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Markdown bevitele és előnézete
+    edit: Szerkesztés
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása

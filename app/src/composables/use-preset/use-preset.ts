@@ -92,31 +92,25 @@ export function usePreset(
 
 	const layoutOptions = computed<Record<string, any>>({
 		get() {
-			if (!localPreset.value.layout) return null;
-			return localPreset.value.layout_options?.[localPreset.value.layout] || null;
+			return localPreset.value.layout_options?.[layout.value] || null;
 		},
 		set(options) {
-			const { layout, layout_options } = localPreset.value;
-			if (layout) {
-				updatePreset({ layout_options: assign({}, layout_options, { [layout]: options }) });
-			}
+			const { layout_options } = localPreset.value;
+			updatePreset({ layout_options: assign({}, layout_options, { [layout.value]: options }) });
 		},
 	});
 
 	const layoutQuery = computed<Record<string, any>>({
 		get() {
-			if (!localPreset.value.layout) return null;
-			return localPreset.value.layout_query?.[localPreset.value.layout] || null;
+			return localPreset.value.layout_query?.[layout.value] || null;
 		},
 		set(query) {
-			const { layout, layout_query } = localPreset.value;
-			if (layout) {
-				updatePreset({ layout_query: assign({}, layout_query, { [layout]: query }) });
-			}
+			const { layout_query } = localPreset.value;
+			updatePreset({ layout_query: assign({}, layout_query, { [layout.value]: query }) });
 		},
 	});
 
-	const layout = computed<string | null>({
+	const layout = computed<string>({
 		get: () => localPreset.value.layout || 'tabular',
 		set: (layout) => updatePreset({ layout }),
 	});

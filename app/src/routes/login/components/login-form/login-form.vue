@@ -109,9 +109,12 @@ export default defineComponent({
 
 				await login(credentials, provider.value);
 
+				const redirectQuery = router.currentRoute.value.query.redirect as string;
+
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;
-				router.push(lastPage || '/content');
+
+				router.push(redirectQuery || lastPage || '/content');
 			} catch (err: any) {
 				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 					requiresTFA.value = true;

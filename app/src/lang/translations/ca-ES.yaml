@@ -1075,6 +1075,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Entra i previsualitza el markdown
+    edit: Edita
     customSyntax: Blocs personalitzats
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada

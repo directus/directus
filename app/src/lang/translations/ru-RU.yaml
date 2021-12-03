@@ -1326,14 +1326,14 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Ввод и предварительный просмотр markdown
+    edit: Редактирование
+    preview: Предпросмотр
     customSyntax: Произвольные блоки
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
     imageToken: Ключ изображения
     imageToken_label: Статичный ключ, добавляемый к адресам изображений
-    preview: Предпросмотр
-    editor: Редактор
   map:
     map: Карта
     description: Указать место на карте

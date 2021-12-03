@@ -28,6 +28,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		setJunctionFields(updates, state, helperFn);
 	}
 
+	if (hasChanged('relations.o2m.collection') || hasChanged('relations.m2o.collection')) {
+		matchJunctionCollectionName(updates);
+	}
+
 	if (
 		[
 			'relations.o2m.collection',
@@ -289,6 +293,16 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	if (!getCurrent('field.field')) {
 		set(updates, 'field.field', 'translations');
 		set(updates, 'relations.o2m.meta', 'translations');
+	}
+}
+
+export function matchJunctionCollectionName(updates: StateUpdates) {
+	if (updates?.relations?.o2m?.collection && updates.relations.o2m.collection !== updates.relations.m2o?.collection) {
+		set(updates, 'relations.m2o.collection', updates.relations.o2m.collection);
+	}
+
+	if (updates?.relations?.m2o?.collection && updates.relations.m2o.collection !== updates.relations.o2m?.collection) {
+		set(updates, 'relations.o2m.collection', updates.relations.m2o.collection);
 	}
 }
 

@@ -630,6 +630,8 @@ interfaces:
     interface: Antarmuka
   select-dropdown-m2o:
     display_template: Tampilan Template
+  input-rich-text-md:
+    edit: Edit
   map:
     zoom: Perbesar
   system-folder:
