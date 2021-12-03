@@ -1298,14 +1298,14 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Syötä ja esikatsele markdownia
+    edit: Muokkaa
+    preview: Esikatselu
     customSyntax: Mukautetut lohkot
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
     box: Lohko / rivillä
     imageToken: Kuvatunnus
     imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
-    preview: Esikatselu
-    editor: Muokkain
   map:
     map: Kartta
     description: Valitse sijainti kartalla
