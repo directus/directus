@@ -1225,6 +1225,7 @@ interfaces:
     display_template: Vis Skabelon
   input-rich-text-md:
     description: Indtast og vis markdown
+    edit: Rediger
     customSyntax: Brugerdefinerede Blokke
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
