@@ -475,7 +475,7 @@ second: seconde
 file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
-card_size: Taille de carte
+card_size: Taille de tuile
 sort_field: Champ de tri
 add_sort_field: Ajouter un champ de tri
 sort: Trier
@@ -598,7 +598,7 @@ operators:
   nempty: N'est pas vide
   all: Contient ces clés
   has: Contient certaines de ces clés
-  intersects: Intersectes
+  intersects: Recoupe
   nintersects: Ne se croise pas
   intersects_bbox: Boîte englobante d'intersectes
   nintersects_bbox: Ne pas intersecter la boîte englobante
@@ -664,25 +664,25 @@ icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
 insights: Analyses
-dashboard: Dashboard
+dashboard: Tableau de bord
 panel: Panneau
 panel_options: Options de panneau
 panel_header: En-tête de panneau
 panel_name_placeholder: Nommez ce panneau...
 panel_note_placeholder: Détails facultatifs sur ce panneau...
 panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
-dashboard_delete_confirm: Êtes-vous sûr de vouloir supprimer ce membre ? Cette action ne peut pas être annulée.
+dashboard_delete_confirm: Êtes-vous sûr de vouloir supprimer ce tableau de bord ? Cette action ne peut pas être annulée.
 edit_dashboard: Modifier le tableau de bord
 delete_dashboard: Supprimer
 visible: Visible
 prefix_placeholder: Texte avant la valeur...
 suffix_placeholder: Texte avant la valeur...
 decimals_placeholder: Nombre de décimales
-no_dashboards: Tableaux de bord
-no_dashboards_copy: Tu n'as pas encore de rapport.
+no_dashboards: Aucun Tableau de bord
+no_dashboards_copy: Vous n'avez pas encore de Tableau de bord.
 no_data: Pas de donnée
 create_dashboard: Créer un tableau de bord
-dashboard_name: Nom du Dashboard
+dashboard_name: Nom du Tableau de bord
 full_screen: Plein écran
 edit_panels: Modifier le panneau
 fit_to_screen: Ajuster à l'écran
@@ -730,7 +730,7 @@ wysiwyg_options:
   link: Ajouter/modifier un lien
   unlink: Supprimer le lien
   media: Ajouter/modifier un média
-  image: Ajouter/Modifier une image
+  image: Ajouter/modifier une image
   copy: Copier
   cut: Couper
   paste: Coller
@@ -766,7 +766,7 @@ unknown_user: Utilisateur inconnu
 creating_in: 'Création de l''élément dans {collection}'
 editing_in: 'Modification de l''élément dans {collection}'
 creating_unit: 'Création de {unit}'
-editing_unit: 'Édition de {unit}'
+editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
@@ -790,8 +790,8 @@ unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
 discard_all_changes: Ignorer toutes les modifications
 discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
-show_x_axis: Montrer &Axes 3D
-show_y_axis: Montrer &Axes 3D
+show_x_axis: Afficher l'axe X
+show_y_axis: Afficher l'axe Y
 keep_editing: Continuer l’édition
 page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
@@ -1068,8 +1068,8 @@ field_options:
     description: Une description optionnelle...
     location: Un emplacement optionnel...
     storage_divider: Nommage des fichiers
-    filename_disk: Nom sur le stockage disque...
-    filename_download: Nom lors du téléchargement...
+    filename_disk: Nom du fichier sur le disque...
+    filename_download: Nom du fichier téléchargé...
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
@@ -1123,7 +1123,7 @@ comment: Commentaire
 relational_triggers: Déclencheurs relationnels
 referential_action_field_label_m2o: Lors de la suppression d'un(e) {collection} ...
 referential_action_field_label_o2m: Lors de la dé-sélection d'un(e) {collection} ...
-referential_action_no_action: Empêcher la suppression
+referential_action_no_action: Interdire la suppression
 referential_action_cascade: Supprimer l'objet {collection} (cascade)
 referential_action_set_null: Vider le champ {field}
 referential_action_set_default: Remettre {field} à sa valeur par défaut
@@ -1136,7 +1136,7 @@ creating_webhook: Création du Webhook
 default_label: Défaut
 delete_label: Supprimer
 delete_are_you_sure: >-
-  Cette action est permanente et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
+  Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
 delete_field_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer le champ « {field} » ? Cette action ne peut pas être annulée !
 description: Description
@@ -1335,7 +1335,7 @@ interfaces:
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
-    map: Carte
+    map: Tuile
     description: Sélectionnez un emplacement sur une carte
     zoom: Zoom
     geometry_type: Type de géométrie
@@ -1371,7 +1371,7 @@ interfaces:
   list:
     repeater: Répéteur
     description: Créer plusieurs entrées de la même structure
-    edit_fields: Éditer les champs
+    edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
@@ -1406,7 +1406,7 @@ interfaces:
     maximum_value: Valeur maximale
     step_interval: Intervalle d'étape
     slug: Transformer en Slug
-    slug_label: Rendre l'URL de la valeur sécurisée
+    slug_label: Transformer en texte adapté à une URL
   input-multiline:
     textarea: Multi-lignes
     description: Entrez le texte brut en multiligne
@@ -1420,7 +1420,7 @@ interfaces:
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
-    toggle_split_view: Basculer en vue spatiale
+    toggle_split_view: Basculer en vue partagée
     language_field: Champ d'indicateur de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
@@ -1435,7 +1435,7 @@ interfaces:
       modal: Modal
   input-rich-text-html:
     wysiwyg: Éditeur avancé
-    description: Un éditeur de texte enrichi pour écrire du contenu HTML
+    description: Un éditeur de texte avancé pour écrire du contenu HTML
     toolbar: Barre d’outils
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
@@ -1552,7 +1552,7 @@ displays:
     circle_label: Afficher l'utilisateur dans un cercle
 layouts:
   cards:
-    cards: Cartes
+    cards: Tuiles
     image_source: Source de l'image
     image_fit: Ajustement de l'image
     crop: Rogner
@@ -1571,7 +1571,7 @@ layouts:
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
   map:
-    map: Carte
+    map: Tuile
     basemap: Carte de base
     layers: Afficher...
     cluster_options: Options de regroupement
@@ -1590,7 +1590,7 @@ panels:
     description: Afficher une seule valeur basée sur une requête
     field: Champ
   time_series:
-    name: Séries de temps
+    name: Échelle de temps
     description: Rendre un graphique de ligne basé sur les valeurs au fil du temps
     date_field: Champ date
     value_field: Type de champ
