@@ -669,6 +669,8 @@ interfaces:
     interface: Interface
   select-dropdown-m2o:
     display_template: Templates de Exibição
+  input-rich-text-md:
+    edit: Editar
   map:
     zoom: Zoom
   system-folder:
