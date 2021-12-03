@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, pick, without } from 'lodash';
+import { clone, cloneDeep, pick, without, assign } from 'lodash';
 import { getCache } from '../cache';
 import Keyv from 'keyv';
 import getDatabase from '../database';
@@ -288,10 +288,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
+		const filteredRecords = await emitter.emitFilter(
+			`${this.eventScope}.read`,
+			records,
+			{
+				collection: this.collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
 		emitter.emitAction(
 			`${this.eventScope}.read`,
 			{
-				payload: records,
+				payload: filteredRecords,
 				query,
 				collection: this.collection,
 			},
@@ -302,26 +315,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		);
 
-		return records as Item[];
+		return filteredRecords as Item[];
 	}
 
 	/**
 	 * Get single item by primary key
 	 */
-	async readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Item> {
-		query = query ?? {};
-
+	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
-		const queryWithKey = {
-			...query,
-			filter: {
-				...(query.filter || {}),
-				[primaryKeyField]: {
-					_eq: key,
-				},
-			},
-		};
+		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
+		const queryWithKey = assign(query, { filter: filterWithKey });
 
 		const results = await this.readByQuery(queryWithKey, opts);
 
@@ -335,26 +339,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Get multiple items by primary keys
 	 */
-	async readMany(keys: PrimaryKey[], query?: Query, opts?: QueryOptions): Promise<Item[]> {
-		query = query ?? {};
-
+	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Item[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
-		const queryWithKeys = {
-			...query,
-			filter: {
-				_and: [
-					query.filter || {},
-					{
-						[primaryKeyField]: {
-							_in: keys,
-						},
-					},
-				],
-			},
-		};
+		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
+		const queryWithKey = assign(query, { filter: filterWithKey });
 
-		const results = await this.readByQuery(queryWithKeys, opts);
+		const results = await this.readByQuery(queryWithKey, opts);
 
 		return results;
 	}
