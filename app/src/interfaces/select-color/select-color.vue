@@ -63,7 +63,7 @@
 			>
 				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
-			<template v-if="(colorType === 'RGB') | (colorType === 'RGBA')">
+			<template v-if="colorType === 'RGB' || colorType === 'RGBA'">
 				<v-input
 					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
 					:key="i"
