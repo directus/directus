@@ -85,7 +85,6 @@ import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } 
 import {
 	Field,
 	GeometryType,
-	GeometryFormat,
 	GeoJSONParser,
 	GeoJSONSerializer,
 	SimpleGeometry,
@@ -131,10 +130,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		geometryFormat: {
-			type: String as PropType<GeometryFormat>,
-			default: undefined,
-		},
 		geometryType: {
 			type: String as PropType<GeometryType>,
 			default: undefined,
@@ -156,7 +151,7 @@ export default defineComponent({
 		const geometryParsingError = ref<string | TranslateResult>();
 
 		const geometryType = props.geometryType || (props.fieldData?.type.split('.')[1] as GeometryType);
-		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
+		const geometryFormat = getGeometryFormatForType(props.type)!;
 
 		const mapboxKey = getSetting('mapbox_key');
 		const basemaps = getBasemapSources();

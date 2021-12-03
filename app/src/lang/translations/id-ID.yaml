@@ -538,6 +538,7 @@ fields:
     name: Nama
     status: Status
     value: Nilai
+    collections: Pengumpulan
 field_options:
   directus_activity:
     create: Buat

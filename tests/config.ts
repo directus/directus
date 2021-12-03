@@ -39,6 +39,17 @@ const config: Config = {
 				},
 			},
 		},
+		postgres10: {
+			name: `directus-test-database-postgres10-${process.pid}`,
+			Image: 'postgis/postgis:10-3.1-alpine',
+			Hostname: `directus-test-database-postgres10-${process.pid}`,
+			Env: ['POSTGRES_PASSWORD=secret', 'POSTGRES_DB=directus'],
+			HostConfig: {
+				PortBindings: {
+					'5432/tcp': [{ HostPort: '6006' }],
+				},
+			},
+		},
 		mysql: {
 			name: `directus-test-database-mysql-${process.pid}`,
 			Image: 'mysql:8',
@@ -95,6 +106,23 @@ const config: Config = {
 			connection: {
 				host: 'localhost',
 				port: 6000,
+				user: 'postgres',
+				password: 'secret',
+				database: 'directus',
+			},
+			waitTestSQL: 'SELECT 1',
+			migrations: {
+				directory: migrationsDir,
+			},
+			seeds: {
+				directory: seedsDir,
+			},
+		},
+		postgres10: {
+			client: 'pg',
+			connection: {
+				host: 'localhost',
+				port: 6006,
 				user: 'postgres',
 				password: 'secret',
 				database: 'directus',
@@ -189,6 +217,7 @@ const config: Config = {
 	},
 	ports: {
 		postgres: 6100,
+		postgres10: 6106,
 		mysql: 6101,
 		maria: 6102,
 		mssql: 6103,
@@ -197,6 +226,7 @@ const config: Config = {
 	},
 	names: {
 		postgres: 'Postgres',
+		postgres10: 'Postgres (10)',
 		mysql: 'MySQL',
 		maria: 'MariaDB',
 		mssql: 'MS SQL Server',
@@ -207,6 +237,14 @@ const config: Config = {
 		postgres: [
 			'DB_CLIENT=pg',
 			`DB_HOST=directus-test-database-postgres-${process.pid}`,
+			'DB_USER=postgres',
+			'DB_PASSWORD=secret',
+			'DB_PORT=5432',
+			'DB_DATABASE=directus',
+		],
+		postgres10: [
+			'DB_CLIENT=pg',
+			`DB_HOST=directus-test-database-postgres10-${process.pid}`,
 			'DB_USER=postgres',
 			'DB_PASSWORD=secret',
 			'DB_PORT=5432',

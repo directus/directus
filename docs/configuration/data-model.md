@@ -262,6 +262,7 @@ Each field can have one or more _rules_. Each rule has the following configurati
   [Filter Rules](/configuration/filter-rules) spec
 - **Readonly**: Whether or not the field is readonly when the condition is matched
 - **Hidden**: Whether or not the field is hidden when the condition is matched
+- **Required**: Whether or not the field is required when the condition is matched
 - **Interface Options**: Any additional configuration for the selected interface
 
 These changes to the field are merged onto the base configuration of the field. This means you can have the field hidden

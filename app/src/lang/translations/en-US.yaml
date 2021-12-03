@@ -67,6 +67,8 @@ create_webhook: Create Webhook
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
+subject: Subject
+inbox: Inbox
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
@@ -433,6 +435,9 @@ user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
+no_notifications: No Notifications
+no_notifications_copy: You're all caught up!
+activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV
@@ -790,6 +795,7 @@ layout_setup: Layout Setup
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
+discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
@@ -857,6 +863,7 @@ directus_collection:
   directus_migrations: What version of the database you're using
   directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
+  directus_notifications: Notifications sent to users
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -977,6 +984,7 @@ fields:
     storage_asset_transform: Allowed Transformations
     overrides: App Overrides
     custom_css: Custom CSS
+    module_bar: Module Bar
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
@@ -1009,6 +1017,7 @@ fields:
     data_label: Send Event Data
     triggers: Triggers
     actions: Actions
+    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1248,6 +1257,7 @@ interfaces:
     code: Code
     description: Write or share code snippets
     line_number: Line Number
+    line_wrapping: Line Wrapping
     placeholder: Enter code here...
   system-collection:
     collection: Collection
@@ -1314,6 +1324,8 @@ interfaces:
   file-image:
     image: Image
     description: Select or upload an image
+    crop: Crop to Fit
+    crop_label: Crop image as needed
   system-interface:
     interface: Interface
     description: Select an existing interface
@@ -1420,6 +1432,8 @@ interfaces:
   boolean:
     toggle: Toggle
     description: Switch between on and off
+    color_on: Color On
+    color_off: Color Off
     label_placeholder: Enter a label...
     label_default: Enabled
   translations:
@@ -1449,6 +1463,7 @@ interfaces:
     description: A search typeahead for external API values.
     results_path: Results Path
     value_path: Value Path
+    text_path: Text Path
     trigger: Trigger
     rate: Rate
   group-raw:
@@ -1601,6 +1616,8 @@ panels:
     description: Render a line chart based on values over time
     date_field: Date Field
     value_field: Value Field
+    fill_type: Fill Type
+    curve_type: Curve Type
   label:
     name: Label
     description: Show some text

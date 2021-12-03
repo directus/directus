@@ -243,6 +243,7 @@ export default defineComponent({
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
+			isEditorDirty,
 			imageToken
 		);
 
@@ -258,23 +259,26 @@ export default defineComponent({
 			mediaWidth,
 			mediaSource,
 			mediaButton,
-		} = useMedia(editorRef, imageToken);
+		} = useMedia(editorRef, isEditorDirty, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef, isEditorDirty);
 
-		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(
+			editorRef,
+			isEditorDirty
+		);
 
 		const replaceTokens = (value: string, token: string | null) => {
 			const url = getPublicURL();
 			const regex = new RegExp(
-				`(<[^=]+=")(${escapeRegExp(
+				`(<[^]+?=")(${escapeRegExp(
 					url
 				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
 				'gi'
 			);
 
 			return value.replace(regex, (_, pre, matchedUrl, post) => {
-				const matched = new URL(matchedUrl);
+				const matched = new URL(matchedUrl.replace(/&amp;/g, '&'));
 				const params = new URLSearchParams(matched.search);
 
 				if (!token) {
@@ -337,6 +341,7 @@ export default defineComponent({
 				statusbar: false,
 				menubar: false,
 				convert_urls: false,
+				image_dimensions: false,
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,

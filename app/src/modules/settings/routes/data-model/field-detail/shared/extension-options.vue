@@ -23,8 +23,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
+import { getInterface } from '@/interfaces';
+import { getDisplay } from '@/displays';
 import { useFieldDetailStore } from '../store/';
 import { get } from 'lodash';
 import { storeToRefs } from 'pinia';
@@ -53,19 +53,15 @@ export default defineComponent({
 
 		const { collection, field, relations, fields, collections } = storeToRefs(fieldDetail);
 
-		const { interfaces } = getInterfaces();
-		const { displays } = getDisplays();
-
 		const extensionInfo = computed(() => {
-			if (props.type === 'interface') {
-				return interfaces.value.find((inter) => inter.id === props.extension);
+			switch (props.type) {
+				case 'interface':
+					return getInterface(props.extension);
+				case 'display':
+					return getDisplay(props.extension);
+				default:
+					return null;
 			}
-
-			if (props.type === 'display') {
-				return displays.value.find((display) => display.id === props.extension);
-			}
-
-			return null;
 		});
 
 		const usesCustomComponent = computed(() => {

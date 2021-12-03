@@ -1,13 +1,7 @@
+import { DateHelper } from '../types';
 import { Knex } from 'knex';
-import { HelperFn } from '../types';
 
-export class HelperSQLite implements HelperFn {
-	private knex: Knex;
-
-	constructor(knex: Knex) {
-		this.knex = knex;
-	}
-
+export class DateHelperSQLite extends DateHelper {
 	year(table: string, column: string): Knex.Raw {
 		return this.knex.raw("strftime('%Y', ??.??)", [table, column]);
 	}
@@ -38,5 +32,10 @@ export class HelperSQLite implements HelperFn {
 
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw("strftime('%S', ??.??)", [table, column]);
+	}
+
+	parse(date: string): string {
+		const newDate = new Date(date);
+		return (newDate.getTime() - newDate.getTimezoneOffset() * 60 * 1000).toString();
 	}
 }

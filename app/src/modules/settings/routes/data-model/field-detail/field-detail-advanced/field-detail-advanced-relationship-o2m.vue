@@ -25,6 +25,7 @@
 				v-model="sortField"
 				:collection="relatedCollection"
 				:placeholder="t('add_sort_field') + '...'"
+				:nullable="true"
 			/>
 		</div>
 

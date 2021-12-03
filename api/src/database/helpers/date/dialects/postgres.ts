@@ -1,13 +1,7 @@
+import { DateHelper } from '../types';
 import { Knex } from 'knex';
-import { HelperFn } from '../types';
 
-export class HelperPostgres implements HelperFn {
-	private knex: Knex;
-
-	constructor(knex: Knex) {
-		this.knex = knex;
-	}
-
+export class DateHelperPostgres extends DateHelper {
 	year(table: string, column: string): Knex.Raw {
 		return this.knex.raw('EXTRACT(YEAR FROM ??.??)', [table, column]);
 	}

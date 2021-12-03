@@ -8,6 +8,7 @@
 		:filter-user="filter"
 		:filter-system="roleFilter"
 		:search="search"
+		show-select="none"
 		collection="directus_activity"
 	>
 		<private-view :title="t('activity_feed')">
@@ -26,7 +27,7 @@
 			</template>
 
 			<template #navigation>
-				<notifications-navigation v-model:filter="roleFilter" />
+				<activity-navigation v-model:filter="roleFilter" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout">
@@ -61,7 +62,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
-import NotificationsNavigation from '../components/navigation.vue';
+import ActivityNavigation from '../components/navigation.vue';
 import usePreset from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
@@ -71,7 +72,7 @@ import { mergeFilters } from '@directus/shared/utils';
 
 export default defineComponent({
 	name: 'ActivityCollection',
-	components: { NotificationsNavigation, LayoutSidebarDetail, SearchInput },
+	components: { ActivityNavigation, LayoutSidebarDetail, SearchInput },
 	props: {
 		primaryKey: {
 			type: String,
