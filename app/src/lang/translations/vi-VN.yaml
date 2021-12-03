@@ -789,6 +789,8 @@ interfaces:
     interface: Giao diện
   select-dropdown-m2o:
     display_template: Mẫu hiển thị
+  input-rich-text-md:
+    edit: Sửa
   map:
     zoom: Thu phóng
   system-folder:
