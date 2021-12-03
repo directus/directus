@@ -48,7 +48,9 @@ for (const authProvider of authProviders) {
 	router.use(`/login/${authProvider.name}`, authRouter);
 }
 
-router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
+if (!env.AUTH_DISABLE_DEFAULT) {
+	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
+}
 
 router.post(
 	'/refresh',
@@ -191,7 +193,10 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		res.locals.payload = { data: getAuthProviders() };
+		res.locals.payload = {
+			data: getAuthProviders(),
+			disableDefault: env.AUTH_DISABLE_DEFAULT,
+		};
 		return next();
 	}),
 	respond

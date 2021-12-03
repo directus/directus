@@ -260,9 +260,7 @@ export default defineComponent({
 
 		const typesWithLabels = computed(() => translate(fieldTypes));
 
-		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(localType.value);
-		});
+		const typeDisabled = computed(() => localType.value !== 'standard');
 
 		const typePlaceholder = computed(() => {
 			if (localType.value === 'm2o') {

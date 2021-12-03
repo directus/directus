@@ -25,6 +25,117 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'editorFont',
+			name: '$t:interfaces.input-rich-text-md.editorFont',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{ text: '$t:sans_serif', value: 'sans-serif' },
+						{ text: '$t:monospace', value: 'monospace' },
+						{ text: '$t:serif', value: 'serif' },
+					],
+				},
+			},
+			schema: {
+				default_value: 'sans-serif',
+			},
+		},
+		{
+			field: 'previewFont',
+			name: '$t:interfaces.input-rich-text-md.previewFont',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{ text: '$t:sans_serif', value: 'sans-serif' },
+						{ text: '$t:monospace', value: 'monospace' },
+						{ text: '$t:serif', value: 'serif' },
+					],
+				},
+			},
+			schema: {
+				default_value: 'sans-serif',
+			},
+		},
+		{
+			field: 'toolbar',
+			name: '$t:interfaces.input-rich-text-html.toolbar',
+			type: 'json',
+			schema: {
+				default_value: [
+					'heading',
+					'bold',
+					'italic',
+					'strikethrough',
+					'bullist',
+					'numlist',
+					'blockquote',
+					'code',
+					'link',
+					'table',
+					'image',
+					'empty',
+				],
+			},
+			meta: {
+				width: 'half',
+				interface: 'select-multiple-dropdown',
+				options: {
+					choices: [
+						{
+							value: 'heading',
+							text: '$t:wysiwyg_options.heading',
+						},
+						{
+							value: 'bold',
+							text: '$t:wysiwyg_options.bold',
+						},
+						{
+							value: 'italic',
+							text: '$t:wysiwyg_options.italic',
+						},
+						{
+							value: 'strikethrough',
+							text: '$t:wysiwyg_options.strikethrough',
+						},
+						{
+							value: 'blockquote',
+							text: '$t:wysiwyg_options.blockquote',
+						},
+						{
+							value: 'bullist',
+							text: '$t:wysiwyg_options.bullist',
+						},
+						{
+							value: 'numlist',
+							text: '$t:wysiwyg_options.numlist',
+						},
+						{
+							value: 'table',
+							text: '$t:wysiwyg_options.table',
+						},
+						{
+							value: 'code',
+							text: '$t:wysiwyg_options.source_code',
+						},
+						{
+							value: 'image',
+							text: '$t:wysiwyg_options.image',
+						},
+						{
+							value: 'link',
+							text: '$t:wysiwyg_options.link',
+						},
+					],
+				},
+			},
+		},
+		{
 			field: 'customSyntax',
 			name: '$t:interfaces.input-rich-text-md.customSyntax',
 			type: 'json',
@@ -43,6 +154,10 @@ export default defineInterface({
 							meta: {
 								interface: 'input',
 								width: 'half',
+								options: {
+									placeholder: '$t:name',
+									default: null,
+								},
 							},
 						},
 						{
@@ -61,6 +176,10 @@ export default defineInterface({
 							meta: {
 								interface: 'input',
 								width: 'half',
+								options: {
+									placeholder: '$t:prefix',
+									default: null,
+								},
 							},
 						},
 						{
@@ -70,6 +189,10 @@ export default defineInterface({
 							meta: {
 								interface: 'input',
 								width: 'half',
+								options: {
+									placeholder: '$t:suffix',
+									default: null,
+								},
 							},
 						},
 						{

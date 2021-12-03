@@ -44,14 +44,14 @@ export async function applySnapshot(
 				snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
 			}
 
-			if (diff?.[0].kind === 'E') {
-				const updates = diff.reduce((acc, edit) => {
-					if (edit.kind !== 'E') return acc;
-					set(acc, edit.path!, edit.rhs);
-					return acc;
-				}, {});
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+				const newValues = snapshot.collections.find((field) => {
+					return field.collection === collection;
+				});
 
-				await collectionsService.updateOne(collection, updates);
+				if (newValues) {
+					await collectionsService.updateOne(collection, newValues);
+				}
 			}
 		}
 
@@ -62,18 +62,16 @@ export async function applySnapshot(
 				await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
 			}
 
-			if (diff?.[0].kind === 'E') {
-				const updates = diff.reduce((acc, edit) => {
-					if (edit.kind !== 'E') return acc;
-					set(acc, edit.path!, edit.rhs);
-					return acc;
-				}, {});
-
-				await fieldsService.updateField(collection, {
-					field,
-					type: 'unknown', // If the type was updated, the updates spread will overwrite it
-					...updates,
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+				const newValues = snapshot.fields.find((snapshotField) => {
+					return snapshotField.collection === collection && snapshotField.field === field;
 				});
+
+				if (newValues) {
+					await fieldsService.updateField(collection, {
+						...newValues,
+					});
+				}
 			}
 
 			if (diff?.[0].kind === 'D') {
@@ -88,22 +86,26 @@ export async function applySnapshot(
 		}
 
 		const relationsService = new RelationsService({ knex: trx, schema: await getSchema({ database: trx }) });
-		for (const { collection, field, diff, related_collection } of snapshotDiff.relations) {
+
+		for (const { collection, field, diff } of snapshotDiff.relations) {
+			const structure = {};
+
+			for (const diffEdit of diff) {
+				set(structure, diffEdit.path!, undefined);
+			}
+
 			if (diff?.[0].kind === 'N') {
 				await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
 			}
 
-			if (diff?.[0].kind === 'E') {
-				const updates = diff.reduce(
-					(acc, edit) => {
-						if (edit.kind !== 'E') return acc;
-						set(acc, edit.path!, edit.rhs);
-						return acc;
-					},
-					{ collection, field, related_collection }
-				);
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+				const newValues = snapshot.relations.find((relation) => {
+					return relation.collection === collection && relation.field === field;
+				});
 
-				await relationsService.updateOne(collection, field, updates);
+				if (newValues) {
+					await relationsService.updateOne(collection, field, newValues);
+				}
 			}
 
 			if (diff?.[0].kind === 'D') {

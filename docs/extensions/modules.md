@@ -163,3 +163,8 @@ npx directus-extension build
 
 Finally, move the output from your module's `dist` folder into your project's `/extensions/modules/my-custom-module`
 folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+
+## 5. Enable extension in Project Settings
+
+By default, newly installed modules are disabled from the navigation in Project Settings. Make sure to enable your
+freshly made module to have it show up in the navigation!

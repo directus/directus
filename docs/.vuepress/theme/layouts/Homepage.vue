@@ -451,7 +451,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="stylus">
 .homepage {
 	max-width: 1140px;
 	margin: 90px auto 40px;
@@ -464,7 +464,7 @@ export default {
 	width: 100%;
 	min-height: 220px;
 	overflow: hidden;
-	background-color: #00c897;
+	background-color: var(--primary);
 	border-radius: 4px;
 }
 
@@ -512,14 +512,14 @@ export default {
 	margin-bottom: 30px;
 	padding: 40px;
 	overflow: hidden;
-	border: 2px solid #f0f4f9;
+	border: 2px solid var(--border-subdued);
 	border-radius: 4px;
 	cursor: pointer;
 	transition: border 0.25s ease;
 }
 
 .panel:hover {
-	border-color: #00c897;
+	border-color: var(--primary);
 }
 
 .panel svg {
@@ -529,14 +529,14 @@ export default {
 
 .panel h2 {
 	margin: 24px 0 16px !important;
-	color: #172940;
+	color: var(--foreground-normal-alt);
 	font-weight: 800;
 	line-height: 1.3;
 	border-bottom: none;
 }
 
 .panel span {
-	color: #a2b5cd;
+	color: var(--foreground-subdued);
 }
 
 .panel u {

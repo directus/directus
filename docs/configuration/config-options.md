@@ -516,9 +516,10 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 ## Authentication
 
-| Variable         | Description                            | Default Value |
-| ---------------- | -------------------------------------- | ------------- |
-| `AUTH_PROVIDERS` | CSV of auth providers you want to use. | --            |
+| Variable               | Description                            | Default Value |
+| ---------------------- | -------------------------------------- | ------------- |
+| `AUTH_PROVIDERS`       | CSV of auth providers you want to use. | --            |
+| `AUTH_DISABLE_DEFAULT` | Disable the default auth provider      | `false`       |
 
 For each of the auth providers you list, you must provide the following configuration:
 

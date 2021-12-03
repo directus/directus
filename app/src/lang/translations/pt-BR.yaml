@@ -415,6 +415,7 @@ user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
 no_webhooks_copy: Nenhum webhook foi configurado ainda. Comece criando um abaixo.
+activity_log: Registro de atividades
 all_items: Todos os itens
 any: Qualquer
 csv: CSV
@@ -1185,6 +1186,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
+    edit: Editar
     customSyntax: Blocos personalizados
     customSyntax_label: Adicionar tipos de sintaxe personalizados
     customSyntax_add: Adicionar sintaxe personalizada
@@ -1257,6 +1259,8 @@ interfaces:
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
+    color_on: Cor ligada
+    color_off: Cor desligada
     label_placeholder: Insira um rótulo...
     label_default: Habilitado
   translations:

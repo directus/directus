@@ -141,3 +141,11 @@ services:
 
     ports:
       - 5110:8080
+
+  postgres10:
+    image: postgis/postgis:10-3.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 5111:5432

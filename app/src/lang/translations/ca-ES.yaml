@@ -1075,6 +1075,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Entra i previsualitza el markdown
+    edit: Edita
     customSyntax: Blocs personalitzats
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada
@@ -1155,6 +1156,8 @@ interfaces:
   boolean:
     toggle: Canvia
     description: Canvia entre Encés i apagat
+    color_on: Color activat
+    color_off: Color desactivat
     label_placeholder: Introdueix una etiqueta...
     label_default: Habilitat
   translations:

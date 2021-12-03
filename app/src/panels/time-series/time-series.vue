@@ -8,7 +8,7 @@ import api from '@/api';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
-import { isEqual, isNil } from 'lodash';
+import { isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
@@ -68,6 +68,14 @@ export default defineComponent({
 			type: String,
 			default: '#00C897',
 		},
+		fillType: {
+			type: String,
+			default: 'gradient',
+		},
+		curveType: {
+			type: String,
+			default: 'smooth',
+		},
 		decimals: {
 			type: Number,
 			default: 0,
@@ -111,13 +119,11 @@ export default defineComponent({
 		});
 
 		watch(
-			[() => props, () => props.showHeader, () => props.height],
-			(newVal, oldVal) => {
-				if (isEqual(newVal, oldVal) === false) {
-					fetchData();
-					chart.value?.destroy();
-					setupChart();
-				}
+			() => props,
+			() => {
+				fetchData();
+				chart.value?.destroy();
+				setupChart();
 			},
 			{ deep: true }
 		);
@@ -238,7 +244,7 @@ export default defineComponent({
 			chart.value = new ApexCharts(chartEl.value, {
 				colors: [props.color ? props.color : '#00C897'],
 				chart: {
-					type: 'area',
+					type: props.fillType === 'disabled' ? 'line' : 'area',
 					height: '100%',
 					toolbar: {
 						show: false,
@@ -254,7 +260,7 @@ export default defineComponent({
 				},
 				series: [],
 				stroke: {
-					curve: 'smooth',
+					curve: props.curveType,
 					width: 2,
 					lineCap: 'round',
 				},
@@ -265,7 +271,7 @@ export default defineComponent({
 					},
 				},
 				fill: {
-					type: 'gradient',
+					type: props.fillType === 'disabled' ? 'solid' : props.fillType,
 					gradient: {
 						colorStops: [
 							[

@@ -962,6 +962,7 @@ interfaces:
     display_template: عرض القالب
   input-rich-text-md:
     description: أدخل و معاينة markdown
+    edit: تعديل
   map:
     zoom: تكبير/تصغير
   list-o2m:
@@ -995,6 +996,8 @@ interfaces:
   boolean:
     toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
+    color_on: تشغيل اللون
+    color_off: إيقاف اللون
     label_default: تمكين
   translations:
     display_template: عرض القالب
