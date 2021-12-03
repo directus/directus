@@ -962,6 +962,7 @@ interfaces:
     display_template: عرض القالب
   input-rich-text-md:
     description: أدخل و معاينة markdown
+    edit: تعديل
   map:
     zoom: تكبير/تصغير
   list-o2m:

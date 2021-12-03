@@ -958,6 +958,7 @@ interfaces:
     display_template: Weergavesjabloon
   input-rich-text-md:
     markdown: Markdown
+    edit: Wijzig
     customSyntax: Aangepaste blokken
     box: Blok / Inline
     imageToken: Afbeeldingstoken

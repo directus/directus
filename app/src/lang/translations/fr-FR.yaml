@@ -1326,14 +1326,14 @@ interfaces:
   input-rich-text-md:
     markdown: Éditeur Markdown
     description: Saisir et prévisualiser le markdown
+    edit: Modifier
+    preview: Prévisualiser
     customSyntax: Blocs personnalisés
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
     box: Bloc / Inline
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
-    preview: Prévisualiser
-    editor: Éditeur
   map:
     map: Carte
     description: Sélectionnez un emplacement sur une carte

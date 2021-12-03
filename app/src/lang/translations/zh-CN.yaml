@@ -1236,6 +1236,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: 输入并预览Markdown
+    edit: 编辑
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
