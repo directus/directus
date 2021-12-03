@@ -674,6 +674,8 @@ interfaces:
     icon: Ikon
   system-interface:
     interface: Grensesnitt
+  input-rich-text-md:
+    edit: Rediger
   tags:
     tags: Etiketter
   boolean:
