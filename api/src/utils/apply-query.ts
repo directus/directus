@@ -59,7 +59,7 @@ export default function applyQuery(
 	}
 
 	if (query.group) {
-		dbQuery.groupBy(query.group.map(applyFunctionToColumnName));
+		dbQuery.groupBy(`${collection}.${query.group.map(applyFunctionToColumnName)}`);
 	}
 
 	if (query.aggregate) {
