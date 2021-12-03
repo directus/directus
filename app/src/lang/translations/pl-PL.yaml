@@ -1324,14 +1324,14 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
+    edit: Edytuj
+    preview: Podgląd
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
     imageToken: Token obrazu
     imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
-    preview: Podgląd
-    editor: Edytor
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
