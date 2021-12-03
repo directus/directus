@@ -109,7 +109,7 @@ recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
-unknown_validation_errors: 'Des erreurs de validation se sont produites pour les champs cachés suivants :'
+unknown_validation_errors: 'Des erreurs de validation se sont produites pour les champs masqués suivants :'
 validationError:
   eq: La valeur doit être {valid}
   neq: La valeur ne peut pas être {invalid}
@@ -194,8 +194,8 @@ create_field: Créer un champ
 creating_new_field: 'Nouveau champ ({collection})'
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Réinitialiser les préférences de la page
-hidden_field: Champ caché
-hidden_on_detail: Caché dans les détails
+hidden_field: Champ masqué
+hidden_on_detail: Masqué dans les détails
 disabled_editing_value: Valeur non modifiable
 key: Clé
 alias: Alias
@@ -207,7 +207,7 @@ datetime: Date et heure
 dateTime: Date et heure
 precision: Précision
 decimal: Décimale
-float: Nombre flottant
+float: Nombre décimal
 integer: Entier
 json: JSON
 xml: XML
@@ -266,7 +266,7 @@ translations: Traductions
 no_translations: Aucune traduction
 note: Remarque
 enter_a_value: Saisissez une valeur...
-enter_a_placeholder: Entrez un placeholder...
+enter_a_placeholder: Entrez un texte d'indication...
 length: Taille
 precision_scale: Précision et échelle
 readonly: Lecture seule
@@ -542,7 +542,7 @@ delete_collection: Supprimer la collection
 update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
 make_collection_visible: Rendre la collection visible
-make_collection_hidden: Rendre la collection cachée
+make_collection_hidden: Masquer la collection
 start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
 one_item: '1 élément'
@@ -552,12 +552,12 @@ delete_collection_are_you_sure: >-
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
-show_hidden_collections: Afficher les collections cachées
+show_hidden_collections: Afficher les collections masquées
 hide_hidden_collections: Masquer les collections cachées
 show_header: Afficher en-tête
 unmanaged_collections: Collections non configurées
 system_collections: Collections système
-placeholder: Placeholder
+placeholder: Indication
 icon_left: Icône gauche
 icon_right: Icône droite
 count_other_revisions: '{count} autres versions'
@@ -599,9 +599,9 @@ operators:
   all: Contient ces clés
   has: Contient certaines de ces clés
   intersects: Recoupe
-  nintersects: Ne se croise pas
-  intersects_bbox: Boîte englobante d'intersectes
-  nintersects_bbox: Ne pas intersecter la boîte englobante
+  nintersects: Ne recoupe pas
+  intersects_bbox: Recoupe les délimitations
+  nintersects_bbox: Ne recoupe pas les limitations
 loading: Chargement…
 drop_to_upload: Déposer pour téléverser
 item: Élément
@@ -876,7 +876,7 @@ fields:
     note: Remarque
     color: Couleur
     display_template: Modèle d'affichage
-    hidden: Caché
+    hidden: Masqué
     singleton: Singleton
     translations: Traductions des noms de collections
     archive_app_filter: Filtrer les valeurs archivées dans l'application
@@ -979,7 +979,7 @@ fields:
     collection: Nom de la Collection
     icon: Icône de Collection
     note: Remarque
-    hidden: Caché
+    hidden: Masqué
     singleton: Singleton
     translation: Traductions du nom de champ
     display_template: Modèle
@@ -1150,7 +1150,7 @@ field: Champ | Champs
 file: Fichier
 file_library: Bibliothèque de fichiers
 forgot_password: Mot de passe oublié
-hidden: Caché
+hidden: Masqué
 icon: Icône
 info: Information
 normal: Normal
