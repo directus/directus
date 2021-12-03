@@ -17,8 +17,12 @@ describe('run', () => {
 
 	describe('when passed the argument up', () => {
 		it('returns "Nothing To Updage" if no directus_migrations', async () => {
-			tracker.on.select('directus_migrations').response(['hello']);
-			expect(await run(db, 'up')).rejects.toEqual('Nothing to upgrade');
+			// note the difference between an empty array and ['Empty']
+			tracker.on.select('directus_migrations').response(['Empty']);
+			await run(db, 'up').catch((e: Error) => {
+				expect(e).toBeInstanceOf(Error);
+				expect(e.message).toBe('Nothing to upgrade');
+			});
 		});
 	});
 });
