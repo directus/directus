@@ -538,6 +538,7 @@ fields:
     name: Nama
     status: Status
     value: Nilai
+    collections: Pengumpulan
 field_options:
   directus_activity:
     create: Buat
@@ -550,9 +551,6 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Nama
-    collection_list:
-      fields:
-        type_name: Tipe
     collections_name: Pengumpulan
   directus_webhooks:
     actions_create: Buat
@@ -632,6 +630,8 @@ interfaces:
     interface: Antarmuka
   select-dropdown-m2o:
     display_template: Tampilan Template
+  input-rich-text-md:
+    edit: Edit
   map:
     zoom: Perbesar
   system-folder:

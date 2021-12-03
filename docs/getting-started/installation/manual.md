@@ -3,7 +3,7 @@
 ::: tip Automation
 
 We've created a little CLI tool you can run that does this process automatically. For more info, check the doc on
-[installing through the CLI](/guides/installation/cli).
+[installing through the CLI](/getting-started/installation/cli/).
 
 :::
 
@@ -16,7 +16,8 @@ npm init -y
 ```
 
 We recommend aliasing the `start` script to Directus' start for easier deployments to services like
-[AWS](/guides/installation/aws) or [DigitalOcean App Platform](/guides/installation/digitalocean-app-platform).
+[AWS](/getting-started/installation/aws/) or
+[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/).
 
 ```json
 {
@@ -42,4 +43,4 @@ Docker, etc.
 You can use a copy of [the `example.env` file](https://github.com/directus/directus/blob/main/api/example.env) as a
 starting point.
 
-See [Environment Variables](/reference/environment-variables) for all available variables.
+See [Environment Variables](/configuration/config-options/#general) for all available variables.

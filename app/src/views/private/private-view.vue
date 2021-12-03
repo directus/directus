@@ -57,6 +57,7 @@
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
 
+		<notifications-drawer />
 		<notifications-group v-if="notificationsPreviewActive === false" :dense="sidebarOpen === false" />
 		<notification-dialogs />
 	</div>
@@ -72,9 +73,11 @@ import ProjectInfo from './components/project-info';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
+import NotificationsDrawer from './components/notifications-drawer.vue';
 import { useUserStore, useAppStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import useTitle from '@/composables/use-title';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	components: {
@@ -85,6 +88,7 @@ export default defineComponent({
 		NotificationsGroup,
 		NotificationsPreview,
 		NotificationDialogs,
+		NotificationsDrawer,
 	},
 	props: {
 		title: {
@@ -114,7 +118,7 @@ export default defineComponent({
 
 		const notificationsPreviewActive = ref(false);
 
-		const { sidebarOpen, fullScreen } = toRefs(appStore);
+		const { sidebarOpen, fullScreen } = storeToRefs(appStore);
 
 		const theme = computed(() => {
 			return userStore.currentUser?.theme || 'auto';

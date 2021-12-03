@@ -18,6 +18,7 @@
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:autofocus="autofocus"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 			<v-divider />
@@ -49,12 +50,12 @@
 <script lang="ts">
 import LanguageSelect from './language-select.vue';
 import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } from 'vue';
-import { useFieldsStore, useRelationsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, useUserStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep, isEqual, assign } from 'lodash';
+import { cloneDeep, isEqual, assign, isNil } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
 import { useWindowSize } from '@/composables/use-window-size';
 import useRelation from '@/composables/use-m2m';
@@ -82,13 +83,17 @@ export default defineComponent({
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
 		},
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { collection, field } = toRefs(props);
-		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
+
+		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
 
 		const { width } = useWindowSize();
@@ -164,7 +169,6 @@ export default defineComponent({
 			firstItem,
 			secondItem,
 			updateValue,
-			relationsStore,
 			firstItemInitial,
 			secondItemInitial,
 			splitViewAvailable,
@@ -280,7 +284,7 @@ export default defineComponent({
 				(newVal, oldVal) => {
 					if (
 						newVal &&
-						newVal !== oldVal &&
+						isNil(newVal) !== isNil(oldVal) &&
 						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
 					) {
 						loadItems();
@@ -355,7 +359,7 @@ export default defineComponent({
 					});
 
 					items.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 					unexpectedError(err);
 				} finally {

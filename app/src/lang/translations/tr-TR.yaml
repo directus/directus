@@ -617,6 +617,7 @@ fields:
     name: İsim
     status: Durum
     value: Değer
+    collections: Koleksiyonlar
 field_options:
   directus_activity:
     create: Oluştur
@@ -631,9 +632,6 @@ field_options:
     fields:
       icon_name: İkon
       name_name: İsim
-    collection_list:
-      fields:
-        type_name: Tür
     collections_name: Koleksiyonlar
   directus_users:
     status_dropdown_active: Aktif
@@ -736,6 +734,8 @@ interfaces:
     interface: Arayüz
   select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
+  input-rich-text-md:
+    edit: Düzenle
   map:
     zoom: Yakınlaş
   system-folder:

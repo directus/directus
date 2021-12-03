@@ -88,8 +88,6 @@ undone. Please proceed with caution.
 - **IP Access** — An allow-list of IP addresses from which the platform can be accessed, empty allows all
 - **Require 2FA** — Forces all users within this role to use two-factor authentication
 - **Users in Role** — A list of all users within this role
-- **Module Navigation** — Overrides the visible modules
-- **Collection Navigation** — Overrides the collection module's navigation
 
 ## Deleting a Role
 
@@ -100,8 +98,8 @@ undone. Please proceed with caution.
 ::: warning Users in a Deleted Role
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which denies their App access
-and limits them to the [Public Role](/concepts/roles/#public-role) permissions. They can then be reassigned to a new
-role by an admin.
+and limits them to the [Public Role](/configuration/users-roles-permissions/#configuring-public-permissions)
+permissions. They can then be reassigned to a new role by an admin.
 
 :::
 
@@ -196,9 +194,9 @@ case-by-case basis by administrators.
 ### Configuring System Permissions
 
 In addition to permissions for _your_ custom collections, you can also customize the permissions for _system_
-collections. It is important to note that when [App Access](/guides/roles/#configuring-a-role) is enabled for a role,
-Directus will automatically add permission for the necessary system collections. To edit system permissions, simply
-click "System Collections" at the bottom of the permissions configuration.
+collections. It is important to note that when App Access is enabled for a role, Directus will automatically add
+permission for the necessary system collections. To edit system permissions, simply click "System Collections" at the
+bottom of the permissions configuration.
 
 There are two pre-configured options you can use for resetting the role's system permissions and ensure proper App
 access. To access these, click "System Collections" to expand, and then click one of the buttons at the bottom of the

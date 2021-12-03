@@ -17,10 +17,10 @@
 			v-tooltip.left="t('notifications')"
 			:active="modelValue"
 			class="toggle"
-			icon="notifications"
+			icon="pending_actions"
 			@click="$emit('update:modelValue', !modelValue)"
 		>
-			{{ t('notifications') }}
+			{{ t('activity_log') }}
 		</sidebar-button>
 	</div>
 </template>

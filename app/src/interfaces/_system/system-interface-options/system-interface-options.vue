@@ -29,8 +29,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref } from 'vue';
-import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig, DeepPartial, Field, ExtensionsOptionsContext } from '@directus/shared/types';
+import { getInterface } from '@/interfaces';
 
 export default defineComponent({
 	props: {
@@ -52,21 +51,28 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { interfaces } = getInterfaces();
+		const options = computed({
+			get() {
+				return props.value;
+			},
+			set(newVal: any) {
+				emit('input', newVal);
+			},
+		});
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
 		const selectedInterface = computed(() => {
 			if (props.interface) {
-				return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.interface);
+				return getInterface(props.interface);
 			}
 
 			if (!values.value[props.interfaceField]) return;
 
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === values.value[props.interfaceField]);
+			return getInterface(values.value[props.interfaceField]);
 		});
 
 		const usesCustomComponent = computed(() => {
@@ -83,9 +89,7 @@ export default defineComponent({
 			let optionsObjectOrArray;
 
 			if (typeof selectedInterface.value.options === 'function') {
-				optionsObjectOrArray = (
-					selectedInterface.value.options as (x: ExtensionsOptionsContext) => DeepPartial<Field>[]
-				)({
+				optionsObjectOrArray = selectedInterface.value.options({
 					field: {
 						type: 'unknown',
 					},
@@ -120,7 +124,7 @@ export default defineComponent({
 			return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
 		});
 
-		return { t, selectedInterface, values, usesCustomComponent, optionsFields };
+		return { t, selectedInterface, values, usesCustomComponent, optionsFields, options };
 	},
 });
 </script>

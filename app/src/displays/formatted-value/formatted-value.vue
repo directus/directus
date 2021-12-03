@@ -75,7 +75,8 @@ export default defineComponent({
 	text-overflow: ellipsis;
 
 	&.bold {
-		font-weight: 700;
+		color: var(--foreground-normal-alt);
+		font-weight: 600;
 	}
 
 	&.subdued {

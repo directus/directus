@@ -5,7 +5,7 @@ import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
@@ -19,34 +19,37 @@ import getLocalType from '../utils/get-local-type';
 import { toArray } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
-import { getGeometryHelper } from '../database/helpers/geometry';
+import { getHelpers, Helpers } from '../database/helpers';
 import Keyv from 'keyv';
 
 export class FieldsService {
 	knex: Knex;
+	helpers: Helpers;
 	accountability: Accountability | null;
 	itemsService: ItemsService;
 	payloadService: PayloadService;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
+		this.helpers = getHelpers(this.knex);
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
 
-		const { cache, schemaCache } = getCache();
+		const { cache, systemCache } = getCache();
+
 		this.cache = cache;
-		this.schemaCache = schemaCache;
+		this.systemCache = systemCache;
 	}
 
 	private get hasReadAccess() {
-		return !!this.schema.permissions.find((permission) => {
+		return !!this.accountability?.permissions?.find((permission) => {
 			return permission.collection === 'directus_fields' && permission.action === 'read';
 		});
 	}
@@ -85,12 +88,13 @@ export class FieldsService {
 				return field.field === column.name && field.collection === column.table;
 			});
 
-			const { type = 'alias', ...info } = column ? getLocalType(column, field) : {};
+			const type = getLocalType(column, field);
+
 			const data = {
 				collection: column.table,
 				field: column.name,
 				type: type,
-				schema: { ...column, ...info },
+				schema: column,
 				meta: field || null,
 			};
 
@@ -122,10 +126,12 @@ export class FieldsService {
 		});
 
 		const aliasFieldsAsField = aliasFields.map((field) => {
+			const type = getLocalType(undefined, field);
+
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: Array.isArray(field.special) ? field.special[0] : field.special,
+				type,
 				schema: null,
 				meta: field,
 			};
@@ -141,7 +147,7 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.schema.permissions.filter((permission) => {
+			const permissions = this.accountability.permissions!.filter((permission) => {
 				return permission.action === 'read';
 			});
 
@@ -172,7 +178,7 @@ export class FieldsService {
 				throw new ForbiddenException();
 			}
 
-			const permissions = this.schema.permissions.find((permission) => {
+			const permissions = this.accountability.permissions!.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
@@ -183,7 +189,7 @@ export class FieldsService {
 			}
 		}
 
-		let column;
+		let column = undefined;
 		let fieldInfo = await this.knex.select('*').from('directus_fields').where({ collection, field }).first();
 
 		if (fieldInfo) {
@@ -201,13 +207,14 @@ export class FieldsService {
 			// Do nothing
 		}
 
-		const { type = 'alias', ...info } = column ? getLocalType(column, fieldInfo) : {};
+		const type = getLocalType(column, fieldInfo);
+
 		const data = {
 			collection,
 			field,
 			type,
 			meta: fieldInfo || null,
-			schema: type == 'alias' ? null : { ...column, ...info },
+			schema: type === 'alias' ? null : column,
 		};
 
 		return data;
@@ -239,32 +246,60 @@ export class FieldsService {
 				schema: this.schema,
 			});
 
-			if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+			const hookAdjustedField = await emitter.emitFilter(
+				`fields.create`,
+				field,
+				{
+					collection: collection,
+				},
+				{
+					database: trx,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
+
+			if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 				if (table) {
-					this.addColumnToTable(table, field as Field);
+					this.addColumnToTable(table, hookAdjustedField as Field);
 				} else {
 					await trx.schema.alterTable(collection, (table) => {
-						this.addColumnToTable(table, field as Field);
+						this.addColumnToTable(table, hookAdjustedField as Field);
 					});
 				}
 			}
 
-			if (field.meta) {
-				await itemsService.createOne({
-					...field.meta,
-					collection: collection,
-					field: field.field,
-				});
+			if (hookAdjustedField.meta) {
+				await itemsService.createOne(
+					{
+						...hookAdjustedField.meta,
+						collection: collection,
+						field: hookAdjustedField.field,
+					},
+					{ emitEvents: false }
+				);
 			}
+
+			emitter.emitAction(
+				`fields.create`,
+				{
+					payload: hookAdjustedField,
+					key: hookAdjustedField.field,
+					collection: collection,
+				},
+				{
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		});
 
 		if (this.cache && env.CACHE_AUTO_PURGE) {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	async updateField(collection: string, field: RawField): Promise<string> {
@@ -272,13 +307,31 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		if (field.schema) {
-			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
+		const hookAdjustedField = await emitter.emitFilter(
+			`fields.update`,
+			field,
+			{
+				keys: [field.field],
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
-			if (!isEqual(existingColumn, field.schema)) {
+		const record = field.meta
+			? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
+			: null;
+
+		if (hookAdjustedField.schema) {
+			const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
+
+			if (!isEqual(existingColumn, hookAdjustedField.schema)) {
 				try {
 					await this.knex.schema.alterTable(collection, (table) => {
-						if (!field.schema) return;
+						if (!hookAdjustedField.schema) return;
 						this.addColumnToTable(table, field, existingColumn);
 					});
 				} catch (err: any) {
@@ -287,25 +340,26 @@ export class FieldsService {
 			}
 		}
 
-		if (field.meta) {
-			const record = await this.knex
-				.select('id')
-				.from('directus_fields')
-				.where({ collection, field: field.field })
-				.first();
-
+		if (hookAdjustedField.meta) {
 			if (record) {
-				await this.itemsService.updateOne(record.id, {
-					...field.meta,
-					collection: collection,
-					field: field.field,
-				});
+				await this.itemsService.updateOne(
+					record.id,
+					{
+						...hookAdjustedField.meta,
+						collection: collection,
+						field: hookAdjustedField.field,
+					},
+					{ emitEvents: false }
+				);
 			} else {
-				await this.itemsService.createOne({
-					...field.meta,
-					collection: collection,
-					field: field.field,
-				});
+				await this.itemsService.createOne(
+					{
+						...hookAdjustedField.meta,
+						collection: collection,
+						field: hookAdjustedField.field,
+					},
+					{ emitEvents: false }
+				);
 			}
 		}
 
@@ -313,9 +367,21 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
+
+		emitter.emitAction(
+			`fields.update`,
+			{
+				payload: hookAdjustedField,
+				keys: [hookAdjustedField.field],
+				collection: collection,
+			},
+			{
+				database: getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		return field.field;
 	}
@@ -325,16 +391,18 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		await emitter.emitAsync(`fields.delete.before`, {
-			event: `fields.delete.before`,
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		await emitter.emitFilter(
+			'fields.delete',
+			[field],
+			{
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		await this.knex.transaction(async (trx) => {
 			const relations = this.schema.relations.filter((relation) => {
@@ -427,20 +495,20 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
-		emitAsyncSafe(`fields.delete`, {
-			event: `fields.delete`,
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		emitter.emitAction(
+			'fields.delete',
+			{
+				payload: [field],
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
@@ -464,10 +532,10 @@ export class FieldsService {
 			column = table.dateTime(field.field, { useTz: false });
 		} else if (field.type === 'timestamp') {
 			column = table.timestamp(field.field, { useTz: true });
-		} else if (field.type === 'geometry') {
-			const helper = getGeometryHelper();
-			column = helper.createColumn(table, field);
+		} else if (field.type.startsWith('geometry')) {
+			column = this.helpers.st.createColumn(table, field);
 		} else {
+			// @ts-ignore
 			column = table[field.type](field.field);
 		}
 

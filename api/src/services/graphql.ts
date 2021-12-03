@@ -66,6 +66,7 @@ import { FoldersService } from './folders';
 import { ItemsService } from './items';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
+import { NotificationsService } from './notifications';
 import { RelationsService } from './relations';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
@@ -186,13 +187,18 @@ export class GraphQLService {
 		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
 		const schema = {
-			read: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['read']),
-			create: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['create']),
-			update: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['update']),
-			delete: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['delete']),
+			read:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['read']),
+			create:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['create']),
+			update:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['update']),
+			delete:
+				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['delete']),
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
+
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
@@ -880,6 +886,9 @@ export class GraphQLService {
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
 						filter: ReadableCollectionFilterTypes[collection.collection],
+						limit: {
+							type: GraphQLInt,
+						},
 						search: {
 							type: GraphQLString,
 						},
@@ -1469,10 +1478,13 @@ export class GraphQLService {
 			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
 
 			query.aggregate[aggregateProperty] =
-				aggregationGroup.selectionSet?.selections.map((selectionNode) => {
-					selectionNode = selectionNode as FieldNode;
-					return selectionNode.name.value;
-				}) ?? [];
+				aggregationGroup.selectionSet?.selections
+					// filter out graphql pointers, like __typename
+					.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
+					.map((selectionNode) => {
+						selectionNode = selectionNode as FieldNode;
+						return selectionNode.name.value;
+					}) ?? [];
 		}
 
 		validateQuery(query);
@@ -1512,6 +1524,8 @@ export class GraphQLService {
 				return new PermissionsService(opts);
 			case 'directus_presets':
 				return new PresetsService(opts);
+			case 'directus_notifications':
+				return new NotificationsService(opts);
 			case 'directus_revisions':
 				return new RevisionsService(opts);
 			case 'directus_roles':
@@ -2003,10 +2017,10 @@ export class GraphQLService {
 						throw new ForbiddenException();
 					}
 
-					const { cache, schemaCache } = getCache();
+					const { cache, systemCache } = getCache();
 
 					await cache?.clear();
-					await schemaCache?.clear();
+					await systemCache.clear();
 
 					return;
 				},

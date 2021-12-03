@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificatore
 avatar: Avatar
 default_provider: Predefinito
 published: Pubblicato
@@ -13,7 +34,7 @@ maps: Mappe
 item_creation: Creazione elemento
 item_revision: Revisione elemento
 enter_a_name: Inserisci un nome...
-duplicate_field: Campo duplicato
+duplicate_field: Duplica campo
 half_width: Metà larghezza
 full_width: Larghezza Massima
 group: Gruppo
@@ -45,6 +66,8 @@ create_webhook: Crea webhook
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
+subject: Oggetto
+inbox: Inbox
 emails: Email
 connection_excellent: Connessione Eccellente
 connection_good: Connessione Buona
@@ -152,8 +175,8 @@ global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
 show_zero: Mostra zero
-create_in_advanced_field_creation_mode: Crea con la Modalità di Creazione Campo Avanzata
-continue_in_advanced_field_creation_mode: Continua con la Modalità di Creazione Campo Avanzata
+create_in_advanced_field_creation_mode: Crea campo in modalità avanzata
+continue_in_advanced_field_creation_mode: Continua in modalità avanzata di creazione del campo
 sum: Somma
 sum_distinct: Somma valori unici
 avg: Media
@@ -194,7 +217,13 @@ time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
+geometry: Geometria (tutte)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -400,6 +429,9 @@ user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
 no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
+no_notifications: Nessuna notifica
+no_notifications_copy: È tutto!
+activity_log: Log delle attività
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
@@ -631,7 +663,7 @@ toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
-insights: Approfondimenti (Beta)
+insights: Approfondimenti
 dashboard: Bacheca
 panel: Pannello
 panel_options: Opzioni del pannello
@@ -756,6 +788,7 @@ layout_setup: Configurazione Layout
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
+discard_all_changes: Annulla tutte le modifiche
 discard_changes_copy: Sei sicuro di voler annullare tutte le modifiche che hai fatto?
 show_x_axis: Mostra asse X
 show_y_axis: Mostra asse Y
@@ -803,6 +836,7 @@ cancel: Annulla
 no_upscale: Non ingrandire le immagini
 collection: Raccolta
 collections: Raccolte
+content: Contenuti
 singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
@@ -816,6 +850,7 @@ directus_collection:
   directus_migrations: Quale versione del database stai usando
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
   directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_notifications: Notifiche inviate agli utenti
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
   directus_revisions: Snapshot dei dati per tutte le attività
@@ -849,6 +884,8 @@ fields:
     unarchive_value: Valore ripristino
     sort_field: Ordina per
     accountability: Monitoraggio Attività e Revisione
+    archive_field: Campo archiviazione
+    item_duplication_fields: Campi coinvolti nella duplicazione
   directus_files:
     $thumbnail: Miniatura
     title: Titolo
@@ -909,6 +946,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Mappe
     basemaps: Mappe base
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -921,18 +959,22 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
-    public_pages: Pagine pubbliche
+    branding: Branding e stile
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
-    files_and_thumbnails: File e miniature
-    storage_default_folder: Cartella predefinita di archiviazione
-    storage_asset_presets: Preimpostazioni salvataggio risorse
-    storage_asset_transform: Trasformazione salvataggio risorse
+    files_and_thumbnails: File e archiviazione
+    storage_default_folder: Cartella predefinita
+    storage_asset_presets: Trasformazioni preimpostate
+    storage_asset_transform: Trasformazioni consentite
     overrides: Personalizzazioni App
     custom_css: CSS personalizzato
+    module_bar: Barra del modulo
+    transformations_all: Permetti tutte le trasformazioni
+    transformations_none: Disabilita le trasformazioni
+    transformations_presets: Limita le trasformazioni ai preset preimpostati
   directus_fields:
     collection: Nome della Raccolta
     icon: Icona Raccolta
@@ -951,20 +993,23 @@ fields:
     enforce_tfa: Richiede 2FA
     users: Utenti nel ruolo
     module_list: Navigazione del modulo
-    collection_list: Navigazione Raccolte
   directus_webhooks:
     name: Nome
     method: Metodo
     status: Stato
     data: Dati
+    header: Header
     value: Valore
+    headers: Request Headers
     data_label: Invia dati evento
     triggers: Trigger
     actions: Azioni
+    collections: Raccolte
 field_options:
   directus_settings:
     project_name_placeholder: Il mio progetto...
-    project_logo_note: Sfondo per l'accesso e il logo
+    project_color_note: Sfondo per l'accesso e il logo
+    project_logo_note: SVG/PNG 40x40 bianca
     public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
     security_divider_title: Sicurezza
     auth_password_policy:
@@ -972,6 +1017,8 @@ field_options:
       weak_text: Debole – minimo 8 caratteri
       strong_text: Forte – maiuscole / minuscole / numeri / simboli
     storage_asset_presets:
+      fit_label: Adatta
+      upscaling: Ingrandimento
       fit:
         contain_text: Contieni (preserva le proporzioni)
         cover_text: Ricopri (forza dimensione esatta)
@@ -982,6 +1029,7 @@ field_options:
     mapbox_key: Access Token di Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Mappe base
+    basemaps_name_placeholder: Inserisci il nome dalla mappa base...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Stile Mapbox
@@ -1007,7 +1055,6 @@ field_options:
     singular_unit: Singolare
     plural_unit: Plurale
     archive_divider: Archivio
-    archive_field: Campo archiviazione
     archive_field_placeholder: Scegli un campo...
     archive_app_filter: Abilita filtro archiviati in app
     archive_value: Valore impostato all'archiviazione...
@@ -1016,7 +1063,6 @@ field_options:
     sort_field: Scegli un campo...
     accountability_divider: Autorizzazioni
     duplication_divider: Duplicazione
-    item_duplication_fields: Campi coinvolti nella duplicazione
   directus_files:
     title: Un titolo unico...
     description: Una descrizione opzionale...
@@ -1034,15 +1080,6 @@ field_options:
       name_placeholder: Inserisci un titolo...
       link_name: Link
       link_placeholder: URL relativo o assoluto...
-    collection_list:
-      group_name_addLabel: Aggiungi Nuovo Gruppo...
-      fields:
-        group_name: Nome del gruppo
-        group_placeholder: Etichetta questo gruppo...
-        type_name: Tipo
-        choices_always: Sempre aperto
-        choices_start_open: Inizia aperto
-        choices_start_collapsed: Inizia chiuse
     collections_name: Raccolte
     collections_addLabel: Aggiungi raccolta...
   directus_users:
@@ -1067,7 +1104,9 @@ field_options:
     actions_delete: Cancellazione
     actions_login: Accedi
     headers:
+      header: Header
       value: Valore
+      add: Aggiungi Header
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
 do_nothing: Non Fare Niente
@@ -1153,6 +1192,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1204,6 +1244,7 @@ interfaces:
     code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
+    line_wrapping: Linea di margine
     placeholder: Inserisci il codice qui...
   system-collection:
     collection: Raccolta
@@ -1235,7 +1276,7 @@ interfaces:
   presentation-divider:
     divider: Separatore
     description: Etichetta e divide i campi in sezioni
-    title_placeholder: Inserisci un titolo...
+    title_placeholder: Inserisci un titolo o lascia vuoto per mostrare solo una riga...
     inline_title: Titolo incorporato
     inline_title_label: Mostra titolo all'interno della riga
     margin_top: Margine superiore
@@ -1270,6 +1311,8 @@ interfaces:
   file-image:
     image: Immagine
     description: Seleziona o carica un'immagine
+    crop: Ritaglia a adatta
+    crop_label: Ritaglia l'immagine come necessario
   system-interface:
     interface: Interfaccia
     description: Seleziona un'interfaccia esistente
@@ -1287,6 +1330,10 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Inserisci e visualizza in anteprima markdown
+    edit: Modifica
+    preview: Anteprima
+    editorFont: Carattere dell'editor
+    previewFont: Anteprima carattere
     customSyntax: Blocchi Personalizzati
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
@@ -1309,6 +1356,7 @@ interfaces:
     lnglat: Longitudine, Latitudine
     wkt: WKT
     wkb: WKB
+    click_to_select: Clicca per selezionare {geometry}
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -1320,7 +1368,7 @@ interfaces:
   system-folder:
     folder: Cartella
     description: Seleziona una cartella
-    field_hint: Mette i file appena caricati nella cartella selezionata. Non influisce sui file esistenti selezionati.
+    field_hint: Cartella per i file caricati. Non influisce sui file esistenti.
     root_name: Radice libreria file
     system_default: Predefiniti di sistema
   select-radio:
@@ -1371,6 +1419,8 @@ interfaces:
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato
+    color_on: Colore attivato
+    color_off: Colore Disattivato
     label_placeholder: Inserisci un'etichetta...
     label_default: Abilitato
   translations:
@@ -1400,6 +1450,7 @@ interfaces:
     description: Una ricerca durante la digitazione per valori API esterni.
     results_path: Percorso dei risultati
     value_path: Percorso del valore
+    text_path: Percorso del testo
     trigger: Trigger
     rate: Intervallo
   group-raw:
@@ -1492,8 +1543,8 @@ displays:
   rating:
     rating: Valutazione
     description: Visualizza un numero come stelle rispetto al valore massimo
-    simple: Semplice
-    simple_label: Mostra le stelle in formato semplice
+    simple: Formato breve
+    simple_label: Mostra in formato breve
   raw:
     raw: Valore grezzo
   related-values:
@@ -1530,19 +1581,16 @@ layouts:
     map: Mappa
     basemap: Mappa base
     layers: Livelli
-    edit_custom_layers: Modifica i livelli
     cluster_options: Opzioni di raggruppamento
     cluster: Raggruppa dati vicini
     cluster_radius: Raggio del Cluster
     cluster_minpoints: Dimensione minima del cluster
     cluster_maxzoom: Zoom massimo per il raggruppamento
-    field: Geometria
+    field: Campo geospaziale
     invalid_geometry: Geometria non valida
-    auto_location_filter: Filtro automatico nella vista
-    search_this_area: Cerca in quest'area
-    clear_data_filter: Rimuovi il filtro sui dati
-    clear_location_filter: Rimuovi il filtro sulla posizione
-    no_results_here: Non ci sono risultati in quest'area
+    find_location: Trova una posizione...
+    default_template: Uso il default della raccolta...
+    no_compatible_fields: Nessun campo compatibile
 panels:
   metric:
     name: Metrica
@@ -1553,6 +1601,8 @@ panels:
     description: Disegna un grafico a linee basato su valori nel tempo
     date_field: Campo data
     value_field: Campo valore
+    fill_type: Tipo di riempimento
+    curve_type: Tipo di curva
   label:
     name: Etichetta
     description: Mostra del testo

@@ -746,8 +746,6 @@ fields:
     public_note: Kemennadennoù war ar bajenn degemer
     auth_password_policy: Politikerezh ar gerioù-tremen
     auth_login_attempts: Taolioù kevreañ
-    storage_asset_presets: Rakreoliñ ar resktroù el lec'h stokañ
-    storage_asset_transform: Treuzfurmiñ restroù ar stokañ
     custom_css: Personelaat an CSS
   directus_fields:
     collection: Anv an dastumad
@@ -766,12 +764,14 @@ fields:
     enforce_tfa: Ret eo kaout A2F
     users: Izili gant ar roll
     module_list: Modulenn ar Merdeiñ
-    collection_list: Merdeiñ an dastumad
   directus_webhooks:
     name: Anv
     status: Stad
     value: Talvoud
+    collections: Dastumadoù
 field_options:
+  directus_settings:
+    mapbox_placeholder: pk.eyJ1Ijo.....
   directus_activity:
     create: Krouiñ
     update: Hizivaat
@@ -791,9 +791,6 @@ field_options:
       icon_name: Arlun
       name_name: Anv
       name_placeholder: Bizskrivit un titl...
-    collection_list:
-      fields:
-        type_name: Seurt
     collections_name: Dastumadoù
   directus_users:
     status_dropdown_active: Oberiat
@@ -937,7 +934,6 @@ interfaces:
   presentation-divider:
     divider: Dispartier
     description: Tikedennoù ha rannañ ar maeziennoù er c'hevrennoù
-    title_placeholder: Bizskrivit un titl...
     inline_title: Titl en linenn
     inline_title_label: Diskwel an titl e-barzh al linenn
     margin_top: Marz a-us
@@ -985,6 +981,7 @@ interfaces:
     display_template: Patrom diskwel
   input-rich-text-md:
     description: Dibab ha rakdiskwel ar markdown
+    edit: Kemmañ
     customSyntax: Bloc'hoù personelaet
     customSyntax_label: Ouzhpennañ doareoù sintaks personelaet
     customSyntax_add: Ouzhpennañ ur sintaks personelaet
@@ -1049,6 +1046,8 @@ interfaces:
   boolean:
     toggle: Enaouiñ/Lazhañ
     description: Gwintañ etre an enaouiñ hag al lazhañ
+    color_on: Liv aktivet
+    color_off: Liv diaktivet
     label_placeholder: Bizskrivañ ar skridennad...
     label_default: Enaouet
   translations:

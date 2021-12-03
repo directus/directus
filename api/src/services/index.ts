@@ -12,6 +12,7 @@ export * from './graphql';
 export * from './import';
 export * from './mail';
 export * from './meta';
+export * from './notifications';
 export * from './panels';
 export * from './payload';
 export * from './permissions';

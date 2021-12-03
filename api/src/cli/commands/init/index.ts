@@ -45,7 +45,7 @@ export default async function init(): Promise<void> {
 
 		try {
 			await runSeed(db);
-			await runMigrations(db, 'latest');
+			await runMigrations(db, 'latest', false);
 		} catch (err: any) {
 			process.stdout.write('\nSomething went wrong while seeding the database:\n');
 			process.stdout.write(`\n${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}\n`);

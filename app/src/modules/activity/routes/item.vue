@@ -90,7 +90,7 @@ export default defineComponent({
 
 		const openItemLink = computed(() => {
 			if (!item.value || item.value.collection.startsWith('directus_')) return;
-			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
+			return `/content/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });

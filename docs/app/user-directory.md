@@ -9,7 +9,7 @@
 ## Browsing Users
 
 Lists all users of the project, with a navigation that allows quick access to the different role groups. This page has
-the same functionality as other [Collection Pages](/app/content-collections/).
+the same functionality as other [Content Pages](/app/content-collections/).
 
 ## Viewing a User
 
@@ -21,8 +21,8 @@ profile page.
 
 You can access your profile page from the User Directory or by clicking the User Menu in the
 [Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
-[Item Page](/app/content/item). Administrators can customize the fields on this page, but the following are available by
-default.
+[Item Page](/app/content-items/). Administrators can customize the fields on this page, but the following are available
+by default.
 
 - **First Name** — The given name
 - **Last Name** — The family/surname
@@ -36,6 +36,7 @@ default.
 - **Language** — The preferred App language/locale
 - **Theme** — Light or Dark mode (or based on system preferences)
 - **Multi-Factor Authentication** — Configuration for MFA
+- **Email Notifications** - Receive emails for notifications
 
 The sidebar's info component also includes the following readonly details:
 
@@ -45,6 +46,6 @@ The sidebar's info component also includes the following readonly details:
 
 ::: tip System Fields
 
-Administrators have access to additional system fields. [Learn More](#)
+Administrators have access to additional system fields.
 
 :::

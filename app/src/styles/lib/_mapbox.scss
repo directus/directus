@@ -113,6 +113,7 @@
 	font-family: inherit !important;
 	line-height: inherit !important;
 	background-color: var(--background-page);
+	overflow: hidden;
 
 	&,
 	&.suggestions {

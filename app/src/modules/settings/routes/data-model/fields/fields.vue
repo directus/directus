@@ -204,7 +204,7 @@ export default defineComponent({
 			await remove();
 			await collectionsStore.hydrate();
 			await fieldsStore.hydrate();
-			router.push(`/settings/data-model`);
+			router.replace(`/settings/data-model`);
 		}
 
 		async function saveAndStay() {

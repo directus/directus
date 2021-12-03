@@ -1,11 +1,16 @@
 # IIS (Internet Information Services)
 
-Deploying directus to IIS will require [iisnode](https://github.com/Azure/iisnode), an entrypoint file, and some
-specific web.config configurations.
+Deploying directus to IIS will require [iisnode](https://github.com/Azure/iisnode), the IIS URL Rewrite module, an
+entrypoint file, and some specific web.config configurations.
 
-# iisnode
+## iisnode
 
 iisnode can be downloaded from the [azure/iisnode releases](https://github.com/Azure/iisnode/releases) page.
+
+## IIS URL Rewrite module
+
+The URL Rewrite module can be downloaded from the
+[Microsoft IIS website](https://www.iis.net/downloads/microsoft/url-rewrite).
 
 ## Entrypoint
 
@@ -41,6 +46,7 @@ running directus with iisnode
           </rule>
         </rules>
       </rewrite>
+      <httpErrors existingResponse="PassThrough" />
     </system.webServer>
   </location>
 </configuration>
@@ -52,8 +58,9 @@ A few important points regarding this file:
 2. The iisnode handler `verb` parameter is set to handle all verbs (\*)
 3. The iisnode `node_env` parameter is bound to the environment variable `node_env`
 4. The iisnode `enableXFF` parameter is set to `true`. Since iisnode acts as a reverse proxy, this is required to pass
-   client ip and other details on to the directus server, which directus modules expect and depend on.
-5. the rewrite rule is in place to send all requests made to this site to the entrypoint, ensuring that directus handles
+   client IP and other details on to the directus server, which directus modules expect and depend on.
+5. The rewrite rule is in place to send all requests made to this site to the entrypoint, ensuring that directus handles
    the routing and not IIS
+6. The error page response needs to be untouched by IIS for two-factor authentication to work.
 
 While there are dozens even hundreds of options within IIS, this should help in getting started with Directus on IIS.

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css';
-import {
+import maplibre, {
 	MapboxGeoJSONFeature,
 	MapLayerMouseEvent,
 	AttributionControl,
@@ -24,7 +24,9 @@ import {
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, toRefs, computed, WatchStopHandle } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+import { ShowSelect } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { useAppStore } from '@/stores';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
@@ -61,9 +63,14 @@ export default defineComponent({
 			type: Array as PropType<Array<string | number>>,
 			default: () => [],
 		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'multiple',
+		},
 	},
 	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata', 'updateitempopup'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
 		const appStore = useAppStore();
 		let map: Map;
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
@@ -90,7 +97,6 @@ export default defineComponent({
 		const boxSelectControl = new BoxSelectControl({
 			boxElementClass: 'map-selection-box',
 			selectButtonClass: 'mapboxgl-ctrl-select',
-			unselectButtonClass: 'mapboxgl-ctrl-unselect',
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
 		let geocoderControl: MapboxGeocoder | undefined;
@@ -102,6 +108,8 @@ export default defineComponent({
 				collapsed: true,
 				marker: { element: marker } as any,
 				flyTo: { speed: 1.4 },
+				mapboxgl: maplibre as any,
+				placeholder: t('layouts.map.find_location'),
 			});
 		}
 		onMounted(() => {
@@ -176,7 +184,7 @@ export default defineComponent({
 		}
 
 		function fitBounds() {
-			const bbox = props.data.bbox?.map((x) => x % 90);
+			const bbox = props.data.bbox;
 			if (map && bbox) {
 				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 100,
@@ -247,12 +255,11 @@ export default defineComponent({
 			newSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: true });
 			});
-			boxSelectControl.showUnselect(newSelection?.length);
 		}
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
-			const replace = !event.originalEvent.altKey;
+			const replace = props.showSelect === 'multiple' ? false : !event.originalEvent.altKey;
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
 					emit('featureselect', { ids: [feature.id], replace });

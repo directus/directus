@@ -164,6 +164,10 @@ Retrieve a new access token using a refresh token.
 The refresh token to use. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have to submit
 it here.
 
+`mode`\
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
+Defaults to `json`.
+
 </div>
 
 ### Response Attributes
@@ -205,7 +209,7 @@ POST /graphql/system
 
 ```graphql
 mutation {
-	auth_refresh(refresh_token: "abc...def") {
+	auth_refresh(refresh_token: "abc...def", mode: "json") {
 		access_token
 		refresh_token
 	}

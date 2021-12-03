@@ -189,7 +189,6 @@ time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
 auto_refresh: Automatikus frissítés
@@ -622,7 +621,6 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
-insights: Betekintés (Béta)
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
@@ -903,18 +901,14 @@ fields:
     project_url: Projekt webcíme
     project_color: Projekt színe
     project_logo: Projekt logója
-    public_pages: Nyilvános oldalak
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
     auth_password_policy: Hitelesítési jelszóházirend
     auth_login_attempts: Bejelentkezési kísérletek
-    files_and_thumbnails: Fájlok és miniatűrök
-    storage_default_folder: Tároló alapértelmezett mappája
-    storage_asset_presets: Tárolóeszköz alapbeállításai
-    storage_asset_transform: Tárolóeszközök transzformáció
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
+    module_bar: Modulsáv
   directus_fields:
     collection: Gyűjtemény neve
     icon: Gyűjtemény ikonja
@@ -933,7 +927,6 @@ fields:
     enforce_tfa: 2FA megkövetelése
     users: Felhasználók a szerepkörben
     module_list: Modul navigáció felülbírálása
-    collection_list: Gyűjtemény navigáció
   directus_webhooks:
     name: Név
     method: Metódus
@@ -943,10 +936,10 @@ fields:
     data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
+    collections: Gyűjtemények
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
-    project_logo_note: Bejelentkezés és logó háttere
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
@@ -1009,15 +1002,6 @@ field_options:
       name_placeholder: Írjon be egy címet...
       link_name: Hivatkozás
       link_placeholder: Relatív vagy abszolút URL...
-    collection_list:
-      group_name_addLabel: Új csoport hozzáadása...
-      fields:
-        group_name: Csoportnév
-        group_placeholder: Címkézze fel ezt a csoportot...
-        type_name: Típus
-        choices_always: Mindig nyitva
-        choices_start_open: Indíts nyitva!
-        choices_start_collapsed: Kezdetben összecsukva
     collections_name: Gyűjtemények
     collections_addLabel: Gyűjtemény hozzáadása...
   directus_users:
@@ -1210,7 +1194,6 @@ interfaces:
   presentation-divider:
     divider: Elválasztó
     description: A mezők felcímkézése és szakaszokra osztása
-    title_placeholder: Írjon be egy címet...
     inline_title: Inline cím
     inline_title_label: Cím megjelenítése a soron belül
     margin_top: Felső margó
@@ -1262,6 +1245,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Markdown bevitele és előnézete
+    edit: Szerkesztés
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása
@@ -1292,7 +1276,6 @@ interfaces:
   system-folder:
     folder: Könyvtár
     description: Válasszon egy mappát
-    field_hint: Az újonnan feltöltött fájlokat a kiválasztott mappába helyezi. Nem érinti a kiválasztott, de már létező fájlokat.
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
   select-radio:
@@ -1343,6 +1326,8 @@ interfaces:
   boolean:
     toggle: Váltás
     description: Be- és kikapcsolás közti váltás
+    color_on: Szín be
+    color_off: Szín ki
     label_placeholder: Címke beírása...
     label_default: Engedélyezve
   translations:
@@ -1495,14 +1480,11 @@ layouts:
     map: Térkép
     basemap: Alaptérkép
     layers: Rétegek
-    edit_custom_layers: Rétegek szerkesztése
     cluster_options: Klaszterezés beállításai
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
-    field: Geometria
     invalid_geometry: Érvénytelen geometria
-    search_this_area: Keresés ezen a területen
 panels:
   metric:
     name: Metrikus

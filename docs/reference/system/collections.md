@@ -332,8 +332,8 @@ This endpoint doesn't currently support any query parameters.
 
 ### Request Body
 
-You can only update the `meta` values of the the [collection object](#the-collection-object). Updating the collection
-name is not supported at this time.
+You can only update the `meta` values of the [collection object](#the-collection-object). Updating the collection name
+is not supported at this time.
 
 ### Returns
 

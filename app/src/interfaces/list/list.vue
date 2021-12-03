@@ -132,7 +132,7 @@ export default defineComponent({
 		const { value } = toRefs(props);
 
 		const templateWithDefaults = computed(() =>
-			props.template || props.fields?.[0]?.field ? `{{${props.fields[0].field}}}` : ''
+			props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : ''
 		);
 
 		const showAddNew = computed(() => {
@@ -163,7 +163,7 @@ export default defineComponent({
 			props.fields?.map((field) => {
 				return {
 					...field,
-					name: field.name ?? formatTitle(field.field!),
+					name: formatTitle(field.name ?? field.field!),
 				};
 			})
 		);
@@ -213,7 +213,8 @@ export default defineComponent({
 		}
 
 		function trackEdits(updatedValues: any) {
-			Object.assign(edits.value, updatedValues);
+			const combinedValues = Object.assign({}, defaults.value, updatedValues);
+			Object.assign(edits.value, combinedValues);
 		}
 
 		function checkDiscard() {
@@ -269,7 +270,7 @@ export default defineComponent({
 		}
 
 		function emitValue(value: null | any[]) {
-			if (value === null || value.length === 0) {
+			if (!value || value.length === 0) {
 				return emit('input', null);
 			}
 
@@ -289,6 +290,7 @@ export default defineComponent({
 				emitValue(props.value.slice(0, -1));
 			}
 
+			edits.value = {};
 			active.value = null;
 		}
 	},

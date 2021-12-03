@@ -1,7 +1,7 @@
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(type.toLowerCase())"
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType.toLowerCase())"
 		show-arrow
 		:disabled="value.length === 0"
 	>
@@ -16,9 +16,13 @@
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]">
+			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath]">
 				<v-list-item-content>
-					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
+					<render-template
+						:template="internalTemplate"
+						:item="item"
+						:collection="junctionCollection ?? relatedCollection"
+					/>
 				</v-list-item-content>
 				<v-list-item-icon>
 					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
@@ -35,6 +39,8 @@ import { defineComponent, computed, PropType } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
 import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
+import { getLocalTypeForField } from '../../modules/settings/routes/data-model/get-local-type';
+import { get } from 'lodash';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -55,22 +61,36 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		type: {
-			type: String,
-			required: true,
-		},
 	},
 	setup(props) {
 		const { t, te } = useI18n();
 
-		const relatedCollection = computed(() => {
+		const relatedCollectionData = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
+		});
+
+		const relatedCollection = computed(() => {
+			return relatedCollectionData.value.relatedCollection;
+		});
+
+		const junctionCollection = computed(() => {
+			return relatedCollectionData.value.junctionCollection;
+		});
+
+		const localType = computed(() => {
+			return getLocalTypeForField(props.collection, props.field);
 		});
 
 		const { primaryKeyField } = useCollection(relatedCollection);
 
+		const primaryKeyFieldPath = computed(() => {
+			return relatedCollectionData.value.path
+				? [...relatedCollectionData.value.path, primaryKeyField.value?.field].join('.')
+				: primaryKeyField.value?.field;
+		});
+
 		const internalTemplate = computed(() => {
-			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
+			return props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
 		});
 
 		const unit = computed(() => {
@@ -93,13 +113,21 @@ export default defineComponent({
 			return null;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, internalTemplate, unit };
+		return {
+			relatedCollection,
+			junctionCollection,
+			primaryKeyFieldPath,
+			getLinkForItem,
+			internalTemplate,
+			unit,
+			localType,
+		};
 
 		function getLinkForItem(item: any) {
-			if (!relatedCollection.value || !primaryKeyField.value) return null;
-			const primaryKey = item[primaryKeyField.value.field];
+			if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
+			const primaryKey = get(item, primaryKeyFieldPath.value);
 
-			return `/collections/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
+			return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
 		}
 	},
 });

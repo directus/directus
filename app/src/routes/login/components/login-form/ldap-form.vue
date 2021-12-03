@@ -105,7 +105,7 @@ export default defineComponent({
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;
-				router.push(lastPage || '/collections');
+				router.push(lastPage || '/content');
 			} catch (err: any) {
 				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 					requiresTFA.value = true;
