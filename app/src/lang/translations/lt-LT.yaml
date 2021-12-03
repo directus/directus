@@ -853,6 +853,8 @@ interfaces:
     interface: Sąsaja
   select-dropdown-m2o:
     display_template: Rodymo šablonas
+  input-rich-text-md:
+    edit: Redaguoti
   map:
     zoom: Padidinti
   system-folder:
