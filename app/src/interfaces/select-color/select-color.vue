@@ -131,7 +131,7 @@
 						'--background-page': 'none',
 						'--v-slider-fill-color': 'none',
 						'--v-slider-thumb-color': 'var(--foreground-normal)',
-						'--input-bg-image':
+						'--v-slider-track-background-image':
 							'linear-gradient(to right, transparent,' +
 							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
 							'), url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==\')',
@@ -320,7 +320,7 @@ export default defineComponent({
 					let alpha = Math.round(255 * color.value.alpha())
 						.toString(16)
 						.toUpperCase();
-					alpha = alpha.length === 1 ? `0${alpha}` : alpha;
+					alpha = alpha.padStart(2, '0');
 					return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
 				}
 				return null;

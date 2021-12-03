@@ -131,7 +131,7 @@ body {
 			height: 4px;
 			padding: 8px 0;
 			background-color: var(--background-page);
-			background-image: var(--input-bg-image);
+			background-image: var(--v-slider-track-background-image);
 			border-radius: 10px;
 			cursor: pointer;
 			appearance: none;
