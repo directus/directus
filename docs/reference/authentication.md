@@ -209,7 +209,7 @@ POST /graphql/system
 
 ```graphql
 mutation {
-	auth_refresh(refresh_token: "abc...def", mode: 'json') {
+	auth_refresh(refresh_token: "abc...def", mode: "json") {
 		access_token
 		refresh_token
 	}
