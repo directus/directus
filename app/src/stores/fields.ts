@@ -283,6 +283,9 @@ export const useFieldsStore = defineStore({
 			if (relation === undefined) return false;
 
 			const relatedCollection = relation.field === field ? relation.related_collection : relation.collection;
+
+			if (relatedCollection === null) return false;
+
 			const relatedField = path.join('.');
 			return this.getField(relatedCollection, relatedField);
 		},

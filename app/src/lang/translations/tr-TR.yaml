@@ -734,6 +734,8 @@ interfaces:
     interface: Arayüz
   select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
+  input-rich-text-md:
+    edit: Düzenle
   map:
     zoom: Yakınlaş
   system-folder:

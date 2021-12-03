@@ -341,6 +341,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/reference/system/notifications',
+						title: 'Notifications',
+					},
+					{
+						type: 'page',
 						path: '/reference/system/permissions',
 						title: 'Permissions',
 					},

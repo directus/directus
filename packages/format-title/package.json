@@ -16,27 +16,34 @@
 	"main": "dist/format-title.cjs.js",
 	"exports": {
 		".": {
-			"import": "./dist/format-title.bundler.js",
+			"import": {
+				"node": "./index.mjs",
+				"default": "./dist/format-title.bundler.js"
+			},
 			"require": "./dist/format-title.cjs.js"
 		},
 		"./package.json": "./package.json"
 	},
 	"module": "dist/format-title.bundler.js",
-	"unpkg": "dist/format-title.global.min.js",
-	"types": "dist/types/index.d.ts",
+	"unpkg": "dist/format-title.esm.min.js",
+	"types": "dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist",
+		"index.mjs"
 	],
 	"author": "rijkvanzanten <rijkvanzanten@me.com>",
-	"repository": "directus/format-title",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/directus/directus.git"
+	},
 	"license": "MIT",
 	"engines": {
 		"node": ">=6.0.0"
 	},
 	"scripts": {
 		"prebuild": "rimraf dist",
-		"build": "rollup -c rollup.config.js",
-		"start": "rollup -c rollup.config.js -w"
+		"build": "rollup -c",
+		"dev": "rollup -c -w"
 	},
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "21.0.1",
@@ -44,6 +51,7 @@
 		"@rollup/plugin-node-resolve": "13.0.6",
 		"rimraf": "3.0.2",
 		"rollup": "2.60.1",
+		"rollup-plugin-dts": "4.0.1",
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",
 		"rollup-plugin-typescript2": "0.31.0",

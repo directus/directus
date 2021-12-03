@@ -1326,14 +1326,14 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
+    edit: Edit
+    preview: Preview
     customSyntax: Custom Blocks
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
-    preview: Preview
-    editor: Editor
   map:
     map: Map
     description: Select a location on a map

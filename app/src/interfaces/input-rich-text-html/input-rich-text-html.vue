@@ -271,7 +271,7 @@ export default defineComponent({
 		const replaceTokens = (value: string, token: string | null) => {
 			const url = getPublicURL();
 			const regex = new RegExp(
-				`(<[^=]+=")(${escapeRegExp(
+				`(<[^]+?=")(${escapeRegExp(
 					url
 				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
 				'gi'
