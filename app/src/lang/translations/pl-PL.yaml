@@ -1239,6 +1239,7 @@ interfaces:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii
+    line_wrapping: Zawijanie linii
     placeholder: Wprowadź kod tutaj...
   system-collection:
     collection: Kolekcja
@@ -1326,6 +1327,8 @@ interfaces:
     description: Wprowadź i zobacz markdown
     edit: Edytuj
     preview: Podgląd
+    editorFont: Czcionka edytora
+    previewFont: Podgląd czcionki
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
@@ -1442,6 +1445,7 @@ interfaces:
     description: Typ wyszukiwania dla zewnętrznych wartości API.
     results_path: Ścieżka wyników
     value_path: Ścieżka bazowa
+    text_path: Ścieżka tekstowa
     trigger: Wyzwalacz
     rate: Oceń
   group-raw:
