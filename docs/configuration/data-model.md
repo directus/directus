@@ -136,7 +136,43 @@ This action is permanent and can not be undone. Please proceed with caution.
 
 ## Adjusting the Collection Hierarchy
 
-Collections can be organized in several ways.
+Collections can be organized in several ways, including sorting, custom translations, showing/hiding, and even grouping.
+This organization is reflected in the sidebar navigation, allowing you to control how the users of the app will interact
+with the various collections in your project. Configuring the organization of your collections is done on the
+**Settings > Data Model** page.
+
+### Sorting & Grouping
+
+By using the drag handles on the left of the collection, you can manually put the collections in an order that makes the
+most sense for your project. By dragging a collection underneath another collection, you can turn any collection into a
+group-parent. Groups can even be nested within other groups.
+
+Additionally, you can add special "folder" collections that are exclusively used for organizational purposes, and don't
+hold any data themselves. This can be done through the "Create Folder" button in the top right of the page.
+
+### Renaming Collections
+
+The key of a collection (eg. what's used in the API / database) can't be changed. However, you can alter how a
+collection is displayed in your app by adding custom translations. This can be done by opening the detail page of a
+collection, and modifying the "Collection Naming Translations" option. Make sure to add translations for all the
+languages your app's users might use for the best results!
+
+### Hiding Collections
+
+If you'd like to hide a collection from the navigation by default, but still allow your users to access them through
+other means (like relationships, or direct linking), you can set a collection be hidden by using the triple-dot "More"
+option menu on the right-hand side of the collection row, and selecting the "Make Collection Hidden" option.
+
+Hidden collections can still be accessed by the user by right-clicking on the navigation, and choosing "Show Hidden
+Collections".
+
+::: tip Permissions
+
+If you want to prevent a user from accessing a collection altogether, you can configure the read permissions for their
+role to prevent them from viewing the collection. Collections that can't be read by the user won't show up in the
+navigation either.
+
+:::
 
 ## Adjusting the Collection Form
 
