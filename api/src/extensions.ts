@@ -20,6 +20,7 @@ import getDatabase from './database';
 import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
+import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
 import { HookConfig, EndpointConfig, FilterHandler, ActionHandler, InitHandler, ScheduleHandler } from './types';
 import fse from 'fs-extra';
@@ -277,7 +278,14 @@ class ExtensionManager {
 			},
 		};
 
-		register(registerFunctions, { services, exceptions, env, database: getDatabase(), logger, getSchema });
+		register(registerFunctions, {
+			services,
+			exceptions: { ...exceptions, ...sharedExceptions },
+			env,
+			database: getDatabase(),
+			logger,
+			getSchema,
+		});
 	}
 
 	private registerEndpoint(endpoint: Extension, router: Router) {
@@ -292,7 +300,14 @@ class ExtensionManager {
 		const scopedRouter = express.Router();
 		router.use(`/${routeName}`, scopedRouter);
 
-		register(scopedRouter, { services, exceptions, env, database: getDatabase(), logger, getSchema });
+		register(scopedRouter, {
+			services,
+			exceptions: { ...exceptions, ...sharedExceptions },
+			env,
+			database: getDatabase(),
+			logger,
+			getSchema,
+		});
 
 		this.apiEndpoints.push({
 			path: endpointPath,
