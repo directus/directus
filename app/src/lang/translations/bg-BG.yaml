@@ -1192,6 +1192,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1331,8 +1332,10 @@ interfaces:
     description: Редактиране на markdown съдържание
     edit: Редактиране
     preview: Преглед
+    editorFont: Шрифт при редактиране
+    previewFont: Шрифт при преглед
     customSyntax: Собствени блокове
-    customSyntax_label: Добавяне на собствен синтактични типове
+    customSyntax_label: Добавяне на собствени синтактични типове
     customSyntax_add: Добавяне на собствен синтаксис
     box: Блоков / Вложен
     imageToken: Токен за изображенията
@@ -1447,6 +1450,7 @@ interfaces:
     description: Автоматично дописване на стойности чрез външно API.
     results_path: Път до резултатите
     value_path: Път до стойността
+    text_path: Път до текстовата стойност
     trigger: Задействане
     rate: Скорост
   group-raw:
