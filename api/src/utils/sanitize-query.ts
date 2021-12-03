@@ -1,4 +1,4 @@
-import { flatten, get, merge, set } from 'lodash';
+import { flatten, get, isPlainObject, merge, set } from 'lodash';
 import logger from '../logger';
 import { Meta } from '../types';
 import { Query, Aggregate, Filter } from '@directus/shared/types';
@@ -184,7 +184,7 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 				// way of knowing when to keep nesting and when to stop
 				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0];
 				parsedLevel[`_${parsedKey}`] = parsedValue;
-			} else {
+			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);
 			}
 		}
