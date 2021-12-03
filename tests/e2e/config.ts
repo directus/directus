@@ -22,7 +22,6 @@ export const processID = generateID();
 
 export const CONTAINER_PERSISTENCE_FILE = '.e2e-containers.json';
 
-// TODO resolve path
 const migrationsDir = './tests/e2e/setup/migrations';
 const seedsDir = './tests/e2e/setup/seeds';
 
