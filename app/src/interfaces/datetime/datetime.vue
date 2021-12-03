@@ -1,58 +1,10 @@
 <template>
-	<v-menu :close-on-content-click="false" attached :disabled="disabled">
-		<template #activator="{ toggle, active }">
-			<v-input
-				:active="active"
-				clickable
-				readonly
-				:model-value="displayValue"
-				:disabled="disabled"
-				:placeholder="t('enter_a_value')"
-				@click="toggle"
-			>
-				<template v-if="!disabled" #append>
-					<v-icon :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
-				</template>
-			</v-input>
-		</template>
-
-		<div v-if="type === 'timestamp' || type === 'dateTime' || type === 'date'" class="date-selects">
-			<div class="month">
-				<v-select v-model="month" :placeholder="t('month')" :items="monthItems" />
-			</div>
-			<div class="date">
-				<v-select v-model="date" :placeholder="t('date')" :items="dateItems" />
-			</div>
-			<div class="year">
-				<v-select v-model="year" :placeholder="t('year')" :items="yearItems" allow-other />
-			</div>
-		</div>
-
-		<v-divider v-if="type === 'timestamp' || type === 'dateTime'" />
-
-		<div
-			v-if="type === 'timestamp' || type === 'dateTime' || type === 'time'"
-			class="time-selects"
-			:class="{ seconds: includeSeconds, 'use-24': use24 }"
-		>
-			<div class="hour">
-				<v-select v-model="hours" :placeholder="t('hours')" :items="hourItems" />
-			</div>
-			<div class="minutes">
-				<v-select v-model="minutes" :placeholder="t('minutes')" :items="minutesSecondItems" />
-			</div>
-			<div v-if="includeSeconds" class="seconds">
-				<v-select v-model="seconds" :items="minutesSecondItems" />
-			</div>
-			<div v-if="use24 === false" class="period">
-				<v-select v-model="period" :items="['am', 'pm']" />
-			</div>
-		</div>
-
-		<v-divider />
-
-		<button class="to-now" @click="setToNow">{{ t('interfaces.datetime.set_to_now') }}</button>
-	</v-menu>
+	<v-date-picker
+		:type="type"
+		:disabled="disabled"
+		:include-seconds="includeSeconds"
+		@input="$emit('input', $event)"
+	></v-date-picker>
 </template>
 
 <script lang="ts">
