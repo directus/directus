@@ -59,7 +59,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string, prompt = false): string {
+	generateAuthUrl(codeVerifier: string, prompt: boolean = false): string {
 		try {
 			const codeChallenge = generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config.params === 'object' ? this.config.params : {};
