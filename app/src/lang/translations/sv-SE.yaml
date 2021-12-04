@@ -1276,14 +1276,14 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Ange och förhandsgranska markdown
+    edit: Redigera
+    preview: Förhandsgranska
     customSyntax: Anpassade block
     customSyntax_label: Lägg till anpassade syntaxtyper
     customSyntax_add: Lägg till anpassad syntax
     box: Block / Infogad
     imageToken: Bildnyckel
     imageToken_label: Token (statiskt) att lägga till på bildkällor
-    preview: Förhandsgranska
-    editor: Redigerare
   map:
     map: Karta
     zoom: Zooma
@@ -1360,6 +1360,8 @@ interfaces:
   boolean:
     toggle: Växla
     description: Växla mellan på och av
+    color_on: Färg på
+    color_off: Färg av
     label_placeholder: Ange en etikett...
     label_default: Aktiverad
   translations:

@@ -143,6 +143,7 @@ module.exports = function registerHook({ schedule }) {
 | `database.error`              | The database error   | `client`                             |
 | `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
 | `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
+| `(<collection>.)items.read`   | The read item        | `collection`                         |
 | `(<collection>.)items.create` | The new item         | `collection`                         |
 | `(<collection>.)items.update` | The updated item     | `keys`, `collection`                 |
 | `(<collection>.)items.delete` | The keys of the item | `collection`                         |

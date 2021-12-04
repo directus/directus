@@ -43,3 +43,17 @@ Seeing that these migrations are a bit of a free-for-all, you can really harm yo
 what you're doing and backup your database before adding these migrations.
 
 :::
+
+## Migrations and Directus schema
+
+Migrations can be used for managing contents of Directus collections (e.g. initial hydration). In order
+to do it, you must ensure that schema is up to date before running migrations. One way of achieving it is opting out of default `directus bootstrap` process and running: 
+
+```
+npx directus database install
+# notice that schema is applied before running migrations
+npx directus schema apply ./path/to/snapshot.yaml
+npx directus database migrate:latest
+```
+
+You may want to add additional steps to reflect other responsibilities of `directus bootstrap`.

@@ -4,6 +4,7 @@ fields:
   - field: id
   - field: timestamp
     special: date-created
+  - field: status
   - field: recipient
   - field: sender
   - field: subject

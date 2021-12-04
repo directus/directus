@@ -8,6 +8,7 @@
 		:filter-user="filter"
 		:filter-system="roleFilter"
 		:search="search"
+		show-select="none"
 		collection="directus_activity"
 	>
 		<private-view :title="t('activity_feed')">

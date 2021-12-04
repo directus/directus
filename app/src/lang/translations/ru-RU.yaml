@@ -1192,7 +1192,6 @@ translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
 view_project: Просмотр Проекта
-weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
@@ -1327,14 +1326,14 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Ввод и предварительный просмотр markdown
+    edit: Редактирование
+    preview: Предпросмотр
     customSyntax: Произвольные блоки
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
     imageToken: Ключ изображения
     imageToken_label: Статичный ключ, добавляемый к адресам изображений
-    preview: Предпросмотр
-    editor: Редактор
   map:
     map: Карта
     description: Указать место на карте
@@ -1414,6 +1413,8 @@ interfaces:
   boolean:
     toggle: Переключить
     description: Переключение вкл / выкл
+    color_on: Цвет Вкл
+    color_off: Цвет Выкл
     label_placeholder: Введите метку...
     label_default: Включен
   translations:

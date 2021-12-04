@@ -1310,6 +1310,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
+    edit: Bearbeiten
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
@@ -1395,6 +1396,8 @@ interfaces:
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
+    color_on: Farbe Ein
+    color_off: Farbe Aus
     label_placeholder: Label eingeben...
     label_default: Aktiviert
   translations:
