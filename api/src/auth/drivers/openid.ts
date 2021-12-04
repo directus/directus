@@ -67,7 +67,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	async generateAuthUrl(codeVerifier: string, prompt = false): Promise<string> {
+	async generateAuthUrl(codeVerifier: string, prompt: boolean = false): Promise<string> {
 		try {
 			const client = await this.client;
 			const codeChallenge = generators.codeChallenge(codeVerifier);
