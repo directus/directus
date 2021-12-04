@@ -1192,6 +1192,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1243,6 +1244,7 @@ interfaces:
     code: Code
     description: Écrire ou partager des extraits de code
     line_number: Numéro de ligne
+    line_wrapping: Retour à la ligne
     placeholder: Entrez le code ici...
   system-collection:
     collection: Collection
@@ -1309,6 +1311,8 @@ interfaces:
   file-image:
     image: Image
     description: Sélectionner ou envoyer une image
+    crop: Recadrer
+    crop_label: Recadrer l'image si besoin
   system-interface:
     interface: Interface
     description: Sélectionner une interface existante
@@ -1328,6 +1332,8 @@ interfaces:
     description: Saisir et prévisualiser le markdown
     edit: Modifier
     preview: Prévisualiser
+    editorFont: Police de caractère de l'éditeur
+    previewFont: Aperçu de la police
     customSyntax: Blocs personnalisés
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
@@ -1440,10 +1446,11 @@ interfaces:
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
   input-autocomplete-api:
-    input-autocomplete-api: Champ avec autocomplétion (API)
+    input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.
     results_path: Chemin des résultats
     value_path: Chemin de la valeur
+    text_path: Chemin de texte
     trigger: Déclencheur
     rate: Débit
   group-raw:
@@ -1594,6 +1601,8 @@ panels:
     description: Rendre un graphique de ligne basé sur les valeurs au fil du temps
     date_field: Champ date
     value_field: Type de champ
+    fill_type: Remplissage
+    curve_type: Format de courbe
   label:
     name: Étiquette
     description: Afficher le texte de base
