@@ -6,7 +6,7 @@ import MapActions from './actions.vue';
 import { useI18n } from 'vue-i18n';
 import { toRefs, computed, ref, watch } from 'vue';
 
-import { toGeoJSON } from '@/utils/geometry';
+import { toGeoJSON, getGeometryFormatForType } from '@/utils/geometry';
 import { layers as directusLayers } from './style';
 import { useRouter } from 'vue-router';
 import { useSync } from '@directus/shared/composables';
@@ -64,22 +64,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
 		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
 		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
-		const geometryFormat = computed<GeometryFormat | undefined>({
-			get: () => layoutOptions.value?.geometryFormat,
-			set(newValue: GeometryFormat | undefined) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					geometryFormat: newValue,
-					geometryField: undefined,
-				};
-			},
-		});
 
 		const geometryFieldData = computed(() => {
 			return fieldsInCollection.value.find((f: Field) => f.field == geometryField.value);
 		});
-
-		const isGeometryFieldNative = computed(() => geometryFieldData.value?.type.startsWith('geometry'));
 
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
@@ -103,13 +91,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return;
 			}
 			const geometryField = field.field;
-			const geometryFormat = isGeometryFieldNative.value ? 'native' : field.meta?.options?.geometryFormat;
+			const geometryFormat = getGeometryFormatForType(field.type);
 			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
 			if (!geometryFormat) {
 				return;
 			}
 			return { geometryField, geometryFormat, geometryType };
 		});
+
+		const isGeometryFieldNative = computed(() => geometryOptions.value?.geometryFormat === 'native');
 
 		const template = computed(() => {
 			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
@@ -293,7 +283,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geometryOptions,
 			handleClick,
 			handleSelect,
-			geometryFormat,
 			geometryField,
 			displayTemplate,
 			isGeometryFieldNative,
