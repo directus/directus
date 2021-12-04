@@ -2,6 +2,7 @@ import { Router } from 'express';
 import ldap, {
 	Client,
 	Error,
+	EqualityFilter,
 	SearchCallbackResponse,
 	SearchEntry,
 	InappropriateAuthenticationError,
@@ -108,7 +109,10 @@ export class LDAPAuthDriver extends AuthDriver {
 			// Search for the user in LDAP by attribute
 			this.bindClient.search(
 				userDn,
-				{ filter: `(${userAttribute ?? 'cn'}=${identifier})`, scope: userScope ?? 'one' },
+				{
+					filter: new EqualityFilter({ attribute: userAttribute, value: identifier }),
+					scope: userScope ?? 'one',
+				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
 						reject(handleError(err));
@@ -186,7 +190,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				groupDn,
 				{
 					attributes: ['cn'],
-					filter: `(${groupAttribute ?? 'member'}=${userDn})`,
+					filter: new EqualityFilter({ attribute: groupAttribute, value: userDn }),
 					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
