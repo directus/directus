@@ -110,7 +110,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			this.bindClient.search(
 				userDn,
 				{
-					filter: new EqualityFilter({ attribute: userAttribute, value: identifier }),
+					filter: new EqualityFilter({ attribute: userAttribute ?? 'cn', value: identifier }),
 					scope: userScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
@@ -190,7 +190,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				groupDn,
 				{
 					attributes: ['cn'],
-					filter: new EqualityFilter({ attribute: groupAttribute, value: userDn }),
+					filter: new EqualityFilter({ attribute: groupAttribute ?? 'member', value: userDn }),
 					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
