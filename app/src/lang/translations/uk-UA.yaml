@@ -150,6 +150,8 @@ item_permissions: Дозволи елемента
 field_permissions: Дозволи Поля
 field_validation: Валідація Поля
 field_presets: Пресети Полів
+permissions_for_role: 'Об''єкти {role} ролі можуть {action}.'
+fields_for_role: 'Поля {role} ролі можуть {action}.'
 presets_for_role: 'Значення поля за замовчуванням для ролі {role}.'
 presentation_and_aliases: Подання та Аліаси
 revision_post_create: Ось як виглядав цей елемент після його створення.
@@ -245,6 +247,10 @@ default_value: Значення за замовчуванням
 standard_field: Стандартне поле
 single_file: Один файл
 multiple_files: Кілька файлів
+m2o_relationship: Багато до одного відношення
+o2m_relationship: Одне до багатьох відношеннь
+m2m_relationship: Багато до багатьох відношеннь
+m2a_relationship: Багато до будь-яких відношеннь
 invalid_item: Недійсний елемент
 next: Уперед
 field_name: Назва поля
@@ -308,7 +314,22 @@ last_page: Остання сторінка
 last_access: Останній доступ
 fill_template: Заповнити значення шаблону
 a_unique_table_name: Унікальна назва таблиці...
+a_unique_column_name: Унікальна назва стовпця...
+enable_custom_values: Увімкнути користувацьке значення
 submit: Підтвердити
+move_to_folder: Перемістити до папки
+move: Перемістити
+system: Система
+add_field_related: Додати поле до пов'язаної колекції
+interface_label: Інтерфейс
+today: Сьогодні
+yesterday: Вчора
+delete_comment: Видалити коментар
+minutes: Хвилини
+hours: Години
+month: Місяць
+year: Рік
+select_all: Обрати все
 months:
   january: Січень
   february: Лютий
@@ -322,6 +343,12 @@ months:
   october: Жовтень
   november: Листопад
   december: Грудень
+drag_mode: Режим перетягування
+cancel_crop: Скасувати обрізання
+original: Оригінал
+url: URL
+import_label: Імпортувати
+file_details: Подробиці файлу
 size: Розмір
 created: Створено
 checksum: Контрольна сума
@@ -565,6 +592,7 @@ wysiwyg_options:
   bold: Напівжирний
   codeblock: Код
   remove: Видалити
+  selectall: Обрати все
   table: Таблиця
 dropdown: Випадаюче меню
 choices: Варіанти
