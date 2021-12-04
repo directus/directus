@@ -349,11 +349,20 @@ original: Оригінал
 url: URL
 import_label: Імпортувати
 file_details: Подробиці файлу
+dimensions: Розміри
 size: Розмір
 created: Створено
+modified: Змінено
 checksum: Контрольна сума
 owner: Власник
+edited_by: Відредагували
+folder: Папка
+zoom: Масштаб зображення
 download: Завантажити
+open: Відкрити
+open_in_new_window: Відкрити в новому вікні
+open_folder: Відкрити "{folder}" папку
+foreground_color: Колір переднього плану
 background_color: Колір заднього фону
 upload_from_device: Завантажити файл з пристрою
 choose_from_library: Обрати файл з бібліотеки
@@ -427,7 +436,21 @@ duration: Тривалість
 modified_on: Час зміни
 status: Статус
 remove: Видалити
+edit: Редагувати
+enabled: Увімкнено
+disable_tfa: Вимкнути 2FA
+tfa_scan_code: Відскануйте код у програмі-аутентифікаторі, щоб завершити налаштування 2FA
+enter_otp_to_disable_tfa: Зайдіть в OTP, щоб вимкнути 2FA
+create_account: Створити обліковий запис
+account_created_successfully: Обліковий запис успішно створенно
+auto_fill: Автозаповнення
+corresponding_field: Відповідне поле
 errors:
+  COLLECTION_NOT_FOUND: "Колекція не існує"
+  FIELD_NOT_FOUND: Поле не знайдено
+  FORBIDDEN: Заборонено
+  INVALID_CREDENTIALS: Хибне ім'я або пароль
+  INVALID_OTP: Неправильний одноразовий пароль
   INVALID_PAYLOAD: Невірне навантаження
   INVALID_QUERY: Невірний запит
   ITEM_LIMIT_REACHED: Досягнуто ліміту об'єктів
@@ -487,15 +510,31 @@ system_collections: Системні колекції
 placeholder: Заповнювач
 icon_left: Значок ліворуч
 icon_right: Значок праворуч
+count_other_revisions: '{count} Інші ревізії'
 font: Шрифт
+sans_serif: Некарбований шрифт (Sans Serif)
+serif: Некарбований
 monospace: Моноширинний шрифт
 divider: Розділювач
 color: Колір
+circle: Коло
+empty_item: Порожній об'єкт
+log_in_with: 'Увійти за допомогою {provider}'
+conditional_styles: Умовні стилі
+advanced_settings: Розширені нааштування
+advanced_filter: Розширений фільтр
+delete_advanced_filter: Видалити фільтр
+change_advanced_filter_operator: Змінити оператора
 operators:
+  eq: Дорівнює
+  neq: Не дорівнює
   lt: Менше ніж
   gt: Більше ніж
   lte: Менше ніж або дорівнює
   gte: Більше ніж або дорівнює
+  in: Є одним з
+  nin: Не є одним з
+  null: Нульове значення
   contains: Містить
   ncontains: Не містить
   empty: Порожньо
@@ -588,6 +627,7 @@ wysiwyg_options:
   alignjustify: Вирівняти по ширині
   alignleft: Вирівняти по лівому краю
   alignnone: Не вирівнювати
+  forecolor: Колір переднього плану
   backcolor: Колір заднього фону
   bold: Напівжирний
   codeblock: Код
@@ -655,6 +695,7 @@ fields:
     created_by: Автор
     embed: Вбудувати
     uploaded_by: Завантажено
+    folder: Папка
     width: Ширина
     uploaded_on: Завантажено
     height: Висота
@@ -784,10 +825,17 @@ interfaces:
     hash: Хеш
   select-icon:
     icon: Іконка
+  input-rich-text-md:
+    edit: Редагувати
+  map:
+    zoom: Масштаб зображення
+  system-folder:
+    folder: Папка
   tags:
     tags: Теги
   boolean:
     toggle: Переключити
+    label_default: Увімкнено
   user:
     user: Користувач
     modes:
@@ -812,6 +860,8 @@ displays:
     filesize: Розмір файлу
   icon:
     icon: Іконка
+  image:
+    circle: Коло
   labels:
     choices_value_placeholder: Введіть значення...
   user:
