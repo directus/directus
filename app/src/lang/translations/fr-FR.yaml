@@ -1402,7 +1402,7 @@ interfaces:
   input:
     input: Texte simple
     description: Entrer manuellement une valeur
-    trim: Supprimer les espaces aux extrémités
+    trim: Enlever les esp. aux extrémités
     trim_label: Enlever les espaces au début et à la fin
     mask: Masqué
     mask_label: Cacher la valeur réelle
