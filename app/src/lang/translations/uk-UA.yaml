@@ -535,10 +535,30 @@ operators:
   in: Є одним з
   nin: Не є одним з
   null: Нульове значення
+  nnull: Значення не нульове
   contains: Містить
   ncontains: Не містить
+  starts_with: Починаться з
+  nstarts_with: Не починається з
+  ends_with: Закінчується на
+  nends_with: Не закінчується на
+  between: Знаходиться між
+  nbetween: Не знаходиться між
   empty: Порожньо
+  nempty: Не є порожнім
+  all: Містить ці ключі
+  has: Мвстить деякі з цих ключів
+  intersects: Перетинає
+  nintersects: Не перетинає
+  intersects_bbox: Перетинає обмежувальні рамки
+  nintersects_bbox: Не перетинає обмежувальні рамки
 loading: Завантаження...
+drop_to_upload: Перетягніть для завантаження
+item: Об'єкт
+items: Об'єкти
+upload_file: Завантажити файл
+upload_file_indeterminate: Йде завантаження файлу...
+upload_file_success: Файл був завантажений
 value_unique: Значення повинно бути унікальним
 language_display_template: Шаблон відображення мови
 translations_display_template: Шаблон відображення перекладів
@@ -634,17 +654,31 @@ wysiwyg_options:
   remove: Видалити
   selectall: Обрати все
   table: Таблиця
+  directionality: Спрямування
 dropdown: Випадаюче меню
 choices: Варіанти
+choices_option_configured_incorrectly: Варіанти налаштовані неправильно
 deselect: Зняти виділення
+deselect_all: Скасувати вибір з усього
+other: Інше...
+adding_user: Додавання користувача
+unknown_user: Невідомий користувач
+creating_in: 'Створення об''єкту в {collection}'
+editing_in: 'Редагування об''єкту в {collection}'
+creating_unit: 'Створення {unit}'
+editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
+no_options_available: Варіанти недоступні
+settings_data_model: Модель даних
 settings_permissions: Ролі і Дозволи
 settings_project: Налаштування проекту
 settings_webhooks: Вебхуки
 settings_presets: Шаблони і закладки
 one_or_more_options_are_missing: Одно або більше налаштувань відсутні
+scope: Область застосування
 select: Обрати...
 layout: Макет
+tree_view: Файлова структура
 changes_are_permanent: Зміни постійні
 preset_name_placeholder: Використовувати по замовчуванню, коли порожньо...
 preset_search_placeholder: Пошуковий запит...
@@ -660,6 +694,10 @@ show_x_axis: Показати вісь X
 show_y_axis: Показати вісь Y
 keep_editing: Продовжити редагування
 page_help_collections_overview: '**Огляд колекцій** — список усіх колекцій, до яких ви маєте доступ.'
+page_help_collections_collection: >-
+  **Переглянути об'єкти** — перелік усіх елементів {collection}, до яких у вас є доступ. Налаштуйте макет, фільтри та сортування, щоб налаштувати свій вигляд, і навіть зберігайте закладки різних конфігурацій для швидкого доступу.
+page_help_collections_item: >-
+  **Відомості про об'єкт** — форма для перегляду цього об'єкта та керування ним. Ця бічна панель також містить повну історію переглядів і вбудовані коментарі.
 add_new: Створити
 all: Все
 batch_delete_confirm: >-
