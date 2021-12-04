@@ -44,7 +44,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			token_endpoint: accessUrl,
 			userinfo_endpoint: profileUrl,
 			// Required for openid providers (openid flow should be preferred!)
-			issuer: additionalConfig.issuerUrl ?? null,
+			issuer: additionalConfig.issuerUrl,
 		});
 
 		this.client = new issuer.Client({
