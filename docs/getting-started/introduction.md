@@ -97,7 +97,7 @@ extension types in the platform's App and API.
 - **[Migrations](/extensions/migrations/)** — Custom migrations for tracking project schema and content updates
 - **[Modules](/extensions/modules/)** — The highest and broadest level of organization within the App
 - **[Panels](/extensions/panels/)** — A way to view dashboard data within the Insights Module
-- **[Themes](/extensions/themes/)** — Whitelabeling through App Themes and CSS Overrides
+- **[Themes](/extensions/themes/)** — Whitelabeling through App Themes and Custom CSS
 
 ## The Directus Ecosystem
 
