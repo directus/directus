@@ -150,6 +150,9 @@ item_permissions: Дозволи елемента
 field_permissions: Дозволи Поля
 field_validation: Валідація Поля
 field_presets: Пресети Полів
+permissions_for_role: 'Об''єкти {role} ролі можуть {action}.'
+fields_for_role: 'Поля {role} ролі можуть {action}.'
+validation_for_role: 'Поле {action} направляє {role} Роль повинна підпорядкуватися.'
 presets_for_role: 'Значення поля за замовчуванням для ролі {role}.'
 presentation_and_aliases: Подання та Аліаси
 revision_post_create: Ось як виглядав цей елемент після його створення.
@@ -245,6 +248,10 @@ default_value: Значення за замовчуванням
 standard_field: Стандартне поле
 single_file: Один файл
 multiple_files: Кілька файлів
+m2o_relationship: Багато до одного відношення
+o2m_relationship: Одне до багатьох відношеннь
+m2m_relationship: Багато до багатьох відношеннь
+m2a_relationship: Багато до будь-яких відношеннь
 invalid_item: Недійсний елемент
 next: Уперед
 field_name: Назва поля
@@ -308,7 +315,22 @@ last_page: Остання сторінка
 last_access: Останній доступ
 fill_template: Заповнити значення шаблону
 a_unique_table_name: Унікальна назва таблиці...
+a_unique_column_name: Унікальна назва стовпця...
+enable_custom_values: Увімкнути користувацьке значення
 submit: Підтвердити
+move_to_folder: Перемістити до папки
+move: Перемістити
+system: Система
+add_field_related: Додати поле до пов'язаної колекції
+interface_label: Інтерфейс
+today: Сьогодні
+yesterday: Вчора
+delete_comment: Видалити коментар
+minutes: Хвилини
+hours: Години
+month: Місяць
+year: Рік
+select_all: Обрати все
 months:
   january: Січень
   february: Лютий
@@ -322,11 +344,26 @@ months:
   october: Жовтень
   november: Листопад
   december: Грудень
+drag_mode: Режим перетягування
+cancel_crop: Скасувати обрізання
+original: Оригінал
+url: URL
+import_label: Імпортувати
+file_details: Подробиці файлу
+dimensions: Розміри
 size: Розмір
 created: Створено
+modified: Змінено
 checksum: Контрольна сума
 owner: Власник
+edited_by: Відредагували
+folder: Папка
+zoom: Масштаб зображення
 download: Завантажити
+open: Відкрити
+open_in_new_window: Відкрити в новому вікні
+open_folder: Відкрити "{folder}" папку
+foreground_color: Колір переднього плану
 background_color: Колір заднього фону
 upload_from_device: Завантажити файл з пристрою
 choose_from_library: Обрати файл з бібліотеки
@@ -388,6 +425,16 @@ csv: CSV
 no_collections: Немає колекцій
 create_collection: Створити колекцію
 no_collections_copy_admin: В вас ще немає колекцій. Натисніть кнопку нижче, щоб розпочати.
+no_collections_copy: В вас поки що немає колекцій. Будь ласка, зверніться до свого системного адміністратора.
+relationship_not_setup: Зв’язок не правильно налаштовано
+display_template_not_setup: Параметр шаблону відображення налаштовано неправильно
+collection_field_not_setup: Параметр поля колекції налаштовано неправильно
+select_a_collection: Оберіть колекцію
+select_a_field: Оберіть поле
+active: Активний
+move_to: Перемістити до...
+copy: Копіювати
+copy_to: Коіювати до...
 users: Користувачі
 activity: Активність
 action: Дія
@@ -400,7 +447,21 @@ duration: Тривалість
 modified_on: Час зміни
 status: Статус
 remove: Видалити
+edit: Редагувати
+enabled: Увімкнено
+disable_tfa: Вимкнути 2FA
+tfa_scan_code: Відскануйте код у програмі-аутентифікаторі, щоб завершити налаштування 2FA
+enter_otp_to_disable_tfa: Зайдіть в OTP, щоб вимкнути 2FA
+create_account: Створити обліковий запис
+account_created_successfully: Обліковий запис успішно створенно
+auto_fill: Автозаповнення
+corresponding_field: Відповідне поле
 errors:
+  COLLECTION_NOT_FOUND: "Колекція не існує"
+  FIELD_NOT_FOUND: Поле не знайдено
+  FORBIDDEN: Заборонено
+  INVALID_CREDENTIALS: Хибне ім'я або пароль
+  INVALID_OTP: Неправильний одноразовий пароль
   INVALID_PAYLOAD: Невірне навантаження
   INVALID_QUERY: Невірний запит
   ITEM_LIMIT_REACHED: Досягнуто ліміту об'єктів
@@ -460,19 +521,55 @@ system_collections: Системні колекції
 placeholder: Заповнювач
 icon_left: Значок ліворуч
 icon_right: Значок праворуч
+count_other_revisions: '{count} Інші ревізії'
 font: Шрифт
+sans_serif: Некарбований шрифт (Sans Serif)
+serif: Некарбований
 monospace: Моноширинний шрифт
 divider: Розділювач
 color: Колір
+circle: Коло
+empty_item: Порожній об'єкт
+log_in_with: 'Увійти за допомогою {provider}'
+conditional_styles: Умовні стилі
+advanced_settings: Розширені нааштування
+advanced_filter: Розширений фільтр
+delete_advanced_filter: Видалити фільтр
+change_advanced_filter_operator: Змінити оператора
 operators:
+  eq: Дорівнює
+  neq: Не дорівнює
   lt: Менше ніж
   gt: Більше ніж
   lte: Менше ніж або дорівнює
   gte: Більше ніж або дорівнює
+  in: Є одним з
+  nin: Не є одним з
+  null: Нульове значення
+  nnull: Значення не нульове
   contains: Містить
   ncontains: Не містить
+  starts_with: Починаться з
+  nstarts_with: Не починається з
+  ends_with: Закінчується на
+  nends_with: Не закінчується на
+  between: Знаходиться між
+  nbetween: Не знаходиться між
   empty: Порожньо
+  nempty: Не є порожнім
+  all: Містить ці ключі
+  has: Мвстить деякі з цих ключів
+  intersects: Перетинає
+  nintersects: Не перетинає
+  intersects_bbox: Перетинає обмежувальні рамки
+  nintersects_bbox: Не перетинає обмежувальні рамки
 loading: Завантаження...
+drop_to_upload: Перетягніть для завантаження
+item: Об'єкт
+items: Об'єкти
+upload_file: Завантажити файл
+upload_file_indeterminate: Йде завантаження файлу...
+upload_file_success: Файл був завантажений
 value_unique: Значення повинно бути унікальним
 language_display_template: Шаблон відображення мови
 translations_display_template: Шаблон відображення перекладів
@@ -561,22 +658,38 @@ wysiwyg_options:
   alignjustify: Вирівняти по ширині
   alignleft: Вирівняти по лівому краю
   alignnone: Не вирівнювати
+  forecolor: Колір переднього плану
   backcolor: Колір заднього фону
   bold: Напівжирний
   codeblock: Код
   remove: Видалити
+  selectall: Обрати все
   table: Таблиця
+  directionality: Спрямування
 dropdown: Випадаюче меню
 choices: Варіанти
+choices_option_configured_incorrectly: Варіанти налаштовані неправильно
 deselect: Зняти виділення
+deselect_all: Скасувати вибір з усього
+other: Інше...
+adding_user: Додавання користувача
+unknown_user: Невідомий користувач
+creating_in: 'Створення об''єкту в {collection}'
+editing_in: 'Редагування об''єкту в {collection}'
+creating_unit: 'Створення {unit}'
+editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
+no_options_available: Варіанти недоступні
+settings_data_model: Модель даних
 settings_permissions: Ролі і Дозволи
 settings_project: Налаштування проекту
 settings_webhooks: Вебхуки
 settings_presets: Шаблони і закладки
 one_or_more_options_are_missing: Одно або більше налаштувань відсутні
+scope: Область застосування
 select: Обрати...
 layout: Макет
+tree_view: Файлова структура
 changes_are_permanent: Зміни постійні
 preset_name_placeholder: Використовувати по замовчуванню, коли порожньо...
 preset_search_placeholder: Пошуковий запит...
@@ -592,13 +705,61 @@ show_x_axis: Показати вісь X
 show_y_axis: Показати вісь Y
 keep_editing: Продовжити редагування
 page_help_collections_overview: '**Огляд колекцій** — список усіх колекцій, до яких ви маєте доступ.'
+page_help_collections_collection: >-
+  **Переглянути об'єкти** — перелік усіх елементів {collection}, до яких у вас є доступ. Налаштуйте макет, фільтри та сортування, щоб налаштувати свій вигляд, і навіть зберігайте закладки різних конфігурацій для швидкого доступу.
+page_help_collections_item: >-
+  **Відомості про об'єкт** — форма для перегляду цього об'єкта та керування ним. Ця бічна панель також містить повну історію переглядів і вбудовані коментарі.
+page_help_activity_collection: >-
+  **Діяльність перегляду** — вичерпний перелік усіх дій ваших користувачів, пов'язаних з системою, або змістом.
+page_help_docs_global: >-
+  **Огляд документації** — документи, розроблені спеціально для версії та схеми цього проекту.
+page_help_files_collection: >-
+  **Бібліотека файлів** — перелічує всі файли, завантажені до цього проекту. Налаштуйте макет, фільтри та сортування, щоб налаштувати свій вигляд, і навіть зберігайте закладки різних конфігурацій для швидкого доступу.
+page_help_files_item: >-
+  **Відомості про файл** — форма для керування метаданими файлу, редагування вихідного об’єкта та оновлення налаштувань доступу.
+page_help_settings_project: "**Налаштування проекту** — глобальні параметри конфігурації вашого проекту."
+page_help_settings_datamodel_collections: >-
+  **Модель даних: колекції** — перелічує всі доступні колекції. Це включає видимі, приховані та системні колекції, а також незмінені таблиці бази даних, які можна додавати.
+page_help_settings_datamodel_fields: >-
+  **Модель даних: колекція** — форма для керування цією колекцією та її полями.
+page_help_settings_roles_collection: '**Огляд ролей** — перелічує ролі адміністратора, загальнодоступних і настроюваних користувачів.'
+page_help_settings_roles_item: "**Детальна інформація про роль** — керуйте дозволами для ролі та іншими налаштуваннями."
+page_help_settings_presets_collection: >-
+  **Огляд запрограмованих налаштувань** — перелік усіх попередніх налаштувань у проекті, включаючи: користувача, роль та глобальні закладки, а також вигляди за замовчуванням.
+page_help_settings_presets_item: >-
+  **Деталі попереднього налаштування** — форма для керування закладками та стандартними налаштуваннями колекцій.
+page_help_settings_webhooks_collection: '**Переглянути веб-хуки** — перелік усіх веб-хуків у проекті.'
+page_help_settings_webhooks_item: '**Деталі веб-хуку** — форма для створення веб-хуків проекту та керування ними.'
+page_help_users_collection: '**Каталог користувачів** — перелік усіх користувачів системи в цьому проекті.'
+page_help_users_item: >-
+  **Інформація про користувача** — керуйте інформацією свого облікового запису або переглядайте відомості про інших користувачів.
+page_help_insights_overview: '**Інсайти** — список інформаційних панелей, до яких ви маєте доступ.'
+page_help_insights_dashboard: '**Інформаційна панель** — Робоча область для керування однією або кількома панелями.'
+activity_feed: Стрічка активності
 add_new: Створити
+create_new: Створити нову
 all: Все
+none: Відсутні
+no_layout_collection_selected_yet: Макет/колекція ще не вибрана
 batch_delete_confirm: >-
   Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені, що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
 cancel: Скасувати
+no_upscale: Не показувати зображення
 collection: Колекція
 collections: Колекції
+content: Вміст
+singleton: Об'єкт-одинак
+singleton_label: Вважати як один об'єкт
+system_fields_locked: Системні поля заблоковані і не можуть бути відредаговані
+directus_collection:
+  directus_activity: Облікові записи для всіх подій
+  directus_collections: Додаткова конфігурація колекції та метадані
+  directus_dashboards: Панелі керування в межах модуля інсайтів
+  directus_fields: Додаткова конфігурація поля та метадані
+  directus_files: Метадані для всіх керованих файлів
+  directus_folders: Забезпечує віртуальні каталоги для файлів
+  directus_migrations: Яку версію бази даних ви використовуєте
+  directus_panels: Окремі панелі на панелях керування інсайтів
 fields:
   directus_activity:
     item: Первинний ключ елемента
@@ -615,6 +776,7 @@ fields:
     note: Примітка
     color: Колір
     hidden: Приховано
+    singleton: Об'єкт-одинак
   directus_files:
     title: Заголовок
     description: Опис
@@ -627,6 +789,7 @@ fields:
     created_by: Автор
     embed: Вбудувати
     uploaded_by: Завантажено
+    folder: Папка
     width: Ширина
     uploaded_on: Завантажено
     height: Висота
@@ -645,6 +808,7 @@ fields:
     theme: Тема
     tfa_secret: Двофакторна автентифікація
     status: Статус
+    status_active: Активний
     role: Роль
     last_page: Остання сторінка
     last_access: Останній доступ
@@ -654,6 +818,7 @@ fields:
   directus_fields:
     note: Примітка
     hidden: Приховано
+    singleton: Об'єкт-одинак
     translation: Переклад назви поля
     display_template: Шаблон
   directus_roles:
@@ -671,6 +836,7 @@ field_options:
     create: Створити
     update: Оновити
   directus_collections:
+    singleton: Вважати як один об'єкт
     language: Мова
     translation: Переклад
     archive_divider: Архів
@@ -679,7 +845,10 @@ field_options:
       icon_name: Іконка
       name_name: Назва
     collections_name: Колекції
+  directus_users:
+    status_dropdown_active: Активний
   directus_webhooks:
+    status_options_active: Активний
     actions_create: Створити
     actions_update: Оновити
     headers:
@@ -744,6 +913,9 @@ interfaces:
     color: Колір
   datetime:
     datetime: Дата й час
+  system-display-template:
+    collection_field_not_setup: Параметр поля колекції налаштовано неправильно
+    select_a_collection: Оберіть колекцію
   presentation-divider:
     divider: Розділювач
   select-dropdown:
@@ -756,10 +928,17 @@ interfaces:
     hash: Хеш
   select-icon:
     icon: Іконка
+  input-rich-text-md:
+    edit: Редагувати
+  map:
+    zoom: Масштаб зображення
+  system-folder:
+    folder: Папка
   tags:
     tags: Теги
   boolean:
     toggle: Переключити
+    label_default: Увімкнено
   user:
     user: Користувач
     modes:
@@ -784,6 +963,8 @@ displays:
     filesize: Розмір файлу
   icon:
     icon: Іконка
+  image:
+    circle: Коло
   labels:
     choices_value_placeholder: Введіть значення...
   user:
