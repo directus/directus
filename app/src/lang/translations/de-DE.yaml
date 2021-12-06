@@ -66,6 +66,8 @@ create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
+subject: Betreff
+inbox: Posteingang
 emails: E-Mails
 connection_excellent: Ausgezeichnete Verbindung
 connection_good: Gute Verbindung
@@ -173,6 +175,7 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 show_zero: Null anzeigen
+create_in_advanced_field_creation_mode: Feld im erweiterten Modus erstellen
 continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
@@ -426,6 +429,9 @@ user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
 no_webhooks_copy: Es wurden noch keine Webhooks konfiguriert.
+no_notifications: Keine Benachrichtigungen
+no_notifications_copy: Du bist auf dem neusten Stand!
+activity_log: Aktivitätsprotokoll
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
@@ -782,6 +788,7 @@ layout_setup: Einrichtung Ansicht
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
+discard_all_changes: Alle Änderungen verwerfen
 discard_changes_copy: Möchten Sie wirklich alle Änderungen verwerfen?
 show_x_axis: X-Achse anzeigen
 show_y_axis: Y-Achse anzeigen
@@ -843,6 +850,7 @@ directus_collection:
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
+  directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -876,6 +884,7 @@ fields:
     unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
+    archive_field: Archivfeld
   directus_files:
     $thumbnail: Miniaturansicht
     title: Titel
@@ -998,6 +1007,7 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
+    project_color_note: Login & Logo Hintergrund
     public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
@@ -1005,6 +1015,7 @@ field_options:
       weak_text: Schwach - Minimum 8 Zeichen
       strong_text: Stark - Groß / Klein / Zahlen / Spezialzeichen
     storage_asset_presets:
+      upscaling: Hochskalierung
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
         cover_text: Abdecken (erzwingt exakte Größe)
@@ -1228,6 +1239,7 @@ interfaces:
     code: Code
     description: Code-Snippets schreiben oder teilen
     line_number: Zeilennummer
+    line_wrapping: Zeilenumbruch
     placeholder: Code hier eingeben...
   system-collection:
     collection: Sammlung
@@ -1259,6 +1271,7 @@ interfaces:
   presentation-divider:
     divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
+    title_placeholder: Titel eingeben oder leer lassen, um nur eine Zeile anzuzeigen...
     inline_title: Inline-Titel
     inline_title_label: Titel in Zeile anzeigen
     margin_top: Oberer Rand
@@ -1293,6 +1306,7 @@ interfaces:
   file-image:
     image: Bild
     description: Bild auswählen oder hochladen
+    crop_label: Bild nach Bedarf zuschneiden
   system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
@@ -1311,6 +1325,7 @@ interfaces:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
     edit: Bearbeiten
+    preview: Vorschau
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
@@ -1427,6 +1442,7 @@ interfaces:
     description: Auto-Complete bei der Suche von externen API-Werten.
     results_path: Pfad Ergebnis
     value_path: Wertpfad
+    text_path: Textpfad
     trigger: Trigger
     rate: Frequenz
   group-raw:
@@ -1566,6 +1582,7 @@ layouts:
     invalid_geometry: Ungültige Geometrie
     find_location: Standort suchen...
     default_template: Verwenden des Sammlungs-Standards...
+    no_compatible_fields: Keine kompatiblen Felder
 panels:
   metric:
     name: Metrik
@@ -1576,6 +1593,8 @@ panels:
     description: Liniendiagramm anhand von Werten im Laufe der Zeit anzeigen
     date_field: Datums-Feld
     value_field: Wert-Feld
+    fill_type: Füllart
+    curve_type: Kurventyp
   label:
     name: Label
     description: Einen Text anzeigen
