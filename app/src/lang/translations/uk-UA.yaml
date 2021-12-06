@@ -152,6 +152,7 @@ field_validation: Валідація Поля
 field_presets: Пресети Полів
 permissions_for_role: 'Об''єкти {role} ролі можуть {action}.'
 fields_for_role: 'Поля {role} ролі можуть {action}.'
+validation_for_role: 'Поле {action} направляє {role} Роль повинна підпорядкуватися.'
 presets_for_role: 'Значення поля за замовчуванням для ролі {role}.'
 presentation_and_aliases: Подання та Аліаси
 revision_post_create: Ось як виглядав цей елемент після його створення.
@@ -424,6 +425,16 @@ csv: CSV
 no_collections: Немає колекцій
 create_collection: Створити колекцію
 no_collections_copy_admin: В вас ще немає колекцій. Натисніть кнопку нижче, щоб розпочати.
+no_collections_copy: В вас поки що немає колекцій. Будь ласка, зверніться до свого системного адміністратора.
+relationship_not_setup: Зв’язок не правильно налаштовано
+display_template_not_setup: Параметр шаблону відображення налаштовано неправильно
+collection_field_not_setup: Параметр поля колекції налаштовано неправильно
+select_a_collection: Оберіть колекцію
+select_a_field: Оберіть поле
+active: Активний
+move_to: Перемістити до...
+copy: Копіювати
+copy_to: Коіювати до...
 users: Користувачі
 activity: Активність
 action: Дія
@@ -797,6 +808,7 @@ fields:
     theme: Тема
     tfa_secret: Двофакторна автентифікація
     status: Статус
+    status_active: Активний
     role: Роль
     last_page: Остання сторінка
     last_access: Останній доступ
@@ -833,7 +845,10 @@ field_options:
       icon_name: Іконка
       name_name: Назва
     collections_name: Колекції
+  directus_users:
+    status_dropdown_active: Активний
   directus_webhooks:
+    status_options_active: Активний
     actions_create: Створити
     actions_update: Оновити
     headers:
@@ -898,6 +913,9 @@ interfaces:
     color: Колір
   datetime:
     datetime: Дата й час
+  system-display-template:
+    collection_field_not_setup: Параметр поля колекції налаштовано неправильно
+    select_a_collection: Оберіть колекцію
   presentation-divider:
     divider: Розділювач
   select-dropdown:
