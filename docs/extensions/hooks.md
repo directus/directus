@@ -24,28 +24,23 @@ export default ({ filter, action }) => {
 
 ## Events
 
-Next, you will want to define your event. You can trigger your custom hook with any of the platform's many API events.
-An event is defined by its type and its name.
+Your hook can trigger on a variety of different events. An event is defined by its type and its name.
 
-Event names consist of multiple scopes delimited by a dot:
+There are four event types to choose from:
 
-```
-<scope>.<scope>...
-// eg: items.create
-// eg: users.update
-// eg: auth.login
-// eg: routes.custom.before
-```
+- [Filter](#filter)
+- [Action](#action)
+- [Init](#init)
+- [Schedule](#schedule)
 
-There are four event types to choose from.
+Use filter hooks when you want the hook to fire before the event. Use action hooks when you want the hook to fire after
+the event.
 
 ### Filter
 
-A filter event executes prior to the event being fired. This allows you to check and/or modify the event's payload
-before it is processed.
+Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
 
-It also allows you to cancel an event based on the logic within the hook. The following example shows how you can cancel
-an event by throwing a standard Directus exception:
+Below is an example of canceling a `create` event by throwing a standard Directus exception.
 
 ```js
 export default ({ filter }, { exceptions }) => {
@@ -61,9 +56,18 @@ export default ({ filter }, { exceptions }) => {
 };
 ```
 
-The first parameter of the filter register function is the event name. The second parameter is the modifiable payload.
-The third argument is an event-specific meta object. The fourth argument is a context object with the following
-properties:
+The filter register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives three parameters:
+
+- The modifiable payload
+- An event-specific meta object
+- A context object
+
+The context object has the following properties:
 
 - `database` — The current database transaction
 - `schema` — The current API schema in use
@@ -95,16 +99,27 @@ properties:
 
 ::: warning Performance
 
-Filters can impact performance when not carefully implemented, as they are executed in a blocking manner.
+Filters can impact performance when not carefully implemented, as they are executed in a blocking manner. This applies
+in particular to filters firing on `read` events.
 
 :::
 
 ### Action
 
-An action event executes after a certain event and receives some data related to the event.
+Action hooks execute after a defined event and receive data related to the event. Use action hooks when you need to
+automate responses to CRUD events on items or server actions.
 
-The first parameter of the action register function is the event name. The second argument is an event-specific meta
-object. The third argument is a context object with the following properties:
+The action register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives two parameters:
+
+- An event-specific meta object
+- A context object
+
+The context object has the following properties:
 
 - `database` — The current database transaction
 - `schema` — The current API schema in use
@@ -136,18 +151,24 @@ object. The third argument is a context object with the following properties:
 
 ::: warning Performance
 
-`read` actions can impact performance when not carefully implemented, as a single request can result in a large amount
-of database reads.
+Actions firing on `read` events can impact performance when not carefully implemented, as a single request can result in
+a large amount of database reads.
 
 :::
 
 ### Init
 
-An init event executes at a certain point within the lifecycle of Directus. Init events can be used to inject logic into
+Init hooks execute at a defined point within the lifecycle of Directus. Use init hook objects to inject logic into
 internal services.
 
-The first parameter of the init register function is the event name. The second parameter is an event-specific meta
-object.
+The init register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives one parameter:
+
+- An event-specific meta object
 
 #### Available Events
 
@@ -166,13 +187,16 @@ object.
 
 ### Schedule
 
-A schedule event executes at certain points in time. This is supported through
-[`node-cron`](https://www.npmjs.com/package/node-cron). To set this up, provide a cron statement as the first argument
-to the `schedule()` function, for example `schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or
-`schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday). See example below:
+Schedule hooks execute at certain points in time rather than when Directus performs a specific action. This is supported
+through [`node-cron`](https://www.npmjs.com/package/node-cron).
+
+To set up a scheduled event, provide a cron statement as the first parameter to the `schedule()` function. For example
+`schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday).
+
+Below is an example of registering a schedule hook.
 
 ```js
-const axios = require('axios');
+import axios from 'axios';
 
 export default ({ schedule }) => {
 	schedule('*/15 * * * *', async () => {
@@ -202,7 +226,7 @@ The second parameter is a context object with the following properties:
 ## Example: Sync with External
 
 ```js
-const axios = require('axios');
+import axios from 'axios';
 
 export default ({ filter }, { services, exceptions }) => {
 	const { MailService } = services;
