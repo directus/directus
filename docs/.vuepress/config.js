@@ -414,11 +414,6 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/extensions/api-endpoints',
-						title: 'API Endpoints',
-					},
-					{
-						type: 'page',
 						path: '/extensions/displays',
 						title: 'Displays',
 					},
@@ -426,6 +421,11 @@ module.exports = {
 						type: 'page',
 						path: '/extensions/email-templates',
 						title: 'Email Templates',
+					},
+					{
+						type: 'page',
+						path: '/extensions/endpoints',
+						title: 'Endpoints',
 					},
 					{
 						type: 'page',

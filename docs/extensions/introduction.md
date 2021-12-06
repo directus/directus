@@ -18,7 +18,7 @@ Allow creating custom experiences within the Directus App.
 
 Allow extending and customizing the data pipeline and platform logic.
 
-- [API Endpoints](/extensions/api-endpoints/) — Created with JavaScript / Node.js
+- [Endpoints](/extensions/endpoints/) — Created with JavaScript / Node.js
 - [Hooks](/extensions/hooks/) — Created with JavaScript / Node.js
 - [Email Templates](/extensions/email-templates/) — Created with Liquid.js
 - [Migrations](/extensions/migrations/) — Created with JavaScript / Node.js
