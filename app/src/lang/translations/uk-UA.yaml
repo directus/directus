@@ -1057,16 +1057,50 @@ interfaces:
     placeholder: Перетягніть файли сюди
   group-accordion:
     start: Почати
+    all_closed: Всі закриті
+    first_opened: Спочатку відкриті
+    all_opened: Всі відкриті
+    accordion_mode: Режим акордеон
+    max_one_section_open: Максимальна кількість відкритих секцій – 1
   presentation-links:
+    presentation-links: Кнопки посилання
+    links: Посилання
+    description: Настроювані кнопки посилань для запуску динамічних URL-адрес
+    style: Стиль
     primary: Стандартно
+    link: Посилання
+    button: Кнопки
+    error: Неможливо виконати дію
+  select-multiple-checkbox:
+    checkboxes: Прапорці
+    description: Виберіть один із кількох варіантів за допомогою прапорців
+    allow_other: Дозволити інше
+    show_more: 'Показати ще {count}'
+    items_shown: Показані об'єкти
+  select-multiple-checkbox-tree:
+    name: Прапорці (дерево)
+    description: Обирайте між кількома параметрами за допомогою вкладених прапорців
+    value_combining: Комбінування значення
+    value_combining_note: Визначає, яке значення зберігається під час виконання вкладених виділень.
+    show_all: Показати все
+    show_selected: Показати обране
   input-code:
     code: Код
+    description: Пишіть або поширюйте фрагменти коду
+    line_number: Номер рядка
+    line_wrapping: Огорнення рядка
+    placeholder: Введіть код...
   system-collection:
     collection: Колекція
+    description: Оберіть між інсуючими колекціями
+    include_system_collections: Включити системні колекції
   system-collections:
     collections: Колекції
+    description: Обрати між існуючими колекціями
+    include_system_collections: Включити системні колекції
   select-color:
     color: Колір
+    description: Ведіть або оберіть значення кольору
   datetime:
     datetime: Дата й час
   system-display-template:
@@ -1075,6 +1109,7 @@ interfaces:
   presentation-divider:
     divider: Розділювач
   select-dropdown:
+    allow_other: Дозволити інше
     choices_value_placeholder: Введіть значення...
   file:
     file: Файл
