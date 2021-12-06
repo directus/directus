@@ -254,8 +254,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 				};
-			} catch (e) {
-				logger.warn(`Couldn't verify OpenID cookie`);
+			} catch (e: any) {
+				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
 				throw new InvalidCredentialsException();
 			}
 
@@ -276,7 +276,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				res.clearCookie(`openid.${providerName}`);
 
 				if (!req.query.code || !req.query.state) {
-					logger.warn(`Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
+					logger.warn(`[OpenID] Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {

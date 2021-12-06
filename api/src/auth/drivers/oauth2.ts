@@ -91,6 +91,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier) {
+			logger.trace('[OAuth2] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -141,6 +142,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
+			logger.trace(
+				`[OAuth2] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
+			);
 			throw new InvalidCredentialsException();
 		}
 
@@ -191,18 +195,26 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
+			logger.trace(e, `[OAuth2] Invalid grant.`);
 			// Invalid token
 			return new InvalidTokenException();
 		}
+
+		logger.trace(e, `[OAuth2] Unknown OP error.`);
+
 		// Server response error
 		return new ServiceUnavailableException('Service returned unexpected response', {
-			service: 'openid',
+			service: 'oauth2',
 			message: e.error_description,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
+		logger.trace(e, `[OAuth2] Unknown RP error.`);
 		return new InvalidCredentialsException();
 	}
+
+	logger.trace(e, `[OAuth2] Unknown error.`);
+
 	return e;
 };
 
@@ -241,8 +253,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 				};
-			} catch (e) {
-				logger.warn(`Couldn't verify OAuth2 cookie`);
+			} catch (e: any) {
+				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsException();
 			}
 
@@ -263,7 +275,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				res.clearCookie(`oauth2.${providerName}`);
 
 				if (!req.query.code || !req.query.state) {
-					logger.warn(`Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
+					logger.warn(`[OAuth2]Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
@@ -277,8 +289,6 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
 				}
 
-				logger.warn(error);
-
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
@@ -288,10 +298,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						reason = 'INVALID_USER';
 					} else if (error instanceof InvalidTokenException) {
 						reason = 'INVALID_TOKEN';
+					} else {
+						logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 					}
 
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
+
+				logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 
 				throw error;
 			}
