@@ -1008,6 +1008,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
     project_color_note: Login & Logo Hintergrund
+    project_logo_note: Weiß 40x40 SVG/PNG
     public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
@@ -1326,6 +1327,8 @@ interfaces:
     description: Markdown eingeben und Vorschau anzeigen
     edit: Bearbeiten
     preview: Vorschau
+    editorFont: Editor Schriftart
+    previewFont: Vorschau Schriftart
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
