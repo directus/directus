@@ -73,30 +73,6 @@ The context object has the following properties:
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
-#### Available Events
-
-| Name                          | Payload              | Meta                                 |
-| ----------------------------- | -------------------- | ------------------------------------ |
-| `request.not_found`           | `false`              | `request`, `response`                |
-| `request.error`               | The request errors   | --                                   |
-| `database.error`              | The database error   | `client`                             |
-| `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
-| `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
-| `(<collection>.)items.read`   | The read item        | `collection`                         |
-| `(<collection>.)items.create` | The new item         | `collection`                         |
-| `(<collection>.)items.update` | The updated item     | `keys`, `collection`                 |
-| `(<collection>.)items.delete` | The keys of the item | `collection`                         |
-| `<system-collection>.create`  | The new item         | `collection`                         |
-| `<system-collection>.update`  | The updated item     | `keys`, `collection`                 |
-| `<system-collection>.delete`  | The keys of the item | `collection`                         |
-
-::: tip System Collections
-
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
-
-:::
-
 ::: warning Performance
 
 Filters can impact performance when not carefully implemented, as they are executed in a blocking manner. This applies
@@ -125,7 +101,74 @@ The context object has the following properties:
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
-#### Available Events
+::: warning Performance
+
+Actions firing on `read` events can impact performance when not carefully implemented, as a single request can result in
+a large amount of database reads.
+
+:::
+
+### Init
+
+Init hooks execute at a defined point within the lifecycle of Directus. Use init hook objects to inject logic into
+internal services.
+
+The init register function receives two parameters:
+
+- The event name
+- A callback function that is executed whenever the event fires.
+
+The callback function itself receives one parameter:
+
+- An event-specific meta object
+
+### Schedule
+
+Schedule hooks execute at certain points in time rather than when Directus performs a specific action. This is supported
+through [`node-cron`](https://www.npmjs.com/package/node-cron).
+
+To set up a scheduled event, provide a cron statement as the first parameter to the `schedule()` function. For example
+`schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday).
+
+Below is an example of registering a schedule hook.
+
+```js
+import axios from 'axios';
+
+export default ({ schedule }) => {
+	schedule('*/15 * * * *', async () => {
+		await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
+	});
+};
+```
+
+## Available Events
+
+### Filter Events
+
+| Name                          | Payload              | Meta                                 |
+| ----------------------------- | -------------------- | ------------------------------------ |
+| `request.not_found`           | `false`              | `request`, `response`                |
+| `request.error`               | The request errors   | --                                   |
+| `database.error`              | The database error   | `client`                             |
+| `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
+| `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
+| `(<collection>.)items.read`   | The read item        | `collection`                         |
+| `(<collection>.)items.create` | The new item         | `collection`                         |
+| `(<collection>.)items.update` | The updated item     | `keys`, `collection`                 |
+| `(<collection>.)items.delete` | The keys of the item | `collection`                         |
+| `<system-collection>.create`  | The new item         | `collection`                         |
+| `<system-collection>.update`  | The updated item     | `keys`, `collection`                 |
+| `<system-collection>.delete`  | The keys of the item | `collection`                         |
+
+::: tip System Collections
+
+`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
+`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+
+:::
+
+### Action Events
 
 | Name                          | Meta                                                |
 | ----------------------------- | --------------------------------------------------- |
@@ -149,28 +192,7 @@ The context object has the following properties:
 
 :::
 
-::: warning Performance
-
-Actions firing on `read` events can impact performance when not carefully implemented, as a single request can result in
-a large amount of database reads.
-
-:::
-
-### Init
-
-Init hooks execute at a defined point within the lifecycle of Directus. Use init hook objects to inject logic into
-internal services.
-
-The init register function receives two parameters:
-
-- The event name
-- A callback function that is executed whenever the event fires.
-
-The callback function itself receives one parameter:
-
-- An event-specific meta object
-
-#### Available Events
+### Init Events
 
 | Name                   | Meta      |
 | ---------------------- | --------- |
@@ -184,26 +206,6 @@ The callback function itself receives one parameter:
 | `routes.custom.after`  | `app`     |
 | `middlewares.before`   | `app`     |
 | `middlewares.after`    | `app`     |
-
-### Schedule
-
-Schedule hooks execute at certain points in time rather than when Directus performs a specific action. This is supported
-through [`node-cron`](https://www.npmjs.com/package/node-cron).
-
-To set up a scheduled event, provide a cron statement as the first parameter to the `schedule()` function. For example
-`schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday).
-
-Below is an example of registering a schedule hook.
-
-```js
-import axios from 'axios';
-
-export default ({ schedule }) => {
-	schedule('*/15 * * * *', async () => {
-		await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
-	});
-};
-```
 
 ## Register Function
 
