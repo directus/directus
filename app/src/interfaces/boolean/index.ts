@@ -37,7 +37,7 @@ export default defineInterface({
 		},
 		{
 			field: 'colorOn',
-			name: '$t:displays.boolean.color_on',
+			name: '$t:interfaces.boolean.color_on',
 			type: 'string',
 			meta: {
 				interface: 'select-color',
@@ -46,7 +46,7 @@ export default defineInterface({
 		},
 		{
 			field: 'colorOff',
-			name: '$t:displays.boolean.color_off',
+			name: '$t:interfaces.boolean.color_off',
 			type: 'string',
 			meta: {
 				interface: 'select-color',
