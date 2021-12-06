@@ -13,6 +13,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:disabled="disabled"
 				:loading="valuesLoading"
 				:fields="fields"
 				:model-value="firstItem"
@@ -35,6 +36,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:disabled="disabled"
 				:loading="valuesLoading"
 				:initial-values="secondItemInitial"
 				:fields="fields"
@@ -84,6 +86,10 @@ export default defineComponent({
 			default: null,
 		},
 		autofocus: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
 			type: Boolean,
 			default: false,
 		},
