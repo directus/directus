@@ -435,18 +435,44 @@ active: Активний
 move_to: Перемістити до...
 copy: Копіювати
 copy_to: Коіювати до...
+no_other_dashboards_copy: У вас ще немає інших панелей керування.
+inactive: Неактивний
 users: Користувачі
 activity: Активність
+activity_item: Об'єкт активності
 action: Дія
 ip_address: IP адреса
 user_agent: Ідентифікатор браузера
 webhooks: Вебхуки
+decimals: Десяткові знаки
+value_decimals: Оцінити десяткові знаки
+min_value: Мінімальне значення
+max_value: Максимальне значення
+automatic: Автоматично
 field_width: Ширина поля
+add_filter: Додати фільтр
+upper_limit: Вищий ліміт...
+lower_limit: Нижчий ліміт...
 user_directory: Директорія користувачів
+documentation: Відомості
+sidebar: Бічна панель
 duration: Тривалість
+charset: Таблиця симовлів
+second: сек.
+file_moved: Файл переміщено
+collection_created: Колекцію створено
 modified_on: Час зміни
+card_size: Розмір картки
+sort_field: Поле сортування
+add_sort_field: Додати поле сортування
+sort: Сортування
 status: Статус
 remove: Видалити
+toggle_manual_sorting: Увімкнути ручне сортування
+bookmark_doesnt_exist: Закладка не існує
+bookmark_doesnt_exist_copy: Не вдалося знайти закладку, яку ви намагаєтеся відкрити.
+bookmark_doesnt_exist_cta: Повернутися до колекції
+select_an_item: Оберіть об'єкт...
 edit: Редагувати
 enabled: Увімкнено
 disable_tfa: Вимкнути 2FA
@@ -662,9 +688,22 @@ wysiwyg_options:
   backcolor: Колір заднього фону
   bold: Напівжирний
   codeblock: Код
+  h4: Заголовок 4
+  h5: Заголовок 5
+  h6: Заголовок 6
+  fontselect: Обрати шрифт
+  fontsizeselect: Обрати розмір шрифту
+  indent: Відступ справа
+  outdent: Відступ зліва
+  undo: Скасувати
+  redo: Повторити
   remove: Видалити
+  removeformat: Видалити форматування
   selectall: Обрати все
   table: Таблиця
+  visualaid: Переглянути невидимі елементи
+  source_code: Редагувати вихідний код
+  fullscreen: Повний екран
   directionality: Спрямування
 dropdown: Випадаюче меню
 choices: Варіанти
@@ -760,6 +799,8 @@ directus_collection:
   directus_folders: Забезпечує віртуальні каталоги для файлів
   directus_migrations: Яку версію бази даних ви використовуєте
   directus_panels: Окремі панелі на панелях керування інсайтів
+  directus_permissions: Доступ до дозволів для кожної ролі
+  directus_notifications: Сповіщення відіслано користувачам
 fields:
   directus_activity:
     item: Первинний ключ елемента
@@ -777,6 +818,7 @@ fields:
     color: Колір
     hidden: Приховано
     singleton: Об'єкт-одинак
+    sort_field: Поле сортування
   directus_files:
     title: Заголовок
     description: Опис
@@ -793,6 +835,7 @@ fields:
     width: Ширина
     uploaded_on: Завантажено
     height: Висота
+    charset: Таблиця симовлів
     duration: Тривалість
   directus_users:
     first_name: Ім'я
@@ -840,6 +883,7 @@ field_options:
     language: Мова
     translation: Переклад
     archive_divider: Архів
+    sort_divider: Сортування
   directus_roles:
     fields:
       icon_name: Іконка
@@ -849,6 +893,7 @@ field_options:
     status_dropdown_active: Активний
   directus_webhooks:
     status_options_active: Активний
+    status_options_inactive: Неактивний
     actions_create: Створити
     actions_update: Оновити
     headers:
@@ -899,6 +944,7 @@ value: Значення
 interfaces:
   filter:
     name: Фільтр
+    add_filter: Додати фільтр
     all: Все
     any: Будь-які
   presentation-links:
