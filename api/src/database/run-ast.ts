@@ -6,7 +6,7 @@ import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
-import { stripFunction } from '../utils/strip-function';
+import { parseColumn } from '../utils/parse-column';
 import { toArray } from '@directus/shared/utils';
 import { Query } from '@directus/shared/types';
 import getDatabase from '.';
@@ -118,7 +118,7 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field') {
-			const fieldKey = stripFunction(child.name);
+			const fieldKey = parseColumn(child.name).column;
 
 			if (columnsInCollection.includes(fieldKey) || fieldKey === '*') {
 				columnsToSelectInternal.push(child.name); // maintain original name here (includes functions)
@@ -180,7 +180,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		let field;
 
 		if (fieldNode.type === 'field') {
-			field = schema.collections[table].fields[stripFunction(fieldNode.name)];
+			field = schema.collections[table].fields[parseColumn(fieldNode.name).column];
 		} else {
 			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
 		}
@@ -460,7 +460,10 @@ function removeTemporaryFields(
 				);
 			}
 
-			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
+			const fieldsWithFunctionsApplied = fields.map((field) => {
+				const { func, column } = parseColumn(field);
+				return !func ? column : applyFunctionToColumnName(column, func);
+			});
 
 			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
 

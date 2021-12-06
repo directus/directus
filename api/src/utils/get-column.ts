@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import { getHelpers } from '../database/helpers';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { parseColumn } from './parse-column';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 
 /**
@@ -13,28 +13,15 @@ import { applyFunctionToColumnName } from './apply-function-to-column-name';
  * @param alias Whether or not to add a SQL AS statement
  * @returns Knex raw instance
  */
-export function getColumn(
-	knex: Knex,
-	table: string,
-	column: string,
-	alias: string | false = applyFunctionToColumnName(column)
-): Knex.Raw {
-	const { date: fn } = getHelpers(knex);
-
-	if (column.includes('(') && column.includes(')')) {
-		const functionName = column.split('(')[0];
-		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
-
-		if (functionName in fn) {
-			const result = fn[functionName as keyof typeof fn](table, columnName) as Knex.Raw;
-
-			if (alias) {
-				return knex.raw(result + ' AS ??', [alias]);
-			}
-
-			return result;
+export function getColumn(knex: Knex, table: string, columnExpr: string, alias?: string | false): Knex.Raw {
+	const helpers = getHelpers(knex);
+	const { func, column } = parseColumn(columnExpr);
+	if (func) {
+		if (func in helpers.date) {
+			const res = helpers.date[func as keyof typeof helpers.date](table, column);
+			return knex.raw(res + 'AS ??', applyFunctionToColumnName(column, func));
 		} else {
-			throw new Error(`Invalid function specified "${functionName}"`);
+			throw new Error(`Invalid function specified "${func}"`);
 		}
 	}
 

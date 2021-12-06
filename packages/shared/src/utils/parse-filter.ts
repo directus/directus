@@ -1,8 +1,8 @@
-import { REGEX_BETWEEN_PARENS } from '../constants';
 import { Accountability, Filter, User, Role } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { isDynamicVariable } from './is-dynamic-variable';
+import { parseExpression } from './parse-expression';
 import { isObjectLike } from 'lodash';
 
 type ParseFilterContext = {
@@ -55,13 +55,8 @@ function parseFilterValue(value: any, accountability: Accountability | null, con
 
 function parseDynamicVariable(value: any, accountability: Accountability | null, context: ParseFilterContext) {
 	if (value.startsWith('$NOW')) {
-		if (value.includes('(') && value.includes(')')) {
-			const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
-			if (!adjustment) return new Date();
-			return adjustDate(new Date(), adjustment);
-		}
-
-		return new Date();
+		const { params } = parseExpression(value);
+		return params ? adjustDate(new Date(), params) : new Date();
 	}
 
 	if (value.startsWith('$CURRENT_USER')) {

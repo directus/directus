@@ -1,8 +1,6 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-
 /**
- * Takes in a column name, and transforms the original name with the generated column name based on
- * the applied function.
+ * Takes in a column name, and a (potential) function name and transforms the original name with
+ * the generated column name based on the applied function.
  *
  * @example
  *
@@ -11,12 +9,6 @@ import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
  * // => "date_created_year"
  * ```
  */
-export function applyFunctionToColumnName(column: string): string {
-	if (column.includes('(') && column.includes(')')) {
-		const functionName = column.split('(')[0];
-		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
-		return `${columnName}_${functionName}`;
-	} else {
-		return column;
-	}
+export function applyFunctionToColumnName(column: string, func: string): string {
+	return column + '_' + func;
 }
