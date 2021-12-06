@@ -37,26 +37,20 @@ export default defineInterface({
 		},
 		{
 			field: 'colorOn',
-			name: '$t:interfaces.boolean.color_on',
+			name: '$t:displays.boolean.color_on',
 			type: 'string',
 			meta: {
-				width: 'half',
 				interface: 'select-color',
-			},
-			schema: {
-				default_value: '#00C897',
+				width: 'half',
 			},
 		},
 		{
 			field: 'colorOff',
-			name: '$t:interfaces.boolean.color_off',
+			name: '$t:displays.boolean.color_off',
 			type: 'string',
 			meta: {
-				width: 'half',
 				interface: 'select-color',
-			},
-			schema: {
-				default_value: '#B0BEC5',
+				width: 'half',
 			},
 		},
 		{
