@@ -2,6 +2,63 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.2.1 (December 6, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#10346](https://github.com/directus/directus/pull/10346) Use variables for default colors in boolean
+    interface/display ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10340](https://github.com/directus/directus/pull/10340) replace logo with rounded version
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10331](https://github.com/directus/directus/pull/10331) Update input-rich-text-html.vue
+    ([@AndreyKindin](https://github.com/AndreyKindin))
+- **API**
+  - [#10339](https://github.com/directus/directus/pull/10339) Use expression instead of alias in groupBy query
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#10301](https://github.com/directus/directus/pull/10301) SSO fixes and improvements
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+- **Extensions**
+  - [#10335](https://github.com/directus/directus/pull/10335) Share pinia with extensions
+    ([@nickrum](https://github.com/nickrum))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#10339](https://github.com/directus/directus/pull/10339) Use expression instead of alias in groupBy query
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#10336](https://github.com/directus/directus/pull/10336) Fix permissions merging on null check
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10301](https://github.com/directus/directus/pull/10301) SSO fixes and improvements
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#10297](https://github.com/directus/directus/pull/10297) Fixed escaping error on LDAP filters
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+- **App**
+  - [#10338](https://github.com/directus/directus/pull/10338) Add disabled state to translations interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10308](https://github.com/directus/directus/pull/10308) Fix non-native geometries not visible in map layout
+    ([@Oreilles](https://github.com/Oreilles))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#10316](https://github.com/directus/directus/pull/10316) Small optimization in getNodeAtPath
+    ([@Oreilles](https://github.com/Oreilles))
+
+### :memo: Documentation
+
+- [#10334](https://github.com/directus/directus/pull/10334) docs updates on file library, content sidebar etc
+  ([@azrikahar](https://github.com/azrikahar))
+- [#8611](https://github.com/directus/directus/pull/8611) Extension docs updates
+  ([@nickrum](https://github.com/nickrum))
+
+### :package: Dependency Updates
+
+- [#10319](https://github.com/directus/directus/pull/10319) Update Node.js to v16.13.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#10318](https://github.com/directus/directus/pull/10318) Pin dependencies
+  ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.2.0 (December 3, 2021)
 
 ### :sparkles: New Features
