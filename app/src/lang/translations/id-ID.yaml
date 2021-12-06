@@ -21,10 +21,19 @@
 #'Proxy', 'Intl'
 identifier: Pengenal
 avatar: Avatar
+default_provider: Bawaan
+published: Dipublikasikan
+draft: Konsep
+archived: Diarsipkan
+modules: Modul
+module_bar: Papan Modul
+tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
 maps: Peta
+item_creation: Pembuatan Item
 item_revision: Revisi Item
+enter_a_name: Masukkan sebuah Nama...
 duplicate_field: Kolom Duplikat
 half_width: Lebar Setengah
 full_width: Lebar Penuh
@@ -37,18 +46,28 @@ enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentica
 add_field: Tambah Kolom
 role_name: Nama Peran
 branch: Cabang
+leaf: Daun
+indeterminate: Tidak tentu
+edit_collection: Edit Koleksi
+exclusive: Ekklusif
+children: Anak
+db_only_click_to_configure: 'Hanya Database: Tekan untuk Konfigurasi'
 show_archived_items: Tampilkan Yang Diarsipkan
 edited: Nilai Diedit
 required: Diperlukan
 required_for_app_access: Diperlukan untuk Akses Aplikasi
 requires_value: Wajib memiliki nilai
 create_preset: Buat Preset
+create_panel: Buat Panel
 create_role: Buat Peran
 create_user: Buat User
+delete_panel: Hapus Panel
 create_webhook: Buat Webhook
 invite_users: Undang Pengguna Lain
 invite: Undang
 email_already_invited: Email "{email}" sudah diundang
+subject: Subjek
+inbox: Kotak Masuk
 emails: Surel
 connection_excellent: Koneksi Luar Biasa
 connection_good: Koneksi Bagus
@@ -68,6 +87,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Telah keluar
   SESSION_EXPIRED: Sesi kadaluarsa
+public_label: Publik
 public_description: Kendalikan data API yang tersedia tanpa autentikasi.
 not_allowed: Tidak Diizinkan
 directus_version: Versi Directus
@@ -113,6 +133,8 @@ no_access: Tidak Ada Akses
 use_custom: Gunakan Kustom
 nullable: Dapat dikosongkan
 allow_null_value: Izinkan nilai KOSONG
+allow_multiple: Izinkan Beberapa
+allow_multiple_to_be_open: Izinkan Beberapa untuk Dibuka
 enter_value_to_replace_nulls: Harap masukkan nilai baru untuk menggantikan nilai kosong pada kolom ini.
 field_standard: Standar
 field_presentation: Presentasi & Alias
@@ -123,6 +145,7 @@ field_m2a: Hubungan M2A
 field_o2m: Hubungan O2M
 field_m2m: Hubungan M2M
 field_translations: Terjemahan
+field_group: Grup Bidang
 item_permissions: Perizinan Item
 field_permissions: Perizinan Baris
 field_validation: Validasi Baris
@@ -132,6 +155,10 @@ fields_for_role: 'Baris {role} Peran dapat {action}.'
 validation_for_role: 'Aturan baris {action} Peran {role} harus tunduk.'
 presets_for_role: 'Nilai bawaan baris untuk Peran {role}.'
 presentation_and_aliases: Presentasi & Alias
+revision_post_create: Ini adalah bagaimana item ini terlihat ketika dibuat.
+revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan.
+changes_made: Dibawah adalah perubahan spesifik yang dibuat dalam revisi ini.
+no_relational_data: Ingat bahwa data yang berhubungan tidak termasuk disini.
 hide_field_on_detail: Sembunyikan Baris pada Rincian
 show_field_on_detail: Tampilkan Baris pada Rincian
 delete_field: Hapus Baris
@@ -140,9 +167,24 @@ field_create_success: 'Buat Baris: "{field}"'
 field_update_success: 'Perbarui Baris: "{field}"'
 duplicate_where_to: Dimana Anda ingin menggandakan baris ini?
 language: Bahasa
+aggregate_function: Fungsi Agregat
+aggregate_precision: Presisi Agregat
+group_aggregation: Grup Agregat
+group_precision: Grup Presisi
 global: Global
 admins_have_all_permissions: Admin memiliki semua perizinan
 camera: Kamera
+show_zero: Tampilkan Kosong
+create_in_advanced_field_creation_mode: Buat Bidang dalam Mode Lanjutan
+continue_in_advanced_field_creation_mode: Lanjutkan di Mode Pembuatan Bidang Lanjutan
+sum: Jumlah
+sum_distinct: Perbedaan Jumlah
+avg: Rata-rata
+avg_distinct: Perbedaan Rata-rata
+count: Hitung
+count_distinct: Perbedaan Hitung
+min: Min
+max: Maks
 exposure: Eksposur
 shutter: Shutter
 iso: ISO
@@ -160,8 +202,10 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Tanggal
+date_range: Rentang Tanggal
 datetime: DateTime
 dateTime: DateTime
+precision: Presisi
 decimal: Desimal
 float: Float
 integer: Integer
@@ -173,6 +217,11 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometri (Semua)
+geometry.Point: Titik
+geometry.LineString: StringGaris
+geometry.Polygon: Poligon
+geometry.MultiPoint: TitikMulti
 not_available_for_type: Tidak Tersedia Untuk Tipe Ini
 create_translations: Buat Terjemahan
 auto_refresh: Penyegaran Otomatis
@@ -434,10 +483,20 @@ copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
 back: Kembali
+flip_horizontal: Balik Horisontal
+flip_vertical: Balik Vertikal
+aspect_ratio: Rasio Aspek
 rotate: Putar
 all_users: Semua Pengguna
 delete_collection: Hapus Koleksi
 update_collection_success: Perbarui Koleksi
+delete_collection_success: Koleksi yang Dihapus
+make_collection_visible: Buat Koleksi Terlihat
+make_collection_hidden: Buat Koleksi Tersembunyi
+start_end_of_count_items: '{start}-{end} dari {count} item'
+start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
+one_item: '1 item'
+one_filtered_item: '1 item yang di filter'
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
 icon_right: Ikon Kanan
@@ -547,6 +606,7 @@ fields:
     last_access: Akses Terakhir
   directus_settings:
     project_name: Nama Proyek
+    module_bar: Papan Modul
   directus_fields:
     note: Catatan
     hidden: Tersembunyi
