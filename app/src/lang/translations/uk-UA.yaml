@@ -801,6 +801,14 @@ directus_collection:
   directus_panels: Окремі панелі на панелях керування інсайтів
   directus_permissions: Доступ до дозволів для кожної ролі
   directus_notifications: Сповіщення відіслано користувачам
+  directus_presets: Попередні налаштування для передустановок і закладок колекції
+  directus_relations: Конфігурація зв'язків і метадані
+  directus_revisions: Знімки даних для всіх видів діяльності
+  directus_roles: Групи дозволів для користувачів системи
+  directus_sessions: Інформація про сеанс користувача
+  directus_settings: Параметри конфігурації проекту
+  directus_users: Користувачі системи для платформи
+  directus_webhooks: Конфігурація HTTP-запитів на основі подій
 fields:
   directus_activity:
     item: Первинний ключ елемента
@@ -811,21 +819,36 @@ fields:
     comment: Коментар
     user_agent: Ідентифікатор браузера
     ip: IP адреса
+    revisions: Версії
   directus_collections:
     collection: Колекція
     icon: Іконка
     note: Примітка
     color: Колір
+    display_template: Показати шаблон
     hidden: Приховано
     singleton: Об'єкт-одинак
+    translations: Колекція назв перекладів
+    archive_app_filter: Фільтр архівного застосунку
+    archive_value: Архівувати значення
+    unarchive_value: Розархівувати значення
     sort_field: Поле сортування
+    accountability: Відстеження активності та переглядів
+    archive_field: Архівувати поле
+    item_duplication_fields: Поля дублювання об'єктів
   directus_files:
+    $thumbnail: Мініатюра
     title: Заголовок
     description: Опис
     tags: Теги
     location: Розташування
+    storage: Сховище
+    filename_disk: Ім'я файлу (Диск)
+    filename_download: Ім'я файлу (Завантаження)
     metadata: Метадані
+    type: MIME-тип
     filesize: Розмір файлу
+    modified_by: Змінено
     modified_on: Час зміни
     created_on: Створено
     created_by: Автор
@@ -847,12 +870,24 @@ fields:
     title: Заголовок
     description: Опис
     tags: Теги
+    user_preferences: Налаштування користувача
     language: Мова
     theme: Тема
+    theme_auto: Автоматичний вибір (основано на системі)
+    theme_light: Світлий режим
+    theme_dark: Темний режим
     tfa_secret: Двофакторна автентифікація
+    admin_options: Можливості адміністратора
     status: Статус
+    status_draft: Чернетка
+    status_invited: Запрошені
     status_active: Активний
+    status_suspended: Призупинені
+    status_archived: Архівовані
     role: Роль
+    token: Ключ
+    token_placeholder: Введіть надійний ключ доступу...
+    provider: Провайдер
     last_page: Остання сторінка
     last_access: Останній доступ
   directus_settings:
@@ -874,23 +909,81 @@ fields:
     collections: Колекції
 field_options:
   directus_settings:
+    project_logo_note: Білий 40x40 SVG/PNG
+    public_note_placeholder: Коротке загальнодоступне повідомлення, яке підтримує розміткове форматування...
     security_divider_title: Захист
+    auth_password_policy:
+      none_text: Ні - Не рекомендується
+      weak_text: Слабкий – мінімум 8 символів
+      strong_text: Надійний – Верхній / Нижній регістр / Цифри / Спеціальні символи
+    storage_asset_presets:
+      fit_label: За розміром
+      upscaling: Підбір масштабу
+      fit:
+        contain_text: Умістити (зберігати співвідношення сторінок)
+        cover_text: Покрити (урівняння за точним розміром)
+        fit_text: Вмістити всередину
+        outside_text: Вмістити зовні
+    additional_transforms: Додаткові трансформації
+    mapbox_key: Ключ доступу Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Карта-схеми
+    basemaps_name_placeholder: Введіть назву карта-схеми...
+    files_divider_title: Файли та мініатюри
   directus_activity:
+    login: Увійти
     create: Створити
     update: Оновити
+    delete: Видалити
   directus_collections:
+    track_activity_revisions: Відстежувати активність та ревізії
+    only_track_activity: Лише відстежувати діяльність
+    do_not_track_anything: Нічого не відслідковувати
+    collection_setup: Налаштування колекції
+    note_placeholder: Опис цієї колекції...
+    hidden_label: Приховати в межах програми
     singleton: Вважати як один об'єкт
     language: Мова
     translation: Переклад
+    translation_placeholder: Введіть переклад...
+    collection_name: Назва колекції
+    singular_unit: Форма одиниці
+    plural_unit: Форма множини
     archive_divider: Архів
+    archive_field_placeholder: Обрати поле...
+    archive_app_filter: Увімкнути фільтр архіву застосунку
+    archive_value: Значення, встановлене під час архівування...
+    unarchive_value: Значення, встановлене під час розархівування...
     sort_divider: Сортування
+    sort_field: Обрати поле...
+    accountability_divider: Підзвітність
+    duplication_divider: Дублікація
+  directus_files:
+    title: Унікальний заголовок...
+    description: Опціональний опис...
+    location: Опціональне розташування...
+    storage_divider: Процес назви файлу
+    filename_disk: Назва на диску пам'яті...
+    filename_download: Назва під час завантаження...
   directus_roles:
+    name: Унікальна назва для цієї ролі...
+    description: Опис цієї ролі...
+    ip_access: Додайте дозволені IP-адреси, залиште порожнім, щоб дозволити...
     fields:
       icon_name: Іконка
       name_name: Назва
     collections_name: Колекції
   directus_users:
+    preferences_divider: Налаштування користувача
+    dropdown_auto: Автоматичний вибір (основано на системі)
+    dropdown_light: Світлий режим
+    dropdown_dark: Темний режим
+    admin_divider: Можливості адміністратора
+    status_dropdown_draft: Чернетка
     status_dropdown_active: Активний
+    status_dropdown_suspended: Призупинені
+    status_dropdown_archived: Архівовані
+    token: Введіть надійний ключ доступу...
   directus_webhooks:
     status_options_active: Активний
     status_options_inactive: Неактивний
@@ -931,6 +1024,7 @@ save: Зберегти
 schema: Схема
 search: Пошук
 select_existing: Вибрати існуючі
+select_field_type: Обрати тип поля
 select_interface: Виберіть інтерфейс
 settings: Налаштування
 sign_in: Вхід
@@ -938,15 +1032,31 @@ sign_out: Вихід
 sign_out_confirm: Ви справді бажаєте вийти?
 something_went_wrong: Щось пішло не так.
 sort_direction: Напрямок сортування
+sort_asc: Впорядкувати за збільшенням
+sort_desc: Впорядкувати за зменшенням
 template: Шаблон
+require_value_to_be_set: Потрібно встановити значення
 translation: Переклад
+translation_placeholder: Введіть переклад...
 value: Значення
+view_project: Переглянути проект
+report_error: Звіт про помилку
+start: Почати
 interfaces:
   filter:
     name: Фільтр
+    description: Налаштувати фільтр об'єкта.
     add_filter: Додати фільтр
+    add_value: Додати значення
     all: Все
     any: Будь-які
+    and: й
+    of_the_following: такі
+    no_rules: Немає налаштованих правил
+    change_value: Натисніть, щоб змінити значення
+    placeholder: Перетягніть файли сюди
+  group-accordion:
+    start: Почати
   presentation-links:
     primary: Стандартно
   input-code:
