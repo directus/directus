@@ -199,7 +199,7 @@
 		"@types/nodemailer": "6.4.4",
 		"@types/object-hash": "2.2.1",
 		"@types/qs": "6.9.7",
-		"@types/sanitize-html": "^2.5.0",
+		"@types/sanitize-html": "2.5.0",
 		"@types/sharp": "0.29.4",
 		"@types/stream-json": "1.7.1",
 		"@types/supertest": "2.0.11",
