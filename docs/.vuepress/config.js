@@ -154,13 +154,21 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/app/content-collections',
-						title: 'Content Collections',
-					},
-					{
-						type: 'page',
-						path: '/app/content-items',
-						title: 'Content Items',
+						path: '/app/content',
+						title: 'Content',
+						collapsable: false,
+						children: [
+							{
+								type: 'page',
+								path: '/app/content-collections',
+								title: 'Content Collections',
+							},
+							{
+								type: 'page',
+								path: '/app/content-items',
+								title: 'Content Items',
+							},
+						],
 					},
 					{
 						type: 'page',

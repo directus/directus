@@ -178,8 +178,8 @@ module.exports = function registerHook({ schedule }) {
 ### 1. Create a Hook File
 
 Custom hooks are dynamically loaded from within your extensions folder. By default, this directory is located at
-`/extensions`, but it can be configured within your project's env file to be located anywhere. The hook-id is the name
-of your hook.
+`/extensions/hooks`, but it can be configured within your project's env file to be located anywhere. The hook-id is the
+name of your hook.
 
 #### Default Standalone Hook Location
 
