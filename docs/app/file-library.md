@@ -34,16 +34,18 @@ The file sidebar also includes the following details:
 - **Size** — The file-size the asset takes up within the storage adapter
 - **Created** — The timestamp of when the file was uploaded to the project
 - **Owner** — The Directus user that uploaded the file to the project
+- **Modified** - The timestamp of when the file was last modified
+- **Edited By** — The Directus user that modified the file
 - **Folder** — The current parent folder that contains the file
 - **Metadata** — Metadata JSON dump of the file's EXIF, IPTC, and ICC information
 
 #### Action Buttons
 
-- **Save** — Saves any edits made to the page
-- **Edit** — Saves any edits made to the page
-- **Download** — Saves any edits made to the page
-- **Move Folder** — Saves any edits made to the page
-- **Delete** — Permanently removes this file and its metadata. This action is permanent and can not be undone.
+- **Save** — Saves any edits made to the file
+- **Edit** — Refer [Editing an Image](#editing-an-image)
+- **Download** — Downloads the file to your current device
+- **Move to Folder** — Move the file to another folder
+- **Delete** — Permanently removes the file and its metadata. This action is permanent and can not be undone.
 
 ## Editing an Image
 
@@ -69,3 +71,32 @@ keep in mind that files can also be added directly through different interfaces.
    - Dragging a file from your desktop to the modal
    - Click the modal area to manually select a file from your device
    - Clicking the "..." icon and choosing "Import from URL"
+
+## Creating a Folder
+
+1. From the **File Library**, click on the **"Create Folder"** (folder with plus icon) button located in the header
+2. Fill in the folder name
+3. Click "Save"
+
+## Renaming a Folder
+
+1. From the **File Library**, right-click on the folder you wish to rename and select "Rename Folder"
+2. Update the folder name
+3. Click "Save"
+
+## Moving a Folder
+
+1. From the **File Library**, right-click on the folder you wish to move and select "Move to Folder"
+2. Select a folder that will be the new parent folder
+3. Click "Save"
+
+## Deleting a Folder
+
+1. From the **File Library**, right-click on the folder you wish to delete and select "Delete Folder"
+2. Click "Delete"
+
+::: tip
+
+When you delete a folder, any nested files and folders will be moved one level up.
+
+:::
