@@ -87,7 +87,7 @@ export default function usePreview(
 					.map((item) => {
 						const updatedItem = updatedItems.find(
 							(updated) =>
-								get(updated, [junctionField, junctionPkField]) === get(item, [junctionField, junctionPkField])
+								get(updated, [junctionField, relationPkField]) === get(item, [junctionField, relationPkField])
 						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
