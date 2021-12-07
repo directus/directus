@@ -1,4 +1,5 @@
 import { defineDisplay } from '@directus/shared/utils';
+import { DisplayConfig } from '@directus/shared/types';
 import DisplayFormattedValue from './formatted-value.vue';
 
 export default defineDisplay({
@@ -10,7 +11,7 @@ export default defineDisplay({
 	component: DisplayFormattedValue,
 	options: ({ collection, field }) => {
 		const display_options = field.meta.display_options || {};
-		const options = [
+		const options: DisplayConfig['options'] = [
 			{
 				field: 'prefix',
 				name: '$t:displays.formatted-value.prefix',
