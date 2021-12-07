@@ -179,7 +179,7 @@ export default defineDisplay({
 						template: '{{name}}',
 						fields: [
 							{
-								field: 'filter',
+								field: 'rule',
 								name: '$t:displays.formatted-value.format_rules_filter',
 								type: 'json',
 								meta: {
