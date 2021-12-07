@@ -151,6 +151,7 @@ export default ({ schedule }) => {
 | `request.not_found`           | `false`              | `request`, `response`                |
 | `request.error`               | The request errors   | --                                   |
 | `database.error`              | The database error   | `client`                             |
+| `auth.accountability`         | `null`               | `req`, `token`, `isDirectusJWT`      |
 | `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
 | `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
 | `(<collection>.)items.read`   | The read item        | `collection`                         |
@@ -167,6 +168,24 @@ export default ({ schedule }) => {
 `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
 
 :::
+
+#### Custom accountability factory (custom authentication mechanism)
+
+To opt-out from Directus authentication flow, use `auth.accountability` filter hook and return an object
+that matches expected `accountability` interface:
+
+```ts
+{
+	user: string | null; // user id
+	role: string | null; // role id
+	admin: boolean; // admin access
+	app: boolean; // Directus panel access
+	ip: string; // example: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip
+	userAgent: string; // example: req.get('user-agent')
+}
+```
+
+Return `null` or `undefined` to use Directus authentication flow.
 
 ### Action Events
 
