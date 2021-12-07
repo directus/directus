@@ -9,7 +9,7 @@ exports.seed = async function (knex) {
 			token: 'AdminToken',
 		},
 		{
-			id: 'a8057636-9b70-4804-bfec-19c88d1a3273',
+			id: 'cb8cd13b-037f-40ca-862a-ea1e1f4bfca2',
 			email: 'test@user.com',
 			password: 'TestUserPassword',
 			status: 'active',
