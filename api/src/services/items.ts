@@ -292,6 +292,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			`${this.eventScope}.read`,
 			records,
 			{
+				query,
 				collection: this.collection,
 			},
 			{
@@ -325,7 +326,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
-		const queryWithKey = assign(query, { filter: filterWithKey });
+		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
 		const results = await this.readByQuery(queryWithKey, opts);
 
@@ -343,7 +344,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
-		const queryWithKey = assign(query, { filter: filterWithKey });
+		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
 		const results = await this.readByQuery(queryWithKey, opts);
 

@@ -69,7 +69,7 @@ export default {
 	padding-top: 10px;
 	padding-bottom: 22px;
 	padding-left: 10px;
-	background-color: $codeBgColor;
+	background-color: var(--background-normal);
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
 }

@@ -10,7 +10,7 @@
 html, body
   padding 0
   margin 0
-  background-color #fff
+  background-color var(--background-page)
 
 body
   font-family "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif
@@ -18,7 +18,7 @@ body
   -moz-osx-font-smoothing grayscale
   font-size 16px
   line-height 24px
-  color $textColor
+  color var(--foreground-normal-alt)
 
 .page
   padding-top 80px
@@ -31,7 +31,6 @@ body
   left 0
   right 0
   height $navbarHeight
-  background-color #fff
   box-sizing border-box
 
 .sidebar-mask
@@ -45,7 +44,7 @@ body
 
 .sidebar
   font-size 16px
-  background-color #fff
+  background-color var(--background-page)
   width $sidebarWidth
   position fixed
   z-index 10
@@ -54,7 +53,7 @@ body
   left 0
   bottom 0
   box-sizing border-box
-  border-right 1px solid $borderColor
+  border-right 1px solid var(--border-subdued)
   overflow-y auto
 
 {$contentClass}:not(.custom)
@@ -67,7 +66,7 @@ body
 
   p.demo
     padding 1rem 1.5rem
-    border 1px solid #ddd
+    border 1px solid var(--border-normal)
     border-radius 6px
 
   img
@@ -83,24 +82,24 @@ body
 
 a
   font-weight 500
-  color darken($accentColor, 10%)
+  color var(--primary-110)
   text-decoration none
 
 p a code
   font-weight 400
-  color $accentColor
+  color var(--primary)
 
 kbd
-  background #eee
-  border solid 0.15rem #ddd
-  border-bottom solid 0.25rem #ddd
+  background var(--background-subdued)
+  border solid 0.15rem var(--border-normal)
+  border-bottom solid 0.25rem var(--border-normal)
   border-radius 0.15rem
   padding 0 0.15em
 
 blockquote
   font-size 1.125rem
-  color #A2B5CD;
-  border-left 2px solid #F0F4F9
+  color var(--foreground-subdued)
+  border-left 2px solid var(--border-subdued)
   margin 2rem 0
   padding .25rem 0 .25rem 1rem
   max-width 740px
@@ -148,7 +147,7 @@ h2
   line-height 2.125rem
   font-weight 700
   padding-bottom .3rem
-  border-bottom 2px solid $borderColor
+  border-bottom 2px solid var(--border-subdued)
   margin-bottom 1.5rem !important
   {$contentClass}:not(.custom) > &
     padding-top ($navbarHeight + 4.5rem)
@@ -186,7 +185,7 @@ small
   &::before
     content 'Modular Extension'
     display inline-block
-    background-color $accentColor
+    background-color var(--primary)
     color white
     border-radius 3px
     font-size 15px
@@ -218,7 +217,7 @@ p, ul, ol
 
 hr
   border 0
-  border-top 2px solid $borderColor
+  border-top 2px solid var(--border-subdued)
   margin 3rem 0
 
 table
@@ -229,17 +228,17 @@ table
   width 100%
 
 tr
-  border-top 1px solid #dfe2e5
+  border-top 1px solid var(--border-normal)
 
   &:nth-child(2n)
-    background-color #f6f8fa
+    background-color var(--background-highlight)
 
 th
   white-space nowrap
   text-align left
 
 th, td
-  border 1px solid #dfe2e5
+  border 1px solid var(--border-normal)
   padding .6em 1em
 
 .theme-container
@@ -264,54 +263,3 @@ th, td
       padding-left 0
 
 @require 'mobile.styl'
-
-@media (prefers-color-scheme: dark)
-  html, body
-    color #b3c4cc !important;
-    background #263238 !important;
-    hr
-      border-top 2px solid #455a64 !important;
-    .navbar
-      background-color #2d3a41 !important;
-    .sidebar
-      border-right 1px solid #455a64 !important;
-      background #2e3c43 !important;
-    tr
-      &:nth-child(2n)
-        background #3a4b53
-    .algolia-search-wrapper
-      filter invert(1)
-      .algolia-autocomplete
-        .algolia-docsearch-suggestion
-          .algolia-docsearch-suggestion--category-header
-            background #b32f66
-        .algolia-docsearch-suggestion--highlight
-          color #b32f66
-    .custom-block
-      &.success
-        background-color #294a4b
-      &.warning
-        background-color #43483c
-      &.danger
-        background-color #403e47
-
-    h1, h2, h3
-      color #cfd8dc !important;
-
-    th, td
-      border-color #455a64 !important;
-
-    p, .sidebar-heading, a.sidebar-link
-      color #b3c4cc !important;
-
-    .custom-block.tip, div[class*="language-"], .theme-default-content code
-      background-color #2d3a41 !important;
-      color #b3c4cc !important;
-
-    .panel
-      border 2px solid #2e3f47 !important
-
-    .header
-      .text
-        h1, h2, h3, h4, h5
-          color #fff !important

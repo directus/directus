@@ -50,7 +50,7 @@ Migrations can be used for managing contents of Directus collections (e.g. initi
 must ensure that schema is up to date before running migrations. One way of achieving it is opting out of default
 `directus bootstrap` process and running:
 
-```
+```bash
 npx directus database install
 # notice that schema is applied before running migrations
 npx directus schema apply ./path/to/snapshot.yaml
