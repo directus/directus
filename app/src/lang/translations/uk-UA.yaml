@@ -703,6 +703,19 @@ wysiwyg_options:
   codeblock: Код
   blockquote: Цитата
   bullist: Список з пунктами
+  numlist: Нумерований список
+  hr: Горизонтальна лінійка
+  link: Додати/редагувати посилання
+  unlink: Видалити посилання
+  media: Додати/Редагувати медіа
+  image: Додати/Редагувати зображення
+  copy: Копіювати
+  cut: Вирізати
+  paste: Вставити
+  heading: Заголовок
+  h1: Заголовок 1
+  h2: Заголовок 2
+  h3: Заголовок 3
   h4: Заголовок 4
   h5: Заголовок 5
   h6: Заголовок 6
@@ -907,8 +920,14 @@ fields:
     last_access: Останній доступ
   directus_settings:
     project_name: Назва проекту
+    custom_css: Індивідуальний CSS код
     module_bar: Панель модулів
+    transformations_all: Дозволити всі трансформації
+    transformations_none: Вимкнути трансформації
+    transformations_presets: Обмежити перетворення до передустановок нижче
   directus_fields:
+    collection: Назва колекції
+    icon: Іконка колекції
     note: Примітка
     hidden: Приховано
     singleton: Об'єкт-одинак
@@ -916,14 +935,30 @@ fields:
     display_template: Шаблон
   directus_roles:
     name: Назва ролі
+    icon: Іконка ролі
     description: Опис
+    app_access: Доступ до додатку
+    admin_access: Адміністративний доступ
+    ip_access: IP адреса
+    enforce_tfa: Потрібен 2FA
+    users: Користувачі у ролі
+    module_list: Перемкнути навігацію
   directus_webhooks:
     name: Назва
+    method: Метод
     status: Статус
+    data: Дані
+    header: Заголовок
     value: Значення
+    headers: Заголовки запиту
+    data_label: Надіслати дані про подію
+    triggers: Тріггери
+    actions: Дії
     collections: Колекції
 field_options:
   directus_settings:
+    project_name_placeholder: Мій проект...
+    project_color_note: Фон входу та логотипу
     project_logo_note: Білий 40x40 SVG/PNG
     public_note_placeholder: Коротке загальнодоступне повідомлення, яке підтримує розміткове форматування...
     security_divider_title: Захист
@@ -940,11 +975,16 @@ field_options:
         fit_text: Вмістити всередину
         outside_text: Вмістити зовні
     additional_transforms: Додаткові трансформації
+    transforms_note: Назва методу Sharp та його короткий зміст. Дивіться https://sharp.pixelplumbing.com/api-constructor для отримання додаткової інформації.
     mapbox_key: Ключ доступу Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Карта-схеми
     basemaps_name_placeholder: Введіть назву карта-схеми...
+    basemaps_raster: Растровий
+    basemaps_tile: Растровий TileJSON
+    basemaps_style: Стиль Mapbox
     files_divider_title: Файли та мініатюри
+    overrides_divider_title: Перевизначення програми
   directus_activity:
     login: Увійти
     create: Створити
@@ -987,7 +1027,11 @@ field_options:
     fields:
       icon_name: Іконка
       name_name: Назва
+      name_placeholder: Ведіть назву...
+      link_name: Посилання
+      link_placeholder: Відносна або абсолютна URL-адреса...
     collections_name: Колекції
+    collections_addLabel: Додати колекцію...
   directus_users:
     preferences_divider: Налаштування користувача
     dropdown_auto: Автоматичний вибір (основано на системі)
@@ -995,6 +1039,7 @@ field_options:
     dropdown_dark: Темний режим
     admin_divider: Можливості адміністратора
     status_dropdown_draft: Чернетка
+    status_dropdown_invited: Запрошені
     status_dropdown_active: Активний
     status_dropdown_suspended: Призупинені
     status_dropdown_archived: Архівовані
@@ -1002,10 +1047,28 @@ field_options:
   directus_webhooks:
     status_options_active: Активний
     status_options_inactive: Неактивний
+    data_label: Надіслати дані про подію
+    triggers_divider: Тріггери
     actions_create: Створити
     actions_update: Оновити
+    actions_delete: Видалити
+    actions_login: Логін
     headers:
+      header: Заголовок
       value: Значення
+      add: Додати заголовок
+no_fields_in_collection: 'Ще немає полей в колекції "{collection}"'
+no_value: Значення відсутнє
+do_nothing: Нічого не робити
+generate_and_save_uuid: Генерувати та зберегти UUID
+save_current_user_id: Зберігти поточний ID
+save_current_user_role: Зберегти поточну роль користувача
+save_current_datetime: Зберігти поточну дату/час
+always_open: Завжди відкрито
+start_open: Почати відкритим
+start_collapsed: Старт згорнутим
+block: Блокувати
+inline: У тексті
 comment: Коментар
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
