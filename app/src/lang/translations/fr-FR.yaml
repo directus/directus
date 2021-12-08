@@ -841,7 +841,7 @@ singleton: Singleton
 singleton_label: Est un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 directus_collection:
-  directus_activity: Journaux de responsabilité pour tous les événements
+  directus_activity: Journaux de traçabilité de tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
@@ -880,8 +880,8 @@ fields:
     singleton: Singleton
     translations: Traductions des noms de collections
     archive_app_filter: Filtrer les valeurs archivées dans l'application
-    archive_value: Valeur pour archivage
-    unarchive_value: Valeur au désarchivage
+    archive_value: Valeur pour l'état archivé
+    unarchive_value: Valeur lors du désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
     archive_field: Champ d'archivage
@@ -1056,12 +1056,12 @@ field_options:
     plural_unit: Au pluriel
     archive_divider: Archiver
     archive_field_placeholder: Choisissez un champ...
-    archive_app_filter: Activer le filtre des archives d'applications
+    archive_app_filter: Filtrer tous les éléments archivés
     archive_value: Valeur définie lors de l'archivage...
     unarchive_value: Valeur définie lors de la désarchivage...
     sort_divider: Trier
     sort_field: Choisissez un champ...
-    accountability_divider: Responsabilité
+    accountability_divider: Traçabilité
     duplication_divider: Duplication
   directus_files:
     title: Un titre unique...
@@ -1531,7 +1531,7 @@ displays:
     description: Afficher sous forme d'étiquette(s)
     default_foreground: Premier plan par défaut
     default_background: Arrière-plan par défaut
-    format_label: Formater chaque libellés
+    format_label: Formater chaque libellé
     show_as_dot: Afficher sous forme de point
     choices_value_placeholder: Saisissez une valeur...
     choices_text_placeholder: Entrez du texte...
