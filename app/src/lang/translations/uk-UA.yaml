@@ -933,6 +933,13 @@ fields:
     public_foreground: Публічний передній план
     public_background: Публічний фон
     public_note: Публічна нотатка
+    auth_password_policy: Правила користування авторизованими паролями
+    auth_login_attempts: Авторизовані спроби входу в систему
+    files_and_thumbnails: Файли та сховище
+    storage_default_folder: Папка за замовчуванням
+    storage_asset_presets: Передналаштування трансформацій
+    storage_asset_transform: Дозволені трансформації
+    overrides: Перевизначення програми
     custom_css: Індивідуальний CSS код
     module_bar: Панель модулів
     transformations_all: Дозволити всі трансформації
