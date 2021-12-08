@@ -268,7 +268,7 @@ describe('/items', () => {
 				Object.values(items).forEach((item: any) => {
 					keys.push(item.id);
 				});
-			} else if (vendor !== 'postgres') {
+			} else if (vendor !== 'postgres' && vendor !== 'postgres10') {
 				items = await seedTable(databases.get(vendor)!, 1, 'artists', artists, {
 					raw: 'select id from artists order by id desc limit 10;',
 				});
