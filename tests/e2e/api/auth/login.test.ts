@@ -45,23 +45,19 @@ describe('auth', () => {
 
 				/* the url variable will need to be included in most and is the address of the docker for each database */
 				const url = `http://localhost:${config.ports[vendor]!}`;
-
 				/* Use request() imported from 'supertest' not 'HTTP' */
 				const response = await request(url)
 					.post(`/auth/login`)
-					.send({
-						email: 'test@admin.com',
-						password: 'TestAdminPassword',
-					})
+					.send({ email: 'test@admin.com', password: 'TestAdminPassword' })
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
-
 				/* 
 				Because the actual tokens returned will vary use "expect.any()"
-				In most cases checking every param is not necessary, as seen in the bad result tests below.
+				In most cases checking every param is not necessary or the results will be variable.
 				Use .toMatchObject() in those cases.
 				*/
-				expect(response.body).toBe({
+
+				expect(response.body).toMatchObject({
 					data: {
 						access_token: expect.any(String),
 						expires: expect.any(Number),
@@ -87,10 +83,10 @@ describe('auth', () => {
 
 				/* 
 				Because the actual tokens returned will vary use "expect.any()"
-				In most cases checking every param is not necessary, as seen in the incorrect credentials tests below.
+				In most cases checking every param is not necessary
 				Use .toMatchObject() in those cases.
 				*/
-				expect(response.body).toBe({
+				expect(response.body).toMatchObject({
 					data: {
 						access_token: expect.any(String),
 						expires: expect.any(Number),
@@ -100,7 +96,7 @@ describe('auth', () => {
 			});
 		});
 		describe('when incorrect credentials are provided', () => {
-			it.each(getDBsToTest())(`%p returns code: INVALID_CREDENTIALS for incorrect password`, async (vendor) => {
+			it.each(getDBsToTest())(`%p returns code: UNAUTHORIZED for incorrect password`, async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
 
 				const response = await request(url)
@@ -110,13 +106,8 @@ describe('auth', () => {
 						password: 'IncorrectPassword',
 					})
 					.expect('Content-Type', /application\/json/)
-					.expect(200);
-
-				/* 
-				In most cases checking every param is not necessary, as seen in below.
-				Use .toMatchObject() in those cases.
-				*/
-				expect(response.body).toMatchObject({
+					.expect(401);
+				expect(response.body).toStrictEqual({
 					errors: [
 						{
 							message: 'Invalid user credentials.',
@@ -127,7 +118,7 @@ describe('auth', () => {
 					],
 				});
 			});
-			it.each(getDBsToTest())(`%p returns code: INVALID_CREDENTIALS for unregistered email`, async (vendor) => {
+			it.each(getDBsToTest())(`%p returns code: UNAUTHORIZED for unregistered email`, async (vendor) => {
 				const url = `http://localhost:${config.ports[vendor]!}`;
 
 				const response = await request(url)
@@ -137,13 +128,9 @@ describe('auth', () => {
 						password: 'TestAdminPassword',
 					})
 					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					.expect(401);
 
-				/* 
-				In most cases checking every param is not necessary, as seen in below.
-				Use .toMatchObject() in those cases.
-				*/
-				expect(response.body).toMatchObject({
+				expect(response.body).toStrictEqual({
 					errors: [
 						{
 							message: 'Invalid user credentials.',
@@ -164,13 +151,9 @@ describe('auth', () => {
 						password: 'TestAdminPassword',
 					})
 					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					.expect(400);
 
-				/* 
-				In most cases checking every param is not necessary, as seen in below.
-				Use .toMatchObject() in those cases.
-				*/
-				expect(response.body).toMatchObject({
+				expect(response.body).toStrictEqual({
 					errors: [
 						{
 							message: '"email" must be a valid email',
@@ -189,17 +172,12 @@ describe('auth', () => {
 					const response = await request(url)
 						.post(`/auth/login`)
 						.send({
-							email: 'invalidEmail',
-							password: 'TestAdminPassword',
+							email: 'test@admin.com',
 						})
 						.expect('Content-Type', /application\/json/)
-						.expect(200);
+						.expect(400);
 
-					/* 
-				In most cases checking every param is not necessary, as seen in below.
-				Use .toMatchObject() in those cases.
-				*/
-					expect(response.body).toMatchObject({
+					expect(response.body).toStrictEqual({
 						errors: [
 							{
 								message: '"password" is required',
