@@ -1192,6 +1192,7 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 interfaces:
@@ -1243,6 +1244,7 @@ interfaces:
     code: Code
     description: Write or share code snippets
     line_number: Line Number
+    line_wrapping: Line Wrapping
     placeholder: Enter code here...
   system-collection:
     collection: Collection
@@ -1309,6 +1311,8 @@ interfaces:
   file-image:
     image: Image
     description: Select or upload an image
+    crop: Crop to Fit
+    crop_label: Crop image as needed
   system-interface:
     interface: Interface
     description: Select an existing interface
@@ -1328,6 +1332,8 @@ interfaces:
     description: Enter and preview markdown
     edit: Edit
     preview: Preview
+    editorFont: Editor Font
+    previewFont: Preview Font
     customSyntax: Custom Blocks
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
@@ -1444,6 +1450,7 @@ interfaces:
     description: A search typeahead for external API values.
     results_path: Results Path
     value_path: Value Path
+    text_path: Text Path
     trigger: Trigger
     rate: Rate
   group-raw:
@@ -1594,6 +1601,8 @@ panels:
     description: Render a line chart based on values over time
     date_field: Date Field
     value_field: Value Field
+    fill_type: Fill Type
+    curve_type: Curve Type
   label:
     name: Label
     description: Show some text
