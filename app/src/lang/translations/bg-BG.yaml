@@ -618,8 +618,8 @@ interface_options: Настройки на интерфейса
 layout_options: Оформление и настройки
 rows: Редове
 columns: Колони
-collection_setup: Настройки на колекцията
-optional_system_fields: Незадължителни системни полета
+collection_setup: Настройване
+optional_system_fields: Предложения за полета
 value_unique: Само уникални стойности
 all_activity: Цялата активност
 create_item: Създаване на запис

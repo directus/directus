@@ -919,7 +919,20 @@ fields:
     last_page: Остання сторінка
     last_access: Останній доступ
   directus_settings:
+    basemaps_raster: Растровий
+    basemaps_tile: Растровий TileJSON
+    basemaps_style: Стиль Mapbox
+    mapbox_key: Ключ доступу Mapbox
+    transforms_note: Назва методу Sharp та його короткий зміст. Дивіться https://sharp.pixelplumbing.com/api-constructor для отримання додаткової інформації.
+    additional_transforms: Додаткові трансформації
     project_name: Назва проекту
+    project_url: URL-адреса проекту
+    project_color: Демонструвати колір
+    project_logo: Демонструвати логотип
+    branding: Брендінг та стиль
+    public_foreground: Публічний передній план
+    public_background: Публічний фон
+    public_note: Публічна нотатка
     custom_css: Індивідуальний CSS код
     module_bar: Панель модулів
     transformations_all: Дозволити всі трансформації
