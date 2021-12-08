@@ -596,7 +596,13 @@ items: Об'єкти
 upload_file: Завантажити файл
 upload_file_indeterminate: Йде завантаження файлу...
 upload_file_success: Файл був завантажений
+columns: Колонки
+collection_setup: Налаштування колекції
+optional_system_fields: Необов'язкові поля системи
 value_unique: Значення повинно бути унікальним
+all_activity: Уся діяльність
+create_item: Створити об'єкт
+display_template: Шаблон відображення
 language_display_template: Шаблон відображення мови
 translations_display_template: Шаблон відображення перекладів
 n_items_selected: 'Об''єкти не обрано | 1 об''єкт обрано | {n} об''єктів обрано'
@@ -670,6 +676,7 @@ display_text: Відобразити текст
 display_text_placeholder: Введіть текст відображення...
 interface_group_text_and_numbers: Текст і числа
 interface_group_selection: Вибір
+interface_group_relational: Реляційний
 interface_group_presentation: Оформлення
 interface_group_groups: Групи
 interface_group_other: Інше
@@ -684,10 +691,18 @@ wysiwyg_options:
   alignjustify: Вирівняти по ширині
   alignleft: Вирівняти по лівому краю
   alignnone: Не вирівнювати
+  alignright: Вирівняти по правому краю
   forecolor: Колір переднього плану
   backcolor: Колір заднього фону
   bold: Напівжирний
+  italic: Курсив
+  underline: Підкреслення
+  strikethrough: Закреслений
+  subscript: Нижній індекс
+  superscript: Верхній індекс
   codeblock: Код
+  blockquote: Цитата
+  bullist: Список з пунктами
   h4: Заголовок 4
   h5: Заголовок 5
   h6: Заголовок 6
@@ -1104,6 +1119,7 @@ interfaces:
   datetime:
     datetime: Дата й час
   system-display-template:
+    display-template: Шаблон відображення
     collection_field_not_setup: Параметр поля колекції налаштовано неправильно
     select_a_collection: Оберіть колекцію
   presentation-divider:
@@ -1119,6 +1135,8 @@ interfaces:
     hash: Хеш
   select-icon:
     icon: Іконка
+  select-dropdown-m2o:
+    display_template: Шаблон відображення
   input-rich-text-md:
     edit: Редагувати
   map:
@@ -1130,6 +1148,8 @@ interfaces:
   boolean:
     toggle: Переключити
     label_default: Увімкнено
+  translations:
+    display_template: Шаблон відображення
   user:
     user: Користувач
     modes:
