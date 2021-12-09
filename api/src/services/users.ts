@@ -350,6 +350,8 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'password-reset') throw new ForbiddenException();
 
+		await this.checkPasswordPolicy([password]);
+
 		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
 
 		if (user?.status !== 'active') {
