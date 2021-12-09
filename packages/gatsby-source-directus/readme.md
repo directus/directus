@@ -55,6 +55,7 @@ query {
 			files {
 				# since this is a M2M relationship, we need to reference the junction field
 				directus_files_id {
+					# `id` is required to be fetched in order to be used with `gatsby-transformer-sharp`
 					id
 					imageFile {
 						# when using the plugin 'gatsby-transformer-sharp', you can query images with transformations
@@ -68,6 +69,9 @@ query {
 	}
 }
 ```
+
+**Note**: When using with `gatsby-transformer-sharp` you will need to query `id` of the asset (specified on
+`DirectusData_directus_files` type).
 
 ## Options
 
