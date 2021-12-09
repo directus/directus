@@ -376,6 +376,11 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onCreateSpecials.includes(special) === false
 					);
@@ -452,6 +457,11 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onUpdateSpecials.includes(special) === false
 					);
