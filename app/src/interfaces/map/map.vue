@@ -257,7 +257,7 @@ export default defineComponent({
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 			if (controls.geocoder) {
-				map.addControl(controls.geocoder, 'top-right');
+				map.addControl(controls.geocoder as any, 'top-right');
 				controls.geocoder.on('result', (event: any) => {
 					location.value = event.result.center;
 				});
@@ -336,7 +336,8 @@ export default defineComponent({
 
 		function fitDataBounds(options: CameraOptions & AnimationOptions) {
 			if (map && currentGeometry) {
-				map.fitBounds(currentGeometry.bbox! as LngLatBoundsLike, {
+				const bbox = getBBox(currentGeometry);
+				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 80,
 					maxZoom: 8,
 					...options,
@@ -432,7 +433,6 @@ export default defineComponent({
 			} else {
 				result = geometries[geometries.length - 1];
 			}
-			result!.bbox = getBBox(result!);
 			return result;
 		}
 

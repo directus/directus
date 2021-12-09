@@ -241,9 +241,12 @@ two main ways to achieve multitenancy:
 
 ## Panels
 
-Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a
-[Dashboard](#dashboards) and can be positioned and resized as needed.
-[Panels are a Modular Extension Type](/extensions/panels/).
+Panels are modular units of data visualization that exist within the [Insights module](/app/insights). Each panel exists
+within a [Dashboard](#dashboards) and can be positioned and resized as needed.
+
+### Relevant Guides
+
+- [Creating a Custom Panel](/extensions/panels/)
 
 ## Permissions
 

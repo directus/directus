@@ -574,6 +574,7 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that va
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                            | `false`          |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --               |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle` |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --               |
 
 #### OpenID
 
@@ -592,6 +593,7 @@ registrations.
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                                                                                    | `false`                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --                     |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle`       |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --                     |
 
 ### LDAP (`ldap`)
 
