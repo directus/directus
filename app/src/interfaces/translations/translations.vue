@@ -57,7 +57,7 @@ import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep, isEqual, assign, isNil } from 'lodash';
+import { cloneDeep, isEqual, assign } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
 import { useWindowSize } from '@/composables/use-window-size';
 import useRelation from '@/composables/use-m2m';
