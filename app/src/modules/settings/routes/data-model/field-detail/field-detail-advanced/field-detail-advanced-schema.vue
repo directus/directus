@@ -383,6 +383,11 @@ export default defineComponent({
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
 					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
+					}
 				},
 			});
 
@@ -453,6 +458,11 @@ export default defineComponent({
 
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
+					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
 					}
 				},
 			});
