@@ -2,18 +2,6 @@ import { Command } from 'commander';
 import { Extension, HookConfig } from '@directus/shared/types';
 import { createCli } from './index';
 
-jest.mock('../env', () => ({
-	...jest.requireActual('../env').default,
-	EXTENSIONS_PATH: '',
-	SERVE_APP: false,
-	DB_CLIENT: 'pg',
-	DB_HOST: 'localhost',
-	DB_PORT: 5432,
-	DB_DATABASE: 'directus',
-	DB_USER: 'postgres',
-	DB_PASSWORD: 'psql1234',
-}));
-
 jest.mock('@directus/shared/utils/node/get-extensions', () => ({
 	getPackageExtensions: jest.fn(() => Promise.resolve([])),
 	getLocalExtensions: jest.fn(() => Promise.resolve([customCliExtension])),
