@@ -1,5 +1,5 @@
 <template>
-	<v-divider v-if="item.divider === true" :title="item?.name" />
+	<v-divider v-if="item.divider === true" />
 
 	<v-list-item
 		v-else

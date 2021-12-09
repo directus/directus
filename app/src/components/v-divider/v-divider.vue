@@ -1,16 +1,15 @@
 <template>
 	<div class="v-divider" :class="{ vertical, inlineTitle, large }">
-		<span v-if="$slots.icon || $slots.default || title" class="wrapper">
+		<span v-if="$slots.icon || $slots.default" class="wrapper">
 			<slot name="icon" class="icon" />
-			<span v-if="!vertical && title" class="type-text">{{ title }}</span>
-			<span v-else-if="!vertical && $slots.default" class="type-text"><slot /></span>
+			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
 		</span>
 		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -21,10 +20,6 @@ export default defineComponent({
 		inlineTitle: {
 			type: Boolean,
 			default: true,
-		},
-		title: {
-			type: String as PropType<string | null>,
-			default: null,
 		},
 		large: {
 			type: Boolean,

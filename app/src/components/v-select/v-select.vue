@@ -250,7 +250,7 @@ export default defineComponent({
 						};
 					}
 
-					if (item.divider === true) return { value: null, name: item?.name, divider: true };
+					if (item.divider === true) return { value: null, divider: true };
 
 					const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
 

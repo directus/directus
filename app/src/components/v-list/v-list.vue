@@ -61,7 +61,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 :global(body) {
 	--v-list-padding: 4px 0;
 	--v-list-border-radius: var(--border-radius);
@@ -98,9 +98,5 @@ export default defineComponent({
 :slotted(.v-divider) {
 	max-width: calc(100% - 16px);
 	margin: 8px;
-
-	.type-text {
-		font-size: 12px;
-	}
 }
 </style>

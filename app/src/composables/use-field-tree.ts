@@ -9,7 +9,6 @@ export type FieldNode = {
 	collection: string;
 	relatedCollection?: string;
 	key: string;
-	divider?: boolean;
 	children?: FieldNode[];
 };
 
@@ -52,38 +51,31 @@ export function useFieldTree(
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
 			);
 
-		const baseFields = fields.filter((field: Field) => !field.meta?.group);
+		const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
 
-		for (const [index, field] of baseFields.entries()) {
-			const groupFields = fields
-				.filter((groupField: Field) => groupField.meta?.group === field.field)
-				.sort((a, b) => {
-					if (!a.meta?.sort || !b.meta?.sort) return 0;
-					return a.meta.sort - b.meta.sort;
-				});
-			if (groupFields.length > 0) {
-				baseFields.splice(index + 1, 0, ...groupFields);
+		const sortGroupFields = (a: Field, b: Field) => {
+			if (!a.meta?.sort || !b.meta?.sort) return 0;
+			return a.meta.sort - b.meta.sort;
+		};
+
+		for (const [index, field] of nonGroupFields.entries()) {
+			const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+			if (groupFields.length) {
+				nonGroupFields.splice(index + 1, 0, ...groupFields.sort(sortGroupFields));
 			}
 		}
 
-		const sortedFields = baseFields.filter(filter).flatMap((field) => makeNode(field, parent));
+		const sortedFields = nonGroupFields
+			.filter((field) => !field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+			.filter(filter)
+			.flatMap((field) => makeNode(field, parent));
 
-		return fields.length ? sortedFields : undefined;
+		return sortedFields.length ? sortedFields : undefined;
 	}
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
 		const context = parent ? parent.key + '.' : '';
-
-		if (field.meta?.special?.includes('group')) {
-			return {
-				name: field.meta?.interface !== 'group-raw' ? field.name : '',
-				field: field.field,
-				collection: field.collection,
-				key: context + field.field,
-				divider: true,
-			};
-		}
 
 		if (relatedCollections.length <= 1) {
 			return {

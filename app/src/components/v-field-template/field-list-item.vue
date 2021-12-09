@@ -1,7 +1,6 @@
 <template>
-	<v-divider v-if="field.divider === true" :title="field.name" />
 	<v-list-item
-		v-else-if="field.children === undefined || depth === 0"
+		v-if="field.children === undefined || depth === 0"
 		:disabled="field.disabled"
 		clickable
 		@click="$emit('add', field.key)"
