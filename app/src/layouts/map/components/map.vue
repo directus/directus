@@ -26,6 +26,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, toRefs, computed, WatchStopHandle } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { ShowSelect } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { useAppStore } from '@/stores';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
@@ -61,6 +62,10 @@ export default defineComponent({
 		selection: {
 			type: Array as PropType<Array<string | number>>,
 			default: () => [],
+		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'multiple',
 		},
 	},
 	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata', 'updateitempopup'],
@@ -254,7 +259,7 @@ export default defineComponent({
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
-			const replace = !event.originalEvent.altKey;
+			const replace = props.showSelect === 'multiple' ? false : !event.originalEvent.altKey;
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
 					emit('featureselect', { ids: [feature.id], replace });

@@ -287,7 +287,9 @@ export default defineComponent({
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${fieldKey}" disabled="${props.disabled}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}" ${props.disabled ? 'disabled' : ''}>${
+							field.name
+						}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;

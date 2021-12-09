@@ -1,28 +1,23 @@
 import { FormField } from '@/components/v-form/types';
-import { getInterfaces } from '@/interfaces';
-import { Field, InterfaceConfig } from '@directus/shared/types';
+import { getInterface } from '@/interfaces';
+import { Field } from '@directus/shared/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { clone, orderBy } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';
 import { translate } from '@/utils/translate-object-values';
 
 export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
-	const { interfaces } = getInterfaces();
-
 	const formFields = computed(() => {
 		let formFields = clone(fields.value);
 
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;
 
-			let interfaceUsed = interfaces.value.find((int: InterfaceConfig) => int.id === field.meta?.interface);
-			const interfaceExists = interfaceUsed !== undefined;
-
-			if (interfaceExists === false) {
+			let interfaceUsed = getInterface(field.meta.interface);
+			if (interfaceUsed === undefined) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
+				interfaceUsed = getInterface(field.meta.interface);
 			}
-
-			interfaceUsed = interfaces.value.find((int: InterfaceConfig) => int.id === field.meta?.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;

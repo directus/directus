@@ -3,6 +3,7 @@ export {
 	defineDisplay,
 	defineLayout,
 	defineModule,
+	definePanel,
 	defineHook,
 	defineEndpoint,
 	getFieldsFromTemplate,

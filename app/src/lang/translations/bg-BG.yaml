@@ -618,8 +618,8 @@ interface_options: Настройки на интерфейса
 layout_options: Оформление и настройки
 rows: Редове
 columns: Колони
-collection_setup: Настройки на колекцията
-optional_system_fields: Незадължителни системни полета
+collection_setup: Настройване
+optional_system_fields: Предложения за полета
 value_unique: Само уникални стойности
 all_activity: Цялата активност
 create_item: Създаване на запис
@@ -792,7 +792,7 @@ discard_all_changes: Отмяна на промените
 discard_changes_copy: Сигурни ли сте, че искате да отхвърлите тези промени?
 show_x_axis: Показване на оста по X
 show_y_axis: Показване на оста по Y
-keep_editing: Връщане за редакция
+keep_editing: Редакция
 page_help_collections_overview: '**Обзор на колекциите** — Показване на всички налични колекции до които имате достъп.'
 page_help_collections_collection: >-
   **Преглед на записи** — Показване на всички записи от {collection}, до които имате достъп. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите заготовка от тази конфигурация за по-бърз достъп.
@@ -968,7 +968,7 @@ fields:
     files_and_thumbnails: Файлове и съхранение
     storage_default_folder: Папка по подразбиране
     storage_asset_presets: Заготовки с трансформации
-    storage_asset_transform: Позволявания за трансформации
+    storage_asset_transform: Позволения за трансформиране
     overrides: Преопределяне в приложението
     custom_css: Собствен CSS
     module_bar: Модулна лента
@@ -1244,6 +1244,7 @@ interfaces:
     code: Код
     description: Редактор на програмен код и откъси
     line_number: Номериране на редовете
+    line_wrapping: Пренасяне на редовете
     placeholder: Въвеждане на кода...
   system-collection:
     collection: Колекция
@@ -1310,6 +1311,8 @@ interfaces:
   file-image:
     image: Изображение
     description: Избор или качване на изображение
+    crop: Изрязване
+    crop_label: Изрязване до необходимото
   system-interface:
     interface: Интерфейс
     description: Избор на съществуващ интерфейс
@@ -1327,14 +1330,16 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Редактиране на markdown съдържание
+    edit: Редактиране
+    preview: Преглед
+    editorFont: Шрифт при редактиране
+    previewFont: Шрифт при преглед
     customSyntax: Собствени блокове
-    customSyntax_label: Добавяне на собствен синтактични типове
+    customSyntax_label: Добавяне на собствени синтактични типове
     customSyntax_add: Добавяне на собствен синтаксис
     box: Блоков / Вложен
     imageToken: Токен за изображенията
     imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
-    preview: Преглед
-    editor: Редактор
   map:
     map: Географска карта
     description: Избор на местоположение от карта
@@ -1414,6 +1419,8 @@ interfaces:
   boolean:
     toggle: Превключвател
     description: Превключване между вкл. и изкл.
+    color_on: Активен цвят
+    color_off: Неактивен цвят
     label_placeholder: Въвеждане на етикет...
     label_default: Включване
   translations:
@@ -1443,6 +1450,7 @@ interfaces:
     description: Автоматично дописване на стойности чрез външно API.
     results_path: Път до резултатите
     value_path: Път до стойността
+    text_path: Път до текстовата стойност
     trigger: Задействане
     rate: Скорост
   group-raw:
@@ -1593,6 +1601,8 @@ panels:
     description: Изобразяване на лийена диаграма спрямо стойностите през времето
     date_field: Поле за дата
     value_field: Поле за стойност
+    fill_type: Вид на запълване
+    curve_type: Вид на кривата
   label:
     name: Етикет
     description: Показване на някакъв текст

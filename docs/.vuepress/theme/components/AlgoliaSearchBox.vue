@@ -76,31 +76,36 @@ export default {
   .algolia-autocomplete
     line-height normal
     .ds-dropdown-menu
-      background-color #fff
-      border 2px solid #D3DAE4
+      background-color var(--background-page)
+      border 2px solid var(--border-normal)
       border-radius 4px
       font-size 16px
       margin 6px 0 0
       padding 4px
       text-align left
       &:before
-        border-color #999
-      [class*=ds-dataset-]
+        border-color var(--border-normal)
+      [class^=ds-dataset-]
         border none
+        background var(--background-page)
         padding 0
       .ds-suggestions
         margin-top 0
       .ds-suggestion
-        border-bottom 1px solid $borderColor
+        border-bottom 1px solid var(--border-normal)
     .algolia-docsearch-suggestion--highlight
-      color #2c815b
+      color var(--green-150) !important
+      box-shadow inset 0 -2px 0 0 var(--primary) !important
+    .algolia-docsearch-suggestion--text
+      color var(--foreground-normal)
     .algolia-docsearch-suggestion
-      border-color $borderColor
+      border-color var(--border-normal)
       padding 0
       .algolia-docsearch-suggestion--category-header
         padding 5px 10px
         margin-top 0
-        background $accentColor
+        background var(--primary)
+        border-bottom 1px solid var(--border-normal)
         color #fff
         font-weight 600
         .algolia-docsearch-suggestion--highlight
@@ -110,21 +115,26 @@ export default {
       .algolia-docsearch-suggestion--title
         font-weight 600
         margin-bottom 0
-        color $textColor
+        color var(--foreground-normal-alt)
       .algolia-docsearch-suggestion--subcategory-column
         vertical-align top
         padding 5px 7px 5px 5px
-        border-color $borderColor
-        background #f1f3f5
+        border-color var(--border-normal)
+        background var(--background-normal)
         &:after
           display none
       .algolia-docsearch-suggestion--subcategory-column-text
-        color #555
+        color var(--foreground-normal)
+			.algolia-docsearch-suggestion--content
+        background var(--background-page)
+    .algolia-docsearch-suggestion--content
+      &:before
+        background #d3dae4
     .algolia-docsearch-footer
-      border-color $borderColor
+      border-color var(--border-normal)
     .ds-cursor .algolia-docsearch-suggestion--content
-      background-color #e7edf3 !important
-      color $textColor
+      background-color var(--background-normal-alt) !important
+      color var(--foreground-normal-alt)
 
 @media (min-width: $MQMobile)
   .algolia-search-wrapper
@@ -161,4 +171,19 @@ export default {
       width 5px
       margin -3px 3px 0
       vertical-align middle
+
+@media (prefers-color-scheme: dark)
+	.algolia-search-wrapper
+		.algolia-autocomplete
+			.ds-dropdown-menu
+				&:before
+					border-color #455a64 !important
+					background #263238 !important
+				.algolia-docsearch-suggestion--category-header
+          .algolia-docsearch-suggestion--highlight
+            background rgba(255, 255, 255, 1)
+            color var(--primary) !important
+    .algolia-docsearch-suggestion--content
+      &:before
+        background #455a64
 </style>

@@ -13,11 +13,13 @@
 				</template>
 			</language-select>
 			<v-form
+				:disabled="disabled"
 				:loading="valuesLoading"
 				:fields="fields"
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:autofocus="autofocus"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 			<v-divider />
@@ -34,6 +36,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:disabled="disabled"
 				:loading="valuesLoading"
 				:initial-values="secondItemInitial"
 				:fields="fields"
@@ -81,6 +84,14 @@ export default defineComponent({
 		value: {
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
+		},
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['input'],
@@ -267,6 +278,7 @@ export default defineComponent({
 			const items = ref<Record<string, any>[]>([]);
 			const loading = ref(false);
 			const error = ref(null);
+			const isUndo = ref(false);
 
 			const firstItem = computed(() => getEditedValue(firstLang));
 			const secondItem = computed(() => getEditedValue(secondLang));
@@ -279,8 +291,9 @@ export default defineComponent({
 				(newVal, oldVal) => {
 					if (
 						newVal &&
-						newVal !== oldVal &&
-						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
+						!isEqual(newVal, oldVal) &&
+						newVal.every((item) => typeof item === 'string' || typeof item === 'number') &&
+						isUndo.value === false
 					) {
 						loadItems();
 					}
@@ -372,9 +385,11 @@ export default defineComponent({
 
 				if (!pkField || !langField) return;
 
+				isUndo.value = false;
+
 				let copyValue = cloneDeep(value.value ?? []);
 
-				if (pkField in values === false) {
+				if (pkField in values === false && langField in values === false) {
 					const newIndex = copyValue.findIndex((item) => typeof item === 'object' && item[langField] === lang);
 
 					if (newIndex !== -1) {
@@ -402,6 +417,7 @@ export default defineComponent({
 						} else {
 							if (values[pkField] === item[pkField]) {
 								if (isEqual(initialValues, { ...initialValues, ...values })) {
+									isUndo.value = true;
 									return values[pkField];
 								} else {
 									return values;

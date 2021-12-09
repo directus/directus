@@ -1244,6 +1244,7 @@ interfaces:
     code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
+    line_wrapping: A capo automatico
     placeholder: Inserisci il codice qui...
   system-collection:
     collection: Raccolta
@@ -1310,6 +1311,8 @@ interfaces:
   file-image:
     image: Immagine
     description: Seleziona o carica un'immagine
+    crop: Ritaglia per adattarsi
+    crop_label: Ritaglia l'immagine come necessario
   system-interface:
     interface: Interfaccia
     description: Seleziona un'interfaccia esistente
@@ -1327,14 +1330,16 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Inserisci e visualizza in anteprima markdown
+    edit: Modifica
+    preview: Anteprima
+    editorFont: Carattere dell'editor
+    previewFont: Anteprima carattere
     customSyntax: Blocchi Personalizzati
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
     imageToken: Token Immagine
     imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
-    preview: Anteprima
-    editor: Editor
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
@@ -1414,6 +1419,8 @@ interfaces:
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato
+    color_on: Colore attivato
+    color_off: Colore Disattivato
     label_placeholder: Inserisci un'etichetta...
     label_default: Abilitato
   translations:
@@ -1443,6 +1450,7 @@ interfaces:
     description: Una ricerca durante la digitazione per valori API esterni.
     results_path: Percorso dei risultati
     value_path: Percorso del valore
+    text_path: Percorso del testo
     trigger: Trigger
     rate: Intervallo
   group-raw:
@@ -1593,6 +1601,8 @@ panels:
     description: Disegna un grafico a linee basato su valori nel tempo
     date_field: Campo data
     value_field: Campo valore
+    fill_type: Tipo di riempimento
+    curve_type: Tipo di curva
   label:
     name: Etichetta
     description: Mostra del testo

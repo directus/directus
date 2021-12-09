@@ -47,7 +47,12 @@
 
 		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
 			<div class="content">
-				<interface-input-code :value="code" language="htmlmixed" @input="code = $event"></interface-input-code>
+				<interface-input-code
+					:value="code"
+					language="htmlmixed"
+					line-wrapping="true"
+					@input="code = $event"
+				></interface-input-code>
 			</div>
 
 			<template #actions>
@@ -271,14 +276,14 @@ export default defineComponent({
 		const replaceTokens = (value: string, token: string | null) => {
 			const url = getPublicURL();
 			const regex = new RegExp(
-				`(<[^=]+=")(${escapeRegExp(
+				`(<[^]+?=")(${escapeRegExp(
 					url
 				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
 				'gi'
 			);
 
 			return value.replace(regex, (_, pre, matchedUrl, post) => {
-				const matched = new URL(matchedUrl);
+				const matched = new URL(matchedUrl.replace(/&amp;/g, '&'));
 				const params = new URLSearchParams(matched.search);
 
 				if (!token) {
@@ -341,6 +346,7 @@ export default defineComponent({
 				statusbar: false,
 				menubar: false,
 				convert_urls: false,
+				image_dimensions: false,
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,

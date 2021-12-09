@@ -66,6 +66,9 @@ One of `auto`, `light`, `dark`.
 `tfa_secret` **string**\
 When TFA is enabled, this holds the secret key for it.
 
+`email_notifications` **boolean**\
+When this is enabled, the user will receive emails for notifications.
+
 </div>
 </div>
 <div class="right">

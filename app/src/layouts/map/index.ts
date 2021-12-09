@@ -6,16 +6,16 @@ import MapActions from './actions.vue';
 import { useI18n } from 'vue-i18n';
 import { toRefs, computed, ref, watch } from 'vue';
 
-import { toGeoJSON } from '@/utils/geometry';
+import { toGeoJSON, getGeometryFormatForType } from '@/utils/geometry';
 import { layers as directusLayers } from './style';
 import { useRouter } from 'vue-router';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
-import { Filter } from '@directus/shared/types';
+import { Filter, Item } from '@directus/shared/types';
 import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
+import { Field, GeometryOptions } from '@directus/shared/types';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 
 import { cloneDeep, merge } from 'lodash';
@@ -64,22 +64,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
 		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
 		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
-		const geometryFormat = computed<GeometryFormat | undefined>({
-			get: () => layoutOptions.value?.geometryFormat,
-			set(newValue: GeometryFormat | undefined) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					geometryFormat: newValue,
-					geometryField: undefined,
-				};
-			},
-		});
 
 		const geometryFieldData = computed(() => {
 			return fieldsInCollection.value.find((f: Field) => f.field == geometryField.value);
 		});
-
-		const isGeometryFieldNative = computed(() => geometryFieldData.value?.type.startsWith('geometry'));
 
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
@@ -103,13 +91,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return;
 			}
 			const geometryField = field.field;
-			const geometryFormat = isGeometryFieldNative.value ? 'native' : field.meta?.options?.geometryFormat;
+			const geometryFormat = getGeometryFormatForType(field.type);
 			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
 			if (!geometryFormat) {
 				return;
 			}
 			return { geometryField, geometryFormat, geometryType };
 		});
+
+		const isGeometryFieldNative = computed(() => geometryOptions.value?.geometryFormat === 'native');
 
 		const template = computed(() => {
 			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
@@ -225,20 +215,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		}
 
-		function setSelection(ids: Array<string | number>) {
-			selection.value = ids;
+		function setSelection(ids: Item[]) {
+			selection.value = Array.from(new Set(ids));
 		}
 
-		function pushSelection(ids: Array<string | number>) {
+		function pushSelection(ids: Item[]) {
 			selection.value = Array.from(new Set(selection.value.concat(ids)));
 		}
 
-		function handleSelect({ ids, replace }: { ids: Array<string | number>; replace: boolean }) {
+		function handleSelect({ ids, replace }: { ids: Item[]; replace: boolean }) {
 			if (replace) setSelection(ids);
 			else pushSelection(ids);
 		}
 
-		function handleClick({ id, replace }: { id: string | number; replace: boolean }) {
+		function handleClick({ id, replace }: { id: Item; replace: boolean }) {
 			if (props.selectMode) {
 				handleSelect({ ids: [id], replace });
 			} else {
@@ -293,7 +283,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geometryOptions,
 			handleClick,
 			handleSelect,
-			geometryFormat,
 			geometryField,
 			displayTemplate,
 			isGeometryFieldNative,

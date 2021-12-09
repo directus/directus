@@ -5,11 +5,9 @@ import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import { Relation, SchemaOverview } from '../types';
 import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/types';
-import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
-import { getGeometryHelper } from '../database/helpers/geometry';
-import { getDateHelper } from '../database/helpers/date';
+import { getHelpers } from '../database/helpers';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -60,7 +58,7 @@ export default function applyQuery(
 	}
 
 	if (query.group) {
-		dbQuery.groupBy(query.group.map(applyFunctionToColumnName));
+		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false)));
 	}
 
 	if (query.aggregate) {
@@ -144,6 +142,7 @@ export function applyFilter(
 	collection: string,
 	subQuery = false
 ) {
+	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
 
 	const aliasMap: Record<string, string> = {};
@@ -371,8 +370,6 @@ export function applyFilter(
 				});
 			}
 
-			const dateHelper = getDateHelper();
-
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -380,9 +377,9 @@ export function applyFilter(
 
 				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
 					if (Array.isArray(compareValue)) {
-						compareValue = compareValue.map((val) => dateHelper.parseDate(val));
+						compareValue = compareValue.map((val) => helpers.date.parse(val));
 					} else {
-						compareValue = dateHelper.parseDate(compareValue);
+						compareValue = helpers.date.parse(compareValue);
 					}
 				}
 			}
@@ -479,21 +476,19 @@ export function applyFilter(
 				dbQuery[logical].whereNotBetween(selectionRaw, value);
 			}
 
-			const geometryHelper = getGeometryHelper();
-
 			if (operator == '_intersects') {
-				dbQuery[logical].whereRaw(geometryHelper.intersects(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
 			}
 
 			if (operator == '_nintersects') {
-				dbQuery[logical].whereRaw(geometryHelper.nintersects(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
 			}
 			if (operator == '_intersects_bbox') {
-				dbQuery[logical].whereRaw(geometryHelper.intersects_bbox(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
 			}
 
 			if (operator == '_nintersects_bbox') {
-				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
 			}
 		}
 

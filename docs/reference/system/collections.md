@@ -73,6 +73,24 @@ Whether or not the Admin App should allow the user to view archived items.
 `sort_field` **boolean**\
 What field holds the sort value on the collection. The Admin App uses this to allow drag-and-drop manual sorting.
 
+`accountability` **string**\
+What data is tracked. One of `all`, `activity`. See [Accountability](/configuration/data-model/#accountability) for more
+information.
+
+`item_duplication_fields` **array**\
+What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/configuration/data-model/#duplication)
+for more information.
+
+`group` **string**\
+The name of the parent collection. This is used in [grouping/nesting of collections](/configuration/data-model/#sorting-grouping).
+
+`sort` **number**\
+What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/configuration/data-model/#sorting-grouping).
+
+`collapse` **string**\
+What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`,
+`locked`.
+
 </div>
 
 #### Schema
@@ -89,6 +107,14 @@ The table name.
 The table comment.
 
 </div>
+
+::: tip
+
+["folder" collections do not hold any data](/configuration/data-model/#sorting-grouping), hence their schema would be
+`null`.
+
+:::
+
 </div>
 <div class="right">
 
@@ -116,7 +142,9 @@ The table comment.
 		"archive_value": "archived",
 		"unarchive_value": "draft",
 		"archive_app_filter": true,
-		"sort_field": "sort"
+		"sort_field": "sort",
+		"item_duplication_fields": null,
+		"sort": 1
 	},
 	"schema": {
 		"name": "pages",
@@ -264,6 +292,13 @@ field.
 ### Returns
 
 The [collection object](#the-collection-object) for the collection created in this request.
+
+::: tip
+
+Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
+entirely or use `schema: null` to create ["folder" collections](/configuration/data-model/#sorting-grouping).
+
+:::
 
 </div>
 <div class="right">
