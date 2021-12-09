@@ -1093,6 +1093,8 @@ block: Блокувати
 inline: У тексті
 comment: Коментар
 relational_triggers: Реляційні тригери
+referential_action_field_label_m2o: Видалиться з {collection}...
+referential_action_no_action: Запобігти видаленню
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
 description: Опис
