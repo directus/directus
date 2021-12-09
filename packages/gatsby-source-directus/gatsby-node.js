@@ -38,22 +38,30 @@ exports.pluginOptionsSchema = ({ Joi }) => {
 exports.sourceNodes = async (gatsbyOptions, pluginOptions) => {
 	plugin.setOptions(pluginOptions);
 
+	const optionsSystem = plugin.getOptionsSystem();
+	const options = plugin.getOptions();
+
 	const createNode = gatsbyOptions.actions.createNode;
 
 	// Avoid type conflict with gatsby-source-graphql
 	gatsbyOptions.actions.createNode = (node) => {
-		node.internal.type = 'DirectusGraphQLSource';
+		if (node.internal.type === 'GraphQLSource') {
+			if (node.typeName === optionsSystem.typeName) node.internal.type = 'DirectusSystemGraphQLSource';
+			if (node.typeName === options.typeName) node.internal.type = 'DirectusGraphQLSource';
+		}
 
 		return createNode(node);
 	};
 
-	await sourceNodes(gatsbyOptions, plugin.getOptions());
+	await sourceNodes(gatsbyOptions, optionsSystem);
+	await sourceNodes(gatsbyOptions, options);
 };
 
 exports.createSchemaCustomization = async (gatsby, pluginOptions) => {
 	plugin.setOptions(pluginOptions);
 
-	return await createSchemaCustomization(gatsby, plugin.getOptions());
+	await createSchemaCustomization(gatsby, plugin.getOptionsSystem());
+	await createSchemaCustomization(gatsby, plugin.getOptions());
 };
 
 /**
@@ -67,26 +75,29 @@ exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers
 	const { headers } = await plugin.getOptions();
 	const { Authorization } = await headers();
 
-	await createResolvers({
-		DirectusData_directus_files: {
-			imageFile: {
-				type: `File`,
-				resolve(source) {
-					if (!source || !source.id) {
-						return null;
-					}
-					return createRemoteFileNode({
-						url: `${plugin.url}assets/${source.id}`,
-						store,
-						cache,
-						createNode,
-						createNodeId,
-						httpHeaders: { Authorization },
-						reporter,
-					});
-				},
+	const fileResolver = {
+		imageFile: {
+			type: `File`,
+			resolve(source) {
+				if (!source || !source.id) {
+					return null;
+				}
+				return createRemoteFileNode({
+					url: `${plugin.url}assets/${source.id}`,
+					store,
+					cache,
+					createNode,
+					createNodeId,
+					httpHeaders: { Authorization },
+					reporter,
+				});
 			},
 		},
+	};
+
+	await createResolvers({
+		DirectusData_directus_files: fileResolver,
+		DirectusSystemData_directus_files: fileResolver,
 	});
 };
 
@@ -94,6 +105,7 @@ class Plugin {
 	constructor() {
 		this.authToken = '';
 		this.options = null;
+		this.urlGraphqlSystem = '';
 		this.urlGraphql = '';
 		this.url = '';
 		this.refreshInterval = 0;
@@ -130,6 +142,9 @@ class Plugin {
 
 			baseUrl.pathname = '/graphql';
 			this.urlGraphql = baseUrl.toString();
+
+			baseUrl.pathname = '/graphql/system';
+			this.urlGraphqlSystem = baseUrl.toString();
 		} catch (err) {
 			error('"url" should be a valid URL');
 		}
@@ -155,6 +170,17 @@ class Plugin {
 			typeName: this.options?.type?.name || 'DirectusData',
 			fieldName: this.options?.type?.field || 'directus',
 			headers: this.headers.bind(this),
+		};
+	}
+
+	getOptionsSystem() {
+		const options = this.getOptions();
+
+		return {
+			...options,
+			url: this.urlGraphqlSystem,
+			typeName: this.options?.type?.system_name || 'DirectusSystemData',
+			fieldName: this.options?.type?.system_field || 'directus_system',
 		};
 	}
 

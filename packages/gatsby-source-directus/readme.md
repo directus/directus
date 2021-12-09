@@ -47,6 +47,7 @@ module.exports = {
 
 ```graphql
 query {
+	# if you change `type.name`, remember to also rename following field
 	directus {
 		# the collection you want to query
 		articles {
@@ -63,6 +64,21 @@ query {
 							gatsbyImageData(width: 200)
 						}
 					}
+				}
+			}
+		}
+	}
+
+	# it's also possible to query system collections
+	directus_system {
+		users {
+			email
+		}
+		files {
+			id
+			imageFile {
+				childImageSharp {
+					gatsbyImageData(width: 200)
 				}
 			}
 		}
@@ -93,9 +109,17 @@ query {
 - `type` [*Optional*] - defines the type and field name to be used on GraphQL. If you are using multiple instances of
   Directus, please ensure you have unique type and field names per instance.
 
-  - `type.name` [*Optional, defaults to `DirectusData`*] - defines the type name to be used on GraphQL
-  - `type.field` [*Optional*, defaults to `directus`] - defines the field name to be used on GraphQL. Remember to query
-    the proper field inside `query`.
+  - `type.name` [*Optional, defaults to `DirectusData`*] - defines the GraphQL type name to be used for user defined
+    collections
+
+  - `type.field` [*Optional*, defaults to `directus`] - defines the GraphQL field name to query user defined
+    collections. If you change this property, remember to query the proper field inside `query`.
+
+  - `type.system_name` [*Optional, defaults to `DirectusSystemData`*] - defines the GraphQL type name to be used for
+    Directus defined collections, i.e., `directus_users`, `directus_files`, etc.
+
+  - `type.system_field` [*Optional*, defaults to `directus_system`] - defines the GraphQL field name to query Directus
+    defined collections.
 
 - `dev` [*Optional*] - defines options for development environments
 
