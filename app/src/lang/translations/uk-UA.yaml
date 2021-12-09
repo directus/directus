@@ -919,6 +919,8 @@ fields:
     last_page: Остання сторінка
     last_access: Останній доступ
   directus_settings:
+    mapping: Зіставлення
+    basemaps: Карта-схеми
     basemaps_raster: Растровий
     basemaps_tile: Растровий TileJSON
     basemaps_style: Стиль Mapbox
@@ -1090,6 +1092,7 @@ start_collapsed: Старт згорнутим
 block: Блокувати
 inline: У тексті
 comment: Коментар
+relational_triggers: Реляційні тригери
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
 description: Опис
