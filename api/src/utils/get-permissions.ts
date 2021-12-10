@@ -95,7 +95,7 @@ function parsePermissions(permissions: any[]) {
 
 	let containDynamicData = false;
 
-	permissions.map((permissionRaw) => {
+	permissions = permissions.map((permissionRaw) => {
 		const permission = cloneDeep(permissionRaw);
 
 		if (permission.permissions && typeof permission.permissions === 'string') {
