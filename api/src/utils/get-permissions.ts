@@ -35,9 +35,13 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			if (cachedFilterContext) {
 				return processPermissions(accountability, cachedPermissions.permissions, cachedFilterContext);
 			} else {
-				let requiredPermissionData, containDynamicData;
+				const {
+					permissions: parsedPermissions,
+					requiredPermissionData,
+					containDynamicData,
+				} = parsePermissions(cachedPermissions.permissions);
 
-				({ permissions, requiredPermissionData, containDynamicData } = parsePermissions(cachedPermissions.permissions));
+				permissions = parsedPermissions;
 
 				const filterContext = containDynamicData
 					? await getFilterContext(schema, accountability, requiredPermissionData)
@@ -58,9 +62,13 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			.from('directus_permissions')
 			.where({ role: accountability.role });
 
-		let requiredPermissionData, containDynamicData;
+		const {
+			permissions: parsedPermissions,
+			requiredPermissionData,
+			containDynamicData,
+		} = parsePermissions(permissionsForRole);
 
-		({ permissions, requiredPermissionData, containDynamicData } = parsePermissions(permissionsForRole));
+		permissions = parsedPermissions;
 
 		if (accountability.app === true) {
 			permissions = mergePermissions(
