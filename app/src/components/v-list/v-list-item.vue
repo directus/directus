@@ -134,8 +134,8 @@ export default defineComponent({
 
 <style>
 body {
-	--v-list-item-padding-nav: 0 8px;
-	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
+	--v-list-item-padding-nav: 0 var(--input-padding);
+	--v-list-item-padding: 0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px));
 	--v-list-item-margin-nav: 2px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
@@ -240,7 +240,7 @@ body {
 		display: flex;
 		height: var(--input-height);
 		margin: 0;
-		padding: 8px;
+		padding: 8px var(--input-padding);
 		background-color: var(--v-list-item-background-color);
 		border: var(--border-width) solid var(--v-list-item-border-color);
 		border-radius: var(--border-radius);
