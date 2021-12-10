@@ -21,5 +21,5 @@ export async function getFlatpickrLocale(): Promise<Record<string, any>> {
 	}
 
 	// locale returns { default, en, <lang> } and we'll only return the last value
-	return Object.values(locale)[2] as Record<string, any>;
+	return Object.values(locale)[Object.keys(locale).length - 1] as Record<string, any>;
 }
