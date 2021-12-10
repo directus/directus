@@ -2,6 +2,58 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.2.2 (December 10, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#10441](https://github.com/directus/directus/pull/10441) interface padding
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10437](https://github.com/directus/directus/pull/10437) Update selection styling to use CSS variable
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10123](https://github.com/directus/directus/pull/10123) fix advanced filter fields order with field groups
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10440](https://github.com/directus/directus/pull/10440) Fix broken wysiwyg editor when width and height are set in
+    image ([@maltejur](https://github.com/maltejur))
+  - [#10430](https://github.com/directus/directus/pull/10430) patch translations interface for new translations
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10412](https://github.com/directus/directus/pull/10412) Fix selection of field.meta.special after removal
+    ([@licitdev](https://github.com/licitdev))
+  - [#10410](https://github.com/directus/directus/pull/10410) fix translations not refreshing on save
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10370](https://github.com/directus/directus/pull/10370) fix styling problem with nested render-template
+    ([@SeanDylanGoff](https://github.com/SeanDylanGoff))
+  - [#10368](https://github.com/directus/directus/pull/10368) Relations: fix M2M related primary key
+    ([@AdiechaHK](https://github.com/AdiechaHK))
+  - [#10125](https://github.com/directus/directus/pull/10125) Auto expand selections for checkbox tree in Show Selected
+    mode ([@azrikahar](https://github.com/azrikahar))
+  - [#10123](https://github.com/directus/directus/pull/10123) fix advanced filter fields order with field groups
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9589](https://github.com/directus/directus/pull/9589) Fix conditional markdown and code input glitches
+    ([@smilledge](https://github.com/smilledge))
+- **API**
+  - [#10409](https://github.com/directus/directus/pull/10409) Add password policy check during password reset
+    ([@licitdev](https://github.com/licitdev))
+  - [#9957](https://github.com/directus/directus/pull/9957) Separate caching of dynamic user vars from permissions
+    ([@licitdev](https://github.com/licitdev))
+  - [#9527](https://github.com/directus/directus/pull/9527) Added edge case handling for weird IBM ldap issues
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+
+### :memo: Documentation
+
+- [#10408](https://github.com/directus/directus/pull/10408) clarify "folder" collections & collection API reference
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10386](https://github.com/directus/directus/pull/10386) Add custom panel extensions template & docs
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10382](https://github.com/directus/directus/pull/10382) Tweak for logical operators snippet
+  ([@ryntab](https://github.com/ryntab))
+- [#10275](https://github.com/directus/directus/pull/10275) Docs for testing the API
+  ([@jaycammarano](https://github.com/jaycammarano))
+
 ## v9.2.1 (December 6, 2021)
 
 ### :rocket: Improvements
