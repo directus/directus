@@ -1,4 +1,5 @@
 import { defineDisplay } from '@directus/shared/utils';
+import { DisplayConfig } from '@directus/shared/types';
 import DisplayFormattedValue from './formatted-value.vue';
 
 export default defineDisplay({
@@ -10,7 +11,7 @@ export default defineDisplay({
 	component: DisplayFormattedValue,
 	options: ({ collection, field }) => {
 		const display_options = field.meta.display_options || {};
-		const options = [
+		const options: DisplayConfig['options'] = [
 			{
 				field: 'prefix',
 				name: '$t:displays.formatted-value.prefix',
@@ -167,87 +168,85 @@ export default defineDisplay({
 			});
 		}
 
-		if (['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
-			options.push({
-				field: 'formatRules',
-				name: '$t:displays.formatted-value.format_rules',
-				type: 'json',
-				meta: {
-					interface: 'list',
-					options: {
-						template: '{{name}}',
-						fields: [
-							{
-								field: 'filter',
-								name: '$t:displays.formatted-value.format_rules_filter',
-								type: 'json',
-								meta: {
-									interface: 'system-filter',
-									options: {
-										collectionName: collection,
-									},
+		options.push({
+			field: 'formatRules',
+			name: '$t:displays.formatted-value.format_rules',
+			type: 'json',
+			meta: {
+				interface: 'list',
+				options: {
+					template: '{{name}}',
+					fields: [
+						{
+							field: 'rule',
+							name: '$t:displays.formatted-value.format_rules_filter',
+							type: 'json',
+							meta: {
+								interface: 'system-filter',
+								options: {
+									collectionName: collection,
 								},
 							},
-							{
-								field: 'name',
-								name: '$t:displays.formatted-value.format_rules_name',
-								type: 'string',
-								meta: {
-									width: 'half',
-									interface: 'input',
-									options: {
-										label: '$t:displays.formatted-value.format_rules_name_label',
-									},
+						},
+						{
+							field: 'name',
+							name: '$t:displays.formatted-value.format_rules_name',
+							type: 'string',
+							meta: {
+								width: 'half',
+								interface: 'input',
+								options: {
+									label: '$t:displays.formatted-value.format_rules_name_label',
 								},
 							},
-							{
-								field: 'color',
-								name: '$t:displays.formatted-value.color',
-								type: 'string',
-								meta: {
-									interface: 'select-color',
-									width: 'half',
-								},
+						},
+						{
+							field: 'color',
+							name: '$t:displays.formatted-value.color',
+							type: 'string',
+							meta: {
+								interface: 'select-color',
+								width: 'half',
 							},
-							{
-								field: 'iconLeft',
-								name: '$t:displays.formatted-value.icon_left',
-								type: 'string',
-								meta: {
-									width: 'half',
-									interface: 'select-icon',
-								},
+						},
+						{
+							field: 'iconLeft',
+							name: '$t:displays.formatted-value.icon_left',
+							type: 'string',
+							meta: {
+								width: 'half',
+								interface: 'select-icon',
 							},
-							{
-								field: 'iconRight',
-								name: '$t:displays.formatted-value.icon_right',
-								type: 'string',
-								meta: {
-									width: 'half',
-									interface: 'select-icon',
-								},
+						},
+						{
+							field: 'iconRight',
+							name: '$t:displays.formatted-value.icon_right',
+							type: 'string',
+							meta: {
+								width: 'half',
+								interface: 'select-icon',
 							},
-							{
-								field: 'iconLeftColor',
-								name: '$t:displays.formatted-value.icon_left_color',
-								meta: {
-									width: 'half',
-									interface: 'select-color',
-								},
+						},
+						{
+							field: 'iconLeftColor',
+							name: '$t:displays.formatted-value.icon_left_color',
+							meta: {
+								width: 'half',
+								interface: 'select-color',
 							},
-							{
-								field: 'iconRightColor',
-								name: '$t:displays.formatted-value.icon_right_color',
-								meta: {
-									width: 'half',
-									interface: 'select-color',
-								},
+						},
+						{
+							field: 'iconRightColor',
+							name: '$t:displays.formatted-value.icon_right_color',
+							meta: {
+								width: 'half',
+								interface: 'select-color',
 							},
-						],
-					},
+						},
+					],
 				},
-			});
-		}
+			},
+		});
 
 		return options;
 	},

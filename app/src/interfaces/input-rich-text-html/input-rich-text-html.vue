@@ -47,7 +47,12 @@
 
 		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
 			<div class="content">
-				<interface-input-code :value="code" language="htmlmixed" @input="code = $event"></interface-input-code>
+				<interface-input-code
+					:value="code"
+					language="htmlmixed"
+					line-wrapping="true"
+					@input="code = $event"
+				></interface-input-code>
 			</div>
 
 			<template #actions>

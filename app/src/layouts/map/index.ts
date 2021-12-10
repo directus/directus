@@ -15,7 +15,7 @@ import { Filter, Item } from '@directus/shared/types';
 import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
+import { Field, GeometryOptions } from '@directus/shared/types';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 
 import { cloneDeep, merge } from 'lodash';

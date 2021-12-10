@@ -5,7 +5,6 @@ import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import { Relation, SchemaOverview } from '../types';
 import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/types';
-import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
@@ -59,7 +58,7 @@ export default function applyQuery(
 	}
 
 	if (query.group) {
-		dbQuery.groupBy(`${collection}.${query.group.map(applyFunctionToColumnName)}`);
+		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false)));
 	}
 
 	if (query.aggregate) {

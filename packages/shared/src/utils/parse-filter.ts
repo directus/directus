@@ -19,14 +19,20 @@ export function parseFilter(
 	if (filter === null || filter === undefined) {
 		return null;
 	}
+
 	if (!isObjectLike(filter)) {
 		return { _eq: parseFilterValue(filter, accountability, context) };
 	}
+
 	const filters = Object.entries(filter).map((entry) => parseFilterEntry(entry, accountability, context));
-	if (filters.length > 1) {
+
+	if (filters.length === 0) {
+		return {};
+	} else if (filters.length === 1) {
+		return filters[0] ?? null;
+	} else {
 		return { _and: filters };
 	}
-	return filters[0] ?? null;
 }
 
 function parseFilterEntry(

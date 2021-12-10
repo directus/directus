@@ -3,18 +3,13 @@
 > Displays are small inline components that allow you to create new ways of viewing field values throughout the App.
 > [Learn more about Displays](/getting-started/glossary/#displays).
 
-## 1. Setup the Boilerplate
+## Extension Entrypoint
 
-Every display is a standalone "package" that contains at least a metadata file and a Vue component. We recommend using
-the following file structure:
+The entrypoint of your display is the `index` file inside the `src/` folder of your extension package. It exports a
+configuration object with options to configure the behavior of your display. When loading your display, this object is
+imported by the Directus host.
 
-```
-src/
-	index.js
-	display.vue
-```
-
-### src/index.js
+Example of an entrypoint:
 
 ```js
 import DisplayComponent from './display.vue';
@@ -22,29 +17,36 @@ import DisplayComponent from './display.vue';
 export default {
 	id: 'custom',
 	name: 'Custom',
-	description: 'This is my custom display!',
 	icon: 'box',
+	description: 'This is my custom display!',
 	component: DisplayComponent,
+	options: null,
 	types: ['string'],
 };
 ```
 
+#### Available Options
+
 - `id` — The unique key for this display. It is good practice to scope proprietary displays with an author prefix.
 - `name` — The human-readable name for this display.
-- `description` — A short description (<80 characters) of this display shown in the App.
 - `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
   Directus custom icons.
-- `component` — A reference to your Vue component.
-- `types` — A CSV of supported [types](/getting-started/glossary/#types).
+- `description` — A short description (<80 characters) of this display shown in the App.
+- `component` — A reference to your display component.
+- `options` — The options of your display. Can be either an options object or a dedicated Vue component.
+- `types` — A CSV of supported [types](/concepts/types/).
+- `groups` — An array of field-groups. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2a`, `translations`.
+  Defaults to `standard`.
+- `fields` — If this option is set, the display will fetch relational fields. Can either be an array of fields or a
+  function that returns an array of fields.
 
-::: tip
+## Display Component
 
-[See the TypeScript definition](https://github.com/directus/directus/blob/20355fee5eba514dd75565f60269311187010c66/app/src/displays/types.ts#L24-L34)
-for more info on what can go into this object.
+The display component is the part of your extension that will be rendered by the Directus App whenever your display
+should be used to show the value of a field. This display component has to be Vue component. The most straightforward
+way to write a Vue component is to use the Vue Single File Component syntax.
 
-:::
-
-### src/display.vue
+Example of a display component using the Vue SFC syntax:
 
 ```vue
 <template>
@@ -54,22 +56,38 @@ for more info on what can go into this object.
 <script>
 export default {
 	props: {
-		value: String,
+		value: {
+			type: String,
+			default: null,
+		},
 	},
 };
 </script>
 ```
 
-The props you can use in a display are:
+The current value of the field is provided to the component via the `value` prop. If you use the `fields` option to
+fetch relational fields, the `value` prop will be an object with the requested fields as keys and their respective
+values.
 
-- `value` — The value of the parent field.
-- `interface` - The interface of the parent field.
-- `interface-options` - The options for the parent field's interface.
-- `type` — The type of the parent field.
-- `collection` — The collection name of the parent field.
-- `field` — The key of the parent field.
+#### Available Props
 
----
+- `value` — The value of the field.
+- `interface` - The interface of the field.
+- `interfaceOptions` - The options for the field's interface.
+- `type` — The type of the field.
+- `collection` — The collection name of the field.
+- `field` — The key of the field.
+
+Other than this simple API to communicate with the Directus App, the display component is a blank canvas, allowing you
+to create anything you need.
+
+::: warning Vue Version
+
+The Directus App uses Vue 3. There might be 3rd party libraries that aren't yet compatible with Vue 3.
+
+:::
+
+### Functional Component
 
 Instead of defining the component inside a Vue SFC file, you can use a functional component. This allows you to make
 simple displays that don't need a full component rendered:
@@ -78,56 +96,38 @@ simple displays that don't need a full component rendered:
 export default {
 	id: 'custom',
 	name: 'Custom',
-	description: 'This is my custom display!',
 	icon: 'box',
+	description: 'This is my custom display!',
 	component: function ({ value }) {
 		return value.toLowerCase();
 	},
+	options: null,
 	types: ['string'],
 };
 ```
 
-## 2. Install Dependencies
+## Accessing Internal Systems
 
-Set up a package.json file by running:
+To access internal systems like the API or the stores, you can use the `useApi()` and `useStores()` composables exported
+by the `@directus/extensions-sdk` package. They can be used inside a `setup()` function like this:
 
-```bash
-npm init -y
+```js
+import { useApi, useStores } from '@directus/extensions-sdk';
+
+export default {
+	setup() {
+		const api = useApi();
+
+		const { useCollectionsStore } = useStores();
+		const collectionsStore = useCollectionsStore();
+
+		// ...
+	},
+};
 ```
 
-To be read by the Admin App, your custom display's Vue component must first be bundled into a single `index.js` file. We
-recommend bundling your code using the directus-extension CLI from our `@directus/extensions-sdk` package. The CLI
-internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
-SDK, run this command:
+::: tip Vue Options API
 
-```bash
-npm i -D @directus/extensions-sdk
-```
+If you prefer to use the Vue Options API, you can inject the `api` and `stores` properties directly.
 
-For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
-the root of the `package.json` file:
-
-```json
-"directus:extension": {
-	"type": "display",
-	"path": "dist/index.js",
-	"source": "src/index.js",
-	"host": "^9.0.0-rc.87",
-	"hidden": false
-}
-```
-
-## 3. Develop Your Custom Display
-
-The display itself is simply a function or a Vue component, providing a blank canvas for creating anything you need.
-
-## 4. Build and Deploy
-
-To build the display for use within Directus, run:
-
-```bash
-npx directus-extension build
-```
-
-Finally, move the output from your display's `dist` folder into your project's `/extensions/displays/my-custom-display`
-folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+:::

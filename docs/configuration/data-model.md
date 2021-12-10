@@ -44,8 +44,8 @@ are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
-  - [Creating a Field](#creating-a-field)
-  - [Updating a Field](#updating-a-field)
+  - [Creating a Field](#creating-a-field-standard)
+  - [Configuring a Field](#configuring-a-field)
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
   - [Changing Field Order & Layout](#adjusting-the-collection-form)
