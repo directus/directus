@@ -32,12 +32,12 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 			title: 'Create Directus Docker Image',
 			task: async (_, task) => {
 				const result = await globby(['**/*', '!node_modules', '!**/node_modules', '!**/src', '!tests', '!**/tests'], {
-					cwd: path.resolve(__dirname, '..', '..'),
+					cwd: path.resolve(__dirname, '..', '..', '..'),
 				});
 
 				const stream = await docker.buildImage(
 					{
-						context: path.resolve(__dirname, '..', '..'),
+						context: path.resolve(__dirname, '..', '..', '..'),
 						src: ['Dockerfile', ...result],
 					},
 					{

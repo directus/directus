@@ -55,9 +55,10 @@ npx directus database install
 
 Installs the initial Directus system tables on an empty database. Used internally by `bootstrap`.
 
-It should be used only in specific cases, e.g. when you want to run something between `install` and `migrate`. You probably should call `directus database migrate:latest` afterwards manually.
+It should be used only in specific cases, e.g. when you want to run something between `install` and `migrate`. You
+probably should call `directus database migrate:latest` afterwards manually.
 
-You may want to use `directus bootstrap` instead. 
+You may want to use `directus bootstrap` instead.
 
 ### Upgrade the Database
 
