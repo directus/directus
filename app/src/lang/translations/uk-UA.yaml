@@ -1102,7 +1102,21 @@ inline: У тексті
 comment: Коментар
 relational_triggers: Реляційні тригери
 referential_action_field_label_m2o: Видалиться з {collection}...
+referential_action_field_label_o2m: Буде видалено з колекції {collection}...
 referential_action_no_action: Запобігти видаленню
+referential_action_cascade: Видалити об'єкт з {collection} (cascade)
+referential_action_set_null: Обнулити поле {field}
+referential_action_set_default: Встановити для {field} значення за замовчуванням
+choose_action: Вибрати дію
+continue_label: Продовжити
+continue_as: >-
+  {name} наразі авторизований. Якщо ви впізнали цей обліковий запис, натисніть кнопку продовжити.
+editing_role: 'Роль {role}'
+creating_webhook: Створити вебхук
+default_label: За замовчуванням
+delete_label: Видалити
+delete_are_you_sure: >-
+  Ця дія постійна і не може бути скасована. Ви впевнені, що хочете продовжити?
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
 description: Опис
@@ -1111,6 +1125,7 @@ duplicate: Дублювати
 limit: Обмеження
 email: Email
 embed: Вбудувати
+fallback_icon: Неактивна іконка
 field: Поле | Поля
 file: Файл
 file_library: Бібліотека файлів
@@ -1118,11 +1133,16 @@ forgot_password: Забули пароль
 hidden: Приховано
 icon: Іконка
 info: Інформація
+normal: Нормальний
+success: Успішно
+warning: Попередження
+danger: Небезпека
 junction_collection: Збірна колекція
 latency: Затримка
 login: Вхід
 my_activity: Активність
 not_authenticated: Не автентифіковано
+authenticated: Підтверджено
 options: Параметри
 otp: Одноразовий пароль
 password: Пароль
@@ -1130,6 +1150,7 @@ permissions: Права
 relationship: Відносини
 reset: Скинути
 reset_password: Скинути пароль
+revisions: Версії
 revert: Повернути
 save: Зберегти
 schema: Схема
@@ -1158,6 +1179,7 @@ interfaces:
     name: Фільтр
     description: Налаштувати фільтр об'єкта.
     add_filter: Додати фільтр
+    add_group: І / або група
     add_value: Додати значення
     all: Все
     any: Будь-які
@@ -1167,6 +1189,8 @@ interfaces:
     change_value: Натисніть, щоб змінити значення
     placeholder: Перетягніть файли сюди
   group-accordion:
+    name: Гармошка
+    description: Відображати поля або групи в вигляді гармошки
     start: Почати
     all_closed: Всі закриті
     first_opened: Спочатку відкриті
@@ -1231,58 +1255,148 @@ interfaces:
     hash: Хеш
   select-icon:
     icon: Іконка
+    search_for_icon: Пошук іконки...
+  file-image:
+    image: Зображення
+    description: Виберіть або завантажте зображення
+    crop: Обрізати по розміру
+    crop_label: Обрізати зображення при необхідності
+  system-interface:
+    interface: Інтерфейс
+    description: Оберіть існуючий інтерфейс
+    placeholder: Оберіть інтерфейс...
+  system-interface-options:
+    interface-options: Опції інтерфейсу
+    description: Плагін для вибору опцій інтерфейсу
+  list-m2m:
+    many-to-many: Багато до багатьох
+    description: Вибрати кілька пов'язаних об'єктів
   select-dropdown-m2o:
+    many-to-one: Багато до одного
+    description: Виберіть один пов'язаний об'єкт
     display_template: Шаблон відображення
   input-rich-text-md:
+    markdown: Розмітка
+    description: Увійти та переглянути розмітку
     edit: Редагувати
+    preview: Перегляд
+    editorFont: Шрифт редактора
+    previewFont: Попередній перегляд шрифту
+    customSyntax: Користувацькі блоки
+    customSyntax_label: Додати користувацькі типи синтаксису
+    customSyntax_add: Додати користувацький синтаксис
+    imageToken: Ключ забраження
   map:
+    map: Карта
+    description: Обрати місцезнаходження на карті
     zoom: Масштаб зображення
+    geometry_type: Геометрічний тип
+    geometry_format: Геометрічний формат
+    default_view: Вид за замовчуванням
+    invalid_options: Неправильні опції
+    invalid_format: Неправильний формат ({format})
+    unexpected_geometry: Очікувалось {expected}, отримано {got}.
+    native: Нативний
+    geojson: GeoJSON
+    lnglat: Довгота, широта
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Натисніть, щоб вибрати {geometry}
+  presentation-notice:
+    notice: Зверніть увагу
+    description: Відобразити коротке повідомлення
+    text: Введіть вміст попередження...
+  list-o2m:
+    one-to-many: Один до багатьох
+    description: Вибрати кілька пов'язаних об'єктів
+    no_collection: Колекцію не знайдено
   system-folder:
     folder: Папка
+    description: Обрати теку
+    field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
+    system_default: Стандартні налаштування
   tags:
     tags: Теги
   boolean:
     toggle: Переключити
+    color_on: Увімкнений колір
+    color_off: Ввімкнений колір
     label_default: Увімкнено
   translations:
     display_template: Шаблон відображення
   user:
     user: Користувач
+    description: Виберіть існуючого користувача
+    select_mode: Обрати режим
     modes:
+      auto: Автоматично
       dropdown: Випадаюче меню
+  input-rich-text-html:
+    description: Багатотекстовий редактор, що пише матеріал для HTML
+    toolbar: Панель інструментів
+    custom_formats: Власне форматування
+  group-detail:
+    show_header: Показувати заголовок групи
+    header_icon: Іконка заголовка
+    header_color: Колір заголовку
+    start_open: Почати відкритим
+    start_closed: Почати закритим
 displays:
   translations:
     translations: Переклади
+    description: Попередній перегляд перекладів
+    enable: Увімкнути
+    user_language: Використовувати поточну мову користувача
+    default_language: Мова за замовчуванням
+    language_field: Поле визначення мови
   boolean:
     boolean: Логічне значення
     icon_on: Підключити іконку
     icon_off: Відключити іконку
+    color_on: Увімкнений колір
+    color_off: Ввімкнений колір
   collection:
     collection: Колекція
+    description: Показати колекцію
+    icon_label: Показувати іконку колекції
   color:
     color: Колір
+    default_color: Колір за замовчуванням
   datetime:
     datetime: Дата й час
     format: Формат
+    long: Довгий
+    short: Короткий
+    relative: Відносний
+    relative_label: 'Показати відносний час, наприклад: 5 хвилин тому'
   file:
     file: Файл
+    description: Показати файли
   filesize:
     filesize: Розмір файлу
+    description: Показати розмір файлу
   icon:
     icon: Іконка
   image:
     circle: Коло
   labels:
     choices_value_placeholder: Введіть значення...
+  related-values:
+    related-values: Пов'язані значення
+    description: Показати пов'язані значення
   user:
     user: Користувач
+    description: Показати користувача
     avatar: Аватар
     name: Назва
     both: Обидва
+    circle_label: Показати користувача в колі
 layouts:
   cards:
     cards: Картки
     image_source: Джерело зображення
+    crop: Обрізати
+    contain: Містить
     title: Заголовок
     subtitle: Підзаголовок
   tabular:
@@ -1292,6 +1406,15 @@ layouts:
     comfortable: Комфортна
     compact: Компактна
     cozy: Зручна
+  calendar:
+    calendar: Календар
+  map:
+    map: Карта
+    basemap: Карта-схема
+    layers: Шари
+    cluster_options: Параметри кластеризації
+    invalid_geometry: Неприпустима геометрія
+    find_location: Знайти локацію...
 panels:
   label:
     name: Ярлик
