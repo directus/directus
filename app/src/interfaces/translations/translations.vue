@@ -389,11 +389,12 @@ export default defineComponent({
 
 				let copyValue = cloneDeep(value.value ?? []);
 
-				if (pkField in values === false && langField in values === false) {
+				if (pkField in values === false) {
 					const newIndex = copyValue.findIndex((item) => typeof item === 'object' && item[langField] === lang);
 
 					if (newIndex !== -1) {
 						if (Object.keys(values).length === 1 && langField in values) {
+							isUndo.value = true;
 							copyValue.splice(newIndex, 1);
 						} else {
 							copyValue[newIndex] = values;
