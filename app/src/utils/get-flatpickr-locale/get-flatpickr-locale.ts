@@ -20,6 +20,8 @@ export async function getFlatpickrLocale(): Promise<Record<string, any>> {
 		}
 	}
 
-	// locale returns { default, en, <lang> } and we'll only return the last value
-	return Object.values(locale)[Object.keys(locale).length - 1] as Record<string, any>;
+	// locale returns { default, en, <lang> } when not default and we'll only return the last value
+	return 'firstDayOfWeek' in locale
+		? locale
+		: (Object.values(locale)[Object.keys(locale).length - 1] as Record<string, any>);
 }
