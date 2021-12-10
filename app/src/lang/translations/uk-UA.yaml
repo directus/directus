@@ -596,6 +596,9 @@ items: Об'єкти
 upload_file: Завантажити файл
 upload_file_indeterminate: Йде завантаження файлу...
 upload_file_success: Файл був завантажений
+upload_files_indeterminate: 'Завантаження файлів {done}/{total}'
+upload_files_success: '{count} файлів завантажено'
+drag_file_here: Перетягніть файл сюди
 click_to_browse: Натисніть для перегляду
 interface_options: Налаштування інтерфейсу
 layout_options: Налаштування зовнішнього вигляду
@@ -1236,14 +1239,23 @@ interfaces:
   select-color:
     color: Колір
     description: Ведіть або оберіть значення кольору
+    placeholder: Оберіть колір...
+    preset_colors: Шаблонні кольори
+    preset_colors_add_label: Додати новий колір...
+    name_placeholder: Введіть назву кольору...
   datetime:
     datetime: Дата й час
+    include_seconds: Секунди включно
+    use_24: Використовувати 24-годинний формат
   system-display-template:
     display-template: Шаблон відображення
+    description: Змішати статичний текст і динамічні значення поля
+    collection_field: Поле колекції
     collection_field_not_setup: Параметр поля колекції налаштовано неправильно
     select_a_collection: Оберіть колекцію
   presentation-divider:
     divider: Розділювач
+    description: Позначити та розділити поля на секції
   select-dropdown:
     allow_other: Дозволити інше
     choices_value_placeholder: Введіть значення...
@@ -1415,6 +1427,21 @@ layouts:
     cluster_options: Параметри кластеризації
     invalid_geometry: Неприпустима геометрія
     find_location: Знайти локацію...
+    no_compatible_fields: Немає сумісних полів
 panels:
+  metric:
+    name: Метрична
+    description: Показати одне значення на основі запиту
+    field: Поле
+  time_series:
+    name: Серії часу
+    date_field: Поле даних
+    value_field: Поле значення
+    fill_type: Тип заповнення
+    curve_type: Тип кривої
   label:
     name: Ярлик
+    description: Показати деякі тексти
+  list:
+    name: Список
+    description: Фільтрувати та перелічити поля з колекції
