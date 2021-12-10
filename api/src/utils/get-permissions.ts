@@ -24,35 +24,31 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 		const cachedPermissions = await systemCache.get(cacheKey);
 
 		if (cachedPermissions) {
-			if (cachedPermissions.containDynamicData) {
-				const cachedFilterContext = await cache?.get(
-					`filterContext-${hash({ user, role, permissions: cachedPermissions.permissions })}`
-				);
-
-				if (cachedFilterContext) {
-					permissions = processPermissions(accountability, cachedPermissions.permissions, cachedFilterContext);
-				} else {
-					let requiredPermissionData, containDynamicData;
-
-					({ permissions, requiredPermissionData, containDynamicData } = parsePermissions(
-						cachedPermissions.permissions
-					));
-
-					const filterContext = containDynamicData
-						? await getFilterContext(schema, accountability, requiredPermissionData)
-						: {};
-
-					if (containDynamicData && env.CACHE_ENABLED !== false) {
-						await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
-					}
-
-					permissions = processPermissions(accountability, permissions, filterContext);
-				}
-			} else {
-				permissions = processPermissions(accountability, cachedPermissions.permissions, {});
+			if (!cachedPermissions.containDynamicData) {
+				return processPermissions(accountability, cachedPermissions.permissions, {});
 			}
 
-			return permissions;
+			const cachedFilterContext = await cache?.get(
+				`filterContext-${hash({ user, role, permissions: cachedPermissions.permissions })}`
+			);
+
+			if (cachedFilterContext) {
+				return processPermissions(accountability, cachedPermissions.permissions, cachedFilterContext);
+			} else {
+				let requiredPermissionData, containDynamicData;
+
+				({ permissions, requiredPermissionData, containDynamicData } = parsePermissions(cachedPermissions.permissions));
+
+				const filterContext = containDynamicData
+					? await getFilterContext(schema, accountability, requiredPermissionData)
+					: {};
+
+				if (containDynamicData && env.CACHE_ENABLED !== false) {
+					await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
+				}
+
+				return processPermissions(accountability, permissions, filterContext);
+			}
 		}
 	}
 
@@ -85,7 +81,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			}
 		}
 
-		permissions = processPermissions(accountability, permissions, filterContext);
+		return processPermissions(accountability, permissions, filterContext);
 	}
 
 	return permissions;
