@@ -108,7 +108,7 @@ strong {
 }
 
 ::selection {
-	background: #e1f0fa;
+	background: var('--background-normal-alt');
 }
 
 dl > div {
