@@ -596,6 +596,10 @@ items: Об'єкти
 upload_file: Завантажити файл
 upload_file_indeterminate: Йде завантаження файлу...
 upload_file_success: Файл був завантажений
+click_to_browse: Натисніть для перегляду
+interface_options: Налаштування інтерфейсу
+layout_options: Налаштування зовнішнього вигляду
+rows: Рядки
 columns: Колонки
 collection_setup: Налаштування колекції
 optional_system_fields: Необов'язкові поля системи
@@ -916,9 +920,13 @@ fields:
     token: Ключ
     token_placeholder: Введіть надійний ключ доступу...
     provider: Провайдер
+    external_identifier: Зовнішній ідентифікатор
     last_page: Остання сторінка
     last_access: Останній доступ
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
     mapping: Зіставлення
     basemaps: Карта-схеми
     basemaps_raster: Растровий
