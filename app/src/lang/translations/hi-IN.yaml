@@ -1,6 +1,9 @@
 ---
+avatar: अवतार
 default_provider: Hi
 published: प्रकाशित
+draft: प्रारूप
+archived: संग्रह
 tile_size: टाइल आकार
 edit_field: एडिट फील्ड
 conditions: शर्तेँ
@@ -36,6 +39,8 @@ create_webhook: Webhook बनाएं
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
+subject: विषय
+inbox: सन्देश
 emails: इमेल्स
 connection_excellent: उत्तम कनेक्शन
 connection_good: अच्छा कनेक्शन
@@ -108,6 +113,7 @@ field_m2o: M2O रिलेशन
 field_m2a: M2A रिलेशन
 field_o2m: O2M रिलेशन
 field_m2m: M2M रिलेशन
+field_translations: अनुवाद
 item_permissions: आइटम अनुमतियां
 field_permissions: फील्ड अनुमतियाँ
 field_validation: फील्ड मान्यकरण
