@@ -31,19 +31,19 @@ export default function useSelection(
 	});
 
 	function stageSelection(newSelection: (number | string)[]) {
-		const { junctionField, junctionPkField } = relation.value;
+		const { junctionField, relationPkField } = relation.value;
 
 		const selection = newSelection.map((item) => {
-			const initial = initialItems.value.find((existent) => existent[junctionField][junctionPkField] === item);
-			const draft = items.value.find((draft) => draft[junctionField][junctionPkField] === item);
+			const initial = initialItems.value.find((existent) => existent[junctionField][relationPkField] === item);
+			const draft = items.value.find((draft) => draft[junctionField][relationPkField] === item);
 
 			return {
 				...initial,
 				...draft,
 				[junctionField]: {
-					...initial?.[junctionPkField],
-					...draft?.[junctionPkField],
-					[junctionPkField]: item,
+					...initial?.[relationPkField],
+					...draft?.[relationPkField],
+					[relationPkField]: item,
 				},
 			};
 		});

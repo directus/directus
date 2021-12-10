@@ -3,7 +3,7 @@ import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { cloneDeep, get, merge } from 'lodash';
+import { cloneDeep, get, merge, isEqual } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 import { RelationInfo } from '@/composables/use-m2m';
 import { getEndpoint } from '@/utils/get-endpoint';
@@ -37,11 +37,13 @@ export default function usePreview(
 
 	watch(
 		() => value.value,
-		async (newVal) => {
+		async (newVal, oldVal) => {
 			if (newVal === null) {
 				items.value = [];
 				return;
 			}
+
+			if (isEqual(newVal, oldVal)) return;
 
 			loading.value = true;
 			const { junctionField, relationPkField, junctionPkField, relationCollection } = relation.value;
@@ -87,7 +89,7 @@ export default function usePreview(
 					.map((item) => {
 						const updatedItem = updatedItems.find(
 							(updated) =>
-								get(updated, [junctionField, junctionPkField]) === get(item, [junctionField, junctionPkField])
+								get(updated, [junctionField, relationPkField]) === get(item, [junctionField, relationPkField])
 						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;

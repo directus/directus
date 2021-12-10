@@ -148,7 +148,7 @@ import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { isPlainObject, cloneDeep } from 'lodash';
+import { isPlainObject, cloneDeep, isEqual } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
@@ -378,8 +378,10 @@ export default defineComponent({
 				relatedItemValues,
 			};
 
-			async function fetchValues() {
+			async function fetchValues(newVal: any, oldVal: any) {
 				if (props.value === null) return;
+
+				if (isEqual(newVal, oldVal)) return;
 
 				loading.value = true;
 
