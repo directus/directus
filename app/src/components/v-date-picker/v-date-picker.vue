@@ -1,8 +1,8 @@
 <template>
 	<div ref="wrapper" class="v-date-picker">
-		<input type="text" data-input />
-		<button type="button" data-clear>
-			<v-icon :name="modelValue ? 'close' : 'today'" :class="{ active: isDatePickerOpen }" />
+		<input type="text" :placeholder="t('enter_a_value')" data-input />
+		<button type="button">
+			<v-icon :name="modelValue ? 'close' : 'today'" :class="{ active: isDatePickerOpen }" @click.stop="unsetValue" />
 		</button>
 	</div>
 </template>
@@ -11,10 +11,12 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed, PropType } from 'vue';
 import Flatpickr from 'flatpickr';
+import { format, formatISO } from 'date-fns';
+import getFlatpickrLocale from '@/utils/get-flatpickr-locale';
 
 export default defineComponent({
 	props: {
-		value: {
+		modelValue: {
 			type: String,
 			default: null,
 		},
@@ -44,11 +46,11 @@ export default defineComponent({
 		let flatpickr: Flatpickr.Instance | null;
 
 		const isDatePickerOpen = ref<boolean>(false);
-		const modelValue = ref<Date | null>(null);
 
-		onMounted(() => {
+		onMounted(async () => {
 			if (wrapper.value) {
-				flatpickr = Flatpickr(wrapper.value, flatpickrOptions.value);
+				const locale = await getFlatpickrLocale();
+				flatpickr = Flatpickr(wrapper.value, { ...flatpickrOptions.value, locale });
 			}
 		});
 
@@ -61,6 +63,7 @@ export default defineComponent({
 
 		const defaultOptions = {
 			altInput: true,
+			// autoFillDefaultTime: false,
 			nextArrow:
 				'<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>',
 			prevArrow:
@@ -69,8 +72,19 @@ export default defineComponent({
 
 			onChange(selectedDates: Date[], dateStr: string, instance: Flatpickr.Instance) {
 				const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
-				modelValue.value = selectedDate;
-				emit('update:modelValue', selectedDate);
+
+				if (!selectedDate) return emit('update:modelValue', null);
+
+				switch (props.type) {
+					case 'dateTime':
+						return emit('update:modelValue', format(selectedDate, "yyyy-MM-dd'T'HH:mm:ss"));
+					case 'date':
+						return emit('update:modelValue', format(selectedDate, 'yyyy-MM-dd'));
+					case 'time':
+						return emit('update:modelValue', format(selectedDate, 'HH:mm:ss'));
+					case 'timestamp':
+						return emit('update:modelValue', formatISO(selectedDate));
+				}
 			},
 			onClose() {
 				isDatePickerOpen.value = false;
@@ -82,6 +96,7 @@ export default defineComponent({
 
 		const flatpickrOptions = computed<Record<string, any>>(() => {
 			return Object.assign({}, defaultOptions, {
+				altFormat: getAltFormat(),
 				enableSeconds: props.includeSeconds,
 				enableTime: ['dateTime', 'time', 'timestamp'].includes(props.type),
 				noCalendar: props.type === 'time',
@@ -89,7 +104,34 @@ export default defineComponent({
 			});
 		});
 
-		return { t, wrapper, modelValue, isDatePickerOpen };
+		function getAltFormat() {
+			switch (props.type) {
+				case 'dateTime':
+					if (props.use24) {
+						return props.includeSeconds ? 'F j, Y H:i:S' : 'F j, Y H:i';
+					} else {
+						return props.includeSeconds ? 'F j, Y h:i:S K' : 'F j, Y h:i K';
+					}
+				case 'date':
+					return 'F j, Y';
+				case 'time':
+					if (props.use24) {
+						return props.includeSeconds ? 'H:i:S' : 'H:i';
+					} else {
+						return props.includeSeconds ? 'h:i:S K' : 'h:i K';
+					}
+				case 'timestamp':
+					return 'Z';
+			}
+		}
+
+		function unsetValue() {
+			flatpickr?.close();
+			flatpickr?.clear();
+			emit('update:modelValue', null);
+		}
+
+		return { t, wrapper, isDatePickerOpen, unsetValue };
 	},
 });
 </script>
@@ -106,8 +148,6 @@ export default defineComponent({
 	--v-input-color: var(--foreground-normal);
 	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
-
-	// width: max-content;
 
 	position: relative;
 	display: flex;
@@ -194,7 +234,6 @@ export default defineComponent({
 
 	:deep(.input) {
 		flex-grow: 1;
-		// width: 20px; // allows flex to grow/shrink to allow for slots
 		height: 100%;
 		padding: var(--input-padding);
 		padding-right: 0px;

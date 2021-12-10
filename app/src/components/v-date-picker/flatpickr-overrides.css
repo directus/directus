@@ -207,3 +207,7 @@ span.flatpickr-weekday {
 .flatpickr-time .flatpickr-am-pm:focus {
 	background-color: var(--background-input);
 }
+
+.flatpickr-time input::selection {
+	background: none !important;
+}
