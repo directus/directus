@@ -122,9 +122,16 @@ describe('/items', () => {
 			expect(await databases.get(vendor)!('artists').select('name').where('id', artist.id)).toMatchObject([
 				{ name: artist.name },
 			]);
-			expect(await databases.get(vendor)!('events').select('cost').where('id', event.id)).toMatchObject([
-				{ cost: event.cost },
-			]);
+			if (vendor === 'postgres10') {
+				const cost = Math.round(event.cost * 10) / 10;
+				expect(await databases.get(vendor)!('events').select('cost').where('id', event.id)).toMatchObject([
+					{ cost: cost },
+				]);
+			} else {
+				expect(await databases.get(vendor)!('events').select('cost').where('id', event.id)).toMatchObject([
+					{ cost: event.cost },
+				]);
+			}
 		});
 	});
 	describe('/:collection GET', () => {
@@ -251,9 +258,16 @@ describe('/items', () => {
 				},
 			});
 			for (let row = 0; row < response.data.data.length; row++) {
-				expect(response.data.data[row].events_id).toMatchObject({
-					cost: event.cost,
-				});
+				if (vendor === 'postgres10') {
+					const cost = Math.round(event.cost * 10) / 10;
+					expect(response.data.data[row].events_id).toMatchObject({
+						cost: cost,
+					});
+				} else {
+					expect(response.data.data[row].events_id).toMatchObject({
+						cost: event.cost,
+					});
+				}
 			}
 			expect(response.data.data.length).toBe(keys.length);
 		});
@@ -300,7 +314,12 @@ describe('/items', () => {
 				expect(await databases.get(vendor)!('artists_events').select('*').where('id', items[row].id)).toStrictEqual([]);
 			}
 			expect((await databases.get(vendor)!('artists').select('name').where('id', artist.id))[0].name).toBe(artist.name);
-			expect((await databases.get(vendor)!('events').select('cost').where('id', event.id))[0].cost).toBe(event.cost);
+			if (vendor === 'postgres10') {
+				const cost = Math.round(event.cost * 10) / 10;
+				expect((await databases.get(vendor)!('events').select('cost').where('id', event.id))[0].cost).toBe(cost);
+			} else {
+				expect((await databases.get(vendor)!('events').select('cost').where('id', event.id))[0].cost).toBe(event.cost);
+			}
 		});
 	});
 });

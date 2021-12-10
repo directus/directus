@@ -110,7 +110,7 @@ allowing for more complex filtering.
 		{
 			"_and": [
 				{
-					"owner": {
+					"user_created": {
 						"_eq": "$CURRENT_USER"
 					}
 				},
@@ -124,7 +124,7 @@ allowing for more complex filtering.
 		{
 			"_and": [
 				{
-					"owner": {
+					"user_created": {
 						"_neq": "$CURRENT_USER"
 					}
 				},

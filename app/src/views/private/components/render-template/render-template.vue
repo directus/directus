@@ -141,6 +141,10 @@ export default defineComponent({
 	> * {
 		vertical-align: middle;
 	}
+
+	.render-template {
+		display: inline;
+	}
 }
 
 .subdued {

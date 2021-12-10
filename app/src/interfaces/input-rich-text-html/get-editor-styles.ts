@@ -23,6 +23,9 @@ export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospac
 	url(${merriweatherRegular}) format('woff');
 }
 
+::selection {
+	background: ${cssVar('--background-normal-alt')};
+}
 body {
 	color: ${cssVar('--foreground-normal')};
 	background-color: ${cssVar('--background-input')};
