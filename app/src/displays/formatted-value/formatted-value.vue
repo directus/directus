@@ -2,11 +2,11 @@
 	<value-null v-if="displayValue === null || displayValue === undefined" />
 
 	<div v-else class="display-formatted">
-		<v-icon v-if="format.iconLeft" class="left" :name="format.iconLeft" :color="format.iconLeftColor" small />
+		<v-icon v-if="format.icon" class="left" :name="format.icon" :color="format.color" small />
 
-		<span class="value" :class="[{ bold }, font]" :style="valueStyle">{{ prefix }}{{ displayValue }}{{ suffix }}</span>
-
-		<v-icon v-if="format.iconRight" class="right" :name="format.iconRight" :color="format.iconRightColor" small />
+		<span class="value" :class="[{ bold, italic }, font]" :style="valueStyle">
+			{{ prefix }}{{ displayValue }}{{ suffix }}
+		</span>
 
 		<a v-if="link" class="link" :href="href" :target="target" @click.stop>
 			<v-icon v-tooltip="t('displays.formatted-value.link_tooltip')" class="button" name="launch" small />
@@ -41,6 +41,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		italic: {
+			type: Boolean,
+			default: false,
+		},
 		font: {
 			type: String,
 			default: 'sans-serif',
@@ -50,19 +54,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		iconLeft: {
-			type: String,
-			default: null,
-		},
-		iconLeftColor: {
-			type: String,
-			default: null,
-		},
-		iconRight: {
-			type: String,
-			default: null,
-		},
-		iconRightColor: {
+		icon: {
 			type: String,
 			default: null,
 		},
@@ -104,13 +96,10 @@ export default defineComponent({
 		});
 
 		const format = computed(() => {
-			const { color, iconLeft, iconLeftColor, iconRight, iconRightColor } = props;
+			const { color, icon } = props;
 			return matchedRules.value.reduce((format, rule) => Object.assign({}, format, rule), {
 				color,
-				iconLeft,
-				iconLeftColor,
-				iconRight,
-				iconRightColor,
+				icon,
 			});
 		});
 
@@ -179,6 +168,10 @@ export default defineComponent({
 		&.bold {
 			color: var(--foreground-normal-alt);
 			font-weight: 700;
+		}
+
+		&.italic {
+			font-style: italic;
 		}
 
 		&.sans-serif {

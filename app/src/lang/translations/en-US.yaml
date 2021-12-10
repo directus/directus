@@ -1526,15 +1526,14 @@ displays:
     description: Display a formatted version of the text
     bold: Bold
     bold_label: Use bold style
+    italic: Italic
+    italic_label: Use italic style
     font: Font
     font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     color: Color
-    icon_left: Icon Before
-    icon_left_color: Icon Before Color
-    icon_right: Icon After
-    icon_right_color: Icon After Color
+    icon: Icon
     prefix: Prefix
     prefix_label: Prepend text
     suffix: Suffix
