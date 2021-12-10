@@ -292,7 +292,7 @@ export default defineComponent({
 					params.set('access_token', token);
 				}
 
-				const paramsString = params.toString().length > 0 ? `?${params.toString()}` : '';
+				const paramsString = params.toString().length > 0 ? `?${params.toString().replace(/&/g, '&amp;')}` : '';
 
 				return `${pre}${matched.origin}${matched.pathname}${paramsString}${post}`;
 			});
