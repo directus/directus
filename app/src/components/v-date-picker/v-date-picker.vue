@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, onMounted, onBeforeUnmount, computed, PropType } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed, PropType, watch } from 'vue';
 import Flatpickr from 'flatpickr';
 import { format, formatISO } from 'date-fns';
 import getFlatpickrLocale from '@/utils/get-flatpickr-locale';
@@ -52,6 +52,16 @@ export default defineComponent({
 				const locale = await getFlatpickrLocale();
 				flatpickr = Flatpickr(wrapper.value, { ...flatpickrOptions.value, locale });
 			}
+
+			watch(
+				() => props.modelValue,
+				() => {
+					if (props.modelValue) {
+						flatpickr?.setDate(props.modelValue, false);
+					}
+				},
+				{ immediate: true }
+			);
 		});
 
 		onBeforeUnmount(() => {
