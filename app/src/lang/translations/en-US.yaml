@@ -1587,6 +1587,7 @@ layouts:
     comfortable: Comfortable
     compact: Compact
     cozy: Cozy
+    copy_clipboard_tooltip: Copy to clipboard
   calendar:
     calendar: Calendar
     start_date_field: Start Date Field

@@ -34,6 +34,13 @@
 					:collection="collection"
 					:field="header.field.field"
 				/>
+				<v-icon
+					v-tooltip="t('layouts.tabular.copy_clipboard_tooltip')"
+					class="button copy"
+					name="copy"
+					small
+					@click.stop="copyToClipboard(item[header.value])"
+				/>
 			</template>
 
 			<template #footer>
@@ -221,7 +228,16 @@ export default defineComponent({
 			table
 		);
 
-		return { t, selectionWritable, tableHeadersWritable, limitWritable, table };
+		return { t, selectionWritable, tableHeadersWritable, limitWritable, table, copyToClipboard };
+
+		function copyToClipboard(value: any) {
+			let copy: string;
+
+			if (typeof value === 'object') copy = JSON.stringify(value);
+			else copy = String(value);
+
+			navigator.clipboard.writeText(copy);
+		}
 	},
 });
 </script>
@@ -281,5 +297,25 @@ export default defineComponent({
 
 .reset-preset {
 	margin-top: 24px;
+}
+
+.cell .v-icon.copy {
+	margin-left: 4px;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--green-75);
+	}
+}
+
+@media (hover: hover) {
+	.cell .v-icon.copy {
+		display: none;
+	}
+
+	.cell:hover .v-icon.copy {
+		display: block;
+	}
 }
 </style>
