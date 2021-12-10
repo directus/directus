@@ -2,14 +2,12 @@ import { Range } from '@directus/drive';
 import { Router } from 'express';
 import { pick } from 'lodash';
 import ms from 'ms';
-import validate from 'uuid-validate';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
 import getDatabase from '../database';
 import env from '../env';
-import { ForbiddenException, InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
+import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
-import storage from '../storage';
 import { TransformationParams, TransformationMethods, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
 
@@ -19,33 +17,6 @@ router.use(useCollection('directus_files'));
 
 router.get(
 	'/:pk',
-
-	// Check if file exists and if you have permission to read it
-	asyncHandler(async (req, res, next) => {
-		/**
-		 * We ignore everything in the id after the first 36 characters (uuid length). This allows the
-		 * user to add an optional extension, or other identifier for use in external software (#4067)
-		 */
-		const id = req.params.pk?.substring(0, 36);
-
-		/**
-		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
-		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
-		 * validity of the uuid ahead of time.
-		 */
-		const isValidUUID = validate(id, 4);
-		if (isValidUUID === false) throw new ForbiddenException();
-
-		const database = getDatabase();
-		const file = await database.select('id', 'storage', 'filename_disk').from('directus_files').where({ id }).first();
-		if (!file) throw new ForbiddenException();
-
-		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
-		if (!exists) throw new ForbiddenException();
-
-		return next();
-	}),
-
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });

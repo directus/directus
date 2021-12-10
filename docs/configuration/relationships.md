@@ -256,30 +256,27 @@ Below is an example of a M2A relationship:
 
 ```
 pages (Collection)
-- id (Primary Key)
+- id
 - name
 - *sections* (O2M/M2A alias field that lists references from "sections")
 
+page_sections (Junction Collection)
+- id
+- pages_id (stores the primary key of the parent page)
+- collection (stores name of the related collection, for example "headings", "text", or "images")
+- item (stores the primary key of the related item)
+
 headings (Collection)
-- id (Primary Key)
+- id
 - title
-- *section* (alias field that lists references from "sections")
 
 text (Collection)
-- id (Primary Key)
+- id
 - text
-- *section* (alias field that lists references from "sections")
 
 images (Collection)
-- id (Primary Key)
+- id
 - file
-- *section* (alias field that lists references from "sections")
-
-page_sections (Junction Collection)
-- id (Primary Key)
-- page (stores the page key)
-- section (stores section key)
-- section_collection (determines which collection the section_id belongs to)
 ```
 
 ### Setup
@@ -295,6 +292,13 @@ naming defaults, or disable it to select existing options or enter custom names.
 
 Lastly, you should select any desired Related Collections. Unlike other relationships, you can't _create_ these related
 collections here, so ensure all related collections you need are created before hand.
+
+::: tip Auto-generating
+
+If you enter a collection/field name that doesn't exist yet, Directus will auto-generate these collections/fields once
+you save the changes on the new M2A field.
+
+:::
 
 The optional **Sort Field** can be used enable manual reordering of items within this M2A field. This is configured by
 selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a new

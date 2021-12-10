@@ -31,10 +31,6 @@ Database manipulation abstraction, system migrations, and system data. Also wher
 
 Classes for the different errors the API is expected to throw. Used to set the HTTP status and error codes.
 
-#### `/api/src/mail`
-
-Mail abstraction. Allows Directus to send emails. (Note: this is planned to be moved into a MailService. See below)
-
 #### `/api/src/middleware`
 
 Various (express) routing middleware. Includes things like cache-checker, authenticator, etc.
@@ -50,13 +46,13 @@ TypeScript types that are shared between the different parts of the API.
 
 #### `/api/src/utils`
 
-Utility functions
+Various utility functions.
 
 ## `/app`
 
 Contains the Directus Admin App, written in Vue.js 3 w/ the Composition API.
 
-## `/app/public`
+#### `/app/public`
 
 Assets that are included with the app, but not bundled.
 
@@ -75,7 +71,7 @@ from now, fetching a single item, etc.
 
 #### `/app/src/directives`
 
-Custom Vue directives (e.g. `v-tooltip`)
+Custom Vue directives (e.g. `v-tooltip`).
 
 #### `/app/src/interfaces`
 
@@ -84,7 +80,7 @@ The core-included interfaces.
 #### `/app/src/lang`
 
 Translations abstraction, and language files. The language yaml files are maintained through
-[Crowdin](https://locales.directus.io)
+[Crowdin](https://locales.directus.io).
 
 #### `/app/src/layouts`
 
