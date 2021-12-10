@@ -1,4 +1,5 @@
 .flatpickr-calendar {
+	width: auto;
 	overflow: hidden;
 	font-family: var(--v-input-font-family);
 	background: var(--card-face-color);
@@ -66,11 +67,31 @@
 	background: var(--background-normal);
 }
 
+.flatpickr-innerContainer,
+.flatpickr-innerContainer .flatpickr-rContainer {
+	display: block;
+}
+
+.flatpickr-days {
+	display: block;
+	width: 100%;
+}
+
+.flatpickr-days .dayContainer {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	width: auto;
+	min-width: auto;
+	max-width: none;
+}
+
 span.flatpickr-weekday {
 	color: var(--foreground-normal-alt);
 }
 
 .flatpickr-day {
+	width: 100%;
+	max-width: none;
 	color: var(--foreground-normal-alt);
 	line-height: 36px;
 }

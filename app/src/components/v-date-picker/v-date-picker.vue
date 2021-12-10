@@ -42,15 +42,15 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const wrapper = ref<Node | null>(null);
+		const wrapper = ref<HTMLElement | null>(null);
 		let flatpickr: Flatpickr.Instance | null;
 
 		const isDatePickerOpen = ref<boolean>(false);
 
 		onMounted(async () => {
 			if (wrapper.value) {
-				const locale = await getFlatpickrLocale();
-				flatpickr = Flatpickr(wrapper.value, { ...flatpickrOptions.value, locale });
+				// const locale = await getFlatpickrLocale();
+				flatpickr = Flatpickr(wrapper.value, { ...flatpickrOptions.value });
 			}
 		});
 
@@ -68,6 +68,25 @@ export default defineComponent({
 				'<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>',
 			prevArrow:
 				'<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/></svg>',
+			position: (self: Flatpickr.Instance) => {
+				const wrapperBounds = wrapper.value!.getBoundingClientRect();
+				const calendarHeight = Array.prototype.reduce.call(
+					self.calendarContainer.children,
+					((acc: number, child: HTMLElement) => acc + child.offsetHeight) as any,
+					0
+				) as number;
+				const distanceFromBottom = window.innerHeight - wrapperBounds.bottom;
+				const showOnTop = distanceFromBottom < calendarHeight && wrapperBounds.top > calendarHeight;
+
+				const top =
+					window.pageYOffset + wrapperBounds.top + (!showOnTop ? wrapper.value!.offsetHeight + 2 : -calendarHeight - 2);
+				const left = window.pageXOffset + wrapperBounds.left;
+				const right = window.document.body.offsetWidth - (window.pageXOffset + wrapperBounds.right);
+
+				self.calendarContainer.style.top = `${top}px`;
+				self.calendarContainer.style.left = `${left}px`;
+				self.calendarContainer.style.right = `${right}px`;
+			},
 			wrap: true,
 
 			onChange(selectedDates: Date[], dateStr: string, instance: Flatpickr.Instance) {
