@@ -89,7 +89,7 @@ export default defineComponent({
 			},
 			wrap: true,
 
-			onChange(selectedDates: Date[], dateStr: string, instance: Flatpickr.Instance) {
+			onChange(selectedDates: Date[], _dateStr: string, _instance: Flatpickr.Instance) {
 				const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
 
 				if (!selectedDate) return emit('update:modelValue', null);
@@ -110,6 +110,14 @@ export default defineComponent({
 			},
 			onOpen() {
 				isDatePickerOpen.value = true;
+			},
+			onReady(_selectedDates: Date[], _dateStr: string, instance: Flatpickr.Instance) {
+				const setToNowButton: HTMLElement = document.createElement('button');
+				setToNowButton.innerHTML = t('interfaces.datetime.set_to_now');
+				setToNowButton.classList.add('set-to-now-button');
+				setToNowButton.tabIndex = -1;
+				setToNowButton.addEventListener('click', setToNow);
+				instance.calendarContainer.appendChild(setToNowButton);
 			},
 		};
 
@@ -142,6 +150,11 @@ export default defineComponent({
 				case 'timestamp':
 					return 'Z';
 			}
+		}
+
+		function setToNow() {
+			flatpickr?.setDate(new Date(), true);
+			flatpickr?.close();
 		}
 
 		function unsetValue() {

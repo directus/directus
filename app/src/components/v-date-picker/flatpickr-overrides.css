@@ -223,7 +223,10 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-time input:hover,
-.flatpickr-time .flatpickr-am-pm:hover,
+.flatpickr-time .flatpickr-am-pm:hover {
+	background-color: var(--background-normal-alt);
+}
+
 .flatpickr-time input:focus,
 .flatpickr-time .flatpickr-am-pm:focus {
 	background-color: var(--background-input);
@@ -231,4 +234,16 @@ span.flatpickr-weekday {
 
 .flatpickr-time input::selection {
 	background: none !important;
+}
+
+.flatpickr-calendar .set-to-now-button {
+	width: 100%;
+	padding: 8px 0;
+	color: var(--primary);
+	border-top: var(--border-width) solid var(--border-normal);
+}
+
+
+.flatpickr-calendar .set-to-now-button:hover {
+	background-color: var(--background-normal-alt);
 }
