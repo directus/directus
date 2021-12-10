@@ -1,6 +1,6 @@
 <template>
 	<div ref="wrapper" class="v-date-picker">
-		<input type="text" :placeholder="t('enter_a_value')" data-input />
+		<input class="input" type="text" :placeholder="t('enter_a_value')" data-input />
 		<button type="button">
 			<v-icon :name="modelValue ? 'close' : 'today'" :class="{ active: isDatePickerOpen }" @click.stop="unsetValue" />
 		</button>
@@ -49,8 +49,8 @@ export default defineComponent({
 
 		onMounted(async () => {
 			if (wrapper.value) {
-				// const locale = await getFlatpickrLocale();
-				flatpickr = Flatpickr(wrapper.value, { ...flatpickrOptions.value });
+				const locale = await getFlatpickrLocale();
+				flatpickr = Flatpickr(wrapper.value, { ...flatpickrOptions.value, locale });
 			}
 		});
 
