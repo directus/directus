@@ -113,6 +113,7 @@ To learn more about developing extensions of a specific type, you can refer to o
 - [Displays](/extensions/displays/)
 - [Layouts](/extensions/layouts/)
 - [Modules](/extensions/modules/)
+- [Panels](/extensions/panels/)
 
 #### API Extensions
 

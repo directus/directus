@@ -1244,7 +1244,7 @@ interfaces:
     code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
-    line_wrapping: Linea di margine
+    line_wrapping: A capo automatico
     placeholder: Inserisci il codice qui...
   system-collection:
     collection: Raccolta
@@ -1311,7 +1311,7 @@ interfaces:
   file-image:
     image: Immagine
     description: Seleziona o carica un'immagine
-    crop: Ritaglia a adatta
+    crop: Ritaglia per adattarsi
     crop_label: Ritaglia l'immagine come necessario
   system-interface:
     interface: Interfaccia

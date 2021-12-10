@@ -596,7 +596,20 @@ items: Об'єкти
 upload_file: Завантажити файл
 upload_file_indeterminate: Йде завантаження файлу...
 upload_file_success: Файл був завантажений
+upload_files_indeterminate: 'Завантаження файлів {done}/{total}'
+upload_files_success: '{count} файлів завантажено'
+drag_file_here: Перетягніть файл сюди
+click_to_browse: Натисніть для перегляду
+interface_options: Налаштування інтерфейсу
+layout_options: Налаштування зовнішнього вигляду
+rows: Рядки
+columns: Колонки
+collection_setup: Налаштування колекції
+optional_system_fields: Необов'язкові поля системи
 value_unique: Значення повинно бути унікальним
+all_activity: Уся діяльність
+create_item: Створити об'єкт
+display_template: Шаблон відображення
 language_display_template: Шаблон відображення мови
 translations_display_template: Шаблон відображення перекладів
 n_items_selected: 'Об''єкти не обрано | 1 об''єкт обрано | {n} об''єктів обрано'
@@ -670,6 +683,7 @@ display_text: Відобразити текст
 display_text_placeholder: Введіть текст відображення...
 interface_group_text_and_numbers: Текст і числа
 interface_group_selection: Вибір
+interface_group_relational: Реляційний
 interface_group_presentation: Оформлення
 interface_group_groups: Групи
 interface_group_other: Інше
@@ -684,10 +698,31 @@ wysiwyg_options:
   alignjustify: Вирівняти по ширині
   alignleft: Вирівняти по лівому краю
   alignnone: Не вирівнювати
+  alignright: Вирівняти по правому краю
   forecolor: Колір переднього плану
   backcolor: Колір заднього фону
   bold: Напівжирний
+  italic: Курсив
+  underline: Підкреслення
+  strikethrough: Закреслений
+  subscript: Нижній індекс
+  superscript: Верхній індекс
   codeblock: Код
+  blockquote: Цитата
+  bullist: Список з пунктами
+  numlist: Нумерований список
+  hr: Горизонтальна лінійка
+  link: Додати/редагувати посилання
+  unlink: Видалити посилання
+  media: Додати/Редагувати медіа
+  image: Додати/Редагувати зображення
+  copy: Копіювати
+  cut: Вирізати
+  paste: Вставити
+  heading: Заголовок
+  h1: Заголовок 1
+  h2: Заголовок 2
+  h3: Заголовок 3
   h4: Заголовок 4
   h5: Заголовок 5
   h6: Заголовок 6
@@ -888,12 +923,44 @@ fields:
     token: Ключ
     token_placeholder: Введіть надійний ключ доступу...
     provider: Провайдер
+    external_identifier: Зовнішній ідентифікатор
     last_page: Остання сторінка
     last_access: Останній доступ
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    mapping: Зіставлення
+    basemaps: Карта-схеми
+    basemaps_raster: Растровий
+    basemaps_tile: Растровий TileJSON
+    basemaps_style: Стиль Mapbox
+    mapbox_key: Ключ доступу Mapbox
+    transforms_note: Назва методу Sharp та його короткий зміст. Дивіться https://sharp.pixelplumbing.com/api-constructor для отримання додаткової інформації.
+    additional_transforms: Додаткові трансформації
     project_name: Назва проекту
+    project_url: URL-адреса проекту
+    project_color: Демонструвати колір
+    project_logo: Демонструвати логотип
+    branding: Брендінг та стиль
+    public_foreground: Публічний передній план
+    public_background: Публічний фон
+    public_note: Публічна нотатка
+    auth_password_policy: Правила користування авторизованими паролями
+    auth_login_attempts: Авторизовані спроби входу в систему
+    files_and_thumbnails: Файли та сховище
+    storage_default_folder: Папка за замовчуванням
+    storage_asset_presets: Передналаштування трансформацій
+    storage_asset_transform: Дозволені трансформації
+    overrides: Перевизначення програми
+    custom_css: Індивідуальний CSS код
     module_bar: Панель модулів
+    transformations_all: Дозволити всі трансформації
+    transformations_none: Вимкнути трансформації
+    transformations_presets: Обмежити перетворення до передустановок нижче
   directus_fields:
+    collection: Назва колекції
+    icon: Іконка колекції
     note: Примітка
     hidden: Приховано
     singleton: Об'єкт-одинак
@@ -901,14 +968,30 @@ fields:
     display_template: Шаблон
   directus_roles:
     name: Назва ролі
+    icon: Іконка ролі
     description: Опис
+    app_access: Доступ до додатку
+    admin_access: Адміністративний доступ
+    ip_access: IP адреса
+    enforce_tfa: Потрібен 2FA
+    users: Користувачі у ролі
+    module_list: Перемкнути навігацію
   directus_webhooks:
     name: Назва
+    method: Метод
     status: Статус
+    data: Дані
+    header: Заголовок
     value: Значення
+    headers: Заголовки запиту
+    data_label: Надіслати дані про подію
+    triggers: Тріггери
+    actions: Дії
     collections: Колекції
 field_options:
   directus_settings:
+    project_name_placeholder: Мій проект...
+    project_color_note: Фон входу та логотипу
     project_logo_note: Білий 40x40 SVG/PNG
     public_note_placeholder: Коротке загальнодоступне повідомлення, яке підтримує розміткове форматування...
     security_divider_title: Захист
@@ -925,11 +1008,16 @@ field_options:
         fit_text: Вмістити всередину
         outside_text: Вмістити зовні
     additional_transforms: Додаткові трансформації
+    transforms_note: Назва методу Sharp та його короткий зміст. Дивіться https://sharp.pixelplumbing.com/api-constructor для отримання додаткової інформації.
     mapbox_key: Ключ доступу Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Карта-схеми
     basemaps_name_placeholder: Введіть назву карта-схеми...
+    basemaps_raster: Растровий
+    basemaps_tile: Растровий TileJSON
+    basemaps_style: Стиль Mapbox
     files_divider_title: Файли та мініатюри
+    overrides_divider_title: Перевизначення програми
   directus_activity:
     login: Увійти
     create: Створити
@@ -972,7 +1060,11 @@ field_options:
     fields:
       icon_name: Іконка
       name_name: Назва
+      name_placeholder: Ведіть назву...
+      link_name: Посилання
+      link_placeholder: Відносна або абсолютна URL-адреса...
     collections_name: Колекції
+    collections_addLabel: Додати колекцію...
   directus_users:
     preferences_divider: Налаштування користувача
     dropdown_auto: Автоматичний вибір (основано на системі)
@@ -980,6 +1072,7 @@ field_options:
     dropdown_dark: Темний режим
     admin_divider: Можливості адміністратора
     status_dropdown_draft: Чернетка
+    status_dropdown_invited: Запрошені
     status_dropdown_active: Активний
     status_dropdown_suspended: Призупинені
     status_dropdown_archived: Архівовані
@@ -987,11 +1080,46 @@ field_options:
   directus_webhooks:
     status_options_active: Активний
     status_options_inactive: Неактивний
+    data_label: Надіслати дані про подію
+    triggers_divider: Тріггери
     actions_create: Створити
     actions_update: Оновити
+    actions_delete: Видалити
+    actions_login: Логін
     headers:
+      header: Заголовок
       value: Значення
+      add: Додати заголовок
+no_fields_in_collection: 'Ще немає полей в колекції "{collection}"'
+no_value: Значення відсутнє
+do_nothing: Нічого не робити
+generate_and_save_uuid: Генерувати та зберегти UUID
+save_current_user_id: Зберігти поточний ID
+save_current_user_role: Зберегти поточну роль користувача
+save_current_datetime: Зберігти поточну дату/час
+always_open: Завжди відкрито
+start_open: Почати відкритим
+start_collapsed: Старт згорнутим
+block: Блокувати
+inline: У тексті
 comment: Коментар
+relational_triggers: Реляційні тригери
+referential_action_field_label_m2o: Видалиться з {collection}...
+referential_action_field_label_o2m: Буде видалено з колекції {collection}...
+referential_action_no_action: Запобігти видаленню
+referential_action_cascade: Видалити об'єкт з {collection} (cascade)
+referential_action_set_null: Обнулити поле {field}
+referential_action_set_default: Встановити для {field} значення за замовчуванням
+choose_action: Вибрати дію
+continue_label: Продовжити
+continue_as: >-
+  {name} наразі авторизований. Якщо ви впізнали цей обліковий запис, натисніть кнопку продовжити.
+editing_role: 'Роль {role}'
+creating_webhook: Створити вебхук
+default_label: За замовчуванням
+delete_label: Видалити
+delete_are_you_sure: >-
+  Ця дія постійна і не може бути скасована. Ви впевнені, що хочете продовжити?
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
 description: Опис
@@ -1000,6 +1128,7 @@ duplicate: Дублювати
 limit: Обмеження
 email: Email
 embed: Вбудувати
+fallback_icon: Неактивна іконка
 field: Поле | Поля
 file: Файл
 file_library: Бібліотека файлів
@@ -1007,11 +1136,16 @@ forgot_password: Забули пароль
 hidden: Приховано
 icon: Іконка
 info: Інформація
+normal: Нормальний
+success: Успішно
+warning: Попередження
+danger: Небезпека
 junction_collection: Збірна колекція
 latency: Затримка
 login: Вхід
 my_activity: Активність
 not_authenticated: Не автентифіковано
+authenticated: Підтверджено
 options: Параметри
 otp: Одноразовий пароль
 password: Пароль
@@ -1019,6 +1153,7 @@ permissions: Права
 relationship: Відносини
 reset: Скинути
 reset_password: Скинути пароль
+revisions: Версії
 revert: Повернути
 save: Зберегти
 schema: Схема
@@ -1047,6 +1182,7 @@ interfaces:
     name: Фільтр
     description: Налаштувати фільтр об'єкта.
     add_filter: Додати фільтр
+    add_group: І / або група
     add_value: Додати значення
     all: Все
     any: Будь-які
@@ -1056,6 +1192,8 @@ interfaces:
     change_value: Натисніть, щоб змінити значення
     placeholder: Перетягніть файли сюди
   group-accordion:
+    name: Гармошка
+    description: Відображати поля або групи в вигляді гармошки
     start: Почати
     all_closed: Всі закриті
     first_opened: Спочатку відкриті
@@ -1101,13 +1239,23 @@ interfaces:
   select-color:
     color: Колір
     description: Ведіть або оберіть значення кольору
+    placeholder: Оберіть колір...
+    preset_colors: Шаблонні кольори
+    preset_colors_add_label: Додати новий колір...
+    name_placeholder: Введіть назву кольору...
   datetime:
     datetime: Дата й час
+    include_seconds: Секунди включно
+    use_24: Використовувати 24-годинний формат
   system-display-template:
+    display-template: Шаблон відображення
+    description: Змішати статичний текст і динамічні значення поля
+    collection_field: Поле колекції
     collection_field_not_setup: Параметр поля колекції налаштовано неправильно
     select_a_collection: Оберіть колекцію
   presentation-divider:
     divider: Розділювач
+    description: Позначити та розділити поля на секції
   select-dropdown:
     allow_other: Дозволити інше
     choices_value_placeholder: Введіть значення...
@@ -1119,54 +1267,148 @@ interfaces:
     hash: Хеш
   select-icon:
     icon: Іконка
+    search_for_icon: Пошук іконки...
+  file-image:
+    image: Зображення
+    description: Виберіть або завантажте зображення
+    crop: Обрізати по розміру
+    crop_label: Обрізати зображення при необхідності
+  system-interface:
+    interface: Інтерфейс
+    description: Оберіть існуючий інтерфейс
+    placeholder: Оберіть інтерфейс...
+  system-interface-options:
+    interface-options: Опції інтерфейсу
+    description: Плагін для вибору опцій інтерфейсу
+  list-m2m:
+    many-to-many: Багато до багатьох
+    description: Вибрати кілька пов'язаних об'єктів
+  select-dropdown-m2o:
+    many-to-one: Багато до одного
+    description: Виберіть один пов'язаний об'єкт
+    display_template: Шаблон відображення
   input-rich-text-md:
+    markdown: Розмітка
+    description: Увійти та переглянути розмітку
     edit: Редагувати
+    preview: Перегляд
+    editorFont: Шрифт редактора
+    previewFont: Попередній перегляд шрифту
+    customSyntax: Користувацькі блоки
+    customSyntax_label: Додати користувацькі типи синтаксису
+    customSyntax_add: Додати користувацький синтаксис
+    imageToken: Ключ забраження
   map:
+    map: Карта
+    description: Обрати місцезнаходження на карті
     zoom: Масштаб зображення
+    geometry_type: Геометрічний тип
+    geometry_format: Геометрічний формат
+    default_view: Вид за замовчуванням
+    invalid_options: Неправильні опції
+    invalid_format: Неправильний формат ({format})
+    unexpected_geometry: Очікувалось {expected}, отримано {got}.
+    native: Нативний
+    geojson: GeoJSON
+    lnglat: Довгота, широта
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Натисніть, щоб вибрати {geometry}
+  presentation-notice:
+    notice: Зверніть увагу
+    description: Відобразити коротке повідомлення
+    text: Введіть вміст попередження...
+  list-o2m:
+    one-to-many: Один до багатьох
+    description: Вибрати кілька пов'язаних об'єктів
+    no_collection: Колекцію не знайдено
   system-folder:
     folder: Папка
+    description: Обрати теку
+    field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
+    system_default: Стандартні налаштування
   tags:
     tags: Теги
   boolean:
     toggle: Переключити
+    color_on: Увімкнений колір
+    color_off: Ввімкнений колір
     label_default: Увімкнено
+  translations:
+    display_template: Шаблон відображення
   user:
     user: Користувач
+    description: Виберіть існуючого користувача
+    select_mode: Обрати режим
     modes:
+      auto: Автоматично
       dropdown: Випадаюче меню
+  input-rich-text-html:
+    description: Багатотекстовий редактор, що пише матеріал для HTML
+    toolbar: Панель інструментів
+    custom_formats: Власне форматування
+  group-detail:
+    show_header: Показувати заголовок групи
+    header_icon: Іконка заголовка
+    header_color: Колір заголовку
+    start_open: Почати відкритим
+    start_closed: Почати закритим
 displays:
   translations:
     translations: Переклади
+    description: Попередній перегляд перекладів
+    enable: Увімкнути
+    user_language: Використовувати поточну мову користувача
+    default_language: Мова за замовчуванням
+    language_field: Поле визначення мови
   boolean:
     boolean: Логічне значення
     icon_on: Підключити іконку
     icon_off: Відключити іконку
+    color_on: Увімкнений колір
+    color_off: Ввімкнений колір
   collection:
     collection: Колекція
+    description: Показати колекцію
+    icon_label: Показувати іконку колекції
   color:
     color: Колір
+    default_color: Колір за замовчуванням
   datetime:
     datetime: Дата й час
     format: Формат
+    long: Довгий
+    short: Короткий
+    relative: Відносний
+    relative_label: 'Показати відносний час, наприклад: 5 хвилин тому'
   file:
     file: Файл
+    description: Показати файли
   filesize:
     filesize: Розмір файлу
+    description: Показати розмір файлу
   icon:
     icon: Іконка
   image:
     circle: Коло
   labels:
     choices_value_placeholder: Введіть значення...
+  related-values:
+    related-values: Пов'язані значення
+    description: Показати пов'язані значення
   user:
     user: Користувач
+    description: Показати користувача
     avatar: Аватар
     name: Назва
     both: Обидва
+    circle_label: Показати користувача в колі
 layouts:
   cards:
     cards: Картки
     image_source: Джерело зображення
+    crop: Обрізати
+    contain: Містить
     title: Заголовок
     subtitle: Підзаголовок
   tabular:
@@ -1176,6 +1418,30 @@ layouts:
     comfortable: Комфортна
     compact: Компактна
     cozy: Зручна
+  calendar:
+    calendar: Календар
+  map:
+    map: Карта
+    basemap: Карта-схема
+    layers: Шари
+    cluster_options: Параметри кластеризації
+    invalid_geometry: Неприпустима геометрія
+    find_location: Знайти локацію...
+    no_compatible_fields: Немає сумісних полів
 panels:
+  metric:
+    name: Метрична
+    description: Показати одне значення на основі запиту
+    field: Поле
+  time_series:
+    name: Серії часу
+    date_field: Поле даних
+    value_field: Поле значення
+    fill_type: Тип заповнення
+    curve_type: Тип кривої
   label:
     name: Ярлик
+    description: Показати деякі тексти
+  list:
+    name: Список
+    description: Фільтрувати та перелічити поля з колекції

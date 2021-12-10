@@ -65,6 +65,7 @@ create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
+inbox: صندوق الواردات
 emails: البريد الإلكتروني
 connection_excellent: اتصال ممتاز
 connection_good: اتصال جيد
@@ -165,10 +166,14 @@ duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
 aggregate_function: وظائف المجاميع
 aggregate_precision: وظائف التدقيق
+group_aggregation: تجميع المجموعات
 global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
 show_zero: إظهار صفر
+sum: المجموع
+min: الحد الأدنى
+max: الحد الأقصى
 exposure: التعرض
 shutter: الغالق
 iso: ISO
@@ -188,6 +193,7 @@ boolean: نعم/لا
 date: التاريخ
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
+precision: الدقة
 decimal: عشري
 float: عشري
 integer: رقم صحيح
@@ -199,6 +205,8 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
+geometry.Point: نقطة
+geometry.Polygon: مضلّع
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -221,6 +229,7 @@ new_collection: 'مجموعة جديدة'
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
+add_link: إضافة رابط
 default_value: القيمة الافتراضية
 standard_field: حقل قياسي
 single_file: ملف واحد
@@ -233,6 +242,7 @@ invalid_item: عنصر غير صالح
 next: التالي
 field_name: إسم الحقل
 translations: الترجمة
+no_translations: لا توجد ترجمات
 note: ملحوظة
 enter_a_value: أدخل قيمة...
 enter_a_placeholder: أدخل قيمة مؤقته...
@@ -269,6 +279,7 @@ revision_delta_reverted: تمت الإستعادة
 revision_delta_other: تنقيح
 revision_delta_by: '{date} بواسطة {user}'
 private_user: خصخصة المستخدم
+creation_preview: معاينة الإنشاء
 revision_preview: معاينة التعديلات
 updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
@@ -336,6 +347,7 @@ zoom: تكبير/تصغير
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
+open_folder: فتح مجلد{folder}"
 foreground_color: لون الواجهة
 background_color: لون الخلفية
 upload_from_device: استبدال الملف من الجهاز
@@ -388,6 +400,7 @@ no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
+no_notifications: لا توجد إشعارات
 all_items: كافة العناصر
 any: أي
 csv: CSV
@@ -400,7 +413,10 @@ display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
 select_a_collection: حدد مجموعة
 active: مفعل
+move_to: أنقل إلى...
 copy: نسخ
+copy_to: انسخ إلى...
+no_other_dashboards_copy: ليس لديك حتى الآن أي لوحة تحكم أخرى.
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
@@ -601,6 +617,7 @@ height: الارتفاع
 source: مصدر
 url_placeholder: أدخل عنوان الرابط
 display_text: عرض النص
+tooltip: تلميح
 unlimited: غير محدود
 open_link_in: افتح الرابط في
 wysiwyg_options:

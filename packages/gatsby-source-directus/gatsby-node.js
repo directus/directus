@@ -1,185 +1,252 @@
-const invariant = require('invariant');
-const { Directus } = require('@directus/sdk');
-const { sourceNodes } = require('gatsby-source-graphql/gatsby-node');
-const { createRemoteFileNode } = require('gatsby-source-filesystem');
-
 const ms = require('ms');
 const chalk = require('chalk');
-
-let authToken;
+const { Directus } = require('@directus/sdk');
+const { sourceNodes, createSchemaCustomization } = require('gatsby-source-graphql/gatsby-node');
+const { createRemoteFileNode } = require('gatsby-source-filesystem');
 
 /**
- * Normalizes Directus urls.
+ * Validate plugin options
  */
-function normalizeEndpoint(endpoint, query = {}) {
-	const url = new URL(endpoint);
-	if (!url.pathname.endsWith('/')) {
-		url.pathname = `${url.pathname}/`;
-	}
-
-	Object.entries(query)
-		.filter(([, value]) => value !== undefined)
-		.forEach(([key, value]) => url.searchParams.set(key, value));
-
-	try {
-		const prefix = url.pathname == '/' ? '' : '.';
-
-		const graphql = new URL(`${prefix}/graphql`, url.toString());
-		graphql.hash = url.hash;
-		graphql.search = url.search;
-
-		const base = new URL(`${prefix}/`, url.toString());
-		base.hash = url.hash;
-		base.search = url.search;
-
-		return {
-			graphql: graphql.toString(),
-			base: base.toString(),
-		};
-	} catch {
-		return null;
-	}
-}
+exports.pluginOptionsSchema = ({ Joi }) => {
+	return Joi.object().keys({
+		url: Joi.string().required(),
+		auth: Joi.object()
+			.keys({
+				token: Joi.string(),
+				email: Joi.string(),
+				password: Joi.string(),
+			})
+			.with('email', 'password')
+			.with('password', 'email')
+			.xor('token', 'email'),
+		type: Joi.object()
+			.keys({
+				name: Joi.string(),
+				field: Joi.string(),
+			})
+			.optional(),
+		dev: Joi.object().keys({
+			refresh: [Joi.number(), Joi.string()],
+		}),
+		graphql: Joi.object(),
+	});
+};
 
 /**
  * Gatsby source implementation.
  */
-exports.sourceNodes = async (gatsby, options) => {
-	const { url, dev, graphql, auth, type = {}, ...opts } = options;
-	invariant(url && url.length > 0, `\`gatsby-source-directus\` requires option \`url\` to be specified`);
+exports.sourceNodes = async (gatsbyOptions, pluginOptions) => {
+	plugin.setOptions(pluginOptions);
 
-	const hasAuth = !!auth;
-	const hasToken = auth?.token && auth?.token?.length > 0;
-	if (hasToken) {
-		authToken = auth?.token;
-	}
-	const hasEmail = auth?.email && auth?.email?.length > 0;
-	const hasPassword = auth?.password && auth?.password?.length > 0;
-	const hasCredentials = hasEmail && hasPassword;
+	const optionsSystem = plugin.getOptionsSystem();
+	const options = plugin.getOptions();
 
-	if (hasAuth) {
-		invariant(
-			hasToken || (hasEmail && hasPassword),
-			`\`gatsby-source-directus\` requires either an \`auth.token\` or a combination of \`auth.email\` and \`auth.password\``
-		);
+	const createNode = gatsbyOptions.actions.createNode;
 
-		if (!hasToken) {
-			invariant(
-				hasCredentials,
-				`\`gatsby-source-directus\` requires both \`auth.email\` and \`auth.password\` when \`auth.token\` is not set`
-			);
+	// Avoid type conflict with gatsby-source-graphql
+	gatsbyOptions.actions.createNode = (node) => {
+		if (node.internal.type === 'GraphQLSource') {
+			if (node.typeName === optionsSystem.typeName) node.internal.type = 'DirectusSystemGraphQLSource';
+			if (node.typeName === options.typeName) node.internal.type = 'DirectusGraphQLSource';
 		}
 
-		if (hasToken && hasCredentials) {
-			// eslint-disable-next-line no-console
-			console.log(
-				chalk.yellowBright(
-					'\nWARNING! `gatsby-source-directus` has both token and credentials set. Only token will be used.\n'
-				)
-			);
-		}
-	} else {
-		// eslint-disable-next-line no-console
-		console.log(
-			chalk.yellowBright(
-				'\nWARNING! `gatsby-source-directus` no auth set. source will fetch only public accessible items.\n'
-			)
-		);
-	}
-
-	let endpointParams = {};
-	if (hasAuth && hasToken) {
-		endpointParams.access_token = authToken;
-	}
-
-	let endpoints = normalizeEndpoint(url, endpointParams);
-	invariant(endpoints !== null, `\`gatsby-source-directus\` requires a valid \`url\``);
-
-	let refreshInterval = typeof dev?.refresh === 'string' ? ms(dev.refresh) / 1000 : dev?.refresh || 15;
-	invariant(
-		!Number.isNaN(refreshInterval),
-		`\`gatsby-source-directus\` requires a valid \`dev.refresh\` to be specified.\n` +
-			`can be either a number (seconds) or a string (5s, 1m, ...)`
-	);
-
-	const directus = new Directus(endpoints.base);
-
-	let authResult;
-	if (hasAuth && !hasToken) {
-		try {
-			authResult = await directus.auth.login({
-				email: auth?.email,
-				password: auth?.password,
-			});
-			authToken = authResult?.access_token;
-		} catch (err) {
-			throw new Error(`Directus authentication failed with: ${err.message}\nIs the credentials valid?`);
-		}
-	}
-
-	const headers = async () => {
-		let obj = {};
-		if (typeof graphql?.headers === 'object') {
-			Object.assign(obj, graphql?.headers || {});
-		} else if (typeof graphql?.headers === 'function') {
-			Object.assign(obj, (await graphql?.headers()) || {});
-		}
-
-		if (hasToken) {
-			return Object.assign(obj, {
-				Authorization: `Bearer ${auth?.token}`,
-			});
-		}
-
-		if (authResult?.access_token) {
-			return Object.assign(obj, {
-				Authorization: `Bearer ${authResult?.access_token}`,
-			});
-		}
+		return createNode(node);
 	};
 
-	return await sourceNodes(gatsby, {
-		...graphql,
-		...opts,
-		url: `${endpoints.graphql}`,
-		typeName: type.name || 'DirectusData',
-		fieldName: type.field || 'directus',
-		moduleName: 'gatsby-source-directus',
-		moduleSource: 'DirectusSource',
-		refreshInterval,
-		headers,
-	});
+	await sourceNodes(gatsbyOptions, optionsSystem);
+	await sourceNodes(gatsbyOptions, options);
+};
+
+exports.createSchemaCustomization = async (gatsby, pluginOptions) => {
+	plugin.setOptions(pluginOptions);
+
+	await createSchemaCustomization(gatsby, plugin.getOptionsSystem());
+	await createSchemaCustomization(gatsby, plugin.getOptions());
 };
 
 /**
  * Gatsby file implementation.
  */
-exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers, store, reporter }, options) => {
+exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers, store, reporter }, pluginOptions) => {
+	plugin.setOptions(pluginOptions);
+
 	const { createNode } = actions;
 
-	const { url } = options;
+	const { headers } = await plugin.getOptions();
+	const { Authorization } = await headers();
 
-	let endpoints = normalizeEndpoint(url);
-
-	await createResolvers({
-		DirectusData_directus_files: {
-			imageFile: {
-				type: `File`,
-				resolve(source) {
-					if (!source || !source.id) {
-						return null;
-					}
-					return createRemoteFileNode({
-						url: `${endpoints.base}assets/${source.id}`,
-						store,
-						cache,
-						createNode,
-						createNodeId,
-						httpHeaders: { Authorization: `Bearer ${authToken}` },
-						reporter,
-					});
-				},
+	const fileResolver = {
+		imageFile: {
+			type: `File`,
+			resolve(source) {
+				if (!source || !source.id) {
+					return null;
+				}
+				return createRemoteFileNode({
+					url: `${plugin.url}assets/${source.id}`,
+					store,
+					cache,
+					createNode,
+					createNodeId,
+					httpHeaders: { Authorization },
+					reporter,
+				});
 			},
 		},
+	};
+
+	await createResolvers({
+		DirectusData_directus_files: fileResolver,
+		DirectusSystemData_directus_files: fileResolver,
 	});
 };
+
+class Plugin {
+	constructor() {
+		this.authToken = '';
+		this.options = null;
+		this.urlGraphqlSystem = '';
+		this.urlGraphql = '';
+		this.url = '';
+		this.refreshInterval = 0;
+	}
+
+	setOptions(options) {
+		const { url, dev, auth } = options;
+
+		if (isEmpty(url)) error('"url" must be defined');
+
+		const hasAuth = !!auth;
+		const hasToken = !isEmpty(auth?.token);
+		const hasEmail = !isEmpty(auth?.email);
+		const hasPassword = !isEmpty(auth?.password);
+		const hasCredentials = hasEmail && hasPassword;
+
+		if (hasAuth && !hasToken && !hasCredentials)
+			error('"auth.token" or ("auth.email" and "auth.password") must be defined');
+
+		if (hasAuth && !hasToken) error('("auth.email" and "auth.password") must be defined if "auth.token" is not set');
+
+		if (hasToken && hasCredentials)
+			warning('"auth.token", "auth.email" and "auth.password" are all set, but only "auth.token" will be used');
+
+		if (!hasAuth) warning('no "auth" option were defined. Resources will be fetched with public role');
+
+		if (hasToken) this.authToken = auth.token;
+
+		try {
+			const baseUrl = new URL(url);
+
+			baseUrl.pathname = '/';
+			this.url = baseUrl.toString();
+
+			baseUrl.pathname = '/graphql';
+			this.urlGraphql = baseUrl.toString();
+
+			baseUrl.pathname = '/graphql/system';
+			this.urlGraphqlSystem = baseUrl.toString();
+		} catch (err) {
+			error('"url" should be a valid URL');
+		}
+
+		this.refreshInterval = typeof dev?.refresh === 'string' ? ms(dev.refresh) / 1000 : dev?.refresh || 15;
+
+		if (Number.isNaN(this.refreshInterval))
+			error('"dev.refresh" should be a number in seconds or a string with ms format, i.e. 5s, 5m, 5h, ...');
+
+		this.options = options;
+	}
+
+	getOptions() {
+		const internalOptions = ['url', 'dev', 'auth', 'type'];
+		const gatsbyPluginOptions = Object.fromEntries(
+			Object.entries(this.options).flatMap(([key, value]) => (internalOptions.includes(key) ? [] : [[key, value]]))
+		);
+
+		return {
+			...this.options.graphql,
+			...gatsbyPluginOptions,
+			url: this.urlGraphql,
+			typeName: this.options?.type?.name || 'DirectusData',
+			fieldName: this.options?.type?.field || 'directus',
+			headers: this.headers.bind(this),
+		};
+	}
+
+	getOptionsSystem() {
+		const options = this.getOptions();
+
+		return {
+			...options,
+			url: this.urlGraphqlSystem,
+			typeName: this.options?.type?.system_name || 'DirectusSystemData',
+			fieldName: this.options?.type?.system_field || 'directus_system',
+		};
+	}
+
+	async headers() {
+		let headers = {};
+		if (typeof this.options?.headers === 'object') {
+			Object.assign(headers, this.options.headers || {});
+		} else if (typeof this.options?.headers === 'function') {
+			Object.assign(headers, (await this.options.headers()) || {});
+		}
+
+		if (!this.authToken) {
+			const directus = new Directus(this.url);
+			this.authToken = await directus.auth
+				.login({
+					email: this.options?.auth?.email,
+					password: this.options?.auth?.password,
+				})
+				.then((r) => r.access_token)
+				.catch((err) => {
+					error(`authentication failed with: ${err.message}\nAre credentials valid?`);
+				});
+		}
+
+		if (this.authToken) {
+			Object.assign(headers, {
+				Authorization: `Bearer ${this.authToken}`,
+			});
+		}
+
+		return headers;
+	}
+}
+
+class Log {
+	static log(level, message) {
+		let color = level === 'error' ? 'red' : level === 'warning' ? 'yellow' : 'white';
+
+		// eslint-disable-next-line no-console
+		console.log(chalk.cyan('gatsby-source-directus'), ':', chalk[color](message));
+	}
+	static error(message) {
+		Log.log('error', message);
+	}
+	static warning(message) {
+		Log.log('error', message);
+	}
+}
+
+function isEmpty(value) {
+	if (value?.constructor === String) return value.length === 0;
+
+	return true;
+}
+
+function error(message) {
+	Log.error(message);
+
+	const error = new Error(`gatsby-source-directus: ${message}`);
+	error.stack = undefined;
+
+	throw error;
+}
+
+function warning(message) {
+	Log.warning(message);
+}
+
+const plugin = new Plugin();
