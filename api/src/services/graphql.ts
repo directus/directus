@@ -2103,12 +2103,11 @@ export class GraphQLService {
 				meta: schemaComposer.createObjectTC({
 					name: 'directus_fields_meta',
 					fields: Object.values(schema.read.collections['directus_fields'].fields).reduce((acc, field) => {
-						// Must ignore primary key in order to create an entry
-						if (field['defaultValue'] == 'AUTO_INCREMENT') {
-							return acc;
-						}
 						acc[field.field] = {
-							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
+							type:
+								field.nullable || field.defaultValue === 'AUTO_INCREMENT'
+									? getGraphQLType(field.type)
+									: GraphQLNonNull(getGraphQLType(field.type)),
 							description: field.note,
 						};
 
