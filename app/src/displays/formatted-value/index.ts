@@ -9,9 +9,45 @@ export default defineDisplay({
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	component: DisplayFormattedValue,
-	options: ({ collection, field }) => {
-		const display_options = field.meta.display_options || {};
+	options: ({ field }) => {
+		const isString = ['string', 'text'].includes(field.type);
+		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];
+		const numberOperators = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte'];
+
 		const options: DisplayConfig['options'] = [
+			{
+				field: 'format',
+				name: '$t:displays.formatted-value.format',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.format_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'font',
+				name: '$t:displays.formatted-value.font',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{ text: '$t:displays.formatted-value.font_sans_serif', value: 'sans-serif' },
+							{ text: '$t:displays.formatted-value.font_serif', value: 'serif' },
+							{ text: '$t:displays.formatted-value.font_monospace', value: 'monospace' },
+						],
+					},
+				},
+				schema: {
+					default_value: 'sans-serif',
+				},
+			},
 			{
 				field: 'bold',
 				name: '$t:displays.formatted-value.bold',
@@ -43,33 +79,6 @@ export default defineDisplay({
 				},
 			},
 			{
-				field: 'font',
-				name: '$t:displays.formatted-value.font',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{ text: '$t:displays.formatted-value.font_sans_serif', value: 'sans-serif' },
-							{ text: '$t:displays.formatted-value.font_serif', value: 'serif' },
-							{ text: '$t:displays.formatted-value.font_monospace', value: 'monospace' },
-						],
-					},
-				},
-				schema: {
-					default_value: 'sans-serif',
-				},
-			},
-			{
-				field: 'color',
-				name: '$t:displays.formatted-value.color',
-				type: 'string',
-				meta: {
-					interface: 'select-color',
-					width: 'half',
-				},
-			},
-			{
 				field: 'prefix',
 				name: '$t:displays.formatted-value.prefix',
 				type: 'string',
@@ -96,6 +105,24 @@ export default defineDisplay({
 				},
 			},
 			{
+				field: 'color',
+				name: '$t:displays.formatted-value.color',
+				type: 'string',
+				meta: {
+					interface: 'select-color',
+					width: 'half',
+				},
+			},
+			{
+				field: 'background',
+				name: '$t:displays.formatted-value.background',
+				type: 'string',
+				meta: {
+					interface: 'select-color',
+					width: 'half',
+				},
+			},
+			{
 				field: 'icon',
 				name: '$t:displays.formatted-value.icon',
 				type: 'string',
@@ -104,114 +131,105 @@ export default defineDisplay({
 					interface: 'select-icon',
 				},
 			},
-		];
-
-		if (['string', 'text'].includes(field.type)) {
-			options.push({
-				field: 'formatTitle',
-				name: '$t:displays.formatted-value.format_title',
+			{
+				field: 'border',
+				name: '$t:displays.formatted-value.border',
 				type: 'boolean',
 				meta: {
 					width: 'half',
 					interface: 'boolean',
 					options: {
-						label: '$t:displays.formatted-value.format_title_label',
+						label: '$t:displays.formatted-value.border_label',
 					},
 				},
 				schema: {
 					default_value: false,
 				},
-			});
-		}
-
-		options.push({
-			field: 'link',
-			name: '$t:displays.formatted-value.link',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:displays.formatted-value.link_label',
-				},
 			},
-			schema: {
-				default_value: false,
-			},
-		});
-
-		if (display_options.link) {
-			options.push({
-				field: 'linkTemplate',
-				name: '$t:displays.formatted-value.link_template',
-				type: 'string',
+			{
+				field: 'conditionalFormatting',
+				type: 'json',
+				name: '$t:conditional_styles',
 				meta: {
-					width: 'half',
-					interface: 'input',
+					interface: 'list',
+					width: 'full',
 					options: {
-						label: '$t:displays.formatted-value.link_template_label',
+						template: '{{operator}} {{value}}',
+						fields: [
+							{
+								field: 'operator',
+								name: '$t:operator',
+								type: 'string',
+								schema: {
+									default_value: 'eq',
+								},
+								meta: {
+									interface: 'select-dropdown',
+									options: {
+										choices: (isString ? stringOperators : numberOperators).map((operator) => ({
+											text: `$t:operators.${operator}`,
+											value: operator,
+										})),
+									},
+									width: 'half',
+								},
+							},
+							{
+								field: 'value',
+								name: '$t:value',
+								type: isString ? 'string' : 'integer',
+								schema: {
+									default_value: isString ? '' : 0,
+								},
+								meta: {
+									interface: 'input',
+									width: 'half',
+								},
+							},
+							{
+								field: 'color',
+								name: '$t:displays.formatted-value.color',
+								type: 'string',
+								meta: {
+									interface: 'select-color',
+									width: 'half',
+								},
+							},
+							{
+								field: 'background',
+								name: '$t:displays.formatted-value.background',
+								type: 'string',
+								meta: {
+									interface: 'select-color',
+									width: 'half',
+								},
+							},
+							{
+								field: 'text',
+								name: '$t:displays.formatted-value.text',
+								type: 'string',
+								meta: {
+									interface: 'input',
+									width: 'half',
+									options: {
+										label: '$t:displays.formatted-value.text_label',
+									},
+								},
+							},
+							{
+								field: 'icon',
+								name: '$t:displays.formatted-value.icon',
+								type: 'string',
+								meta: {
+									width: 'half',
+									interface: 'select-icon',
+								},
+							},
+						],
 					},
 				},
-				schema: {
-					default_value: '{{value}}',
-				},
-			});
-		}
-
-		options.push({
-			field: 'formatRules',
-			name: '$t:displays.formatted-value.format_rules',
-			type: 'json',
-			meta: {
-				interface: 'list',
-				options: {
-					template: '{{name}}',
-					fields: [
-						{
-							field: 'name',
-							name: '$t:displays.formatted-value.format_rules_name',
-							type: 'string',
-							meta: {
-								width: 'half',
-								interface: 'input',
-								options: {
-									label: '$t:displays.formatted-value.format_rules_name_label',
-								},
-							},
-						},
-						{
-							field: 'rule',
-							name: '$t:displays.formatted-value.format_rules_filter',
-							type: 'json',
-							meta: {
-								interface: 'system-filter',
-								options: {
-									collectionName: collection,
-								},
-							},
-						},
-						{
-							field: 'color',
-							name: '$t:displays.formatted-value.color',
-							type: 'string',
-							meta: {
-								interface: 'select-color',
-								width: 'half',
-							},
-						},
-						{
-							field: 'icon',
-							name: '$t:displays.formatted-value.icon',
-							type: 'string',
-							meta: {
-								width: 'half',
-								interface: 'select-icon',
-							},
-						},
-					],
-				},
 			},
-		});
+		];
 
 		return options;
 	},

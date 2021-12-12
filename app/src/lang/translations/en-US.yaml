@@ -1524,32 +1524,27 @@ displays:
   formatted-value:
     formatted-value: Formatted Value
     description: Display a formatted version of the text
-    bold: Bold
-    bold_label: Use bold style
-    italic: Italic
-    italic_label: Use italic style
+    format: Format
+    format_label: Auto format
     font: Font
     font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
-    color: Color
-    icon: Icon
+    bold: Bold
+    bold_label: Use bold style
+    italic: Italic
+    italic_label: Use italic style
     prefix: Prefix
     prefix_label: Prepend text
     suffix: Suffix
     suffix_label: Appended Text
-    format_rules: Format Rules
-    format_rules_name: Name
-    format_rules_name_label: Rule Name
-    format_rules_filter: Filter
-    format_rules_filter_label: Filter
-    format_title: Format Title
-    format_title_label: Auto-format casing
-    link: Link
-    link_label: Show link
-    link_tooltip: Open Link
-    link_template: Link template
-    link_template_label: Link template
+    color: Color
+    background: Background
+    icon: Icon
+    border: Border
+    border_label: Show border
+    text: Text
+    text_label: Text
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object

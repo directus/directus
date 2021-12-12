@@ -1,24 +1,18 @@
 <template>
 	<value-null v-if="displayValue === null || displayValue === undefined" />
 
-	<div v-else class="display-formatted">
-		<v-icon v-if="format.icon" class="left" :name="format.icon" :color="format.color" small />
+	<div v-else class="display-formatted" :class="[{ bold, italic }, font]" :style="computedStyle">
+		<v-icon v-if="computedFormat.icon" class="left" :name="computedFormat.icon" :color="computedFormat.color" small />
 
-		<span class="value" :class="[{ bold, italic }, font]" :style="valueStyle">
-			{{ prefix }}{{ displayValue }}{{ suffix }}
+		<span class="value">
+			{{ displayValue }}
 		</span>
-
-		<a v-if="link" class="link" :href="href" :target="target" @click.stop>
-			<v-icon v-tooltip="t('displays.formatted-value.link_tooltip')" class="button" name="launch" small />
-		</a>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
-import { validatePayload } from '@directus/shared/utils';
-import { parseFilter } from '@/utils/parse-filter';
 import { decode } from 'html-entities';
 import { useI18n } from 'vue-i18n';
 import { isNil } from 'lodash';
@@ -37,11 +31,7 @@ export default defineComponent({
 			type: [String, Number],
 			default: null,
 		},
-		bold: {
-			type: Boolean,
-			default: false,
-		},
-		italic: {
+		format: {
 			type: Boolean,
 			default: false,
 		},
@@ -50,13 +40,13 @@ export default defineComponent({
 			default: 'sans-serif',
 			validator: (value: string) => ['sans-serif', 'serif', 'monospace'].includes(value),
 		},
-		color: {
-			type: String,
-			default: null,
+		bold: {
+			type: Boolean,
+			default: false,
 		},
-		icon: {
-			type: String,
-			default: null,
+		italic: {
+			type: Boolean,
+			default: false,
 		},
 		prefix: {
 			type: String,
@@ -66,58 +56,91 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		formatRules: {
-			type: Array as PropType<Record<string, any>[]>,
+		color: {
+			type: String,
 			default: null,
 		},
-		formatTitle: {
-			type: Boolean,
-			default: false,
-		},
-		link: {
-			type: Boolean,
-			default: false,
-		},
-		linkTemplate: {
+		background: {
 			type: String,
-			default: '{{value}}',
+			default: null,
+		},
+		icon: {
+			type: String,
+			default: null,
+		},
+		border: {
+			type: Boolean,
+			default: false,
+		},
+		conditionalFormatting: {
+			type: Array as PropType<
+				{
+					operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
+					value: string;
+					color: string;
+					background: string;
+					text: string;
+					icon: string;
+				}[]
+			>,
+			default: () => [],
 		},
 	},
 	setup(props) {
 		const { t, n } = useI18n();
 
-		const matchedRules = computed(() => {
-			return (props.formatRules || []).filter((formatRule) => {
-				if (!formatRule.rule || Object.keys(formatRule.rule).length !== 1) return;
-				const rule = parseFilter(formatRule.rule);
-				const errors = validatePayload(rule, props.item, { requireAll: true });
-				return errors.length === 0;
+		const matchedConditions = computed(() => {
+			return (props.conditionalFormatting || []).filter(({ operator, value }) => {
+				if (['string', 'text'].includes(props.type)) {
+					const left = String(props.value);
+					const right = String(value);
+					return matchString(left, right, operator);
+				} else if (['float', 'decimal'].includes(props.type)) {
+					const left = parseFloat(String(props.value));
+					const right = parseFloat(String(value));
+					return matchNumber(left, right, operator);
+				} else {
+					const left = parseInt(String(props.value));
+					const right = parseInt(String(value));
+					return matchNumber(left, right, operator);
+				}
 			});
 		});
 
-		const format = computed(() => {
-			const { color, icon } = props;
-			return matchedRules.value.reduce((format, rule) => Object.assign({}, format, rule), {
-				color,
-				icon,
-			});
+		const computedFormat = computed(() => {
+			const { color, background, icon } = props;
+			return matchedConditions.value.reduce(
+				({ color, background, icon, text }, format) => ({
+					color: format.color || color,
+					background: format.background || background,
+					icon: format.icon || icon,
+					text: format.text || text,
+				}),
+				{
+					color,
+					background,
+					icon,
+					text: '',
+				}
+			);
 		});
 
-		const valueStyle = computed(() => {
-			return { color: format.value.color };
+		const computedStyle = computed(() => {
+			return {
+				color: computedFormat.value.color,
+				borderStyle: 'solid',
+				borderWidth: props.border ? '2px' : 0,
+				borderColor: computedFormat.value.color,
+				backgroundColor: computedFormat.value.background ?? 'transparent',
+			};
 		});
 
 		const displayValue = computed(() => {
-			if (isNil(props.value) || props.value === '') return null;
-
-			if (['integer', 'bigInteger', 'float', 'decimal'].includes(props.type)) {
-				const hasDecimals = ['float', 'decimal'].includes(props.type);
-
-				const { value } = props;
-				const number = hasDecimals ? parseFloat(value.toString()) : parseInt(value.toString());
-
-				return n(number);
+			if (computedFormat.value.text) {
+				return computedFormat.value.text;
 			}
+
+			if (isNil(props.value) || props.value === '') return null;
 
 			let value = String(props.value);
 
@@ -127,36 +150,65 @@ export default defineComponent({
 			// Decode any HTML encoded characters (like &copy;)
 			value = decode(value);
 
-			if (props.formatTitle) {
-				value = formatTitle(value);
+			if (props.format) {
+				if (['string', 'text'].includes(props.type)) {
+					value = formatTitle(value);
+				} else if (['float', 'decimal'].includes(props.type)) {
+					value = n(parseFloat(value));
+				} else {
+					value = n(parseInt(value));
+				}
 			}
 
-			return value;
+			const prefix = props.prefix ?? '';
+			const suffix = props.suffix ?? '';
+
+			return `${prefix}${value}${suffix}`;
 		});
 
-		const href = computed(() => {
-			if (isNil(props.value) || props.value === '' || !props.link) return null;
+		return { t, computedFormat, displayValue, computedStyle };
 
-			return props.linkTemplate.replace(/({{\s*value\s*}})/g, props.value.toString());
-		});
+		function matchString(left: string, right: string, operator: string) {
+			switch (operator) {
+				case 'eq':
+					return left === right;
+				case 'neq':
+					return left !== right;
+				case 'contains':
+					return left.includes(right);
+				case 'starts_with':
+					return left.startsWith(right);
+				case 'ends_with':
+					return left.endsWith(right);
+			}
+		}
 
-		const target = computed(() => {
-			if (isNil(href.value) || href.value === '') return null;
-			if (href.value[0] === '/') return '_self';
-			else return '_blank';
-		});
-
-		return { t, format, displayValue, href, target, valueStyle };
+		function matchNumber(left: number, right: number, operator: string) {
+			switch (operator) {
+				case 'eq':
+					return left === right;
+				case 'neq':
+					return left !== right;
+				case 'gt':
+					return left > right;
+				case 'gte':
+					return left >= right;
+				case 'lt':
+					return left < right;
+				case 'lte':
+					return left <= right;
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .display-formatted {
-	display: flex;
-	flex-grow: 1;
+	display: inline-flex;
 	align-items: center;
-	overflow: hidden;
+	padding: 6px 12px;
+	border-radius: 24px;
 
 	& .value {
 		flex-shrink: 1;
@@ -193,30 +245,6 @@ export default defineComponent({
 		&.left {
 			margin-right: 2px;
 		}
-
-		&.right {
-			margin-left: 2px;
-		}
-
-		&.button {
-			margin-left: 4px;
-			color: var(--foreground-subdued);
-			transition: color var(--fast) var(--transition);
-
-			&:hover {
-				color: var(--green-75);
-			}
-		}
-	}
-}
-
-@media (hover: hover) {
-	.display-formatted .v-icon.button {
-		display: none;
-	}
-
-	.display-formatted:hover .v-icon.button {
-		display: block;
 	}
 }
 </style>
