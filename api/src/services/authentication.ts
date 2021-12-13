@@ -6,20 +6,34 @@ import getDatabase from '../database';
 import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import { DEFAULT_AUTH_PROVIDER, DIRECTUS_SHARED_AUTH } from '../constants';
 import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
-import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
+import {
+	AbstractServiceOptions,
+	Action,
+	SchemaOverview,
+	Session,
+	User,
+	DirectusTokenPayload,
+	ShareData,
+} from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { clone, cloneDeep, omit } from 'lodash';
+import { clone, cloneDeep, omit, pick } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
-import logger from '../logger';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
+
+type LoginResult = {
+	accessToken: any;
+	refreshToken: any;
+	expires: any;
+	id?: any;
+};
 
 export class AuthenticationService {
 	knex: Knex;
@@ -34,6 +48,70 @@ export class AuthenticationService {
 		this.schema = options.schema;
 	}
 
+	async sharedLogin(payload: Record<string, any>): Promise<LoginResult> {
+		const record = await this.knex
+			.select<ShareData>(
+				'id AS shared_id',
+				'role AS shared_role',
+				'item AS shared_item',
+				'collection AS shared_collection',
+				'date_expired AS shared_expires',
+				'times_used AS shared_times_used',
+				'max_uses AS shared_max_uses'
+			)
+			.from('directus_shares')
+			.where('id', payload.id)
+			.first();
+
+		if (!record) {
+			throw new InvalidCredentialsException();
+		}
+		if (record.shared_expires && record.shared_expires < new Date()) {
+			throw new InvalidCredentialsException();
+		}
+		if (record.shared_max_uses && record.shared_max_uses <= record.shared_times_used) {
+			throw new InvalidCredentialsException();
+		}
+
+		await this.knex('directus_shares')
+			.update({ times_used: record.shared_times_used + 1 })
+			.where('id', record.shared_id);
+
+		const tokenPayload = {
+			app_access: false,
+			admin_access: false,
+			id: record.shared_id,
+			role: record.shared_role,
+			shared_scope: {
+				item: record.shared_item,
+				collection: record.shared_collection,
+			},
+		};
+
+		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
+			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
+		});
+
+		const refreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+
+		await this.knex('directus_sessions').insert({
+			token: refreshToken,
+			expires: refreshTokenExpiration,
+			ip: this.accountability?.ip,
+			user_agent: this.accountability?.userAgent,
+		});
+
+		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
+
+		return {
+			accessToken,
+			refreshToken,
+			expires: ms(env.ACCESS_TOKEN_TTL as string),
+		};
+	}
+
 	/**
 	 * Retrieve the tokens for a given user email.
 	 *
@@ -44,7 +122,10 @@ export class AuthenticationService {
 		providerName: string = DEFAULT_AUTH_PROVIDER,
 		payload: Record<string, any>,
 		otp?: string
-	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
+	): Promise<LoginResult> {
+		if (providerName === DIRECTUS_SHARED_AUTH) {
+			return this.sharedLogin(payload);
+		}
 		const STALL_TIME = 100;
 		const timeStart = performance.now();
 
@@ -52,21 +133,24 @@ export class AuthenticationService {
 
 		const user = await this.knex
 			.select<User & { tfa_secret: string | null }>(
-				'id',
-				'first_name',
-				'last_name',
-				'email',
-				'password',
-				'status',
-				'role',
-				'tfa_secret',
-				'provider',
-				'external_identifier',
-				'auth_data'
+				'u.id',
+				'u.first_name',
+				'u.last_name',
+				'u.email',
+				'u.password',
+				'u.status',
+				'u.role',
+				'r.admin_access',
+				'r.app_access',
+				'u.tfa_secret',
+				'u.provider',
+				'u.external_identifier',
+				'u.auth_data'
 			)
-			.from('directus_users')
-			.where('id', await provider.getUserID(cloneDeep(payload)))
-			.andWhere('provider', providerName)
+			.from('directus_users as u')
+			.innerJoin('directus_roles as r', 'u.role', 'r.id')
+			.where('u.id', await provider.getUserID(cloneDeep(payload)))
+			.andWhere('u.provider', providerName)
 			.first();
 
 		const updatedPayload = await emitter.emitFilter(
@@ -136,10 +220,8 @@ export class AuthenticationService {
 			}
 		}
 
-		let sessionData: SessionData = null;
-
 		try {
-			sessionData = await provider.login(clone(user), cloneDeep(updatedPayload));
+			await provider.login(clone(user), cloneDeep(updatedPayload));
 		} catch (e) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -165,6 +247,9 @@ export class AuthenticationService {
 
 		const tokenPayload = {
 			id: user.id,
+			role: user.role,
+			app_access: user.app_access,
+			admin_access: user.admin_access,
 		};
 
 		const customClaims = await emitter.emitFilter(
@@ -197,7 +282,6 @@ export class AuthenticationService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
-			data: sessionData && JSON.stringify(sessionData),
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
@@ -236,48 +320,65 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const record = await this.knex
-			.select<Session & User>(
+		const session = await this.knex
+			.select<Session & User & ShareData>(
 				's.expires',
-				's.data',
 				'u.id',
 				'u.first_name',
 				'u.last_name',
 				'u.email',
 				'u.password',
 				'u.status',
-				'u.role',
+				'r.id AS role',
+				'r.admin_access',
+				'r.app_access',
 				'u.provider',
 				'u.external_identifier',
-				'u.auth_data'
+				'u.auth_data',
+				'd.id AS share',
+				'd.item AS shared_item',
+				'd.collection AS shared_collection',
+				'd.date_expired AS shared_expires',
+				'd.times_used AS shared_times_used',
+				'd.max_uses AS shared_max_uses'
 			)
-			.from('directus_sessions as s')
-			.innerJoin('directus_users as u', 's.user', 'u.id')
+			.from('directus_sessions AS s')
+			.leftJoin('directus_users AS u', 's.user', 'u.id')
+			.leftJoin('directus_shares AS d', 's.share', 'd.id')
+			.joinRaw('LEFT JOIN directus_roles AS r ON r.id IN (u.role, d.role)')
 			.where('s.token', refreshToken)
+			.andWhere('s.expires', '<=', this.knex.fn.now())
 			.first();
 
-		if (!record || record.expires < new Date()) {
+		if (!session || !session.share || !session.id) {
 			throw new InvalidCredentialsException();
 		}
-
-		let { data: sessionData } = record;
-		const user = omit(record, 'data');
-
-		if (typeof sessionData === 'string') {
-			try {
-				sessionData = JSON.parse(sessionData);
-			} catch {
-				logger.warn(`Session data isn't valid JSON: ${sessionData}`);
-			}
+		if (session.share) {
+			const expired = session.shared_expires < new Date();
+			const overused = session.shared_max_uses && session.shared_max_uses <= session.shared_times_used;
+			if (expired || overused) throw new InvalidCredentialsException();
 		}
 
-		const provider = getAuthProvider(user.provider);
+		const user = session;
 
-		const newSessionData = await provider.refresh(clone(user), sessionData as SessionData);
+		if (user.id) {
+			const provider = getAuthProvider(user.provider);
+			await provider.refresh(clone(user));
+		}
 
-		const tokenPayload = {
+		const tokenPayload: DirectusTokenPayload = {
 			id: user.id,
+			role: user.role,
+			app_access: user.app_access,
+			admin_access: user.admin_access,
 		};
+		if (session.share) {
+			tokenPayload.role = session.shared_role;
+			tokenPayload.share_scope = {
+				collection: session.shared_collection,
+				item: session.shared_item,
+			};
+		}
 
 		const customClaims = await emitter.emitFilter(
 			'auth.jwt',
@@ -307,7 +408,6 @@ export class AuthenticationService {
 			.update({
 				token: newRefreshToken,
 				expires: refreshTokenExpiration,
-				data: newSessionData && JSON.stringify(newSessionData),
 			})
 			.where({ token: refreshToken });
 
@@ -333,8 +433,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
-				'u.auth_data',
-				's.data'
+				'u.auth_data'
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -342,19 +441,10 @@ export class AuthenticationService {
 			.first();
 
 		if (record) {
-			let { data: sessionData } = record;
-			const user = omit(record, 'data');
-
-			if (typeof sessionData === 'string') {
-				try {
-					sessionData = JSON.parse(sessionData);
-				} catch {
-					logger.warn(`Session data isn't valid JSON: ${sessionData}`);
-				}
-			}
+			const user = record;
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout(clone(user), sessionData as SessionData);
+			await provider.logout(clone(user));
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}

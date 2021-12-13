@@ -350,6 +350,10 @@ hours: Hours
 month: Month
 year: Year
 select_all: Select All
+access_shared_item: Access item
+shared_with_you: An item has been shared with you
+shared_times_remaining: This link can only be used {n} times
+shared_last_remaining: This link can only be used once
 months:
   january: January
   february: February

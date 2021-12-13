@@ -28,6 +28,7 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
+import sharesRouter from './controllers/shares';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import emitter from './emitter';
 import env from './env';
@@ -193,6 +194,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
+	app.use('/shares', sharesRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });

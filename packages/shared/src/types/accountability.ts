@@ -6,6 +6,10 @@ export type Accountability = {
 	admin?: boolean;
 	app?: boolean;
 	permissions?: Permission[];
+	share_scope?: {
+		collection: string;
+		item: string;
+	};
 
 	ip?: string;
 	userAgent?: string;

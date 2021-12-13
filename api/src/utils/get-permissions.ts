@@ -3,6 +3,7 @@ import { deepMap, parseFilter } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
+import { apiAccessMinimalPermissions } from '../database/system-data/api-access-permissions';
 import { mergePermissions } from '../utils/merge-permissions';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
@@ -17,8 +18,8 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 
 	let permissions: Permission[] = [];
 
-	const { user, role, app, admin } = accountability;
-	const cacheKey = `permissions-${hash({ user, role, app, admin })}`;
+	const { user, role, app, admin, scope: { collection: collection_scope, item: item_scope } = {} } = accountability;
+	const cacheKey = `permissions-${hash({ user, role, app, admin, collection_scope, item_scope })}`;
 
 	if (env.CACHE_PERMISSIONS !== false) {
 		const cachedPermissions = await systemCache.get(cacheKey);
@@ -68,12 +69,15 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			containDynamicData,
 		} = parsePermissions(permissionsForRole);
 
-		permissions = parsedPermissions;
+		permissions = mergePermissions(
+			parsedPermissions,
+			apiAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
+		);
 
 		if (accountability.app === true) {
 			permissions = mergePermissions(
 				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability!.role }))
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
 			);
 		}
 

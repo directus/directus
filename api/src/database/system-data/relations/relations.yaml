@@ -88,3 +88,9 @@ data:
   - many_collection: directus_notifications
     many_field: sender
     one_collection: directus_users
+  - many_collection: directus_shares
+    many_field: role
+    one_collection: directus_roles
+  - many_collection: directus_shares
+    many_field: user_created
+    one_collection: directus_users

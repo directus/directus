@@ -3,12 +3,13 @@ import argon2 from 'argon2';
 import ms from 'ms';
 import Joi from 'joi';
 import { AuthDriver } from '../auth';
-import { User, SessionData } from '../../types';
+import { User } from '../../types';
 import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
 import { AuthenticationService } from '../../services';
 import asyncHandler from '../../utils/async-handler';
 import env from '../../env';
 import { respond } from '../../middleware/respond';
+import { DIRECTUS_SHARED_AUTH } from '../../constants';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
@@ -35,21 +36,27 @@ export class LocalAuthDriver extends AuthDriver {
 		}
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
+	async login(user: User, payload: Record<string, any>): Promise<void> {
 		await this.verify(user, payload.password);
-		return null;
 	}
 }
 
 export function createLocalAuthRouter(provider: string): Router {
 	const router = Router();
 
-	const loginSchema = Joi.object({
+	const userLoginSchema = Joi.object({
 		email: Joi.string().email().required(),
 		password: Joi.string().required(),
 		mode: Joi.string().valid('cookie', 'json'),
 		otp: Joi.string(),
 	}).unknown();
+
+	const sharedLoginSchema = Joi.object({
+		mode: Joi.string().valid('cookie', 'json'),
+		id: Joi.string().required(),
+	}).unknown();
+
+	const loginSchema = provider === DIRECTUS_SHARED_AUTH ? sharedLoginSchema : userLoginSchema;
 
 	router.post(
 		'/',
