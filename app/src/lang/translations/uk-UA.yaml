@@ -218,6 +218,7 @@ timestamp: Часова відмітка
 uuid: UUID
 hash: Хеш
 geometry: Геометрія (Все)
+geometry.Point: Аспект
 geometry.Polygon: Полігон
 not_available_for_type: Не доступно для цього типу
 create_translations: Створити переклади
@@ -600,6 +601,7 @@ upload_file_indeterminate: Йде завантаження файлу...
 upload_file_success: Файл був завантажений
 upload_files_indeterminate: 'Завантаження файлів {done}/{total}'
 upload_files_success: '{count} файлів завантажено'
+upload_pending: Очікується завантаження
 drag_file_here: Перетягніть файл сюди
 click_to_browse: Натисніть для перегляду
 interface_options: Налаштування інтерфейсу
@@ -1247,7 +1249,9 @@ interfaces:
     name_placeholder: Введіть назву кольору...
   datetime:
     datetime: Дата й час
+    description: Введіть дати та час
     include_seconds: Секунди включно
+    set_to_now: Перемкнути на Зараз
     use_24: Використовувати 24-годинний формат
   system-display-template:
     display-template: Шаблон відображення
@@ -1258,15 +1262,27 @@ interfaces:
   presentation-divider:
     divider: Розділювач
     description: Позначити та розділити поля на секції
+    title_placeholder: Введыть назву, або залиште поле пустим, щоб відображати тыльки лінію...
+    inline_title: Вбудований заголовок
+    inline_title_label: Показувати заголовок у рядку
+    margin_top: Верхнє поле
+    margin_top_label: Збільшити верхнє поле
   select-dropdown:
+    choices_placeholder: Додати варіант
     allow_other: Дозволити інше
+    allow_other_label: Додати інші значення
+    choices_name_placeholder: Вкажіть назву...
     choices_value_placeholder: Введіть значення...
   file:
     file: Файл
+    description: Оберіть, або завантажте файл
   files:
     files: Файли
+    description: Оберіть, або завантажте декілька файлів
   input-hash:
     hash: Хеш
+    masked: Масковано
+    masked_label: Приховати дійсне значення
   select-icon:
     icon: Іконка
     search_for_icon: Пошук іконки...
@@ -1331,6 +1347,8 @@ interfaces:
     system_default: Стандартні налаштування
   tags:
     tags: Теги
+  input:
+    mask: Масковано
   boolean:
     toggle: Переключити
     color_on: Увімкнений колір
