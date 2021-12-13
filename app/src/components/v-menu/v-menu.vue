@@ -38,6 +38,7 @@
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div
 						class="v-menu-content"
+						:class="{ 'max-height-none': maxHeightNone }"
 						@click.stop="onContentClick"
 						@pointerenter.stop="onPointerEnter"
 						@pointerleave.stop="onPointerLeave"
@@ -110,6 +111,10 @@ export default defineComponent({
 		offsetX: {
 			type: Number,
 			default: 0,
+		},
+		maxHeightNone: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
@@ -399,6 +404,10 @@ body {
 	.v-list {
 		--v-list-background-color: transparent;
 	}
+}
+
+.v-menu-content.max-height-none {
+	max-height: none;
 }
 
 [data-placement='top'] > .v-menu-content {
