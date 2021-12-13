@@ -129,18 +129,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-date-picker {
-	--arrow-color: var(--border-normal);
-	--v-icon-color: var(--foreground-subdued);
-	--v-input-color: var(--foreground-normal);
-	--v-input-background-color: var(--background-input);
-	--v-input-border-color-focus: var(--primary);
-
 	.input {
 		display: none;
 	}
-}
-
-.v-icon.active {
-	--v-icon-color: var(--primary);
 }
 </style>
