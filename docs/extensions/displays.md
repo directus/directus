@@ -34,7 +34,7 @@ export default {
 - `description` — A short description (<80 characters) of this display shown in the App.
 - `component` — A reference to your display component.
 - `options` — The options of your display. Can be either an options object or a dedicated Vue component.
-- `types` — A CSV of supported [types](/concepts/types/).
+- `types` — An array of supported [types](/getting-started/glossary/#types).
 - `groups` — An array of field-groups. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2a`, `translations`.
   Defaults to `standard`.
 - `fields` — If this option is set, the display will fetch relational fields. Can either be an array of fields or a
