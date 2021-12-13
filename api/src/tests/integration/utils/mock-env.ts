@@ -6,3 +6,4 @@ process.env.DB_PORT = '5432';
 process.env.DB_DATABASE = 'directus';
 process.env.DB_USER = 'postgres';
 process.env.DB_PASSWORD = 'psql1234';
+process.env.AUTH_PROVIDERS = 'local';
