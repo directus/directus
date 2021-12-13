@@ -1,14 +1,14 @@
+.flatpickr-wrapper {
+	width: 100%;
+}
+
 .flatpickr-calendar {
 	width: auto;
 	overflow: hidden;
 	font-family: var(--v-input-font-family);
 	background: var(--card-face-color);
 	border-radius: var(--border-radius);
-	box-shadow: 0 0 6px 0 rgb(var(--card-shadow-color), 0.2), 0 0 12px 2px rgb(var(--card-shadow-color), 0.05);
-	transform: translateY(2px);
-	transition-timing-function: var(--transition-out);
-	transition-duration: var(--fast);
-	transition-property: opacity, transform;
+	box-shadow: none;
 }
 
 .flatpickr-calendar.animate.open {
@@ -242,7 +242,6 @@ span.flatpickr-weekday {
 	color: var(--primary);
 	border-top: var(--border-width) solid var(--border-normal);
 }
-
 
 .flatpickr-calendar .set-to-now-button:hover {
 	background-color: var(--background-normal-alt);
