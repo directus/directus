@@ -207,6 +207,7 @@ datetime: Час
 dateTime: Час
 precision: Точність
 decimal: Десятки
+float: Обтікання
 integer: Ціле число
 json: JSON
 xml: XML
@@ -216,6 +217,7 @@ time: Час
 timestamp: Часова відмітка
 uuid: UUID
 hash: Хеш
+geometry: Геометрія (Все)
 geometry.Polygon: Полігон
 not_available_for_type: Не доступно для цього типу
 create_translations: Створити переклади
