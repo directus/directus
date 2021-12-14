@@ -17,14 +17,17 @@ describe('ItemsService', () => {
 		tracker.reset();
 	});
 
-	it('test', async () => {
+	it('creates one item in collection directus_users', async () => {
+		const item = { email: 'test@gmail.com', password: 'TestPassword' };
 		tracker.on.insert('directus_users').response(1);
+
 		itemsService = new ItemsService('directus_users', {
 			// Use getSchema() to mock schema
 			knex: db,
 			accountability: { role: 'admin' },
 			schema: await getSchema(),
 		});
-		expect(await itemsService.createOne({ email: 'test@gmail.com', password: 'TestPassword' })).toBe('');
+
+		expect(await itemsService.createOne(item)).toBe(item);
 	});
 });

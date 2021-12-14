@@ -173,7 +173,7 @@ async function parseCurrentLevel(
 	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
 }
 
-function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
+export function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helpers = getHelpers(knex);
 
 	return function (fieldNode: FieldNode | M2ONode): Knex.Raw<string> {

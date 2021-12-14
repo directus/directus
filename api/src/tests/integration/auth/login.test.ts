@@ -1,6 +1,7 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { AuthenticationService } from 'directus';
+import { getSchema } from '../../../utils/get-schema';
 
 // need to mock auth provider
 describe('AuthenticationService', () => {
@@ -21,7 +22,7 @@ describe('AuthenticationService', () => {
 		authService = new AuthenticationService({
 			knex: db,
 			accountability: { role: 'admin' },
-			schema: { collections: {}, relations: [] },
+			schema: await getSchema(),
 		});
 		expect(await authService.login('default', { email: 'test@gmail.com', password: 'TestPassword' })).toBe('');
 	});
