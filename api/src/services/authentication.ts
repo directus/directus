@@ -353,10 +353,9 @@ export class AuthenticationService {
 		if (!session || !session.share || !session.id) {
 			throw new InvalidCredentialsException();
 		}
-		if (session.share) {
-			const expired = session.shared_expires < new Date();
-			const overused = session.shared_max_uses && session.shared_max_uses <= session.shared_times_used;
-			if (expired || overused) throw new InvalidCredentialsException();
+
+		if (session.share && session.shared_expires && session.shared_expires < new Date()) {
+			throw new InvalidCredentialsException();
 		}
 
 		const user = session;
