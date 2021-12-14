@@ -334,7 +334,7 @@ delete_comment: Usuń komentarz
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_date_short: 'd MMM u'
+date-fns_date_short: 'D MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minuty
