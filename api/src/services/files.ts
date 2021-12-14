@@ -88,7 +88,6 @@ export class FilesService extends ItemsService {
 
 				payload.metadata = {};
 
-			
 				payload.metadata = await exifr.parse(buffer.content, {
 					icc: false,
 					iptc: true,
