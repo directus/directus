@@ -2104,8 +2104,7 @@ export class GraphQLService {
 					name: 'directus_fields_meta',
 					fields: Object.values(schema.read.collections['directus_fields'].fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type:
-								field.nullable || field.defaultValue === 'AUTO_INCREMENT'
+							type: field.nullable || field.generated || field.type === 'uuid' || field.defaultValue
 									? getGraphQLType(field.type)
 									: GraphQLNonNull(getGraphQLType(field.type)),
 							description: field.note,
