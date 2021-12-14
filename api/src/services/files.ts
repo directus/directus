@@ -74,10 +74,10 @@ export class FilesService extends ItemsService {
 		payload.filesize = size;
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
+			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
 			try {
-				const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
 				const meta = await sharp(buffer.content, {}).metadata();
-
+		
 				if (meta.orientation && meta.orientation >= 5) {
 					payload.height = meta.width;
 					payload.width = meta.height;
@@ -85,9 +85,14 @@ export class FilesService extends ItemsService {
 					payload.width = meta.width;
 					payload.height = meta.height;
 				}
-
-				payload.metadata = {};
-
+			} catch (err: any) {
+				logger.warn(`Couldn't extract sharp metadata from file`);
+				logger.warn(err);
+			}
+		
+			payload.metadata = {};
+		
+			try {
 				payload.metadata = await exifr.parse(buffer.content, {
 					icc: false,
 					iptc: true,
@@ -107,7 +112,7 @@ export class FilesService extends ItemsService {
 					payload.tags = payload.metadata.iptc.Keywords;
 				}
 			} catch (err: any) {
-				logger.warn(`Couldn't extract metadata from file`);
+				logger.warn(`Couldn't extract EXIF metadata from file`);
 				logger.warn(err);
 			}
 		}
