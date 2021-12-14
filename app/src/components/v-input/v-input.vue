@@ -232,7 +232,12 @@ export default defineComponent({
 			}
 
 			if (props.type === 'number') {
-				emit('update:modelValue', Number(value));
+				const parsedNumber = Number(value);
+
+				// Ignore if numeric value remains unchanged
+				if (props.modelValue !== parsedNumber) {
+					emit('update:modelValue', parsedNumber);
+				}
 			} else {
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
