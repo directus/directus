@@ -28,7 +28,7 @@
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />
 				</v-button>
-				<v-button v-tooltip="t('edit')" icon rounded @click="editImageEditor = true" >
+				<v-button v-tooltip="t('edit')" icon rounded @click="editImageEditor = true">
 					<v-icon name="tune" />
 				</v-button>
 				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
@@ -49,7 +49,7 @@
 				:edits="edits"
 				@input="stageEdits"
 			/>
-			
+
 			<image-editor v-if="!disabled && image" :id="image.id" v-model:active="editImageEditor" />
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
@@ -111,7 +111,6 @@ export default defineComponent({
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
-		const editDrawerActive = ref(false);
 		const editImageDetails = ref(false);
 		const editImageEditor = ref(false);
 		const imageError = ref<string | null>(null);
