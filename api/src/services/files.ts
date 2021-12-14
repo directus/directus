@@ -77,7 +77,7 @@ export class FilesService extends ItemsService {
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
 			try {
 				const meta = await sharp(buffer.content, {}).metadata();
-		
+
 				if (meta.orientation && meta.orientation >= 5) {
 					payload.height = meta.width;
 					payload.width = meta.height;
@@ -89,9 +89,9 @@ export class FilesService extends ItemsService {
 				logger.warn(`Couldn't extract sharp metadata from file`);
 				logger.warn(err);
 			}
-		
+
 			payload.metadata = {};
-		
+
 			try {
 				payload.metadata = await exifr.parse(buffer.content, {
 					icc: false,
