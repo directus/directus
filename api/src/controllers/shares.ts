@@ -70,13 +70,15 @@ router.get('/', validateBatch('read'), readHandler, respond);
 router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
-	'/:pk/info',
+	'/info/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new SharesService({
 			schema: req.schema,
 		});
 
-		const record = await service.info(req.params.pk);
+		const record = await service.readOne(req.params.pk, {
+			fields: ['collection', 'item', 'max_uses', 'times_used', 'date_expired'],
+		});
 
 		res.locals.payload = { data: record || null };
 		return next();

@@ -54,6 +54,7 @@ export function createLocalAuthRouter(provider: string): Router {
 	const sharedLoginSchema = Joi.object({
 		mode: Joi.string().valid('cookie', 'json'),
 		id: Joi.string().required(),
+		password: Joi.string(),
 	}).unknown();
 
 	const loginSchema = provider === DIRECTUS_SHARED_AUTH ? sharedLoginSchema : userLoginSchema;
