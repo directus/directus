@@ -26,13 +26,10 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_sessions', (table) => {
+		table.uuid('user').notNullable().alter();
+		table.json('data');
 		table.dropColumn('share');
 	});
 
 	await knex.schema.dropTable('directus_shares');
-
-	await knex.schema.alterTable('directus_sessions', (table) => {
-		table.uuid('user').notNullable().alter();
-		table.json('data');
-	});
 }
