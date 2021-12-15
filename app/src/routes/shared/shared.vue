@@ -1,7 +1,5 @@
 <template>
-	<shared-view>
-		<h2 class="type-title">{{ t('shared_with_you') }}</h2>
-
+	<shared-view inline :title="t('share_access_page')">
 		<template v-if="shareInfo">
 			<div v-if="remainingUses">
 				<v-notice v-if="remainingUses === 1" type="danger">
