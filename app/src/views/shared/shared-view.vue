@@ -1,25 +1,31 @@
 <template>
 	<div class="shared" :class="{ inline }">
 		<header>
-			<div class="title-box">
-				<div
-					v-if="serverInfo?.project.project_logo"
-					class="logo"
-					:style="{ backgroundColor: serverInfo?.project.project_color }"
-				>
-					<img :src="logoURL" :alt="serverInfo?.project.project_name || 'Logo'" />
-				</div>
-				<div v-else class="logo" :style="{ backgroundColor: serverInfo?.project.project_color }">
-					<img src="../../assets/logo.svg" alt="Directus" class="directus-logo" />
-				</div>
-				<div class="title">
-					<p class="subtitle">{{ serverInfo?.project.project_name }}</p>
-					<h1 class="type-title">{{ t('share_access_page') }}</h1>
+			<div class="container">
+				<div class="title-box">
+					<div
+						v-if="serverInfo?.project.project_logo"
+						class="logo"
+						:style="{ backgroundColor: serverInfo?.project.project_color }"
+					>
+						<img :src="logoURL" :alt="serverInfo?.project.project_name || 'Logo'" />
+					</div>
+					<div v-else class="logo" :style="{ backgroundColor: serverInfo?.project.project_color }">
+						<img src="../../assets/logo.svg" alt="Directus" class="directus-logo" />
+					</div>
+					<div class="title">
+						<p class="subtitle">{{ serverInfo?.project.project_name }}</p>
+						<h1 class="type-title">{{ t('share_access_page') }}</h1>
+					</div>
 				</div>
 			</div>
 		</header>
 
-		<slot />
+		<div class="container">
+			<div class="content">
+				<slot />
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -57,15 +63,33 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.shared {
+	width: 100%;
+	height: 100%;
+	background-color: var(--background-subdued);
+}
+
+header {
+	margin-bottom: 32px;
+	padding: 10px;
+	background-color: var(--background-page);
+	border-bottom: var(--border-width) solid var(--border-subdued);
+}
+
+.container {
+	max-width: 856px;
+	margin: 0 auto;
+}
+
 .title-box {
 	display: flex;
 	align-items: center;
 	width: max-content;
 	max-width: 100%;
 	height: 64px;
+	margin-top: 2px;
 
 	.title {
-		margin-top: 2px;
 		margin-left: 16px;
 
 		h1 {
@@ -97,5 +121,12 @@ export default defineComponent({
 		object-fit: contain;
 		object-position: center center;
 	}
+}
+
+.content {
+	padding: 32px;
+	background-color: var(--background-page);
+	border-radius: var(--border-radius);
+	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 }
 </style>
