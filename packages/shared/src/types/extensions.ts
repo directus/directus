@@ -67,6 +67,7 @@ export type ApiExtensionContext = {
 	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
+	emitter: any;
 	logger: Logger;
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
 };
