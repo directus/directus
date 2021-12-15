@@ -22,13 +22,6 @@ export class Emitter {
 		this.initEmitter = new EventEmitter2(emitterOptions);
 	}
 
-	public eventsToEmit(event: string, meta: Record<string, any>) {
-		if (event.startsWith('items')) {
-			return [event, `${meta.collection}.${event}`];
-		}
-		return [event];
-	}
-
 	public async emitFilter<T>(event: string, payload: T, meta: Record<string, any>, context: HookContext): Promise<T> {
 		const events = this.eventsToEmit(event, meta);
 		const listeners = events.flatMap((event) => this.filterEmitter.listeners(event)) as FilterHandler[];
@@ -86,6 +79,19 @@ export class Emitter {
 
 	public offInit(event: string, handler: InitHandler): void {
 		this.initEmitter.off(event, handler);
+	}
+
+	public offAll(): void {
+		this.filterEmitter.removeAllListeners();
+		this.actionEmitter.removeAllListeners();
+		this.initEmitter.removeAllListeners();
+	}
+
+	private eventsToEmit(event: string, meta: Record<string, any>) {
+		if (event.startsWith('items')) {
+			return [event, `${meta.collection}.${event}`];
+		}
+		return [event];
 	}
 }
 

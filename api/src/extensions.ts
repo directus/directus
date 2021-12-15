@@ -17,7 +17,7 @@ import {
 	EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import getDatabase from './database';
-import emitter from './emitter';
+import emitter, { Emitter } from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
@@ -63,11 +63,13 @@ class ExtensionManager {
 	)[] = [];
 	private apiEndpoints: { path: string }[] = [];
 
+	private apiEmitter: Emitter;
 	private endpointRouter: Router;
 
 	private isScheduleHookEnabled = true;
 
 	constructor() {
+		this.apiEmitter = new Emitter();
 		this.endpointRouter = Router();
 	}
 
@@ -107,6 +109,8 @@ class ExtensionManager {
 
 		this.unregisterHooks();
 		this.unregisterEndpoints();
+
+		this.apiEmitter.offAll();
 
 		if (env.SERVE_APP) {
 			this.appExtensions = {};
@@ -283,7 +287,7 @@ class ExtensionManager {
 			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
-			emitter,
+			emitter: this.apiEmitter,
 			logger,
 			getSchema,
 		});
@@ -306,7 +310,7 @@ class ExtensionManager {
 			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
-			emitter,
+			emitter: this.apiEmitter,
 			logger,
 			getSchema,
 		});
