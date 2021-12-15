@@ -391,17 +391,6 @@ export default defineComponent({
 				currentCollection.value.meta?.archive_app_filter
 		);
 
-		// watch(
-		// 	() => selectedArchiveFilter.value,
-		// 	() => {
-		// 		if (selectedArchiveFilter.value === null) {
-		// 			router.replace(`/content/${props.collection}`);
-		// 		} else {
-		// 			router.push(`/content/${props.collection}?${selectedArchiveFilter.value}`);
-		// 		}
-		// 	}
-		// );
-
 		const archiveFilter = computed<Filter | null>(() => {
 			if (!currentCollection.value?.meta) return null;
 			if (!currentCollection.value?.meta?.archive_app_filter) return null;
