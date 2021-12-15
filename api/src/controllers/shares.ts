@@ -87,7 +87,7 @@ router.get(
 );
 
 router.get(
-	'/:pk',
+	`/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		const service = new SharesService({
 			accountability: req.accountability,
@@ -136,7 +136,7 @@ router.patch(
 );
 
 router.patch(
-	'/:pk',
+	`/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		const service = new SharesService({
 			accountability: req.accountability,
@@ -183,7 +183,7 @@ router.delete(
 );
 
 router.delete(
-	'/:pk',
+	`/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		const service = new SharesService({
 			accountability: req.accountability,
