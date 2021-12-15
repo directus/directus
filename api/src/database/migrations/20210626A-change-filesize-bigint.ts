@@ -1,9 +1,11 @@
 import { Knex } from 'knex';
 // @ts-ignore
 import Client_Oracledb from 'knex/lib/dialects/oracledb';
+// @ts-ignore
+import Client_Cockroachdb from 'knex/lib/dialects/cockroachdb';
 
 export async function up(knex: Knex): Promise<void> {
-	if (knex.client instanceof Client_Oracledb) {
+	if (knex.client instanceof Client_Oracledb || knex.client instanceof Client_Cockroachdb) {
 		return;
 	}
 
@@ -13,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	if (knex.client instanceof Client_Oracledb) {
+	if (knex.client instanceof Client_Oracledb || knex.client instanceof Client_Cockroachdb) {
 		return;
 	}
 

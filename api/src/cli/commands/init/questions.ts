@@ -21,6 +21,7 @@ const port = ({ client }: { client: string }): Record<string, any> => ({
 	default() {
 		const ports: Record<string, number> = {
 			pg: 5432,
+			cockroachdb: 26257,
 			mysql: 3306,
 			oracledb: 1521,
 			mssql: 1433,
@@ -68,6 +69,7 @@ export const databaseQuestions = {
 	sqlite3: [filename],
 	mysql: [host, port, database, user, password],
 	pg: [host, port, database, user, password, ssl],
+	cockroachdb: [host, port, database, user, password, ssl],
 	oracledb: [host, port, database, user, password],
 	mssql: [host, port, database, user, password, encrypt],
 };
