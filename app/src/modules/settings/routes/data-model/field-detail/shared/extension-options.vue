@@ -29,7 +29,6 @@ import { useFieldDetailStore } from '../store/';
 import { get } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
-import { Field, DeepPartial } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
