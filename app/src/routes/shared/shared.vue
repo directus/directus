@@ -1,6 +1,15 @@
 <template>
-	<shared-view inline :title="t('share_access_page')">
-		<template v-if="shareInfo">
+	<shared-view inline :title="notFound ? t('share_access_not_found_title') : t('share_access_page')">
+		<v-progress-circular v-if="loading" indeterminate />
+
+		<div v-else-if="notFound">
+			<strong>{{ t('share_access_not_found') }}</strong>
+			{{ t('share_access_not_found_desc') }}
+		</div>
+
+		<v-error v-else-if="error" :error="error" />
+
+		<template v-else-if="shareInfo">
 			<div v-if="remainingUses">
 				<v-notice v-if="remainingUses === 1" type="danger">
 					{{ t('shared_last_remaining') }}
@@ -16,10 +25,6 @@
 				{{ shareInfo }}
 			</div>
 		</template>
-
-		<v-notice v-if="error" type="danger">
-			{{ errorFormatted }}
-		</v-notice>
 	</shared-view>
 </template>
 
@@ -34,17 +39,25 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
+		const loading = ref(false);
+
+		const notFound = ref(false);
+
 		const error = ref<RequestError | null>(null);
 		const errorFormatted = computed(() => {
 			if (error.value) {
 				return translateAPIError(error.value);
 			}
+
 			return null;
 		});
 
 		const route = useRoute();
+
 		const shareId = route.params.id as string;
+
 		const shareInfo = ref<any>();
+
 		const remainingUses = computed(() => {
 			if (shareInfo.value?.max_uses) {
 				return shareInfo.value.max_uses - shareInfo.value.times_used;
@@ -54,14 +67,22 @@ export default defineComponent({
 
 		getShareInformation(shareId);
 
-		return { t, shareInfo, remainingUses, error, errorFormatted };
+		return { t, shareInfo, remainingUses, error, errorFormatted, loading, notFound };
 
 		async function getShareInformation(shareId: string) {
+			loading.value = true;
+
 			try {
-				const response = await api.get(`/shares/${shareId}`);
+				const response = await api.get(`/shares/info/${shareId}`);
 				shareInfo.value = response.data.data;
 			} catch (err: any) {
-				error.value = err;
+				if (err.response?.status === 404 || err.response?.status === 403) {
+					notFound.value = true;
+				} else {
+					error.value = err;
+				}
+			} finally {
+				loading.value = false;
 			}
 		}
 	},
