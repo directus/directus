@@ -78,9 +78,7 @@ export default defineComponent({
 			let optionsObjectOrArray;
 
 			if (typeof extensionInfo.value.options === 'function') {
-				optionsObjectOrArray = (extensionInfo.value.options as (x: typeof fieldDetail) => DeepPartial<Field>[])(
-					fieldDetail
-				);
+				optionsObjectOrArray = extensionInfo.value.options(fieldDetail);
 			} else {
 				optionsObjectOrArray = extensionInfo.value.options;
 			}
