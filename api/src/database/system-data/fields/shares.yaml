@@ -13,3 +13,10 @@ fields:
   - field: date_expired
   - field: times_used
   - field: max_uses
+  - field: password
+    special: hash,conceal
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+    width: half
