@@ -3,7 +3,6 @@ import { deepMap, parseFilter } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { apiAccessMinimalPermissions } from '../database/system-data/api-access-permissions';
 import { mergePermissions } from '../utils/merge-permissions';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
@@ -68,11 +67,6 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			requiredPermissionData,
 			containDynamicData,
 		} = parsePermissions(permissionsForRole);
-
-		permissions = mergePermissions(
-			parsedPermissions,
-			apiAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
-		);
 
 		if (accountability.app === true) {
 			permissions = mergePermissions(

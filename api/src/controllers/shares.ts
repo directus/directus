@@ -70,6 +70,21 @@ router.get('/', validateBatch('read'), readHandler, respond);
 router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
+	'/:pk/info',
+	asyncHandler(async (req, res, next) => {
+		const service = new SharesService({
+			schema: req.schema,
+		});
+
+		const record = await service.info(req.params.pk);
+
+		res.locals.payload = { data: record || null };
+		return next();
+	}),
+	respond
+);
+
+router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new SharesService({
