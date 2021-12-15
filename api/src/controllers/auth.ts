@@ -13,7 +13,7 @@ import {
 	createOpenIDAuthRouter,
 	createLDAPAuthRouter,
 } from '../auth/drivers';
-import { DEFAULT_AUTH_PROVIDER, DIRECTUS_SHARED_AUTH } from '../constants';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const router = Router();
 
@@ -51,8 +51,6 @@ for (const authProvider of authProviders) {
 if (!env.AUTH_DISABLE_DEFAULT) {
 	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 }
-
-router.use('/shared', createLocalAuthRouter(DIRECTUS_SHARED_AUTH));
 
 router.post(
 	'/refresh',

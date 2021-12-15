@@ -6,10 +6,14 @@ import { validateBatch } from '../middleware/validate-batch';
 import { SharesService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { createLocalAuthRouter } from '../auth/drivers';
+import { DIRECTUS_SHARED_AUTH } from '../constants';
 
 const router = express.Router();
 
 router.use(useCollection('directus_shares'));
+
+router.use('/auth', createLocalAuthRouter(DIRECTUS_SHARED_AUTH));
 
 router.post(
 	'/',
