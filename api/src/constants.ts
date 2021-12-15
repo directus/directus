@@ -46,3 +46,5 @@ export const DEFAULT_AUTH_PROVIDER = 'default';
 export const DIRECTUS_SHARED_AUTH = 'directus_shared_auth';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
+
+export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';

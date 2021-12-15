@@ -7,7 +7,7 @@ import { SharesService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { createLocalAuthRouter } from '../auth/drivers';
-import { DIRECTUS_SHARED_AUTH } from '../constants';
+import { DIRECTUS_SHARED_AUTH, UUID_REGEX } from '../constants';
 
 const router = express.Router();
 
@@ -70,7 +70,7 @@ router.get('/', validateBatch('read'), readHandler, respond);
 router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
-	'/info/:pk',
+	`/info/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		const service = new SharesService({
 			schema: req.schema,
