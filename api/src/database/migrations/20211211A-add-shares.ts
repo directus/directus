@@ -6,6 +6,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('collection').references('collection').inTable('directus_collections').onDelete('CASCADE');
 		table.string('item');
 		table.uuid('role').references('id').inTable('directus_roles').onDelete('CASCADE');
+		table.string('password');
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.timestamp('date_expired');

@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import argon2 from 'argon2';
 import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
@@ -57,7 +58,8 @@ export class AuthenticationService {
 				'collection AS shared_collection',
 				'date_expired AS shared_expires',
 				'times_used AS shared_times_used',
-				'max_uses AS shared_max_uses'
+				'max_uses AS shared_max_uses',
+				'password AS shared_password'
 			)
 			.from('directus_shares')
 			.where('id', payload.id)
@@ -70,6 +72,9 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 		if (record.shared_max_uses && record.shared_max_uses <= record.shared_times_used) {
+			throw new InvalidCredentialsException();
+		}
+		if (record.shared_password && !(await argon2.verify(record.shared_password, payload.password))) {
 			throw new InvalidCredentialsException();
 		}
 

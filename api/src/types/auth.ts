@@ -51,4 +51,5 @@ export type ShareData = {
 	shared_expires: Date;
 	shared_times_used: number;
 	shared_max_uses?: number;
+	shared_password?: string;
 };
