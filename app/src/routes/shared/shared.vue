@@ -1,5 +1,5 @@
 <template>
-	<public-view>
+	<shared-view>
 		<h2 class="type-title">{{ t('shared_with_you') }}</h2>
 
 		<template v-if="shareInfo">
@@ -22,7 +22,7 @@
 		<v-notice v-if="error" type="danger">
 			{{ errorFormatted }}
 		</v-notice>
-	</public-view>
+	</shared-view>
 </template>
 
 <script lang="ts">
@@ -55,7 +55,8 @@ export default defineComponent({
 		});
 
 		getShareInformation(shareId);
-		return { t, shareInfo, remainingUses, errorFormatted };
+
+		return { t, shareInfo, remainingUses, error, errorFormatted };
 
 		async function getShareInformation(shareId: string) {
 			try {
