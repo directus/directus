@@ -230,11 +230,59 @@ export function applyFilter(
 
 				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
 				if (relationType === 'o2m' && (subQuery === true || parentAlias !== undefined)) {
-					dbQuery.leftJoin(
-						{ [alias]: relation.collection },
-						`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
-						`${alias}.${relation.field}`
-					);
+					// if (relation.collection === 'group_access') {
+					// 	dbQuery.leftJoin(
+					// 		{ [alias]: relation.collection },
+					// 		`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
+					// 		`${alias}.${relation.field}`
+					// 	)
+					// 	.groupBy(`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`)
+					// 	.leftJoin(
+					// 		{ user: 'user' },
+					// 		`user.id_user`,
+					// 		`user.id_user`
+					// 	);
+					// } else {
+					// 	dbQuery.leftJoin(
+					// 		{ [alias]: relation.collection },
+					// 		`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
+					// 		`${alias}.${relation.field}`
+					// 	);
+					// }
+					// console.log("HAVE BEEN HERE _______________________________________________________");
+					// console.log(parentCollection);
+
+					const secondRelation = relations.find((innerRelation) => {
+						return relation.collection === innerRelation.collection && relation.field !== innerRelation.field;
+					});
+
+					if (secondRelation) {
+						dbQuery
+							.leftJoin(
+								{ [alias]: relation.collection },
+								`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
+								`${alias}.${relation.field}`
+							)
+							.groupBy(`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`)
+							.leftJoin(
+								{ [secondRelation.related_collection!]: secondRelation.related_collection! },
+								`${alias}.${secondRelation.field!}`,
+								`${secondRelation.related_collection!}.${secondRelation.field!}`
+							);
+					} else {
+						dbQuery.leftJoin(
+							{ [alias]: relation.collection },
+							`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
+							`${alias}.${relation.field}`
+						);
+					}
+					// } else {
+					// 	dbQuery.leftJoin(
+					// 		{ [alias]: relation.collection },
+					// 		`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
+					// 		`${alias}.${relation.field}`
+					// 	);
+					// }
 				}
 
 				if (relationType === 'm2o' || subQuery === true) {
