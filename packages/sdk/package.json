@@ -1,39 +1,35 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.1.2",
+	"version": "9.2.2",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git"
 	},
-	"main": "./dist/index.js",
+	"main": "dist/sdk.cjs.js",
 	"exports": {
 		".": {
 			"import": {
 				"node": "./index.mjs",
-				"default": "./dist/sdk.esm.js"
+				"default": "./dist/sdk.bundler.js"
 			},
-			"require": "./dist/index.js"
+			"require": "./dist/sdk.cjs.js"
 		},
 		"./package.json": "./package.json"
 	},
-	"module": "./dist/sdk.esm.js",
-	"unpkg": "./dist/sdk.esm.min.js",
-	"types": "./dist/index.d.ts",
+	"module": "dist/sdk.bundler.js",
+	"unpkg": "dist/sdk.esm.min.js",
+	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
 		"index.mjs"
 	],
 	"scripts": {
 		"prebuild": "npm run cleanup",
-		"build": "run-p build:*",
-		"build:targets": "rollup -c",
-		"build:node": "tsc --project ./tsconfig.json",
+		"build": "rollup -c",
+		"dev": "rollup -c -w",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
-		"cleanup:types": "rimraf ./types",
-		"cleanup:node": "rimraf ./node",
-		"cleanup:browser": "rimraf ./browser",
 		"cleanup:coverage": "rimraf ./coverage",
 		"test": "jest --coverage",
 		"test:watch": "jest --coverage --watchAll"
@@ -66,7 +62,7 @@
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
 		"rollup": "2.60.1",
-		"rollup-plugin-copy": "3.4.0",
+		"rollup-plugin-dts": "4.0.1",
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",
 		"rollup-plugin-typescript2": "0.31.0",

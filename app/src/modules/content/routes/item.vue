@@ -1,6 +1,6 @@
 <template>
 	<content-not-found
-		v-if="error || (collectionInfo.meta && collectionInfo.meta.singleton === true && primaryKey !== null)"
+		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
 	<private-view v-else :title="title">
@@ -150,6 +150,7 @@
 			ref="form"
 			:key="collection"
 			v-model="edits"
+			:autofocus="isNew"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"

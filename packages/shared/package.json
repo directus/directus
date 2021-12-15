@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.1.2",
+	"version": "9.2.2",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -56,7 +56,7 @@
 		"geojson": "*",
 		"joi": "17.4.2",
 		"knex": "*",
-		"knex-schema-inspector": "*",
+		"knex-schema-inspector": "^1.6.6",
 		"lodash": "4.17.21",
 		"pino": "*",
 		"vue": "3",

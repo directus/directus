@@ -13,29 +13,39 @@ on:
       - main
 
 jobs:
-  # Check whether workflow is skippable
   pre_check:
     name: Pre-Check
     runs-on: ubuntu-latest
     outputs:
-      # Returns 'true' if workflow is skippable for one of the following reasons:
+      # Returns 'true' if the whole workflow is skippable for one of the following reasons:
       # - Exact same files have been successfully checked in older workflow run
-      # - Only files that do not require checks (paths_ignore) have been changed and
+      # - Only files that do not require checks ('paths_ignore') have been changed and
       #   workflow run on previous commit has been successful (backtracking)
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      # Returns information about the defined filter in 'paths_filter'
+      paths_result: ${{ steps.skip_check.outputs.paths_result }}
     steps:
-      - name: Check whether workflow is skippable
+      - name: Check for skippable jobs
         id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
-        # Run all the jobs if the pre-check should fail for any reason
+        # Switch back to fkirc/skip-duplicate-actions@master once https://github.com/fkirc/skip-duplicate-actions/pull/159 has been merged
+        uses: paescuj/skip-duplicate-actions@path-filters
+        # Don't skip any jobs if the pre-check should fail for any reason
         # (setting this on step-level makes sure the pre-check will still be marked as 'passed',
         # better solution pending at https://github.com/actions/toolkit/issues/399)
         continue-on-error: true
         with:
           # Cancel outdated workflow runs
           cancel_others: 'true'
-          # Ignore changes in the following files
+          # Ignore changes in the following files globally
           paths_ignore: '["app/src/lang/translations/*.yaml"]'
+          # Paths filter
+          paths_filter: |
+            e2e_tests:
+              paths:
+                - 'api/**/*'
+                - 'tests/**/*'
+                - 'docker-compose.yml'
+                - '.github/workflows/e2e-tests.yml'
 
   lint:
     name: Lint
@@ -63,4 +73,4 @@ jobs:
     needs: pre_check
     uses: directus/directus/.github/workflows/e2e-tests.yml@main
     with:
-      should_skip: ${{ needs.pre_check.outputs.should_skip }}
+      should_skip: ${{ needs.pre_check.outputs.should_skip == 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}

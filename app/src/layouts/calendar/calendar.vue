@@ -21,6 +21,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:selection'],
 	setup(props) {
 		const calendarElement = ref<HTMLElement>();
 

@@ -7,7 +7,12 @@ import { getAuthProvider } from '../../auth';
 import env from '../../env';
 import { AuthenticationService, UsersService } from '../../services';
 import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
-import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
+import {
+	InvalidCredentialsException,
+	ServiceUnavailableException,
+	InvalidConfigException,
+	InvalidTokenException,
+} from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
@@ -38,7 +43,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			authorization_endpoint: authorizeUrl,
 			token_endpoint: accessUrl,
 			userinfo_endpoint: profileUrl,
-			issuer: additionalConfig.provider,
+			// Required for openid providers (openid flow should be preferred!)
+			issuer: additionalConfig.issuerUrl,
 		});
 
 		this.client = new issuer.Client({
@@ -53,16 +59,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string): string {
+	generateAuthUrl(codeVerifier: string, prompt = false): string {
 		try {
 			const codeChallenge = generators.codeChallenge(codeVerifier);
+			const paramsConfig = typeof this.config.params === 'object' ? this.config.params : {};
+
 			return this.client.authorizationUrl({
 				scope: this.config.scope ?? 'email',
+				access_type: 'offline',
+				prompt: prompt ? 'consent' : undefined,
+				...paramsConfig,
 				code_challenge: codeChallenge,
 				code_challenge_method: 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				access_type: 'offline',
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -81,6 +91,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier) {
+			logger.trace('[OAuth2] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -131,6 +142,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
+			logger.trace(
+				`[OAuth2] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
+			);
 			throw new InvalidCredentialsException();
 		}
 
@@ -160,34 +174,47 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			}
 		}
 
-		if (!authData?.refreshToken) {
-			return sessionData;
+		if (authData?.refreshToken) {
+			try {
+				const tokenSet = await this.client.refresh(authData.refreshToken);
+				// Update user refreshToken if provided
+				if (tokenSet.refresh_token) {
+					await this.usersService.updateOne(user.id, {
+						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+					});
+				}
+			} catch (e) {
+				throw handleError(e);
+			}
 		}
 
-		try {
-			const tokenSet = await this.client.refresh(authData.refreshToken);
-			return { accessToken: tokenSet.access_token };
-		} catch (e) {
-			throw handleError(e);
-		}
+		return sessionData;
 	}
 }
 
 const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
+			logger.trace(e, `[OAuth2] Invalid grant.`);
 			// Invalid token
-			return new InvalidCredentialsException();
+			return new InvalidTokenException();
 		}
+
+		logger.trace(e, `[OAuth2] Unknown OP error.`);
+
 		// Server response error
 		return new ServiceUnavailableException('Service returned unexpected response', {
-			service: 'openid',
+			service: 'oauth2',
 			message: e.error_description,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
+		logger.trace(e, `[OAuth2] Unknown RP error.`);
 		return new InvalidCredentialsException();
 	}
+
+	logger.trace(e, `[OAuth2] Unknown error.`);
+
 	return e;
 };
 
@@ -199,7 +226,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		(req, res) => {
 			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
-			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect }, env.SECRET as string, {
+			const prompt = !!req.query.prompt;
+			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect, prompt }, env.SECRET as string, {
 				expiresIn: '5m',
 				issuer: 'directus',
 			});
@@ -209,7 +237,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt));
 		},
 		respond
 	);
@@ -223,12 +251,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
 					verifier: string;
 					redirect?: string;
+					prompt: boolean;
 				};
-			} catch (e) {
+			} catch (e: any) {
+				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsException();
 			}
 
-			const { verifier, redirect } = tokenData;
+			const { verifier, redirect, prompt } = tokenData;
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
@@ -245,7 +275,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				res.clearCookie(`oauth2.${providerName}`);
 
 				if (!req.query.code || !req.query.state) {
-					logger.warn(`Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
+					logger.warn(`[OAuth2]Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
@@ -254,7 +284,10 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					state: req.query.state,
 				});
 			} catch (error: any) {
-				logger.warn(error);
+				// Prompt user for a new refresh_token if invalidated
+				if (error instanceof InvalidTokenException && !prompt) {
+					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
+				}
 
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
@@ -263,10 +296,16 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						reason = 'SERVICE_UNAVAILABLE';
 					} else if (error instanceof InvalidCredentialsException) {
 						reason = 'INVALID_USER';
+					} else if (error instanceof InvalidTokenException) {
+						reason = 'INVALID_TOKEN';
+					} else {
+						logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 					}
 
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
+
+				logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 
 				throw error;
 			}

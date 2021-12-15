@@ -17,6 +17,7 @@ import { MailService } from './mail';
 import { SettingsService } from './settings';
 import { stall } from '../utils/stall';
 import { performance } from 'perf_hooks';
+import { getSimpleHash } from '@directus/shared/utils';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -309,7 +310,7 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex.select('status').from('directus_users').where({ email }).first();
+		const user = await this.knex.select('status', 'password').from('directus_users').where({ email }).first();
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
@@ -322,7 +323,7 @@ export class UsersService extends ItemsService {
 			accountability: this.accountability,
 		});
 
-		const payload = { email, scope: 'password-reset' };
+		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 		const subjectLine = subject ? subject : 'Password Reset Request';
@@ -343,16 +344,19 @@ export class UsersService extends ItemsService {
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
+		const { email, scope, hash } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
+			hash: string;
 		};
 
-		if (scope !== 'password-reset') throw new ForbiddenException();
+		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
 
-		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
+		await this.checkPasswordPolicy([password]);
 
-		if (user?.status !== 'active') {
+		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
+
+		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
 			throw new ForbiddenException();
 		}
 

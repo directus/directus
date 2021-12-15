@@ -981,6 +981,7 @@ interfaces:
     display_template: Patrom diskwel
   input-rich-text-md:
     description: Dibab ha rakdiskwel ar markdown
+    edit: Kemmañ
     customSyntax: Bloc'hoù personelaet
     customSyntax_label: Ouzhpennañ doareoù sintaks personelaet
     customSyntax_add: Ouzhpennañ ur sintaks personelaet
@@ -1045,6 +1046,8 @@ interfaces:
   boolean:
     toggle: Enaouiñ/Lazhañ
     description: Gwintañ etre an enaouiñ hag al lazhañ
+    color_on: Liv aktivet
+    color_off: Liv diaktivet
     label_placeholder: Bizskrivañ ar skridennad...
     label_default: Enaouet
   translations:

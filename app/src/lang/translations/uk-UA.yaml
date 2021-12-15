@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Ідентифікатор
 avatar: Аватар
 default_provider: За замовчуванням
 published: Опубліковано
@@ -30,6 +51,7 @@ indeterminate: Не вдалось визначити
 edit_collection: Редагувати збірку
 exclusive: Винятково
 children: Дочірні елементи
+db_only_click_to_configure: 'Можливе використання лише бази даних: натисніть для налаштування'
 show_archived_items: Показати архівні елементи
 edited: Значення відредаговано
 required: Обов'язкове
@@ -44,6 +66,8 @@ create_webhook: Створити вебхук
 invite_users: Запросити друзів
 invite: Запросити
 email_already_invited: Користувача "{email}" вже запрошено
+subject: Тема
+inbox: Вхідні повідомлення
 emails: Електронні адреси
 connection_excellent: Ідеальне з'єднання
 connection_good: Хороше з'єднання
@@ -106,10 +130,12 @@ validationError:
   regex: Значення має некоректний формат
 all_access: Повний доступ
 no_access: Немає доступу
+use_custom: Використайте Користувацькі налаштування
 nullable: Дозволити NULL значення
 allow_null_value: Дозволити NULL значення
 allow_multiple: Дозволити кілька
 allow_multiple_to_be_open: Можна відкрити декілька
+enter_value_to_replace_nulls: Будь ласка, введіть нове значення щоб замінити будь-які спеціальні значення в межах цього поля.
 field_standard: Стандартний
 field_presentation: Подання та Аліаси
 field_file: Один файл
@@ -124,40 +150,190 @@ item_permissions: Дозволи елемента
 field_permissions: Дозволи Поля
 field_validation: Валідація Поля
 field_presets: Пресети Полів
+permissions_for_role: 'Об''єкти {role} ролі можуть {action}.'
+fields_for_role: 'Поля {role} ролі можуть {action}.'
+validation_for_role: 'Поле {action} направляє {role} Роль повинна підпорядкуватися.'
+presets_for_role: 'Значення поля за замовчуванням для ролі {role}.'
+presentation_and_aliases: Подання та Аліаси
+revision_post_create: Ось як виглядав цей елемент після його створення.
+revision_post_update: Ось як виглядав цей елемент після його оновлення.
+changes_made: Нижче наведені конкретні зміни, внесені цією редакцією.
+no_relational_data: Майте на увазі, що реляційні дані тут не включені.
+hide_field_on_detail: Сховати поле в подробицях
+show_field_on_detail: Показати поле в подробицях
 delete_field: Видалити поле
+fields_and_layout: Поля та схема
+field_create_success: 'Створено поле: "{field}"'
+field_update_success: 'Оновлено поле: "{field}"'
+duplicate_where_to: Куди б ви хотіли дублювати це поле?
 language: Мова
+aggregate_function: Функція об'эднання
+aggregate_precision: Точність об'єднання
+group_aggregation: Об'єднання групи
+group_precision: Точність групи
 global: Глобальний
+admins_have_all_permissions: Адміністратори мають усі права доступу
 camera: Камера
 show_zero: Показати нуль
+create_in_advanced_field_creation_mode: Створити поле в розширеному режимі
+continue_in_advanced_field_creation_mode: Продовжити у розширеному режимі створення поля
 sum: Сума
+sum_distinct: Зіткнення
+avg: Середнє
+avg_distinct: Середній збіг
+count: Кількість
+count_distinct: Розрахунок відмінностей
+min: Мінімум
+max: Максимум
+exposure: Контакт
+shutter: Витримка
+iso: ISO
+focal_length: Фокусна відстань
+schema_setup_key: Назва стовпця в базі даних цього поля та ключ API
 create_field: Створення поля
+creating_new_field: 'Нове поле ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Скинути налаштування сторінки
+hidden_field: Приховане поле
 hidden_on_detail: Приховано на деталі
+disabled_editing_value: Вимкнути редагування значення
+key: Клавіша
+alias: Ім'я користувача
+bigInteger: Велике ціле число
+boolean: Логічне значення
 date: Дата
+date_range: Період
+datetime: Час
+dateTime: Час
+precision: Точність
 decimal: Десятки
+float: Обтікання
+integer: Ціле число
+json: JSON
+xml: XML
+string: Рядок
 text: Текст
 time: Час
+timestamp: Часова відмітка
+uuid: UUID
+hash: Хеш
+geometry: Геометрія (Все)
+geometry.Point: Аспект
+geometry.Polygon: Полігон
+not_available_for_type: Не доступно для цього типу
+create_translations: Створити переклади
+auto_refresh: Автооновлення
+refresh_interval: Оновити інтервал
+no_refresh: Не оновляти
+refresh_interval_seconds: Постійно оновляти | Кожну секунду | Кожні {seconds} секунд
+refresh_interval_minutes: Кожну хвилину | Кожні {minutes} хвилин
 auto_generate: Автоматично згенерувати
+this_will_auto_setup_fields_relations: Це автоматично налаштує всі необхідні поля і відносини.
+click_here: Натисніть тут
+to_manually_setup_translations: для ручного налаштування перекладів.
+click_to_manage_translated_fields: >-
+  Тут ще немає перекладених полів. Натисніть тут щоб створити їх. | Тут є одне перекладене поле. Натисніть тут щоб змініити його. | Тут є {count} перекладених полів. Натисніть сюди, щоб змінити їх.
+fields_group: Група полів
+no_collections_found: Колекцій не знайдено.
+new_data_alert: 'Наступне буде створено в межах вашої моделі даних:'
+search_collection: Пошук колекцій...
+new_field: 'Нове поле'
+new_collection: 'Нова колекція'
+add_m2o_to_collection: 'Додати М2О до "{collection}"'
+add_o2m_to_collection: 'Додати O2M до "{collection}"'
+add_m2m_to_collection: 'Додати M2M до "{collection}"'
+choose_a_type: Оберіть тип...
+determined_by_relationship: Визначено зв'язком
 add_note: Додайте інформативну нотатку для користувачів...
+add_link: Додати посилання
+custom_link: Спеціальне посилання
 default_value: Значення за замовчуванням
+standard_field: Стандартне поле
+single_file: Один файл
+multiple_files: Кілька файлів
+m2o_relationship: Багато до одного відношення
+o2m_relationship: Одне до багатьох відношеннь
+m2m_relationship: Багато до багатьох відношеннь
+m2a_relationship: Багато до будь-яких відношеннь
+invalid_item: Недійсний елемент
 next: Уперед
+field_name: Назва поля
+translations: Переклади
+no_translations: Нема перекладів
 note: Примітка
+enter_a_value: Введіть значення...
+enter_a_placeholder: Введіть заповнювач...
 length: Довжина
+precision_scale: Точність і шкала
 readonly: Тільки читання
 unique: Унікальне
+updated_on: Оновлене
+updated_by: Оновлено
 primary_key: Первинний ключ
+foreign_key: Чужерідна клавіша
+finish_setup: Завершити налаштування
+dismiss: Відмінити
+raw_value: Необроблене значення
+edit_raw_value: Змінити необроблене значення
+enter_raw_value: Введіть необроблене значення...
 clear_value: Очистити значення
+clear_changes: Очистити зміни
 reset_to_default: Відновити налаштування за умовчанням
 undo_changes: Відмінити зміни
 notifications: Сповіщення
+show_all_activity: Показати всю активність
 page_not_found: Сторінку не знайдено
 page_not_found_body: Здається, сторінка яку ви шукаєте, не існує.
+confirm_revert: Підтвердити повернення
+confirm_revert_body: Це поверне елемент до вибраного стану.
+display: Відображати
+settings_update_success: Налаштування оновлено
 title: Заголовок
+revision_delta_created: Створено
+revision_delta_created_externally: Створено ззовні
+revision_delta_updated: 'Оновлено 1 поле | Оновлено {count} полів'
 revision_delta_deleted: Видалено
+revision_delta_reverted: Відновлено
+revision_delta_other: Редакція
+revision_delta_by: '{date} {user}'
+private_user: Приватний користувач
+creation_preview: Попередній перегляд створення
+revision_preview: Перегляд редакції
+updates_made: Зроблено оновлень
 leave_comment: Залишити коментар...
+post_comment_success: Коментар опубліковано
+item_create_success: Елемент створено | Елементи створено
+item_update_success: Елемент оновлено | Елементи оновлено
+item_delete_success: Елемент видалено | Елементи видалено
 this_collection: Ця колекція
 related_collection: Пов'язана колекція
+related_collections: Схожі колекції
+translations_collection: Колекція перекладів
+languages_collection: Колекція мов
+export_data: Експорт даних
 format: Формат
+use_current_filters_settings: Використовувати поточні фільтри та налаштування
+export_collection: 'Експортувати {collection}'
+last_page: Остання сторінка
+last_access: Останній доступ
+fill_template: Заповнити значення шаблону
+a_unique_table_name: Унікальна назва таблиці...
+a_unique_column_name: Унікальна назва стовпця...
+enable_custom_values: Увімкнути користувацьке значення
 submit: Підтвердити
+move_to_folder: Перемістити до папки
+move: Перемістити
+system: Система
+add_field_related: Додати поле до пов'язаної колекції
+interface_label: Інтерфейс
+today: Сьогодні
+yesterday: Вчора
+delete_comment: Видалити коментар
+minutes: Хвилини
+hours: Години
+month: Місяць
+year: Рік
+select_all: Обрати все
 months:
   january: Січень
   february: Лютий
@@ -171,87 +347,507 @@ months:
   october: Жовтень
   november: Листопад
   december: Грудень
+drag_mode: Режим перетягування
+cancel_crop: Скасувати обрізання
+original: Оригінал
+url: URL
+import_label: Імпортувати
+file_details: Подробиці файлу
+dimensions: Розміри
 size: Розмір
+created: Створено
+modified: Змінено
 checksum: Контрольна сума
 owner: Власник
+edited_by: Відредагували
+folder: Папка
+zoom: Масштаб зображення
 download: Завантажити
+open: Відкрити
+open_in_new_window: Відкрити в новому вікні
+open_folder: Відкрити "{folder}" папку
+foreground_color: Колір переднього плану
+background_color: Колір заднього фону
+upload_from_device: Завантажити файл з пристрою
+choose_from_library: Обрати файл з бібліотеки
+import_from_url: Імпортувати файл з URL
+replace_from_device: Замінити файл з пристрою
+replace_from_library: Замінити файл з бібліотеки
+replace_from_url: Замінити файл з URL
+no_file_selected: Файл не обрано
+download_file: Завантажити файл
+collection_key: Клавіша колекції
 name: Назва
+primary_key_field: Первинне ключове поле
+type: Тип
+creating_new_collection: Створення нової колекції
 created_by: Автор
 created_on: Створено
+creating_collection_info: Назвіть колекцію і налаштуйте її унікальну клавішу...
+creating_collection_system: Увімкніть та перейменуйте будь-яке з цих опціональних полів.
+auto_increment_integer: Автозбільшення цілого числа
+generated_uuid: Створене UUID
+manual_string: Введений вручну рядок
+save_and_create_new: Зберігти і створити новий
 save_and_stay: Зберегти і Залишитись
 save_as_copy: Зберегти копію
+add_existing: Добати вже існуючий
+creating_items: Створення об'єктів
+enable_create_button: Увімкнути кнопку "створення"
+selecting_items: Обрані об'єкти
+enable_select_button: Підключити кнопку "обрати"
 comments: Коментарі
+no_comments: Коментарів ще немає
+click_to_expand: Натисніть щоб розгорнути
+select_item: Обрати об'єкт
+no_items: Об'єктів немає
+search_items: Пошук об'єктів...
+disabled: Вимкнено
+information: Інформація
+report_bug: Звіт про помилку
 request_feature: Запит на нову функцію
+interface_not_found: 'Інтерфейс "{interface}" не знайдено.'
+reset_interface: Скинути інтерфейс
+display_not_found: 'Дисплей "{display}" не знайдено.'
+reset_display: Скинути дисплей
+list-m2a: Білдер (М2А)
 item_count: 'Немає елементів | Один елемент | {count} елементів'
+no_items_copy: Ще немає об'єктів в цій колекції.
+file_count: 'Файлів немає | Один файл | {count} файлів'
+no_files_copy: Файлів не знайдено.
+user_count: 'Користувачів немає | Один користувач | {count} користувачів'
+no_users_copy: Ще немає користувачів в цій ролі.
+webhooks_count: 'Немає веб-хуків | Один веб-хук | {count} вебхуків'
+no_webhooks_copy: Ще не налаштовано жодного веб-хука. Розпочніть зі створення одного нижче.
+no_notifications: Немає сповіщень
+no_notifications_copy: У вас все налаштовано!
+activity_log: Журнал активності
+all_items: Всі об'єкти
+any: Будь-які
 csv: CSV
+no_collections: Немає колекцій
 create_collection: Створити колекцію
+no_collections_copy_admin: В вас ще немає колекцій. Натисніть кнопку нижче, щоб розпочати.
+no_collections_copy: В вас поки що немає колекцій. Будь ласка, зверніться до свого системного адміністратора.
+relationship_not_setup: Зв’язок не правильно налаштовано
+display_template_not_setup: Параметр шаблону відображення налаштовано неправильно
+collection_field_not_setup: Параметр поля колекції налаштовано неправильно
+select_a_collection: Оберіть колекцію
+select_a_field: Оберіть поле
+active: Активний
+move_to: Перемістити до...
+copy: Копіювати
+copy_to: Коіювати до...
+no_other_dashboards_copy: У вас ще немає інших панелей керування.
+inactive: Неактивний
 users: Користувачі
 activity: Активність
+activity_item: Об'єкт активності
 action: Дія
 ip_address: IP адреса
 user_agent: Ідентифікатор браузера
 webhooks: Вебхуки
+decimals: Десяткові знаки
+value_decimals: Оцінити десяткові знаки
+min_value: Мінімальне значення
+max_value: Максимальне значення
+automatic: Автоматично
 field_width: Ширина поля
+add_filter: Додати фільтр
+upper_limit: Вищий ліміт...
+lower_limit: Нижчий ліміт...
 user_directory: Директорія користувачів
+documentation: Відомості
+sidebar: Бічна панель
 duration: Тривалість
+charset: Таблиця симовлів
+second: сек.
+file_moved: Файл переміщено
+collection_created: Колекцію створено
 modified_on: Час зміни
+card_size: Розмір картки
+sort_field: Поле сортування
+add_sort_field: Додати поле сортування
+sort: Сортування
 status: Статус
 remove: Видалити
+toggle_manual_sorting: Увімкнути ручне сортування
+bookmark_doesnt_exist: Закладка не існує
+bookmark_doesnt_exist_copy: Не вдалося знайти закладку, яку ви намагаєтеся відкрити.
+bookmark_doesnt_exist_cta: Повернутися до колекції
+select_an_item: Оберіть об'єкт...
+edit: Редагувати
+enabled: Увімкнено
+disable_tfa: Вимкнути 2FA
+tfa_scan_code: Відскануйте код у програмі-аутентифікаторі, щоб завершити налаштування 2FA
+enter_otp_to_disable_tfa: Зайдіть в OTP, щоб вимкнути 2FA
+create_account: Створити обліковий запис
+account_created_successfully: Обліковий запис успішно створенно
+auto_fill: Автозаповнення
+corresponding_field: Відповідне поле
 errors:
+  COLLECTION_NOT_FOUND: "Колекція не існує"
+  FIELD_NOT_FOUND: Поле не знайдено
+  FORBIDDEN: Заборонено
+  INVALID_CREDENTIALS: Хибне ім'я або пароль
+  INVALID_OTP: Неправильний одноразовий пароль
+  INVALID_PAYLOAD: Невірне навантаження
+  INVALID_QUERY: Невірний запит
+  ITEM_LIMIT_REACHED: Досягнуто ліміту об'єктів
+  ITEM_NOT_FOUND: Об'єкт не знайдений
   ROUTE_NOT_FOUND: Не знайдено
+  RECORD_NOT_UNIQUE: Виявлено ідентичне значення
+  USER_SUSPENDED: Користувача призупинено
+  CONTAINS_NULL_VALUES: Поле містить нульові значення
+  UNPROCESSABLE_ENTITY: Неможливо обробити запит
+  INTERNAL_SERVER_ERROR: Неочікувана помилка
   NOT_NULL_VIOLATION: Значення не може бути null
+  ILLEGAL_ASSET_TRANSFORMATION: Джерело зображення надто велике для попереднього перегляду
+  UNKNOWN: Неочікувана помилка
+security: Захист
+value_hashed: Значення надійно видалені
+bookmark_name: Назва закладки...
 create_bookmark: Створити закладку
+edit_bookmark: Редагувати закладку
 bookmarks: Закладки
+presets: Шаблони
+unexpected_error: Неочікувана помилка
+unexpected_error_copy: Сталася неочікувана помилка. Будь ласка, повторіть спробу пізніше.
+copy_details: Копіювати деталі
+no_app_access: Немає доступу до додатку
+no_app_access_copy: В цього користувача нема дозволу на використовування додатку адміністратора.
+password_reset_sent: Ми надіслали вам електронного листа із посиланням для відновлення пароля
+password_reset_successful: Пароль успішно оновлено
 back: Назад
+filter: Фільтр
+editing_image: Редагування зображення
+square: Квадрат
+free: Вільне
+flip_horizontal: Віддзеркалити по горизонталі
+flip_vertical: Віддзеркалити по вертикалі
+aspect_ratio: Співвідношення сторін
+rotate: Повернути
+all_users: Всі користувачі
+delete_collection: Видалити колекцію
+update_collection_success: Оновити колекцію
+delete_collection_success: Видалити колекцію
+make_collection_visible: Зробити колекцію видимою
+make_collection_hidden: Приховати колекцію
+start_end_of_count_items: '{start}-{end} з {count} об''єктів'
+start_end_of_count_filtered_items: '{start}-{end} з {count} відсортованих об''єктів'
+one_item: '1 об''єкт'
+one_filtered_item: '1 відсортований об''єкт'
+delete_collection_are_you_sure: >-
+  Ви впевнені, що хочете видалити цю колекцію? Це призведе до видалення колекції та всіх елементів у ній. Ця дія безповоротна.
+collections_shown: Показані колекції
+visible_collections: Видимі колекції
+hidden_collections: Приховані колекції
+show_hidden_collections: Показати приховані колекції
+hide_hidden_collections: Сховати приховані колекції
+show_header: Відобразити заголовок
+unmanaged_collections: Неналаштовані колекції
+system_collections: Системні колекції
 placeholder: Заповнювач
 icon_left: Значок ліворуч
 icon_right: Значок праворуч
+count_other_revisions: '{count} Інші ревізії'
 font: Шрифт
+sans_serif: Некарбований шрифт (Sans Serif)
+serif: Некарбований
 monospace: Моноширинний шрифт
 divider: Розділювач
 color: Колір
+circle: Коло
+empty_item: Порожній об'єкт
+log_in_with: 'Увійти за допомогою {provider}'
+conditional_styles: Умовні стилі
+advanced_settings: Розширені нааштування
+advanced_filter: Розширений фільтр
+delete_advanced_filter: Видалити фільтр
+change_advanced_filter_operator: Змінити оператора
 operators:
+  eq: Дорівнює
+  neq: Не дорівнює
   lt: Менше ніж
   gt: Більше ніж
   lte: Менше ніж або дорівнює
   gte: Більше ніж або дорівнює
+  in: Є одним з
+  nin: Не є одним з
+  null: Нульове значення
+  nnull: Значення не нульове
   contains: Містить
   ncontains: Не містить
+  starts_with: Починаться з
+  nstarts_with: Не починається з
+  ends_with: Закінчується на
+  nends_with: Не закінчується на
+  between: Знаходиться між
+  nbetween: Не знаходиться між
   empty: Порожньо
+  nempty: Не є порожнім
+  all: Містить ці ключі
+  has: Мвстить деякі з цих ключів
+  intersects: Перетинає
+  nintersects: Не перетинає
+  intersects_bbox: Перетинає обмежувальні рамки
+  nintersects_bbox: Не перетинає обмежувальні рамки
 loading: Завантаження...
+drop_to_upload: Перетягніть для завантаження
+item: Об'єкт
+items: Об'єкти
+upload_file: Завантажити файл
+upload_file_indeterminate: Йде завантаження файлу...
+upload_file_success: Файл був завантажений
+upload_files_indeterminate: 'Завантаження файлів {done}/{total}'
+upload_files_success: '{count} файлів завантажено'
+upload_pending: Очікується завантаження
+drag_file_here: Перетягніть файл сюди
+click_to_browse: Натисніть для перегляду
+interface_options: Налаштування інтерфейсу
+layout_options: Налаштування зовнішнього вигляду
+rows: Рядки
+columns: Колонки
+collection_setup: Налаштування колекції
+optional_system_fields: Необов'язкові поля системи
 value_unique: Значення повинно бути унікальним
+all_activity: Уся діяльність
+create_item: Створити об'єкт
+display_template: Шаблон відображення
+language_display_template: Шаблон відображення мови
+translations_display_template: Шаблон відображення перекладів
+n_items_selected: 'Об''єкти не обрано | 1 об''єкт обрано | {n} об''єктів обрано'
+per_page: На сторінку
+all_files: Всі файли
+my_files: Мої файли
+recent_files: Нещодавні файли
+create_folder: Створити папку
+edit_folder: Редагувати папку
+folder_name: Назва папки...
+folder_key: Ключ папки...
+add_file: Додати файл
+replace_file: Замінити файл
 no_results: Нічого не знайдено
+no_results_copy: Регулювати або очистити фільтри пошуку, щоб побачити результати.
+clear_filters: Очистити фільтри
+saves_automatically: Автоматично зберігається
 role: Роль
+rule: Правило
 user: Користувач
+no_presets: Без шаблонів
+no_presets_copy: Шаблони або закладки ще не були збережені.
+no_presets_cta: Додати шаблон
+presets_only: Тільки шаблони
 create: Створити
 on_update: При оновленні
 read: Прочитайте
 update: Оновити
 select_fields: Обрати поля
+format_text: Форматувати текст
+format_value: Форматувати значення
+abbreviate_value: Скоротити значення
+operator: Оператор
+bold: Напівжирний
+toggle: Переключити
+icon_on: Підключити іконку
+icon_off: Відключити іконку
+label: Ярлик
+insights: Статистика
+dashboard: Панель приладів
+panel: Панель
+panel_options: Налаштування панелі
+panel_header: Заголовок панелі
+panel_name_placeholder: Назвіть цю панель...
+panel_note_placeholder: Деталі налаштування стосовно цієї панелі...
+panel_delete_confirm: Ви впевнені, що хочете видалити цю панель? Цю дію не можна буде скасувати.
+dashboard_delete_confirm: Ви впевнені, що хочете видалити цю панель? Цю дію не можна буде скасувати.
+edit_dashboard: Редагувати панель
+delete_dashboard: Видалити панель
+visible: Видима
+prefix_placeholder: Текст перед значенням...
+suffix_placeholder: Текст після значення...
+decimals_placeholder: Кількість десяткових знаків...
+no_dashboards: Немає панелі керування
+no_dashboards_copy: В вас ще немає панелі керування.
+no_data: Немає даних
+create_dashboard: Створити панель керування
+dashboard_name: Назва панелі керування
+full_screen: Повний екран
+edit_panels: Редагувати панелі
+fit_to_screen: За розміром екрану
+image_url: URL-адреса зображення
+alt_text: Альтернативний текст
+media: Медіа
+quality: Якість
 width: Ширина
 height: Висота
+source: Джерело
+url_placeholder: Введіть URL...
+display_text: Відобразити текст
+display_text_placeholder: Введіть текст відображення...
+interface_group_text_and_numbers: Текст і числа
+interface_group_selection: Вибір
+interface_group_relational: Реляційний
+interface_group_presentation: Оформлення
+interface_group_groups: Групи
+interface_group_other: Інше
+tooltip: Підказка
+tooltip_placeholder: Введіть підказку...
+unlimited: Необмежено
+open_link_in: Відкрити посилання за допомогою
+new_tab: Нова вкладка
+current_tab: Поточна вкладка
 wysiwyg_options:
+  aligncenter: Вирівняти по центру
+  alignjustify: Вирівняти по ширині
+  alignleft: Вирівняти по лівому краю
+  alignnone: Не вирівнювати
+  alignright: Вирівняти по правому краю
+  forecolor: Колір переднього плану
+  backcolor: Колір заднього фону
+  bold: Напівжирний
+  italic: Курсив
+  underline: Підкреслення
+  strikethrough: Закреслений
+  subscript: Нижній індекс
+  superscript: Верхній індекс
   codeblock: Код
+  blockquote: Цитата
+  bullist: Список з пунктами
+  numlist: Нумерований список
+  hr: Горизонтальна лінійка
+  link: Додати/редагувати посилання
+  unlink: Видалити посилання
+  media: Додати/Редагувати медіа
+  image: Додати/Редагувати зображення
+  copy: Копіювати
+  cut: Вирізати
+  paste: Вставити
+  heading: Заголовок
+  h1: Заголовок 1
+  h2: Заголовок 2
+  h3: Заголовок 3
+  h4: Заголовок 4
+  h5: Заголовок 5
+  h6: Заголовок 6
+  fontselect: Обрати шрифт
+  fontsizeselect: Обрати розмір шрифту
+  indent: Відступ справа
+  outdent: Відступ зліва
+  undo: Скасувати
+  redo: Повторити
   remove: Видалити
+  removeformat: Видалити форматування
+  selectall: Обрати все
   table: Таблиця
+  visualaid: Переглянути невидимі елементи
+  source_code: Редагувати вихідний код
+  fullscreen: Повний екран
+  directionality: Спрямування
 dropdown: Випадаюче меню
 choices: Варіанти
+choices_option_configured_incorrectly: Варіанти налаштовані неправильно
 deselect: Зняти виділення
+deselect_all: Скасувати вибір з усього
+other: Інше...
+adding_user: Додавання користувача
+unknown_user: Невідомий користувач
+creating_in: 'Створення об''єкту в {collection}'
+editing_in: 'Редагування об''єкту в {collection}'
+creating_unit: 'Створення {unit}'
+editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
+no_options_available: Варіанти недоступні
+settings_data_model: Модель даних
 settings_permissions: Ролі і Дозволи
 settings_project: Налаштування проекту
 settings_webhooks: Вебхуки
+settings_presets: Шаблони і закладки
+one_or_more_options_are_missing: Одно або більше налаштувань відсутні
+scope: Область застосування
+select: Обрати...
+layout: Макет
+tree_view: Файлова структура
+changes_are_permanent: Зміни постійні
+preset_name_placeholder: Використовувати по замовчуванню, коли порожньо...
+preset_search_placeholder: Пошуковий запит...
+editing_preset: Редагувати шаблон
+layout_preview: Попередній перегляд макету
+layout_setup: Попередній перегляд налаштувань
 unsaved_changes: Незбережені зміни
 unsaved_changes_copy: Ви впевнені, що хочете залишити цю сторінку?
 discard_changes: Скасувати зміни
+discard_all_changes: Скасувати всі зміни
+discard_changes_copy: Ви впевнені, що бажаєте скасувати всі не збережені зміни?
+show_x_axis: Показати вісь X
+show_y_axis: Показати вісь Y
 keep_editing: Продовжити редагування
+page_help_collections_overview: '**Огляд колекцій** — список усіх колекцій, до яких ви маєте доступ.'
+page_help_collections_collection: >-
+  **Переглянути об'єкти** — перелік усіх елементів {collection}, до яких у вас є доступ. Налаштуйте макет, фільтри та сортування, щоб налаштувати свій вигляд, і навіть зберігайте закладки різних конфігурацій для швидкого доступу.
+page_help_collections_item: >-
+  **Відомості про об'єкт** — форма для перегляду цього об'єкта та керування ним. Ця бічна панель також містить повну історію переглядів і вбудовані коментарі.
+page_help_activity_collection: >-
+  **Діяльність перегляду** — вичерпний перелік усіх дій ваших користувачів, пов'язаних з системою, або змістом.
+page_help_docs_global: >-
+  **Огляд документації** — документи, розроблені спеціально для версії та схеми цього проекту.
+page_help_files_collection: >-
+  **Бібліотека файлів** — перелічує всі файли, завантажені до цього проекту. Налаштуйте макет, фільтри та сортування, щоб налаштувати свій вигляд, і навіть зберігайте закладки різних конфігурацій для швидкого доступу.
+page_help_files_item: >-
+  **Відомості про файл** — форма для керування метаданими файлу, редагування вихідного об’єкта та оновлення налаштувань доступу.
+page_help_settings_project: "**Налаштування проекту** — глобальні параметри конфігурації вашого проекту."
+page_help_settings_datamodel_collections: >-
+  **Модель даних: колекції** — перелічує всі доступні колекції. Це включає видимі, приховані та системні колекції, а також незмінені таблиці бази даних, які можна додавати.
+page_help_settings_datamodel_fields: >-
+  **Модель даних: колекція** — форма для керування цією колекцією та її полями.
+page_help_settings_roles_collection: '**Огляд ролей** — перелічує ролі адміністратора, загальнодоступних і настроюваних користувачів.'
+page_help_settings_roles_item: "**Детальна інформація про роль** — керуйте дозволами для ролі та іншими налаштуваннями."
+page_help_settings_presets_collection: >-
+  **Огляд запрограмованих налаштувань** — перелік усіх попередніх налаштувань у проекті, включаючи: користувача, роль та глобальні закладки, а також вигляди за замовчуванням.
+page_help_settings_presets_item: >-
+  **Деталі попереднього налаштування** — форма для керування закладками та стандартними налаштуваннями колекцій.
+page_help_settings_webhooks_collection: '**Переглянути веб-хуки** — перелік усіх веб-хуків у проекті.'
+page_help_settings_webhooks_item: '**Деталі веб-хуку** — форма для створення веб-хуків проекту та керування ними.'
+page_help_users_collection: '**Каталог користувачів** — перелік усіх користувачів системи в цьому проекті.'
+page_help_users_item: >-
+  **Інформація про користувача** — керуйте інформацією свого облікового запису або переглядайте відомості про інших користувачів.
+page_help_insights_overview: '**Інсайти** — список інформаційних панелей, до яких ви маєте доступ.'
+page_help_insights_dashboard: '**Інформаційна панель** — Робоча область для керування однією або кількома панелями.'
+activity_feed: Стрічка активності
 add_new: Створити
+create_new: Створити нову
 all: Все
+none: Відсутні
+no_layout_collection_selected_yet: Макет/колекція ще не вибрана
 batch_delete_confirm: >-
   Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені, що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
 cancel: Скасувати
+no_upscale: Не показувати зображення
 collection: Колекція
 collections: Колекції
+content: Вміст
+singleton: Об'єкт-одинак
+singleton_label: Вважати як один об'єкт
+system_fields_locked: Системні поля заблоковані і не можуть бути відредаговані
+directus_collection:
+  directus_activity: Облікові записи для всіх подій
+  directus_collections: Додаткова конфігурація колекції та метадані
+  directus_dashboards: Панелі керування в межах модуля інсайтів
+  directus_fields: Додаткова конфігурація поля та метадані
+  directus_files: Метадані для всіх керованих файлів
+  directus_folders: Забезпечує віртуальні каталоги для файлів
+  directus_migrations: Яку версію бази даних ви використовуєте
+  directus_panels: Окремі панелі на панелях керування інсайтів
+  directus_permissions: Доступ до дозволів для кожної ролі
+  directus_notifications: Сповіщення відіслано користувачам
+  directus_presets: Попередні налаштування для передустановок і закладок колекції
+  directus_relations: Конфігурація зв'язків і метадані
+  directus_revisions: Знімки даних для всіх видів діяльності
+  directus_roles: Групи дозволів для користувачів системи
+  directus_sessions: Інформація про сеанс користувача
+  directus_settings: Параметри конфігурації проекту
+  directus_users: Користувачі системи для платформи
+  directus_webhooks: Конфігурація HTTP-запитів на основі подій
 fields:
   directus_activity:
     item: Первинний ключ елемента
@@ -262,27 +858,46 @@ fields:
     comment: Коментар
     user_agent: Ідентифікатор браузера
     ip: IP адреса
+    revisions: Версії
   directus_collections:
     collection: Колекція
     icon: Іконка
     note: Примітка
     color: Колір
+    display_template: Показати шаблон
     hidden: Приховано
+    singleton: Об'єкт-одинак
+    translations: Колекція назв перекладів
+    archive_app_filter: Фільтр архівного застосунку
+    archive_value: Архівувати значення
+    unarchive_value: Розархівувати значення
+    sort_field: Поле сортування
+    accountability: Відстеження активності та переглядів
+    archive_field: Архівувати поле
+    item_duplication_fields: Поля дублювання об'єктів
   directus_files:
+    $thumbnail: Мініатюра
     title: Заголовок
     description: Опис
     tags: Теги
     location: Розташування
+    storage: Сховище
+    filename_disk: Ім'я файлу (Диск)
+    filename_download: Ім'я файлу (Завантаження)
     metadata: Метадані
+    type: MIME-тип
     filesize: Розмір файлу
+    modified_by: Змінено
     modified_on: Час зміни
     created_on: Створено
     created_by: Автор
     embed: Вбудувати
     uploaded_by: Завантажено
+    folder: Папка
     width: Ширина
     uploaded_on: Завантажено
     height: Висота
+    charset: Таблиця симовлів
     duration: Тривалість
   directus_users:
     first_name: Ім'я
@@ -294,46 +909,221 @@ fields:
     title: Заголовок
     description: Опис
     tags: Теги
+    user_preferences: Налаштування користувача
     language: Мова
     theme: Тема
+    theme_auto: Автоматичний вибір (основано на системі)
+    theme_light: Світлий режим
+    theme_dark: Темний режим
     tfa_secret: Двофакторна автентифікація
+    admin_options: Можливості адміністратора
     status: Статус
+    status_draft: Чернетка
+    status_invited: Запрошені
+    status_active: Активний
+    status_suspended: Призупинені
+    status_archived: Архівовані
     role: Роль
+    token: Ключ
+    token_placeholder: Введіть надійний ключ доступу...
+    provider: Провайдер
+    external_identifier: Зовнішній ідентифікатор
+    last_page: Остання сторінка
+    last_access: Останній доступ
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    mapping: Зіставлення
+    basemaps: Карта-схеми
+    basemaps_raster: Растровий
+    basemaps_tile: Растровий TileJSON
+    basemaps_style: Стиль Mapbox
+    mapbox_key: Ключ доступу Mapbox
+    transforms_note: Назва методу Sharp та його короткий зміст. Дивіться https://sharp.pixelplumbing.com/api-constructor для отримання додаткової інформації.
+    additional_transforms: Додаткові трансформації
     project_name: Назва проекту
+    project_url: URL-адреса проекту
+    project_color: Демонструвати колір
+    project_logo: Демонструвати логотип
+    branding: Брендінг та стиль
+    public_foreground: Публічний передній план
+    public_background: Публічний фон
+    public_note: Публічна нотатка
+    auth_password_policy: Правила користування авторизованими паролями
+    auth_login_attempts: Авторизовані спроби входу в систему
+    files_and_thumbnails: Файли та сховище
+    storage_default_folder: Папка за замовчуванням
+    storage_asset_presets: Передналаштування трансформацій
+    storage_asset_transform: Дозволені трансформації
+    overrides: Перевизначення програми
+    custom_css: Індивідуальний CSS код
     module_bar: Панель модулів
+    transformations_all: Дозволити всі трансформації
+    transformations_none: Вимкнути трансформації
+    transformations_presets: Обмежити перетворення до передустановок нижче
   directus_fields:
+    collection: Назва колекції
+    icon: Іконка колекції
     note: Примітка
     hidden: Приховано
+    singleton: Об'єкт-одинак
     translation: Переклад назви поля
     display_template: Шаблон
   directus_roles:
     name: Назва ролі
+    icon: Іконка ролі
     description: Опис
+    app_access: Доступ до додатку
+    admin_access: Адміністративний доступ
+    ip_access: IP адреса
+    enforce_tfa: Потрібен 2FA
+    users: Користувачі у ролі
+    module_list: Перемкнути навігацію
   directus_webhooks:
     name: Назва
+    method: Метод
     status: Статус
+    data: Дані
+    header: Заголовок
     value: Значення
+    headers: Заголовки запиту
+    data_label: Надіслати дані про подію
+    triggers: Тріггери
+    actions: Дії
     collections: Колекції
 field_options:
+  directus_settings:
+    project_name_placeholder: Мій проект...
+    project_color_note: Фон входу та логотипу
+    project_logo_note: Білий 40x40 SVG/PNG
+    public_note_placeholder: Коротке загальнодоступне повідомлення, яке підтримує розміткове форматування...
+    security_divider_title: Захист
+    auth_password_policy:
+      none_text: Ні - Не рекомендується
+      weak_text: Слабкий – мінімум 8 символів
+      strong_text: Надійний – Верхній / Нижній регістр / Цифри / Спеціальні символи
+    storage_asset_presets:
+      fit_label: За розміром
+      upscaling: Підбір масштабу
+      fit:
+        contain_text: Умістити (зберігати співвідношення сторінок)
+        cover_text: Покрити (урівняння за точним розміром)
+        fit_text: Вмістити всередину
+        outside_text: Вмістити зовні
+    additional_transforms: Додаткові трансформації
+    transforms_note: Назва методу Sharp та його короткий зміст. Дивіться https://sharp.pixelplumbing.com/api-constructor для отримання додаткової інформації.
+    mapbox_key: Ключ доступу Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Карта-схеми
+    basemaps_name_placeholder: Введіть назву карта-схеми...
+    basemaps_raster: Растровий
+    basemaps_tile: Растровий TileJSON
+    basemaps_style: Стиль Mapbox
+    files_divider_title: Файли та мініатюри
+    overrides_divider_title: Перевизначення програми
   directus_activity:
+    login: Увійти
     create: Створити
     update: Оновити
+    delete: Видалити
   directus_collections:
+    track_activity_revisions: Відстежувати активність та ревізії
+    only_track_activity: Лише відстежувати діяльність
+    do_not_track_anything: Нічого не відслідковувати
+    collection_setup: Налаштування колекції
+    note_placeholder: Опис цієї колекції...
+    hidden_label: Приховати в межах програми
+    singleton: Вважати як один об'єкт
     language: Мова
     translation: Переклад
+    translation_placeholder: Введіть переклад...
+    collection_name: Назва колекції
+    singular_unit: Форма одиниці
+    plural_unit: Форма множини
     archive_divider: Архів
+    archive_field_placeholder: Обрати поле...
+    archive_app_filter: Увімкнути фільтр архіву застосунку
+    archive_value: Значення, встановлене під час архівування...
+    unarchive_value: Значення, встановлене під час розархівування...
+    sort_divider: Сортування
+    sort_field: Обрати поле...
+    accountability_divider: Підзвітність
+    duplication_divider: Дублікація
+  directus_files:
+    title: Унікальний заголовок...
+    description: Опціональний опис...
+    location: Опціональне розташування...
+    storage_divider: Процес назви файлу
+    filename_disk: Назва на диску пам'яті...
+    filename_download: Назва під час завантаження...
   directus_roles:
+    name: Унікальна назва для цієї ролі...
+    description: Опис цієї ролі...
+    ip_access: Додайте дозволені IP-адреси, залиште порожнім, щоб дозволити...
     fields:
       icon_name: Іконка
       name_name: Назва
+      name_placeholder: Ведіть назву...
+      link_name: Посилання
+      link_placeholder: Відносна або абсолютна URL-адреса...
     collections_name: Колекції
+    collections_addLabel: Додати колекцію...
+  directus_users:
+    preferences_divider: Налаштування користувача
+    dropdown_auto: Автоматичний вибір (основано на системі)
+    dropdown_light: Світлий режим
+    dropdown_dark: Темний режим
+    admin_divider: Можливості адміністратора
+    status_dropdown_draft: Чернетка
+    status_dropdown_invited: Запрошені
+    status_dropdown_active: Активний
+    status_dropdown_suspended: Призупинені
+    status_dropdown_archived: Архівовані
+    token: Введіть надійний ключ доступу...
   directus_webhooks:
+    status_options_active: Активний
+    status_options_inactive: Неактивний
+    data_label: Надіслати дані про подію
+    triggers_divider: Тріггери
     actions_create: Створити
     actions_update: Оновити
+    actions_delete: Видалити
+    actions_login: Логін
     headers:
+      header: Заголовок
       value: Значення
+      add: Додати заголовок
+no_fields_in_collection: 'Ще немає полей в колекції "{collection}"'
+no_value: Значення відсутнє
+do_nothing: Нічого не робити
+generate_and_save_uuid: Генерувати та зберегти UUID
+save_current_user_id: Зберігти поточний ID
+save_current_user_role: Зберегти поточну роль користувача
+save_current_datetime: Зберігти поточну дату/час
+always_open: Завжди відкрито
+start_open: Почати відкритим
+start_collapsed: Старт згорнутим
+block: Блокувати
+inline: У тексті
 comment: Коментар
+relational_triggers: Реляційні тригери
+referential_action_field_label_m2o: Видалиться з {collection}...
+referential_action_field_label_o2m: Буде видалено з колекції {collection}...
+referential_action_no_action: Запобігти видаленню
+referential_action_cascade: Видалити об'єкт з {collection} (cascade)
+referential_action_set_null: Обнулити поле {field}
+referential_action_set_default: Встановити для {field} значення за замовчуванням
+choose_action: Вибрати дію
+continue_label: Продовжити
+continue_as: >-
+  {name} наразі авторизований. Якщо ви впізнали цей обліковий запис, натисніть кнопку продовжити.
+editing_role: 'Роль {role}'
+creating_webhook: Створити вебхук
+default_label: За замовчуванням
+delete_label: Видалити
+delete_are_you_sure: >-
+  Ця дія постійна і не може бути скасована. Ви впевнені, що хочете продовжити?
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
 description: Опис
@@ -342,6 +1132,7 @@ duplicate: Дублювати
 limit: Обмеження
 email: Email
 embed: Вбудувати
+fallback_icon: Неактивна іконка
 field: Поле | Поля
 file: Файл
 file_library: Бібліотека файлів
@@ -349,11 +1140,16 @@ forgot_password: Забули пароль
 hidden: Приховано
 icon: Іконка
 info: Інформація
+normal: Нормальний
+success: Успішно
+warning: Попередження
+danger: Небезпека
 junction_collection: Збірна колекція
 latency: Затримка
 login: Вхід
 my_activity: Активність
 not_authenticated: Не автентифіковано
+authenticated: Підтверджено
 options: Параметри
 otp: Одноразовий пароль
 password: Пароль
@@ -361,11 +1157,13 @@ permissions: Права
 relationship: Відносини
 reset: Скинути
 reset_password: Скинути пароль
+revisions: Версії
 revert: Повернути
 save: Зберегти
 schema: Схема
 search: Пошук
 select_existing: Вибрати існуючі
+select_field_type: Обрати тип поля
 select_interface: Виберіть інтерфейс
 settings: Налаштування
 sign_in: Вхід
@@ -373,61 +1171,264 @@ sign_out: Вихід
 sign_out_confirm: Ви справді бажаєте вийти?
 something_went_wrong: Щось пішло не так.
 sort_direction: Напрямок сортування
+sort_asc: Впорядкувати за збільшенням
+sort_desc: Впорядкувати за зменшенням
 template: Шаблон
+require_value_to_be_set: Потрібно встановити значення
 translation: Переклад
+translation_placeholder: Введіть переклад...
 value: Значення
+view_project: Переглянути проект
+report_error: Звіт про помилку
+start: Почати
 interfaces:
   filter:
+    name: Фільтр
+    description: Налаштувати фільтр об'єкта.
+    add_filter: Додати фільтр
+    add_group: І / або група
+    add_value: Додати значення
     all: Все
+    any: Будь-які
+    and: й
+    of_the_following: такі
+    no_rules: Немає налаштованих правил
+    change_value: Натисніть, щоб змінити значення
+    placeholder: Перетягніть файли сюди
+  group-accordion:
+    name: Гармошка
+    description: Відображати поля або групи в вигляді гармошки
+    start: Почати
+    all_closed: Всі закриті
+    first_opened: Спочатку відкриті
+    all_opened: Всі відкриті
+    accordion_mode: Режим акордеон
+    max_one_section_open: Максимальна кількість відкритих секцій – 1
   presentation-links:
+    presentation-links: Кнопки посилання
+    links: Посилання
+    description: Настроювані кнопки посилань для запуску динамічних URL-адрес
+    style: Стиль
     primary: Стандартно
+    link: Посилання
+    button: Кнопки
+    error: Неможливо виконати дію
+  select-multiple-checkbox:
+    checkboxes: Прапорці
+    description: Виберіть один із кількох варіантів за допомогою прапорців
+    allow_other: Дозволити інше
+    show_more: 'Показати ще {count}'
+    items_shown: Показані об'єкти
+  select-multiple-checkbox-tree:
+    name: Прапорці (дерево)
+    description: Обирайте між кількома параметрами за допомогою вкладених прапорців
+    value_combining: Комбінування значення
+    value_combining_note: Визначає, яке значення зберігається під час виконання вкладених виділень.
+    show_all: Показати все
+    show_selected: Показати обране
   input-code:
     code: Код
+    description: Пишіть або поширюйте фрагменти коду
+    line_number: Номер рядка
+    line_wrapping: Огорнення рядка
+    placeholder: Введіть код...
   system-collection:
     collection: Колекція
+    description: Оберіть між інсуючими колекціями
+    include_system_collections: Включити системні колекції
   system-collections:
     collections: Колекції
+    description: Обрати між існуючими колекціями
+    include_system_collections: Включити системні колекції
   select-color:
     color: Колір
+    description: Ведіть або оберіть значення кольору
+    placeholder: Оберіть колір...
+    preset_colors: Шаблонні кольори
+    preset_colors_add_label: Додати новий колір...
+    name_placeholder: Введіть назву кольору...
   datetime:
     datetime: Дата й час
+    description: Введіть дати та час
+    include_seconds: Секунди включно
+    set_to_now: Перемкнути на Зараз
+    use_24: Використовувати 24-годинний формат
+  system-display-template:
+    display-template: Шаблон відображення
+    description: Змішати статичний текст і динамічні значення поля
+    collection_field: Поле колекції
+    collection_field_not_setup: Параметр поля колекції налаштовано неправильно
+    select_a_collection: Оберіть колекцію
   presentation-divider:
     divider: Розділювач
+    description: Позначити та розділити поля на секції
+    title_placeholder: Введыть назву, або залиште поле пустим, щоб відображати тыльки лінію...
+    inline_title: Вбудований заголовок
+    inline_title_label: Показувати заголовок у рядку
+    margin_top: Верхнє поле
+    margin_top_label: Збільшити верхнє поле
+  select-dropdown:
+    choices_placeholder: Додати варіант
+    allow_other: Дозволити інше
+    allow_other_label: Додати інші значення
+    choices_name_placeholder: Вкажіть назву...
+    choices_value_placeholder: Введіть значення...
   file:
     file: Файл
+    description: Оберіть, або завантажте файл
   files:
     files: Файли
+    description: Оберіть, або завантажте декілька файлів
+  input-hash:
+    hash: Хеш
+    masked: Масковано
+    masked_label: Приховати дійсне значення
   select-icon:
     icon: Іконка
+    search_for_icon: Пошук іконки...
+  file-image:
+    image: Зображення
+    description: Виберіть або завантажте зображення
+    crop: Обрізати по розміру
+    crop_label: Обрізати зображення при необхідності
+  system-interface:
+    interface: Інтерфейс
+    description: Оберіть існуючий інтерфейс
+    placeholder: Оберіть інтерфейс...
+  system-interface-options:
+    interface-options: Опції інтерфейсу
+    description: Плагін для вибору опцій інтерфейсу
+  list-m2m:
+    many-to-many: Багато до багатьох
+    description: Вибрати кілька пов'язаних об'єктів
+  select-dropdown-m2o:
+    many-to-one: Багато до одного
+    description: Виберіть один пов'язаний об'єкт
+    display_template: Шаблон відображення
+  input-rich-text-md:
+    markdown: Розмітка
+    description: Увійти та переглянути розмітку
+    edit: Редагувати
+    preview: Перегляд
+    editorFont: Шрифт редактора
+    previewFont: Попередній перегляд шрифту
+    customSyntax: Користувацькі блоки
+    customSyntax_label: Додати користувацькі типи синтаксису
+    customSyntax_add: Додати користувацький синтаксис
+    imageToken: Ключ забраження
+  map:
+    map: Карта
+    description: Обрати місцезнаходження на карті
+    zoom: Масштаб зображення
+    geometry_type: Геометрічний тип
+    geometry_format: Геометрічний формат
+    default_view: Вид за замовчуванням
+    invalid_options: Неправильні опції
+    invalid_format: Неправильний формат ({format})
+    unexpected_geometry: Очікувалось {expected}, отримано {got}.
+    native: Нативний
+    geojson: GeoJSON
+    lnglat: Довгота, широта
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Натисніть, щоб вибрати {geometry}
+  presentation-notice:
+    notice: Зверніть увагу
+    description: Відобразити коротке повідомлення
+    text: Введіть вміст попередження...
+  list-o2m:
+    one-to-many: Один до багатьох
+    description: Вибрати кілька пов'язаних об'єктів
+    no_collection: Колекцію не знайдено
+  system-folder:
+    folder: Папка
+    description: Обрати теку
+    field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
+    system_default: Стандартні налаштування
   tags:
     tags: Теги
+  input:
+    mask: Масковано
+  boolean:
+    toggle: Переключити
+    color_on: Увімкнений колір
+    color_off: Ввімкнений колір
+    label_default: Увімкнено
+  translations:
+    display_template: Шаблон відображення
   user:
     user: Користувач
+    description: Виберіть існуючого користувача
+    select_mode: Обрати режим
     modes:
+      auto: Автоматично
       dropdown: Випадаюче меню
+  input-rich-text-html:
+    description: Багатотекстовий редактор, що пише матеріал для HTML
+    toolbar: Панель інструментів
+    custom_formats: Власне форматування
+  group-detail:
+    show_header: Показувати заголовок групи
+    header_icon: Іконка заголовка
+    header_color: Колір заголовку
+    start_open: Почати відкритим
+    start_closed: Почати закритим
 displays:
+  translations:
+    translations: Переклади
+    description: Попередній перегляд перекладів
+    enable: Увімкнути
+    user_language: Використовувати поточну мову користувача
+    default_language: Мова за замовчуванням
+    language_field: Поле визначення мови
+  boolean:
+    boolean: Логічне значення
+    icon_on: Підключити іконку
+    icon_off: Відключити іконку
+    color_on: Увімкнений колір
+    color_off: Ввімкнений колір
   collection:
     collection: Колекція
+    description: Показати колекцію
+    icon_label: Показувати іконку колекції
   color:
     color: Колір
+    default_color: Колір за замовчуванням
   datetime:
     datetime: Дата й час
     format: Формат
+    long: Довгий
+    short: Короткий
+    relative: Відносний
+    relative_label: 'Показати відносний час, наприклад: 5 хвилин тому'
   file:
     file: Файл
+    description: Показати файли
   filesize:
     filesize: Розмір файлу
+    description: Показати розмір файлу
   icon:
     icon: Іконка
+  image:
+    circle: Коло
+  labels:
+    choices_value_placeholder: Введіть значення...
+  related-values:
+    related-values: Пов'язані значення
+    description: Показати пов'язані значення
   user:
     user: Користувач
+    description: Показати користувача
     avatar: Аватар
     name: Назва
     both: Обидва
+    circle_label: Показати користувача в колі
 layouts:
   cards:
     cards: Картки
     image_source: Джерело зображення
+    crop: Обрізати
+    contain: Містить
     title: Заголовок
     subtitle: Підзаголовок
   tabular:
@@ -437,3 +1438,30 @@ layouts:
     comfortable: Комфортна
     compact: Компактна
     cozy: Зручна
+  calendar:
+    calendar: Календар
+  map:
+    map: Карта
+    basemap: Карта-схема
+    layers: Шари
+    cluster_options: Параметри кластеризації
+    invalid_geometry: Неприпустима геометрія
+    find_location: Знайти локацію...
+    no_compatible_fields: Немає сумісних полів
+panels:
+  metric:
+    name: Метрична
+    description: Показати одне значення на основі запиту
+    field: Поле
+  time_series:
+    name: Серії часу
+    date_field: Поле даних
+    value_field: Поле значення
+    fill_type: Тип заповнення
+    curve_type: Тип кривої
+  label:
+    name: Ярлик
+    description: Показати деякі тексти
+  list:
+    name: Список
+    description: Фільтрувати та перелічити поля з колекції

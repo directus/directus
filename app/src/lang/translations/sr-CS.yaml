@@ -982,6 +982,7 @@ interfaces:
   input-rich-text-md:
     markdown: Smanjenje
     description: Unesi i pregledaj opcije smanjenja
+    edit: Izmijeni
     customSyntax: Prilagođeni Blokovi
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
@@ -1048,6 +1049,8 @@ interfaces:
   boolean:
     toggle: Isključi / Uključi
     description: Prebaci između uključeno i isključeno
+    color_on: Boja Uključena
+    color_off: Boja Isključena
     label_placeholder: Unesi ime...
     label_default: Omogućen
   translations:

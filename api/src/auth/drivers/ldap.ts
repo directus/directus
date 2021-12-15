@@ -2,8 +2,10 @@ import { Router } from 'express';
 import ldap, {
 	Client,
 	Error,
+	EqualityFilter,
 	SearchCallbackResponse,
 	SearchEntry,
+	LDAPResult,
 	InappropriateAuthenticationError,
 	InvalidCredentialsError,
 	InsufficientAccessRightsError,
@@ -18,6 +20,7 @@ import {
 	InvalidPayloadException,
 	ServiceUnavailableException,
 	InvalidConfigException,
+	UnexpectedResponseException,
 } from '../../exceptions';
 import { AuthenticationService, UsersService } from '../../services';
 import asyncHandler from '../../utils/async-handler';
@@ -97,6 +100,13 @@ export class LDAPAuthDriver extends AuthDriver {
 						}
 					});
 				});
+
+				res.on('end', (result: LDAPResult | null) => {
+					if (result?.status === 0) {
+						// Handle edge case with IBM systems where authenticated bind user could not fetch their DN
+						reject(new UnexpectedResponseException('Failed to find bind user record'));
+					}
+				});
 			});
 		});
 	}
@@ -108,7 +118,10 @@ export class LDAPAuthDriver extends AuthDriver {
 			// Search for the user in LDAP by attribute
 			this.bindClient.search(
 				userDn,
-				{ filter: `(${userAttribute ?? 'cn'}=${identifier})`, scope: userScope ?? 'one' },
+				{
+					filter: new EqualityFilter({ attribute: userAttribute ?? 'cn', value: identifier }),
+					scope: userScope ?? 'one',
+				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
 						reject(handleError(err));
@@ -186,7 +199,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				groupDn,
 				{
 					attributes: ['cn'],
-					filter: `(${groupAttribute ?? 'member'}=${userDn})`,
+					filter: new EqualityFilter({ attribute: groupAttribute ?? 'member', value: userDn }),
 					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {

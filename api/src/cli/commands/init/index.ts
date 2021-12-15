@@ -11,6 +11,7 @@ import createEnv from '../../utils/create-env';
 import { drivers, getDriverForClient } from '../../utils/drivers';
 import { databaseQuestions } from './questions';
 import { generateHash } from '../../../utils/generate-hash';
+import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
@@ -94,20 +95,15 @@ export default async function init(): Promise<void> {
 
 	await db('directus_roles').insert({
 		id: roleID,
-		name: 'Administrator',
-		icon: 'verified',
-		admin_access: true,
-		description: 'Initial administrative role with unrestricted App/API access',
+		...defaultAdminRole,
 	});
 
 	await db('directus_users').insert({
 		id: userID,
-		status: 'active',
 		email: firstUser.email,
 		password: firstUser.password,
-		first_name: 'Admin',
-		last_name: 'User',
 		role: roleID,
+		...defaultAdminUser,
 	});
 
 	await db.destroy();
