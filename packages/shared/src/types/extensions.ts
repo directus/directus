@@ -72,12 +72,12 @@ export type ApiExtensionContext = {
 };
 
 export type ExtensionOptionsContext = {
-	collection: string;
+	collection: string | undefined;
 	editing: string;
 	field: DeepPartial<Field>;
 	relations: {
 		m2o: DeepPartial<Relation> | undefined;
-		m2a: DeepPartial<Relation> | undefined;
+		m2a?: DeepPartial<Relation> | undefined;
 		o2m: DeepPartial<Relation> | undefined;
 	};
 	collections: {
