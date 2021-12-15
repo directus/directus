@@ -2,7 +2,7 @@ import { EventEmitter2 } from 'eventemitter2';
 import logger from './logger';
 import { ActionHandler, FilterHandler, HookContext, InitHandler } from './types';
 
-class Emitter {
+export class Emitter {
 	private filterEmitter;
 	private actionEmitter;
 	private initEmitter;

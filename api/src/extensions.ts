@@ -283,6 +283,7 @@ class ExtensionManager {
 			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
+			emitter,
 			logger,
 			getSchema,
 		});
@@ -305,6 +306,7 @@ class ExtensionManager {
 			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
+			emitter,
 			logger,
 			getSchema,
 		});
