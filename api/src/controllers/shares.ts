@@ -1,19 +1,47 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { SharesService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { createLocalAuthRouter } from '../auth/drivers';
-import { DIRECTUS_SHARED_AUTH, UUID_REGEX } from '../constants';
+import { UUID_REGEX, COOKIE_OPTIONS } from '../constants';
+import Joi from 'joi';
+import env from '../env';
 
 const router = express.Router();
 
 router.use(useCollection('directus_shares'));
 
-router.use('/auth', createLocalAuthRouter(DIRECTUS_SHARED_AUTH));
+const sharedLoginSchema = Joi.object({
+	id: Joi.string().required(),
+	password: Joi.string(),
+}).unknown();
+
+router.post(
+	'/auth',
+	asyncHandler(async (req, res, next) => {
+		const service = new SharesService({
+			schema: req.schema,
+		});
+
+		const { error } = sharedLoginSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
+
+		const { accessToken, refreshToken, expires } = await service.login(req.body);
+
+		res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+
+		res.locals.payload = { data: { access_token: accessToken, expires } };
+
+		return next();
+	}),
+	respond
+);
 
 router.post(
 	'/',

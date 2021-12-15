@@ -53,3 +53,10 @@ export type ShareData = {
 	shared_max_uses?: number;
 	shared_password?: string;
 };
+
+export type LoginResult = {
+	accessToken: any;
+	refreshToken: any;
+	expires: any;
+	id?: any;
+};

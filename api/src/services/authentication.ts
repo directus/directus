@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import argon2 from 'argon2';
 import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
@@ -7,7 +6,7 @@ import getDatabase from '../database';
 import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
-import { DEFAULT_AUTH_PROVIDER, DIRECTUS_SHARED_AUTH } from '../constants';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
@@ -20,6 +19,7 @@ import {
 	User,
 	DirectusTokenPayload,
 	ShareData,
+	LoginResult,
 } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
@@ -28,13 +28,6 @@ import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
-
-type LoginResult = {
-	accessToken: any;
-	refreshToken: any;
-	expires: any;
-	id?: any;
-};
 
 export class AuthenticationService {
 	knex: Knex;
@@ -49,74 +42,6 @@ export class AuthenticationService {
 		this.schema = options.schema;
 	}
 
-	async sharedLogin(payload: Record<string, any>): Promise<LoginResult> {
-		const record = await this.knex
-			.select<ShareData>(
-				'id AS shared_id',
-				'role AS shared_role',
-				'item AS shared_item',
-				'collection AS shared_collection',
-				'date_expired AS shared_expires',
-				'times_used AS shared_times_used',
-				'max_uses AS shared_max_uses',
-				'password AS shared_password'
-			)
-			.from('directus_shares')
-			.where('id', payload.id)
-			.first();
-
-		if (!record) {
-			throw new InvalidCredentialsException();
-		}
-		if (record.shared_expires && record.shared_expires < new Date()) {
-			throw new InvalidCredentialsException();
-		}
-		if (record.shared_max_uses && record.shared_max_uses <= record.shared_times_used) {
-			throw new InvalidCredentialsException();
-		}
-		if (record.shared_password && !(await argon2.verify(record.shared_password, payload.password))) {
-			throw new InvalidCredentialsException();
-		}
-
-		await this.knex('directus_shares')
-			.update({ times_used: record.shared_times_used + 1 })
-			.where('id', record.shared_id);
-
-		const tokenPayload = {
-			app_access: false,
-			admin_access: false,
-			id: record.shared_id,
-			role: record.shared_role,
-			shared_scope: {
-				item: record.shared_item,
-				collection: record.shared_collection,
-			},
-		};
-
-		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
-			issuer: 'directus',
-		});
-
-		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
-
-		await this.knex('directus_sessions').insert({
-			token: refreshToken,
-			expires: refreshTokenExpiration,
-			ip: this.accountability?.ip,
-			user_agent: this.accountability?.userAgent,
-		});
-
-		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
-
-		return {
-			accessToken,
-			refreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
-		};
-	}
-
 	/**
 	 * Retrieve the tokens for a given user email.
 	 *
@@ -128,9 +53,6 @@ export class AuthenticationService {
 		payload: Record<string, any>,
 		otp?: string
 	): Promise<LoginResult> {
-		if (providerName === DIRECTUS_SHARED_AUTH) {
-			return this.sharedLogin(payload);
-		}
 		const STALL_TIME = 100;
 		const timeStart = performance.now();
 

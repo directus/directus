@@ -1,4 +1,6 @@
 import { TransformationParams } from './types';
+import env from './env';
+import ms from 'ms';
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
@@ -43,8 +45,15 @@ export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'translations'];
 
 export const DEFAULT_AUTH_PROVIDER = 'default';
-export const DIRECTUS_SHARED_AUTH = 'directus_shared_auth';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+
+export const COOKIE_OPTIONS = {
+	httpOnly: true,
+	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+	maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+	secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+	sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+};

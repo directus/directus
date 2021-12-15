@@ -10,20 +10,11 @@
 		<v-error v-else-if="error" :error="error" />
 
 		<template v-else-if="shareInfo">
-			<div v-if="remainingUses">
-				<v-notice v-if="remainingUses === 1" type="danger">
-					{{ t('shared_last_remaining') }}
-				</v-notice>
-				<v-notice v-else type="warning">
-					{{ t('shared_times_remaining', { n: shareInfo.max_uses - shareInfo.times_used }) }}
-				</v-notice>
-			</div>
+			<pre>{{ shareInfo }}</pre>
+
 			<v-button>
 				{{ t('access_shared_item') }}
 			</v-button>
-			<div>
-				{{ shareInfo }}
-			</div>
 		</template>
 	</shared-view>
 </template>
@@ -58,16 +49,9 @@ export default defineComponent({
 
 		const shareInfo = ref<any>();
 
-		const remainingUses = computed(() => {
-			if (shareInfo.value?.max_uses) {
-				return shareInfo.value.max_uses - shareInfo.value.times_used;
-			}
-			return undefined;
-		});
-
 		getShareInformation(shareId);
 
-		return { t, shareInfo, remainingUses, error, errorFormatted, loading, notFound };
+		return { t, shareInfo, error, errorFormatted, loading, notFound };
 
 		async function getShareInformation(shareId: string) {
 			loading.value = true;
@@ -85,6 +69,21 @@ export default defineComponent({
 				loading.value = false;
 			}
 		}
+
+		// async function login() {
+		// 	loading.value = true;
+
+		// 	try {
+		// 		await api.post('/shares/auth', {
+		// 			id: shareId,
+		// 			mode: 'cookie',
+		// 		});
+		// 	} catch (err) {
+		// 		error.value = err;
+		// 	} finally {
+		// 		loading.value = false;
+		// 	}
+		// }
 	},
 });
 </script>
