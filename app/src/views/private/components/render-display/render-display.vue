@@ -11,7 +11,6 @@
 		:type="type"
 		:collection="collection"
 		:field="field"
-		:item="item"
 	/>
 </template>
 
@@ -45,10 +44,6 @@ export default defineComponent({
 		},
 		type: {
 			type: String,
-			required: true,
-		},
-		item: {
-			type: Object,
 			required: true,
 		},
 		collection: {

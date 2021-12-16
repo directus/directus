@@ -13,7 +13,6 @@
 				:type="part.type"
 				:collection="part.collection"
 				:field="part.field"
-				:item="item"
 			/>
 			<span v-else-if="typeof part === 'string'">{{ translate(part) }}</span>
 			<span v-else>{{ part }}</span>

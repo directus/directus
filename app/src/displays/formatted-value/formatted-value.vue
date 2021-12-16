@@ -19,10 +19,6 @@ import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
-		item: {
-			type: Object,
-			required: true,
-		},
 		type: {
 			type: String,
 			required: true,
