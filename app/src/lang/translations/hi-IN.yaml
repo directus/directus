@@ -278,6 +278,15 @@ displays:
     boolean: Boolean
   color:
     color: Color
+  formatted-value:
+    font: फ़ॉन्ट
+    font_serif: Serif
+    font_monospace: Monospace
+    prefix: प्रीफिक्स
+    suffix: सफिक्स
+    color: Color
+    text: Text
+    text_label: Text
   image:
     circle: Circle
   user:
