@@ -1521,7 +1521,6 @@ displays:
     color: Цвят
     icon: Икона
     text: Текст
-    text_label: Текст
   formatted-json-value:
     formatted-json-value: Форматирана JSON стойност
     description: Показване на форматирана стойност на JSON обект
