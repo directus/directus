@@ -1193,7 +1193,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1511,9 +1510,19 @@ displays:
   formatted-value:
     formatted-value: Wartość sformatowana
     description: Wyświetl sformatowaną wersję tekstu
-    format_title: Format tytułu
-    format_title_label: Automatyczny format
+    format: Formatowanie
+    font: Czcionka
+    font_serif: Szeryfowa
+    font_monospace: Monospace
+    bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
+    italic: Kursywa
+    prefix: Przedrostek
+    suffix: Przyrostek
+    color: Kolor
+    icon: Ikona
+    text: Tekst
+    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
