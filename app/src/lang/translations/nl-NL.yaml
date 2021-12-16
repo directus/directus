@@ -1073,7 +1073,6 @@ displays:
     color: Kleur
     icon: Icoon
     text: Tekst
-    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven

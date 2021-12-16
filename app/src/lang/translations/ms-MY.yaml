@@ -234,7 +234,6 @@ displays:
     prefix: Awalan
     suffix: Akhiran
     text: Teks
-    text_label: Teks
   user:
     avatar: Avatar
     name: Nama

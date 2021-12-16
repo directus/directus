@@ -838,7 +838,6 @@ displays:
     color: Màu sắc
     icon: Biểu tượng
     text: Đoạn văn bản
-    text_label: Đoạn văn bản
   icon:
     icon: Biểu tượng
     description: Hiển thị một biểu tượng

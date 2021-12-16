@@ -1486,7 +1486,6 @@ displays:
     color: Väri
     icon: Kuvake
     text: Teksti
-    text_label: Teksti
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio

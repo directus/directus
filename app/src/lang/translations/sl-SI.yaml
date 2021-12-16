@@ -1296,7 +1296,6 @@ displays:
     color: Barva
     icon: Ikona
     text: Tekst
-    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Oblikovana JSON vrednost
     description: Prikaži oblikovano verzijo objekta

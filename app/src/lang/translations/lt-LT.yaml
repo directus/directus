@@ -941,7 +941,6 @@ displays:
     color: Spalva
     icon: Ikona
     text: Tekstas
-    text_label: Tekstas
   formatted-json-value:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją

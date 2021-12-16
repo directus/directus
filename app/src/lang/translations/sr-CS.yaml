@@ -1133,7 +1133,6 @@ displays:
     color: Boja
     icon: Ikonica
     text: Text
-    text_label: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta

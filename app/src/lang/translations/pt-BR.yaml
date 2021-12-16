@@ -1346,7 +1346,6 @@ displays:
     color: Cor
     icon: Ícone
     text: Texto
-    text_label: Texto
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
     description: Exibe uma versão formatada do objeto

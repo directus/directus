@@ -1131,7 +1131,6 @@ displays:
     color: Liv
     icon: Arlun
     text: Testenn
-    text_label: Testenn
   formatted-json-value:
     formatted-json-value: Talvoud JSON furmadet
     description: Diskwel an dra en ur stumm furmadet

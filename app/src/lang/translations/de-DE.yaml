@@ -1517,7 +1517,6 @@ displays:
     color: Farbe
     icon: Symbol
     text: Text
-    text_label: Text
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen

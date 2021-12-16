@@ -1451,7 +1451,6 @@ displays:
     color: Färg
     icon: Ikon
     text: Text
-    text_label: Text
   formatted-json-value:
     formatted-json-value: Formaterat JSON-värde
     description: Visa en formaterad version av objektet

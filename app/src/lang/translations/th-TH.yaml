@@ -1304,7 +1304,6 @@ displays:
     color: สี
     icon: ไอคอน
     text: ข้อความแบบยาว
-    text_label: ข้อความแบบยาว
   formatted-json-value:
     formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว
     description: แสดงค่าของ JSON ที่ถูกจัดรูปแบบแล้ว

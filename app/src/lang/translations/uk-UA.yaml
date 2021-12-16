@@ -1419,7 +1419,6 @@ displays:
     color: Колір
     icon: Іконка
     text: Текст
-    text_label: Текст
   icon:
     icon: Іконка
   image:

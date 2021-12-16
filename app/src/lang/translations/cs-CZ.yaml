@@ -478,7 +478,6 @@ displays:
     color: Barva
     icon: Ikona
     text: Text
-    text_label: Text
   icon:
     icon: Ikona
   user:

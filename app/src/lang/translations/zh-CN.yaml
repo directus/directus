@@ -1414,7 +1414,6 @@ displays:
     color: 颜色
     icon: 图标
     text: 文本
-    text_label: 文本
   formatted-json-value:
     formatted-json-value: 格式化JSON值
     description: 显示对象的格式化版本

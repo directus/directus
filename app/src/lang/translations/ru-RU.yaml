@@ -1515,7 +1515,6 @@ displays:
     color: Цвет
     icon: Иконка
     text: Текст
-    text_label: Текст
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта

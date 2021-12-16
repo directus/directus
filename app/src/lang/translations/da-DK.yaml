@@ -1401,7 +1401,6 @@ displays:
     color: Farve
     icon: Ikon
     text: Tekst
-    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet

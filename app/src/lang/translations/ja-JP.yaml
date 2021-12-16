@@ -513,7 +513,6 @@ displays:
     color: 色
     icon: アイコン
     text: テキスト
-    text_label: テキスト
   icon:
     icon: アイコン
   labels:
