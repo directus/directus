@@ -12,7 +12,9 @@
 		<template v-else-if="shareInfo">
 			<pre>{{ shareInfo }}</pre>
 
-			<v-button>
+			<v-input v-if="shareInfo.password" @update:modelValue="passwordInput = $event" />
+
+			<v-button @click="login">
 				{{ t('access_shared_item') }}
 			</v-button>
 		</template>
@@ -23,7 +25,7 @@
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { translateAPIError } from '@/lang';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import api, { RequestError } from '@/api';
 
 export default defineComponent({
@@ -49,9 +51,11 @@ export default defineComponent({
 
 		const shareInfo = ref<any>();
 
+		const passwordInput = ref<string>();
+
 		getShareInformation(shareId);
 
-		return { t, shareInfo, error, errorFormatted, loading, notFound };
+		return { t, shareInfo, error, errorFormatted, loading, notFound, passwordInput, login };
 
 		async function getShareInformation(shareId: string) {
 			loading.value = true;
@@ -70,20 +74,21 @@ export default defineComponent({
 			}
 		}
 
-		// async function login() {
-		// 	loading.value = true;
+		async function login() {
+			loading.value = true;
 
-		// 	try {
-		// 		await api.post('/shares/auth', {
-		// 			id: shareId,
-		// 			mode: 'cookie',
-		// 		});
-		// 	} catch (err) {
-		// 		error.value = err;
-		// 	} finally {
-		// 		loading.value = false;
-		// 	}
-		// }
+			try {
+				await api.post('/shares/auth', {
+					id: shareId,
+					mode: 'cookie',
+					password: passwordInput.value,
+				});
+			} catch (err: any) {
+				error.value = err;
+			} finally {
+				loading.value = false;
+			}
+		}
 	},
 });
 </script>

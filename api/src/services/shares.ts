@@ -28,13 +28,13 @@ export class SharesService extends ItemsService {
 			.from('directus_shares')
 			.where('id', payload.id)
 			.andWhere((subQuery) => {
-				subQuery.whereNull('share_end').orWhere('share_end', '>=', this.knex.fn.now());
+				subQuery.whereNull('date_end').orWhere('date_end', '>=', this.knex.fn.now());
 			})
 			.andWhere((subQuery) => {
-				subQuery.whereNull('share_start').orWhere('share_start', '<=', this.knex.fn.now());
+				subQuery.whereNull('date_start').orWhere('date_start', '<=', this.knex.fn.now());
 			})
 			.andWhere((subQuery) => {
-				subQuery.whereNull('share_max_uses').orWhere('share_max_uses', '>=', this.knex.ref('share_times_used'));
+				subQuery.whereNull('max_uses').orWhere('max_uses', '>=', this.knex.ref('times_used'));
 			})
 			.first();
 
