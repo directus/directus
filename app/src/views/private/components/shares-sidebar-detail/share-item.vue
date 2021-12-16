@@ -6,9 +6,10 @@
 		</div>
 		<div class="share-item-info">
 			<span class="share-uses-left">
-				{{ t('uses_left', { n: uses_left }) }}
-				<v-icon v-if="share.password" name="lock" />
+				<template v-if="!share.max_uses">{{ t('unlimited_usage') }}</template>
+				<template v-else>{{ t('uses_left', uses_left) }}</template>
 			</span>
+			<v-icon v-if="share.password" name="lock" />
 		</div>
 	</div>
 </template>
@@ -29,7 +30,7 @@ export default defineComponent({
 		const { t, d } = useI18n();
 
 		const uses_left = computed(() => {
-			if (props.share.max_uses == undefined) return undefined;
+			if (props.share.max_uses === null) return undefined;
 			return props.share.max_uses - props.share.times_used;
 		});
 
@@ -47,7 +48,7 @@ export default defineComponent({
 	margin-bottom: 10px;
 	padding: 10px;
 	background-color: var(--background-page);
-	border-radius: 3px;
+	border-radius: var(--border-radius);
 
 	&:hover {
 		cursor: pointer;
@@ -65,7 +66,7 @@ export default defineComponent({
 	font-size: 18px;
 }
 
-.share-uses-left {
+.share-uses-info {
 	color: var(--foreground-subdued);
 }
 </style>

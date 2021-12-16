@@ -1134,7 +1134,8 @@ block: Block
 inline: Inline
 comment: Comment
 shares: Shares
-uses_left: Unlimited usage | 1 use left | {n} uses left
+unlimited_usage: Unlimited usage
+uses_left: No uses left | 1 use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
 share_item: Share Item
