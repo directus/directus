@@ -1193,7 +1193,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1511,9 +1510,19 @@ displays:
   formatted-value:
     formatted-value: Valeur formatée
     description: Afficher une version formatée du texte
-    format_title: Formater le titre
-    format_title_label: Formatage automatique de la casse
+    format: Format
+    font: Police de caractères
+    font_serif: Sérif
+    font_monospace: Monospace
+    bold: Gras
     bold_label: Utiliser le style en gras
+    italic: Italique
+    prefix: Préfixe
+    suffix: Suffixe
+    color: Couleur
+    icon: Icône
+    text: Texte
+    text_label: Texte
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet
