@@ -286,7 +286,6 @@ displays:
     suffix: सफिक्स
     color: Color
     text: Text
-    text_label: Text
   image:
     circle: Circle
   user:
