@@ -292,7 +292,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	function setItemValueToResponse(response: AxiosResponse) {
-		if (collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_')) {
+		if (
+			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+		) {
 			response.data.data = translate(response.data.data);
 		}
 		if (isBatch.value === false) {
