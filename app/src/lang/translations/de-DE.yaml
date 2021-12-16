@@ -1505,9 +1505,19 @@ displays:
   formatted-value:
     formatted-value: Formatierter Wert
     description: Eine formatierte Version des Textes anzeigen
-    format_title: Titel formatieren
-    format_title_label: Automatische Groß-/Kleinschreibung
+    format: Format
+    font: Schriftart
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Fett
     bold_label: Fett-Schnitt verwenden
+    italic: Kursiv
+    prefix: Präfix
+    suffix: Suffix
+    color: Farbe
+    icon: Symbol
+    text: Text
+    text_label: Text
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
