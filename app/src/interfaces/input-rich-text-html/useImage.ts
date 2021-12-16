@@ -3,6 +3,7 @@ import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { Ref, ref } from 'vue';
+import { replaceUrlAccessToken } from '@/utils/replace-url-access-token';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -54,8 +55,10 @@ export default function useImage(
 					return;
 				}
 
+				const rawImageUrl = replaceUrlAccessToken(imageUrl, null);
+
 				imageSelection.value = {
-					imageUrl,
+					imageUrl: rawImageUrl,
 					alt,
 					width,
 					height,
@@ -86,10 +89,11 @@ export default function useImage(
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		const imageUrl = addTokenToURL(getPublicURL() + 'assets/' + image.id, imageToken.value);
+		const rawImageUrl = getPublicURL() + 'assets/' + image.id;
+		const imageUrl = addTokenToURL(rawImageUrl, imageToken.value);
 
 		imageSelection.value = {
-			imageUrl,
+			imageUrl: rawImageUrl,
 			alt: image.title,
 			width: image.width,
 			height: image.height,
@@ -100,10 +104,12 @@ export default function useImage(
 	function saveImage() {
 		const img = imageSelection.value;
 		if (img === null) return;
-		const resizedImageUrl = addQueryToPath(img.imageUrl, {
-			...(img.width ? { width: img.width.toString() } : {}),
-			...(img.height ? { height: img.height.toString() } : {}),
-		});
+		const resizedImageUrl = addTokenToURL(
+			addQueryToPath(img.imageUrl, {
+				...(img.width ? { width: img.width.toString() } : {}),
+				...(img.height ? { height: img.height.toString() } : {}),
+			})
+		);
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		isEditorDirty.value = true;
 		editor.value.selection.setContent(imageHtml);
