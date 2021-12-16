@@ -1251,7 +1251,6 @@ displays:
     color: Color
     icon: Icona
     text: Text
-    text_label: Text
   formatted-json-value:
     formatted-json-value: Valor JSON formatat
     description: Mostra una versió formatada del l'objecte
