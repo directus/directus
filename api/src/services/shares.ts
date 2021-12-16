@@ -14,29 +14,30 @@ export class SharesService extends ItemsService {
 
 	async login(payload: Record<string, any>): Promise<LoginResult> {
 		const record = await this.knex
-			.select<ShareData>(
-				'id AS shared_id',
-				'role AS shared_role',
-				'item AS shared_item',
-				'collection AS shared_collection',
-				'date_expired AS shared_expires',
-				'times_used AS shared_times_used',
-				'max_uses AS shared_max_uses',
-				'password AS shared_password'
-			)
+			.select<ShareData>({
+				shared_id: 'id',
+				shared_role: 'role',
+				shared_item: 'item',
+				shared_collection: 'collection',
+				shared_expires: 'date_expired',
+				shared_times_used: 'times_used',
+				shared_max_uses: 'max_uses',
+				shared_password: 'password',
+			})
 			.from('directus_shares')
 			.where('id', payload.id)
+			.andWhere((subQuery) => {
+				subQuery.whereNull('shared_expires').orWhere('shared_expires', '>=', this.knex.fn.now());
+			})
+			.andWhere((subQuery) => {
+				subQuery.whereNull('shared_max_uses').orWhere('shared_max_uses', '>=', this.knex.ref('shared_times_used'));
+			})
 			.first();
 
 		if (!record) {
 			throw new InvalidCredentialsException();
 		}
-		if (record.shared_expires && record.shared_expires < new Date()) {
-			throw new InvalidCredentialsException();
-		}
-		if (record.shared_max_uses && record.shared_max_uses <= record.shared_times_used) {
-			throw new InvalidCredentialsException();
-		}
+
 		if (record.shared_password && !(await argon2.verify(record.shared_password, payload.password))) {
 			throw new InvalidCredentialsException();
 		}
@@ -48,7 +49,6 @@ export class SharesService extends ItemsService {
 		const tokenPayload = {
 			app_access: false,
 			admin_access: false,
-			id: record.shared_id,
 			role: record.shared_role,
 			shared_scope: {
 				item: record.shared_item,
@@ -69,6 +69,7 @@ export class SharesService extends ItemsService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
+			share: record.shared_id,
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
