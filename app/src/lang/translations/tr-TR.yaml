@@ -787,7 +787,6 @@ displays:
     color: Renk
     icon: İkon
     text: Metin
-    text_label: Metin
   icon:
     icon: İkon
     description: Simge olarak görüntüle
