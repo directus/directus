@@ -507,6 +507,13 @@ displays:
     file: ファイル
   filesize:
     filesize: ファイルサイズ
+  formatted-value:
+    format: 書式
+    font: フォント
+    color: 色
+    icon: アイコン
+    text: テキスト
+    text_label: テキスト
   icon:
     icon: アイコン
   labels:
