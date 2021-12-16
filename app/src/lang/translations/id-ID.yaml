@@ -750,7 +750,6 @@ displays:
     color: Warna
     icon: Ikon
     text: Teks
-    text_label: Teks
   icon:
     icon: Ikon
   image:
