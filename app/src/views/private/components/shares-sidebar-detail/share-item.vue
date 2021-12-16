@@ -46,7 +46,7 @@ export default defineComponent({
 	margin: 5px;
 	margin-bottom: 10px;
 	padding: 10px;
-	background-color: white;
+	background-color: var(--background-page);
 	border-radius: 3px;
 
 	&:hover {

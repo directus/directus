@@ -193,6 +193,7 @@
 				v-if="isNew === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:allowed="shareAllowed"
 			/>
 		</template>
 	</private-view>
@@ -359,11 +360,8 @@ export default defineComponent({
 		onBeforeRouteUpdate(editsGuard);
 		onBeforeRouteLeave(editsGuard);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
-			collection,
-			item,
-			isNew
-		);
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, shareAllowed, fields, revisionsAllowed } =
+			usePermissions(collection, item, isNew);
 
 		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
@@ -410,6 +408,7 @@ export default defineComponent({
 			archiveAllowed,
 			isArchived,
 			updateAllowed,
+			shareAllowed,
 			toggleArchive,
 			validationErrors,
 			form,

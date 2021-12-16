@@ -18,7 +18,9 @@
 			@cancel="unselect"
 			@input="input"
 		/>
-		<v-button @click="select('+')">{{ t('new_share') }}</v-button>
+		<v-button v-if="allowed" @click="select('+')">
+			{{ t('new_share') }}
+		</v-button>
 	</sidebar-detail>
 </template>
 
@@ -39,6 +41,10 @@ export default defineComponent({
 		},
 		primaryKey: {
 			type: [String, Number],
+			required: true,
+		},
+		allowed: {
+			type: Boolean,
 			required: true,
 		},
 	},
