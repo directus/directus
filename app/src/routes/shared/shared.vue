@@ -1,27 +1,21 @@
 <template>
-	<shared-view>
-		<h2 class="type-title">{{ t('shared_with_you') }}</h2>
+	<shared-view inline :title="notFound ? t('share_access_not_found_title') : t('share_access_page')">
+		<v-progress-circular v-if="loading" indeterminate />
 
-		<template v-if="shareInfo">
-			<div v-if="remainingUses">
-				<v-notice v-if="remainingUses === 1" type="danger">
-					{{ t('shared_last_remaining') }}
-				</v-notice>
-				<v-notice v-else type="warning">
-					{{ t('shared_times_remaining', { n: shareInfo.max_uses - shareInfo.times_used }) }}
-				</v-notice>
-			</div>
+		<div v-else-if="notFound">
+			<strong>{{ t('share_access_not_found') }}</strong>
+			{{ t('share_access_not_found_desc') }}
+		</div>
+
+		<v-error v-else-if="error" :error="error" />
+
+		<template v-else-if="shareInfo">
+			<pre>{{ shareInfo }}</pre>
+
 			<v-button>
 				{{ t('access_shared_item') }}
 			</v-button>
-			<div>
-				{{ shareInfo }}
-			</div>
 		</template>
-
-		<v-notice v-if="error" type="danger">
-			{{ errorFormatted }}
-		</v-notice>
 	</shared-view>
 </template>
 
@@ -36,36 +30,60 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
+		const loading = ref(false);
+
+		const notFound = ref(false);
+
 		const error = ref<RequestError | null>(null);
 		const errorFormatted = computed(() => {
 			if (error.value) {
 				return translateAPIError(error.value);
 			}
+
 			return null;
 		});
 
 		const route = useRoute();
+
 		const shareId = route.params.id as string;
+
 		const shareInfo = ref<any>();
-		const remainingUses = computed(() => {
-			if (shareInfo.value?.max_uses) {
-				return shareInfo.value.max_uses - shareInfo.value.times_used;
-			}
-			return undefined;
-		});
 
 		getShareInformation(shareId);
 
-		return { t, shareInfo, remainingUses, error, errorFormatted };
+		return { t, shareInfo, error, errorFormatted, loading, notFound };
 
 		async function getShareInformation(shareId: string) {
+			loading.value = true;
+
 			try {
-				const response = await api.get(`/shares/${shareId}`);
+				const response = await api.get(`/shares/info/${shareId}`);
 				shareInfo.value = response.data.data;
 			} catch (err: any) {
-				error.value = err;
+				if (err.response?.status === 404 || err.response?.status === 403) {
+					notFound.value = true;
+				} else {
+					error.value = err;
+				}
+			} finally {
+				loading.value = false;
 			}
 		}
+
+		// async function login() {
+		// 	loading.value = true;
+
+		// 	try {
+		// 		await api.post('/shares/auth', {
+		// 			id: shareId,
+		// 			mode: 'cookie',
+		// 		});
+		// 	} catch (err) {
+		// 		error.value = err;
+		// 	} finally {
+		// 		loading.value = false;
+		// 	}
+		// }
 	},
 });
 </script>
