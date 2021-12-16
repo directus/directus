@@ -220,8 +220,10 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (wszystkie)
 geometry.Point: Punkt
+geometry.LineString: Ciąg linii
 geometry.Polygon: Wielokąt
 geometry.MultiPoint: Wielopunktowy
+geometry.MultiLineString: Ciąg multilinii
 geometry.MultiPolygon: Wielokąt
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
@@ -951,6 +953,7 @@ fields:
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
@@ -1025,6 +1028,7 @@ field_options:
     additional_transforms: Dodatkowe przekształcenia
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Podstawowe
     basemaps_name_placeholder: Wprowadź nazwę mapy bazowej...
     basemaps_raster: Raster
@@ -1189,6 +1193,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
