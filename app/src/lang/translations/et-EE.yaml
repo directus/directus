@@ -1157,9 +1157,19 @@ displays:
   formatted-value:
     formatted-value: Vormistatud väärtus
     description: Näita teksti vormistatud väärtust
-    format_title: Vorminda pealkiri
-    format_title_label: Paranda esitähed suureks
+    format: Vorming
+    font: Kirjatüüp
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Paks kiri
     bold_label: Paksus kirjas
+    italic: Kaldkiri
+    prefix: Eesliide
+    suffix: Järelliide
+    color: Värv
+    icon: Ikoon
+    text: Tekst
+    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Vormista JSON väärtusena
     description: Näita objekti vormistatud versiooni

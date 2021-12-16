@@ -1409,9 +1409,19 @@ displays:
   formatted-value:
     formatted-value: Formázott érték
     description: A szöveg formázott változatának megjelenítése
-    format_title: Cím formázása
-    format_title_label: Automatikus nagybetű / kisbetű
+    format: Formátum
+    font: Betűtípus
+    font_serif: Talpas
+    font_monospace: Egyterű
+    bold: Félkövér
     bold_label: Vastag stílus használata
+    italic: Dőlt
+    prefix: Előtag
+    suffix: Utótag
+    color: Szín
+    icon: Ikon
+    text: Szöveg
+    text_label: Szöveg
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
     description: Az objektum formázott változatának megjelenítése

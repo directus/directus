@@ -1503,9 +1503,19 @@ displays:
   formatted-value:
     formatted-value: Форматированное Значение
     description: Показывать форматированную версию текста
-    format_title: Форматировать Заголовок
-    format_title_label: Авто-форматировать заглавные
+    format: Формат
+    font: Шрифт
+    font_serif: Serif
+    font_monospace: Моноширинный
+    bold: Жирный
     bold_label: Использовать жирный шрифт
+    italic: Наклонный
+    prefix: Префикс
+    suffix: Суффикс
+    color: Цвет
+    icon: Иконка
+    text: Текст
+    text_label: Текст
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта

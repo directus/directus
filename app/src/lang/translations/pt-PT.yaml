@@ -692,6 +692,12 @@ displays:
     collection: Coleção
   datetime:
     format: Formatar
+  formatted-value:
+    format: Formatar
+    prefix: Prefixo
+    suffix: Sufixo
+    text: Texto
+    text_label: Texto
   labels:
     choices_value_placeholder: Insira um valor...
   user:

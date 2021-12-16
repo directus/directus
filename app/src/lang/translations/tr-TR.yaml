@@ -776,8 +776,18 @@ displays:
   filesize:
     filesize: Dosya Boyutu
   formatted-value:
-    format_title: Başlığı Biçimlendir
+    format: Biçim
+    font: Font
+    font_serif: Serif
+    font_monospace: Monospace
     bold_label: Kalınlaştır
+    italic: İtalik
+    prefix: Önek
+    suffix: Sonek
+    color: Renk
+    icon: İkon
+    text: Metin
+    text_label: Metin
   icon:
     icon: İkon
     description: Simge olarak görüntüle

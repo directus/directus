@@ -1474,9 +1474,19 @@ displays:
   formatted-value:
     formatted-value: Muotoiltu arvo
     description: Näytä tekstin muotoiltu versio
-    format_title: Muoto otsikko
-    format_title_label: Automaattisesti muotoiltu kirjainkoko
+    format: Muoto
+    font: Kirjasin
+    font_serif: Serif
+    font_monospace: Tasavälinen
+    bold: Lihavoitu
     bold_label: Käytä lihavoitua tyyliä
+    italic: Kursiivi
+    prefix: Etuliite
+    suffix: Jälkiliite
+    color: Väri
+    icon: Kuvake
+    text: Teksti
+    text_label: Teksti
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio

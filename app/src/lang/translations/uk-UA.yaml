@@ -1407,6 +1407,19 @@ displays:
   filesize:
     filesize: Розмір файлу
     description: Показати розмір файлу
+  formatted-value:
+    format: Формат
+    font: Шрифт
+    font_serif: Некарбований
+    font_monospace: Моноширинний шрифт
+    bold: Напівжирний
+    italic: Курсив
+    prefix: Префікс
+    suffix: Суфікс
+    color: Колір
+    icon: Іконка
+    text: Текст
+    text_label: Текст
   icon:
     icon: Іконка
   image:

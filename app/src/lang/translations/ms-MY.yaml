@@ -230,6 +230,11 @@ displays:
     collection: Koleksi
   file:
     file: Fail
+  formatted-value:
+    prefix: Awalan
+    suffix: Akhiran
+    text: Teks
+    text_label: Teks
   user:
     avatar: Avatar
     name: Nama

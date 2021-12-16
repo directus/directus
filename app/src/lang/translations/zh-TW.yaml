@@ -790,9 +790,18 @@ displays:
   formatted-value:
     formatted-value: 格式化值
     description: 顯示文本的格式化版本
-    format_title: 格式化標題
-    format_title_label: 自動格式化大小寫
+    format: 格式
+    font: 字體
+    font_monospace: 等寬字體
+    bold: 粗體
     bold_label: 使用粗體樣式
+    italic: 斜體
+    prefix: 前綴
+    suffix: 後綴
+    color: 顏色
+    icon: 圖示
+    text: 文字
+    text_label: 文字
   formatted-json-value:
     formatted-json-value: 格式化JSON值
     description: 顯示物件的格式化版本

@@ -1402,9 +1402,19 @@ displays:
   formatted-value:
     formatted-value: 格式化值
     description: 显示文本格式化
-    format_title: 格式化标题
-    format_title_label: 自动格式化外观
+    format: 格式
+    font: 字体
+    font_serif: 衬线字体
+    font_monospace: 等宽
+    bold: 加粗
     bold_label: 使用粗体
+    italic: 斜体
+    prefix: 前缀
+    suffix: 后缀
+    color: 颜色
+    icon: 图标
+    text: 文本
+    text_label: 文本
   formatted-json-value:
     formatted-json-value: 格式化JSON值
     description: 显示对象的格式化版本

@@ -1391,9 +1391,17 @@ displays:
   formatted-value:
     formatted-value: Formateret Værdi
     description: Vis en formateret version af teksten
-    format_title: Formatér Titel
-    format_title_label: Automatisk formatering af kabinet
+    format: Format
+    font: Font
+    font_serif: Serif
+    bold: Fed
     bold_label: Use bold style
+    prefix: Præfiks
+    suffix: Suffiks
+    color: Farve
+    icon: Ikon
+    text: Tekst
+    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet

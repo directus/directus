@@ -1334,9 +1334,19 @@ displays:
   formatted-value:
     formatted-value: Valor formatado
     description: Exibe uma versão formatada do texto
-    format_title: Formatar título
-    format_title_label: Auto-formatar capitalização
+    format: Formato
+    font: Fonte
+    font_serif: Serif
+    font_monospace: Monoespaçada
+    bold: Negrito
     bold_label: Usar estilo negrito
+    italic: Itálico
+    prefix: Prefixo
+    suffix: Sufixo
+    color: Cor
+    icon: Ícone
+    text: Texto
+    text_label: Texto
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
     description: Exibe uma versão formatada do objeto
