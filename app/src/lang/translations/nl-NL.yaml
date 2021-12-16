@@ -1061,9 +1061,19 @@ displays:
   formatted-value:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
-    format_title: Formatteer titel
-    format_title_label: Fix hoofdletters automatisch
+    format: Format
+    font: Letterype
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Vetgedrukt
     bold_label: Gebruik bold
+    italic: Cursief
+    prefix: Voorvoegsel
+    suffix: Achtervoegsel
+    color: Kleur
+    icon: Icoon
+    text: Tekst
+    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven
