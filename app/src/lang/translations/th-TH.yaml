@@ -1292,9 +1292,19 @@ displays:
   formatted-value:
     formatted-value: ค่าที่ถูกกำหนดรูปแบบ
     description: แสดงข้อความในเวอร์ชั่นที่ถูกกำหนดรูปแบบ
-    format_title: รูปแบบหัวเรื่อง
-    format_title_label: จัดรูปแบบอัตโนมัติ
+    format: รูปแบบ
+    font: ฟอนท์
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: ตัวหนา
     bold_label: ใช้ตัวหนา
+    italic: ตัวเอียง
+    prefix: คำนำหน้า
+    suffix: คำต่อท้าย
+    color: สี
+    icon: ไอคอน
+    text: ข้อความแบบยาว
+    text_label: ข้อความแบบยาว
   formatted-json-value:
     formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว
     description: แสดงค่าของ JSON ที่ถูกจัดรูปแบบแล้ว
