@@ -471,6 +471,14 @@ displays:
     description: Zobrazit soubory
   filesize:
     filesize: Velikost souboru
+  formatted-value:
+    format: Formát
+    prefix: Prefix
+    suffix: Přípona
+    color: Barva
+    icon: Ikona
+    text: Text
+    text_label: Text
   icon:
     icon: Ikona
   user:
