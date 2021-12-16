@@ -237,17 +237,20 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;
 
+			await api.patch(itemEndpoint.value, {
+				[field]: value,
+			});
+
 			item.value = {
 				...item.value,
 				[field]: value,
 			};
 
-			await api.patch(itemEndpoint.value, {
-				[field]: value,
-			});
-
 			notify({
-				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
+				title:
+					value === archiveValue
+						? i18n.global.t('item_delete_success', isBatch.value ? 2 : 1)
+						: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
 		} catch (err: any) {
