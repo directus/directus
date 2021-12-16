@@ -1078,7 +1078,6 @@ displays:
     color: لون
     icon: أيقونة
     text: نص
-    text_label: نص
   icon:
     icon: أيقونة
     description: عرض أيقونة
