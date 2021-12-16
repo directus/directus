@@ -697,7 +697,6 @@ displays:
     suffix: Suffiks
     icon: Ikon
     text: Tekst
-    text_label: Tekst
   icon:
     icon: Ikon
   labels:
