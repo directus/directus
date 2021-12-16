@@ -114,7 +114,7 @@ export default defineComponent({
 
 			const tabs = [];
 
-			if (['read', 'update', 'delete'].includes(action)) {
+			if (['read', 'update', 'delete', 'share'].includes(action)) {
 				tabs.push({
 					text: t('item_permissions'),
 					value: 'permissions',
