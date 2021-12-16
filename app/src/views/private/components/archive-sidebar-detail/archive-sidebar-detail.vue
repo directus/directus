@@ -2,8 +2,14 @@
 	<sidebar-detail icon="archive" :title="t('archive')" :badge="active">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ t('filter') }}</p>
-				<v-select v-model="selectedItem" :items="items" />
+				<v-radio
+					v-for="item in items"
+					:key="item.value"
+					:value="item.value"
+					:label="item.text"
+					:model-value="selectedItem"
+					@update:model-value="selectedItem = $event"
+				/>
 			</div>
 		</div>
 	</sidebar-detail>
@@ -34,11 +40,11 @@ export default defineComponent({
 
 		const items = [
 			{
-				text: t('show_items'),
+				text: t('show_active_items'),
 				value: null,
 			},
-			{ text: t('show_archived_items'), value: 'archived_only' },
-			{ text: t('show_items_and_archived_items'), value: 'archived' },
+			{ text: t('show_archived_items'), value: 'archived' },
+			{ text: t('show_all_items'), value: 'all' },
 		];
 
 		const active = computed(() => selectedItem.value !== null);
@@ -69,6 +75,10 @@ export default defineComponent({
 
 	.type-label {
 		font-size: 1rem;
+	}
+
+	.v-radio + .v-radio {
+		margin-top: 8px;
 	}
 }
 </style>

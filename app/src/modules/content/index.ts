@@ -58,8 +58,8 @@ const checkForSystem: NavigationGuard = (to, from) => {
 };
 
 const getArchiveValue = (query: LocationQuery) => {
-	if ('archived_only' in query) {
-		return 'archived_only';
+	if ('all' in query) {
+		return 'all';
 	} else if ('archived' in query) {
 		return 'archived';
 	} else {

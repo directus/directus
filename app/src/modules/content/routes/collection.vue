@@ -126,7 +126,7 @@
 						selection.length > 0 &&
 						currentCollection.meta &&
 						currentCollection.meta.archive_field &&
-						archive !== 'archived_only'
+						archive !== 'archived'
 					"
 					v-model="confirmArchive"
 					@esc="confirmArchive = false"
@@ -403,13 +403,7 @@ export default defineComponent({
 			if (archiveValue === 'true') archiveValue = true;
 			if (archiveValue === 'false') archiveValue = false;
 
-			if (props.archive === 'archived_only') {
-				return {
-					[field]: {
-						_eq: archiveValue,
-					},
-				};
-			} else if (props.archive === 'archived') {
+			if (props.archive === 'all') {
 				return {
 					_or: [
 						{
@@ -423,6 +417,12 @@ export default defineComponent({
 							},
 						},
 					],
+				};
+			} else if (props.archive === 'archived') {
+				return {
+					[field]: {
+						_eq: archiveValue,
+					},
 				};
 			} else {
 				return {
