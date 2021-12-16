@@ -929,6 +929,7 @@ fields:
     tfa_secret: Autenticación de dos pasos
     admin_options: Opciones de Admin
     status: Estatus
+    status_draft: Borrador
     status_invited: Invitado
     status_active: Activo
     status_suspended: Suspendido
@@ -990,6 +991,7 @@ fields:
     module_list: Navegación en Módulo
   directus_webhooks:
     name: Nombre
+    method: Método
     status: Estatus
     data: Datos
     header: Encabezado
@@ -999,6 +1001,8 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Seguridad
+    auth_password_policy:
+      weak_text: Débil - 8 caracteres mínimos
     additional_transforms: Transformaciones adicionales
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     mapbox_key: Token de acceso Mapbox
@@ -1025,17 +1029,21 @@ field_options:
     archive_divider: Archivar
     sort_divider: Ordenar
   directus_roles:
+    description: Una descripción de este rol...
     fields:
       icon_name: Ícono
       name_name: Nombre
       name_placeholder: Ingresar un título...
     collections_name: Colecciones
+    collections_addLabel: Añadir Colección...
   directus_users:
     preferences_divider: Preferencias de usuario
     dropdown_auto: Automático (basado en el sistema)
     dropdown_light: Modo luz
     dropdown_dark: Modo Oscuro
     admin_divider: Opciones de Admin
+    status_dropdown_draft: Borrador
+    status_dropdown_invited: Invitado
     status_dropdown_active: Activo
     status_dropdown_suspended: Suspendido
     status_dropdown_archived: Archivado
@@ -1137,9 +1145,11 @@ interfaces:
   filter:
     name: Filtro
     add_filter: Agregar Filtro
+    add_group: Y / O grupo
     all: Todos
     any: Cualquiera
     and: "y"
+    change_value: Haga clic para cambiar el valor
   group-accordion:
     start: Iniciar
     all_closed: Todo Cerrado
@@ -1160,6 +1170,8 @@ interfaces:
     allow_other: Permitir otro
     show_more: 'Mostrar {count} más'
     items_shown: Elementos Mostrados
+  select-multiple-checkbox-tree:
+    show_all: Mostrar todo
   input-code:
     code: Código
     description: Escribir o compartir fragmentos de código
@@ -1254,6 +1266,7 @@ interfaces:
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
   map:
+    map: Mapa
     zoom: Lupa
     native: Nativo
     geojson: GeoJSON
@@ -1294,6 +1307,7 @@ interfaces:
     add_tags: Agregar etiquetas...
   input:
     input: Entrada
+    description: Introduzca manualmente un valor
     trim: Recortar
     mask: Enmascarado
     mask_label: Ocultar el valor real

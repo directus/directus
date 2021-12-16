@@ -90,6 +90,7 @@ logoutReason:
   SESSION_EXPIRED: Session expired
 public_label: Public
 public_description: Controls what API data is available without authenticating.
+admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
 directus_version: Directus Version
 node_version: Node Version

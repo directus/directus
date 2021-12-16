@@ -5,6 +5,7 @@ import ldap, {
 	EqualityFilter,
 	SearchCallbackResponse,
 	SearchEntry,
+	LDAPResult,
 	InappropriateAuthenticationError,
 	InvalidCredentialsError,
 	InsufficientAccessRightsError,
@@ -19,6 +20,7 @@ import {
 	InvalidPayloadException,
 	ServiceUnavailableException,
 	InvalidConfigException,
+	UnexpectedResponseException,
 } from '../../exceptions';
 import { AuthenticationService, UsersService } from '../../services';
 import asyncHandler from '../../utils/async-handler';
@@ -97,6 +99,13 @@ export class LDAPAuthDriver extends AuthDriver {
 							resolve();
 						}
 					});
+				});
+
+				res.on('end', (result: LDAPResult | null) => {
+					if (result?.status === 0) {
+						// Handle edge case with IBM systems where authenticated bind user could not fetch their DN
+						reject(new UnexpectedResponseException('Failed to find bind user record'));
+					}
 				});
 			});
 		});

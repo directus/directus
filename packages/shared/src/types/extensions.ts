@@ -67,17 +67,18 @@ export type ApiExtensionContext = {
 	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
+	emitter: any;
 	logger: Logger;
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
 };
 
 export type ExtensionOptionsContext = {
-	collection: string;
+	collection: string | undefined;
 	editing: string;
 	field: DeepPartial<Field>;
 	relations: {
 		m2o: DeepPartial<Relation> | undefined;
-		m2a: DeepPartial<Relation> | undefined;
+		m2a?: DeepPartial<Relation> | undefined;
 		o2m: DeepPartial<Relation> | undefined;
 	};
 	collections: {

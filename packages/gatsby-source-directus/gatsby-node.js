@@ -36,7 +36,7 @@ exports.pluginOptionsSchema = ({ Joi }) => {
  * Gatsby source implementation.
  */
 exports.sourceNodes = async (gatsbyOptions, pluginOptions) => {
-	plugin.setOptions(pluginOptions);
+	await plugin.setOptions(pluginOptions);
 
 	const optionsSystem = plugin.getOptionsSystem();
 	const options = plugin.getOptions();
@@ -58,7 +58,7 @@ exports.sourceNodes = async (gatsbyOptions, pluginOptions) => {
 };
 
 exports.createSchemaCustomization = async (gatsby, pluginOptions) => {
-	plugin.setOptions(pluginOptions);
+	await plugin.setOptions(pluginOptions);
 
 	await createSchemaCustomization(gatsby, plugin.getOptionsSystem());
 	await createSchemaCustomization(gatsby, plugin.getOptions());
@@ -68,7 +68,7 @@ exports.createSchemaCustomization = async (gatsby, pluginOptions) => {
  * Gatsby file implementation.
  */
 exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers, store, reporter }, pluginOptions) => {
-	plugin.setOptions(pluginOptions);
+	await plugin.setOptions(pluginOptions);
 
 	const { createNode } = actions;
 
@@ -78,10 +78,22 @@ exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers
 	const fileResolver = {
 		imageFile: {
 			type: `File`,
-			resolve(source) {
-				if (!source || !source.id) {
-					return null;
+			async resolve(source) {
+				if (!source || !source.id) return null;
+
+				let filename_download = plugin.fileCache.get(source.id);
+
+				if (!filename_download) {
+					if (source.filename_download) filename_download = source.filename_download;
+					else ({ filename_download } = await plugin.directus.files.readOne(source.id));
+
+					plugin.fileCache.set(source.id, filename_download);
 				}
+
+				const nameParts = filename_download.split('.');
+				const ext = nameParts.length > 1 ? `.${nameParts.pop()}` : '';
+				const name = nameParts.join('.');
+
 				return createRemoteFileNode({
 					url: `${plugin.url}assets/${source.id}`,
 					store,
@@ -90,6 +102,8 @@ exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers
 					createNodeId,
 					httpHeaders: { Authorization },
 					reporter,
+					ext,
+					name,
 				});
 			},
 		},
@@ -103,7 +117,9 @@ exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers
 
 class Plugin {
 	constructor() {
-		this.authToken = '';
+		// eslint-disable-next-line no-undef
+		this.fileCache = new Map();
+		this.directus = null;
 		this.options = null;
 		this.urlGraphqlSystem = '';
 		this.urlGraphql = '';
@@ -111,7 +127,7 @@ class Plugin {
 		this.refreshInterval = 0;
 	}
 
-	setOptions(options) {
+	async setOptions(options) {
 		const { url, dev, auth } = options;
 
 		if (isEmpty(url)) error('"url" must be defined');
@@ -132,8 +148,6 @@ class Plugin {
 
 		if (!hasAuth) warning('no "auth" option were defined. Resources will be fetched with public role');
 
-		if (hasToken) this.authToken = auth.token;
-
 		try {
 			const baseUrl = new URL(url);
 
@@ -147,6 +161,17 @@ class Plugin {
 			this.urlGraphqlSystem = baseUrl.toString();
 		} catch (err) {
 			error('"url" should be a valid URL');
+		}
+
+		try {
+			if (!this.directus) this.directus = new Directus(this.url);
+
+			if (hasToken) await this.directus.auth.static(auth.token);
+
+			if (hasCredentials)
+				await this.directus.auth.login({ email: this.options?.auth?.email, password: this.options?.auth?.password });
+		} catch (err) {
+			error(`authentication failed with: ${err.message}\nAre credentials valid?`);
 		}
 
 		this.refreshInterval = typeof dev?.refresh === 'string' ? ms(dev.refresh) / 1000 : dev?.refresh || 15;
@@ -192,22 +217,9 @@ class Plugin {
 			Object.assign(headers, (await this.options.headers()) || {});
 		}
 
-		if (!this.authToken) {
-			const directus = new Directus(this.url);
-			this.authToken = await directus.auth
-				.login({
-					email: this.options?.auth?.email,
-					password: this.options?.auth?.password,
-				})
-				.then((r) => r.access_token)
-				.catch((err) => {
-					error(`authentication failed with: ${err.message}\nAre credentials valid?`);
-				});
-		}
-
-		if (this.authToken) {
+		if (this.directus.auth.token) {
 			Object.assign(headers, {
-				Authorization: `Bearer ${this.authToken}`,
+				Authorization: `Bearer ${this.directus.auth.token}`,
 			});
 		}
 
