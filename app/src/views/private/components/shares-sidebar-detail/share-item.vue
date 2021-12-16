@@ -5,16 +5,13 @@
 			<span class="share-item-date">{{ d(new Date(share.date_created), 'short') }}</span>
 		</div>
 		<div class="share-item-info">
-			<span class="share-uses-left">
-				<template v-if="!share.max_uses">{{ t('unlimited_usage') }}</template>
+			<span class="share-uses" :class="{ 'no-left': uses_left === 0 }">
+				<template v-if="uses_left === null">{{ t('unlimited_usage') }}</template>
 				<template v-else>{{ t('uses_left', uses_left) }}</template>
-				<v-icon v-if="share.password" name="lock" />
 			</span>
-			<span v-if="share.date_end && new Date(share.date_end) < new Date()" class="share-expired">
-				{{ t('expired') }}
-			</span>
-			<span v-else-if="share.date_start && new Date(share.date_start) > new Date()" class="share-upcoming">
-				{{ t('upcoming') }}
+			<v-icon v-if="share.password" name="lock" />
+			<span v-if="status" class="share-status" :class="{ [status]: true }">
+				{{ t(status) }}
 			</span>
 		</div>
 	</div>
@@ -36,14 +33,24 @@ export default defineComponent({
 		const { t, d } = useI18n();
 
 		const uses_left = computed(() => {
-			if (props.share.max_uses === null) return undefined;
+			if (props.share.max_uses === null) return null;
 			return props.share.max_uses - props.share.times_used;
+		});
+
+		const status = computed(() => {
+			if (props.share.date_end && new Date(props.share.date_end) < new Date()) {
+				return 'expired';
+			}
+			if (props.share.date_start && new Date(props.share.date_start) > new Date()) {
+				return 'upcoming';
+			}
+			return null;
 		});
 
 		function click() {
 			emit('click', props.share.id);
 		}
-		return { uses_left, click, t, d };
+		return { uses_left, status, click, t, d };
 	},
 });
 </script>
@@ -74,17 +81,24 @@ export default defineComponent({
 
 .share-item-info {
 	display: flex;
-	justify-content: space-between;
 	color: var(--foreground-subdued);
 }
 
-.share-expired {
-	color: var(--warning);
-	text-transform: uppercase;
+.share-uses.no-left {
+	color: var(--danger);
 }
 
-.share-upcoming {
-	color: var(--green);
+.share-status {
+	flex-grow: 1;
+	text-align: end;
 	text-transform: uppercase;
+
+	&.expired {
+		color: var(--warning);
+	}
+
+	&.upcoming {
+		color: var(--green);
+	}
 }
 </style>

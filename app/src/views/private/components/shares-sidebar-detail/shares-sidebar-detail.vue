@@ -65,7 +65,7 @@ export default defineComponent({
 			data.item = props.primaryKey;
 			try {
 				if (selected.value === '+') {
-					const res = await api.post('/shares', data);
+					await api.post('/shares', data);
 				} else {
 					await api.patch(`/shares/${selected.value}`, data);
 				}
@@ -102,6 +102,7 @@ export default defineComponent({
 							'filter[collection][_eq]': collection,
 							'filter[item][_eq]': primaryKey,
 							fields: ['id', 'name', 'password', 'max_uses', 'times_used', 'date_created', 'date_start', 'date_end'],
+							sort: 'name',
 						},
 					});
 					count.value = response.data.data.length;
