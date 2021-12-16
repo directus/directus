@@ -1169,7 +1169,6 @@ displays:
     color: Värv
     icon: Ikoon
     text: Tekst
-    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Vormista JSON väärtusena
     description: Näita objekti vormistatud versiooni
