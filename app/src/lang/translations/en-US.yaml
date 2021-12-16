@@ -1547,7 +1547,7 @@ displays:
     border: Border
     border_label: Show border
     text: Text
-    text_label: Text
+    text_placeholder: Optional value override...
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object

@@ -10,7 +10,7 @@ export default defineDisplay({
 	icon: 'text_format',
 	component: DisplayFormattedValue,
 	options: ({ field }) => {
-		const isString = ['string', 'text'].includes(field.type);
+		const isString = ['string', 'text'].includes(field.type ?? 'unknown');
 		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];
 		const numberOperators = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte'];
 
@@ -212,7 +212,7 @@ export default defineDisplay({
 									interface: 'input',
 									width: 'half',
 									options: {
-										label: '$t:displays.formatted-value.text_label',
+										placeholder: '$t:displays.formatted-value.text_placeholder',
 									},
 								},
 							},

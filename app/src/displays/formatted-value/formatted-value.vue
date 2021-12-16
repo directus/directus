@@ -1,8 +1,17 @@
 <template>
 	<value-null v-if="displayValue === null || displayValue === undefined" />
 
-	<div v-else class="display-formatted" :class="[{ bold, italic }, font]" :style="computedStyle">
-		<v-icon v-if="computedFormat.icon" class="left" :name="computedFormat.icon" :color="computedFormat.color" small />
+	<div
+		v-else
+		class="display-formatted"
+		:class="[
+			{ bold, italic },
+			font,
+			{ 'has-background': computedFormat.background, 'has-border': computedStyle.borderWidth !== 0 },
+		]"
+		:style="computedStyle"
+	>
+		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
 
 		<span class="value">
 			{{ displayValue }}
@@ -105,6 +114,7 @@ export default defineComponent({
 
 		const computedFormat = computed(() => {
 			const { color, background, icon } = props;
+
 			return matchedConditions.value.reduce(
 				({ color, background, icon, text }, format) => ({
 					color: format.color || color,
@@ -201,46 +211,45 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .display-formatted {
-	display: inline-flex;
-	align-items: center;
-	padding: 6px 12px;
-	border-radius: 24px;
+	display: inline-block;
 
-	& .value {
-		flex-shrink: 1;
-		overflow: hidden;
-		line-height: 1;
-		white-space: nowrap;
-		text-overflow: ellipsis;
+	&.has-background,
+	&.has-border {
+		height: 28px;
+		padding: 0 10px;
+		font-size: 14px;
+		line-height: 28px;
+		border-radius: 24px;
+	}
 
-		&.bold {
-			color: var(--foreground-normal-alt);
-			font-weight: 700;
-		}
+	&.has-border {
+		line-height: 26px;
+	}
 
-		&.italic {
-			font-style: italic;
-		}
+	&.bold {
+		color: var(--foreground-normal-alt);
+		font-weight: 700;
+	}
 
-		&.sans-serif {
-			font-family: var(--family-sans-serif);
-		}
+	&.italic {
+		font-style: italic;
+	}
 
-		&.serif {
-			font-family: var(--family-serif);
-		}
+	&.sans-serif {
+		font-family: var(--family-sans-serif);
+	}
 
-		&.monospace {
-			font-family: var(--family-monospace);
-		}
+	&.serif {
+		font-family: var(--family-serif);
+	}
+
+	&.monospace {
+		font-family: var(--family-monospace);
 	}
 
 	.v-icon {
 		flex-shrink: 0;
-
-		&.left {
-			margin-right: 2px;
-		}
+		vertical-align: -3px;
 	}
 }
 </style>
