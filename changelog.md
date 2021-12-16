@@ -2,6 +2,63 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.3.0 (December 16, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#10513](https://github.com/directus/directus/pull/10513) Add Archive sidebar component
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9773](https://github.com/directus/directus/pull/9773) Update formatted-value display
+    ([@alejandro-tss](https://github.com/alejandro-tss))
+  - [#9135](https://github.com/directus/directus/pull/9135) Custom filter support for relational interfaces
+    ([@t7tran](https://github.com/t7tran))
+
+### :rocket: Improvements
+
+- **API**
+  - [#10531](https://github.com/directus/directus/pull/10531) Pass a custom emitter to API extensions
+    ([@nickrum](https://github.com/nickrum))
+  - [#10529](https://github.com/directus/directus/pull/10529) Emitting action/filter events for api extensions
+    ([@br41nslug](https://github.com/br41nslug))
+- **Extensions**
+  - [#10531](https://github.com/directus/directus/pull/10531) Pass a custom emitter to API extensions
+    ([@nickrum](https://github.com/nickrum))
+- **App**
+  - [#10514](https://github.com/directus/directus/pull/10514) add tooltip to sidebar components
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10494](https://github.com/directus/directus/pull/10494) Remove quotes for CSS variable in selection style
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10493](https://github.com/directus/directus/pull/10493) Unify & translate initial role/user detail in `init` &
+    `bootstrap` command ([@azrikahar](https://github.com/azrikahar))
+  - [#10464](https://github.com/directus/directus/pull/10464) Autofocus form for repeater
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#10497](https://github.com/directus/directus/pull/10497) Expanded try catch around extracting metadata
+    ([@keesvanbemmel](https://github.com/keesvanbemmel))
+- **App**
+  - [#10491](https://github.com/directus/directus/pull/10491) Fix decimal input on the interface
+    ([@licitdev](https://github.com/licitdev))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#10524](https://github.com/directus/directus/pull/10524) Align display options type with interface options type
+    ([@nickrum](https://github.com/nickrum))
+
+### :memo: Documentation
+
+- [#10543](https://github.com/directus/directus/pull/10543) Update CLI docs ([@azrikahar](https://github.com/azrikahar))
+- [#10513](https://github.com/directus/directus/pull/10513) Add Archive sidebar component
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10467](https://github.com/directus/directus/pull/10467) fix links to types
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10465](https://github.com/directus/directus/pull/10465) Minor fix for "no result found" for search in dark mode
+  ([@azrikahar](https://github.com/azrikahar))
+
 ## v9.2.2 (December 10, 2021)
 
 ### :rocket: Improvements
