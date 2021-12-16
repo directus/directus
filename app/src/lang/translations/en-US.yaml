@@ -350,10 +350,6 @@ hours: Hours
 month: Month
 year: Year
 select_all: Select All
-access_shared_item: Access item
-shared_with_you: An item has been shared with you
-shared_times_remaining: This link can only be used {n} times
-shared_last_remaining: This link can only be used once
 months:
   january: January
   february: February
@@ -1137,6 +1133,15 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+shares: Shares
+uses_left: Unlimited usage | 1 use left | {n} uses left
+no_shares: No shares to show
+new_share: New Share
+share_item: Share Item
+access_shared_item: Access item
+shared_with_you: An item has been shared with you
+shared_times_remaining: This link can only be used {n} times
+shared_last_remaining: This link can only be used once
 share_access_page: Access Shared Page
 share_access_not_found: This shared page either does not exist or has already exceeded the maximum number of allowed uses.
 share_access_not_found_desc: Please contact an authorized user of this project to request access.

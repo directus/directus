@@ -3,7 +3,13 @@ table: directus_shares
 fields:
   - field: id
     special: uuid
-    hidden: true
+    readonly: true
+    conditions:
+      - name: notCreatedYet
+        rule:
+          id:
+            _null: true
+        hidden: true
 
   - field: name
 
@@ -46,6 +52,12 @@ fields:
     special: date-created
     width: half
     readonly: true
+    conditions:
+      - name: notCreatedYet
+        rule:
+          id:
+            _null: true
+        hidden: true
 
   - field: user_created
     special: user-created
@@ -55,3 +67,9 @@ fields:
     options:
       template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
     readonly: true
+    conditions:
+      - name: notCreatedYet
+        rule:
+          id:
+            _null: true
+        hidden: true
