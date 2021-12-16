@@ -1421,7 +1421,6 @@ displays:
     color: Szín
     icon: Ikon
     text: Szöveg
-    text_label: Szöveg
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
     description: Az objektum formázott változatának megjelenítése
