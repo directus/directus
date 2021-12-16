@@ -70,6 +70,7 @@
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
 			:selection="selectedPrimaryKeys"
+			:filter="customFilter"
 			multiple
 			@input="stageSelection"
 		/>
@@ -78,11 +79,15 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, toRefs } from 'vue';
+import { defineComponent, computed, PropType, toRefs, inject, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
 import Draggable from 'vuedraggable';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
+import { deepMap } from '@directus/shared/utils';
 
 import useActions from './use-actions';
 import useRelation from '@/composables/use-m2m';
@@ -129,10 +134,28 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const values = inject('values', ref<Record<string, any>>({}));
+
+		const customFilter = computed(() => {
+			return parseFilter(
+				deepMap(props.filter, (val: any) => {
+					if (val && typeof val === 'string') {
+						return render(val, values.value);
+					}
+
+					return val;
+				})
+			);
+		});
 
 		const { value, collection, field } = toRefs(props);
 
@@ -223,6 +246,7 @@ export default defineComponent({
 			templateWithDefaults,
 			createAllowed,
 			selectAllowed,
+			customFilter,
 		};
 
 		function emitter(newVal: any[] | null) {

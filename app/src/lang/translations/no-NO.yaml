@@ -691,6 +691,13 @@ displays:
     format: Format
   file:
     file: Fil
+  formatted-value:
+    format: Format
+    prefix: Prefiks
+    suffix: Suffiks
+    icon: Ikon
+    text: Tekst
+    text_label: Tekst
   icon:
     icon: Ikon
   labels:

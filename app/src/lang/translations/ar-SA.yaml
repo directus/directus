@@ -1068,7 +1068,17 @@ displays:
   formatted-value:
     formatted-value: قيمة منسقة
     description: عرض نسخة منسقة من النص
-    format_title: تنسيق العنوان
+    format: التنسيق
+    font: الخط
+    font_serif: خط سيريف Serif
+    font_monospace: Monospace
+    italic: خط مائل
+    prefix: بادئة
+    suffix: لاحقة
+    color: لون
+    icon: أيقونة
+    text: نص
+    text_label: نص
   icon:
     icon: أيقونة
     description: عرض أيقونة

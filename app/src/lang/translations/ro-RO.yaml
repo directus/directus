@@ -209,6 +209,8 @@ interfaces:
 displays:
   collection:
     collection: Colecție
+  formatted-value:
+    icon: Iconiță
   icon:
     icon: Iconiță
   user:

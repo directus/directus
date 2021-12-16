@@ -1239,9 +1239,19 @@ displays:
   formatted-value:
     formatted-value: Valor formatat
     description: Mostra una versió formatada del text
-    format_title: Títol del format
-    format_title_label: Auto formata les minúscules i majúscules
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Espai únic
+    bold: Negreta
     bold_label: Utilitza text en negreta
+    italic: Cursiva
+    prefix: Prefix
+    suffix: Sufix
+    color: Color
+    icon: Icona
+    text: Text
+    text_label: Text
   formatted-json-value:
     formatted-json-value: Valor JSON formatat
     description: Mostra una versió formatada del l'objecte

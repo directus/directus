@@ -1284,9 +1284,19 @@ displays:
   formatted-value:
     formatted-value: Oblikovana vrednost
     description: Prikaži oblikovano verzijo teksta
-    format_title: Oblikuj naslov
-    format_title_label: Avtomatska velikost črk
+    format: Oblika
+    font: Pisava
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Krepko
     bold_label: Uporabi krepke črke
+    italic: Ležeče
+    prefix: Predpona
+    suffix: Pripona
+    color: Barva
+    icon: Ikona
+    text: Tekst
+    text_label: Tekst
   formatted-json-value:
     formatted-json-value: Oblikovana JSON vrednost
     description: Prikaži oblikovano verzijo objekta

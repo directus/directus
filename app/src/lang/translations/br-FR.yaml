@@ -1120,9 +1120,18 @@ displays:
   formatted-value:
     formatted-value: Talvoud furmadet
     description: Diskwel an destenn en ur stumm furmadet
-    format_title: Furmadiñ an titl
-    format_title_label: Furmad emgefreek ar c'hased lizherennoù
+    format: Furmad
+    font: Font arouezennoù
+    font_serif: Sérif
+    bold: Tev
     bold_label: Implij ar stil e tev
+    italic: Italek
+    prefix: Rakger
+    suffix: Lostger
+    color: Liv
+    icon: Arlun
+    text: Testenn
+    text_label: Testenn
   formatted-json-value:
     formatted-json-value: Talvoud JSON furmadet
     description: Diskwel an dra en ur stumm furmadet

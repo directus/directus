@@ -1439,9 +1439,19 @@ displays:
   formatted-value:
     formatted-value: Formaterat värde
     description: Visa en formaterad version av texten
-    format_title: Formatera titel
-    format_title_label: Auto-formatera inkapsling
+    format: Format
+    font: Typsnitt
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Fet
     bold_label: Använd fet stil
+    italic: Kursiv
+    prefix: Prefix
+    suffix: Suffix
+    color: Färg
+    icon: Ikon
+    text: Text
+    text_label: Text
   formatted-json-value:
     formatted-json-value: Formaterat JSON-värde
     description: Visa en formaterad version av objektet

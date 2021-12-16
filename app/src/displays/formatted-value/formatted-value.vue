@@ -1,13 +1,17 @@
 <template>
 	<value-null v-if="displayValue === null || displayValue === undefined" />
 
-	<span v-else class="display-formatted-text" :class="[{ bold }, font]" :style="{ color }">
-		{{ displayValue }}
-	</span>
+	<div v-else class="display-formatted" :class="[{ bold, italic }, font]" :style="computedStyle">
+		<v-icon v-if="computedFormat.icon" class="left" :name="computedFormat.icon" :color="computedFormat.color" small />
+
+		<span class="value">
+			{{ displayValue }}
+		</span>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
 import { decode } from 'html-entities';
 import { useI18n } from 'vue-i18n';
@@ -15,37 +19,124 @@ import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
+		type: {
+			type: String,
+			required: true,
+		},
 		value: {
 			type: [String, Number],
 			default: null,
 		},
-		formatTitle: {
+		format: {
 			type: Boolean,
 			default: false,
+		},
+		font: {
+			type: String,
+			default: 'sans-serif',
+			validator: (value: string) => ['sans-serif', 'serif', 'monospace'].includes(value),
 		},
 		bold: {
 			type: Boolean,
 			default: false,
 		},
+		italic: {
+			type: Boolean,
+			default: false,
+		},
+		prefix: {
+			type: String,
+			default: null,
+		},
+		suffix: {
+			type: String,
+			default: null,
+		},
 		color: {
 			type: String,
 			default: null,
 		},
-		font: {
+		background: {
 			type: String,
-			default: 'sans-serif',
-			validator: (val: string) => ['sans-serif', 'serif', 'monospace'].includes(val),
+			default: null,
+		},
+		icon: {
+			type: String,
+			default: null,
+		},
+		border: {
+			type: Boolean,
+			default: false,
+		},
+		conditionalFormatting: {
+			type: Array as PropType<
+				{
+					operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
+					value: string;
+					color: string;
+					background: string;
+					text: string;
+					icon: string;
+				}[]
+			>,
+			default: () => [],
 		},
 	},
 	setup(props) {
-		const { n } = useI18n();
+		const { t, n } = useI18n();
+
+		const matchedConditions = computed(() => {
+			return (props.conditionalFormatting || []).filter(({ operator, value }) => {
+				if (['string', 'text'].includes(props.type)) {
+					const left = String(props.value);
+					const right = String(value);
+					return matchString(left, right, operator);
+				} else if (['float', 'decimal'].includes(props.type)) {
+					const left = parseFloat(String(props.value));
+					const right = parseFloat(String(value));
+					return matchNumber(left, right, operator);
+				} else {
+					const left = parseInt(String(props.value));
+					const right = parseInt(String(value));
+					return matchNumber(left, right, operator);
+				}
+			});
+		});
+
+		const computedFormat = computed(() => {
+			const { color, background, icon } = props;
+			return matchedConditions.value.reduce(
+				({ color, background, icon, text }, format) => ({
+					color: format.color || color,
+					background: format.background || background,
+					icon: format.icon || icon,
+					text: format.text || text,
+				}),
+				{
+					color,
+					background,
+					icon,
+					text: '',
+				}
+			);
+		});
+
+		const computedStyle = computed(() => {
+			return {
+				color: computedFormat.value.color,
+				borderStyle: 'solid',
+				borderWidth: props.border ? '2px' : 0,
+				borderColor: computedFormat.value.color,
+				backgroundColor: computedFormat.value.background ?? 'transparent',
+			};
+		});
 
 		const displayValue = computed(() => {
-			if (isNil(props.value) || props.value === '') return null;
-
-			if (typeof props.value === 'number') {
-				return n(props.value);
+			if (computedFormat.value.text) {
+				return computedFormat.value.text;
 			}
+
+			if (isNil(props.value) || props.value === '') return null;
 
 			let value = String(props.value);
 
@@ -55,44 +146,101 @@ export default defineComponent({
 			// Decode any HTML encoded characters (like &copy;)
 			value = decode(value);
 
-			if (props.formatTitle) {
-				value = formatTitle(value);
+			if (props.format) {
+				if (['string', 'text'].includes(props.type)) {
+					value = formatTitle(value);
+				} else if (['float', 'decimal'].includes(props.type)) {
+					value = n(parseFloat(value));
+				} else {
+					value = n(parseInt(value));
+				}
 			}
 
-			return value;
+			const prefix = props.prefix ?? '';
+			const suffix = props.suffix ?? '';
+
+			return `${prefix}${value}${suffix}`;
 		});
 
-		return { displayValue };
+		return { t, computedFormat, displayValue, computedStyle };
+
+		function matchString(left: string, right: string, operator: string) {
+			switch (operator) {
+				case 'eq':
+					return left === right;
+				case 'neq':
+					return left !== right;
+				case 'contains':
+					return left.includes(right);
+				case 'starts_with':
+					return left.startsWith(right);
+				case 'ends_with':
+					return left.endsWith(right);
+			}
+		}
+
+		function matchNumber(left: number, right: number, operator: string) {
+			switch (operator) {
+				case 'eq':
+					return left === right;
+				case 'neq':
+					return left !== right;
+				case 'gt':
+					return left > right;
+				case 'gte':
+					return left >= right;
+				case 'lt':
+					return left < right;
+				case 'lte':
+					return left <= right;
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.display-formatted-text {
-	overflow: hidden;
-	line-height: 26px;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+.display-formatted {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 12px;
+	border-radius: 24px;
 
-	&.bold {
-		color: var(--foreground-normal-alt);
-		font-weight: 600;
+	& .value {
+		flex-shrink: 1;
+		overflow: hidden;
+		line-height: 1;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+
+		&.bold {
+			color: var(--foreground-normal-alt);
+			font-weight: 700;
+		}
+
+		&.italic {
+			font-style: italic;
+		}
+
+		&.sans-serif {
+			font-family: var(--family-sans-serif);
+		}
+
+		&.serif {
+			font-family: var(--family-serif);
+		}
+
+		&.monospace {
+			font-family: var(--family-monospace);
+		}
 	}
 
-	&.subdued {
-		color: var(--foreground-subdued);
-	}
+	.v-icon {
+		flex-shrink: 0;
 
-	&.sans-serif {
-		font-family: var(--family-sans-serif);
-	}
-
-	&.serif {
-		font-family: var(--family-serif);
-	}
-
-	&.monospace {
-		font-family: var(--family-monospace);
+		&.left {
+			margin-right: 2px;
+		}
 	}
 }
 </style>

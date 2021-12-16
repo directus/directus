@@ -1,4 +1,5 @@
 import { defineDisplay } from '@directus/shared/utils';
+import { DisplayConfig } from '@directus/shared/types';
 import DisplayFormattedValue from './formatted-value.vue';
 
 export default defineDisplay({
@@ -8,62 +9,228 @@ export default defineDisplay({
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	component: DisplayFormattedValue,
-	options: [
-		{
-			field: 'formatTitle',
-			name: '$t:displays.formatted-value.format_title',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:displays.formatted-value.format_title_label',
+	options: ({ field }) => {
+		const isString = ['string', 'text'].includes(field.type);
+		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];
+		const numberOperators = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte'];
+
+		const options: DisplayConfig['options'] = [
+			{
+				field: 'format',
+				name: '$t:displays.formatted-value.format',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.format_label',
+					},
+				},
+				schema: {
+					default_value: false,
 				},
 			},
-			schema: {
-				default_value: false,
-			},
-		},
-		{
-			field: 'bold',
-			name: '$t:bold',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:displays.formatted-value.bold_label',
+			{
+				field: 'font',
+				name: '$t:displays.formatted-value.font',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{ text: '$t:displays.formatted-value.font_sans_serif', value: 'sans-serif' },
+							{ text: '$t:displays.formatted-value.font_serif', value: 'serif' },
+							{ text: '$t:displays.formatted-value.font_monospace', value: 'monospace' },
+						],
+					},
+				},
+				schema: {
+					default_value: 'sans-serif',
 				},
 			},
-			schema: {
-				default_value: false,
-			},
-		},
-		{
-			field: 'color',
-			name: '$t:color',
-			meta: {
-				width: 'half',
-				interface: 'select-color',
-			},
-		},
-		{
-			field: 'font',
-			name: '$t:font',
-			meta: {
-				width: 'half',
-				interface: 'select-dropdown',
-				options: {
-					choices: [
-						{ text: '$t:sans_serif', value: 'sans-serif' },
-						{ text: '$t:serif', value: 'serif' },
-						{ text: '$t:monospace', value: 'monospace' },
-					],
+			{
+				field: 'bold',
+				name: '$t:displays.formatted-value.bold',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.bold_label',
+					},
+				},
+				schema: {
+					default_value: false,
 				},
 			},
-			schema: {
-				default_value: 'sans-serif',
+			{
+				field: 'italic',
+				name: '$t:displays.formatted-value.italic',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.italic_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
 			},
-		},
-	],
+			{
+				field: 'prefix',
+				name: '$t:displays.formatted-value.prefix',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						label: '$t:displays.formatted-value.prefix_label',
+						trim: false,
+					},
+				},
+			},
+			{
+				field: 'suffix',
+				name: '$t:displays.formatted-value.suffix',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						label: '$t:displays.formatted-value.suffix_label',
+						trim: false,
+					},
+				},
+			},
+			{
+				field: 'color',
+				name: '$t:displays.formatted-value.color',
+				type: 'string',
+				meta: {
+					interface: 'select-color',
+					width: 'half',
+				},
+			},
+			{
+				field: 'background',
+				name: '$t:displays.formatted-value.background',
+				type: 'string',
+				meta: {
+					interface: 'select-color',
+					width: 'half',
+				},
+			},
+			{
+				field: 'icon',
+				name: '$t:displays.formatted-value.icon',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-icon',
+				},
+			},
+			{
+				field: 'border',
+				name: '$t:displays.formatted-value.border',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.border_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'conditionalFormatting',
+				type: 'json',
+				name: '$t:conditional_styles',
+				meta: {
+					interface: 'list',
+					width: 'full',
+					options: {
+						template: '{{operator}} {{value}}',
+						fields: [
+							{
+								field: 'operator',
+								name: '$t:operator',
+								type: 'string',
+								schema: {
+									default_value: 'eq',
+								},
+								meta: {
+									interface: 'select-dropdown',
+									options: {
+										choices: (isString ? stringOperators : numberOperators).map((operator) => ({
+											text: `$t:operators.${operator}`,
+											value: operator,
+										})),
+									},
+									width: 'half',
+								},
+							},
+							{
+								field: 'value',
+								name: '$t:value',
+								type: isString ? 'string' : 'integer',
+								schema: {
+									default_value: isString ? '' : 0,
+								},
+								meta: {
+									interface: 'input',
+									width: 'half',
+								},
+							},
+							{
+								field: 'color',
+								name: '$t:displays.formatted-value.color',
+								type: 'string',
+								meta: {
+									interface: 'select-color',
+									width: 'half',
+								},
+							},
+							{
+								field: 'background',
+								name: '$t:displays.formatted-value.background',
+								type: 'string',
+								meta: {
+									interface: 'select-color',
+									width: 'half',
+								},
+							},
+							{
+								field: 'text',
+								name: '$t:displays.formatted-value.text',
+								type: 'string',
+								meta: {
+									interface: 'input',
+									width: 'half',
+									options: {
+										label: '$t:displays.formatted-value.text_label',
+									},
+								},
+							},
+							{
+								field: 'icon',
+								name: '$t:displays.formatted-value.icon',
+								type: 'string',
+								meta: {
+									width: 'half',
+									interface: 'select-icon',
+								},
+							},
+						],
+					},
+				},
+			},
+		];
+
+		return options;
+	},
 });

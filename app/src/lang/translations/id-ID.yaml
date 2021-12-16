@@ -740,6 +740,17 @@ displays:
     file: Berkas
   filesize:
     filesize: Ukuran Berkas
+  formatted-value:
+    format: Format
+    font: Huruf
+    font_serif: Serif
+    font_monospace: Monospace
+    prefix: Awalan
+    suffix: Akhiran
+    color: Warna
+    icon: Ikon
+    text: Teks
+    text_label: Teks
   icon:
     icon: Ikon
   image:

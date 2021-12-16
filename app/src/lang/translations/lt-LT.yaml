@@ -929,8 +929,19 @@ displays:
   formatted-value:
     formatted-value: Suformatuota reikšmė
     description: Rodyti suformatuotą teksto versiją
-    format_title: Formatuoti antraštę
+    format: Formatas
+    font: Šriftas
+    font_serif: Serif
+    font_monospace: Vienodo pločio
+    bold: Paryškintas
     bold_label: Naudoti paryškintą stilių
+    italic: Pasviręs
+    prefix: Priešdėlis
+    suffix: Priesaga
+    color: Spalva
+    icon: Ikona
+    text: Tekstas
+    text_label: Tekstas
   formatted-json-value:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją

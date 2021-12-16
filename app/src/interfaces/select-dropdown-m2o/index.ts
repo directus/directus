@@ -26,6 +26,17 @@ export default defineInterface({
 					},
 				},
 			},
+			{
+				field: 'filter',
+				name: '$t:filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: collection,
+					},
+				},
+			},
 		];
 	},
 	recommendedDisplays: ['related-values'],

@@ -1509,9 +1509,19 @@ displays:
   formatted-value:
     formatted-value: Formatted Value
     description: Display a formatted version of the text
-    format_title: Format Title
-    format_title_label: Auto-format casing
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Bold
     bold_label: Use bold style
+    italic: Italic
+    prefix: Prefix
+    suffix: Suffix
+    color: Colour
+    icon: Icon
+    text: Text
+    text_label: Text
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object

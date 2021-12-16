@@ -89,6 +89,7 @@ logoutReason:
   SESSION_EXPIRED: Votre session a expiré
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
+admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
 not_allowed: Non autorisé
 directus_version: Version de Directus
 node_version: Version de Node
@@ -1509,9 +1510,19 @@ displays:
   formatted-value:
     formatted-value: Valeur formatée
     description: Afficher une version formatée du texte
-    format_title: Formater le titre
-    format_title_label: Formatage automatique de la casse
+    format: Format
+    font: Police de caractères
+    font_serif: Sérif
+    font_monospace: Monospace
+    bold: Gras
     bold_label: Utiliser le style en gras
+    italic: Italique
+    prefix: Préfixe
+    suffix: Suffixe
+    color: Couleur
+    icon: Icône
+    text: Texte
+    text_label: Texte
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet
