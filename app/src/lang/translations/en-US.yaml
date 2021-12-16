@@ -1525,9 +1525,27 @@ displays:
   formatted-value:
     formatted-value: Formatted Value
     description: Display a formatted version of the text
-    format_title: Format Title
-    format_title_label: Auto-format casing
+    format: Format
+    format_label: Auto format
+    font: Font
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Bold
     bold_label: Use bold style
+    italic: Italic
+    italic_label: Use italic style
+    prefix: Prefix
+    prefix_label: Prepend text
+    suffix: Suffix
+    suffix_label: Appended Text
+    color: Color
+    background: Background
+    icon: Icon
+    border: Border
+    border_label: Show border
+    text: Text
+    text_label: Text
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
