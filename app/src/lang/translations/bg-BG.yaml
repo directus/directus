@@ -1509,9 +1509,19 @@ displays:
   formatted-value:
     formatted-value: Форматирана стойност
     description: Форматиране на текстовата стойност
-    format_title: Заглавен стил
-    format_title_label: Започване на думите с главна буква
+    format: Формат
+    font: Шрифт
+    font_serif: Серифен
+    font_monospace: Равноширок
+    bold: Удебеляване
     bold_label: Използване на удебелен стил
+    italic: Курсив
+    prefix: Представка
+    suffix: Наставка
+    color: Цвят
+    icon: Икона
+    text: Текст
+    text_label: Текст
   formatted-json-value:
     formatted-json-value: Форматирана JSON стойност
     description: Показване на форматирана стойност на JSON обект
