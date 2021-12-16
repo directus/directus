@@ -44,14 +44,15 @@ export type DirectusTokenPayload = {
 };
 
 export type ShareData = {
-	shared_id: string;
-	shared_role: string;
-	shared_item: string;
-	shared_collection: string;
-	shared_expires: Date;
-	shared_times_used: number;
-	shared_max_uses?: number;
-	shared_password?: string;
+	share_id: string;
+	share_role: string;
+	share_item: string;
+	share_collection: string;
+	share_start: Date;
+	share_end: Date;
+	share_times_used: number;
+	share_max_uses?: number;
+	share_password?: string;
 };
 
 export type LoginResult = {

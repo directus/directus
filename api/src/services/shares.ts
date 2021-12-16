@@ -15,22 +15,26 @@ export class SharesService extends ItemsService {
 	async login(payload: Record<string, any>): Promise<LoginResult> {
 		const record = await this.knex
 			.select<ShareData>({
-				shared_id: 'id',
-				shared_role: 'role',
-				shared_item: 'item',
-				shared_collection: 'collection',
-				shared_expires: 'date_expired',
-				shared_times_used: 'times_used',
-				shared_max_uses: 'max_uses',
-				shared_password: 'password',
+				share_id: 'id',
+				share_role: 'role',
+				share_item: 'item',
+				share_collection: 'collection',
+				share_start: 'date_start',
+				share_end: 'date_end',
+				share_times_used: 'times_used',
+				share_max_uses: 'max_uses',
+				share_password: 'password',
 			})
 			.from('directus_shares')
 			.where('id', payload.id)
 			.andWhere((subQuery) => {
-				subQuery.whereNull('shared_expires').orWhere('shared_expires', '>=', this.knex.fn.now());
+				subQuery.whereNull('share_end').orWhere('share_end', '>=', this.knex.fn.now());
 			})
 			.andWhere((subQuery) => {
-				subQuery.whereNull('shared_max_uses').orWhere('shared_max_uses', '>=', this.knex.ref('shared_times_used'));
+				subQuery.whereNull('share_start').orWhere('share_start', '<=', this.knex.fn.now());
+			})
+			.andWhere((subQuery) => {
+				subQuery.whereNull('share_max_uses').orWhere('share_max_uses', '>=', this.knex.ref('share_times_used'));
 			})
 			.first();
 
@@ -38,21 +42,21 @@ export class SharesService extends ItemsService {
 			throw new InvalidCredentialsException();
 		}
 
-		if (record.shared_password && !(await argon2.verify(record.shared_password, payload.password))) {
+		if (record.share_password && !(await argon2.verify(record.share_password, payload.password))) {
 			throw new InvalidCredentialsException();
 		}
 
 		await this.knex('directus_shares')
-			.update({ times_used: record.shared_times_used + 1 })
-			.where('id', record.shared_id);
+			.update({ times_used: record.share_times_used + 1 })
+			.where('id', record.share_id);
 
 		const tokenPayload = {
 			app_access: false,
 			admin_access: false,
-			role: record.shared_role,
-			shared_scope: {
-				item: record.shared_item,
-				collection: record.shared_collection,
+			role: record.share_role,
+			share_scope: {
+				item: record.share_item,
+				collection: record.share_collection,
 			},
 		};
 
@@ -69,7 +73,7 @@ export class SharesService extends ItemsService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
-			share: record.shared_id,
+			share: record.share_id,
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());

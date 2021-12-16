@@ -105,7 +105,7 @@ router.get(
 		});
 
 		const record = await service.readOne(req.params.pk, {
-			fields: ['collection', 'item', 'max_uses', 'times_used', 'date_expired'],
+			fields: ['collection', 'item', 'password', 'max_uses', 'times_used', 'date_start', 'date_end'],
 		});
 
 		res.locals.payload = { data: record || null };

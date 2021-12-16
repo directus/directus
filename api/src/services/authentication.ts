@@ -265,7 +265,8 @@ export class AuthenticationService {
 				share_id: 'd.id',
 				share_item: 'd.item',
 				share_collection: 'd.collection',
-				share_expires: 'd.date_expired',
+				share_start: 'd.date_start',
+				share_end: 'd.date_end',
 				share_times_used: 'd.times_used',
 				share_max_uses: 'd.max_uses',
 			})
@@ -276,7 +277,10 @@ export class AuthenticationService {
 			.where('s.token', refreshToken)
 			.andWhere('s.expires', '>=', this.knex.fn.now())
 			.andWhere((subQuery) => {
-				subQuery.whereNull('d.date_expired').orWhere('d.date_expired', '>=', this.knex.fn.now());
+				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', this.knex.fn.now());
+			})
+			.andWhere((subQuery) => {
+				subQuery.whereNull('d.date_start').orWhere('d.date_start', '<=', this.knex.fn.now());
 			})
 			.first();
 
