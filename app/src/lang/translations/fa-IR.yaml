@@ -306,6 +306,9 @@ displays:
     translations: ترجمه‌ها
   boolean:
     boolean: بولین
+  formatted-value:
+    prefix: پيشوند
+    suffix: پسوند
   labels:
     choices_value_placeholder: یک مقدار وارد کنید...
   user:
