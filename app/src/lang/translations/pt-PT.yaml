@@ -697,7 +697,6 @@ displays:
     prefix: Prefixo
     suffix: Sufixo
     text: Texto
-    text_label: Texto
   labels:
     choices_value_placeholder: Insira um valor...
   user:
