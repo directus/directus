@@ -277,6 +277,12 @@ displays:
     collection: Συλλογή
   file:
     file: Αρχείο
+  formatted-value:
+    prefix: Πρόθεμα
+    suffix: Επίθεμα
+    icon: Εικονίδιο
+    text: Κείμενο
+    text_label: Κείμενο
   icon:
     icon: Εικονίδιο
   user:
