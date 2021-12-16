@@ -826,6 +826,19 @@ displays:
     file: Tệp
   filesize:
     filesize: Kích thước tệp
+  formatted-value:
+    format: Định dạng
+    font: Phông chữ
+    font_serif: Serif
+    font_monospace: Khoảng cách như nhau
+    bold: In đậm
+    italic: Nghiêng
+    prefix: Tiền tố
+    suffix: Hậu tố
+    color: Màu sắc
+    icon: Biểu tượng
+    text: Đoạn văn bản
+    text_label: Đoạn văn bản
   icon:
     icon: Biểu tượng
     description: Hiển thị một biểu tượng
