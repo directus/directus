@@ -101,7 +101,7 @@ export default defineComponent({
 						params: {
 							'filter[collection][_eq]': collection,
 							'filter[item][_eq]': primaryKey,
-							fields: ['id', 'name', 'password', 'max_uses', 'times_used', 'date_created', 'date_expired'],
+							fields: ['id', 'name', 'password', 'max_uses', 'times_used', 'date_created', 'date_start', 'date_end'],
 						},
 					});
 					count.value = response.data.data.length;

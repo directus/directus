@@ -8,8 +8,14 @@
 			<span class="share-uses-left">
 				<template v-if="!share.max_uses">{{ t('unlimited_usage') }}</template>
 				<template v-else>{{ t('uses_left', uses_left) }}</template>
+				<v-icon v-if="share.password" name="lock" />
 			</span>
-			<v-icon v-if="share.password" name="lock" />
+			<span v-if="share.date_end && new Date(share.date_end) < new Date()" class="share-expired">
+				{{ t('expired') }}
+			</span>
+			<span v-else-if="share.date_start && new Date(share.date_start) > new Date()" class="share-upcoming">
+				{{ t('upcoming') }}
+			</span>
 		</div>
 	</div>
 </template>
@@ -66,7 +72,19 @@ export default defineComponent({
 	font-size: 18px;
 }
 
-.share-uses-info {
+.share-item-info {
+	display: flex;
+	justify-content: space-between;
 	color: var(--foreground-subdued);
+}
+
+.share-expired {
+	color: var(--warning);
+	text-transform: uppercase;
+}
+
+.share-upcoming {
+	color: var(--green);
+	text-transform: uppercase;
 }
 </style>
