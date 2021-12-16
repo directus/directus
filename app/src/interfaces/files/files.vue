@@ -280,7 +280,11 @@ export default defineComponent({
 				const { junctionField } = relationInfo.value;
 				const filesAsJunctionRows = files.map((file) => {
 					return {
-						[junctionField]: file.id,
+						[junctionField]: {
+							id: file.id,
+							type: file.type,
+							title: file.title,
+						},
 					};
 				});
 
