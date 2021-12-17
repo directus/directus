@@ -80,6 +80,14 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			);
 		}
 
+		if (accountability.share_scope) {
+			// TODO: generate and merge permissions for share scope
+			permissions = mergePermissions(
+				permissions,
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
+			);
+		}
+
 		const filterContext = containDynamicData
 			? await getFilterContext(schema, accountability, requiredPermissionData)
 			: {};
@@ -90,10 +98,6 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			if (containDynamicData && env.CACHE_ENABLED !== false) {
 				await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
 			}
-		}
-
-		if (accountability.share_scope) {
-			// TODO: generate and merge permissions for share scope
 		}
 
 		return processPermissions(accountability, permissions, filterContext);

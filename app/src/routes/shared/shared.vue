@@ -10,13 +10,16 @@
 		<v-error v-else-if="error" :error="error" />
 
 		<template v-else-if="shareInfo">
-			<pre>{{ shareInfo }}</pre>
+			<template v-if="authenticated">Authenticated</template>
+			<template v-else>
+				<pre>{{ shareInfo }}</pre>
 
-			<v-input v-if="shareInfo.password" @update:modelValue="passwordInput = $event" />
+				<v-input v-if="shareInfo.password" @update:modelValue="passwordInput = $event" />
 
-			<v-button @click="actuallyLogin">
-				{{ t('access_shared_item') }}
-			</v-button>
+				<v-button @click="actuallyLogin">
+					{{ t('access_shared_item') }}
+				</v-button>
+			</template>
 		</template>
 	</shared-view>
 </template>
@@ -29,6 +32,7 @@ import { defineComponent, computed, ref, watch } from 'vue';
 import { useAppStore } from '@/stores';
 import api, { RequestError } from '@/api';
 import { login } from '@/auth';
+// import DrawerItem from '@/views/private/components/drawer-item';
 
 type ShareInfo = {
 	collection: string;
@@ -41,6 +45,7 @@ type ShareInfo = {
 };
 
 export default defineComponent({
+	// components: { DrawerItem },
 	setup() {
 		const { t } = useI18n();
 
