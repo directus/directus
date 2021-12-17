@@ -51,7 +51,10 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
+db_only_click_to_configure: 'قاعدة البيانات فقط: اضغط لتعديل الاعدادات'
+show_active_items: إظهار العناصر النشطة
 show_archived_items: أظهر العناصر المؤرشفة
+show_all_items: عرض جميع العناصر
 edited: تم تعديل القيمة
 required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
@@ -65,6 +68,7 @@ create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
+subject: الموضوع
 inbox: صندوق الواردات
 emails: البريد الإلكتروني
 connection_excellent: اتصال ممتاز
@@ -156,6 +160,7 @@ presentation_and_aliases: Presentation & Aliases
 revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
+no_relational_data: 'ملاحظة: العلاقة بين الجداول غير مدرجة هنا.'
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -171,7 +176,11 @@ global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
 show_zero: إظهار صفر
+create_in_advanced_field_creation_mode: إنشاء حقل في الوضع المتقدم
+continue_in_advanced_field_creation_mode: الاستمرار في وضع إنشاء الحقل المتقدم
 sum: المجموع
+avg: المتوسط
+count: عدد
 min: الحد الأدنى
 max: الحد الأقصى
 exposure: التعرض
