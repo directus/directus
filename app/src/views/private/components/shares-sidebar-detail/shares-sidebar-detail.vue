@@ -18,7 +18,7 @@
 			@cancel="unselect"
 			@input="input"
 		/>
-		<v-button v-if="allowed" @click="select('+')">
+		<v-button v-if="allowed" class="new-share" @click="select('+')">
 			{{ t('new_share') }}
 		</v-button>
 	</sidebar-detail>
@@ -145,5 +145,11 @@ export default defineComponent({
 	margin-left: 2px;
 	color: var(--foreground-subdued);
 	font-style: italic;
+}
+
+.new-share {
+	--v-button-width: 100%;
+
+	width: 100%;
 }
 </style>

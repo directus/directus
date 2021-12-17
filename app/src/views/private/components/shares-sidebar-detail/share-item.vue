@@ -57,11 +57,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .share-item {
-	margin: 5px;
-	margin-bottom: 10px;
+	margin: 10px 0px;
 	padding: 10px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
+
+	&:first-child {
+		margin-top: 0;
+	}
 
 	&:hover {
 		cursor: pointer;
@@ -84,12 +87,17 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 }
 
-.share-uses.no-left {
-	color: var(--danger);
+.share-uses {
+	margin-right: 5px;
+
+	&.no-left {
+		color: var(--danger);
+	}
 }
 
 .share-status {
 	flex-grow: 1;
+	font-weight: 600;
 	text-align: end;
 	text-transform: uppercase;
 
