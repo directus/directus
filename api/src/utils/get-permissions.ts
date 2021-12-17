@@ -17,14 +17,8 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 
 	let permissions: Permission[] = [];
 
-	const {
-		user,
-		role,
-		app,
-		admin,
-		share_scope: { collection: collection_scope, item: item_scope } = {},
-	} = accountability;
-	const cacheKey = `permissions-${hash({ user, role, app, admin, collection_scope, item_scope })}`;
+	const { user, role, app, admin, share_scope } = accountability;
+	const cacheKey = `permissions-${hash({ user, role, app, admin, share_scope })}`;
 
 	if (env.CACHE_PERMISSIONS !== false) {
 		const cachedPermissions = await systemCache.get(cacheKey);
