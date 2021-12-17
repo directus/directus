@@ -9,16 +9,20 @@
 
 		<v-error v-else-if="error" :error="error" />
 
-		<template v-else-if="shareInfo">
-			<template v-if="authenticated">Authenticated</template>
+		<template v-else-if="share">
+			<template v-if="authenticated">
+				<drawer-item :collection="share.collection" :primary-key="share.item" :active="true" />
+			</template>
 			<template v-else>
-				<pre>{{ shareInfo }}</pre>
-
-				<v-input v-if="shareInfo.password" @update:modelValue="passwordInput = $event" />
-
-				<v-button @click="actuallyLogin">
-					{{ t('access_shared_item') }}
-				</v-button>
+				<v-notice v-if="share.uses_left !== undefined" :type="share.uses_left === 0 ? 'danger' : 'warning'">
+					{{ t('usesleft', share.uses_left) }}
+				</v-notice>
+				<template v-if="share.uses_left !== 0">
+					<v-input v-if="share.password" @update:modelValue="passwordInput = $event" />
+					<v-button @click="actuallyLogin">
+						{{ t('access_shared_item') }}
+					</v-button>
+				</template>
 			</template>
 		</template>
 	</shared-view>
@@ -32,7 +36,7 @@ import { defineComponent, computed, ref, watch } from 'vue';
 import { useAppStore } from '@/stores';
 import api, { RequestError } from '@/api';
 import { login } from '@/auth';
-// import DrawerItem from '@/views/private/components/drawer-item';
+import DrawerItem from '@/views/private/components/drawer-item';
 
 type ShareInfo = {
 	collection: string;
@@ -42,10 +46,11 @@ type ShareInfo = {
 	date_end?: Date;
 	max_uses?: number;
 	times_used: number;
+	uses_left?: number;
 };
 
 export default defineComponent({
-	// components: { DrawerItem },
+	components: { DrawerItem },
 	setup() {
 		const { t } = useI18n();
 
@@ -68,8 +73,7 @@ export default defineComponent({
 		const route = useRoute();
 
 		const shareId = route.params.id as string;
-
-		const shareInfo = ref<ShareInfo>();
+		const share = ref<ShareInfo>();
 
 		const passwordInput = ref<string>();
 
@@ -77,7 +81,7 @@ export default defineComponent({
 
 		return {
 			t,
-			shareInfo,
+			share,
 			error,
 			errorFormatted,
 			loading,
@@ -92,8 +96,9 @@ export default defineComponent({
 
 			try {
 				const response = await api.get(`/shares/info/${shareId}`);
-				shareInfo.value = response.data.data;
-				const { password, max_uses } = shareInfo.value!;
+				share.value = response.data.data;
+				const { password, max_uses, times_used } = share.value!;
+				share.value!.uses_left = max_uses ? max_uses - times_used : undefined;
 				if (!password && !max_uses) {
 					actuallyLogin();
 				}
