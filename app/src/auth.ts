@@ -17,19 +17,19 @@ type LoginCredentials = {
 type LoginParams = {
 	credentials: LoginCredentials;
 	provider?: string;
-	shared?: boolean;
+	share?: boolean;
 };
 
-function getAuthEndpoint(provider?: string, shared?: boolean) {
-	if (shared) return '/shares/auth';
+function getAuthEndpoint(provider?: string, share?: boolean) {
+	if (share) return '/shares/auth';
 	if (provider === DEFAULT_AUTH_PROVIDER) return '/auth/login';
 	return `/auth/login/${provider}`;
 }
 
-export async function login({ credentials, provider, shared }: LoginParams): Promise<void> {
+export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post<any>(getAuthEndpoint(provider, shared), {
+	const response = await api.post<any>(getAuthEndpoint(provider, share), {
 		...credentials,
 		mode: 'cookie',
 	});
@@ -40,7 +40,7 @@ export async function login({ credentials, provider, shared }: LoginParams): Pro
 	api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
 	// Refresh the token 10 seconds before the access token expires. This means the user will stay
-	// logged in without any noticable hickups or delays
+	// logged in without any noticeable hiccups or delays
 
 	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 	// for tokens that last > 24 days. Ref #4054

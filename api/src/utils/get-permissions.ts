@@ -2,7 +2,7 @@ import { Permission, Accountability } from '@directus/shared/types';
 import { deepMap, parseFilter } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
+import { appAccessMinimalPermissions, schemaPermissions } from '../database/system-data/app-access-permissions';
 import { mergePermissions } from '../utils/merge-permissions';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
@@ -73,6 +73,8 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			containDynamicData,
 		} = parsePermissions(permissionsForRole);
 
+		permissions = parsedPermissions;
+
 		if (accountability.app === true) {
 			permissions = mergePermissions(
 				permissions,
@@ -81,11 +83,8 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 		}
 
 		if (accountability.share_scope) {
-			// TODO: generate and merge permissions for share scope
-			permissions = mergePermissions(
-				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
-			);
+			// @TODO: generate and merge permissions for share scope
+			permissions = mergePermissions(permissions, schemaPermissions);
 		}
 
 		const filterContext = containDynamicData

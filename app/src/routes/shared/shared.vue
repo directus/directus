@@ -10,19 +10,21 @@
 		<v-error v-else-if="error" :error="error" />
 
 		<template v-else-if="share">
-			<template v-if="authenticated">
-				<drawer-item :collection="share.collection" :primary-key="share.item" :active="true" />
-			</template>
-			<template v-else>
-				<v-notice v-if="share.uses_left !== undefined" :type="share.uses_left === 0 ? 'danger' : 'warning'">
-					{{ t('usesleft', share.uses_left) }}
+			<template v-if="!authenticated">
+				<v-notice v-if="usesLeft !== undefined" :type="usesLeft === 0 ? 'danger' : 'warning'">
+					{{ t('usesleft', usesLeft) }}
 				</v-notice>
-				<template v-if="share.uses_left !== 0">
+
+				<template v-if="usesLeft !== 0">
 					<v-input v-if="share.password" @update:modelValue="passwordInput = $event" />
-					<v-button @click="actuallyLogin">
+					<v-button @click="authenticate">
 						{{ t('access_shared_item') }}
 					</v-button>
 				</template>
+			</template>
+
+			<template v-else>
+				<h1>Logged in!</h1>
 			</template>
 		</template>
 	</shared-view>
@@ -31,26 +33,19 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { translateAPIError } from '@/lang';
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useAppStore } from '@/stores';
 import api, { RequestError } from '@/api';
 import { login } from '@/auth';
-import DrawerItem from '@/views/private/components/drawer-item';
+import { Share } from '@directus/shared/types';
 
-type ShareInfo = {
-	collection: string;
-	item: string;
-	password?: string;
-	date_start?: Date;
-	date_end?: Date;
-	max_uses?: number;
-	times_used: number;
-	uses_left?: number;
-};
+type ShareInfo = Pick<
+	Share,
+	'id' | 'collection' | 'item' | 'password' | 'date_start' | 'date_end' | 'max_uses' | 'times_used'
+>;
 
 export default defineComponent({
-	components: { DrawerItem },
+	components: {},
 	setup() {
 		const { t } = useI18n();
 
@@ -62,18 +57,13 @@ export default defineComponent({
 		const notFound = ref(false);
 
 		const error = ref<RequestError | null>(null);
-		const errorFormatted = computed(() => {
-			if (error.value) {
-				return translateAPIError(error.value);
-			}
-
-			return null;
-		});
 
 		const route = useRoute();
 
 		const shareId = route.params.id as string;
 		const share = ref<ShareInfo>();
+
+		const usesLeft = ref<number | null>(null);
 
 		const passwordInput = ref<string>();
 
@@ -83,12 +73,12 @@ export default defineComponent({
 			t,
 			share,
 			error,
-			errorFormatted,
 			loading,
 			notFound,
 			passwordInput,
-			actuallyLogin,
+			authenticate,
 			authenticated,
+			usesLeft,
 		};
 
 		async function getShareInformation(shareId: string) {
@@ -97,10 +87,21 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/shares/info/${shareId}`);
 				share.value = response.data.data;
-				const { password, max_uses, times_used } = share.value!;
-				share.value!.uses_left = max_uses ? max_uses - times_used : undefined;
+
+				if (!share.value) {
+					notFound.value = true;
+					loading.value = false;
+					return;
+				}
+
+				const { password, max_uses, times_used } = share.value;
+
+				if (max_uses) {
+					usesLeft.value = max_uses - times_used;
+				}
+
 				if (!password && !max_uses) {
-					actuallyLogin();
+					authenticate();
 				}
 			} catch (err: any) {
 				if (err.response?.status === 404 || err.response?.status === 403) {
@@ -113,12 +114,12 @@ export default defineComponent({
 			}
 		}
 
-		async function actuallyLogin() {
+		async function authenticate() {
 			loading.value = true;
 
 			try {
 				const credentials = { share_id: shareId, password: passwordInput.value };
-				await login({ shared: true, credentials });
+				await login({ share: true, credentials });
 			} catch (err: any) {
 				error.value = err;
 			} finally {

@@ -56,6 +56,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	const metaService = new MetaService({
 		accountability: req.accountability,
 		schema: req.schema,
@@ -76,6 +77,7 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		if (req.accountability?.share_scope) {
 			const user = {
+				share: true,
 				role: {
 					id: req.accountability.role,
 					admin_access: false,
