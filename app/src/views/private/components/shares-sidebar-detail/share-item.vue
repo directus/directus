@@ -10,6 +10,7 @@
 				<template v-else>{{ t('uses_left', uses_left) }}</template>
 			</span>
 			<v-icon v-if="share.password" small name="lock" />
+			<span style="flex-grow: 1"></span>
 			<span v-if="status" class="share-status" :class="{ [status]: true }">
 				{{ t(status) }}
 			</span>
@@ -58,13 +59,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .share-item {
 	margin-bottom: 8px;
-	padding: 10px;
+	padding: 8px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
-
-	&:last-of-type {
-		margin-bottom: 16px;
-	}
 
 	&:hover {
 		cursor: pointer;
@@ -98,7 +95,6 @@ export default defineComponent({
 }
 
 .share-status {
-	flex-grow: 1;
 	font-weight: 600;
 	font-size: 12px;
 	text-align: end;
