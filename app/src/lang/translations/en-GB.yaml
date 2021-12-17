@@ -52,7 +52,9 @@ edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
 db_only_click_to_configure: 'Database Only: Click to Configure'
+show_active_items: Show Active Items
 show_archived_items: Show Archived Items
+show_all_items: Show All Items
 edited: Value Edited
 required: Required
 required_for_app_access: Required for App Access
@@ -89,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Session expired
 public_label: Public
 public_description: Controls what API data is available without authenticating.
+admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
 directus_version: Directus Version
 node_version: Node Version
@@ -1192,6 +1195,7 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 interfaces:
@@ -1510,17 +1514,26 @@ displays:
     formatted-value: Formatted Value
     description: Display a formatted version of the text
     format: Format
+    format_label: Auto format
     font: Font
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Bold
     bold_label: Use bold style
     italic: Italic
+    italic_label: Use italic style
     prefix: Prefix
+    prefix_label: Prepend text
     suffix: Suffix
+    suffix_label: Appended Text
     color: Colour
+    background: Background
     icon: Icon
+    border: Border
+    border_label: Show border
     text: Text
+    text_placeholder: Optional value override...
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
