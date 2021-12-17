@@ -715,6 +715,8 @@ unlimited: Unlimited
 open_link_in: Open link in
 new_tab: New tab
 current_tab: Current tab
+save_image: Save Image
+save_media: Save Media
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
