@@ -15,7 +15,7 @@ const router = express.Router();
 router.use(useCollection('directus_shares'));
 
 const sharedLoginSchema = Joi.object({
-	id: Joi.string().required(),
+	share_id: Joi.string().required(),
 	password: Joi.string(),
 }).unknown();
 

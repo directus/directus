@@ -6,17 +6,30 @@ import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 
-export type LoginCredentials = {
+type LoginCredentials = {
 	identifier?: string;
 	email?: string;
-	password: string;
+	password?: string;
 	otp?: string;
+	share_id?: string;
 };
 
-export async function login(credentials: LoginCredentials, provider: string): Promise<void> {
+type LoginParams = {
+	credentials: LoginCredentials;
+	provider?: string;
+	shared?: boolean;
+};
+
+function getAuthEndpoint(provider?: string, shared?: boolean) {
+	if (shared) return '/shares/auth';
+	if (provider === DEFAULT_AUTH_PROVIDER) return '/auth/login';
+	return `/auth/login/${provider}`;
+}
+
+export async function login({ credentials, provider, shared }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post<any>(provider !== DEFAULT_AUTH_PROVIDER ? `/auth/login/${provider}` : '/auth/login', {
+	const response = await api.post<any>(getAuthEndpoint(provider, shared), {
 		...credentials,
 		mode: 'cookie',
 	});

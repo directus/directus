@@ -1,5 +1,5 @@
 <template>
-	<shared-view inline :title="notFound ? t('share_access_not_found_title') : t('share_access_page')">
+	<shared-view :inline="!authenticated" :title="notFound ? t('share_access_not_found_title') : t('share_access_page')">
 		<v-progress-circular v-if="loading" indeterminate />
 
 		<div v-else-if="notFound">
@@ -14,7 +14,7 @@
 
 			<v-input v-if="shareInfo.password" @update:modelValue="passwordInput = $event" />
 
-			<v-button @click="login">
+			<v-button @click="actuallyLogin">
 				{{ t('access_shared_item') }}
 			</v-button>
 		</template>
@@ -26,11 +26,26 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { translateAPIError } from '@/lang';
 import { defineComponent, computed, ref, watch } from 'vue';
+import { useAppStore } from '@/stores';
 import api, { RequestError } from '@/api';
+import { login } from '@/auth';
+
+type ShareInfo = {
+	collection: string;
+	item: string;
+	password?: string;
+	date_start?: Date;
+	date_end?: Date;
+	max_uses?: number;
+	times_used: number;
+};
 
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
+
+		const appStore = useAppStore();
+		const authenticated = computed(() => appStore.authenticated);
 
 		const loading = ref(false);
 
@@ -49,13 +64,23 @@ export default defineComponent({
 
 		const shareId = route.params.id as string;
 
-		const shareInfo = ref<any>();
+		const shareInfo = ref<ShareInfo>();
 
 		const passwordInput = ref<string>();
 
 		getShareInformation(shareId);
 
-		return { t, shareInfo, error, errorFormatted, loading, notFound, passwordInput, login };
+		return {
+			t,
+			shareInfo,
+			error,
+			errorFormatted,
+			loading,
+			notFound,
+			passwordInput,
+			actuallyLogin,
+			authenticated,
+		};
 
 		async function getShareInformation(shareId: string) {
 			loading.value = true;
@@ -63,6 +88,10 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/shares/info/${shareId}`);
 				shareInfo.value = response.data.data;
+				const { password, max_uses } = shareInfo.value!;
+				if (!password && !max_uses) {
+					actuallyLogin();
+				}
 			} catch (err: any) {
 				if (err.response?.status === 404 || err.response?.status === 403) {
 					notFound.value = true;
@@ -74,15 +103,12 @@ export default defineComponent({
 			}
 		}
 
-		async function login() {
+		async function actuallyLogin() {
 			loading.value = true;
 
 			try {
-				await api.post('/shares/auth', {
-					id: shareId,
-					mode: 'cookie',
-					password: passwordInput.value,
-				});
+				const credentials = { share_id: shareId, password: passwordInput.value };
+				await login({ shared: true, credentials });
 			} catch (err: any) {
 				error.value = err;
 			} finally {

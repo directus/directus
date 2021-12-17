@@ -18,7 +18,6 @@ import {
 	Session,
 	User,
 	DirectusTokenPayload,
-	ShareData,
 	LoginResult,
 } from '../types';
 import { Accountability } from '@directus/shared/types';

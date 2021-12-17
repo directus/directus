@@ -74,6 +74,16 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability?.share_scope) {
+			res.locals.payload = {
+				role: {
+					admin_access: false,
+					app_access: false,
+				},
+			};
+			return next();
+		}
+
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
