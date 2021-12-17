@@ -113,7 +113,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(extractToken);
 
-	app.use((req, res, next) => {
+	app.use((_req, res, next) => {
 		res.setHeader('X-Powered-By', 'Directus');
 		next();
 	});
@@ -122,7 +122,7 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(cors);
 	}
 
-	app.get('/', (req, res, next) => {
+	app.get('/', (_req, res, next) => {
 		if (env.ROOT_REDIRECT) {
 			res.redirect(env.ROOT_REDIRECT);
 		} else {
@@ -138,7 +138,7 @@ export default async function createApp(): Promise<express.Application> {
 		const html = await fse.readFile(adminPath, 'utf8');
 		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		const noCacheIndexHtmlHandler = (req: Request, res: Response) => {
+		const noCacheIndexHtmlHandler = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
 			res.send(htmlWithBase);
 		};

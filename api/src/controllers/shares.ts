@@ -191,7 +191,7 @@ router.patch(
 
 router.delete(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new SharesService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -212,7 +212,7 @@ router.delete(
 
 router.delete(
 	`/:pk(${UUID_REGEX})`,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new SharesService({
 			accountability: req.accountability,
 			schema: req.schema,

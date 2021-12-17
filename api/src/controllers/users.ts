@@ -140,7 +140,7 @@ router.patch(
 
 router.patch(
 	'/me/track/page',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
@@ -219,7 +219,7 @@ router.patch(
 router.delete(
 	'/',
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -240,7 +240,7 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -261,7 +261,7 @@ const inviteSchema = Joi.object({
 
 router.post(
 	'/invite',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const { error } = inviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
@@ -282,7 +282,7 @@ const acceptInviteSchema = Joi.object({
 
 router.post(
 	'/invite/accept',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 		const service = new UsersService({
@@ -327,7 +327,7 @@ router.post(
 
 router.post(
 	'/me/tfa/enable/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
@@ -354,7 +354,7 @@ router.post(
 
 router.post(
 	'/me/tfa/disable',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
