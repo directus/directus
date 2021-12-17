@@ -1,16 +1,10 @@
 <template>
-	<div v-if="loading || authenticating" class="hydrating">
+	<div v-if="loading" class="hydrating">
 		<v-progress-circular indeterminate />
 	</div>
 
-	<shared-view
-		v-else
-		:inline="!authenticated"
-		:title="notFound ? t('share_access_not_found_title') : t('share_access_page')"
-	>
-		<v-progress-circular v-if="loading" indeterminate />
-
-		<div v-else-if="notFound">
+	<shared-view v-else :inline="!authenticated" :title="title">
+		<div v-if="notFound">
 			<strong>{{ t('share_access_not_found') }}</strong>
 			{{ t('share_access_not_found_desc') }}
 		</div>
@@ -19,14 +13,14 @@
 
 		<template v-else-if="share">
 			<template v-if="!authenticated">
-				<v-notice v-if="usesLeft !== undefined" :type="usesLeft === 0 ? 'danger' : 'warning'">
-					{{ t('usesleft', usesLeft) }}
+				<v-notice v-if="usesLeft !== undefined" :type="usesLeftNoticeType">
+					{{ t('shared_uses_left', usesLeft) }}
 				</v-notice>
 
 				<template v-if="usesLeft !== 0">
 					<v-input v-if="share.password" @update:modelValue="passwordInput = $event" />
-					<v-button @click="authenticate">
-						{{ t('access_shared_item') }}
+					<v-button :busy="authenticating" @click="authenticate">
+						{{ t('share_access_page') }}
 					</v-button>
 				</template>
 			</template>
@@ -40,13 +34,15 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import { useAppStore } from '@/stores';
 import api, { RequestError } from '@/api';
-import { login } from '@/auth';
+import { login, logout } from '@/auth';
 import { Share } from '@directus/shared/types';
 import ShareItem from './components/share-item.vue';
+import { hydrate } from '@/hydrate';
+import { useCollection } from '@directus/shared/composables';
 
 type ShareInfo = Pick<
 	Share,
@@ -61,39 +57,57 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const authenticated = computed(() => appStore.authenticated);
 
-		const shareInfoLoading = ref(true);
+		const loading = ref(true);
 		const authenticating = ref(false);
 
 		const notFound = ref(false);
 
 		const error = ref<RequestError | null>(null);
 
+		const router = useRouter();
 		const route = useRoute();
 
 		const shareId = route.params.id as string;
 		const share = ref<ShareInfo>();
 
 		const usesLeft = ref<number | null>(null);
+		const usesLeftNoticeType = computed(() => {
+			if (!usesLeft.value) return 'info';
+			if (usesLeft.value < 3) return 'warning';
+			return 'info';
+		});
 
 		const passwordInput = ref<string>();
 
 		getShareInformation(shareId);
 
+		const { info } = useCollection(computed(() => share.value?.collection ?? null));
+		const collectionName = computed(() => info.value?.name);
+
+		const title = computed(() => {
+			if (notFound.value) return t('share_access_not_found_title');
+			if (collectionName.value) return t('viewing_in', { collection: collectionName.value });
+			return t('share_access_page');
+		});
+
 		return {
 			t,
 			share,
 			error,
-			shareInfoLoading,
+			title,
+			loading,
 			notFound,
 			passwordInput,
 			authenticate,
 			authenticated,
 			authenticating,
 			usesLeft,
+			usesLeftNoticeType,
+			collectionName,
 		};
 
 		async function getShareInformation(shareId: string) {
-			shareInfoLoading.value = true;
+			loading.value = true;
 
 			try {
 				const response = await api.get(`/shares/info/${shareId}`);
@@ -101,19 +115,17 @@ export default defineComponent({
 
 				if (!share.value) {
 					notFound.value = true;
-					shareInfoLoading.value = false;
+					loading.value = false;
 					return;
 				}
 
-				const { password, max_uses, times_used } = share.value;
+				const { max_uses, times_used } = share.value;
 
 				if (max_uses) {
 					usesLeft.value = max_uses - times_used;
 				}
 
-				if (!password && !max_uses) {
-					authenticate();
-				}
+				await handleAuth();
 			} catch (err: any) {
 				if (err.response?.status === 404 || err.response?.status === 403) {
 					notFound.value = true;
@@ -121,7 +133,35 @@ export default defineComponent({
 					error.value = err;
 				}
 			} finally {
-				shareInfoLoading.value = false;
+				loading.value = false;
+			}
+		}
+
+		async function handleAuth() {
+			if (appStore.authenticated) {
+				const currentUser = await api.get('/users/me', { params: { fields: ['id'] } });
+
+				if (currentUser.data.data?.share) {
+					if (currentUser.data.data.share !== shareId) {
+						await logout({ navigate: false });
+					} else {
+						await hydrate();
+					}
+				}
+
+				// Logged in as regular user
+				if (currentUser.data.data?.id && !currentUser.data.data?.share) {
+					router.replace(`/content/${share.value!.collection}/${share.value!.item}`);
+					return;
+				}
+			}
+
+			if (!share.value?.password && !share.value?.max_uses) {
+				if (appStore.authenticated) {
+					await hydrate();
+				} else {
+					await authenticate();
+				}
 			}
 		}
 
@@ -148,7 +188,7 @@ h2 {
 
 .v-input,
 .v-notice {
-	margin-bottom: 20px;
+	margin-bottom: 32px;
 }
 
 .hydrating {

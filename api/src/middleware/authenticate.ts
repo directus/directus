@@ -38,6 +38,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 				}
 			}
 
+			req.accountability.share = payload.share;
 			req.accountability.share_scope = payload.share_scope;
 			req.accountability.user = payload.id;
 			req.accountability.role = payload.role;

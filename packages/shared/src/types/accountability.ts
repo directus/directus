@@ -11,6 +11,7 @@ export type Accountability = {
 	admin?: boolean;
 	app?: boolean;
 	permissions?: Permission[];
+	share?: string;
 	share_scope?: ShareScope;
 
 	ip?: string;

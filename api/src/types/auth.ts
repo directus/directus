@@ -37,6 +37,7 @@ export type DirectusTokenPayload = {
 	role: string | null;
 	app_access: boolean | number;
 	admin_access: boolean | number;
+	share?: string;
 	share_scope?: {
 		collection: string;
 		item: string;

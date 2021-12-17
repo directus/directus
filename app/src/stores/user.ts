@@ -5,7 +5,7 @@ import { userName } from '@/utils/user-name';
 import { defineStore } from 'pinia';
 
 type ShareUser = {
-	share: true;
+	share: string;
 	role: {
 		id: string;
 		admin_access: false;
@@ -34,11 +34,18 @@ export const useUserStore = defineStore({
 			this.loading = true;
 
 			try {
-				const { data } = await api.get(`/users/me`, {
-					params: {
-						fields: '*,avatar.id,role.*',
-					},
-				});
+				const fields = [
+					'id',
+					'language',
+					'last_page',
+					'theme',
+					'avatar.id',
+					'role.admin_access',
+					'role.app_access',
+					'role.id',
+				];
+
+				const { data } = await api.get(`/users/me`, { params: { fields } });
 
 				this.currentUser = data.data;
 			} catch (error: any) {

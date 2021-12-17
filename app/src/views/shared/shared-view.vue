@@ -16,7 +16,9 @@
 						</div>
 						<div class="title">
 							<p class="subtitle">{{ serverInfo?.project.project_name }}</p>
-							<h1 class="type-title">{{ title ?? t('share_access_page') }}</h1>
+							<slot name="title">
+								<h1 class="type-title">{{ title ?? t('share_access_page') }}</h1>
+							</slot>
 						</div>
 					</div>
 				</div>

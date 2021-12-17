@@ -77,7 +77,7 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		if (req.accountability?.share_scope) {
 			const user = {
-				share: true,
+				share: req.accountability?.share,
 				role: {
 					id: req.accountability.role,
 					admin_access: false,

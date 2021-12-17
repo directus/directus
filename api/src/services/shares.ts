@@ -1,4 +1,12 @@
-import { AbstractServiceOptions, ShareData, LoginResult, Item, PrimaryKey, MutationOptions } from '../types';
+import {
+	AbstractServiceOptions,
+	ShareData,
+	LoginResult,
+	Item,
+	PrimaryKey,
+	MutationOptions,
+	DirectusTokenPayload,
+} from '../types';
 import { ItemsService } from './items';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
@@ -62,10 +70,11 @@ export class SharesService extends ItemsService {
 			.update({ times_used: record.share_times_used + 1 })
 			.where('id', record.share_id);
 
-		const tokenPayload = {
+		const tokenPayload: DirectusTokenPayload = {
 			app_access: false,
 			admin_access: false,
 			role: record.share_role,
+			share: record.share_id,
 			share_scope: {
 				item: record.share_item,
 				collection: record.share_collection,

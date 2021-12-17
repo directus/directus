@@ -263,6 +263,7 @@ export class AuthenticationService {
 				role_app_access: 'r.app_access',
 				share_id: 'd.id',
 				share_item: 'd.item',
+				share_role: 'd.role',
 				share_collection: 'd.collection',
 				share_start: 'd.date_start',
 				share_end: 'd.date_end',
@@ -314,6 +315,7 @@ export class AuthenticationService {
 		};
 
 		if (record.share_id) {
+			tokenPayload.share = record.share_id;
 			tokenPayload.role = record.share_role;
 			tokenPayload.share_scope = {
 				collection: record.share_collection,
