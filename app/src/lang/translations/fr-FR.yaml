@@ -207,7 +207,7 @@ date_range: Plage de dates
 datetime: Date et heure
 dateTime: Date et heure
 precision: Précision
-decimal: Décimale
+decimal: Nombre décimal avec précision
 float: Nombre décimal
 integer: Entier
 json: JSON
@@ -1511,16 +1511,21 @@ displays:
     formatted-value: Valeur formatée
     description: Afficher une version formatée du texte
     format: Format
+    format_label: En capitales
     font: Police de caractères
     font_serif: Sérif
     font_monospace: Monospace
     bold: Gras
-    bold_label: Utiliser le style en gras
+    bold_label: Mettre en gras
     italic: Italique
+    italic_label: Mettre en italique
     prefix: Préfixe
     suffix: Suffixe
     color: Couleur
+    background: Couleur de fond
     icon: Icône
+    border: Bordure
+    border_label: Afficher une bordure
     text: Texte
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
