@@ -75,12 +75,14 @@ router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
 		if (req.accountability?.share_scope) {
-			res.locals.payload = {
+			const user = {
 				role: {
+					id: req.accountability.role,
 					admin_access: false,
 					app_access: false,
 				},
 			};
+			res.locals.payload = { data: user };
 			return next();
 		}
 
