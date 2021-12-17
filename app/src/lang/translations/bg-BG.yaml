@@ -91,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Сесията е изтекла
 public_label: Публичен
 public_description: Контрол на позволенията към API-то, без нужда от оторизиране.
+admin_description: Първоначална администраторска роля с неограничен достъп до API и приложението.
 not_allowed: Не е позволено
 directus_version: Версия на Directus
 node_version: Версия на Node
@@ -1194,6 +1195,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
