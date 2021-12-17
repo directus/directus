@@ -45,24 +45,24 @@ export default function useImage(
 
 			if (buttonApi.isActive()) {
 				const node = editor.value.selection.getNode() as HTMLImageElement;
-				const imagePreviewUrl = node.getAttribute('src');
-				const imageUrlParams = imagePreviewUrl ? new URL(imagePreviewUrl).searchParams : undefined;
+				const previewUrl = node.getAttribute('src');
+				const imageUrlParams = previewUrl ? new URL(previewUrl).searchParams : undefined;
 				const alt = node.getAttribute('alt');
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
 
-				if (imagePreviewUrl === null || alt === null) {
+				if (previewUrl === null || alt === null) {
 					return;
 				}
 
-				const imageUrl = replaceUrlAccessToken(imagePreviewUrl, null);
+				const imageUrl = replaceUrlAccessToken(previewUrl, null);
 
 				imageSelection.value = {
 					imageUrl,
 					alt,
 					width,
 					height,
-					previewUrl: imagePreviewUrl,
+					previewUrl,
 				};
 			} else {
 				imageSelection.value = null;
