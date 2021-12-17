@@ -1,7 +1,7 @@
 <template>
 	<div class="share-item" @click="click">
 		<div class="share-item-header">
-			<span class="share-item-name">{{ share.name }}</span>
+			<span class="type-label">{{ share.name }}</span>
 			<span class="share-item-date">{{ d(new Date(share.date_created), 'short') }}</span>
 		</div>
 		<div class="share-item-info">
@@ -9,7 +9,7 @@
 				<template v-if="uses_left === null">{{ t('unlimited_usage') }}</template>
 				<template v-else>{{ t('uses_left', uses_left) }}</template>
 			</span>
-			<v-icon v-if="share.password" name="lock" />
+			<v-icon v-if="share.password" small name="lock" />
 			<span v-if="status" class="share-status" :class="{ [status]: true }">
 				{{ t(status) }}
 			</span>
@@ -57,13 +57,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .share-item {
-	margin: 10px 0px;
+	margin-bottom: 8px;
 	padding: 10px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 
-	&:first-child {
-		margin-top: 0;
+	&:last-of-type {
+		margin-bottom: 16px;
 	}
 
 	&:hover {
@@ -71,24 +71,26 @@ export default defineComponent({
 	}
 }
 
+.share-item-date {
+	color: var(--foreground-subdued);
+	font-size: 12px;
+}
+
 .share-item-header {
 	display: flex;
 	justify-content: space-between;
-	margin-bottom: 5px;
-}
-
-.share-item-name {
-	font-weight: 700;
-	font-size: 18px;
+	margin-bottom: 0;
 }
 
 .share-item-info {
 	display: flex;
+	align-items: center;
 	color: var(--foreground-subdued);
 }
 
 .share-uses {
 	margin-right: 5px;
+	font-size: 12px;
 
 	&.no-left {
 		color: var(--danger);
@@ -98,6 +100,7 @@ export default defineComponent({
 .share-status {
 	flex-grow: 1;
 	font-weight: 600;
+	font-size: 12px;
 	text-align: end;
 	text-transform: uppercase;
 

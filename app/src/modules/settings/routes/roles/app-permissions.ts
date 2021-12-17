@@ -128,6 +128,48 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		permissions: {},
 		fields: ['*'],
 	},
+	{
+		collection: 'directus_shares',
+		action: 'read',
+		permissions: {
+			_or: [
+				{
+					role: {
+						_eq: '$CURRENT_ROLE',
+					},
+				},
+				{
+					role: {
+						_null: true,
+					},
+				},
+			],
+		},
+	},
+	{
+		collection: 'directus_shares',
+		action: 'create',
+		permissions: {},
+		// No permissions here, because they are  collection-based
+	},
+	{
+		collection: 'directus_shares',
+		action: 'update',
+		permissions: {
+			user_created: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+	},
+	{
+		collection: 'directus_shares',
+		action: 'delete',
+		permissions: {
+			user_created: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+	},
 ];
 
 export const appMinimalPermissions: Partial<Permission>[] = [

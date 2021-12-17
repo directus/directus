@@ -1,4 +1,4 @@
-import { AbstractServiceOptions, ShareData, LoginResult } from '../types';
+import { AbstractServiceOptions, ShareData, LoginResult, Item, PrimaryKey, MutationOptions } from '../types';
 import { ItemsService } from './items';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
@@ -6,10 +6,22 @@ import ms from 'ms';
 import { InvalidCredentialsException } from '../exceptions';
 import env from '../env';
 import { nanoid } from 'nanoid';
+import { AuthorizationService } from './authorization';
 
 export class SharesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_shares', options);
+	}
+
+	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const authorizationService = new AuthorizationService({
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		await authorizationService.checkAccess('share', data.collection, data.item);
+		return super.createOne(data, opts);
 	}
 
 	async login(payload: Record<string, any>): Promise<LoginResult> {
