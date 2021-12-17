@@ -45,24 +45,24 @@ export default function useImage(
 
 			if (buttonApi.isActive()) {
 				const node = editor.value.selection.getNode() as HTMLImageElement;
-				const imageUrl = node.getAttribute('src');
-				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
+				const imagePreviewUrl = node.getAttribute('src');
+				const imageUrlParams = imagePreviewUrl ? new URL(imagePreviewUrl).searchParams : undefined;
 				const alt = node.getAttribute('alt');
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
 
-				if (imageUrl === null || alt === null) {
+				if (imagePreviewUrl === null || alt === null) {
 					return;
 				}
 
-				const rawImageUrl = replaceUrlAccessToken(imageUrl, null);
+				const imageUrl = replaceUrlAccessToken(imagePreviewUrl, null);
 
 				imageSelection.value = {
-					imageUrl: rawImageUrl,
+					imageUrl,
 					alt,
 					width,
 					height,
-					previewUrl: imageUrl,
+					previewUrl: imagePreviewUrl,
 				};
 			} else {
 				imageSelection.value = null;
@@ -89,15 +89,14 @@ export default function useImage(
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		const rawImageUrl = getPublicURL() + 'assets/' + image.id;
-		const imageUrl = addTokenToURL(rawImageUrl, imageToken.value);
+		const imageUrl = getPublicURL() + 'assets/' + image.id;
 
 		imageSelection.value = {
-			imageUrl: rawImageUrl,
+			imageUrl,
 			alt: image.title,
 			width: image.width,
 			height: image.height,
-			previewUrl: imageUrl,
+			previewUrl: addTokenToURL(imageUrl, imageToken.value),
 		};
 	}
 
