@@ -133,6 +133,31 @@ export default function applyQuery(
  *   )
  * ```
  */
+type RelationInfo = {
+	relation?: Relation;
+	relationType?: string;
+};
+
+function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
+	const fakeRelation = field.match(/^\$FOLLOW\((.*?),(.*?)\)$/);
+	if (fakeRelation) {
+		const [_, related_collection, related_field] = fakeRelation;
+		const relation = {
+			collection,
+			related_collection,
+			field: related_field,
+		} as Relation;
+		return { relation, relationType: 'o2m' };
+	}
+	const relation = relations.find((relation) => {
+		return (
+			(relation.collection === collection && relation.field === field) ||
+			(relation.related_collection === collection && relation.meta?.one_field === field)
+		);
+	});
+	const relationType = !relation ? undefined : getRelationType({ relation, collection, field })!;
+	return { relation, relationType };
+}
 
 export function applyFilter(
 	knex: Knex,
@@ -185,16 +210,10 @@ export function applyFilter(
 				 */
 				const pathRoot = pathParts[0].split(':')[0];
 
-				const relation = relations.find((relation) => {
-					return (
-						(relation.collection === parentCollection && relation.field === pathRoot) ||
-						(relation.related_collection === parentCollection && relation.meta?.one_field === pathRoot)
-					);
-				});
-
-				if (!relation) return;
-
-				const relationType = getRelationType({ relation, collection: parentCollection, field: pathRoot });
+				const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
+				if (!relation) {
+					return;
+				}
 
 				const alias = generateAlias();
 
@@ -298,16 +317,9 @@ export function applyFilter(
 			 */
 			const pathRoot = filterPath[0].split(':')[0];
 
-			const relation = relations.find((relation) => {
-				return (
-					(relation.collection === collection && relation.field === pathRoot) ||
-					(relation.related_collection === collection && relation.meta?.one_field === pathRoot)
-				);
-			});
+			const { relation, relationType } = getRelationInfo(relations, pathRoot, collection);
 
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
-
-			const relationType = relation ? getRelationType({ relation, collection: collection, field: pathRoot }) : null;
 
 			if (relationType === 'm2o' || relationType === 'm2a' || relationType === null) {
 				if (filterPath.length > 1) {
