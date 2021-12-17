@@ -17,7 +17,13 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 
 	let permissions: Permission[] = [];
 
-	const { user, role, app, admin, scope: { collection: collection_scope, item: item_scope } = {} } = accountability;
+	const {
+		user,
+		role,
+		app,
+		admin,
+		share_scope: { collection: collection_scope, item: item_scope } = {},
+	} = accountability;
 	const cacheKey = `permissions-${hash({ user, role, app, admin, collection_scope, item_scope })}`;
 
 	if (env.CACHE_PERMISSIONS !== false) {
@@ -57,10 +63,15 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	}
 
 	if (accountability.admin !== true) {
-		const permissionsForRole = await database
-			.select('*')
-			.from('directus_permissions')
-			.where({ role: accountability.role });
+		const query = database.select('*').from('directus_permissions');
+
+		if (accountability.role) {
+			query.where({ role: accountability.role });
+		} else {
+			query.whereNull('role');
+		}
+
+		const permissionsForRole = await query;
 
 		const {
 			permissions: parsedPermissions,
@@ -85,6 +96,10 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			if (containDynamicData && env.CACHE_ENABLED !== false) {
 				await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
 			}
+		}
+
+		if (accountability.share_scope) {
+			// TODO: generate and merge permissions for share scope
 		}
 
 		return processPermissions(accountability, permissions, filterContext);
