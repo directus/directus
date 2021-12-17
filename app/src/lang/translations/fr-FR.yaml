@@ -89,6 +89,7 @@ logoutReason:
   SESSION_EXPIRED: Votre session a expiré
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
+admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
 not_allowed: Non autorisé
 directus_version: Version de Directus
 node_version: Version de Node
@@ -206,7 +207,7 @@ date_range: Plage de dates
 datetime: Date et heure
 dateTime: Date et heure
 precision: Précision
-decimal: Décimale
+decimal: Nombre décimal avec précision
 float: Nombre décimal
 integer: Entier
 json: JSON
@@ -1192,7 +1193,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1510,9 +1510,23 @@ displays:
   formatted-value:
     formatted-value: Valeur formatée
     description: Afficher une version formatée du texte
-    format_title: Formater le titre
-    format_title_label: Formatage automatique de la casse
-    bold_label: Utiliser le style en gras
+    format: Format
+    format_label: En capitales
+    font: Police de caractères
+    font_serif: Sérif
+    font_monospace: Monospace
+    bold: Gras
+    bold_label: Mettre en gras
+    italic: Italique
+    italic_label: Mettre en italique
+    prefix: Préfixe
+    suffix: Suffixe
+    color: Couleur
+    background: Couleur de fond
+    icon: Icône
+    border: Bordure
+    border_label: Afficher une bordure
+    text: Texte
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet

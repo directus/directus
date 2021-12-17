@@ -137,5 +137,9 @@ displays:
     translations: 번역
   datetime:
     format: 형식
+  formatted-value:
+    format: 형식
+    prefix: 접두사
+    suffix: 접미사
   labels:
     choices_value_placeholder: 값 입력

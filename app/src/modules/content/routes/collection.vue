@@ -122,7 +122,12 @@
 				</v-dialog>
 
 				<v-dialog
-					v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
+					v-if="
+						selection.length > 0 &&
+						currentCollection.meta &&
+						currentCollection.meta.archive_field &&
+						archive !== 'archived'
+					"
 					v-model="confirmArchive"
 					@esc="confirmArchive = false"
 				>
@@ -236,6 +241,7 @@
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
+				<archive-sidebar-detail v-if="hasArchive" :collection="collection" :archive="archive" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 				<export-sidebar-detail
 					:collection="collection"
@@ -269,6 +275,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useLayout } from '@/composables/use-layout';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
@@ -279,6 +286,7 @@ import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
 import { mergeFilters } from '@directus/shared/utils';
+import { Filter } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;
@@ -294,6 +302,7 @@ export default defineComponent({
 		BookmarkAdd,
 		BookmarkEdit,
 		DrawerBatch,
+		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
 	},
 	props: {
@@ -306,8 +315,8 @@ export default defineComponent({
 			default: null,
 		},
 		archive: {
-			type: Boolean,
-			default: false,
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {
@@ -353,7 +362,7 @@ export default defineComponent({
 			deleting,
 			batchDelete,
 			confirmArchive,
-			archive: archiveItems,
+			archiveItems,
 			archiving,
 			error: deleteError,
 			batchEditActive,
@@ -375,7 +384,14 @@ export default defineComponent({
 
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
-		const archiveFilter = computed(() => {
+		const hasArchive = computed(
+			() =>
+				currentCollection.value &&
+				currentCollection.value.meta?.archive_field &&
+				currentCollection.value.meta?.archive_app_filter
+		);
+
+		const archiveFilter = computed<Filter | null>(() => {
 			if (!currentCollection.value?.meta) return null;
 			if (!currentCollection.value?.meta?.archive_app_filter) return null;
 
@@ -387,7 +403,22 @@ export default defineComponent({
 			if (archiveValue === 'true') archiveValue = true;
 			if (archiveValue === 'false') archiveValue = false;
 
-			if (props.archive) {
+			if (props.archive === 'all') {
+				return {
+					_or: [
+						{
+							[field]: {
+								_eq: archiveValue,
+							},
+						},
+						{
+							[field]: {
+								_neq: archiveValue,
+							},
+						},
+					],
+				};
+			} else if (props.archive === 'archived') {
 				return {
 					[field]: {
 						_eq: archiveValue,
@@ -446,6 +477,7 @@ export default defineComponent({
 			refresh,
 			refreshInterval,
 			currentLayout,
+			hasArchive,
 			archiveFilter,
 			mergeFilters,
 		};
