@@ -1,4 +1,7 @@
-import { Accountability } from '@directus/shared/types';
-export function getPermissionForShare(scope: NonNullable<Accountability['share_scope']>) {
-	return {};
+import { Permission, Accountability } from '@directus/shared/types';
+import { SchemaOverview } from '../types';
+
+export function getPermissionsForShare(accountability: Accountability, schema: SchemaOverview): Permission[] {
+	const { collection, item } = accountability.share_scope!;
+	return [];
 }

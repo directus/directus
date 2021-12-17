@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions, schemaPermissions } from '../database/system-data/app-access-permissions';
 import { mergePermissions } from '../utils/merge-permissions';
-import { getPermissionForShare } from './get-permissions-for-share';
+import { getPermissionsForShare } from './get-permissions-for-share';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
 import { getCache } from '../cache';
@@ -84,8 +84,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 		}
 
 		if (accountability.share_scope) {
-			// @TODO: generate and merge permissions for share scope
-			permissions = mergePermissions(permissions, schemaPermissions, getPermissionForShare(accountability.share_scope));
+			permissions = mergePermissions(permissions, schemaPermissions, getPermissionsForShare(accountability, schema));
 		}
 
 		const filterContext = containDynamicData

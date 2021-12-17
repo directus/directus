@@ -1,15 +1,17 @@
 import { Permission } from '.';
 
+export type ShareScope = {
+	collection: string;
+	item: string;
+};
+
 export type Accountability = {
 	role: string | null;
 	user?: string | null;
 	admin?: boolean;
 	app?: boolean;
 	permissions?: Permission[];
-	share_scope?: {
-		collection: string;
-		item: string;
-	};
+	share_scope?: ShareScope;
 
 	ip?: string;
 	userAgent?: string;
