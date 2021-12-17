@@ -11,17 +11,13 @@
 			<template v-else>
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
 				<template v-else>
-					<img
-						v-if="imageSource"
-						class="image"
-						loading="lazy"
-						:src="imageSource"
-						alt=""
+					<v-image
+						:class="imageInfo.fileType"
+						:file-type="imageInfo.fileType"
+						:source="imageInfo.source"
+						alt="item.title"
 						role="presentation"
-						@error="imgError = true"
 					/>
-					<img v-else-if="svgSource" class="svg" :src="svgSource" alt="" role="presentation" @error="imgError = true" />
-					<v-icon v-else large :name="icon" />
 				</template>
 			</template>
 		</div>
@@ -101,11 +97,11 @@ export default defineComponent({
 			if (!imgError.value && props.file.type.startsWith('image')) return null;
 			return readableMimeType(props.file.type, true);
 		});
-
-		const imageSource = computed(() => {
+		const imageInfo = computed(() => {
+			let fileType = undefined;
 			if (!props.file || !props.file.type) return null;
-			if (props.file.type.startsWith('image') === false) return null;
-			if (props.file.type.includes('svg')) return null;
+			if (props.file.type.startsWith('image') === true) fileType = 'image';
+			if (props.file.type.includes('svg')) fileType = 'svg';
 
 			let key = 'system-medium-cover';
 
@@ -114,25 +110,17 @@ export default defineComponent({
 			}
 
 			const url = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
-			return addTokenToURL(url);
+			const source = addTokenToURL(url);
+
+			return { source, fileType };
 		});
-
-		const svgSource = computed(() => {
-			if (!props.file || !props.file.type) return null;
-			if (props.file.type.startsWith('image') === false) return null;
-			if (props.file.type.includes('svg') === false) return null;
-
-			const url = getRootPath() + `assets/${props.file.id}?modified=${props.file.modified_on}`;
-			return addTokenToURL(url);
-		});
-
 		const selectionIcon = computed(() => {
 			if (!props.item) return 'radio_button_unchecked';
 
 			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
-		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick, imgError };
+		return { imageInfo, type, selectionIcon, toggleSelection, handleClick, imgError };
 
 		function toggleSelection() {
 			if (!props.item) return null;
