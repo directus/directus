@@ -92,7 +92,7 @@ header {
 	align-items: center;
 	width: max-content;
 	max-width: 100%;
-	height: 64px;
+	height: 60px;
 	margin-top: 2px;
 
 	.title {
@@ -116,8 +116,8 @@ header {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 64px;
-	height: 64px;
+	width: 60px;
+	height: 60px;
 	background-color: var(--brand);
 	border-radius: var(--border-radius);
 

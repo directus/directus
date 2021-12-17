@@ -1,5 +1,13 @@
 <template>
-	<shared-view :inline="!authenticated" :title="notFound ? t('share_access_not_found_title') : t('share_access_page')">
+	<div v-if="loading || authenticating" class="hydrating">
+		<v-progress-circular indeterminate />
+	</div>
+
+	<shared-view
+		v-else
+		:inline="!authenticated"
+		:title="notFound ? t('share_access_not_found_title') : t('share_access_page')"
+	>
 		<v-progress-circular v-if="loading" indeterminate />
 
 		<div v-else-if="notFound">
@@ -24,7 +32,7 @@
 			</template>
 
 			<template v-else>
-				<h1>Logged in!</h1>
+				<share-item :collection="share.collection" :primary-key="share.item" />
 			</template>
 		</template>
 	</shared-view>
@@ -38,6 +46,7 @@ import { useAppStore } from '@/stores';
 import api, { RequestError } from '@/api';
 import { login } from '@/auth';
 import { Share } from '@directus/shared/types';
+import ShareItem from './components/share-item.vue';
 
 type ShareInfo = Pick<
 	Share,
@@ -45,14 +54,15 @@ type ShareInfo = Pick<
 >;
 
 export default defineComponent({
-	components: {},
+	components: { ShareItem },
 	setup() {
 		const { t } = useI18n();
 
 		const appStore = useAppStore();
 		const authenticated = computed(() => appStore.authenticated);
 
-		const loading = ref(false);
+		const shareInfoLoading = ref(true);
+		const authenticating = ref(false);
 
 		const notFound = ref(false);
 
@@ -73,16 +83,17 @@ export default defineComponent({
 			t,
 			share,
 			error,
-			loading,
+			shareInfoLoading,
 			notFound,
 			passwordInput,
 			authenticate,
 			authenticated,
+			authenticating,
 			usesLeft,
 		};
 
 		async function getShareInformation(shareId: string) {
-			loading.value = true;
+			shareInfoLoading.value = true;
 
 			try {
 				const response = await api.get(`/shares/info/${shareId}`);
@@ -90,7 +101,7 @@ export default defineComponent({
 
 				if (!share.value) {
 					notFound.value = true;
-					loading.value = false;
+					shareInfoLoading.value = false;
 					return;
 				}
 
@@ -110,12 +121,12 @@ export default defineComponent({
 					error.value = err;
 				}
 			} finally {
-				loading.value = false;
+				shareInfoLoading.value = false;
 			}
 		}
 
 		async function authenticate() {
-			loading.value = true;
+			authenticating.value = true;
 
 			try {
 				const credentials = { share_id: shareId, password: passwordInput.value };
@@ -123,7 +134,7 @@ export default defineComponent({
 			} catch (err: any) {
 				error.value = err;
 			} finally {
-				loading.value = false;
+				authenticating.value = false;
 			}
 		}
 	},
@@ -138,5 +149,15 @@ h2 {
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
+}
+
+.hydrating {
+	position: fixed;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
 }
 </style>
