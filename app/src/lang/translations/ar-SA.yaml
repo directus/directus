@@ -200,6 +200,7 @@ alias: اسم مستعار
 bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
+date_range: فترة التاريخ
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
 precision: الدقة
@@ -216,6 +217,7 @@ uuid: UUID
 hash: الهاش
 geometry.Point: نقطة
 geometry.Polygon: مضلّع
+geometry.MultiPoint: نقاط متعددة
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -235,10 +237,14 @@ new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيان�
 search_collection: مجموعة البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
+add_m2o_to_collection: 'إضافة M2O إلى "{collection}"'
+add_o2m_to_collection: 'إضافة O2M إلى "{collection}"'
+add_m2m_to_collection: 'إضافة M2M إلى "{collection}"'
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
 add_link: إضافة رابط
+custom_link: رابط مخصص
 default_value: القيمة الافتراضية
 standard_field: حقل قياسي
 single_file: ملف واحد
@@ -269,6 +275,7 @@ raw_value: قيمة خام
 edit_raw_value: تعديل القيمة الخام
 enter_raw_value: أدخل قيمة سطر...
 clear_value: إزالة القيمة
+clear_changes: مسح التغييرات
 reset_to_default: إعادة تعيين إلى الافتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
@@ -322,6 +329,8 @@ yesterday: أمس
 delete_comment: احذف التعليق
 date-fns_time: 'ساعات: دقائق: ثواني'
 date-fns_time_no_seconds: 'س:دد ص'
+minutes: دقائق
+hours: ساعات
 month: شهر
 year: سنة
 select_all: تحديد الكل
