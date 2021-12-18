@@ -52,7 +52,9 @@ edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
 db_only_click_to_configure: 'Apenas banco de dados: Clique p/ configurar'
+show_active_items: Exibir Itens Ativos
 show_archived_items: Mostrar itens arquivados
+show_all_items: Mostrar todos os itens
 edited: Valor editado
 required: Obrigatório
 required_for_app_access: Obrigatório para o Acesso ao Aplicativo
@@ -66,6 +68,8 @@ create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
+subject: Assunto
+inbox: Caixa de entrada
 emails: Emails
 connection_excellent: Conexão excelente
 connection_good: Conexão boa
@@ -177,6 +181,9 @@ continue_in_advanced_field_creation_mode: Continuar a criação do campo no modo
 sum: Soma
 sum_distinct: Soma distinta
 avg: Média
+avg_distinct: Média distinta
+count: Quantidade
+count_distinct: Contagem distinta
 min: Mínimo
 max: Máximo
 exposure: Exposição
@@ -196,6 +203,7 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Data
+date_range: Período
 datetime: DateTime
 dateTime: DateTime
 precision: Precisão
@@ -232,6 +240,8 @@ new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 search_collection: Pesquisar Coleção...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
+add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
+add_o2m_to_collection: 'Adicionar O2M a "{collection}"'
 choose_a_type: Escolha um tipo...
 determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
@@ -435,6 +445,7 @@ copy_to: Copiar para...
 inactive: Inativo
 users: Usuários
 activity: Atividade
+activity_item: Feed de atividade
 action: Ação
 ip_address: Endereço de IP
 user_agent: Agente de Usuário
@@ -799,6 +810,11 @@ collections: Coleções
 singleton: Singleton
 singleton_label: Tratar como objeto único
 system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
+directus_collection:
+  directus_dashboards: Painéis dentro do módulo Insights
+  directus_folders: Fornece diretórios virtuais para arquivos
+  directus_users: Usuários do sistema para a plataforma
+  directus_webhooks: Configuração para solicitações HTTP baseadas em eventos
 fields:
   directus_activity:
     item: Chave Primária do Item
@@ -824,6 +840,8 @@ fields:
     unarchive_value: Valor quando desarquivado
     sort_field: Campo de ordenação
     accountability: Rastreamento de Atividades e Revisões
+    archive_field: Arquivar Campo
+    item_duplication_fields: Campos de item duplicado
   directus_files:
     $thumbnail: Miniatura
     title: Título
@@ -876,6 +894,7 @@ fields:
     token: Token
     token_placeholder: Digite um token de acesso seguro...
     provider: Provedor
+    external_identifier: Identificador externo
     last_page: Última página
     last_access: Último acesso
   directus_settings:
@@ -883,6 +902,9 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Mapeamento
+    basemaps_raster: Rasterizar
+    mapbox_key: Token de Acesso Mapbox
     additional_transforms: Transformações Adicionais
     project_name: Nome do projeto
     project_url: URL do projeto
@@ -896,9 +918,14 @@ fields:
     auth_login_attempts: Tentativas de autenticação
     files_and_thumbnails: Arquivos e armazenamento
     storage_default_folder: Pasta padrão
+    storage_asset_presets: Predefinições de Transformação de Arquivos
+    storage_asset_transform: Transformações Permitidas
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
     module_bar: Barra de módulo
+    transformations_all: Permitir todas as transformações
+    transformations_none: Desativar transformações
+    transformations_presets: Limitar transformações às predefinições abaixo
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -936,13 +963,20 @@ field_options:
       none_text: Nenhum – Não Recomendado
     storage_asset_presets:
       fit_label: Ajustar
+      upscaling: Upscaling
       fit:
+        contain_text: Contém (preservar proporção)
+        cover_text: Capa (forçar tamanho exato)
         fit_text: Ajustar dentro
         outside_text: Ajustar fora
     additional_transforms: Transformações Adicionais
+    mapbox_key: Token de Acesso Mapbox
+    basemaps_name_placeholder: Digite o nome do basemap...
+    basemaps_raster: Rasterizar
     files_divider_title: Arquivos e Miniaturas
     overrides_divider_title: Substituições de Aplicativos
   directus_activity:
+    login: Entrar
     create: Criar
     update: Alteração
     delete: Excluir
@@ -955,8 +989,10 @@ field_options:
     language: Idioma
     translation: Tradução
     collection_name: Nome da coleção
+    plural_unit: Unidade Plural
     archive_divider: Arquivar
     sort_divider: Ordenar
+    accountability_divider: Responsabilidade
   directus_roles:
     fields:
       icon_name: Ícone
