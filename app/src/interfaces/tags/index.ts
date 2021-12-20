@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceTags from './tags.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'tags',
@@ -115,4 +116,5 @@ export default defineInterface({
 		},
 	],
 	recommendedDisplays: ['labels'],
+	preview: PreviewSVG,
 });
