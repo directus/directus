@@ -220,6 +220,7 @@ export function applyFilter(
 				const pathRoot = pathParts[0].split(':')[0];
 
 				const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
+
 				if (!relation) {
 					return;
 				}

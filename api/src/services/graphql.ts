@@ -189,13 +189,21 @@ export class GraphQLService {
 
 		const schema = {
 			read:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['read']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['read']),
 			create:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['create']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['create']),
 			update:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['update']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['update']),
 			delete:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['delete']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['delete']),
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
