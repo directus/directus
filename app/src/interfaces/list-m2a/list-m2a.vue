@@ -201,7 +201,7 @@ export default defineComponent({
 			useEdits();
 		const { onSort } = useManualSort();
 
-		watch(props, fetchValues, { immediate: true, deep: true });
+		watch(() => props.value, fetchValues, { immediate: true, deep: true });
 
 		return {
 			t,
