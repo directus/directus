@@ -330,6 +330,7 @@ export function applyFilter(
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false) {
+				if (!relation) continue;
 				const pkField = `${collection}.${schema.collections[relation!.related_collection!].primary}`;
 
 				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
