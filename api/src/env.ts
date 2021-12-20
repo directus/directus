@@ -19,6 +19,8 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
 
+	DB_EXCLUDE_TABLES: 'spatial_ref_sys',
+
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
@@ -27,8 +29,6 @@ const defaults: Record<string, any> = {
 	RATE_LIMITER_POINTS: 25,
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
-
-	SESSION_STORE: 'memory',
 
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
@@ -53,8 +53,10 @@ const defaults: Record<string, any> = {
 	CACHE_AUTO_PURGE: false,
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
+	CACHE_PERMISSIONS: true,
 
-	OAUTH_PROVIDERS: '',
+	AUTH_PROVIDERS: '',
+	AUTH_DISABLE_DEFAULT: false,
 
 	EXTENSIONS_PATH: './extensions',
 
@@ -83,6 +85,8 @@ const typeMap: Record<string, string> = {
 	DB_PASSWORD: 'string',
 	DB_DATABASE: 'string',
 	DB_PORT: 'number',
+
+	DB_EXCLUDE_TABLES: 'array',
 };
 
 let env: Record<string, any> = {
@@ -161,6 +165,15 @@ function getEnvVariableValue(variableValue: string, variableType: string) {
 	return variableValue.split(`${variableType}:`)[1];
 }
 
+function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | number | RegExp> {
+	return envArray.map((item: string) => {
+		if (isEnvSyntaxPrefixPresent(item)) {
+			return getEnvironmentValueByType(item);
+		}
+		return item;
+	});
+}
+
 function getEnvironmentValueByType(envVariableString: string) {
 	const variableType = getVariableType(envVariableString);
 	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
@@ -169,7 +182,7 @@ function getEnvironmentValueByType(envVariableString: string) {
 		case 'number':
 			return toNumber(envVariableValue);
 		case 'array':
-			return toArray(envVariableValue);
+			return getEnvironmentValueWithPrefix(toArray(envVariableValue));
 		case 'regex':
 			return new RegExp(envVariableValue);
 		case 'string':
@@ -177,6 +190,10 @@ function getEnvironmentValueByType(envVariableString: string) {
 		case 'json':
 			return tryJSON(envVariableValue);
 	}
+}
+
+function isEnvSyntaxPrefixPresent(value: string): boolean {
+	return acceptedEnvTypes.some((envType) => value.includes(`${envType}:`));
 }
 
 function processValues(env: Record<string, any>) {
@@ -203,7 +220,7 @@ function processValues(env: Record<string, any>) {
 
 		// Convert values with a type prefix
 		// (see https://docs.directus.io/reference/environment-variables/#environment-syntax-prefix)
-		if (typeof value === 'string' && acceptedEnvTypes.some((envType) => value.includes(`${envType}:`))) {
+		if (typeof value === 'string' && isEnvSyntaxPrefixPresent(value)) {
 			env[key] = getEnvironmentValueByType(value);
 			continue;
 		}

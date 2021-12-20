@@ -1,5 +1,6 @@
-import md from 'mockdate';
 import nock, { back, BackMode } from 'nock';
+import { setImmediate, setTimeout, clearImmediate } from 'timers';
+import argon2 from 'argon2';
 
 export const URL = process.env.TEST_URL || 'http://localhost';
 export const MODE = process.env.TEST_MODE || 'dryrun';
@@ -27,6 +28,11 @@ export function test(name: string, test: Test, settings?: TestSettings): void {
 			await test(settings?.url || URL, scope);
 		}
 
+		// `clearImmediate` doesn't exist in the jsdom environment and nock throws ReferenceError
+		if (typeof global.clearImmediate !== 'function') {
+			global.clearImmediate = clearImmediate;
+		}
+
 		nock.abortPendingRequests();
 		nock.cleanAll();
 	});
@@ -42,40 +48,41 @@ export async function timers(
 	initial: number = Date.now()
 ): Promise<void> {
 	const originals = {
-		setTimeout: global.setTimeout,
-		setImmediate: global.setImmediate,
+		setTimeout: setTimeout,
+		setImmediate: setImmediate,
 	};
 
-	md.set(new Date(initial));
+	jest.useFakeTimers();
+	jest.setSystemTime(new Date(initial));
 
 	let travel = 0;
 
 	try {
-		jest.useFakeTimers();
 		const tick = async (ms: number) => {
 			travel += ms;
-			md.set(initial + travel);
 			await Promise.resolve().then(() => jest.advanceTimersByTime(ms));
 		};
 		const skip = async (func: () => Promise<void>, date = false) => {
-			if (date) {
-				md.reset();
-			}
 			jest.useRealTimers();
 			try {
 				await func();
 			} finally {
 				if (date) {
-					md.set(initial + travel);
+					jest.setSystemTime(initial + travel);
 				}
 				jest.useFakeTimers();
 			}
 		};
-		const flush = () => new Promise<void>((resolve) => originals.setImmediate(resolve));
+		const flush = () =>
+			new Promise<void>((resolve) => {
+				jest.runAllTicks();
+
+				originals.setImmediate(resolve);
+			});
 		const sleep = (ms: number) =>
 			new Promise<void>((resolve) => {
 				travel += ms;
-				md.set(initial + travel);
+				jest.advanceTimersByTime(travel);
 				originals.setTimeout(resolve, ms);
 			});
 
@@ -86,8 +93,16 @@ export async function timers(
 			sleep,
 		});
 	} finally {
-		md.reset();
 		jest.clearAllTimers();
 		jest.useRealTimers();
 	}
+}
+
+export function generateHash(stringToHash: string): Promise<string> {
+	const buffer = 'string' as unknown as Buffer;
+	const argon2HashConfigOptions = { test: 'test', associatedData: buffer }; // Disallow the HASH_RAW option, see https://github.com/directus/directus/discussions/7670#discussioncomment-1255805
+	// test, if specified, must be passed as a Buffer to argon2.hash, see https://github.com/ranisalt/node-argon2/wiki/Options#test
+	if ('test' in argon2HashConfigOptions)
+		argon2HashConfigOptions.associatedData = Buffer.from(argon2HashConfigOptions.associatedData);
+	return argon2.hash(stringToHash, argon2HashConfigOptions);
 }

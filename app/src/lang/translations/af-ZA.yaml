@@ -1,4 +1,7 @@
 ---
+avatar: Profiel prentjie
+and: En
+or: Of
 create_role: Skep Rol
 language: Taal
 create_field: Skep Veld
@@ -15,6 +18,9 @@ comments: Kommentaar
 create_collection: Skep Versameling
 users: Gebruikers
 activity: Aktiwiteit
+action: Aksie
+ip_address: IP Adres
+user_agent: Gebruiker Agent
 duration: Tydsduur
 status: Status
 bookmarks: Boekmerke
@@ -80,12 +86,23 @@ fields:
     display_template: Modelvorm
   directus_roles:
     description: Beskrywing
+  directus_webhooks:
+    status: Status
+field_options:
+  directus_activity:
+    create: Skep
+  directus_collections:
+    language: Taal
+  directus_webhooks:
+    actions_create: Skep
 comment: Kommentaar
 description: Beskrywing
 email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
+  filter:
+    all: Alle
   input-code:
     code: Kode
   system-collection:

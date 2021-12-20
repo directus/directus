@@ -6,8 +6,9 @@
 			:init="editorOptions"
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
-			@onFocusIn="setFocus(true)"
-			@onFocusOut="setFocus(false)"
+			@dirty="setDirty"
+			@focusin="setFocus(true)"
+			@focusout="setFocus(false)"
 		/>
 
 		<v-dialog v-model="linkDrawerOpen">
@@ -46,7 +47,12 @@
 
 		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
 			<div class="content">
-				<interface-input-code :value="code" language="htmlmixed" @input="code = $event"></interface-input-code>
+				<interface-input-code
+					:value="code"
+					language="htmlmixed"
+					line-wrapping="true"
+					@input="code = $event"
+				></interface-input-code>
 			</div>
 
 			<template #actions>
@@ -59,7 +65,7 @@
 		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
 			<div class="content">
 				<template v-if="imageSelection">
-					<img class="image-preview" :src="imageSelection.imageUrl" />
+					<img class="image-preview" :src="imageSelection.previewUrl" />
 					<div class="grid">
 						<div class="field half">
 							<div class="type-label">{{ t('image_url') }}</div>
@@ -166,11 +172,13 @@ import 'tinymce/icons/default';
 
 import Editor from '@tinymce/tinymce-vue';
 import getEditorStyles from './get-editor-styles';
-
+import { escapeRegExp } from 'lodash';
 import useImage from './useImage';
 import useMedia from './useMedia';
 import useLink from './useLink';
 import useSourceCode from './useSourceCode';
+import { getToken } from '@/api';
+import { getPublicURL } from '@/utils/get-root-path';
 
 type CustomFormat = {
 	title: string;
@@ -188,7 +196,7 @@ export default defineComponent({
 			default: '',
 		},
 		toolbar: {
-			type: Array as PropType<string[]>,
+			type: Array as PropType<string[] | null>,
 			default: () => [
 				'bold',
 				'italic',
@@ -239,10 +247,12 @@ export default defineComponent({
 
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
+		const isEditorDirty = ref(false);
 		const { imageToken } = toRefs(props);
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
+			isEditorDirty,
 			imageToken
 		);
 
@@ -258,19 +268,50 @@ export default defineComponent({
 			mediaWidth,
 			mediaSource,
 			mediaButton,
-		} = useMedia(editorRef, imageToken);
+		} = useMedia(editorRef, isEditorDirty, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef, isEditorDirty);
 
-		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(
+			editorRef,
+			isEditorDirty
+		);
+
+		const replaceTokens = (value: string, token: string | null) => {
+			const url = getPublicURL();
+			const regex = new RegExp(
+				`(<[^]+?=")(${escapeRegExp(
+					url
+				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
+				'gi'
+			);
+
+			return value.replace(regex, (_, pre, matchedUrl, post) => {
+				const matched = new URL(matchedUrl.replace(/&amp;/g, '&'));
+				const params = new URLSearchParams(matched.search);
+
+				if (!token) {
+					params.delete('access_token');
+				} else {
+					params.set('access_token', token);
+				}
+
+				const paramsString = params.toString().length > 0 ? `?${params.toString().replace(/&/g, '&amp;')}` : '';
+
+				return `${pre}${matched.origin}${matched.pathname}${paramsString}${post}`;
+			});
+		};
 
 		const internalValue = computed({
 			get() {
-				return props.value;
+				if (!props.value) return '';
+				return replaceTokens(props.value, getToken());
 			},
 			set(newValue: string) {
+				if (!isEditorDirty.value) return;
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					emit('input', newValue);
+					const removeToken = replaceTokens(newValue, props.imageToken ?? null);
+					emit('input', removeToken);
 				}
 			},
 		});
@@ -282,7 +323,7 @@ export default defineComponent({
 				styleFormats = props.customFormats;
 			}
 
-			let toolbarString = props.toolbar
+			let toolbarString = (props.toolbar ?? [])
 				.map((t) =>
 					t
 						.replace(/^link$/g, 'customLink')
@@ -309,6 +350,7 @@ export default defineComponent({
 				statusbar: false,
 				menubar: false,
 				convert_urls: false,
+				image_dimensions: false,
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
@@ -325,6 +367,7 @@ export default defineComponent({
 			editorOptions,
 			internalValue,
 			setFocus,
+			setDirty,
 			onImageSelect,
 			saveImage,
 			imageDrawerOpen,
@@ -359,6 +402,10 @@ export default defineComponent({
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 			editor.ui.registry.addToggleButton('customLink', linkButton);
 			editor.ui.registry.addButton('customCode', sourceCodeButton);
+		}
+
+		function setDirty() {
+			isEditorDirty.value = true;
 		}
 
 		function setFocus(val: boolean) {

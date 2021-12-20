@@ -62,12 +62,15 @@ export const router = createRouter({
 	routes: defaultRoutes,
 });
 
-export const onBeforeEach: NavigationGuard = async (to, from) => {
+let firstLoad = true;
+
+export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 
 	// First load
-	if (from.name === undefined) {
+	if (firstLoad) {
+		firstLoad = false;
 		// Try retrieving a fresh access token on first load
 		try {
 			await refresh({ navigate: false });
@@ -86,7 +89,11 @@ export const onBeforeEach: NavigationGuard = async (to, from) => {
 			await hydrate();
 			return to.fullPath;
 		} else {
-			return '/login';
+			if (to.fullPath) {
+				return '/login?redirect=' + encodeURIComponent(to.fullPath);
+			} else {
+				return '/login';
+			}
 		}
 	}
 };

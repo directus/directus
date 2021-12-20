@@ -1,19 +1,31 @@
 {
 	"compilerOptions": {
-		"target": "es5",
-		"lib": ["es5"],
-		"module": "es2015",
+		"target": "ES2019",
+		"lib": ["ES2019"],
+		"module": "ES2015",
 		"moduleResolution": "node",
-		"sourceMap": true,
 		"declaration": true,
-		"declarationDir": "dist/types",
-		"noEmit": true,
-		"noEmitOnError": true,
+		"declarationMap": true,
 		"strict": true,
+		"noFallthroughCasesInSwitch": true,
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedParameters": true,
+		"alwaysStrict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"resolveJsonModule": false,
 		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
 		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true
+		"isolatedModules": true,
+		"rootDir": "./src"
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules"]
+	"include": ["./src/**/*.ts"]
 }

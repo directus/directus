@@ -13,6 +13,7 @@ import { Permission } from '@directus/shared/types';
 import api from '@/api';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { isPermissionEmpty } from '@/utils/is-permission-empty';
 
 export default defineComponent({
 	props: {
@@ -39,10 +40,15 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				await api.patch(`/permissions/${props.permission.id}`, props.permission);
+				if (isPermissionEmpty(props.permission)) {
+					await api.delete(`/permissions/${props.permission.id}`);
+				} else {
+					await api.patch(`/permissions/${props.permission.id}`, props.permission);
+				}
+
 				emit('refresh');
 				router.push(`/settings/roles/${props.roleKey || 'public'}`);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

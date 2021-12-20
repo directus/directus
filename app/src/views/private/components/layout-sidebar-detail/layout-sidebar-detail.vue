@@ -10,7 +10,7 @@
 				</v-select>
 			</div>
 
-			<component :is="`layout-options-${layout}`" />
+			<slot />
 		</div>
 	</sidebar-detail>
 </template>
@@ -18,7 +18,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { getLayouts } from '@/layouts';
+import { getLayouts, getLayout } from '@/layouts';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -33,24 +34,9 @@ export default defineComponent({
 
 		const { layouts } = getLayouts();
 
-		const currentLayout = computed(() => {
-			const layout = layouts.value.find((layout) => layout.id === props.modelValue);
+		const currentLayout = computed(() => getLayout(props.modelValue) ?? getLayout('tabular'));
 
-			if (layout === undefined) {
-				return layouts.value.find((layout) => layout.id === 'tabular');
-			}
-
-			return layout;
-		});
-
-		const layout = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(newType: string) {
-				emit('update:modelValue', newType);
-			},
-		});
+		const layout = useSync(props, 'modelValue', emit);
 
 		return { t, currentLayout, layouts, layout };
 	},
@@ -61,11 +47,10 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 :deep(.layout-options) {
-	--form-vertical-gap: 24px;
-	@include form-grid;
-}
+	--form-vertical-gap: 20px;
 
-:deep(.layout-options .type-label) {
-	font-size: 1rem;
+	margin-bottom: 4px;
+
+	@include form-grid;
 }
 </style>

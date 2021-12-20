@@ -1,13 +1,12 @@
 <template>
-	<v-detail class="group-detail">
+	<v-detail :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
 			<v-divider
 				:style="{
 					'--v-divider-label-color': headerColor,
 				}"
-				:class="{ active }"
+				:class="{ active, edited }"
 				:inline-title="false"
-				:start-open="start === 'open'"
 				large
 				@click="toggle"
 			>
@@ -15,6 +14,13 @@
 				<template v-if="field.name">
 					<span class="title">{{ field.name }}</span>
 				</template>
+				<v-icon
+					v-if="!active && validationMessages"
+					v-tooltip="validationMessages"
+					class="warning"
+					name="error_outline"
+					small
+				/>
 				<v-icon class="expand-icon" name="expand_more" />
 			</v-divider>
 		</template>
@@ -24,7 +30,7 @@
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.id"
+			:group="field.meta.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
@@ -35,11 +41,13 @@
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { ValidationError } from '@directus/shared/types';
+import { useI18n } from 'vue-i18n';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
-	name: 'InterfaceGroupRaw',
+	name: 'InterfaceGroupDetail',
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -97,6 +105,44 @@ export default defineComponent({
 		},
 	},
 	emits: ['apply'],
+	setup(props) {
+		const { t } = useI18n();
+
+		const edited = computed(() => {
+			if (!props.values) return false;
+
+			const editedFields = Object.keys(props.values);
+			return props.fields.some((field) => editedFields.includes(field.field)) ? true : false;
+		});
+
+		const validationMessages = computed(() => {
+			if (!props.validationErrors) return;
+
+			const fields = props.fields.map((field) => field.field);
+
+			const errors = props.validationErrors.reduce((acc, validationError) => {
+				if (fields.includes(validationError.field) === false) return acc;
+
+				if (validationError.code === 'RECORD_NOT_UNIQUE') {
+					acc.push(`${formatTitle(validationError.field)} ${t('validationError.unique').toLowerCase()}`);
+				} else {
+					acc.push(
+						`${formatTitle(validationError.field)} ${t(
+							`validationError.${validationError.type}`,
+							validationError
+						).toLowerCase()}`
+					);
+				}
+				return acc;
+			}, [] as string[]);
+
+			if (errors.length === 0) return;
+
+			return errors.join('\n');
+		});
+
+		return { edited, validationMessages };
+	},
 });
 </script>
 
@@ -119,7 +165,29 @@ export default defineComponent({
 	transform: rotate(0) !important;
 }
 
+.v-divider .title {
+	position: relative;
+}
+
+.v-divider.edited:not(.active) .title::before {
+	position: absolute;
+	top: 14px;
+	left: -7px;
+	display: block;
+	width: 4px;
+	height: 4px;
+	background-color: var(--foreground-subdued);
+	border-radius: 4px;
+	content: '';
+	pointer-events: none;
+}
+
 .header-icon {
 	margin-right: 12px !important;
+}
+
+.warning {
+	margin-left: 8px;
+	color: var(--danger);
 }
 </style>

@@ -3,8 +3,9 @@ import {
 	DisplayConfig,
 	LayoutConfig,
 	ModuleConfig,
-	HookRegisterFunction,
-	EndpointRegisterFunction,
+	HookConfig,
+	EndpointConfig,
+	PanelConfig,
 } from '../types';
 
 export function defineInterface(config: InterfaceConfig): InterfaceConfig {
@@ -25,10 +26,14 @@ export function defineModule(config: ModuleConfig): ModuleConfig {
 	return config;
 }
 
-export function defineHook(config: HookRegisterFunction): HookRegisterFunction {
+export function defineHook(config: HookConfig): HookConfig {
 	return config;
 }
 
-export function defineEndpoint(config: EndpointRegisterFunction): EndpointRegisterFunction {
+export function defineEndpoint(config: EndpointConfig): EndpointConfig {
+	return config;
+}
+
+export function definePanel(config: PanelConfig): PanelConfig {
 	return config;
 }

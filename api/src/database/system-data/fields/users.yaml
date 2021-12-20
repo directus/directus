@@ -56,7 +56,6 @@ fields:
       iconRight: local_offer
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
@@ -64,7 +63,7 @@ fields:
     interface: presentation-divider
     options:
       icon: face
-      title: User Preferences
+      title: $t:fields.directus_users.user_preferences
     special:
       - alias
       - no-data
@@ -79,11 +78,11 @@ fields:
     options:
       choices:
         - value: auto
-          text: Automatic (Based on System)
+          text: $t:fields.directus_users.theme_auto
         - value: light
-          text: Light Mode
+          text: $t:fields.directus_users.theme_light
         - value: dark
-          text: Dark Mode
+          text: $t:fields.directus_users.theme_dark
     width: half
 
   - field: tfa_secret
@@ -91,11 +90,16 @@ fields:
     special: conceal
     width: half
 
+  - field: email_notifications
+    interface: boolean
+    width: half
+    special: boolean
+
   - field: admin_divider
     interface: presentation-divider
     options:
       icon: verified_user
-      title: Admin Options
+      title: $t:fields.directus_users.admin_options
       color: '#E35169'
     special:
       - alias
@@ -106,15 +110,15 @@ fields:
     interface: select-dropdown
     options:
       choices:
-        - text: Draft
+        - text: $t:fields.directus_users.status_draft
           value: draft
-        - text: Invited
+        - text: $t:fields.directus_users.status_invited
           value: invited
-        - text: Active
+        - text: $t:fields.directus_users.status_active
           value: active
-        - text: Suspended
+        - text: $t:fields.directus_users.status_suspended
           value: suspended
-        - text: Archived
+        - text: $t:fields.directus_users.status_archived
           value: archived
     width: half
 
@@ -132,7 +136,7 @@ fields:
     interface: token
     options:
       iconRight: vpn_key
-      placeholder: Enter a secure access token...
+      placeholder: $t:fields.directus_users.token_placeholder
     width: full
 
   - field: id
@@ -150,3 +154,20 @@ fields:
     display: datetime
     display_options:
       relative: true
+
+  - field: provider
+    width: half
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:default_provider
+          value: default
+
+  - field: external_identifier
+    width: half
+    options:
+      iconRight: account_circle
+    interface: input
+
+  - field: auth_data
+    hidden: true

@@ -37,7 +37,13 @@ export const onRequest = (config: AxiosRequestConfig): Promise<RequestConfig> =>
 	};
 
 	return new Promise((resolve) => {
-		queue.add(() => resolve(requestConfig));
+		if (config.url && config.url === '/auth/refresh') {
+			queue.pause();
+			resolve(requestConfig);
+			queue.start();
+		} else {
+			queue.add(() => resolve(requestConfig));
+		}
 	});
 };
 
@@ -50,6 +56,8 @@ export const onResponse = (response: AxiosResponse | Response): AxiosResponse | 
 
 export const onError = async (error: RequestError): Promise<RequestError> => {
 	const requestsStore = useRequestsStore();
+
+	// Note: Cancelled requests don't respond with the config
 	const id = (error.response?.config as RequestConfig)?.id;
 
 	if (id) requestsStore.endRequest(id);
@@ -95,13 +103,13 @@ api.interceptors.response.use(onResponse, onError);
 
 export default api;
 
-function getToken() {
-	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+export function getToken(): string | null {
+	return api.defaults.headers.common['Authorization']?.split(' ')[1] || null;
 }
 
 export function addTokenToURL(url: string, token?: string): string {
-	token = token || getToken();
-	if (!token) return url;
+	const accessToken = token || getToken();
+	if (!accessToken) return url;
 
-	return addQueryToPath(url, { access_token: token });
+	return addQueryToPath(url, { access_token: accessToken });
 }

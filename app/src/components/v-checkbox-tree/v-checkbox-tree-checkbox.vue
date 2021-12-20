@@ -1,11 +1,5 @@
 <template>
-	<v-list-group
-		v-if="children"
-		v-show="groupShown"
-		:value="value"
-		:open="typeof search === 'string' && search.length > 0"
-		arrow-placement="before"
-	>
+	<v-list-group v-if="children" v-show="groupShown" :value="value" :open="groupOpen" arrow-placement="before">
 		<template #activator>
 			<v-checkbox
 				v-model="treeValue"
@@ -14,7 +8,9 @@
 				:label="text"
 				:value="value"
 				:disabled="disabled"
-			/>
+			>
+				<v-highlight :text="text" :query="search" />
+			</v-checkbox>
 		</template>
 
 		<v-checkbox-tree-checkbox
@@ -33,11 +29,14 @@
 			:children="choice[itemChildren]"
 			:disabled="disabled"
 			:show-selection-only="showSelectionOnly"
+			:parent-value="value"
 		/>
 	</v-list-group>
 
 	<v-list-item v-else-if="!children" v-show="!hidden" class="item">
-		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value" />
+		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
+			<v-highlight :text="text" :query="search" />
+		</v-checkbox>
 	</v-list-item>
 </template>
 
@@ -105,6 +104,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		parentValue: {
+			type: [String, Number],
+			default: null,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -122,7 +125,10 @@ export default defineComponent({
 			if (props.showSelectionOnly) {
 				options = options.filter(
 					(child) =>
-						props.modelValue.includes(child[props.itemValue]) || childrenHaveValueMatch(child[props.itemChildren])
+						props.modelValue.includes(child[props.itemValue]) ||
+						childrenHaveValueMatch(child[props.itemChildren]) ||
+						props.modelValue.includes(props.parentValue) ||
+						props.modelValue.includes(props.value)
 				);
 			}
 
@@ -152,6 +158,14 @@ export default defineComponent({
 			}
 
 			return visibleChildrenValues.value.length > 0;
+		});
+
+		const groupOpen = computed(() => {
+			if (props.showSelectionOnly === true) {
+				return visibleChildrenValues.value.length > 0;
+			}
+
+			return typeof props.search === 'string' && props.search.length > 0;
 		});
 
 		const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);
@@ -247,6 +261,7 @@ export default defineComponent({
 			groupIndeterminateState,
 			visibleChildrenValues,
 			groupShown,
+			groupOpen,
 		};
 
 		function emitAll(rawValue: (string | number)[], { added, removed }: Delta) {
@@ -313,16 +328,25 @@ export default defineComponent({
 				props.modelValue.includes(props.value) &&
 				allChildrenRecursive.some((childVal) => rawValue.includes(childVal))
 			) {
+				const childThatContainsSelection = props.children.find((child) => {
+					const childNestedValues = getRecursiveChildrenValues('all', child[props.itemChildren]);
+					return rawValue.some((rawVal) => childNestedValues.includes(rawVal)) === true;
+				});
+
 				const newValue = [
 					...rawValue.filter((val) => val !== props.value),
 					...(props.children || [])
 						.filter((child) => {
 							if (!child[props.itemChildren]) return true;
-
-							const childNestedValues = getRecursiveChildrenValues('all', child[props.itemChildren]);
-							return rawValue.some((rawVal) => childNestedValues.includes(rawVal)) === false;
+							return child[props.itemValue] !== childThatContainsSelection?.[props.itemValue];
 						})
 						.map((child) => child[props.itemValue]),
+					...(childThatContainsSelection?.[props.itemChildren] ?? [])
+						.filter((grandChild: Record<string, any>) => {
+							const childNestedValues = getRecursiveChildrenValues('all', grandChild[props.itemChildren]);
+							return rawValue.some((rawVal) => childNestedValues.includes(rawVal)) === false;
+						})
+						.map((grandChild: Record<string, any>) => grandChild[props.itemValue]),
 				];
 
 				return emitValue(newValue);

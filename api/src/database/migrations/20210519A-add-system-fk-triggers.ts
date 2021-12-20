@@ -99,7 +99,7 @@ export async function up(knex: Knex): Promise<void> {
 				await knex.schema.alterTable(update.table, (table) => {
 					table.dropForeign([constraint.column], existingForeignKey?.constraint_name || undefined);
 				});
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(`Couldn't drop foreign key ${update.table}.${constraint.column}->${constraint.references}`);
 				logger.warn(err);
 			}
@@ -114,7 +114,7 @@ export async function up(knex: Knex): Promise<void> {
 						// Knex uses a default convention for index names: `table_column_type`
 						table.dropIndex([constraint.column], `${update.table}_${constraint.column}_foreign`);
 					});
-				} catch (err) {
+				} catch (err: any) {
 					logger.warn(
 						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
 					);
@@ -126,7 +126,7 @@ export async function up(knex: Knex): Promise<void> {
 				await knex.schema.alterTable(update.table, (table) => {
 					table.foreign(constraint.column).references(constraint.references).onDelete(constraint.on_delete);
 				});
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(`Couldn't add foreign key to ${update.table}.${constraint.column}->${constraint.references}`);
 				logger.warn(err);
 			}
@@ -141,7 +141,7 @@ export async function down(knex: Knex): Promise<void> {
 				await knex.schema.alterTable(update.table, (table) => {
 					table.dropForeign([constraint.column]);
 				});
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(`Couldn't drop foreign key ${update.table}.${constraint.column}->${constraint.references}`);
 				logger.warn(err);
 			}
@@ -156,7 +156,7 @@ export async function down(knex: Knex): Promise<void> {
 						// Knex uses a default convention for index names: `table_column_type`
 						table.dropIndex([constraint.column], `${update.table}_${constraint.column}_foreign`);
 					});
-				} catch (err) {
+				} catch (err: any) {
 					logger.warn(
 						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
 					);
@@ -168,7 +168,7 @@ export async function down(knex: Knex): Promise<void> {
 				await knex.schema.alterTable(update.table, (table) => {
 					table.foreign(constraint.column).references(constraint.references);
 				});
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(`Couldn't add foreign key to ${update.table}.${constraint.column}->${constraint.references}`);
 				logger.warn(err);
 			}

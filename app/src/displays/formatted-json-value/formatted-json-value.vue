@@ -25,13 +25,13 @@
 
 <script lang="ts">
 import { render } from 'micromustache';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
 		value: {
-			type: [Object, Array],
+			type: [Object, Array] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		format: {
@@ -46,14 +46,22 @@ export default defineComponent({
 
 			try {
 				if (Array.isArray(props.value)) {
-					return props.value.map((item: any) => render(props.format || '', item));
+					return props.value.map((item: any) => renderValue(item));
 				} else {
-					return [render(props.format || '', props.value)];
+					return [renderValue(props.value)];
 				}
-			} catch (error) {
+			} catch {
 				return null;
 			}
 		});
+
+		function renderValue(input: Record<string, any> | Record<string, any>[]) {
+			if (props.format) {
+				return render(props.format, input);
+			} else {
+				return render('{{ value }}', { value: input });
+			}
+		}
 
 		return { displayValue, t };
 	},

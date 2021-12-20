@@ -273,6 +273,54 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	background: #e8f2ff;
 }
 
+/* Default styles for linting */
+.CodeMirror-gutter-elt {
+	left: 4px;
+}
+.CodeMirror-lint-markers {
+	width: 16px;
+}
+.CodeMirror-lint-tooltip {
+	position: absolute;
+	z-index: 850;
+	max-width: 600px;
+	padding: 4px 8px;
+	color: var(--foreground-inverted);
+	background-color: var(--background-inverted);
+	border-radius: var(--border-radius);
+	font-family: var(--family-monospace);
+	white-space: pre-wrap;
+	overflow: hidden;
+	opacity: 0;
+	transition: opacity var(--fast) var(--transition);
+}
+.CodeMirror-lint-mark-warning {
+	border-bottom: 2px dashed var(--warning);
+}
+
+.CodeMirror-lint-mark-error {
+	border-bottom: 2px dashed var(--danger);
+}
+.CodeMirror-lint-marker {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	left: 4px;
+	height: 16px;
+	width: 16px;
+}
+.CodeMirror-lint-marker-warning {
+	background-color: var(--warning);
+	-webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.CodeMirror-lint-marker-error {
+	background-color: var(--danger);
+	-webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
+}
+
 /* STOP */
 
 /* ============================================================================================== */
@@ -313,7 +361,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
 	position: absolute;
-	z-index: 6;
+	z-index: 4;
 	display: none;
 }
 .CodeMirror-vscrollbar {

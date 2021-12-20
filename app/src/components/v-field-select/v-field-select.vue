@@ -13,7 +13,7 @@
 		class="v-field-select"
 	>
 		<template #item="{ element }">
-			<v-chip v-tooltip="element.field" class="field draggable" @click="removeField(element.field)">
+			<v-chip v-tooltip="element.field" clickable class="field draggable" @click="removeField(element.field)">
 				{{ element.name }}
 			</v-chip>
 		</template>
@@ -27,7 +27,7 @@
 					</v-button>
 				</template>
 
-				<v-list>
+				<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
 					<field-list-item
 						v-for="field in availableFields"
 						:key="field.key"
@@ -45,13 +45,13 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, ref, PropType, computed } from 'vue';
 import FieldListItem from '../v-field-template/field-list-item.vue';
-import { Collection, Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
+import { Collection } from '@/types';
 import Draggable from 'vuedraggable';
-import useFieldTree from '@/composables/use-field-tree';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldListItem, Draggable },
@@ -70,7 +70,7 @@ export default defineComponent({
 		},
 		depth: {
 			type: Number,
-			default: 1,
+			default: undefined,
 		},
 		inject: {
 			type: Object as PropType<{ fields: Field[]; collections: Collection[]; relations: Relation[] } | null>,
@@ -85,7 +85,7 @@ export default defineComponent({
 		const { collection, inject } = toRefs(props);
 
 		const { info } = useCollection(collection);
-		const { tree } = useFieldTree(collection, false, inject);
+		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
 		const internalValue = computed({
 			get() {
@@ -100,7 +100,7 @@ export default defineComponent({
 			get() {
 				return internalValue.value.map((field) => ({
 					field,
-					name: findTree(tree.value, field.split('.'))?.name as string,
+					name: findTree(treeList.value, field.split('.'))?.name as string,
 				}));
 			},
 			set(newVal: { field: string; name: string }[]) {
@@ -109,7 +109,7 @@ export default defineComponent({
 		});
 
 		const availableFields = computed(() => {
-			return parseTree(tree.value);
+			return parseTree(treeList.value);
 		});
 
 		return {
@@ -120,7 +120,8 @@ export default defineComponent({
 			availableFields,
 			selectedFields,
 			hideDragImage,
-			tree,
+			treeList,
+			loadFieldRelations,
 			collectionInfo: info,
 		};
 

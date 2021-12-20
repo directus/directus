@@ -1,14 +1,14 @@
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { formatISO, parse, format } from 'date-fns';
-import useItems from '@/composables/use-items';
+import { useItems } from '@directus/shared/composables';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field, Filter, Item } from '@directus/shared/types';
+import { Field, Item } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -20,17 +20,9 @@ import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
-import CalendarSidebar from './sidebar.vue';
-
-type LayoutOptions = {
-	template?: string;
-	startDateField?: string;
-	endDateField?: string;
-	viewInfo?: {
-		type: string;
-		startDateStr: string;
-	};
-};
+import { useSync } from '@directus/shared/composables';
+import { LayoutOptions } from './types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',
@@ -39,18 +31,20 @@ export default defineLayout<LayoutOptions>({
 	component: CalendarLayout,
 	slots: {
 		options: CalendarOptions,
-		sidebar: CalendarSidebar,
+		sidebar: () => undefined,
 		actions: CalendarActions,
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { t, locale } = useI18n();
 
-		const calendarEl = ref<HTMLElement>();
 		const calendar = ref<Calendar>();
 
 		const appStore = useAppStore();
 
-		const { selection, collection, searchQuery, layoutOptions, filters } = toRefs(props);
+		const selection = useSync(props, 'selection', emit);
+		const layoutOptions = useSync(props, 'layoutOptions', emit);
+
+		const { collection, filter, search } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -60,80 +54,41 @@ export default defineLayout<LayoutOptions>({
 			})
 		);
 
-		const filtersWithCalendarView = computed<Filter[]>(() => {
-			if (!calendar.value || !startDateField.value) return filters.value;
-
-			return [
-				...filters.value,
-				{
-					key: 'start_date',
-					field: startDateField.value,
-					operator: 'gte',
-					value: formatISO(calendar.value.view.currentStart),
-					hidden: true,
-				},
-				{
-					key: 'end_date',
-					field: startDateField.value,
-					operator: 'lte',
-					value: formatISO(calendar.value.view.currentEnd),
-					hidden: true,
-				},
-			];
+		const calendarFilter = computed(() => {
+			if (!calendar.value || !startDateField.value) {
+				return;
+			}
+			const start = formatISO(calendar.value.view.activeStart);
+			const end = formatISO(calendar.value.view.activeEnd);
+			const startsHere = { [startDateField.value]: { _between: [start, end] } };
+			if (!endDateField.value) {
+				return startsHere;
+			}
+			const endsHere = { [endDateField.value]: { _between: [start, end] } };
+			const startsBefore = { [startDateField.value]: { _lte: start } };
+			const endsAfter = { [endDateField.value]: { _gte: end } };
+			const overlapsHere = { _and: [startsBefore, endsAfter] };
+			return { _or: [startsHere, endsHere, overlapsHere] };
 		});
 
-		const template = computed({
-			get() {
-				return layoutOptions.value?.template;
-			},
-			set(newTemplate: string | undefined) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					template: newTemplate,
-				};
-			},
+		const filterWithCalendarView = computed(() => {
+			if (!calendarFilter.value) return filter.value;
+			if (!filter.value) return null;
+
+			return {
+				_and: [filter.value, calendarFilter.value],
+			};
 		});
 
-		const viewInfo = computed({
-			get() {
-				return layoutOptions.value?.viewInfo;
-			},
-			set(newViewInfo: LayoutOptions['viewInfo']) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					viewInfo: newViewInfo,
-				};
-			},
-		});
+		const template = syncRefProperty(layoutOptions, 'template', undefined);
+		const viewInfo = syncRefProperty(layoutOptions, 'viewInfo', undefined);
 
-		const startDateField = computed({
-			get() {
-				return layoutOptions.value?.startDateField;
-			},
-			set(newStartDateField: string | undefined) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					startDateField: newStartDateField,
-				};
-			},
-		});
-
+		const startDateField = syncRefProperty(layoutOptions, 'startDateField', undefined);
 		const startDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === startDateField.value);
 		});
 
-		const endDateField = computed({
-			get() {
-				return layoutOptions.value?.endDateField;
-			},
-			set(newEndDateField: string | undefined) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					endDateField: newEndDateField,
-				};
-			},
-		});
-
+		const endDateField = syncRefProperty(layoutOptions, 'endDateField', undefined);
 		const endDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
@@ -141,7 +96,7 @@ export default defineLayout<LayoutOptions>({
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
-				sort: computed(() => primaryKeyField.value?.field || ''),
+				sort: computed(() => [primaryKeyField.value?.field || '']),
 				page: ref(1),
 				limit: ref(-1),
 				fields: computed(() => {
@@ -153,8 +108,8 @@ export default defineLayout<LayoutOptions>({
 					if (endDateField.value) fields.push(endDateField.value);
 					return fields;
 				}),
-				filters: filtersWithCalendarView,
-				searchQuery: searchQuery,
+				filter: filterWithCalendarView,
+				search: search,
 			},
 			false
 		);
@@ -170,7 +125,7 @@ export default defineLayout<LayoutOptions>({
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
-				contentHeight: 800,
+				height: '100%',
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
@@ -188,10 +143,12 @@ export default defineLayout<LayoutOptions>({
 						const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
 
 						if (item) {
-							if (selection.value.includes(item)) {
-								selection.value = selection.value.filter((selectedItem) => selectedItem !== item);
+							const primaryKey = item[primaryKeyField.value!.field];
+
+							if (selection.value.includes(primaryKey)) {
+								selection.value = selection.value.filter((selected) => selected !== primaryKey);
 							} else {
-								selection.value = [...selection.value, item];
+								selection.value = [...selection.value, primaryKey];
 							}
 
 							updateCalendar();
@@ -201,9 +158,9 @@ export default defineLayout<LayoutOptions>({
 
 						const endpoint = collection.value.startsWith('directus')
 							? collection.value.substring(9)
-							: `/collections/${collection.value}`;
+							: `content/${collection.value}`;
 
-						router.push(`${endpoint}/${primaryKey}`);
+						router.push(`/${endpoint}/${primaryKey}`);
 					}
 				},
 				async eventChange(info) {
@@ -223,7 +180,7 @@ export default defineLayout<LayoutOptions>({
 
 					try {
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				},
@@ -266,7 +223,6 @@ export default defineLayout<LayoutOptions>({
 		});
 
 		return {
-			calendarEl,
 			items,
 			loading,
 			error,
@@ -275,7 +231,7 @@ export default defineLayout<LayoutOptions>({
 			totalCount,
 			changeManualSort,
 			getItems,
-			filtersWithCalendarView,
+			filterWithCalendarView,
 			template,
 			dateFields,
 			startDateField,
@@ -294,8 +250,8 @@ export default defineLayout<LayoutOptions>({
 			}
 		}
 
-		function createCalendar() {
-			calendar.value = new Calendar(calendarEl.value!, fullFullCalendarOptions.value);
+		function createCalendar(calendarElement: HTMLElement) {
+			calendar.value = new Calendar(calendarElement, fullFullCalendarOptions.value);
 
 			calendar.value.on('datesSet', (args) => {
 				viewInfo.value = {
@@ -332,13 +288,15 @@ export default defineLayout<LayoutOptions>({
 				}
 			}
 
+			const primaryKey = item[primaryKeyField.value.field];
+
 			return {
-				id: item[primaryKeyField.value.field],
+				id: primaryKey,
 				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				className: selection.value.includes(item) ? 'selected' : undefined,
+				className: selection.value.includes(primaryKey) ? 'selected' : undefined,
 			};
 		}
 

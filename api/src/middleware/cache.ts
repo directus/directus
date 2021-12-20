@@ -23,7 +23,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 
 	try {
 		cachedData = await cache.get(key);
-	} catch (err) {
+	} catch (err: any) {
 		logger.warn(err, `[cache] Couldn't read key ${key}. ${err.message}`);
 		return next();
 	}
@@ -33,7 +33,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 
 		try {
 			cacheExpiryDate = (await cache.get(`${key}__expires_at`)) as number | null;
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't read key ${`${key}__expires_at`}. ${err.message}`);
 			return next();
 		}

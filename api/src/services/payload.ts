@@ -1,15 +1,18 @@
-import argon2 from 'argon2';
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview, Alterations } from '../types';
+import { Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
+import { unflatten } from 'flat';
+import { getHelpers, Helpers } from '../database/helpers';
+import { parse as wktToGeoJSON } from 'wellknown';
+import { generateHash } from '../utils/generate-hash';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -19,6 +22,7 @@ type Transformers = {
 		value: any;
 		payload: Partial<Item>;
 		accountability: Accountability | null;
+		specials: string[];
 	}) => Promise<any>;
 };
 
@@ -29,12 +33,14 @@ type Transformers = {
 export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
+	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
+		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 
@@ -44,9 +50,8 @@ export class PayloadService {
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
-
 			if (action === 'create' || action === 'update') {
-				return await argon2.hash(String(value));
+				return await generateHash(String(value));
 			}
 
 			return value;
@@ -60,7 +65,13 @@ export class PayloadService {
 		},
 		async boolean({ action, value }) {
 			if (action === 'read') {
-				return value === true || value === 1 || value === '1';
+				if (value === true || value === 1 || value === '1') {
+					return true;
+				} else if (value === false || value === 0 || value === '0') {
+					return false;
+				} else if (value === null || value === '') {
+					return null;
+				}
 			}
 
 			return value;
@@ -108,8 +119,7 @@ export class PayloadService {
 		},
 		async csv({ action, value }) {
 			if (!value) return;
-			if (action === 'read') return value.split(',');
-
+			if (action === 'read' && Array.isArray(value) === false) return value.split(',');
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
@@ -148,16 +158,23 @@ export class PayloadService {
 			})
 		);
 
-		await this.processDates(processedPayload, action);
+		this.processGeometries(processedPayload, action);
+		this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
-					if (Array.isArray(value) || (typeof value === 'object' && value instanceof Date !== true && value !== null)) {
-						record[key] = JSON.stringify(value);
+					if (Array.isArray(value) || (typeof value === 'object' && !(value instanceof Date) && value !== null)) {
+						if (!value.isRawInstance) {
+							record[key] = JSON.stringify(value);
+						}
 					}
 				}
 			});
+		}
+
+		if (action === 'read') {
+			this.processAggregates(processedPayload);
 		}
 
 		if (Array.isArray(payload)) {
@@ -165,6 +182,16 @@ export class PayloadService {
 		}
 
 		return processedPayload[0];
+	}
+
+	processAggregates(payload: Partial<Item>[]) {
+		const aggregateKeys = Object.keys(payload[0]).filter((key) => key.includes('->'));
+		if (aggregateKeys.length) {
+			for (const item of payload) {
+				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				aggregateKeys.forEach((key) => delete item[key]);
+			}
+		}
 	}
 
 	async processField(
@@ -185,6 +212,7 @@ export class PayloadService {
 					value,
 					payload,
 					accountability,
+					specials: fieldSpecials,
 				});
 			}
 		}
@@ -193,13 +221,35 @@ export class PayloadService {
 	}
 
 	/**
+	 * Native geometries are stored in custom binary format. We need to insert them with
+	 * the function st_geomfromtext. For this to work, that function call must not be
+	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
+	 * to check if the value is a raw instance before stringifying it in the next step.
+	 */
+	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
+		const process =
+			action == 'read'
+				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
+				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
+
+		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
+
+		for (const [name] of geometryColumns) {
+			for (const payload of payloads) {
+				if (payload[name]) {
+					payload[name] = process(payload[name]);
+				}
+			}
+		}
+
+		return payloads;
+	}
+	/**
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(
-		payloads: Partial<Record<string, any>>[],
-		action: Action
-	): Promise<Partial<Record<string, any>>[]> {
+	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
@@ -364,12 +414,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -432,12 +482,12 @@ export class PayloadService {
 
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
+					onRevisionCreate: (pk) => revisions.push(pk),
 				});
 			}
 
@@ -512,8 +562,9 @@ export class PayloadService {
 						// primary key might be reported as a string instead of number, coming from the
 						// http route, and or a bigInteger in the DB
 						if (
-							existingRecord[relation.field] == parent ||
-							existingRecord[relation.field] == payload[currentPrimaryKeyField]
+							isNil(existingRecord[relation.field]) === false &&
+							(existingRecord[relation.field] == parent ||
+								existingRecord[relation.field] == payload[currentPrimaryKeyField])
 						) {
 							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
 							continue;
@@ -532,7 +583,7 @@ export class PayloadService {
 
 				savedPrimaryKeys.push(
 					...(await itemsService.upsertMany(recordsToUpsert, {
-						onRevisionCreate: (id) => revisions.push(id),
+						onRevisionCreate: (pk) => revisions.push(pk),
 					}))
 				);
 
@@ -562,7 +613,7 @@ export class PayloadService {
 						query,
 						{ [relation.field]: null },
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -580,7 +631,7 @@ export class PayloadService {
 							[relation.field]: parent || payload[currentPrimaryKeyField],
 						})),
 						{
-							onRevisionCreate: (id) => revisions.push(id),
+							onRevisionCreate: (pk) => revisions.push(pk),
 						}
 					);
 				}
@@ -596,7 +647,7 @@ export class PayloadService {
 								[relation.field]: parent || payload[currentPrimaryKeyField],
 							},
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}
@@ -627,7 +678,7 @@ export class PayloadService {
 							query,
 							{ [relation.field]: null },
 							{
-								onRevisionCreate: (id) => revisions.push(id),
+								onRevisionCreate: (pk) => revisions.push(pk),
 							}
 						);
 					}
@@ -636,5 +687,23 @@ export class PayloadService {
 		}
 
 		return { revisions };
+	}
+
+	/**
+	 * Transforms the input partial payload to match the output structure, to have consistency
+	 * between delta and data
+	 */
+	async prepareDelta(data: Partial<Item>): Promise<string> {
+		let payload = cloneDeep(data);
+
+		for (const key in payload) {
+			if (payload[key]?.isRawInstance) {
+				payload[key] = payload[key].bindings[0];
+			}
+		}
+
+		payload = await this.processValues('read', payload);
+
+		return JSON.stringify(payload);
 	}
 }

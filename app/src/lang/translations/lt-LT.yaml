@@ -1,24 +1,5 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+avatar: Nuotrauka
 edit_field: Redaguoti lauką
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
@@ -35,7 +16,6 @@ leaf: Lapas
 indeterminate: Neapibrėžta
 exclusive: Išskirtinis
 children: Vaikai
-db_only_click_to_configure: 'Tik duomenų bazė: spausti, kad konfigūruoti '
 show_archived_items: Rodyti archyvuotus elementus
 edited: Vertė redaguota
 required: Privalomas
@@ -46,7 +26,6 @@ create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
 create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
-email_examples: "administratorius{'@'}pavyzdys.lt, naudotojas{'@'}pavyzdys.lt..."
 invite: Pakviesti
 email_already_invited: El. pašto "{email}" adresatas jau buvo pakviestas
 emails: El. pašto adresai
@@ -133,9 +112,6 @@ fields_for_role: 'Laukai, kuriuos {role} vaidmuo gali {action}.'
 validation_for_role: 'Lauko {action} taisyklės, kurių {role} vaidmuo turi laikytis.'
 presets_for_role: 'Lauko vertė pagal nutylėjimą {role} vaidmeniui.'
 presentation_and_aliases: Atvaizdavimas ir sinonimai
-revision_post_update: Taip šis elementas atrodė po paskutinio atnaujinimo...
-changes_made: Tai yra konkretūs atlikti pakeitimai...
-no_relational_data: Atminkite, kad neįtraukiami sąryšių duomenys.
 hide_field_on_detail: Slėpti lauką detalėse
 show_field_on_detail: Rodyti lauką detalėse
 delete_field: Trinti lauką
@@ -165,6 +141,7 @@ bigInteger: Didelis sveikasis skaičius
 boolean: Loginis
 date: Data
 datetime: Data ir laikas
+dateTime: Data ir laikas
 decimal: Dešimtainis skaičius
 float: Slankiojo kablelio skaičius
 integer: Sveikasis skaičius
@@ -195,9 +172,6 @@ new_data_alert: 'Jūsų duomenų modelyje bus sukurta:'
 search_collection: Ieškoti kolekcijoje...
 new_field: 'Naujas laukas'
 new_collection: 'Nauja kolekcija'
-add_m2o_to_collection: 'Pridėti daug-su-vienu į "{collection}"'
-add_o2m_to_collection: 'Pridėti vienas-su-daug į "{collection}"'
-add_m2m_to_collection: 'Pridėti daug-su-daug į "{collection}"'
 choose_a_type: Pasirinkite tipą...
 determined_by_relationship: Nustatoma pagal sąryšį
 add_note: Pridėkite paaiškinimą vartotojui...
@@ -358,7 +332,6 @@ no_files_copy: Nėra failų.
 user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
 no_users_copy: Nėra vartotojų šioje grupėje.
 webhooks_count: 'Nėra "Webhook"ų | Vienas "Webhook"as | {count} "Webhook"ų"'
-no_webhooks_copy: Dar nėra sukurta "Webhook"ų.
 all_items: Visi elementai
 csv: CSV
 no_collections: Nėra kolekcijų
@@ -370,8 +343,12 @@ display_template_not_setup: Blogai sukonfigūruota atvaizdavimo šablono parinkt
 collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
 select_a_collection: Pasirinkite kolekciją
 active: Aktyvus
+copy: Kopijuoti
 users: Vartotojai
 activity: Veiksmas
+action: Veiksmas
+ip_address: IP adresas
+user_agent: Naršyklė
 webhooks: '„Webhook“''ai'
 field_width: Laukelio plotis
 add_filter: Pridėti filtrą
@@ -415,9 +392,9 @@ errors:
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
   ROUTE_NOT_FOUND: Nerasta
-  UNKNOWN: Nenumatyta klaida
   INTERNAL_SERVER_ERROR: Nenumatyta klaida
   NOT_NULL_VIOLATION: Reikšmė negali būti null
+  UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
 create_bookmark: Kurti žymę
@@ -534,6 +511,7 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+full_screen: Per visą ekraną
 width: Plotis
 height: Aukštis
 wysiwyg_options:
@@ -606,7 +584,6 @@ unsaved_changes: Neįrašyti pakeitimai
 unsaved_changes_copy: Ar tikrai norite išeiti iš šio puslapio?
 discard_changes: Atšaukti pakeitimus
 keep_editing: Redaguoti toliau
-page_help_collections_overview: '**Kolekcijų peržiūra** — Rodomos visos kolekcijos, prie kurių turite prieigą.'
 page_help_collections_collection: >-
   **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_collections_item: >-
@@ -663,6 +640,7 @@ fields:
     collection: Rinkinys
     icon: Ikona
     note: Pastaba
+    color: Spalva
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas
@@ -699,6 +677,7 @@ fields:
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
     status: Būsena
+    status_active: Aktyvus
     role: Vaidmuo
     last_page: Paskutinis puslapis
     last_access: Paskutinė prieiga
@@ -712,8 +691,6 @@ fields:
     public_note: Vieša pastaba
     auth_password_policy: Slaptažodžių politika
     auth_login_attempts: Max. bandymų prisijungti kiekis
-    storage_asset_presets: Saugyklos failų ruošiniai
-    storage_asset_transform: Saugyklos failų transformacija
   directus_fields:
     collection: Kolekcijos pavadinimas
     icon: Kolekcijos ikonėlė
@@ -732,7 +709,36 @@ fields:
     enforce_tfa: Reikalinga 2FA
     users: Vartotojai grupėje
     module_list: Modulių navigacija
-    collection_list: Kolekcijų navigacija
+  directus_webhooks:
+    name: Pavadinimas
+    status: Būsena
+    value: Reikšmė
+    collections: Kolekcijos
+field_options:
+  directus_activity:
+    create: Kurti
+    update: Atnaujinti
+  directus_collections:
+    collection_setup: Kolekcijos konfigūracija
+    singleton: Laikyti vienu objektu
+    language: Kalba
+    translation: Vertimas
+    collection_name: Kolekcijos pavadinimas
+    archive_divider: Archyvuoti
+    sort_divider: Rūšiuoti
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Pavadinimas
+    collections_name: Kolekcijos
+  directus_users:
+    status_dropdown_active: Aktyvus
+  directus_webhooks:
+    status_options_active: Aktyvus
+    actions_create: Kurti
+    actions_update: Atnaujinti
+    headers:
+      value: Reikšmė
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
 do_nothing: Nieko nedaryti
 generate_and_save_uuid: Generuoti ir išsaugoti UUID
@@ -800,6 +806,9 @@ value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
+  filter:
+    add_filter: Pridėti filtrą
+    all: Visi
   presentation-links:
     primary: Pirminis
   input-code:
@@ -844,6 +853,10 @@ interfaces:
     interface: Sąsaja
   select-dropdown-m2o:
     display_template: Rodymo šablonas
+  input-rich-text-md:
+    edit: Redaguoti
+  map:
+    zoom: Padidinti
   system-folder:
     folder: Aplankas
   tags:
@@ -861,6 +874,8 @@ interfaces:
     add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
+    color_on: Spalva, kai įjungta
+    color_off: Spalva, kai išjungta
     label_default: Įjungtas
   translations:
     display_template: Rodymo šablonas
@@ -874,6 +889,8 @@ interfaces:
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
 displays:
+  translations:
+    translations: Vertimai
   boolean:
     boolean: Loginis
     description: Rodyti įjungimo/išjungimo būsenas
@@ -912,8 +929,18 @@ displays:
   formatted-value:
     formatted-value: Suformatuota reikšmė
     description: Rodyti suformatuotą teksto versiją
-    format_title: Formatuoti antraštę
+    format: Formatas
+    font: Šriftas
+    font_serif: Serif
+    font_monospace: Vienodo pločio
+    bold: Paryškintas
     bold_label: Naudoti paryškintą stilių
+    italic: Pasviręs
+    prefix: Priešdėlis
+    suffix: Priesaga
+    color: Spalva
+    icon: Ikona
+    text: Tekstas
   formatted-json-value:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją
@@ -948,3 +975,6 @@ layouts:
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
+panels:
+  label:
+    name: Žyma

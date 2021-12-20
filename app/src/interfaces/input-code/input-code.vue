@@ -51,6 +51,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		lineWrapping: {
+			type: Boolean,
+			default: false,
+		},
 		placeholder: {
 			type: String,
 			default: null,
@@ -111,7 +115,7 @@ export default defineComponent({
 		const stringValue = computed<string>(() => {
 			if (props.value === null) return '';
 
-			if (props.type === 'json') {
+			if (typeof props.value === 'object') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
@@ -135,7 +139,7 @@ export default defineComponent({
 			if (codemirror) {
 				const lang = props.language.toLowerCase();
 
-				if (lang === 'json') {
+				if (props.type === 'json' || lang === 'json') {
 					// @ts-ignore
 					await import('codemirror/mode/javascript/javascript.js');
 
@@ -237,7 +241,8 @@ export default defineComponent({
 				defaultOptions,
 				{
 					lineNumbers: props.lineNumber,
-					readOnly: false,
+					lineWrapping: props.lineWrapping,
+					readOnly: props.disabled ? 'nocursor' : false,
 					mode: props.language,
 					placeholder: props.placeholder,
 				},
@@ -289,8 +294,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'codemirror/addon/lint/lint.css';
-
 .input-code {
 	position: relative;
 	width: 100%;
@@ -309,7 +312,7 @@ export default defineComponent({
 	position: absolute;
 	top: 10px;
 	right: 10px;
-	z-index: 10;
+	z-index: 4;
 	color: var(--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);

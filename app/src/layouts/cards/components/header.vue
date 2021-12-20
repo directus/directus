@@ -1,13 +1,13 @@
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<div v-if="internalSelection.length > 0" class="selected" @click="internalSelection = []">
+			<div v-if="selectionSync.length > 0" class="selected" @click="selectionSync = []">
 				<v-icon name="cancel" outline />
-				<span class="label">{{ t('n_items_selected', internalSelection.length) }}</span>
+				<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
 			</div>
-			<button v-else class="select-all" @click="$emit('select-all')">
+			<button v-else class="select-all" @click="showSelect === 'multiple' ? $emit('select-all') : undefined">
 				<v-icon name="check_circle" outline />
-				<span class="label">{{ t('select_all') }}</span>
+				<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 			</button>
 		</div>
 		<div class="end">
@@ -33,7 +33,7 @@
 						:disabled="field.disabled"
 						:active="field.field === sortKey"
 						clickable
-						@click="internalSort = field.field"
+						@click="sortSync = [field.field]"
 					>
 						<v-list-item-content>{{ field.name }}</v-list-item-content>
 					</v-list-item>
@@ -54,8 +54,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field } from '@directus/shared/types';
-import useSync from '@/composables/use-sync';
+import { Field, ShowSelect } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -68,8 +68,12 @@ export default defineComponent({
 			required: true,
 		},
 		sort: {
-			type: String,
+			type: Array as PropType<string[]>,
 			required: true,
+		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'multiple',
 		},
 		selection: {
 			type: Array as PropType<Record<string, any>>,
@@ -80,12 +84,13 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const internalSize = useSync(props, 'size', emit);
-		const internalSort = useSync(props, 'sort', emit);
-		const internalSelection = useSync(props, 'selection', emit);
-		const descending = computed(() => props.sort.startsWith('-'));
+		const sizeSync = useSync(props, 'size', emit);
+		const sortSync = useSync(props, 'sort', emit);
+		const selectionSync = useSync(props, 'selection', emit);
 
-		const sortKey = computed(() => (props.sort.startsWith('-') ? props.sort.substring(1) : props.sort));
+		const descending = computed(() => props.sort[0].startsWith('-'));
+
+		const sortKey = computed(() => (props.sort[0].startsWith('-') ? props.sort[0].substring(1) : props.sort[0]));
 
 		const sortField = computed(() => {
 			return props.fields.find((field) => field.field === sortKey.value);
@@ -107,26 +112,26 @@ export default defineComponent({
 			descending,
 			toggleDescending,
 			sortField,
-			internalSize,
-			internalSort,
-			internalSelection,
+			sizeSync,
+			sortSync,
+			selectionSync,
 			sortKey,
 			fieldsWithoutFake,
 		};
 
 		function toggleSize() {
 			if (props.size >= 2 && props.size < 5) {
-				internalSize.value++;
+				sizeSync.value++;
 			} else {
-				internalSize.value = 2;
+				sizeSync.value = 2;
 			}
 		}
 
 		function toggleDescending() {
 			if (descending.value === true) {
-				internalSort.value = internalSort.value.substring(1);
+				sortSync.value = [sortSync.value[0].substring(1)];
 			} else {
-				internalSort.value = '-' + internalSort.value;
+				sortSync.value = ['-' + sortSync.value];
 			}
 		}
 	},
@@ -146,8 +151,8 @@ export default defineComponent({
 	margin-bottom: 36px;
 	padding: 0 8px;
 	background-color: var(--background-page);
-	border-top: 2px solid var(--border-subdued);
-	border-bottom: 2px solid var(--border-subdued);
+	border-top: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--border-width) solid var(--border-subdued);
 	box-shadow: 0 0 0 2px var(--background-page);
 }
 
@@ -204,8 +209,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			--v-icon-color: var(--foreground-normal);
-
+			color: var(--foreground-normal);
 			cursor: pointer;
 		}
 	}

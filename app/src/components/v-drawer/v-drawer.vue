@@ -19,9 +19,11 @@
 
 			<div class="content">
 				<v-overlay v-if="$slots.sidebar" absolute @click="sidebarActive = false" />
+
 				<nav v-if="$slots.sidebar" class="sidebar">
 					<slot name="sidebar" />
 				</nav>
+
 				<main ref="mainEl" class="main">
 					<header-bar :title="title" primary-action-icon="close" @primary="$emit('cancel')">
 						<template #title><slot name="title" /></template>
@@ -32,9 +34,11 @@
 						</template>
 
 						<template #title-outer:prepend>
-							<v-button class="header-icon" rounded icon secondary disabled>
-								<v-icon :name="icon" />
-							</v-button>
+							<slot name="title-outer:prepend">
+								<v-button class="header-icon" rounded icon secondary disabled>
+									<v-icon :name="icon" />
+								</v-button>
+							</slot>
 						</template>
 
 						<template #actions:prepend><slot name="actions:prepend" /></template>
@@ -202,6 +206,7 @@ body {
 			--content-padding: 16px;
 			--content-padding-bottom: 32px;
 
+			position: relative;
 			flex-grow: 1;
 			overflow: auto;
 

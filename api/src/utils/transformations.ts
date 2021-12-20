@@ -16,14 +16,22 @@ export function resolvePreset(input: TransformationParams | TransformationPreset
 	);
 }
 
-function extractOptions<T extends Record<string, any>>(keys: (keyof T)[], numberKeys: (keyof T)[] = []) {
+function extractOptions<T extends Record<string, any>>(
+	keys: (keyof T)[],
+	numberKeys: (keyof T)[] = [],
+	booleanKeys: (keyof T)[] = []
+) {
 	return function (input: TransformationParams | TransformationPreset): T {
 		return Object.entries(input).reduce(
 			(config, [key, value]) =>
 				keys.includes(key as any) && isNil(value) === false
 					? {
 							...config,
-							[key]: numberKeys.includes(key as any) ? +value : value,
+							[key]: numberKeys.includes(key as any)
+								? +value
+								: booleanKeys.includes(key as any)
+								? Boolean(value)
+								: value,
 					  }
 					: config,
 			{} as T
@@ -53,7 +61,8 @@ function extractResize(input: TransformationParams | TransformationPreset): Tran
 		'resize',
 		extractOptions<TransformationPresetResize>(
 			['width', 'height', 'fit', 'withoutEnlargement'],
-			['width', 'height']
+			['width', 'height'],
+			['withoutEnlargement']
 		)(input),
 	];
 }

@@ -6,7 +6,7 @@ import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
@@ -26,7 +26,8 @@ export class FilesService extends ItemsService {
 	async uploadOne(
 		stream: NodeJS.ReadableStream,
 		data: Partial<File> & { filename_download: string; storage: string },
-		primaryKey?: PrimaryKey
+		primaryKey?: PrimaryKey,
+		opts?: MutationOptions
 	): Promise<PrimaryKey> {
 		const payload = clone(data);
 
@@ -63,7 +64,7 @@ export class FilesService extends ItemsService {
 
 		try {
 			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
@@ -74,21 +75,26 @@ export class FilesService extends ItemsService {
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			const meta = await sharp(buffer.content, {}).metadata();
+			try {
+				const meta = await sharp(buffer.content, {}).metadata();
 
-			if (meta.orientation && meta.orientation >= 5) {
-				payload.height = meta.width;
-				payload.width = meta.height;
-			} else {
-				payload.width = meta.width;
-				payload.height = meta.height;
+				if (meta.orientation && meta.orientation >= 5) {
+					payload.height = meta.width;
+					payload.width = meta.height;
+				} else {
+					payload.width = meta.width;
+					payload.height = meta.height;
+				}
+			} catch (err: any) {
+				logger.warn(`Couldn't extract sharp metadata from file`);
+				logger.warn(err);
 			}
 
 			payload.metadata = {};
 
 			try {
 				payload.metadata = await exifr.parse(buffer.content, {
-					icc: true,
+					icc: false,
 					iptc: true,
 					ifd1: true,
 					interop: true,
@@ -105,8 +111,8 @@ export class FilesService extends ItemsService {
 				if (payload.metadata?.iptc?.Keywords) {
 					payload.tags = payload.metadata.iptc.Keywords;
 				}
-			} catch (err) {
-				logger.warn(`Couldn't extract metadata from file`);
+			} catch (err: any) {
+				logger.warn(`Couldn't extract EXIF metadata from file`);
 				logger.warn(err);
 			}
 		}
@@ -124,16 +130,21 @@ export class FilesService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		emitAsyncSafe(`files.upload`, {
-			event: `files.upload`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: primaryKey,
-			action: 'upload',
-			payload,
-			schema: this.schema,
-			database: this.knex,
-		});
+		if (opts?.emitEvents !== false) {
+			emitter.emitAction(
+				'files.upload',
+				{
+					payload,
+					key: primaryKey,
+					collection: this.collection,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
+		}
 
 		return primaryKey;
 	}
@@ -142,11 +153,11 @@ export class FilesService extends ItemsService {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		const fileCreatePermissions = this.schema.permissions.find(
+		const fileCreatePermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
 
-		if (this.accountability?.admin !== true && !fileCreatePermissions) {
+		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
 			throw new ForbiddenException();
 		}
 
@@ -156,7 +167,7 @@ export class FilesService extends ItemsService {
 			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
 				responseType: 'stream',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't fetch file from url "${importURL}"`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
@@ -212,38 +223,5 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
-	}
-
-	/**
-	 * @deprecated Use `uploadOne` instead
-	 */
-	async upload(
-		stream: NodeJS.ReadableStream,
-		data: Partial<File> & { filename_download: string; storage: string },
-		primaryKey?: PrimaryKey
-	): Promise<PrimaryKey> {
-		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
-
-		return await this.uploadOne(stream, data, primaryKey);
-	}
-
-	/**
-	 * @deprecated Use `importOne` instead
-	 */
-	async import(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		return await this.importOne(importURL, body);
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'FilesService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
-		);
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		return await this.deleteOne(key);
 	}
 }

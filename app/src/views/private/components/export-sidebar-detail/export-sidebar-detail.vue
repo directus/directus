@@ -25,7 +25,7 @@
 
 			<div class="field full">
 				<v-button full-width @click="exportData">
-					{{ t('export_collection', { collection }) }}
+					{{ t('export_collection', { collection: collectionName }) }}
 				</v-button>
 			</div>
 		</div>
@@ -34,11 +34,11 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import filtersToQuery from '@/utils/filters-to-query';
+import { useCollectionsStore } from '@/stores/';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -52,11 +52,11 @@ export default defineComponent({
 			type: Object as PropType<LayoutQuery>,
 			default: (): LayoutQuery => ({}),
 		},
-		filters: {
-			type: Array as PropType<Filter[]>,
-			default: () => [],
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
 		},
-		searchQuery: {
+		search: {
 			type: String as PropType<string | null>,
 			default: null,
 		},
@@ -65,13 +65,16 @@ export default defineComponent({
 			required: true,
 		},
 	},
+
 	setup(props) {
 		const { t } = useI18n();
 
 		const format = ref('csv');
 		const useFilters = ref(true);
+		const collectionsStore = useCollectionsStore();
+		const collectionName = computed(() => collectionsStore.getCollection(props.collection).name);
 
-		return { t, format, useFilters, exportData };
+		return { t, format, useFilters, exportData, collectionName };
 
 		function exportData() {
 			const endpoint = props.collection.startsWith('directus_')
@@ -80,7 +83,7 @@ export default defineComponent({
 			const url = getRootPath() + endpoint;
 
 			let params: Record<string, unknown> = {
-				access_token: api.defaults.headers.Authorization.substring(7),
+				access_token: api.defaults.headers.common['Authorization'].substring(7),
 				export: format.value || 'json',
 			};
 
@@ -89,17 +92,14 @@ export default defineComponent({
 				if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
 				if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
 
-				if (props.searchQuery) params.search = props.searchQuery;
+				if (props.search) params.search = props.search;
 
-				if (props.filters?.length) {
-					params = {
-						...params,
-						...filtersToQuery(props.filters),
-					};
+				if (props.filter) {
+					params.filter = props.filter;
 				}
 
-				if (props.searchQuery) {
-					params.search = props.searchQuery;
+				if (props.search) {
+					params.search = props.search;
 				}
 			}
 

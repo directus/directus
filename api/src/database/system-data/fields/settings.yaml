@@ -8,7 +8,7 @@ fields:
     interface: input
     options:
       iconRight: title
-      placeholder: My project...
+      placeholder: $t:field_options.directus_settings.project_name_placeholder
     translations:
       language: en-US
       translations: Name
@@ -24,9 +24,19 @@ fields:
       translations: Website
     width: half
 
+  - field: branding_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.branding
+    special:
+      - alias
+      - no-data
+    width: full
+
   - field: project_color
     interface: select-color
-    note: Login & Logo Background
+    note: $t:field_options.directus_settings.project_color_note
     translations:
       language: en-US
       translations: Brand Color
@@ -34,21 +44,11 @@ fields:
 
   - field: project_logo
     interface: file
-    note: White 40x40 SVG/PNG
+    note: $t:field_options.directus_settings.project_logo_note
     translations:
       language: en-US
       translations: Brand Logo
     width: half
-
-  - field: public_divider
-    interface: presentation-divider
-    options:
-      icon: public
-      title: Public Pages
-    special:
-      - alias
-      - no-data
-    width: full
 
   - field: public_foreground
     interface: file
@@ -65,16 +65,43 @@ fields:
     width: half
 
   - field: public_note
-    interface: input-multiline
+    interface: input
     options:
-      placeholder: A short, public message that supports markdown formatting...
+      placeholder: $t:field_options.directus_settings.public_note_placeholder
+      iconRight: info
     width: full
+
+  - field: custom_css
+    interface: input-code
+    options:
+      language: css
+      lineNumber: true
+      template: |
+        #app, #main-content {
+          --border-radius-outline: 0px !important;
+          --border-radius: 0px !important;
+        }
+    width: full
+
+  - field: modules_divider
+    interface: presentation-divider
+    options:
+      icon: menu_open
+      title: $t:modules
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: module_bar
+    interface: system-modules
+    special: json
 
   - field: security_divider
     interface: presentation-divider
     options:
-      icon: security
-      title: Security
+      icon: shield
+      title: $t:security
     special:
       - alias
       - no-data
@@ -85,11 +112,11 @@ fields:
     options:
       choices:
         - value: null
-          text: None – Not Recommended
+          text: $t:field_options.directus_settings.auth_password_policy.none_text
         - value: '/^.{8,}$/'
-          text: Weak – Minimum 8 Characters
+          text: $t:field_options.directus_settings.auth_password_policy.weak_text
         - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
-          text: Strong – Upper / Lowercase / Numbers / Special
+          text: $t:field_options.directus_settings.auth_password_policy.strong_text
       allowOther: true
     width: half
 
@@ -103,19 +130,36 @@ fields:
   - field: files_divider
     interface: presentation-divider
     options:
-      icon: storage
-      title: Files & Thumbnails
+      icon: folder
+      title: $t:fields.directus_settings.files_and_thumbnails
     special:
       - alias
       - no-data
     width: full
+
+  - field: storage_asset_transform
+    interface: select-dropdown
+    options:
+      choices:
+        - value: all
+          text: $t:fields.directus_settings.transformations_all
+        - value: none
+          text: $t:fields.directus_settings.transformations_none
+        - value: presets
+          text: $t:fields.directus_settings.transformations_presets
+    width: half
+
+  - field: storage_default_folder
+    interface: system-folder
+    width: half
+    note: $t:interfaces.system-folder.field_hint
 
   - field: storage_asset_presets
     interface: list
     options:
       fields:
         - field: key
-          name: Key
+          name: $t:key
           type: string
           schema:
             is_nullable: false
@@ -126,7 +170,7 @@ fields:
               onlyOnCreate: false
             width: full
         - field: fit
-          name: Fit
+          name: $t:field_options.directus_settings.storage_asset_presets.fit_label
           type: string
           schema:
             is_nullable: false
@@ -135,16 +179,16 @@ fields:
             options:
               choices:
                 - value: contain
-                  text: Contain (preserve aspect ratio)
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.contain_text
                 - value: cover
-                  text: Cover (forces exact size)
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.cover_text
                 - value: inside
-                  text: Fit inside
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.fit_text
                 - value: outside
-                  text: Fit outside
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.outside_text
             width: half
         - field: width
-          name: Width
+          name: $t:width
           type: integer
           schema:
             is_nullable: false
@@ -152,7 +196,7 @@ fields:
             interface: input
             width: half
         - field: height
-          name: Height
+          name: $t:height
           type: integer
           schema:
             is_nullable: false
@@ -161,7 +205,7 @@ fields:
             width: half
         - field: quality
           type: integer
-          name: Quality
+          name: $t:quality
           schema:
             default_value: 80
             is_nullable: false
@@ -173,7 +217,7 @@ fields:
               step: 1
             width: half
         - field: withoutEnlargement
-          name: Upscaling
+          name: $t:field_options.directus_settings.storage_asset_presets.upscaling
           type: boolean
           schema:
             default_value: false
@@ -181,9 +225,9 @@ fields:
             interface: boolean
             width: half
             options:
-              label: Don't upscale images
+              label: $t:no_upscale
         - field: format
-          name: Format
+          name: $t:format
           type: string
           schema:
             is_nullable: false
@@ -203,15 +247,14 @@ fields:
                   text: Tiff
             width: half
         - field: transforms
-          name: Additional Transformations
+          name: $t:field_options.directus_settings.additional_transforms
           type: json
           schema:
             is_nullable: false
             default_value: []
           meta:
-            note:
-              The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more
-              information.
+            note: $t:field_options.directus_settings.transforms_note
+
             interface: json
             options:
               template: >
@@ -231,36 +274,72 @@ fields:
     special: json
     width: full
 
-  - field: storage_asset_transform
-    interface: select-dropdown
-    options:
-      choices:
-        - value: all
-          text: All
-        - value: none
-          text: None
-        - value: presets
-          text: Presets Only
-    width: half
-
-  - field: storage_default_folder
-    interface: system-folder
-    width: half
-    note: Default folder where new files are uploaded
-
-  - field: overrides_divider
+  - field: map_divider
     interface: presentation-divider
     options:
-      icon: brush
-      title: App Overrides
+      icon: map
+      title: $t:fields.directus_settings.mapping
     special:
       - alias
       - no-data
     width: full
 
-  - field: custom_css
-    interface: input-code
+  - field: mapbox_key
+    interface: input
     options:
-      language: css
-      lineNumber: true
+      icon: key
+      title: $t:field_options.directus_settings.mapbox_key
+      placeholder: $t:field_options.directus_settings.mapbox_placeholder
+      iconLeft: vpn_key
+      font: monospace
     width: full
+
+  - field: basemaps
+    interface: list
+    special: json
+    options:
+      template: '{{name}}'
+      fields:
+        - field: name
+          name: $t:name
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            options:
+              placeholder: $t:field_options.directus_settings.basemaps_name_placeholder
+        - field: type
+          name: $t:type
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - value: raster
+                  text: $t:field_options.directus_settings.basemaps_raster
+                - value: tile
+                  text: $t:field_options.directus_settings.basemaps_tile
+                - value: style
+                  text: $t:field_options.directus_settings.basemaps_style
+        - field: url
+          name: $t:url
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            options:
+              placeholder: http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png
+        - field: tileSize
+          name: $t:tile_size
+          type: integer
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            options:
+              placeholder: '512'
+            conditions:
+              - name: typeNeqRaster
+                rule:
+                  type:
+                    _neq: 'raster'
+                hidden: true

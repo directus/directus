@@ -55,6 +55,8 @@
 				<drawer-collection
 					collection="directus_files"
 					:active="activeDialog === 'choose'"
+					:multiple="multiple"
+					:filter="filterByFolder"
 					@update:active="activeDialog = null"
 					@input="setSelection"
 				/>
@@ -68,7 +70,7 @@
 					<v-card>
 						<v-card-title>{{ t('import_from_url') }}</v-card-title>
 						<v-card-text>
-							<v-input v-model="url" :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
+							<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
 						</v-card-text>
 						<v-card-actions>
 							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
@@ -92,6 +94,7 @@ import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
+import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -132,6 +135,11 @@ export default defineComponent({
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
 
+		const filterByFolder = computed(() => {
+			if (!props.folder) return null;
+			return { folder: { id: { _eq: props.folder } } };
+		});
+
 		return {
 			t,
 			uploading,
@@ -144,6 +152,7 @@ export default defineComponent({
 			done,
 			numberOfFiles,
 			activeDialog,
+			filterByFolder,
 			url,
 			isValidURL,
 			urlLoading,
@@ -200,7 +209,7 @@ export default defineComponent({
 
 						uploadedFile && emit('input', uploadedFile);
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					uploading.value = false;
@@ -293,6 +302,8 @@ export default defineComponent({
 						},
 					});
 
+					emitter.emit(Events.upload);
+
 					if (props.multiple) {
 						emit('input', [response.data.data]);
 					} else {
@@ -301,7 +312,7 @@ export default defineComponent({
 
 					activeDialog.value = null;
 					url.value = '';
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -361,7 +372,7 @@ export default defineComponent({
 
 .uploading {
 	--v-progress-linear-color: var(--white);
-	--v-progress-linear-background-color: rgb(255 255 255 / 25%);
+	--v-progress-linear-background-color: rgb(255 255 255 / 0.25);
 	--v-progress-linear-height: 8px;
 
 	color: var(--white);

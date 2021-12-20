@@ -75,9 +75,9 @@ export default defineComponent({
 		});
 
 		watch(
-			() => props.id,
-			(newID, oldID) => {
-				if (newID && newID !== oldID) {
+			[() => props.id, internalActive],
+			([newID, newActive]) => {
+				if (newActive && newID) {
 					fetchFile();
 				}
 			},
@@ -99,7 +99,7 @@ export default defineComponent({
 				});
 
 				file.value = response.data.data;
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

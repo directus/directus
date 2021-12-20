@@ -45,7 +45,7 @@ describe('auth', function () {
 				}
 			);
 			fail('Should have failed');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err).toBeInstanceOf(InvalidRefreshTime);
 		}
 	});
@@ -86,7 +86,7 @@ describe('auth', function () {
 				password: 'invalid_password',
 			});
 			fail('Should have thrown due to error response');
-		} catch (err) {
+		} catch {
 			//
 		}
 
@@ -114,7 +114,7 @@ describe('auth', function () {
 		try {
 			await sdk.auth.static('token');
 			fail('Should have thrown due to error response');
-		} catch (err) {
+		} catch {
 			//
 		}
 

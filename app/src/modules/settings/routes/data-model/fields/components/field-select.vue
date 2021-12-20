@@ -48,19 +48,25 @@
 				</template>
 			</draggable>
 
-			<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
+			<v-input v-else class="field" :class="{ hidden }" readonly>
 				<template #prepend>
 					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 				</template>
 
 				<template #input>
-					<div v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name" class="label">
-						<span class="name">
-							{{ field.field }}
-							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
-						</span>
-						<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-						<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+					<div
+						v-tooltip="interfaceName ? `${field.name} (${formatTitle(field.type)}) - ${interfaceName}` : field.name"
+						class="label"
+						@click="openFieldDetail"
+					>
+						<div class="label-inner">
+							<span class="name">
+								{{ field.field }}
+								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
+							</span>
+							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+							<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+						</div>
 					</div>
 				</template>
 
@@ -123,7 +129,7 @@
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>
 						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete_label') }}</v-button>
+						<v-button :loading="deleting" kind="danger" @click="deleteField">{{ t('delete_label') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -135,16 +141,17 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field, InterfaceConfig } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 import FieldSelectMenu from './field-select-menu.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	name: 'FieldSelect',
@@ -171,26 +178,24 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
-		const { interfaces } = getInterfaces();
 
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
-		const interfaceName = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
-		});
+		const interfaceName = computed(() => getInterface(props.field.meta?.interface)?.name);
 
 		const hidden = computed(() => props.field.meta?.hidden === true);
 
 		const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
 
-		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.meta?.id));
+		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
 
 		return {
 			t,
 			interfaceName,
+			formatTitle,
 			editActive,
 			setWidth,
 			deleteActive,
@@ -288,7 +293,7 @@ export default defineComponent({
 					});
 
 					duplicateActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					duplicating.value = false;
@@ -309,7 +314,7 @@ export default defineComponent({
 				field: field.field,
 				meta: {
 					sort: index + 1,
-					group: props.field.meta!.id,
+					group: props.field.meta!.field,
 				},
 			}));
 
@@ -436,44 +441,52 @@ export default defineComponent({
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 12px;
+	grid-gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {
-		margin-top: 12px;
+		margin-top: 8px;
 	}
 }
 
 .field {
 	:deep(.input) {
-		background-color: var(--card-face-color) !important;
-		border: none !important;
-		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2) !important;
+		border: var(--border-width) solid var(--border-subdued) !important;
 	}
 
 	:deep(.input:hover) {
 		background-color: var(--card-face-color) !important;
+		border: var(--border-width) solid var(--border-normal-alt) !important;
 	}
 
 	.label {
+		display: flex;
 		flex-grow: 1;
+		align-items: center;
+		align-self: stretch;
 		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
+		cursor: pointer;
 
-		.name {
-			font-family: var(--family-monospace);
-		}
+		.label-inner {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
 
-		.interface {
-			display: none;
-			color: var(--foreground-subdued);
-			font-family: var(--family-monospace);
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
+			.name {
+				margin-right: 8px;
+				font-family: var(--family-monospace);
+			}
 
-			@media (min-width: 600px) {
-				display: initial;
+			.interface {
+				display: none;
+				color: var(--foreground-subdued);
+				font-family: var(--family-monospace);
+				opacity: 0;
+				transition: opacity var(--fast) var(--transition);
+
+				@media (min-width: 600px) {
+					display: initial;
+				}
 			}
 		}
 	}
@@ -505,13 +518,6 @@ export default defineComponent({
 
 .form-grid {
 	--form-vertical-gap: 24px;
-
-	@include form-grid;
-}
-
-.delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-125);
 }
 
 .required {

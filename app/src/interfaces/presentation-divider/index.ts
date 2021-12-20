@@ -10,8 +10,21 @@ export default defineInterface({
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
-	groups: ['presentation'],
+	localTypes: ['presentation'],
+	group: 'presentation',
 	options: [
+		{
+			field: 'title',
+			name: '$t:title',
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'input',
+				options: {
+					placeholder: '$t:interfaces.presentation-divider.title_placeholder',
+				},
+			},
+		},
 		{
 			field: 'color',
 			name: '$t:color',
@@ -31,18 +44,6 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'title',
-			name: '$t:title',
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input',
-				options: {
-					placeholder: '$t:interfaces.presentation-divider.title_placeholder',
-				},
-			},
-		},
-		{
 			field: 'marginTop',
 			name: '$t:interfaces.presentation-divider.margin_top',
 			type: 'boolean',
@@ -54,7 +55,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: false,
+				default_value: true,
 			},
 		},
 		{

@@ -1,16 +1,7 @@
 import { Component, ComponentOptions } from 'vue';
+import { ExtensionOptionsContext } from './extensions';
 import { Field, LocalType, Type } from './fields';
 import { DeepPartial } from './misc';
-
-export type DisplayHandlerFunctionContext = {
-	type: string;
-};
-
-export type DisplayHandlerFunction = (
-	value: any,
-	options: Record<string, any> | null,
-	context?: DisplayHandlerFunctionContext
-) => string | null;
 
 export type DisplayFieldsFunction = (
 	options: any,
@@ -27,9 +18,16 @@ export interface DisplayConfig {
 	icon: string;
 	description?: string;
 
-	handler: DisplayHandlerFunction | ComponentOptions;
-	options: DeepPartial<Field>[] | Component | null;
+	component: Component;
+	options:
+		| DeepPartial<Field>[]
+		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
+		| ((
+				ctx: ExtensionOptionsContext
+		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
+		| ComponentOptions
+		| null;
 	types: readonly Type[];
-	groups?: readonly LocalType[];
+	localTypes?: readonly LocalType[];
 	fields?: string[] | DisplayFieldsFunction;
 }

@@ -50,7 +50,7 @@
 					<v-button secondary @click="confirmDelete = false">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button class="action-delete" :loading="deleting" @click="remove">
+					<v-button kind="danger" :loading="deleting" @click="remove">
 						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
@@ -117,7 +117,7 @@ export default defineComponent({
 					await api.delete(`/activity/comment/${props.activity.id}`);
 					await props.refresh();
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleting.value = false;

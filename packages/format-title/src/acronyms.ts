@@ -24,6 +24,7 @@ export default [
 	'EIN',
 	'ESPN',
 	'FAQ',
+	'FAQs',
 	'FTP',
 	'FPS',
 	'FORTRAN',

@@ -1,4 +1,5 @@
 ---
+avatar: პროფილის ფოტო
 create_role: შექმენით როლი
 create_field: შექმენით ველი
 auto_generate: ავტო-გენერირება
@@ -8,6 +9,9 @@ owner: მფლობელი
 comments: კომენტარები
 create_collection: შექმენით კოლექცია
 users: მომხმარებლები
+action: მოქმედება
+ip_address: IP მისამართი
+user_agent: მომხმარებლის აგენტი
 duration: ხანგრძლივობა
 status: სტატუსი
 back: უკან დაბრუნება
@@ -54,11 +58,20 @@ fields:
     role: როლი
   directus_roles:
     description: აღწერა
+  directus_webhooks:
+    status: სტატუსი
+field_options:
+  directus_activity:
+    create: შექმნა
+  directus_webhooks:
+    actions_create: შექმნა
 comment: კომენტარი
 description: აღწერა
 email: ელ-ფოსტა
 password: პაროლი
 interfaces:
+  filter:
+    all: ყველა
   system-collection:
     collection: კოლექცია
   files:

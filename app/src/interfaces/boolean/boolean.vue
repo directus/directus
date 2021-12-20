@@ -8,7 +8,8 @@
 		:indeterminate="value === null"
 		:disabled="disabled"
 		:style="{
-			'--v-checkbox-color': color,
+			'--v-checkbox-color': colorOn,
+			'--v-checkbox-unchecked-color': colorOff,
 		}"
 		@update:model-value="$emit('input', $event)"
 	/>
@@ -30,7 +31,7 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.global.t('enabled'),
+			default: () => i18n.global.t('enabled'),
 		},
 		iconOn: {
 			type: String,
@@ -40,9 +41,13 @@ export default defineComponent({
 			type: String,
 			default: 'check_box_outline_blank',
 		},
-		color: {
+		colorOn: {
 			type: String,
-			default: '#00C897',
+			default: 'var(--primary)',
+		},
+		colorOff: {
+			type: String,
+			default: 'var(--foreground-subdued)',
 		},
 	},
 	emits: ['input'],

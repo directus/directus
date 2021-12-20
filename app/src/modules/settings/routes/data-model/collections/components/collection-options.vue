@@ -1,8 +1,8 @@
 <template>
 	<div v-if="collection.collection.startsWith('directus_') === false">
 		<v-menu placement="left-start" show-arrow>
-			<template #activator="{ toggle }">
-				<v-icon name="more_vert" clickable class="ctx-toggle" @click="toggle" />
+			<template #activator="{ toggle, deactivate }">
+				<v-icon name="more_vert" clickable class="ctx-toggle" @click.stop.prevent="toggle" @focusout="deactivate" />
 			</template>
 			<v-list>
 				<v-list-item clickable class="danger" @click="deleteActive = true">
@@ -13,8 +13,20 @@
 						{{ t('delete_collection') }}
 					</v-list-item-content>
 				</v-list-item>
+
+				<v-list-item clickable @click="update({ meta: { hidden: !collection.meta?.hidden } })">
+					<template v-if="collection.meta?.hidden === false">
+						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
+						<v-list-item-content>{{ t('make_collection_hidden') }}</v-list-item-content>
+					</template>
+					<template v-else>
+						<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
+						<v-list-item-content>{{ t('make_collection_visible') }}</v-list-item-content>
+					</template>
+				</v-list-item>
 			</v-list>
 		</v-menu>
+
 		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
 				<v-card-title>{{ t('delete_collection_are_you_sure') }}</v-card-title>
@@ -22,7 +34,7 @@
 					<v-button :disabled="deleting" secondary @click="deleteActive = null">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button :loading="deleting" class="delete" @click="deleteCollection">
+					<v-button :loading="deleting" kind="danger" @click="deleteCollection">
 						{{ t('delete_collection') }}
 					</v-button>
 				</v-card-actions>
@@ -50,7 +62,11 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const { deleting, deleteActive, deleteCollection } = useDelete();
 
-		return { t, deleting, deleteActive, deleteCollection };
+		return { t, deleting, deleteActive, deleteCollection, update };
+
+		async function update(updates: Partial<Collection>) {
+			await collectionsStore.updateCollection(props.collection.collection, updates);
+		}
 
 		function useDelete() {
 			const deleting = ref(false);
@@ -74,11 +90,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-button.delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-125);
-}
-
 .ctx-toggle {
 	--v-icon-color: var(--foreground-subdued);
 

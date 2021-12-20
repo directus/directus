@@ -1,7 +1,6 @@
-import { useCollection } from '@/composables/use-collection';
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
-import { debounce, isEqual } from 'lodash';
+import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsablePreset = {
@@ -9,8 +8,8 @@ type UsablePreset = {
 	layout: Ref<string | null>;
 	layoutOptions: Ref<Record<string, any>>;
 	layoutQuery: Ref<Record<string, any>>;
-	filters: Ref<readonly Filter[]>;
-	searchQuery: Ref<string | null>;
+	filter: Ref<Filter | null>;
+	search: Ref<string | null>;
 	refreshInterval: Ref<number | null>;
 	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
 	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
@@ -33,7 +32,7 @@ export function usePreset(
 
 	const busy = ref(false);
 
-	const { info: collectionInfo } = useCollection(collection);
+	// const { info: collectionInfo } = useCollection(collection);
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
@@ -71,7 +70,7 @@ export function usePreset(
 
 	/**
 	 * If no bookmark is present, save periodically to the DB,
-	 * otherwhise update the saved status if changes where made.
+	 * otherwise update the saved status if changes where made.
 	 */
 	function handleChanges() {
 		if (bookmarkExists.value) {
@@ -82,118 +81,58 @@ export function usePreset(
 		}
 	}
 
+	function updatePreset(preset: Partial<Preset>, immediate?: boolean) {
+		localPreset.value = assign({}, localPreset.value, preset);
+		immediate ? savePreset() : handleChanges();
+	}
+
 	watch([collection, bookmark], () => {
 		initLocalPreset();
 	});
 
 	const layoutOptions = computed<Record<string, any>>({
 		get() {
-			if (!localPreset.value.layout) return null;
-			return localPreset.value.layout_options?.[localPreset.value.layout] || null;
+			return localPreset.value.layout_options?.[layout.value] || null;
 		},
-		set(val) {
-			if (!localPreset.value.layout) return null;
-
-			localPreset.value = {
-				...localPreset.value,
-				layout_options: {
-					...localPreset.value.layout_options,
-					[localPreset.value.layout]: val,
-				},
-			};
-
-			handleChanges();
+		set(options) {
+			const { layout_options } = localPreset.value;
+			updatePreset({ layout_options: assign({}, layout_options, { [layout.value]: options }) });
 		},
 	});
 
 	const layoutQuery = computed<Record<string, any>>({
 		get() {
-			if (!localPreset.value.layout) return null;
-			return localPreset.value.layout_query?.[localPreset.value.layout] || null;
+			return localPreset.value.layout_query?.[layout.value] || null;
 		},
-		set(val) {
-			if (!localPreset.value.layout) return null;
-			localPreset.value = {
-				...localPreset.value,
-				layout_query: {
-					...localPreset.value.layout_query,
-					[localPreset.value.layout]: val,
-				},
-			};
-
-			handleChanges();
+		set(query) {
+			const { layout_query } = localPreset.value;
+			updatePreset({ layout_query: assign({}, layout_query, { [layout.value]: query }) });
 		},
 	});
 
-	const layout = computed<string | null>({
-		get() {
-			return localPreset.value.layout || 'tabular';
-		},
-		set(val) {
-			localPreset.value = {
-				...localPreset.value,
-				layout: val,
-			};
-
-			handleChanges();
-		},
+	const layout = computed<string>({
+		get: () => localPreset.value.layout || 'tabular',
+		set: (layout) => updatePreset({ layout }),
 	});
 
-	const filters = computed({
-		get() {
-			return localPreset.value.filters || [];
-		},
-		set(val: readonly Filter[]) {
-			localPreset.value = {
-				...localPreset.value,
-				filters: val,
-			};
-
-			handleChanges();
-		},
+	const filter = computed<Filter | null>({
+		get: () => localPreset.value.filter ?? null,
+		set: (filter) => updatePreset({ filter }),
 	});
 
 	const refreshInterval = computed<number | null>({
-		get() {
-			return localPreset.value.refresh_interval || null;
-		},
-		set(val) {
-			localPreset.value = {
-				...localPreset.value,
-				refresh_interval: val,
-			};
-
-			handleChanges();
-		},
+		get: () => localPreset.value.refresh_interval || null,
+		set: (refresh_interval) => updatePreset({ refresh_interval }),
 	});
 
-	const searchQuery = computed<string | null>({
-		get() {
-			return localPreset.value.search || null;
-		},
-		set(val) {
-			localPreset.value = {
-				...localPreset.value,
-				search: val,
-			};
-
-			handleChanges();
-		},
+	const search = computed<string | null>({
+		get: () => localPreset.value.search || null,
+		set: (search) => updatePreset({ search }),
 	});
 
 	const bookmarkTitle = computed<string | null>({
-		get() {
-			return localPreset.value?.bookmark || null;
-		},
-		set(newTitle: string | null) {
-			localPreset.value = {
-				...localPreset.value,
-				bookmark: newTitle,
-			};
-
-			// This'll save immediately
-			savePreset();
-		},
+		get: () => localPreset.value?.bookmark || null,
+		set: (bookmark) => updatePreset({ bookmark }, true),
 	});
 
 	return {
@@ -201,8 +140,8 @@ export function usePreset(
 		layout,
 		layoutOptions,
 		layoutQuery,
-		filters,
-		searchQuery,
+		filter,
+		search,
 		refreshInterval,
 		savePreset,
 		saveCurrentAsBookmark,
@@ -225,53 +164,29 @@ export function usePreset(
 	}
 
 	async function resetPreset() {
-		localPreset.value = {
-			...localPreset.value,
-			layout_query: null,
-			layout_options: null,
-			layout: 'tabular',
-			filters: null,
-			search: null,
-			refresh_interval: null,
-		};
-
-		await savePreset();
+		updatePreset(
+			{
+				layout_query: null,
+				layout_options: null,
+				layout: 'tabular',
+				filter: null,
+				search: null,
+				refresh_interval: null,
+			},
+			true
+		);
 	}
 
 	function initLocalPreset() {
+		const preset = { layout: 'tabular' };
+
 		if (bookmark.value === null) {
-			localPreset.value = {
-				...presetsStore.getPresetForCollection(collection.value),
-			};
-		} else {
-			if (bookmarkExists.value === false) return;
-
-			localPreset.value = {
-				...presetsStore.getBookmark(Number(bookmark.value)),
-			};
+			assign(preset, presetsStore.getPresetForCollection(collection.value));
+		} else if (bookmarkExists.value) {
+			assign(preset, presetsStore.getBookmark(Number(bookmark.value)));
 		}
 
-		if (!localPreset.value.layout) {
-			localPreset.value = {
-				...localPreset.value,
-				layout: 'tabular',
-			};
-		}
-
-		if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
-			localPreset.value = {
-				...localPreset.value,
-				filters: localPreset.value.filters || [
-					{
-						key: 'hide-archived',
-						field: collectionInfo.value.meta.archive_field,
-						operator: 'neq',
-						value: collectionInfo.value.meta.archive_value!,
-						locked: true,
-					},
-				],
-			};
-		}
+		localPreset.value = preset;
 	}
 
 	/**

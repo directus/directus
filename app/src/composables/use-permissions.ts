@@ -3,7 +3,7 @@ import { Field } from '@directus/shared/types';
 import { computed, ComputedRef, Ref } from 'vue';
 import { cloneDeep } from 'lodash';
 import { isAllowed } from '../utils/is-allowed';
-import { useCollection } from './use-collection';
+import { useCollection } from '@directus/shared/composables';
 
 type UsablePermissions = {
 	deleteAllowed: ComputedRef<boolean>;
@@ -54,9 +54,9 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 
 		if (!permissions) return fields;
 
-		if (permissions?.fields?.includes('*') === false) {
+		if (permissions.fields?.includes('*') === false) {
 			fields = fields.map((field: Field) => {
-				if (permissions.fields.includes(field.field) === false) {
+				if (permissions.fields?.includes(field.field) === false) {
 					field.meta = {
 						...(field.meta || {}),
 						readonly: true,
@@ -67,12 +67,12 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 			});
 		}
 
-		if (permissions?.presets) {
+		if (permissions.presets) {
 			fields = fields.map((field: Field) => {
-				if (field.field in permissions.presets) {
+				if (field.field in permissions.presets!) {
 					field.schema = {
 						...(field.schema || {}),
-						default_value: permissions.presets[field.field],
+						default_value: permissions.presets![field.field],
 					} as any;
 				}
 

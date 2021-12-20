@@ -1,10 +1,10 @@
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
+import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService } from '../services';
+import { AuthenticationService, MetaService, UsersService, TFAService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 
@@ -38,7 +38,7 @@ router.post(
 				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
 				res.locals.payload = { data: item };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -86,7 +86,7 @@ router.get(
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				res.locals.payload = { data: { id: req.accountability.user } };
 				return next();
@@ -177,7 +177,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -203,7 +203,7 @@ router.patch(
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -306,7 +306,7 @@ router.post(
 			throw new InvalidPayloadException(`"password" is required`);
 		}
 
-		const service = new UsersService({
+		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -340,7 +340,7 @@ router.post(
 			throw new InvalidPayloadException(`"otp" is required`);
 		}
 
-		const service = new UsersService({
+		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -363,16 +363,12 @@ router.post(
 			throw new InvalidPayloadException(`"otp" is required`);
 		}
 
-		const service = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const authService = new AuthenticationService({
+		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
+		const otpValid = await service.verifyOTP(req.accountability.user, req.body.otp);
 
 		if (otpValid === false) {
 			throw new InvalidPayloadException(`"otp" is invalid`);

@@ -22,23 +22,16 @@
 			</template>
 		</draggable>
 
-		<v-menu attached>
-			<template #activator="{ toggle, active }">
-				<v-button
-					class="add-field"
-					align="left"
-					:dashed="!active"
-					:class="{ active }"
-					outlined
-					large
-					full-width
-					@click="toggle"
-				>
-					<v-icon name="add" />
-					{{ t('create_field') }}
-				</v-button>
-			</template>
+		<v-button full-width :to="`/settings/data-model/${collection}/+`">
+			{{ t('create_field') }}
+		</v-button>
 
+		<v-menu show-arrow>
+			<template #activator="{ toggle, active }">
+				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
+					{{ t('create_in_advanced_field_creation_mode') }}
+				</button>
+			</template>
 			<v-list>
 				<template v-for="(option, index) in addOptions" :key="index">
 					<v-divider v-if="option.divider === true" />
@@ -59,13 +52,14 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs } from 'vue';
-import useCollection from '@/composables/use-collection/';
+import { useCollection } from '@directus/shared/composables';
 import Draggable from 'vuedraggable';
 import { Field } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import { orderBy, isNil } from 'lodash';
+import { LocalType } from '@directus/shared/types';
 
 export default defineComponent({
 	name: 'FieldsManagement',
@@ -97,7 +91,7 @@ export default defineComponent({
 			return parsedFields.value.filter((field) => field.meta?.system !== true);
 		});
 
-		const addOptions = computed(() => [
+		const addOptions = computed<Array<{ type: LocalType; icon: string; text: any } | { divider: boolean }>>(() => [
 			{
 				type: 'standard',
 				icon: 'create',
@@ -196,9 +190,24 @@ export default defineComponent({
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 12px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	padding-bottom: 24px;
+}
+
+.field-select {
+	margin: 4px;
+}
+
+.field-select:deep(.field-grid) {
+	grid-gap: 0;
+}
+
+.field-select:deep(.field-grid.group.full.nested) {
+	margin: 4px 0;
+
+	.field-select {
+		margin: 4px;
+	}
 }
 
 .add-field {
@@ -206,14 +215,19 @@ export default defineComponent({
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 
-	margin-top: -8px;
+	margin-top: -12px;
+}
 
-	.v-icon {
-		margin-right: 8px;
-	}
+.add-field-advanced {
+	display: block;
+	width: max-content;
+	margin: 0 auto;
+	margin-top: 8px;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
 
-	&.active {
-		--v-button-background-color: var(--primary);
+	&:hover {
+		color: var(--foreground-normal);
 	}
 }
 

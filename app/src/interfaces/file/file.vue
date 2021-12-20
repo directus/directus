@@ -17,7 +17,7 @@
 								class="preview"
 								:class="{
 									'has-file': file,
-									'is-svg': file && file.type.includes('svg'),
+									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
 								<img v-if="imageThumbnail" :src="imageThumbnail" :alt="file.title" />
@@ -104,6 +104,7 @@
 		</v-dialog>
 
 		<drawer-collection
+			v-if="activeDialog === 'choose'"
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
 			@update:active="activeDialog = null"
@@ -119,7 +120,7 @@
 			<v-card>
 				<v-card-title>{{ t('import_from_url') }}</v-card-title>
 				<v-card-text>
-					<v-input v-model="url" :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
+					<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
@@ -136,7 +137,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed } from 'vue';
+import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
@@ -156,7 +157,7 @@ export default defineComponent({
 	components: { DrawerCollection, DrawerItem },
 	props: {
 		value: {
-			type: [String, Object],
+			type: [String, Object] as PropType<string | Record<string, any>>,
 			default: null,
 		},
 		disabled: {
@@ -183,7 +184,7 @@ export default defineComponent({
 		});
 
 		const assetURL = computed(() => {
-			const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+			const id = typeof props.value === 'string' ? props.value : props.value?.id;
 			return addTokenToURL(getRootPath() + `assets/${id}`);
 		});
 
@@ -250,7 +251,7 @@ export default defineComponent({
 					} else {
 						file.value = response.data.data;
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -303,7 +304,7 @@ export default defineComponent({
 					activeDialog.value = null;
 					url.value = '';
 					emit('input', file.value?.id);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -367,7 +368,7 @@ export default defineComponent({
 
 		img {
 			object-fit: contain;
-			filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
+			filter: drop-shadow(0px 0px 8px rgb(0 0 0 / 0.25));
 		}
 	}
 }

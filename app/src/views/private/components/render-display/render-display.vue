@@ -1,11 +1,6 @@
 <template>
 	<value-null v-if="value === null || value === undefined" />
 	<v-text-overflow v-else-if="displayInfo === null" class="display" :text="value" />
-	<v-text-overflow
-		v-else-if="typeof displayInfo.handler === 'function'"
-		class="display"
-		:text="displayInfo.handler(value, options, { type })"
-	/>
 	<component
 		:is="`display-${display}`"
 		v-else
@@ -21,9 +16,8 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { getDisplays } from '@/displays';
+import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import { DisplayConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -62,10 +56,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { displays } = getDisplays();
-		const displayInfo = computed(
-			() => displays.value.find((display: DisplayConfig) => display.id === props.display) || null
-		);
+		const displayInfo = computed(() => getDisplay(props.display));
 		return { displayInfo };
 	},
 });

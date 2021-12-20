@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.88",
+	"version": "9.3.0",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -10,6 +10,10 @@
 		"./constants": {
 			"import": "./dist/esm/constants/index.js",
 			"require": "./dist/cjs/constants/index.js"
+		},
+		"./exceptions": {
+			"import": "./dist/esm/exceptions/index.js",
+			"require": "./dist/cjs/exceptions/index.js"
 		},
 		"./types": {
 			"import": "./dist/esm/types/index.js",
@@ -27,17 +31,17 @@
 			"import": "./dist/esm/utils/node/index.js",
 			"require": "./dist/cjs/utils/node/index.js"
 		},
-		"./exceptions": {
-			"import": "./dist/esm/exceptions/index.js",
-			"require": "./dist/cjs/exceptions/index.js"
-		}
+		"./package.json": "./package.json"
 	},
 	"scripts": {
 		"build": "run-p \"build:* -- {@}\" --",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
+		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll",
+		"prepublishOnly": "npm run cleanup && npm run build"
 	},
 	"author": "Nicola Krumschmidt",
 	"maintainers": [
@@ -45,18 +49,24 @@
 	],
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"date-fns": "^2.21.1",
-		"express": "4.17.1",
+		"axios": "*",
+		"date-fns": "2.24.0",
+		"express": "*",
 		"fs-extra": "10.0.0",
+		"geojson": "*",
 		"joi": "17.4.2",
-		"knex-schema-inspector": "1.5.13",
+		"knex": "*",
+		"knex-schema-inspector": "^1.6.6",
 		"lodash": "4.17.21",
-		"vue": "3.1.5",
-		"vue-router": "4.0.10"
+		"pino": "*",
+		"vue": "3",
+		"vue-i18n": "9",
+		"vue-router": "4"
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
-		"typescript": "4.3.5"
+		"tmp": "0.2.1",
+		"typescript": "4.5.2"
 	}
 }

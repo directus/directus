@@ -1,9 +1,13 @@
 {
 	"name": "@directus/drive-azure",
-	"version": "9.0.0-rc.88",
+	"version": "9.3.0",
 	"description": "Azure Blob driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"types": "dist/index.d.ts",
 	"keywords": [
 		"storage",
@@ -35,20 +39,20 @@
 	],
 	"dependencies": {
 		"@azure/storage-blob": "^12.6.0",
-		"@directus/drive": "9.0.0-rc.88",
+		"@directus/drive": "9.3.0",
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
-		"@types/fs-extra": "9.0.12",
-		"@types/jest": "26.0.24",
-		"@types/node": "15.12.2",
+		"@types/fs-extra": "9.0.13",
+		"@types/jest": "27.0.3",
+		"@types/node": "16.11.9",
 		"@types/normalize-path": "3.0.0",
 		"dotenv": "10.0.0",
 		"fs-extra": "10.0.0",
-		"jest": "27.0.6",
+		"jest": "27.3.1",
 		"npm-run-all": "4.1.5",
-		"ts-jest": "27.0.4",
-		"typescript": "4.3.5"
+		"ts-jest": "27.0.7",
+		"typescript": "4.5.2"
 	},
 	"publishConfig": {
 		"access": "public"

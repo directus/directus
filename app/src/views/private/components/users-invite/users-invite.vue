@@ -11,7 +11,7 @@
 				<div class="grid">
 					<div class="field">
 						<div class="type-label">{{ t('emails') }}</div>
-						<v-textarea v-model="emails" :nullable="false" :placeholder="t('email_examples')" />
+						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
 					<div v-if="role === null" class="field">
 						<div class="type-label">{{ t('role') }}</div>
@@ -94,7 +94,7 @@ export default defineComponent({
 
 				emails.value = '';
 				emit('update:modelValue', false);
-			} catch (err) {
+			} catch (err: any) {
 				uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
 					return error.extensions?.code === 'RECORD_NOT_UNIQUE';
 				});

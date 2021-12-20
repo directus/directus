@@ -5,7 +5,7 @@
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.id"
+			:group="field.meta.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
 			@update:model-value="$emit('apply', $event)"
@@ -14,9 +14,8 @@
 </template>
 
 <script lang="ts">
-import { Field } from '@directus/shared/types';
+import { Field, ValidationError } from '@directus/shared/types';
 import { defineComponent, PropType } from 'vue';
-import { ValidationError } from '@/types';
 export default defineComponent({
 	name: 'InterfaceGroupRaw',
 	props: {

@@ -13,7 +13,7 @@ export async function track(event: string): Promise<void> {
 
 		try {
 			await axios.post('https://telemetry.directus.io/', info);
-		} catch (err) {
+		} catch (err: any) {
 			if (env.NODE_ENV === 'development') {
 				logger.error(err);
 			}
@@ -54,8 +54,8 @@ async function getEnvInfo(event: string) {
 		email: {
 			transport: env.EMAIL_TRANSPORT,
 		},
-		oauth: {
-			providers: env.OAUTH_PROVIDERS.split(',')
+		auth: {
+			providers: env.AUTH_PROVIDERS.split(',')
 				.map((v: string) => v.trim())
 				.filter((v: string) => v),
 		},

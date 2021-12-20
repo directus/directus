@@ -14,7 +14,7 @@ export async function up(knex: Knex): Promise<void> {
 
 				if (options.icon) newOptions.headerIcon = options.icon;
 				if (options.color) newOptions.headerColor = options.color;
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(`Couldn't convert previous options from field ${dividerGroup.collection}.${dividerGroup.field}`);
 				logger.warn(err);
 			}
@@ -27,7 +27,7 @@ export async function up(knex: Knex): Promise<void> {
 					options: JSON.stringify(newOptions),
 				})
 				.where('id', '=', dividerGroup.id);
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't update ${dividerGroup.collection}.${dividerGroup.field} to new group interface`);
 			logger.warn(err);
 		}

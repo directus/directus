@@ -242,7 +242,7 @@ export default defineComponent({
 					});
 
 					imageData.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					loading.value = false;
@@ -269,7 +269,7 @@ export default defineComponent({
 							await api.patch(`/files/${props.id}`, formData);
 							emit('refresh');
 							internalActive.value = false;
-						} catch (err) {
+						} catch (err: any) {
 							unexpectedError(err);
 						} finally {
 							saving.value = false;
@@ -490,13 +490,13 @@ export default defineComponent({
 
 .toolbar-button {
 	padding: 8px;
-	background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgb(255 255 255 / 0.2);
 	border-radius: var(--border-radius);
 	cursor: pointer;
 	transition: background-color var(--fast) var(--transition);
 
 	&:hover {
-		background-color: rgba(255, 255, 255, 0.15);
+		background-color: rgb(255 255 255 / 0.15);
 	}
 }
 

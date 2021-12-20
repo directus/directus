@@ -1,5 +1,5 @@
 import formatTitle from '@directus/format-title';
-import Busboy from 'busboy';
+import Busboy, { BusboyHeaders } from 'busboy';
 import express from 'express';
 import Joi from 'joi';
 import path from 'path';
@@ -20,7 +20,18 @@ router.use(useCollection('directus_files'));
 const multipartHandler = asyncHandler(async (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();
 
-	const busboy = new Busboy({ headers: req.headers });
+	let headers: BusboyHeaders;
+
+	if (req.headers['content-type']) {
+		headers = req.headers as BusboyHeaders;
+	} else {
+		headers = {
+			...req.headers,
+			'content-type': 'application/octet-stream',
+		};
+	}
+
+	const busboy = new Busboy({ headers });
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
@@ -33,19 +44,21 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	 */
 
 	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
-	const payload: Partial<File> = {};
+	let payload: any = {};
 	let fileCount = 0;
 
-	busboy.on('field', (fieldname: keyof File, val) => {
-		if (typeof val === 'string' && val.trim() === 'null') val = null;
-		if (typeof val === 'string' && val.trim() === 'false') val = false;
-		if (typeof val === 'string' && val.trim() === 'true') val = true;
+	busboy.on('field', (fieldname, val) => {
+		let fieldValue: string | null | boolean = val;
+
+		if (typeof fieldValue === 'string' && fieldValue.trim() === 'null') fieldValue = null;
+		if (typeof fieldValue === 'string' && fieldValue.trim() === 'false') fieldValue = false;
+		if (typeof fieldValue === 'string' && fieldValue.trim() === 'true') fieldValue = true;
 
 		if (fieldname === 'storage') {
 			disk = val;
 		}
 
-		payload[fieldname] = val;
+		payload[fieldname] = fieldValue;
 	});
 
 	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
@@ -53,10 +66,6 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 
 		if (!payload.title) {
 			payload.title = formatTitle(path.parse(filename).name);
-		}
-
-		if (req.accountability?.user) {
-			payload.uploaded_by = req.accountability.user;
 		}
 
 		const payloadWithRequiredFields: Partial<File> & {
@@ -70,11 +79,14 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			storage: payload.storage || disk,
 		};
 
+		// Clear the payload for the next to-be-uploaded file
+		payload = {};
+
 		try {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
 			savedFiles.push(primaryKey);
 			tryDone();
-		} catch (error) {
+		} catch (error: any) {
 			busboy.emit('error', error);
 		}
 	});
@@ -128,7 +140,7 @@ router.post(
 					data: record,
 				};
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -165,7 +177,7 @@ router.post(
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -243,7 +255,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -270,7 +282,7 @@ router.patch(
 		try {
 			const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

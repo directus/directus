@@ -10,7 +10,7 @@ import { AbstractServiceOptions, SchemaOverview } from '../../types';
 import { Accountability } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
-import prettier from 'prettier';
+import { Url } from '../../utils/url';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
@@ -48,12 +48,12 @@ export class MailService {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
-		const from = options.from || (env.EMAIL_FROM as string);
+		const defaultTemplateData = await this.getDefaultTemplateData();
+
+		const from = `${defaultTemplateData.projectName} <${options.from || (env.EMAIL_FROM as string)}>`;
 
 		if (template) {
 			let templateData = template.data;
-
-			const defaultTemplateData = await this.getDefaultTemplateData();
 
 			templateData = {
 				...defaultTemplateData,
@@ -65,7 +65,10 @@ export class MailService {
 
 		if (typeof html === 'string') {
 			// Some email clients start acting funky when line length exceeds 75 characters. See #6074
-			html = prettier.format(html as string, { parser: 'html', printWidth: 70, tabWidth: 0 });
+			html = html
+				.split('\n')
+				.map((line) => line.trim())
+				.join('\n');
 		}
 
 		await this.mailer.sendMail({ ...emailOptions, from, html });
@@ -100,16 +103,15 @@ export class MailService {
 		};
 
 		function getProjectLogoURL(logoID?: string) {
-			let projectLogoURL = env.PUBLIC_URL;
-			if (projectLogoURL.endsWith('/') === false) {
-				projectLogoURL += '/';
-			}
+			const projectLogoUrl = new Url(env.PUBLIC_URL);
+
 			if (logoID) {
-				projectLogoURL += `assets/${logoID}`;
+				projectLogoUrl.addPath('assets', logoID);
 			} else {
-				projectLogoURL += `admin/img/directus-white.png`;
+				projectLogoUrl.addPath('admin', 'img', 'directus-white.png');
 			}
-			return projectLogoURL;
+
+			return projectLogoUrl.toString();
 		}
 	}
 }

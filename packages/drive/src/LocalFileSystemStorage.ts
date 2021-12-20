@@ -47,7 +47,7 @@ export class LocalFileSystemStorage extends Storage {
 		try {
 			const result = await fse.appendFile(this._fullPath(location), content);
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -59,7 +59,7 @@ export class LocalFileSystemStorage extends Storage {
 		try {
 			const result = await fse.copy(this._fullPath(src), this._fullPath(dest));
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, `${src} -> ${dest}`);
 		}
 	}
@@ -71,7 +71,7 @@ export class LocalFileSystemStorage extends Storage {
 		try {
 			const result = await fse.unlink(this._fullPath(location));
 			return { raw: result, wasDeleted: true };
-		} catch (e) {
+		} catch (e: any) {
 			const error = handleError(e, location);
 
 			if (error instanceof FileNotFound) {
@@ -96,7 +96,7 @@ export class LocalFileSystemStorage extends Storage {
 		try {
 			const result = await fse.pathExists(this._fullPath(location));
 			return { exists: result, raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -108,7 +108,7 @@ export class LocalFileSystemStorage extends Storage {
 		try {
 			const result = await fse.readFile(this._fullPath(location), encoding);
 			return { content: result, raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -120,7 +120,7 @@ export class LocalFileSystemStorage extends Storage {
 		try {
 			const result = await fse.readFile(this._fullPath(location));
 			return { content: result, raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -136,7 +136,7 @@ export class LocalFileSystemStorage extends Storage {
 				modified: stat.mtime,
 				raw: stat,
 			};
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -158,7 +158,7 @@ export class LocalFileSystemStorage extends Storage {
 		try {
 			const result = await fse.move(this._fullPath(src), this._fullPath(dest));
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, `${src} -> ${dest}`);
 		}
 	}
@@ -171,7 +171,7 @@ export class LocalFileSystemStorage extends Storage {
 			const { content: actualContent } = await this.get(location, 'utf-8');
 
 			return this.put(location, `${content}${actualContent}`);
-		} catch (e) {
+		} catch (e: any) {
 			if (e instanceof FileNotFound) {
 				return this.put(location, content);
 			}
@@ -197,7 +197,7 @@ export class LocalFileSystemStorage extends Storage {
 
 			const result = await fse.outputFile(fullPath, content);
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -218,7 +218,7 @@ export class LocalFileSystemStorage extends Storage {
 
 			for await (const file of dir) {
 				const fileName = join(prefixDirectory, file.name);
-				if (fileName.startsWith(prefix)) {
+				if (fileName.toLowerCase().startsWith(prefix.toLowerCase())) {
 					if (file.isDirectory()) {
 						yield* this._flatDirIterator(join(fileName, sep), originalPrefix);
 					} else if (file.isFile()) {
@@ -230,7 +230,7 @@ export class LocalFileSystemStorage extends Storage {
 					}
 				}
 			}
-		} catch (e) {
+		} catch (e: any) {
 			if (e.code !== 'ENOENT') {
 				throw handleError(e, originalPrefix);
 			}

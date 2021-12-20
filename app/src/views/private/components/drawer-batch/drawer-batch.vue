@@ -125,7 +125,7 @@ export default defineComponent({
 
 					internalActive.value = false;
 					internalEdits.value = {};
-				} catch (err) {
+				} catch (err: any) {
 					validationErrors.value = err.response.data.errors
 						.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 						.map((err: APIError) => {

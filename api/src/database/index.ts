@@ -8,6 +8,8 @@ import { validateEnv } from '../utils/validate-env';
 import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
+import { promisify } from 'util';
+import { getHelpers } from './helpers';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -22,6 +24,7 @@ export default function getDatabase(): Knex {
 		'DB_SEARCH_PATH',
 		'DB_CONNECTION_STRING',
 		'DB_POOL',
+		'DB_EXCLUDE_TABLES',
 	]);
 
 	const poolConfig = getConfigFromEnv('DB_POOL');
@@ -54,7 +57,12 @@ export default function getDatabase(): Knex {
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
 			warn: (msg) => {
+				// Ignore warnings about returning not being supported in some DBs
 				if (msg.startsWith('.returning()')) return;
+
+				// Ignore warning about MySQL not supporting TRX for DDL
+				if (msg.startsWith('Transaction was implicitly committed, do not mix transactions and DDL with MySQL')) return;
+
 				return logger.warn(msg);
 			},
 			error: (msg) => logger.error(msg),
@@ -66,8 +74,14 @@ export default function getDatabase(): Knex {
 
 	if (env.DB_CLIENT === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
-		poolConfig.afterCreate = (conn: any, cb: any) => {
-			conn.run('PRAGMA foreign_keys = ON', cb);
+
+		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			logger.trace('Enabling SQLite Foreign Keys support...');
+
+			const run = promisify(conn.run.bind(conn));
+			await run('PRAGMA foreign_keys = ON');
+
+			callback(null, conn);
 		};
 	}
 
@@ -111,7 +125,7 @@ export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
 	database = database ?? getDatabase();
 
 	try {
-		if (env.DB_CLIENT === 'oracledb') {
+		if (getDatabaseClient(database) === 'oracle') {
 			await database.raw('select 1 from DUAL');
 		} else {
 			await database.raw('SELECT 1');
@@ -123,20 +137,42 @@ export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
 	}
 }
 
-export async function validateDBConnection(database?: Knex): Promise<void> {
+export async function validateDatabaseConnection(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
 
 	try {
-		if (env.DB_CLIENT === 'oracledb') {
+		if (getDatabaseClient(database) === 'oracle') {
 			await database.raw('select 1 from DUAL');
 		} else {
 			await database.raw('SELECT 1');
 		}
-	} catch (error) {
+	} catch (error: any) {
 		logger.error(`Can't connect to the database.`);
 		logger.error(error);
 		process.exit(1);
 	}
+}
+
+export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqlite' | 'oracle' | 'mssql' | 'redshift' {
+	database = database ?? getDatabase();
+
+	switch (database.client.constructor.name) {
+		case 'Client_MySQL':
+			return 'mysql';
+		case 'Client_PG':
+			return 'postgres';
+		case 'Client_SQLite3':
+			return 'sqlite';
+		case 'Client_Oracledb':
+		case 'Client_Oracle':
+			return 'oracle';
+		case 'Client_MSSQL':
+			return 'mssql';
+		case 'Client_Redshift':
+			return 'redshift';
+	}
+
+	throw new Error(`Couldn't extract database client`);
 }
 
 export async function isInstalled(): Promise<boolean> {
@@ -144,7 +180,7 @@ export async function isInstalled(): Promise<boolean> {
 
 	// The existence of a directus_collections table alone isn't a "proper" check to see if everything
 	// is installed correctly of course, but it's safe enough to assume that this collection only
-	// exists when using the installer CLI.
+	// exists when Directus is properly installed.
 	return await inspector.hasTable('directus_collections');
 }
 
@@ -173,9 +209,31 @@ export async function validateMigrations(): Promise<boolean> {
 		);
 
 		return requiredVersions.every((version) => completedVersions.includes(version));
-	} catch (error) {
+	} catch (error: any) {
 		logger.error(`Database migrations cannot be found`);
 		logger.error(error);
 		throw process.exit(1);
+	}
+}
+
+/**
+ * These database extensions should be optional, so we don't throw or return any problem states when they don't
+ */
+export async function validateDatabaseExtensions(): Promise<void> {
+	const database = getDatabase();
+	const client = getDatabaseClient(database);
+	const helpers = getHelpers(database);
+	const geometrySupport = await helpers.st.supported();
+	if (!geometrySupport) {
+		switch (client) {
+			case 'postgres':
+				logger.warn(`PostGIS isn't installed. Geometry type support will be limited.`);
+				break;
+			case 'sqlite':
+				logger.warn(`Spatialite isn't installed. Geometry type support will be limited.`);
+				break;
+			default:
+				logger.warn(`Geometry type not supported on ${client}`);
+		}
 	}
 }

@@ -1,40 +1,46 @@
 <template>
 	<div class="calendar-layout">
-		<div ref="calendarEl" />
+		<div ref="calendarElement" />
 	</div>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, onMounted, onUnmounted, toRefs } from 'vue';
+import { defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
 
 import '@fullcalendar/core/vdom';
-import { useLayoutState } from '@directus/shared/composables';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-
-		const layoutState = useLayoutState();
-		const { calendarEl, createCalendar, destroyCalendar } = toRefs(layoutState.value);
+	inheritAttrs: false,
+	props: {
+		createCalendar: {
+			type: Function as PropType<(calendarElement: HTMLElement) => void>,
+			required: true,
+		},
+		destroyCalendar: {
+			type: Function as PropType<() => void>,
+			required: true,
+		},
+	},
+	emits: ['update:selection'],
+	setup(props) {
+		const calendarElement = ref<HTMLElement>();
 
 		onMounted(() => {
-			const create = createCalendar.value;
-			create();
+			props.createCalendar(calendarElement.value!);
 		});
 
 		onUnmounted(() => {
-			const destroy = destroyCalendar.value;
-			destroy();
+			props.destroyCalendar();
 		});
 
-		return { t, calendarEl };
+		return { calendarElement };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .calendar-layout {
+	height: calc(100% - calc(61px + 2 * 24px));
 	padding: var(--content-padding);
 	padding-top: 0;
 }

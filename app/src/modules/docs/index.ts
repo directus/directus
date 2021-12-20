@@ -7,19 +7,24 @@ import StaticDocs from './routes/static.vue';
 export default defineModule({
 	id: 'docs',
 	name: '$t:documentation',
-	icon: 'info',
+	icon: 'help_outline',
 	routes: [
 		{
 			path: '',
-			redirect: '/docs/getting-started/introduction/',
+			component: StaticDocs,
+			children: [
+				{
+					path: '',
+					redirect: '/docs/app/overview',
+				},
+				...getRoutes(docs),
+			],
 		},
-		...getRoutes(docs),
 		{
 			path: ':_(.+)+',
 			component: NotFound,
 		},
 	],
-	order: 20,
 });
 
 function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
@@ -28,16 +33,14 @@ function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
 	for (const route of routes) {
 		if (!('children' in route)) {
 			updatedRoutes.push({
+				name: `docs-${route.path.replace('/', '-')}`,
 				path: route.path,
-				component: StaticDocs,
-				meta: {
-					import: route.import,
-				},
+				component: route.import,
 			});
 		} else {
 			updatedRoutes.push({
 				path: route.path,
-				redirect: `/docs${route.children[0].path}`,
+				redirect: `/docs/${route.children[0].path}`,
 			});
 
 			updatedRoutes.push(...getRoutes(route.children));

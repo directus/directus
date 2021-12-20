@@ -17,7 +17,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 	if (req.method === 'GET') {
 		query = (req.query.query as string | undefined) || null;
 
-		if (req.params.variables) {
+		if (req.query.variables) {
 			try {
 				variables = JSON.parse(req.query.variables as string);
 			} catch {
@@ -40,7 +40,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 
 	try {
 		document = parse(new Source(query));
-	} catch (err) {
+	} catch (err: any) {
 		throw new InvalidPayloadException(`GraphQL schema validation error.`, {
 			graphqlErrors: [err],
 		});

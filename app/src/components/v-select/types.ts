@@ -5,4 +5,5 @@ export type Option = {
 	disabled?: boolean;
 	children?: Option[];
 	divider?: boolean;
+	selectable?: boolean;
 };

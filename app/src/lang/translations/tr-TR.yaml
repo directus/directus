@@ -1,24 +1,5 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+avatar: Avatar
 edit_field: Alanı Düzenle
 item_revision: Revizyonları Göster
 duplicate_field: Yinelenen Alan
@@ -29,7 +10,7 @@ field_name_translations: Alan İsim Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
 add_field: Alan Ekle
 role_name: Rol Adı
-db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
+edit_collection: Koleksiyonu düzenle
 show_archived_items: Arşivlenmiş Öğeleri Göster
 edited: Değer Düzenlendi
 required: Gerekli
@@ -61,6 +42,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
+public_label: Herkese Açık
 public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
 not_allowed: İzin Verilmedi
 directus_version: Directus Versiyon
@@ -125,9 +107,6 @@ fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
 validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
 presets_for_role: '{role} rolü için varsayılan alan değeri.'
 presentation_and_aliases: Sunum ve Takma Adlar
-revision_post_update: İşte güncellemeden sonra bu öğenin nasıl göründüğü...
-changes_made: Bunlar yapılan belirli değişiklikler...
-no_relational_data: Bunun ilişkisel verileri içermediğini unutmayın.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -157,6 +136,7 @@ bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
 datetime: Tarih Saat
+dateTime: Tarih Saat
 decimal: Ondalık
 float: Ondalıklı sayı
 integer: Tamsayı
@@ -187,9 +167,6 @@ new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
 search_collection: Koleksiyonu Ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
-add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
-add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
-add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
 determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
@@ -227,7 +204,7 @@ undo_changes: Değişiklikleri geri al
 notifications: Bildirimler
 show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
-page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
+page_not_found_body: Aradığınız sayfa mevcut değil.
 confirm_revert: Geri Alma İşlemini Onayla
 confirm_revert_body: Bu, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
@@ -328,6 +305,7 @@ type: Tür
 creating_new_collection: Yeni Koleksiyon Oluştur
 created_by: Oluşturan
 created_on: Oluşturulma tarihi
+creating_collection_info: Koleksiyonu isimlendir ve onun benzersiz "anahtar" alanını ayarla...
 save_and_create_new: Kaydet ve Yeni Oluştur
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
@@ -349,7 +327,6 @@ no_files_copy: Burada dosya yok.
 user_count: 'Kullanıcı Yok | Bir Kullanıcı | {count} Kullanıcı'
 no_users_copy: Bu Grupta Kullanıcı Yok.
 webhooks_count: 'Webhook Yok | Bir Webhook | {count} Webhook'
-no_webhooks_copy: Henüz hiç bir webhook yok.
 all_items: Tüm öğeler
 csv: CSV
 no_collections: Koleksiyon Yok
@@ -357,8 +334,12 @@ create_collection: Koleksiyon Oluştur
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
 select_a_collection: Koleksiyon Seç
 active: Aktif
+copy: Kopyala
 users: Kullanıcılar
 activity: Aktivite
+action: İşlem
+ip_address: IP Adresi
+user_agent: Kullanıcı Aracısı
 webhooks: Ağ Kancaları
 field_width: Alan Genişliği
 add_filter: Filtre Ekle
@@ -398,9 +379,9 @@ errors:
   RECORD_NOT_UNIQUE: Kopya değer tespit edildi
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  UNKNOWN: Beklenmeyen hata
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
   NOT_NULL_VIOLATION: Değer null olamaz
+  UNKNOWN: Beklenmeyen hata
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
@@ -484,6 +465,7 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 label: Etiket
+full_screen: Tam Ekran
 width: Genişlik
 height: Yükseklik
 wysiwyg_options:
@@ -569,6 +551,7 @@ fields:
     collection: Koleksiyon
     icon: İkon
     note: Not
+    color: Renk
     display_template: Görüntüleme Şablonu
     hidden: Gizli
     sort_field: Sıralama Alanı
@@ -604,10 +587,14 @@ fields:
     theme: Tema
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     status: Durum
+    status_active: Aktif
     role: Rol
     last_page: Son Sayfa
     last_access: Son Erişim
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
     project_name: Proje Adı
     custom_css: Özel CSS
   directus_fields:
@@ -626,6 +613,34 @@ fields:
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
+  directus_webhooks:
+    name: İsim
+    status: Durum
+    value: Değer
+    collections: Koleksiyonlar
+field_options:
+  directus_activity:
+    create: Oluştur
+    update: Güncelle
+  directus_collections:
+    language: Dil
+    translation: Çeviri
+    collection_name: Koleksiyon Adı
+    archive_divider: Arşiv
+    sort_divider: Sırala
+  directus_roles:
+    fields:
+      icon_name: İkon
+      name_name: İsim
+    collections_name: Koleksiyonlar
+  directus_users:
+    status_dropdown_active: Aktif
+  directus_webhooks:
+    status_options_active: Aktif
+    actions_create: Oluştur
+    actions_update: Güncelle
+    headers:
+      value: Değer
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
@@ -685,6 +700,9 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
+  filter:
+    add_filter: Filtre Ekle
+    all: Tümü
   presentation-links:
     primary: Birincil
   input-code:
@@ -716,6 +734,10 @@ interfaces:
     interface: Arayüz
   select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
+  input-rich-text-md:
+    edit: Düzenle
+  map:
+    zoom: Yakınlaş
   system-folder:
     folder: Klasör
   slider:
@@ -737,6 +759,8 @@ interfaces:
       auto: Otomatik
       dropdown: Açılır Liste
 displays:
+  translations:
+    translations: Çeviriler
   boolean:
     boolean: Evet/Hayır
   collection:
@@ -752,8 +776,17 @@ displays:
   filesize:
     filesize: Dosya Boyutu
   formatted-value:
-    format_title: Başlığı Biçimlendir
+    format: Biçim
+    font: Font
+    font_serif: Serif
+    font_monospace: Monospace
     bold_label: Kalınlaştır
+    italic: İtalik
+    prefix: Önek
+    suffix: Sonek
+    color: Renk
+    icon: İkon
+    text: Metin
   icon:
     icon: İkon
     description: Simge olarak görüntüle
@@ -795,3 +828,6 @@ layouts:
     comfortable: Geniş
     compact: Sıkışık
     cozy: Normal
+panels:
+  label:
+    name: Etiket

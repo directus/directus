@@ -1,6 +1,7 @@
 import { FilterOperator } from './filter';
+import { DeepPartial } from './misc';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { LOCAL_TYPES, TYPES } from '../constants';
+import { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS } from '../constants';
 
 type Translations = {
 	language: string;
@@ -13,11 +14,15 @@ export type Type = typeof TYPES[number];
 
 export type LocalType = typeof LOCAL_TYPES[number];
 
+export type GeometryType = typeof GEOMETRY_TYPES[number] | 'GeometryCollection' | undefined;
+
+export type GeometryFormat = typeof GEOMETRY_FORMATS[number];
+
 export type FieldMeta = {
 	id: number;
 	collection: string;
 	field: string;
-	group: number | null;
+	group: string | null;
 	hidden: boolean;
 	interface: string | null;
 	display: string | null;
@@ -46,6 +51,8 @@ export interface Field extends FieldRaw {
 	name: string;
 	children?: Field[] | null;
 }
+
+export type RawField = DeepPartial<Field> & { field: string; type: Type };
 
 export type ValidationError = {
 	code: string;

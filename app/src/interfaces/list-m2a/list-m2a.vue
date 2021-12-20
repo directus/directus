@@ -22,6 +22,7 @@
 						v-if="allowedCollections.includes(element[anyRelation.meta.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
+						clickable
 						@click="editExisting((value || [])[element.$index])"
 					>
 						<v-icon
@@ -140,13 +141,14 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
-import { Relation, Collection } from '@/types';
+import { Relation } from '@directus/shared/types';
+import { Collection } from '@/types';
 import DrawerCollection from '@/views/private/components/drawer-collection/';
 import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import { isPlainObject, cloneDeep } from 'lodash';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { isPlainObject, cloneDeep, isEqual } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
@@ -199,7 +201,7 @@ export default defineComponent({
 			useEdits();
 		const { onSort } = useManualSort();
 
-		watch(props, fetchValues, { immediate: true, deep: true });
+		watch(() => props.value, fetchValues, { immediate: true, deep: true });
 
 		return {
 			t,
@@ -376,8 +378,10 @@ export default defineComponent({
 				relatedItemValues,
 			};
 
-			async function fetchValues() {
+			async function fetchValues(newVal: any, oldVal: any) {
 				if (props.value === null) return;
+
+				if (isEqual(newVal, oldVal)) return;
 
 				loading.value = true;
 
@@ -495,7 +499,7 @@ export default defineComponent({
 							[collection]: responses[i].data.data,
 						};
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

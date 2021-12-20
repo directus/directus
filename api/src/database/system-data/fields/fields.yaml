@@ -53,6 +53,12 @@ fields:
     width: half
 
   - collection: directus_fields
+    field: required
+    hidden: true
+    special: boolean
+    width: half
+
+  - collection: directus_fields
     field: sort
     width: half
 

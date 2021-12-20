@@ -1,6 +1,6 @@
 import api from '@/api';
 import { Collection } from '@/types';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { computed, Ref, ref, watch } from 'vue';
 
 type UsableTemplateData = {
@@ -43,7 +43,7 @@ export default function useTemplateData(
 			});
 
 			templateData.value = result.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;

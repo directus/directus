@@ -24,11 +24,11 @@ export class ImportService {
 	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream): Promise<void> {
 		if (collection.startsWith('directus_')) throw new ForbiddenException();
 
-		const createPermissions = this.schema.permissions.find(
+		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create'
 		);
 
-		const updatePermissions = this.schema.permissions.find(
+		const updatePermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'update'
 		);
 
@@ -104,8 +104,16 @@ export class ImportService {
 					.pipe(csv())
 					.on('data', (value: Record<string, string>) => {
 						const obj = transform(value, (result: Record<string, string>, value, key) => {
-							if (value.length === 0) delete result[key];
-							else set(result, key, value);
+							if (value.length === 0) {
+								delete result[key];
+							} else {
+								try {
+									const parsedJson = JSON.parse(value);
+									set(result, key, parsedJson);
+								} catch {
+									set(result, key, value);
+								}
+							}
 						});
 
 						saveQueue.push(obj);

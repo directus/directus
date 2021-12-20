@@ -1,10 +1,10 @@
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
 import SidebarDetail from '@/views/private/components/sidebar-detail/';
 import UserPopover from '@/views/private/components/user-popover';
 import ValueNull from '@/views/private/components/value-null';
+import DocsWrapper from '@/views/private/components/docs-wrapper';
 import { App } from 'vue';
 import TransitionBounce from './transition/bounce';
 import TransitionDialog from './transition/dialog';
@@ -27,6 +27,7 @@ import VFieldSelect from './v-field-select';
 import VFieldTemplate from './v-field-template';
 import VForm from './v-form';
 import VHover from './v-hover/';
+import VHighlight from './v-highlight.vue';
 import VIcon from './v-icon/';
 import VInfo from './v-info/';
 import VInput from './v-input/';
@@ -46,6 +47,7 @@ import VSlider from './v-slider/';
 import VSwitch from './v-switch/';
 import VTable from './v-table/';
 import VTabs, { VTab, VTabItem, VTabsItems } from './v-tabs/';
+import VTemplateInput from './v-template-input.vue';
 import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
@@ -72,6 +74,7 @@ export function registerComponents(app: App): void {
 	app.component('VFieldSelect', VFieldSelect);
 	app.component('VForm', VForm);
 	app.component('VHover', VHover);
+	app.component('VHighlight', VHighlight);
 	app.component('VIcon', VIcon);
 	app.component('VInfo', VInfo);
 	app.component('VInput', VInput);
@@ -101,6 +104,7 @@ export function registerComponents(app: App): void {
 	app.component('VTable', VTable);
 	app.component('VTabsItems', VTabsItems);
 	app.component('VTabs', VTabs);
+	app.component('VTemplateInput', VTemplateInput);
 	app.component('VTextarea', VTextarea);
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
@@ -111,9 +115,9 @@ export function registerComponents(app: App): void {
 
 	app.component('RenderDisplay', RenderDisplay);
 	app.component('RenderTemplate', RenderTemplate);
-	app.component('FilterSidebarDetail', FilterSidebarDetail);
 	app.component('ExportSidebarDetail', ExportSidebarDetail);
 	app.component('SidebarDetail', SidebarDetail);
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
+	app.component('DocsWrapper', DocsWrapper);
 }

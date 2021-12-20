@@ -2,9 +2,9 @@
 	<div>
 		<v-list-item
 			v-if="folder.children === undefined"
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
-			@contextmenu.prevent.stop="activateContextMenu"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -14,12 +14,12 @@
 
 		<v-list-group
 			v-else
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
 			:value="folder.id"
 			scope="files-navigation"
 			disable-groupable-parent
-			@contextmenu.prevent.stop="activateContextMenu"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -106,7 +106,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleteSaving" @click="deleteSave">{{ t('delete_label') }}</v-button>
+					<v-button kind="danger" :loading="deleteSaving" @click="deleteSave">{{ t('delete_label') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -144,8 +144,6 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const contextMenu = ref();
-
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
@@ -165,8 +163,6 @@ export default defineComponent({
 			deleteActive,
 			deleteSave,
 			deleteSaving,
-			contextMenu,
-			activateContextMenu,
 		};
 
 		function useRenameFolder() {
@@ -183,7 +179,7 @@ export default defineComponent({
 					await api.patch(`/folders/${props.folder.id}`, {
 						name: renameValue.value,
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					renameSaving.value = false;
@@ -207,7 +203,7 @@ export default defineComponent({
 					await api.patch(`/folders/${props.folder.id}`, {
 						parent: moveValue.value,
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveSaving.value = false;
@@ -273,23 +269,19 @@ export default defineComponent({
 					await api.delete(`/folders/${props.folder.id}`);
 
 					if (newParent) {
-						router.push(`/files/folders/${newParent}`);
+						router.replace(`/files/folders/${newParent}`);
 					} else {
-						router.push('/files');
+						router.replace('/files');
 					}
 
 					deleteActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					await fetchFolders();
 					deleteSaving.value = false;
 				}
 			}
-		}
-
-		function activateContextMenu(event: PointerEvent) {
-			contextMenu.value.activate(event);
 		}
 	},
 });
