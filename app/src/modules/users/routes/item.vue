@@ -103,7 +103,7 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="t('avatar')" />
+					<v-image v-else-if="avatarSrc" :source="avatarSrc" :alt="t('avatar')" />
 					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">

@@ -1,7 +1,7 @@
 <template>
-	<img
+	<v-image
 		v-if="imageThumbnail && !imgError"
-		:src="imageThumbnail"
+		:source="imageThumbnail"
 		:class="{ 'is-svg': value && value.type.includes('svg') }"
 		:alt="value.title"
 		@error="imgError = true"

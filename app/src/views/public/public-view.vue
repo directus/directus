@@ -3,10 +3,10 @@
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div v-if="branding && branding.project_logo" class="logo" :style="{ backgroundColor: branding.project_color }">
-					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
+					<v-image :source="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<div v-else class="logo" :style="{ backgroundColor: branding.project_color }">
-					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
+					<v-image source="./logo-light.svg" alt="Directus" class="directus-logo" />
 				</div>
 				<div class="title">
 					<h1 class="type-title">{{ branding && branding.project_name }}</h1>
@@ -23,7 +23,12 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="branding && branding.project_name" />
+				<v-image
+					v-if="foregroundURL"
+					class="foreground"
+					:source="foregroundURL"
+					:alt="branding && branding.project_name"
+				/>
 			</transition>
 			<div class="note-container">
 				<div v-if="branding && branding.public_note" v-md="branding.public_note" class="note" />

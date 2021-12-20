@@ -11,13 +11,7 @@
 			<template v-else>
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
 				<template v-else>
-					<v-image
-						:class="imageInfo.fileType"
-						:file-type="imageInfo.fileType"
-						:source="imageInfo.source"
-						:alt="item.title"
-						role="presentation"
-					/>
+					<v-image :class="imageInfo.fileType" :source="imageInfo.source" :alt="item.title" role="presentation" />
 				</template>
 			</template>
 		</div>

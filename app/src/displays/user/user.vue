@@ -1,16 +1,16 @@
 <template>
 	<user-popover v-if="value" :user="value.id">
 		<div class="user" :class="display">
-			<img
+			<v-image
 				v-if="(display === 'avatar' || display === 'both') && src"
-				:src="src"
+				:source="src"
 				role="presentation"
 				:alt="value && userName(value)"
 				:class="{ circle }"
 			/>
-			<img
+			<v-image
 				v-else-if="(display === 'avatar' || display === 'both') && src === null"
-				src="../../assets/avatar-placeholder.svg"
+				source="../../assets/avatar-placeholder.svg"
 				role="presentation"
 				:alt="value && userName(value)"
 				:class="{ circle }"

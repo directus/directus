@@ -1,8 +1,8 @@
 <template>
 	<v-icon v-if="imageError" name="image" />
-	<img
+	<v-image
 		v-else-if="src"
-		:src="src"
+		:source="src"
 		role="presentation"
 		:alt="value && value.title"
 		:class="{ circle }"

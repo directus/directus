@@ -6,7 +6,7 @@
 			:class="{ svg: isSVG, 'max-size': inModal === false }"
 			@click="$emit('click')"
 		>
-			<img :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
+			<v-image :source="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 			<v-icon v-if="inModal === false" name="upload" />
 		</div>
 
