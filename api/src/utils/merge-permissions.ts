@@ -8,19 +8,15 @@ export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permiss
 		.reduce((acc, val) => {
 			const key = `${val.collection}__${val.action}__${val.role || '$PUBLIC'}`;
 			const current = acc.get(key);
-			acc.set(key, current ? mergePerm(strategy, current, val) : val);
+			acc.set(key, current ? mergePermission(strategy, current, val) : val);
 			return acc;
 		}, new Map())
 		.values();
 
-	const result = Array.from(mergedPermissions).map((perm) => {
-		return omit(perm, ['id', 'system']) as Permission;
-	});
-
-	return result;
+	return Array.from(mergedPermissions);
 }
 
-function mergePerm(strategy: 'and' | 'or', currentPerm: Permission, newPerm: Permission) {
+export function mergePermission(strategy: 'and' | 'or', currentPerm: Permission, newPerm: Permission) {
 	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
 
 	let permissions = currentPerm.permissions;
@@ -82,11 +78,14 @@ function mergePerm(strategy: 'and' | 'or', currentPerm: Permission, newPerm: Per
 		presets = merge({}, presets, newPerm.presets);
 	}
 
-	return {
-		...currentPerm,
-		permissions,
-		validation,
-		fields,
-		presets,
-	};
+	return omit(
+		{
+			...currentPerm,
+			permissions,
+			validation,
+			fields,
+			presets,
+		},
+		['id', 'system']
+	);
 }

@@ -139,15 +139,15 @@ type RelationInfo = {
 };
 
 function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
-	const fakeRelation = field.match(/^\$FOLLOW\((.*?),(.*?)\)$/);
+	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)\)$/);
 
-	if (fakeRelation) {
-		const [_, related_collection, related_field] = fakeRelation;
+	if (implicitRelation) {
+		const [_, m2oCollection, m2oField] = implicitRelation;
 
 		const relation: Relation = {
-			collection,
-			related_collection,
-			field: related_field,
+			collection: m2oCollection,
+			field: m2oField,
+			related_collection: collection,
 			schema: null,
 			meta: null,
 		};
@@ -327,7 +327,7 @@ export function applyFilter(
 			 */
 			const pathRoot = filterPath[0].split(':')[0];
 
-			const { relation, relationType } = getRelationInfo(relations, pathRoot, collection);
+			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
@@ -347,6 +347,7 @@ export function applyFilter(
 					const field = relation!.field;
 					const collection = relation!.collection;
 					const column = `${collection}.${field}`;
+
 					subQueryKnex.select({ [field]: column }).from(collection);
 
 					applyQuery(
@@ -528,18 +529,11 @@ export function applyFilter(
 				 */
 				const pathRoot = pathParts[0].split(':')[0];
 
-				const relation = relations.find((relation) => {
-					return (
-						(relation.collection === parentCollection && relation.field === pathRoot) ||
-						(relation.related_collection === parentCollection && relation.meta?.one_field === pathRoot)
-					);
-				});
+				const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
 
 				if (!relation) {
 					throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
 				}
-
-				const relationType = getRelationType({ relation, collection: parentCollection, field: pathRoot });
 
 				const alias = get(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts);
 
