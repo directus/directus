@@ -2,7 +2,11 @@ import { Permission, Accountability } from '@directus/shared/types';
 import { SchemaOverview } from '../types';
 import { assign } from 'lodash';
 
-export function getPermissionsForShare(accountability: Accountability, schema: SchemaOverview): Permission[] {
+export function getPermissionsForShare(
+	currentPermissions: Permission[],
+	accountability: Accountability,
+	schema: SchemaOverview
+): Permission[] {
 	const defaults: Permission = {
 		id: undefined,
 		action: 'read',
@@ -11,7 +15,7 @@ export function getPermissionsForShare(accountability: Accountability, schema: S
 		permissions: {},
 		validation: {},
 		presets: null,
-		fields: [],
+		fields: null,
 	};
 
 	const { collection, item } = accountability.share_scope!;
@@ -27,5 +31,10 @@ export function getPermissionsForShare(accountability: Accountability, schema: S
 		},
 	});
 
-	return [];
+	return [parentCollectionPermission].filter((permission) => {
+		return currentPermissions.some(
+			(existingPermission) =>
+				existingPermission.action === permission.action && existingPermission.collection === permission.collection
+		);
+	});
 }
