@@ -52,7 +52,9 @@ edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
 db_only_click_to_configure: 'Solo Database: click per configurare'
+show_active_items: Mostra gli elementi attivi
 show_archived_items: Mostra gli elementi archiviati
+show_all_items: Mostra tutti gli elementi
 edited: Valore Modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
@@ -89,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Sessione scaduta
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
+admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
 not_allowed: Non consentito
 directus_version: Versione di Directus
 node_version: Versione Node
@@ -1192,6 +1195,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1510,17 +1514,26 @@ displays:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
     format: Formato
+    format_label: Formato automatico
     font: Tipo di carattere
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Grassetto
     bold_label: Usa lo stile grassetto
     italic: Corsivo
+    italic_label: Usa il corsivo
     prefix: Prefisso
+    prefix_label: Prefisso
     suffix: Suffisso
+    suffix_label: Suffisso
     color: Colore
+    background: Sfondo
     icon: Icona
+    border: Bordo
+    border_label: Mostra bordo
     text: Text
+    text_placeholder: Testo opzionale ridefinito...
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
     description: Visualizza una versione formattata dell'oggetto
