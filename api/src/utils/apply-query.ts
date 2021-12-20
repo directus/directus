@@ -134,28 +134,37 @@ export default function applyQuery(
  * ```
  */
 type RelationInfo = {
-	relation?: Relation;
-	relationType?: string;
+	relation: Relation | null;
+	relationType: string | null;
 };
 
 function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
 	const fakeRelation = field.match(/^\$FOLLOW\((.*?),(.*?)\)$/);
+
 	if (fakeRelation) {
 		const [_, related_collection, related_field] = fakeRelation;
-		const relation = {
+
+		const relation: Relation = {
 			collection,
 			related_collection,
 			field: related_field,
-		} as Relation;
+			schema: null,
+			meta: null,
+		};
+
 		return { relation, relationType: 'o2m' };
 	}
-	const relation = relations.find((relation) => {
-		return (
-			(relation.collection === collection && relation.field === field) ||
-			(relation.related_collection === collection && relation.meta?.one_field === field)
-		);
-	});
-	const relationType = !relation ? undefined : getRelationType({ relation, collection, field })!;
+
+	const relation =
+		relations.find((relation) => {
+			return (
+				(relation.collection === collection && relation.field === field) ||
+				(relation.related_collection === collection && relation.meta?.one_field === field)
+			);
+		}) ?? null;
+
+	const relationType = relation ? getRelationType({ relation, collection, field }) : null;
+
 	return { relation, relationType };
 }
 
