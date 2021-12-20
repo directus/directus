@@ -15,7 +15,7 @@
 						:class="imageInfo.fileType"
 						:file-type="imageInfo.fileType"
 						:source="imageInfo.source"
-						alt="item.title"
+						:alt="item.title"
 						role="presentation"
 					/>
 				</template>

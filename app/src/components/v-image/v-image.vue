@@ -1,6 +1,6 @@
 <template>
 	<div v-if="!ready" placeholder />
-	<img v-else-if="source" class="fileType" :src="source" alt="alt" role="role" @error="imgError = true" />
+	<img v-else-if="source" :class="fileType" :src="source" :alt="alt" :role="role" @error="imgError = true" />
 	<v-icon v-else large :name="icon" />
 </template>
 
