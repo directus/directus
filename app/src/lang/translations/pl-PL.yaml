@@ -52,7 +52,9 @@ edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować'
+show_active_items: Pokaż aktywne elementy
 show_archived_items: Pokaż zarchiwizowane elementy
+show_all_items: Pokaż wszystkie elementy
 edited: Wartość zmieniona
 required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
@@ -1511,6 +1513,7 @@ displays:
     formatted-value: Wartość sformatowana
     description: Wyświetl sformatowaną wersję tekstu
     format: Formatowanie
+    format_label: Automatyczny format
     font: Czcionka
     font_serif: Szeryfowa
     font_monospace: Monospace
