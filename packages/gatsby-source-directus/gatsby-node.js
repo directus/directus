@@ -143,9 +143,6 @@ class Plugin {
 
 		if (hasAuth) {
 			if (!hasToken && !hasCredentials) error('"auth.token" or ("auth.email" and "auth.password") must be defined');
-
-			if (!hasToken && (!hasEmail || !hasPassword))
-				error('("auth.email" and "auth.password") must be defined if "auth.token" is not set');
 		} else warning('no "auth" option were defined. Resources will be fetched with public role');
 
 		try {
