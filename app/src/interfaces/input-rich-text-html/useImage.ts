@@ -107,7 +107,8 @@ export default function useImage(
 			addQueryToPath(img.imageUrl, {
 				...(img.width ? { width: img.width.toString() } : {}),
 				...(img.height ? { height: img.height.toString() } : {}),
-			})
+			}),
+			imageToken.value
 		);
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		isEditorDirty.value = true;
