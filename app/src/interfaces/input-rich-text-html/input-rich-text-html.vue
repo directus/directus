@@ -108,7 +108,7 @@
 					<v-tab-item value="video">
 						<template v-if="mediaSelection">
 							<video class="media-preview" controls="controls">
-								<source :src="mediaSelection.source" />
+								<source :src="mediaSelection.previewUrl" />
 							</video>
 							<div class="grid">
 								<div class="field">

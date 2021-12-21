@@ -2,13 +2,16 @@ import { addTokenToURL } from '@/api';
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
 import { computed, Ref, ref, watch } from 'vue';
+import { replaceUrlAccessToken } from '@/utils/replace-url-access-token';
 
 type MediaSelection = {
-	source: string;
+	sourceUrl: string;
 	width?: number;
 	height?: number;
 	tag?: 'video' | 'audio';
 	type?: string;
+	previewUrl?: string;
+	embedUrl?: string;
 };
 
 type MediaButton = {
@@ -76,10 +79,11 @@ export default function useMedia(
 
 	const mediaSource = computed({
 		get() {
-			return mediaSelection.value?.source;
+			return mediaSelection.value?.sourceUrl;
 		},
 		set(newSource: any) {
-			mediaSelection.value = { ...mediaSelection.value, source: newSource };
+			mediaSelection.value = { ...mediaSelection.value, sourceUrl: newSource };
+			mediaSelection.value.previewUrl = addTokenToURL(newSource, imageToken.value);
 		},
 	});
 
@@ -106,10 +110,10 @@ export default function useMedia(
 	watch(mediaSelection, (vid) => {
 		if (embed.value === '') {
 			if (vid === null) return;
-			embed.value = `<${vid.tag} width="${vid.width}" height="${vid.height}" controls><source src="${vid.source}" type="${vid.type}" /></${vid.tag}>`;
+			embed.value = `<${vid.tag} width="${vid.width}" height="${vid.height}" controls><source src="${vid.embedUrl}" type="${vid.type}" /></${vid.tag}>`;
 		} else {
 			embed.value = embed.value
-				.replace(/src=".*?"/g, `src="${vid?.source}"`)
+				.replace(/src=".*?"/g, `src="${vid?.embedUrl}"`)
 				.replace(/width=".*?"/g, `width="${vid?.width}"`)
 				.replace(/height=".*?"/g, `height="${vid?.height}"`)
 				.replace(/type=".*?"/g, `type="${vid?.type}"`)
@@ -123,19 +127,26 @@ export default function useMedia(
 			mediaSelection.value = null;
 		} else {
 			const tag = /<(video|audio)/g.exec(newEmbed)?.[1];
-			const source = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
+			const embedUrl = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const type = /type="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 
-			if (source === undefined) return;
+			if (embedUrl === undefined) return;
+
+			// Remove token for source
+			const sourceUrl = replaceUrlAccessToken(embedUrl, null);
+			// Add access token for preview purposes
+			const previewUrl = addTokenToURL(embedUrl, imageToken.value);
 
 			mediaSelection.value = {
 				tag: tag === 'audio' ? 'audio' : 'video',
-				source,
+				sourceUrl,
 				width,
 				height,
 				type,
+				previewUrl,
+				embedUrl,
 			};
 		}
 	});
@@ -164,16 +175,17 @@ export default function useMedia(
 	}
 
 	function onMediaSelect(media: Record<string, any>) {
-		const url = getPublicURL() + 'assets/' + media.id;
+		const sourceUrl = getPublicURL() + 'assets/' + media.id;
 		const tag = media.type.startsWith('audio') ? 'audio' : 'video';
-		const source = imageToken.value ? addTokenToURL(url, imageToken.value) : url;
 
 		mediaSelection.value = {
-			source,
+			sourceUrl,
 			width: media.width || 300,
 			height: media.height || 150,
 			tag,
 			type: media.type,
+			previewUrl: addTokenToURL(sourceUrl, imageToken.value),
+			embedUrl: replaceUrlAccessToken(sourceUrl, imageToken.value),
 		};
 	}
 

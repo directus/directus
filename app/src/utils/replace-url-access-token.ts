@@ -1,4 +1,4 @@
-export function replaceUrlAccessToken(url: string, token: string | null): string {
+export function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
 	const parsedUrl = new URL(url);
 	const params = new URLSearchParams(parsedUrl.search);
 
