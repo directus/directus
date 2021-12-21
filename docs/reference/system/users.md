@@ -268,6 +268,65 @@ query {
 
 ---
 
+## Update the Current User
+
+Update the authenticated user.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Returns
+
+Returns the updated [user object](#the-user-object) for the authenticated user.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /users/me
+```
+
+```json
+// PATCH /users/me
+
+{
+	"email": "new.email@example.com"
+}
+```
+
+### GraphQL
+
+```
+POST /graphql/system
+```
+
+```graphql
+type Mutation {
+	update_users_me(data: update_directus_users_input!): directus_users
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_users_me(data: { email: "new.email@example.com" }) {
+		email
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
 ## Create a User
 
 Create a new user

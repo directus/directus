@@ -1578,6 +1578,7 @@ export class GraphQLService {
 		{
 			CreateCollectionTypes,
 			ReadCollectionTypes,
+			UpdateCollectionTypes,
 			DeleteCollectionTypes,
 		}: {
 			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
@@ -2437,6 +2438,37 @@ export class GraphQLService {
 						const query = this.getQuery(args, selections || [], info.variableValues);
 
 						return await service.readOne(this.accountability.user, query);
+					},
+				},
+			});
+		}
+
+		if ('directus_users' in schema.update.collections) {
+			schemaComposer.Mutation.addFields({
+				update_users_me: {
+					type: ReadCollectionTypes['directus_users'],
+					args: {
+						data: toInputObjectType(UpdateCollectionTypes['directus_users']),
+					},
+					resolve: async (_, args, __, info) => {
+						if (!this.accountability?.user) return null;
+						const service = new UsersService({
+							schema: this.schema,
+							accountability: this.accountability,
+						});
+
+						await service.updateOne(this.accountability.user, args.data);
+
+						if ('directus_users' in ReadCollectionTypes) {
+							const selections = this.replaceFragmentsInSelections(
+								info.fieldNodes[0]?.selectionSet?.selections,
+								info.fragments
+							);
+							const query = this.getQuery(args, selections || [], info.variableValues);
+
+							return await service.readOne(this.accountability.user, query);
+						}
+						return true;
 					},
 				},
 			});
