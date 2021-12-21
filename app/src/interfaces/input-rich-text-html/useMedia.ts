@@ -39,7 +39,7 @@ type UsableMedia = {
 export default function useMedia(
 	editor: Ref<any>,
 	isEditorDirty: Ref<boolean>,
-	imageToken: Ref<string | undefined>
+	staticAccessToken: Ref<string | undefined>
 ): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
@@ -83,7 +83,7 @@ export default function useMedia(
 		},
 		set(newSource: any) {
 			mediaSelection.value = { ...mediaSelection.value, sourceUrl: newSource };
-			mediaSelection.value.previewUrl = addTokenToURL(newSource, imageToken.value);
+			mediaSelection.value.previewUrl = addTokenToURL(newSource, staticAccessToken.value);
 		},
 	});
 
@@ -137,7 +137,7 @@ export default function useMedia(
 			// Remove token for source
 			const sourceUrl = replaceUrlAccessToken(embedUrl, null);
 			// Add access token for preview purposes
-			const previewUrl = addTokenToURL(embedUrl, imageToken.value);
+			const previewUrl = addTokenToURL(embedUrl, staticAccessToken.value);
 
 			mediaSelection.value = {
 				tag: tag === 'audio' ? 'audio' : 'video',
@@ -184,8 +184,8 @@ export default function useMedia(
 			height: media.height || 150,
 			tag,
 			type: media.type,
-			previewUrl: addTokenToURL(sourceUrl, imageToken.value),
-			embedUrl: replaceUrlAccessToken(sourceUrl, imageToken.value),
+			previewUrl: addTokenToURL(sourceUrl, staticAccessToken.value),
+			embedUrl: replaceUrlAccessToken(sourceUrl, staticAccessToken.value),
 		};
 	}
 

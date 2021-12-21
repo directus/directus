@@ -239,7 +239,7 @@ export default defineComponent({
 			type: Array as PropType<CustomSyntax[]>,
 			default: () => [],
 		},
-		imageToken: {
+		staticAccessToken: {
 			type: String,
 			default: undefined,
 		},
@@ -303,7 +303,7 @@ export default defineComponent({
 		const markdownString = computed(() => {
 			let mdString = props.value || '';
 
-			if (!props.imageToken) {
+			if (!props.staticAccessToken) {
 				const baseUrl = getPublicURL() + 'assets/';
 				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
 
@@ -356,8 +356,8 @@ export default defineComponent({
 
 			let url = getPublicURL() + `assets/` + image.id;
 
-			if (props.imageToken) {
-				url += '?access_token=' + props.imageToken;
+			if (props.staticAccessToken) {
+				url += '?access_token=' + props.staticAccessToken;
 			}
 
 			codemirror.replaceSelection(`![](${url})`);

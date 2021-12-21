@@ -32,7 +32,7 @@ type UsableImage = {
 export default function useImage(
 	editor: Ref<any>,
 	isEditorDirty: Ref<boolean>,
-	imageToken: Ref<string | undefined>
+	staticAccessToken: Ref<string | undefined>
 ): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
@@ -96,7 +96,7 @@ export default function useImage(
 			alt: image.title,
 			width: image.width,
 			height: image.height,
-			previewUrl: addTokenToURL(imageUrl, imageToken.value),
+			previewUrl: addTokenToURL(imageUrl, staticAccessToken.value),
 		};
 	}
 
@@ -108,7 +108,7 @@ export default function useImage(
 				...(img.width ? { width: img.width.toString() } : {}),
 				...(img.height ? { height: img.height.toString() } : {}),
 			}),
-			imageToken.value
+			staticAccessToken.value
 		);
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		isEditorDirty.value = true;

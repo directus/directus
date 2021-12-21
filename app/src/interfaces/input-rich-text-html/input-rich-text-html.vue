@@ -232,7 +232,7 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		imageToken: {
+		staticAccessToken: {
 			type: String,
 			default: undefined,
 		},
@@ -244,12 +244,12 @@ export default defineComponent({
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const isEditorDirty = ref(false);
-		const { imageToken } = toRefs(props);
+		const { staticAccessToken } = toRefs(props);
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
 			isEditorDirty,
-			imageToken
+			staticAccessToken
 		);
 
 		const {
@@ -264,7 +264,7 @@ export default defineComponent({
 			mediaWidth,
 			mediaSource,
 			mediaButton,
-		} = useMedia(editorRef, isEditorDirty, imageToken);
+		} = useMedia(editorRef, isEditorDirty, staticAccessToken);
 
 		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef, isEditorDirty);
 
@@ -301,12 +301,12 @@ export default defineComponent({
 		const internalValue = computed({
 			get() {
 				if (!props.value) return '';
-				return replaceTokens(props.value, props.imageToken ?? getToken());
+				return replaceTokens(props.value, props.staticAccessToken ?? getToken());
 			},
 			set(newValue: string) {
 				if (!isEditorDirty.value) return;
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					const removeToken = replaceTokens(newValue, props.imageToken ?? null);
+					const removeToken = replaceTokens(newValue, props.staticAccessToken ?? null);
 					emit('input', removeToken);
 				}
 			},
