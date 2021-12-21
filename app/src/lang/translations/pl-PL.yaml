@@ -1521,10 +1521,14 @@ displays:
     bold_label: Ustaw styl pogrubiony
     italic: Kursywa
     prefix: Przedrostek
+    prefix_label: Poprzedni tekst
     suffix: Przyrostek
     color: Kolor
     icon: Ikona
+    border: Krawędź
+    border_label: Pokaż obramowanie
     text: Tekst
+    text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
