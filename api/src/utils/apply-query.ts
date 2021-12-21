@@ -143,7 +143,7 @@ function getRelationInfo(relations: Relation[], collection: string, field: strin
 
 	if (implicitRelation) {
 		if (implicitRelation.length === 2) {
-			const [_, m2oCollection, m2oField] = implicitRelation;
+			const [m2oCollection, m2oField] = implicitRelation;
 			const relation: Relation = {
 				collection: m2oCollection,
 				field: m2oField,
@@ -154,7 +154,7 @@ function getRelationInfo(relations: Relation[], collection: string, field: strin
 			return { relation, relationType: 'o2m' };
 		}
 		if (implicitRelation.length === 3) {
-			const [_, a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
+			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
 			const relation: Relation = {
 				collection: a2oCollection,
 				field: a2oItemField,
