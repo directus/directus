@@ -230,33 +230,12 @@ export function applyFilter(
 
 				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
 				if (relationType === 'o2m' && (subQuery === true || parentAlias !== undefined)) {
-					// if (relation.collection === 'group_access') {
-					// 	dbQuery.leftJoin(
-					// 		{ [alias]: relation.collection },
-					// 		`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
-					// 		`${alias}.${relation.field}`
-					// 	)
-					// 	.groupBy(`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`)
-					// 	.leftJoin(
-					// 		{ user: 'user' },
-					// 		`user.id_user`,
-					// 		`user.id_user`
-					// 	);
-					// } else {
-					// 	dbQuery.leftJoin(
-					// 		{ [alias]: relation.collection },
-					// 		`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
-					// 		`${alias}.${relation.field}`
-					// 	);
-					// }
-					// console.log("HAVE BEEN HERE _______________________________________________________");
-					// console.log(parentCollection);
-
-					const secondRelation = relations.find((innerRelation) => {
+					const m2o = relations.find((innerRelation) => {
 						return relation.collection === innerRelation.collection && relation.field !== innerRelation.field;
 					});
 
-					if (secondRelation) {
+					if (m2o) {
+						// Also join with M2M relation table
 						dbQuery
 							.leftJoin(
 								{ [alias]: relation.collection },
@@ -265,9 +244,9 @@ export function applyFilter(
 							)
 							.groupBy(`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`)
 							.leftJoin(
-								{ [secondRelation.related_collection!]: secondRelation.related_collection! },
-								`${alias}.${secondRelation.field!}`,
-								`${secondRelation.related_collection!}.${secondRelation.field!}`
+								{ [m2o.related_collection!]: m2o.related_collection! },
+								`${alias}.${m2o.field!}`,
+								`${m2o.related_collection!}.${m2o.field!}`
 							);
 					} else {
 						dbQuery.leftJoin(
@@ -276,13 +255,6 @@ export function applyFilter(
 							`${alias}.${relation.field}`
 						);
 					}
-					// } else {
-					// 	dbQuery.leftJoin(
-					// 		{ [alias]: relation.collection },
-					// 		`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
-					// 		`${alias}.${relation.field}`
-					// 	);
-					// }
 				}
 
 				if (relationType === 'm2o' || subQuery === true) {
