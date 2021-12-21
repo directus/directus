@@ -139,7 +139,7 @@ type RelationInfo = {
 };
 
 function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
-	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)\)$/);
+	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)(?:,(.*?))?\)$/);
 
 	if (implicitRelation) {
 		if (implicitRelation.length === 2) {
