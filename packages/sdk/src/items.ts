@@ -28,25 +28,61 @@ export enum Meta {
 }
 
 type Dictionary = { [k: string]: any };
+type GetType<T> = T extends Array<infer Type> ? Type : T;
+type KeysFrom<T> = Extract<keyof GetType<T>, string>;
 
-type Wildcard = { '*': undefined; '*.*': undefined; '*.*.*': undefined };
+type Wildcard = { '*': undefined };
 
 type WithWildcard<T> = T extends Dictionary ? T & Wildcard : T;
 
-type FieldsDotNotation<T> = (
-	WithWildcard<T> extends Dictionary
-		? {
-				[K in Exclude<keyof WithWildcard<T>, symbol>]: `${K}${FieldDotPrefix<FieldsDotNotation<WithWildcard<T>[K]>>}`;
-		  }[Exclude<keyof WithWildcard<T>, symbol>]
-		: ''
-) extends infer D
-	? Extract<D, string>
-	: never;
+type _Fields = Fields<Schema>;
 
-type FieldDotPrefix<T extends string> = T extends '' ? '' : `.${T}`;
+type Fields<T, W = WithWildcard<GetType<T>>> = W extends Dictionary
+	? {
+			[K in KeysFrom<W>]: `${K}${GetType<W[K]> extends W ? '' : FieldDotPrefix<W[K]>}`;
+	  }[KeysFrom<W>]
+	: '';
+
+type _WithWildcard = WithWildcard<Schema['persons']>;
+type _FieldDotPrefix = FieldDotPrefix<Schema['persons']>;
+type FieldDotPrefix<T> = T extends Dictionary ? `.${Fields<T>}` : '';
+
+export type AggregationFunctions =
+	| 'count'
+	| 'countDistinct'
+	| 'sum'
+	| 'sumDistinct'
+	| 'avg'
+	| 'avgDistinct'
+	| 'min'
+	| 'max';
+
+export type GroupFunctions = 'year' | 'month' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
+
+export type GroupFunctionsFields<T, K = Fields<T>> = K | `${GroupFunctions}(${K extends string ? K : ''})`;
+
+type Person = {
+	name: string;
+	age: number;
+	father: Person;
+	children: Person[];
+};
+
+type Schema = {
+	persons: Person[];
+	string: string;
+	number: number;
+	boolean: boolean;
+};
+
+type A = string[];
+
+type B = A extends any[] ? number : never;
+
+type GroupBy = GroupFunctionsFields<Schema>;
 
 export type QueryOne<T> = {
-	fields?: FieldsDotNotation<T>[];
+	fields?: FieldsWithWildcard<T> | FieldsWithWildcard<T>[];
 	search?: string;
 	deep?: Record<string, DeepQueryMany<T>>;
 	export?: 'json' | 'csv' | 'xml';
@@ -59,6 +95,9 @@ export type QueryMany<T> = QueryOne<T> & {
 	offset?: number;
 	page?: number;
 	meta?: keyof ItemMetadata | '*';
+	alias?: Record<string, Fields<T>>;
+	aggregate?: Record<AggregationFunctions, Fields<T>>;
+	groupBy?: GroupFunctionsFields<T>[];
 };
 
 export type DeepQueryMany<T> = {

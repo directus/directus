@@ -30,11 +30,27 @@ import { SingletonHandler } from '../handlers/singleton';
 
 export type DirectusStorageOptions = StorageOptions & { mode?: 'LocalStorage' | 'MemoryStorage' };
 
+export type DirectusCollections =
+	| 'directus_activity'
+	| 'directus_collections'
+	| 'directus_fields'
+	| 'directus_files'
+	| 'directus_folders'
+	| 'directus_permissions'
+	| 'directus_presets'
+	| 'directus_relations'
+	| 'directus_revisions'
+	| 'directus_roles'
+	| 'directus_settings'
+	| 'directus_users';
+
 export type DirectusOptions = {
 	auth?: IAuth | PartialBy<AuthOptions, 'transport' | 'storage'>;
 	transport?: ITransport | TransportOptions;
 	storage?: IStorage | DirectusStorageOptions;
 };
+
+export type Collection<T> = (keyof T | DirectusCollections) & string;
 
 export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _url: string;
@@ -59,18 +75,18 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _settings?: SettingsHandler<TypeOf<T, 'directus_settings'>>;
 
 	private _items: {
-		[collection: string]: ItemsHandler<any>;
+		[collection in DirectusCollections | keyof T]: ItemsHandler<any>;
 	};
 
 	private _singletons: {
-		[collection: string]: SingletonHandler<any>;
+		[collection in DirectusCollections | keyof T]: SingletonHandler<any>;
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
 		this._url = url;
 		this._options = options;
-		this._items = {};
-		this._singletons = {};
+		this._items = {} as Directus<T>['_items'];
+		this._singletons = {} as Directus<T>['_singletons'];
 
 		if (this._options?.storage && this._options?.storage instanceof IStorage) this._storage = this._options.storage;
 		else {
@@ -198,14 +214,31 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		return this._graphql || (this._graphql = new GraphQLHandler(this.transport));
 	}
 
-	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I> {
+	singleton<C extends Collection<T>, I = TypeOf<T, C>>(collection: C): ISingleton<I> {
 		return (
 			this._singletons[collection] ||
 			(this._singletons[collection] = new SingletonHandler<I>(collection, this.transport))
 		);
 	}
 
-	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I> {
+	items<C extends Collection<T>, I = TypeOf<T, C>>(collection: C): IItems<I> {
 		return this._items[collection] || (this._items[collection] = new ItemsHandler<T>(collection, this.transport));
 	}
 }
+
+type Person = {
+	name: string;
+	age: number;
+	father: Person;
+	children: Person[];
+};
+
+type Schema = {
+	persons: Person[];
+};
+
+const sdk = new Directus<Schema>('');
+
+sdk.items('persons').readMany({
+	groupBy: [''],
+});
