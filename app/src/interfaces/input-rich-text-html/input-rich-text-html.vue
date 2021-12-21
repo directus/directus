@@ -301,7 +301,7 @@ export default defineComponent({
 		const internalValue = computed({
 			get() {
 				if (!props.value) return '';
-				return replaceTokens(props.value, getToken());
+				return replaceTokens(props.value, props.imageToken ?? getToken());
 			},
 			set(newValue: string) {
 				if (!isEditorDirty.value) return;
