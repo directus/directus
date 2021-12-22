@@ -52,7 +52,9 @@ edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować'
+show_active_items: Pokaż aktywne elementy
 show_archived_items: Pokaż zarchiwizowane elementy
+show_all_items: Pokaż wszystkie elementy
 edited: Wartość zmieniona
 required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
@@ -89,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Sesja wygasła
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
+admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
 node_version: Wersja Node
@@ -219,8 +222,10 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (wszystkie)
 geometry.Point: Punkt
+geometry.LineString: Ciąg linii
 geometry.Polygon: Wielokąt
 geometry.MultiPoint: Wielopunktowy
+geometry.MultiLineString: Ciąg multilinii
 geometry.MultiPolygon: Wielokąt
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
@@ -950,6 +955,7 @@ fields:
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
@@ -1024,6 +1030,7 @@ field_options:
     additional_transforms: Dodatkowe przekształcenia
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Podstawowe
     basemaps_name_placeholder: Wprowadź nazwę mapy bazowej...
     basemaps_raster: Raster
@@ -1505,9 +1512,23 @@ displays:
   formatted-value:
     formatted-value: Wartość sformatowana
     description: Wyświetl sformatowaną wersję tekstu
-    format_title: Format tytułu
-    format_title_label: Automatyczny format
+    format: Formatowanie
+    format_label: Automatyczny format
+    font: Czcionka
+    font_serif: Szeryfowa
+    font_monospace: Monospace
+    bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
+    italic: Kursywa
+    prefix: Przedrostek
+    prefix_label: Poprzedni tekst
+    suffix: Przyrostek
+    color: Kolor
+    icon: Ikona
+    border: Krawędź
+    border_label: Pokaż obramowanie
+    text: Tekst
+    text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
