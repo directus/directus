@@ -142,7 +142,7 @@ function getRelationInfo(relations: Relation[], collection: string, field: strin
 	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)(?:,(.*?))?\)$/)?.slice(1);
 
 	if (implicitRelation) {
-		if (implicitRelation.length === 2) {
+		if (implicitRelation[2] === undefined) {
 			const [m2oCollection, m2oField] = implicitRelation;
 			const relation: Relation = {
 				collection: m2oCollection,
@@ -152,8 +152,7 @@ function getRelationInfo(relations: Relation[], collection: string, field: strin
 				meta: null,
 			};
 			return { relation, relationType: 'o2m' };
-		}
-		if (implicitRelation.length === 3) {
+		} else {
 			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
 			const relation: Relation = {
 				collection: a2oCollection,
