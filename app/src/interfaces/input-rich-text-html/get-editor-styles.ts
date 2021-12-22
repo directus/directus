@@ -39,6 +39,9 @@ body.mce-content-readonly {
 	color: ${cssVar('--foreground-subdued')};
 	background-color: ${cssVar('--background-subdued')};
 }
+.mce-offscreen-selection {
+	display: none;
+}
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${cssVar(`--family-${font}`)}, serif;
 	color: ${cssVar('--foreground-normal-alt')};
