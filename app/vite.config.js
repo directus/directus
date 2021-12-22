@@ -121,17 +121,17 @@ export default defineConfig({
 	resolve: {
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
-	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
+	base: '',
 	server: {
 		port: 8080,
 		proxy: {
-			'^/(?!admin)': {
+			'^/(?=api)': {
 				target: process.env.API_URL ? process.env.API_URL : 'http://localhost:8055/',
 				changeOrigin: true,
 			},
 		},
 		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
+			allow: [searchForWorkspaceRoot(process.cwd())],
 		},
 	},
 });

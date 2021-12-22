@@ -58,7 +58,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 ];
 
 export const router = createRouter({
-	history: createWebHistory(getRootPath() + 'admin/'),
+	history: createWebHistory(getRootPath()),
 	routes: defaultRoutes,
 });
 

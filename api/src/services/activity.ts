@@ -82,7 +82,7 @@ ${userName(sender)} has mentioned you in a comment:
 
 ${comment}
 
-<a href="${env.PUBLIC_URL}/admin/content/${data.collection}/${data.item}">Click here to view.</a>
+<a href="${env.PUBLIC_URL}/content/${data.collection}/${data.item}">Click here to view.</a>
 `;
 
 					await this.notificationsService.createOne({

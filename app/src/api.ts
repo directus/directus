@@ -1,12 +1,11 @@
 import { logout, LogoutReason, refresh } from '@/auth';
 import { useRequestsStore } from '@/stores/';
-import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { addQueryToPath } from './utils/add-query-to-path';
 import PQueue from 'p-queue';
 
 const api = axios.create({
-	baseURL: getRootPath(),
+	baseURL: '/api/',
 	withCredentials: true,
 	headers: {
 		'Cache-Control': 'no-store',

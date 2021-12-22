@@ -106,9 +106,9 @@ export class MailService {
 			const projectLogoUrl = new Url(env.PUBLIC_URL);
 
 			if (logoID) {
-				projectLogoUrl.addPath('assets', logoID);
+				projectLogoUrl.addPath('api', 'assets', logoID);
 			} else {
-				projectLogoUrl.addPath('admin', 'img', 'directus-white.png');
+				projectLogoUrl.addPath('img', 'directus-white.png');
 			}
 
 			return projectLogoUrl.toString();

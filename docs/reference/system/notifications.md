@@ -64,7 +64,7 @@ Primary key of the item this notification references.
 	"recipient": "3EE34828-B43C-4FB2-A721-5151579B08EA",
 	"sender": "497a495e-5529-4e46-8feb-2f35e9b85601",
 	"subject": "You were mentioned in articles",
-	"message": "\nHello admin@example.com,\n\rijk@directus.io has mentioned you in a comment:\n\n> Hello <em>admin@example.com</em>!\n\n<a href=\"http://localhost:8080/admin/content/articles/1\">Click here to view.</a>\n",
+	"message": "\nHello admin@example.com,\n\rijk@directus.io has mentioned you in a comment:\n\n> Hello <em>admin@example.com</em>!\n\n<a href=\"http://localhost:8080/content/articles/1\">Click here to view.</a>\n",
 	"collection": "articles",
 	"item": "1"
 }

@@ -185,7 +185,7 @@ class ExtensionManager {
 			const depName = appDir.find((file) => dep.replace(/\//g, '_') === file.substring(0, file.indexOf('.')));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', depName);
+				const depUrl = new Url(env.PUBLIC_URL).addPath(depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {

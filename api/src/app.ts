@@ -131,20 +131,20 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
+		const adminUrl = new Url(env.PUBLIC_URL).toString({ rootRelative: true });
 
 		// Set the App's base path according to the APIs public URL
 		const html = await fse.readFile(adminPath, 'utf8');
-		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
+		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl}/" />`);
 
 		const noCacheIndexHtmlHandler = (req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
 			res.send(htmlWithBase);
 		};
 
-		app.get('/admin', noCacheIndexHtmlHandler);
-		app.use('/admin', express.static(path.join(adminPath, '..')));
-		app.use('/admin/*', noCacheIndexHtmlHandler);
+		app.get('/', noCacheIndexHtmlHandler);
+		app.use('/', express.static(path.join(adminPath, '..')));
+		app.use('/(?!api)/*', noCacheIndexHtmlHandler);
 	}
 
 	// use the rate limiter - all routes for now
@@ -168,31 +168,31 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitter.emitInit('routes.before', { app });
 
-	app.use('/auth', authRouter);
+	app.use('/api/auth', authRouter);
 
-	app.use('/graphql', graphqlRouter);
+	app.use('/api/graphql', graphqlRouter);
 
-	app.use('/activity', activityRouter);
-	app.use('/assets', assetsRouter);
-	app.use('/collections', collectionsRouter);
-	app.use('/dashboards', dashboardsRouter);
-	app.use('/extensions', extensionsRouter);
-	app.use('/fields', fieldsRouter);
-	app.use('/files', filesRouter);
-	app.use('/folders', foldersRouter);
-	app.use('/items', itemsRouter);
-	app.use('/notifications', notificationsRouter);
-	app.use('/panels', panelsRouter);
-	app.use('/permissions', permissionsRouter);
-	app.use('/presets', presetsRouter);
-	app.use('/relations', relationsRouter);
-	app.use('/revisions', revisionsRouter);
-	app.use('/roles', rolesRouter);
-	app.use('/server', serverRouter);
-	app.use('/settings', settingsRouter);
-	app.use('/users', usersRouter);
-	app.use('/utils', utilsRouter);
-	app.use('/webhooks', webhooksRouter);
+	app.use('/api/activity', activityRouter);
+	app.use('/api/assets', assetsRouter);
+	app.use('/api/collections', collectionsRouter);
+	app.use('/api/dashboards', dashboardsRouter);
+	app.use('/api/extensions', extensionsRouter);
+	app.use('/api/fields', fieldsRouter);
+	app.use('/api/files', filesRouter);
+	app.use('/api/folders', foldersRouter);
+	app.use('/api/items', itemsRouter);
+	app.use('/api/notifications', notificationsRouter);
+	app.use('/api/panels', panelsRouter);
+	app.use('/api/permissions', permissionsRouter);
+	app.use('/api/presets', presetsRouter);
+	app.use('/api/relations', relationsRouter);
+	app.use('/api/revisions', revisionsRouter);
+	app.use('/api/roles', rolesRouter);
+	app.use('/api/server', serverRouter);
+	app.use('/api/settings', settingsRouter);
+	app.use('/api/users', usersRouter);
+	app.use('/api/utils', utilsRouter);
+	app.use('/api/webhooks', webhooksRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });

@@ -33,7 +33,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
 		}
 
-		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', additionalConfig.provider, 'callback');
+		const redirectUrl = new Url(env.PUBLIC_URL).addPath('api', 'auth', 'login', additionalConfig.provider, 'callback');
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
