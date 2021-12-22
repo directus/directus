@@ -131,19 +131,6 @@ export function traverse(
 					),
 				});
 			}
-
-			// if (relation.meta?.one_field) {
-			// 	permissions.push(
-			// 		...traverse(
-			// 			schema,
-			// 			rootItemPrimaryKeyField,
-			// 			rootItemPrimaryKey,
-			// 			relation.related_collection!,
-			// 			[...parentCollections, currentCollection],
-			// 			[...path, relation.meta?.one_field]
-			// 		)
-			// 	);
-			// }
 		}
 
 		if (type === 'm2o') {

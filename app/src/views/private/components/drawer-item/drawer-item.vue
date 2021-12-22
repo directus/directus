@@ -82,7 +82,7 @@ export default defineComponent({
 		},
 		primaryKey: {
 			type: [String, Number],
-			required: true,
+			default: null,
 		},
 		edits: {
 			type: Object as PropType<Record<string, any>>,

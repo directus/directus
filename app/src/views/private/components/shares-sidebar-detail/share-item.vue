@@ -1,13 +1,44 @@
 <template>
-	<div class="share-item" @click="click">
+	<div class="share-item">
 		<div class="share-item-header">
 			<span class="type-label">{{ share.name }}</span>
-			<span class="share-item-date">{{ d(new Date(share.date_created), 'short') }}</span>
+
+			<div class="header-right">
+				<v-menu show-arrow placement="bottom-end">
+					<template #activator="{ toggle, active }">
+						<v-icon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
+						<div class="date">
+							{{ formattedTime }}
+						</div>
+					</template>
+
+					<v-list>
+						<v-list-item clickable @click="$emit('copy')">
+							<v-list-item-icon><v-icon name="copy" /></v-list-item-icon>
+							<v-list-item-content>{{ t('share_copy_link') }}</v-list-item-content>
+						</v-list-item>
+						<v-list-item clickable @click="$emit('send')">
+							<v-list-item-icon><v-icon name="send" /></v-list-item-icon>
+							<v-list-item-content>{{ t('share_send_link') }}</v-list-item-content>
+						</v-list-item>
+						<v-divider />
+						<v-list-item clickable @click="$emit('edit')">
+							<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
+							<v-list-item-content>{{ t('edit') }}</v-list-item-content>
+						</v-list-item>
+						<v-list-item clickable @click="$emit('delete')">
+							<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
+							<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</div>
 		</div>
+
 		<div class="share-item-info">
-			<span class="share-uses" :class="{ 'no-left': uses_left === 0 }">
-				<template v-if="uses_left === null">{{ t('unlimited_usage') }}</template>
-				<template v-else>{{ t('uses_left', uses_left) }}</template>
+			<span class="share-uses" :class="{ 'no-left': usesLeft === 0 }">
+				<template v-if="usesLeft === null">{{ t('unlimited_usage') }}</template>
+				<template v-else>{{ t('uses_left', usesLeft) }}</template>
 			</span>
 			<v-icon v-if="share.password" small name="lock" />
 			<span style="flex-grow: 1"></span>
@@ -19,8 +50,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { format } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -29,11 +61,11 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['click'],
+	emits: ['copy', 'edit', 'send', 'delete'],
 	setup(props, { emit }) {
 		const { t, d } = useI18n();
 
-		const uses_left = computed(() => {
+		const usesLeft = computed(() => {
 			if (props.share.max_uses === null) return null;
 			return props.share.max_uses - props.share.times_used;
 		});
@@ -48,10 +80,13 @@ export default defineComponent({
 			return null;
 		});
 
-		function click() {
-			emit('click', props.share.id);
-		}
-		return { uses_left, status, click, t, d };
+		const formattedTime = computed(() => {
+			return format(new Date(props.share.date_created), String(t('date-fns_date_short')));
+		});
+
+		const confirmDelete = ref<string | null>(null);
+
+		return { usesLeft, status, t, d, formattedTime, confirmDelete };
 	},
 });
 </script>
@@ -62,10 +97,6 @@ export default defineComponent({
 	padding: 8px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
-
-	&:hover {
-		cursor: pointer;
-	}
 }
 
 .share-item-date {
@@ -106,6 +137,56 @@ export default defineComponent({
 
 	&.upcoming {
 		color: var(--green);
+	}
+}
+
+.header-right {
+	position: relative;
+	flex-basis: 24px;
+	color: var(--foreground-subdued);
+
+	.more {
+		cursor: pointer;
+		opacity: 0;
+		transition: all var(--slow) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+
+		&.active {
+			opacity: 1;
+		}
+	}
+
+	.date {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		font-size: 12px;
+		white-space: nowrap;
+		text-align: right;
+		opacity: 1;
+		transition: opacity var(--slow) var(--transition);
+		pointer-events: none;
+	}
+
+	.more.active + .date {
+		opacity: 0;
+	}
+}
+
+.share-item:hover {
+	&:hover {
+		.header-right .date {
+			opacity: 0;
+		}
+
+		.header-right .more {
+			opacity: 1;
+		}
 	}
 }
 </style>

@@ -4,12 +4,7 @@ fields:
   - field: id
     special: uuid
     readonly: true
-    conditions:
-      - name: notCreatedYet
-        rule:
-          id:
-            _null: true
-        hidden: true
+    hidden: true
 
   - field: name
 

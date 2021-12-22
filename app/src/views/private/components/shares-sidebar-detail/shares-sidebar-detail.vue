@@ -8,7 +8,13 @@
 		</div>
 
 		<template v-for="share in shares" :key="share.id">
-			<share-item :share="share" @click="select(share.id)" />
+			<share-item
+				:share="share"
+				@copy="copy(share.id)"
+				@edit="select(share.id)"
+				@send="shareToSend = share"
+				@delete="confirmDelete"
+			/>
 		</template>
 
 		<drawer-item
@@ -18,6 +24,23 @@
 			@cancel="unselect"
 			@input="input"
 		/>
+
+		<v-dialog v-model="shareToDelete" @esc="shareToDelete = null">
+			<v-card>
+				<v-card-title>{{ t('delete_comment') }}</v-card-title>
+				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="shareToDelete = null">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button kind="danger" :loading="deleting" @click="remove">
+						{{ t('delete_label') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<v-button v-if="allowed" class="new-share" @click="select('+')">
 			{{ t('new_share') }}
 		</v-button>
@@ -28,6 +51,9 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
+import { getRootPath } from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Share } from '@directus/shared/types';
 
 import api from '@/api';
 import ShareItem from './share-item.vue';
@@ -51,67 +77,85 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const { shares, count, loading, error, refresh, select, unselect, selected } = useShares(
-			props.collection,
-			props.primaryKey
-		);
+		const shares = ref<Share[] | null>(null);
+		const count = ref(0);
+		const error = ref(null);
+		const loading = ref(false);
+		const shareToEdit = ref<string | null>(null);
+		const shareToSend = ref<Share | null>(null);
+		const shareToDelete = ref<Share | null>(null);
+
 		refresh();
 
-		return { t, shares, loading, error, refresh, count, select, unselect, selected, input };
+		return {
+			shareToDelete,
+			t,
+			shares,
+			loading,
+			error,
+			refresh,
+			count,
+			select,
+			unselect,
+			shareToEdit,
+			input,
+			copy,
+			shareToSend,
+		};
 
 		async function input(data: any) {
 			if (!data) return;
+
 			data.collection = props.collection;
 			data.item = props.primaryKey;
+
 			try {
-				if (selected.value === '+') {
+				if (shareToEdit.value === '+') {
 					await api.post('/shares', data);
 				} else {
-					await api.patch(`/shares/${selected.value}`, data);
+					await api.patch(`/shares/${shareToEdit.value}`, data);
 				}
-				refresh();
-			} catch (error) {
-				// TODO: handle error
+
+				await refresh();
+
+				shareToEdit.value = null;
+			} catch (error: any) {
+				unexpectedError(error);
 			}
-			selected.value = undefined;
 		}
 
-		function useShares(collection: string, primaryKey: string | number) {
-			const shares = ref<any[] | null>(null);
-			const count = ref(0);
-			const error = ref(null);
-			const loading = ref(false);
-			const selected = ref<any>();
+		async function copy(id: string) {
+			const url = window.location.origin + getRootPath() + 'admin/shared/' + id;
+			await navigator?.clipboard?.writeText(url);
+		}
 
-			return { shares, count, error, loading, refresh, select, unselect, selected };
+		function select(id: string) {
+			shareToEdit.value = id;
+		}
 
-			function select(id: string) {
-				selected.value = id;
-			}
+		function unselect() {
+			shareToEdit.value = null;
+		}
 
-			function unselect() {
-				selected.value = undefined;
-			}
-			async function refresh() {
-				error.value = null;
-				loading.value = true;
+		async function refresh() {
+			error.value = null;
+			loading.value = true;
 
-				try {
-					const response = await api.get(`/shares`, {
-						params: {
-							'filter[collection][_eq]': collection,
-							'filter[item][_eq]': primaryKey,
-							fields: ['id', 'name', 'password', 'max_uses', 'times_used', 'date_created', 'date_start', 'date_end'],
-							sort: 'name',
-						},
-					});
-					count.value = response.data.data.length;
-					shares.value = response.data.data;
-				} catch (error: any) {
-					error.value = error;
-				} finally {
-					loading.value = false;
-				}
+			try {
+				const response = await api.get(`/shares`, {
+					params: {
+						'filter[collection][_eq]': props.collection,
+						'filter[item][_eq]': props.primaryKey,
+						fields: ['id', 'name', 'password', 'max_uses', 'times_used', 'date_created', 'date_start', 'date_end'],
+						sort: 'name',
+					},
+				});
+				count.value = response.data.data.length;
+				shares.value = response.data.data;
+			} catch (error: any) {
+				error.value = error;
+			} finally {
+				loading.value = false;
 			}
 		}
 	},
