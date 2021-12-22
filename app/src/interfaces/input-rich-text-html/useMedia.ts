@@ -8,7 +8,7 @@ type MediaSelection = {
 	sourceUrl: string;
 	width?: number;
 	height?: number;
-	tag?: 'video' | 'audio';
+	tag?: 'video' | 'audio' | 'iframe';
 	type?: string;
 	previewUrl?: string;
 	embedUrl?: string;
@@ -118,8 +118,8 @@ export default function useMedia(
 				.replace(/width=".*?"/g, `width="${vid?.width}"`)
 				.replace(/height=".*?"/g, `height="${vid?.height}"`)
 				.replace(/type=".*?"/g, `type="${vid?.type}"`)
-				.replaceAll(/<(video|audio)/g, `<${vid?.tag}`)
-				.replaceAll(/<\/(video|audio)/g, `</${vid?.tag}`);
+				.replaceAll(/<(video|audio|iframe)/g, `<${vid?.tag}`)
+				.replaceAll(/<\/(video|audio|iframe)/g, `</${vid?.tag}`);
 		}
 	});
 
@@ -127,7 +127,7 @@ export default function useMedia(
 		if (newEmbed === '') {
 			mediaSelection.value = null;
 		} else {
-			const tag = /<(video|audio)/g.exec(newEmbed)?.[1];
+			const tag = /<(video|audio|iframe)/g.exec(newEmbed)?.[1];
 			const url = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
@@ -143,7 +143,7 @@ export default function useMedia(
 			const embedUrl = replaceUrlAccessToken(url, staticAccessToken.value);
 
 			mediaSelection.value = {
-				tag: tag === 'audio' ? 'audio' : 'video',
+				tag: tag === 'audio' ? 'audio' : tag === 'iframe' ? 'iframe' : 'video',
 				sourceUrl,
 				width,
 				height,

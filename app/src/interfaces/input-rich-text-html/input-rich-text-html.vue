@@ -50,7 +50,7 @@
 				<interface-input-code
 					:value="code"
 					language="htmlmixed"
-					line-wrapping="true"
+					:line-wrapping="true"
 					@input="code = $event"
 				></interface-input-code>
 			</div>
@@ -107,9 +107,14 @@
 				<v-tabs-items v-model="openMediaTab">
 					<v-tab-item value="video">
 						<template v-if="mediaSelection">
-							<video class="media-preview" controls="controls">
+							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="controls">
 								<source :src="mediaSelection.previewUrl" />
 							</video>
+							<iframe
+								v-if="mediaSelection.tag === 'iframe'"
+								class="media-preview"
+								:src="mediaSelection.previewUrl"
+							></iframe>
 							<div class="grid">
 								<div class="field">
 									<div class="type-label">{{ t('source') }}</div>
@@ -347,7 +352,7 @@ export default defineComponent({
 				menubar: false,
 				convert_urls: false,
 				image_dimensions: false,
-				extended_valid_elements: 'audio[loop],source',
+				extended_valid_elements: 'audio[loop|controls],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
 				file_picker_types: 'customImage customMedia image media',

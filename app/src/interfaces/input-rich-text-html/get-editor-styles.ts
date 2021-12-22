@@ -135,11 +135,14 @@ blockquote {
 	margin-left: 0px;
 }
 video,
-iframe,
 img {
 	max-width: 100%;
 	border-radius: ${cssVar('--border-radius')};
 	height: auto;
+}
+iframe {
+	max-width: 100%;
+	border-radius: ${cssVar('--border-radius')};
 }
 hr {
 	background-color: ${cssVar('--border-normal')};
