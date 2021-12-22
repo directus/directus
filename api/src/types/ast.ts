@@ -12,8 +12,8 @@ export type M2ONode = {
 	relatedKey: string;
 };
 
-export type M2ANode = {
-	type: 'm2a';
+export type A2MNode = {
+	type: 'a2o';
 	names: string[];
 	children: {
 		[collection: string]: (NestedCollectionNode | FieldNode)[];
@@ -40,7 +40,7 @@ export type O2MNode = {
 	relatedKey: string;
 };
 
-export type NestedCollectionNode = M2ONode | O2MNode | M2ANode;
+export type NestedCollectionNode = M2ONode | O2MNode | A2MNode;
 
 export type FieldNode = {
 	type: 'field';

@@ -96,7 +96,7 @@ export function traverse(
 		if (relation.related_collection === currentCollection) {
 			type = 'o2m';
 		} else if (!relation.related_collection) {
-			type = 'm2a';
+			type = 'a2o';
 		} else {
 			type = 'm2o';
 		}
@@ -119,7 +119,7 @@ export function traverse(
 			);
 		}
 
-		if (type === 'm2a') {
+		if (type === 'a2o') {
 			// @TODO This requires the "corresponding" relationship type to be implemented
 		}
 
@@ -153,7 +153,7 @@ export function traverse(
 }
 
 export function getFilterForPath(
-	type: 'o2m' | 'm2o' | 'm2a',
+	type: 'o2m' | 'm2o' | 'a2o',
 	path: string[],
 	rootPrimaryKeyField: string,
 	rootPrimaryKey: string

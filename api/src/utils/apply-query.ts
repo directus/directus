@@ -227,7 +227,7 @@ export function applyFilter(
 
 			function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
 				/**
-				 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+				 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 				 */
 				const pathRoot = pathParts[0].split(':')[0];
 
@@ -350,7 +350,7 @@ export function applyFilter(
 			const filterPath = getFilterPath(key, value);
 
 			/**
-			 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+			 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 			 */
 			const pathRoot = filterPath[0].split(':')[0];
 
@@ -552,7 +552,7 @@ export function applyFilter(
 				parentAlias?: string
 			): string | void {
 				/**
-				 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+				 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 				 */
 				const pathRoot = pathParts[0].split(':')[0];
 

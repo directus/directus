@@ -432,11 +432,11 @@ export class CollectionsService {
 					}
 				}
 
-				const m2aRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
+				const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
 					return relation.meta?.one_allowed_collections?.includes(collectionKey);
 				});
 
-				for (const relation of m2aRelationsThatIncludeThisCollection) {
+				for (const relation of a2oRelationsThatIncludeThisCollection) {
 					const newAllowedCollections = relation
 						.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
 						.join(',');
