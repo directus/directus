@@ -52,7 +52,9 @@ edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
+show_active_items: Aktive Elemente anzeigen
 show_archived_items: Zeige archivierte Elemente
+show_all_items: Alle Elemente anzeigen
 edited: Bearbeiteter Wert
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
@@ -89,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
 directus_version: Directus-Version
 node_version: Node-Version
@@ -1123,7 +1126,7 @@ referential_action_field_label_o2m: Beim Abwählen von {collection}...
 referential_action_no_action: Löschen verhindern
 referential_action_cascade: Lösche das Element in {collection} (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
-referential_action_set_default: '{field} au Standardwert setzen'
+referential_action_set_default: '{field} auf Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
