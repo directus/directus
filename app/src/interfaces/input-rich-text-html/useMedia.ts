@@ -127,17 +127,19 @@ export default function useMedia(
 			mediaSelection.value = null;
 		} else {
 			const tag = /<(video|audio)/g.exec(newEmbed)?.[1];
-			const embedUrl = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
+			const url = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const type = /type="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 
-			if (embedUrl === undefined) return;
+			if (url === undefined) return;
 
+			// Add temporarily access token for preview
+			const previewUrl = addTokenToURL(url, staticAccessToken.value);
 			// Remove token for source
-			const sourceUrl = replaceUrlAccessToken(embedUrl, null);
-			// Add access token for preview purposes
-			const previewUrl = addTokenToURL(embedUrl, staticAccessToken.value);
+			const sourceUrl = replaceUrlAccessToken(url, null);
+			// Display static access token only
+			const embedUrl = replaceUrlAccessToken(url, staticAccessToken.value);
 
 			mediaSelection.value = {
 				tag: tag === 'audio' ? 'audio' : 'video',
