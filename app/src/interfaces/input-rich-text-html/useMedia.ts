@@ -84,6 +84,7 @@ export default function useMedia(
 		set(newSource: any) {
 			mediaSelection.value = { ...mediaSelection.value, sourceUrl: newSource };
 			mediaSelection.value.previewUrl = addTokenToURL(newSource, staticAccessToken.value);
+			mediaSelection.value.embedUrl = replaceUrlAccessToken(newSource, staticAccessToken.value);
 		},
 	});
 
