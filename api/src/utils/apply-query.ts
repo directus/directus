@@ -144,6 +144,7 @@ function getRelationInfo(relations: Relation[], collection: string, field: strin
 	if (implicitRelation) {
 		if (implicitRelation[2] === undefined) {
 			const [m2oCollection, m2oField] = implicitRelation;
+
 			const relation: Relation = {
 				collection: m2oCollection,
 				field: m2oField,
@@ -151,9 +152,11 @@ function getRelationInfo(relations: Relation[], collection: string, field: strin
 				schema: null,
 				meta: null,
 			};
+
 			return { relation, relationType: 'o2m' };
 		} else {
 			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
+
 			const relation: Relation = {
 				collection: a2oCollection,
 				field: a2oItemField,
@@ -161,8 +164,10 @@ function getRelationInfo(relations: Relation[], collection: string, field: strin
 				schema: null,
 				meta: {
 					one_collection_field: a2oCollectionField,
+					one_field: field,
 				} as RelationMeta,
 			};
+
 			return { relation, relationType: 'o2a' };
 		}
 	}
@@ -368,9 +373,17 @@ export function applyFilter(
 				}
 			} else if (subQuery === false) {
 				if (!relation) continue;
-				const pkField = `${collection}.${schema.collections[relation!.related_collection!].primary}`;
 
-				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
+				let pkField: Knex.Raw<any> | string = `${collection}.${
+					schema.collections[relation!.related_collection!].primary
+				}`;
+
+				if (relationType === 'o2a') {
+					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
+				}
+
+				// Note: knex's types don't appreciate knex.raw in whereIn, even though it's officially supported
+				dbQuery[logical].whereIn(pkField as string, (subQueryKnex) => {
 					const field = relation!.field;
 					const collection = relation!.collection;
 					const column = `${collection}.${field}`;

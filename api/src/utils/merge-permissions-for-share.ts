@@ -119,8 +119,31 @@ export function traverse(
 			);
 		}
 
-		if (type === 'a2o') {
-			// @TODO This requires the "corresponding" relationship type to be implemented
+		if (type === 'a2o' && relation.meta?.one_allowed_collections) {
+			for (const collection of relation.meta.one_allowed_collections) {
+				permissions.push({
+					collection,
+					permissions: getFilterForPath(
+						type,
+						[...path, `$FOLLOW(${relation.collection},${relation.field},${relation.meta.one_collection_field})`],
+						rootItemPrimaryKeyField,
+						rootItemPrimaryKey
+					),
+				});
+			}
+
+			// if (relation.meta?.one_field) {
+			// 	permissions.push(
+			// 		...traverse(
+			// 			schema,
+			// 			rootItemPrimaryKeyField,
+			// 			rootItemPrimaryKey,
+			// 			relation.related_collection!,
+			// 			[...parentCollections, currentCollection],
+			// 			[...path, relation.meta?.one_field]
+			// 		)
+			// 	);
+			// }
 		}
 
 		if (type === 'm2o') {
@@ -160,7 +183,7 @@ export function getFilterForPath(
 ): Filter {
 	const filter: Filter = {};
 
-	if (type === 'm2o') {
+	if (type === 'm2o' || type === 'a2o') {
 		set(filter, path.reverse(), { [rootPrimaryKeyField]: { _eq: rootPrimaryKey } });
 	} else {
 		set(filter, path.reverse(), { _eq: rootPrimaryKey });
