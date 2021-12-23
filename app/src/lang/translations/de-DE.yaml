@@ -1020,6 +1020,7 @@ field_options:
       weak_text: Schwach - Minimum 8 Zeichen
       strong_text: Stark - Groß / Klein / Zahlen / Spezialzeichen
     storage_asset_presets:
+      fit_label: Passform
       upscaling: Hochskalierung
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
@@ -1031,6 +1032,7 @@ field_options:
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basiskarte
+    basemaps_name_placeholder: Geben Sie den Basemap-Namen ein...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1193,6 +1195,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1311,6 +1314,7 @@ interfaces:
   file-image:
     image: Bild
     description: Bild auswählen oder hochladen
+    crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
   system-interface:
     interface: Benutzeroberfläche
@@ -1510,17 +1514,26 @@ displays:
     formatted-value: Formatierter Wert
     description: Eine formatierte Version des Textes anzeigen
     format: Format
+    format_label: Automatisches Formatieren
     font: Schriftart
+    font_sans_serif: Sans Serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Fett
     bold_label: Fett-Schnitt verwenden
     italic: Kursiv
+    italic_label: Kursivschrift verwenden
     prefix: Präfix
+    prefix_label: Text vorangestellt
     suffix: Suffix
+    suffix_label: Angehängten Text
     color: Farbe
+    background: Hintergrund
     icon: Symbol
+    border: Umrandung
+    border_label: Rahmen anzeigen
     text: Text
+    text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
