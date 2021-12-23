@@ -34,7 +34,7 @@ export const useNotificationsStore = defineStore({
 						_and: [
 							{
 								recipient: {
-									_eq: userStore.currentUser?.id,
+									_eq: userStore.currentUser.id,
 								},
 							},
 							{

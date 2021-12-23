@@ -191,10 +191,10 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/roles', rolesRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
+	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
-	app.use('/shares', sharesRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });

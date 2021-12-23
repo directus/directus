@@ -22,6 +22,7 @@ const sharedLoginSchema = Joi.object({
 router.post(
 	'/auth',
 	asyncHandler(async (req, res, next) => {
+		// This doesn't use accountability, as the user isn't logged in at this point
 		const service = new SharesService({
 			schema: req.schema,
 		});
