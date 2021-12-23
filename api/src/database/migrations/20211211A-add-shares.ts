@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_shares', (table) => {
 		table.uuid('id').primary();
 		table.string('name');
-		table.string('collection').references('collection').inTable('directus_collections').onDelete('CASCADE');
+		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
 		table.string('item');
 		table.uuid('role').references('id').inTable('directus_roles').onDelete('CASCADE');
 		table.string('password');
@@ -30,6 +30,7 @@ export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_sessions', (table) => {
 		table.uuid('user').notNullable().alter();
 		table.json('data');
+		table.dropForeign('share');
 		table.dropColumn('share');
 	});
 
