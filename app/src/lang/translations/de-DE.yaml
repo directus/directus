@@ -888,6 +888,7 @@ fields:
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
     archive_field: Archivfeld
+    item_duplication_fields: Vervielfältigungsfelder
   directus_files:
     $thumbnail: Miniaturansicht
     title: Titel
