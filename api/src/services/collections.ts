@@ -7,9 +7,9 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
-import { ItemsService, MutationOptions } from '../services/items';
+import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview, MutationOptions } from '../types';
 import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 

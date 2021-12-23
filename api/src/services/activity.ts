@@ -1,5 +1,6 @@
 import { AbstractServiceOptions, PrimaryKey, Item, Action } from '../types';
-import { ItemsService, MutationOptions } from './index';
+import { ItemsService } from './items';
+import { MutationOptions } from '../types';
 import { NotificationsService } from './notifications';
 import { UsersService } from './users';
 import { AuthorizationService } from './authorization';
