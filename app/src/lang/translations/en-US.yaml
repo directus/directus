@@ -1145,6 +1145,7 @@ no_shares: No shares to show
 new_share: New Share
 expired: Expired
 upcoming: Upcoming
+share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_times_remaining: This link can only be used {n} times
