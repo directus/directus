@@ -5,7 +5,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import { Settings } from '@directus/shared/types';
-import { useUserStore } from '.';
+import { useUserStore } from './user';
 
 export const useSettingsStore = defineStore({
 	id: 'settingsStore',
