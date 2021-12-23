@@ -52,7 +52,7 @@ export class SharesService extends ItemsService {
 				share_password: 'password',
 			})
 			.from('directus_shares')
-			.where('id', payload.share_id)
+			.where('id', payload.share)
 			.andWhere((subQuery) => {
 				subQuery.whereNull('date_end').orWhere('date_end', '>=', this.knex.fn.now());
 			})
