@@ -13,12 +13,19 @@
 
 		<template v-else-if="share">
 			<template v-if="!authenticated">
-				<v-notice v-if="usesLeft !== undefined" :type="usesLeftNoticeType">
+				<v-notice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
 					{{ t('shared_uses_left', usesLeft) }}
 				</v-notice>
 
 				<template v-if="usesLeft !== 0">
-					<v-input v-if="share.password" @update:modelValue="passwordInput = $event" />
+					<v-input
+						v-if="share.password"
+						class="password"
+						:class="{ invalid: passwordWrong }"
+						type="password"
+						:placeholder="t('shared_enter_passcode')"
+						@update:modelValue="password = $event"
+					/>
 					<v-button :busy="authenticating" @click="authenticate">
 						{{ t('share_access_page') }}
 					</v-button>
@@ -71,13 +78,15 @@ export default defineComponent({
 		const share = ref<ShareInfo>();
 
 		const usesLeft = ref<number | null>(null);
+
 		const usesLeftNoticeType = computed(() => {
 			if (!usesLeft.value) return 'info';
 			if (usesLeft.value < 3) return 'warning';
 			return 'info';
 		});
 
-		const passwordInput = ref<string>();
+		const password = ref<string>();
+		const passwordWrong = ref(false);
 
 		getShareInformation(shareId);
 
@@ -97,13 +106,14 @@ export default defineComponent({
 			title,
 			loading,
 			notFound,
-			passwordInput,
+			password,
 			authenticate,
 			authenticated,
 			authenticating,
 			usesLeft,
 			usesLeftNoticeType,
 			collectionName,
+			passwordWrong,
 		};
 
 		async function getShareInformation(shareId: string) {
@@ -169,9 +179,14 @@ export default defineComponent({
 			authenticating.value = true;
 
 			try {
-				const credentials = { share: shareId, password: passwordInput.value };
+				const credentials = { share: shareId, password: password.value };
 				await login({ share: true, credentials });
 			} catch (err: any) {
+				if (err?.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_CREDENTIALS') {
+					passwordWrong.value = true;
+					return;
+				}
+
 				error.value = err;
 			} finally {
 				authenticating.value = false;
@@ -199,5 +214,22 @@ h2 {
 	justify-content: center;
 	width: 100%;
 	height: 100%;
+}
+
+.password {
+	position: relative;
+}
+
+.password.invalid::before {
+	position: absolute;
+	top: -12px;
+	left: -12px;
+	width: calc(100% + 24px);
+	height: calc(100% + 24px);
+	background-color: var(--danger-alt);
+	border-radius: var(--border-radius);
+	transition: var(--medium) var(--transition);
+	transition-property: background-color, padding, margin;
+	content: '';
 }
 </style>
