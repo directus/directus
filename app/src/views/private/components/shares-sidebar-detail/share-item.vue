@@ -17,10 +17,6 @@
 							<v-list-item-icon><v-icon name="copy" /></v-list-item-icon>
 							<v-list-item-content>{{ t('share_copy_link') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable @click="$emit('send')">
-							<v-list-item-icon><v-icon name="send" /></v-list-item-icon>
-							<v-list-item-content>{{ t('share_send_link') }}</v-list-item-content>
-						</v-list-item>
 						<v-divider />
 						<v-list-item clickable @click="$emit('edit')">
 							<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>

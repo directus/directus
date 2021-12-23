@@ -8,19 +8,13 @@
 		</div>
 
 		<template v-for="share in shares" :key="share.id">
-			<share-item
-				:share="share"
-				@copy="copy(share.id)"
-				@edit="select(share.id)"
-				@send="shareToSend = share"
-				@delete="confirmDelete"
-			/>
+			<share-item :share="share" @copy="copy(share.id)" @edit="select(share.id)" @delete="shareToDelete = share" />
 		</template>
 
 		<drawer-item
 			collection="directus_shares"
-			:primary-key="selected"
-			:active="!!selected"
+			:primary-key="shareToEdit"
+			:active="!!shareToEdit"
 			@cancel="unselect"
 			@input="input"
 		/>
@@ -81,6 +75,7 @@ export default defineComponent({
 		const count = ref(0);
 		const error = ref(null);
 		const loading = ref(false);
+		const deleting = ref(false);
 		const shareToEdit = ref<string | null>(null);
 		const shareToSend = ref<Share | null>(null);
 		const shareToDelete = ref<Share | null>(null);
@@ -101,6 +96,8 @@ export default defineComponent({
 			input,
 			copy,
 			shareToSend,
+			remove,
+			deleting,
 		};
 
 		async function input(data: any) {
@@ -158,6 +155,23 @@ export default defineComponent({
 				loading.value = false;
 			}
 		}
+
+		async function remove() {
+			if (!shareToDelete.value) return;
+
+			deleting.value = true;
+
+			try {
+				await api.delete(`/shares/${shareToDelete.value.id}`);
+
+				await refresh();
+				shareToDelete.value = null;
+			} catch (err: any) {
+				unexpectedError(err);
+			} finally {
+				deleting.value = false;
+			}
+		}
 	},
 });
 </script>
@@ -185,7 +199,7 @@ export default defineComponent({
 
 .empty {
 	margin-top: 16px;
-	margin-bottom: 8px;
+	margin-bottom: 16px;
 	margin-left: 2px;
 	color: var(--foreground-subdued);
 	font-style: italic;
