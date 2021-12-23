@@ -21,12 +21,12 @@
 							<v-list-item-icon><v-icon name="send" /></v-list-item-icon>
 							<v-list-item-content>{{ t('share_send_link') }}</v-list-item-content>
 						</v-list-item>
-						<v-divider />
-						<v-list-item clickable @click="$emit('edit')">
+						<v-divider v-if="deleteAllowed && editAllowed" />
+						<v-list-item v-if="editAllowed" clickable @click="$emit('edit')">
 							<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 							<v-list-item-content>{{ t('edit') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable @click="$emit('delete')">
+						<v-list-item v-if="deleteAllowed" clickable @click="$emit('delete')">
 							<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 							<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
 						</v-list-item>
@@ -53,6 +53,7 @@
 import { defineComponent, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { format } from 'date-fns';
+import { isAllowed } from '@/utils/is-allowed';
 
 export default defineComponent({
 	props: {
@@ -65,6 +66,14 @@ export default defineComponent({
 	setup(props) {
 		const { t, d } = useI18n();
 
+		const editAllowed = computed(() => {
+			return isAllowed('directus_shares', 'update', props.share);
+		});
+
+		const deleteAllowed = computed(() => {
+			return isAllowed('directus_shares', 'delete', props.share);
+		});
+
 		const usesLeft = computed(() => {
 			if (props.share.max_uses === null) return null;
 			return props.share.max_uses - props.share.times_used;
@@ -74,9 +83,11 @@ export default defineComponent({
 			if (props.share.date_end && new Date(props.share.date_end) < new Date()) {
 				return 'expired';
 			}
+
 			if (props.share.date_start && new Date(props.share.date_start) > new Date()) {
 				return 'upcoming';
 			}
+
 			return null;
 		});
 
@@ -86,7 +97,7 @@ export default defineComponent({
 
 		const confirmDelete = ref<string | null>(null);
 
-		return { usesLeft, status, t, d, formattedTime, confirmDelete };
+		return { editAllowed, deleteAllowed, usesLeft, status, t, d, formattedTime, confirmDelete };
 	},
 });
 </script>

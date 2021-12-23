@@ -41,7 +41,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="!!shareToSend" @update:model-value="shareToSend = null" @esc="shareToDelete = null">
+		<v-dialog :model-value="!!shareToSend" @update:model-value="shareToSend = null" @esc="shareToSend = null">
 			<v-card>
 				<v-card-title>{{ t('share_send_link') }}</v-card-title>
 				<v-card-text>
@@ -185,9 +185,20 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/shares`, {
 					params: {
-						'filter[collection][_eq]': props.collection,
-						'filter[item][_eq]': props.primaryKey,
-						fields: ['id', 'name', 'password', 'max_uses', 'times_used', 'date_created', 'date_start', 'date_end'],
+						filter: {
+							_and: [
+								{
+									collection: {
+										_eq: props.collection,
+									},
+								},
+								{
+									item: {
+										_eq: props.primaryKey,
+									},
+								},
+							],
+						},
 						sort: 'name',
 					},
 				});
