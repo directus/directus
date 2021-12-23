@@ -98,7 +98,7 @@ body {
 .module-bar {
 	display: flex;
 	flex-direction: column;
-	width: 60px;
+	width: var(--ui-base-height);
 	height: 100%;
 	background-color: var(--module-background);
 

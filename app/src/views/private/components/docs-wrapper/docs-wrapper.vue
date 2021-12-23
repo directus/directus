@@ -105,7 +105,7 @@ export default defineComponent({
 }
 
 .md :deep(h2) {
-	margin-top: 60px;
+	margin-top: var(--ui-base-height);
 	margin-bottom: 20px;
 	padding-bottom: 4px;
 	font-size: 24px;

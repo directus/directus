@@ -39,7 +39,7 @@ body {
 <style lang="scss" scoped>
 .v-card {
 	--border-radius: 6px;
-	--input-height: 60px;
+	--input-height: var(--ui-base-height);
 	--input-padding: 16px; // (60 - 4 - 24) / 2
 	--form-vertical-gap: 52px;
 

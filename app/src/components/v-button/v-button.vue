@@ -363,7 +363,7 @@ export default defineComponent({
 	--v-button-height: 28px;
 	--v-button-font-size: 12px;
 	--v-button-font-weight: 600;
-	--v-button-min-width: 60px;
+	--v-button-min-width: var(--ui-base-height);
 	--border-radius: 4px;
 
 	padding: 0 12px;
@@ -385,7 +385,7 @@ export default defineComponent({
 }
 
 .x-large {
-	--v-button-height: 60px;
+	--v-button-height: var(--ui-base-height);
 	--v-button-font-size: 18px;
 	--v-button-min-width: 180px;
 

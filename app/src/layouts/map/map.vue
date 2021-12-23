@@ -250,7 +250,7 @@ export default defineComponent({
 .layout-map {
 	position: relative;
 	width: 100%;
-	height: calc(100% - 60px);
+	height: calc(100% - var(--ui-base-height));
 }
 
 .center {

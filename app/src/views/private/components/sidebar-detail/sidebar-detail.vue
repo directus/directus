@@ -91,7 +91,7 @@ body {
 		flex-shrink: 0;
 		justify-content: space-between;
 		width: 100%;
-		height: 60px;
+		height: var(--ui-base-height);
 		color: var(--sidebar-detail-color);
 		background-color: var(--background-normal-alt);
 
@@ -101,7 +101,7 @@ body {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: 60px;
+			width: var(--ui-base-height);
 			height: 100%;
 		}
 
@@ -123,8 +123,8 @@ body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 60px;
-		height: 60px;
+		width: var(--ui-base-height);
+		height: var(--ui-base-height);
 		color: var(--foreground-normal);
 		cursor: pointer;
 		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);

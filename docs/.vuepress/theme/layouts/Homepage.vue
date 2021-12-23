@@ -504,11 +504,11 @@ export default {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	margin: 60px auto 40px;
+	margin: var(--ui-base-height) auto 40px;
 }
 
 .panel {
-	width: calc((100% - 60px - (40px * 6) - (2px * 6)) / 3);
+	width: calc((100% - var(--ui-base-height) - (40px * 6) - (2px * 6)) / 3);
 	margin-bottom: 30px;
 	padding: 40px;
 	overflow: hidden;
@@ -564,7 +564,7 @@ export default {
 
 @media (max-width: 1000px) {
 	.panel {
-		width: calc((100% - 60px - (20px * 6) - (2px * 6)) / 3);
+		width: calc((100% - var(--ui-base-height) - (20px * 6) - (2px * 6)) / 3);
 		padding: 20px;
 	}
 }

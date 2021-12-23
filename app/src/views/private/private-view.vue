@@ -157,7 +157,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .private-view {
 	--content-padding: 12px;
-	--content-padding-bottom: 60px;
+	--content-padding-bottom: var(--ui-base-height);
 
 	display: flex;
 	width: 100%;
@@ -221,7 +221,7 @@ export default defineComponent({
 
 	#main-content {
 		--border-radius: 6px;
-		--input-height: 60px;
+		--input-height: var(--ui-base-height);
 		--input-padding: 16px; // (60 - 4 - 24) / 2
 
 		position: relative;
@@ -241,7 +241,7 @@ export default defineComponent({
 
 		// Offset for partially visible sidebar
 		@media (min-width: 960px) {
-			margin-right: 60px;
+			margin-right: var(--ui-base-height);
 		}
 
 		@media (min-width: 1260px) {
@@ -277,12 +277,12 @@ export default defineComponent({
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 60px));
+			transform: translateX(calc(100% - var(--ui-base-height)));
 		}
 
 		@media (min-width: 1260px) {
 			position: relative;
-			flex-basis: 60px;
+			flex-basis: var(--ui-base-height);
 			flex-shrink: 0;
 			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
 

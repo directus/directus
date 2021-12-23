@@ -48,7 +48,7 @@ export default defineComponent({
 	position: relative;
 	flex-shrink: 0;
 	width: 100%;
-	height: 60px;
+	height: var(--ui-base-height);
 	color: var(--foreground-normal-alt);
 	background-color: var(--background-normal-alt);
 
@@ -56,7 +56,7 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 60px;
+		width: var(--ui-base-height);
 		height: 100%;
 	}
 

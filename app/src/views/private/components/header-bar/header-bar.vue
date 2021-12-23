@@ -96,7 +96,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: 61px;
+	height: calc(var(--ui-base-height) + 1px);
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--background-page);
@@ -175,7 +175,7 @@ export default defineComponent({
 
 	&.small {
 		top: 0;
-		height: 60px;
+		height: var(--ui-base-height);
 	}
 
 	&.small .title-container .headline {

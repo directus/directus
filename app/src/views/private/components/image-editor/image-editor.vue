@@ -442,7 +442,7 @@ export default defineComponent({
 	.editor {
 		flex-grow: 1;
 		width: 100%;
-		height: calc(100% - 60px);
+		height: calc(100% - var(--ui-base-height));
 	}
 
 	img {
@@ -463,7 +463,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 60px;
+	height: var(--ui-base-height);
 	padding: 0 24px;
 	color: var(--white);
 	background-color: #263238;
