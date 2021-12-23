@@ -145,12 +145,13 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 				},
 			],
 		},
+		fields: ['*'],
 	},
 	{
 		collection: 'directus_shares',
 		action: 'create',
 		permissions: {},
-		// No permissions here, because they are  collection-based
+		fields: ['*'],
 	},
 	{
 		collection: 'directus_shares',
@@ -160,6 +161,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 				_eq: '$CURRENT_USER',
 			},
 		},
+		fields: ['*'],
 	},
 	{
 		collection: 'directus_shares',
@@ -169,6 +171,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 				_eq: '$CURRENT_USER',
 			},
 		},
+		fields: ['*'],
 	},
 ];
 

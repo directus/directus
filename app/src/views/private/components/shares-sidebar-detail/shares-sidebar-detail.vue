@@ -25,7 +25,7 @@
 			@input="input"
 		/>
 
-		<v-dialog v-model="shareToDelete" @esc="shareToDelete = null">
+		<v-dialog :model-value="!!shareToDelete" @update:model-value="shareToDelete = null" @esc="shareToDelete = null">
 			<v-card>
 				<v-card-title>{{ t('delete_comment') }}</v-card-title>
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
