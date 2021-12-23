@@ -8,7 +8,13 @@
 		</div>
 
 		<template v-for="share in shares" :key="share.id">
-			<share-item :share="share" @copy="copy(share.id)" @edit="select(share.id)" @delete="shareToDelete = share" />
+			<share-item
+				:share="share"
+				@copy="copy(share.id)"
+				@edit="select(share.id)"
+				@delete="shareToDelete = share"
+				@invite="shareToSend = share"
+			/>
 		</template>
 
 		<drawer-item
@@ -35,7 +41,34 @@
 			</v-card>
 		</v-dialog>
 
-		<v-button v-if="allowed" class="new-share" @click="select('+')">
+		<v-dialog :model-value="!!shareToSend" @update:model-value="shareToSend = null" @esc="shareToDelete = null">
+			<v-card>
+				<v-card-title>{{ t('share_send_link') }}</v-card-title>
+				<v-card-text>
+					<div class="grid">
+						<div class="field">
+							<v-input disabled :model-value="sendPublicLink" />
+						</div>
+
+						<div class="field">
+							<div class="type-label">{{ t('emails') }}</div>
+							<v-textarea v-model="sendEmails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
+						</div>
+					</div>
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="shareToSend = null">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button :loading="sending" @click="send">
+						{{ t('share_send_link') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-button v-if="allowed" full-width @click="select('+')">
 			{{ t('new_share') }}
 		</v-button>
 	</sidebar-detail>
@@ -43,7 +76,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -79,6 +112,13 @@ export default defineComponent({
 		const shareToEdit = ref<string | null>(null);
 		const shareToSend = ref<Share | null>(null);
 		const shareToDelete = ref<Share | null>(null);
+		const sending = ref(false);
+		const sendEmails = ref('');
+
+		const sendPublicLink = computed(() => {
+			if (!shareToSend.value) return null;
+			return window.location.origin + getRootPath() + 'admin/shared/' + shareToSend.value.id;
+		});
 
 		refresh();
 
@@ -98,6 +138,10 @@ export default defineComponent({
 			shareToSend,
 			remove,
 			deleting,
+			sendPublicLink,
+			send,
+			sending,
+			sendEmails,
 		};
 
 		async function input(data: any) {
@@ -163,7 +207,6 @@ export default defineComponent({
 
 			try {
 				await api.delete(`/shares/${shareToDelete.value.id}`);
-
 				await refresh();
 				shareToDelete.value = null;
 			} catch (err: any) {
@@ -172,11 +215,36 @@ export default defineComponent({
 				deleting.value = false;
 			}
 		}
+
+		async function send() {
+			if (!shareToSend.value) return;
+
+			sending.value = true;
+
+			try {
+				const emailsParsed = sendEmails.value
+					.split(/,|\n/)
+					.filter((e) => e)
+					.map((email) => email.trim());
+
+				await api.post('/shares/invite', {
+					email: emailsParsed,
+				});
+
+				sendEmails.value = '';
+			} catch (err: any) {
+				unexpectedError(err);
+			} finally {
+				sending.value = false;
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
 .sidebar-detail {
 	--v-badge-background-color: var(--primary);
 }
@@ -205,9 +273,9 @@ export default defineComponent({
 	font-style: italic;
 }
 
-.new-share {
-	--v-button-width: 100%;
+.grid {
+	--form-vertical-gap: 20px;
 
-	width: 100%;
+	@include form-grid;
 }
 </style>
