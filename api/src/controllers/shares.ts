@@ -132,6 +132,38 @@ router.get(
 
 		const record = await service.readOne(req.params.pk, {
 			fields: ['id', 'collection', 'item', 'password', 'max_uses', 'times_used', 'date_start', 'date_end'],
+			filter: {
+				_and: [
+					{
+						_or: [
+							{
+								date_start: {
+									_lte: '$NOW',
+								},
+							},
+							{
+								date_start: {
+									_null: true,
+								},
+							},
+						],
+					},
+					{
+						_or: [
+							{
+								date_end: {
+									_gte: '$NOW',
+								},
+							},
+							{
+								date_end: {
+									_null: true,
+								},
+							},
+						],
+					},
+				],
+			},
 		});
 
 		res.locals.payload = { data: record || null };
