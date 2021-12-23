@@ -30,6 +30,6 @@ export default definePanel({
 			},
 		},
 	],
-	minWidth: 12,
+	minWidth: 8,
 	minHeight: 6,
 });
