@@ -11,7 +11,7 @@ type LoginCredentials = {
 	email?: string;
 	password?: string;
 	otp?: string;
-	share_id?: string;
+	share?: string;
 };
 
 type LoginParams = {

@@ -15,7 +15,7 @@ const router = express.Router();
 router.use(useCollection('directus_shares'));
 
 const sharedLoginSchema = Joi.object({
-	share_id: Joi.string().required(),
+	share: Joi.string().required(),
 	password: Joi.string(),
 }).unknown();
 
@@ -37,6 +37,32 @@ router.post(
 		res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
 
 		res.locals.payload = { data: { access_token: accessToken, expires } };
+
+		return next();
+	}),
+	respond
+);
+
+const sharedInviteSchema = Joi.object({
+	share: Joi.string().required(),
+	emails: Joi.array().items(Joi.string()),
+}).unknown();
+
+router.post(
+	'/invite',
+	asyncHandler(async (req, res, next) => {
+		const service = new SharesService({
+			schema: req.schema,
+			accountability: req.accountability,
+		});
+
+		const { error } = sharedInviteSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
+
+		await service.invite(req.body);
 
 		return next();
 	}),

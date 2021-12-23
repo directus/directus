@@ -228,10 +228,13 @@ export default defineComponent({
 					.map((email) => email.trim());
 
 				await api.post('/shares/invite', {
-					email: emailsParsed,
+					emails: emailsParsed,
+					share: shareToSend.value.id,
 				});
 
 				sendEmails.value = '';
+
+				shareToSend.value = null;
 			} catch (err: any) {
 				unexpectedError(err);
 			} finally {

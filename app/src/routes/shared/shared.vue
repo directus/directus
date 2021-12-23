@@ -169,7 +169,7 @@ export default defineComponent({
 			authenticating.value = true;
 
 			try {
-				const credentials = { share_id: shareId, password: passwordInput.value };
+				const credentials = { share: shareId, password: passwordInput.value };
 				await login({ share: true, credentials });
 			} catch (err: any) {
 				error.value = err;

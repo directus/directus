@@ -11,24 +11,30 @@ import { ItemsService } from './items';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import { InvalidCredentialsException } from '../exceptions';
+import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import env from '../env';
 import { nanoid } from 'nanoid';
 import { AuthorizationService } from './authorization';
+import { UsersService } from './users';
+import { MailService } from './mail';
+import { userName } from '../utils/user-name';
+import { md } from '../utils/md';
 
 export class SharesService extends ItemsService {
+	authorizationService: AuthorizationService;
+
 	constructor(options: AbstractServiceOptions) {
 		super('directus_shares', options);
-	}
 
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const authorizationService = new AuthorizationService({
+		this.authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
 		});
+	}
 
-		await authorizationService.checkAccess('share', data.collection, data.item);
+	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.authorizationService.checkAccess('share', data.collection, data.item);
 		return super.createOne(data, opts);
 	}
 
@@ -104,5 +110,47 @@ export class SharesService extends ItemsService {
 			refreshToken,
 			expires: ms(env.ACCESS_TOKEN_TTL as string),
 		};
+	}
+
+	/**
+	 * Send a link to the given share ID to the given email(s). Note: you can only send a link to a share
+	 * if you have read access to that particular share
+	 */
+	async invite(payload: { emails: string[]; share: PrimaryKey }) {
+		if (!this.accountability?.user) throw new ForbiddenException();
+
+		const share = await this.readOne(payload.share, { fields: ['collection'] });
+
+		const usersService = new UsersService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const mailService = new MailService({ schema: this.schema, accountability: this.accountability });
+
+		const userInfo = await usersService.readOne(this.accountability.user, {
+			fields: ['first_name', 'last_name', 'email', 'id'],
+		});
+
+		const message = `
+Hello!
+
+${userName(userInfo)} has invited you to view an item in ${share.collection}.
+
+[Open](${env.PUBLIC_URL}/admin/shared/${payload.share})
+`;
+
+		for (const email of payload.emails) {
+			await mailService.send({
+				template: {
+					name: 'base',
+					data: {
+						html: md(message),
+					},
+				},
+				to: email,
+				subject: `${userName(userInfo)} has shared an item with you`,
+			});
+		}
 	}
 }
