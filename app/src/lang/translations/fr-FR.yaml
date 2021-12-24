@@ -31,6 +31,7 @@ tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
 maps: Cartes
+switch_user: Changer d'utilisateur
 item_creation: Création d'article
 item_revision: Historique de l'article
 enter_a_name: Saisir un nom...
@@ -768,6 +769,7 @@ adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
 creating_in: 'Création de l''élément dans {collection}'
 editing_in: 'Modification de l''élément dans {collection}'
+viewing_in: 'Consulter l''élément de {collection}'
 creating_unit: 'Création de {unit}'
 editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
@@ -1123,6 +1125,26 @@ start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
 comment: Commentaire
+shares: Partages
+unlimited_usage: Utilisation illimitée
+uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
+no_shares: Aucun partage pour l'instant
+new_share: Nouveau partage
+expired: Expiré
+upcoming: À venir
+share: Partage
+share_item: Partager l'élément
+shared_with_you: Un élément a été partagé avec vous
+shared_enter_passcode: Saisir le mot de passe pour poursuivre...
+shared_times_remaining: Ce lien ne peut être utilisé que {n} fois
+shared_last_remaining: Ce lien ne peut être utilisé qu'une seule fois
+shared_uses_left: Pour des raisons de sécurité, cette page partagée a été configurée de manière à être consultée un nombre limité de fois. Il reste actuellement {n} consultations possibles, après quoi cette page ne sera plus accessible.
+share_access_page: Consulter la page partagée
+share_access_not_found: Cette page partagée n'existe pas ou a dépassé le nombre de consultations possibles.
+share_access_not_found_desc: Veuillez contacter un utilisateur autorisé de ce projet pour demander un accès.
+share_access_not_found_title: Page partagée inconnue
+share_copy_link: Copier le lien
+share_send_link: Envoyer le lien
 relational_triggers: Déclencheurs relationnels
 referential_action_field_label_m2o: Lors de la suppression d'un(e) {collection} ...
 referential_action_field_label_o2m: Lors de la dé-sélection d'un(e) {collection} ...
@@ -1195,6 +1217,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
