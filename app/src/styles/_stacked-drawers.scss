@@ -1,6 +1,7 @@
 #drawer-outlet {
 	.container.right .v-drawer {
-		transition: transform var(--slow) var(--transition);
+		transition: var(--slow) var(--transition);
+		transition-property: transform, border-radius;
 	}
 
 	.container.right:not(:last-of-type) .v-drawer {
@@ -9,7 +10,9 @@
 
 	@for $i from 1 to 6 {
 		> .container.right:not(.dialog-leave-active):nth-last-of-type(#{$i}):not(:last-of-type) .v-drawer {
-			transform: translateX(-#{($i - 1) * 50}px);
+			transform: translateX(-#{($i - 1) * 30}px) scale(#{1 - (0.05 * ($i - 1))});
+			transform-origin: left;
+			border-radius: 20px;
 		}
 	}
 
