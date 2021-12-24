@@ -1447,6 +1447,9 @@ interfaces:
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
+    folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
+    imageToken: Token obrazu
+    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.

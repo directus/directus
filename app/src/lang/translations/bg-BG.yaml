@@ -1447,6 +1447,9 @@ interfaces:
     toolbar: Лента с инструменти
     custom_formats: Собтсвени формати
     options_override: Преопределяне на настройки
+    folder_note: Папка за качените файлове. Съществуващите файлове не се променят.
+    imageToken: Токен за изображенията
+    imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
     description: Автоматично дописване на стойности чрез външно API.

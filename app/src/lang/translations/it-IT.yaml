@@ -1447,6 +1447,9 @@ interfaces:
     toolbar: Barra degli strumenti
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
+    folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
+    imageToken: Token Immagine
+    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.

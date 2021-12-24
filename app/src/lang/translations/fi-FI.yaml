@@ -1411,6 +1411,9 @@ interfaces:
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
     options_override: Valintojen ohitus
+    folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
+    imageToken: Kuvatunnus
+    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
