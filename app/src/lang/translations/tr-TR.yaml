@@ -1,33 +1,75 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Tanımlayıcı
 avatar: Avatar
 default_provider: Varsayılan
 published: Yayınlandı
 draft: Taslak
 archived: Arşivlenmiş
 modules: Modüller
+tile_size: Blok boyutu
 edit_field: Alanı Düzenle
+conditions: Koşullar
+maps: Haritalar
+switch_user: Kullanıcı değiştir
+item_creation: Öğe Oluşturma
 item_revision: Revizyonları Göster
+enter_a_name: Bir isim girin...
 duplicate_field: Yinelenen Alan
 half_width: Yarı Genişlik
 full_width: Tam Genişlik
+group: Grup
+and: Ve
+or: Veya
 fill_width: Tam Genişlik
 field_name_translations: Alan İsim Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
 add_field: Alan Ekle
 role_name: Rol Adı
+branch: Dal
+leaf: Yaprak
+indeterminate: Belirsiz
 edit_collection: Koleksiyonu düzenle
+exclusive: İstisna
+children: Alt
+db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın'
+show_active_items: Aktif Öğeleri Göster
 show_archived_items: Arşivlenmiş Öğeleri Göster
+show_all_items: Tüm Öğeleri Göster
 edited: Değer Düzenlendi
 required: Gerekli
 required_for_app_access: Uygulama Erişimi için Gereklidir
 requires_value: Gerekli değer
 create_preset: Ön Ayar Oluştur
+create_panel: Panel Oluştur
 create_role: Rol Oluştur
 create_user: Kullanıcı Oluştur
+delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
 invite_users: Kullanıcıları Davet Et
 invite: Davet et
 email_already_invited: '"{email}" bu e-posta zaten davet edildi'
+subject: Konu
+inbox: Gelen Kutusu
 emails: E-postalar
 connection_excellent: Mükemmel Bağlantı
 connection_good: İyi Bağlantı
@@ -49,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Oturumun süresi doldu
 public_label: Herkese Açık
 public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
+admin_description: Sınırsız Uygulama/API erişimine sahip ilk yönetici rolü.
 not_allowed: İzin Verilmedi
 directus_version: Directus Versiyon
 node_version: Node Versiyon
@@ -93,6 +136,8 @@ no_access: Erişim Yok
 use_custom: Özelleştirilmiş kullan
 nullable: Boş (null) olabilir
 allow_null_value: NULL değere izin ver
+allow_multiple: Çoklu Seçime İzin Ver
+allow_multiple_to_be_open: Çoklu Açılmasına İzin Ver
 enter_value_to_replace_nulls: Bu alandaki tüm NULLları değiştirecek yeni bir değer girin.
 field_standard: Standart
 field_presentation: Sunum ve Takma Adlar
@@ -103,6 +148,7 @@ field_m2a: M2A İlişkisi
 field_o2m: O2M İlişkisi
 field_m2m: M2M İlişkisi
 field_translations: Çeviriler
+field_group: Alan Grubu
 item_permissions: Alan İzinleri
 field_permissions: Alan İzinleri
 field_validation: Alan Doğrulama
@@ -112,6 +158,7 @@ fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
 validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
 presets_for_role: '{role} rolü için varsayılan alan değeri.'
 presentation_and_aliases: Sunum ve Takma Adlar
+revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
