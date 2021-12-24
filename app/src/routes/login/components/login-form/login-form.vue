@@ -107,7 +107,7 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials, provider.value);
+				await login({ provider: provider.value, credentials });
 
 				const redirectQuery = router.currentRoute.value.query.redirect as string;
 

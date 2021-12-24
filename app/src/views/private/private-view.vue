@@ -3,7 +3,7 @@
 		{{ t('no_app_access_copy') }}
 
 		<template #append>
-			<v-button to="/logout">Switch User</v-button>
+			<v-button to="/logout">{{ t('switch_user') }}</v-button>
 		</template>
 	</v-info>
 

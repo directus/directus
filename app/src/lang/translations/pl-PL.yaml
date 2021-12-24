@@ -52,7 +52,9 @@ edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować'
+show_active_items: Pokaż aktywne elementy
 show_archived_items: Pokaż zarchiwizowane elementy
+show_all_items: Pokaż wszystkie elementy
 edited: Wartość zmieniona
 required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
@@ -1193,7 +1195,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1511,9 +1512,23 @@ displays:
   formatted-value:
     formatted-value: Wartość sformatowana
     description: Wyświetl sformatowaną wersję tekstu
-    format_title: Format tytułu
-    format_title_label: Automatyczny format
+    format: Formatowanie
+    format_label: Automatyczny format
+    font: Czcionka
+    font_serif: Szeryfowa
+    font_monospace: Monospace
+    bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
+    italic: Kursywa
+    prefix: Przedrostek
+    prefix_label: Poprzedni tekst
+    suffix: Przyrostek
+    color: Kolor
+    icon: Ikona
+    border: Krawędź
+    border_label: Pokaż obramowanie
+    text: Tekst
+    text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu

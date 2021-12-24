@@ -189,6 +189,12 @@
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 			/>
+			<shares-sidebar-detail
+				v-if="isNew === false && internalPrimaryKey"
+				:collection="collection"
+				:primary-key="internalPrimaryKey"
+				:allowed="shareAllowed"
+			/>
 		</template>
 	</private-view>
 </template>
@@ -202,6 +208,7 @@ import ContentNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import useShortcut from '@/composables/use-shortcut';
@@ -219,6 +226,7 @@ export default defineComponent({
 		ContentNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
+		SharesSidebarDetail,
 		SaveOptions,
 	},
 	props: {
@@ -352,11 +360,8 @@ export default defineComponent({
 		onBeforeRouteUpdate(editsGuard);
 		onBeforeRouteLeave(editsGuard);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
-			collection,
-			item,
-			isNew
-		);
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, shareAllowed, fields, revisionsAllowed } =
+			usePermissions(collection, item, isNew);
 
 		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
@@ -403,6 +408,7 @@ export default defineComponent({
 			archiveAllowed,
 			isArchived,
 			updateAllowed,
+			shareAllowed,
 			toggleArchive,
 			validationErrors,
 			form,

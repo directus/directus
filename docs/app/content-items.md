@@ -57,7 +57,7 @@ icon) button located in the header.
 1. Navigate to the [Content Module](/app/overview#1.-module-bar)
 2. Navigate to the collection of the item you want to archive
 3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
-4. Click the "Archive Item" (trash icon) button located in the header
+4. Click the "Archive Item" (archive icon) button located in the header
 5. Confirm the action within the dialog by clicking "Archive"
 
 ::: warning Requires Configuration

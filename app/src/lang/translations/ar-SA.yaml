@@ -51,7 +51,10 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
+db_only_click_to_configure: 'قاعدة البيانات فقط: اضغط لتعديل الاعدادات'
+show_active_items: إظهار العناصر النشطة
 show_archived_items: أظهر العناصر المؤرشفة
+show_all_items: عرض جميع العناصر
 edited: تم تعديل القيمة
 required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
@@ -65,6 +68,7 @@ create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
+subject: الموضوع
 inbox: صندوق الواردات
 emails: البريد الإلكتروني
 connection_excellent: اتصال ممتاز
@@ -156,6 +160,7 @@ presentation_and_aliases: Presentation & Aliases
 revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
+no_relational_data: 'ملاحظة: العلاقة بين الجداول غير مدرجة هنا.'
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -171,7 +176,11 @@ global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
 show_zero: إظهار صفر
+create_in_advanced_field_creation_mode: إنشاء حقل في الوضع المتقدم
+continue_in_advanced_field_creation_mode: الاستمرار في وضع إنشاء الحقل المتقدم
 sum: المجموع
+avg: المتوسط
+count: عدد
 min: الحد الأدنى
 max: الحد الأقصى
 exposure: التعرض
@@ -191,6 +200,7 @@ alias: اسم مستعار
 bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
+date_range: فترة التاريخ
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
 precision: الدقة
@@ -207,6 +217,7 @@ uuid: UUID
 hash: الهاش
 geometry.Point: نقطة
 geometry.Polygon: مضلّع
+geometry.MultiPoint: نقاط متعددة
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -226,10 +237,14 @@ new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيان�
 search_collection: مجموعة البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
+add_m2o_to_collection: 'إضافة M2O إلى "{collection}"'
+add_o2m_to_collection: 'إضافة O2M إلى "{collection}"'
+add_m2m_to_collection: 'إضافة M2M إلى "{collection}"'
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
 add_link: إضافة رابط
+custom_link: رابط مخصص
 default_value: القيمة الافتراضية
 standard_field: حقل قياسي
 single_file: ملف واحد
@@ -260,6 +275,7 @@ raw_value: قيمة خام
 edit_raw_value: تعديل القيمة الخام
 enter_raw_value: أدخل قيمة سطر...
 clear_value: إزالة القيمة
+clear_changes: مسح التغييرات
 reset_to_default: إعادة تعيين إلى الافتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
@@ -313,6 +329,8 @@ yesterday: أمس
 delete_comment: احذف التعليق
 date-fns_time: 'ساعات: دقائق: ثواني'
 date-fns_time_no_seconds: 'س:دد ص'
+minutes: دقائق
+hours: ساعات
 month: شهر
 year: سنة
 select_all: تحديد الكل
@@ -1068,7 +1086,16 @@ displays:
   formatted-value:
     formatted-value: قيمة منسقة
     description: عرض نسخة منسقة من النص
-    format_title: تنسيق العنوان
+    format: التنسيق
+    font: الخط
+    font_serif: خط سيريف Serif
+    font_monospace: Monospace
+    italic: خط مائل
+    prefix: بادئة
+    suffix: لاحقة
+    color: لون
+    icon: أيقونة
+    text: نص
   icon:
     icon: أيقونة
     description: عرض أيقونة
