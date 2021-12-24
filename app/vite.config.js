@@ -178,7 +178,7 @@ function directusExtensions() {
 							...APP_SHARED_DEPS.reduce((acc, dep) => ({ ...acc, [dep.replace(/\//g, '_')]: dep }), {}),
 						},
 						output: {
-							entryFileNames: '[name].[hash].js',
+							entryFileNames: 'assets/[name].[hash].entry.js',
 						},
 						external: virtualIds,
 						preserveEntrySignatures: 'exports-only',
