@@ -7,12 +7,13 @@ import path from 'path';
 import sharp from 'sharp';
 import getDatabase from '../database';
 import env from '../env';
-import { IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
+import { IllegalAssetTransformation, RangeNotSatisfiableException, ForbiddenException } from '../exceptions';
 import storage from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { AuthorizationService } from './authorization';
 import * as TransformationUtils from '../utils/transformations';
+import validateUUID from 'uuid-validate';
 
 sharp.concurrency(1);
 
@@ -47,7 +48,22 @@ export class AssetsService {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
+		/**
+		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
+		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
+		 * validity of the uuid ahead of time.
+		 */
+		const isValidUUID = validateUUID(id, 4);
+
+		if (isValidUUID === false) throw new ForbiddenException();
+
 		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
+
+		if (!file) throw new ForbiddenException();
+
+		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
+
+		if (!exists) throw new ForbiddenException();
 
 		if (range) {
 			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {

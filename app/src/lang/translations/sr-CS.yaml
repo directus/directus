@@ -773,6 +773,7 @@ fields:
     name: Ime
     status: Status
     value: Vrijednost
+    collections: Kolekcije
 field_options:
   directus_activity:
     create: Kreiraj
@@ -930,7 +931,6 @@ interfaces:
   presentation-divider:
     divider: Djelilac
     description: Označi i podijeli polja u sekcije
-    title_placeholder: Unesi naslov...
     inline_title: Linijski Naslov
     inline_title_label: Prikaži naslov u liniji
     margin_top: Gornja Margina
@@ -982,6 +982,7 @@ interfaces:
   input-rich-text-md:
     markdown: Smanjenje
     description: Unesi i pregledaj opcije smanjenja
+    edit: Izmijeni
     customSyntax: Prilagođeni Blokovi
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
@@ -1048,6 +1049,8 @@ interfaces:
   boolean:
     toggle: Isključi / Uključi
     description: Prebaci između uključeno i isključeno
+    color_on: Boja Uključena
+    color_off: Boja Isključena
     label_placeholder: Unesi ime...
     label_default: Omogućen
   translations:
@@ -1070,6 +1073,8 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
+    imageToken: Token Fotografije
+    imageToken_label: Koji (statični) token prikačiti na izvore slika
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.
@@ -1118,9 +1123,18 @@ displays:
   formatted-value:
     formatted-value: Formatirana Vrijednost
     description: Prikaži formatiranu verziju teksta
-    format_title: Formatiraj Naslov
-    format_title_label: Automatsko formatiranje naslova
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Fiksni razmak
+    bold: Podebljano
     bold_label: Koristi podebljan stil
+    italic: Kurziv
+    prefix: Prefiks
+    suffix: Sufiks
+    color: Boja
+    icon: Ikonica
+    text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta

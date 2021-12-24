@@ -87,6 +87,8 @@ fields:
     tfa_secret: אימות דו-שלבי
     status: סטטוס
     role: תפקיד
+  directus_settings:
+    module_bar: סרגל מודולים
   directus_fields:
     translation: תרגומי שמות שדות
   directus_roles:

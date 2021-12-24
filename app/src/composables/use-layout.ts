@@ -1,6 +1,6 @@
 import { getLayouts } from '@/layouts';
 import { computed, reactive, toRefs, defineComponent, Ref, PropType, Component, ComputedRef } from 'vue';
-import { Filter, Item, LayoutConfig } from '@directus/shared/types';
+import { Filter, Item, LayoutConfig, ShowSelect } from '@directus/shared/types';
 
 const NAME_SUFFIX = 'wrapper';
 const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery'] as const;
@@ -46,6 +46,10 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 			search: {
 				type: String as PropType<string | null>,
 				default: null,
+			},
+			showSelect: {
+				type: String as PropType<ShowSelect>,
+				default: 'multiple',
 			},
 			selectMode: {
 				type: Boolean,

@@ -4,16 +4,25 @@ import { User } from '@directus/shared/types';
 import { userName } from '@/utils/user-name';
 import { defineStore } from 'pinia';
 
+type ShareUser = {
+	share: string;
+	role: {
+		id: string;
+		admin_access: false;
+		app_access: false;
+	};
+};
+
 export const useUserStore = defineStore({
 	id: 'userStore',
 	state: () => ({
-		currentUser: null as User | null,
+		currentUser: null as User | ShareUser | null,
 		loading: false,
 		error: null,
 	}),
 	getters: {
 		fullName(): string | null {
-			if (this.currentUser === null) return null;
+			if (this.currentUser === null || 'share' in this.currentUser) return null;
 			return userName(this.currentUser);
 		},
 		isAdmin(): boolean {
@@ -25,11 +34,18 @@ export const useUserStore = defineStore({
 			this.loading = true;
 
 			try {
-				const { data } = await api.get(`/users/me`, {
-					params: {
-						fields: '*,avatar.id,role.*',
-					},
-				});
+				const fields = [
+					'id',
+					'language',
+					'last_page',
+					'theme',
+					'avatar.id',
+					'role.admin_access',
+					'role.app_access',
+					'role.id',
+				];
+
+				const { data } = await api.get(`/users/me`, { params: { fields } });
 
 				this.currentUser = data.data;
 			} catch (error: any) {
@@ -57,7 +73,7 @@ export const useUserStore = defineStore({
 				latency: end - start,
 			});
 
-			if (this.currentUser) {
+			if (this.currentUser && !('share' in this.currentUser)) {
 				this.currentUser.last_page = page;
 			}
 		},

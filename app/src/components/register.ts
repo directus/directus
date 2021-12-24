@@ -47,9 +47,11 @@ import VSlider from './v-slider/';
 import VSwitch from './v-switch/';
 import VTable from './v-table/';
 import VTabs, { VTab, VTabItem, VTabsItems } from './v-tabs/';
+import VTemplateInput from './v-template-input.vue';
 import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
+import VDatePicker from './v-date-picker';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -103,9 +105,11 @@ export function registerComponents(app: App): void {
 	app.component('VTable', VTable);
 	app.component('VTabsItems', VTabsItems);
 	app.component('VTabs', VTabs);
+	app.component('VTemplateInput', VTemplateInput);
 	app.component('VTextarea', VTextarea);
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
+	app.component('VDatePicker', VDatePicker);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);

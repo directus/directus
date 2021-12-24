@@ -20,18 +20,46 @@ import { Directus } from '@directus/sdk';
 const directus = new Directus('http://directus.example.com');
 
 async function start() {
-	// Wait for login to be done...
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
-
-	// ... before fetching items
-	const articles = await directus.items('articles').readMany();
+	// We don't need to authenticate if data is public
+	const publicData = await directus.items('public').readMany({ meta: 'total_count' });
 
 	console.log({
-		items: articles.data,
-		total: articles.meta.total_count,
+		items: publicData.data,
+		total: publicData.meta.total_count,
+	});
+
+	// But, we need to authenticate if data is private
+	let authenticated = false;
+
+	// Try to authenticate with token if exists
+	await directus.auth
+		.refresh()
+		.then(() => {
+			authenticated = true;
+		})
+		.catch(() => {});
+
+	// Let's login in case we don't have token or it is invalid / expired
+	while (!authenticated) {
+		const email = window.prompt('Email:');
+		const password = window.prompt('Password:');
+
+		await directus.auth
+			.login({ email, password })
+			.then(() => {
+				authenticated = true;
+			})
+			.catch(() => {
+				window.alert('Invalid credentials');
+			});
+	}
+
+	// After authentication, we can fetch the private data in case the user has access to it
+	const privateData = await directus.items('privateData').readMany({ meta: 'total_count' });
+
+	console.log({
+		items: privateData.data,
+		total: privateData.meta.total_count,
 	});
 }
 
@@ -143,7 +171,7 @@ const directus = new Directus(url, init);
 
       <a name="options.auth.autoRefresh"></a>
 
-    - `autoRefresh` [optional] _Boolean_ - Tells SDK ifit should handle refresh tokens automatically. Defaults to
+    - `autoRefresh` [optional] _Boolean_ - Tells SDK if it should handle refresh tokens automatically. Defaults to
       `true`.
     - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
       before the refresh token expires and needs to be refreshed. Defaults to `30000`.
@@ -235,6 +263,15 @@ By default, Directus will handle token refreshes. Although, you can handle this 
 ```js
 await directus.auth.refresh();
 ```
+
+::: tip Developing Locally
+
+If you're developing locally, you might not be able to refresh your auth token automatically in all browsers. This is
+because the default auth configuration requires secure cookies to be set, and not all browsers allow this for localhost.
+You can use a browser which does support this such as Firefox, or
+[disable secure cookies](/configuration/config-options/#security).
+
+:::
 
 ### Logout
 
@@ -329,37 +366,27 @@ upload progress (a downside of `fetch`).
 
 The storage is used to load and save token information.
 
-### Custom Implementatin
+### Custom Implementation
 
-It is possible to provide a custom implementation by extending `IStorage`. While, this could be useful for advanced
+It is possible to provide a custom implementation by extending `BaseStorage`. While, this could be useful for advanced
 usage, it is not needed for most use-cases.
 
 ```js
-import { IStorage, Directus } from '@directus/sdk';
+import { BaseStorage, Directus } from '@directus/sdk';
 
-class MyStorage extends IStorage {
-	get auth_token() {
-		return this.get('auth_token');
-	}
-	get auth_expires() {
-		return Number(this.get('auth_expires'));
-	}
-	get auth_refresh_token() {
-		return this.get('auth_refresh_token');
-	}
-
+class SessionStorage extends BaseStorage {
 	get(key) {
-		return '';
+		return sessionStorage.getItem(key);
 	}
 	set(key, value) {
-		return value;
+		return sessionStorage.setItem(key, value);
 	}
 	delete(key) {
-		return null;
+		return sessionStorage.removeItem(key);
 	}
 }
 
-const directus = new Directus('http://directus.example.com', { storage: new MyStorage() });
+const directus = new Directus('http://directus.example.com', { storage: new SessionStorage() });
 ```
 
 ### Directus Implementation
@@ -369,7 +396,8 @@ By default, Directus creates an instance of `Storage` which handles store inform
 
 SDK uses `localStorage` on browsers and the memory itself on Node.js to save tokens. This behavior can be configured in
 [`options.storage.mode`](#options.storage.mode). The `LocalStorage` is only available on browsers and the
-`MemoryStorage` is not persitent, i.e., once you leave the tab or quit the process, you will need to authenticate again.
+`MemoryStorage` is not persistent, i.e., once you leave the tab or quit the process, you will need to authenticate
+again.
 
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#options.storage.prefix) for each
 one.

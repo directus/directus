@@ -790,6 +790,7 @@ fields:
     name: Naam
     status: Status
     value: Waarde
+    collections: Collecties
 field_options:
   directus_activity:
     create: Maak
@@ -957,6 +958,7 @@ interfaces:
     display_template: Weergavesjabloon
   input-rich-text-md:
     markdown: Markdown
+    edit: Wijzig
     customSyntax: Aangepaste blokken
     box: Blok / Inline
     imageToken: Afbeeldingstoken
@@ -998,6 +1000,8 @@ interfaces:
     maximum_value: Maximale waarde
   boolean:
     toggle: Schakel
+    color_on: Kleur Aan
+    color_off: Kleur uit
     label_placeholder: Voer een label in...
     label_default: Ingeschakeld
   translations:
@@ -1016,6 +1020,7 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
+    imageToken: Afbeeldingstoken
 displays:
   translations:
     translations: Vertalingen
@@ -1057,9 +1062,18 @@ displays:
   formatted-value:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
-    format_title: Formatteer titel
-    format_title_label: Fix hoofdletters automatisch
+    format: Format
+    font: Letterype
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Vetgedrukt
     bold_label: Gebruik bold
+    italic: Cursief
+    prefix: Voorvoegsel
+    suffix: Achtervoegsel
+    color: Kleur
+    icon: Icoon
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven

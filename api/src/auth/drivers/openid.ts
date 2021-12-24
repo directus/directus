@@ -6,8 +6,13 @@ import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
-import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
+import { AuthDriverOptions, User, AuthData } from '../../types';
+import {
+	InvalidCredentialsException,
+	ServiceUnavailableException,
+	InvalidConfigException,
+	InvalidTokenException,
+} from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
@@ -36,6 +41,15 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
 				.then((issuer) => {
+					const supportedTypes = issuer.metadata.response_types_supported as string[] | undefined;
+					if (!supportedTypes?.includes('code')) {
+						reject(
+							new InvalidConfigException('OpenID provider does not support required code flow', {
+								provider: additionalConfig.provider,
+							})
+						);
+					}
+
 					resolve(
 						new issuer.Client({
 							client_id: clientId,
@@ -53,17 +67,21 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	async generateAuthUrl(codeVerifier: string): Promise<string> {
+	async generateAuthUrl(codeVerifier: string, prompt = false): Promise<string> {
 		try {
 			const client = await this.client;
 			const codeChallenge = generators.codeChallenge(codeVerifier);
+			const paramsConfig = typeof this.config.params === 'object' ? this.config.params : {};
+
 			return client.authorizationUrl({
 				scope: this.config.scope ?? 'openid profile email',
+				access_type: 'offline',
+				prompt: prompt ? 'consent' : undefined,
+				...paramsConfig,
 				code_challenge: codeChallenge,
 				code_challenge_method: 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				access_type: 'offline',
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -98,7 +116,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 			const issuer = client.issuer;
 			if (issuer.metadata.userinfo_endpoint) {
-				userInfo = await client.userinfo(tokenSet);
+				userInfo = await client.userinfo(tokenSet.access_token!);
 			} else {
 				userInfo = tokenSet.claims();
 			}
@@ -149,11 +167,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User, sessionData: SessionData): Promise<SessionData> {
-		return this.refresh(user, sessionData);
+	async login(user: User): Promise<void> {
+		return this.refresh(user);
 	}
 
-	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
+	async refresh(user: User): Promise<void> {
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
@@ -164,16 +182,19 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			}
 		}
 
-		if (!authData?.refreshToken) {
-			return sessionData;
-		}
-
-		try {
-			const client = await this.client;
-			const tokenSet = await client.refresh(authData.refreshToken);
-			return { accessToken: tokenSet.access_token };
-		} catch (e) {
-			throw handleError(e);
+		if (authData?.refreshToken) {
+			try {
+				const client = await this.client;
+				const tokenSet = await client.refresh(authData.refreshToken);
+				// Update user refreshToken if provided
+				if (tokenSet.refresh_token) {
+					await this.usersService.updateOne(user.id, {
+						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+					});
+				}
+			} catch (e) {
+				throw handleError(e);
+			}
 		}
 	}
 }
@@ -182,7 +203,7 @@ const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
-			return new InvalidCredentialsException();
+			return new InvalidTokenException();
 		}
 		// Server response error
 		return new ServiceUnavailableException('Service returned unexpected response', {
@@ -204,7 +225,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		asyncHandler(async (req, res) => {
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
-			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect }, env.SECRET as string, {
+			const prompt = !!req.query.prompt;
+			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect, prompt }, env.SECRET as string, {
 				expiresIn: '5m',
 				issuer: 'directus',
 			});
@@ -214,7 +236,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(await provider.generateAuthUrl(codeVerifier));
+			return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
 		}),
 		respond
 	);
@@ -228,12 +250,14 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
 					verifier: string;
 					redirect?: string;
+					prompt: boolean;
 				};
-			} catch (e) {
+			} catch (e: any) {
+				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
 				throw new InvalidCredentialsException();
 			}
 
-			const { verifier, redirect } = tokenData;
+			const { verifier, redirect, prompt } = tokenData;
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
@@ -250,7 +274,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				res.clearCookie(`openid.${providerName}`);
 
 				if (!req.query.code || !req.query.state) {
-					logger.warn(`Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
+					logger.warn(`[OpenID] Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
@@ -259,6 +283,11 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					state: req.query.state,
 				});
 			} catch (error: any) {
+				// Prompt user for a new refresh_token if invalidated
+				if (error instanceof InvalidTokenException && !prompt) {
+					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
+				}
+
 				logger.warn(error);
 
 				if (redirect) {
@@ -268,6 +297,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						reason = 'SERVICE_UNAVAILABLE';
 					} else if (error instanceof InvalidCredentialsException) {
 						reason = 'INVALID_USER';
+					} else if (error instanceof InvalidTokenException) {
+						reason = 'INVALID_TOKEN';
 					}
 
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);

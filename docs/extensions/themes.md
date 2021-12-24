@@ -27,8 +27,8 @@ See [Adjusting Project Settings](/configuration/project-settings/)
 You can also override any core CSS directly within the App through Project Settings. This makes it easy to edit the CSS
 variables listed in the themes above.
 
-1. Navigate to **Settings > Project Settings**
-2. Scroll to the **CSS Overrides** field
+1. Navigate to **Settings Module > Project Settings**
+2. Scroll to the **Custom CSS** field
 3. Enter any **valid CSS**
 4. Click the **Save** action button in the header
 

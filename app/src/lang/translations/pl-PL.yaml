@@ -31,6 +31,7 @@ tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
 maps: Mapy
+switch_user: Przełącz użytkownika
 item_creation: Tworzenie elementu
 item_revision: Wersja elementu
 enter_a_name: Wprowadź nazwę...
@@ -52,7 +53,9 @@ edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować'
+show_active_items: Pokaż aktywne elementy
 show_archived_items: Pokaż zarchiwizowane elementy
+show_all_items: Pokaż wszystkie elementy
 edited: Wartość zmieniona
 required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
@@ -66,6 +69,8 @@ create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
+subject: Temat
+inbox: Skrzynka odbiorcza
 emails: E-maile
 connection_excellent: Doskonałe połączenie
 connection_good: Dobre połączenie
@@ -87,6 +92,7 @@ logoutReason:
   SESSION_EXPIRED: Sesja wygasła
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
+admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
 node_version: Wersja Node
@@ -173,7 +179,7 @@ global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
 show_zero: Pokaż zerowy
-create_in_advanced_field_creation_mode: Utwórz w Zaawansowanym trybie tworzenia pól
+create_in_advanced_field_creation_mode: Utwórz pole w trybie zaawansowanym
 continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
@@ -215,7 +221,13 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
-geometry: Geometria
+geometry: Geometria (wszystkie)
+geometry.Point: Punkt
+geometry.LineString: Ciąg linii
+geometry.Polygon: Wielokąt
+geometry.MultiPoint: Wielopunktowy
+geometry.MultiLineString: Ciąg multilinii
+geometry.MultiPolygon: Wielokąt
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -250,7 +262,7 @@ multiple_files: Wiele plików
 m2o_relationship: Relacja wiele do jednego
 o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
-m2a_relationship: Relacja wiele do wielu
+m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
 next: Następny
 field_name: Nazwa pola
@@ -328,7 +340,7 @@ delete_comment: Usuń komentarz
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_date_short: 'D MMM u'
+date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minuty
@@ -421,6 +433,9 @@ user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
 no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
+no_notifications: Brak powiadomień
+no_notifications_copy: Jesteś na bieżąco z wiadomościami!
+activity_log: Dziennik aktywności
 all_items: Wszystkie elementy
 any: Dowolny
 csv: CSV
@@ -652,6 +667,7 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
+insights: Statystyki
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -753,6 +769,7 @@ adding_user: Dodawanie użytkownika
 unknown_user: Nieznany użytkownik
 creating_in: 'Tworzenie elementu w {collection}'
 editing_in: 'Edycja elementu w {collection}'
+viewing_in: 'Podgląd elementu w {collection}'
 creating_unit: 'Tworzenie {unit}'
 editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
@@ -776,6 +793,7 @@ layout_setup: Ustawienia układu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
+discard_all_changes: Odrzuć wszystkie zmiany
 discard_changes_copy: Czy na pewno chcesz odrzucić wszystkie wprowadzone zmiany?
 show_x_axis: Pokaż oś X
 show_y_axis: Pokaż oś Y
@@ -823,6 +841,7 @@ cancel: Anuluj
 no_upscale: Nie skaluj obrazów
 collection: Kolekcja
 collections: Kolekcje
+content: Zawartość
 singleton: Singleton
 singleton_label: Traktuj jako pojedynczy obiekt
 system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
@@ -836,6 +855,7 @@ directus_collection:
   directus_migrations: Jaką wersję bazy danych używasz
   directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
+  directus_notifications: Powiadomienia wysłane do użytkowników
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
   directus_revisions: Zrzuty danych dla wszystkich działań
@@ -869,6 +889,8 @@ fields:
     unarchive_value: Niezarchiwizowane wartości
     sort_field: Pole sortowania
     accountability: Śledzenie Aktywności i Wersji
+    archive_field: Pole archiwum
+    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     $thumbnail: Miniaturka
     title: Tytuł
@@ -929,24 +951,35 @@ fields:
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
+    branding: Marka i Styl
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
+    files_and_thumbnails: Pliki i pamięć
+    storage_default_folder: Domyślny folder
+    storage_asset_presets: Presety transformacji
+    storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    module_bar: Pasek modułu
+    transformations_all: Zezwól na wszystkie transformacje
+    transformations_none: Wyłącz transformacje
+    transformations_presets: Ogranicz transformacje do poniższych ustawień
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
@@ -976,10 +1009,12 @@ fields:
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
+    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
-    project_logo_note: Tło logowania i logo
+    project_color_note: Tło logowania i logo
+    project_logo_note: Biały 40x40 SVG/PNG
     public_note_placeholder: Krótka, publiczna wiadomość, która obsługuje formatowanie markdown...
     security_divider_title: Bezpieczeństwo
     auth_password_policy:
@@ -987,6 +1022,8 @@ field_options:
       weak_text: Słabe - co najmniej 8 znaków
       strong_text: Silne – duże / małe litery / cyfry / specjalne
     storage_asset_presets:
+      fit_label: Dopasuj
+      upscaling: Skalowanie
       fit:
         contain_text: Zawiera (współczynnik proporcji zachowania)
         cover_text: Okładka (wymusza dokładny rozmiar)
@@ -995,7 +1032,9 @@ field_options:
     additional_transforms: Dodatkowe przekształcenia
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Podstawowe
+    basemaps_name_placeholder: Wprowadź nazwę mapy bazowej...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
@@ -1021,7 +1060,6 @@ field_options:
     singular_unit: Pojedyncza jednostka
     plural_unit: Liczba mnoga
     archive_divider: Archiwum
-    archive_field: Pole archiwum
     archive_field_placeholder: Wybierz pole...
     archive_app_filter: Włącz filtr archiwum aplikacji
     archive_value: Wartość ustawiona podczas archiwizacji...
@@ -1030,7 +1068,6 @@ field_options:
     sort_field: Wybierz pole...
     accountability_divider: Odpowiedzialność
     duplication_divider: Duplikacja
-    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     title: Unikalny tytuł...
     description: Opcjonalny opis...
@@ -1088,6 +1125,26 @@ start_collapsed: Rozpocznij zwinięty
 block: Zablokuj
 inline: W lini
 comment: Komentarz
+shares: Udostępnienia
+unlimited_usage: Nieograniczone użycie
+uses_left: Brak pozostałych zastosowań | 1 zastosowanie | {n} zastosowań pozostało
+no_shares: Brak udostępnień do wyświetlenia
+new_share: Nowe udostępnianie
+expired: Wygasły
+upcoming: Nadchodzące
+share: Udostępnij
+share_item: Udostępnij element
+shared_with_you: Pewien element został Ci udostępniony
+shared_enter_passcode: Wprowadź kod dostępu, aby kontynuować...
+shared_times_remaining: Ten link może być użyty tylko {n} razy
+shared_last_remaining: Ten link może być użyty tylko raz
+shared_uses_left: Dla dodanego bezpieczeństwa, ta wspólna strona została skonfigurowana z ograniczoną liczbą widoków. Pozostało {n} wyświetleń, po których strona nie będzie już dostępna.
+share_access_page: Dostęp do udostępnionej strony
+share_access_not_found: Ta współdzielona strona nie istnieje lub przekroczyła już maksymalną liczbę dozwolonych zastosowań.
+share_access_not_found_desc: Skontaktuj się z autoryzowanym użytkownikiem tego projektu, aby poprosić o dostęp.
+share_access_not_found_title: Nieznana strona udostępniania
+share_copy_link: Kopiuj link
+share_send_link: Wyślij link
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
 referential_action_field_label_o2m: Po odznaczeniu {collection}...
@@ -1211,6 +1268,7 @@ interfaces:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii
+    line_wrapping: Zawijanie linii
     placeholder: Wprowadź kod tutaj...
   system-collection:
     collection: Kolekcja
@@ -1242,7 +1300,7 @@ interfaces:
   presentation-divider:
     divider: Separator
     description: Etykietowanie i dzielenie pól na sekcje
-    title_placeholder: Wprowadź tytuł...
+    title_placeholder: Wprowadź tytuł, lub pozostaw puste, aby pokazać tylko linię...
     inline_title: Tytuł w linii
     inline_title_label: Pokaż tytuł w linii
     margin_top: Margines górny
@@ -1277,6 +1335,8 @@ interfaces:
   file-image:
     image: Obraz
     description: Wybierz lub prześlij plik
+    crop: Przytnij aby dopasować
+    crop_label: Przytnij obraz w razie potrzeby
   system-interface:
     interface: Interfejs
     description: Wybierz istniejący interfejs
@@ -1294,6 +1354,10 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
+    edit: Edytuj
+    preview: Podgląd
+    editorFont: Czcionka edytora
+    previewFont: Podgląd czcionki
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
@@ -1328,6 +1392,7 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
+    field_hint: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -1378,6 +1443,8 @@ interfaces:
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
+    color_on: Kolor włączony
+    color_off: Kolor wyłączony
     label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:
@@ -1402,11 +1469,15 @@ interfaces:
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
+    folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
+    imageToken: Token obrazu
+    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.
     results_path: Ścieżka wyników
     value_path: Ścieżka bazowa
+    text_path: Ścieżka tekstowa
     trigger: Wyzwalacz
     rate: Oceń
   group-raw:
@@ -1466,9 +1537,23 @@ displays:
   formatted-value:
     formatted-value: Wartość sformatowana
     description: Wyświetl sformatowaną wersję tekstu
-    format_title: Format tytułu
-    format_title_label: Automatyczny format
+    format: Formatowanie
+    format_label: Automatyczny format
+    font: Czcionka
+    font_serif: Szeryfowa
+    font_monospace: Monospace
+    bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
+    italic: Kursywa
+    prefix: Przedrostek
+    prefix_label: Poprzedni tekst
+    suffix: Przyrostek
+    color: Kolor
+    icon: Ikona
+    border: Krawędź
+    border_label: Pokaż obramowanie
+    text: Tekst
+    text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
@@ -1546,6 +1631,7 @@ layouts:
     invalid_geometry: Nieprawidłowa geometria
     find_location: Znajdź lokalizację...
     default_template: Używanie domyślnej kolekcji...
+    no_compatible_fields: Brak kompatybilnych pól
 panels:
   metric:
     name: Metryczny
@@ -1556,6 +1642,8 @@ panels:
     description: Renderowanie wykresu liniowego na podstawie wartości w czasie
     date_field: Pole daty
     value_field: Pole wartości
+    fill_type: Typ wypełnienia
+    curve_type: Typ Krzywej
   label:
     name: Etykieta
     description: Pokaż tekst

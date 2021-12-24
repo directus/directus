@@ -669,6 +669,8 @@ interfaces:
     interface: Interface
   select-dropdown-m2o:
     display_template: Templates de Exibição
+  input-rich-text-md:
+    edit: Editar
   map:
     zoom: Zoom
   system-folder:
@@ -690,6 +692,11 @@ displays:
     collection: Coleção
   datetime:
     format: Formatar
+  formatted-value:
+    format: Formatar
+    prefix: Prefixo
+    suffix: Sufixo
+    text: Texto
   labels:
     choices_value_placeholder: Insira um valor...
   user:

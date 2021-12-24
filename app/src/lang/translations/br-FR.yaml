@@ -768,6 +768,7 @@ fields:
     name: Anv
     status: Stad
     value: Talvoud
+    collections: Dastumadoù
 field_options:
   directus_settings:
     mapbox_placeholder: pk.eyJ1Ijo.....
@@ -933,7 +934,6 @@ interfaces:
   presentation-divider:
     divider: Dispartier
     description: Tikedennoù ha rannañ ar maeziennoù er c'hevrennoù
-    title_placeholder: Bizskrivit un titl...
     inline_title: Titl en linenn
     inline_title_label: Diskwel an titl e-barzh al linenn
     margin_top: Marz a-us
@@ -981,6 +981,7 @@ interfaces:
     display_template: Patrom diskwel
   input-rich-text-md:
     description: Dibab ha rakdiskwel ar markdown
+    edit: Kemmañ
     customSyntax: Bloc'hoù personelaet
     customSyntax_label: Ouzhpennañ doareoù sintaks personelaet
     customSyntax_add: Ouzhpennañ ur sintaks personelaet
@@ -1045,6 +1046,8 @@ interfaces:
   boolean:
     toggle: Enaouiñ/Lazhañ
     description: Gwintañ etre an enaouiñ hag al lazhañ
+    color_on: Liv aktivet
+    color_off: Liv diaktivet
     label_placeholder: Bizskrivañ ar skridennad...
     label_default: Enaouet
   translations:
@@ -1066,6 +1069,8 @@ interfaces:
     toolbar: Barrenn ostilhoù
     custom_formats: Furmadoù personelaet
     options_override: Erlec'hiañ an dibarzhioù
+    imageToken: Token ur skeudenn
+    imageToken_label: Peseurt token (statek) ouzhpennañ d'an tarzhoù skeudennoù
   input-autocomplete-api:
     input-autocomplete-api: Maezienn Emleuniet (API)
     description: Un doare klask evit an talvoudoù API diavaez.
@@ -1117,9 +1122,17 @@ displays:
   formatted-value:
     formatted-value: Talvoud furmadet
     description: Diskwel an destenn en ur stumm furmadet
-    format_title: Furmadiñ an titl
-    format_title_label: Furmad emgefreek ar c'hased lizherennoù
+    format: Furmad
+    font: Font arouezennoù
+    font_serif: Sérif
+    bold: Tev
     bold_label: Implij ar stil e tev
+    italic: Italek
+    prefix: Rakger
+    suffix: Lostger
+    color: Liv
+    icon: Arlun
+    text: Testenn
   formatted-json-value:
     formatted-json-value: Talvoud JSON furmadet
     description: Diskwel an dra en ur stumm furmadet

@@ -82,7 +82,6 @@ export function getParser(options: GeometryOptions): GeoJSONParser {
 		const geomRaw = entry[options.geometryField];
 		const geom = geomRaw && parse(geomRaw);
 		if (!geom) return undefined;
-		geom.bbox = getBBox(geom);
 		return geom;
 	};
 }
@@ -99,7 +98,7 @@ export function toGeoJSON(entries: any[], options: GeometryOptions): FeatureColl
 	for (let i = 0; i < entries.length; i++) {
 		const geometry = parser(entries[i]);
 		if (!geometry) continue;
-		const [a, b, c, d] = geometry.bbox!;
+		const [a, b, c, d] = getBBox(geometry);
 		geojson.bbox = expandBBox(geojson.bbox!, [a, b]);
 		geojson.bbox = expandBBox(geojson.bbox!, [c, d]);
 		const properties = { ...entries[i] };

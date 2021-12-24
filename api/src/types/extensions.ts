@@ -6,6 +6,7 @@ import { CustomGraphQLMutation, CustomGraphQLQuery } from '.';
 import env from '../env';
 import * as exceptions from '../exceptions';
 import * as services from '../services';
+import { Emitter } from '../emitter';
 import { getSchema } from '../utils/get-schema';
 import { SchemaOverview } from './schema';
 
@@ -14,6 +15,7 @@ export type ExtensionContext = {
 	exceptions: typeof exceptions;
 	database: Knex;
 	env: typeof env;
+	emitter: Emitter;
 	logger: Logger;
 	getSchema: typeof getSchema;
 };

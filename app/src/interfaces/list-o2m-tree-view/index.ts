@@ -16,7 +16,7 @@ export default defineInterface({
 
 		return [
 			{
-				field: 'template',
+				field: 'displayTemplate',
 				name: '$t:display_template',
 				meta: {
 					interface: 'system-display-template',
@@ -52,6 +52,27 @@ export default defineInterface({
 						label: '$t:enable_select_button',
 					},
 					width: 'half',
+				},
+			},
+			{
+				field: 'filter',
+				name: '$t:filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: collection,
+					},
+					conditions: [
+						{
+							rule: {
+								enableSelect: {
+									_eq: false,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 		];

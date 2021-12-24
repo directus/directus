@@ -1,5 +1,6 @@
 import { addTokenToURL } from '@/api';
 import { i18n } from '@/lang';
+import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { Ref, ref } from 'vue';
 
@@ -27,7 +28,11 @@ type UsableImage = {
 	imageButton: ImageButton;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableImage {
+export default function useImage(
+	editor: Ref<any>,
+	isEditorDirty: Ref<boolean>,
+	imageToken: Ref<string | undefined>
+): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
@@ -40,7 +45,10 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 			if (buttonApi.isActive()) {
 				const node = editor.value.selection.getNode() as HTMLImageElement;
 				const imageUrl = node.getAttribute('src');
+				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
 				const alt = node.getAttribute('alt');
+				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
+				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
 
 				if (imageUrl === null || alt === null) {
 					return;
@@ -49,8 +57,8 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 				imageSelection.value = {
 					imageUrl,
 					alt,
-					width: Number(node.getAttribute('width')) || undefined,
-					height: Number(node.getAttribute('height')) || undefined,
+					width,
+					height,
 					previewUrl: imageUrl,
 				};
 			} else {
@@ -92,7 +100,12 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 	function saveImage() {
 		const img = imageSelection.value;
 		if (img === null) return;
-		const imageHtml = `<img src="${img.imageUrl}" alt="${img.alt}" width="${img.width}" height="${img.height}" />`;
+		const resizedImageUrl = addQueryToPath(img.imageUrl, {
+			...(img.width ? { width: img.width.toString() } : {}),
+			...(img.height ? { height: img.height.toString() } : {}),
+		});
+		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
+		isEditorDirty.value = true;
 		editor.value.selection.setContent(imageHtml);
 		closeImageDrawer();
 	}
