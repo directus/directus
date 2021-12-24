@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayLabels from './labels.vue';
 
 export default defineDisplay({
@@ -7,32 +7,8 @@ export default defineDisplay({
 	description: '$t:displays.labels.description',
 	types: ['string', 'json', 'csv'],
 	icon: 'flag',
-	handler: DisplayLabels,
+	component: DisplayLabels,
 	options: [
-		{
-			field: 'defaultForeground',
-			name: '$t:displays.labels.default_foreground',
-			type: 'string',
-			meta: {
-				interface: 'select-color',
-				width: 'half',
-			},
-			schema: {
-				default_value: '#263238',
-			},
-		},
-		{
-			field: 'defaultBackground',
-			name: '$t:displays.labels.default_background',
-			type: 'string',
-			meta: {
-				interface: 'select-color',
-				width: 'half',
-			},
-			schema: {
-				default_value: '#eceff1',
-			},
-		},
 		{
 			field: 'format',
 			name: '$t:format_text',

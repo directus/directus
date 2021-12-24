@@ -2,26 +2,26 @@
 	<v-menu attached :disabled="disabled">
 		<template #activator="{ active, activate }">
 			<v-input
+				v-model="searchQuery"
 				:disabled="disabled"
 				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
-				v-model="searchQuery"
-				@focus="activate"
 				:class="{ 'has-value': value }"
 				:nullable="false"
+				@focus="activate"
 			>
 				<template v-if="value" #prepend>
-					<v-icon clickable @click="activate" :name="value" :class="{ active: value }" />
+					<v-icon clickable :name="value" :class="{ active: value }" @click="activate" />
 				</template>
 
 				<template #append>
-					<v-icon v-if="value !== null" clickable @click="setIcon(null)" name="close" />
+					<v-icon v-if="value !== null" clickable name="close" @click="setIcon(null)" />
 					<v-icon
 						v-else
 						clickable
-						@click="activate"
 						name="expand_more"
 						class="open-indicator"
 						:class="{ open: active }"
+						@click="activate"
 					/>
 				</template>
 			</v-input>
@@ -29,7 +29,7 @@
 
 		<div class="content" :class="width">
 			<template v-for="(group, index) in filteredIcons" :key="group.name">
-				<div class="icons" v-if="group.icons.length > 0">
+				<div v-if="group.icons.length > 0" class="icons">
 					<v-icon
 						v-for="icon in group.icons"
 						:key="icon"
@@ -52,11 +52,10 @@ import { defineComponent, ref, computed } from 'vue';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
-			default: 'search',
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -67,6 +66,7 @@ export default defineComponent({
 			default: 'half',
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

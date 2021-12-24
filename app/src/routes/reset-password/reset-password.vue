@@ -3,7 +3,7 @@
 		<h1 class="type-title">{{ t('reset_password') }}</h1>
 
 		<request-form v-if="!resetToken" />
-		<reset-form :token="resetToken" v-else />
+		<reset-form v-else :token="resetToken" />
 
 		<template #notice>
 			<v-icon name="lock_outlined" left />

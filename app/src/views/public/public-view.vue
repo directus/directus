@@ -23,10 +23,10 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="branding && branding.project_name" />
+				<img v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="branding && branding.project_name" />
 			</transition>
 			<div class="note-container">
-				<div class="note" v-if="branding && branding.public_note" v-html="md(branding.public_note)" />
+				<div v-if="branding && branding.public_note" v-md="branding.public_note" class="note" />
 			</div>
 		</div>
 	</div>
@@ -36,7 +36,6 @@
 import { version } from '../../../package.json';
 import { defineComponent, computed } from 'vue';
 import { useServerStore } from '@/stores';
-import { md } from '@/utils/md';
 import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
@@ -84,7 +83,6 @@ export default defineComponent({
 			version,
 			artStyles,
 			branding: serverStore.info?.project,
-			md,
 			foregroundURL,
 			logoURL,
 			isBranded,
@@ -125,7 +123,7 @@ export default defineComponent({
 		font-size: 15px;
 		line-height: 24px;
 		background-color: #fff;
-		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
+		box-shadow: 0 0 40px 0 rgb(0 0 0 / 0.25);
 		transition: max-width var(--medium) var(--transition);
 
 		:slotted(.type-title) {
@@ -184,7 +182,7 @@ export default defineComponent({
 				color: var(--white);
 				font-size: 15px;
 				line-height: 24px;
-				background-color: rgba(38, 50, 56, 0.25);
+				background-color: rgb(38 50 56 / 0.25);
 				border-radius: 6px;
 				backdrop-filter: blur(2px);
 			}
@@ -253,6 +251,10 @@ export default defineComponent({
 
 	&.branded :deep(.v-input) {
 		--v-input-border-color-focus: var(--foreground-normal);
+	}
+
+	&.branded :deep(.v-input.solid) {
+		--v-input-border-color-focus: var(--foreground-subdued);
 	}
 }
 

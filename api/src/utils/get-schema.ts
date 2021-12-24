@@ -1,20 +1,18 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
 import logger from '../logger';
 import { RelationsService } from '../services';
-import { Accountability, Permission, SchemaOverview } from '../types';
-import { toArray } from '../utils/to-array';
+import { SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
-import { mergePermissions } from './merge-permissions';
 import getDatabase from '../database';
 import { getCache } from '../cache';
 import env from '../env';
-import ms from 'ms';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -22,60 +20,33 @@ export async function getSchema(options?: {
 }): Promise<SchemaOverview> {
 	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
-	const { schemaCache } = getCache();
+	const { systemCache } = getCache();
 
 	let result: SchemaOverview;
 
-	if (env.CACHE_SCHEMA !== false && schemaCache) {
-		const cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+	if (env.CACHE_SCHEMA !== false) {
+		let cachedSchema;
+
+		try {
+			cachedSchema = (await systemCache.get('schema')) as SchemaOverview;
+		} catch (err: any) {
+			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
+		}
 
 		if (cachedSchema) {
 			result = cachedSchema;
 		} else {
 			result = await getDatabaseSchema(database, schemaInspector);
-			await schemaCache.set('schema', result, typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined);
+
+			try {
+				await systemCache.set('schema', result);
+			} catch (err: any) {
+				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
+			}
 		}
 	} else {
 		result = await getDatabaseSchema(database, schemaInspector);
 	}
-
-	let permissions: Permission[] = [];
-
-	if (options?.accountability && options.accountability.admin !== true) {
-		const permissionsForRole = await database
-			.select('*')
-			.from('directus_permissions')
-			.where({ role: options.accountability.role });
-
-		permissions = permissionsForRole.map((permissionRaw) => {
-			if (permissionRaw.permissions && typeof permissionRaw.permissions === 'string') {
-				permissionRaw.permissions = JSON.parse(permissionRaw.permissions);
-			}
-
-			if (permissionRaw.validation && typeof permissionRaw.validation === 'string') {
-				permissionRaw.validation = JSON.parse(permissionRaw.validation);
-			}
-
-			if (permissionRaw.presets && typeof permissionRaw.presets === 'string') {
-				permissionRaw.presets = JSON.parse(permissionRaw.presets);
-			}
-
-			if (permissionRaw.fields && typeof permissionRaw.fields === 'string') {
-				permissionRaw.fields = permissionRaw.fields.split(',');
-			}
-
-			return permissionRaw;
-		});
-
-		if (options.accountability.app === true) {
-			permissions = mergePermissions(
-				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability!.role }))
-			);
-		}
-	}
-
-	result.permissions = permissions;
 
 	return result;
 }
@@ -87,7 +58,6 @@ async function getDatabaseSchema(
 	const result: SchemaOverview = {
 		collections: {},
 		relations: [],
-		permissions: [],
 	};
 
 	const schemaOverview = await schemaInspector.overview();
@@ -100,8 +70,18 @@ async function getDatabaseSchema(
 	];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
+		if (toArray(env.DB_EXCLUDE_TABLES).includes(collection)) {
+			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
+			continue;
+		}
+
 		if (!info.primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
+			continue;
+		}
+
+		if (collection.includes(' ')) {
+			logger.warn(`Collection "${collection}" has a space in the name and will be ignored`);
 			continue;
 		}
 
@@ -115,18 +95,21 @@ async function getDatabaseSchema(
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
-			fields: mapValues(schemaOverview[collection].columns, (column) => ({
-				field: column.column_name,
-				defaultValue: getDefaultValue(column) ?? null,
-				nullable: column.is_nullable ?? true,
-				type: getLocalType(column) || 'alias',
-				dbType: column.data_type,
-				precision: column.numeric_precision || null,
-				scale: column.numeric_scale || null,
-				special: [],
-				note: null,
-				alias: false,
-			})),
+			fields: mapValues(schemaOverview[collection].columns, (column) => {
+				return {
+					field: column.column_name,
+					defaultValue: getDefaultValue(column) ?? null,
+					nullable: column.is_nullable ?? true,
+					generated: column.is_generated ?? false,
+					type: getLocalType(column),
+					dbType: column.data_type,
+					precision: column.numeric_precision || null,
+					scale: column.numeric_scale || null,
+					special: [],
+					note: null,
+					alias: false,
+				};
+			}),
 		};
 	}
 
@@ -147,20 +130,20 @@ async function getDatabaseSchema(
 		if (!result.collections[field.collection]) continue;
 
 		const existing = result.collections[field.collection].fields[field.field];
+		const column = schemaOverview[field.collection].columns[field.field];
+		const special = field.special ? toArray(field.special) : [];
+		const type = (existing && getLocalType(column, { special })) || 'alias';
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
-			type: existing
-				? getLocalType(schemaOverview[field.collection].columns[field.field], {
-						special: field.special ? toArray(field.special) : [],
-				  })
-				: 'alias',
+			generated: existing?.generated ?? false,
+			type: type,
 			dbType: existing?.dbType || null,
 			precision: existing?.precision || null,
 			scale: existing?.scale || null,
-			special: field.special ? toArray(field.special) : [],
+			special: special,
 			note: field.note,
 			alias: existing?.alias ?? true,
 		};

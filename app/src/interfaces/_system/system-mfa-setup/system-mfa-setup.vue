@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-checkbox block :model-value="tfaEnabled" @click="toggle" :disabled="!isCurrentUser">
+		<v-checkbox block :model-value="tfaEnabled" :disabled="!isCurrentUser" @click="toggle">
 			{{ tfaEnabled ? t('enabled') : t('disabled') }}
 			<div class="spacer" />
 			<template #append>
@@ -8,9 +8,9 @@
 			</template>
 		</v-checkbox>
 
-		<v-dialog persistent v-model="enableActive" @esc="cancelAndClose">
+		<v-dialog v-model="enableActive" persistent @esc="cancelAndClose">
 			<v-card>
-				<form @submit.prevent="generateTFA" v-if="tfaEnabled === false && tfaGenerated === false && loading === false">
+				<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generateTFA">
 					<v-card-title>
 						{{ t('enter_password_to_enable_tfa') }}
 					</v-card-title>
@@ -20,12 +20,12 @@
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button type="button" @click="cancelAndClose" secondary>{{ t('cancel') }}</v-button>
+						<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
 						<v-button type="submit" :loading="loading">{{ t('next') }}</v-button>
 					</v-card-actions>
 				</form>
 
-				<v-progress-circular class="loader" indeterminate v-else-if="loading === true" />
+				<v-progress-circular v-else-if="loading === true" class="loader" indeterminate />
 
 				<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
 					<form @submit.prevent="enableTFA">
@@ -33,14 +33,14 @@
 							{{ t('tfa_scan_code') }}
 						</v-card-title>
 						<v-card-text>
-							<canvas class="qr" :id="canvasID" />
+							<canvas :id="canvasID" class="qr" />
 							<output class="secret selectable">{{ secret }}</output>
-							<v-input type="text" :placeholder="t('otp')" v-model="otp" :nullable="false" />
+							<v-input v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
 							<v-error v-if="error" :error="error" />
 						</v-card-text>
 						<v-card-actions>
-							<v-button type="button" @click="cancelAndClose" secondary>{{ t('cancel') }}</v-button>
-							<v-button type="submit" @click="enableTFA" :disabled="otp.length !== 6">{{ t('done') }}</v-button>
+							<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
+							<v-button type="submit" :disabled="otp.length !== 6" @click="enableTFA">{{ t('done') }}</v-button>
 						</v-card-actions>
 					</form>
 				</div>
@@ -54,11 +54,11 @@
 						{{ t('enter_otp_to_disable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input type="text" :placeholder="t('otp')" v-model="otp" :nullable="false" />
+						<v-input v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button type="submit" class="disable" :loading="loading" :disabled="otp.length !== 6">
+						<v-button type="submit" kind="warning" :loading="loading" :disabled="otp.length !== 6">
 							{{ t('disable_tfa') }}
 						</v-button>
 					</v-card-actions>
@@ -155,7 +155,7 @@ export default defineComponent({
 				await qrcode.toCanvas(document.getElementById(canvasID), url);
 				tfaGenerated.value = true;
 				error.value = null;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -184,7 +184,7 @@ export default defineComponent({
 				otp.value = '';
 				secret.value = '';
 				error.value = null;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -200,7 +200,7 @@ export default defineComponent({
 				tfaEnabled.value = false;
 				disableActive.value = false;
 				otp.value = '';
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -230,16 +230,11 @@ export default defineComponent({
 
 .secret {
 	display: block;
-	margin: 0 auto 16px auto;
+	margin: 0 auto 16px;
 	color: var(--foreground-subdued);
 	font-family: var(--family-monospace);
 	letter-spacing: 2.6px;
 	text-align: center;
-}
-
-.disable {
-	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-125);
 }
 
 .v-error {

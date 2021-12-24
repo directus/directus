@@ -9,6 +9,7 @@ export type Credentials = {
 	user?: string;
 	password?: string;
 	ssl?: boolean;
+	options__encrypt?: boolean;
 };
 export default function createDBConnection(
 	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
@@ -23,26 +24,26 @@ export default function createDBConnection(
 			filename: filename as string,
 		};
 	} else {
-		if (client !== 'pg') {
-			const { host, port, database, user, password } = credentials as Credentials;
+		const { host, port, database, user, password } = credentials as Credentials;
 
-			connection = {
-				host: host,
-				port: Number(port),
-				database: database,
-				user: user,
-				password: password,
-			};
-		} else {
-			const { host, port, database, user, password, ssl } = credentials as Credentials;
+		connection = {
+			host: host,
+			port: Number(port),
+			database: database,
+			user: user,
+			password: password,
+		};
 
-			connection = {
-				host: host,
-				port: Number(port),
-				database: database,
-				user: user,
-				password: password,
-				ssl: ssl,
+		if (client === 'pg') {
+			const { ssl } = credentials as Credentials;
+			connection['ssl'] = ssl;
+		}
+
+		if (client === 'mssql') {
+			const { options__encrypt } = credentials as Credentials;
+
+			(connection as Knex.MsSqlConnectionConfig)['options'] = {
+				encrypt: options__encrypt,
 			};
 		}
 	}

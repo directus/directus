@@ -1,18 +1,24 @@
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import { Relation } from '@/types';
+import { LocalType, Relation } from '@directus/shared/types';
 
-export function getLocalTypeForField(
-	collection: string,
-	field: string
-): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2a' | 'm2o' | 'presentation' | 'translations' {
+export function getLocalTypeForField(collection: string, field: string): LocalType | null {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
 	const fieldInfo = fieldsStore.getField(collection, field);
 	const relations: Relation[] = relationsStore.getRelationsForField(collection, field);
 
+	if (!fieldInfo) return null;
+
 	if (relations.length === 0) {
-		if (fieldInfo.type === 'alias') return 'presentation';
+		if (fieldInfo.type === 'alias') {
+			if (fieldInfo.meta?.special?.includes('group')) {
+				return 'group';
+			}
+
+			return 'presentation';
+		}
+
 		return 'standard';
 	}
 

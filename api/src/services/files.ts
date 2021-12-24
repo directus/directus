@@ -1,21 +1,19 @@
 import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
-import parseEXIF from 'exif-reader';
-import { parse as parseICC } from 'icc';
+import exifr from 'exifr';
 import { clone } from 'lodash';
 import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
-import { AbstractServiceOptions, File, PrimaryKey } from '../types';
-import parseIPTC from '../utils/parse-iptc';
-import { toArray } from '../utils/to-array';
-import { ItemsService, MutationOptions } from './items';
+import { AbstractServiceOptions, File, PrimaryKey, MutationOptions } from '../types';
+import { toArray } from '@directus/shared/utils';
+import { ItemsService } from './items';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -28,9 +26,18 @@ export class FilesService extends ItemsService {
 	async uploadOne(
 		stream: NodeJS.ReadableStream,
 		data: Partial<File> & { filename_download: string; storage: string },
-		primaryKey?: PrimaryKey
+		primaryKey?: PrimaryKey,
+		opts?: MutationOptions
 	): Promise<PrimaryKey> {
 		const payload = clone(data);
+
+		if ('folder' in payload === false) {
+			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
+
+			if (settings?.storage_default_folder) {
+				payload.folder = settings.storage_default_folder;
+			}
+		}
 
 		if (primaryKey !== undefined) {
 			await this.updateOne(primaryKey, payload, { emitEvents: false });
@@ -46,9 +53,10 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
-		const fileExtension = path.extname(payload.filename_download) || (payload.type && extension(payload.type));
+		const fileExtension =
+			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
 
-		payload.filename_disk = primaryKey + '.' + fileExtension;
+		payload.filename_disk = primaryKey + (fileExtension || '');
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';
@@ -56,7 +64,7 @@ export class FilesService extends ItemsService {
 
 		try {
 			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
@@ -67,47 +75,45 @@ export class FilesService extends ItemsService {
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			const meta = await sharp(buffer.content, {}).metadata();
+			try {
+				const meta = await sharp(buffer.content, {}).metadata();
 
-			if (meta.orientation && meta.orientation >= 5) {
-				payload.height = meta.width;
-				payload.width = meta.height;
-			} else {
-				payload.width = meta.width;
-				payload.height = meta.height;
+				if (meta.orientation && meta.orientation >= 5) {
+					payload.height = meta.width;
+					payload.width = meta.height;
+				} else {
+					payload.width = meta.width;
+					payload.height = meta.height;
+				}
+			} catch (err: any) {
+				logger.warn(`Couldn't extract sharp metadata from file`);
+				logger.warn(err);
 			}
 
-			payload.filesize = meta.size;
 			payload.metadata = {};
 
-			if (meta.icc) {
-				try {
-					payload.metadata.icc = parseICC(meta.icc);
-				} catch (err) {
-					logger.warn(`Couldn't extract ICC information from file`);
-					logger.warn(err);
+			try {
+				payload.metadata = await exifr.parse(buffer.content, {
+					icc: false,
+					iptc: true,
+					ifd1: true,
+					interop: true,
+					translateValues: true,
+					reviveValues: true,
+					mergeOutput: false,
+				});
+				if (payload.metadata?.iptc?.Headline) {
+					payload.title = payload.metadata.iptc.Headline;
 				}
-			}
-
-			if (meta.exif) {
-				try {
-					payload.metadata.exif = parseEXIF(meta.exif);
-				} catch (err) {
-					logger.warn(`Couldn't extract EXIF information from file`);
-					logger.warn(err);
+				if (!payload.description && payload.metadata?.iptc?.Caption) {
+					payload.description = payload.metadata.iptc.Caption;
 				}
-			}
-
-			if (meta.iptc) {
-				try {
-					payload.metadata.iptc = parseIPTC(meta.iptc);
-					payload.title = payload.metadata.iptc.headline || payload.title;
-					payload.description = payload.description || payload.metadata.iptc.caption;
-					payload.tags = payload.metadata.iptc.keywords;
-				} catch (err) {
-					logger.warn(`Couldn't extract IPTC information from file`);
-					logger.warn(err);
+				if (payload.metadata?.iptc?.Keywords) {
+					payload.tags = payload.metadata.iptc.Keywords;
 				}
+			} catch (err: any) {
+				logger.warn(`Couldn't extract EXIF metadata from file`);
+				logger.warn(err);
 			}
 		}
 
@@ -124,16 +130,21 @@ export class FilesService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		emitAsyncSafe(`files.upload`, {
-			event: `files.upload`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: primaryKey,
-			action: 'upload',
-			payload,
-			schema: this.schema,
-			database: this.knex,
-		});
+		if (opts?.emitEvents !== false) {
+			emitter.emitAction(
+				'files.upload',
+				{
+					payload,
+					key: primaryKey,
+					collection: this.collection,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
+		}
 
 		return primaryKey;
 	}
@@ -142,11 +153,11 @@ export class FilesService extends ItemsService {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		const fileCreatePermissions = this.schema.permissions.find(
+		const fileCreatePermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
 
-		if (this.accountability?.admin !== true && !fileCreatePermissions) {
+		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
 			throw new ForbiddenException();
 		}
 
@@ -156,7 +167,7 @@ export class FilesService extends ItemsService {
 			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
 				responseType: 'stream',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't fetch file from url "${importURL}"`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
@@ -190,7 +201,7 @@ export class FilesService extends ItemsService {
 	 * Delete multiple files
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const files = await super.readMany(keys, { fields: ['id', 'storage'] });
+		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
 			throw new ForbiddenException();
@@ -212,38 +223,5 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
-	}
-
-	/**
-	 * @deprecated Use `uploadOne` instead
-	 */
-	async upload(
-		stream: NodeJS.ReadableStream,
-		data: Partial<File> & { filename_download: string; storage: string },
-		primaryKey?: PrimaryKey
-	): Promise<PrimaryKey> {
-		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
-
-		return await this.uploadOne(stream, data, primaryKey);
-	}
-
-	/**
-	 * @deprecated Use `importOne` instead
-	 */
-	async import(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		return await this.importOne(importURL, body);
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'FilesService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
-		);
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		return await this.deleteOne(key);
 	}
 }

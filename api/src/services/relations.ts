@@ -1,8 +1,10 @@
 import { Knex } from 'knex';
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, SchemaOverview, Query, Relation, RelationMeta, Accountability } from '../types';
-import { toArray } from '../utils/to-array';
+import { AbstractServiceOptions, SchemaOverview, Relation, RelationMeta } from '../types';
+import { Query } from '@directus/shared/types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
 import SchemaInspector from '@directus/schema';
@@ -19,7 +21,7 @@ export class RelationsService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -35,7 +37,7 @@ export class RelationsService {
 			// happens in `filterForbidden` down below
 		});
 
-		this.schemaCache = getCache().schemaCache;
+		this.systemCache = getCache().systemCache;
 	}
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
@@ -74,7 +76,7 @@ export class RelationsService {
 				throw new ForbiddenException();
 			}
 
-			const permissions = this.schema.permissions.find((permission) => {
+			const permissions = this.accountability.permissions?.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
@@ -142,6 +144,10 @@ export class RelationsService {
 			);
 		}
 
+		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
+			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
+		}
+
 		const existingRelation = this.schema.relations.find(
 			(existingRelation) =>
 				existingRelation.collection === relation.collection && existingRelation.field === relation.field
@@ -189,9 +195,7 @@ export class RelationsService {
 			await relationsItemService.createOne(metaRow);
 		});
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	/**
@@ -269,9 +273,7 @@ export class RelationsService {
 			}
 		});
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	/**
@@ -310,16 +312,14 @@ export class RelationsService {
 			}
 		});
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 	}
 
 	/**
 	 * Whether or not the current user has read access to relations
 	 */
 	private get hasReadAccess() {
-		return !!this.schema.permissions.find((permission) => {
+		return !!this.accountability?.permissions?.find((permission) => {
 			return permission.collection === 'directus_relations' && permission.action === 'read';
 		});
 	}
@@ -374,11 +374,12 @@ export class RelationsService {
 	private async filterForbidden(relations: Relation[]): Promise<Relation[]> {
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
-		const allowedCollections = this.schema.permissions
-			.filter((permission) => {
-				return permission.action === 'read';
-			})
-			.map(({ collection }) => collection);
+		const allowedCollections =
+			this.accountability.permissions
+				?.filter((permission) => {
+					return permission.action === 'read';
+				})
+				.map(({ collection }) => collection) ?? [];
 
 		const allowedFields = this.permissionsService.getAllowedFields('read');
 

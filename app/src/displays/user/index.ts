@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayUser from './user.vue';
 
 export default defineDisplay({
@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.user.description',
 	types: ['uuid'],
 	icon: 'person',
-	handler: DisplayUser,
+	component: DisplayUser,
 	options: [
 		{
 			field: 'display',

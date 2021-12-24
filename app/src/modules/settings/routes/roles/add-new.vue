@@ -7,23 +7,23 @@
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input v-model="roleName" autofocus @keyup.enter="save" :placeholder="t('role_name') + '...'" />
+						<v-input v-model="roleName" autofocus :placeholder="t('role_name') + '...'" @keyup.enter="save" />
 					</div>
 
 					<div class="field half">
 						<p class="type-label">{{ t('fields.directus_roles.app_access') }}</p>
-						<v-checkbox block v-model="appAccess" :label="t('enabled')" />
+						<v-checkbox v-model="appAccess" block :label="t('enabled')" />
 					</div>
 
 					<div class="field half">
 						<p class="type-label">{{ t('fields.directus_roles.admin_access') }}</p>
-						<v-checkbox block v-model="adminAccess" :label="t('enabled')" />
+						<v-checkbox v-model="adminAccess" block :label="t('enabled')" />
 					</div>
 				</div>
 			</v-card-text>
 			<v-card-actions>
 				<v-button to="/settings/roles" secondary>{{ t('cancel') }}</v-button>
-				<v-button @click="save" :disabled="roleName === null" :loading="saving">{{ t('save') }}</v-button>
+				<v-button :disabled="roleName === null" :loading="saving" @click="save">{{ t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -80,7 +80,7 @@ export default defineComponent({
 					}
 
 					router.push(`/settings/roles/${roleResponse.data.data.id}`);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					saving.value = false;
@@ -92,13 +92,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
 .form-grid {
 	--form-horizontal-gap: 12px;
 	--form-vertical-gap: 24px;
-
-	@include form-grid;
 
 	.type-label {
 		font-size: 1rem;

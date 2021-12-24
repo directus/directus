@@ -1,5 +1,5 @@
 import { shallowRef, Ref } from 'vue';
-import { ModuleConfig } from './types';
+import { ModuleConfig } from '@directus/shared/types';
 
 const modulesRaw: Ref<ModuleConfig[]> = shallowRef([]);
 const modules: Ref<ModuleConfig[]> = shallowRef([]);

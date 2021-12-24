@@ -1,5 +1,5 @@
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { APIError } from '@/types';
@@ -7,6 +7,13 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { validatePayload } from '@directus/shared/utils';
+import { Item, LogicalFilterAND } from '@directus/shared/types';
+import { isNil, flatten } from 'lodash';
+import { FailedValidationException } from '@directus/shared/exceptions';
+import { getEndpoint } from '@/utils/get-endpoint';
+import { applyConditions } from '@/utils/apply-conditions';
+import { translate } from '@/utils/translate-object-values';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -29,8 +36,7 @@ type UsableItem = {
 };
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
-	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
-
+	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
@@ -53,18 +59,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const endpoint = computed(() => {
-		return collection.value.startsWith('directus_')
-			? `/${collection.value.substring(9)}`
-			: `/items/${collection.value}`;
-	});
-
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
-			return endpoint.value;
+			return getEndpoint(collection.value);
 		}
 
-		return `${endpoint.value}/${encodeURIComponent(primaryKey.value as string)}`;
+		return `${getEndpoint(collection.value)}/${encodeURIComponent(primaryKey.value as string)}`;
 	});
 
 	watch([collection, primaryKey], refresh, { immediate: true });
@@ -96,7 +96,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		try {
 			const response = await api.get(itemEndpoint.value);
 			setItemValueToResponse(response);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;
@@ -107,11 +107,19 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
+		const errors = validate(edits.value);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
+
 		try {
 			let response;
 
 			if (isNew.value === true) {
-				response = await api.post(endpoint.value, edits.value);
+				response = await api.post(getEndpoint(collection.value), edits.value);
 
 				notify({
 					title: i18n.global.t('item_create_success', isBatch.value ? 2 : 1),
@@ -129,7 +137,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			setItemValueToResponse(response);
 			edits.value = {};
 			return response.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
@@ -172,8 +180,16 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			delete newItem[primaryKeyField.value.field];
 		}
 
+		const errors = validate(newItem);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
+
 		try {
-			const response = await api.post(endpoint.value, newItem);
+			const response = await api.post(getEndpoint(collection.value), newItem);
 
 			notify({
 				title: i18n.global.t('item_create_success', 1),
@@ -184,7 +200,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
@@ -221,20 +237,23 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;
 
+			await api.patch(itemEndpoint.value, {
+				[field]: value,
+			});
+
 			item.value = {
 				...item.value,
 				[field]: value,
 			};
 
-			await api.patch(itemEndpoint.value, {
-				[field]: value,
-			});
-
 			notify({
-				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
+				title:
+					value === archiveValue
+						? i18n.global.t('item_delete_success', isBatch.value ? 2 : 1)
+						: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {
@@ -254,7 +273,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {
@@ -276,6 +295,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	function setItemValueToResponse(response: AxiosResponse) {
+		if (
+			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+		) {
+			response.data.data = translate(response.data.data);
+		}
 		if (isBatch.value === false) {
 			item.value = response.data.data;
 		} else {
@@ -291,5 +316,37 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = valuesThatAreEqual;
 		}
+	}
+
+	function validate(item: Item) {
+		const validationRules = {
+			_and: [],
+		} as LogicalFilterAND;
+
+		const fieldsWithConditions = fields.value.map((field) => applyConditions(item, field));
+
+		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+
+		for (const field of requiredFields) {
+			if (isNew.value === true && isNil(field.schema?.default_value)) {
+				validationRules._and.push({
+					[field.field]: {
+						_submitted: true,
+					},
+				});
+			}
+
+			validationRules._and.push({
+				[field.field]: {
+					_nnull: true,
+				},
+			});
+		}
+
+		return flatten(
+			validatePayload(validationRules, item).map((error) =>
+				error.details.map((details) => new FailedValidationException(details).extensions)
+			)
+		);
 	}
 }

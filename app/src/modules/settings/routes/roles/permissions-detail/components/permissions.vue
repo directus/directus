@@ -3,13 +3,13 @@
 		<v-notice type="info">
 			{{
 				t('permissions_for_role', {
-					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public'),
+					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
 
-		<interface-input-code :value="permissions" @input="permissions = $event" language="json" type="json" />
+		<v-form v-model="permissionSync" :fields="fields" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
@@ -22,11 +22,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@/types';
-import useSync from '@/composables/use-sync';
+import { Permission, Role } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
-	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,
@@ -41,24 +40,27 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const internalPermission = useSync(props, 'permission', emit);
+		const permissionSync = useSync(props, 'permission', emit);
 
-		const permissions = computed({
-			get() {
-				return internalPermission.value.permissions;
+		const fields = computed(() => [
+			{
+				field: 'permissions',
+				name: t('rule'),
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: permissionSync.value.collection,
+					},
+				},
 			},
-			set(newPermissions: Record<string, any> | null) {
-				internalPermission.value = {
-					...internalPermission.value,
-					permissions: newPermissions,
-				};
-			},
-		});
+		]);
 
-		return { t, permissions };
+		return { t, fields, permissionSync };
 	},
 });
 </script>

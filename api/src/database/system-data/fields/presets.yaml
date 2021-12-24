@@ -1,7 +1,7 @@
 table: directus_presets
 
 fields:
-  - field: filters
+  - field: filter
     hidden: true
     special: json
 
@@ -33,3 +33,5 @@ fields:
 
   - field: layout
     width: half
+
+  - field: refresh_interval

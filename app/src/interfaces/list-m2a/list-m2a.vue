@@ -12,24 +12,25 @@
 			<draggable
 				:force-fallback="true"
 				:model-value="previewValues"
-				@update:model-value="onSort"
 				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.meta || !o2mRelation.meta.sort_field"
+				@update:model-value="onSort"
 			>
 				<template #item="{ element }">
 					<v-list-item
 						v-if="allowedCollections.includes(element[anyRelation.meta.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
+						clickable
 						@click="editExisting((value || [])[element.$index])"
 					>
 						<v-icon
+							v-if="o2mRelation.meta && o2mRelation.meta.sort_field"
 							class="drag-handle"
 							left
 							name="drag_handle"
 							@click.stop
-							v-if="o2mRelation.meta && o2mRelation.meta.sort_field"
 						/>
 						<span class="collection">{{ collections[element[anyRelation.meta.one_collection_field]].name }}:</span>
 						<span
@@ -67,8 +68,8 @@
 			</draggable>
 		</v-list>
 
-		<div class="buttons">
-			<v-menu show-arrow v-if="enableCreate">
+		<div v-if="!disabled" class="buttons">
+			<v-menu v-if="enableCreate" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button @click="toggle">
 						{{ t('create_new') }}
@@ -78,20 +79,20 @@
 
 				<v-list>
 					<v-list-item
+						v-for="availableCollection of collections"
+						:key="availableCollection.collection"
 						clickable
-						@click="createNew(collection.collection)"
-						v-for="collection of collections"
-						:key="collection.collection"
+						@click="createNew(availableCollection.collection)"
 					>
-						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-text-overflow :text="collection.name" />
+						<v-list-item-icon><v-icon :name="availableCollection.icon" /></v-list-item-icon>
+						<v-text-overflow :text="availableCollection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>
 
-			<v-menu show-arrow v-if="enableSelect">
+			<v-menu v-if="enableSelect" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button @click="toggle" class="existing">
+					<v-button class="existing" @click="toggle">
 						{{ t('add_existing') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
@@ -99,21 +100,21 @@
 
 				<v-list>
 					<v-list-item
+						v-for="availableCollection of collections"
+						:key="availableCollection.collection"
 						clickable
-						@click="selectingFrom = collection.collection"
-						v-for="collection of collections"
-						:key="collection.collection"
+						@click="selectingFrom = availableCollection.collection"
 					>
-						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-text-overflow :text="collection.name" />
+						<v-list-item-icon><v-icon :name="availableCollection.icon" /></v-list-item-icon>
+						<v-text-overflow :text="availableCollection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>
 		</div>
 
 		<drawer-collection
-			multiple
 			v-if="!disabled && !!selectingFrom"
+			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
 			:selection="[]"
@@ -140,19 +141,19 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
-import { Relation, Collection } from '@/types/';
+import { Relation } from '@directus/shared/types';
+import { Collection } from '@/types';
 import DrawerCollection from '@/views/private/components/drawer-collection/';
 import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import { isPlainObject, cloneDeep } from 'lodash';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { isPlainObject, cloneDeep, isEqual } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 
 export default defineComponent({
-	emits: ['input'],
 	components: { DrawerCollection, DrawerItem, Draggable },
 	props: {
 		collection: {
@@ -184,6 +185,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -199,7 +201,7 @@ export default defineComponent({
 			useEdits();
 		const { onSort } = useManualSort();
 
-		watch(props, fetchValues, { immediate: true, deep: true });
+		watch(() => props.value, fetchValues, { immediate: true, deep: true });
 
 		return {
 			t,
@@ -376,8 +378,10 @@ export default defineComponent({
 				relatedItemValues,
 			};
 
-			async function fetchValues() {
+			async function fetchValues(newVal: any, oldVal: any) {
 				if (props.value === null) return;
+
+				if (isEqual(newVal, oldVal)) return;
 
 				loading.value = true;
 
@@ -495,7 +499,7 @@ export default defineComponent({
 							[collection]: responses[i].data.data,
 						};
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

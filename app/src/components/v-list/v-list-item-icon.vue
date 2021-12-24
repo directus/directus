@@ -1,6 +1,6 @@
 <template>
 	<div class="v-list-item-icon" :class="{ center }">
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 
@@ -61,8 +61,12 @@ body {
 				}
 			}
 
-			&.large #{$this} :slotted(.v-icon) {
+			&.nav #{$this} :slotted(.v-icon) {
 				--v-icon-color: none;
+
+				&.dense {
+					--v-icon-size: 18px;
+				}
 			}
 
 			&.disabled #{$this} :slotted(.v-icon) {

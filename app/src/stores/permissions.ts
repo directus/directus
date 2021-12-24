@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
@@ -46,6 +46,11 @@ export const usePermissionsStore = defineStore({
 						permission.role === userStore.currentUser?.role?.id
 				) || null
 			);
+		},
+		hasPermission(collection: string, action: Permission['action']) {
+			const userStore = useUserStore();
+			if (userStore.currentUser?.role?.admin_access === true) return true;
+			return !!this.getPermissionsForUser(collection, action);
 		},
 	},
 });

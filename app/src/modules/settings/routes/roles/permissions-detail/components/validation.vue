@@ -4,23 +4,22 @@
 			{{
 				t('validation_for_role', {
 					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public'),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
 
-		<interface-input-code :value="validation" @input="validation = $event" language="json" type="json" />
+		<v-form v-model="permissionSync" :fields="fields" />
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@/types';
-import useSync from '@/composables/use-sync';
+import { Permission, Role } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
-	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,
@@ -31,24 +30,27 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const internalPermission = useSync(props, 'permission', emit);
+		const permissionSync = useSync(props, 'permission', emit);
 
-		const validation = computed({
-			get() {
-				return internalPermission.value.validation;
+		const fields = computed(() => [
+			{
+				field: 'validation',
+				name: t('rule'),
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: permissionSync.value.collection,
+					},
+				},
 			},
-			set(newValidation: Record<string, any> | null) {
-				internalPermission.value = {
-					...internalPermission.value,
-					validation: newValidation,
-				};
-			},
-		});
+		]);
 
-		return { t, validation };
+		return { t, permissionSync, fields };
 	},
 });
 </script>

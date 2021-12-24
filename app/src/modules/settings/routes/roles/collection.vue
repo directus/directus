@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_permissions')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_role')">
+			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -20,7 +20,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_settings_roles_collection'))" />
+				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
@@ -62,11 +62,11 @@ import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 
 import api from '@/api';
-import { md } from '@/utils/md';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { translate } from '@/utils/translate-object-values';
 
 type Role = {
 	id: number;
@@ -76,7 +76,7 @@ type Role = {
 };
 
 export default defineComponent({
-	name: 'roles-collection',
+	name: 'RolesCollection',
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
@@ -124,39 +124,51 @@ export default defineComponent({
 			return `/settings/roles/+`;
 		});
 
-		return { t, md, loading, roles, tableHeaders, addNewLink, navigateToRole };
+		return { t, loading, roles, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
 			loading.value = true;
 
 			try {
 				const response = await api.get(`/roles`, {
-					params: { limit: -1, fields: 'id,name,description,icon,users.id', sort: 'name' },
+					params: {
+						limit: -1,
+						fields: ['id', 'name', 'description', 'icon', 'users'],
+						deep: {
+							users: {
+								_aggregate: { count: 'id' },
+								_groupBy: ['role'],
+								_sort: 'role',
+								_limit: -1,
+							},
+						},
+						sort: 'name',
+					},
 				});
 
 				roles.value = [
 					{
 						public: true,
-						name: t('public'),
+						name: t('public_label'),
 						icon: 'public',
 						description: t('public_description'),
 						id: 'public',
 					},
 					...response.data.data.map((role: any) => {
 						return {
-							...role,
-							count: (role.users || []).length,
+							...translate(role),
+							count: role.users[0]?.count.id || 0,
 						};
 					}),
 				];
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}
 		}
 
-		function navigateToRole(item: Role) {
+		function navigateToRole({ item }: { item: Role }) {
 			router.push(`/settings/roles/${item.id}`);
 		}
 	},

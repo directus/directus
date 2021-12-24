@@ -1,26 +1,26 @@
 <template>
-	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError }">
+	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
 		<v-checkbox
 			v-if="batchMode"
 			:model-value="batchActive"
 			:value="field.field"
 			@update:model-value="$emit('toggle-batch', field)"
 		/>
-		<span @click="toggle" v-tooltip="edited ? t('edited') : null">
+		<span v-tooltip="edited ? t('edited') : null" class="field-name" @click="toggle">
 			{{ field.name }}
-			<v-icon class="required" sup name="star" v-if="field.schema && field.schema.is_nullable === false" />
+			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
+		<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
-import { Field } from '@/types/';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
-	emits: ['toggle-batch'],
 	props: {
 		batchMode: {
 			type: Boolean,
@@ -54,7 +54,16 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	emits: ['toggle-batch'],
 	setup() {
 		const { t } = useI18n();
 		return { t };
@@ -79,6 +88,11 @@ export default defineComponent({
 		margin-right: 4px;
 	}
 
+	.v-chip {
+		margin: 0;
+		margin-left: 8px;
+	}
+
 	.required {
 		--v-icon-color: var(--primary);
 
@@ -88,7 +102,7 @@ export default defineComponent({
 	.ctx-arrow {
 		position: absolute;
 		top: -3px;
-		right: -20px;
+		right: -24px;
 		color: var(--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -118,7 +132,7 @@ export default defineComponent({
 			pointer-events: none;
 		}
 
-		> span {
+		.field-name {
 			margin-left: -16px;
 			padding-left: 16px;
 		}

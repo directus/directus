@@ -26,33 +26,16 @@ FROM node:${NODE_VERSION}
 #ENV TNS_ADMIN /usr/lib/instantclient
 #ENV ORACLE_HOME /usr/lib/instantclient
 
-RUN npm i -g lerna
-
 WORKDIR /directus
-
-COPY package*.json ./
-COPY lerna.json ./
-COPY api/package.json api/
-COPY api/cli.js api/
-COPY app/package.json app/
-COPY docs/package.json docs/
-COPY packages/create-directus-project/package.json packages/create-directus-project/
-COPY packages/create-directus-project/lib/index.js packages/create-directus-project/lib/
-COPY packages/drive/package.json packages/drive/
-COPY packages/drive-azure/package.json packages/drive-azure/
-COPY packages/drive-gcs/package.json packages/drive-gcs/
-COPY packages/drive-s3/package.json packages/drive-s3/
-COPY packages/format-title/package.json packages/format-title/
-COPY packages/gatsby-source-directus/package.json packages/gatsby-source-directus/
-COPY packages/schema/package.json packages/schema/
-COPY packages/sdk/package.json packages/sdk/
-COPY packages/specs/package.json packages/specs/
-
-RUN npx lerna bootstrap
 
 COPY . .
 
+RUN apk add --update python3 make g++\
+   && rm -rf /var/cache/apk/*
+
+RUN npm install
+
 WORKDIR /directus/api
 
-CMD ["sh", "-c", "node ./dist/cli/index.js bootstrap; node ./dist/start.js;"]
+CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
 EXPOSE 8055/tcp

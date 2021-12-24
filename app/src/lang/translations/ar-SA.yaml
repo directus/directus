@@ -1,31 +1,75 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: English
+avatar: الصورةالرمزية
+default_provider: الإفتراضي
+published: تم نشره
+draft: مسوّدة
+archived: مؤرشف
+modules: الوحدات
+module_bar: شريط الوحدة
+tile_size: حجم الصورة
 edit_field: تعديل الحقل
+conditions: الشروط
+maps: الخرائط
+item_creation: إنشاء عنصر
 item_revision: التعديلات على العنصر
+enter_a_name: أدخل اسم...
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
+group: المجموعة
+and: و
+or: أو
 fill_width: العرض الكامل
 field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
 add_field: إضافة حقل
 role_name: إسم الدور
 branch: فرع
+leaf: ورقة الشجر
 indeterminate: غير محدد
+edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
-db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
+db_only_click_to_configure: 'قاعدة البيانات فقط: اضغط لتعديل الاعدادات'
+show_active_items: إظهار العناصر النشطة
 show_archived_items: أظهر العناصر المؤرشفة
+show_all_items: عرض جميع العناصر
 edited: تم تعديل القيمة
 required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
 requires_value: قيمة مطلوبة
 create_preset: إنشاء إعدادات مسبقة
+create_panel: إنشاء لوحة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
+delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
+subject: الموضوع
+inbox: صندوق الواردات
 emails: البريد الإلكتروني
 connection_excellent: اتصال ممتاز
 connection_good: اتصال جيد
@@ -45,7 +89,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: تسجيل الخروج
   SESSION_EXPIRED: انتهت الجلسة
-public: عام
+public_label: عام
 public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
 not_allowed: غير مسموح
 directus_version: إصدار Directus
@@ -91,6 +135,8 @@ no_access: ممنوع الدخول
 use_custom: تخصيص
 nullable: لا يمكن
 allow_null_value: السماح بقيمة الالتفاف
+allow_multiple: السماح بالاختيار المتعدد
+allow_multiple_to_be_open: السماح بالفتح المتعدد
 enter_value_to_replace_nulls: الرجاء إدخال قيمة جديدة لاستبدال أي ULLL حاليا داخل هذا الحقل.
 field_standard: قياسي
 field_presentation: Presentation & Aliases
@@ -101,6 +147,7 @@ field_m2a: العلاقة
 field_o2m: العلاقة
 field_m2m: العلاقة
 field_translations: الترجمة
+field_group: مجموعة الحقول
 item_permissions: أذونات العنصر
 field_permissions: أذونات العنصر
 field_validation: مجال المصادقة
@@ -110,9 +157,10 @@ fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث...
-changes_made: هذه هي التغييرات المحددة التي تم إجراؤها...
-no_relational_data: ولا يغيب عن البال أن هذا لا يشمل بيانات علاقية.
+revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
+revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
+changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
+no_relational_data: 'ملاحظة: العلاقة بين الجداول غير مدرجة هنا.'
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -121,9 +169,20 @@ field_create_success: 'حقل تم إنشاؤه: "{field}"'
 field_update_success: 'حقل تم إنشاؤه: "{field}"'
 duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+aggregate_function: وظائف المجاميع
+aggregate_precision: وظائف التدقيق
+group_aggregation: تجميع المجموعات
 global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
+show_zero: إظهار صفر
+create_in_advanced_field_creation_mode: إنشاء حقل في الوضع المتقدم
+continue_in_advanced_field_creation_mode: الاستمرار في وضع إنشاء الحقل المتقدم
+sum: المجموع
+avg: المتوسط
+count: عدد
+min: الحد الأدنى
+max: الحد الأقصى
 exposure: التعرض
 shutter: الغالق
 iso: ISO
@@ -141,7 +200,10 @@ alias: اسم مستعار
 bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
+date_range: فترة التاريخ
 datetime: الوقت و التاريخ
+dateTime: الوقت و التاريخ
+precision: الدقة
 decimal: عشري
 float: عشري
 integer: رقم صحيح
@@ -153,6 +215,9 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
+geometry.Point: نقطة
+geometry.Polygon: مضلّع
+geometry.MultiPoint: نقاط متعددة
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -172,12 +237,14 @@ new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيان�
 search_collection: مجموعة البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
-add_m2o_to_collection: 'إضافة كثيرين إلى واحد ل "{collection}"'
-add_o2m_to_collection: 'إضافة واحد إلى كثيرين ل "{collection}"'
-add_m2m_to_collection: 'إضافة كثيرين إلى كثيرين ل "{collection}"'
+add_m2o_to_collection: 'إضافة M2O إلى "{collection}"'
+add_o2m_to_collection: 'إضافة O2M إلى "{collection}"'
+add_m2m_to_collection: 'إضافة M2M إلى "{collection}"'
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
+add_link: إضافة رابط
+custom_link: رابط مخصص
 default_value: القيمة الافتراضية
 standard_field: حقل قياسي
 single_file: ملف واحد
@@ -190,6 +257,7 @@ invalid_item: عنصر غير صالح
 next: التالي
 field_name: إسم الحقل
 translations: الترجمة
+no_translations: لا توجد ترجمات
 note: ملحوظة
 enter_a_value: أدخل قيمة...
 enter_a_placeholder: أدخل قيمة مؤقته...
@@ -207,6 +275,7 @@ raw_value: قيمة خام
 edit_raw_value: تعديل القيمة الخام
 enter_raw_value: أدخل قيمة سطر...
 clear_value: إزالة القيمة
+clear_changes: مسح التغييرات
 reset_to_default: إعادة تعيين إلى الافتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
@@ -226,6 +295,7 @@ revision_delta_reverted: تمت الإستعادة
 revision_delta_other: تنقيح
 revision_delta_by: '{date} بواسطة {user}'
 private_user: خصخصة المستخدم
+creation_preview: معاينة الإنشاء
 revision_preview: معاينة التعديلات
 updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
@@ -253,12 +323,14 @@ move_to_folder: أنقل إلى مجلد
 move: نقل
 system: نظام
 add_field_related: إضافة حقل إلى مجموعة ذات صلة
-interface: الواجهة
+interface_label: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
 date-fns_time: 'ساعات: دقائق: ثواني'
 date-fns_time_no_seconds: 'س:دد ص'
+minutes: دقائق
+hours: ساعات
 month: شهر
 year: سنة
 select_all: تحديد الكل
@@ -276,9 +348,10 @@ months:
   november: نوفمبر
   december: ديسمبر
 drag_mode: وضع السحب
+cancel_crop: إلغاء القص
 original: أصلي
 url: الرابط
-import: إستيراد
+import_label: إستيراد
 file_details: تفاصيل الملف
 dimensions: الأبعاد
 size: حجم
@@ -292,6 +365,8 @@ zoom: تكبير/تصغير
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
+open_folder: فتح مجلد{folder}"
+foreground_color: لون الواجهة
 background_color: لون الخلفية
 upload_from_device: استبدال الملف من الجهاز
 choose_from_library: اختر ملف من المكتبة
@@ -343,8 +418,9 @@ no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
-no_webhooks_copy: لا يوجد أسئلة بعد.
+no_notifications: لا توجد إشعارات
 all_items: كافة العناصر
+any: أي
 csv: CSV
 no_collections: مجموعات
 create_collection: إنشاء مجموعة
@@ -355,8 +431,16 @@ display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
 select_a_collection: حدد مجموعة
 active: مفعل
+move_to: أنقل إلى...
+copy: نسخ
+copy_to: انسخ إلى...
+no_other_dashboards_copy: ليس لديك حتى الآن أي لوحة تحكم أخرى.
+inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+action: الإجراء
+ip_address: عنوان IP
+user_agent: وكيل المستخدم
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
 add_filter: إضافة فلتر
@@ -367,7 +451,7 @@ documentation: التوثيق
 sidebar: الشريط الجانبي
 duration: المدة
 charset: اصطفاف تعليق افتراضي
-second: الثانية (Automatic Translation)
+second: ثانية
 file_moved: الملفات المنقولة
 collection_created: تم تحديث المجموعة
 modified_on: التعديل في
@@ -399,11 +483,17 @@ errors:
   INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
   INVALID_PAYLOAD: Invalid payload
   INVALID_QUERY: طلب غير صحيح
+  ITEM_LIMIT_REACHED: تم الوصول إلى الحد الأقصى للعناصر
   ITEM_NOT_FOUND: لم يتم العثور على العنصر
   ROUTE_NOT_FOUND: غير موجود
+  RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   USER_SUSPENDED: المستخدم موقوف
-  UNKNOWN: خطأ غير متوقع
+  CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
+  NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
+  UNKNOWN: خطأ غير متوقع
+security: الأمان
+value_hashed: تم تجزئة القيمة بشكل آمن
 bookmark_name: اسم الإشارة المرجعية...
 create_bookmark: إنشاء إشارة مرجعية
 edit_bookmark: تحرير الإشارة المرجعية
@@ -412,6 +502,7 @@ presets: الإعدادات المسبقة
 unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
+no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
 password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
@@ -437,12 +528,15 @@ visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
 show_hidden_collections: أظهر المجموعات المخفية
 hide_hidden_collections: اخفي المجموعات المخفية
+show_header: إظهار العناوين الرأسية
+unmanaged_collections: مجموعات غير مهيأة
 system_collections: مجموعات النظام
 placeholder: مكان محجوز
 icon_left: أيقونة اليسار
 icon_right: أيقونة اليمين
 count_other_revisions: '{count} مراجعات أخرى'
 font: الخط
+sans_serif: Sans Serif
 serif: خط سيريف Serif
 monospace: Monospace
 divider: الفاصل
@@ -450,6 +544,7 @@ color: لون
 circle: دائرة
 empty_item: عنصر فارغ
 log_in_with: 'تسجيل الدخول باستخدام {provider}'
+advanced_settings: إعدادات متقدمة
 advanced_filter: تصفية متقدمة
 delete_advanced_filter: حذف التصفية
 change_advanced_filter_operator: تغيير المشغل
@@ -462,16 +557,22 @@ operators:
   gte: أكبر من أو يساوي
   in: واحد من
   nin: ليس من
+  null: فارغ
   nnull: باطل
   contains: يحتوي على
   ncontains: لا يحتوي
   starts_with: إبدا بـ
+  nstarts_with: لا يبدأ ب
+  ends_with: ينتهي ب
+  nends_with: لا ينتهي ب
   between: بين
   nbetween: بين
   empty: فارغ
   nempty: ليس فارغا
   all: تتضمن هذه الوسوم
   has: تتضمن هذه الوسوم
+  intersects: تداخلات
+  nintersects: لا يتقاطع
 loading: جار التحميل...
 drop_to_upload: إسقاط إلى التحميل
 item: عنصر
@@ -509,10 +610,12 @@ no_results_copy: ضبط أو مسح تصفية البحث لرؤية النتا�
 clear_filters: مسح التصفية
 saves_automatically: يحفظ تلقائياً
 role: الدور
+rule: قاعدة
 user: مستخدم
 no_presets: لا إعدادات مسبقة
 no_presets_copy: لم يتم حفظ أي إعدادات مسبقة أو إشارات مرجعية حتى الآن.
 no_presets_cta: إضافة إعداد مسبق
+presets_only: الإعدادات المسبقة فقط
 create: انشاء
 on_create: عند الإنشاء
 on_update: عند التحديث
@@ -520,18 +623,25 @@ read: قراءة
 update: تحديث
 select_fields: حدد حقول
 format_text: تنسيق النص
+toggle: تبديل
+icon_on: تشغيل الأيقونة
+icon_off: إيقاف الأيقونة
+label: تسمية
 image_url: رابط الصورة
+alt_text: النص البديل
 media: وسائط الإعلام
 width: العرض
 height: الارتفاع
 source: مصدر
 url_placeholder: أدخل عنوان الرابط
 display_text: عرض النص
+tooltip: تلميح
 unlimited: غير محدود
 open_link_in: افتح الرابط في
 wysiwyg_options:
   alignleft: محاذاة إلى اليسار
   alignright: محاذاة إلى اليمين
+  forecolor: لون الواجهة
   backcolor: لون الخلفية
   italic: خط مائل
   underline: مسطر
@@ -582,7 +692,6 @@ unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
 keep_editing: استمر في التحرير
-page_help_collections_overview: '**نظرة عامة للمجموعات** - قوائم جميع المجموعات التي لديك حق الوصول إليها.'
 page_help_collections_collection: >-
   **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_collections_item: >-
@@ -637,6 +746,7 @@ fields:
     collection: المجموعة
     icon: أيقونة
     note: ملحوظة
+    color: لون
     display_template: عرض القالب
     hidden: مخفي
     translations: ترجمات تسمية المجموعات
@@ -681,6 +791,7 @@ fields:
     theme: السمة
     tfa_secret: التحقق بخطوتين
     status: حالة
+    status_active: مفعل
     role: الدور
     last_page: آخر صفحة
     last_access: آخر وصول
@@ -689,6 +800,7 @@ fields:
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    module_bar: شريط الوحدة
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
@@ -701,11 +813,43 @@ fields:
     icon: أيقونة الدور
     description: التفاصيل
     users: المستخدمون في الدور
+  directus_webhooks:
+    name: الاسم
+    status: حالة
+    value: قيمة
+    collections: مجموعات
 field_options:
+  directus_settings:
+    security_divider_title: الأمان
+  directus_activity:
+    create: انشاء
+    update: تحديث
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
     do_not_track_anything: عدم تتبع أي شيء
+    collection_setup: لا توجد مجموعات الإعداد
+    singleton: معاملته ككائن واحد
+    language: لغة
+    translation: الترجمة
+    collection_name: اسم المجموعة
+    archive_divider: أرشفة
+    sort_divider: رتب
+  directus_roles:
+    fields:
+      icon_name: أيقونة
+      name_name: الاسم
+      name_placeholder: أدخل عنوانًا...
+    collections_name: مجموعات
+  directus_users:
+    status_dropdown_active: مفعل
+  directus_webhooks:
+    status_options_active: مفعل
+    status_options_inactive: غير نشط
+    actions_create: انشاء
+    actions_update: تحديث
+    headers:
+      value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
@@ -717,11 +861,8 @@ referential_action_no_action: منع الحذف
 referential_action_cascade: حذف العنصر {collection} (تسلسلي)
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
-continue: واصل
 editing_role: 'دور {role}'
 creating_webhook: إنشاء Webhook
-default: الإفتراضي
-delete: حذف
 delete_are_you_sure: >-
   هذا الإجراء دائم ولا يمكن التراجع عنه. هل أنت متأكد من رغبتك في المتابعة؟
 delete_field_are_you_sure: >-
@@ -729,6 +870,7 @@ delete_field_are_you_sure: >-
 description: التفاصيل
 done: تم
 duplicate: مكرر
+limit: الحد
 email: البريد الإلكتروني
 embed: تضمين
 field: حقل | حقول
@@ -774,6 +916,10 @@ value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
 interfaces:
+  filter:
+    add_filter: إضافة فلتر
+    all: الجميع
+    any: أي
   presentation-links:
     links: روابط
     primary: الأساسي
@@ -814,7 +960,6 @@ interfaces:
     select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
-    title_placeholder: أدخل عنوانًا...
     inline_title_label: أظهر العنوان داخل السطر
     margin_top: الهامش العلوي
     margin_top_label: زيادة الهامش العلوي
@@ -852,8 +997,13 @@ interfaces:
     display_template: عرض القالب
   input-rich-text-md:
     description: أدخل و معاينة markdown
+    edit: تعديل
+  map:
+    zoom: تكبير/تصغير
   list-o2m:
     description: حدد عدة عناصر ذات صلة
+  system-folder:
+    folder: مجلد
   select-radio:
     description: حدد اختيار واحد من خيارات متعددة
   list:
@@ -879,7 +1029,10 @@ interfaces:
   input-multiline:
     description: أدخل النص المتعدد الأسطر
   boolean:
+    toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
+    color_on: تشغيل اللون
+    color_off: إيقاف اللون
     label_default: تمكين
   translations:
     display_template: عرض القالب
@@ -899,9 +1052,13 @@ interfaces:
   input-autocomplete-api:
     rate: معدل
 displays:
+  translations:
+    translations: الترجمة
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل
+    icon_on: تشغيل الأيقونة
+    icon_off: إيقاف الأيقونة
     color_on: تشغيل اللون
     color_off: إيقاف اللون
   collection:
@@ -929,7 +1086,16 @@ displays:
   formatted-value:
     formatted-value: قيمة منسقة
     description: عرض نسخة منسقة من النص
-    format_title: تنسيق العنوان
+    format: التنسيق
+    font: الخط
+    font_serif: خط سيريف Serif
+    font_monospace: Monospace
+    italic: خط مائل
+    prefix: بادئة
+    suffix: لاحقة
+    color: لون
+    icon: أيقونة
+    text: نص
   icon:
     icon: أيقونة
     description: عرض أيقونة
@@ -977,3 +1143,6 @@ layouts:
     calendar: تقويم
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
+panels:
+  label:
+    name: تسمية

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" persistent @esc="cancel">
+	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
@@ -9,21 +9,21 @@
 
 			<v-card-text>
 				<v-input
-					@keyup.enter="$emit('save', bookmarkName)"
-					autofocus
 					v-model="bookmarkName"
+					autofocus
 					:placeholder="t('bookmark_name')"
+					@keyup.enter="$emit('save', bookmarkName)"
 				/>
 			</v-card-text>
 
 			<v-card-actions>
-				<v-button @click="cancel" secondary>
+				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
 				<v-button
 					:disabled="bookmarkName === null || bookmarkName.length === 0"
-					@click="$emit('save', bookmarkName)"
 					:loading="saving"
+					@click="$emit('save', bookmarkName)"
 				>
 					{{ t('save') }}
 				</v-button>
@@ -37,7 +37,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-	emits: ['save', 'update:modelValue'],
 	props: {
 		modelValue: {
 			type: Boolean,
@@ -48,6 +47,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['save', 'update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

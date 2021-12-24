@@ -1,30 +1,31 @@
 <template>
 	<div class="interface-tags">
 		<v-input
-			:placeholder="placeholder || t('interfaces.tags.add_tags')"
-			@keydown="onInput"
-			:disabled="disabled"
 			v-if="allowCustom"
+			:placeholder="placeholder || t('interfaces.tags.add_tags')"
+			:disabled="disabled"
+			@keydown="onInput"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>
 		</v-input>
-		<div class="tags" v-if="presetVals.length > 0 || customVals.length > 0">
+		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
 			<span v-if="presetVals.length > 0" class="presets tag-container">
 				<v-chip
 					v-for="preset in presetVals"
-					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
 					:key="preset"
+					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
 					:disabled="disabled"
 					small
 					label
+					clickable
 					@click="toggleTag(preset)"
 				>
 					{{ preset }}
 				</v-chip>
 			</span>
 			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon class="custom-tags-delimeter" v-if="presetVals.length > 0" name="chevron_right" />
+				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimeter" name="chevron_right" />
 				<v-chip
 					v-for="val in customVals"
 					:key="val"
@@ -32,6 +33,7 @@
 					class="tag"
 					small
 					label
+					clickable
 					@click="removeTag(val)"
 				>
 					{{ val }}
@@ -47,7 +49,6 @@ import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -90,6 +91,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

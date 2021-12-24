@@ -4,7 +4,7 @@
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<v-progress-circular indeterminate v-if="loading" />
+		<v-progress-circular v-if="loading" indeterminate />
 
 		<file-preview
 			v-else-if="file"
@@ -17,7 +17,7 @@
 			@click="internalActive = false"
 		/>
 
-		<v-button class="close" @click="internalActive = false" icon rounded>
+		<v-button class="close" icon rounded @click="internalActive = false">
 			<v-icon name="close" />
 		</v-button>
 	</v-dialog>
@@ -41,7 +41,6 @@ type File = {
 };
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	components: { FilePreview },
 	props: {
 		id: {
@@ -53,6 +52,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const localActive = ref(false);
 
@@ -75,9 +75,9 @@ export default defineComponent({
 		});
 
 		watch(
-			() => props.id,
-			(newID, oldID) => {
-				if (newID && newID !== oldID) {
+			[() => props.id, internalActive],
+			([newID, newActive]) => {
+				if (newActive && newID) {
 					fetchFile();
 				}
 			},
@@ -99,7 +99,7 @@ export default defineComponent({
 				});
 
 				file.value = response.data.data;
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

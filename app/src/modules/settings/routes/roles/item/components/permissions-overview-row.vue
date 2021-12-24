@@ -41,13 +41,21 @@
 			:loading="isLoading('delete')"
 			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'delete')"
 		/>
+		<permissions-overview-toggle
+			action="share"
+			:collection="collection"
+			:role="role"
+			:permissions="permissions"
+			:loading="isLoading('share')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'share')"
+		/>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, toRefs } from 'vue';
-import { Collection, Permission } from '@/types';
+import { Permission, Collection } from '@directus/shared/types';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 import useUpdatePermissions from '../composables/use-update-permissions';
 

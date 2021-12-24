@@ -1,2 +1,4 @@
 export * from './extensions';
-export * from './symbols';
+export * from './fields';
+export * from './injection';
+export * from './regex';

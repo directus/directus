@@ -11,13 +11,13 @@
 				<div class="grid">
 					<div class="field">
 						<div class="type-label">{{ t('emails') }}</div>
-						<v-textarea v-model="emails" :nullable="false" :placeholder="t('email_examples')" />
+						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
-					<div class="field" v-if="role === null">
+					<div v-if="role === null" class="field">
 						<div class="type-label">{{ t('role') }}</div>
 						<v-select v-model="roleSelected" :items="roles" />
 					</div>
-					<v-notice class="field" type="danger" v-if="uniqueValidationErrors.length > 0">
+					<v-notice v-if="uniqueValidationErrors.length > 0" class="field" type="danger">
 						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
 							<template v-if="err.extensions.invalid">
 								{{ t('email_already_invited', { email: err.extensions.invalid }) }}
@@ -32,7 +32,7 @@
 
 			<v-card-actions>
 				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('cancel') }}</v-button>
-				<v-button @click="inviteUsers" :disabled="emails === null || emails.length === 0" :loading="loading">
+				<v-button :disabled="emails === null || emails.length === 0" :loading="loading" @click="inviteUsers">
 					{{ t('invite') }}
 				</v-button>
 			</v-card-actions>
@@ -48,7 +48,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { APIError } from '@/types';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: Boolean,
@@ -59,6 +58,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -94,7 +94,7 @@ export default defineComponent({
 
 				emails.value = '';
 				emit('update:modelValue', false);
-			} catch (err) {
+			} catch (err: any) {
 				uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
 					return error.extensions?.code === 'RECORD_NOT_UNIQUE';
 				});

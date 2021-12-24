@@ -2,21 +2,21 @@ import formatTitle from '@directus/format-title';
 import openapi from '@directus/specs';
 import { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
-import { OpenAPIObject, OperationObject, PathItemObject, SchemaObject, TagObject } from 'openapi3-ts';
+import {
+	OpenAPIObject,
+	OperationObject,
+	ParameterObject,
+	PathItemObject,
+	ReferenceObject,
+	SchemaObject,
+	TagObject,
+} from 'openapi3-ts';
 // @ts-ignore
 import { version } from '../../package.json';
 import getDatabase from '../database';
 import env from '../env';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Collection,
-	Field,
-	Permission,
-	Relation,
-	SchemaOverview,
-	types,
-} from '../types';
+import { AbstractServiceOptions, Collection, Relation, SchemaOverview } from '../types';
+import { Accountability, Field, Type, Permission } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
@@ -92,7 +92,7 @@ class OASSpecsService implements SpecificationSubService {
 		const collections = await this.collectionsService.readByQuery();
 		const fields = await this.fieldsService.readAll();
 		const relations = (await this.relationsService.readAll()) as Relation[];
-		const permissions = this.schema.permissions;
+		const permissions = this.accountability?.permissions ?? [];
 
 		const tags = await this.generateTags(collections);
 		const paths = await this.generatePaths(permissions, tags);
@@ -182,7 +182,14 @@ class OASSpecsService implements SpecificationSubService {
 								);
 
 							if (hasPermission) {
-								paths[path][method] = operation;
+								if ('parameters' in pathItem) {
+									paths[path][method] = {
+										...operation,
+										parameters: [...(pathItem.parameters ?? []), ...(operation?.parameters ?? [])],
+									};
+								} else {
+									paths[path][method] = operation;
+								}
 							}
 						}
 					}
@@ -210,6 +217,7 @@ class OASSpecsService implements SpecificationSubService {
 								{
 									description: listBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
+									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase['parameters']) : [],
 									operationId: `${this.getActionForMethod(method)}${tag.name}`,
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
@@ -266,6 +274,8 @@ class OASSpecsService implements SpecificationSubService {
 									description: detailBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
 									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
+									parameters:
+										'parameters' in detailBase ? this.filterCollectionFromParams(detailBase['parameters']) : [],
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
@@ -365,6 +375,12 @@ class OASSpecsService implements SpecificationSubService {
 		return components;
 	}
 
+	private filterCollectionFromParams(
+		parameters: (ParameterObject | ReferenceObject)[]
+	): (ParameterObject | ReferenceObject)[] {
+		return parameters.filter((param) => param?.$ref !== '#/components/parameters/Collection');
+	}
+
 	private getActionForMethod(method: string): 'create' | 'read' | 'update' | 'delete' {
 		switch (method) {
 			case 'post':
@@ -438,7 +454,7 @@ class OASSpecsService implements SpecificationSubService {
 						},
 					],
 				};
-			} else if (relationType === 'm2a') {
+			} else if (relationType === 'a2o') {
 				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
@@ -459,19 +475,32 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private fieldTypes: Record<
-		typeof types[number],
+		Type,
 		{
 			type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
 			format?: string;
 			items?: any;
 		}
 	> = {
+		alias: {
+			type: 'string',
+		},
 		bigInteger: {
 			type: 'integer',
 			format: 'int64',
 		},
+		binary: {
+			type: 'string',
+			format: 'binary',
+		},
 		boolean: {
 			type: 'boolean',
+		},
+		csv: {
+			type: 'array',
+			items: {
+				type: 'string',
+			},
 		},
 		date: {
 			type: 'string',
@@ -487,6 +516,9 @@ class OASSpecsService implements SpecificationSubService {
 		float: {
 			type: 'number',
 			format: 'float',
+		},
+		hash: {
+			type: 'string',
 		},
 		integer: {
 			type: 'integer',
@@ -511,22 +543,33 @@ class OASSpecsService implements SpecificationSubService {
 			type: 'string',
 			format: 'timestamp',
 		},
-		binary: {
-			type: 'string',
-			format: 'binary',
+		unknown: {
+			type: undefined,
 		},
 		uuid: {
 			type: 'string',
 			format: 'uuid',
 		},
-		csv: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
+		geometry: {
+			type: 'object',
 		},
-		hash: {
-			type: 'string',
+		'geometry.Point': {
+			type: 'object',
+		},
+		'geometry.LineString': {
+			type: 'object',
+		},
+		'geometry.Polygon': {
+			type: 'object',
+		},
+		'geometry.MultiPoint': {
+			type: 'object',
+		},
+		'geometry.MultiLineString': {
+			type: 'object',
+		},
+		'geometry.MultiPolygon': {
+			type: 'object',
 		},
 	};
 }

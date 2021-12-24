@@ -1,4 +1,5 @@
 ---
+avatar: Άβαταρ
 edit_field: Επεξεργασία Πεδίου
 item_revision: Αναθεώρηση Αντικειμένου
 duplicate_field: Αντίγραφο Πεδίου
@@ -9,7 +10,8 @@ field_name_translations: Μεταφράσεις Ονόματος Πεδίου
 enter_password_to_enable_tfa: Εισάγετε τον κωδικό πρόσβασής σας για να ενεργοποιήσετε τον διπλό έλεγχο ταυτότητας
 add_field: Προσθήκη Πεδίου
 role_name: Όνομα Ρόλου
-db_only_click_to_configure: 'Βάση δεδομένων μόνο: Κάντε κλικ για ρύθμιση '
+exclusive: Αποκλειστικά
+children: Παιδιά
 show_archived_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
 edited: Η Τιμή Επεξεργάστηκε
 required: Υποχρεωτικό
@@ -39,13 +41,13 @@ delete_bookmark: Διαγραφή σελιδοδείκτη
 logoutReason:
   SIGN_OUT: Αποσύνδεση
   SESSION_EXPIRED: Η συνεδρία έληξε
-public: Δημόσιο
 public_description: Ελέγχει ποια δεδομένα API είναι διαθέσιμα χωρίς ταυτοποίηση.
 not_allowed: Δεν Επιτρέπεται
 directus_version: Έκδοση Directus
 node_version: Έκδοση Node
 os_type: Λειτουργικό
 os_version: Έκδοση Λειτουργικού
+os_uptime: Χρόνος λειτουργίας συστήματος
 os_totalmem: Μνήμη Λειτουργικού
 archive: Αρχειοθέτηση
 archive_confirm: Είστε βέβαιοι ότι θέλετε να αρχειοθετήσετε αυτό το στοιχείο;
@@ -64,6 +66,13 @@ validationError:
   gt: Η τιμή πρέπει να είναι μεγαλύτερη από {valid}
   gte: Η τιμή πρέπει να είναι μεγαλύτερη ή ίση με {valid}
   lt: Η τιμή πρέπει να είναι μικρότερη από {valid}
+  empty: Η τιμή πρέπει να είναι άδεια
+  null: Η τιμή πρέπει να είναι μηδενική
+  nnull: Η τιμή δεν μπορεί να είναι μηδενική
+  required: Η τιμή είναι απαραίτητη
+  unique: Η τιμή πρέπει να είναι μοναδική
+  regex: Η τιμή δεν έχει τη σωστή μορφή
+all_access: Όλη Η Πρόσβαση
 no_access: Καμία Πρόσβαση
 field_standard: Τυπικό
 create_field: Δημιουργία πεδίου
@@ -104,10 +113,15 @@ comments: Σχόλια
 create_collection: Δημιουργία Συλλογής
 users: Χρήστες
 activity: Δραστηριότητα
+action: Ενέργεια
+ip_address: Διεύθυνση IP
+user_agent: Πράκτορας χρήστη
 field_width: Πλάτος πεδίου
 duration: Διάρκεια
 status: Κατάσταση
 remove: Διαγραφή
+errors:
+  NOT_NULL_VIOLATION: Η τιμή δεν μπορεί να είναι μηδενική
 bookmarks: Σελιδοδείκτες
 back: Πίσω
 operators:
@@ -116,6 +130,7 @@ operators:
   gte: Μεγαλύτερο από ή ίσο με
   contains: Περιέχει
   empty: Είναι κενό
+value_unique: Η τιμή πρέπει να είναι μοναδική
 role: Ρόλος
 create: Δημιουργία
 read: Ανάγνωση
@@ -190,10 +205,29 @@ fields:
   directus_roles:
     name: Όνομα Ρόλου
     description: Περιγραφή
+  directus_webhooks:
+    name: Όνομα
+    status: Κατάσταση
+    value: Τιμή
+    collections: Συλλογές
+field_options:
+  directus_activity:
+    create: Δημιουργία
+    update: Ενημέρωση
+  directus_collections:
+    translation: Μετάφραση
+    archive_divider: Αρχειοθέτηση
+  directus_roles:
+    fields:
+      icon_name: Εικονίδιο
+      name_name: Όνομα
+    collections_name: Συλλογές
+  directus_webhooks:
+    actions_create: Δημιουργία
+    actions_update: Ενημέρωση
+    headers:
+      value: Τιμή
 comment: Σχόλιο
-continue: Συνέχεια
-default: Προεπιλογή
-delete: Διαγραφή
 delete_field_are_you_sure: >-
   Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.
 description: Περιγραφή
@@ -222,6 +256,8 @@ settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
 interfaces:
+  filter:
+    all: Όλα
   presentation-links:
     primary: Κυρίως
   system-collection:
@@ -241,6 +277,11 @@ displays:
     collection: Συλλογή
   file:
     file: Αρχείο
+  formatted-value:
+    prefix: Πρόθεμα
+    suffix: Επίθεμα
+    icon: Εικονίδιο
+    text: Κείμενο
   icon:
     icon: Εικονίδιο
   user:

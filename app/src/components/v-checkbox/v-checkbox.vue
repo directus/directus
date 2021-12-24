@@ -2,29 +2,28 @@
 	<component
 		:is="customValue ? 'div' : 'button'"
 		class="v-checkbox"
-		@click.stop="toggleInput"
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
 		:class="{ checked: isChecked, indeterminate, block }"
+		@click.stop="toggleInput"
 	>
-		<div class="prepend" v-if="$slots.prepend"><slot name="prepend" /></div>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
 		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
 		<span class="label type-text">
 			<slot v-if="customValue === false">{{ label }}</slot>
-			<input class="custom-input" v-else v-model="internalValue" />
+			<input v-else v-model="internalValue" class="custom-input" />
 		</span>
-		<div class="append" v-if="$slots.append"><slot name="append" /></div>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
 	</component>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
-	emits: ['update:indeterminate', 'update:modelValue', 'update:value'],
 	props: {
 		value: {
 			type: String,
@@ -32,7 +31,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: [Boolean, Array],
-			default: false,
+			default: null,
 		},
 		label: {
 			type: String,
@@ -71,6 +70,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:indeterminate', 'update:modelValue', 'update:value'],
 	setup(props, { emit }) {
 		const internalValue = useSync(props, 'value', emit);
 
@@ -86,6 +86,8 @@ export default defineComponent({
 
 		const icon = computed<string>(() => {
 			if (props.indeterminate === true) return props.iconIndeterminate;
+			if (props.checked === null && props.modelValue === null) return props.iconIndeterminate;
+
 			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 
@@ -117,6 +119,7 @@ export default defineComponent({
 <style>
 body {
 	--v-checkbox-color: var(--primary);
+	--v-checkbox-unchecked-color: var(--foreground-subdued);
 }
 </style>
 
@@ -124,6 +127,7 @@ body {
 @import '@/styles/mixins/no-wrap';
 
 .v-checkbox {
+	--v-icon-color: var(--v-checkbox-unchecked-color);
 	--v-icon-color-hover: var(--primary);
 
 	position: relative;
@@ -153,7 +157,7 @@ body {
 	}
 
 	& .checkbox {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--v-checkbox-unchecked-color);
 
 		transition: color var(--fast) var(--transition);
 	}
@@ -175,9 +179,14 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--border-normal);
+		background-color: var(--background-page);
+		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: all var(--fast) var(--transition);
+
+		&:disabled {
+			background-color: var(--background-subdued);
+		}
 
 		&::before {
 			position: absolute;
@@ -206,27 +215,27 @@ body {
 		}
 	}
 
+	&:not(:disabled):not(.indeterminate) {
+		.label {
+			color: var(--foreground-normal);
+		}
+
+		&.block {
+			&::before {
+				opacity: 0.1;
+			}
+		}
+	}
+
 	&:not(:disabled):not(.indeterminate).checked {
 		.checkbox {
 			--v-icon-color: var(--v-checkbox-color);
-		}
-
-		.label {
-			color: var(--foreground-normal);
 		}
 
 		&.block {
 			.label {
 				color: var(--v-checkbox-color);
 			}
-
-			&::before {
-				opacity: 0.1;
-			}
-		}
-
-		input {
-			//
 		}
 	}
 

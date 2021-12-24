@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceFileImage from './file-image.vue';
 
 export default defineInterface({
@@ -8,8 +8,38 @@ export default defineInterface({
 	icon: 'insert_photo',
 	component: InterfaceFileImage,
 	types: ['uuid'],
-	groups: ['file'],
+	localTypes: ['file'],
+	group: 'relational',
 	relational: true,
-	options: [],
+	options: [
+		{
+			field: 'folder',
+			name: '$t:interfaces.system-folder.folder',
+			type: 'uuid',
+			meta: {
+				width: 'half',
+				interface: 'system-folder',
+				note: '$t:interfaces.system-folder.field_hint',
+			},
+			schema: {
+				default_value: undefined,
+			},
+		},
+		{
+			field: 'crop',
+			name: '$t:interfaces.file-image.crop',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: '$t:interfaces.file-image.crop_label',
+				},
+			},
+			schema: {
+				default_value: true,
+			},
+		},
+	],
 	recommendedDisplays: ['image'],
 });

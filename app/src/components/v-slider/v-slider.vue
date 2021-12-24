@@ -16,7 +16,7 @@
 			/>
 			<div class="fill" />
 			<div v-if="showTicks" class="ticks">
-				<span class="tick" v-for="i in (max - min) / step + 1" :key="i" />
+				<span v-for="i in (max - min) / step + 1" :key="i" class="tick" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
 				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
@@ -36,7 +36,6 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['change', 'update:modelValue'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -71,6 +70,7 @@ export default defineComponent({
 			default: 0,
 		},
 	},
+	emits: ['change', 'update:modelValue'],
 	setup(props, { emit }) {
 		const styles = computed(() => {
 			if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
@@ -132,7 +132,6 @@ body {
 			padding: 8px 0;
 			background-color: var(--background-page);
 			cursor: pointer;
-			-webkit-appearance: none;
 			appearance: none;
 
 			&::-webkit-slider-runnable-track {
@@ -163,7 +162,6 @@ body {
 				box-shadow: none;
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				transition: all var(--fast) var(--transition);
-				-webkit-appearance: none;
 				appearance: none;
 			}
 
@@ -179,7 +177,6 @@ body {
 				box-shadow: none;
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				transition: all var(--fast) var(--transition);
-				-webkit-appearance: none;
 				appearance: none;
 			}
 		}

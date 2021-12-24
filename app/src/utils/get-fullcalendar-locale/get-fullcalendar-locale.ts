@@ -11,7 +11,8 @@ export async function getFullcalendarLocale(lang: string): Promise<LocaleInput> 
 		try {
 			const mod = await importCalendarLocale(l);
 
-			locale = mod.default.default;
+			// There's a problem in how @fullcalendar/core exports the language to "fake" ESM
+			locale = mod.default.default || mod.default;
 			break;
 		} catch {
 			continue;

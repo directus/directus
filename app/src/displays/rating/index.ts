@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayRating from './rating.vue';
 
 export default defineDisplay({
@@ -6,7 +6,7 @@ export default defineDisplay({
 	name: '$t:displays.rating.rating',
 	description: '$t:displays.rating.description',
 	icon: 'star',
-	handler: DisplayRating,
+	component: DisplayRating,
 	options: [
 		{
 			field: 'simple',

@@ -8,7 +8,7 @@ import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
-import { toArray } from './utils/to-array';
+import { toArray } from '@directus/shared/utils';
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
 
@@ -16,8 +16,10 @@ const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 
 	PORT: 8055,
-	PUBLIC_URL: 'http://localhost:8055',
+	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
+
+	DB_EXCLUDE_TABLES: 'spatial_ref_sys',
 
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',
@@ -28,12 +30,11 @@ const defaults: Record<string, any> = {
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
 
-	SESSION_STORE: 'memory',
-
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
+	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 
 	ROOT_REDIRECT: './admin',
 
@@ -47,13 +48,15 @@ const defaults: Record<string, any> = {
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
-	CACHE_TTL: '10m',
+	CACHE_TTL: '5m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
+	CACHE_PERMISSIONS: true,
 
-	OAUTH_PROVIDERS: '',
+	AUTH_PROVIDERS: '',
+	AUTH_DISABLE_DEFAULT: false,
 
 	EXTENSIONS_PATH: './extensions',
 
@@ -64,9 +67,12 @@ const defaults: Record<string, any> = {
 
 	TELEMETRY: true,
 
-	ASSETS_CACHE_TTL: '30m',
-	ASSETS_TRANSFORM_MAX_CONCURRENT: 4,
+	ASSETS_CACHE_TTL: '30d',
+	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
+	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
+
+	SERVE_APP: true,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -79,6 +85,8 @@ const typeMap: Record<string, string> = {
 	DB_PASSWORD: 'string',
 	DB_DATABASE: 'string',
 	DB_PORT: 'number',
+
+	DB_EXCLUDE_TABLES: 'array',
 };
 
 let env: Record<string, any> = {
@@ -157,6 +165,15 @@ function getEnvVariableValue(variableValue: string, variableType: string) {
 	return variableValue.split(`${variableType}:`)[1];
 }
 
+function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | number | RegExp> {
+	return envArray.map((item: string) => {
+		if (isEnvSyntaxPrefixPresent(item)) {
+			return getEnvironmentValueByType(item);
+		}
+		return item;
+	});
+}
+
 function getEnvironmentValueByType(envVariableString: string) {
 	const variableType = getVariableType(envVariableString);
 	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
@@ -165,12 +182,18 @@ function getEnvironmentValueByType(envVariableString: string) {
 		case 'number':
 			return toNumber(envVariableValue);
 		case 'array':
-			return toArray(envVariableValue);
+			return getEnvironmentValueWithPrefix(toArray(envVariableValue));
 		case 'regex':
 			return new RegExp(envVariableValue);
 		case 'string':
 			return envVariableValue;
+		case 'json':
+			return tryJSON(envVariableValue);
 	}
+}
+
+function isEnvSyntaxPrefixPresent(value: string): boolean {
+	return acceptedEnvTypes.some((envType) => value.includes(`${envType}:`));
 }
 
 function processValues(env: Record<string, any>) {
@@ -181,14 +204,14 @@ function processValues(env: Record<string, any>) {
 		// and store it in the variable with the same name but without '_FILE' at the end
 		let newKey;
 		if (key.length > 5 && key.endsWith('_FILE')) {
+			newKey = key.slice(0, -5);
+			if (newKey in env) {
+				throw new Error(
+					`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
+				);
+			}
 			try {
 				value = fs.readFileSync(value, { encoding: 'utf8' });
-				newKey = key.slice(0, -5);
-				if (newKey in env) {
-					throw new Error(
-						`Duplicate environment variable encountered: you can't use "${key}" and "${newKey}" simultaneously.`
-					);
-				}
 				key = newKey;
 			} catch {
 				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
@@ -197,7 +220,7 @@ function processValues(env: Record<string, any>) {
 
 		// Convert values with a type prefix
 		// (see https://docs.directus.io/reference/environment-variables/#environment-syntax-prefix)
-		if (typeof value === 'string' && acceptedEnvTypes.some((envType) => value.includes(`${envType}:`))) {
+		if (typeof value === 'string' && isEnvSyntaxPrefixPresent(value)) {
 			env[key] = getEnvironmentValueByType(value);
 			continue;
 		}
@@ -213,6 +236,9 @@ function processValues(env: Record<string, any>) {
 					break;
 				case 'array':
 					env[key] = toArray(value);
+					break;
+				case 'json':
+					env[key] = tryJSON(value);
 					break;
 			}
 			continue;
@@ -247,6 +273,14 @@ function processValues(env: Record<string, any>) {
 			continue;
 		}
 
+		if (String(value).includes(',')) {
+			env[key] = toArray(value);
+		}
+
+		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
+		// config flags, or custom param names (that aren't camelCased)
+		env[key] = tryJSON(value);
+
 		// If '_FILE' variable hasn't been processed yet, store it as it is (string)
 		if (newKey) {
 			env[key] = value;
@@ -254,4 +288,12 @@ function processValues(env: Record<string, any>) {
 	}
 
 	return env;
+}
+
+function tryJSON(value: any) {
+	try {
+		return JSON.parse(value);
+	} catch {
+		return value;
+	}
 }

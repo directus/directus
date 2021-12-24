@@ -3,12 +3,12 @@
 		{{ t('no_app_access_copy') }}
 
 		<template #append>
-			<v-button to="/logout">Switch User</v-button>
+			<v-button to="/logout">{{ t('switch_user') }}</v-button>
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme }">
-		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
+	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
+		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
 				<project-info />
@@ -18,14 +18,15 @@
 				</div>
 			</div>
 		</aside>
-		<div class="content" ref="contentEl">
+		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
+				:small="smallHeader"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
 				@primary="navOpen = !navOpen"
 			>
-				<template v-for="(_, scopedSlotName) in $slots" v-slot:[scopedSlotName]="slotData">
+				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
@@ -35,8 +36,9 @@
 			</main>
 		</div>
 		<aside
+			id="sidebar"
 			role="contentinfo"
-			class="sidebar alt-colors"
+			class="alt-colors"
 			aria-label="Module Sidebar"
 			:class="{ 'is-open': sidebarOpen }"
 			@click="openSidebar"
@@ -55,6 +57,7 @@
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
 
+		<notifications-drawer />
 		<notifications-group v-if="notificationsPreviewActive === false" :dense="sidebarOpen === false" />
 		<notification-dialogs />
 	</div>
@@ -63,16 +66,18 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, provide, toRefs, computed } from 'vue';
-import ModuleBar from './components/module-bar/';
+import ModuleBar from './components/module-bar.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectInfo from './components/project-info';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
+import NotificationsDrawer from './components/notifications-drawer.vue';
 import { useUserStore, useAppStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import useTitle from '@/composables/use-title';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	components: {
@@ -83,11 +88,16 @@ export default defineComponent({
 		NotificationsGroup,
 		NotificationsPreview,
 		NotificationDialogs,
+		NotificationsDrawer,
 	},
 	props: {
 		title: {
 			type: String,
 			default: null,
+		},
+		smallHeader: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -108,7 +118,7 @@ export default defineComponent({
 
 		const notificationsPreviewActive = ref(false);
 
-		const { sidebarOpen } = toRefs(appStore);
+		const { sidebarOpen, fullScreen } = storeToRefs(appStore);
 
 		const theme = computed(() => {
 			return userStore.currentUser?.theme || 'auto';
@@ -118,11 +128,22 @@ export default defineComponent({
 
 		router.afterEach(async () => {
 			contentEl.value?.scrollTo({ top: 0 });
+			fullScreen.value = false;
 		});
 
 		useTitle(title);
 
-		return { t, navOpen, contentEl, theme, sidebarOpen, openSidebar, notificationsPreviewActive, appAccess };
+		return {
+			t,
+			navOpen,
+			contentEl,
+			theme,
+			sidebarOpen,
+			openSidebar,
+			notificationsPreviewActive,
+			appAccess,
+			fullScreen,
+		};
 
 		function openSidebar(event: PointerEvent) {
 			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
@@ -141,6 +162,7 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
+	overflow-x: hidden;
 	background-color: var(--background-page);
 
 	.nav-overlay {
@@ -159,7 +181,7 @@ export default defineComponent({
 		}
 	}
 
-	.navigation {
+	#navigation {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -197,11 +219,10 @@ export default defineComponent({
 		}
 	}
 
-	.content {
+	#main-content {
 		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; // (60 - 4 - 24) / 2
-		--form-vertical-gap: 52px;
 
 		position: relative;
 		flex-grow: 1;
@@ -220,7 +241,7 @@ export default defineComponent({
 
 		// Offset for partially visible sidebar
 		@media (min-width: 960px) {
-			margin-right: 64px;
+			margin-right: 60px;
 		}
 
 		@media (min-width: 1260px) {
@@ -228,12 +249,12 @@ export default defineComponent({
 		}
 	}
 
-	.sidebar {
+	#sidebar {
 		position: fixed;
 		top: 0;
 		right: 0;
 		z-index: 30;
-		width: 284px;
+		width: 280px;
 		height: 100%;
 		overflow: hidden;
 		background-color: var(--background-normal);
@@ -251,24 +272,22 @@ export default defineComponent({
 		.flex-container {
 			display: flex;
 			flex-direction: column;
-			width: 284px;
+			width: 280px;
 			height: 100%;
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 64px));
+			transform: translateX(calc(100% - 60px));
 		}
 
 		@media (min-width: 1260px) {
 			position: relative;
-			flex-basis: 64px;
+			flex-basis: 60px;
 			flex-shrink: 0;
-			transform: none;
-			transition: flex-basis var(--slow) var(--transition);
+			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
 
 			&.is-open {
-				flex-basis: 284px;
-				transform: none;
+				flex-basis: 280px;
 			}
 		}
 	}
@@ -276,6 +295,24 @@ export default defineComponent({
 	@media (min-width: 600px) {
 		--content-padding: 32px;
 		--content-padding-bottom: 132px;
+	}
+
+	&.full-screen {
+		#navigation {
+			position: fixed;
+			transform: translateX(-100%);
+			transition: none;
+		}
+
+		#main-content {
+			margin: 0;
+		}
+
+		#sidebar {
+			position: fixed;
+			transform: translateX(100%);
+			transition: none;
+		}
 	}
 }
 </style>

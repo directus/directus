@@ -1,8 +1,9 @@
 <template>
-	<v-list :mandatory="false" v-model="openSelection">
+	<v-list v-model="openSelection" :mandatory="false" @toggle="$emit('group-toggle', $event)">
 		<v-checkbox-tree-checkbox
 			v-for="choice in choices"
 			:key="choice[itemValue]"
+			v-model="value"
 			:value-combining="valueCombining"
 			:search="search"
 			:item-text="itemText"
@@ -12,7 +13,7 @@
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled"
-			v-model="value"
+			:show-selection-only="showSelectionOnly"
 		/>
 	</v-list>
 </template>
@@ -22,7 +23,7 @@ import { computed, ref, defineComponent, PropType } from 'vue';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
-	name: 'v-checkbox-tree',
+	name: 'VCheckboxTree',
 	components: { VCheckboxTreeCheckbox },
 	props: {
 		choices: {
@@ -57,7 +58,12 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		showSelectionOnly: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	emits: ['update:modelValue', 'group-toggle'],
 	setup(props, { emit }) {
 		const value = computed({
 			get() {

@@ -1,10 +1,11 @@
 <template>
 	<div class="permissions-overview-header">
 		<span class="name">{{ t('collection') }}</span>
-		<v-icon name="add" v-tooltip="t('create')" />
-		<v-icon name="visibility" v-tooltip="t('read')" />
-		<v-icon name="edit" outline v-tooltip="t('update')" />
-		<v-icon name="delete" outline v-tooltip="t('delete')" />
+		<v-icon v-tooltip="t('create')" name="add" />
+		<v-icon v-tooltip="t('read')" name="visibility" />
+		<v-icon v-tooltip="t('update')" name="edit" outline />
+		<v-icon v-tooltip="t('delete_label')" name="delete" outline />
+		<v-icon v-tooltip="t('share')" name="share" outline />
 	</div>
 </template>
 

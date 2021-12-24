@@ -1,7 +1,7 @@
 <template>
 	<v-menu show-arrow>
 		<template #activator="{ toggle }">
-			<span @click="toggle" class="picker">
+			<span class="picker" @click="toggle">
 				{{ selectedOption && selectedOption.text }}
 				<v-icon name="expand_more" small />
 			</span>
@@ -12,8 +12,8 @@
 				v-for="option in options"
 				:key="option.value"
 				clickable
-				@click="internalCurrent = option.value"
 				:active="internalCurrent === option.value"
+				@click="internalCurrent = option.value"
 			>
 				<v-icon name="commit_node" />
 				<v-list-item-content>{{ option.text }}</v-list-item-content>
@@ -26,7 +26,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, watch, ref } from 'vue';
 import { Revision } from './types';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import localizedFormat from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
 
@@ -36,7 +36,6 @@ type Option = {
 };
 
 export default defineComponent({
-	emits: ['update:current'],
 	props: {
 		revisions: {
 			type: Array as PropType<Revision[]>,
@@ -47,6 +46,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:current'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -85,7 +85,7 @@ export default defineComponent({
 		return { internalCurrent, options, selectedOption };
 
 		async function getFormattedDate(revision: Revision) {
-			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_date')));
+			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_date_short')));
 			const time = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_time')));
 
 			return `${date} (${time})`;

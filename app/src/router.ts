@@ -3,6 +3,7 @@ import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
+import ShareRoute from '@/routes/shared';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { useAppStore, useServerStore, useUserStore } from '@/stores';
@@ -51,6 +52,14 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		},
 	},
 	{
+		name: 'shared',
+		path: '/shared/:id([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})',
+		component: ShareRoute,
+		meta: {
+			public: true,
+		},
+	},
+	{
 		name: 'private-404',
 		path: '/:_(.+)+',
 		component: PrivateNotFoundRoute,
@@ -62,12 +71,15 @@ export const router = createRouter({
 	routes: defaultRoutes,
 });
 
-export const onBeforeEach: NavigationGuard = async (to, from) => {
+let firstLoad = true;
+
+export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 
 	// First load
-	if (from.name === undefined) {
+	if (firstLoad) {
+		firstLoad = false;
 		// Try retrieving a fresh access token on first load
 		try {
 			await refresh({ navigate: false });
@@ -86,7 +98,11 @@ export const onBeforeEach: NavigationGuard = async (to, from) => {
 			await hydrate();
 			return to.fullPath;
 		} else {
-			return '/login';
+			if (to.fullPath) {
+				return '/login?redirect=' + encodeURIComponent(to.fullPath);
+			} else {
+				return '/login';
+			}
 		}
 	}
 };

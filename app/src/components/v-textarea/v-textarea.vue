@@ -8,16 +8,16 @@
 			'has-content': hasContent,
 		}"
 	>
-		<div class="prepend" v-if="$slots.prepend"><slot name="prepend" /></div>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
 		<textarea
-			v-bind="$attrs"
 			v-focus="autofocus"
-			v-on="listeners"
+			v-bind="$attrs"
 			:placeholder="placeholder"
 			:disabled="disabled"
 			:value="modelValue"
+			v-on="listeners"
 		/>
-		<div class="append" v-if="$slots.append"><slot name="append" /></div>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
 	</div>
 </template>
 
@@ -25,7 +25,6 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -60,6 +59,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const listeners = computed(() => ({
 			input: emitValue,

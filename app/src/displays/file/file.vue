@@ -6,8 +6,8 @@
 		:alt="value.title"
 		@error="imgError = true"
 	/>
-	<div ref="previewEl" v-else class="preview">
-		<span class="extension" v-if="fileExtension">
+	<div v-else ref="previewEl" class="preview">
+		<span v-if="fileExtension" class="extension">
 			{{ fileExtension }}
 		</span>
 
@@ -32,6 +32,7 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Object as PropType<File>,
+			default: null,
 		},
 	},
 	setup(props) {
@@ -69,7 +70,7 @@ img {
 	--v-icon-color: var(--foreground-subdued);
 
 	position: relative;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	height: 100%;

@@ -1,9 +1,8 @@
 <template>
 	<component
 		:is="component"
-		v-bind="disabled === false && $attrs"
 		class="v-list-item"
-		:to="to"
+		:to="to !== '' ? to : undefined"
 		:class="{
 			active: isActiveRoute,
 			dense,
@@ -11,11 +10,13 @@
 			disabled,
 			dashed,
 			block,
-			large,
+			nav,
+			clickable,
 		}"
 		:href="href"
 		:download="download"
-		:target="component === 'a' ? '_blank' : null"
+		:target="component === 'a' ? '_blank' : undefined"
+		@click="onClick"
 	>
 		<slot />
 	</component>
@@ -43,7 +44,7 @@ export default defineComponent({
 		},
 		href: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		disabled: {
 			type: Boolean,
@@ -71,23 +72,28 @@ export default defineComponent({
 		},
 		download: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		value: {
 			type: [String, Number],
 			default: undefined,
 		},
-		large: {
+		nav: {
 			type: Boolean,
 			default: false,
 		},
+		scope: {
+			type: String,
+			default: 'v-list',
+		},
 	},
-	setup(props) {
+	emits: ['click'],
+	setup(props, { emit }) {
 		const route = useRoute();
 
 		const { route: linkRoute, isActive, isExactActive } = useLink(props);
 
-		const component = computed<string>(() => {
+		const component = computed(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
 			return 'li';
@@ -95,6 +101,7 @@ export default defineComponent({
 
 		useGroupable({
 			value: props.value,
+			group: props.scope,
 		});
 
 		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
@@ -115,23 +122,30 @@ export default defineComponent({
 			return false;
 		});
 
-		return { component, isLink, isActiveRoute };
+		return { component, isLink, isActiveRoute, onClick };
+
+		function onClick(event: PointerEvent) {
+			if (props.disabled === true) return;
+			emit('click', event);
+		}
 	},
 });
 </script>
 
 <style>
 body {
-	--v-list-item-padding-large: 0 8px;
-	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-large: 4px 0;
+	--v-list-item-padding-nav: 0 var(--input-padding);
+	--v-list-item-padding: 0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px));
+	--v-list-item-margin-nav: 2px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
-	--v-list-item-min-height-large: 40px;
+	--v-list-item-min-height-nav: 36px;
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
+	--v-list-item-border-color: var(--border-subdued);
+	--v-list-item-border-color-hover: var(--border-normal-alt);
 	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
 	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
@@ -217,26 +231,27 @@ body {
 	}
 
 	&.block {
+		--v-list-item-border-color: var(--border-subdued);
+		--v-list-item-background-color: var(--background-page);
+		--v-list-item-background-color-hover: var(--card-face-color);
+		--v-icon-color: var(--foreground-subdued);
+
 		position: relative;
 		display: flex;
 		height: var(--input-height);
 		margin: 0;
-		padding: 8px;
-		background-color: var(--background-subdued);
-		border: 2px solid var(--border-subdued);
+		padding: 8px var(--input-padding);
+		background-color: var(--v-list-item-background-color);
+		border: var(--border-width) solid var(--v-list-item-border-color);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
-		:slotted(.v-icon) {
-			color: var(--foreground-subdued);
-
-			&:hover {
-				color: var(--foreground-normal);
-			}
-		}
-
 		:slotted(.drag-handle) {
 			cursor: grab;
+
+			&:hover {
+				color: var(--foreground-color);
+			}
 		}
 
 		:slotted(.drag-handle:active) {
@@ -247,13 +262,17 @@ body {
 			flex-grow: 1;
 		}
 
-		&:hover {
-			background-color: var(--background-subdued);
-			border: 2px solid var(--border-normal);
+		&.clickable:hover {
+			background-color: var(--v-list-item-background-color-hover);
+			border: var(--border-width) solid var(--v-list-item-border-color-hover);
 		}
 
 		&.sortable-chosen {
-			border: 2px solid var(--primary) !important;
+			border: var(--border-width) solid var(--primary) !important;
+		}
+
+		&.sortable-ghost {
+			pointer-events: none;
 		}
 
 		& + & {
@@ -271,13 +290,13 @@ body {
 	}
 
 	@at-root {
-		.v-list.large {
+		.v-list.nav {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: var(--v-list-item-min-height-large);
+				--v-list-item-min-height: var(--v-list-item-min-height-nav);
 				--v-list-item-border-radius: 4px;
 
-				margin: var(--v-list-item-margin-large);
-				padding: var(--v-list-item-padding-large);
+				margin: var(--v-list-item-margin-nav);
+				padding: var(--v-list-item-padding-nav);
 
 				&:first-child {
 					margin-top: 0;
@@ -291,6 +310,12 @@ body {
 					margin-top: 0;
 					margin-bottom: 0;
 				}
+			}
+		}
+
+		.v-list.nav.dense {
+			#{$this}:not(.dense) {
+				--v-list-item-min-height: 32px;
 			}
 		}
 	}

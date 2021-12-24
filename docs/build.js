@@ -7,8 +7,9 @@ console.log('Building docs...');
 
 const tree = dirTree('.', {
 	extensions: /\.md$/,
-	exclude: /(node_modules|.vuepress|.vscode|dist)/,
+	exclude: /(node_modules|.vuepress|.vscode|dist|README.md)/,
 	normalizePath: true,
+	attributes: ['type', 'extension'],
 });
 
 const index = `export default ${generateIndex(tree.children)};`;
@@ -23,10 +24,13 @@ function generateIndex(tree) {
 	const children = tree
 		.map((child) => {
 			if (child.type === 'file') {
-				const baseName = path.basename(child.name, child.extension);
-				const basePath = path.join(path.dirname(child.path), path.basename(child.path, child.extension));
+				const baseName = path.posix.basename(child.name, child.extension);
+				const basePath = path.posix.join(
+					path.posix.dirname(child.path),
+					path.posix.basename(child.path, child.extension)
+				);
 
-				return `{name:'${baseName}',path:'${basePath}',import:()=>import('../${child.path}?raw')}`;
+				return `{name:'${baseName}',path:'${basePath}',import:()=>import('../${child.path}')}`;
 			} else if (child.type === 'directory') {
 				const children = generateIndex(child.children);
 

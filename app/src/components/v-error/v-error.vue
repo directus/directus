@@ -2,8 +2,8 @@
 	<div class="v-error selectable">
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
-			v-tooltip="t('copy_details')"
 			v-if="showCopy"
+			v-tooltip="t('copy_details')"
 			small
 			class="copy-error"
 			:name="copied ? 'check' : 'content_copy'"
@@ -21,7 +21,7 @@ import { isPlainObject } from 'lodash';
 export default defineComponent({
 	props: {
 		error: {
-			type: [Object, Error] as PropType<any>,
+			type: [Object, Error] as PropType<Record<string, any>>,
 			required: true,
 		},
 	},

@@ -3,7 +3,7 @@
 		<div class="fields">
 			<div class="field full">
 				<p class="type-label">{{ t('refresh_interval') }}</p>
-				<v-select :items="items" v-model="interval" />
+				<v-select v-model="interval" :items="items" />
 			</div>
 		</div>
 	</sidebar-detail>
@@ -14,13 +14,13 @@ import { useI18n } from 'vue-i18n';
 import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
-	emits: ['update:modelValue', 'refresh'],
 	props: {
 		modelValue: {
 			type: Number,
 			default: null,
 		},
 	},
+	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="!url || !resultsPath || !valuePath">
+	<v-notice v-if="!url" type="warning">
 		{{ t('one_or_more_options_are_missing') }}
 	</v-notice>
 	<div v-else>
@@ -20,8 +20,8 @@
 			</template>
 
 			<v-list v-if="results.length > 0">
-				<v-list-item v-for="result of results" :key="result" @click="() => emitValue(result)">
-					<v-list-item-content>{{ result }}</v-list-item-content>
+				<v-list-item v-for="result of results" :key="result.value" @click="() => emitValue(result.value)">
+					<v-list-item-content>{{ textPath ? result.text : result.value }}</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
@@ -46,6 +46,10 @@ export default defineComponent({
 			default: null,
 		},
 		resultsPath: {
+			type: String,
+			default: null,
+		},
+		textPath: {
 			type: String,
 			default: null,
 		},
@@ -82,10 +86,11 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const results = ref<string[]>([]);
+		const results = ref<Record<string, any>[]>([]);
 
 		const fetchResultsRaw = async (value: string | null) => {
 			if (!value) {
@@ -97,18 +102,24 @@ export default defineComponent({
 
 			try {
 				const result = await axios.get(url);
-				const resultsArray = get(result.data, props.resultsPath);
+				const resultsArray = props.resultsPath ? get(result.data, props.resultsPath) : result.data;
 
 				if (Array.isArray(resultsArray) === false) {
 					// eslint-disable-next-line no-console
-					console.warn(`Expected results type of array, "${typeof resultsArray}" recieved`);
+					console.warn(`Expected results type of array, "${typeof resultsArray}" received`);
 					return;
-				} else {
-					results.value = resultsArray
-						.map((result: Record<string, unknown>) => get(result, props.valuePath))
-						.filter((val: unknown) => val);
 				}
-			} catch (err) {
+
+				results.value = resultsArray.map((result: Record<string, unknown>) => {
+					if (props.textPath && props.valuePath) {
+						return { text: get(result, props.textPath), value: get(result, props.valuePath) };
+					} else if (props.valuePath) {
+						return { value: get(result, props.valuePath) };
+					} else {
+						return { value: result };
+					}
+				});
+			} catch (err: any) {
 				// eslint-disable-next-line no-console
 				console.warn(err);
 			}

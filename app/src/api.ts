@@ -3,6 +3,7 @@ import { useRequestsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { addQueryToPath } from './utils/add-query-to-path';
+import PQueue from 'p-queue';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -11,6 +12,8 @@ const api = axios.create({
 		'Cache-Control': 'no-store',
 	},
 });
+
+const queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
 
 interface RequestConfig extends AxiosRequestConfig {
 	id: string;
@@ -24,7 +27,7 @@ export interface RequestError extends AxiosError {
 	response: Response;
 }
 
-export const onRequest = (config: AxiosRequestConfig): RequestConfig => {
+export const onRequest = (config: AxiosRequestConfig): Promise<RequestConfig> => {
 	const requestsStore = useRequestsStore();
 	const id = requestsStore.startRequest();
 
@@ -33,20 +36,31 @@ export const onRequest = (config: AxiosRequestConfig): RequestConfig => {
 		...config,
 	};
 
-	return requestConfig;
+	return new Promise((resolve) => {
+		if (config.url && config.url === '/auth/refresh') {
+			queue.pause();
+			resolve(requestConfig);
+			queue.start();
+		} else {
+			queue.add(() => resolve(requestConfig));
+		}
+	});
 };
 
 export const onResponse = (response: AxiosResponse | Response): AxiosResponse | Response => {
 	const requestsStore = useRequestsStore();
-	const id = (response.config as RequestConfig).id;
-	requestsStore.endRequest(id);
+	const id = (response.config as RequestConfig)?.id;
+	if (id) requestsStore.endRequest(id);
 	return response;
 };
 
 export const onError = async (error: RequestError): Promise<RequestError> => {
 	const requestsStore = useRequestsStore();
-	const id = (error.response.config as RequestConfig).id;
-	requestsStore.endRequest(id);
+
+	// Note: Cancelled requests don't respond with the config
+	const id = (error.response?.config as RequestConfig)?.id;
+
+	if (id) requestsStore.endRequest(id);
 
 	// If a request fails with the unauthorized error, it either means that your user doesn't have
 	// access, or that your session doesn't exist / has expired.
@@ -89,13 +103,13 @@ api.interceptors.response.use(onResponse, onError);
 
 export default api;
 
-function getToken() {
-	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+export function getToken(): string | null {
+	return api.defaults.headers.common['Authorization']?.split(' ')[1] || null;
 }
 
 export function addTokenToURL(url: string, token?: string): string {
-	token = token || getToken();
-	if (!token) return url;
+	const accessToken = token || getToken();
+	if (!accessToken) return url;
 
-	return addQueryToPath(url, { access_token: token });
+	return addQueryToPath(url, { access_token: accessToken });
 }

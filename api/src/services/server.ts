@@ -12,8 +12,9 @@ import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
-import { toArray } from '../utils/to-array';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
 
@@ -208,7 +209,7 @@ export class ServerService {
 			try {
 				await cache!.set(`health-${checkID}`, true, 5);
 				await cache!.delete(`health-${checkID}`);
-			} catch (err) {
+			} catch (err: any) {
 				checks['cache:responseTime'][0].status = 'error';
 				checks['cache:responseTime'][0].output = err;
 			} finally {
@@ -248,7 +249,7 @@ export class ServerService {
 			try {
 				await rateLimiter.consume(`health-${checkID}`, 1);
 				await rateLimiter.delete(`health-${checkID}`);
-			} catch (err) {
+			} catch (err: any) {
 				checks['rateLimiter:responseTime'][0].status = 'error';
 				checks['rateLimiter:responseTime'][0].output = err;
 			} finally {
@@ -288,7 +289,7 @@ export class ServerService {
 					await disk.put(`health-${checkID}`, 'check');
 					await disk.get(`health-${checkID}`);
 					await disk.delete(`health-${checkID}`);
-				} catch (err) {
+				} catch (err: any) {
 					checks[`storage:${location}:responseTime`][0].status = 'error';
 					checks[`storage:${location}:responseTime`][0].output = err;
 				} finally {
@@ -322,7 +323,7 @@ export class ServerService {
 
 			try {
 				await mailer.verify();
-			} catch (err) {
+			} catch (err: any) {
 				checks['email:connection'][0].status = 'error';
 				checks['email:connection'][0].output = err;
 			}

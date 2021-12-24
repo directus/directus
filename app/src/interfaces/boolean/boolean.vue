@@ -7,10 +7,11 @@
 		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
-		@update:model-value="$emit('input', $event)"
 		:style="{
-			'--v-checkbox-color': color,
+			'--v-checkbox-color': colorOn,
+			'--v-checkbox-unchecked-color': colorOff,
 		}"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
@@ -19,7 +20,6 @@ import { defineComponent } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Boolean,
@@ -31,7 +31,7 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.global.t('enabled'),
+			default: () => i18n.global.t('enabled'),
 		},
 		iconOn: {
 			type: String,
@@ -41,10 +41,15 @@ export default defineComponent({
 			type: String,
 			default: 'check_box_outline_blank',
 		},
-		color: {
+		colorOn: {
 			type: String,
-			default: '#00C897',
+			default: 'var(--primary)',
+		},
+		colorOff: {
+			type: String,
+			default: 'var(--foreground-subdued)',
 		},
 	},
+	emits: ['input'],
 });
 </script>

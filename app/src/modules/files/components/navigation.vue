@@ -1,5 +1,5 @@
 <template>
-	<v-list large>
+	<v-list nav>
 		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
 			<v-list-item v-for="n in 4" :key="n">
 				<v-skeleton-loader type="list-item-icon" />
@@ -7,8 +7,15 @@
 		</template>
 
 		<div class="folders">
-			<v-item-group scope="files-navigation" multiple v-model="openFolders">
-				<v-list-group to="/files" value="root" scope="files-navigation" exact disable-groupable-parent>
+			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
+				<v-list-group
+					to="/files"
+					:active="currentFolder === null"
+					value="root"
+					scope="files-navigation"
+					exact
+					disable-groupable-parent
+				>
 					<template #activator>
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />
@@ -56,7 +63,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, watch } from 'vue';
-import useFolders, { Folder } from '../composables/use-folders';
+import useFolders, { Folder } from '@/composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';
 

@@ -1,9 +1,9 @@
 <template>
 	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
-		<template #title v-if="template !== null && templateData && primaryKey !== '+'">
-			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
+		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
+			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
-			<h1 class="type-title" v-else>
+			<h1 v-else class="type-title">
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
@@ -13,7 +13,8 @@
 		</template>
 
 		<template #actions>
-			<v-button @click="save" icon rounded v-tooltip.bottom="t('save')">
+			<slot name="actions" />
+			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -27,10 +28,11 @@
 					:width="file.width"
 					:height="file.height"
 					:title="file.title"
-					:inModal="true"
+					:in-modal="true"
 				/>
 
 				<v-form
+					:disabled="disabled"
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
@@ -44,11 +46,12 @@
 			</template>
 
 			<v-form
+				v-model="internalEdits"
+				:disabled="disabled"
 				:loading="loading"
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
-				v-model="internalEdits"
 			/>
 		</div>
 	</v-drawer>
@@ -61,15 +64,14 @@ import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview';
 
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import { Relation, Field } from '@/types';
+import { Field, Relation } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
-	emits: ['update:active', 'input'],
 	components: { FilePreview },
 	props: {
 		active: {
@@ -82,7 +84,7 @@ export default defineComponent({
 		},
 		primaryKey: {
 			type: [String, Number],
-			required: true,
+			default: null,
 		},
 		edits: {
 			type: Object as PropType<Record<string, any>>,
@@ -91,6 +93,10 @@ export default defineComponent({
 		junctionField: {
 			type: String,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 		// There's an interesting case where the main form can be a newly created item ('+'), while
 		// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
@@ -107,6 +113,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:active', 'input'],
 	setup(props, { emit }) {
 		const { t, te } = useI18n();
 
@@ -301,7 +308,7 @@ export default defineComponent({
 					const response = await api.get(endpoint, { params: { fields } });
 
 					item.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -324,7 +331,7 @@ export default defineComponent({
 						...(item.value || {}),
 						[junctionFieldInfo.value.field]: response.data.data,
 					};
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -358,11 +365,7 @@ export default defineComponent({
 				return null;
 			});
 
-			const junctionRelatedCollectionInfo = computed(() => {
-				if (!junctionRelatedCollection.value) return null;
-				const { info } = useCollection(junctionRelatedCollection.value);
-				return info.value;
-			});
+			const { info: junctionRelatedCollectionInfo } = useCollection(junctionRelatedCollection);
 
 			return { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits };
 

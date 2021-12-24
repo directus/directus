@@ -8,6 +8,7 @@ import asyncHandler from '../utils/async-handler';
 import { getCacheKey } from '../utils/get-cache-key';
 import { parse as toXML } from 'js2xmlparser';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
+import logger from '../logger';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
@@ -20,8 +21,14 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		res.locals.cache !== false
 	) {
 		const key = getCacheKey(req);
-		await cache.set(key, res.locals.payload, ms(env.CACHE_TTL as string));
-		await cache.set(`${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));
+
+		try {
+			await cache.set(key, res.locals.payload, ms(env.CACHE_TTL as string));
+			await cache.set(`${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));
+		} catch (err: any) {
+			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
+		}
+
 		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.CACHE_TTL as string)));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 	} else {
@@ -73,8 +80,10 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	if (Buffer.isBuffer(res.locals.payload)) {
 		return res.end(res.locals.payload);
-	} else {
+	} else if (res.locals.payload) {
 		return res.json(res.locals.payload);
+	} else {
+		return res.status(204).end();
 	}
 });
 

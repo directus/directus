@@ -1,144 +1,179 @@
 <template>
-	<div class="interface-input-rich-text-md" :class="view[0]" ref="markdownInterface">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
 		<div class="toolbar">
-			<v-menu show-arrow placement="bottom-start">
-				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.heading')">
-						<v-icon name="title" />
-					</v-button>
-				</template>
-				<v-list>
-					<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
-						<v-list-item-content><v-text-overflow :text="t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
-						<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+			<template v-if="view[0] !== 'preview'">
+				<v-menu
+					v-if="toolbar.includes('heading')"
+					show-arrow
+					placement="bottom-start"
+					:class="[{ active: view[0] !== 'preview' }]"
+				>
+					<template #activator="{ toggle }">
+						<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
+							<v-icon name="format_size" />
+						</v-button>
+					</template>
+					<v-list>
+						<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
+							<v-list-item-content><v-text-overflow :text="t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
+							<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
+						</v-list-item>
+					</v-list>
+				</v-menu>
 
-			<v-button
-				small
-				icon
-				@click="edit('bold')"
-				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
-			>
-				<v-icon name="format_bold" />
-			</v-button>
-			<v-button
-				small
-				icon
-				@click="edit('italic')"
-				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
-			>
-				<v-icon name="format_italic" />
-			</v-button>
-			<v-button
-				small
-				icon
-				@click="edit('strikethrough')"
-				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
-			>
-				<v-icon name="format_strikethrough" />
-			</v-button>
-			<v-button small icon @click="edit('listBulleted')" v-tooltip="t('wysiwyg_options.bullist')">
-				<v-icon name="format_list_bulleted" />
-			</v-button>
-			<v-button small icon @click="edit('listNumbered')" v-tooltip="t('wysiwyg_options.numlist')">
-				<v-icon name="format_list_numbered" />
-			</v-button>
-			<v-button
-				small
-				icon
-				@click="edit('blockquote')"
-				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
-			>
-				<v-icon name="format_quote" />
-			</v-button>
-			<v-button
-				small
-				icon
-				@click="edit('code')"
-				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
-			>
-				<v-icon name="code" />
-			</v-button>
-			<v-button
-				small
-				icon
-				@click="edit('link')"
-				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
-			>
-				<v-icon name="insert_link" />
-			</v-button>
+				<v-button
+					v-if="toolbar.includes('bold')"
+					v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+					small
+					icon
+					@click="edit('bold')"
+				>
+					<v-icon name="format_bold" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('italic')"
+					v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+					small
+					icon
+					@click="edit('italic')"
+				>
+					<v-icon name="format_italic" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('strikethrough')"
+					v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
+					small
+					icon
+					@click="edit('strikethrough')"
+				>
+					<v-icon name="format_strikethrough" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('bullist')"
+					v-tooltip="t('wysiwyg_options.bullist')"
+					small
+					icon
+					@click="edit('listBulleted')"
+				>
+					<v-icon name="format_list_bulleted" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('numlist')"
+					v-tooltip="t('wysiwyg_options.numlist')"
+					small
+					icon
+					@click="edit('listNumbered')"
+				>
+					<v-icon name="format_list_numbered" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('blockquote')"
+					v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
+					small
+					icon
+					@click="edit('blockquote')"
+				>
+					<v-icon name="format_quote" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('code')"
+					v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
+					small
+					icon
+					@click="edit('code')"
+				>
+					<v-icon name="code" />
+				</v-button>
+				<v-button
+					v-if="toolbar.includes('link')"
+					v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+					small
+					icon
+					@click="edit('link')"
+				>
+					<v-icon name="insert_link" />
+				</v-button>
 
-			<v-menu show-arrow :close-on-content-click="false">
-				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.table')">
-						<v-icon name="table_chart" />
-					</v-button>
-				</template>
+				<v-menu v-if="toolbar.includes('table')" show-arrow :close-on-content-click="false">
+					<template #activator="{ toggle }">
+						<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
+							<v-icon name="table_chart" />
+						</v-button>
+					</template>
 
-				<template #default="{ deactivate }">
-					<div class="table-options">
-						<div class="field half">
-							<p class="type-label">{{ t('rows') }}</p>
-							<v-input :min="1" type="number" v-model="table.rows" />
+					<template #default="{ deactivate }">
+						<div class="table-options">
+							<div class="field half">
+								<p class="type-label">{{ t('rows') }}</p>
+								<v-input v-model="table.rows" :min="1" type="number" />
+							</div>
+							<div class="field half">
+								<p class="type-label">{{ t('columns') }}</p>
+								<v-input v-model="table.columns" :min="1" type="number" />
+							</div>
+							<div class="field full">
+								<v-button
+									full-width
+									@click="
+										() => {
+											edit('table', table);
+											deactivate();
+										}
+									"
+								>
+									Create
+								</v-button>
+							</div>
 						</div>
-						<div class="field half">
-							<p class="type-label">{{ t('columns') }}</p>
-							<v-input :min="1" type="number" v-model="table.columns" />
-						</div>
-						<div class="field full">
-							<v-button
-								full-width
-								@click="
-									() => {
-										edit('table', table);
-										deactivate();
-									}
-								"
-							>
-								Create
-							</v-button>
-						</div>
-					</div>
-				</template>
-			</v-menu>
+					</template>
+				</v-menu>
 
-			<v-button @click="imageDialogOpen = true" small icon v-tooltip="t('wysiwyg_options.image')">
-				<v-icon name="insert_photo" />
-			</v-button>
+				<v-button
+					v-if="toolbar.includes('image')"
+					v-tooltip="t('wysiwyg_options.image')"
+					small
+					icon
+					@click="imageDialogOpen = true"
+				>
+					<v-icon name="insert_photo" />
+				</v-button>
 
-			<v-button
-				v-for="custom in customSyntax"
-				small
-				icon
-				:key="custom.name"
-				@click="edit('custom', custom)"
-				v-tooltip="custom.name"
-			>
-				<v-icon :name="custom.icon" />
-			</v-button>
+				<v-button
+					v-for="custom in customSyntax"
+					:key="custom.name"
+					v-tooltip="custom.name"
+					small
+					icon
+					@click="edit('custom', custom)"
+				>
+					<v-icon :name="custom.icon" />
+				</v-button>
+			</template>
 
 			<div class="spacer"></div>
 
-			<v-item-group class="view" mandatory v-model="view" rounded>
-				<v-button x-small value="editor">Editor</v-button>
-				<v-button x-small value="preview">Preview</v-button>
+			<v-item-group v-model="view" class="view" mandatory rounded>
+				<v-button x-small value="editor" :class="[{ active: view[0] !== 'preview' }]">
+					{{ t('interfaces.input-rich-text-md.edit') }}
+				</v-button>
+				<v-button x-small value="preview" :class="[{ active: view[0] === 'preview' }]">
+					{{ t('interfaces.input-rich-text-md.preview') }}
+				</v-button>
 			</v-item-group>
 		</div>
 
 		<div ref="codemirrorEl"></div>
 
-		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
+		<div v-if="view[0] === 'preview'" v-md="markdownString" class="preview-box"></div>
 
 		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="onImageUpload" from-url from-library />
+					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="imageDialogOpen = null" secondary>{{ t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = null">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -155,14 +190,12 @@ import 'codemirror/addon/display/placeholder.js';
 
 import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
-import { md } from '@/utils/md';
 import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -176,6 +209,32 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		editorFont: {
+			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
+			default: 'sans-serif',
+		},
+		previewFont: {
+			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
+			default: 'sans-serif',
+		},
+		toolbar: {
+			type: Array as PropType<string[] | null>,
+			default: () => [
+				'heading',
+				'bold',
+				'italic',
+				'strikethrough',
+				'bullist',
+				'numlist',
+				'blockquote',
+				'code',
+				'link',
+				'table',
+				'image',
+				'link',
+				'empty',
+			],
+		},
 		customSyntax: {
 			type: Array as PropType<CustomSyntax[]>,
 			default: () => [],
@@ -184,7 +243,12 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		folder: {
+			type: String,
+			default: undefined,
+		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -206,12 +270,12 @@ export default defineComponent({
 					value: props.value || '',
 				});
 
-				codemirror.on('change', (cm) => {
+				codemirror.on('change', (cm, { origin }) => {
+					if (origin === 'setValue') return;
+
 					const content = cm.getValue();
 
-					if (content !== props.value && (props.value === null && content === '') === false) {
-						emit('input', content);
-					}
+					emit('input', content);
 				});
 			}
 		});
@@ -232,7 +296,15 @@ export default defineComponent({
 			}
 		);
 
-		const html = computed(() => {
+		const editFamily = computed(() => {
+			return `var(--family-${props.editorFont})`;
+		});
+
+		const previewFamily = computed(() => {
+			return `var(--family-${props.previewFont})`;
+		});
+
+		const markdownString = computed(() => {
 			let mdString = props.value || '';
 
 			if (!props.imageToken) {
@@ -246,9 +318,7 @@ export default defineComponent({
 				}
 			}
 
-			const html = md(mdString);
-
-			return html;
+			return mdString;
 		});
 
 		const table = reactive({
@@ -274,13 +344,15 @@ export default defineComponent({
 			codemirrorEl,
 			edit,
 			view,
-			html,
+			markdownString,
 			table,
 			onImageUpload,
 			imageDialogOpen,
 			useShortcut,
 			translateShortcut,
 			markdownInterface,
+			editFamily,
+			previewFamily,
 		};
 
 		function onImageUpload(image: any) {
@@ -317,6 +389,7 @@ export default defineComponent({
 
 	min-height: 300px;
 	overflow: hidden;
+	font-family: var(--family-sans-serif);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 }
@@ -330,71 +403,85 @@ textarea {
 }
 
 .preview-box :deep(h1) {
+	margin-top: 1em;
 	margin-bottom: 0;
-	font-weight: 300;
-	font-size: 44px;
-	font-family: var(--font-serif), serif;
-	line-height: 52px;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	font-size: 36px;
+	font-family: v-bind(previewFamily), serif;
+	line-height: 46px;
 }
 
 .preview-box :deep(h2) {
-	margin-top: 40px;
+	margin-top: 1.25em;
 	margin-bottom: 0;
-	font-weight: 600;
-	font-size: 34px;
-	line-height: 38px;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	font-size: 24px;
+	font-family: v-bind(previewFamily), serif;
+	line-height: 34px;
 }
 
 .preview-box :deep(h3) {
-	margin-top: 40px;
+	margin-top: 1.25em;
 	margin-bottom: 0;
-	font-weight: 600;
-	font-size: 26px;
-	line-height: 31px;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	font-size: 19px;
+	font-family: v-bind(previewFamily), serif;
+	line-height: 29px;
 }
 
 .preview-box :deep(h4) {
-	margin-top: 40px;
+	margin-top: 1.5em;
 	margin-bottom: 0;
-	font-weight: 600;
-	font-size: 22px;
-	line-height: 28px;
-}
-
-.preview-box :deep(h5) {
-	margin-top: 40px;
-	margin-bottom: 0;
-	font-weight: 600;
-	font-size: 18px;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	font-size: 16px;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 26px;
 }
 
-.preview-box :deep(h6) {
-	margin-top: 40px;
+.preview-box :deep(h5) {
+	margin-top: 2em;
 	margin-bottom: 0;
-	font-weight: 600;
-	font-size: 16px;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	font-size: 14px;
+	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
 }
 
+.preview-box :deep(h6) {
+	margin-top: 2em;
+	margin-bottom: 0;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	font-size: 12px;
+	font-family: v-bind(previewFamily), serif;
+	line-height: 22px;
+}
+
 .preview-box :deep(p) {
-	margin-top: 20px;
-	margin-bottom: 20px;
-	font-size: 16px;
-	font-family: var(--font-serif), serif;
-	line-height: 32px;
+	margin: 1.5em 0;
+	font-weight: 500;
+	font-size: 15px;
+	font-family: v-bind(previewFamily), serif;
+	line-height: 24px;
 }
 
 .preview-box :deep(a) {
-	color: #546e7a;
+	color: var(--primary-125);
+	text-decoration: none;
 }
 
 .preview-box :deep(ul),
 .preview-box :deep(ol) {
-	margin: 24px 0;
-	font-size: 18px;
-	font-family: var(--font-serif), serif;
-	line-height: 34px;
+	margin: 1.5em 0;
+	font-weight: 500;
+	font-size: 15px;
+	font-family: v-bind(previewFamily), serif;
+	line-height: 24px;
 }
 
 .preview-box :deep(ul ul),
@@ -406,37 +493,39 @@ textarea {
 
 .preview-box :deep(b),
 .preview-box :deep(strong) {
-	font-weight: 600;
+	font-weight: 700;
 }
 
 .preview-box :deep(code) {
 	padding: 2px 4px;
-	font-size: 18px;
+	font-weight: 500;
+	font-size: 15px;
 	font-family: var(--family-monospace), monospace;
-	line-height: 34px;
+	line-height: 24px;
 	overflow-wrap: break-word;
-	background-color: #eceff1;
-	border-radius: 4px;
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
 }
 
 .preview-box :deep(pre) {
-	padding: 20px;
+	padding: 1em;
 	overflow: auto;
-	font-size: 18px;
+	font-weight: 500;
+	font-size: 15px;
 	font-family: var(--family-monospace), monospace;
 	line-height: 24px;
-	background-color: #eceff1;
-	border-radius: 4px;
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
 }
 
 .preview-box :deep(blockquote) {
-	margin-left: -10px;
-	padding-left: 10px;
-	font-size: 18px;
-	font-family: var(--font-serif), serif;
-	font-style: italic;
-	line-height: 34px;
-	border-left: 2px solid #546e7a;
+	margin-left: 0px;
+	padding-left: 1em;
+	font-weight: 500;
+	font-size: 15px;
+	font-family: v-bind(previewFamily), serif;
+	line-height: 24px;
+	border-left: 2px solid var(--border-normal);
 }
 
 .preview-box :deep(blockquote blockquote) {
@@ -448,25 +537,28 @@ textarea {
 .preview-box :deep(img) {
 	max-width: 100%;
 	height: auto;
-	border-radius: 4px;
+	border-radius: var(--border-radius);
 }
 
 .preview-box :deep(hr) {
-	margin-top: 52px;
-	margin-bottom: 56px;
-	text-align: center;
-	border: 0;
-	border-top: 2px solid #cfd8dc;
+	height: 1px;
+	margin-top: 2em;
+	margin-bottom: 2em;
+	background-color: var(--border-normal);
+	border: none;
 }
 
 .preview-box :deep(table) {
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 24px;
 	border-collapse: collapse;
 }
 
 .preview-box :deep(table th),
 .preview-box :deep(table td) {
 	padding: 0.4rem;
-	border: 1px solid #cfd8dc;
+	border: 1px solid var(--border-normal);
 }
 
 .preview-box :deep(figure) {
@@ -482,6 +574,7 @@ textarea {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror) {
+	font-family: v-bind(editFamily), sans-serif;
 	border: none;
 	border-radius: 0;
 }

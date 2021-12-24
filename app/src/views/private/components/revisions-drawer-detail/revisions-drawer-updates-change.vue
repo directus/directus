@@ -3,13 +3,17 @@
 		<v-icon :name="added ? 'add' : 'remove'" />
 		<div class="delta">
 			<span v-for="(part, index) in changesFiltered" :key="index" :class="{ changed: part.added || part.removed }">
-				{{ part.value }}
+				<template v-if="part.value">{{ part.value }}</template>
+				<template v-else>
+					<span class="no-value">{{ t('no_value') }}</span>
+				</template>
 			</span>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 
 type Change = {
@@ -35,6 +39,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
 		const changesFiltered = computed(() => {
 			return props.changes.filter((change) => {
 				if (props.added === true) {
@@ -50,7 +55,7 @@ export default defineComponent({
 			return props.changes.length === 2; // before/after
 		});
 
-		return { changesFiltered, wholeThing };
+		return { t, changesFiltered, wholeThing };
 	},
 });
 </script>
@@ -59,13 +64,13 @@ export default defineComponent({
 .change-line {
 	position: relative;
 	width: 100%;
-	padding: 8px 12px 8px 52px;
+	padding: 8px 12px 8px 40px;
 	border-radius: var(--border-radius);
 
 	.v-icon {
 		position: absolute;
-		top: 6px;
-		left: 12px;
+		top: 8px;
+		left: 8px;
 	}
 }
 
@@ -79,6 +84,7 @@ export default defineComponent({
 .added {
 	color: var(--success);
 	background-color: var(--success-alt);
+	border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
 
 	.changed {
 		background-color: var(--success-25);
@@ -88,10 +94,16 @@ export default defineComponent({
 .deleted {
 	color: var(--danger);
 	background-color: var(--danger-alt);
+	border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
 
 	.changed {
 		background-color: var(--danger-25);
 	}
+}
+
+.no-value {
+	font-style: italic;
+	opacity: 0.25;
 }
 
 .no-highlight .changed {

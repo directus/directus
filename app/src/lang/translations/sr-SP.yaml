@@ -1,14 +1,24 @@
 ---
+avatar: Аватар
+default_provider: Подразумевано
+published: Објављено
+draft: Нацрт
+archived: Архивирано
+modules: Модули
 edit_field: Уреди поља
+conditions: Услови
+maps: Мапе
 item_revision: Ревизија итема
+enter_a_name: Унесите име...
 duplicate_field: Дуплирај поље
 half_width: Пола ширине
 full_width: Пуна ширина
+group: Група
+or: Или
 fill_width: Попуни ширину
 required: Захтјева се
 create_role: Креирајте улогу
 emails: Е-мејлови
-public: Јавно
 not_allowed: Није дозвољено
 directus_version: Верзија Директуса
 node_version: Верзија нода
@@ -50,6 +60,9 @@ comments: Коментари
 create_collection: Креирајте колекцију
 users: Корисници
 activity: Активност
+action: Акција
+ip_address: ИП адреса
+user_agent: Кориснички агент
 duration: Трајање
 status: Стање
 bookmarks: Сачуване странице
@@ -117,10 +130,21 @@ fields:
     display_template: Шаблон
   directus_roles:
     description: Опис
+  directus_webhooks:
+    name: Име
+    status: Стање
+field_options:
+  directus_activity:
+    create: Креирај
+  directus_collections:
+    language: Језик
+    archive_divider: Архивирај
+  directus_roles:
+    fields:
+      name_name: Име
+  directus_webhooks:
+    actions_create: Креирај
 comment: Коментар
-continue: Настави
-default: Подразумевано
-delete: Обриши
 description: Опис
 done: Завршено
 email: Имејл
@@ -129,6 +153,8 @@ my_activity: Моја активност
 password: Лозинка
 template: Шаблон
 interfaces:
+  filter:
+    all: Sve
   input-code:
     code: Код
   system-collection:
@@ -140,6 +166,8 @@ interfaces:
 displays:
   collection:
     collection: Колекција
+  formatted-value:
+    text: Текст
   user:
     avatar: Аватар
     name: Име

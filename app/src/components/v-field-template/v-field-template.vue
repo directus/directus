@@ -1,5 +1,5 @@
 <template>
-	<v-menu attached v-model="menuActive">
+	<v-menu v-model="menuActive" attached>
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
@@ -13,17 +13,17 @@
 					>
 						<span class="text" />
 					</span>
-					<span class="placeholder" v-if="placeholder && !modelValue">{{ placeholder }}</span>
+					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" outline clickable @click="toggle" :disabled="disabled" />
+					<v-icon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
 				</template>
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false">
-			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
+		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value)">
+			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
 </template>
@@ -31,12 +31,11 @@
 <script lang="ts">
 import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
 import FieldListItem from './field-list-item.vue';
-import useFieldTree from '@/composables/use-field-tree';
 import { FieldTree } from './types';
-import { Field, Relation } from '@/types';
+import { Field, Relation } from '@directus/shared/types';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	components: { FieldListItem },
 	props: {
 		disabled: {
@@ -53,11 +52,11 @@ export default defineComponent({
 		},
 		collection: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		depth: {
 			type: Number,
-			default: 2,
+			default: undefined,
 		},
 		placeholder: {
 			type: String,
@@ -68,13 +67,14 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const contentEl = ref<HTMLElement | null>(null);
 
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
-		const { tree } = useFieldTree(collection, true, inject);
+		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
 		watch(() => props.modelValue, setContent, { immediate: true });
 
@@ -91,7 +91,7 @@ export default defineComponent({
 			}
 		});
 
-		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive, onSelect };
+		return { menuActive, treeList, addField, onInput, contentEl, onClick, loadFieldRelations, onKeyDown };
 
 		function onInput() {
 			if (!contentEl.value) return;
@@ -167,7 +167,7 @@ export default defineComponent({
 		function addField(fieldKey: string) {
 			if (!contentEl.value) return;
 
-			const field = findTree(tree.value, fieldKey.split('.'));
+			const field = findTree(treeList.value, fieldKey.split('.'));
 
 			if (!field) return;
 
@@ -246,10 +246,8 @@ export default defineComponent({
 				const el = node as HTMLElement;
 				const tag = el.tagName;
 
-				if (tag) {
-					if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
-					if (tag.toLowerCase() === 'span') return (acc += el.textContent);
-				}
+				if (tag && tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+				else if ('textContent' in el) return (acc += el.textContent);
 
 				return (acc += '');
 			}, '');
@@ -279,11 +277,19 @@ export default defineComponent({
 							return `<span class="text">${part}</span>`;
 						}
 						const fieldKey = part.replace(/({|})/g, '').trim();
-						const field = findTree(tree.value, fieldKey.split('.'));
+						const fieldPath = fieldKey.split('.');
+
+						for (let i = 0; i < fieldPath.length; i++) {
+							loadFieldRelations(fieldPath.slice(0, i).join('.'));
+						}
+
+						const field = findTree(treeList.value, fieldPath);
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${fieldKey}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}" ${props.disabled ? 'disabled' : ''}>${
+							field.name
+						}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;
@@ -325,7 +331,7 @@ export default defineComponent({
 	user-select: none;
 }
 
-:deep(button:hover) {
+:deep(button:not(:disabled):hover) {
 	color: var(--white);
 	background-color: var(--danger);
 }

@@ -5,6 +5,7 @@
 import argon2 from 'argon2';
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { generateHash } from '../utils';
 
 describe('utils', function () {
 	test(`generates random string`, async (url, nock) => {
@@ -30,7 +31,7 @@ describe('utils', function () {
 			})
 			.reply(200, async (_, body: any) => {
 				return {
-					data: await argon2.hash(body.string),
+					data: await generateHash(body.string),
 				};
 			});
 
@@ -47,7 +48,7 @@ describe('utils', function () {
 			})
 			.reply(200, async (_, body: any) => {
 				return {
-					data: await argon2.hash(body.string),
+					data: await generateHash(body.string),
 				};
 			});
 

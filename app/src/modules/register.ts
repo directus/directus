@@ -3,14 +3,14 @@ import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import RouterPass from '@/utils/router-passthrough';
 import { getModules } from './index';
-import { ModuleConfig } from './types';
+import { ModuleConfig } from '@directus/shared/types';
 
 const { modulesRaw } = getModules();
 
 let queuedModules: ModuleConfig[] = [];
 
 export async function loadModules(): Promise<void> {
-	const moduleModules = import.meta.globEager('./*/**/index.ts');
+	const moduleModules = import.meta.globEager('./*/index.ts');
 
 	const modules: ModuleConfig[] = Object.values(moduleModules).map((module) => module.default);
 
@@ -20,9 +20,11 @@ export async function loadModules(): Promise<void> {
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/index.js`);
 
 		modules.push(...customModules.default);
-	} catch {
+	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom modules`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	queuedModules = modules;

@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayColor from './color.vue';
 
 export default defineDisplay({
@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.color.description',
 	types: ['string'],
 	icon: 'flag',
-	handler: DisplayColor,
+	component: DisplayColor,
 	options: [
 		{
 			field: 'defaultColor',

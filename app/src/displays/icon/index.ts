@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayIcon from './icon.vue';
 
 export default defineDisplay({
@@ -6,7 +6,7 @@ export default defineDisplay({
 	name: '$t:displays.icon.icon',
 	description: '$t:displays.icon.description',
 	icon: 'insert_emoticon',
-	handler: DisplayIcon,
+	component: DisplayIcon,
 	options: [
 		{
 			field: 'filled',

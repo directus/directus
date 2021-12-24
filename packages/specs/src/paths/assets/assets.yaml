@@ -16,34 +16,11 @@ get:
       description: The key of the asset size configured in settings.
       schema:
         type: string
-    - name: width
+    - name: transforms
       in: query
-      description: Width of the file in pixels.
-      schema:
-        type: integer
-    - name: height
-      in: query
-      description: Height of the file in pixels.
-      schema:
-        type: integer
-    - name: fit
-      in: query
-      description: Fit of the file
+      description: A JSON array of image transformations
       schema:
         type: string
-        enum: [crop, contain, inside, outside]
-    - name: withoutEnlargement
-      in: query
-      description: No image upscale.
-      schema:
-        type: boolean
-    - name: quality
-      in: query
-      description: Quality of compression.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
     - name: download
       in: query
       description: Download the asset to your computer

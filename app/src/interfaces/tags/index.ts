@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceTags from './tags.vue';
 
 export default defineInterface({
@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'local_offer',
 	component: InterfaceTags,
 	types: ['json', 'csv'],
+	group: 'standard',
 	options: [
 		{
 			field: 'presets',
@@ -57,7 +58,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: false,
+				default_value: true,
 			},
 		},
 		{

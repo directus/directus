@@ -14,11 +14,11 @@
 			<span class="warning">{{ t('changes_are_permanent') }}</span>
 		</template>
 
-		<div class="loader" v-if="loading">
+		<div v-if="loading" class="loader">
 			<v-progress-circular indeterminate />
 		</div>
 
-		<v-notice type="error" v-else-if="error">error</v-notice>
+		<v-notice v-else-if="error" type="error">error</v-notice>
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
@@ -35,52 +35,52 @@
 					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
 				</div>
 
-				<v-icon name="rotate_90_degrees_ccw" clickable @click="rotate" v-tooltip.top.inverted="t('rotate')" />
+				<v-icon v-tooltip.top.inverted="t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
 
 				<v-icon
+					v-tooltip.top.inverted="t('flip_horizontal')"
 					name="flip_horizontal"
 					clickable
 					@click="flip('horizontal')"
-					v-tooltip.top.inverted="t('flip_horizontal')"
 				/>
 
-				<v-icon name="flip_vertical" clickable @click="flip('vertical')" v-tooltip.top.inverted="t('flip_vertical')" />
+				<v-icon v-tooltip.top.inverted="t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
 
 				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon :name="aspectRatioIcon" clickable @click="toggle" v-tooltip.top.inverted="t('aspect_ratio')" />
+						<v-icon v-tooltip.top.inverted="t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
 
 					<v-list>
-						<v-list-item clickable @click="aspectRatio = 16 / 9" :active="aspectRatio === 16 / 9">
+						<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
 							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
 							<v-list-item-content>16:9</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable @click="aspectRatio = 3 / 2" :active="aspectRatio === 3 / 2">
+						<v-list-item clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
 							<v-list-item-icon><v-icon name="crop_3_2" /></v-list-item-icon>
 							<v-list-item-content>3:2</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable @click="aspectRatio = 5 / 4" :active="aspectRatio === 5 / 4">
+						<v-list-item clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
 							<v-list-item-icon><v-icon name="crop_5_4" /></v-list-item-icon>
 							<v-list-item-content>5:4</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable @click="aspectRatio = 7 / 5" :active="aspectRatio === 7 / 5">
+						<v-list-item clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
 							<v-list-item-icon><v-icon name="crop_7_5" /></v-list-item-icon>
 							<v-list-item-content>7:5</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable @click="aspectRatio = 1 / 1" :active="aspectRatio === 1 / 1">
+						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
 							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
 							<v-list-item-content>{{ t('square') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable @click="aspectRatio = NaN" :active="aspectRatio === NaN">
+						<v-list-item clickable :active="aspectRatio === NaN" @click="aspectRatio = NaN">
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
 							<v-list-item-content>{{ t('free') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item
 							v-if="imageData"
 							clickable
-							@click="aspectRatio = imageData.width / imageData.height"
 							:active="aspectRatio === imageData.width / imageData.height"
+							@click="aspectRatio = imageData.width / imageData.height"
 						>
 							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
 							<v-list-item-content>{{ t('original') }}</v-list-item-content>
@@ -90,7 +90,7 @@
 
 				<div class="spacer" />
 
-				<div class="dimensions" v-if="imageData">
+				<div v-if="imageData" class="dimensions">
 					{{ n(imageData.width) }}x{{ n(imageData.height) }}
 					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
 						->
@@ -98,14 +98,14 @@
 					</template>
 				</div>
 
-				<button class="toolbar-button cancel" v-show="cropping" @click="cropping = false">
+				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
 					{{ t('cancel_crop') }}
 				</button>
 			</div>
 		</div>
 
 		<template #actions>
-			<v-button @click="save" :loading="saving" icon rounded v-tooltip.bottom="t('save')">
+			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -133,7 +133,6 @@ type Image = {
 };
 
 export default defineComponent({
-	emits: ['update:modelValue', 'refresh'],
 	props: {
 		id: {
 			type: String,
@@ -144,6 +143,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
@@ -242,7 +242,7 @@ export default defineComponent({
 					});
 
 					imageData.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					loading.value = false;
@@ -269,7 +269,7 @@ export default defineComponent({
 							await api.patch(`/files/${props.id}`, formData);
 							emit('refresh');
 							internalActive.value = false;
-						} catch (err) {
+						} catch (err: any) {
 							unexpectedError(err);
 						} finally {
 							saving.value = false;
@@ -490,13 +490,13 @@ export default defineComponent({
 
 .toolbar-button {
 	padding: 8px;
-	background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgb(255 255 255 / 0.2);
 	border-radius: var(--border-radius);
 	cursor: pointer;
 	transition: background-color var(--fast) var(--transition);
 
 	&:hover {
-		background-color: rgba(255, 255, 255, 0.15);
+		background-color: rgb(255 255 255 / 0.15);
 	}
 }
 

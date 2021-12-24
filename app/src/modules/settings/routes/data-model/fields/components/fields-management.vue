@@ -1,41 +1,37 @@
 <template>
 	<div class="fields-management">
-		<div class="field-grid">
-			<field-select disabled v-for="field in lockedFields" :key="field.field" :field="field" />
+		<div v-if="lockedFields.length > 0" class="field-grid">
+			<field-select v-for="field in lockedFields" :key="field.field" disabled :field="field" />
 		</div>
 
 		<draggable
 			class="field-grid"
-			:model-value="usableFields"
+			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
 			:force-fallback="true"
 			handle=".drag-handle"
-			group="fields"
+			:group="{ name: 'fields' }"
 			:set-data="hideDragImage"
-			@update:model-value="setSort"
 			item-key="field"
+			:animation="150"
+			:fallback-on-body="true"
+			:invert-swap="true"
+			@update:model-value="setSort"
 		>
 			<template #item="{ element }">
-				<field-select :field="element" />
+				<field-select :field="element" :fields="usableFields" @setNestedSort="setNestedSort" />
 			</template>
 		</draggable>
 
-		<v-menu attached>
-			<template #activator="{ toggle, active }">
-				<v-button
-					@click="toggle"
-					class="add-field"
-					align="left"
-					:dashed="!active"
-					:class="{ active }"
-					outlined
-					large
-					full-width
-				>
-					<v-icon name="add" />
-					{{ t('create_field') }}
-				</v-button>
-			</template>
+		<v-button full-width :to="`/settings/data-model/${collection}/+`">
+			{{ t('create_field') }}
+		</v-button>
 
+		<v-menu show-arrow>
+			<template #activator="{ toggle, active }">
+				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
+					{{ t('create_in_advanced_field_creation_mode') }}
+				</button>
+			</template>
 			<v-list>
 				<template v-for="(option, index) in addOptions" :key="index">
 					<v-divider v-if="option.divider === true" />
@@ -56,15 +52,17 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs } from 'vue';
-import useCollection from '@/composables/use-collection/';
+import { useCollection } from '@directus/shared/composables';
 import Draggable from 'vuedraggable';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
-import { orderBy } from 'lodash';
+import { orderBy, isNil } from 'lodash';
+import { LocalType } from '@directus/shared/types';
 
 export default defineComponent({
+	name: 'FieldsManagement',
 	components: { Draggable, FieldSelect },
 	props: {
 		collection: {
@@ -93,7 +91,7 @@ export default defineComponent({
 			return parsedFields.value.filter((field) => field.meta?.system !== true);
 		});
 
-		const addOptions = computed(() => [
+		const addOptions = computed<Array<{ type: LocalType; icon: string; text: any } | { divider: boolean }>>(() => [
 			{
 				type: 'standard',
 				icon: 'create',
@@ -103,6 +101,11 @@ export default defineComponent({
 				type: 'presentation',
 				icon: 'scatter_plot',
 				text: t('presentation_and_aliases'),
+			},
+			{
+				type: 'group',
+				icon: 'view_in_ar',
+				text: t('field_group'),
 			},
 			{
 				divider: true,
@@ -150,17 +153,26 @@ export default defineComponent({
 			},
 		]);
 
-		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions };
+		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions, setNestedSort, isNil };
 
 		async function setSort(fields: Field[]) {
 			const updates = fields.map((field, index) => ({
 				field: field.field,
 				meta: {
 					sort: index + 1,
+					group: null,
 				},
 			}));
 
 			await fieldsStore.updateFields(collection.value, updates);
+		}
+
+		async function setNestedSort(updates?: Field[]) {
+			updates = (updates || []).filter((val) => isNil(val) === false);
+
+			if (updates.length > 0) {
+				await fieldsStore.updateFields(collection.value, updates);
+			}
 		}
 	},
 });
@@ -178,11 +190,23 @@ export default defineComponent({
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 12px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	padding-bottom: 24px;
+}
 
-	& + & {
-		margin-top: 12px;
+.field-select {
+	margin: 4px;
+}
+
+.field-select:deep(.field-grid) {
+	grid-gap: 0;
+}
+
+.field-select:deep(.field-grid.group.full.nested) {
+	margin: 4px 0;
+
+	.field-select {
+		margin: 4px;
 	}
 }
 
@@ -191,14 +215,19 @@ export default defineComponent({
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 
-	margin-top: 12px;
+	margin-top: -12px;
+}
 
-	.v-icon {
-		margin-right: 8px;
-	}
+.add-field-advanced {
+	display: block;
+	width: max-content;
+	margin: 0 auto;
+	margin-top: 8px;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
 
-	&.active {
-		--v-button-background-color: var(--primary);
+	&:hover {
+		color: var(--foreground-normal);
 	}
 }
 

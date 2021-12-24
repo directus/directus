@@ -1,8 +1,8 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="t('email')" />
-		<v-notice type="success" v-if="done">{{ t('password_reset_sent') }}</v-notice>
-		<v-notice type="danger" v-if="error">
+		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+		<v-notice v-if="done" type="success">{{ t('password_reset_sent') }}</v-notice>
+		<v-notice v-if="error" type="danger">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
@@ -50,7 +50,7 @@ export default defineComponent({
 				});
 
 				done.value = true;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				sending.value = false;

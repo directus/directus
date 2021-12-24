@@ -5,7 +5,7 @@
 		:min="minValue"
 		:max="maxValue"
 		:step="stepInterval"
-		:alwaysShowValue="alwaysShowValue"
+		:always-show-value="alwaysShowValue"
 		show-thumb-label
 		show-ticks
 		@update:model-value="$emit('input', $event)"
@@ -16,7 +16,6 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Number,
@@ -43,6 +42,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 });
 </script>
 

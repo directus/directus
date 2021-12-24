@@ -38,10 +38,9 @@ module.exports = {
 				parser: '@typescript-eslint/parser',
 			},
 			extends: [
-				'plugin:vue/vue3-essential',
+				'plugin:vue/vue3-recommended',
 				'eslint:recommended',
 				'plugin:@typescript-eslint/recommended',
-				'plugin:prettier-vue/recommended',
 				'prettier',
 			],
 			rules: {
@@ -49,15 +48,15 @@ module.exports = {
 				// It's recommended to turn off this rule on TypeScript projects
 				'no-undef': 'off',
 				// Allow ts-directive comments (used to suppress TypeScript compiler errors)
-				'@typescript-eslint/ban-ts-comment': 0,
+				'@typescript-eslint/ban-ts-comment': 'off',
 				// Allow usage of the any type (consider to enable this rule later on)
-				'@typescript-eslint/no-explicit-any': 0,
+				'@typescript-eslint/no-explicit-any': 'off',
 				// Allow usage of require statements (consider to enable this rule later on)
-				'@typescript-eslint/no-var-requires': 0,
+				'@typescript-eslint/no-var-requires': 'off',
 				// Allow non-null assertions for now (consider to enable this rule later on)
-				'@typescript-eslint/no-non-null-assertion': 0,
-				// Allow unused variables when they begin with an underscore
-				'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+				'@typescript-eslint/no-non-null-assertion': 'off',
+				// Allow unused arguments and variables when they begin with an underscore
+				'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 			},
 		},
 	],

@@ -5,14 +5,15 @@
 				v-if="showManualSort"
 				class="manual cell"
 				:class="{ 'sorted-manually': sort.by === manualSortKey }"
-				@click="toggleManualSort"
 				scope="col"
+				@click="toggleManualSort"
 			>
 				<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
 			</th>
 
-			<th v-if="showSelect" class="select cell" scope="col">
+			<th v-if="showSelect !== 'none'" class="select cell" scope="col">
 				<v-checkbox
+					v-if="showSelect === 'multiple'"
 					:model-value="allItemsSelected"
 					:indeterminate="someItemsSelected"
 					@update:model-value="toggleSelectAll"
@@ -28,15 +29,15 @@
 					</span>
 					<v-icon
 						v-if="header.sortable"
+						v-tooltip.top="t(getTooltipForSortIcon(header))"
 						name="sort"
 						class="sort-icon"
 						small
-						v-tooltip.top="t(getTooltipForSortIcon(header))"
 					/>
 				</div>
 				<span
-					class="resize-handle"
 					v-if="showResize"
+					class="resize-handle"
 					@click.stop
 					@pointerdown="onResizeHandleMouseDown(header, $event)"
 				/>
@@ -51,12 +52,12 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType } from 'vue';
+import { ShowSelect } from '@directus/shared/types';
 import useEventListener from '@/composables/use-event-listener';
 import { Header, Sort } from '../types';
 import { throttle, clone } from 'lodash';
 
 export default defineComponent({
-	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,
@@ -67,8 +68,8 @@ export default defineComponent({
 			required: true,
 		},
 		showSelect: {
-			type: Boolean,
-			default: false,
+			type: String as PropType<ShowSelect>,
+			default: 'none',
 		},
 		showResize: {
 			type: Boolean,
@@ -103,6 +104,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -250,7 +252,7 @@ export default defineComponent({
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color);
-		border-bottom: 2px solid var(--border-subdued);
+		border-bottom: var(--border-width) solid var(--border-subdued);
 
 		&.select,
 		&.manual {
@@ -346,7 +348,7 @@ export default defineComponent({
 			top: 20%;
 			left: 2px;
 			display: block;
-			width: 2px;
+			width: var(--border-width);
 			height: 60%;
 			background-color: var(--border-subdued);
 			content: '';

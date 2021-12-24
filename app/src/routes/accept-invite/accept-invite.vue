@@ -6,17 +6,17 @@
 			<v-input :model-value="email" disabled />
 
 			<v-input
+				v-model="password"
 				:placeholder="t('password')"
 				autofocus
 				autocomplete="password"
 				type="password"
-				v-model="password"
 				:disabled="done"
 			/>
 
-			<v-notice type="success" v-if="done">{{ t('account_created_successfully') }}</v-notice>
+			<v-notice v-if="done" type="success">{{ t('account_created_successfully') }}</v-notice>
 
-			<v-notice type="danger" v-if="error">
+			<v-notice v-if="error" type="danger">
 				{{ errorFormatted }}
 			</v-notice>
 
@@ -77,7 +77,7 @@ export default defineComponent({
 				});
 
 				done.value = true;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				creating.value = false;

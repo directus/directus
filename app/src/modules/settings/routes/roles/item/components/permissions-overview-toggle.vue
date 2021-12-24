@@ -1,23 +1,23 @@
 <template>
 	<div
+		v-tooltip="appMinimal && t('required_for_app_access')"
 		class="permissions-overview-toggle"
 		:class="[{ 'has-app-minimal': !!appMinimal }, permissionLevel, appMinimalLevel]"
-		v-tooltip="appMinimal && t('required_for_app_access')"
 	>
 		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
 
-		<v-menu show-arrow v-else>
+		<v-menu v-else show-arrow>
 			<template #activator="{ toggle }">
 				<div>
-					<v-progress-circular indeterminate v-if="loading || saving" small />
-					<v-icon v-else-if="permissionLevel === 'all'" clickable @click="toggle" name="check" />
+					<v-progress-circular v-if="loading || saving" indeterminate small />
+					<v-icon v-else-if="permissionLevel === 'all'" clickable name="check" @click="toggle" />
 					<v-icon
 						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
 						clickable
-						@click="toggle"
 						name="rule"
+						@click="toggle"
 					/>
-					<v-icon v-else-if="permissionLevel === 'none'" clickable @click="toggle" name="block" />
+					<v-icon v-else-if="permissionLevel === 'none'" clickable name="block" @click="toggle" />
 				</div>
 			</template>
 
@@ -66,7 +66,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
-import { Collection, Permission } from '@/types';
+import { Permission, Collection } from '@directus/shared/types';
 import api from '@/api';
 import { useRouter } from 'vue-router';
 import useUpdatePermissions from '../composables/use-update-permissions';
@@ -110,18 +110,14 @@ export default defineComponent({
 
 		const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 			if (permission.value === undefined) return 'none';
-			if (hasAll() === true) return 'all';
+			if (
+				permission.value.fields?.includes('*') &&
+				Object.keys(permission.value.permissions || {}).length === 0 &&
+				Object.keys(permission.value.validation || {}).length === 0
+			)
+				return 'all';
 
 			return 'custom';
-
-			function hasAll() {
-				if (!permission.value) return false;
-				if (permission.value.fields?.includes('*') === false) return false;
-				if (Object.keys(permission.value.permissions || {}).length > 0) return false;
-				if (Object.keys(permission.value.validation || {}).length > 0) return false;
-
-				return true;
-			}
 		});
 
 		const saving = ref(false);

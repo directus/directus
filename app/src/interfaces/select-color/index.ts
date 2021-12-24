@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceColor from './select-color.vue';
 
 export default defineInterface({
@@ -9,6 +9,7 @@ export default defineInterface({
 	component: InterfaceColor,
 	types: ['string'],
 	recommendedDisplays: ['color'],
+	group: 'selection',
 	options: [
 		{
 			field: 'presets',

@@ -1,8 +1,8 @@
-import { AbstractServiceOptions, Item, PrimaryKey } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey, Webhook, MutationOptions } from '../types';
 import { register } from '../webhooks';
-import { ItemsService, MutationOptions } from './items';
+import { ItemsService } from './items';
 
-export class WebhooksService extends ItemsService {
+export class WebhooksService extends ItemsService<Webhook> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_webhooks', options);
 	}
@@ -39,43 +39,6 @@ export class WebhooksService extends ItemsService {
 
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const result = await super.deleteMany(keys, opts);
-		await register();
-		return result;
-	}
-
-	/**
-	 * @deprecated Use `createOne` or `createMany` instead
-	 */
-	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const result = await super.create(data);
-		await register();
-		return result;
-	}
-
-	/**
-	 * @deprecated Use `updateOne` or `updateMany` instead
-	 */
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
-		key?: PrimaryKey | PrimaryKey[]
-	): Promise<PrimaryKey | PrimaryKey[]> {
-		const result = await super.update(data, key as any);
-		await register();
-		return result;
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const result = await super.delete(key as any);
 		await register();
 		return result;
 	}

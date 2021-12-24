@@ -69,16 +69,18 @@ export default {
 	padding-top: 10px;
 	padding-bottom: 22px;
 	padding-left: 10px;
-	background-color: $codeBgColor;
+	background-color: var(--background-normal);
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
 }
+
 .theme-code-group__ul {
 	display: inline-flex;
 	margin: auto 0;
 	padding-left: 0;
 	list-style: none;
 }
+
 .theme-code-group__nav-tab {
 	padding: 5px;
 	color: rgba(255, 255, 255, 0.9);
@@ -89,9 +91,11 @@ export default {
 	border: 0;
 	cursor: pointer;
 }
+
 .theme-code-group__nav-tab-active {
 	border-bottom: #42b983 1px solid;
 }
+
 .pre-blank {
 	color: #42b983;
 }

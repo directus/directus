@@ -13,7 +13,7 @@ describe('AuthorizationRequired', function () {
 	it('sets the raw exception object', function () {
 		try {
 			throw new AuthorizationRequired(new Error('test'), '/some/path');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err.raw).toBeDefined();
 			expect(err.raw.message).toBe('test');
 		}
@@ -24,7 +24,7 @@ describe('DriverNotSupported', function () {
 	it('driver should be set', function () {
 		try {
 			throw DriverNotSupported.driver('alibaba');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err.driver).toBeDefined();
 			expect(err.driver).toBe('alibaba');
 		}
@@ -35,7 +35,7 @@ describe('DriverNotSupported', function () {
 	it('driver should be set', function () {
 		try {
 			throw DriverNotSupported.driver('alibaba');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err.driver).toBeDefined();
 			expect(err.driver).toBe('alibaba');
 		}
@@ -80,7 +80,7 @@ describe('NoSuchBucket', function () {
 	it('constructor', function () {
 		try {
 			throw new NoSuchBucket(new Error('test'), 'bucket');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err.raw).toBeDefined();
 			expect(err.raw.message).toBe('test');
 			expect(err.status).toBe(500);
@@ -93,7 +93,7 @@ describe('PermissionMissing', function () {
 	it('constructor', function () {
 		try {
 			throw new PermissionMissing(new Error('test'), 'bucket');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err.raw).toBeDefined();
 			expect(err.raw.message).toBe('test');
 			expect(err.status).toBe(500);
@@ -106,7 +106,7 @@ describe('UnknownException', function () {
 	it('constructor', function () {
 		try {
 			throw new UnknownException(new Error('test'), 'ERR_CODE', __filename);
-		} catch (err) {
+		} catch (err: any) {
 			expect(err.raw).toBeDefined();
 			expect(err.raw.message).toBe('test');
 			expect(err.message).toContain(__filename);
@@ -121,7 +121,7 @@ describe('WrongKeyPath ', function () {
 	it('constructor', function () {
 		try {
 			throw new WrongKeyPath(new Error('test'), 'some/path');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err.raw).toBeDefined();
 			expect(err.raw.message).toBe('test');
 			expect(err.message).toContain('some/path');

@@ -1,11 +1,11 @@
 <template>
 	<button
 		class="v-switch"
-		@click="toggleInput"
 		type="button"
 		role="switch"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
+		@click="toggleInput"
 	>
 		<span class="switch" />
 		<span class="label type-label">
@@ -18,7 +18,6 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		value: {
 			type: String,
@@ -37,6 +36,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
 			if (props.modelValue instanceof Array) {

@@ -2,12 +2,12 @@
 	<v-dialog v-model="dialogActive" @esc="dialogActive = false">
 		<template #activator="{ on }">
 			<v-button
+				v-tooltip.bottom="disabled ? t('not_allowed') : t('create_folder')"
 				rounded
 				icon
 				class="add-new"
-				@click="on"
-				v-tooltip.bottom="disabled ? t('not_allowed') : t('create_folder')"
 				:disabled="disabled"
+				@click="on"
 			>
 				<v-icon name="create_new_folder" outline />
 			</v-button>
@@ -16,11 +16,11 @@
 		<v-card>
 			<v-card-title>{{ t('create_folder') }}</v-card-title>
 			<v-card-text>
-				<v-input autofocus @keyup.enter="addFolder" :placeholder="t('folder_name')" v-model="newFolderName" />
+				<v-input v-model="newFolderName" autofocus :placeholder="t('folder_name')" @keyup.enter="addFolder" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="dialogActive = false">{{ t('cancel') }}</v-button>
-				<v-button :disabled="newFolderName === null" @click="addFolder" :loading="saving">
+				<v-button :disabled="newFolderName === null" :loading="saving" @click="addFolder">
 					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
@@ -31,7 +31,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
-import useFolders from '../composables/use-folders';
+import useFolders from '@/composables/use-folders';
 import api from '@/api';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -75,7 +75,7 @@ export default defineComponent({
 				newFolderName.value = null;
 
 				router.push({ path: `/files/folders/${newFolder.data.data.id}` });
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;

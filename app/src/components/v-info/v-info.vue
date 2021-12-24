@@ -79,6 +79,7 @@ export default defineComponent({
 .content {
 	max-width: 300px;
 	color: var(--foreground-subdued);
+	line-height: 22px;
 
 	&:not(:last-child) {
 		margin-bottom: 24px;

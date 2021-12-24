@@ -1,5 +1,5 @@
 <template>
-	<v-list class="v-tabs vertical alt-colors" v-if="vertical" large>
+	<v-list v-if="vertical" class="v-tabs vertical alt-colors" nav>
 		<slot />
 	</v-list>
 	<div v-else class="v-tabs horizontal">
@@ -12,7 +12,6 @@ import { defineComponent, PropType, toRefs, provide, ref } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		vertical: {
 			type: Boolean,
@@ -23,6 +22,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { modelValue: selection, vertical } = toRefs(props);
 

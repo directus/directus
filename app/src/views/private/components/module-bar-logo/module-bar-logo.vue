@@ -1,16 +1,16 @@
 <template>
 	<component
 		:is="url ? 'a' : 'div'"
+		v-tooltip.right="urlTooltip"
 		:href="url"
-		target="_blank"
-		ref="noopener noreferer"
+		:target="url ? '_blank' : undefined"
+		:rel="url ? 'noopener noreferrer' : undefined"
 		class="module-bar-logo"
 		:class="{ loading: showLoader }"
-		v-tooltip.right="urlTooltip"
 	>
 		<template v-if="customLogoPath">
 			<transition name="fade">
-				<v-progress-linear indeterminate rounded v-if="showLoader" @animationiteration="stopSpinnerIfQueueIsEmpty" />
+				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
 			</transition>
 			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
@@ -74,22 +74,22 @@ export default defineComponent({
 .module-bar-logo {
 	--v-progress-linear-height: 2px;
 	--v-progress-linear-color: var(--white);
-	--v-progress-linear-background-color: rgba(255, 255, 255, 0.5);
+	--v-progress-linear-background-color: rgb(255 255 255 / 0.5);
 
 	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 64px;
-	height: 64px;
+	width: 60px;
+	height: 60px;
 	padding: 12px;
 	background-color: var(--brand);
 
 	.v-progress-linear {
 		position: absolute;
-		right: 12px;
+		right: 10px;
 		bottom: 5px;
-		left: 12px;
+		left: 10px;
 		width: 40px;
 	}
 
@@ -102,8 +102,8 @@ export default defineComponent({
 
 	.logo {
 		position: absolute;
-		top: 20px;
-		left: 12px;
+		top: 18px;
+		left: 10px;
 		width: 40px;
 		height: 32px;
 		margin: 0 auto;

@@ -36,7 +36,7 @@
 				</div>
 			</transition-expand>
 
-			<span class="reset-toggle" v-if="systemVisible && appAccess">
+			<span v-if="systemVisible && appAccess" class="reset-toggle">
 				{{ t('reset_system_permissions_to') }}
 				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
 				/
@@ -46,14 +46,14 @@
 
 		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
 
-		<v-dialog @update:model-value="resetActive = false" :model-value="!!resetActive" @esc="resetActive = false">
+		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
 			<v-card>
 				<v-card-title>
 					{{ t('reset_system_permissions_copy') }}
 				</v-card-title>
 				<v-card-actions>
-					<v-button @click="resetActive = false" secondary>{{ t('cancel') }}</v-button>
-					<v-button @click="resetSystemPermissions(resetActive === 'recommended')" :loading="resetting">
+					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="resetting" @click="resetSystemPermissions(resetActive === 'recommended')">
 						{{ t('reset') }}
 					</v-button>
 				</v-card-actions>
@@ -68,10 +68,11 @@ import { defineComponent, computed, ref, provide, watch } from 'vue';
 import { useCollectionsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 import api from '@/api';
 import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { orderBy } from 'lodash';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -96,11 +97,16 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
+			collectionsStore.collections.filter(
+				(collection) => collection.collection.startsWith('directus_') === false && collection.schema
+			)
 		);
 
 		const systemCollections = computed(() =>
-			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
+			orderBy(
+				collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
+				'name'
+			)
 		);
 
 		const systemVisible = ref(false);
@@ -154,7 +160,7 @@ export default defineComponent({
 					const response = await api.get('/permissions', { params });
 
 					permissions.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -173,7 +179,7 @@ export default defineComponent({
 						if (permission.id === id) return response.data.data;
 						return permission;
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
@@ -213,7 +219,7 @@ export default defineComponent({
 					await fetchPermissions();
 
 					resetActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					resetError.value = err;
 				} finally {
 					resetting.value = false;

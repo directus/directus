@@ -1,28 +1,46 @@
 ---
+avatar: अवतार
+default_provider: Hi
+published: प्रकाशित
+draft: प्रारूप
+archived: संग्रह
+tile_size: टाइल आकार
 edit_field: एडिट फील्ड
+conditions: शर्तेँ
+maps: मानचित्र
 item_revision: आइटम संशोधन
+enter_a_name: कोई नाम प्रविष्ट करें
 duplicate_field: डुप्लिकेट फ़ील्ड
 half_width: आधी चौड़ाई
 full_width: पुरी चौड़ाई
+group: समूह
+and: और
+or: या
 fill_width: संपूर्ण चौड़ाई
 field_name_translations: फ़ील्ड नाम अनुवाद
 enter_password_to_enable_tfa: टू-फैक्टर ऑथेंटिकेशन को सक्षम करने के लिए अपना पासवर्ड दर्ज करें
 add_field: नया क्षेत्र
 role_name: भूमिका नाम
-db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें '
+branch: शाखा
+leaf: पत्ता
+edit_collection: कलेक्शन संपादित करें
+exclusive: विशेष
+children: बच्चे
 show_archived_items: आर्काइव आइटम दिखाएं
 edited: डेटा संपादित
 required: आवश्यक
 required_for_app_access: ऐप एक्सेस के लिए आवश्यक
 requires_value: डेटा की आवश्यकता है
 create_preset: प्रीसेट बनाएं
+create_panel: पैनल बनाएँ
 create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
 create_webhook: Webhook बनाएं
 invite_users: यूज़र आमंत्रित करें
-email_examples: "good"
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
+subject: विषय
+inbox: सन्देश
 emails: इमेल्स
 connection_excellent: उत्तम कनेक्शन
 connection_good: अच्छा कनेक्शन
@@ -42,7 +60,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: साइंड आउट
   SESSION_EXPIRED: समय बीत गया
-public: पब्लिक
+public_label: सार्वजनिक
 public_description: यह नियंत्रित करता है कि authentication के बिना कौन सा API डेटा उपलब्ध है
 not_allowed: अनुमति नहीं हैं
 directus_version: Directus वर्शन
@@ -95,6 +113,7 @@ field_m2o: M2O रिलेशन
 field_m2a: M2A रिलेशन
 field_o2m: O2M रिलेशन
 field_m2m: M2M रिलेशन
+field_translations: अनुवाद
 item_permissions: आइटम अनुमतियां
 field_permissions: फील्ड अनुमतियाँ
 field_validation: फील्ड मान्यकरण
@@ -109,6 +128,11 @@ language: भाषा
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
 camera: कैमरा
+show_zero: शून्य दिखाओ
+avg: औसत
+count: गिनती
+min: न्यूनतम
+max: अधिकतम
 exposure: एक्सपोज़र
 shutter: शटर
 iso: ISO
@@ -126,7 +150,9 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Date
+date_range: तिथि सीमा
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -173,6 +199,8 @@ card_size: Card Size
 sort_field: Sort Field
 add_sort_field: Add Sort Field
 sort: सॉर्ट
+errors:
+  NOT_NULL_VIOLATION: मान null नहीं हो सकता
 flip_horizontal: फ्लिप हॉरिजॉन्टल
 one_item: '1 समान'
 font: फ़ॉन्ट
@@ -206,6 +234,7 @@ wysiwyg_options:
 settings_webhooks: Webhooks
 fields:
   directus_collections:
+    color: Color
     sort_field: Sort Field
   directus_files:
     modified_on: संशोधन का समय
@@ -217,7 +246,22 @@ fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
     name: भूमिका नाम
-delete: Delete
+  directus_webhooks:
+    name: नाम
+field_options:
+  directus_activity:
+    create: Create
+    update: Update
+  directus_collections:
+    language: भाषा
+    archive_divider: आर्काइव
+    sort_divider: सॉर्ट
+  directus_roles:
+    fields:
+      name_name: नाम
+  directus_webhooks:
+    actions_create: Create
+    actions_update: Update
 interfaces:
   presentation-links:
     primary: प्राइमरी
@@ -234,6 +278,14 @@ displays:
     boolean: Boolean
   color:
     color: Color
+  formatted-value:
+    font: फ़ॉन्ट
+    font_serif: Serif
+    font_monospace: Monospace
+    prefix: प्रीफिक्स
+    suffix: सफिक्स
+    color: Color
+    text: Text
   image:
     circle: Circle
   user:

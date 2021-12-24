@@ -2,20 +2,20 @@
 	<div class="folder-picker-list-item">
 		<v-list-item
 			v-if="folder.children.length === 0"
-			@click="clickHandler(folder.id)"
 			clickable
 			:active="currentFolder === folder.id"
 			:disabled="disabled"
+			@click="clickHandler(folder.id)"
 		>
 			<v-list-item-icon><v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" /></v-list-item-icon>
 			<v-list-item-content>{{ folder.name }}</v-list-item-content>
 		</v-list-item>
 		<v-list-group
 			v-else
-			@click="clickHandler(folder.id)"
 			clickable
 			:active="currentFolder === folder.id"
 			:disabled="disabled"
+			@click="clickHandler(folder.id)"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -46,7 +46,7 @@ type Folder = {
 };
 
 export default defineComponent({
-	name: 'folder-picker-list-item',
+	name: 'FolderPickerListItem',
 	props: {
 		folder: {
 			type: Object as PropType<Folder>,
@@ -71,10 +71,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style scoped>
-.folder-picker-list-item {
-	--v-list-item-background-color-hover: var(--background-normal-alt);
-	--v-list-item-background-color-active: var(--background-normal-alt);
-}
-</style>

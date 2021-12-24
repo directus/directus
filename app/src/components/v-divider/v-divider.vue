@@ -52,12 +52,11 @@ body {
 		margin-top: 8px;
 		border: solid;
 		border-color: var(--v-divider-color);
-		border-width: 2px 0 0 0;
+		border-width: var(--border-width) 0 0 0;
 	}
 
 	span.wrapper {
 		display: flex;
-		margin-right: 16px;
 		color: var(--v-divider-label-color);
 
 		:slotted(.v-icon) {
@@ -67,6 +66,7 @@ body {
 	}
 
 	.type-text {
+		width: 100%;
 		color: var(--v-divider-label-color);
 		font-weight: 600;
 		transition: color var(--fast) var(--transition);
@@ -101,7 +101,7 @@ body {
 		hr {
 			width: 0px;
 			max-width: 0px;
-			border-width: 0 2px 0 0;
+			border-width: 0 var(--border-width) 0 0;
 		}
 
 		span.wrapper {

@@ -15,12 +15,12 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
 						:disabled="item === null || deleteAllowed === false"
 						@click="on"
-						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -30,25 +30,25 @@
 					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="moveToDialogActive" v-if="isNew === false" @esc="moveToDialogActive = false">
+			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="t('move_to_folder')"
 						rounded
 						icon
 						:disabled="item === null"
-						@click="on"
 						class="folder"
-						v-tooltip.bottom="t('move_to_folder')"
+						@click="on"
 					>
 						<v-icon name="folder_move" />
 					</v-button>
@@ -62,46 +62,48 @@
 					</v-card-text>
 
 					<v-card-actions>
-						<v-button @click="moveToDialogActive = false" secondary>
+						<v-button secondary @click="moveToDialogActive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="moveToFolder" :loading="moving">
+						<v-button :loading="moving" @click="moveToFolder">
 							{{ t('move') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="t('download')">
+			<v-button v-tooltip.bottom="t('download')" rounded icon class="download" @click="downloadFile">
 				<v-icon name="save_alt" />
 			</v-button>
 
 			<v-button
 				v-if="item && item.type.includes('image')"
+				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
-				@click="editActive = true"
 				class="edit"
-				v-tooltip.bottom="t('edit')"
+				@click="editActive = true"
 			>
 				<v-icon name="tune" />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false || saveAllowed === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true || saveAllowed === true"
+						v-if="hasEdits === true && saveAllowed === true"
+						:disabled-options="['save-and-add-new']"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -125,12 +127,13 @@
 			<image-editor
 				v-if="item && item.type.startsWith('image')"
 				:id="item.id"
-				@refresh="refresh"
 				v-model="editActive"
+				@refresh="refresh"
 			/>
 
 			<v-form
 				ref="form"
+				v-model="edits"
 				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="item"
@@ -138,7 +141,6 @@
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
 				:validation-errors="validationErrors"
-				v-model="edits"
 			/>
 		</div>
 
@@ -159,9 +161,9 @@
 			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false && revisionsAllowed"
+				ref="revisionsDrawerDetail"
 				collection="directus_files"
 				:primary-key="primaryKey"
-				ref="revisionsDrawerDetail"
 			/>
 			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
@@ -170,7 +172,7 @@
 			/>
 		</template>
 
-		<replace-file v-model="replaceFileDialogActive" @replaced="refresh" :file="item" />
+		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
 	</private-view>
 </template>
 
@@ -185,7 +187,7 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import FolderPicker from '../components/folder-picker.vue';
 import api, { addTokenToURL } from '@/api';
@@ -199,7 +201,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
-	name: 'files-item',
+	name: 'FilesItem',
 	components: {
 		FilesNavigation,
 		RevisionsDrawerDetail,
@@ -328,6 +330,7 @@ export default defineComponent({
 			deleting,
 			saveAndStay,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			editActive,
 			revisionsDrawerDetail,
@@ -387,7 +390,7 @@ export default defineComponent({
 		async function saveAndStay() {
 			try {
 				await save();
-				revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.refresh?.();
 			} catch {
 				// `save` will show unexpected error dialog
 			}
@@ -401,16 +404,23 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(to.value);
+				router.replace(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
+				confirmDelete.value = false;
 			}
 		}
 
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		function downloadFile() {
@@ -453,7 +463,7 @@ export default defineComponent({
 						type: 'success',
 						icon: 'folder_move',
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;

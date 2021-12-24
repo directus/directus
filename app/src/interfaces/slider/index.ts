@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceSlider from './slider.vue';
 
 export default defineInterface({
@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'linear_scale',
 	component: InterfaceSlider,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
+	group: 'other',
 	options: [
 		{
 			field: 'minValue',

@@ -1,15 +1,24 @@
 ---
+avatar: Profielafbeelding
 edit_field: Veld Bewerken
+conditions: Voorwaarden
 item_revision: Item revisie
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
+group: Groep
+and: En
+or: Of
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
 enter_password_to_enable_tfa: Voer je wachtwoord in om Two-Factor Authentication te activeren
 add_field: Voeg Veld Toe
 role_name: Rol Naam
-db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
+branch: Tak
+leaf: Blad
+indeterminate: Onbepaald
+exclusive: Exclusief
+children: Onderliggende
 show_archived_items: Toon Gearchiveerde Items
 edited: Waarde bewerkt
 required: Vereist
@@ -20,7 +29,6 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 create_webhook: Webhook Aanmaken
 invite_users: Gebruikers Uitnodigen
-email_examples: "admin{'@'}voorbeeld.nl, gebruiker{'@'}voorbeeld.nl..."
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
 emails: E-mails
@@ -42,7 +50,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Uitgelogd
   SESSION_EXPIRED: Sessie verlopen
-public: Openbaar
+public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 not_allowed: Niet toegestaan
 directus_version: Directus Versie
@@ -86,6 +94,7 @@ validationError:
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
+nullable: Mag NULL zijn
 allow_null_value: NULL waarde toestaan
 enter_value_to_replace_nulls: Voer een nieuwe waarde in om alle NULL's in dit veld te vervangen.
 field_standard: Standaard
@@ -97,6 +106,7 @@ field_m2a: M2A Relatie
 field_o2m: O2M Relatie
 field_m2m: M2M Relatie
 field_translations: Vertalingen
+field_group: Veld-Groep
 item_permissions: Item Permissies
 field_permissions: Veld Permissies
 field_validation: Veld Validatie
@@ -106,9 +116,6 @@ fields_for_role: 'Velden die de rol "{role}" kan {action}.'
 validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
 presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
 presentation_and_aliases: Presentatie & Aliasen
-revision_post_update: Hier is hoe dit item eruit zag na de update...
-changes_made: Dit zijn de specifieke wijzigingen die zijn aangebracht...
-no_relational_data: Houd er rekening mee dat dit geen relationele gegevens omvat.
 hide_field_on_detail: Veld Verbergen
 show_field_on_detail: Veld Tonen
 delete_field: Veld Verwijderen
@@ -138,6 +145,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimaal
 float: Float
 integer: Integer
@@ -168,9 +176,6 @@ new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 search_collection: Collectie doorzoeken...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
-add_m2o_to_collection: 'Many-to-one toevoegen aan "{collection}"'
-add_o2m_to_collection: 'One-to-many toevoegen aan "{collection}"'
-add_m2m_to_collection: 'Many-to-many toevoegen aan "{collection}"'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
@@ -249,7 +254,7 @@ move_to_folder: Verplaats naar map
 move: Verplaatsen
 system: Systeem
 add_field_related: Veld toevoegen aan gerelateerde collectie
-interface: Interface
+interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
@@ -279,7 +284,7 @@ drag_mode: Sleep modus
 cancel_crop: Annuleer bijsnijden
 original: Origineel
 url: URL
-import: Importeren
+import_label: Importeren
 file_details: Bestand Details
 dimensions: Afmetingen
 size: Grootte
@@ -345,7 +350,6 @@ no_files_copy: Er zijn geen bestanden hier.
 user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
 no_users_copy: Er zijn nog geen gebruikers in deze rol.
 webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
-no_webhooks_copy: Er zijn nog geen webhooks.
 all_items: Alle items
 csv: CSV
 no_collections: Geen collecties
@@ -357,8 +361,12 @@ display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
 active: Actief
+copy: Kopieer
 users: Gebruikers
 activity: Activiteit
+action: Actie
+ip_address: IP Adres
+user_agent: User Agent
 webhooks: Webhooks
 field_width: Veld breedte
 add_filter: Filter toevoegen
@@ -369,7 +377,6 @@ documentation: Documentatie
 sidebar: Sidebar
 duration: Duur
 charset: Karakterset
-second: Seconde
 file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
@@ -407,8 +414,10 @@ errors:
   RECORD_NOT_UNIQUE: Verdubbelde waarde gedetecteerd
   USER_SUSPENDED: Gebruiker geschorst
   CONTAINS_NULL_VALUES: Veld bevat NULL waarden
-  UNKNOWN: Onverwachte fout
+  UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
+  NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
+  UNKNOWN: Onverwachte fout
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
@@ -476,6 +485,10 @@ operators:
   nnull: Is niet null
   contains: Bevat
   ncontains: Bevat niet
+  starts_with: Begint met
+  nstarts_with: Begint niet met
+  ends_with: Eindigt met
+  nends_with: Eindigt niet met
   between: Is tussen
   nbetween: Ligt niet tussen
   empty: Is leeg
@@ -494,6 +507,7 @@ upload_files_success: '{count} bestanden geüpload'
 upload_pending: Uploaden in afwachting
 drag_file_here: Sleep een bestand hierheen
 click_to_browse: Klik om te bladeren
+interface_options: Interface-opties
 layout_options: Lay-out opties
 rows: Rijen
 columns: Kolommen
@@ -519,6 +533,7 @@ no_results_copy: Pas de zoekfilters aan om resultaten te zien.
 clear_filters: Filters wissen
 saves_automatically: Slaat automatisch op
 role: Rol
+rule: Regel
 user: Gebruiker
 no_presets: Geen Voorkeuren
 no_presets_copy: Geen voorkeuren of bladwijzers.
@@ -535,6 +550,7 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+full_screen: Volledig scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
 media: Media
@@ -544,6 +560,8 @@ source: Bron
 url_placeholder: Voer een URL in...
 display_text: Weergegeven tekst
 display_text_placeholder: Enter weergegeven tekst...
+tooltip: Tooltip
+tooltip_placeholder: Voer een tooltip in...
 unlimited: Onbeperkt
 open_link_in: Open link in
 new_tab: Nieuw tabblad
@@ -620,6 +638,7 @@ select: Selecteer...
 layout: Lay-out
 tree_view: Boomstructuurweergave
 changes_are_permanent: Wijzigingen zijn permanent
+preset_name_placeholder: Standaardwaarde...
 preset_search_placeholder: Zoekterm...
 editing_preset: Voorkeur aan het Wijzigen
 layout_preview: Lay-out voorbeeld
@@ -628,7 +647,6 @@ unsaved_changes: Niet-opgeslagen wijzigingen
 unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
 discard_changes: Wijzigingen ongedaan maken
 keep_editing: Blijf wijzigen
-page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
 page_help_collections_collection: >-
   **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_collections_item: >-
@@ -686,14 +704,18 @@ fields:
     collection: Collectie
     icon: Icoon
     note: Notitie
+    color: Kleur
     display_template: Weergavesjabloon
     hidden: Verborgen
     singleton: Singleton
+    translations: Collectie-naam vertalingen
     archive_app_filter: Archiveer App Filter
     archive_value: Archiveer waarde
     unarchive_value: Dearchiveer waarde
     sort_field: Sorteerveld
+    accountability: Activiteit & Revisie Tracking
   directus_files:
+    $thumbnail: Thumbnail
     title: Titel
     description: Beschrijving
     tags: Tags
@@ -730,6 +752,7 @@ fields:
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
     status: Status
+    status_active: Actief
     role: Rol
     token: Token
     last_page: Laatste pagina
@@ -744,8 +767,6 @@ fields:
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
-    storage_asset_presets: Bestand Voorkeuren
-    storage_asset_transform: Storage Asset Transform
     custom_css: Aangepastte CSS
   directus_fields:
     collection: Collectie naam
@@ -765,7 +786,39 @@ fields:
     enforce_tfa: 2FA vereist
     users: Gebruikers in rol
     module_list: Module Navigatie
-    collection_list: Collectie navigatie
+  directus_webhooks:
+    name: Naam
+    status: Status
+    value: Waarde
+    collections: Collecties
+field_options:
+  directus_activity:
+    create: Maak
+    update: Updaten
+  directus_collections:
+    track_activity_revisions: Track Activiteiten & Revisies
+    only_track_activity: Track alleen activiteiten
+    do_not_track_anything: Niets tracken
+    collection_setup: Collectie setup
+    singleton: Behandel als één object
+    language: Taal
+    translation: Vertaling
+    collection_name: Collectie naam
+    archive_divider: Archiveren
+    sort_divider: Sorteren
+  directus_roles:
+    fields:
+      icon_name: Icoon
+      name_name: Naam
+    collections_name: Collecties
+  directus_users:
+    status_dropdown_active: Actief
+  directus_webhooks:
+    status_options_active: Actief
+    actions_create: Maak
+    actions_update: Updaten
+    headers:
+      value: Waarde
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID
@@ -775,11 +828,13 @@ save_current_datetime: Huidige datum/tijd opslaan
 block: Blok
 inline: Doorlopend
 comment: Reactie
-continue: Doorgaan
+relational_triggers: Relationele triggers
+referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
+referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
+referential_action_no_action: Voorkom de verwijdering
+referential_action_cascade: Verwijder het {collection} item (cascade)
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
-default: Standaard
-delete: Verwijder
 delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-
@@ -836,6 +891,9 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
+  filter:
+    add_filter: Filter toevoegen
+    all: Alle
   presentation-links:
     primary: Primair
   input-code:
@@ -900,12 +958,17 @@ interfaces:
     display_template: Weergavesjabloon
   input-rich-text-md:
     markdown: Markdown
+    edit: Wijzig
     customSyntax: Aangepaste blokken
     box: Blok / Inline
     imageToken: Afbeeldingstoken
+  map:
+    zoom: Zoom
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
+  system-folder:
+    folder: Map
   select-radio:
     radio-buttons: Keuzerondjes
   list:
@@ -937,6 +1000,8 @@ interfaces:
     maximum_value: Maximale waarde
   boolean:
     toggle: Schakel
+    color_on: Kleur Aan
+    color_off: Kleur uit
     label_placeholder: Voer een label in...
     label_default: Ingeschakeld
   translations:
@@ -956,6 +1021,8 @@ interfaces:
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
 displays:
+  translations:
+    translations: Vertalingen
   boolean:
     boolean: Boolean
     description: Toon aan/uit status
@@ -994,9 +1061,18 @@ displays:
   formatted-value:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
-    format_title: Formatteer titel
-    format_title_label: Fix hoofdletters automatisch
+    format: Format
+    font: Letterype
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Vetgedrukt
     bold_label: Gebruik bold
+    italic: Cursief
+    prefix: Voorvoegsel
+    suffix: Achtervoegsel
+    color: Kleur
+    icon: Icoon
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven
@@ -1059,3 +1135,6 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+panels:
+  label:
+    name: Label

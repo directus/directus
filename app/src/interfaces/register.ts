@@ -1,7 +1,7 @@
 import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getInterfaces } from './index';
-import { InterfaceConfig } from './types';
+import { InterfaceConfig } from '@directus/shared/types';
 
 const { interfacesRaw } = getInterfaces();
 
@@ -16,17 +16,19 @@ export async function registerInterfaces(app: App): Promise<void> {
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/interfaces/index.js`);
 
 		interfaces.push(...customInterfaces.default);
-	} catch {
+	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom interfaces`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	interfacesRaw.value = interfaces;
 
 	interfacesRaw.value.forEach((inter: InterfaceConfig) => {
-		app.component('interface-' + inter.id, inter.component);
+		app.component(`interface-${inter.id}`, inter.component);
 
-		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {
+		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false && inter.options !== null) {
 			app.component(`interface-options-${inter.id}`, inter.options);
 		}
 	});

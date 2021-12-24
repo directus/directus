@@ -1,15 +1,15 @@
 <template>
 	<v-skeleton-loader v-if="loading" />
-	<div class="folder-picker" v-else>
+	<div v-else class="folder-picker">
 		<v-list>
-			<v-item-group scope="folder-picker" multiple v-model="openFolders">
+			<v-item-group v-model="openFolders" scope="folder-picker" multiple>
 				<v-list-group
 					disable-groupable-parent
 					clickable
-					@click="$emit('update:modelValue', null)"
 					:active="modelValue === null"
 					scope="folder-picker"
 					value="root"
+					@click="$emit('update:modelValue', null)"
 				>
 					<template #activator>
 						<v-list-item-icon>
@@ -53,7 +53,6 @@ type Folder = {
 };
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	components: { FolderPickerListItem },
 	props: {
 		disabledFolders: {
@@ -65,6 +64,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props) {
 		const { t } = useI18n();
 
@@ -129,7 +129,7 @@ export default defineComponent({
 				});
 
 				folders.value = response.data.data;
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;
@@ -152,6 +152,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .folder-picker {
+	--v-list-item-background-color-hover: var(--background-normal-alt);
+	--v-list-item-background-color-active: var(--background-normal-alt);
+
 	padding: 12px;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);

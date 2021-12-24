@@ -3,7 +3,7 @@
 		<v-icon small name="star" />
 		{{ value }}
 	</span>
-	<div v-else class="rating detailed" v-tooltip.bottom.start="value">
+	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
 		<div class="active" :style="ratingPercentage">
 			<v-icon v-for="index in starCount" :key="index" small name="star" />
 		</div>
@@ -61,7 +61,7 @@ export default defineComponent({
 		padding: 2px 6px 2px 4px;
 		color: #ffc107;
 		font-weight: 600;
-		background-color: rgba(255, 193, 7, 0.15);
+		background-color: rgb(255 193 7 / 0.15);
 		border-radius: var(--border-radius);
 
 		.v-icon {

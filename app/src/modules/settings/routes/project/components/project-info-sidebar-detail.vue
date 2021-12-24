@@ -33,14 +33,13 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="md(t('page_help_settings_project'))" />
+		<div v-md="t('page_help_settings_project')" class="page-description" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
-import { md } from '@/utils/md';
 import { useProjectInfo } from '../../../composables/use-project-info';
 
 export default defineComponent({
@@ -49,7 +48,7 @@ export default defineComponent({
 
 		const { parsedInfo } = useProjectInfo();
 
-		return { t, parsedInfo, md };
+		return { t, parsedInfo };
 	},
 });
 </script>

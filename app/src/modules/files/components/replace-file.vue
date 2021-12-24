@@ -7,7 +7,7 @@
 		<v-card v-if="file">
 			<v-card-title>{{ t('replace_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload :preset="preset" :file-id="file.id" @input="uploaded" from-url />
+				<v-upload :preset="preset" :file-id="file.id" from-url @input="uploaded" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('done') }}</v-button>
@@ -21,7 +21,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	emits: ['update:modelValue', 'replaced'],
 	props: {
 		modelValue: {
 			type: Boolean,
@@ -36,6 +35,7 @@ export default defineComponent({
 			default: () => ({}),
 		},
 	},
+	emits: ['update:modelValue', 'replaced'],
 	setup(_props, { emit }) {
 		const { t } = useI18n();
 

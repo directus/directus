@@ -11,9 +11,9 @@
 		}"
 	>
 		<v-checkbox
-			block
 			v-for="item in choicesDisplayed"
 			:key="item.value"
+			block
 			:value="item.value"
 			:label="item.text"
 			:disabled="disabled"
@@ -31,10 +31,10 @@
 
 		<template v-if="allowOther">
 			<v-checkbox
-				block
-				custom-value
 				v-for="otherValue in otherValues"
 				:key="otherValue.key"
+				block
+				custom-value
 				:value="otherValue.value"
 				:disabled="disabled"
 				:icon-on="iconOn"
@@ -45,8 +45,8 @@
 			/>
 
 			<button
-				:disabled="disabled"
 				v-if="allowOther"
+				:disabled="disabled"
 				class="add-new custom"
 				align="left"
 				outlined
@@ -72,7 +72,6 @@ type Option = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -111,6 +110,7 @@ export default defineComponent({
 			default: 8,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceFile from './file.vue';
 
 export default defineInterface({
@@ -8,8 +8,23 @@ export default defineInterface({
 	icon: 'note_add',
 	component: InterfaceFile,
 	types: ['uuid'],
-	groups: ['file'],
+	localTypes: ['file'],
+	group: 'relational',
 	relational: true,
-	options: [],
+	options: [
+		{
+			field: 'folder',
+			name: '$t:interfaces.system-folder.folder',
+			type: 'uuid',
+			meta: {
+				width: 'full',
+				interface: 'system-folder',
+				note: '$t:interfaces.system-folder.field_hint',
+			},
+			schema: {
+				default_value: undefined,
+			},
+		},
+	],
 	recommendedDisplays: ['file'],
 });

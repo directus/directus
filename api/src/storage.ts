@@ -4,7 +4,7 @@ import { GoogleCloudStorage } from '@directus/drive-gcs';
 import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-import { toArray } from './utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { validateEnv } from './utils/validate-env';
 
 validateEnv(['STORAGE_LOCATIONS']);

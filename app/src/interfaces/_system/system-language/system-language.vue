@@ -1,5 +1,5 @@
 <template>
-	<v-select @update:model-value="$emit('input', $event)" :model-value="value" :items="languages" :disabled="disabled" />
+	<v-select :model-value="value" :items="languages" :disabled="disabled" @update:model-value="$emit('input', $event)" />
 </template>
 
 <script lang="ts">
@@ -7,7 +7,6 @@ import { defineComponent } from 'vue';
 import availableLanguages from '@/lang/available-languages.yaml';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -18,6 +17,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup() {
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,

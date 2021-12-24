@@ -4,22 +4,21 @@
 			{{
 				t('presets_for_role', {
 					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public'),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
-		<interface-input-code :value="presets" @input="presets = $event" language="json" type="json" />
+		<interface-input-code :value="presets" language="json" type="json" @input="presets = $event" />
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@/types';
-import useSync from '@/composables/use-sync';
+import { Permission, Role } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
-	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,
@@ -30,6 +29,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

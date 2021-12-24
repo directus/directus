@@ -26,7 +26,7 @@
 			</table-header>
 			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
 				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
-					<v-progress-linear indeterminate v-if="loading" />
+					<v-progress-linear v-if="loading" indeterminate />
 				</th>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
@@ -40,9 +40,9 @@
 				</tr>
 			</tbody>
 			<draggable
-				:force-fallback="true"
 				v-else
 				v-model="internalItems"
+				:force-fallback="true"
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
@@ -61,7 +61,7 @@
 						:sorted-manually="internalSort.by === manualSortKey"
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
-						@click="clickable ? $emit('click:row', element) : null"
+						@click="clickable ? $emit('click:row', { item: element, event: $event }) : null"
 						@item-selected="
 							onItemSelected({
 								item: element,
@@ -86,6 +86,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from 'vue';
+import { ShowSelect } from '@directus/shared/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -103,15 +104,6 @@ const HeaderDefaults: Header = {
 };
 
 export default defineComponent({
-	emits: [
-		'click:row',
-		'update:sort',
-		'update:items',
-		'item-selected',
-		'update:modelValue',
-		'manual-sort',
-		'update:headers',
-	],
 	components: {
 		TableHeader,
 		TableRow,
@@ -139,8 +131,8 @@ export default defineComponent({
 			default: false,
 		},
 		showSelect: {
-			type: Boolean,
-			default: false,
+			type: String as PropType<ShowSelect>,
+			default: 'none',
 		},
 		showResize: {
 			type: Boolean,
@@ -199,6 +191,15 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: [
+		'click:row',
+		'update:sort',
+		'update:items',
+		'item-selected',
+		'update:modelValue',
+		'manual-sort',
+		'update:headers',
+	],
 	setup(props, { emit, slots }) {
 		const internalHeaders = computed({
 			get: () => {
@@ -256,7 +257,7 @@ export default defineComponent({
 
 		const fullColSpan = computed<string>(() => {
 			let length = internalHeaders.value.length + 1; // +1 account for spacer
-			if (props.showSelect) length++;
+			if (props.showSelect !== 'none') length++;
 			if (props.showManualSort) length++;
 			if (hasItemAppendSlot.value) length++;
 
@@ -295,7 +296,7 @@ export default defineComponent({
 				})
 				.reduce((acc, val) => (acc += ' ' + val), '');
 
-			if (props.showSelect) gridTemplateColumns = '36px ' + gridTemplateColumns;
+			if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
 			if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
 
 			gridTemplateColumns = gridTemplateColumns + ' 1fr';

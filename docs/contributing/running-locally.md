@@ -9,6 +9,9 @@
 You will need to have [the latest version of Node](https://nodejs.org/en/download/current/) to _build_ a Development
 version of Directus.
 
+You can use the JavaScript tool manager [volta](https://volta.sh/) to automatically install the current node and npm
+versions.
+
 :::
 
 ## 1. Fork the Directus repository
@@ -57,23 +60,63 @@ To start the initialization run the following command:
 # From within the root of the project
 npm run cli bootstrap
 
-# For SQLite you need to be in the 'api' folder to initialize the database
-cd api
-npm run cli bootstrap
+# For SQLite you need to run the command in the 'api' context (to ensure the database file is created in the right directory)
+npm run cli bootstrap --workspace=api
 ```
 
 This will set-up the required tables for Directus and make sure all the migrations have run.
 
 ## 7. Start the development server
 
-Run the following command from the root directory.
+First you need to choose what packages you want to work on. Then, you should run the `dev` script on that package. You
+can see their names and list of scripts in their related `package.json`. Example of running APP:
 
 ```bash
-npm run dev
+npm run dev -w @directus/app
 ```
 
-If you are only looking to work on the Documentation (public website version), you can navigate to the `docs` directory
-and run the following command:
+If you want to work on multiple packages at once, you should create a new instance of your terminal for each package:
+Example of running Api, App:
+
+<table>
+  <tr>
+  <th>
+  Terminal 1 [Api]
+  </th>
+  <th>
+  Terminal 2 [App]
+  </th>
+  </tr>
+  <tr>
+  <td>
+
+```bash
+npm run dev -w directus
+```
+
+  </td>
+  <td>
+
+```bash
+npm run dev -w @directus/app
+```
+
+  </td>
+  </tr>
+</table>
+
+---
+
+To work on the Documentation (public website version), you should navigate to the `docs` directory and run the following
+command:
+
+```bash
+npm install
+```
+
+<sup>ℹ This is necessary because the way vue-server-renderer imports vue</sup>
+
+Then you should run
 
 ```bash
 npm run dev:site
@@ -81,8 +124,7 @@ npm run dev:site
 
 ::: tip
 
-If you encounter errors during this installation process, make sure your node version meets the
-[minimum requirements](/guides/installation/cli)
+If you encounter errors during this installation process, make sure your node version meets the minimum requirements
 
 :::
 
@@ -90,3 +132,9 @@ If you encounter errors during this installation process, make sure your node ve
 
 At this point you are ready to start working on Directus! Before diving in however, it's worth reading through the
 introduction to [Contributing](/contributing/introduction).
+
+::: tip Debugging
+
+Check our Wiki for a [guide](https://github.com/directus/directus/wiki/debugging) on debugging the app and api.
+
+:::

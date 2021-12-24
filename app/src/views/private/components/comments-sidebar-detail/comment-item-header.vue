@@ -35,7 +35,7 @@
 					</v-list-item>
 					<v-list-item clickable @click="confirmDelete = true">
 						<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
-						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+						<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -47,11 +47,11 @@
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
 
 				<v-card-actions>
-					<v-button @click="confirmDelete = false" secondary>
+					<v-button secondary @click="confirmDelete = false">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button @click="remove" class="action-delete" :loading="deleting">
-						{{ t('delete') }}
+					<v-button kind="danger" :loading="deleting" @click="remove">
+						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -71,7 +71,6 @@ import api, { addTokenToURL } from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	emits: ['edit'],
 	props: {
 		activity: {
 			type: Object as PropType<Activity>,
@@ -82,6 +81,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['edit'],
 	setup(props) {
 		const { t } = useI18n();
 
@@ -117,7 +117,7 @@ export default defineComponent({
 					await api.delete(`/activity/comment/${props.activity.id}`);
 					await props.refresh();
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleting.value = false;

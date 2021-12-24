@@ -2,78 +2,78 @@
 	<v-menu attached :disabled="disabled" :close-on-content-click="false">
 		<template #activator="{ activate }">
 			<v-input
-				:disabled="disabled"
-				:placeholder="t('interfaces.select-color.placeholder')"
 				v-model="hex"
+				:disabled="disabled"
+				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
 				maxlength="7"
 				@focus="activate"
 			>
 				<template #prepend>
-					<v-input type="color" class="html-color-select" v-model="hex" ref="htmlColorInput" />
+					<v-input ref="htmlColorInput" v-model="hex" type="color" class="html-color-select" />
 					<v-button
-						@click="activateColorPicker"
 						class="swatch"
 						:icon="true"
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
 							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
 						}"
+						@click="activateColorPicker"
 					>
 						<v-icon v-if="!isValidColor" name="colorize" />
 					</v-button>
 				</template>
 				<template #append>
-					<v-icon :name="isValidColor ? 'close' : 'palette'" clickable @click="unsetColor" />
+					<v-icon :name="isValidColor ? 'close' : 'palette'" :clickable="isValidColor" @click="unsetColor" />
 				</template>
 			</v-input>
 		</template>
 
 		<div class="color-data-inputs" :class="{ stacked: width === 'half' }">
 			<div class="color-data-input color-type">
-				<v-select :items="colorTypes" v-model="colorType" />
+				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
 			<template v-if="colorType === 'RGB'">
 				<v-input
-					type="number"
 					v-for="(val, i) in rgb"
 					:key="i"
+					type="number"
 					:model-value="val"
-					@update:model-value="setValue('rgb', i, $event)"
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
 					:max="255"
 					:step="1"
 					maxlength="3"
+					@update:model-value="setValue('rgb', i, $event)"
 				/>
 			</template>
 			<template v-if="colorType === 'HSL'">
 				<v-input
-					type="number"
 					v-for="(val, i) in hsl"
 					:key="i"
+					type="number"
 					:model-value="val"
-					@update:model-value="setValue('hsl', i, $event)"
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
 					:max="i === 0 ? 360 : 100"
 					:step="1"
 					maxlength="3"
+					@update:model-value="setValue('hsl', i, $event)"
 				/>
 			</template>
 		</div>
-		<div class="presets" v-if="presets">
+		<div v-if="presets" class="presets">
 			<v-button
 				v-for="preset in presets"
 				:key="preset.color"
+				v-tooltip="preset.name"
 				class="preset"
 				rounded
 				icon
 				:style="{ '--v-button-background-color': preset.color }"
-				v-tooltip="preset.name"
 				@click="() => (hex = preset.color)"
 			/>
 		</div>
@@ -86,7 +86,6 @@ import { isHex } from '@/utils/color';
 import Color from 'color';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -96,6 +95,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 			validator: (val: string) => val === null || val === '' || isHex(val),
+		},
+		placeholder: {
+			type: String,
+			default: null,
 		},
 		presets: {
 			type: Array as PropType<string[]>,
@@ -132,6 +135,10 @@ export default defineComponent({
 					name: 'Light Gray',
 					color: '#ECEFF1',
 				},
+				{
+					name: 'White',
+					color: '#FFFFFF',
+				},
 			],
 		},
 		width: {
@@ -139,6 +146,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -274,7 +282,7 @@ export default defineComponent({
 .presets {
 	display: flex;
 	width: 100%;
-	padding: 0px 8px 14px 8px;
+	padding: 0px 8px 14px;
 }
 
 .presets .preset {
@@ -294,11 +302,13 @@ export default defineComponent({
 }
 
 .v-input.html-color-select {
-	display: none;
+	width: 0;
+	height: 0;
+	visibility: hidden;
 }
 
-.color-input {
-	--input-padding: 12px 12px 12px 4px;
+.color-input :deep(.input) {
+	padding-left: 6px;
 }
 
 .color-data-inputs {

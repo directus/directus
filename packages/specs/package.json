@@ -1,14 +1,17 @@
 {
 	"name": "@directus/specs",
-	"version": "9.0.0-rc.80",
+	"version": "9.3.0",
 	"description": "OpenAPI Specification of the Directus API",
 	"main": "index.js",
+	"exports": {
+		".": "./index.js",
+		"./package.json": "./package.json"
+	},
 	"scripts": {
 		"ui:watch": "swagger-ui-watcher src/openapi.yaml",
 		"validate": "swagger-cli validate src/openapi.yaml",
 		"build": "swagger-cli bundle src/openapi.yaml -o dist/openapi.json",
 		"build:deref": "swagger-cli bundle src/openapi.yaml -o dist/openapi-deref.json --dereference",
-		"prepublishOnly": "npm run build",
 		"dev": "npm-watch build"
 	},
 	"watch": {
@@ -40,7 +43,7 @@
 	],
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
-		"npm-watch": "0.10.0",
+		"npm-watch": "0.11.0",
 		"swagger-cli": "4.0.4",
 		"swagger-ui-watcher": "2.1.12"
 	},

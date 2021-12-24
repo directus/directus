@@ -10,7 +10,7 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	role: null,
 	user: null,
 	search: null,
-	filters: null,
+	filter: null,
 	layout: null,
 	layout_query: null,
 	layout_options: null,
@@ -23,7 +23,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'cards',
 		layout_query: {
 			cards: {
-				sort: '-uploaded_on',
+				sort: ['-uploaded_on'],
 			},
 		},
 		layout_options: {
@@ -41,7 +41,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'cards',
 		layout_query: {
 			cards: {
-				sort: 'email',
+				sort: ['email'],
 			},
 		},
 		layout_options: {
@@ -58,7 +58,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'tabular',
 		layout_query: {
 			tabular: {
-				sort: '-timestamp',
+				sort: ['-timestamp'],
 				fields: ['action', 'collection', 'timestamp', 'user'],
 			},
 		},
@@ -91,6 +91,26 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 			},
 		},
 	},
+	directus_webhooks: {
+		collection: 'directus_webhooks',
+		layout: 'tabular',
+		layout_query: {
+			tabular: {
+				fields: ['status', 'method', 'name', 'collections', 'actions'],
+			},
+		},
+		layout_options: {
+			tabular: {
+				widths: {
+					status: 32,
+					method: 100,
+					name: 210,
+					collections: 240,
+					actions: 210,
+				},
+			},
+		},
+	},
 };
 
 const currentUpdate: Record<number, string> = {};
@@ -100,10 +120,18 @@ export const usePresetsStore = defineStore({
 	state: () => ({
 		collectionPresets: [] as Preset[],
 	}),
+	getters: {
+		bookmarks(): Preset[] {
+			return this.collectionPresets.filter((preset) => preset.bookmark !== null);
+		},
+	},
 	actions: {
 		async hydrate() {
+			const userStore = useUserStore();
+			if (!userStore.currentUser || 'share' in userStore.currentUser) return;
+
 			// Hydrate is only called for logged in users, therefore, currentUser exists
-			const { id, role } = useUserStore().currentUser!;
+			const { id, role } = userStore.currentUser;
 
 			const values = await Promise.all([
 				// All user saved bookmarks and presets
@@ -242,7 +270,7 @@ export const usePresetsStore = defineStore({
 		 * the user. If the preset already exists and is for a user, we update the preset.
 		 * The response gets added to the store.
 		 */
-		async savePreset(preset: Preset) {
+		async savePreset(preset: Partial<Preset>) {
 			const userStore = useUserStore();
 			if (userStore.currentUser === null) return null;
 			const { id: userID } = userStore.currentUser;

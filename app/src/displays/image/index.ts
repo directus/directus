@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayImage from './image.vue';
 
 export default defineDisplay({
@@ -6,8 +6,9 @@ export default defineDisplay({
 	name: '$t:displays.image.image',
 	description: '$t:displays.image.description',
 	types: ['uuid'],
+	localTypes: ['file'],
 	icon: 'insert_photo',
-	handler: DisplayImage,
+	component: DisplayImage,
 	options: [
 		{
 			field: 'circle',

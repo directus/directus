@@ -2,50 +2,33 @@
 	<div class="comment-item">
 		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
 
-		<v-textarea ref="textarea" v-if="editing" v-model="edits">
-			<template #append>
-				<div class="buttons">
-					<v-button class="cancel" @click="cancelEditing" secondary x-small>
-						{{ t('cancel') }}
-					</v-button>
+		<comment-input
+			v-if="editing"
+			:existing-comment="activity"
+			:primary-key="primaryKey"
+			:collection="collection"
+			:refresh="refresh"
+			:previews="userPreviews"
+			@cancel="cancelEditing"
+		/>
 
-					<v-button
-						:loading="savingEdits"
-						class="post-comment"
-						@click="saveEdits"
-						x-small
-						:disabled="edits === activity.comment"
-					>
-						{{ t('save') }}
-					</v-button>
-				</div>
-			</template>
-		</v-textarea>
-
-		<div v-else class="content">
-			<span v-html="htmlContent" class="selectable" />
-
-			<!-- @TODO: Dynamically add element below if the comment overflows -->
-			<!-- <div v-if="activity.id == 204" class="expand-text">
-				<span>{{ t('click_to_expand') }}</span>
-			</div> -->
-		</div>
+		<div v-else v-md="activity.display" class="content selectable" />
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, watch, ComponentPublicInstance } from 'vue';
+import { defineComponent, PropType, ref, watch, ComponentPublicInstance } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
-import { md } from '@/utils/md';
+import CommentInput from './comment-input.vue';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	components: { CommentItemHeader },
+	components: { CommentItemHeader, CommentInput },
 	props: {
 		activity: {
 			type: Object as PropType<Activity>,
@@ -55,18 +38,30 @@ export default defineComponent({
 			type: Function as PropType<() => void>,
 			required: true,
 		},
+		userPreviews: {
+			type: Object,
+			require: true,
+			default: () => ({}),
+		},
+		primaryKey: {
+			type: [Number, String],
+			required: true,
+		},
+		collection: {
+			type: String,
+			required: true,
+		},
 	},
 	setup(props) {
 		const { t } = useI18n();
 
 		const textarea = ref<ComponentPublicInstance>();
-		const htmlContent = computed(() => (props.activity.comment ? md(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
 		useShortcut('meta+enter', saveEdits, textarea);
 
-		return { t, htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
+		return { t, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);
@@ -87,8 +82,9 @@ export default defineComponent({
 					await api.patch(`/activity/comment/${props.activity.id}`, {
 						comment: edits.value,
 					});
-					await props.refresh();
-				} catch (err) {
+
+					props.refresh();
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					savingEdits.value = false;
@@ -119,6 +115,7 @@ export default defineComponent({
 }
 
 .comment-item .content {
+	display: inline-block;
 	max-height: 300px;
 	overflow-y: auto;
 }
@@ -147,6 +144,17 @@ export default defineComponent({
 	border-top: 2px solid var(--border-normal);
 }
 
+.comment-item .content :deep(mark) {
+	display: inline-block;
+	padding: 2px 4px;
+	color: var(--primary);
+	line-height: 1;
+	background: var(--primary-alt);
+	border-radius: var(--border-radius);
+	user-select: text;
+	pointer-events: none;
+}
+
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
 	margin-top: 12px;
 	font-weight: 600;
@@ -162,9 +170,9 @@ export default defineComponent({
 	height: 40px;
 	background: linear-gradient(
 		180deg,
-		rgba(var(--background-page-rgb), 0) 0%,
-		rgba(var(--background-page-rgb), 0.8) 25%,
-		rgba(var(--background-page-rgb), 1) 100%
+		rgb(var(--background-page-rgb), 0) 0%,
+		rgb(var(--background-page-rgb), 0.8) 25%,
+		rgb(var(--background-page-rgb), 1) 100%
 	);
 	content: '';
 }
@@ -201,6 +209,10 @@ export default defineComponent({
 
 .comment-item:hover :deep(.comment-header .header-right .more) {
 	opacity: 1;
+}
+
+.user-name {
+	color: var(--primary);
 }
 
 .buttons {

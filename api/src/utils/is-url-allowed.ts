@@ -1,5 +1,6 @@
-import { toArray } from './to-array';
+import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
+import { URL } from 'url';
 
 /**
  * Check if url matches allow list either exactly or by domain+path

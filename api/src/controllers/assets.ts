@@ -2,15 +2,13 @@ import { Range } from '@directus/drive';
 import { Router } from 'express';
 import { pick } from 'lodash';
 import ms from 'ms';
-import validate from 'uuid-validate';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
 import getDatabase from '../database';
 import env from '../env';
-import { ForbiddenException, InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
+import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
-import storage from '../storage';
-import { Transformation } from '../types/assets';
+import { TransformationParams, TransformationMethods, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
 
 const router = Router();
@@ -19,33 +17,6 @@ router.use(useCollection('directus_files'));
 
 router.get(
 	'/:pk',
-
-	// Check if file exists and if you have permission to read it
-	asyncHandler(async (req, res, next) => {
-		/**
-		 * We ignore everything in the id after the first 36 characters (uuid length). This allows the
-		 * user to add an optional extension, or other identifier for use in external software (#4067)
-		 */
-		const id = req.params.pk?.substring(0, 36);
-
-		/**
-		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
-		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
-		 * validity of the uuid ahead of time.
-		 */
-		const isValidUUID = validate(id, 4);
-		if (isValidUUID === false) throw new ForbiddenException();
-
-		const database = getDatabase();
-		const file = await database.select('id', 'storage', 'filename_disk').from('directus_files').where({ id }).first();
-		if (!file) throw new ForbiddenException();
-
-		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
-		if (!exists) throw new ForbiddenException();
-
-		return next();
-	}),
-
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
@@ -68,26 +39,63 @@ router.get(
 		if ('key' in transformation && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
-		if ('quality' in transformation && (Number(transformation.quality) < 1 || Number(transformation.quality) > 100)) {
-			throw new InvalidQueryException(`"quality" Parameter has to between 1 to 100`);
+
+		if ('transforms' in transformation) {
+			let transforms: unknown;
+
+			// Try parse the JSON array
+			try {
+				transforms = JSON.parse(transformation['transforms'] as string);
+			} catch {
+				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
+			}
+
+			// Check if it is actually an array.
+			if (!Array.isArray(transforms)) {
+				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
+			}
+
+			// Check against ASSETS_TRANSFORM_MAX_OPERATIONS
+			if (transforms.length > Number(env.ASSETS_TRANSFORM_MAX_OPERATIONS)) {
+				throw new InvalidQueryException(
+					`"transforms" Parameter is only allowed ${env.ASSETS_TRANSFORM_MAX_OPERATIONS} transformations.`
+				);
+			}
+
+			// Check the transformations are valid
+			transforms.forEach((transform) => {
+				const name = transform[0];
+
+				if (!TransformationMethods.includes(name)) {
+					throw new InvalidQueryException(`"transforms" Parameter does not allow "${name}" as a transformation.`);
+				}
+			});
+
+			transformation.transforms = transforms;
 		}
 
-		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key);
+		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key!);
 		const allKeys: string[] = [
 			...systemKeys,
-			...(assetSettings.storage_asset_presets || []).map((transformation: Transformation) => transformation.key),
+			...(assetSettings.storage_asset_presets || []).map((transformation: TransformationParams) => transformation.key),
 		];
 
 		// For use in the next request handler
 		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, ...(assetSettings.storage_asset_presets || [])];
 		res.locals.transformation = transformation;
 
-		if (Object.keys(transformation).length === 0) {
+		if (
+			Object.keys(transformation).length === 0 ||
+			('transforms' in transformation && transformation.transforms!.length === 0)
+		) {
 			return next();
 		}
+
 		if (assetSettings.storage_asset_transform === 'all') {
-			if (transformation.key && allKeys.includes(transformation.key as string) === false)
+			if (transformation.key && allKeys.includes(transformation.key as string) === false) {
 				throw new InvalidQueryException(`Key "${transformation.key}" isn't configured.`);
+			}
+
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'presets') {
 			if (allKeys.includes(transformation.key as string)) return next();
@@ -107,9 +115,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		const transformation: Transformation = res.locals.transformation.key
-			? res.locals.shortcuts.find(
-					(transformation: Transformation) => transformation.key === res.locals.transformation.key
+		const transformation: TransformationParams | TransformationPreset = res.locals.transformation.key
+			? (res.locals.shortcuts as TransformationPreset[]).find(
+					(transformation) => transformation.key === res.locals.transformation.key
 			  )
 			: res.locals.transformation;
 

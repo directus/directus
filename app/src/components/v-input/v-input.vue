@@ -1,5 +1,5 @@
 <template>
-	<div class="v-input" @click="$emit('click', $event)" :class="classes">
+	<div class="v-input" :class="classes" @click="$emit('click', $event)">
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
@@ -10,17 +10,18 @@
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
 				<input
-					v-bind="attributes"
+					ref="input"
 					v-focus="autofocus"
-					v-on="listeners"
+					v-bind="attributes"
+					:placeholder="placeholder"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue"
-					ref="input"
+					:value="modelValue === null ? '' : String(modelValue)"
+					v-on="listeners"
 				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
@@ -29,17 +30,19 @@
 					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
+					tabindex="-1"
 					clickable
-					@click="stepUp"
 					:disabled="!isStepUpAllowed"
+					@click="stepUp"
 				/>
 				<v-icon
 					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
+					tabindex="-1"
 					clickable
-					@click="stepDown"
 					:disabled="!isStepDownAllowed"
+					@click="stepDown"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
@@ -54,11 +57,10 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
+import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
-	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
 	inheritAttrs: false,
 	props: {
 		autofocus: {
@@ -84,6 +86,10 @@ export default defineComponent({
 		fullWidth: {
 			type: Boolean,
 			default: true,
+		},
+		placeholder: {
+			type: [String, Number],
+			default: null,
 		},
 		modelValue: {
 			type: [String, Number],
@@ -139,6 +145,7 @@ export default defineComponent({
 			default: 'off',
 		},
 	},
+	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
 	setup(props, { emit, attrs }) {
 		const input = ref<HTMLInputElement | null>(null);
 
@@ -147,11 +154,12 @@ export default defineComponent({
 			keydown: processValue,
 			blur: (e: Event) => {
 				trimIfEnabled();
-				attrs?.onBlur?.(e);
+				if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 			},
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));
 		const attributes = computed(() => omit(attrs, ['class']));
+
 		const classes = computed(() => [
 			{
 				'full-width': props.fullWidth,
@@ -174,13 +182,13 @@ export default defineComponent({
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
 			const key = event.key.toLowerCase();
-			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'tab'];
+			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.slug === true) {
 				const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
 
-				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key);
+				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 				if (isAllowed === false) {
 					event.preventDefault();
@@ -210,7 +218,7 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.modelValue && props.trim) {
+			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
 				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}
@@ -218,22 +226,26 @@ export default defineComponent({
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
-			if (props.nullable === true && !value) {
+			if (props.nullable === true && value === '') {
 				emit('update:modelValue', null);
 				return;
 			}
 
 			if (props.type === 'number') {
-				emit('update:modelValue', Number(value));
+				const parsedNumber = Number(value);
+
+				// Ignore if numeric value remains unchanged
+				if (props.modelValue !== parsedNumber) {
+					emit('update:modelValue', parsedNumber);
+				}
 			} else {
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
-					value = slugify(value, { separator: props.slugSeparator });
+					value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
 					if (endsWithSpace) value += props.slugSeparator;
 				}
 
 				if (props.dbSafe === true) {
-					value = value.toLowerCase();
 					value = value.replace(/\s/g, '_');
 					// Replace é -> e etc
 					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -374,6 +386,7 @@ body {
 		}
 
 		.append {
+			flex-shrink: 0;
 			margin-left: 8px;
 		}
 	}
@@ -397,7 +410,7 @@ body {
 		&::-webkit-outer-spin-button,
 		&::-webkit-inner-spin-button {
 			margin: 0;
-			-webkit-appearance: none;
+			appearance: none;
 		}
 
 		&:focus {
@@ -407,7 +420,7 @@ body {
 		/* Firefox */
 
 		&[type='number'] {
-			-moz-appearance: textfield;
+			appearance: textfield;
 		}
 	}
 

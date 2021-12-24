@@ -6,13 +6,13 @@
 
 		<div class="action-buttons">
 			<v-button
+				v-if="showSidebarToggle"
 				class="sidebar-toggle"
 				icon
 				rounded
 				secondary
 				outlined
 				@click="$emit('toggle:sidebar')"
-				v-if="showSidebarToggle"
 			>
 				<v-icon name="info" outline />
 			</v-button>
@@ -26,13 +26,13 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-	emits: ['toggle:sidebar'],
 	props: {
 		showSidebarToggle: {
 			type: Boolean,
 			default: false,
 		},
 	},
+	emits: ['toggle:sidebar'],
 	setup() {
 		const active = ref(false);
 		return { active };
@@ -57,6 +57,7 @@ export default defineComponent({
 	flex-shrink: 0;
 	margin-right: 8px;
 }
+
 @media (min-width: 960px) {
 	.actions .expand {
 		display: none;
@@ -80,6 +81,7 @@ export default defineComponent({
 .actions .action-buttons .sidebar-toggle {
 	flex-shrink: 0;
 }
+
 @media (min-width: 960px) {
 	.actions .action-buttons .sidebar-toggle {
 		display: none;
@@ -102,9 +104,10 @@ export default defineComponent({
 	transform: rotate(180deg);
 }
 
-.actions.active .action-buttons > * {
+.actions.active .action-buttons > :deep(*) {
 	display: inherit;
 }
+
 @media (min-width: 960px) {
 	.actions .action-buttons > :deep(*:not(.sidebar-toggle)) {
 		display: inherit !important;

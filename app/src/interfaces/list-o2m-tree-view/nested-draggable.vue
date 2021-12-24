@@ -8,11 +8,11 @@
 		:group="{ name: 'g1' }"
 		item-key="id"
 		draggable=".row"
-		@start="drag = true"
-		@end="drag = false"
 		:set-data="hideDragImage"
 		:disabled="disabled"
 		:force-fallback="true"
+		@start="drag = true"
+		@end="drag = false"
 		@change="$emit('change', $event)"
 	>
 		<template #item="{ element, index }">
@@ -50,8 +50,11 @@ import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 
 export default defineComponent({
-	emits: ['change', 'input'],
-	name: 'nested-draggable',
+	name: 'NestedDraggable',
+	components: {
+		Draggable,
+		ItemPreview,
+	},
 	props: {
 		tree: {
 			required: true,
@@ -87,10 +90,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	components: {
-		Draggable,
-		ItemPreview,
-	},
+	emits: ['change', 'input'],
 	setup(props, { emit }) {
 		const drag = ref(false);
 
@@ -165,10 +165,10 @@ export default defineComponent({
 
 .row {
 	.preview {
-		padding: 12px 12px;
+		padding: 12px;
 		background-color: var(--card-face-color);
 		border-radius: var(--border-radius);
-		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
+		box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2);
 		cursor: grab;
 		transition: var(--fast) var(--transition);
 		transition-property: box-shadow, background-color;
@@ -177,10 +177,6 @@ export default defineComponent({
 			padding-top: 12px;
 		}
 	}
-}
-
-.flip-list-move {
-	transition: transform 0.5s;
 }
 
 .ghost .preview {

@@ -8,21 +8,22 @@
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
 
 		<component
-			v-if="interfaceExists"
 			:is="
 				field.meta && field.meta.interface
 					? `interface-${field.meta.interface}`
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
+			v-if="interfaceExists"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
 			:loading="loading"
-			:value="modelValue === undefined ? field.schema.default_value : modelValue"
+			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
 			:width="(field.meta && field.meta.width) || 'full'"
 			:type="field.type"
 			:collection="field.collection"
 			:field="field.field"
+			:field-data="field"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"
@@ -37,13 +38,11 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field } from '@/types';
-import { getInterfaces } from '@/interfaces';
+import { Field } from '@directus/shared/types';
+import { getInterface } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -63,7 +62,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
-			default: null,
+			default: undefined,
 		},
 		loading: {
 			type: Boolean,
@@ -78,14 +77,11 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props) {
 		const { t } = useI18n();
 
-		const { interfaces } = getInterfaces();
-
-		const interfaceExists = computed(() => {
-			return !!interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field?.meta?.interface || 'input');
-		});
+		const interfaceExists = computed(() => !!getInterface(props.field?.meta?.interface || 'input'));
 
 		return { t, interfaceExists, getDefaultInterfaceForType };
 	},
