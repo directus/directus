@@ -298,6 +298,7 @@ revision_delta_reverted: Geri Alındı
 revision_delta_other: Revizyon
 revision_delta_by: '{user} tarafından {date}'
 private_user: Gizli Kullanıcı
+creation_preview: Oluşturma Önizlemesi
 revision_preview: Revizyon Önizlemesi
 updates_made: Güncellemeler Uygulandı
 leave_comment: Yorum bırakın...
@@ -335,6 +336,8 @@ date-fns_time_no_seconds: 's:dd a'
 date-fns_date_short: 'AAA d, u'
 date-fns_time_short: 's:aa a'
 date-fns_date_short_no_year: AAA d
+minutes: Dakika
+hours: Saat
 month: Ay
 year: Yıl
 select_all: Tümünü Seç
@@ -355,6 +358,7 @@ drag_mode: Sürükleme Modu
 cancel_crop: Kırpmayı İptal Et
 original: Orijinal
 url: URL
+import_label: İçe aktar
 file_details: Dosya Ayrıntıları
 dimensions: Boyutlar
 size: Boyut
@@ -368,6 +372,7 @@ zoom: Yakınlaş
 download: İndir
 open: Aç
 open_in_new_window: Yeni Pencerede Aç
+open_folder: '"{folder}" Klasörünü Aç'
 foreground_color: Ön Plan Rengi
 background_color: Arkaplan Rengi
 upload_from_device: Cihazdan Yükle
@@ -462,6 +467,7 @@ errors:
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
   NOT_NULL_VIOLATION: Değer null olamaz
   UNKNOWN: Beklenmeyen hata
+security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
@@ -699,6 +705,8 @@ fields:
     value: Değer
     collections: Koleksiyonlar
 field_options:
+  directus_settings:
+    security_divider_title: Güvenlik
   directus_activity:
     create: Oluştur
     update: Güncelle
