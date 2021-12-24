@@ -1,5 +1,5 @@
 <template>
-	<v-menu :close-on-content-click="false" attached :disabled="disabled" :max-height-none="true">
+	<v-menu :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
 			<v-input :active="active" clickable readonly :model-value="displayValue" :disabled="disabled" @click="toggle">
 				<template v-if="!disabled" #append>
@@ -7,6 +7,7 @@
 				</template>
 			</v-input>
 		</template>
+
 		<v-date-picker
 			:type="type"
 			:disabled="disabled"
