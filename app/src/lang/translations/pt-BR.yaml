@@ -1319,6 +1319,8 @@ interfaces:
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
     options_override: Sobrescrever opções
+    imageToken: Token da imagem
+    imageToken_label: Qual token (estático) a ser adicionado nas imagens
   input-autocomplete-api:
     input-autocomplete-api: Entrada de preenchimento automático (API)
     description: Um tipo de pesquisa para valores de API externos.
