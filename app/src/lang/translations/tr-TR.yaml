@@ -26,6 +26,7 @@ published: Yayınlandı
 draft: Taslak
 archived: Arşivlenmiş
 modules: Modüller
+module_bar: Kenar Çubuğu
 tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
@@ -224,6 +225,9 @@ geometry: Geometri (Tümü)
 geometry.Point: Nokta
 geometry.LineString: Çizgi Dizisi
 geometry.Polygon: Çokgen
+geometry.MultiPoint: Çoklu Nokta
+geometry.MultiLineString: Çoklu Çizgi Dizisi
+geometry.MultiPolygon: Çoklu Çokgen
 not_available_for_type: Bu Tip için Mevcut Değil
 create_translations: Çeviriler Oluşturun
 auto_refresh: Otomatik Yenile
@@ -243,6 +247,9 @@ new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
 search_collection: Koleksiyonu Ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
+add_m2o_to_collection: '"{collection}" Çoktan-Bire İlişki Ekle'
+add_o2m_to_collection: '"{collection}" Birden-Çoka İlişki Ekle'
+add_m2m_to_collection: '"{collection}" Çoktan-Çoka İlişki Ekle'
 choose_a_type: Bir Tür Seçin...
 determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
@@ -391,11 +398,18 @@ creating_new_collection: Yeni Koleksiyon Oluştur
 created_by: Oluşturan
 created_on: Oluşturulma tarihi
 creating_collection_info: Koleksiyonu isimlendir ve onun benzersiz "anahtar" alanını ayarla...
+creating_collection_system: İsteğe bağlı alanları etkinleştir ve yeniden adlandır.
+auto_increment_integer: Otomatik artan sayı
+generated_uuid: Üretilen UUID
+manual_string: Elle girilmiş metin
 save_and_create_new: Kaydet ve Yeni Oluştur
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
 add_existing: Var olanı ekle
 creating_items: öğe oluşturma
+enable_create_button: Oluştur Butonunu Etkinleştir
+selecting_items: Öğeleri Seç
+enable_select_button: Seç Butonunu Etkinleştir
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
 click_to_expand: Genişletmek için Tıklayın
@@ -406,7 +420,9 @@ disabled: Pasif
 information: Bilgi
 report_bug: Hata Bildir
 request_feature: Ek Özellik Talep Et
+interface_not_found: '"{interface}" Arayüzü bulunamadı.'
 reset_interface: Arayüzü Sıfırla
+display_not_found: '"{display}" Ekranı bulunamadı.'
 item_count: 'Öge yok | 1 Öge | {count}  Öge'
 no_files_copy: Burada dosya yok.
 user_count: 'Kullanıcı Yok | Bir Kullanıcı | {count} Kullanıcı'
@@ -683,6 +699,7 @@ fields:
     webP: WebP
     project_name: Proje Adı
     custom_css: Özel CSS
+    module_bar: Kenar Çubuğu
   directus_fields:
     collection: Koleksiyon Adı
     icon: Koleksiyon İkonu
