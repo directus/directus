@@ -1483,6 +1483,9 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     options_override: Options Override
+    folder_note: Folder for uploaded files. Does not affect existing files.
+    imageToken: Image Token
+    imageToken_label: What (static) token to append to image sources
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
