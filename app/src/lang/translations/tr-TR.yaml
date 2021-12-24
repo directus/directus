@@ -423,25 +423,49 @@ request_feature: Ek Özellik Talep Et
 interface_not_found: '"{interface}" Arayüzü bulunamadı.'
 reset_interface: Arayüzü Sıfırla
 display_not_found: '"{display}" Ekranı bulunamadı.'
+reset_display: Ekranı Sıfırla
+list-m2a: Oluşturucu (Çoktan-Herhangi)
 item_count: 'Öge yok | 1 Öge | {count}  Öge'
+no_items_copy: Bu koleksiyonda şimdilik herhangi bir öge yok.
+file_count: 'Dosya yok | Bir Dosya | {count} Dosyalar'
 no_files_copy: Burada dosya yok.
 user_count: 'Kullanıcı Yok | Bir Kullanıcı | {count} Kullanıcı'
 no_users_copy: Bu Grupta Kullanıcı Yok.
 webhooks_count: 'Webhook Yok | Bir Webhook | {count} Webhook'
+no_webhooks_copy: Henüz bir Webhook yapılandırılmamış. Aşağıdan bir tane oluşturarak başlayın.
+no_notifications: Bildirim yok
+no_notifications_copy: Hepsini gördün!
+activity_log: Etkinlik günlüğü
 all_items: Tüm öğeler
+any: Herhangi Biri
 csv: CSV
 no_collections: Koleksiyon Yok
 create_collection: Koleksiyon Oluştur
+no_collections_copy_admin: Henüz bir koleksiyonunuz yok. Başlamak için aşağıdaki butona tıklayın.
+no_collections_copy: Henüz bir koleksiyonunuz yok. Lütfen sistem yöneticinizle görüşün.
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
+display_template_not_setup: Görüntüleme şablonu seçeneği yanlış yapılandırılmış
+collection_field_not_setup: Koleksiyon alan seçenekleri yanlış yapılandırılmış
 select_a_collection: Koleksiyon Seç
+select_a_field: Bir Alan Seçiniz
 active: Aktif
+move_to: Şuraya taşı...
 copy: Kopyala
+copy_to: Şuraya kopyala...
+no_other_dashboards_copy: Henüz başka Kontrol panonuz yok.
+inactive: Devre Dışı
 users: Kullanıcılar
 activity: Aktivite
+activity_item: Etkinlik Öğesi
 action: İşlem
 ip_address: IP Adresi
 user_agent: Kullanıcı Aracısı
 webhooks: Ağ Kancaları
+decimals: Ondalıklar
+value_decimals: Ondalık Değerleri
+min_value: Alt Değer
+max_value: Üst Değer
+automatic: Otomatik
 field_width: Alan Genişliği
 add_filter: Filtre Ekle
 upper_limit: Üst sınır...
@@ -451,28 +475,37 @@ documentation: Dökümantasyon
 sidebar: Kenar çubuğu
 duration: Süre
 charset: Karakter seti
+second: saniye
 file_moved: Dosya taşındı
 collection_created: Koleksiyon oluşturuldu
 modified_on: Düzenleme Tarihi
 card_size: Kart Boyutu
 sort_field: Sıralama Alanı
+add_sort_field: Sıralama Alanı Ekle
 sort: Sırala
 status: Durum
 remove: Kaldır
 toggle_manual_sorting: Elle sıralamayı aç/kapa
+bookmark_doesnt_exist: Yer imi yok
+bookmark_doesnt_exist_copy: Açmaya çalıştığınız yer imi bulunamadı.
 bookmark_doesnt_exist_cta: Koleksiyona dön
 select_an_item: Seçim Yapın...
 edit: Düzenle
 enabled: Etkin
 disable_tfa: 2FA'yı devre dışı bırak
+tfa_scan_code: 2 Adımlı doğrulama için doğrulayıcı uygulamanızdan kodu taratın
+enter_otp_to_disable_tfa: 2 Adımlı doğrulamayı devre dışı bırakmak için OTP girin
 create_account: Hesap Oluştur
 account_created_successfully: Hesap başarıyla oluşturuldu
 auto_fill: Otomatik Doldur
+corresponding_field: İlgili Alan
 errors:
+  COLLECTION_NOT_FOUND: "Koleksiyon yok"
   FIELD_NOT_FOUND: Alan Bulunmadı
   FORBIDDEN: Yetkisiz erişim
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
   INVALID_OTP: Tek kullanımlık şifre hatalı
+  INVALID_PAYLOAD: Geçersiz yük
   INVALID_QUERY: Geçersiz sorgu
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
@@ -480,8 +513,10 @@ errors:
   RECORD_NOT_UNIQUE: Kopya değer tespit edildi
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
+  UNPROCESSABLE_ENTITY: İşlenemeyen varlık
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
   NOT_NULL_VIOLATION: Değer null olamaz
+  ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
   UNKNOWN: Beklenmeyen hata
 security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
@@ -492,10 +527,13 @@ bookmarks: Yer İmleri
 presets: Ön ayarlar
 unexpected_error: Beklenmeyen hata
 unexpected_error_copy: Beklenmedik bir hata oluştu. Lütfen daha sonra tekrar deneyin.
+copy_details: Detayları Kopyala
 no_app_access: Uygulama erişimi yok
+no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
 password_reset_sent: Sana içinde şifreni yenilemeni sağlayacak bağlantı olan bir eposta gönderdik
 password_reset_successful: Şifre başarıyla sıfırlandı
 back: Geri
+filter: Filtrele
 editing_image: Görseli düzenle
 square: Kare
 free: Boş
@@ -507,6 +545,7 @@ all_users: Tüm Kullanıcılar
 delete_collection: Koleksiyonu sil
 update_collection_success: Güncellenmiş Koleksiyon
 delete_collection_success: Silinmiş Koleksiyon
+make_collection_visible: Koleksiyonu Görünür Yap
 one_item: '1 öğe'
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
@@ -742,6 +781,7 @@ field_options:
     status_dropdown_active: Aktif
   directus_webhooks:
     status_options_active: Aktif
+    status_options_inactive: Devre Dışı
     actions_create: Oluştur
     actions_update: Güncelle
     headers:
@@ -806,8 +846,10 @@ view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
   filter:
+    name: Filtrele
     add_filter: Filtre Ekle
     all: Tümü
+    any: Herhangi Biri
   presentation-links:
     primary: Birincil
   input-code:
@@ -822,6 +864,7 @@ interfaces:
     datetime: Tarih/Saat
   system-display-template:
     display-template: Görüntüleme Şablonu
+    collection_field_not_setup: Koleksiyon alan seçenekleri yanlış yapılandırılmış
     select_a_collection: Koleksiyon Seç
   presentation-divider:
     divider: Ayırıcı
