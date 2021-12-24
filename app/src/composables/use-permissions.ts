@@ -10,6 +10,7 @@ type UsablePermissions = {
 	saveAllowed: ComputedRef<boolean>;
 	archiveAllowed: ComputedRef<boolean>;
 	updateAllowed: ComputedRef<boolean>;
+	shareAllowed: ComputedRef<boolean>;
 	fields: ComputedRef<Field[]>;
 	revisionsAllowed: ComputedRef<boolean>;
 };
@@ -31,6 +32,8 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	});
 
 	const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
+
+	const shareAllowed = computed(() => isAllowed(collection.value, 'share', item.value));
 
 	const archiveAllowed = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return false;
@@ -90,5 +93,5 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 		);
 	});
 
-	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields, revisionsAllowed };
+	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, shareAllowed, fields, revisionsAllowed };
 }

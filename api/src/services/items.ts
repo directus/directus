@@ -9,7 +9,15 @@ import env from '../env';
 import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
-import { AbstractService, AbstractServiceOptions, Action, Item as AnyItem, PrimaryKey, SchemaOverview } from '../types';
+import {
+	AbstractService,
+	AbstractServiceOptions,
+	Action,
+	Item as AnyItem,
+	PrimaryKey,
+	SchemaOverview,
+	MutationOptions,
+} from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
@@ -18,23 +26,6 @@ import { ActivityService, RevisionsService } from './index';
 export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
-};
-
-export type MutationOptions = {
-	/**
-	 * Callback function that's fired whenever a revision is made in the mutation
-	 */
-	onRevisionCreate?: (pk: PrimaryKey) => void;
-
-	/**
-	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
-	 */
-	autoPurgeCache?: false;
-
-	/**
-	 * Allow disabling the emitting of hooks. Useful if a custom hook is fired (like files.upload)
-	 */
-	emitEvents?: boolean;
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {

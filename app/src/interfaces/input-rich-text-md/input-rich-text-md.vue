@@ -170,7 +170,7 @@
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload from-url from-library @input="onImageUpload" />
+					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="imageDialogOpen = null">{{ t('cancel') }}</v-button>
@@ -240,6 +240,10 @@ export default defineComponent({
 			default: () => [],
 		},
 		imageToken: {
+			type: String,
+			default: undefined,
+		},
+		folder: {
 			type: String,
 			default: undefined,
 		},

@@ -14,7 +14,7 @@ import ldap, {
 import ms from 'ms';
 import Joi from 'joi';
 import { AuthDriver } from '../auth';
-import { AuthDriverOptions, User, SessionData } from '../../types';
+import { AuthDriverOptions, User } from '../../types';
 import {
 	InvalidCredentialsException,
 	InvalidPayloadException,
@@ -318,12 +318,11 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
+	async login(user: User, payload: Record<string, any>): Promise<void> {
 		await this.verify(user, payload.password);
-		return null;
 	}
 
-	async refresh(user: User): Promise<SessionData> {
+	async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
@@ -331,7 +330,6 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
 			throw new InvalidCredentialsException();
 		}
-		return null;
 	}
 }
 
