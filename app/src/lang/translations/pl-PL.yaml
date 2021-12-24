@@ -31,6 +31,7 @@ tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
 maps: Mapy
+switch_user: Przełącz użytkownika
 item_creation: Tworzenie elementu
 item_revision: Wersja elementu
 enter_a_name: Wprowadź nazwę...
@@ -768,6 +769,7 @@ adding_user: Dodawanie użytkownika
 unknown_user: Nieznany użytkownik
 creating_in: 'Tworzenie elementu w {collection}'
 editing_in: 'Edycja elementu w {collection}'
+viewing_in: 'Podgląd elementu w {collection}'
 creating_unit: 'Tworzenie {unit}'
 editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
@@ -1123,6 +1125,26 @@ start_collapsed: Rozpocznij zwinięty
 block: Zablokuj
 inline: W lini
 comment: Komentarz
+shares: Udostępnienia
+unlimited_usage: Nieograniczone użycie
+uses_left: Brak pozostałych zastosowań | 1 zastosowanie | {n} zastosowań pozostało
+no_shares: Brak udostępnień do wyświetlenia
+new_share: Nowe udostępnianie
+expired: Wygasły
+upcoming: Nadchodzące
+share: Udostępnij
+share_item: Udostępnij element
+shared_with_you: Pewien element został Ci udostępniony
+shared_enter_passcode: Wprowadź kod dostępu, aby kontynuować...
+shared_times_remaining: Ten link może być użyty tylko {n} razy
+shared_last_remaining: Ten link może być użyty tylko raz
+shared_uses_left: Dla dodanego bezpieczeństwa, ta wspólna strona została skonfigurowana z ograniczoną liczbą widoków. Pozostało {n} wyświetleń, po których strona nie będzie już dostępna.
+share_access_page: Dostęp do udostępnionej strony
+share_access_not_found: Ta współdzielona strona nie istnieje lub przekroczyła już maksymalną liczbę dozwolonych zastosowań.
+share_access_not_found_desc: Skontaktuj się z autoryzowanym użytkownikiem tego projektu, aby poprosić o dostęp.
+share_access_not_found_title: Nieznana strona udostępniania
+share_copy_link: Kopiuj link
+share_send_link: Wyślij link
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
 referential_action_field_label_o2m: Po odznaczeniu {collection}...
