@@ -467,6 +467,8 @@ export class GraphQLService {
 
 			for (const relation of schema[action].relations) {
 				if (relation.related_collection) {
+					if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
+
 					CollectionTypes[relation.collection]?.addFields({
 						[relation.field]: {
 							type: CollectionTypes[relation.related_collection],
@@ -931,6 +933,8 @@ export class GraphQLService {
 
 			for (const relation of schema.read.relations) {
 				if (relation.related_collection) {
+					if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
+
 					ReadableCollectionFilterTypes[relation.collection]?.addFields({
 						[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
 					});
