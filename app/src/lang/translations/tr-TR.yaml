@@ -1,5 +1,10 @@
 ---
 avatar: Avatar
+default_provider: Varsayılan
+published: Yayınlandı
+draft: Taslak
+archived: Arşivlenmiş
+modules: Modüller
 edit_field: Alanı Düzenle
 item_revision: Revizyonları Göster
 duplicate_field: Yinelenen Alan
