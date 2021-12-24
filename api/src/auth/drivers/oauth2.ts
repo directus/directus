@@ -6,7 +6,7 @@ import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
+import { AuthDriverOptions, User, AuthData } from '../../types';
 import {
 	InvalidCredentialsException,
 	ServiceUnavailableException,
@@ -159,11 +159,11 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User): Promise<SessionData> {
-		return this.refresh(user, null);
+	async login(user: User): Promise<void> {
+		return this.refresh(user);
 	}
 
-	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
+	async refresh(user: User): Promise<void> {
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
@@ -187,8 +187,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				throw handleError(e);
 			}
 		}
-
-		return sessionData;
 	}
 }
 

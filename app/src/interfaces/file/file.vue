@@ -8,6 +8,7 @@
 						v-else
 						clickable
 						readonly
+						:disabled="disabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
@@ -84,6 +85,7 @@
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
+			:disabled="disabled"
 			@input="stageEdits"
 		/>
 

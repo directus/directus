@@ -20,13 +20,13 @@ export function isAllowed(
 	);
 
 	if (!permissionInfo) return false;
-	if (!permissionInfo.fields) return false;
+	if (!permissionInfo.fields && action !== 'share') return false;
 
-	if (strict && permissionInfo.fields.includes('*') === false && value) {
+	if (strict && action !== 'share' && permissionInfo.fields!.includes('*') === false && value) {
 		const allowedFields = permissionInfo.fields;
 		const attemptedFields = Object.keys(value);
 
-		if (attemptedFields.every((field) => allowedFields.includes(field)) === false) return false;
+		if (attemptedFields.every((field) => allowedFields!.includes(field)) === false) return false;
 	}
 
 	const schema = generateJoi(permissionInfo.permissions, {

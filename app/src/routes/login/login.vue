@@ -55,9 +55,9 @@ export default defineComponent({
 
 		const appStore = useAppStore();
 
-		const providers = ref([]);
+		const providers = ref<{ driver: string; name: string }[]>([]);
 		const provider = ref(DEFAULT_AUTH_PROVIDER);
-		const providerOptions = ref([]);
+		const providerOptions = ref<{ text: string; value: string }[]>([]);
 		const driver = ref('local');
 
 		const providerSelect = computed({

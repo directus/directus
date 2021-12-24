@@ -11,9 +11,9 @@ import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
-import { AbstractServiceOptions, File, PrimaryKey } from '../types';
+import { AbstractServiceOptions, File, PrimaryKey, MutationOptions } from '../types';
 import { toArray } from '@directus/shared/utils';
-import { ItemsService, MutationOptions } from './items';
+import { ItemsService } from './items';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

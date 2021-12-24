@@ -52,7 +52,9 @@ edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
+show_active_items: Aktive Elemente anzeigen
 show_archived_items: Zeige archivierte Elemente
+show_all_items: Alle Elemente anzeigen
 edited: Bearbeiteter Wert
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
@@ -89,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
 directus_version: Directus-Version
 node_version: Node-Version
@@ -885,6 +888,7 @@ fields:
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
     archive_field: Archivfeld
+    item_duplication_fields: Vervielfältigungsfelder
   directus_files:
     $thumbnail: Miniaturansicht
     title: Titel
@@ -1016,6 +1020,7 @@ field_options:
       weak_text: Schwach - Minimum 8 Zeichen
       strong_text: Stark - Groß / Klein / Zahlen / Spezialzeichen
     storage_asset_presets:
+      fit_label: Passform
       upscaling: Hochskalierung
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
@@ -1027,6 +1032,7 @@ field_options:
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basiskarte
+    basemaps_name_placeholder: Geben Sie den Basemap-Namen ein...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1123,7 +1129,7 @@ referential_action_field_label_o2m: Beim Abwählen von {collection}...
 referential_action_no_action: Löschen verhindern
 referential_action_cascade: Lösche das Element in {collection} (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
-referential_action_set_default: '{field} au Standardwert setzen'
+referential_action_set_default: '{field} auf Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
@@ -1307,6 +1313,7 @@ interfaces:
   file-image:
     image: Bild
     description: Bild auswählen oder hochladen
+    crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
   system-interface:
     interface: Benutzeroberfläche
@@ -1506,17 +1513,26 @@ displays:
     formatted-value: Formatierter Wert
     description: Eine formatierte Version des Textes anzeigen
     format: Format
+    format_label: Automatisches Formatieren
     font: Schriftart
+    font_sans_serif: Sans Serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Fett
     bold_label: Fett-Schnitt verwenden
     italic: Kursiv
+    italic_label: Kursivschrift verwenden
     prefix: Präfix
+    prefix_label: Text vorangestellt
     suffix: Suffix
+    suffix_label: Angehängten Text
     color: Farbe
+    background: Hintergrund
     icon: Symbol
+    border: Umrandung
+    border_label: Rahmen anzeigen
     text: Text
+    text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen

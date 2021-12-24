@@ -68,7 +68,7 @@
 			</draggable>
 		</v-list>
 
-		<div class="buttons">
+		<div v-if="!disabled" class="buttons">
 			<v-menu v-if="enableCreate" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button @click="toggle">

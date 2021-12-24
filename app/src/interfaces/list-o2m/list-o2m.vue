@@ -165,12 +165,13 @@ export default defineComponent({
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 
-		const templateWithDefaults = computed(
-			() =>
+		const templateWithDefaults = computed(() => {
+			return (
 				props.template ||
 				relatedCollection.value.meta?.display_template ||
-				`{{${fieldsStore.getPrimaryKeyFieldForCollection(relation.value.collection).field}}}`
-		);
+				`{{${fieldsStore.getPrimaryKeyFieldForCollection(relation.value.collection)?.field ?? 'id'}}}`
+			);
+		});
 
 		const fields = computed(() =>
 			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relatedCollection.value.collection)
