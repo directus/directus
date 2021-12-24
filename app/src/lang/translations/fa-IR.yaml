@@ -275,6 +275,8 @@ fields:
   directus_users:
     title: عنوان
     language: زبان
+  directus_settings:
+    module_bar: ماژول
   directus_fields:
     note: شرح
     translation: ترجمه‌های نام فیلد
@@ -304,6 +306,9 @@ displays:
     translations: ترجمه‌ها
   boolean:
     boolean: بولین
+  formatted-value:
+    prefix: پيشوند
+    suffix: پسوند
   labels:
     choices_value_placeholder: یک مقدار وارد کنید...
   user:

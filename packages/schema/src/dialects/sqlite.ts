@@ -28,8 +28,9 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
 
 			if (table in overview === false) {
+				const primaryKeys = columns.filter((column) => column.pk !== 0);
 				overview[table] = {
-					primary: columns.find((column) => column.pk == 1)!.name!,
+					primary: primaryKeys.length !== 1 ? (undefined as any) : primaryKeys[0]!.name!,
 					columns: {},
 				};
 			}

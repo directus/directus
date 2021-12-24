@@ -1,9 +1,9 @@
-import { flatten, get, merge, set } from 'lodash';
+import { flatten, get, isPlainObject, merge, set } from 'lodash';
 import logger from '../logger';
 import { Meta } from '../types';
 import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
-import { parseFilter, deepMap } from '@directus/shared/utils';
+import { parseFilter } from '@directus/shared/utils';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -114,7 +114,7 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
-	let filters: Filter = rawFilter;
+	let filters: Filter | null = rawFilter;
 
 	if (typeof rawFilter === 'string') {
 		try {
@@ -124,21 +124,7 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 		}
 	}
 
-	filters = deepMap(filters, (val) => {
-		try {
-			const parsed = JSON.parse(val);
-
-			if (typeof parsed == 'number' && !Number.isSafeInteger(parsed)) return val;
-
-			return parsed;
-		} catch {
-			return val;
-		}
-	});
-
-	filters = parseFilter(filters, accountability);
-
-	return filters;
+	return parseFilter(filters, accountability);
 }
 
 function sanitizeLimit(rawLimit: any) {
@@ -196,8 +182,9 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, accountability);
 				// ...however we want to keep them for the nested structure of deep, otherwise there's no
 				// way of knowing when to keep nesting and when to stop
-				parsedLevel[key] = Object.values(parsedSubQuery)[0];
-			} else {
+				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0];
+				parsedLevel[`_${parsedKey}`] = parsedValue;
+			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);
 			}
 		}

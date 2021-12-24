@@ -908,6 +908,7 @@ fields:
     auth_login_attempts: Bejelentkezési kísérletek
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
+    module_bar: Modulsáv
   directus_fields:
     collection: Gyűjtemény neve
     icon: Gyűjtemény ikonja
@@ -935,6 +936,7 @@ fields:
     data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
+    collections: Gyűjtemények
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
@@ -1243,6 +1245,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Markdown bevitele és előnézete
+    edit: Szerkesztés
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása
@@ -1323,6 +1326,8 @@ interfaces:
   boolean:
     toggle: Váltás
     description: Be- és kikapcsolás közti váltás
+    color_on: Szín be
+    color_off: Szín ki
     label_placeholder: Címke beírása...
     label_default: Engedélyezve
   translations:
@@ -1346,6 +1351,8 @@ interfaces:
     toolbar: Eszköztár
     custom_formats: Egyéni formátumok
     options_override: Beállítások felülírása
+    imageToken: Kép token
+    imageToken_label: Milyen (statikus) tokent csatoljunk a képforrásokhoz
   input-autocomplete-api:
     input-autocomplete-api: Automatikus kiegészítés (API)
     description: Külső API-értékek keresési típusvezetője (automatikus kiegészítés).
@@ -1404,9 +1411,18 @@ displays:
   formatted-value:
     formatted-value: Formázott érték
     description: A szöveg formázott változatának megjelenítése
-    format_title: Cím formázása
-    format_title_label: Automatikus nagybetű / kisbetű
+    format: Formátum
+    font: Betűtípus
+    font_serif: Talpas
+    font_monospace: Egyterű
+    bold: Félkövér
     bold_label: Vastag stílus használata
+    italic: Dőlt
+    prefix: Előtag
+    suffix: Utótag
+    color: Szín
+    icon: Ikon
+    text: Szöveg
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
     description: Az objektum formázott változatának megjelenítése

@@ -17,6 +17,7 @@ import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
 import panelsRouter from './controllers/panels';
+import notificationsRouter from './controllers/notifications';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -27,6 +28,7 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
+import sharesRouter from './controllers/shares';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import emitter from './emitter';
 import env from './env';
@@ -111,7 +113,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(extractToken);
 
-	app.use((req, res, next) => {
+	app.use((_req, res, next) => {
 		res.setHeader('X-Powered-By', 'Directus');
 		next();
 	});
@@ -120,7 +122,7 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(cors);
 	}
 
-	app.get('/', (req, res, next) => {
+	app.get('/', (_req, res, next) => {
 		if (env.ROOT_REDIRECT) {
 			res.redirect(env.ROOT_REDIRECT);
 		} else {
@@ -136,7 +138,7 @@ export default async function createApp(): Promise<express.Application> {
 		const html = await fse.readFile(adminPath, 'utf8');
 		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		const noCacheIndexHtmlHandler = (req: Request, res: Response) => {
+		const noCacheIndexHtmlHandler = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
 			res.send(htmlWithBase);
 		};
@@ -180,6 +182,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/files', filesRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/notifications', notificationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
@@ -188,6 +191,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/roles', rolesRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
+	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);

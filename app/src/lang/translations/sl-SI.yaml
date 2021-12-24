@@ -827,6 +827,7 @@ fields:
     data_label: Pošlji podatke dogodka
     triggers: Sprožilci
     actions: Dejanja
+    collections: Zbirke
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
@@ -1119,6 +1120,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Vnos in predogled markdown-a
+    edit: Uredi
     customSyntax: Bloki po meri
     customSyntax_label: Dodaj posebno vrsto sintakse
     customSyntax_add: Dodaj prilagojeno sintakso
@@ -1199,6 +1201,8 @@ interfaces:
   boolean:
     toggle: Preklopi
     description: Preklopi
+    color_on: Barva da
+    color_off: Barva ne
     label_placeholder: Vnesite oznako ...
     label_default: Omogočeno
   translations:
@@ -1221,6 +1225,8 @@ interfaces:
     toolbar: Orodna vrstica
     custom_formats: Prilagojene oblike
     options_override: Preglasitev opcij
+    imageToken: Žeton slike
+    imageToken_label: Kateri statični žeton se naj doda k sliki
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Iskalnik za zunanje API vrednosti.
@@ -1280,9 +1286,18 @@ displays:
   formatted-value:
     formatted-value: Oblikovana vrednost
     description: Prikaži oblikovano verzijo teksta
-    format_title: Oblikuj naslov
-    format_title_label: Avtomatska velikost črk
+    format: Oblika
+    font: Pisava
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Krepko
     bold_label: Uporabi krepke črke
+    italic: Ležeče
+    prefix: Predpona
+    suffix: Pripona
+    color: Barva
+    icon: Ikona
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Oblikovana JSON vrednost
     description: Prikaži oblikovano verzijo objekta

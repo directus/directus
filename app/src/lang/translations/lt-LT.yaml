@@ -713,6 +713,7 @@ fields:
     name: Pavadinimas
     status: Būsena
     value: Reikšmė
+    collections: Kolekcijos
 field_options:
   directus_activity:
     create: Kurti
@@ -852,6 +853,8 @@ interfaces:
     interface: Sąsaja
   select-dropdown-m2o:
     display_template: Rodymo šablonas
+  input-rich-text-md:
+    edit: Redaguoti
   map:
     zoom: Padidinti
   system-folder:
@@ -871,6 +874,8 @@ interfaces:
     add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
+    color_on: Spalva, kai įjungta
+    color_off: Spalva, kai išjungta
     label_default: Įjungtas
   translations:
     display_template: Rodymo šablonas
@@ -924,8 +929,18 @@ displays:
   formatted-value:
     formatted-value: Suformatuota reikšmė
     description: Rodyti suformatuotą teksto versiją
-    format_title: Formatuoti antraštę
+    format: Formatas
+    font: Šriftas
+    font_serif: Serif
+    font_monospace: Vienodo pločio
+    bold: Paryškintas
     bold_label: Naudoti paryškintą stilių
+    italic: Pasviręs
+    prefix: Priešdėlis
+    suffix: Priesaga
+    color: Spalva
+    icon: Ikona
+    text: Tekstas
   formatted-json-value:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją

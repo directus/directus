@@ -90,7 +90,7 @@
 			:dashboard-key="primaryKey"
 			:panel="panelKey ? panels.find((panel) => panel.id === panelKey) : null"
 			@save="stageConfiguration"
-			@cancel="$router.push(`/insights/${primaryKey}`)"
+			@cancel="$router.replace(`/insights/${primaryKey}`)"
 		/>
 
 		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = null" @esc="movePanelID = null">
@@ -361,7 +361,7 @@ export default defineComponent({
 
 		function stageConfiguration(edits: Partial<Panel>) {
 			stagePanelEdits({ edits });
-			router.push(`/insights/${props.primaryKey}`);
+			router.replace(`/insights/${props.primaryKey}`);
 		}
 
 		async function saveChanges() {

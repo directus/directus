@@ -11,33 +11,33 @@
     border-left-style solid
     margin 2rem 0
   &.tip
-    background-color #F7FAFC
-    border-color #2ECFA8
+    background-color var(--background-subdued)
+    border-color var(--primary)
   &.warning
-    background-color #FEECD0
-    border-color #FBC54F
+    background-color var(--warning-10)
+    border-color var(--warning)
     .custom-block-title
-      color darken(#FBC54F, 20%)
+      color var(--warning-125)
     a
-      color darken(#FBC54F, 20%)
+      color var(--warning-125)
     code
-      background-color lighten(#FBC54F, 40%)
+      background-color var(--warning-50)
   &.danger
-    background-color #FFE2E2
-    border-color #E35169
+    background-color var(--danger-10)
+    border-color var(--danger)
     .custom-block-title
-      color darken(#E35169, 20%)
+      color var(--danger-125)
     a
-      color $textColor
+      color var(--danger-125)
     code
-      background-color lighten(#E35169, 40%)
+      background-color var(--danger-50)
   &.details
     display block
     position relative
     border-radius 10px
     margin 1.6em 0
     padding 1.6em
-    background-color #eee
+    background-color var(--background-subdued)
     h4
       margin-top 0
     figure, p

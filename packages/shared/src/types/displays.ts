@@ -1,4 +1,5 @@
-import { Component } from 'vue';
+import { Component, ComponentOptions } from 'vue';
+import { ExtensionOptionsContext } from './extensions';
 import { Field, LocalType, Type } from './fields';
 import { DeepPartial } from './misc';
 
@@ -18,7 +19,14 @@ export interface DisplayConfig {
 	description?: string;
 
 	component: Component;
-	options: DeepPartial<Field>[] | Component | null;
+	options:
+		| DeepPartial<Field>[]
+		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
+		| ((
+				ctx: ExtensionOptionsContext
+		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
+		| ComponentOptions
+		| null;
 	types: readonly Type[];
 	localTypes?: readonly LocalType[];
 	fields?: string[] | DisplayFieldsFunction;

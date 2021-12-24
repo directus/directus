@@ -21,6 +21,7 @@ jobs:
           - mysql
           - postgres
           - maria
+          - postgres10
           # - sqlite3
         node-version:
           # - 12-alpine

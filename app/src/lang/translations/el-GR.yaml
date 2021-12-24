@@ -209,6 +209,7 @@ fields:
     name: Όνομα
     status: Κατάσταση
     value: Τιμή
+    collections: Συλλογές
 field_options:
   directus_activity:
     create: Δημιουργία
@@ -276,6 +277,11 @@ displays:
     collection: Συλλογή
   file:
     file: Αρχείο
+  formatted-value:
+    prefix: Πρόθεμα
+    suffix: Επίθεμα
+    icon: Εικονίδιο
+    text: Κείμενο
   icon:
     icon: Εικονίδιο
   user:

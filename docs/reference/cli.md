@@ -53,7 +53,12 @@ custom migration or an external service, for example).
 npx directus database install
 ```
 
-Installs the Directus system tables on an empty database. Used internally by `bootstrap`
+Installs the initial Directus system tables on an empty database. Used internally by `bootstrap`.
+
+It should be used only in specific cases, e.g. when you want to run something between `install` and `migrate`. You
+probably should call `directus database migrate:latest` afterwards manually.
+
+You may want to use `directus bootstrap` instead.
 
 ### Upgrade the Database
 
@@ -91,6 +96,48 @@ To apply the generated snapshot, run
 
 ```
 npx directus schema apply ./path/to/snapshot.yaml
+```
+
+### Creating Users
+
+To create a new user with a specific role, run
+
+```
+npx directus users create --email <user-email> --password <password> --role <role-uuid>
+```
+
+#### Updating User Password
+
+To update the password of an existing user, run
+
+```
+npx directus users passwd --email <user-email> --password <new-password>
+```
+
+### Creating Roles
+
+To create a new role, run
+
+```
+npx directus roles create --role <role-name>
+```
+
+These roles are created with the
+[minimum permissions required](/configuration/users-roles-permissions/#configuring-system-permissions) to properly
+access the App by default.
+
+To create a new role with admin access, set the `--admin` flag to `true`, such as
+
+```
+npx directus roles create --role <role-name> --admin true
+```
+
+### Count Items in a Collection
+
+To count the amount of items in a given collection, run
+
+```
+npx directus count <collection-name>
 ```
 
 ---

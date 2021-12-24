@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, ref, onMounted, watch } from 'vue';
+import { defineComponent, computed, PropType, ref, onMounted } from 'vue';
 import { LoginForm, LdapForm } from './components/login-form/';
 import ContinueAs from './components/continue-as.vue';
 import SsoLinks from './components/sso-links.vue';
@@ -55,9 +55,9 @@ export default defineComponent({
 
 		const appStore = useAppStore();
 
-		const providers = ref([]);
+		const providers = ref<{ driver: string; name: string }[]>([]);
 		const provider = ref(DEFAULT_AUTH_PROVIDER);
-		const providerOptions = ref([]);
+		const providerOptions = ref<{ text: string; value: string }[]>([]);
 		const driver = ref('local');
 
 		const providerSelect = computed({
@@ -74,19 +74,22 @@ export default defineComponent({
 
 		onMounted(() => fetchProviders());
 
-		watch(providers, () => {
-			providerOptions.value = providers.value
-				.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
-				.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
-			providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
-		});
-
 		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver };
 
 		async function fetchProviders() {
 			try {
 				const response = await api.get('/auth');
 				providers.value = response.data.data;
+
+				providerOptions.value = providers.value
+					.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
+					.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
+
+				if (!response.data.disableDefault) {
+					providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
+				} else {
+					providerSelect.value = providerOptions.value[0]?.value;
+				}
 			} catch (err: any) {
 				unexpectedError(err);
 			}
