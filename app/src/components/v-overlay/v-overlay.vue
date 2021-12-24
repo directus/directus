@@ -69,16 +69,10 @@ body {
 		width: 100%;
 		height: 100%;
 		background-color: var(--v-overlay-color);
-		opacity: 0;
-		transition: opacity var(--slow) var(--transition);
 	}
 
 	&.active {
 		pointer-events: auto;
-
-		.overlay {
-			opacity: 1;
-		}
 	}
 
 	.content {
