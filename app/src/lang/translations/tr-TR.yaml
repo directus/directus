@@ -159,6 +159,9 @@ validation_for_role: '{action} alanı, {role} rolünün uyması gereken kurallar
 presets_for_role: '{role} rolü için varsayılan alan değeri.'
 presentation_and_aliases: Sunum ve Takma Adlar
 revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
+revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
+changes_made: Aşağıda bu revizyonda yapılan belirli değişiklikler bulunmaktadır.
+no_relational_data: Unutmayın ilişkisel veriler buraya dahil değildir.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -167,9 +170,24 @@ field_create_success: 'Oluşturulan alan: "{field}"'
 field_update_success: 'Güncellenen alan: "{field}"'
 duplicate_where_to: Bu alanı nereye çoğaltmak istersiniz?
 language: Dil
+aggregate_function: Toplayıcı Fonksiyon
+aggregate_precision: Toplayıcı Hassasiyet
+group_aggregation: Grup Toplayıcı
+group_precision: Grup Hassasiyeti
 global: Genel
 admins_have_all_permissions: Yöneticiler tüm izinlere sahiptir
 camera: Kamera
+show_zero: Sıfırı Göster
+create_in_advanced_field_creation_mode: Alanı Gelişmiş Modda Oluştur
+continue_in_advanced_field_creation_mode: Alan Oluşturmaya Gelişmiş Modda Devam Et
+sum: Toplam
+sum_distinct: Tekrarsız Toplam
+avg: Ortalama
+avg_distinct: Tekrarsız Ortalama
+count: Say
+count_distinct: Tekrarsız Say
+min: En az
+max: En çok
 exposure: Pozlama
 shutter: Deklanşör
 iso: ISO
@@ -187,8 +205,10 @@ alias: Takma Ad
 bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
+date_range: Tarih Aralığı
 datetime: Tarih Saat
 dateTime: Tarih Saat
+precision: Ondalık Hassasiyeti
 decimal: Ondalık
 float: Ondalıklı sayı
 integer: Tamsayı
@@ -200,6 +220,10 @@ time: Zaman
 timestamp: Zaman damgası
 uuid: UUID
 hash: Hash
+geometry: Geometri (Tümü)
+geometry.Point: Nokta
+geometry.LineString: Çizgi Dizisi
+geometry.Polygon: Çokgen
 not_available_for_type: Bu Tip için Mevcut Değil
 create_translations: Çeviriler Oluşturun
 auto_refresh: Otomatik Yenile
@@ -222,6 +246,8 @@ new_collection: 'Yeni Koleksiyon'
 choose_a_type: Bir Tür Seçin...
 determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
+add_link: Bağlantı ekle
+custom_link: Özel bağlantı
 default_value: Öntanımlı Değer
 standard_field: Standart Alan
 single_file: Tek Dosya
@@ -234,6 +260,7 @@ invalid_item: Geçersiz Öğe
 next: Sonraki
 field_name: Alan adı
 translations: Çeviriler
+no_translations: Çeviri yok
 note: Not
 enter_a_value: Bir değer girin...
 enter_a_placeholder: Placeholder ekle...
@@ -251,6 +278,7 @@ raw_value: Ham veri
 edit_raw_value: Ham Değeri Düzenle
 enter_raw_value: Bir değer girin...
 clear_value: Değeri Temizle
+clear_changes: Değişiklikleri iptal et
 reset_to_default: Öntanımlı girdilere sıfırla
 undo_changes: Değişiklikleri geri al
 notifications: Bildirimler
