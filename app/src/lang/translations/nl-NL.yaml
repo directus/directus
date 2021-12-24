@@ -1020,6 +1020,7 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
+    imageToken: Afbeeldingstoken
 displays:
   translations:
     translations: Vertalingen
