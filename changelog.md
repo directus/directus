@@ -2,6 +2,50 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.4.0 (December 23, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#10663](https://github.com/directus/directus/pull/10663) Add ability to share items with people outside the
+    platform ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10438](https://github.com/directus/directus/pull/10438) Add v-date-picker base component & use it in datetime
+    interface ([@azrikahar](https://github.com/azrikahar))
+
+### :rocket: Improvements
+
+- **App**
+  - [#10659](https://github.com/directus/directus/pull/10659) match panel sizing to metric
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10652](https://github.com/directus/directus/pull/10652) use CSS variable for users Admin Options divider
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10587](https://github.com/directus/directus/pull/10587) smaller label height
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10573](https://github.com/directus/directus/pull/10573) Update to the latest Material Icons
+    ([@tatthien](https://github.com/tatthien))
+  - [#7199](https://github.com/directus/directus/pull/7199) Add default folder upload to WYSIWYG editors
+    ([@letoast](https://github.com/letoast))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10651](https://github.com/directus/directus/pull/10651) fix public role sidebar not closable
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10617](https://github.com/directus/directus/pull/10617) fix M2A list not updating
+    ([@azrikahar](https://github.com/azrikahar))
+- **cli**
+  - [#10623](https://github.com/directus/directus/pull/10623) Fix directusctl packages
+    ([@azrikahar](https://github.com/azrikahar))
+- **API**
+  - :warning: [#10569](https://github.com/directus/directus/pull/10569) Use correct status code (204) when no content is
+    sent ([@eikaramba](https://github.com/eikaramba))
+
+### :sponge: Optimizations
+
+- **API**
+  - [#10643](https://github.com/directus/directus/pull/10643) Move the app entrypoints to the assets directory
+    ([@nickrum](https://github.com/nickrum))
+
 ## v9.3.0 (December 16, 2021)
 
 ### :sparkles: New Features
