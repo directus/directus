@@ -46,7 +46,7 @@ export default async function runAST(
 
 	const knex = options?.knex || getDatabase();
 
-	if (ast.type === 'm2a') {
+	if (ast.type === 'a2o') {
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
@@ -141,7 +141,7 @@ async function parseCurrentLevel(
 			columnsToSelectInternal.push(child.fieldKey);
 		}
 
-		if (child.type === 'm2a') {
+		if (child.type === 'a2o') {
 			columnsToSelectInternal.push(child.relation.field);
 			columnsToSelectInternal.push(child.relation.meta!.one_collection_field!);
 		}
@@ -263,7 +263,7 @@ function applyParentFilters(
 			} else {
 				nestedNode.query.union = [foreignField, foreignIds];
 			}
-		} else if (nestedNode.type === 'm2a') {
+		} else if (nestedNode.type === 'a2o') {
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
 			for (const parentItem of parentItems) {
@@ -346,7 +346,7 @@ function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
-	} else if (nestedNode.type === 'm2a') {
+	} else if (nestedNode.type === 'a2o') {
 		for (const parentItem of parentItems) {
 			if (!nestedNode.relation.meta?.one_collection_field) {
 				parentItem[nestedNode.fieldKey] = null;
@@ -381,7 +381,7 @@ function removeTemporaryFields(
 	const rawItems = cloneDeep(toArray(rawItem));
 	const items: Item[] = [];
 
-	if (ast.type === 'm2a') {
+	if (ast.type === 'a2o') {
 		const fields: Record<string, string[]> = {};
 		const nestedCollectionNodes: Record<string, NestedCollectionNode[]> = {};
 

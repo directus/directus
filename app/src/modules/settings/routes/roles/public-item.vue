@@ -14,6 +14,10 @@
 		<div class="roles">
 			<permissions-overview :role="null" :permission="permissionKey" />
 		</div>
+
+		<template #sidebar>
+			<role-info-sidebar-detail :role="null" />
+		</template>
 	</private-view>
 </template>
 
@@ -23,10 +27,11 @@ import { defineComponent } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import PermissionsOverview from './item/components/permissions-overview.vue';
+import RoleInfoSidebarDetail from './item/components/role-info-sidebar-detail.vue';
 
 export default defineComponent({
 	name: 'RolesItem',
-	components: { SettingsNavigation, PermissionsOverview },
+	components: { SettingsNavigation, PermissionsOverview, RoleInfoSidebarDetail },
 	props: {
 		permissionKey: {
 			type: String,

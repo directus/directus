@@ -85,7 +85,7 @@
 						</div>
 					</div>
 				</template>
-				<v-upload v-else :multiple="false" from-library from-url @input="onImageSelect" />
+				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
 			</div>
 
 			<template #actions>
@@ -125,7 +125,7 @@
 								</div>
 							</div>
 						</template>
-						<v-upload v-else :multiple="false" from-library from-url @input="onMediaSelect" />
+						<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
 					</v-tab-item>
 					<v-tab-item value="embed">
 						<div class="grid">
@@ -233,6 +233,10 @@ export default defineComponent({
 			default: true,
 		},
 		imageToken: {
+			type: String,
+			default: undefined,
+		},
+		folder: {
 			type: String,
 			default: undefined,
 		},

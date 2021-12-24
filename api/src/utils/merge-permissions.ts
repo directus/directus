@@ -1,66 +1,72 @@
-import { flatten, merge, omit } from 'lodash';
-import { Permission, LogicalFilterOR } from '@directus/shared/types';
+import { flatten, merge, omit, intersection } from 'lodash';
+import { Permission, LogicalFilterOR, LogicalFilterAND } from '@directus/shared/types';
 
-export function mergePermissions(...permissions: Permission[][]): Permission[] {
+export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permission[][]): Permission[] {
 	const allPermissions = flatten(permissions);
 
 	const mergedPermissions = allPermissions
 		.reduce((acc, val) => {
 			const key = `${val.collection}__${val.action}__${val.role || '$PUBLIC'}`;
 			const current = acc.get(key);
-			acc.set(key, current ? mergePerm(current, val) : val);
+			acc.set(key, current ? mergePermission(strategy, current, val) : val);
 			return acc;
 		}, new Map())
 		.values();
 
-	const result = Array.from(mergedPermissions).map((perm) => {
-		return omit(perm, ['id', 'system']) as Permission;
-	});
-
-	return result;
+	return Array.from(mergedPermissions);
 }
 
-function mergePerm(currentPerm: Permission, newPerm: Permission) {
+export function mergePermission(strategy: 'and' | 'or', currentPerm: Permission, newPerm: Permission) {
+	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
+
 	let permissions = currentPerm.permissions;
 	let validation = currentPerm.validation;
 	let fields = currentPerm.fields;
 	let presets = currentPerm.presets;
 
 	if (newPerm.permissions) {
-		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === '_or') {
+		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === logicalKey) {
 			permissions = {
-				_or: [...(currentPerm.permissions as LogicalFilterOR)._or, newPerm.permissions],
-			};
+				[logicalKey]: [
+					...(currentPerm.permissions as LogicalFilterOR & LogicalFilterAND)[logicalKey],
+					newPerm.permissions,
+				],
+			} as LogicalFilterAND | LogicalFilterOR;
 		} else if (currentPerm.permissions) {
 			permissions = {
-				_or: [currentPerm.permissions, newPerm.permissions],
-			};
+				[logicalKey]: [currentPerm.permissions, newPerm.permissions],
+			} as LogicalFilterAND | LogicalFilterOR;
 		} else {
 			permissions = {
-				_or: [newPerm.permissions],
-			};
+				[logicalKey]: [newPerm.permissions],
+			} as LogicalFilterAND | LogicalFilterOR;
 		}
 	}
 
 	if (newPerm.validation) {
-		if (currentPerm.validation && Object.keys(currentPerm.validation)[0] === '_or') {
+		if (currentPerm.validation && Object.keys(currentPerm.validation)[0] === logicalKey) {
 			validation = {
-				_or: [...(currentPerm.validation as LogicalFilterOR)._or, newPerm.validation],
-			};
+				[logicalKey]: [
+					...(currentPerm.validation as LogicalFilterOR & LogicalFilterAND)[logicalKey],
+					newPerm.validation,
+				],
+			} as LogicalFilterAND | LogicalFilterOR;
 		} else if (currentPerm.validation) {
 			validation = {
-				_or: [currentPerm.validation, newPerm.validation],
-			};
+				[logicalKey]: [currentPerm.validation, newPerm.validation],
+			} as LogicalFilterAND | LogicalFilterOR;
 		} else {
 			validation = {
-				_or: [newPerm.validation],
-			};
+				[logicalKey]: [newPerm.validation],
+			} as LogicalFilterAND | LogicalFilterOR;
 		}
 	}
 
 	if (newPerm.fields) {
-		if (Array.isArray(currentPerm.fields)) {
+		if (Array.isArray(currentPerm.fields) && strategy === 'or') {
 			fields = [...new Set([...currentPerm.fields, ...newPerm.fields])];
+		} else if (Array.isArray(currentPerm.fields) && strategy === 'and') {
+			fields = intersection(currentPerm.fields, newPerm.fields);
 		} else {
 			fields = newPerm.fields;
 		}
@@ -72,11 +78,14 @@ function mergePerm(currentPerm: Permission, newPerm: Permission) {
 		presets = merge({}, presets, newPerm.presets);
 	}
 
-	return {
-		...currentPerm,
-		permissions,
-		validation,
-		fields,
-		presets,
-	};
+	return omit(
+		{
+			...currentPerm,
+			permissions,
+			validation,
+			fields,
+			presets,
+		},
+		['id', 'system']
+	);
 }

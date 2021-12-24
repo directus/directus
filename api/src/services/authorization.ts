@@ -66,7 +66,7 @@ export class AuthorizationService {
 		function getCollectionsFromAST(ast: AST | NestedCollectionNode): { collection: string; field: string }[] {
 			const collections = [];
 
-			if (ast.type === 'm2a') {
+			if (ast.type === 'a2o') {
 				collections.push(...ast.names.map((name) => ({ collection: name, field: ast.fieldKey })));
 
 				for (const children of Object.values(ast.children)) {
@@ -94,7 +94,7 @@ export class AuthorizationService {
 
 		function validateFields(ast: AST | NestedCollectionNode | FieldNode) {
 			if (ast.type !== 'field') {
-				if (ast.type === 'm2a') {
+				if (ast.type === 'a2o') {
 					for (const [collection, children] of Object.entries(ast.children)) {
 						checkFields(collection, children, ast.query?.[collection]?.aggregate);
 					}
@@ -144,7 +144,7 @@ export class AuthorizationService {
 			accountability: Accountability | null
 		): AST | NestedCollectionNode | FieldNode {
 			if (ast.type !== 'field') {
-				if (ast.type === 'm2a') {
+				if (ast.type === 'a2o') {
 					const collections = Object.keys(ast.children);
 
 					for (const collection of collections) {
