@@ -546,10 +546,20 @@ delete_collection: Koleksiyonu sil
 update_collection_success: Güncellenmiş Koleksiyon
 delete_collection_success: Silinmiş Koleksiyon
 make_collection_visible: Koleksiyonu Görünür Yap
+make_collection_hidden: Koleksiyonu Gizle
+start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler'
+start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler'
 one_item: '1 öğe'
+one_filtered_item: '1 filtrelenmiş öğe'
+delete_collection_are_you_sure: >-
+  Bu koleksiyonu silmek istediğinizden emin misiniz? Bu işlem, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem geri alınamaz.
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar
+show_hidden_collections: Gizlenmiş Koleksiyonları Göster
+hide_hidden_collections: Gizlenmiş Koleksiyonları Gizle
+show_header: Başlığı Göster
+unmanaged_collections: Yapılandırılmamış Koleksiyonlar
 system_collections: Sistem Koleksiyonları
 placeholder: Yertutucu
 icon_left: İkon Sol
@@ -605,7 +615,32 @@ on_update: Güncellemede (On Update)
 read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
+operator: Operatör
+bold: Kalın
+toggle: Aç/Kapat
+icon_on: Açık İkonu
+icon_off: Kapalı İkonu
 label: Etiket
+insights: Raporlar
+dashboard: Kontrol Paneli
+panel: Panel
+panel_options: Panel Seçenekleri
+panel_header: Panel Başlığı
+panel_name_placeholder: Panele bir ad verin...
+panel_note_placeholder: Bu panel hakkında isteğe bağlı detaylar...
+panel_delete_confirm: Bu paneli silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+dashboard_delete_confirm: Bu kontrol panelini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+edit_dashboard: Kontrol Panelini Düzenle
+delete_dashboard: Kontrol Panelini Sil
+visible: Görünür
+prefix_placeholder: Ön ek...
+suffix_placeholder: Son ek...
+decimals_placeholder: Ondalık hane sayısı...
+no_dashboards: Kontrol paneli yok
+no_dashboards_copy: Henüz bir Kontrol Paneliniz yok.
+no_data: Veri Yok
+create_dashboard: Kontrol Paneli Oluştur
+dashboard_name: Kontrol Paneli Adı
 full_screen: Tam Ekran
 width: Genişlik
 height: Yükseklik
@@ -617,6 +652,7 @@ wysiwyg_options:
   alignright: Sağa Hizala
   forecolor: Ön Plan Rengi
   backcolor: Arkaplan Rengi
+  bold: Kalın
   italic: İtalik
   underline: Alt çizgi
   strikethrough: Üstü Çizili
@@ -896,6 +932,7 @@ interfaces:
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
   boolean:
+    toggle: Aç/Kapat
     label_default: Etkin
   translations:
     display_template: Görüntüleme Şablonu
@@ -911,6 +948,8 @@ displays:
     translations: Çeviriler
   boolean:
     boolean: Evet/Hayır
+    icon_on: Açık İkonu
+    icon_off: Kapalı İkonu
   collection:
     collection: Koleksiyon
   color:
@@ -928,6 +967,7 @@ displays:
     font: Font
     font_serif: Serif
     font_monospace: Monospace
+    bold: Kalın
     bold_label: Kalınlaştır
     italic: İtalik
     prefix: Önek
