@@ -1,6 +1,6 @@
-#dialog-outlet {
+#drawer-outlet {
 	.container.right .v-drawer {
-		transition: transform var(--medium) var(--transition);
+		transition: transform var(--slow) var(--transition);
 	}
 
 	.container.right:not(:last-of-type) .v-drawer {
