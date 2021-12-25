@@ -36,6 +36,7 @@ by default.
 - **Language** — The preferred App language/locale
 - **Theme** — Light or Dark mode (or based on system preferences)
 - **Multi-Factor Authentication** — Configuration for MFA
+- **Email Notifications** - Receive emails for notifications
 
 The sidebar's info component also includes the following readonly details:
 

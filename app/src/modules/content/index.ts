@@ -1,7 +1,7 @@
 import { defineModule } from '@directus/shared/utils';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import RouterPass from '@/utils/router-passthrough';
-import { NavigationGuard } from 'vue-router';
+import { LocationQuery, NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
@@ -54,6 +54,16 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		to.params.collection === from.params.collection
 	) {
 		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
+	}
+};
+
+const getArchiveValue = (query: LocationQuery) => {
+	if ('all' in query) {
+		return 'all';
+	} else if ('archived' in query) {
+		return 'archived';
+	} else {
+		return null;
 	}
 };
 
@@ -119,11 +129,14 @@ export default defineModule({
 					name: 'content-collection',
 					path: '',
 					component: CollectionOrItem,
-					props: (route) => ({
-						collection: route.params.collection,
-						bookmark: route.query.bookmark,
-						archive: 'archive' in route.query,
-					}),
+					props: (route) => {
+						const archive = getArchiveValue(route.query);
+						return {
+							collection: route.params.collection,
+							bookmark: route.query.bookmark,
+							archive,
+						};
+					},
 					beforeEnter: checkForSystem,
 				},
 				{

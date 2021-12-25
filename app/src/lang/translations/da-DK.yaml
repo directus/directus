@@ -1225,6 +1225,7 @@ interfaces:
     display_template: Vis Skabelon
   input-rich-text-md:
     description: Indtast og vis markdown
+    edit: Rediger
     customSyntax: Brugerdefinerede Blokke
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
@@ -1303,6 +1304,8 @@ interfaces:
   boolean:
     toggle: Skift
     description: Skift mellem tænd og sluk
+    color_on: Farve Til
+    color_off: Farve Fra
     label_placeholder: Indtast en etiket...
     label_default: Aktiveret
   translations:
@@ -1327,6 +1330,7 @@ interfaces:
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
     options_override: Tilsidesæt
+    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater
@@ -1388,9 +1392,16 @@ displays:
   formatted-value:
     formatted-value: Formateret Værdi
     description: Vis en formateret version af teksten
-    format_title: Formatér Titel
-    format_title_label: Automatisk formatering af kabinet
+    format: Format
+    font: Font
+    font_serif: Serif
+    bold: Fed
     bold_label: Use bold style
+    prefix: Præfiks
+    suffix: Suffiks
+    color: Farve
+    icon: Ikon
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet

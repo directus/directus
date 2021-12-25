@@ -20,6 +20,7 @@ The leftmost section of the App is the module bar, which includes the:
   - [Insights](/app/insights) — Access to infinitely customizable data dashboards
   - [App Guide](/app/overview/) — A tailored, in-app portal for the platform's concepts, guides, and reference
   - [Settings](/app/settings) — An admin-only section for configuring the project and system settings
+- **Notifications** - Opens a drawer of notifications, such as from [mentions](/app/content-items/#mentions).
 - **Current User Menu** — This component displays the authenticated user's name and avatar.
   - Sign Out — Hovering over the User Menu exposes the button to log out of the platform.
 

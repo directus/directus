@@ -1075,6 +1075,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Entra i previsualitza el markdown
+    edit: Edita
     customSyntax: Blocs personalitzats
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada
@@ -1155,6 +1156,8 @@ interfaces:
   boolean:
     toggle: Canvia
     description: Canvia entre Encés i apagat
+    color_on: Color activat
+    color_off: Color desactivat
     label_placeholder: Introdueix una etiqueta...
     label_default: Habilitat
   translations:
@@ -1177,6 +1180,8 @@ interfaces:
     toolbar: Barra d'eines
     custom_formats: Formats personalitzats
     options_override: Sobreescriptura d'opcions
+    imageToken: Testimoni d'Imatge
+    imageToken_label: Quin testimoni (estàtic) a afegir a els origen de la imatge
   input-autocomplete-api:
     input-autocomplete-api: Entrada autocompleta (API)
     description: Una cerca typeahead per valors d'API externes.
@@ -1236,9 +1241,18 @@ displays:
   formatted-value:
     formatted-value: Valor formatat
     description: Mostra una versió formatada del text
-    format_title: Títol del format
-    format_title_label: Auto formata les minúscules i majúscules
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Espai únic
+    bold: Negreta
     bold_label: Utilitza text en negreta
+    italic: Cursiva
+    prefix: Prefix
+    suffix: Sufix
+    color: Color
+    icon: Icona
+    text: Text
   formatted-json-value:
     formatted-json-value: Valor JSON formatat
     description: Mostra una versió formatada del l'objecte

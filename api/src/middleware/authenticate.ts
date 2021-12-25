@@ -3,6 +3,7 @@ import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import getDatabase from '../database';
 import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
+import { DirectusTokenPayload } from '../types';
 import asyncHandler from '../utils/async-handler';
 import isDirectusJWT from '../utils/is-directus-jwt';
 
@@ -23,10 +24,10 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	if (req.token) {
 		if (isDirectusJWT(req.token)) {
-			let payload: { id: string };
+			let payload: DirectusTokenPayload;
 
 			try {
-				payload = jwt.verify(req.token, env.SECRET as string, { issuer: 'directus' }) as { id: string };
+				payload = jwt.verify(req.token, env.SECRET as string, { issuer: 'directus' }) as DirectusTokenPayload;
 			} catch (err: any) {
 				if (err instanceof TokenExpiredError) {
 					throw new InvalidCredentialsException('Token expired.');
@@ -37,24 +38,12 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 				}
 			}
 
-			const user = await database
-				.select('directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
-				.from('directus_users')
-				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-				.where({
-					'directus_users.id': payload.id,
-					status: 'active',
-				})
-				.first();
-
-			if (!user) {
-				throw new InvalidCredentialsException();
-			}
-
+			req.accountability.share = payload.share;
+			req.accountability.share_scope = payload.share_scope;
 			req.accountability.user = payload.id;
-			req.accountability.role = user.role;
-			req.accountability.admin = user.admin_access === true || user.admin_access == 1;
-			req.accountability.app = user.app_access === true || user.app_access == 1;
+			req.accountability.role = payload.role;
+			req.accountability.admin = payload.admin_access === true || payload.admin_access == 1;
+			req.accountability.app = payload.app_access === true || payload.app_access == 1;
 		} else {
 			// Try finding the user with the provided token
 			const user = await database

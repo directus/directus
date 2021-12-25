@@ -44,8 +44,8 @@ are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
-  - [Creating a Field](#creating-a-field)
-  - [Updating a Field](#updating-a-field)
+  - [Creating a Field](#creating-a-field-standard)
+  - [Configuring a Field](#configuring-a-field)
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
   - [Changing Field Order & Layout](#adjusting-the-collection-form)
@@ -136,7 +136,43 @@ This action is permanent and can not be undone. Please proceed with caution.
 
 ## Adjusting the Collection Hierarchy
 
-Collections can be organized in several ways.
+Collections can be organized in several ways, including sorting, custom translations, showing/hiding, and even grouping.
+This organization is reflected in the sidebar navigation, allowing you to control how the users of the app will interact
+with the various collections in your project. Configuring the organization of your collections is done on the
+**Settings > Data Model** page.
+
+### Sorting & Grouping
+
+By using the drag handles on the left of the collection, you can manually put the collections in an order that makes the
+most sense for your project. By dragging a collection underneath another collection, you can turn any collection into a
+group-parent. Groups can even be nested within other groups.
+
+Additionally, you can add special "folder" collections that are exclusively used for organizational purposes, and don't
+hold any data themselves. This can be done through the "Create Folder" button in the top right of the page.
+
+### Renaming Collections
+
+The key of a collection (eg. what's used in the API / database) can't be changed. However, you can alter how a
+collection is displayed in your app by adding custom translations. This can be done by opening the detail page of a
+collection, and modifying the "Collection Naming Translations" option. Make sure to add translations for all the
+languages your app's users might use for the best results!
+
+### Hiding Collections
+
+If you'd like to hide a collection from the navigation by default, but still allow your users to access them through
+other means (like relationships, or direct linking), you can set a collection be hidden by using the triple-dot "More"
+option menu on the right-hand side of the collection row, and selecting the "Make Collection Hidden" option.
+
+Hidden collections can still be accessed by the user by right-clicking on the navigation, and choosing "Show Hidden
+Collections".
+
+::: tip Permissions
+
+If you want to prevent a user from accessing a collection altogether, you can configure the read permissions for their
+role to prevent them from viewing the collection. Collections that can't be read by the user won't show up in the
+navigation either.
+
+:::
 
 ## Adjusting the Collection Form
 
@@ -262,6 +298,7 @@ Each field can have one or more _rules_. Each rule has the following configurati
   [Filter Rules](/configuration/filter-rules) spec
 - **Readonly**: Whether or not the field is readonly when the condition is matched
 - **Hidden**: Whether or not the field is hidden when the condition is matched
+- **Required**: Whether or not the field is required when the condition is matched
 - **Interface Options**: Any additional configuration for the selected interface
 
 These changes to the field are merged onto the base configuration of the field. This means you can have the field hidden

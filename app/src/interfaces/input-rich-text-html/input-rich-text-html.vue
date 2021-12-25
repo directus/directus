@@ -47,7 +47,12 @@
 
 		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
 			<div class="content">
-				<interface-input-code :value="code" language="htmlmixed" @input="code = $event"></interface-input-code>
+				<interface-input-code
+					:value="code"
+					language="htmlmixed"
+					line-wrapping="true"
+					@input="code = $event"
+				></interface-input-code>
 			</div>
 
 			<template #actions>
@@ -80,7 +85,7 @@
 						</div>
 					</div>
 				</template>
-				<v-upload v-else :multiple="false" from-library from-url @input="onImageSelect" />
+				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
 			</div>
 
 			<template #actions>
@@ -120,7 +125,7 @@
 								</div>
 							</div>
 						</template>
-						<v-upload v-else :multiple="false" from-library from-url @input="onMediaSelect" />
+						<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
 					</v-tab-item>
 					<v-tab-item value="embed">
 						<div class="grid">
@@ -231,6 +236,10 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		folder: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -271,14 +280,14 @@ export default defineComponent({
 		const replaceTokens = (value: string, token: string | null) => {
 			const url = getPublicURL();
 			const regex = new RegExp(
-				`(<[^=]+=")(${escapeRegExp(
+				`(<[^]+?=")(${escapeRegExp(
 					url
 				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
 				'gi'
 			);
 
 			return value.replace(regex, (_, pre, matchedUrl, post) => {
-				const matched = new URL(matchedUrl);
+				const matched = new URL(matchedUrl.replace(/&amp;/g, '&'));
 				const params = new URLSearchParams(matched.search);
 
 				if (!token) {
@@ -287,7 +296,7 @@ export default defineComponent({
 					params.set('access_token', token);
 				}
 
-				const paramsString = params.toString().length > 0 ? `?${params.toString()}` : '';
+				const paramsString = params.toString().length > 0 ? `?${params.toString().replace(/&/g, '&amp;')}` : '';
 
 				return `${pre}${matched.origin}${matched.pathname}${paramsString}${post}`;
 			});
@@ -341,6 +350,7 @@ export default defineComponent({
 				statusbar: false,
 				menubar: false,
 				convert_urls: false,
+				image_dimensions: false,
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,

@@ -72,6 +72,7 @@ import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
 import { ServerService } from './server';
 import { SettingsService } from './settings';
+import { SharesService } from './shares';
 import { SpecificationService } from './specifications';
 import { TFAService } from './tfa';
 import { UsersService } from './users';
@@ -188,13 +189,21 @@ export class GraphQLService {
 
 		const schema = {
 			read:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['read']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['read']),
 			create:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['create']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['create']),
 			update:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['update']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['update']),
 			delete:
-				this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, this.accountability, ['delete']),
+				this.accountability?.admin === true
+					? this.schema
+					: reduceSchema(this.schema, this.accountability?.permissions || null, ['delete']),
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
@@ -458,6 +467,8 @@ export class GraphQLService {
 
 			for (const relation of schema[action].relations) {
 				if (relation.related_collection) {
+					if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
+
 					CollectionTypes[relation.collection]?.addFields({
 						[relation.field]: {
 							type: CollectionTypes[relation.related_collection],
@@ -886,6 +897,9 @@ export class GraphQLService {
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
 						filter: ReadableCollectionFilterTypes[collection.collection],
+						limit: {
+							type: GraphQLInt,
+						},
 						search: {
 							type: GraphQLString,
 						},
@@ -919,6 +933,8 @@ export class GraphQLService {
 
 			for (const relation of schema.read.relations) {
 				if (relation.related_collection) {
+					if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
+
 					ReadableCollectionFilterTypes[relation.collection]?.addFields({
 						[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
 					});
@@ -1533,6 +1549,8 @@ export class GraphQLService {
 				return new UsersService(opts);
 			case 'directus_webhooks':
 				return new WebhooksService(opts);
+			case 'directus_shares':
+				return new SharesService(opts);
 			default:
 				return new ItemsService(collection, opts);
 		}

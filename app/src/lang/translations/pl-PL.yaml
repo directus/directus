@@ -31,6 +31,7 @@ tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
 maps: Mapy
+switch_user: Przełącz użytkownika
 item_creation: Tworzenie elementu
 item_revision: Wersja elementu
 enter_a_name: Wprowadź nazwę...
@@ -52,7 +53,9 @@ edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować'
+show_active_items: Pokaż aktywne elementy
 show_archived_items: Pokaż zarchiwizowane elementy
+show_all_items: Pokaż wszystkie elementy
 edited: Wartość zmieniona
 required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
@@ -66,6 +69,8 @@ create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
+subject: Temat
+inbox: Skrzynka odbiorcza
 emails: E-maile
 connection_excellent: Doskonałe połączenie
 connection_good: Dobre połączenie
@@ -87,6 +92,7 @@ logoutReason:
   SESSION_EXPIRED: Sesja wygasła
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
+admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
 node_version: Wersja Node
@@ -217,8 +223,10 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (wszystkie)
 geometry.Point: Punkt
+geometry.LineString: Ciąg linii
 geometry.Polygon: Wielokąt
 geometry.MultiPoint: Wielopunktowy
+geometry.MultiLineString: Ciąg multilinii
 geometry.MultiPolygon: Wielokąt
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
@@ -332,7 +340,7 @@ delete_comment: Usuń komentarz
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_date_short: 'D MMM u'
+date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minuty
@@ -425,6 +433,9 @@ user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
 no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
+no_notifications: Brak powiadomień
+no_notifications_copy: Jesteś na bieżąco z wiadomościami!
+activity_log: Dziennik aktywności
 all_items: Wszystkie elementy
 any: Dowolny
 csv: CSV
@@ -758,6 +769,7 @@ adding_user: Dodawanie użytkownika
 unknown_user: Nieznany użytkownik
 creating_in: 'Tworzenie elementu w {collection}'
 editing_in: 'Edycja elementu w {collection}'
+viewing_in: 'Podgląd elementu w {collection}'
 creating_unit: 'Tworzenie {unit}'
 editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
@@ -843,6 +855,7 @@ directus_collection:
   directus_migrations: Jaką wersję bazy danych używasz
   directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
+  directus_notifications: Powiadomienia wysłane do użytkowników
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
   directus_revisions: Zrzuty danych dla wszystkich działań
@@ -944,6 +957,7 @@ fields:
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
@@ -1018,6 +1032,7 @@ field_options:
     additional_transforms: Dodatkowe przekształcenia
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Podstawowe
     basemaps_name_placeholder: Wprowadź nazwę mapy bazowej...
     basemaps_raster: Raster
@@ -1110,6 +1125,26 @@ start_collapsed: Rozpocznij zwinięty
 block: Zablokuj
 inline: W lini
 comment: Komentarz
+shares: Udostępnienia
+unlimited_usage: Nieograniczone użycie
+uses_left: Brak pozostałych zastosowań | 1 zastosowanie | {n} zastosowań pozostało
+no_shares: Brak udostępnień do wyświetlenia
+new_share: Nowe udostępnianie
+expired: Wygasły
+upcoming: Nadchodzące
+share: Udostępnij
+share_item: Udostępnij element
+shared_with_you: Pewien element został Ci udostępniony
+shared_enter_passcode: Wprowadź kod dostępu, aby kontynuować...
+shared_times_remaining: Ten link może być użyty tylko {n} razy
+shared_last_remaining: Ten link może być użyty tylko raz
+shared_uses_left: Dla dodanego bezpieczeństwa, ta wspólna strona została skonfigurowana z ograniczoną liczbą widoków. Pozostało {n} wyświetleń, po których strona nie będzie już dostępna.
+share_access_page: Dostęp do udostępnionej strony
+share_access_not_found: Ta współdzielona strona nie istnieje lub przekroczyła już maksymalną liczbę dozwolonych zastosowań.
+share_access_not_found_desc: Skontaktuj się z autoryzowanym użytkownikiem tego projektu, aby poprosić o dostęp.
+share_access_not_found_title: Nieznana strona udostępniania
+share_copy_link: Kopiuj link
+share_send_link: Wyślij link
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
 referential_action_field_label_o2m: Po odznaczeniu {collection}...
@@ -1233,6 +1268,7 @@ interfaces:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii
+    line_wrapping: Zawijanie linii
     placeholder: Wprowadź kod tutaj...
   system-collection:
     collection: Kolekcja
@@ -1299,6 +1335,8 @@ interfaces:
   file-image:
     image: Obraz
     description: Wybierz lub prześlij plik
+    crop: Przytnij aby dopasować
+    crop_label: Przytnij obraz w razie potrzeby
   system-interface:
     interface: Interfejs
     description: Wybierz istniejący interfejs
@@ -1316,14 +1354,16 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
+    edit: Edytuj
+    preview: Podgląd
+    editorFont: Czcionka edytora
+    previewFont: Podgląd czcionki
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
     imageToken: Token obrazu
     imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
-    preview: Podgląd
-    editor: Edytor
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1403,6 +1443,8 @@ interfaces:
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
+    color_on: Kolor włączony
+    color_off: Kolor wyłączony
     label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:
@@ -1427,11 +1469,15 @@ interfaces:
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
+    folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
+    imageToken: Token obrazu
+    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.
     results_path: Ścieżka wyników
     value_path: Ścieżka bazowa
+    text_path: Ścieżka tekstowa
     trigger: Wyzwalacz
     rate: Oceń
   group-raw:
@@ -1491,9 +1537,23 @@ displays:
   formatted-value:
     formatted-value: Wartość sformatowana
     description: Wyświetl sformatowaną wersję tekstu
-    format_title: Format tytułu
-    format_title_label: Automatyczny format
+    format: Formatowanie
+    format_label: Automatyczny format
+    font: Czcionka
+    font_serif: Szeryfowa
+    font_monospace: Monospace
+    bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
+    italic: Kursywa
+    prefix: Przedrostek
+    prefix_label: Poprzedni tekst
+    suffix: Przyrostek
+    color: Kolor
+    icon: Ikona
+    border: Krawędź
+    border_label: Pokaż obramowanie
+    text: Tekst
+    text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
@@ -1582,6 +1642,8 @@ panels:
     description: Renderowanie wykresu liniowego na podstawie wartości w czasie
     date_field: Pole daty
     value_field: Pole wartości
+    fill_type: Typ wypełnienia
+    curve_type: Typ Krzywej
   label:
     name: Etykieta
     description: Pokaż tekst

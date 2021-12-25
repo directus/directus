@@ -3,6 +3,7 @@ import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
+import ShareRoute from '@/routes/shared';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { useAppStore, useServerStore, useUserStore } from '@/stores';
@@ -51,6 +52,14 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		},
 	},
 	{
+		name: 'shared',
+		path: '/shared/:id([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})',
+		component: ShareRoute,
+		meta: {
+			public: true,
+		},
+	},
+	{
 		name: 'private-404',
 		path: '/:_(.+)+',
 		component: PrivateNotFoundRoute,
@@ -89,7 +98,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			await hydrate();
 			return to.fullPath;
 		} else {
-			return '/login';
+			if (to.fullPath) {
+				return '/login?redirect=' + encodeURIComponent(to.fullPath);
+			} else {
+				return '/login';
+			}
 		}
 	}
 };
