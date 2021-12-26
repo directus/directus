@@ -321,7 +321,7 @@ export default defineComponent({
 .footer {
 	position: absolute;
 	right: 10px;
-	bottom: 10px;
+	bottom: 35px;
 	left: 10px;
 	display: flex;
 	align-items: center;
@@ -338,6 +338,10 @@ export default defineComponent({
 		button {
 			box-shadow: 0 0 2px 1px rgb(0 0 0 / 0.2);
 		}
+	}
+
+	.mapboxgl-ctrl-dropdown {
+		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 	}
 }
 

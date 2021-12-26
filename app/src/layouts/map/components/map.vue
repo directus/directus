@@ -86,7 +86,7 @@ export default defineComponent({
 			return getStyleFromBasemapSource(source);
 		});
 
-		const attributionControl = new AttributionControl({ compact: true });
+		const attributionControl = new AttributionControl();
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
@@ -125,7 +125,7 @@ export default defineComponent({
 			map = new Map({
 				container: 'map-container',
 				style: style.value,
-				customAttribution: '© OpenStreetMap contributors',
+				attributionControl: false,
 				dragRotate: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
@@ -134,7 +134,7 @@ export default defineComponent({
 			if (geocoderControl) {
 				map.addControl(geocoderControl as any, 'top-right');
 			}
-			map.addControl(attributionControl, 'top-right');
+			map.addControl(attributionControl, 'bottom-right');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');

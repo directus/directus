@@ -250,7 +250,6 @@ export default defineComponent({
 			map = new Map({
 				container: container.value!,
 				style: style.value,
-				customAttribution: '© OpenStreetMap contributors',
 				dragRotate: false,
 				logoPosition: 'bottom-right',
 				...props.defaultView,
