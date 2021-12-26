@@ -320,8 +320,7 @@ export default defineComponent({
 
 .footer {
 	position: absolute;
-	right: 10px;
-	bottom: 35px;
+	bottom: 10px;
 	left: 10px;
 	display: flex;
 	align-items: center;
