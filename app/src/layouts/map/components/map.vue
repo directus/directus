@@ -125,7 +125,7 @@ export default defineComponent({
 			map = new Map({
 				container: 'map-container',
 				style: style.value,
-				attributionControl: false,
+				customAttribution: '© OpenStreetMap contributors',
 				dragRotate: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),

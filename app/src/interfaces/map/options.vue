@@ -85,7 +85,7 @@ export default defineComponent({
 			map = new Map({
 				container: mapContainer.value!,
 				style: style.value,
-				attributionControl: false,
+				customAttribution: '© OpenStreetMap contributors',
 				...(defaultView.value || {}),
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
