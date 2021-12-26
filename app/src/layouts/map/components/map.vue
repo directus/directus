@@ -11,7 +11,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibre, {
 	MapboxGeoJSONFeature,
 	MapLayerMouseEvent,
-	AttributionControl,
 	NavigationControl,
 	GeolocateControl,
 	LngLatBoundsLike,
