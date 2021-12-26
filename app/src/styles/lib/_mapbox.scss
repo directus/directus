@@ -1,4 +1,3 @@
-
 .mapboxgl-map {
 	font: inherit;
 }
@@ -71,7 +70,8 @@
 }
 
 .mapboxgl-search-location-dot {
-	&, &::before {
+	&,
+	&::before {
 		background-color: var(--purple);
 	}
 }
@@ -79,7 +79,7 @@
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
 	min-height: 24px;
-	color: var(--foreground-subdued);
+	color: var(--foreground-normal);
 	background: var(--background-input) !important;
 	box-shadow: var(--card-shadow);
 
@@ -106,6 +106,16 @@
 		font-size: 12px;
 		line-height: 20px;
 	}
+}
+
+.mapboxgl-ctrl-attrib:not(.mapboxgl-compact) {
+	font-size: 0.8em;
+	color: var(--foreground-normal);
+	background: var(--background-input);
+	border-radius: 6px 0 0 0;
+	border: 1px solid var(--border-normal);
+	border-right: none;
+	border-bottom: none;
 }
 
 .mapboxgl-ctrl-geocoder {
@@ -170,7 +180,6 @@
 	border: 1px solid rgb(56 135 190);
 	pointer-events: none;
 }
-
 
 .maplibregl-ctrl-top-right {
 	max-width: 80%;
