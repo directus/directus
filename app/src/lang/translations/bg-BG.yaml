@@ -768,6 +768,7 @@ adding_user: Добавяне на потребител
 unknown_user: Неизвестен потребител
 creating_in: 'Създаване на запис в {collection}'
 editing_in: 'Редактиране на запис от {collection}'
+viewing_in: 'Преглед на запис от {collection}'
 creating_unit: 'Създаване {unit}'
 editing_unit: 'Редактиране на {unit}'
 editing_in_batch: 'Множествено редактиране на {count} записи'
@@ -1123,6 +1124,14 @@ start_collapsed: Затворена в началото
 block: Блок
 inline: Вложен
 comment: Коментиране
+shares: Споделяния
+unlimited_usage: Неограничено използване
+no_shares: Няма споделяния
+new_share: Ново споделяне
+share: Споделяне
+share_item: Споделяне на запис
+share_copy_link: Копиране на връзка
+share_send_link: Изпращане на връзка
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
 referential_action_field_label_o2m: При размаркиране от {collection}...
