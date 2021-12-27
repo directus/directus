@@ -11,7 +11,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibre, {
 	MapboxGeoJSONFeature,
 	MapLayerMouseEvent,
-	AttributionControl,
 	NavigationControl,
 	GeolocateControl,
 	LngLatBoundsLike,
@@ -20,6 +19,7 @@ import maplibre, {
 	LngLatLike,
 	AnyLayer,
 	Map,
+	AttributionControl,
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -86,7 +86,7 @@ export default defineComponent({
 			return getStyleFromBasemapSource(source);
 		});
 
-		const attributionControl = new AttributionControl({ compact: true });
+		const attributionControl = new AttributionControl();
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
@@ -125,8 +125,8 @@ export default defineComponent({
 			map = new Map({
 				container: 'map-container',
 				style: style.value,
-				customAttribution: '© OpenStreetMap contributors',
 				dragRotate: false,
+				attributionControl: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -134,7 +134,7 @@ export default defineComponent({
 			if (geocoderControl) {
 				map.addControl(geocoderControl as any, 'top-right');
 			}
-			map.addControl(attributionControl, 'top-right');
+			map.addControl(attributionControl, 'bottom-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');

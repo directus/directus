@@ -112,10 +112,21 @@
 	font-size: 0.8em;
 	color: var(--foreground-normal);
 	background: var(--background-input);
-	border-radius: 6px 0 0 0;
-	border: 1px solid var(--border-normal);
-	border-right: none;
-	border-bottom: none;
+	border-radius: 0 6px 0 0;
+	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+
+	a {
+		color: var(--foreground-normal);
+
+		&:hover {
+			color: var(--foreground-normal-alt);
+		}
+	}
+}
+
+.maplibregl-ctrl-bottom-left {
+	display: flex;
+	flex-direction: column-reverse;
 }
 
 .mapboxgl-ctrl-geocoder {
