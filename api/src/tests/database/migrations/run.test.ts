@@ -1,6 +1,7 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import run from '../../../database/migrations/run';
+import { track } from '../../../utils/track';
 
 describe('run', () => {
 	let db: jest.Mocked<Knex>;
@@ -94,8 +95,5 @@ describe('run', () => {
 				expect(e.message).toBe('Method implemented in the dialect driver');
 			});
 		});
-		// it('returns undefined if the migration is successful', async () => {
-		// 	expect(await run(db, 'latest')).toBe(undefined);
-		// });
 	});
 });
