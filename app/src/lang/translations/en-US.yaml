@@ -1209,6 +1209,7 @@ relationship: Relationship
 reset: Reset
 reset_password: Reset Password
 revisions: Revisions
+no_revisions: No Revisions Yet
 revert: Revert
 save: Save
 schema: Schema
