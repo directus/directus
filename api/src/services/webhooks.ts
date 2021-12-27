@@ -1,6 +1,6 @@
-import { AbstractServiceOptions, Item, PrimaryKey, Webhook } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey, Webhook, MutationOptions } from '../types';
 import { register } from '../webhooks';
-import { ItemsService, MutationOptions } from './items';
+import { ItemsService } from './items';
 
 export class WebhooksService extends ItemsService<Webhook> {
 	constructor(options: AbstractServiceOptions) {

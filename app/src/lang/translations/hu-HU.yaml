@@ -1351,6 +1351,8 @@ interfaces:
     toolbar: Eszköztár
     custom_formats: Egyéni formátumok
     options_override: Beállítások felülírása
+    imageToken: Kép token
+    imageToken_label: Milyen (statikus) tokent csatoljunk a képforrásokhoz
   input-autocomplete-api:
     input-autocomplete-api: Automatikus kiegészítés (API)
     description: Külső API-értékek keresési típusvezetője (automatikus kiegészítés).

@@ -100,7 +100,7 @@ fields:
     options:
       icon: verified_user
       title: $t:fields.directus_users.admin_options
-      color: '#E35169'
+      color: 'var(--danger)'
     special:
       - alias
       - no-data

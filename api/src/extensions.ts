@@ -35,6 +35,7 @@ import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
+import { escapeRegExp } from 'lodash';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -178,14 +179,15 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
+		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
-			const depName = appDir.find((file) => dep.replace(/\//g, '_') === file.substring(0, file.indexOf('.')));
+			const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
+			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', depName);
+				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {

@@ -1343,6 +1343,8 @@ interfaces:
     toolbar: 工具栏
     custom_formats: 自定义格式
     options_override: 覆盖选项
+    imageToken: 图像Token
+    imageToken_label: 添加到源图片的Token
   input-autocomplete-api:
     input-autocomplete-api: 自动完成 Input (API)
     description: 一个事先搜索的外部API

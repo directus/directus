@@ -21,13 +21,13 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!junction.meta.sort_field"
+				:disabled="!junction.meta?.sort_field"
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
 					<v-list-item :dense="sortedItems.length > 4" block clickable @click="editItem(element)">
 						<v-icon
-							v-if="junction.meta.sort_field"
+							v-if="junction.meta?.sort_field"
 							name="drag_handle"
 							class="drag-handle"
 							left
@@ -46,7 +46,7 @@
 		</v-list>
 
 		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="editModalActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableCreate && createAllowed" @click="createNew()">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
@@ -204,8 +204,16 @@ export default defineComponent({
 			getPrimaryKeys
 		);
 
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
-			useEdit(value, relationInfo, emitter);
+		const {
+			currentlyEditing,
+			editItem,
+			createNew,
+			editsAtStart,
+			stageEdits,
+			cancelEdit,
+			relatedPrimaryKey,
+			editModalActive,
+		} = useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(
 			items,
@@ -226,6 +234,7 @@ export default defineComponent({
 			loading,
 			currentlyEditing,
 			editItem,
+			createNew,
 			junctionCollection,
 			relationCollection,
 			editsAtStart,

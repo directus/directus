@@ -85,7 +85,6 @@ export default defineComponent({
 			map = new Map({
 				container: mapContainer.value!,
 				style: style.value,
-				attributionControl: false,
 				...(defaultView.value || {}),
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});

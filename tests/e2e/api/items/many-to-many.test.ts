@@ -4,6 +4,7 @@ import config from '../../config';
 import { getDBsToTest } from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createEvent, createMany, seedTable, Item } from '../../setup/utils/factories';
+
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
 
@@ -122,16 +123,10 @@ describe('/items', () => {
 			expect(await databases.get(vendor)!('artists').select('name').where('id', artist.id)).toMatchObject([
 				{ name: artist.name },
 			]);
-			if (vendor === 'postgres10') {
-				const cost = Math.round(event.cost * 10) / 10;
-				expect(await databases.get(vendor)!('events').select('cost').where('id', event.id)).toMatchObject([
-					{ cost: cost },
-				]);
-			} else {
-				expect(await databases.get(vendor)!('events').select('cost').where('id', event.id)).toMatchObject([
-					{ cost: event.cost },
-				]);
-			}
+
+			expect(await databases.get(vendor)!('events').select('cost').where('id', event.id)).toMatchObject([
+				{ cost: event.cost },
+			]);
 		});
 	});
 	describe('/:collection GET', () => {
@@ -258,16 +253,9 @@ describe('/items', () => {
 				},
 			});
 			for (let row = 0; row < response.data.data.length; row++) {
-				if (vendor === 'postgres10') {
-					const cost = Math.round(event.cost * 10) / 10;
-					expect(response.data.data[row].events_id).toMatchObject({
-						cost: cost,
-					});
-				} else {
-					expect(response.data.data[row].events_id).toMatchObject({
-						cost: event.cost,
-					});
-				}
+				expect(response.data.data[row].events_id).toMatchObject({
+					cost: event.cost,
+				});
 			}
 			expect(response.data.data.length).toBe(keys.length);
 		});
@@ -314,12 +302,8 @@ describe('/items', () => {
 				expect(await databases.get(vendor)!('artists_events').select('*').where('id', items[row].id)).toStrictEqual([]);
 			}
 			expect((await databases.get(vendor)!('artists').select('name').where('id', artist.id))[0].name).toBe(artist.name);
-			if (vendor === 'postgres10') {
-				const cost = Math.round(event.cost * 10) / 10;
-				expect((await databases.get(vendor)!('events').select('cost').where('id', event.id))[0].cost).toBe(cost);
-			} else {
-				expect((await databases.get(vendor)!('events').select('cost').where('id', event.id))[0].cost).toBe(event.cost);
-			}
+
+			expect((await databases.get(vendor)!('events').select('cost').where('id', event.id))[0].cost).toBe(event.cost);
 		});
 	});
 });

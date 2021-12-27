@@ -1,6 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import { DeepPartial, Field } from '@directus/shared/types';
 import InterfaceSelectMultipleCheckboxesTree from './select-multiple-checkbox-tree.vue';
+import PreviewSVG from './preview.svg?raw';
 
 const repeaterFields: DeepPartial<Field>[] = [
 	{
@@ -122,4 +123,5 @@ export default defineInterface({
 		},
 	],
 	recommendedDisplays: ['labels'],
+	preview: PreviewSVG,
 });
