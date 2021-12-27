@@ -958,6 +958,8 @@ fields:
     basemaps_style: Styl Mapbox
     mapbox_key: Token dostępu do Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atrybuty
+    attribution_placeholder: '© Współtwórcy OpenStreetMap'
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
@@ -1196,6 +1198,7 @@ relationship: Powiązanie
 reset: Resetuj
 reset_password: Resetuj hasło
 revisions: Wersje
+no_revisions: Brak rewizji
 revert: Przywróć
 save: Zapisz
 schema: Schemat
@@ -1347,6 +1350,7 @@ interfaces:
   list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
+    display_template_configure_notice: Możesz skonfigurować szablon wyświetlania po utworzeniu tego pola.
   select-dropdown-m2o:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
@@ -1591,6 +1595,7 @@ displays:
   related-values:
     related-values: Powiązane wartości
     description: Wyświetl wartości Raw
+    display_template_configure_notice: Możesz skonfigurować szablon wyświetlania po utworzeniu tego pola.
   user:
     user: Użytkownik
     description: Wyświetl użytkownika
