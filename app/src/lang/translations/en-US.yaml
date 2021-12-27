@@ -1362,6 +1362,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
     description: Select a single related item
@@ -1611,6 +1612,7 @@ displays:
   related-values:
     related-values: Related Values
     description: Display relative values
+    display_template_configure_notice: You can configure the display template after creating this field.
   user:
     user: User
     description: Display a directus user
