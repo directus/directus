@@ -19,6 +19,7 @@ import maplibre, {
 	LngLatLike,
 	AnyLayer,
 	Map,
+	AttributionControl,
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -85,6 +86,7 @@ export default defineComponent({
 			return getStyleFromBasemapSource(source);
 		});
 
+		const attributionControl = new AttributionControl();
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
@@ -124,7 +126,7 @@ export default defineComponent({
 				container: 'map-container',
 				style: style.value,
 				dragRotate: false,
-				logoPosition: 'bottom-right',
+				attributionControl: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -132,6 +134,7 @@ export default defineComponent({
 			if (geocoderControl) {
 				map.addControl(geocoderControl as any, 'top-right');
 			}
+			map.addControl(attributionControl, 'bottom-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
