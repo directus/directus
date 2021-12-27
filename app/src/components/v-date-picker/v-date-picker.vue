@@ -34,6 +34,8 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+	  min: String,
+	  max: String,
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -97,6 +99,8 @@ export default defineComponent({
 				enableTime: ['dateTime', 'time', 'timestamp'].includes(props.type),
 				noCalendar: props.type === 'time',
 				time_24hr: props.use24,
+				minDate: props.min,
+				maxDate: props.max,
 			});
 		});
 

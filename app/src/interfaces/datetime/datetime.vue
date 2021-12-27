@@ -14,6 +14,8 @@
 			:include-seconds="includeSeconds"
 			:use-24="use24"
 			:model-value="value"
+			:min="min"
+			:max="max"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</v-menu>
@@ -21,9 +23,10 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, watch } from 'vue';
+import {computed, defineComponent, inject, PropType, ref, watch} from 'vue';
 import formatLocalized from '@/utils/localized-format';
 import { parse, parseISO } from 'date-fns';
+import {get} from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -48,12 +51,19 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+	  minField: String,
+	  maxField: String,
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const { displayValue } = useDisplayValue();
+
+		const values = inject('values') as object
+
+	  const min = computed(() => props.minField ? get(values, props.minField) : '')
+	  const max = computed(() => props.maxField ? get(values, props.maxField) : '')
 
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
@@ -93,7 +103,7 @@ export default defineComponent({
 			emit('input', null);
 		}
 
-		return { displayValue, unsetValue };
+		return { displayValue, unsetValue, min, max };
 	},
 });
 </script>
