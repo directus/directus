@@ -1,4 +1,4 @@
-const generateHash = require('../utils/generateHash');
+const generateHash = require('../utils/setup-utils');
 
 exports.seed = async function (knex) {
 	return await knex('directus_users').insert([
