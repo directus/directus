@@ -24,28 +24,48 @@ export default defineComponent({
 		const emptyPixel =
 			'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 		const srcData = ref<string>(emptyPixel);
-		const queued = ref(true);
 
-		const observer = new IntersectionObserver((entries) => {
+		let loaded = false;
+
+		const observer = new IntersectionObserver(async (entries) => {
 			if (entries.length === 0) return;
 			inView.value = entries[0].isIntersecting;
-		});
 
-		watch(
-			() => props.src,
-			async () => {
+			if (entries[0].isIntersecting && !loaded && props.src) {
 				try {
-					const res = await api.get(props.src, { responseType: 'arraybuffer' });
+					const res = await api.get(props.src, {
+						responseType: 'arraybuffer',
+						params: {
+							download: true,
+						},
+					});
+
+					if (res.headers['content-type'].startsWith('image') === false) return;
+
+					const contentType = res.headers['content-type'];
+
 					const data = new Uint8Array(res.data);
-					const raw = String.fromCharCode.apply(null, data);
+
+					if (data.length > 1048576 * 5) {
+						emit('error', new Error('Image too big to render'));
+						return;
+					}
+
+					let raw = '';
+
+					data.forEach((byte) => {
+						raw += String.fromCharCode(byte);
+					});
+
 					const base64 = btoa(raw);
-					srcData.value = `data:image;base64,${base64}`;
+					srcData.value = `data:${contentType};base64,${base64}`;
 				} catch (err) {
 					emit('error', err);
+				} finally {
+					loaded = true;
 				}
-			},
-			{ immediate: true }
-		);
+			}
+		});
 
 		onMounted(() => {
 			if (!imageElement.value) return;
@@ -58,7 +78,7 @@ export default defineComponent({
 
 		const attrsWithoutSrc = computed(() => omit(attrs, ['src']));
 
-		return { queued, srcData, attrsWithoutSrc, imageElement, inView, emptyPixel };
+		return { loaded, srcData, attrsWithoutSrc, imageElement, inView, emptyPixel };
 	},
 });
 </script>
