@@ -3,14 +3,14 @@
 		<div class="user" :class="display">
 			<v-image
 				v-if="(display === 'avatar' || display === 'both') && src"
-				:source="src"
+				:src="src"
 				role="presentation"
 				:alt="value && userName(value)"
 				:class="{ circle }"
 			/>
 			<v-image
 				v-else-if="(display === 'avatar' || display === 'both') && src === null"
-				source="../../assets/avatar-placeholder.svg"
+				src="../../assets/avatar-placeholder.svg"
 				role="presentation"
 				:alt="value && userName(value)"
 				:class="{ circle }"

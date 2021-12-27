@@ -13,7 +13,7 @@ const api = axios.create({
 	},
 });
 
-export const queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
+const queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
 
 interface RequestConfig extends AxiosRequestConfig {
 	id: string;

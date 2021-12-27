@@ -42,7 +42,7 @@
 
 			<router-link :to="userProfileLink">
 				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
-					<v-image v-if="avatarURL" :source="avatarURL" :alt="userFullName" class="avatar-image" />
+					<v-image v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
 					<v-icon v-else name="account_circle" outline />
 				</v-avatar>
 			</router-link>

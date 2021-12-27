@@ -17,7 +17,7 @@
 
 		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
 			<v-avatar x-large class="avatar">
-				<v-image v-if="avatarSrc" :source="avatarSrc" :alt="data.first_name" />
+				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
 				<v-icon v-else name="person" outline />
 			</v-avatar>
 			<div class="data">

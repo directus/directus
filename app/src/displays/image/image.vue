@@ -2,7 +2,7 @@
 	<v-icon v-if="imageError" name="image" />
 	<v-image
 		v-else-if="src"
-		:source="src"
+		:src="src"
 		role="presentation"
 		:alt="value && value.title"
 		:class="{ circle }"

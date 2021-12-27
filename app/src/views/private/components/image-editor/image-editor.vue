@@ -22,7 +22,7 @@
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
-				<v-image ref="imageElement" :source="imageURL" role="presentation" alt="" @load="onImageLoad" />
+				<v-image ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
 
 			<div class="toolbar">
