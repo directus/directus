@@ -31,6 +31,7 @@ tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
+switch_user: Switch User
 item_creation: Item Creation
 item_revision: Item Revision
 enter_a_name: Enter a Name...
@@ -768,6 +769,7 @@ adding_user: Adding User
 unknown_user: Unknown User
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
+viewing_in: 'Viewing Item in {collection}'
 creating_unit: 'Creating {unit}'
 editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
@@ -1123,6 +1125,26 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+shares: Shares
+unlimited_usage: Unlimited usage
+uses_left: No uses left | 1 use left | {n} uses left
+no_shares: No shares to show
+new_share: New Share
+expired: Expired
+upcoming: Upcoming
+share: Share
+share_item: Share Item
+shared_with_you: An item has been shared with you
+shared_enter_passcode: Enter your passcode to continue...
+shared_times_remaining: This link can only be used {n} times
+shared_last_remaining: This link can only be used once
+shared_uses_left: For added security, this shared page has been configured with a limited number of views. There are currently {n} views remaining, after which, the page will no longer be accessible.
+share_access_page: Access Shared Page
+share_access_not_found: This shared page either does not exist or has already exceeded the maximum number of allowed uses.
+share_access_not_found_desc: Please contact an authorised user of this project to request access.
+share_access_not_found_title: Unknown Share Page
+share_copy_link: Copy Link
+share_send_link: Send Link
 relational_triggers: Relational Triggers
 referential_action_field_label_m2o: On Delete of {collection}...
 referential_action_field_label_o2m: On Deselect of {collection}...
@@ -1174,6 +1196,7 @@ relationship: Relationship
 reset: Reset
 reset_password: Reset Password
 revisions: Revisions
+no_revisions: No Revisions Yet
 revert: Revert
 save: Save
 schema: Schema
@@ -1325,6 +1348,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
     description: Select a single related item
@@ -1573,6 +1597,7 @@ displays:
   related-values:
     related-values: Related Values
     description: Display relative values
+    display_template_configure_notice: You can configure the display template after creating this field.
   user:
     user: User
     description: Display a directus user

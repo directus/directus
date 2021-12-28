@@ -24,6 +24,13 @@ avatar: Profiel prentjie
 default_provider: Verstek
 published: Gepubliseer
 draft: Draft
+archived: Geargiveer
+modules: Modules
+module_bar: Modulebalk
+tile_size: Teëlgrootte
+edit_field: Wysig veld
+conditions: Voorwaardes
+maps: Kaarte
 and: En
 or: Of
 create_role: Skep Rol
@@ -106,6 +113,8 @@ fields:
     tfa_secret: Twee-Faktor Verifikasie
     status: Status
     role: Rol
+  directus_settings:
+    module_bar: Modulebalk
   directus_fields:
     display_template: Modelvorm
   directus_roles:
