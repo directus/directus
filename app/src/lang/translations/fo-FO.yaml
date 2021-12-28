@@ -2,3 +2,13 @@
 avatar: Vangamynd
 default_provider: Standard
 draft: Kladda
+archived: Skjalasavna
+modules: Modulir
+module_bar: Modul Bjálki
+tile_size: Flísa Stødd
+edit_field: Rætta Teig
+conditions: Treytir
+maps: Kort
+fields:
+  directus_settings:
+    module_bar: Modul Bjálki
