@@ -1,6 +1,28 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Eyðmerki
 avatar: Vangamynd
 default_provider: Standard
+published: Út Givið
 draft: Kladda
 archived: Skjalasavna
 modules: Modulir
@@ -17,6 +39,25 @@ duplicate_field: Tvífalda Teig
 half_width: Hálv Breidd
 full_width: Full Breidd
 group: Bólkur
+and: Og
+or: Ella
+fill_width: Fyll Breiddina
+field_name_translations: Navna Teiga Umsetingar
+enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (Two-Factor Authentication)
+add_field: Legg afturat Teig
+role_name: Navna Heiti
+branch: Grein
+leaf: Blað
+indeterminate: Óvist
+edit_collection: Rætta Savn
+exclusive: Serúrval
+children: Børn
+db_only_click_to_configure: 'Einans Dátugrunnur: Klikkja fyri at Stilla'
+show_active_items: Vís Virknar Lutir
 fields:
   directus_settings:
     module_bar: Modul Bjálki
+  directus_fields:
+    translation: Navna Teiga Umsetingar
+  directus_roles:
+    name: Navna Heiti
