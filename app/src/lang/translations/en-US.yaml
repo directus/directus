@@ -1460,11 +1460,6 @@ interfaces:
     slider: Slider
     description: Select a number using a slider
     always_show_value: Always show value
-  table:
-    table: Table
-    description: Render JSON in a table format
-    edit_columns: Edit Columns
-    auto_detect_columns: Auto detect columns
   tags:
     tags: Tags
     description: Select or add tags
