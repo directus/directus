@@ -45,7 +45,7 @@ fill_width: Fyll Breiddina
 field_name_translations: Navna Teiga Umsetingar
 enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (Two-Factor Authentication)
 add_field: Legg afturat Teig
-role_name: Navna Heiti
+role_name: Leikluts Heiti
 branch: Grein
 leaf: Blað
 indeterminate: Óvist
@@ -54,10 +54,42 @@ exclusive: Serúrval
 children: Børn
 db_only_click_to_configure: 'Einans Dátugrunnur: Klikkja fyri at Stilla'
 show_active_items: Vís Virknar Lutir
+show_archived_items: Vís Skjalasavnaðir Lutir
+show_all_items: Vís Allar Lutir
+edited: Virði er broytt
+required: Neyðugt
+required_for_app_access: Neyðugt til App Atgongd
+requires_value: Neyðugt virði
+create_preset: Stovna Undanstilling
+create_panel: Stovna Talvu
+create_role: Stovna Leiklut
+create_user: Stovna Brúkara
+delete_panel: Strika Talvu
+create_webhook: Stovna Webhook
+invite_users: Bjóða Brúkarum
+invite: Bjóða
+email_already_invited: Telduposturin "{email}" hevur longu fingið eina innbóðing
+subject: Evni
+inbox: Innbakki
+emails: Teldupostar
+connection_excellent: Frálíkt Samband
+connection_good: Gott Samband
+connection_fair: Hampiligt Samband
+connection_poor: Ringt Samband
+primary: Primer
+rename_folder: Umdoyp Faldara
+delete_folder: Strika Faldara
+prefix: Forskoyti
 fields:
   directus_settings:
     module_bar: Modul Bjálki
   directus_fields:
     translation: Navna Teiga Umsetingar
   directus_roles:
-    name: Navna Heiti
+    name: Leikluts Heiti
+interfaces:
+  presentation-links:
+    primary: Primer
+displays:
+  formatted-value:
+    prefix: Forskoyti
