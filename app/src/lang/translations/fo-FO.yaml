@@ -1,0 +1,107 @@
+---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Eyðmerki
+avatar: Vangamynd
+default_provider: Standard
+published: Út Givið
+draft: Kladda
+archived: Skjalasavna
+modules: Modulir
+module_bar: Modul Bjálki
+tile_size: Flísa Stødd
+edit_field: Rætta Teig
+conditions: Treytir
+maps: Kort
+switch_user: Skift Brúkara
+item_creation: Stovna Lut
+item_revision: Endurskoða Lut
+enter_a_name: Áset eitt Navn...
+duplicate_field: Tvífalda Teig
+half_width: Hálv Breidd
+full_width: Full Breidd
+group: Bólkur
+and: Og
+or: Ella
+fill_width: Fyll Breiddina
+field_name_translations: Navna Teiga Umsetingar
+enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (Two-Factor Authentication)
+add_field: Legg afturat Teig
+role_name: Leikluts Heiti
+branch: Grein
+leaf: Blað
+indeterminate: Óvist
+edit_collection: Rætta Savn
+exclusive: Serúrval
+children: Børn
+db_only_click_to_configure: 'Einans Dátugrunnur: Klikkja fyri at Stilla'
+show_active_items: Vís Virknar Lutir
+show_archived_items: Vís Skjalasavnaðir Lutir
+show_all_items: Vís Allar Lutir
+edited: Virði er broytt
+required: Neyðugt
+required_for_app_access: Neyðugt til App Atgongd
+requires_value: Neyðugt virði
+create_preset: Stovna Undanstilling
+create_panel: Stovna Talvu
+create_role: Stovna Leiklut
+create_user: Stovna Brúkara
+delete_panel: Strika Talvu
+create_webhook: Stovna Webhook
+invite_users: Bjóða Brúkarum
+invite: Bjóða
+email_already_invited: Telduposturin "{email}" hevur longu fingið eina innbóðing
+subject: Evni
+inbox: Innbakki
+emails: Teldupostar
+connection_excellent: Frálíkt Samband
+connection_good: Gott Samband
+connection_fair: Hampiligt Samband
+connection_poor: Ringt Samband
+primary: Primer
+rename_folder: Umdoyp Faldara
+delete_folder: Strika Faldara
+prefix: Forskoyti
+suffix: Eftirskoyti
+reset_bookmark: Nullstilla Bókamerki
+rename_bookmark: Umdoyp Bókamerki
+update_bookmark: Rætta Bókamerki
+delete_bookmark: Strika Bókamerki
+delete_bookmark_copy: >-
+  Ert tú vissur í at tú vilt strika "{bookmark}" bókamerki? Hendan gerð kann ikki angrast.
+logoutReason:
+  SIGN_OUT: Ritaður Út
+  SESSION_EXPIRED: Sambandi er Útgingið
+public_label: Alment
+fields:
+  directus_settings:
+    module_bar: Modul Bjálki
+  directus_fields:
+    translation: Navna Teiga Umsetingar
+  directus_roles:
+    name: Leikluts Heiti
+interfaces:
+  presentation-links:
+    primary: Primer
+displays:
+  formatted-value:
+    prefix: Forskoyti
+    suffix: Eftirskoyti
