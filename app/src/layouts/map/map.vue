@@ -9,7 +9,7 @@
 			:selection="selection"
 			:camera="cameraOptions"
 			:bounds="geojsonBounds"
-			:src="directusSource"
+			:source="directusSource"
 			:layers="directusLayers"
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
