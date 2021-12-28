@@ -1411,6 +1411,9 @@ interfaces:
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
     options_override: Valintojen ohitus
+    folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
+    imageToken: Kuvatunnus
+    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
@@ -1474,9 +1477,18 @@ displays:
   formatted-value:
     formatted-value: Muotoiltu arvo
     description: Näytä tekstin muotoiltu versio
-    format_title: Muoto otsikko
-    format_title_label: Automaattisesti muotoiltu kirjainkoko
+    format: Muoto
+    font: Kirjasin
+    font_serif: Serif
+    font_monospace: Tasavälinen
+    bold: Lihavoitu
     bold_label: Käytä lihavoitua tyyliä
+    italic: Kursiivi
+    prefix: Etuliite
+    suffix: Jälkiliite
+    color: Väri
+    icon: Kuvake
+    text: Teksti
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio

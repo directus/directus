@@ -31,6 +31,7 @@ tile_size: Големина на сегментите
 edit_field: Редактиране на полето
 conditions: Условия
 maps: Географски карти
+switch_user: Превключване на потребителя
 item_creation: Записът е създаден
 item_revision: Ревизии на запис
 enter_a_name: Въвеждане на името...
@@ -52,7 +53,9 @@ edit_collection: Редактиране на колекцията
 exclusive: Изключително
 children: Дъщерен
 db_only_click_to_configure: 'Само в базата от данни: Натиснете за конфигуриране'
+show_active_items: Показване на активните записи
 show_archived_items: Показване на архивираните записи
+show_all_items: Показване на всички записи
 edited: Стойността е редактирана
 required: Задължително
 required_for_app_access: Изисква се за достъп до приложението
@@ -89,6 +92,7 @@ logoutReason:
   SESSION_EXPIRED: Сесията е изтекла
 public_label: Публичен
 public_description: Контрол на позволенията към API-то, без нужда от оторизиране.
+admin_description: Първоначална администраторска роля с неограничен достъп до API и приложението.
 not_allowed: Не е позволено
 directus_version: Версия на Directus
 node_version: Версия на Node
@@ -379,10 +383,10 @@ open_folder: Отваряне на папка „{folder}“
 foreground_color: Основен цвят
 background_color: Цвят на фона
 upload_from_device: Добавяне на файл от устройство
-choose_from_library: Избиране на файл от архива
+choose_from_library: Избиране на файл от библиотеката
 import_from_url: Импортиране на файл от URL
 replace_from_device: Замяна на файл от устройство
-replace_from_library: Зямяна на файл от архива
+replace_from_library: Зямяна на файл от библиотеката
 replace_from_url: Замяна на файл от URL
 no_file_selected: Не е избран файл
 download_file: Изтегляне на файл
@@ -618,8 +622,8 @@ interface_options: Настройки на интерфейса
 layout_options: Оформление и настройки
 rows: Редове
 columns: Колони
-collection_setup: Настройки на колекцията
-optional_system_fields: Незадължителни системни полета
+collection_setup: Настройване
+optional_system_fields: Предложения за полета
 value_unique: Само уникални стойности
 all_activity: Цялата активност
 create_item: Създаване на запис
@@ -765,13 +769,14 @@ adding_user: Добавяне на потребител
 unknown_user: Неизвестен потребител
 creating_in: 'Създаване на запис в {collection}'
 editing_in: 'Редактиране на запис от {collection}'
+viewing_in: 'Преглед на запис от {collection}'
 creating_unit: 'Създаване {unit}'
 editing_unit: 'Редактиране на {unit}'
 editing_in_batch: 'Множествено редактиране на {count} записи'
 no_options_available: Не са налични настройки
 settings_data_model: Модел на данни
 settings_permissions: Роли и позволения
-settings_project: Настройки на проект
+settings_project: Настройки на проекта
 settings_webhooks: Уеб-куки
 settings_presets: Заготовки и отметки
 one_or_more_options_are_missing: Липсват една или повече настройки
@@ -792,7 +797,7 @@ discard_all_changes: Отмяна на промените
 discard_changes_copy: Сигурни ли сте, че искате да отхвърлите тези промени?
 show_x_axis: Показване на оста по X
 show_y_axis: Показване на оста по Y
-keep_editing: Връщане за редакция
+keep_editing: Редакция
 page_help_collections_overview: '**Обзор на колекциите** — Показване на всички налични колекции до които имате достъп.'
 page_help_collections_collection: >-
   **Преглед на записи** — Показване на всички записи от {collection}, до които имате достъп. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите заготовка от тази конфигурация за по-бърз достъп.
@@ -803,7 +808,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Обзор на документацията** — Обща и техническа документация, специфична за версията и схемата на вашият проект.
 page_help_files_collection: >-
-  **Файлов архив** — Показване на всички налични файлове, добавени към проекта. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите заготовка от тази конфигурация за по-бърз достъп.
+  **Файлове** — Показване на всички налични файлове, добавени към проекта. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите заготовка от тази конфигурация за по-бърз достъп.
 page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
 page_help_settings_project: "**Настройки за проекта** — Глобални конфигурация и настройки на вашият проект."
@@ -968,7 +973,7 @@ fields:
     files_and_thumbnails: Файлове и съхранение
     storage_default_folder: Папка по подразбиране
     storage_asset_presets: Заготовки с трансформации
-    storage_asset_transform: Позволявания за трансформации
+    storage_asset_transform: Позволения за трансформиране
     overrides: Преопределяне в приложението
     custom_css: Собствен CSS
     module_bar: Модулна лента
@@ -1120,6 +1125,26 @@ start_collapsed: Затворена в началото
 block: Блок
 inline: Вложен
 comment: Коментиране
+shares: Споделяния
+unlimited_usage: Неограничено използване
+uses_left: Не е налична | Остава 1 използване | Остават {n} използвания
+no_shares: Няма споделяния
+new_share: Ново споделяне
+expired: Просрочен
+upcoming: Предстоящ
+share: Споделяне
+share_item: Споделяне на запис
+shared_with_you: Запис е споделен с вас
+shared_enter_passcode: Въведете паролата си, за да продължите...
+shared_times_remaining: Тази връзка може да бъде използвана само {n} пъти
+shared_last_remaining: Тази връзка може да бъде използвана само веднъж
+shared_uses_left: За допълнителна сигурност, споделената страница е настроена с ограничение в броя на прегледите. В момента остават {n} прегледи, след това страницата няма да бъде достъпна.
+share_access_page: Достъп до споделена страница
+share_access_not_found: Споделената страница не съществува или квотата за използване от потребители вече е просрочена.
+share_access_not_found_desc: Свържете се с оторизиран потребител от проекта за да получите достъп.
+share_access_not_found_title: Непозната споделена страница
+share_copy_link: Копиране на връзка
+share_send_link: Изпращане на връзка
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
 referential_action_field_label_o2m: При размаркиране от {collection}...
@@ -1148,7 +1173,7 @@ embed: Вграждане
 fallback_icon: Резервна икона
 field: Поле | Полета
 file: Файл
-file_library: Файлов архив
+file_library: Файлове
 forgot_password: Забравена парола
 hidden: Скриване
 icon: Икона
@@ -1192,7 +1217,6 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1265,7 +1289,7 @@ interfaces:
     datetime: Дата и час
     description: Въвеждане на дати и часове
     include_seconds: Вклчване на секундите
-    set_to_now: Задаване към сега
+    set_to_now: Сегашно време
     use_24: Използване на 24 часов формат
   system-display-template:
     display-template: Шаблон при показване
@@ -1445,6 +1469,9 @@ interfaces:
     toolbar: Лента с инструменти
     custom_formats: Собтсвени формати
     options_override: Преопределяне на настройки
+    folder_note: Папка за качените файлове. Съществуващите файлове не се променят.
+    imageToken: Токен за изображенията
+    imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
     description: Автоматично дописване на стойности чрез външно API.
@@ -1510,9 +1537,27 @@ displays:
   formatted-value:
     formatted-value: Форматирана стойност
     description: Форматиране на текстовата стойност
-    format_title: Заглавен стил
-    format_title_label: Започване на думите с главна буква
+    format: Формат
+    format_label: Заглавен Чикаго стил
+    font: Шрифт
+    font_sans_serif: Безсерифен
+    font_serif: Серифен
+    font_monospace: Равноширок
+    bold: Удебеляване
     bold_label: Използване на удебелен стил
+    italic: Курсив
+    italic_label: Използване на наклонен стил
+    prefix: Представка
+    prefix_label: Текст след стойността
+    suffix: Наставка
+    suffix_label: Текст пред стойността
+    color: Цвят
+    background: Фон
+    icon: Икона
+    border: Рамка
+    border_label: Показване на рамката
+    text: Текст
+    text_placeholder: Заместващ текст...
   formatted-json-value:
     formatted-json-value: Форматирана JSON стойност
     description: Показване на форматирана стойност на JSON обект

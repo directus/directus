@@ -19,7 +19,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
 
-	DB_EXCLUDE_TABLES: 'spatial_ref_sys',
+	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',

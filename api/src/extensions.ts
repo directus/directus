@@ -17,7 +17,7 @@ import {
 	EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import getDatabase from './database';
-import emitter from './emitter';
+import emitter, { Emitter } from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
@@ -35,6 +35,7 @@ import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
+import { escapeRegExp } from 'lodash';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -63,11 +64,13 @@ class ExtensionManager {
 	)[] = [];
 	private apiEndpoints: { path: string }[] = [];
 
+	private apiEmitter: Emitter;
 	private endpointRouter: Router;
 
 	private isScheduleHookEnabled = true;
 
 	constructor() {
+		this.apiEmitter = new Emitter();
 		this.endpointRouter = Router();
 	}
 
@@ -107,6 +110,8 @@ class ExtensionManager {
 
 		this.unregisterHooks();
 		this.unregisterEndpoints();
+
+		this.apiEmitter.offAll();
 
 		if (env.SERVE_APP) {
 			this.appExtensions = {};
@@ -174,14 +179,15 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
+		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
-			const depName = appDir.find((file) => dep.replace(/\//g, '_') === file.substring(0, file.indexOf('.')));
+			const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
+			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', depName);
+				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {
@@ -283,6 +289,7 @@ class ExtensionManager {
 			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
+			emitter: this.apiEmitter,
 			logger,
 			getSchema,
 		});
@@ -305,6 +312,7 @@ class ExtensionManager {
 			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
+			emitter: this.apiEmitter,
 			logger,
 			getSchema,
 		});

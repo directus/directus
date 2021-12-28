@@ -2,6 +2,216 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.4.0 (December 23, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#10663](https://github.com/directus/directus/pull/10663) Add ability to share items with people outside the
+    platform ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10438](https://github.com/directus/directus/pull/10438) Add v-date-picker base component & use it in datetime
+    interface ([@azrikahar](https://github.com/azrikahar))
+
+### :rocket: Improvements
+
+- **App**
+  - [#10659](https://github.com/directus/directus/pull/10659) match panel sizing to metric
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10652](https://github.com/directus/directus/pull/10652) use CSS variable for users Admin Options divider
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10587](https://github.com/directus/directus/pull/10587) smaller label height
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10573](https://github.com/directus/directus/pull/10573) Update to the latest Material Icons
+    ([@tatthien](https://github.com/tatthien))
+  - [#7199](https://github.com/directus/directus/pull/7199) Add default folder upload to WYSIWYG editors
+    ([@letoast](https://github.com/letoast))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10651](https://github.com/directus/directus/pull/10651) fix public role sidebar not closable
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10617](https://github.com/directus/directus/pull/10617) fix M2A list not updating
+    ([@azrikahar](https://github.com/azrikahar))
+- **cli**
+  - [#10623](https://github.com/directus/directus/pull/10623) Fix directusctl packages
+    ([@azrikahar](https://github.com/azrikahar))
+- **API**
+  - :warning: [#10569](https://github.com/directus/directus/pull/10569) Use correct status code (204) when no content is
+    sent ([@eikaramba](https://github.com/eikaramba))
+
+### :sponge: Optimizations
+
+- **API**
+  - [#10643](https://github.com/directus/directus/pull/10643) Move the app entrypoints to the assets directory
+    ([@nickrum](https://github.com/nickrum))
+
+## v9.3.0 (December 16, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#10513](https://github.com/directus/directus/pull/10513) Add Archive sidebar component
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9773](https://github.com/directus/directus/pull/9773) Update formatted-value display
+    ([@alejandro-tss](https://github.com/alejandro-tss))
+  - [#9135](https://github.com/directus/directus/pull/9135) Custom filter support for relational interfaces
+    ([@t7tran](https://github.com/t7tran))
+
+### :rocket: Improvements
+
+- **API**
+  - [#10531](https://github.com/directus/directus/pull/10531) Pass a custom emitter to API extensions
+    ([@nickrum](https://github.com/nickrum))
+  - [#10529](https://github.com/directus/directus/pull/10529) Emitting action/filter events for api extensions
+    ([@br41nslug](https://github.com/br41nslug))
+- **Extensions**
+  - [#10531](https://github.com/directus/directus/pull/10531) Pass a custom emitter to API extensions
+    ([@nickrum](https://github.com/nickrum))
+- **App**
+  - [#10514](https://github.com/directus/directus/pull/10514) add tooltip to sidebar components
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10494](https://github.com/directus/directus/pull/10494) Remove quotes for CSS variable in selection style
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10493](https://github.com/directus/directus/pull/10493) Unify & translate initial role/user detail in `init` &
+    `bootstrap` command ([@azrikahar](https://github.com/azrikahar))
+  - [#10464](https://github.com/directus/directus/pull/10464) Autofocus form for repeater
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#10497](https://github.com/directus/directus/pull/10497) Expanded try catch around extracting metadata
+    ([@keesvanbemmel](https://github.com/keesvanbemmel))
+- **App**
+  - [#10491](https://github.com/directus/directus/pull/10491) Fix decimal input on the interface
+    ([@licitdev](https://github.com/licitdev))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#10524](https://github.com/directus/directus/pull/10524) Align display options type with interface options type
+    ([@nickrum](https://github.com/nickrum))
+
+### :memo: Documentation
+
+- [#10543](https://github.com/directus/directus/pull/10543) Update CLI docs ([@azrikahar](https://github.com/azrikahar))
+- [#10513](https://github.com/directus/directus/pull/10513) Add Archive sidebar component
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10467](https://github.com/directus/directus/pull/10467) fix links to types
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10465](https://github.com/directus/directus/pull/10465) Minor fix for "no result found" for search in dark mode
+  ([@azrikahar](https://github.com/azrikahar))
+
+## v9.2.2 (December 10, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#10441](https://github.com/directus/directus/pull/10441) interface padding
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10437](https://github.com/directus/directus/pull/10437) Update selection styling to use CSS variable
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10123](https://github.com/directus/directus/pull/10123) fix advanced filter fields order with field groups
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10440](https://github.com/directus/directus/pull/10440) Fix broken wysiwyg editor when width and height are set in
+    image ([@maltejur](https://github.com/maltejur))
+  - [#10430](https://github.com/directus/directus/pull/10430) patch translations interface for new translations
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10412](https://github.com/directus/directus/pull/10412) Fix selection of field.meta.special after removal
+    ([@licitdev](https://github.com/licitdev))
+  - [#10410](https://github.com/directus/directus/pull/10410) fix translations not refreshing on save
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10370](https://github.com/directus/directus/pull/10370) fix styling problem with nested render-template
+    ([@SeanDylanGoff](https://github.com/SeanDylanGoff))
+  - [#10368](https://github.com/directus/directus/pull/10368) Relations: fix M2M related primary key
+    ([@AdiechaHK](https://github.com/AdiechaHK))
+  - [#10125](https://github.com/directus/directus/pull/10125) Auto expand selections for checkbox tree in Show Selected
+    mode ([@azrikahar](https://github.com/azrikahar))
+  - [#10123](https://github.com/directus/directus/pull/10123) fix advanced filter fields order with field groups
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#9589](https://github.com/directus/directus/pull/9589) Fix conditional markdown and code input glitches
+    ([@smilledge](https://github.com/smilledge))
+- **API**
+  - [#10409](https://github.com/directus/directus/pull/10409) Add password policy check during password reset
+    ([@licitdev](https://github.com/licitdev))
+  - [#9957](https://github.com/directus/directus/pull/9957) Separate caching of dynamic user vars from permissions
+    ([@licitdev](https://github.com/licitdev))
+  - [#9527](https://github.com/directus/directus/pull/9527) Added edge case handling for weird IBM ldap issues
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+
+### :memo: Documentation
+
+- [#10408](https://github.com/directus/directus/pull/10408) clarify "folder" collections & collection API reference
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10386](https://github.com/directus/directus/pull/10386) Add custom panel extensions template & docs
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10382](https://github.com/directus/directus/pull/10382) Tweak for logical operators snippet
+  ([@ryntab](https://github.com/ryntab))
+- [#10275](https://github.com/directus/directus/pull/10275) Docs for testing the API
+  ([@jaycammarano](https://github.com/jaycammarano))
+
+## v9.2.1 (December 6, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#10346](https://github.com/directus/directus/pull/10346) Use variables for default colors in boolean
+    interface/display ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10340](https://github.com/directus/directus/pull/10340) replace logo with rounded version
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10331](https://github.com/directus/directus/pull/10331) Update input-rich-text-html.vue
+    ([@AndreyKindin](https://github.com/AndreyKindin))
+- **API**
+  - [#10339](https://github.com/directus/directus/pull/10339) Use expression instead of alias in groupBy query
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#10301](https://github.com/directus/directus/pull/10301) SSO fixes and improvements
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+- **Extensions**
+  - [#10335](https://github.com/directus/directus/pull/10335) Share pinia with extensions
+    ([@nickrum](https://github.com/nickrum))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#10339](https://github.com/directus/directus/pull/10339) Use expression instead of alias in groupBy query
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#10336](https://github.com/directus/directus/pull/10336) Fix permissions merging on null check
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10301](https://github.com/directus/directus/pull/10301) SSO fixes and improvements
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#10297](https://github.com/directus/directus/pull/10297) Fixed escaping error on LDAP filters
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+- **App**
+  - [#10338](https://github.com/directus/directus/pull/10338) Add disabled state to translations interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10308](https://github.com/directus/directus/pull/10308) Fix non-native geometries not visible in map layout
+    ([@Oreilles](https://github.com/Oreilles))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#10316](https://github.com/directus/directus/pull/10316) Small optimization in getNodeAtPath
+    ([@Oreilles](https://github.com/Oreilles))
+
+### :memo: Documentation
+
+- [#10334](https://github.com/directus/directus/pull/10334) docs updates on file library, content sidebar etc
+  ([@azrikahar](https://github.com/azrikahar))
+- [#8611](https://github.com/directus/directus/pull/8611) Extension docs updates
+  ([@nickrum](https://github.com/nickrum))
+
+### :package: Dependency Updates
+
+- [#10319](https://github.com/directus/directus/pull/10319) Update Node.js to v16.13.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#10318](https://github.com/directus/directus/pull/10318) Pin dependencies
+  ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.2.0 (December 3, 2021)
 
 ### :sparkles: New Features

@@ -47,7 +47,12 @@
 
 		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
 			<div class="content">
-				<interface-input-code :value="code" language="htmlmixed" @input="code = $event"></interface-input-code>
+				<interface-input-code
+					:value="code"
+					language="htmlmixed"
+					line-wrapping="true"
+					@input="code = $event"
+				></interface-input-code>
 			</div>
 
 			<template #actions>
@@ -80,7 +85,7 @@
 						</div>
 					</div>
 				</template>
-				<v-upload v-else :multiple="false" from-library from-url @input="onImageSelect" />
+				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
 			</div>
 
 			<template #actions>
@@ -120,7 +125,7 @@
 								</div>
 							</div>
 						</template>
-						<v-upload v-else :multiple="false" from-library from-url @input="onMediaSelect" />
+						<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
 					</v-tab-item>
 					<v-tab-item value="embed">
 						<div class="grid">
@@ -231,6 +236,10 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		folder: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -287,7 +296,7 @@ export default defineComponent({
 					params.set('access_token', token);
 				}
 
-				const paramsString = params.toString().length > 0 ? `?${params.toString()}` : '';
+				const paramsString = params.toString().length > 0 ? `?${params.toString().replace(/&/g, '&amp;')}` : '';
 
 				return `${pre}${matched.origin}${matched.pathname}${paramsString}${post}`;
 			});

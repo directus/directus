@@ -3,6 +3,7 @@ import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
+import ShareRoute from '@/routes/shared';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { useAppStore, useServerStore, useUserStore } from '@/stores';
@@ -46,6 +47,14 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		name: 'logout',
 		path: '/logout',
 		component: LogoutRoute,
+		meta: {
+			public: true,
+		},
+	},
+	{
+		name: 'shared',
+		path: '/shared/:id([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})',
+		component: ShareRoute,
 		meta: {
 			public: true,
 		},

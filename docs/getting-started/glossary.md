@@ -37,7 +37,9 @@ tracks the event type, user, timestamp, IP address, user-agent, and any associat
 
 Collections are containers for specific types of Items and contain any number of fields. Each collection represents a
 **table** in your database. By default, the [title formatter](#title-formatter) is used to display any existing database
-table names as human-readable collection titles.
+table names as human-readable collection titles. There are also "folder" collections that are
+[exclusively used for organizational purposes](/configuration/data-model/#sorting-grouping), and don't hold any data
+themselves.
 
 Collections can be organized in any way that is appropriate for your project. You can architect them platform-specific
 (eg: _pages_ of a website), or in a more platform-agnostic way (eg: raw _customers_ of your business). While there's no
@@ -241,9 +243,12 @@ two main ways to achieve multitenancy:
 
 ## Panels
 
-Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a
-[Dashboard](#dashboards) and can be positioned and resized as needed.
-[Panels are a Modular Extension Type](/extensions/panels/).
+Panels are modular units of data visualization that exist within the [Insights module](/app/insights). Each panel exists
+within a [Dashboard](#dashboards) and can be positioned and resized as needed.
+
+### Relevant Guides
+
+- [Creating a Custom Panel](/extensions/panels/)
 
 ## Permissions
 

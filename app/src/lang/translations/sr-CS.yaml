@@ -1073,6 +1073,8 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
+    imageToken: Token Fotografije
+    imageToken_label: Koji (statični) token prikačiti na izvore slika
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.
@@ -1121,9 +1123,18 @@ displays:
   formatted-value:
     formatted-value: Formatirana Vrijednost
     description: Prikaži formatiranu verziju teksta
-    format_title: Formatiraj Naslov
-    format_title_label: Automatsko formatiranje naslova
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Fiksni razmak
+    bold: Podebljano
     bold_label: Koristi podebljan stil
+    italic: Kurziv
+    prefix: Prefiks
+    suffix: Sufiks
+    color: Boja
+    icon: Ikonica
+    text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta

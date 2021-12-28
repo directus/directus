@@ -31,6 +31,7 @@ tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
 maps: Cartes
+switch_user: Changer d'utilisateur
 item_creation: Création d'article
 item_revision: Historique de l'article
 enter_a_name: Saisir un nom...
@@ -52,7 +53,9 @@ edit_collection: Modifier la collection
 exclusive: Exclusif
 children: Les enfants
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer'
+show_active_items: Afficher Les Éléments Actifs
 show_archived_items: Afficher les éléments archivés
+show_all_items: Afficher Tous Les Éléments
 edited: Valeur modifiée
 required: Obligatoire
 required_for_app_access: Obligatoire pour l'accès à l'application
@@ -89,6 +92,7 @@ logoutReason:
   SESSION_EXPIRED: Votre session a expiré
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
+admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
 not_allowed: Non autorisé
 directus_version: Version de Directus
 node_version: Version de Node
@@ -206,7 +210,7 @@ date_range: Plage de dates
 datetime: Date et heure
 dateTime: Date et heure
 precision: Précision
-decimal: Décimale
+decimal: Nombre décimal avec précision
 float: Nombre décimal
 integer: Entier
 json: JSON
@@ -765,6 +769,7 @@ adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
 creating_in: 'Création de l''élément dans {collection}'
 editing_in: 'Modification de l''élément dans {collection}'
+viewing_in: 'Consulter l''élément de {collection}'
 creating_unit: 'Création de {unit}'
 editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
@@ -841,7 +846,7 @@ singleton: Singleton
 singleton_label: Est un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 directus_collection:
-  directus_activity: Journaux de responsabilité pour tous les événements
+  directus_activity: Journaux de traçabilité de tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
@@ -880,8 +885,8 @@ fields:
     singleton: Singleton
     translations: Traductions des noms de collections
     archive_app_filter: Filtrer les valeurs archivées dans l'application
-    archive_value: Valeur pour archivage
-    unarchive_value: Valeur au désarchivage
+    archive_value: Valeur pour l'état archivé
+    unarchive_value: Valeur lors du désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
     archive_field: Champ d'archivage
@@ -1056,12 +1061,12 @@ field_options:
     plural_unit: Au pluriel
     archive_divider: Archiver
     archive_field_placeholder: Choisissez un champ...
-    archive_app_filter: Activer le filtre des archives d'applications
+    archive_app_filter: Filtrer tous les éléments archivés
     archive_value: Valeur définie lors de l'archivage...
     unarchive_value: Valeur définie lors de la désarchivage...
     sort_divider: Trier
     sort_field: Choisissez un champ...
-    accountability_divider: Responsabilité
+    accountability_divider: Traçabilité
     duplication_divider: Duplication
   directus_files:
     title: Un titre unique...
@@ -1120,6 +1125,26 @@ start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
 comment: Commentaire
+shares: Partages
+unlimited_usage: Utilisation illimitée
+uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
+no_shares: Aucun partage pour l'instant
+new_share: Nouveau partage
+expired: Expiré
+upcoming: À venir
+share: Partage
+share_item: Partager l'élément
+shared_with_you: Un élément a été partagé avec vous
+shared_enter_passcode: Saisir le mot de passe pour poursuivre...
+shared_times_remaining: Ce lien ne peut être utilisé que {n} fois
+shared_last_remaining: Ce lien ne peut être utilisé qu'une seule fois
+shared_uses_left: Pour des raisons de sécurité, cette page partagée a été configurée de manière à être consultée un nombre limité de fois. Il reste actuellement {n} consultations possibles, après quoi cette page ne sera plus accessible.
+share_access_page: Consulter la page partagée
+share_access_not_found: Cette page partagée n'existe pas ou a dépassé le nombre de consultations possibles.
+share_access_not_found_desc: Veuillez contacter un utilisateur autorisé de ce projet pour demander un accès.
+share_access_not_found_title: Page partagée inconnue
+share_copy_link: Copier le lien
+share_send_link: Envoyer le lien
 relational_triggers: Déclencheurs relationnels
 referential_action_field_label_m2o: Lors de la suppression d'un(e) {collection} ...
 referential_action_field_label_o2m: Lors de la dé-sélection d'un(e) {collection} ...
@@ -1192,7 +1217,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1402,7 +1426,7 @@ interfaces:
   input:
     input: Texte simple
     description: Entrer manuellement une valeur
-    trim: Supprimer les espaces aux extrémités
+    trim: Enlever les esp. aux extrémités
     trim_label: Enlever les espaces au début et à la fin
     mask: Masqué
     mask_label: Cacher la valeur réelle
@@ -1445,6 +1469,9 @@ interfaces:
     toolbar: Barre d’outils
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
+    folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
+    imageToken: Token d'image
+    imageToken_label: Quel token (statique) ajouter aux sources d'images
   input-autocomplete-api:
     input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.
@@ -1510,9 +1537,27 @@ displays:
   formatted-value:
     formatted-value: Valeur formatée
     description: Afficher une version formatée du texte
-    format_title: Formater le titre
-    format_title_label: Formatage automatique de la casse
-    bold_label: Utiliser le style en gras
+    format: Format
+    format_label: En capitales
+    font: Police de caractères
+    font_sans_serif: Sans serif
+    font_serif: Sérif
+    font_monospace: Monospace
+    bold: Gras
+    bold_label: Mettre en gras
+    italic: Italique
+    italic_label: Mettre en italique
+    prefix: Préfixe
+    prefix_label: Texte Préfixé
+    suffix: Suffixe
+    suffix_label: Texte Ajouté
+    color: Couleur
+    background: Couleur de fond
+    icon: Icône
+    border: Bordure
+    border_label: Afficher une bordure
+    text: Texte
+    text_placeholder: Valeur Optionnelle Surchargée...
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet
@@ -1531,7 +1576,7 @@ displays:
     description: Afficher sous forme d'étiquette(s)
     default_foreground: Premier plan par défaut
     default_background: Arrière-plan par défaut
-    format_label: Formater chaque libellés
+    format_label: Formater chaque libellé
     show_as_dot: Afficher sous forme de point
     choices_value_placeholder: Saisissez une valeur...
     choices_text_placeholder: Entrez du texte...

@@ -1,0 +1,17 @@
+# NOTE: Activity/collections/fields/presets/relations/revisions will have an extra hardcoded filter
+# to filter out collections you don't have read access
+
+- collection: directus_collections
+  action: read
+
+- collection: directus_fields
+  action: read
+
+- collection: directus_permissions
+  action: read
+  permissions:
+    role:
+      _eq: $CURRENT_ROLE
+
+- collection: directus_relations
+  action: read
