@@ -12,3 +12,5 @@ width: full
 group: null
 translations: null
 note: null
+conditions: null
+required: false
