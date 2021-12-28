@@ -54,8 +54,6 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import hideDragImage from '@/utils/hide-drag-image';
 
-// TEST
-
 export default defineComponent({
 	components: { DrawerItem },
 	props: {
