@@ -109,7 +109,7 @@ export default defineComponent({
 
 		const headers = (props.fields || []).map((field) => ({
 			value: field.field,
-			text: field.display_name || formatTitle(field.name),
+			text: field.meta.display_name || formatTitle(field.name),
 			width: field.meta.width,
 		}));
 
