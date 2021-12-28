@@ -80,6 +80,17 @@ primary: Primer
 rename_folder: Umdoyp Faldara
 delete_folder: Strika Faldara
 prefix: Forskoyti
+suffix: Eftirskoyti
+reset_bookmark: Nullstilla Bókamerki
+rename_bookmark: Umdoyp Bókamerki
+update_bookmark: Rætta Bókamerki
+delete_bookmark: Strika Bókamerki
+delete_bookmark_copy: >-
+  Ert tú vissur í at tú vilt strika "{bookmark}" bókamerki? Hendan gerð kann ikki angrast.
+logoutReason:
+  SIGN_OUT: Ritaður Út
+  SESSION_EXPIRED: Sambandi er Útgingið
+public_label: Alment
 fields:
   directus_settings:
     module_bar: Modul Bjálki
@@ -93,3 +104,4 @@ interfaces:
 displays:
   formatted-value:
     prefix: Forskoyti
+    suffix: Eftirskoyti
