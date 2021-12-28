@@ -9,6 +9,14 @@ tile_size: Flísa Stødd
 edit_field: Rætta Teig
 conditions: Treytir
 maps: Kort
+switch_user: Skift Brúkara
+item_creation: Stovna Lut
+item_revision: Endurskoða Lut
+enter_a_name: Áset eitt Navn...
+duplicate_field: Tvífalda Teig
+half_width: Hálv Breidd
+full_width: Full Breidd
+group: Bólkur
 fields:
   directus_settings:
     module_bar: Modul Bjálki
