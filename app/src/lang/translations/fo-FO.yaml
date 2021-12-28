@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-identifier: Eyðmerki
+identifier: Eyðkenni
 avatar: Vangamynd
 default_provider: Standard
 published: Út Givið
