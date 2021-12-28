@@ -43,7 +43,7 @@ and: Og
 or: Ella
 fill_width: Fyll Breiddina
 field_name_translations: Navna Teiga Umsetingar
-enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (Two-Factor Authentication)
+enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (2FA)
 add_field: Legg afturat Teig
 role_name: Leikluts Heiti
 branch: Grein
