@@ -1246,6 +1246,14 @@ interfaces:
   hwfaak-event-sections:
     name: Event Sections
     description: Render Tickets Event Sections
+  table:
+    name: Table
+    description: Display JSON in table format
+    edit_columns: Edit columns
+    display_name: Display name
+    field_name_placeholder: Enter field name...
+    field_display_name_placeholder: Enter field display name...
+    field_note_placeholder: Enter field note...
   filter:
     name: Filter
     description: Configure a filter object.
