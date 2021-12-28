@@ -54,7 +54,7 @@
 					<table-row
 						:headers="internalHeaders"
 						:item="element"
-						:show-select="!disabled && showSelect"
+						:show-select="showSelect"
 						:show-manual-sort="!disabled && showManualSort"
 						:is-selected="getSelectedState(element)"
 						:subdued="loading"
