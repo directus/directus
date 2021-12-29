@@ -1138,6 +1138,7 @@ share: Udostępnij
 share_item: Udostępnij element
 shared_with_you: Pewien element został Ci udostępniony
 shared_enter_passcode: Wprowadź kod dostępu, aby kontynuować...
+shared_leave_blank_for_unlimited: Pozostaw puste dla nieograniczonej liczby
 shared_times_remaining: Ten link może być użyty tylko {n} razy
 shared_last_remaining: Ten link może być użyty tylko raz
 shared_uses_left: Dla dodanego bezpieczeństwa, ta wspólna strona została skonfigurowana z ograniczoną liczbą widoków. Pozostało {n} wyświetleń, po których strona nie będzie już dostępna.

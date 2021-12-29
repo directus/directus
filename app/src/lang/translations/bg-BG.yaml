@@ -958,6 +958,8 @@ fields:
     basemaps_style: Mapbox стил
     mapbox_key: Токен за mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Кредитиране
+    attribution_placeholder: '© Сътрудници на OpenStreetMap'
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
@@ -1136,6 +1138,7 @@ share: Споделяне
 share_item: Споделяне на запис
 shared_with_you: Запис е споделен с вас
 shared_enter_passcode: Въведете паролата си, за да продължите...
+shared_leave_blank_for_unlimited: Оставете празно за без ограничение
 shared_times_remaining: Тази връзка може да бъде използвана само {n} пъти
 shared_last_remaining: Тази връзка може да бъде използвана само веднъж
 shared_uses_left: За допълнителна сигурност, споделената страница е настроена с ограничение в броя на прегледите. В момента остават {n} прегледи, след това страницата няма да бъде достъпна.
@@ -1196,6 +1199,7 @@ relationship: Релация
 reset: Нулиране
 reset_password: Нулиране на парола
 revisions: Ревизии
+no_revisions: Все още няма ревизии
 revert: Възстановяване
 save: Запазване
 schema: Схема
