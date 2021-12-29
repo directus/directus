@@ -1151,6 +1151,7 @@ share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_enter_passcode: Enter your passcode to continue...
+shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
 shared_last_remaining: This link can only be used once
 shared_uses_left: For added security, this shared page has been configured with a limited number of views. There are currently {n} views remaining, after which, the page will no longer be accessible.
