@@ -31,6 +31,12 @@ tile_size: Teëlgrootte
 edit_field: Wysig veld
 conditions: Voorwaardes
 maps: Kaarte
+switch_user: Verander gebruiker
+item_creation: Item skepping
+item_revision: Item Hersiening
+enter_a_name: Voer 'n naam in...
+duplicate_field: Dupliseer veld
+half_width: Halwe breedte
 and: En
 or: Of
 create_role: Skep Rol
