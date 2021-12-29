@@ -10,7 +10,7 @@
 				</div>
 				<div class="title">
 					<h1 class="type-title">{{ branding && branding.project_name }}</h1>
-					<p class="subtitle">Admin App</p>
+					<p class="subtitle">Application</p>
 				</div>
 			</div>
 
@@ -118,12 +118,13 @@ export default defineComponent({
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
+		z-index: 2;
 
 		// Page Content Spacing
 		font-size: 15px;
 		line-height: 24px;
 		background-color: #fff;
-		box-shadow: 0 0 40px 0 rgb(0 0 0 / 0.25);
+		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.10);
 		transition: max-width var(--medium) var(--transition);
 
 		:slotted(.type-title) {
@@ -159,6 +160,7 @@ export default defineComponent({
 		height: 100%;
 		background-position: center center;
 		background-size: cover;
+		z-index: 1;
 
 		.foreground {
 			width: 80%;
@@ -182,7 +184,7 @@ export default defineComponent({
 				color: var(--white);
 				font-size: 15px;
 				line-height: 24px;
-				background-color: rgb(38 50 56 / 0.25);
+				background-color: rgb(38 50 56 / 0.20);
 				border-radius: 6px;
 				backdrop-filter: blur(2px);
 			}
@@ -210,18 +212,14 @@ export default defineComponent({
 			margin-left: 16px;
 
 			h1 {
-				color: var(--foreground-subdued);
-				color: var(--brand);
 				font-weight: 700;
-				font-size: 24px;
-				line-height: 24px;
+				font-size: 18px;
+				line-height: 18px;
 			}
 
 			.subtitle {
 				width: 100%;
 				color: var(--foreground-subdued);
-				color: var(--brand);
-				opacity: 0.6;
 			}
 		}
 	}
@@ -230,10 +228,10 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 64px;
-		height: 64px;
+		width: 56px;
+		height: 56px;
 		background-color: var(--brand);
-		border-radius: var(--border-radius);
+		border-radius: calc(var(--border-radius) - 2px);
 
 		img {
 			width: 40px;
