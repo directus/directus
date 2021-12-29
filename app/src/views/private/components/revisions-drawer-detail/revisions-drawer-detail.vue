@@ -6,6 +6,10 @@
 	>
 		<v-progress-linear v-if="loading" indeterminate />
 
+		<div v-else-if="revisionsCount === 0" class="empty">
+			<div class="content">{{ t('no_revisions') }}</div>
+		</div>
+
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
 				<RevisionsDateGroup :group="group" @click="openModal" />
@@ -264,6 +268,7 @@ export default defineComponent({
 .empty {
 	margin-top: 16px;
 	margin-bottom: 16px;
+	margin-left: 2px;
 	color: var(--foreground-subdued);
 	font-style: italic;
 }
