@@ -35,6 +35,7 @@ import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
+import { getFlowManager } from './flows';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import getPermissions from './middleware/get-permissions';
@@ -83,8 +84,10 @@ export default async function createApp(): Promise<express.Application> {
 	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
+	const flowManager = getFlowManager();
 
 	await extensionManager.initialize();
+	await flowManager.initialize();
 
 	const app = express();
 
