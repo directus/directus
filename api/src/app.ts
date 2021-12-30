@@ -3,6 +3,7 @@ import express, { Request, Response, RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
+import helmet from 'helmet';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
@@ -53,6 +54,7 @@ import { register as registerWebhooks } from './webhooks';
 import { flushCaches } from './cache';
 import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -88,6 +90,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.disable('x-powered-by');
 	app.set('trust proxy', env.IP_TRUST_PROXY);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
+
+	app.use(helmet.contentSecurityPolicy(getConfigFromEnv('CONTENT_SECURITY_POLICY_')));
 
 	await emitter.emitInit('app.before', { app });
 

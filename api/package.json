@@ -114,6 +114,7 @@
 		"fs-extra": "^10.0.0",
 		"graphql": "^15.5.0",
 		"graphql-compose": "^9.0.1",
+		"helmet": "^4.6.0",
 		"inquirer": "^8.1.1",
 		"joi": "^17.3.0",
 		"js-yaml": "^4.1.0",
