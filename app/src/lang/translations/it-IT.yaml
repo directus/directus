@@ -1046,7 +1046,7 @@ field_options:
     login: Accedi
     create: Creare
     update: Modifica
-    delete: Cancellazione
+    delete: Elimina
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -1108,7 +1108,7 @@ field_options:
     triggers_divider: Trigger
     actions_create: Creare
     actions_update: Modifica
-    actions_delete: Cancellazione
+    actions_delete: Elimina
     actions_login: Accedi
     headers:
       header: Header
@@ -1137,7 +1137,7 @@ upcoming: Prossimamente
 share: Condivisione
 share_item: Condividi elemento
 shared_with_you: Un elemento è stato condiviso con te
-shared_enter_passcode: Inserisci il tuo codice segreto per continuare...
+shared_enter_passcode: Inserisci il codice di accesso per continuare...
 shared_leave_blank_for_unlimited: Lascia vuoto per non impostare un limite
 shared_times_remaining: Questo link può essere usato solo {n} volte
 shared_last_remaining: Questo link può essere usato solo una volta
@@ -1162,7 +1162,7 @@ continue_as: >-
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
-delete_label: Cancellazione
+delete_label: Elimina
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
