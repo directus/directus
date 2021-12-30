@@ -769,7 +769,7 @@ adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
 creating_in: 'Creazione elemento in {collection}'
 editing_in: 'Modifica elemento in {collection}'
-viewing_in: 'Visualizzazione dell''oggetto in {collection}'
+viewing_in: 'Visualizzazione dell''elemento in {collection}'
 creating_unit: 'Creazione {unit}'
 editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
@@ -1133,6 +1133,21 @@ uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi riman
 no_shares: Nessuna condivisione da mostrare
 new_share: Nuova condivisione
 expired: Scaduto
+upcoming: Prossimamente
+share: Condivisione
+share_item: Condividi elemento
+shared_with_you: Un elemento è stato condiviso con te
+shared_enter_passcode: Inserisci il tuo codice segreto per continuare...
+shared_leave_blank_for_unlimited: Lascia vuoto per non impostare un limite
+shared_times_remaining: Questo link può essere usato solo {n} volte
+shared_last_remaining: Questo link può essere usato solo una volta
+shared_uses_left: Per una maggiore sicurezza, questa pagina condivisa è stata configurata con un numero limitato di visualizzazioni. Al momento restano {n} visualizzazioni, dopodiché la pagina non sarà più accessibile.
+share_access_page: Accedi alla pagina condivisa
+share_access_not_found: Questa pagina condivisa non esiste o ha già raggiunto il numero massimo di utilizzi consentiti.
+share_access_not_found_desc: Contatta un utente autorizzato di questo progetto per richiedere l'accesso.
+share_access_not_found_title: Pagina della condivisione sconosciuta
+share_copy_link: Copia link
+share_send_link: Invia link
 relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
 referential_action_field_label_o2m: Alla deselezione di {collection}...
@@ -1184,6 +1199,7 @@ relationship: Relazione
 reset: Resetta
 reset_password: Resetta la password
 revisions: Revisioni
+no_revisions: Non ci sono ancora revisioni
 revert: Ripristina
 save: Salva
 schema: Schema
@@ -1205,6 +1221,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1335,6 +1352,7 @@ interfaces:
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
+    display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   select-dropdown-m2o:
     many-to-one: Molti a Uno
     description: Seleziona un singolo elemento correlato
@@ -1583,6 +1601,7 @@ displays:
   related-values:
     related-values: Valori Correlati
     description: Visualizza i valori relativi
+    display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   user:
     user: Utente
     description: Mostra un utente directus
