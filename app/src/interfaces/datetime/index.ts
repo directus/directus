@@ -1,8 +1,8 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceDateTime from './datetime.vue';
 import PreviewSVG from './preview.svg?raw';
-import type { DeepPartial } from "@directus/shared/src/types/misc";
-import type { Field } from "@directus/shared/src/types/fields";
+import type { DeepPartial } from '@directus/shared/src/types/misc';
+import type { Field } from '@directus/shared/src/types/fields';
 
 export default defineInterface({
 	id: 'datetime',
@@ -12,8 +12,8 @@ export default defineInterface({
 	component: InterfaceDateTime,
 	types: ['dateTime', 'date', 'time', 'timestamp'],
 	group: 'selection',
-	options: ({ field }) => {
-		const label = field.type === 'time' ? 'time' : 'date'
+	options: ({ field, collection }) => {
+		const label = field.type === 'time' ? 'time' : 'date';
 		const opts: DeepPartial<Field>[] = [
 			{
 				field: 'minField',
@@ -21,6 +21,11 @@ export default defineInterface({
 				type: 'string',
 				meta: {
 					width: 'half',
+					interface: 'system-field',
+					options: {
+						collection: collection,
+						typeAllowList: ['dateTime', 'date', 'time', 'timestamp'],
+					},
 				},
 			},
 			{
@@ -29,8 +34,13 @@ export default defineInterface({
 				type: 'string',
 				meta: {
 					width: 'half',
+					interface: 'system-field',
+					options: {
+						collection: collection,
+						typeAllowList: ['dateTime', 'date', 'time', 'timestamp'],
+					},
 				},
-			}
+			},
 		];
 
 		if (field.type === 'date') {
@@ -64,10 +74,10 @@ export default defineInterface({
 				schema: {
 					default_value: true,
 				},
-			},
+			}
 		);
 
-		return opts
+		return opts;
 	},
 	recommendedDisplays: ['datetime'],
 	preview: PreviewSVG,

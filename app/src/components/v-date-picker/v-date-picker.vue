@@ -34,8 +34,14 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-	  min: String,
-	  max: String,
+		min: {
+			type: String,
+			default: '',
+		},
+		max: {
+			type: String,
+			default: '',
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {

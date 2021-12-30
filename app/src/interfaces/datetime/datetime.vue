@@ -23,10 +23,10 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import {computed, defineComponent, inject, PropType, ref, watch} from 'vue';
+import { computed, defineComponent, inject, PropType, ref, watch } from 'vue';
 import formatLocalized from '@/utils/localized-format';
 import { parse, parseISO } from 'date-fns';
-import {get} from 'lodash';
+import { get } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -51,8 +51,14 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-	  minField: String,
-	  maxField: String,
+		minField: {
+			type: String,
+			default: '',
+		},
+		maxField: {
+			type: String,
+			default: '',
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -60,10 +66,10 @@ export default defineComponent({
 
 		const { displayValue } = useDisplayValue();
 
-		const values = inject('values') as object
+		const values = inject('values') as object;
 
-	  const min = computed(() => props.minField ? get(values, props.minField) : '')
-	  const max = computed(() => props.maxField ? get(values, props.maxField) : '')
+		const min = computed(() => (props.minField ? get(values, props.minField) : ''));
+		const max = computed(() => (props.maxField ? get(values, props.maxField) : ''));
 
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
