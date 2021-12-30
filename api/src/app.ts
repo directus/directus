@@ -55,6 +55,7 @@ import { flushCaches } from './cache';
 import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 import { getConfigFromEnv } from './utils/get-config-from-env';
+import { merge } from 'lodash';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -91,7 +92,20 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('trust proxy', env.IP_TRUST_PROXY);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
-	app.use(helmet.contentSecurityPolicy(getConfigFromEnv('CONTENT_SECURITY_POLICY_')));
+	app.use(
+		helmet.contentSecurityPolicy(
+			merge(
+				{
+					useDefaults: true,
+					directives: {
+						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
+						scriptSrc: ["'self'", "'unsafe-eval'"],
+					},
+				},
+				getConfigFromEnv('CONTENT_SECURITY_POLICY_')
+			)
+		)
+	);
 
 	await emitter.emitInit('app.before', { app });
 
