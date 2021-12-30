@@ -93,7 +93,7 @@ export default function getDatabase(): Knex {
 	}
 
 	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
-		logger.warn(`DB_CHARSET hasn't been set. Please match DB_CHARSET to your database's collation.`);
+		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
 	}
 
 	database = knex(knexConfig);
