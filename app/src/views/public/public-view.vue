@@ -109,6 +109,7 @@ export default defineComponent({
 		--input-height: 60px;
 		--input-padding: 16px; // (60 - 4 - 24) / 2
 
+		z-index: 2;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -118,13 +119,12 @@ export default defineComponent({
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		z-index: 2;
 
 		// Page Content Spacing
 		font-size: 15px;
 		line-height: 24px;
 		background-color: #fff;
-		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.10);
+		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-width var(--medium) var(--transition);
 
 		:slotted(.type-title) {
@@ -153,6 +153,7 @@ export default defineComponent({
 
 	.art {
 		position: relative;
+		z-index: 1;
 		display: none;
 		flex-grow: 1;
 		align-items: center;
@@ -160,7 +161,6 @@ export default defineComponent({
 		height: 100%;
 		background-position: center center;
 		background-size: cover;
-		z-index: 1;
 
 		.foreground {
 			width: 80%;
@@ -184,7 +184,7 @@ export default defineComponent({
 				color: var(--white);
 				font-size: 15px;
 				line-height: 24px;
-				background-color: rgb(38 50 56 / 0.20);
+				background-color: rgb(38 50 56 / 0.2);
 				border-radius: 6px;
 				backdrop-filter: blur(2px);
 			}
