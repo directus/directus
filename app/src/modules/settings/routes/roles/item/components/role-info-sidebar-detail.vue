@@ -1,14 +1,15 @@
 <template>
 	<sidebar-detail icon="info_outline" :title="t('information')" close>
-		<dl v-if="!isNew && role">
-			<div>
-				<dt>{{ t('primary_key') }}</dt>
-				<dd>{{ role.id }}</dd>
-			</div>
-		</dl>
+		<template v-if="!isNew && role">
+			<dl>
+				<div>
+					<dt>{{ t('primary_key') }}</dt>
+					<dd>{{ role.id }}</dd>
+				</div>
+			</dl>
 
-		<v-divider />
-
+			<v-divider />
+		</template>
 		<div v-md="t('page_help_settings_roles_item')" class="page-description" />
 	</sidebar-detail>
 </template>

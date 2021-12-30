@@ -1,5 +1,5 @@
 <template>
-	<div class="image">
+	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
@@ -89,6 +89,14 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		width: {
+			type: String,
+			required: true,
+		},
+		crop: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -109,7 +117,9 @@ export default defineComponent({
 				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 			}
 			if (image.value.type.includes('image')) {
-				const url = getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
+				const fit = props.crop ? 'cover' : 'contain';
+				const url =
+					getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
 				return addTokenToURL(url);
 			}
 
@@ -258,7 +268,7 @@ export default defineComponent({
 	width: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
-	background-color: var(--background-subdued);
+	background-color: var(--background-inverted);
 	border-radius: var(--border-radius);
 }
 
@@ -266,7 +276,8 @@ img {
 	z-index: 1;
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	max-height: inherit;
+	object-fit: contain;
 }
 
 .is-svg {
@@ -321,7 +332,7 @@ img {
 	--v-button-background-color-hover: var(--white);
 
 	position: absolute;
-	top: 30%;
+	top: calc(50% - 32px);
 	left: 0;
 	z-index: 3;
 	display: flex;
@@ -383,6 +394,24 @@ img {
 
 	.meta {
 		max-height: 17px;
+	}
+}
+
+.image {
+	&.full,
+	&.fill {
+		.image-preview {
+			height: auto;
+			max-height: 400px;
+		}
+	}
+
+	&.crop {
+		.image-preview {
+			img {
+				object-fit: cover;
+			}
+		}
 	}
 }
 

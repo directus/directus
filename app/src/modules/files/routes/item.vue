@@ -404,7 +404,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(to.value);
+				router.replace(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
 				confirmDelete.value = false;

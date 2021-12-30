@@ -45,6 +45,7 @@ create_webhook: 创建Web钩子
 invite_users: 邀请用户
 invite: 邀请
 email_already_invited: 电子邮件 "{email}" 已被邀请
+subject: 主題
 emails: 邮箱
 connection_excellent: 优秀的连接状态
 connection_good: 好的连接状态
@@ -938,6 +939,8 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目
+    project_color_note: 登录和标志背景
+    project_logo_note: 白色的40x40 SVG/PNG
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -1234,6 +1237,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: 输入并预览Markdown
+    edit: 编辑
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
@@ -1314,6 +1318,8 @@ interfaces:
   boolean:
     toggle: 切换
     description: 开启或关闭
+    color_on: 启用颜色
+    color_off: 禁用颜色
     label_placeholder: 输入标签...
     label_default: 已启用
   translations:
@@ -1337,6 +1343,8 @@ interfaces:
     toolbar: 工具栏
     custom_formats: 自定义格式
     options_override: 覆盖选项
+    imageToken: 图像Token
+    imageToken_label: 添加到源图片的Token
   input-autocomplete-api:
     input-autocomplete-api: 自动完成 Input (API)
     description: 一个事先搜索的外部API
@@ -1396,9 +1404,18 @@ displays:
   formatted-value:
     formatted-value: 格式化值
     description: 显示文本格式化
-    format_title: 格式化标题
-    format_title_label: 自动格式化外观
+    format: 格式
+    font: 字体
+    font_serif: 衬线字体
+    font_monospace: 等宽
+    bold: 加粗
     bold_label: 使用粗体
+    italic: 斜体
+    prefix: 前缀
+    suffix: 后缀
+    color: 颜色
+    icon: 图标
+    text: 文本
   formatted-json-value:
     formatted-json-value: 格式化JSON值
     description: 显示对象的格式化版本

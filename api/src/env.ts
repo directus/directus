@@ -19,7 +19,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
 
-	DB_EXCLUDE_TABLES: 'spatial_ref_sys',
+	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',
@@ -56,6 +56,7 @@ const defaults: Record<string, any> = {
 	CACHE_PERMISSIONS: true,
 
 	AUTH_PROVIDERS: '',
+	AUTH_DISABLE_DEFAULT: false,
 
 	EXTENSIONS_PATH: './extensions',
 
@@ -70,6 +71,9 @@ const defaults: Record<string, any> = {
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
+
+	IP_TRUST_PROXY: true,
+	IP_CUSTOM_HEADER: false,
 
 	SERVE_APP: true,
 };

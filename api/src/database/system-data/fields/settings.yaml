@@ -343,3 +343,12 @@ fields:
                   type:
                     _neq: 'raster'
                 hidden: true
+        - field: attribution
+          name: $t:fields.directus_settings.attribution
+          type: string
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            options:
+              placeholder: $t:fields.directus_settings.attribution_placeholder

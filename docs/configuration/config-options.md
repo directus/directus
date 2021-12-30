@@ -196,19 +196,19 @@ needs to be publicly available on the internet.
 
 ## Database
 
-| Variable               | Description                                                                                                                                        | Default Value     |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                |
-| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                |
-| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                |
-| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                |
-| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                |
-| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys` |
-| `DB_CHARSET`           | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI` |
+| Variable               | Description                                                                                                                                        | Default Value                 |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                            |
+| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                            |
+| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                            |
+| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                            |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
+| `DB_CHARSET`           | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
 
 ::: tip Additional Database Variables
 
@@ -227,18 +227,21 @@ All the `DB_POOL_` prefixed options are passed to [`tarn.js`](https://github.com
 
 ## Security
 
-| Variable                         | Description                                                                                                            | Default Value            |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `KEY`                            | Unique identifier for the project.                                                                                     | --                       |
-| `SECRET`                         | Secret string for the project.                                                                                         | --                       |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                           | `15m`                    |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                       | `7d`                     |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                               | --                       |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                            | `false`                  |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                  | `lax`                    |
-| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                         | `directus_refresh_token` |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset) | --                       |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)           | --                       |
+| Variable                         | Description                                                                                                                           | Default Value            |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `KEY`                            | Unique identifier for the project.                                                                                                    | --                       |
+| `SECRET`                         | Secret string for the project.                                                                                                        | --                       |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                          | `15m`                    |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                      | `7d`                     |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                              | --                       |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                           | `false`                  |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                 | `lax`                    |
+| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                        | `directus_refresh_token` |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset)                | --                       |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)                          | --                       |
+| `IP_TRUST_PROXY`                 | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                       | true                     |
+| `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                  | false                    |
+| `CONTENT_SECURITY_POLICY`        | Custom options for the Content-Security-Policy header. See [helmet's documentation](https://helmetjs.github.io) for more information. | --                       |
 
 ::: tip Cookie Strictness
 
@@ -371,15 +374,16 @@ often possible to cache assets for far longer than you would cache database cont
 
 :::
 
-| Variable                         | Description                                                                              | Default Value    |
-| -------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                  | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>        | How long the cache is persisted.                                                         | `30m`            |
-| `CACHE_CONTROL_S_MAXAGE`         | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup> | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
-| `CACHE_SCHEMA`<sup>[3]</sup>     | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
-| `CACHE_NAMESPACE`                | How to scope the cache data.                                                             | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
+| Variable                          | Description                                                                              | Default Value    |
+| --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
+| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
+| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
+| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -390,7 +394,7 @@ so you configure it using human readable values (like `2 days`, `7 hrs`, `5m`).
 <sup>[2]</sup> `CACHE_AUTO_PURGE` allows you to keep the Directus API real-time, while still getting the performance
 benefits on quick subsequent reads.
 
-<sup>[3]</sup> `CACHE_SCHEMA` ignores the `CACHE_ENABLED` value.
+<sup>[3]</sup> Not affected by the `CACHE_ENABLED` value.
 
 <sup>[4]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
 Instead, you can use the above `CACHE_STORE` environment variable to use either `memcache` or `redis` as the cache
@@ -515,9 +519,10 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 ## Authentication
 
-| Variable         | Description                            | Default Value |
-| ---------------- | -------------------------------------- | ------------- |
-| `AUTH_PROVIDERS` | CSV of auth providers you want to use. | --            |
+| Variable               | Description                            | Default Value |
+| ---------------------- | -------------------------------------- | ------------- |
+| `AUTH_PROVIDERS`       | CSV of auth providers you want to use. | --            |
+| `AUTH_DISABLE_DEFAULT` | Disable the default auth provider      | `false`       |
 
 For each of the auth providers you list, you must provide the following configuration:
 
@@ -572,6 +577,7 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that va
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                            | `false`          |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --               |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle` |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --               |
 
 #### OpenID
 
@@ -590,24 +596,33 @@ registrations.
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                                                                                    | `false`                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --                     |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle`       |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --                     |
 
 ### LDAP (`ldap`)
 
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                          | Description                                        | Default Value |
-| --------------------------------- | -------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                               | --            |
-| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.       | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                | --            |
-| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                   | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                    | `cn`          |
-| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                  | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group. | `member`      |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.        | `mail`        |
+| Variable                          | Description                                                            | Default Value |
+| --------------------------------- | ---------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                                                   | --            |
+| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.                           | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                                    | --            |
+| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                                       | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                                        | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`      | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
+| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                                      | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group.                     | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+
+<sup>[2]</sup> The scope defines the following behaviors:
+
+- `base`: Limits the scope to a single object defined by the associated DN.
+- `one`: Searches all objects within the associated DN.
+- `sub`: Searches all objects and sub-objects within the associated DN.
 
 ### Example: LDAP
 

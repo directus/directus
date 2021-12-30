@@ -1,13 +1,12 @@
 <template>
 	<v-list-group
 		v-if="isGroup && matchesSearch"
+		v-context-menu="'contextMenu'"
 		:to="to"
 		scope="content-navigation"
 		:value="collection.collection"
 		query
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
-		@contextmenu.prevent.stop="activateContextMenu"
-		@focusout="deactivateContextMenu"
 	>
 		<template #activator>
 			<navigation-item-content
@@ -29,12 +28,11 @@
 
 	<v-list-item
 		v-else-if="matchesSearch"
+		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 		query
-		@contextmenu.prevent.stop="activateContextMenu"
-		@focusout="deactivateContextMenu"
 	>
 		<navigation-item-content
 			:search="search"
@@ -44,16 +42,8 @@
 		/>
 	</v-list-item>
 
-	<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+	<v-menu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">
 		<v-list>
-			<v-list-item v-if="hasArchive" clickable :to="`/content/${collection.collection}?archive`" exact query>
-				<v-list-item-icon>
-					<v-icon name="archive" outline />
-				</v-list-item-icon>
-				<v-list-item-content>
-					<v-text-overflow :text="t('show_archived_items')" />
-				</v-list-item-content>
-			</v-list-item>
 			<v-list-item v-if="isAdmin" clickable :to="`/settings/data-model/${collection.collection}`">
 				<v-list-item-icon>
 					<v-icon name="list_alt" />
@@ -67,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { Collection } from '@/types';
 import { Preset } from '@directus/shared/types';
 import { useUserStore, useCollectionsStore, usePresetsStore } from '@/stores';
@@ -104,12 +94,6 @@ export default defineComponent({
 
 		const childBookmarks = computed(() => getChildBookmarks(props.collection));
 
-		const contextMenu = ref();
-
-		const hasArchive = computed(
-			() => props.collection.meta?.archive_field && props.collection.meta?.archive_app_filter
-		);
-
 		const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
 
 		const to = computed(() => (props.collection.schema ? `/content/${props.collection.collection}` : ''));
@@ -141,18 +125,17 @@ export default defineComponent({
 			}
 		});
 
+		const hasContextMenu = computed(() => isAdmin);
+
 		return {
 			childCollections,
 			childBookmarks,
 			isGroup,
 			to,
 			matchesSearch,
-			contextMenu,
-			activateContextMenu,
-			deactivateContextMenu,
 			isAdmin,
 			t,
-			hasArchive,
+			hasContextMenu,
 		};
 
 		function getChildCollections(collection: Collection) {
@@ -169,16 +152,6 @@ export default defineComponent({
 
 		function getChildBookmarks(collection: Collection) {
 			return presetsStore.bookmarks.filter((bookmark) => bookmark.collection === collection.collection);
-		}
-
-		function activateContextMenu(event: PointerEvent) {
-			if (hasArchive.value || props.collection.schema) {
-				contextMenu.value.activate(event);
-			}
-		}
-
-		function deactivateContextMenu() {
-			contextMenu.value.deactivate();
 		}
 	},
 });

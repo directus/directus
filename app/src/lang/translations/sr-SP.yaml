@@ -166,6 +166,8 @@ interfaces:
 displays:
   collection:
     collection: Колекција
+  formatted-value:
+    text: Текст
   user:
     avatar: Аватар
     name: Име

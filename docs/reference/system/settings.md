@@ -63,6 +63,21 @@ of `all`, `none` or `presets`.
 `storage_asset_presets` **array**\
 What preset keys exist in [the assets endpoint](/reference/files/#requesting-a-thumbnail).
 
+`custom_css` **string**\
+CSS rules to override the App's default styling.
+
+`storage_default_folder` **uuid**\
+Folder for uploaded files. Does not affect existing files.
+
+`basemaps` **array**\
+Custom tiles to overriding the Mapbox defaults.
+
+`mapbox_key` **string**\
+[Mapbox Access Token](https://docs.mapbox.com/help/glossary/access-token/).
+
+`module_bar` **array**\
+What modules are enabled/added globally.
+
 </div>
 </div>
 <div class="right">
@@ -84,7 +99,11 @@ What preset keys exist in [the assets endpoint](/reference/files/#requesting-a-t
 		"storage_asset_presets": [
 			{ "key": "small", "fit": "cover", "width": 200, "height": 161, "quality": 80, "withoutEnlargement": false }
 		],
-		"custom_css": null
+		"custom_css": null,
+		"storage_default_folder": null,
+		"basemaps": null,
+		"mapbox_key": null,
+		"module_bar": null
 	}
 }
 ```

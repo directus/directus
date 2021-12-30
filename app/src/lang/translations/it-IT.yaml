@@ -31,6 +31,7 @@ tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
+switch_user: Cambia utente
 item_creation: Creazione elemento
 item_revision: Revisione elemento
 enter_a_name: Inserisci un nome...
@@ -52,7 +53,9 @@ edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
 db_only_click_to_configure: 'Solo Database: click per configurare'
+show_active_items: Mostra gli elementi attivi
 show_archived_items: Mostra gli elementi archiviati
+show_all_items: Mostra tutti gli elementi
 edited: Valore Modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
@@ -66,6 +69,8 @@ create_webhook: Crea webhook
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
+subject: Oggetto
+inbox: Inbox
 emails: Email
 connection_excellent: Connessione Eccellente
 connection_good: Connessione Buona
@@ -87,6 +92,7 @@ logoutReason:
   SESSION_EXPIRED: Sessione scaduta
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
+admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
 not_allowed: Non consentito
 directus_version: Versione di Directus
 node_version: Versione Node
@@ -427,6 +433,9 @@ user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
 no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
+no_notifications: Nessuna notifica
+no_notifications_copy: È tutto!
+activity_log: Log delle attività
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
@@ -635,7 +644,7 @@ replace_file: Sostituisci File
 no_results: Nessun risultato
 no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
 clear_filters: Pulisci filtri
-saves_automatically: Salva Automaticamente
+saves_automatically: Salvataggio automatico
 role: Ruolo
 rule: Regola
 user: Utente
@@ -760,6 +769,7 @@ adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
 creating_in: 'Creazione elemento in {collection}'
 editing_in: 'Modifica elemento in {collection}'
+viewing_in: 'Visualizzazione dell''elemento in {collection}'
 creating_unit: 'Creazione {unit}'
 editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
@@ -845,6 +855,7 @@ directus_collection:
   directus_migrations: Quale versione del database stai usando
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
   directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_notifications: Notifiche inviate agli utenti
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
   directus_revisions: Snapshot dei dati per tutte le attività
@@ -947,6 +958,8 @@ fields:
     basemaps_style: Stile Mapbox
     mapbox_key: Access Token di Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribuzione
+    attribution_placeholder: '© collaboratori di OpenStreetMap'
     transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
     additional_transforms: Trasformazioni aggiuntive
     project_name: Nome del progetto
@@ -1033,7 +1046,7 @@ field_options:
     login: Accedi
     create: Creare
     update: Modifica
-    delete: Cancellazione
+    delete: Elimina
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -1095,7 +1108,7 @@ field_options:
     triggers_divider: Trigger
     actions_create: Creare
     actions_update: Modifica
-    actions_delete: Cancellazione
+    actions_delete: Elimina
     actions_login: Accedi
     headers:
       header: Header
@@ -1114,6 +1127,27 @@ start_collapsed: Inizia chiuse
 block: Blocco
 inline: In linea
 comment: Commento
+shares: Condivisioni
+unlimited_usage: Utilizzo illimitato
+uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
+no_shares: Nessuna condivisione da mostrare
+new_share: Nuova condivisione
+expired: Scaduto
+upcoming: Prossimamente
+share: Condivisione
+share_item: Condividi elemento
+shared_with_you: Un elemento è stato condiviso con te
+shared_enter_passcode: Inserisci il codice di accesso per continuare...
+shared_leave_blank_for_unlimited: Lascia vuoto per non impostare un limite
+shared_times_remaining: Questo link può essere usato solo {n} volte
+shared_last_remaining: Questo link può essere usato solo una volta
+shared_uses_left: Per una maggiore sicurezza, questa pagina condivisa è stata configurata con un numero limitato di visualizzazioni. Al momento restano {n} visualizzazioni, dopodiché la pagina non sarà più accessibile.
+share_access_page: Accedi alla pagina condivisa
+share_access_not_found: Questa pagina condivisa non esiste o ha già raggiunto il numero massimo di utilizzi consentiti.
+share_access_not_found_desc: Contatta un utente autorizzato di questo progetto per richiedere l'accesso.
+share_access_not_found_title: Pagina della condivisione sconosciuta
+share_copy_link: Copia link
+share_send_link: Invia link
 relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
 referential_action_field_label_o2m: Alla deselezione di {collection}...
@@ -1128,7 +1162,7 @@ continue_as: >-
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
-delete_label: Cancellazione
+delete_label: Elimina
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
@@ -1165,6 +1199,7 @@ relationship: Relazione
 reset: Resetta
 reset_password: Resetta la password
 revisions: Revisioni
+no_revisions: Non ci sono ancora revisioni
 revert: Ripristina
 save: Salva
 schema: Schema
@@ -1238,6 +1273,7 @@ interfaces:
     code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
+    line_wrapping: A capo automatico
     placeholder: Inserisci il codice qui...
   system-collection:
     collection: Raccolta
@@ -1304,6 +1340,8 @@ interfaces:
   file-image:
     image: Immagine
     description: Seleziona o carica un'immagine
+    crop: Ritaglia per adattarsi
+    crop_label: Ritaglia l'immagine come necessario
   system-interface:
     interface: Interfaccia
     description: Seleziona un'interfaccia esistente
@@ -1314,6 +1352,7 @@ interfaces:
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
+    display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   select-dropdown-m2o:
     many-to-one: Molti a Uno
     description: Seleziona un singolo elemento correlato
@@ -1321,14 +1360,16 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Inserisci e visualizza in anteprima markdown
+    edit: Modifica
+    preview: Anteprima
+    editorFont: Carattere dell'editor
+    previewFont: Anteprima carattere
     customSyntax: Blocchi Personalizzati
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
     imageToken: Token Immagine
     imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
-    preview: Anteprima
-    editor: Editor
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
@@ -1408,6 +1449,8 @@ interfaces:
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato
+    color_on: Colore attivato
+    color_off: Colore Disattivato
     label_placeholder: Inserisci un'etichetta...
     label_default: Abilitato
   translations:
@@ -1432,11 +1475,15 @@ interfaces:
     toolbar: Barra degli strumenti
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
+    folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
+    imageToken: Token Immagine
+    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.
     results_path: Percorso dei risultati
     value_path: Percorso del valore
+    text_path: Percorso del testo
     trigger: Trigger
     rate: Intervallo
   group-raw:
@@ -1496,9 +1543,27 @@ displays:
   formatted-value:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
-    format_title: Formatta il titolo
-    format_title_label: Maiuscole automatiche
+    format: Formato
+    format_label: Formato automatico
+    font: Tipo di carattere
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Grassetto
     bold_label: Usa lo stile grassetto
+    italic: Corsivo
+    italic_label: Usa il corsivo
+    prefix: Prefisso
+    prefix_label: Prefisso
+    suffix: Suffisso
+    suffix_label: Suffisso
+    color: Colore
+    background: Sfondo
+    icon: Icona
+    border: Bordo
+    border_label: Mostra bordo
+    text: Text
+    text_placeholder: Testo opzionale ridefinito...
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
     description: Visualizza una versione formattata dell'oggetto
@@ -1536,6 +1601,7 @@ displays:
   related-values:
     related-values: Valori Correlati
     description: Visualizza i valori relativi
+    display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   user:
     user: Utente
     description: Mostra un utente directus
@@ -1587,6 +1653,8 @@ panels:
     description: Disegna un grafico a linee basato su valori nel tempo
     date_field: Campo data
     value_field: Campo valore
+    fill_type: Tipo di riempimento
+    curve_type: Tipo di curva
   label:
     name: Etichetta
     description: Mostra del testo

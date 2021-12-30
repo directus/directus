@@ -3,13 +3,11 @@ import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Relation, SchemaOverview } from '../types';
+import { Relation, RelationMeta, SchemaOverview } from '../types';
 import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/types';
-import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
-import { getGeometryHelper } from '../database/helpers/geometry';
-import { getDateHelper } from '../database/helpers/date';
+import { getHelpers } from '../database/helpers';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -60,7 +58,7 @@ export default function applyQuery(
 	}
 
 	if (query.group) {
-		dbQuery.groupBy(query.group.map(applyFunctionToColumnName));
+		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false)));
 	}
 
 	if (query.aggregate) {
@@ -135,6 +133,57 @@ export default function applyQuery(
  *   )
  * ```
  */
+type RelationInfo = {
+	relation: Relation | null;
+	relationType: string | null;
+};
+
+function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
+	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)(?:,(.*?))?\)$/)?.slice(1);
+
+	if (implicitRelation) {
+		if (implicitRelation[2] === undefined) {
+			const [m2oCollection, m2oField] = implicitRelation;
+
+			const relation: Relation = {
+				collection: m2oCollection,
+				field: m2oField,
+				related_collection: collection,
+				schema: null,
+				meta: null,
+			};
+
+			return { relation, relationType: 'o2m' };
+		} else {
+			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
+
+			const relation: Relation = {
+				collection: a2oCollection,
+				field: a2oItemField,
+				related_collection: collection,
+				schema: null,
+				meta: {
+					one_collection_field: a2oCollectionField,
+					one_field: field,
+				} as RelationMeta,
+			};
+
+			return { relation, relationType: 'o2a' };
+		}
+	}
+
+	const relation =
+		relations.find((relation) => {
+			return (
+				(relation.collection === collection && relation.field === field) ||
+				(relation.related_collection === collection && relation.meta?.one_field === field)
+			);
+		}) ?? null;
+
+	const relationType = relation ? getRelationType({ relation, collection, field }) : null;
+
+	return { relation, relationType };
+}
 
 export function applyFilter(
 	knex: Knex,
@@ -144,6 +193,7 @@ export function applyFilter(
 	collection: string,
 	subQuery = false
 ) {
+	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
 
 	const aliasMap: Record<string, string> = {};
@@ -182,20 +232,15 @@ export function applyFilter(
 
 			function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
 				/**
-				 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+				 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 				 */
 				const pathRoot = pathParts[0].split(':')[0];
 
-				const relation = relations.find((relation) => {
-					return (
-						(relation.collection === parentCollection && relation.field === pathRoot) ||
-						(relation.related_collection === parentCollection && relation.meta?.one_field === pathRoot)
-					);
-				});
+				const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
 
-				if (!relation) return;
-
-				const relationType = getRelationType({ relation, collection: parentCollection, field: pathRoot });
+				if (!relation) {
+					return;
+				}
 
 				const alias = generateAlias();
 
@@ -209,7 +254,7 @@ export function applyFilter(
 					);
 				}
 
-				if (relationType === 'm2a') {
+				if (relationType === 'a2o') {
 					const pathScope = pathParts[0].split(':')[1];
 
 					if (!pathScope) {
@@ -220,12 +265,27 @@ export function applyFilter(
 
 					dbQuery.leftJoin({ [alias]: pathScope }, (joinClause) => {
 						joinClause
-							.on(
+							.onVal(relation.meta!.one_collection_field!, '=', pathScope)
+							.andOn(
 								`${parentAlias || parentCollection}.${relation.field}`,
 								'=',
 								knex.raw(`CAST(?? AS CHAR(255))`, `${alias}.${schema.collections[pathScope].primary}`)
-							)
-							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
+							);
+					});
+				}
+
+				if (relationType === 'o2a') {
+					dbQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
+						joinClause
+							.onVal(relation.meta!.one_collection_field!, '=', parentCollection)
+							.andOn(
+								`${alias}.${relation.field}`,
+								'=',
+								knex.raw(
+									`CAST(?? AS CHAR(255))`,
+									`${parentAlias || parentCollection}.${schema.collections[parentCollection].primary}`
+								)
+							);
 					});
 				}
 
@@ -243,7 +303,7 @@ export function applyFilter(
 
 					if (relationType === 'm2o') {
 						parent = relation.related_collection!;
-					} else if (relationType === 'm2a') {
+					} else if (relationType === 'a2o') {
 						const pathScope = pathParts[0].split(':')[1];
 
 						if (!pathScope) {
@@ -295,22 +355,15 @@ export function applyFilter(
 			const filterPath = getFilterPath(key, value);
 
 			/**
-			 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+			 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 			 */
 			const pathRoot = filterPath[0].split(':')[0];
 
-			const relation = relations.find((relation) => {
-				return (
-					(relation.collection === collection && relation.field === pathRoot) ||
-					(relation.related_collection === collection && relation.meta?.one_field === pathRoot)
-				);
-			});
+			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-			const relationType = relation ? getRelationType({ relation, collection: collection, field: pathRoot }) : null;
-
-			if (relationType === 'm2o' || relationType === 'm2a' || relationType === null) {
+			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
 				if (filterPath.length > 1) {
 					const columnName = getWhereColumn(filterPath, collection);
 					if (!columnName) continue;
@@ -319,12 +372,22 @@ export function applyFilter(
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false) {
-				const pkField = `${collection}.${schema.collections[relation!.related_collection!].primary}`;
+				if (!relation) continue;
 
-				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
+				let pkField: Knex.Raw<any> | string = `${collection}.${
+					schema.collections[relation!.related_collection!].primary
+				}`;
+
+				if (relationType === 'o2a') {
+					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
+				}
+
+				// Note: knex's types don't appreciate knex.raw in whereIn, even though it's officially supported
+				dbQuery[logical].whereIn(pkField as string, (subQueryKnex) => {
 					const field = relation!.field;
 					const collection = relation!.collection;
 					const column = `${collection}.${field}`;
+
 					subQueryKnex.select({ [field]: column }).from(collection);
 
 					applyQuery(
@@ -371,8 +434,6 @@ export function applyFilter(
 				});
 			}
 
-			const dateHelper = getDateHelper();
-
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -380,9 +441,9 @@ export function applyFilter(
 
 				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
 					if (Array.isArray(compareValue)) {
-						compareValue = compareValue.map((val) => dateHelper.parseDate(val));
+						compareValue = compareValue.map((val) => helpers.date.parse(val));
 					} else {
-						compareValue = dateHelper.parseDate(compareValue);
+						compareValue = helpers.date.parse(compareValue);
 					}
 				}
 			}
@@ -479,21 +540,19 @@ export function applyFilter(
 				dbQuery[logical].whereNotBetween(selectionRaw, value);
 			}
 
-			const geometryHelper = getGeometryHelper();
-
 			if (operator == '_intersects') {
-				dbQuery[logical].whereRaw(geometryHelper.intersects(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
 			}
 
 			if (operator == '_nintersects') {
-				dbQuery[logical].whereRaw(geometryHelper.nintersects(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
 			}
 			if (operator == '_intersects_bbox') {
-				dbQuery[logical].whereRaw(geometryHelper.intersects_bbox(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
 			}
 
 			if (operator == '_nintersects_bbox') {
-				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
+				dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
 			}
 		}
 
@@ -506,22 +565,15 @@ export function applyFilter(
 				parentAlias?: string
 			): string | void {
 				/**
-				 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+				 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 				 */
 				const pathRoot = pathParts[0].split(':')[0];
 
-				const relation = relations.find((relation) => {
-					return (
-						(relation.collection === parentCollection && relation.field === pathRoot) ||
-						(relation.related_collection === parentCollection && relation.meta?.one_field === pathRoot)
-					);
-				});
+				const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
 
 				if (!relation) {
 					throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
 				}
-
-				const relationType = getRelationType({ relation, collection: parentCollection, field: pathRoot });
 
 				const alias = get(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts);
 
@@ -529,7 +581,7 @@ export function applyFilter(
 
 				let parent: string;
 
-				if (relationType === 'm2a') {
+				if (relationType === 'a2o') {
 					const pathScope = pathParts[0].split(':')[1];
 
 					if (!pathScope) {

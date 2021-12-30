@@ -252,17 +252,15 @@ export default defineComponent({
 		const special = syncFieldDetailStoreProperty('field.meta.special');
 		const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
 		const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
-		const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable');
-		const unique = syncFieldDetailStoreProperty('field.schema.is_unique');
+		const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
+		const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
 		const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
 
 		const { t } = useI18n();
 
 		const typesWithLabels = computed(() => translate(fieldTypes));
 
-		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(localType.value);
-		});
+		const typeDisabled = computed(() => localType.value !== 'standard');
 
 		const typePlaceholder = computed(() => {
 			if (localType.value === 'm2o') {
@@ -378,12 +376,22 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onCreateSpecials.includes(special) === false
 					);
 
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
+					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
 					}
 				},
 			});
@@ -449,12 +457,22 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onUpdateSpecials.includes(special) === false
 					);
 
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
+					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
 					}
 				},
 			});

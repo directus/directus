@@ -15,25 +15,36 @@ export default defineDisplay({
 	description: '$t:displays.related-values.description',
 	icon: 'settings_ethernet',
 	component: DisplayRelatedValues,
-	options: ({ relations }) => {
+	options: ({ editing, relations }) => {
 		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
+
+		const displayTemplateMeta =
+			editing === '+'
+				? {
+						interface: 'presentation-notice',
+						options: {
+							text: '$t:displays.related-values.display_template_configure_notice',
+						},
+						width: 'full',
+				  }
+				: {
+						interface: 'system-display-template',
+						options: {
+							collectionName: relatedCollection,
+						},
+						width: 'full',
+				  };
 
 		return [
 			{
 				field: 'template',
 				name: '$t:display_template',
-				meta: {
-					interface: 'system-display-template',
-					options: {
-						collectionName: relatedCollection,
-					},
-					width: 'full',
-				},
+				meta: displayTemplateMeta,
 			},
 		];
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a'],
+	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
 	fields: (options: Options | null, { field, collection }) => {
 		const { relatedCollection, path } = getRelatedCollection(collection, field);
 		const fieldsStore = useFieldsStore();

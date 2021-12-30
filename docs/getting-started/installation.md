@@ -27,6 +27,7 @@ While Directus is always completely free, you will likely need to pay for these 
 - [Amazon AWS](/getting-started/installation/aws)
 - [DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform)
 - [Shared Hosting with Plesk](/getting-started/installation/plesk)
+- [Cleavr.io](https://docs.cleavr.io/guides/directus)
 
 ## One-Click Installs
 
@@ -34,6 +35,7 @@ If you would like to completely avoid the manual installation process, the follo
 handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these
 services.
 
+- [Cloudron](/getting-started/installation/cloudron)
 - [DigitalOcean](https://marketplace.digitalocean.com/apps/directus?action=deploy&refcode=4c0b6062c16e)
 - [Heroku](https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template)
 - [Platform.sh](https://console.platform.sh/projects/create-project?template=https%3A%2F%2Fraw.githubusercontent.com%2Fplatformsh%2Ftemplate-builder%2Fmaster%2Ftemplates%2Fdirectus%2F.platform.template.yaml)

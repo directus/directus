@@ -1,10 +1,12 @@
+@import './colors.styl'
+
 html
   scroll-padding-top 4rem
 
 .tabs-component
   margin 4em 0
 .tabs-component-tabs
-  border solid 1px #ddd
+  border solid 1px var(--border-normal)
   border-radius 6px
 .tabs-component-tab
   &:hover
@@ -80,7 +82,7 @@ html
     .definitions
       font-size: 0.9rem
       > p
-        border-bottom 2px solid $borderColor
+        border-bottom 2px solid var(--border-subdued)
         padding .8rem 0
         margin 0
         > code:first-child
@@ -92,7 +94,7 @@ html
         > strong
           color#aaa
         &:first-child
-          border-top 2px solid $borderColor
+          border-top 2px solid var(--border-subdued)
 
 pre
   tab-size: 2 !important;
@@ -151,3 +153,12 @@ pre
   h5 + div[class^="language-"] {
     margin-top -16px
   }
+
+  .search-box
+    input
+      background var(--background-page) url(/search.svg) 0.4rem 0.3rem no-repeat !important
+
+@media (prefers-color-scheme: dark)
+  .search-box
+    input
+      background var(--background-page) url(/search-dark.svg) 0.4rem 0.3rem no-repeat !important

@@ -38,6 +38,7 @@
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div
 						class="v-menu-content"
+						:class="{ 'full-height': fullHeight, seamless }"
 						@click.stop="onContentClick"
 						@pointerenter.stop="onPointerEnter"
 						@pointerleave.stop="onPointerLeave"
@@ -97,7 +98,7 @@ export default defineComponent({
 		trigger: {
 			type: String,
 			default: null,
-			validator: (val: string) => ['hover', 'click'].includes(val),
+			validator: (val: string) => ['hover', 'click', 'keyDown'].includes(val),
 		},
 		delay: {
 			type: Number,
@@ -110,6 +111,14 @@ export default defineComponent({
 		offsetX: {
 			type: Number,
 			default: 0,
+		},
+		fullHeight: {
+			type: Boolean,
+			default: false,
+		},
+		seamless: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
@@ -326,6 +335,7 @@ body {
 	z-index: 1;
 	width: 10px;
 	height: 10px;
+	overflow: hidden;
 	border-radius: 2px;
 	box-shadow: none;
 }
@@ -349,7 +359,7 @@ body {
 	bottom: -6px;
 
 	&::after {
-		bottom: 2px;
+		bottom: 3px;
 		box-shadow: 2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
@@ -358,7 +368,7 @@ body {
 	top: -6px;
 
 	&::after {
-		top: 2px;
+		top: 3px;
 		box-shadow: -2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
@@ -398,6 +408,14 @@ body {
 	.v-list {
 		--v-list-background-color: transparent;
 	}
+}
+
+.v-menu-content.full-height {
+	max-height: none;
+}
+
+.v-menu-content.seamless {
+	padding: 0;
 }
 
 [data-placement='top'] > .v-menu-content {

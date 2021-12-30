@@ -454,7 +454,7 @@ class OASSpecsService implements SpecificationSubService {
 						},
 					],
 				};
-			} else if (relationType === 'm2a') {
+			} else if (relationType === 'a2o') {
 				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';

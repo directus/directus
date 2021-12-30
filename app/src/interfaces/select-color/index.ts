@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceColor from './select-color.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'select-color',
@@ -60,4 +61,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

@@ -4,6 +4,7 @@ import { RelationInfo } from '@/composables/use-m2m';
 
 type UsableEdit = {
 	currentlyEditing: Ref<string | number | null>;
+	createNew: () => void;
 	editItem: (item: any) => void;
 	editsAtStart: Ref<Record<string, any>>;
 	stageEdits: (edits: any) => void;
@@ -31,6 +32,15 @@ export default function useEdit(
 		editsAtStart.value = item;
 		currentlyEditing.value = get(item, [junctionPkField], null);
 		relatedPrimaryKey.value = get(item, [junctionField, relationPkField], null);
+	}
+
+	function createNew() {
+		const { sortField } = relation.value;
+
+		editModalActive.value = true;
+		editsAtStart.value = { ...(sortField ? { [sortField]: (value.value || []).length } : null) };
+		currentlyEditing.value = null;
+		relatedPrimaryKey.value = null;
 	}
 
 	function stageEdits(edits: any) {
@@ -78,5 +88,14 @@ export default function useEdit(
 		relatedPrimaryKey.value = null;
 	}
 
-	return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive };
+	return {
+		currentlyEditing,
+		editItem,
+		createNew,
+		editsAtStart,
+		stageEdits,
+		cancelEdit,
+		relatedPrimaryKey,
+		editModalActive,
+	};
 }

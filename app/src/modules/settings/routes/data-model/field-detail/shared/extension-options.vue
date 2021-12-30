@@ -23,13 +23,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
+import { getInterface } from '@/interfaces';
+import { getDisplay } from '@/displays';
 import { useFieldDetailStore } from '../store/';
 import { get } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
-import { Field, DeepPartial } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -53,19 +52,15 @@ export default defineComponent({
 
 		const { collection, field, relations, fields, collections } = storeToRefs(fieldDetail);
 
-		const { interfaces } = getInterfaces();
-		const { displays } = getDisplays();
-
 		const extensionInfo = computed(() => {
-			if (props.type === 'interface') {
-				return interfaces.value.find((inter) => inter.id === props.extension);
+			switch (props.type) {
+				case 'interface':
+					return getInterface(props.extension);
+				case 'display':
+					return getDisplay(props.extension);
+				default:
+					return null;
 			}
-
-			if (props.type === 'display') {
-				return displays.value.find((display) => display.id === props.extension);
-			}
-
-			return null;
 		});
 
 		const usesCustomComponent = computed(() => {
@@ -82,9 +77,7 @@ export default defineComponent({
 			let optionsObjectOrArray;
 
 			if (typeof extensionInfo.value.options === 'function') {
-				optionsObjectOrArray = (extensionInfo.value.options as (x: typeof fieldDetail) => DeepPartial<Field>[])(
-					fieldDetail
-				);
+				optionsObjectOrArray = extensionInfo.value.options(fieldDetail);
 			} else {
 				optionsObjectOrArray = extensionInfo.value.options;
 			}
