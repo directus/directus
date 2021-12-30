@@ -769,6 +769,7 @@ adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
 creating_in: 'Creazione elemento in {collection}'
 editing_in: 'Modifica elemento in {collection}'
+viewing_in: 'Visualizzazione dell''oggetto in {collection}'
 creating_unit: 'Creazione {unit}'
 editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
@@ -957,6 +958,8 @@ fields:
     basemaps_style: Stile Mapbox
     mapbox_key: Access Token di Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribuzione
+    attribution_placeholder: '© collaboratori di OpenStreetMap'
     transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
     additional_transforms: Trasformazioni aggiuntive
     project_name: Nome del progetto
@@ -1124,6 +1127,12 @@ start_collapsed: Inizia chiuse
 block: Blocco
 inline: In linea
 comment: Commento
+shares: Condivisioni
+unlimited_usage: Utilizzo illimitato
+uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
+no_shares: Nessuna condivisione da mostrare
+new_share: Nuova condivisione
+expired: Scaduto
 relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
 referential_action_field_label_o2m: Alla deselezione di {collection}...
