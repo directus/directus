@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Идентификатор
 avatar: Аватар
+application: Приложение
 default_provider: По подразбиране
 published: Публикувано
 draft: Чернова
@@ -1221,6 +1222,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1287,6 +1289,7 @@ interfaces:
     description: Въвеждане или избор на стойност за цвят
     placeholder: Избор на цвят...
     preset_colors: Заготовки с цветове
+    opacity: Прозрачност
     preset_colors_add_label: Добавяне на нов цвят...
     name_placeholder: Въвеждане името на цвета...
   datetime:
@@ -1351,6 +1354,7 @@ interfaces:
   list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързващи записи
+    display_template_configure_notice: Шаблонът за показване може да бъде настроен и след създаването на полето.
   select-dropdown-m2o:
     many-to-one: Много към един
     description: Избор на един свързан запис
@@ -1599,6 +1603,7 @@ displays:
   related-values:
     related-values: Релативни стойности
     description: Показване на релативните стойности
+    display_template_configure_notice: Шаблонът за показване може да бъде настроен и след създаването на полето.
   user:
     user: Потребител
     description: Показване на потребител от Directus
