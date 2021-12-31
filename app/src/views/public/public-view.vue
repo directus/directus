@@ -2,15 +2,15 @@
 	<div class="public-view" :class="{ branded: isBranded }">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
-				<div v-if="branding && branding.project_logo" class="logo" :style="{ backgroundColor: branding.project_color }">
+				<div v-if="branding?.project_logo" class="logo" :style="{ backgroundColor: branding.project_color }">
 					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<div v-else class="logo" :style="{ backgroundColor: branding.project_color }">
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
 				</div>
 				<div class="title">
-					<h1 class="type-title">{{ branding && branding.project_name }}</h1>
-					<p class="subtitle">Application</p>
+					<h1 class="type-title">{{ branding?.project_name }}</h1>
+					<p class="subtitle">{{ branding?.project_descriptor ?? t('application') }}</p>
 				</div>
 			</div>
 
@@ -23,10 +23,10 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="branding && branding.project_name" />
+				<img v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="branding?.project_name" />
 			</transition>
 			<div class="note-container">
-				<div v-if="branding && branding.public_note" v-md="branding.public_note" class="note" />
+				<div v-if="branding?.public_note" v-md="branding.public_note" class="note" />
 			</div>
 		</div>
 	</div>

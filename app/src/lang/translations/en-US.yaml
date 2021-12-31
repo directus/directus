@@ -22,6 +22,7 @@
 
 identifier: Identifier
 avatar: Avatar
+application: Application
 default_provider: Default
 published: Published
 draft: Draft
