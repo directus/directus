@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identifiant
 avatar: Avatar
+application: Application
 default_provider: Défaut
 published: Publié
 draft: Brouillon
@@ -215,7 +216,7 @@ float: Nombre décimal
 integer: Entier
 json: JSON
 xml: XML
-string: Chaine de caractères
+string: Chaîne de caractères
 text: Texte
 time: Heure
 timestamp: Horodatage
@@ -223,11 +224,11 @@ uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
 geometry: Géométrie (tous)
 geometry.Point: Point
-geometry.LineString: LineString
+geometry.LineString: Chaîne ligne simple
 geometry.Polygon: Polygone
-geometry.MultiPoint: Multipoint
-geometry.MultiLineString: Chaine MultiLine
-geometry.MultiPolygon: MultiPolygon
+geometry.MultiPoint: Multi points
+geometry.MultiLineString: Chaîne multi-lignes
+geometry.MultiPolygon: Polygone multiple
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
