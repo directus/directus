@@ -105,7 +105,13 @@ archive: Skjalasavna
 archive_confirm: Ert tú vísur í at tú vilt skjalasavna hendan lutin?
 archive_confirm_count: >-
   Eingir lutir eru valdir | Ert tú vísur í at tú vilt skjalasavna hendan lutin? | Ert tú vísur í at tú vilt skjalasavna hesar {count} lutir?
-reset_system_permissions_to: 'Nullstilla rættindini av skipanini til:'
+reset_system_permissions_to: 'Nullstilla kervis rættindini til:'
+reset_system_permissions_copy: Hendan gerð fer at yvirskriva øll brúkara sett loyvi sum tú kanst hava nýtt á kerv-søvnini. Ert tú vísur?
+system: Kervi
+no_collections_copy: Tú hevur eingi Søvn enn. Set teg vinarliga í samband við kervisfyrisitarin.
+system_collections: Kervi Søvnini
+optional_system_fields: Valfrí Kervisteigar
+system_fields_locked: Kervisteigar eru læstir og kunnu ikki broytast
 fields:
   directus_settings:
     module_bar: Modul Bjálki
@@ -119,6 +125,12 @@ field_options:
 interfaces:
   presentation-links:
     primary: Primer
+  system-collection:
+    include_system_collections: Tel við Kervi Søvnini
+  system-collections:
+    include_system_collections: Tel við Kervi Søvnini
+  system-folder:
+    system_default: Grundkervi
 displays:
   formatted-value:
     prefix: Forskoyti
