@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identyfikator
 avatar: Awatar
+application: Aplikacja
 default_provider: Domyślny
 published: Opublikowany
 draft: Szkic
@@ -1287,6 +1288,7 @@ interfaces:
     description: Wprowadź lub wybierz kolor
     placeholder: Wybierz kolor...
     preset_colors: Ustawienia kolorów
+    opacity: Przezroczystość
     preset_colors_add_label: Dodaj nowy kolor...
     name_placeholder: Wprowadź nazwę koloru...
   datetime:
