@@ -69,7 +69,7 @@ delete_panel: Strika Talvu
 create_webhook: Stovna Webhook
 invite_users: Bjóða Brúkarum
 invite: Bjóða
-email_already_invited: Telduposturin "{email}" hevur longu fingið eina innbóðing
+email_already_invited: Telduposturin "{email}" hevur longu fingið eina innbjóðing
 subject: Evni
 inbox: Innbakki
 emails: Teldupostar
@@ -92,6 +92,20 @@ logoutReason:
   SIGN_OUT: Ritaður Út
   SESSION_EXPIRED: Sambandi er Útgingið
 public_label: Alment
+public_description: Stýrir hvat API dáta til taks uttan samgildi.
+not_allowed: Ikki loyvt
+directus_version: Directus Útgáva
+node_version: Node Útgáva
+node_uptime: Node Nýtslutíð
+os_type: OS Slag
+os_version: OS Útgáva
+os_uptime: OS Nýtslutíð
+os_totalmem: OS Minni
+archive: Skjalasavna
+archive_confirm: Ert tú vísur í at tú vilt skjalasavna hendan lutin?
+archive_confirm_count: >-
+  Eingir lutir eru valdir | Ert tú vísur í at tú vilt skjalasavna hendan lutin? | Ert tú vísur í at tú vilt skjalasavna hesar {count} lutir?
+reset_system_permissions_to: 'Nullstilla rættindini av skipanini til:'
 fields:
   directus_settings:
     module_bar: Modul Bjálki
@@ -99,6 +113,9 @@ fields:
     translation: Navna Teiga Umsetingar
   directus_roles:
     name: Leikluts Heiti
+field_options:
+  directus_collections:
+    archive_divider: Skjalasavna
 interfaces:
   presentation-links:
     primary: Primer
