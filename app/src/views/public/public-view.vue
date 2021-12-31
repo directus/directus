@@ -37,6 +37,7 @@ import { version } from '../../../package.json';
 import { defineComponent, computed } from 'vue';
 import { useServerStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -46,6 +47,7 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
 		const serverStore = useServerStore();
 
 		const isBranded = computed(() => {
@@ -86,6 +88,7 @@ export default defineComponent({
 			foregroundURL,
 			logoURL,
 			isBranded,
+			t,
 		};
 	},
 });
