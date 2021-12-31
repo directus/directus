@@ -163,7 +163,7 @@ presentation_and_aliases: Présentation & Alias
 revision_post_create: Voici à quoi ressemblait cet article lors de sa création.
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
 changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
-no_relational_data: Gardez à l'esprit que les données relationnelles ne sont pas incluses ici.
+no_relational_data: Attention, les données relationnelles ne sont pas incluses.
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
 delete_field: Supprimer le champ
@@ -307,7 +307,7 @@ revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
-revision_preview: Aperçu de l'historique
+revision_preview: Aperçu de la révision
 updates_made: Mises à jour réalisées
 leave_comment: Laisser un commentaire…
 post_comment_success: Commentaire publié
@@ -959,6 +959,8 @@ fields:
     basemaps_style: Style de Mapbox
     mapbox_key: Jeton d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribution
+    attribution_placeholder: '© contributeurs OpenStreetMap'
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     additional_transforms: Transformations supplémentaires
     project_name: Nom du projet
@@ -1137,6 +1139,7 @@ share: Partage
 share_item: Partager l'élément
 shared_with_you: Un élément a été partagé avec vous
 shared_enter_passcode: Saisir le mot de passe pour poursuivre...
+shared_leave_blank_for_unlimited: Laisser vide pour illimité
 shared_times_remaining: Ce lien ne peut être utilisé que {n} fois
 shared_last_remaining: Ce lien ne peut être utilisé qu'une seule fois
 shared_uses_left: Pour des raisons de sécurité, cette page partagée a été configurée de manière à être consultée un nombre limité de fois. Il reste actuellement {n} consultations possibles, après quoi cette page ne sera plus accessible.
@@ -1197,6 +1200,7 @@ relationship: Relation
 reset: Réinitialiser
 reset_password: Réinitialiser le mot de passe
 revisions: Historique
+no_revisions: Aucune révision pour l'instant
 revert: Restaurer
 save: Enregistrer
 schema: Schéma
@@ -1218,6 +1222,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1284,6 +1289,7 @@ interfaces:
     description: Entrez ou sélectionnez une valeur de couleur
     placeholder: Choisir une couleur...
     preset_colors: Couleurs prédéfinies
+    opacity: Opacité
     preset_colors_add_label: Ajouter une nouvelle couleur...
     name_placeholder: Entrer le nom de la couleur...
   datetime:
@@ -1348,6 +1354,7 @@ interfaces:
   list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
+    display_template_configure_notice: Vous pourrez configurer le modèle d'affichage après avoir créé ce champ.
   select-dropdown-m2o:
     many-to-one: Plusieurs à un
     description: Sélectionner un seul élément lié
@@ -1596,6 +1603,7 @@ displays:
   related-values:
     related-values: Valeurs liées
     description: Afficher des valeurs provenant d'une relation
+    display_template_configure_notice: Vous pourrez configurer le modèle d'affichage après avoir créé ce champ.
   user:
     user: Utilisateur
     description: Afficher un utilisateur directus
