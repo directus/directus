@@ -27,6 +27,7 @@ While Directus is always completely free, you will likely need to pay for these 
 - [Amazon AWS](/getting-started/installation/aws)
 - [DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform)
 - [Shared Hosting with Plesk](/getting-started/installation/plesk)
+- [Cleavr.io](https://docs.cleavr.io/guides/directus)
 
 ## One-Click Installs
 
