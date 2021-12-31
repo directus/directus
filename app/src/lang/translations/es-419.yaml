@@ -1343,6 +1343,8 @@ interfaces:
     toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
     options_override: Sobrescribir Opciones
+    imageToken: Token de Imagen
+    imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
   input-autocomplete-api:
     results_path: Ruta de Resultados
     trigger: Disparador

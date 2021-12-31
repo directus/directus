@@ -2,6 +2,101 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.4.1 (December 28, 2021)
+
+### :rocket: Improvements
+
+- **API**
+  - [#10713](https://github.com/directus/directus/pull/10713) exclude MS-SQL system table 'sysdiagrams'
+    ([@paulboudewijn](https://github.com/paulboudewijn))
+- **App**
+  - [#10698](https://github.com/directus/directus/pull/10698) Add notice for display templates when creating M2M field
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10697](https://github.com/directus/directus/pull/10697) Add empty state to revisions
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10611](https://github.com/directus/directus/pull/10611) Update interface previews
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#6440](https://github.com/directus/directus/pull/6440) Add stacked drawers effect
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#10740](https://github.com/directus/directus/pull/10740) Fix data type inconsistencies in directus_shares table
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10736](https://github.com/directus/directus/pull/10736) Replace knex.fn.now() to Date()
+    ([@licitdev](https://github.com/licitdev))
+  - [#10674](https://github.com/directus/directus/pull/10674) check system deny list in relations for GraphQL
+    ([@azrikahar](https://github.com/azrikahar))
+- **App**
+  - [#10721](https://github.com/directus/directus/pull/10721) Tweak auto-refresh of panels
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10704](https://github.com/directus/directus/pull/10704) App: fix m2o raw value
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10703](https://github.com/directus/directus/pull/10703) App: add sort on create m2m item
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10702](https://github.com/directus/directus/pull/10702) App: fix stacked drawers on mobile
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10696](https://github.com/directus/directus/pull/10696) Fix Map Attribution Problems
+    ([@maltejur](https://github.com/maltejur))
+  - [#10691](https://github.com/directus/directus/pull/10691) Add OpenStreetMaps Attribution
+    ([@maltejur](https://github.com/maltejur))
+  - [#10576](https://github.com/directus/directus/pull/10576) fix default values from permission's field presets
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#10711](https://github.com/directus/directus/pull/10711) Fix end-to-end tests for Postgres10
+    ([@jaycammarano](https://github.com/jaycammarano))
+- **API**
+  - [#10710](https://github.com/directus/directus/pull/10710) Fix debugging random portno
+    ([@paulboudewijn](https://github.com/paulboudewijn))
+
+## v9.4.0 (December 23, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#10663](https://github.com/directus/directus/pull/10663) Add ability to share items with people outside the
+    platform ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10438](https://github.com/directus/directus/pull/10438) Add v-date-picker base component & use it in datetime
+    interface ([@azrikahar](https://github.com/azrikahar))
+
+### :rocket: Improvements
+
+- **App**
+  - [#10659](https://github.com/directus/directus/pull/10659) match panel sizing to metric
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10652](https://github.com/directus/directus/pull/10652) use CSS variable for users Admin Options divider
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10587](https://github.com/directus/directus/pull/10587) smaller label height
+    ([@benhaynes](https://github.com/benhaynes))
+  - [#10573](https://github.com/directus/directus/pull/10573) Update to the latest Material Icons
+    ([@tatthien](https://github.com/tatthien))
+  - [#7199](https://github.com/directus/directus/pull/7199) Add default folder upload to WYSIWYG editors
+    ([@letoast](https://github.com/letoast))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10651](https://github.com/directus/directus/pull/10651) fix public role sidebar not closable
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10617](https://github.com/directus/directus/pull/10617) fix M2A list not updating
+    ([@azrikahar](https://github.com/azrikahar))
+- **cli**
+  - [#10623](https://github.com/directus/directus/pull/10623) Fix directusctl packages
+    ([@azrikahar](https://github.com/azrikahar))
+- **API**
+  - :warning: [#10569](https://github.com/directus/directus/pull/10569) Use correct status code (204) when no content is
+    sent ([@eikaramba](https://github.com/eikaramba))
+
+### :sponge: Optimizations
+
+- **API**
+  - [#10643](https://github.com/directus/directus/pull/10643) Move the app entrypoints to the assets directory
+    ([@nickrum](https://github.com/nickrum))
+
 ## v9.3.0 (December 16, 2021)
 
 ### :sparkles: New Features

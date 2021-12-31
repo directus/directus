@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 type Info = {
 	project: null | {
 		project_name: string | null;
+		project_descriptor: string | null;
 		project_logo: string | null;
 		project_color: string | null;
 		public_foreground: string | null;

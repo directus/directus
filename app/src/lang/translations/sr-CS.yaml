@@ -1073,6 +1073,8 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
+    imageToken: Token Fotografije
+    imageToken_label: Koji (statični) token prikačiti na izvore slika
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.

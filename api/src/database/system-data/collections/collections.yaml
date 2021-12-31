@@ -65,3 +65,6 @@ data:
     note: $t:directus_collection.directus_panels
   - collection: directus_notifications
     note: $t:directus_collection.directus_notifications
+  - collection: directus_shares
+    icon: share
+    note: $t:directus_collection.directus_shares

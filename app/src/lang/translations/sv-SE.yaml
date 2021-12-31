@@ -1382,6 +1382,9 @@ interfaces:
     toolbar: Verktygsfält
     custom_formats: Anpassade format
     options_override: Skriv över alternativ
+    folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
+    imageToken: Bildnyckel
+    imageToken_label: Token (statiskt) att lägga till på bildkällor
   input-autocomplete-api:
     results_path: Sökväg för resultat
     trigger: Utlösare
