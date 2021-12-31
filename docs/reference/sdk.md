@@ -581,6 +581,50 @@ directus.files;
 
 Same methods as `directus.items("directus_files")`.
 
+### Uploading a file
+
+To upload a file you will need to send a `multipart/form-data` as body. On browser side you do so:
+
+```js
+/* index.js */
+import { Directus } from 'https://unpkg.com/@directus/sdk@latest/dist/sdk.esm.min.js';
+
+const directus = new Directus('http://localhost:8055', {
+	auth: {
+		staticToken: 'STATIC_TOKEN', // If you want to use a static token, otherwise check below how you can use email and password.
+	},
+});
+
+(async function () {
+	// await directus.auth.login({ email, password }) // If you want to use email and password. You should remove the staticToken above
+
+	const form = document.querySelector('#upload-file');
+
+	if (form && form instanceof HTMLFormElement) {
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+
+			const form = new FormData(event.target);
+			await directus.files.createOne(form);
+		});
+	}
+})();
+```
+
+```html
+<!-- index.html -->
+<head></head>
+<body>
+  <form id="upload-file">
+		<input type="text" name="title" />
+		<input type="file" name="file" />
+    <button>Send</button>
+	<form>
+	<script src="/index.js" type="module"></script>
+</body>
+</html>
+```
+
 ## Folders
 
 ```js
