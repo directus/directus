@@ -108,8 +108,11 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Nullstilla kervis rættindini til:'
 reset_system_permissions_copy: Hendan gerð fer at yvirskriva øll brúkara sett loyvi sum tú kanst hava nýtt á kervissøvnini. Ert tú vísur?
 system: Kervi
+interface_label: Takførisflati
+creating_collection_system: Virkjan og nýnevnan av øllum hesum valfríðu Teigum.
 no_collections_copy: Tú hevur eingi Søvn enn. Set teg vinarliga í samband við kervisfyrisitarin.
 system_collections: Kervissøvnini
+interface_options: Takførisflatastillingar
 optional_system_fields: Valfrí Kervisteigar
 page_help_activity_collection: >-
   **Kaga Virksemi** — Ein drúvur listi av øllum tínum kervisbrúkarum innan kervisvirksemi og innihaldsvirksemi.
@@ -138,11 +141,33 @@ interfaces:
   presentation-links:
     primary: Primer
   system-collection:
+    collection: Savn
+    description: Vel millum galdandi Søvn
     include_system_collections: Tel við Kervissøvnini
   system-collections:
+    collections: Søvn
+    description: Vel millum galdandi Søvn
     include_system_collections: Tel við Kervissøvnini
+  system-display-template:
+    display-template: Sýna fram skapilón
+    description: Blanda óbroytandi tekst og dynamiskar teigvirðir
+    collection_field: Savnteigur
+    collection_field_not_setup: Stillingin til savnteigin skeivt stilla
+    select_a_collection: Vel eitt savn
+  system-interface:
+    interface: Takførisflati
+    description: Vel ein galdandi takførisflata
+    placeholder: Vel ein takførisflata...
+  system-interface-options:
+    interface-options: Takførisflatastillingar
   system-folder:
+    folder: Faldari
+    description: Vel ein faldara
+    field_hint: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
+    root_name: Fílasavns Rót
     system_default: Grundkervi
+  input-rich-text-html:
+    folder_note: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
 displays:
   formatted-value:
     prefix: Forskoyti
