@@ -422,12 +422,17 @@ no_files_copy: Tidak ada berkas disini.
 user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
 no_users_copy: Belum ada pengguna didalam peran ini.
 webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
+no_notifications: Tidak ada Pemberitahuan
+no_notifications_copy: Selesai!
+activity_log: Catatan Aktifitas
 all_items: Semua Item
 csv: CSV
 no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
+select_a_collection: Pilih Koleksi
+select_a_field: Pilih Bidang
 active: Aktif
 move_to: Pindahkan ke...
 copy: Salin
@@ -502,8 +507,10 @@ copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
 password_reset_sent: Kami telah mengirimkan surel berisi tautan aman untuk menyetel ulang kata sandi Anda
+password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring
+editing_image: Menyunting Gambar
 square: Persegi
 free: Bebas
 flip_horizontal: Balik Horisontal
@@ -521,6 +528,7 @@ start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filt
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
 show_header: Tampilkan Tajuk
+system_collections: Koleksi Sistem
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
 icon_right: Ikon Kanan
@@ -535,6 +543,7 @@ log_in_with: 'Masuk dengan {provider}'
 advanced_settings: Pengaturan Lanjutan
 advanced_filter: Filter Lanjutan
 delete_advanced_filter: Hapus Filter
+change_advanced_filter_operator: Ganti Operator
 operators:
   lt: Kurang dari
   gt: Lebih besar dari
@@ -543,12 +552,20 @@ operators:
   nnull: Bukan null
   contains: Mengandung
   ncontains: Tidak mengandung
+  starts_with: Dimulai dengan
+  nstarts_with: Tidak dimulai dengan
+  ends_with: Berakhir dengan
+  nends_with: Tidak berakhir dengan
   between: Diantara
   nbetween: Tidak Diantara
   empty: Kosong
   nempty: Tidak kosong
 loading: Memuat...
+interface_options: Pilihan Antarmuka
 layout_options: Pilihan Tata Letak
+rows: Baris
+columns: Kolom
+collection_setup: Penyiapan Koleksi
 value_unique: Nilai harus unik
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
@@ -560,12 +577,41 @@ on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
 select_fields: Pilih Bidang
+bold: Tebal
+label: Label
+no_dashboards: Tidak ada Dasbor
+no_data: Tidak ada Data
+create_dashboard: Buat Dasbor
+dashboard_name: Nama Dasbor
+full_screen: Layar Penuh
+image_url: Tautan Gambar
+alt_text: Teks Alternatif
+quality: Kualitas
 width: Lebar
 height: Tinggi
+source: Sumber
+url_placeholder: Masukkan tautan...
+display_text: Teks Tampilan
+display_text_placeholder: Masukkan teks tampilan...
+interface_group_text_and_numbers: Teks & Angka
+interface_group_presentation: Presentasi
+interface_group_other: Lainnya
+unlimited: Tak terbatas
+open_link_in: Buka tautan di
+new_tab: Tab baru
+current_tab: Tab saat ini
 wysiwyg_options:
+  aligncenter: Rata Tengah
+  alignjustify: Rata Kanan-Kiri
+  alignleft: Rata Kiri
+  alignright: Rata Kanan
   forecolor: Warna Latar Depan
   backcolor: Warna Latar Belakang
+  bold: Tebal
+  italic: Miring
+  underline: Garis Bawah
   codeblock: Kode
+  copy: Salin
   remove: Hapus
   selectall: Pilih Semua
   table: Tabel
@@ -577,9 +623,11 @@ settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
 scope: Lingkup
+select: Pilih...
 discard_changes: Batalkan Perubahan
 keep_editing: Tetap Mengedit
 add_new: Tambah Baru
+create_new: Buat baru
 all: Semua
 batch_delete_confirm: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
@@ -611,8 +659,10 @@ fields:
     created_on: Dibuat Pada
     created_by: Dibuat Oleh
     embed: Lampirkan
+    uploaded_by: Diunggah Oleh
     folder: Direktori
     width: Lebar
+    uploaded_on: Diunggah Pada
     height: Tinggi
     charset: Charset
     duration: Durasi
@@ -627,7 +677,11 @@ fields:
     description: Deskripsi
     language: Bahasa
     theme: Tema
+    theme_light: Mode Terang
+    theme_dark: Mode Gelap
+    tfa_secret: Otentikasi Dua Faktor
     status: Status
+    status_draft: Konsep
     status_active: Aktif
     role: Peran
     last_page: Halaman Terakhir
@@ -655,6 +709,7 @@ field_options:
     create: Buat
     update: Perbarui
   directus_collections:
+    collection_setup: Penyiapan Koleksi
     language: Bahasa
     archive_divider: Arsip
     sort_divider: Sortir
@@ -664,6 +719,9 @@ field_options:
       name_name: Nama
     collections_name: Pengumpulan
   directus_users:
+    dropdown_light: Mode Terang
+    dropdown_dark: Mode Gelap
+    status_dropdown_draft: Konsep
     status_dropdown_active: Aktif
   directus_webhooks:
     status_options_active: Aktif
@@ -730,6 +788,7 @@ interfaces:
     datetime: Datetime
   system-display-template:
     display-template: Tampilan Template
+    select_a_collection: Pilih Koleksi
   presentation-divider:
     divider: Pembagi/Pemecah
   select-dropdown:
@@ -781,6 +840,8 @@ displays:
     font: Huruf
     font_serif: Serif
     font_monospace: Monospace
+    bold: Tebal
+    italic: Miring
     prefix: Awalan
     suffix: Akhiran
     color: Warna
@@ -810,3 +871,6 @@ layouts:
     comfortable: Longgar
     compact: Rapat
     cozy: Normal
+panels:
+  label:
+    name: Label
