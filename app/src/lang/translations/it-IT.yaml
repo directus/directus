@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identificatore
 avatar: Avatar
+application: Applicazione
 default_provider: Predefinito
 published: Pubblicato
 draft: Bozza
@@ -1221,6 +1222,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1287,6 +1289,7 @@ interfaces:
     description: Inserisci o seleziona un valore di colore
     placeholder: Scegli un colore...
     preset_colors: Colori Predefiniti
+    opacity: Opacità
     preset_colors_add_label: Aggiungi nuovo colore...
     name_placeholder: Inserisci il nome del colore...
   datetime:
