@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Pengenal
 avatar: Avatar
+application: Aplikasi
 default_provider: Bawaan
 published: Dipublikasikan
 draft: Konsep
@@ -31,6 +32,7 @@ tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
 maps: Peta
+switch_user: Beralih/ganti pengguna
 item_creation: Pembuatan Item
 item_revision: Revisi Item
 enter_a_name: Masukkan sebuah Nama...
@@ -244,6 +246,8 @@ new_collection: 'Koleksi Baru'
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
+add_link: Tambahkan Tautan
+custom_link: Tautan khusus
 default_value: Nilai Bawaan
 standard_field: Kolom Standar
 single_file: Satu Berkas
@@ -256,6 +260,7 @@ invalid_item: Item tidak Valid
 next: Lanjut
 field_name: Nama Kolom
 translations: Terjemahan
+no_translations: Tidak ada terjemahan
 note: Catatan
 enter_a_value: Masukkan sebuah nilai...
 enter_a_placeholder: Masukkan sebuah placeholder...
@@ -329,6 +334,8 @@ date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Menit
+hours: Jam
 month: Bulan
 year: Tahun
 select_all: Pilih Semua
@@ -349,6 +356,7 @@ drag_mode: Mode Tarik
 cancel_crop: Batalkan Pemotongan
 original: Orisinal
 url: URL
+import_label: Impor
 file_details: Rincian Berkas
 dimensions: Dimensi
 size: Ukuran
@@ -362,6 +370,7 @@ zoom: Perbesar
 download: Unduh
 open: Buka
 open_in_new_window: Buka di Jendela Baru
+open_folder: Buka folder "{folder}"
 foreground_color: Warna Latar Depan
 background_color: Warna Latar Belakang
 upload_from_device: Unggah Berkas dari Perangkat
@@ -419,12 +428,21 @@ no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
+active: Aktif
+move_to: Pindahkan ke...
+copy: Salin
+copy_to: Salin ke...
+inactive: Tidak aktif
 users: Pengguna
 activity: Aktivitas
 action: Aksi
 ip_address: Alamat IP
 user_agent: Agen pengguna
 webhooks: Webhooks
+decimals: Desimal
+min_value: Nilai minimal
+max_value: Nilai maksimal
+automatic: Otomatis
 field_width: Lebar Bidang
 add_filter: Tambah Filter
 upper_limit: Batas atas...
@@ -471,6 +489,7 @@ errors:
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
   UNKNOWN: Kesalahan Tidak Terduga
+security: Keamanan
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
@@ -482,7 +501,11 @@ unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi n
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
+password_reset_sent: Kami telah mengirimkan surel berisi tautan aman untuk menyetel ulang kata sandi Anda
 back: Kembali
+filter: Penyaring
+square: Persegi
+free: Bebas
 flip_horizontal: Balik Horisontal
 flip_vertical: Balik Vertikal
 aspect_ratio: Rasio Aspek
@@ -497,6 +520,7 @@ start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
+show_header: Tampilkan Tajuk
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
 icon_right: Ikon Kanan
@@ -507,6 +531,8 @@ monospace: Monospace
 divider: Pembagi/Pemecah
 color: Warna
 circle: Lingkaran
+log_in_with: 'Masuk dengan {provider}'
+advanced_settings: Pengaturan Lanjutan
 advanced_filter: Filter Lanjutan
 delete_advanced_filter: Hapus Filter
 operators:
@@ -528,6 +554,7 @@ display_template: Tampilan Template
 no_results: Tidak Ada Hasil
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
+user: Pengguna
 create: Buat
 on_update: Saat Pembaruan
 read: Baca
@@ -601,6 +628,7 @@ fields:
     language: Bahasa
     theme: Tema
     status: Status
+    status_active: Aktif
     role: Peran
     last_page: Halaman Terakhir
     last_access: Akses Terakhir
@@ -621,6 +649,8 @@ fields:
     value: Nilai
     collections: Pengumpulan
 field_options:
+  directus_settings:
+    security_divider_title: Keamanan
   directus_activity:
     create: Buat
     update: Perbarui
@@ -633,7 +663,11 @@ field_options:
       icon_name: Ikon
       name_name: Nama
     collections_name: Pengumpulan
+  directus_users:
+    status_dropdown_active: Aktif
   directus_webhooks:
+    status_options_active: Aktif
+    status_options_inactive: Tidak aktif
     actions_create: Buat
     actions_update: Perbarui
     headers:
@@ -679,6 +713,7 @@ template: Templat
 value: Nilai
 interfaces:
   filter:
+    name: Penyaring
     add_filter: Tambah Filter
     all: Semua
   presentation-links:
@@ -722,6 +757,7 @@ interfaces:
   translations:
     display_template: Tampilan Template
   user:
+    user: Pengguna
     modes:
       dropdown: Dropwdown
 displays:
@@ -757,6 +793,7 @@ displays:
   labels:
     choices_value_placeholder: Masukkan sebuah nilai...
   user:
+    user: Pengguna
     avatar: Avatar
     name: Nama
     both: Keduanya
