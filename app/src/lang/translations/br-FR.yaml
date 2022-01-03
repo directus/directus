@@ -747,6 +747,10 @@ fields:
     auth_password_policy: Politikerezh ar gerioù-tremen
     auth_login_attempts: Taolioù kevreañ
     custom_css: Personelaat an CSS
+  directus_shares:
+    name: Anv
+    role: Roll
+    password: Ger-tremen
   directus_fields:
     collection: Anv an dastumad
     icon: Arlun an Dastumad

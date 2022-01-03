@@ -2,6 +2,39 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.4.2 (December 30, 2021)
+
+### :warning: Notice
+
+For security reasons, we've enabled the `Content-Security-Policy` header by default. This won't change the normal
+operating behavior of the API, but be aware if you were doing some trickery before that might be affected by this
+header.
+
+### :rocket: Improvements
+
+- **API**
+  - [#10778](https://github.com/directus/directus/pull/10778) Add warning when DB_CHARSET isn't explicitly configured
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - :warning: [#10776](https://github.com/directus/directus/pull/10776) Add Content-Security-Policy header by default
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10773](https://github.com/directus/directus/pull/10773) Don't force commandTimeout in redis based caches
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10765](https://github.com/directus/directus/pull/10765) Add ability to configure IP extraction
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#10762](https://github.com/directus/directus/pull/10762) Don't show badge when no revisions
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10760](https://github.com/directus/directus/pull/10760) style tweaks ([@benhaynes](https://github.com/benhaynes))
+  - [#9224](https://github.com/directus/directus/pull/9224) Enable alpha channel in color selector
+    ([@adanielyan](https://github.com/adanielyan))
+
+### :memo: Documentation
+
+- [#10761](https://github.com/directus/directus/pull/10761) Add link to Cleavr deployment guide
+  ([@armgitaar](https://github.com/armgitaar))
+- [#10622](https://github.com/directus/directus/pull/10622) `update_users_me` Alias for GraphQL API
+  ([@w0ryn](https://github.com/w0ryn))
+
 ## v9.4.1 (December 28, 2021)
 
 ### :rocket: Improvements

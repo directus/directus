@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identyfikator
 avatar: Awatar
+application: Aplikacja
 default_provider: Domyślny
 published: Opublikowany
 draft: Szkic
@@ -982,6 +983,10 @@ fields:
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
+  directus_shares:
+    name: Nazwa
+    role: Rola
+    password: Hasło
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
@@ -1287,6 +1292,7 @@ interfaces:
     description: Wprowadź lub wybierz kolor
     placeholder: Wybierz kolor...
     preset_colors: Ustawienia kolorów
+    opacity: Przezroczystość
     preset_colors_add_label: Dodaj nowy kolor...
     name_placeholder: Wprowadź nazwę koloru...
   datetime:

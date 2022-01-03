@@ -926,6 +926,10 @@ fields:
     transformations_all: Permitir todas as transformações
     transformations_none: Desativar transformações
     transformations_presets: Limitar transformações às predefinições abaixo
+  directus_shares:
+    name: Nome
+    role: Função
+    password: Senha
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção

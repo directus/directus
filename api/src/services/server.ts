@@ -37,6 +37,7 @@ export class ServerService {
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
+				'project_descriptor',
 				'project_logo',
 				'project_color',
 				'public_foreground',

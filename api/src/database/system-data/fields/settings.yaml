@@ -14,6 +14,16 @@ fields:
       translations: Name
     width: half
 
+  - field: project_descriptor
+    interface: input
+    options:
+      iconRight: title
+      placeholder: $t:field_options.directus_settings.project_name_placeholder
+    translations:
+      language: en-US
+      translations: Name
+    width: half
+
   - field: project_url
     interface: input
     options:
@@ -22,7 +32,7 @@ fields:
     translations:
       language: en-US
       translations: Website
-    width: half
+    width: full
 
   - field: branding_divider
     interface: presentation-divider

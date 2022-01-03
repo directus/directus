@@ -751,6 +751,10 @@ fields:
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
     custom_css: Prilagođeni CSS
+  directus_shares:
+    name: Ime
+    role: Uloga
+    password: Lozinka
   directus_fields:
     collection: Ime Kolekcije
     icon: Ikonica Kolekcije

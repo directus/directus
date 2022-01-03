@@ -383,6 +383,9 @@ fields:
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
+  directus_shares:
+    name: 名前
+    password: パスワード
   directus_fields:
     note: 備考
     hidden: 非表示

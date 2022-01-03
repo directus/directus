@@ -156,6 +156,10 @@ fields:
   directus_settings:
     project_name: Nama Projek
     module_bar: Modul.bar
+  directus_shares:
+    name: Nama
+    role: Peranan
+    password: Katalaluan
   directus_fields:
     note: Nota
     translation: Terjemahan nama bidang

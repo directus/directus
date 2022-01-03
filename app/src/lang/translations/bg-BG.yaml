@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Идентификатор
 avatar: Аватар
+application: Приложение
 default_provider: По подразбиране
 published: Публикувано
 draft: Чернова
@@ -963,6 +964,7 @@ fields:
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
+    project_descriptor: Описание на проекта
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
@@ -982,6 +984,14 @@ fields:
     transformations_all: Позволяване на всякакви трансформации
     transformations_none: Забраняват се трансформациите
     transformations_presets: Ограничаване само до заготовките по-долу
+  directus_shares:
+    name: Име
+    role: Роля
+    password: Парола
+    date_start: Начална дата
+    date_end: Крайна дата
+    max_uses: Максимален брой ползвания
+    times_used: Брой ползвания
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -1146,8 +1156,8 @@ share_access_page: Достъп до споделена страница
 share_access_not_found: Споделената страница не съществува или квотата за използване от потребители вече е просрочена.
 share_access_not_found_desc: Свържете се с оторизиран потребител от проекта за да получите достъп.
 share_access_not_found_title: Непозната споделена страница
-share_copy_link: Копиране на връзка
-share_send_link: Изпращане на връзка
+share_copy_link: Копиране на връзката
+share_send_link: Изпращане на връзката
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
 referential_action_field_label_o2m: При размаркиране от {collection}...
@@ -1221,6 +1231,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1287,6 +1298,7 @@ interfaces:
     description: Въвеждане или избор на стойност за цвят
     placeholder: Избор на цвят...
     preset_colors: Заготовки с цветове
+    opacity: Прозрачност
     preset_colors_add_label: Добавяне на нов цвят...
     name_placeholder: Въвеждане името на цвета...
   datetime:
@@ -1351,6 +1363,7 @@ interfaces:
   list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързващи записи
+    display_template_configure_notice: Шаблонът за показване може да бъде настроен и след създаването на полето.
   select-dropdown-m2o:
     many-to-one: Много към един
     description: Избор на един свързан запис
@@ -1599,6 +1612,7 @@ displays:
   related-values:
     related-values: Релативни стойности
     description: Показване на релативните стойности
+    display_template_configure_notice: Шаблонът за показване може да бъде настроен и след създаването на полето.
   user:
     user: Потребител
     description: Показване на потребител от Directus
