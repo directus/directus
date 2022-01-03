@@ -106,6 +106,13 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		appStore.hydrating = false;
 		if (appStore.authenticated === true) {
 			await hydrate();
+			if (userStore.currentUser && to.fullPath === '/tfa-setup') {
+				if (userStore.currentUser.tfa_secret === null) {
+					userStore.currentUser.theme = 'light';
+				} else {
+					return userStore.currentUser.last_page || '/login';
+				}
+			}
 			return to.fullPath;
 		} else {
 			if (to.fullPath) {
@@ -116,10 +123,16 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 	}
 
-	if (to.meta?.public !== true && userStore.currentUser && to.fullPath !== '/tfa-setup') {
-		if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+	if (to.meta?.public !== true && userStore.currentUser) {
+		if (to.fullPath !== '/tfa-setup') {
+			if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+				userStore.currentUser.theme = 'light';
+				return '/tfa-setup';
+			}
+		} else if (userStore.currentUser.tfa_secret !== null) {
+			return userStore.currentUser.last_page || '/login';
+		} else {
 			userStore.currentUser.theme = 'light';
-			return '/tfa-setup';
 		}
 	}
 };
