@@ -17,6 +17,7 @@ import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -261,7 +262,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
-					ip: req.ip,
+					ip: getIPFromReq(req),
 					userAgent: req.get('user-agent'),
 					role: null,
 				},

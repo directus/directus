@@ -126,6 +126,10 @@ fields:
     tfa_secret: Дво-факторска аутентификација
     status: Стање
     role: Рола
+  directus_shares:
+    name: Име
+    role: Рола
+    password: Лозинка
   directus_fields:
     display_template: Шаблон
   directus_roles:

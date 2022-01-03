@@ -5,6 +5,7 @@ import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import { DirectusTokenPayload } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { getIPFromReq } from '../utils/get-ip-from-req';
 import isDirectusJWT from '../utils/is-directus-jwt';
 
 /**
@@ -16,7 +17,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		role: null,
 		admin: false,
 		app: false,
-		ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
+		ip: getIPFromReq(req),
 		userAgent: req.get('user-agent'),
 	};
 

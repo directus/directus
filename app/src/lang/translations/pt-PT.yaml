@@ -593,6 +593,9 @@ fields:
     public_background: Fundo Público
     public_note: Nota Pública
     custom_css: CSS Personalizado
+  directus_shares:
+    name: Nome
+    role: Perfil
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção

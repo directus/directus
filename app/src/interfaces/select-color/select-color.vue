@@ -5,13 +5,19 @@
 				v-model="hex"
 				:disabled="disabled"
 				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
-				:pattern="/#([a-f\d]{2}){3}/i"
+				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
-				maxlength="7"
+				:maxlength="opacity ? 9 : 7"
 				@focus="activate"
 			>
 				<template #prepend>
-					<v-input ref="htmlColorInput" v-model="hex" type="color" class="html-color-select" />
+					<v-input
+						ref="htmlColorInput"
+						:model-value="hex ? hex.substr(0, 7) : null"
+						type="color"
+						class="html-color-select"
+						@update:model-value="setSwatchValue($event)"
+					/>
 					<v-button
 						class="swatch"
 						:icon="true"
@@ -30,14 +36,38 @@
 			</v-input>
 		</template>
 
-		<div class="color-data-inputs" :class="{ stacked: width === 'half' }">
-			<div class="color-data-input color-type">
+		<div
+			class="color-data-inputs"
+			:style="{
+				'grid-template-columns': opacity
+					? width === 'half'
+						? 'repeat(4, 1fr)'
+						: 'repeat(6, 1fr)'
+					: width === 'half'
+					? 'repeat(3, 1fr)'
+					: 'repeat(5, 1fr)',
+			}"
+			:class="{ stacked: width === 'half' }"
+		>
+			<div
+				class="color-data-input color-type"
+				:style="{
+					'grid-column': opacity
+						? width === 'half'
+							? '1 / span 4'
+							: '1 / span 2'
+						: width === 'half'
+						? '1 / span 3'
+						: '1 / span 2',
+				}"
+			>
 				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
-			<template v-if="colorType === 'RGB'">
+			<template v-if="colorType === 'RGB' || colorType === 'RGBA'">
 				<v-input
-					v-for="(val, i) in rgb"
+					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
 					:key="i"
+					:hidden="i === 3"
 					type="number"
 					:model-value="val"
 					class="color-data-input"
@@ -48,10 +78,22 @@
 					maxlength="3"
 					@update:model-value="setValue('rgb', i, $event)"
 				/>
-			</template>
-			<template v-if="colorType === 'HSL'">
 				<v-input
-					v-for="(val, i) in hsl"
+					v-if="opacity"
+					type="number"
+					:model-value="alpha"
+					class="color-data-input"
+					pattern="\d*"
+					:min="0"
+					:max="100"
+					:step="1"
+					maxlength="3"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
+			</template>
+			<template v-if="colorType === 'HSL' || colorType === 'HSLA'">
+				<v-input
+					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
 					:key="i"
 					type="number"
 					:model-value="val"
@@ -63,7 +105,40 @@
 					maxlength="3"
 					@update:model-value="setValue('hsl', i, $event)"
 				/>
+				<v-input
+					v-if="opacity"
+					type="number"
+					:model-value="alpha"
+					class="color-data-input"
+					pattern="\d*"
+					:min="0"
+					:max="100"
+					:step="1"
+					maxlength="3"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
 			</template>
+		</div>
+		<div v-if="opacity" class="color-data-alphas">
+			<div class="color-data-alpha">
+				<v-slider
+					:model-value="alpha"
+					:min="0"
+					:max="100"
+					:step="1"
+					:style="{
+						'--v-slider-color': 'none',
+						'--background-page': 'none',
+						'--v-slider-fill-color': 'none',
+						'--v-slider-thumb-color': 'var(--foreground-normal)',
+						'--v-slider-track-background-image':
+							'linear-gradient(to right, transparent,' +
+							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
+							'), url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==\')',
+					}"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
+			</div>
 		</div>
 		<div v-if="presets" class="presets">
 			<v-button
@@ -145,16 +220,20 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		opacity: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
-		type ColorType = 'RGB' | 'HSL';
+		type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
 
-		const colorTypes = ['RGB', 'HSL'] as ColorType[];
-		const colorType = ref<ColorType>('RGB');
+		let colorTypes = props.opacity ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
+		const colorType = ref<ColorType>(props.opacity ? 'RGBA' : 'RGB');
 
 		function unsetColor() {
 			emit('input', null);
@@ -162,6 +241,25 @@ export default defineComponent({
 
 		function activateColorPicker() {
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
+		}
+
+		function setShowAlpha(val: boolean) {
+			if (val) {
+				colorTypes.value = ['RGBA', 'HSLA'];
+				if (colorType.value === 'RGB' || colorType.value === 'RGBA') {
+					colorType.value = 'RGBA';
+				} else {
+					colorType.value = 'HSLA';
+				}
+			} else {
+				setValue('alpha', 0, 100);
+				if (colorType.value === 'RGB' || colorType.value === 'RGBA') {
+					colorType.value = 'RGB';
+				} else {
+					colorType.value = 'HSL';
+				}
+				colorTypes.value = ['RGB', 'HSL'];
+			}
 		}
 
 		const isValidColor = computed<boolean>(() => rgb.value !== null && props.value !== null);
@@ -175,7 +273,7 @@ export default defineComponent({
 			return color.value.contrast(pageColor) < 1.1;
 		});
 
-		const { hsl, rgb, hex, color } = useColor();
+		const { hsl, rgb, hex, alpha, color } = useColor();
 
 		return {
 			t,
@@ -184,29 +282,49 @@ export default defineComponent({
 			rgb,
 			hsl,
 			hex,
+			alpha,
 			htmlColorInput,
 			activateColorPicker,
 			isValidColor,
 			Color,
 			setValue,
+			setSwatchValue,
 			lowContrast,
 			unsetColor,
+			setShowAlpha,
 		};
 
-		function setValue(type: 'rgb' | 'hsl', i: number, val: number) {
+		function setValue(type: 'rgb' | 'hsl' | 'alpha', i: number, val: number) {
 			if (type === 'rgb') {
 				const newArray = [...rgb.value];
 				newArray[i] = val;
 				rgb.value = newArray;
-			} else {
+			} else if (type === 'hsl') {
 				const newArray = [...hsl.value];
 				newArray[i] = val;
 				hsl.value = newArray;
+			} else {
+				alpha.value = val;
 			}
+		}
+
+		function setSwatchValue(color: string) {
+			hex.value = `${color}${hex.value !== null && hex.value.length === 9 ? hex.value.substr(-2) : ''}`;
 		}
 
 		function useColor() {
 			const color = ref<Color | null>(null);
+
+			const getHexa = (): string | null => {
+				if (color.value !== null) {
+					let alpha = Math.round(255 * color.value.alpha())
+						.toString(16)
+						.toUpperCase();
+					alpha = alpha.padStart(2, '0');
+					return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
+				}
+				return null;
+			};
 
 			watch(
 				() => props.value,
@@ -218,25 +336,27 @@ export default defineComponent({
 
 			const rgb = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.rgb().array().map(Math.round) : [0, 0, 0];
+					const arr = color.value !== null ? color.value.rgb().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
+					return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
 				},
 				set(newRGB) {
-					setColor(Color.rgb(newRGB));
+					setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3] : 1));
 				},
 			});
 
 			const hsl = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.hsl().array().map(Math.round) : [0, 0, 0];
+					const arr = color.value !== null ? color.value.hsl().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
+					return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
 				},
 				set(newHSL) {
-					setColor(Color.hsl(newHSL));
+					setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
 				},
 			});
 
 			const hex = computed<string | null>({
 				get() {
-					return color.value !== null ? color.value.hex() : null;
+					return getHexa();
 				},
 				set(newHex) {
 					if (newHex === null || newHex === '') {
@@ -248,7 +368,20 @@ export default defineComponent({
 				},
 			});
 
-			return { rgb, hsl, hex, color };
+			const alpha = computed<number>({
+				get() {
+					return color.value !== null ? Math.round(color?.value?.alpha() * 100) : 100;
+				},
+				set(newAlpha) {
+					if (newAlpha === null) {
+						return;
+					}
+					const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
+					setColor(Color(newColor).alpha(newAlpha / 100));
+				},
+			});
+
+			return { rgb, hsl, hex, alpha, color };
 
 			function setColor(newColor: Color | null) {
 				color.value = newColor;
@@ -256,7 +389,7 @@ export default defineComponent({
 				if (newColor === null) {
 					unsetColor();
 				} else {
-					emit('input', newColor.hex());
+					emit('input', getHexa());
 				}
 			}
 		}
@@ -314,13 +447,8 @@ export default defineComponent({
 .color-data-inputs {
 	display: grid;
 	grid-gap: 0px;
-	grid-template-columns: repeat(5, 1fr);
 	width: 100%;
 	padding: 12px 10px;
-}
-
-.color-data-inputs .color-type {
-	grid-column: 1 / span 2;
 }
 
 .color-data-inputs .color-data-input {
@@ -351,14 +479,6 @@ export default defineComponent({
 	--border-radius: 0px 4px 4px 0px;
 }
 
-.color-data-inputs.stacked {
-	grid-template-columns: repeat(3, 1fr);
-}
-
-.color-data-inputs.stacked .color-type {
-	grid-column: 1 / span 3;
-}
-
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
 	margin-top: calc(-2 * var(--border-width));
 	margin-left: initial;
@@ -378,5 +498,22 @@ export default defineComponent({
 
 .color-data-inputs.stacked .color-data-input:last-child {
 	--border-radius: 0px 0px 4px 0px;
+}
+
+.color-data-alphas {
+	display: grid;
+	grid-gap: 12px;
+	align-items: baseline;
+	width: 100%;
+	height: 45px;
+	padding: 12px 14px;
+}
+
+.color-data-alphas .color-data-alpha {
+	display: grid;
+}
+
+.color-data-alphas .color-data-alpha .slider input {
+	background-color: transparent;
 }
 </style>

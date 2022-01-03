@@ -160,6 +160,9 @@ fields:
     role: Rol
   directus_settings:
     module_bar: Bară module
+  directus_shares:
+    role: Rol
+    password: Parolă
   directus_fields:
     hidden: Ascuns
     translation: Traducerile numelui câmpului

@@ -263,6 +263,9 @@ fields:
   directus_users:
     language: भाषा
     role: भूमिका
+  directus_shares:
+    name: नाम
+    role: भूमिका
   directus_fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
