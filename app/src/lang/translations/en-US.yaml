@@ -977,6 +977,7 @@ fields:
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Additional Transformations
     project_name: Project Name
+    project_descriptor: Project Descriptor
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
@@ -996,6 +997,14 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
+  directus_shares:
+    name: Name
+    role: Role
+    password: Password
+    date_start: Date Start
+    date_end: Date End
+    max_uses: Max Uses
+    times_used: Times Used
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
