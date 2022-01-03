@@ -689,6 +689,10 @@ fields:
   directus_settings:
     project_name: Nama Proyek
     module_bar: Papan Modul
+  directus_shares:
+    name: Nama
+    role: Peran
+    password: Kata Sandi
   directus_fields:
     note: Catatan
     hidden: Tersembunyi
