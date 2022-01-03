@@ -667,6 +667,10 @@ fields:
     project_name: Tên Dự Án
     auth_password_policy: Quy định về mật khẩu
     module_bar: Thanh công cụ
+  directus_shares:
+    name: Tên
+    role: Phân quyền
+    password: Mật khẩu
   directus_fields:
     icon: Biểu tượng của Danh mục
     note: Ghi chú
