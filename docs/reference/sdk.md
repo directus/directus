@@ -615,11 +615,11 @@ const directus = new Directus('http://localhost:8055', {
 <!-- index.html -->
 <head></head>
 <body>
-  <form id="upload-file">
+	<form id="upload-file">
 		<input type="text" name="title" />
 		<input type="file" name="file" />
-    <button>Send</button>
-	<form>
+    	<button>Send</button>
+	</form>
 	<script src="/index.js" type="module"></script>
 </body>
 </html>
