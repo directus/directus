@@ -691,6 +691,10 @@ fields:
     public_note: Vieša pastaba
     auth_password_policy: Slaptažodžių politika
     auth_login_attempts: Max. bandymų prisijungti kiekis
+  directus_shares:
+    name: Pavadinimas
+    role: Vaidmuo
+    password: Slaptažodis
   directus_fields:
     collection: Kolekcijos pavadinimas
     icon: Kolekcijos ikonėlė
