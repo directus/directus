@@ -595,6 +595,10 @@ fields:
     auth_password_policy: 身份驗證密碼政策
     auth_login_attempts: 身份驗證登錄嘗試
     custom_css: 自定義 CSS
+  directus_shares:
+    name: 名稱
+    role: 角色
+    password: 密碼
   directus_fields:
     collection: 集合名稱
     icon: 集合圖示
