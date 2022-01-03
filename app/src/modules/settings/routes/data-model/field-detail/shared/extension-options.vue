@@ -27,10 +27,11 @@ import { defineComponent, PropType, computed, Ref, ref } from 'vue';
 import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
 import { useI18n } from 'vue-i18n';
-import { DeepPartial, ExtensionOptionsContext, Field } from '@directus/shared/types';
+import { DeepPartial, Field } from '@directus/shared/types';
 
 interface Context {
-	fieldDetail: ExtensionOptionsContext;
+	// change the any to an object of fields standard advanced
+	optionsFields?: any;
 	field: DeepPartial<Field>;
 	collection?: Ref<string | undefined>;
 	fields: DeepPartial<Field>[];
@@ -76,6 +77,7 @@ export default defineComponent({
 			return extensionInfo.value.options && 'render' in extensionInfo.value.options;
 		});
 
+		// rename optionsFields to prevent confusion with props.context.optionsFields
 		const optionsFields = computed(() => {
 			if (!extensionInfo.value) return [];
 			if (!extensionInfo.value.options) return [];
@@ -83,8 +85,8 @@ export default defineComponent({
 
 			let optionsObjectOrArray;
 
-			if (typeof extensionInfo.value.options === 'function') {
-				optionsObjectOrArray = extensionInfo.value.options(props.context.fieldDetail);
+			if (props.context.optionsFields) {
+				optionsObjectOrArray = props.context.optionsFields;
 			} else {
 				optionsObjectOrArray = extensionInfo.value.options;
 			}

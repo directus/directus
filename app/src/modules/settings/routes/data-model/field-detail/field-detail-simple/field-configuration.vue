@@ -110,7 +110,19 @@ export default defineComponent({
 		const interfaceIdsWithHiddenLabel = computed(() =>
 			interfaces.value.filter((inter) => inter.hideLabel === true).map((inter) => inter.id)
 		);
-		const context = { field, relations, fields, collections, fieldDetail };
+
+		const extensionInfo = computed(() => {
+			return getInterface(props.chosenInterface);
+		});
+
+		const context = {
+			field,
+			relations,
+			fields,
+			collections,
+			fieldDetail,
+			optionsFields: extensionInfo.value?.options(fieldDetail),
+		};
 		watch(
 			chosenInterface,
 			(newVal, oldVal) => {
