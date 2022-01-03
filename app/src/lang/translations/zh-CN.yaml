@@ -193,6 +193,7 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry.Point: 点
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -593,6 +594,7 @@ all_files: 所有文件
 my_files: 我的文件
 recent_files: 最近的文件
 create_folder: 创建文件夹
+edit_folder: 编辑文件夹
 folder_name: 文件夹名
 add_file: 添加文件
 replace_file: 替换文件
@@ -654,6 +656,8 @@ source: 来源
 url_placeholder: 输入网址...
 display_text: 显示文本
 display_text_placeholder: 输入显示文本...
+interface_group_groups: 组
+interface_group_other: 其他
 tooltip: 提示
 tooltip_placeholder: 输入工具提示...
 unlimited: 无限制
@@ -787,6 +791,7 @@ cancel: 取消
 no_upscale: 不要放大图片
 collection: 数据模型
 collections: 数据模型
+content: 内容
 singleton: 单一
 singleton_label: 视为单个对象
 system_fields_locked: 系统字段已锁定，无法编辑
@@ -894,6 +899,7 @@ fields:
     basemaps_style: Mapbox 样式
     mapbox_key: Mapbox 访问令牌
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution_placeholder: '© OpenStreetMap 贡献者'
     transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
     additional_transforms: 其它转换
     project_name: 项目名称
@@ -1045,6 +1051,9 @@ start_collapsed: 默认收起
 block: 阻止
 inline: 内联
 comment: 注释
+share: 分享
+share_copy_link: 复制链接
+share_send_link: 发送链接
 relational_triggers: 关联触发器
 referential_action_field_label_m2o: 删除 {collection} 时...
 referential_action_field_label_o2m: 取消选择 {collection}...
@@ -1122,8 +1131,10 @@ interfaces:
   filter:
     name: 筛选
     add_filter: 添加过滤器
+    add_value: 添加值
     all: 全部
     any: 任意
+    and: 和
   group-accordion:
     name: 折叠
     description: 在折叠面板中显示字段或分组
@@ -1242,6 +1253,7 @@ interfaces:
     markdown: Markdown
     description: 输入并预览Markdown
     edit: 编辑
+    preview: 预览
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
@@ -1370,6 +1382,7 @@ interfaces:
 displays:
   translations:
     translations: 翻译
+    enable: 启用
   boolean:
     boolean: Boolean
     description: 显示开启或关闭状态
