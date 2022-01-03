@@ -962,6 +962,10 @@ fields:
     transformations_all: Salli kaikki muutokset
     transformations_none: Poista muunnokset käytöstä
     transformations_presets: Rajoita muunnoksia allaoleviin esiasetuksiin
+  directus_shares:
+    name: Nimi
+    role: Rooli
+    password: Salasana
   directus_fields:
     collection: Kokoelman nimi
     icon: Kokoelman kuvake

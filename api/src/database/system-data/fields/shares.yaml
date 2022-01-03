@@ -32,15 +32,19 @@ fields:
       iconRight: lock
       masked: true
     width: half
+    note: $t:shared_leave_blank_for_unlimited
 
   - field: date_start
     width: half
+    note: $t:shared_leave_blank_for_unlimited
 
   - field: date_end
     width: half
+    note: $t:shared_leave_blank_for_unlimited
 
   - field: max_uses
     width: half
+    note: $t:shared_leave_blank_for_unlimited
 
   - field: times_used
     width: half

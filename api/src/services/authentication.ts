@@ -275,12 +275,12 @@ export class AuthenticationService {
 			.leftJoin('directus_shares AS d', 's.share', 'd.id')
 			.joinRaw('LEFT JOIN directus_roles AS r ON r.id IN (u.role, d.role)')
 			.where('s.token', refreshToken)
-			.andWhere('s.expires', '>=', this.knex.fn.now())
+			.andWhere('s.expires', '>=', new Date())
 			.andWhere((subQuery) => {
-				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', this.knex.fn.now());
+				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', new Date());
 			})
 			.andWhere((subQuery) => {
-				subQuery.whereNull('d.date_start').orWhere('d.date_start', '<=', this.knex.fn.now());
+				subQuery.whereNull('d.date_start').orWhere('d.date_start', '<=', new Date());
 			})
 			.first();
 

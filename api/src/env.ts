@@ -72,6 +72,9 @@ const defaults: Record<string, any> = {
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
 
+	IP_TRUST_PROXY: true,
+	IP_CUSTOM_HEADER: false,
+
 	SERVE_APP: true,
 };
 

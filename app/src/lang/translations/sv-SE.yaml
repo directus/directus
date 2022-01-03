@@ -938,6 +938,10 @@ fields:
     transformations_all: Tillåt alla transformationer
     transformations_none: Inaktivera transformationer
     transformations_presets: Begränsa transformationer till inställningarna nedan
+  directus_shares:
+    name: Namn
+    role: Roll
+    password: Lösenord
   directus_fields:
     collection: Namn kollektion
     icon: Ikon kollektion

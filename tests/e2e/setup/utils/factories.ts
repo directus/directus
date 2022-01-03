@@ -138,7 +138,7 @@ export const createArtist = (): Artist => ({
 
 export const createEvent = (): Event => ({
 	id: uuid(),
-	cost: datatype.number(),
+	cost: 1504.04,
 	description: lorem.paragraphs(2),
 	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
 	time: randomTime(),
