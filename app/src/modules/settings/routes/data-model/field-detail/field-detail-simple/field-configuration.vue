@@ -147,7 +147,7 @@ export default defineComponent({
 			setOptions,
 		};
 
-		function setOptions(newOptions: Record<string, string>) {
+		function setOptions(newOptions: Record<string, any>) {
 			options.value = newOptions;
 		}
 	},
