@@ -362,6 +362,10 @@ fields:
   directus_settings:
     project_name: Název projektu
     module_bar: Panel modulů
+  directus_shares:
+    name: Jméno
+    role: Role
+    password: Heslo
   directus_fields:
     note: Poznámka
     hidden: Skryté

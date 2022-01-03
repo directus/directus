@@ -12,6 +12,7 @@ import ldap, {
 	OperationsError,
 } from 'ldapjs';
 import ms from 'ms';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 import Joi from 'joi';
 import { AuthDriver } from '../auth';
 import { AuthDriverOptions, User } from '../../types';
@@ -361,7 +362,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 		'/',
 		asyncHandler(async (req, res, next) => {
 			const accountability = {
-				ip: req.ip,
+				ip: getIPFromReq(req),
 				userAgent: req.get('user-agent'),
 				role: null,
 			};

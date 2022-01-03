@@ -903,6 +903,10 @@ fields:
     auth_login_attempts: Auth Login Forsøg
     overrides: App Tilsidesættelser
     module_bar: Modul Bar
+  directus_shares:
+    name: Navn
+    role: Rolle
+    password: Adgangskode
   directus_fields:
     collection: Samlingens Navn
     icon: Samlingsikon
