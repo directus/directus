@@ -575,6 +575,9 @@ fields:
   directus_settings:
     project_name: Prosjektnavn
     module_bar: Modul Bar
+  directus_shares:
+    name: Navn
+    password: Passord
   directus_fields:
     note: Notat
     hidden: Skjult
