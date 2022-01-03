@@ -983,6 +983,10 @@ fields:
     transformations_all: Позволяване на всякакви трансформации
     transformations_none: Забраняват се трансформациите
     transformations_presets: Ограничаване само до заготовките по-долу
+  directus_shares:
+    name: Име
+    role: Роля
+    password: Парола
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -1222,7 +1226,6 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
