@@ -198,6 +198,10 @@ fields:
     role: Ρόλος
   directus_settings:
     project_name: Όνομα Έργου
+  directus_shares:
+    name: Όνομα
+    role: Ρόλος
+    password: Κωδικός
   directus_fields:
     note: Σημείωση
     hidden: Κρυφό
