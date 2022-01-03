@@ -964,6 +964,7 @@ fields:
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
+    project_descriptor: Описание на проекта
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
@@ -987,6 +988,10 @@ fields:
     name: Име
     role: Роля
     password: Парола
+    date_start: Начална дата
+    date_end: Крайна дата
+    max_uses: Максимален брой ползвания
+    times_used: Брой ползвания
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -1151,8 +1156,8 @@ share_access_page: Достъп до споделена страница
 share_access_not_found: Споделената страница не съществува или квотата за използване от потребители вече е просрочена.
 share_access_not_found_desc: Свържете се с оторизиран потребител от проекта за да получите достъп.
 share_access_not_found_title: Непозната споделена страница
-share_copy_link: Копиране на връзка
-share_send_link: Изпращане на връзка
+share_copy_link: Копиране на връзката
+share_send_link: Изпращане на връзката
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
 referential_action_field_label_o2m: При размаркиране от {collection}...
@@ -1226,6 +1231,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
