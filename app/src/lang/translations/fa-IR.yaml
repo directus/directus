@@ -1,5 +1,27 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: شناسه
 avatar: آواتار
+application: برنامه
 default_provider: پیش‌فرض
 published: منتشر شد
 draft: پیش‌نویس
@@ -10,6 +32,7 @@ tile_size: اندازه آجر
 edit_field: ویرایش فیلد
 conditions: مزایای همکاری
 maps: نقشه ها
+switch_user: تغییر کاربر
 item_creation: ایجاد مورد
 item_revision: مشاهده ویرایش ها
 enter_a_name: یک نام وارد کنید
@@ -31,7 +54,9 @@ edit_collection: ویرایش مجموعه
 exclusive: انحصاری
 children: همراه با کودک
 db_only_click_to_configure: 'فقط پایگاه داده: برای پیکربندی کلیک کنید'
+show_active_items: نمایش آیتم های فعال
 show_archived_items: نشان دادن یادداشت‌های بایگانی شده
+show_all_items: نمایش تمامی موارد
 edited: ارزش ویرایش شد
 required: الزامی
 required_for_app_access: برای دسترسی به برنامه مورد نیاز است
@@ -45,6 +70,8 @@ create_webhook: به روزرسانی webhook
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: این آدرس ایمیل قبلا دعوت شده است
+subject: موضوع
+inbox: پیغام‌های دریافتی
 emails: پست الکترونیکی
 connection_excellent: اتصال عالی
 connection_good: اتصال خوب
@@ -66,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: نشست به پایان رسیده
 public_label: عمومی
 public_description: داده API موجود را بدون احراز هویت کنترل می‌کند.
+admin_description: نقش مدیریتی اولیه با سطح دسترسی بدون محدودیت به برنامه و API
 not_allowed: مجاز نیست
 directus_version: نسخه دایرکتوس
 node_version: نسخه نود
@@ -127,6 +155,9 @@ item_permissions: مجوزهای مورد
 field_permissions: مجوزهای مورد
 field_validation: اعتبار سنجی فیلد
 field_presets: ایستگاه از پیش تنظیم شده
+permissions_for_role: 'مواردی که نقش {role} میتواند {action}'
+fields_for_role: 'فیلدهایی که نقش {role} میتواند {action}'
+validation_for_role: 'قوانین {action} مربوط به فیلد که نقش {role} باید رعایت کند.'
 presentation_and_aliases: ارائه و نام مستعار
 revision_post_update: در اینجا این مورد پس از بروزرسانی چگونه بود.
 changes_made: در زیر تغییرات خاصی است که در این تجدید نظر ایجاد شده است.
