@@ -795,6 +795,10 @@ fields:
     auth_login_attempts: Intents d'autenticació
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
+  directus_shares:
+    name: Nom
+    role: Rol
+    password: Contrasenya
   directus_fields:
     collection: Nom de la col·lecció
     icon: Icona de la col·lecció
