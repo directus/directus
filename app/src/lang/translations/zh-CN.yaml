@@ -908,6 +908,10 @@ fields:
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
     module_bar: 模块栏
+  directus_shares:
+    name: 名称
+    role: 角色
+    password: 密码
   directus_fields:
     collection: 模型名称
     icon: 图标
