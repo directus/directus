@@ -56,6 +56,9 @@ fields:
     tfa_secret: ორფაქტორიანი იდენტიფიკაცია
     status: სტატუსი
     role: როლი
+  directus_shares:
+    role: როლი
+    password: პაროლი
   directus_roles:
     description: აღწერა
   directus_webhooks:
