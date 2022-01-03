@@ -1,6 +1,8 @@
 <template>
 	<public-view>
-		<h1 class="type-title">{{ t('tfa_setup') }}</h1>
+		<div class="header">
+			<h1 class="type-title">{{ t('tfa_setup') }}</h1>
+		</div>
 
 		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generateTFA">
 			<div class="title">
@@ -99,5 +101,19 @@ h1 {
 .title {
 	margin-bottom: 10px;
 	font-weight: 600;
+}
+
+.qr {
+	display: block;
+	margin: 0 auto;
+}
+
+.secret {
+	display: block;
+	margin: 0 auto 16px;
+	color: var(--foreground-subdued);
+	font-family: var(--family-monospace);
+	letter-spacing: 2.6px;
+	text-align: center;
 }
 </style>
