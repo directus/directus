@@ -983,6 +983,10 @@ fields:
     transformations_all: Permetti tutte le trasformazioni
     transformations_none: Disabilita le trasformazioni
     transformations_presets: Limita le trasformazioni ai preset preimpostati
+  directus_shares:
+    name: Nome
+    role: Ruolo
+    password: Password
   directus_fields:
     collection: Nome della Raccolta
     icon: Icona Raccolta
@@ -1222,7 +1226,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
