@@ -15,20 +15,27 @@
 		:is="`${type}-options-${extensionInfo.id}`"
 		v-else
 		:value="options"
-		:collection="collection"
-		:field="field"
+		:collection="context.collection"
+		:field="context.field"
 		@input="options = $event"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, Ref } from 'vue';
 import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
-import { useFieldDetailStore } from '../store/';
 import { get } from 'lodash';
-import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+import { DeepPartial, ExtensionOptionsContext, Field, Relation } from '@directus/shared/types';
+
+interface Context {
+	fieldDetail: ExtensionOptionsContext;
+	field: DeepPartial<Field>;
+	collection: Ref<string | undefined>;
+	relations: DeepPartial<Relation>;
+	fields: DeepPartial<Field>[];
+}
 
 export default defineComponent({
 	props: {
@@ -44,13 +51,13 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		context: {
+			type: Object as PropType<Context>,
+			required: true,
+		},
 	},
 	setup(props) {
-		const fieldDetail = useFieldDetailStore();
-
 		const { t } = useI18n();
-
-		const { collection, field, relations, fields, collections } = storeToRefs(fieldDetail);
 
 		const extensionInfo = computed(() => {
 			switch (props.type) {
@@ -77,7 +84,7 @@ export default defineComponent({
 			let optionsObjectOrArray;
 
 			if (typeof extensionInfo.value.options === 'function') {
-				optionsObjectOrArray = extensionInfo.value.options(fieldDetail);
+				optionsObjectOrArray = extensionInfo.value.options(props.context.fieldDetail);
 			} else {
 				optionsObjectOrArray = extensionInfo.value.options;
 			}
@@ -94,12 +101,12 @@ export default defineComponent({
 		const options = computed({
 			get() {
 				const path = props.type === 'interface' ? 'field.meta.options' : 'field.meta.display_options';
-				return get(fieldDetail, path);
+				return get(props.context.fieldDetail, path);
 			},
 			set(val: any) {
 				const key = props.type === 'interface' ? 'options' : 'display_options';
 
-				fieldDetail.$patch((state) => {
+				props.context.fieldDetail.$patch((state) => {
 					state.field.meta = {
 						...state.field.meta,
 						[key]: val,
@@ -113,11 +120,6 @@ export default defineComponent({
 			extensionInfo,
 			optionsFields,
 			options,
-			collection,
-			field,
-			relations,
-			fields,
-			collections,
 			t,
 		};
 	},
