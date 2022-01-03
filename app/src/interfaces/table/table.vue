@@ -209,11 +209,11 @@ export default defineComponent({
 		}
 
 		function checkDiscard() {
-			if (active.value !== null && !isEqual(edits.value, props.value[active.value])) {
-				confirmDiscard.value = true;
-			} else {
-				closeDrawer();
-			}
+			// if (active.value !== null && !isEqual(edits.value, props.value[active.value])) {
+			// 	confirmDiscard.value = true;
+			// } else {
+			closeDrawer();
+			// }
 		}
 
 		function discardAndLeave() {
