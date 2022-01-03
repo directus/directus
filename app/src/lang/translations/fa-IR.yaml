@@ -277,6 +277,8 @@ fields:
     language: زبان
   directus_settings:
     module_bar: ماژول
+  directus_shares:
+    name: نام
   directus_fields:
     note: شرح
     translation: ترجمه‌های نام فیلد

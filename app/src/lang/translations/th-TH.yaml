@@ -873,6 +873,10 @@ fields:
     files_and_thumbnails: ไฟล์ และ ที่เก็บ
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
+  directus_shares:
+    name: ชื่อ
+    role: บทบาท
+    password: รหัสผ่าน
   directus_fields:
     collection: ชื่อคอลเลกชัน
     icon: ไอคอนของคอลเลกชัน

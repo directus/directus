@@ -909,6 +909,10 @@ fields:
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
     module_bar: Modulsáv
+  directus_shares:
+    name: Név
+    role: Szerepkör
+    password: Jelszó
   directus_fields:
     collection: Gyűjtemény neve
     icon: Gyűjtemény ikonja

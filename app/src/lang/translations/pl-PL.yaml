@@ -983,6 +983,10 @@ fields:
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
+  directus_shares:
+    name: Nazwa
+    role: Rola
+    password: Hasło
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji

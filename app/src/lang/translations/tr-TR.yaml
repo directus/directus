@@ -775,6 +775,10 @@ fields:
     project_name: Proje Adı
     custom_css: Özel CSS
     module_bar: Kenar Çubuğu
+  directus_shares:
+    name: İsim
+    role: Rol
+    password: Şifre
   directus_fields:
     collection: Koleksiyon Adı
     icon: Koleksiyon İkonu

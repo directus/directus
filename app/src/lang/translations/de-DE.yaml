@@ -978,6 +978,10 @@ fields:
     transformations_all: Alle Transformationen erlauben
     transformations_none: Transformationen deaktivieren
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
+  directus_shares:
+    name: Name
+    role: Rolle
+    password: Passwort
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon

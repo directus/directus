@@ -122,6 +122,9 @@ fields:
     role: Rol
   directus_settings:
     module_bar: Modulebalk
+  directus_shares:
+    role: Rol
+    password: Wagwoord
   directus_fields:
     display_template: Modelvorm
   directus_roles:
