@@ -962,6 +962,10 @@ fields:
     transformations_all: Дозволити всі трансформації
     transformations_none: Вимкнути трансформації
     transformations_presets: Обмежити перетворення до передустановок нижче
+  directus_shares:
+    name: Назва
+    role: Роль
+    password: Пароль
   directus_fields:
     collection: Назва колекції
     icon: Іконка колекції
