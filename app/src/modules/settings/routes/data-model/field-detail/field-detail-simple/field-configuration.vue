@@ -43,7 +43,7 @@
 				<v-divider inline />
 			</template>
 
-			<extension-options type="interface" :extension="chosenInterface" :context="context" />
+			<extension-options type="interface" :extension="chosenInterface" :context="context" @field-values="setOptions" />
 
 			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
 				{{ t('save') }}
@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch } from 'vue';
+import { defineComponent, computed, watch, ref } from 'vue';
 import { getInterface, getInterfaces } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
@@ -82,8 +82,7 @@ export default defineComponent({
 	setup(props) {
 		const fieldDetail = useFieldDetailStore();
 
-		const { readyToSave, saving, localType, collection, field, relations, fields, collections } =
-			storeToRefs(fieldDetail);
+		const { readyToSave, saving, localType, field, relations, fields, collections } = storeToRefs(fieldDetail);
 
 		const { t } = useI18n();
 
@@ -128,6 +127,7 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
+		const options = ref({});
 
 		return {
 			key,
@@ -138,13 +138,18 @@ export default defineComponent({
 			context,
 			defaultValue,
 			required,
+			options,
 			note,
 			interfaceIdsWithHiddenLabel,
 			readyToSave,
 			saving,
 			localType,
-			collection,
+			setOptions,
 		};
+
+		function setOptions(newOptions) {
+			options.value = newOptions;
+		}
 	},
 });
 </script>

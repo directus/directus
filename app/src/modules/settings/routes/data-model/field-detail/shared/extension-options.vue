@@ -9,6 +9,7 @@
 		class="extension-options"
 		:fields="optionsFields"
 		primary-key="+"
+		@update:model-value="$emit('field-values', options)"
 	/>
 
 	<component
@@ -17,7 +18,7 @@
 		:value="options"
 		:collection="context.collection"
 		:field="context.field"
-		@input="options = $event"
+		@update:model-value="$emit('field-values', options)"
 	/>
 </template>
 
@@ -56,6 +57,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['field-values'],
 	setup(props) {
 		const { t } = useI18n();
 
@@ -97,13 +99,15 @@ export default defineComponent({
 
 			return optionsObjectOrArray.standard;
 		});
-
+		// get rid of options, pass options from above.
 		const options = computed({
 			get() {
+				// instead of getting pass from above
 				const path = props.type === 'interface' ? 'field.meta.options' : 'field.meta.display_options';
 				return get(props.context.fieldDetail, path);
 			},
 			set(val: any) {
+				// instead of setting to fieldDetail, set to 2 way binding var passed from above
 				const key = props.type === 'interface' ? 'options' : 'display_options';
 
 				props.context.fieldDetail.$patch((state) => {
@@ -118,8 +122,8 @@ export default defineComponent({
 		return {
 			usesCustomComponent,
 			extensionInfo,
-			optionsFields,
 			options,
+			optionsFields,
 			t,
 		};
 	},
