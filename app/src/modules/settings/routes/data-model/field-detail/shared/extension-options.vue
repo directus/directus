@@ -23,18 +23,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, Ref } from 'vue';
+import { defineComponent, PropType, computed, Ref, ref } from 'vue';
 import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
-import { get } from 'lodash';
 import { useI18n } from 'vue-i18n';
-import { DeepPartial, ExtensionOptionsContext, Field, Relation } from '@directus/shared/types';
+import { DeepPartial, ExtensionOptionsContext, Field } from '@directus/shared/types';
 
 interface Context {
 	fieldDetail: ExtensionOptionsContext;
 	field: DeepPartial<Field>;
-	collection: Ref<string | undefined>;
-	relations: DeepPartial<Relation>;
+	collection?: Ref<string | undefined>;
 	fields: DeepPartial<Field>[];
 }
 
@@ -99,22 +97,8 @@ export default defineComponent({
 
 			return optionsObjectOrArray.standard;
 		});
-		const options = computed({
-			get() {
-				const path = props.type === 'interface' ? 'field.meta.options' : 'field.meta.display_options';
-				return get(props.context.fieldDetail, path);
-			},
-			set(val: any) {
-				const key = props.type === 'interface' ? 'options' : 'display_options';
 
-				props.context.fieldDetail.$patch((state) => {
-					state.field.meta = {
-						...state.field.meta,
-						[key]: val,
-					};
-				});
-			},
-		});
+		const options = ref({});
 
 		return {
 			usesCustomComponent,

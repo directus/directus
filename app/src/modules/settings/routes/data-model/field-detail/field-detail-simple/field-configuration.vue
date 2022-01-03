@@ -148,7 +148,12 @@ export default defineComponent({
 		};
 
 		function setOptions(newOptions: Record<string, any>) {
-			options.value = newOptions;
+			fieldDetail.$patch((state) => {
+				state.field.meta = {
+					...state.field.meta,
+					options: newOptions,
+				};
+			});
 		}
 	},
 });
