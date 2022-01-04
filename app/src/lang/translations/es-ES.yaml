@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identificador
 avatar: Avatar
+application: Aplicación
 default_provider: Por defecto
 published: Publicado
 draft: Borrador
@@ -31,6 +32,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
 maps: Mapas
+switch_user: Cambiar de usuario
 item_creation: Creación de artículos
 item_revision: Revisión de Elemento
 enter_a_name: Introduce un Nombre...
@@ -1032,6 +1034,8 @@ field_options:
     collection_name: Nombre de Colección
     archive_divider: Archivar
     sort_divider: Ordenar
+    accountability_divider: Responsabilidad
+    duplication_divider: Duplicación
   directus_roles:
     description: Una descripción de este rol...
     fields:
