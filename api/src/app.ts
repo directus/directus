@@ -100,6 +100,11 @@ export default async function createApp(): Promise<express.Application> {
 					directives: {
 						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
 						scriptSrc: ["'self'", "'unsafe-eval'"],
+
+						// Even though this is recommended to have enabled, it breaks most local
+						// installations. Making this opt-in rather than opt-out is a little more
+						// friendly. Ref #10806
+						upgradeInsecureRequests: null,
 					},
 				},
 				getConfigFromEnv('CONTENT_SECURITY_POLICY_')
