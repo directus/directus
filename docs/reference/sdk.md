@@ -595,20 +595,18 @@ const directus = new Directus('http://localhost:8055', {
 	},
 });
 
-(async function () {
-	// await directus.auth.login({ email, password }) // If you want to use email and password. You should remove the staticToken above
+// await directus.auth.login({ email, password }) // If you want to use email and password. You should remove the staticToken above
 
-	const form = document.querySelector('#upload-file');
+const form = document.querySelector('#upload-file');
 
-	if (form && form instanceof HTMLFormElement) {
-		form.addEventListener('submit', async (event) => {
-			event.preventDefault();
+if (form && form instanceof HTMLFormElement) {
+	form.addEventListener('submit', async (event) => {
+		event.preventDefault();
 
-			const form = new FormData(event.target);
-			await directus.files.createOne(form);
-		});
-	}
-})();
+		const form = new FormData(event.target);
+		await directus.files.createOne(form);
+	});
+}
 ```
 
 ```html

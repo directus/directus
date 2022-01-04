@@ -34,10 +34,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useServerStore } from '@/stores';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
 	name: 'SharedView',
@@ -58,9 +59,15 @@ export default defineComponent({
 
 		const { t } = useI18n();
 
+		const logoURL = computed<string | null>(() => {
+			if (!serverStore.info?.project?.project_logo) return null;
+			return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
+		});
+
 		return {
 			serverInfo: info,
 			t,
+			logoURL,
 		};
 	},
 });
