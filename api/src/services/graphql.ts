@@ -80,6 +80,8 @@ import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 import { generateHash } from '../utils/generate-hash';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import { FlowsService } from './flows';
+import { OperationsService } from './operations';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -1551,6 +1553,10 @@ export class GraphQLService {
 				return new WebhooksService(opts);
 			case 'directus_shares':
 				return new SharesService(opts);
+			case 'directus_flows':
+				return new FlowsService(opts);
+			case 'directus_operations':
+				return new OperationsService(opts);
 			default:
 				return new ItemsService(collection, opts);
 		}

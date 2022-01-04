@@ -1,0 +1,11 @@
+table: directus_operations
+
+fields:
+  - field: id
+    special: uuid
+  - field: flow
+  - field: type
+  - field: options
+    special: json
+  - field: next
+  - field: reject

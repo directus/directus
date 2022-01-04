@@ -1,0 +1,14 @@
+table: directus_flows
+
+fields:
+  - field: id
+    special: uuid
+  - field: name
+  - field: icon
+  - field: note
+  - field: status
+  - field: trigger
+  - field: options
+    special: json
+  - field: operations
+    special: o2m
