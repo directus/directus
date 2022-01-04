@@ -14,9 +14,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
-	migrationFiles = migrationFiles.filter(
-		(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
-	);
+	migrationFiles = migrationFiles.filter((file: string) => file.startsWith('run') === false && file.endsWith('.js'));
 	customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
@@ -24,9 +22,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const migrations = [
 		...migrationFiles.map((path) => parseFilePath(path)),
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
-	]
-		.sort((a, b) => (a.version > b.version ? 1 : -1))
-		.filter((m) => m.file.endsWith('.js'));
+	].sort((a, b) => (a.version > b.version ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
 	if (migrations.length > migrationKeys.size) {
