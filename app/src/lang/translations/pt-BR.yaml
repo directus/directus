@@ -94,7 +94,7 @@ public_description: Controla quais dados da API estão disponíveis sem autentic
 not_allowed: Não permitido
 directus_version: Versão do Directus
 node_version: Versão Node
-node_uptime: Node Uptime
+node_uptime: Tempo de atividade do Node
 os_type: Tipo de SO
 os_version: Versão do SO
 os_uptime: Tempo de atividade do SO
@@ -907,6 +907,7 @@ fields:
     mapbox_key: Token de Acesso Mapbox
     additional_transforms: Transformações Adicionais
     project_name: Nome do projeto
+    project_descriptor: Descrição do projeto
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
@@ -962,6 +963,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
     project_logo_note: 40x40 SVG/PNG (Branco)
+    public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
     auth_password_policy:
       none_text: Nenhum – Não Recomendado
