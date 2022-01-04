@@ -43,7 +43,12 @@
 				<v-divider inline />
 			</template>
 
-			<extension-options type="interface" :extension="chosenInterface" :context="context" @field-values="setOptions" />
+			<extension-options
+				type="interface"
+				:extension="chosenInterface"
+				:options="optionsFields"
+				@field-values="setOptions"
+			/>
 
 			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
 				{{ t('save') }}
@@ -82,7 +87,7 @@ export default defineComponent({
 	setup(props) {
 		const fieldDetail = useFieldDetailStore();
 
-		const { readyToSave, saving, localType, field, relations, fields, collections } = storeToRefs(fieldDetail);
+		const { readyToSave, saving, localType } = storeToRefs(fieldDetail);
 
 		const { t } = useI18n();
 
@@ -115,11 +120,7 @@ export default defineComponent({
 			return getInterface(props.chosenInterface);
 		});
 
-		const context = {
-			field,
-			collections,
-			optionsFields: extensionInfo.value?.options(fieldDetail),
-		};
+		const optionsFields = extensionInfo.value?.options(fieldDetail);
 		watch(
 			chosenInterface,
 			(newVal, oldVal) => {
@@ -136,7 +137,6 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
-		const options = ref({});
 
 		return {
 			key,
@@ -144,16 +144,15 @@ export default defineComponent({
 			type,
 			typeDisabled,
 			typeOptions,
-			context,
 			defaultValue,
 			required,
-			options,
 			note,
 			interfaceIdsWithHiddenLabel,
 			readyToSave,
 			saving,
 			localType,
 			setOptions,
+			optionsFields,
 		};
 
 		function setOptions(newOptions: Record<string, any>) {

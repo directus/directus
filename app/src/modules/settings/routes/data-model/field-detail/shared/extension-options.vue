@@ -5,36 +5,29 @@
 
 	<v-form
 		v-else-if="usesCustomComponent === false"
-		v-model="options"
+		v-model="optionsValues"
 		class="extension-options"
 		:fields="optionsFields"
 		primary-key="+"
-		@update:model-value="$emit('field-values', options)"
+		@update:model-value="$emit('field-values', optionsValues)"
 	/>
 
 	<component
 		:is="`${type}-options-${extensionInfo.id}`"
 		v-else
-		:value="options"
-		:collection="context.collection"
-		:field="context.field"
-		@update:model-value="$emit('field-values', options)"
+		:value="optionsValues"
+		:collection="collection"
+		:field="field"
+		@update:model-value="$emit('field-values', optionsValues)"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, Ref, ref } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
 import { useI18n } from 'vue-i18n';
-import { DeepPartial, Field } from '@directus/shared/types';
-
-interface Context {
-	// change the any to an object of fields standard advanced
-	optionsFields?: any;
-	field?: DeepPartial<Field>;
-	collection?: Ref<string | undefined>;
-}
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -50,9 +43,19 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		context: {
-			type: Object as PropType<Context>,
+		options: {
+			type: Object,
 			required: true,
+		},
+		collection: {
+			type: String,
+			default: '',
+		},
+		field: {
+			type: Object as PropType<Field>,
+			default: () => {
+				return {};
+			},
 		},
 	},
 	emits: ['field-values'],
@@ -76,7 +79,6 @@ export default defineComponent({
 			return extensionInfo.value.options && 'render' in extensionInfo.value.options;
 		});
 
-		// rename optionsFields to prevent confusion with props.context.optionsFields
 		const optionsFields = computed(() => {
 			if (!extensionInfo.value) return [];
 			if (!extensionInfo.value.options) return [];
@@ -84,8 +86,8 @@ export default defineComponent({
 
 			let optionsObjectOrArray;
 
-			if (props.context.optionsFields) {
-				optionsObjectOrArray = props.context.optionsFields;
+			if (props.options) {
+				optionsObjectOrArray = props.options;
 			} else {
 				optionsObjectOrArray = extensionInfo.value.options;
 			}
@@ -99,12 +101,12 @@ export default defineComponent({
 			return optionsObjectOrArray.standard;
 		});
 
-		const options = ref({});
+		const optionsValues = ref({});
 
 		return {
 			usesCustomComponent,
 			extensionInfo,
-			options,
+			optionsValues,
 			optionsFields,
 			t,
 		};
