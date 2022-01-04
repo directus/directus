@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { getInterface, getInterfaces } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
