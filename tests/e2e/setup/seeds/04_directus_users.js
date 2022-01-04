@@ -18,5 +18,12 @@ exports.seed = async function (knex) {
 			role: '214faee7-d6a6-4a4c-b1cd-f9e9bd0b6fb7',
 			token: 'UserToken',
 		},
+		{
+			id: 'cb8cd13b-037f-40ca-862a-ea1e1f4bfca3',
+			email: 'test@noroleuser.com',
+			password: await generateHash.hash('TestNoRoleUserPassword'),
+			status: 'active',
+			token: 'NoRoleUserToken',
+		},
 	]);
 };
