@@ -25,6 +25,16 @@
 			@cancel="checkDiscard()"
 		>
 			<template #actions>
+				<v-button
+					v-tooltip.bottom="t('delete_field')"
+					:disabled="isNewItem"
+					icon
+					rounded
+					kind="danger"
+					@click="removeItem(active)"
+				>
+					<v-icon name="delete" />
+				</v-button>
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="saveItem(active)">
 					<v-icon name="check" />
 				</v-button>
@@ -59,7 +69,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, toRefs, ref } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@directus/shared/types';
 import { i18n } from '@/lang';
 import { isEqual } from 'lodash';
@@ -105,7 +115,6 @@ export default defineComponent({
 		const confirmDiscard = ref(false);
 		const active = ref<number | null>(null);
 		const drawerOpen = computed(() => active.value !== null);
-		const { value } = toRefs(props);
 
 		const headers = (props.fields || []).map((field) => ({
 			value: field.field,
@@ -240,12 +249,13 @@ export default defineComponent({
 			);
 		}
 
-		function removeItem(item: Record<string, any>) {
-			if (value.value) {
-				emitValue(props.value.filter((i) => i !== item));
+		function removeItem(active: number) {
+			if (edits.value) {
+				emitValue(props.value.filter((item, index) => index !== active));
 			} else {
 				emitValue(null);
 			}
+			closeDrawer();
 		}
 
 		function addNew() {

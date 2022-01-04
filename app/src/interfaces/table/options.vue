@@ -21,6 +21,10 @@
 			/>
 		</div>
 		<div class="grid-element full">
+			<p class="type-label">{{ t('interfaces.table.add_limit') }}</p>
+			<v-input v-model="limit" class="input" />
+		</div>
+		<div class="grid-element full">
 			<p class="type-label">{{ t('interfaces.table.edit_columns') }}</p>
 			<repeater
 				:value="columnsValue"
@@ -184,7 +188,19 @@ export default defineComponent({
 			},
 		});
 
-		return { t, columnsValue, columnsFields, tableSpacing };
+		const limit = computed({
+			get() {
+				return props.value?.limit;
+			},
+			set(newValue: string) {
+				emit('input', {
+					...(props.value || {}),
+					limit: newValue,
+				});
+			},
+		});
+
+		return { t, columnsValue, columnsFields, tableSpacing, limit };
 	},
 });
 </script>
