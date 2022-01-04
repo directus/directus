@@ -189,11 +189,18 @@ export default defineComponent({
 			discardAndLeave,
 		};
 
+		function getItemIndex(item) {
+			for (let i = 0; i < props.value.length; i++) {
+				if (isEqual(item, props.value[i])) return i;
+			}
+			return -1;
+		}
+
 		function rowClick(row) {
 			isNewItem.value = false;
 
 			edits.value = { ...row.item };
-			active.value = row.item.index;
+			active.value = getItemIndex(row.item);
 		}
 
 		function saveItem(index: number) {
@@ -209,11 +216,11 @@ export default defineComponent({
 		}
 
 		function checkDiscard() {
-			// if (active.value !== null && !isEqual(edits.value, props.value[active.value])) {
-			// 	confirmDiscard.value = true;
-			// } else {
-			closeDrawer();
-			// }
+			if (active.value !== null && !isEqual(edits.value, props.value[active.value])) {
+				confirmDiscard.value = true;
+			} else {
+				closeDrawer();
+			}
 		}
 
 		function discardAndLeave() {
