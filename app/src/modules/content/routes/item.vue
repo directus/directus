@@ -120,6 +120,10 @@
 				</v-card>
 			</v-dialog>
 
+			<v-button v-tooltip.bottom="t('refresh')" rounded icon outlined kind="normal" :loading="loading" @click="refresh">
+				<v-icon name="refresh" />
+			</v-button>
+
 			<v-button
 				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded

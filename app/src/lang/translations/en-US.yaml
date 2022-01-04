@@ -236,6 +236,7 @@ geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
+refresh: Refresh
 auto_refresh: Auto Refresh
 refresh_interval: Refresh Interval
 no_refresh: Do not refresh
