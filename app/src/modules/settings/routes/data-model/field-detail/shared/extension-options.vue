@@ -32,9 +32,8 @@ import { DeepPartial, Field } from '@directus/shared/types';
 interface Context {
 	// change the any to an object of fields standard advanced
 	optionsFields?: any;
-	field: DeepPartial<Field>;
+	field?: DeepPartial<Field>;
 	collection?: Ref<string | undefined>;
-	fields: DeepPartial<Field>[];
 }
 
 export default defineComponent({

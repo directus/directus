@@ -117,10 +117,7 @@ export default defineComponent({
 
 		const context = {
 			field,
-			relations,
-			fields,
 			collections,
-			fieldDetail,
 			optionsFields: extensionInfo.value?.options(fieldDetail),
 		};
 		watch(
