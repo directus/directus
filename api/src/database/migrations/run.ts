@@ -24,7 +24,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const migrations = [
 		...migrationFiles.map((path) => parseFilePath(path)),
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
-	].sort((a, b) => (a.version > b.version ? 1 : -1));
+	]
+		.sort((a, b) => (a.version > b.version ? 1 : -1))
+		.filter((m) => m.file.endsWith('.js'));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
 	if (migrations.length > migrationKeys.size) {
