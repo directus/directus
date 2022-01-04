@@ -14,7 +14,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
-	migrationFiles = migrationFiles.filter((file: string) => file.startsWith('run') === false && file.endsWith('.js'));
+	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
 	customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
