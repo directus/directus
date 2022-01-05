@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Profilbilde
+application: Applikasjon
 default_provider: Standard
 published: Publisert
 draft: Utkast
@@ -30,6 +31,7 @@ module_bar: Modul Bar
 edit_field: Rediger felt
 conditions: Betingelser
 maps: Kart
+switch_user: Bytt bruker
 item_creation: Objekt opprettelse
 item_revision: Element revisjoner
 enter_a_name: Angi et navn...
@@ -361,8 +363,11 @@ save_and_stay: Lagre og fortsett
 save_as_copy: Lagre som kopi
 add_existing: Legge til eksisterende
 creating_items: Oppretter elementer
+selecting_items: Velg elementer
 comments: Kommentarer
+select_item: Velg element
 no_items: Ingen elementer
+search_items: Søk etter elementer...
 disabled: Deaktivert
 information: Informasjon
 request_feature: Foreslå ny funksjon
@@ -501,6 +506,7 @@ delete_collection_are_you_sure: >-
   Er du sikker på at du vil slette denne samlingen? Dette vil slette samlingen og alle elementene i den. Denne handlingen er permanent.
 collections_shown: Samlinger vises
 visible_collections: Synlige samlinger
+empty_item: Tomt element
 operators:
   lt: Mindre enn
   gt: Større enn
@@ -510,7 +516,10 @@ operators:
   ncontains: Inneholder ikke
   empty: Er tom
 loading: Laster...
+item: Element
+items: Elementer
 value_unique: Verdien må være unik
+create_item: Opprette element
 no_results: Ingen treff
 create: Opprett
 on_update: Ved oppdatering
