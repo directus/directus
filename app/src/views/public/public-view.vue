@@ -23,12 +23,7 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<v-image
-					v-if="foregroundURL"
-					class="foreground"
-					:src="foregroundURL"
-					:alt="branding?.project_name"
-				/>
+				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="branding?.project_name" />
 			</transition>
 			<div class="note-container">
 				<div v-if="branding?.public_note" v-md="branding.public_note" class="note" />
