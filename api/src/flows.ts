@@ -1,7 +1,11 @@
 import { schedule, ScheduledTask, validate } from 'node-cron';
+import { omit } from 'lodash';
+import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
+import { FlowsService } from './services';
 import { ActionHandler, FilterHandler, InitHandler } from './types';
+import { getSchema } from './utils/get-schema';
 
 let flowManager: FlowManager | undefined;
 
@@ -14,55 +18,6 @@ export function getFlowManager(): FlowManager {
 
 	return flowManager;
 }
-
-const flows: Flow[] = [
-	{
-		name: 'test-action',
-		status: 'active',
-		trigger: 'action',
-		options: {
-			event: 'items.create',
-		},
-		operation: {
-			type: 'debug',
-			options: {
-				message: 'Hello',
-			},
-			next: {
-				type: 'debug',
-				options: {
-					message: 'World',
-				},
-				next: null,
-				reject: null,
-			},
-			reject: null,
-		},
-	},
-	{
-		name: 'test-schedule',
-		status: 'active',
-		trigger: 'schedule',
-		options: {
-			cron: '*/15 * * * * *',
-		},
-		operation: {
-			type: 'debug',
-			options: {
-				message: 'Surprise',
-			},
-			next: null,
-			reject: {
-				type: 'debug',
-				options: {
-					message: 'Oh no',
-				},
-				next: null,
-				reject: null,
-			},
-		},
-	},
-];
 
 type TriggerHandler =
 	| { type: 'filter'; event: string; handler: FilterHandler }
@@ -83,35 +38,39 @@ class FlowManager {
 	}
 
 	public async initialize(): Promise<void> {
-		for (const flow of flows) {
-			if (flow.status === 'active') {
-				if (flow.trigger === 'filter') {
-					const handler: FilterHandler = (payload, meta, context) =>
-						this.executeOperation(flow.operation, { payload, meta, context });
+		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
-					emitter.onFilter(flow.options.event, handler);
+		const flows = await flowsService.readByQuery({ filter: { status: { _eq: 'active' } }, fields: ['*.*'] });
 
-					this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
-				} else if (flow.trigger === 'action') {
-					const handler: ActionHandler = (meta, context) => this.executeOperation(flow.operation, { meta, context });
+		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
-					emitter.onAction(flow.options.event, handler);
+		for (const flow of flowTrees) {
+			if (flow.trigger === 'filter') {
+				const handler: FilterHandler = (payload, meta, context) =>
+					this.executeOperation(flow.operation, { payload, meta, context });
 
-					this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
-				} else if (flow.trigger === 'init') {
-					const handler: InitHandler = (meta) => this.executeOperation(flow.operation, { meta });
+				emitter.onFilter(flow.options.event, handler);
 
-					emitter.onInit(flow.options.event, handler);
+				this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
+			} else if (flow.trigger === 'action') {
+				const handler: ActionHandler = (meta, context) => this.executeOperation(flow.operation, { meta, context });
 
-					this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
-				} else if (flow.trigger === 'schedule') {
-					if (validate(flow.options.cron)) {
-						const task = schedule(flow.options.cron, () => this.executeOperation(flow.operation));
+				emitter.onAction(flow.options.event, handler);
 
-						this.triggerHandlers.push({ type: flow.trigger, task });
-					} else {
-						logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options.cron}`);
-					}
+				this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
+			} else if (flow.trigger === 'init') {
+				const handler: InitHandler = (meta) => this.executeOperation(flow.operation, { meta });
+
+				emitter.onInit(flow.options.event, handler);
+
+				this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
+			} else if (flow.trigger === 'schedule') {
+				if (validate(flow.options.cron)) {
+					const task = schedule(flow.options.cron, () => this.executeOperation(flow.operation));
+
+					this.triggerHandlers.push({ type: flow.trigger, task });
+				} else {
+					logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options.cron}`);
 				}
 			}
 		}
@@ -144,7 +103,7 @@ class FlowManager {
 		this.operations[id] = operation;
 	}
 
-	private async executeOperation(operation: FlowOperation | null, data: Record<string, any> = {}): Promise<any> {
+	private async executeOperation(operation: Operation | null, data: Record<string, any> = {}): Promise<any> {
 		if (operation !== null) {
 			if (operation.type in this.operations) {
 				const handler = this.operations[operation.type];
@@ -165,19 +124,64 @@ class FlowManager {
 	}
 }
 
+function constructFlowTree(flow: FlowRaw): Flow {
+	if (flow.operations.length === 0)
+		return {
+			...omit(flow, ['id', 'operations']),
+			operation: null,
+		};
+
+	const rootOperation = findRootOperation(flow.operations);
+	const operationTree = constructOperationTree(rootOperation, flow.operations);
+
+	const flowTree: Flow = {
+		...omit(flow, ['id', 'operations']),
+		operation: operationTree,
+	};
+
+	return flowTree;
+}
+
+function findRootOperation(operations: OperationRaw[]): OperationRaw {
+	for (const operation of operations) {
+		if (operations.every((other) => other.next !== operation.id && other.reject !== operation.id)) {
+			return operation;
+		}
+	}
+
+	throw new Error('Circular reference in operations!');
+}
+
+function constructOperationTree(root: OperationRaw, operations: OperationRaw[]): Operation {
+	const nextOperation = root.next !== null ? operations.find((operation) => operation.id === root.next) : null;
+	const rejectOperation = root.reject !== null ? operations.find((operation) => operation.id === root.reject) : null;
+
+	if (nextOperation === undefined || rejectOperation === undefined) {
+		throw new Error('Undefined reference in operations!');
+	}
+
+	const operationTree: Operation = {
+		...omit(root, ['id', 'flow']),
+		next: nextOperation !== null ? constructOperationTree(nextOperation, operations) : null,
+		reject: rejectOperation !== null ? constructOperationTree(rejectOperation, operations) : null,
+	};
+
+	return operationTree;
+}
+
 export type OperationHandler = (
 	data: Record<string, any>,
 	options: Record<string, any>
 ) => Record<string, any> | void | Promise<Record<string, any>> | Promise<void>;
 
-export interface OperationApp {
+export interface OperationAppConfig {
 	id: string;
 	name: string;
 
 	options: Record<string, any>;
 }
 
-export interface OperationApi {
+export interface OperationApiConfig {
 	id: string;
 
 	handler: OperationHandler;
@@ -187,30 +191,37 @@ type TriggerType = 'filter' | 'action' | 'init' | 'schedule';
 
 export interface Flow {
 	name: string;
+	icon: string;
+	note: string;
 	status: 'active' | 'inactive';
 	trigger: TriggerType;
 	options: Record<string, any>;
-	operation: FlowOperation;
+	operation: Operation | null;
 }
 
-export interface FlowOperation {
+export interface Operation {
 	type: string;
 	options: Record<string, any>;
-	next: FlowOperation | null;
-	reject: FlowOperation | null;
+	next: Operation | null;
+	reject: Operation | null;
 }
 
 export interface FlowRaw {
+	id: string;
 	name: string;
+	icon: string;
+	note: string;
 	status: 'active' | 'inactive';
 	trigger: TriggerType;
 	options: Record<string, any>;
-	operation: number;
+	operations: OperationRaw[];
 }
 
 export interface OperationRaw {
+	id: string;
+	flow: string;
 	type: string;
 	options: Record<string, any>;
-	next: number | null;
-	reject: number | null;
+	next: string | null;
+	reject: string | null;
 }
