@@ -964,6 +964,7 @@ fields:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
     project_name: Projekt-Name
+    project_descriptor: Projekt-Beschreiber
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
@@ -987,6 +988,10 @@ fields:
     name: Name
     role: Rolle
     password: Passwort
+    date_start: Anfangsdatum
+    date_end: Enddatum
+    max_uses: Max. Verwendungen
+    times_used: Anzahl der Nutzungen
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon
@@ -1132,6 +1137,27 @@ start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
+shares: Freigaben
+unlimited_usage: Unbegrenzte Nutzung
+uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
+no_shares: Keine Freigaben zum Anzeigen
+new_share: Neue Freigabe
+expired: Abgelaufen
+upcoming: Bevorstehend
+share: Teilen
+share_item: Element teilen
+shared_with_you: Ein Element wurde mit dir geteilt
+shared_enter_passcode: Kennwort eingeben um fortzufahren...
+shared_leave_blank_for_unlimited: Leer lassen für kein Limit
+shared_times_remaining: Dieser Link kann nur {n} mal verwendet werden
+shared_last_remaining: Dieser Link kann nur einmal verwendet werden
+shared_uses_left: Für zusätzliche Sicherheit wurde diese freigegebene Seite mit einer begrenzten Anzahl von Aufrufen konfiguriert. Derzeit sind noch {n} Aufrufe verbleiben, danach wird die Seite nicht mehr zugänglich sein.
+share_access_page: Auf gemeinsame Seite zugreifen
+share_access_not_found: Diese freigegebene Seite existiert entweder nicht oder hat bereits die maximale Anzahl an erlaubten Verwendungen überschritten.
+share_access_not_found_desc: Bitte kontaktieren Sie einen autorisierten Benutzer dieses Projekts, um Zugriff anzufordern.
+share_access_not_found_title: Unbekannte geteilte Seite
+share_copy_link: Link kopieren
+share_send_link: Link senden
 relational_triggers: Relationale Trigger
 referential_action_field_label_m2o: Beim Löschen von {collection}...
 referential_action_field_label_o2m: Beim Abwählen von {collection}...
@@ -1183,6 +1209,7 @@ relationship: Beziehung
 reset: Zurücksetzen
 reset_password: Passwort zurücksetzen
 revisions: Revisionen
+no_revisions: Noch keine Revision
 revert: Zurücksetzen
 save: Speichern
 schema: Schema
@@ -1204,6 +1231,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1270,6 +1298,7 @@ interfaces:
     description: Farbwert eingeben oder auswählen
     placeholder: Farbe wählen...
     preset_colors: Farben für Vorlage
+    opacity: Deckkraft
     preset_colors_add_label: Farbe hinzufügen...
     name_placeholder: Farbnamen eingeben...
   datetime:
@@ -1334,6 +1363,7 @@ interfaces:
   list-m2m:
     many-to-many: n:n
     description: Mehrere verwandte Elemente auswählen
+    display_template_configure_notice: Sie können die Anzeige-Vorlage nach dem Erstellen dieses Feldes konfigurieren.
   select-dropdown-m2o:
     many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
@@ -1582,6 +1612,7 @@ displays:
   related-values:
     related-values: Verwandte Werte
     description: Relative Werte anzeigen
+    display_template_configure_notice: Sie können die Anzeige-Vorlage nach dem Erstellen dieses Feldes konfigurieren.
   user:
     user: Benutzer
     description: Benutzer anzeigen
