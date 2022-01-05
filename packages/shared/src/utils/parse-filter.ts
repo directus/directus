@@ -56,7 +56,12 @@ function parseFilterValue(value: any, accountability: Accountability | null, con
 	if (value === 'false') return false;
 	if (value === 'null' || value === 'NULL') return null;
 	if (isDynamicVariable(value)) return parseDynamicVariable(value, accountability, context);
-	return JSON.parse(value);
+
+	try {
+		return JSON.parse(value);
+	} catch {
+		return value;
+	}
 }
 
 function parseDynamicVariable(value: any, accountability: Accountability | null, context: ParseFilterContext) {
