@@ -143,7 +143,7 @@ import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useLayout } from '@/composables/use-layout';
+import { useLayout } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { isEqual } from 'lodash';

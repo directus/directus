@@ -16,5 +16,6 @@ export {
 	useSync,
 	useCollection,
 	useItems,
+	useLayout,
 	useFilterFields,
 } from '@directus/shared/composables';
