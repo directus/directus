@@ -768,6 +768,10 @@ fields:
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
     custom_css: Aangepastte CSS
+  directus_shares:
+    name: Naam
+    role: Rol
+    password: Wachtwoord
   directus_fields:
     collection: Collectie naam
     icon: Collectie Icoon

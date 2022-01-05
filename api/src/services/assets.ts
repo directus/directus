@@ -44,10 +44,6 @@ export class AssetsService {
 
 		const systemPublicKeys = Object.values(publicSettings || {});
 
-		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
-			await this.authorizationService.checkAccess('read', 'directus_files', id);
-		}
-
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
@@ -56,6 +52,10 @@ export class AssetsService {
 		const isValidUUID = validateUUID(id, 4);
 
 		if (isValidUUID === false) throw new ForbiddenException();
+
+		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
+			await this.authorizationService.checkAccess('read', 'directus_files', id);
+		}
 
 		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
 

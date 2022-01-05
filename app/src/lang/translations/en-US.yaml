@@ -22,6 +22,7 @@
 
 identifier: Identifier
 avatar: Avatar
+application: Application
 default_provider: Default
 published: Published
 draft: Draft
@@ -976,6 +977,7 @@ fields:
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Additional Transformations
     project_name: Project Name
+    project_descriptor: Project Descriptor
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
@@ -995,6 +997,14 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
+  directus_shares:
+    name: Name
+    role: Role
+    password: Password
+    date_start: Date Start
+    date_end: Date End
+    max_uses: Max Uses
+    times_used: Times Used
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
@@ -1151,6 +1161,7 @@ share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_enter_passcode: Enter your passcode to continue...
+shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
 shared_last_remaining: This link can only be used once
 shared_uses_left: For added security, this shared page has been configured with a limited number of views. There are currently {n} views remaining, after which, the page will no longer be accessible.
@@ -1300,6 +1311,7 @@ interfaces:
     description: Enter or select a color value
     placeholder: Choose a color...
     preset_colors: Preset Colors
+    opacity: Opacity
     preset_colors_add_label: Add new color...
     name_placeholder: Enter color name...
   datetime:

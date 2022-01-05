@@ -777,6 +777,10 @@ fields:
     auth_password_policy: Salasõna reeglid
     auth_login_attempts: Sisselogimise katseid
     custom_css: Kohandatud CSS
+  directus_shares:
+    name: Nimi
+    role: Roll
+    password: Parool
   directus_fields:
     collection: Andmekogu nimetus
     icon: Andmekogu pilt

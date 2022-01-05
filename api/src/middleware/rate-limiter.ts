@@ -5,6 +5,7 @@ import env from '../env';
 import { HitRateLimitException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import asyncHandler from '../utils/async-handler';
+import { getIPFromReq } from '../utils/get-ip-from-req';
 import { validateEnv } from '../utils/validate-env';
 
 let checkRateLimit: RequestHandler = (req, res, next) => next();
@@ -17,7 +18,7 @@ if (env.RATE_LIMITER_ENABLED === true) {
 
 	checkRateLimit = asyncHandler(async (req, res, next) => {
 		try {
-			await rateLimiter.consume(req.ip, 1);
+			await rateLimiter.consume(getIPFromReq(req), 1);
 		} catch (rateLimiterRes: any) {
 			if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 

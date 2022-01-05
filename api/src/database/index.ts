@@ -92,6 +92,10 @@ export default function getDatabase(): Knex {
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
+	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
+		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
+	}
+
 	database = knex(knexConfig);
 
 	const times: Record<string, number> = {};

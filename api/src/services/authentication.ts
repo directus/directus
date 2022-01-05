@@ -74,7 +74,7 @@ export class AuthenticationService {
 				'u.auth_data'
 			)
 			.from('directus_users as u')
-			.innerJoin('directus_roles as r', 'u.role', 'r.id')
+			.leftJoin('directus_roles as r', 'u.role', 'r.id')
 			.where('u.id', await provider.getUserID(cloneDeep(payload)))
 			.andWhere('u.provider', providerName)
 			.first();

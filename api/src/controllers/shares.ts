@@ -139,7 +139,7 @@ router.get(
 						_or: [
 							{
 								date_start: {
-									_lte: '$NOW',
+									_lte: new Date().toISOString(),
 								},
 							},
 							{
@@ -153,7 +153,7 @@ router.get(
 						_or: [
 							{
 								date_end: {
-									_gte: '$NOW',
+									_gte: new Date().toISOString(),
 								},
 							},
 							{

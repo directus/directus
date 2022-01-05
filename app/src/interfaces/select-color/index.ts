@@ -13,6 +13,18 @@ export default defineInterface({
 	group: 'selection',
 	options: [
 		{
+			field: 'opacity',
+			name: '$t:interfaces.select-color.opacity',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
 			field: 'presets',
 			name: '$t:interfaces.select-color.preset_colors',
 			type: 'string',

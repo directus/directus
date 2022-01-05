@@ -2,7 +2,7 @@
 	<sidebar-detail
 		:title="t('revisions')"
 		icon="change_history"
-		:badge="!loading && revisions ? abbreviateNumber(revisionsCount) : null"
+		:badge="!loading && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 	>
 		<v-progress-linear v-if="loading" indeterminate />
 
