@@ -38,7 +38,7 @@
 		/>
 		<v-menu :show-arrow="true" placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
-				<v-icon class="preview" name="event" @click="toggle" />
+				<v-icon class="preview" name="event" small @click="toggle" />
 			</template>
 			<div class="date-input">
 				<v-date-picker :type="type" :model-value="value" @update:model-value="emitValue" />
