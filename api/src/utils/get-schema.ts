@@ -107,6 +107,7 @@ async function getDatabaseSchema(
 					scale: column.numeric_scale || null,
 					special: [],
 					note: null,
+					required: null,
 					alias: false,
 				};
 			}),
