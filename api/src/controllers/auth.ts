@@ -7,8 +7,14 @@ import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import { getAuthProviders } from '../utils/get-auth-providers';
 import logger from '../logger';
-import { createLocalAuthRouter, createOAuth2AuthRouter, createOpenIDAuthRouter } from '../auth/drivers';
+import {
+	createLocalAuthRouter,
+	createOAuth2AuthRouter,
+	createOpenIDAuthRouter,
+	createLDAPAuthRouter,
+} from '../auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import { getIPFromReq } from '../utils/get-ip-from-req';
 
 const router = Router();
 
@@ -29,6 +35,10 @@ for (const authProvider of authProviders) {
 		case 'openid':
 			authRouter = createOpenIDAuthRouter(authProvider.name);
 			break;
+
+		case 'ldap':
+			authRouter = createLDAPAuthRouter(authProvider.name);
+			break;
 	}
 
 	if (!authRouter) {
@@ -39,13 +49,15 @@ for (const authProvider of authProviders) {
 	router.use(`/login/${authProvider.name}`, authRouter);
 }
 
-router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
+if (!env.AUTH_DISABLE_DEFAULT) {
+	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
+}
 
 router.post(
 	'/refresh',
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
-			ip: req.ip,
+			ip: getIPFromReq(req),
 			userAgent: req.get('user-agent'),
 			role: null,
 		};
@@ -93,7 +105,7 @@ router.post(
 	'/logout',
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
-			ip: req.ip,
+			ip: getIPFromReq(req),
 			userAgent: req.get('user-agent'),
 			role: null,
 		};
@@ -133,7 +145,7 @@ router.post(
 		}
 
 		const accountability = {
-			ip: req.ip,
+			ip: getIPFromReq(req),
 			userAgent: req.get('user-agent'),
 			role: null,
 		};
@@ -167,7 +179,7 @@ router.post(
 		}
 
 		const accountability = {
-			ip: req.ip,
+			ip: getIPFromReq(req),
 			userAgent: req.get('user-agent'),
 			role: null,
 		};
@@ -182,7 +194,10 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		res.locals.payload = { data: getAuthProviders() };
+		res.locals.payload = {
+			data: getAuthProviders(),
+			disableDefault: env.AUTH_DISABLE_DEFAULT,
+		};
 		return next();
 	}),
 	respond

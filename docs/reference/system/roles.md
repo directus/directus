@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
-> platform. [Learn more about Roles](/concepts/roles/).
+> platform. [Learn more about Roles](/getting-started/glossary/#roles).
 
 </div>
 <div class="right">
@@ -44,9 +44,6 @@ CSV of IP addresses that have access to this role. Allows you to configure an al
 `enforce_tfa` **boolean**\
 Whether or not Two-Factor Authentication is required for users in this role.
 
-`collection_list` **object**\
-Override for the collection listing in the navigation of the collections module in the Admin App.
-
 `admin_access` **boolean**\
 If this role is considered an admin role. This means that users in this role have full permissions to everything.
 
@@ -54,7 +51,7 @@ If this role is considered an admin role. This means that users in this role hav
 Whether or not users in this role have access to use the Admin App.
 
 `users` **one-to-many**\
-The users in this role. One-to-many to [users](/reference/api/system/users/).
+The users in this role. One-to-many to [users](/reference/system/users/).
 
 </div>
 </div>
@@ -68,7 +65,6 @@ The users in this role. One-to-many to [users](/reference/api/system/users/).
 	"description": null,
 	"ip_access": null,
 	"enforce_tfa": false,
-	"collection_list": null,
 	"admin_access": true,
 	"app_access": true,
 	"users": ["0bc7b36a-9ba9-4ce0-83f0-0a526f354e07"]
@@ -89,11 +85,11 @@ List all roles that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [role objects](#the-role-object). If no items are available, data
+An array of up to [limit](/reference/query/#limit) [role objects](#the-role-object). If no items are available, data
 will be an empty array.
 
 </div>
@@ -106,7 +102,7 @@ GET /roles
 SEARCH /roles
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -148,7 +144,7 @@ List an existing role by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -209,7 +205,7 @@ Create a new role.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -284,7 +280,7 @@ Create multiple new roles.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -371,7 +367,7 @@ Update an existing role.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -440,7 +436,7 @@ Update multiple existing roles.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 

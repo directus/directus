@@ -10,6 +10,13 @@ If you have _any_ questions along your contributor journey, please feel free to 
 
 :::
 
+::: tip Technical Contributor Docs
+
+Technical documentation for contributing to the core codebase is located on the main `directus/directus`
+[GitHub repository's Wiki](https://github.com/directus/directus/wiki).
+
+:::
+
 ## Code of Conduct
 
 **The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md) is one of the ways
@@ -49,7 +56,7 @@ will not be merged.
 ## Feature Requests
 
 Feature requests are a great way to let our team know what should be prioritized next. You can
-[submit a new feature request](https://github.com/directus/directus/discussions/category_choices) or
+[submit a new feature request](https://github.com/directus/directus/discussions/new) or
 [vote on existing submissions](https://github.com/directus/directus/discussions) via GitHub Discussions.
 
 ::: warning The 80/20 Rule

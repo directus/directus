@@ -1,8 +1,8 @@
 # Users, Roles & Permissions
 
-> [Users](/getting-started/glossary#users) are the individual accounts for authenticating into the API and App. Each
-> user belongs to a [Role](/getting-started/glossary#roles) which defines its access
-> [Permissions](/getting-started/glossary#permissions).
+> [Users](/getting-started/glossary/#users) are the individual accounts for authenticating into the API and App. Each
+> user belongs to a [Role](/getting-started/glossary/#roles) which defines its access
+> [Permissions](/getting-started/glossary/#permissions).
 
 [[toc]]
 
@@ -27,7 +27,7 @@ their account.
 
 1. Navigate to the **User Library**
 2. **Click on the user** you wish to manage
-3. **Complete the form** of [User Fields](/concepts/application/#user-detail)
+3. **Complete the form** of [User Fields](/app/user-directory/#editing-a-user)
 
 The User Detail is only editable by the current user and admins, and the following fields are only available to admins:
 
@@ -39,7 +39,7 @@ The User Detail is only editable by the current user and admins, and the followi
   - **Suspended** — A user that has been temporarily disabled; no App/API access
   - **Archived** — A soft-deleted user; no App/API access
 - **Role** — The user's role determines their permissions and access
-- **Token** — A user's token is an alternate way to [authenticate into the API](/reference/api/authentication) using a
+- **Token** — A user's token is an alternate way to [authenticate into the API](/reference/authentication/) using a
   static string. When NULL, the token is disabled. When enabled, ensure that a secure string is used.
 
 ## Archiving a User
@@ -88,8 +88,6 @@ undone. Please proceed with caution.
 - **IP Access** — An allow-list of IP addresses from which the platform can be accessed, empty allows all
 - **Require 2FA** — Forces all users within this role to use two-factor authentication
 - **Users in Role** — A list of all users within this role
-- **Module Navigation** — Overrides the visible modules
-- **Collection Navigation** — Overrides the collection module's navigation
 
 ## Deleting a Role
 
@@ -100,8 +98,8 @@ undone. Please proceed with caution.
 ::: warning Users in a Deleted Role
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which denies their App access
-and limits them to the [Public Role](/concepts/roles/#public-role) permissions. They can then be reassigned to a new
-role by an admin.
+and limits them to the [Public Role](/configuration/users-roles-permissions/#configuring-public-permissions)
+permissions. They can then be reassigned to a new role by an admin.
 
 :::
 
@@ -154,7 +152,7 @@ continue with the appropriate guide below based on the relevant _action_.
 
 ### Read (Custom Access)
 
-5. **Item Permissions** control which items can be read, as defined by the [Filter Rules](/reference/filter-rules)
+5. **Item Permissions** control which items can be read, as defined by the [Filter Rules](/configuration/filter-rules)
    entered.
 6. **Field Permissions** control which fields can be read. Fields are individually toggled.
 
@@ -168,16 +166,16 @@ App's soft-delete and manual sorting features.
 
 ### Update (Custom Access)
 
-5. **Item Permissions** control which items can be updated, as defined by [Filter Rules](/reference/filter-rules).
+5. **Item Permissions** control which items can be updated, as defined by [Filter Rules](/configuration/filter-rules/).
 6. **Field Permissions** control which fields can be updated. Fields are individually toggled.
 7. **Field Validation** define the rules for field values on update, as defined by
-   [Filter Rules](/reference/filter-rules).
+   [Filter Rules](/configuration/filter-rules/).
 8. **Field Presets** control the field defaults when updating an item
 
 ### Delete (Custom Access)
 
-5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules/))
-   entered.
+5. **Item Permissions** control which items can be deleted, as defined by the
+   [Filter Rules](/configuration/filter-rules/) entered.
 
 ---
 
@@ -196,9 +194,9 @@ case-by-case basis by administrators.
 ### Configuring System Permissions
 
 In addition to permissions for _your_ custom collections, you can also customize the permissions for _system_
-collections. It is important to note that when [App Access](/guides/roles/#configuring-a-role) is enabled for a role,
-Directus will automatically add permission for the necessary system collections. To edit system permissions, simply
-click "System Collections" at the bottom of the permissions configuration.
+collections. It is important to note that when App Access is enabled for a role, Directus will automatically add
+permission for the necessary system collections. To edit system permissions, simply click "System Collections" at the
+bottom of the permissions configuration.
 
 There are two pre-configured options you can use for resetting the role's system permissions and ensure proper App
 access. To access these, click "System Collections" to expand, and then click one of the buttons at the bottom of the
@@ -213,8 +211,9 @@ Workflows are a way to add structured stages to the flow of content authoring. T
 permissions for a Collection, but can be further enhanced via email notifications, custom interfaces, and automation.
 Directus supports endlessly configurable workflows, so we will only cover one simple example below.
 
-1. To create a structured workflow for **Articles**, the first step is [Creating a Field](#) to track the article
-   "status" — we'll call it **Status**, but it can be named anything.
+1. To create a structured workflow for **Articles**, the first step is
+   [Creating a Field](/configuration/data-model/#creating-a-field) to track the article "status" — we'll call it
+   **Status**, but it can be named anything.
 2. Next, create different Roles for each stage of the workflow, such as `author` and `manager`.
 3. Finally, configure the Role permissions based on the possible values of that Status field, such as `draft`, `review`,
    `approved`, and `published`, so that they are properly restricted to create content and update the status.

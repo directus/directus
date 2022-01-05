@@ -32,6 +32,9 @@ Primary key of the setting.
 `project_name` **string**\
 Name of the project, shown in the Admin App.
 
+`project_descriptor` **string**\
+Descriptor of the project, shown in the Admin App.
+
 `project_url` **string**\
 Link to the (public) website that goes with this project.
 
@@ -39,13 +42,13 @@ Link to the (public) website that goes with this project.
 Brand color for the current project.
 
 `project_logo` **many-to-one**\
-Primary logo for the current project. Many-to-one to [files](/reference/api/system/files/).
+Primary logo for the current project. Many-to-one to [files](/reference/files/).
 
 `public_foreground` **many-to-one**\
-Foreground image for the Admin App's public pages. Many-to-one to [files](/reference/api/system/files/).
+Foreground image for the Admin App's public pages. Many-to-one to [files](/reference/files/).
 
 `public_background` **many-to-one**\
-Background image for the Admin App's public pages. Many-to-one to [files](/reference/api/system/files/).
+Background image for the Admin App's public pages. Many-to-one to [files](/reference/files/).
 
 `public_note` **string**\
 Note shown on the Admin App's public pages. Supports Markdown.
@@ -57,10 +60,26 @@ How often a user is allowed to try to login. After which times the user will be 
 What regex passwords must pass in order to be valid.
 
 `storage_asset_transform` **string**\
-If the transform endpoints are allowed to be used on [the assets endpoint](/reference/assets/). One of `all`, `none` or `presets`.
+If the transform endpoints are allowed to be used on [the assets endpoint](/reference/files/#requesting-a-thumbnail). One
+of `all`, `none` or `presets`.
 
 `storage_asset_presets` **array**\
-What preset keys exist in [the assets endpoint](/reference/assets/).
+What preset keys exist in [the assets endpoint](/reference/files/#requesting-a-thumbnail).
+
+`custom_css` **string**\
+CSS rules to override the App's default styling.
+
+`storage_default_folder` **uuid**\
+Folder for uploaded files. Does not affect existing files.
+
+`basemaps` **array**\
+Custom tiles to overriding the Mapbox defaults.
+
+`mapbox_key` **string**\
+[Mapbox Access Token](https://docs.mapbox.com/help/glossary/access-token/).
+
+`module_bar` **array**\
+What modules are enabled/added globally.
 
 </div>
 </div>
@@ -71,6 +90,7 @@ What preset keys exist in [the assets endpoint](/reference/assets/).
 	"data": {
 		"id": 1,
 		"project_name": "Directus",
+		"project_descriptor": "Application",
 		"project_url": null,
 		"project_color": null,
 		"project_logo": null,
@@ -83,7 +103,11 @@ What preset keys exist in [the assets endpoint](/reference/assets/).
 		"storage_asset_presets": [
 			{ "key": "small", "fit": "cover", "width": 200, "height": 161, "quality": 80, "withoutEnlargement": false }
 		],
-		"custom_css": null
+		"custom_css": null,
+		"storage_default_folder": null,
+		"basemaps": null,
+		"mapbox_key": null,
+		"module_bar": null
 	}
 }
 ```
@@ -100,7 +124,7 @@ What preset keys exist in [the assets endpoint](/reference/assets/).
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -149,7 +173,7 @@ query {
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
-import { has, isEmpty, orderBy } from 'lodash';
+import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
 import {
 	InterfaceConfig,
 	DisplayConfig,
@@ -17,17 +17,7 @@ import { get, set } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
 
-import * as global from './alterations/global';
-import * as file from './alterations/file';
-import * as files from './alterations/files';
-import * as group from './alterations/group';
-import * as m2a from './alterations/m2a';
-import * as m2m from './alterations/m2m';
-import * as m2o from './alterations/m2o';
-import * as o2m from './alterations/o2m';
-import * as presentation from './alterations/presentation';
-import * as standard from './alterations/standard';
-import * as translations from './alterations/translations';
+import * as alterations from './alterations';
 import { getLocalTypeForField } from '../../get-local-type';
 import api from '@/api';
 
@@ -103,17 +93,19 @@ export const useFieldDetailStore = defineStore({
 				const fieldsStore = useFieldsStore();
 				const relationsStore = useRelationsStore();
 
-				this.field = fieldsStore.getField(collection, field)!;
+				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
+				this.localType = getLocalTypeForField(collection, field)!;
 
-				const relations = relationsStore.getRelationsForField(collection, field);
+				const relations = cloneDeep(relationsStore.getRelationsForField(collection, field));
 
 				// o2m relation is the same regardless of type
 				this.relations.o2m = relations.find(
 					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
 				) as DeepPartial<Relation> | undefined;
 
-				if (['files', 'm2m', 'translations'].includes(this.localType)) {
-					this.relations.m2o = relations.find((relation) => relation !== this.relations.o2m) as
+				if (['files', 'm2m', 'translations', 'm2a'].includes(this.localType)) {
+					// These types rely on directus_relations fields being said, so meta should exist for these particular relations
+					this.relations.m2o = relations.find((relation) => relation.meta?.id !== this.relations.o2m?.meta?.id) as
 						| DeepPartial<Relation>
 						| undefined;
 				} else {
@@ -121,11 +113,11 @@ export const useFieldDetailStore = defineStore({
 						(relation) => relation.collection === collection && relation.field === field
 					) as DeepPartial<Relation> | undefined;
 				}
+			} else {
+				this.update({
+					localType: localType ?? 'standard',
+				});
 			}
-
-			this.update({
-				localType: localType ?? getLocalTypeForField(collection, field) ?? 'standard',
-			});
 		},
 		update(updates: DeepPartial<typeof this.$state>) {
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);
@@ -134,47 +126,19 @@ export const useFieldDetailStore = defineStore({
 			const helperFn = { hasChanged, getCurrent };
 
 			if (hasChanged('field.meta.interface')) {
-				global.setLocalTypeForInterface(updates);
-				global.setTypeForInterface(updates, this);
+				alterations.global.setLocalTypeForInterface(updates);
+				alterations.global.setTypeForInterface(updates, this);
 			}
 
 			if (hasChanged('localType')) {
-				global.resetSchema(updates, this);
-				global.resetRelations(updates);
-				global.setSpecialForLocalType(updates);
+				alterations.global.resetSchema(updates, this);
+				alterations.global.resetRelations(updates);
+				alterations.global.setSpecialForLocalType(updates);
 			}
 
-			switch (getCurrent('localType')) {
-				case 'file':
-					file.applyChanges(updates, this, helperFn);
-					break;
-				case 'files':
-					files.applyChanges(updates, this, helperFn);
-					break;
-				case 'group':
-					group.applyChanges(updates, this, helperFn);
-					break;
-				case 'm2a':
-					m2a.applyChanges(updates, this, helperFn);
-					break;
-				case 'm2m':
-					m2m.applyChanges(updates, this, helperFn);
-					break;
-				case 'm2o':
-					m2o.applyChanges(updates, this, helperFn);
-					break;
-				case 'o2m':
-					o2m.applyChanges(updates, this, helperFn);
-					break;
-				case 'presentation':
-					presentation.applyChanges(updates, this, helperFn);
-					break;
-				case 'standard':
-					standard.applyChanges(updates, this, helperFn);
-					break;
-				case 'translations':
-					translations.applyChanges(updates, this, helperFn);
-					break;
+			const localType = getCurrent('localType') as typeof LOCAL_TYPES[number] | undefined;
+			if (localType) {
+				alterations[localType].applyChanges(updates, this, helperFn);
 			}
 
 			this.$patch(updates);
@@ -209,6 +173,8 @@ export const useFieldDetailStore = defineStore({
 				for (const collection of Object.keys(this.items)) {
 					await api.post(`/items/${collection}`, this.items[collection]);
 				}
+
+				await fieldsStore.hydrate();
 			} catch (err: any) {
 				unexpectedError(err);
 			} finally {

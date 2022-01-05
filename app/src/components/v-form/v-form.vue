@@ -39,8 +39,7 @@
 			/>
 
 			<form-field
-				v-else
-				v-show="!field.meta?.hidden"
+				v-else-if="!field.meta?.hidden"
 				:key="field.field"
 				:field="field"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
@@ -66,12 +65,11 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
 import { Field, FieldRaw, ValidationError } from '@directus/shared/types';
-import { assign, cloneDeep, isNil, merge, omit, pick } from 'lodash';
+import { assign, cloneDeep, isNil, omit, pick } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
-import { validatePayload } from '@directus/shared/utils';
-import { parseFilter } from '@/utils/parse-filter';
+import { applyConditions } from '@/utils/apply-conditions';
 
 type FieldValues = {
 	[field: string]: any;
@@ -160,7 +158,7 @@ export default defineComponent({
 
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < formFields.value.length; i++) {
-				if (formFields.value[i].meta && !formFields.value[i].meta?.readonly) {
+				if (formFields.value[i].meta && !formFields.value[i].meta?.readonly && !formFields.value[i].meta?.hidden) {
 					return i;
 				}
 			}
@@ -222,6 +220,23 @@ export default defineComponent({
 				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
 			});
 
+			const defaultValues = computed(() => {
+				return fields.value.reduce(function (acc, field) {
+					if (
+						field.schema?.default_value !== undefined &&
+						// Ignore autoincremented integer PK field
+						!(
+							field.schema.is_primary_key &&
+							field.schema.data_type === 'integer' &&
+							typeof field.schema.default_value === 'string'
+						)
+					) {
+						acc[field.field] = field.schema?.default_value;
+					}
+					return acc;
+				}, {} as Record<string, any>);
+			});
+
 			const fieldsParsed = computed(() => {
 				if (props.group !== null) return fields.value;
 
@@ -239,37 +254,9 @@ export default defineComponent({
 					return field;
 				};
 
-				const applyConditions = (field: Field) => {
-					if (field.meta && Array.isArray(field.meta?.conditions)) {
-						const conditions = [...field.meta.conditions].reverse();
+				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-						const matchingCondition = conditions.find((condition) => {
-							if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
-
-							const rule = parseFilter(condition.rule);
-							const errors = validatePayload(rule, values.value, { requireAll: true });
-							return errors.length === 0;
-						});
-
-						if (matchingCondition) {
-							return {
-								...field,
-								meta: merge({}, field.meta || {}, {
-									readonly: matchingCondition.readonly,
-									options: matchingCondition.options,
-									hidden: matchingCondition.hidden,
-									required: matchingCondition.required,
-								}),
-							};
-						}
-
-						return field;
-					} else {
-						return field;
-					}
-				};
-
-				return fields.value.map((field) => applyConditions(setPrimaryKeyReadonly(field)));
+				return fields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
 			});
 
 			const fieldsInGroup = computed(() =>

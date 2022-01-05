@@ -17,17 +17,17 @@ import {
 	EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import getDatabase from './database';
-import emitter from './emitter';
+import emitter, { Emitter } from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
+import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
-import { HookConfig, EndpointConfig } from './types';
+import { HookConfig, EndpointConfig, FilterHandler, ActionHandler, InitHandler, ScheduleHandler } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
 import { schedule, ScheduledTask, validate } from 'node-cron';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { rollup } from 'rollup';
 // @TODO Remove this once a new version of @rollup/plugin-virtual has been released
 // @ts-expect-error
@@ -35,7 +35,7 @@ import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
-import { ListenerFn } from 'eventemitter2';
+import { escapeRegExp } from 'lodash';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -57,16 +57,20 @@ class ExtensionManager {
 	private appExtensions: Partial<Record<AppExtensionType, string>> = {};
 
 	private apiHooks: (
-		| { type: 'cron'; path: string; task: ScheduledTask }
-		| { type: 'event'; path: string; event: string; handler: ListenerFn }
+		| { type: 'filter'; path: string; event: string; handler: FilterHandler }
+		| { type: 'action'; path: string; event: string; handler: ActionHandler }
+		| { type: 'init'; path: string; event: string; handler: InitHandler }
+		| { type: 'schedule'; path: string; task: ScheduledTask }
 	)[] = [];
 	private apiEndpoints: { path: string }[] = [];
 
+	private apiEmitter: Emitter;
 	private endpointRouter: Router;
 
 	private isScheduleHookEnabled = true;
 
 	constructor() {
+		this.apiEmitter = new Emitter();
 		this.endpointRouter = Router();
 	}
 
@@ -106,6 +110,8 @@ class ExtensionManager {
 
 		this.unregisterHooks();
 		this.unregisterEndpoints();
+
+		this.apiEmitter.offAll();
 
 		if (env.SERVE_APP) {
 			this.appExtensions = {};
@@ -173,14 +179,15 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
+		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
-			const depName = appDir.find((file) => dep.replace(/\//g, '_') === file.substring(0, file.indexOf('.')));
+			const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
+			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', depName);
+				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {
@@ -223,15 +230,39 @@ class ExtensionManager {
 
 		const register = getModuleDefault(hookInstance);
 
-		const events = register({ services, exceptions, env, database: getDatabase(), logger, getSchema });
+		const registerFunctions = {
+			filter: (event: string, handler: FilterHandler) => {
+				emitter.onFilter(event, handler);
 
-		for (const [event, handler] of Object.entries(events)) {
-			if (event.startsWith('cron(')) {
-				const cron = event.match(REGEX_BETWEEN_PARENS)?.[1];
+				this.apiHooks.push({
+					type: 'filter',
+					path: hookPath,
+					event,
+					handler,
+				});
+			},
+			action: (event: string, handler: ActionHandler) => {
+				emitter.onAction(event, handler);
 
-				if (!cron || validate(cron) === false) {
-					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
-				} else {
+				this.apiHooks.push({
+					type: 'action',
+					path: hookPath,
+					event,
+					handler,
+				});
+			},
+			init: (event: string, handler: InitHandler) => {
+				emitter.onInit(event, handler);
+
+				this.apiHooks.push({
+					type: 'init',
+					path: hookPath,
+					event,
+					handler,
+				});
+			},
+			schedule: (cron: string, handler: ScheduleHandler) => {
+				if (validate(cron)) {
 					const task = schedule(cron, async () => {
 						if (this.isScheduleHookEnabled) {
 							try {
@@ -243,22 +274,25 @@ class ExtensionManager {
 					});
 
 					this.apiHooks.push({
-						type: 'cron',
+						type: 'schedule',
 						path: hookPath,
 						task,
 					});
+				} else {
+					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 				}
-			} else {
-				emitter.on(event, handler);
+			},
+		};
 
-				this.apiHooks.push({
-					type: 'event',
-					path: hookPath,
-					event,
-					handler,
-				});
-			}
-		}
+		register(registerFunctions, {
+			services,
+			exceptions: { ...exceptions, ...sharedExceptions },
+			env,
+			database: getDatabase(),
+			emitter: this.apiEmitter,
+			logger,
+			getSchema,
+		});
 	}
 
 	private registerEndpoint(endpoint: Extension, router: Router) {
@@ -273,7 +307,15 @@ class ExtensionManager {
 		const scopedRouter = express.Router();
 		router.use(`/${routeName}`, scopedRouter);
 
-		register(scopedRouter, { services, exceptions, env, database: getDatabase(), logger, getSchema });
+		register(scopedRouter, {
+			services,
+			exceptions: { ...exceptions, ...sharedExceptions },
+			env,
+			database: getDatabase(),
+			emitter: this.apiEmitter,
+			logger,
+			getSchema,
+		});
 
 		this.apiEndpoints.push({
 			path: endpointPath,
@@ -282,10 +324,19 @@ class ExtensionManager {
 
 	private unregisterHooks(): void {
 		for (const hook of this.apiHooks) {
-			if (hook.type === 'cron') {
-				hook.task.destroy();
-			} else {
-				emitter.off(hook.event, hook.handler);
+			switch (hook.type) {
+				case 'filter':
+					emitter.offFilter(hook.event, hook.handler);
+					break;
+				case 'action':
+					emitter.offAction(hook.event, hook.handler);
+					break;
+				case 'init':
+					emitter.offInit(hook.event, hook.handler);
+					break;
+				case 'schedule':
+					hook.task.stop();
+					break;
 			}
 
 			delete require.cache[require.resolve(hook.path)];

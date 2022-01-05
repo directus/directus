@@ -14,22 +14,19 @@
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
-			@fitdata="fitGeoJSONBounds"
-			@setpopup="updatePopup"
+			@fitdata="fitDataBounds"
+			@updateitempopup="updateItemPopup"
 		/>
 
-		<div v-if="popupItem" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }">
-			<render-template :template="template" :item="popupItem" :collection="collection" />
-		</div>
-
-		<v-button
-			v-if="isGeometryFieldNative && !autoLocationFilter && locationFilterOutdatedWritable"
-			small
-			class="location-filter"
-			@click="updateLocationFilter"
-		>
-			{{ t('layouts.map.search_this_area') }}
-		</v-button>
+		<transition name="fade">
+			<div
+				v-if="itemPopup.item"
+				class="popup"
+				:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
+			>
+				<render-template :template="template" :item="itemPopup.item" :collection="collection" />
+			</div>
+		</transition>
 
 		<transition name="fade">
 			<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
@@ -51,30 +48,12 @@
 				{{ geojsonError }}
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
-			<v-info
-				v-else-if="!loading && !itemCount && !locationFilterOutdated && (search || filter || locationFilter)"
-				icon="search"
-				center
-				:title="t('layouts.map.no_results_here')"
-			>
-				<template #append>
-					<v-card-actions>
-						<v-button :disabled="!search && !filter" @click="clearDataFilters">
-							{{ t('layouts.map.clear_data_filter') }}
-						</v-button>
-						<v-button :disabled="!locationFilter" @click="clearLocationFilter">
-							{{ t('layouts.map.clear_location_filter') }}
-						</v-button>
-					</v-card-actions>
-				</template>
-			</v-info>
 		</transition>
 
 		<template v-if="loading || itemCount > 0">
 			<div class="footer">
-				<div class="pagination">
+				<div v-if="totalPages > 1" class="pagination">
 					<v-pagination
-						v-if="totalPages > 1"
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -120,7 +99,6 @@ import { defineComponent, PropType } from 'vue';
 import MapComponent from './components/map.vue';
 import { useSync } from '@directus/shared/composables';
 import { GeometryOptions, Item } from '@directus/shared/types';
-import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { MapComponent },
@@ -133,10 +111,6 @@ export default defineComponent({
 		selection: {
 			type: Array as PropType<Item[]>,
 			default: () => [],
-		},
-		search: {
-			type: String as PropType<string | null>,
-			default: null,
 		},
 		loading: {
 			type: Boolean,
@@ -218,163 +192,36 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
-		locationFilterOutdated: {
-			type: Boolean,
-			required: true,
-		},
-		fitGeoJSONBounds: {
+		fitDataBounds: {
 			type: Function as PropType<() => void>,
 			required: true,
-		},
-		updateLocationFilter: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		clearDataFilters: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		clearLocationFilter: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		isGeometryFieldNative: {
-			type: Boolean,
-			required: true,
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: null,
-		},
-		locationFilter: {
-			type: Object as PropType<Filter>,
-			default: null,
 		},
 		template: {
 			type: String,
 			default: () => undefined,
 		},
-		popupItem: {
-			type: [String, Number],
+		itemPopup: {
+			type: Object as PropType<{ item?: any; position?: { x: number; y: number } }>,
 			default: () => undefined,
 		},
-		popupPosition: {
-			type: Object,
-			default: () => undefined,
-		},
-		updatePopup: {
+		updateItemPopup: {
 			type: Function,
 			required: true,
 		},
 	},
-	emits: ['update:cameraOptions', 'update:limit', 'update:locationFilterOutdated'],
+	emits: ['update:cameraOptions', 'update:limit'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
 		const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 		const limitWritable = useSync(props, 'limit', emit);
-		const locationFilterOutdatedWritable = useSync(props, 'locationFilterOutdated', emit);
 
-		return { t, n, cameraOptionsWritable, limitWritable, locationFilterOutdatedWritable };
+		return { t, n, cameraOptionsWritable, limitWritable };
 	},
 });
 </script>
 
-<style lang="scss">
-.mapboxgl-ctrl-dropdown {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 36px;
-	padding: 10px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--background-page);
-	border-radius: var(--border-radius);
-
-	span {
-		width: auto;
-		margin-right: 4px;
-	}
-
-	.v-select {
-		color: var(--foreground-normal);
-	}
-}
-
-.popup {
-	position: fixed;
-	z-index: 1;
-	max-width: 80%;
-	padding: 6px 10px 6px;
-	color: var(--foreground-normal-alt);
-	font-weight: 500;
-	font-size: 14px;
-	font-family: var(--family-sans-serif);
-	background-color: var(--background-page);
-	border-radius: var(--border-radius);
-	box-shadow: var(--card-shadow);
-	pointer-events: none;
-	translate: -50% calc(-100% - 12px);
-}
-
-.layout-map .mapboxgl-map .mapboxgl-canvas-container {
-	transition: opacity 0.2s;
-}
-
-.layout-map .mapboxgl-map.loading .mapboxgl-canvas-container {
-	opacity: 0.9;
-}
-
-.layout-map .mapboxgl-map.error .mapboxgl-canvas-container {
-	opacity: 0.4;
-}
-</style>
-
 <style lang="scss" scoped>
-.layout-map {
-	position: relative;
-	width: 100%;
-	height: calc(100% - 61px);
-}
-
-.center {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
-}
-
-.location-filter {
-	position: absolute;
-	top: 10px;
-	left: 50%;
-	box-shadow: var(--card-shadow);
-	transform: translate(-50%, 0%);
-}
-
-.v-progress-circular {
-	--v-progress-circular-background-color: var(--primary-25);
-	--v-progress-circular-color: var(--primary-75);
-}
-
-.reset-preset {
-	margin-top: 24px;
-}
-
-.delete-action {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.custom-layers {
-	padding: var(--content-padding);
-	padding-top: 0;
-}
-
 .v-info {
 	padding: 40px;
 	background-color: var(--background-page);
@@ -387,15 +234,99 @@ export default defineComponent({
 	pointer-events: initial;
 }
 
+.layout-map .mapboxgl-map :deep(.mapboxgl-canvas-container) {
+	transition: opacity 0.2s;
+}
+
+.layout-map .mapboxgl-map.loading :deep(.mapboxgl-canvas-container) {
+	opacity: 0.9;
+}
+
+.layout-map .mapboxgl-map.error :deep(.mapboxgl-canvas-container) {
+	opacity: 0.4;
+}
+
+.layout-map {
+	position: relative;
+	width: 100%;
+	height: calc(100% - 60px);
+}
+
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.location-filter {
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	box-shadow: var(--card-shadow);
+	transform: translate(-50%, 0%);
+}
+
+.popup {
+	position: fixed;
+	z-index: 1;
+	max-width: 80%;
+	padding: 6px 10px;
+	color: var(--foreground-normal-alt);
+	font-weight: 500;
+	font-size: 14px;
+	font-family: var(--family-sans-serif);
+	background-color: var(--background-page);
+	border-radius: var(--border-radius);
+	box-shadow: var(--card-shadow);
+	transform: translate(-50%, -140%);
+	pointer-events: none;
+}
+
+.render-template {
+	padding-right: 0;
+}
+
+.mapboxgl-ctrl-dropdown {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 36px;
+	padding: 10px;
+	color: var(--foreground-subdued);
+	background-color: var(--background-page);
+	border: var(--border-width) solid var(--background-page);
+	border-radius: var(--border-radius);
+	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+
+	span {
+		width: auto;
+		margin-right: 4px;
+	}
+
+	.v-select {
+		color: var(--foreground-normal);
+	}
+}
+
+.v-progress-circular {
+	--v-progress-circular-background-color: var(--primary-25);
+	--v-progress-circular-color: var(--primary-75);
+}
+
+.reset-preset {
+	margin-top: 24px;
+}
+
 .footer {
 	position: absolute;
-	right: 10px;
-	bottom: 10px;
-	left: 10px;
+	right: 0;
+	bottom: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
+	padding: 10px;
 	overflow: hidden;
 	background-color: transparent !important;
 
@@ -403,9 +334,25 @@ export default defineComponent({
 		--v-button-height: 28px;
 
 		display: inline-block;
+		margin-right: 10px;
+	}
+}
 
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+</style>
+<style lang="scss">
+.footer {
+	.pagination {
 		button {
-			box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 		}
 	}
 }

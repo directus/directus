@@ -8,6 +8,7 @@
 						v-else
 						clickable
 						readonly
+						:disabled="disabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
@@ -84,6 +85,7 @@
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
+			:disabled="disabled"
 			@input="stageEdits"
 		/>
 
@@ -104,6 +106,7 @@
 		</v-dialog>
 
 		<drawer-collection
+			v-if="activeDialog === 'choose'"
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
 			@update:active="activeDialog = null"
@@ -367,7 +370,7 @@ export default defineComponent({
 
 		img {
 			object-fit: contain;
-			filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
+			filter: drop-shadow(0px 0px 8px rgb(0 0 0 / 0.25));
 		}
 	}
 }

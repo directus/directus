@@ -127,8 +127,11 @@ export const usePresetsStore = defineStore({
 	},
 	actions: {
 		async hydrate() {
+			const userStore = useUserStore();
+			if (!userStore.currentUser || 'share' in userStore.currentUser) return;
+
 			// Hydrate is only called for logged in users, therefore, currentUser exists
-			const { id, role } = useUserStore().currentUser!;
+			const { id, role } = userStore.currentUser;
 
 			const values = await Promise.all([
 				// All user saved bookmarks and presets
@@ -267,7 +270,7 @@ export const usePresetsStore = defineStore({
 		 * the user. If the preset already exists and is for a user, we update the preset.
 		 * The response gets added to the store.
 		 */
-		async savePreset(preset: Preset) {
+		async savePreset(preset: Partial<Preset>) {
 			const userStore = useUserStore();
 			if (userStore.currentUser === null) return null;
 			const { id: userID } = userStore.currentUser;

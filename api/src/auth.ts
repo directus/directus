@@ -2,7 +2,7 @@ import getDatabase from './database';
 import env from './env';
 import logger from './logger';
 import { AuthDriver } from './auth/auth';
-import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver } from './auth/drivers';
+import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver } from './auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { InvalidConfigException } from './exceptions';
 import { AuthDriverOptions } from './types';
@@ -24,10 +24,12 @@ export function getAuthProvider(provider: string): AuthDriver {
 
 export async function registerAuthProviders(): Promise<void> {
 	const options = { knex: getDatabase(), schema: await getSchema() };
-	const defaultProvider = getProviderInstance('local', options)!;
 
-	// Register default provider
-	providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
+	// Register default provider if not disabled
+	if (!env.AUTH_DISABLE_DEFAULT) {
+		const defaultProvider = getProviderInstance('local', options)!;
+		providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
+	}
 
 	if (!env.AUTH_PROVIDERS) {
 		return;
@@ -74,5 +76,8 @@ function getProviderInstance(
 
 		case 'openid':
 			return new OpenIDAuthDriver(options, config);
+
+		case 'ldap':
+			return new LDAPAuthDriver(options, config);
 	}
 }

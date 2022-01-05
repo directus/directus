@@ -1,7 +1,7 @@
-# Styles
+# Themes & Styling
 
 > **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily
-> tailored to your brand. [Learn more about the App](/concepts/application/).
+> tailored to your brand. [Learn more about the App](/app/overview/).
 
 ## App Themes
 
@@ -20,15 +20,15 @@ no limit to customization. Below are several code resources for key SCSS files.
 
 ## Project Styling
 
-See [Adjusting Project Settings](/guides/projects/#adjusting-project-settings)
+See [Adjusting Project Settings](/configuration/project-settings/)
 
 ## Custom CSS
 
 You can also override any core CSS directly within the App through Project Settings. This makes it easy to edit the CSS
 variables listed in the themes above.
 
-1. Navigate to **Settings > Project Settings**
-2. Scroll to the **CSS Overrides** field
+1. Navigate to **Settings Module > Project Settings**
+2. Scroll to the **Custom CSS** field
 3. Enter any **valid CSS**
 4. Click the **Save** action button in the header
 

@@ -14,6 +14,7 @@ import {
 	useServerStore,
 	useSettingsStore,
 	useUserStore,
+	useNotificationsStore,
 } from '@/stores';
 
 type GenericStore = {
@@ -37,12 +38,15 @@ export function useStores(
 		useRelationsStore,
 		usePermissionsStore,
 		useInsightsStore,
+		useNotificationsStore,
 	]
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
-export async function hydrate(stores = useStores()): Promise<void> {
+export async function hydrate(): Promise<void> {
+	const stores = useStores();
+
 	const appStore = useAppStore();
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();

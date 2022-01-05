@@ -173,13 +173,18 @@ export default defineComponent({
 		}
 	}
 
+	&.small {
+		top: 0;
+		height: 60px;
+	}
+
 	&.small .title-container .headline {
 		opacity: 0;
 		pointer-events: none;
 	}
 
 	&.collapsed {
-		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
+		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 
 		.title-container {
 			.headline {

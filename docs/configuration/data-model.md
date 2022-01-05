@@ -1,7 +1,7 @@
 # Data Model
 
-> The data model describes the structure of your database's schema using [Collections](#) (database tables) and
-> [Fields](#) (database columns).
+> The data model describes the structure of your database's schema using [Collections](/app/content-collections/)
+> (database tables) and [Fields](/reference/system/fields/) (database columns).
 
 [[toc]]
 
@@ -44,26 +44,26 @@ are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
-  - [Creating a Field](/guides/fields/#creating-a-field)
-  - [Updating a Field](/guides/fields/#updating-a-field)
-  - [Deleting a Field](/guides/fields/#deleting-a-field)
-  - [Duplicating a Field](/guides/fields/#duplicating-a-field)
-  - [Changing Field Order & Layout](/guides/fields/#adjusting-field-layout)
+  - [Creating a Field](#creating-a-field-standard)
+  - [Configuring a Field](#configuring-a-field)
+  - [Deleting a Field](#deleting-a-field)
+  - [Duplicating a Field](#duplicating-a-field)
+  - [Changing Field Order & Layout](#adjusting-the-collection-form)
 - **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
   Translations (see field below).
 - **Note** — A helpful note that explains the collection's purpose
 - **Icon** — The icon used throughout the App when referencing this collection
 - **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A [Field Template](#) that creates dynamic titles for the collection's items
+- **Display Template** — A Field Template that creates dynamic titles for the collection's items
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
-  [Collection Page](/concepts/application/#collection-detail) will be bypassed, taking users directly to the
-  [Item Page](/concepts/application/#item-detail).
+  [Collection Page](/app/content-collections/) will be bypassed, taking users directly to the
+  [Item Page](/app/content-items/).
 - **Collection Naming Translations** — While the collection key can not be changed (as of now), this option allows
-  translating the collection name into different languages. By default, the platform uses the [Title Formatter](#) to
-  display collection keys as human readable names, but you can also use translations to explicitly rename more technical
-  table keys.
+  translating the collection name into different languages. By default, the platform uses the
+  [Title Formatter](/getting-started/glossary/#title-formatter) to display collection keys as human readable names, but
+  you can also use translations to explicitly rename more technical table keys.
 
 ### Archive
 
@@ -85,8 +85,9 @@ this field, the collection's archive settings will automatically be configured f
 ### Sort
 
 The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the
-[Collection Page](/concepts/application/#collection-detail), but can also be used for sorting items within
-[Junction Tables](#). Configuration is as easy as selecting the appropriate sort field:
+[Collection Page](/app/content-collections/), but can also be used for sorting items within
+[Junction Tables](/getting-started/glossary/#junction-collections). Configuration is as easy as selecting the
+appropriate sort field:
 
 - **Sort Field** — Choose a field with the `integer` type. You may want to set this field to be "hidden" so it doesn't
   show up within the Item Page form.
@@ -107,8 +108,8 @@ Field** on the field's Relationship pane.
 
 ### Accountability
 
-By default, the platform tracks all [activity](#) and [revisions](#) for collections. This option allows you to override
-this, choosing what data is tracked.
+By default, the platform tracks all [activity](/reference/system/activity) and [revisions](/reference/system/revisions/)
+for collections. This option allows you to override this, choosing what data is tracked.
 
 - **Activity & Revision Tracking** — supports the follow options:
   - Track Activity & Revisions
@@ -135,12 +136,48 @@ This action is permanent and can not be undone. Please proceed with caution.
 
 ## Adjusting the Collection Hierarchy
 
-Collections can be organized in several ways.
+Collections can be organized in several ways, including sorting, custom translations, showing/hiding, and even grouping.
+This organization is reflected in the sidebar navigation, allowing you to control how the users of the app will interact
+with the various collections in your project. Configuring the organization of your collections is done on the
+**Settings > Data Model** page.
+
+### Sorting & Grouping
+
+By using the drag handles on the left of the collection, you can manually put the collections in an order that makes the
+most sense for your project. By dragging a collection underneath another collection, you can turn any collection into a
+group-parent. Groups can even be nested within other groups.
+
+Additionally, you can add special "folder" collections that are exclusively used for organizational purposes, and don't
+hold any data themselves. This can be done through the "Create Folder" button in the top right of the page.
+
+### Renaming Collections
+
+The key of a collection (eg. what's used in the API / database) can't be changed. However, you can alter how a
+collection is displayed in your app by adding custom translations. This can be done by opening the detail page of a
+collection, and modifying the "Collection Naming Translations" option. Make sure to add translations for all the
+languages your app's users might use for the best results!
+
+### Hiding Collections
+
+If you'd like to hide a collection from the navigation by default, but still allow your users to access them through
+other means (like relationships, or direct linking), you can set a collection be hidden by using the triple-dot "More"
+option menu on the right-hand side of the collection row, and selecting the "Make Collection Hidden" option.
+
+Hidden collections can still be accessed by the user by right-clicking on the navigation, and choosing "Show Hidden
+Collections".
+
+::: tip Permissions
+
+If you want to prevent a user from accessing a collection altogether, you can configure the read permissions for their
+role to prevent them from viewing the collection. Collections that can't be read by the user won't show up in the
+navigation either.
+
+:::
 
 ## Adjusting the Collection Form
 
-The [Item Page](#) displays a custom form for viewing and editing each collection's fields. This form is is highly
-configurable, with the following field options:
+The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
+is highly configurable, with the following field options:
 
 - **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the field's context menu
   or edit drawer.
@@ -153,10 +190,18 @@ configurable, with the following field options:
 - **Grouping** — Fields can be organized within different nested groups that are created using the normal Creating a
   Field flow. Different style groupings are available for different use-cases.
 
-## Creating a Field
+## Creating a Field (Standard)
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Under Fields & Layout, click the **Create Field** button
+3. **Choose the desired interface** by clicking on the illustration
+4. Add a **Field Key**, which is also used as the default field name
+5. **Configure the field options**, including the default value, required flag, and interface options
+
+## Creating a Field (Advanced)
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Under Fields & Layout, click the **Create Field in Advanced Mode** button
 3. **Choose the field type**, and follow its setup steps below.
 
 ::: tip Database Columns
@@ -173,9 +218,11 @@ This pane controls the technical details of the field's database column.
 
 - **Key** — (Required) The database column name and field's API key. The key must be unique within its parent
   Collection. As of now, all keys are sanitized: lowercased, alphanumeric, and with spaces removed. Keys can not be
-  changed once created, however you can use [Field Name Translations](#) to override how it's displayed in the App.
-- **Type** — (Required) How the data is saved to the database; See [Directus Data Type Superset](/concepts/types). This
-  dropdown maybe be limited or even disabled based on your chosen Field category.
+  changed once created, however you can use [Field Name Translations](/configuration/data-model/#field) to override how
+  it's displayed in the App.
+- **Type** — (Required) How the data is saved to the database; See
+  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown maybe be limited or even
+  disabled based on your chosen Field category.
 - **Length** — (Only for certain types) For String types this determines the number of characters that can be stored in
   the database. For Float and Decimal types, this control becomes **Precision & Scale**.
 - **On Create** — (Only for certain types) For some data types, this option allows you to control what value is saved
@@ -201,15 +248,15 @@ As of now, the key can not be modified after the field has been created.
 This pane is only shown when configuring relational fields (including images and translations). Depending on the type of
 relationship, you'll be presented with one of the following set of options:
 
-- [Many-to-One](#)
-- [One-to-Many](#)
-- [Many-to-Many](#)
-- [Many-to-Any](#)
-- [Translations](#)
+- [Many-to-One](/configuration/relationships/#many-to-one-m2o)
+- [One-to-Many](/configuration/relationships/#one-to-many-o2m)
+- [Many-to-Many](/configuration/relationships/#many-to-many-m2m)
+- [Many-to-Any](/configuration/relationships/#many-to-many-m2m)
+- [Translations](/configuration/relationships/#translations-o2m)
 
 ::: tip Corresponding Field
 
-[Relationships go both ways](/concepts/relationships/#perspective-matters), so when creating a new relation Field,
+[Relationships go both ways](/configuration/relationships/#perspective-matters), so when creating a new relation Field,
 Directus offers to automatically create the corresponding Field on the related Collection.
 
 :::
@@ -227,8 +274,9 @@ Directus offers to automatically create the corresponding Field on the related C
 - **Note** — (App Only) Displayed below the field in the App form, providing a helpful comment for App users. This note
   supports markdown.
 - **Field Name Translations** — (App Only) While the field key can not be changed (as of now), this option allows
-  translating the field name into different languages. By default, the platform uses the [Title Formatter](#) to display
-  field keys as human readable names, but you can also use translations to explicitly rename more technical column keys.
+  translating the field name into different languages. By default, the platform uses the
+  [Title Formatter](/getting-started/glossary/#title-formatter) to display field keys as human readable names, but you
+  can also use translations to explicitly rename more technical column keys.
 
 ### Interface
 
@@ -247,9 +295,10 @@ Each field can have one or more _rules_. Each rule has the following configurati
 
 - **Name**: The name of the rule. This is only used internally for convenience purposes
 - **Rule**: The rule that controls whether or not these conditions are applied. Rule follows the
-  [Filter Rules](/reference/filter-rules) spec
+  [Filter Rules](/configuration/filter-rules) spec
 - **Readonly**: Whether or not the field is readonly when the condition is matched
 - **Hidden**: Whether or not the field is hidden when the condition is matched
+- **Required**: Whether or not the field is required when the condition is matched
 - **Interface Options**: Any additional configuration for the selected interface
 
 These changes to the field are merged onto the base configuration of the field. This means you can have the field hidden
@@ -261,17 +310,54 @@ The conditions are matched in order. The **last** condition that matches is the 
 
 :::
 
+## Creating Translated Multilingual Fields
+
+While you could create individual fields for each translation, such as `title_english`, `title_german`, `title_french`,
+and so on, this is not easily extensible, and creates a less than ideal form layout. Instead, you can use the Directus
+_relational_ [Translations O2M](/configuration/relationships/#translations-o2m) interface. This uses a separate
+collection to store an endless number of translations, and a separate collection of languages that can easily be added
+to without having to change the schema.
+
+Let's take a look at a basic example for "Articles":
+
+- **`articles` Collection**
+  - `id` — (Primary Key)
+  - `author` — Field that is not translated
+  - `date_published` — Field that is not translated
+  - `translations` — A O2M relational field to `article_translations`
+- **`article_translations` Collection**
+  - `id` — (Primary Key)
+  - `article` — The key of the article this belongs to
+  - `language` — The language key of this translation
+  - `title` — The translated Article Title
+  - `text` — The translated Article Text
+- **`languages` Collection**
+  - `language_code` — (Primary Key) eg: "en-US"
+  - `name` — The language name, eg: "English"
+
+As you can see above, you add **non-translated** fields, such as the `author` and `publish_date`, to the parent
+collection. Any **multilingual** fields, such as Title or Text, should be added directly to the Translation Collection.
+You can not simply drag or shift fields from the parent to translations, they must be _created_ in the correct
+collection.
+
+::: tip Translating Parent Fields
+
+To make an existing parent field translatable, you can choose "Duplicate Field" from its context menu, move it to the
+translation collection, and then delete the parent field. However, be aware that this does **not** maintain any existing
+field values in the process.
+
+:::
+
 ## Configuring a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Click the field you want to update
-3. Make any desired updates referencing the [Creating a Field](#) docs above
+3. Make any desired updates referencing the [Creating a Field](/configuration/data-model/#creating-a-field) docs above
 
 ::: tip System Fields
 
 While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the
-system collections. To get started, enable System Collections within the sidebar filter of
-[Settings > Data Model](/concepts/databases/).
+system collections. To get started, expand System Collections from the bottom of **Settings > Data Model**.
 
 :::
 

@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Avatar
 default_provider: Standard
 published: Veröffentlicht
@@ -51,7 +52,9 @@ edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
+show_active_items: Aktive Elemente anzeigen
 show_archived_items: Zeige archivierte Elemente
+show_all_items: Alle Elemente anzeigen
 edited: Bearbeiteter Wert
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
@@ -65,6 +68,8 @@ create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
+subject: Betreff
+inbox: Posteingang
 emails: E-Mails
 connection_excellent: Ausgezeichnete Verbindung
 connection_good: Gute Verbindung
@@ -86,6 +91,7 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
 directus_version: Directus-Version
 node_version: Node-Version
@@ -172,6 +178,8 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 show_zero: Null anzeigen
+create_in_advanced_field_creation_mode: Feld im erweiterten Modus erstellen
+continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
 avg: Mittelwert
@@ -212,7 +220,13 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
-geometry: Dimensionen
+geometry: Geometrie (alle)
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -232,6 +246,9 @@ new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung durchsuchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
+add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
+add_o2m_to_collection: 'O2M zu "{collection} " hinzufügen'
+add_m2m_to_collection: 'M2M zu "{collection} " hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
@@ -415,6 +432,9 @@ user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
 no_webhooks_copy: Es wurden noch keine Webhooks konfiguriert.
+no_notifications: Keine Benachrichtigungen
+no_notifications_copy: Du bist auf dem neusten Stand!
+activity_log: Aktivitätsprotokoll
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
@@ -646,7 +666,7 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
-insights: Einblicke (Beta)
+insights: Einblicke
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
@@ -679,6 +699,12 @@ source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
 display_text_placeholder: Anzeigetext eingeben...
+interface_group_text_and_numbers: Text & Zahlen
+interface_group_selection: Auswahl
+interface_group_relational: Beziehung
+interface_group_presentation: Präsentation
+interface_group_groups: Gruppen
+interface_group_other: Andere
 tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
@@ -765,6 +791,7 @@ layout_setup: Einrichtung Ansicht
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
+discard_all_changes: Alle Änderungen verwerfen
 discard_changes_copy: Möchten Sie wirklich alle Änderungen verwerfen?
 show_x_axis: X-Achse anzeigen
 show_y_axis: Y-Achse anzeigen
@@ -812,6 +839,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 collection: Sammlung
 collections: Sammlungen
+content: Inhalt
 singleton: Einzelnes Element
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
@@ -825,6 +853,7 @@ directus_collection:
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
+  directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -858,6 +887,8 @@ fields:
     unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
+    archive_field: Archivfeld
+    item_duplication_fields: Vervielfältigungsfelder
   directus_files:
     $thumbnail: Miniaturansicht
     title: Titel
@@ -918,6 +949,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -930,18 +962,26 @@ fields:
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
-    public_pages: Öffentliche Seiten
+    branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
-    files_and_thumbnails: Dateien & Vorschaubilder
+    files_and_thumbnails: Dateien & Speicher
     storage_default_folder: Standardordner
-    storage_asset_presets: Vorlagen für Dateien
-    storage_asset_transform: Transformierung von Dateien
+    storage_asset_presets: Transformations-Voreinstellungen
+    storage_asset_transform: Erlaubte Transformationen
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
+    module_bar: Modulleiste
+    transformations_all: Alle Transformationen erlauben
+    transformations_none: Transformationen deaktivieren
+    transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
+  directus_shares:
+    name: Name
+    role: Rolle
+    password: Passwort
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon
@@ -960,19 +1000,23 @@ fields:
     enforce_tfa: 2FA erforderlich
     users: Benutzer in Rolle
     module_list: Modulnavigation
-    collection_list: Sammlungsnavigation
   directus_webhooks:
     name: Name
     method: Methode
     status: Status
     data: Daten
+    header: Header
+    value: Wert
+    headers: Request-Headers
     data_label: Ereignisdaten senden
     triggers: Auslöser
     actions: Aktionen
+    collections: Sammlungen
 field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
-    project_logo_note: Login & Logo Hintergrund
+    project_color_note: Login & Logo Hintergrund
+    project_logo_note: Weiß 40x40 SVG/PNG
     public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
@@ -980,6 +1024,8 @@ field_options:
       weak_text: Schwach - Minimum 8 Zeichen
       strong_text: Stark - Groß / Klein / Zahlen / Spezialzeichen
     storage_asset_presets:
+      fit_label: Passform
+      upscaling: Hochskalierung
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
         cover_text: Abdecken (erzwingt exakte Größe)
@@ -990,6 +1036,7 @@ field_options:
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basiskarte
+    basemaps_name_placeholder: Geben Sie den Basemap-Namen ein...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1015,7 +1062,6 @@ field_options:
     singular_unit: Einzahl-Einheit
     plural_unit: Mehrzahl-Einheit
     archive_divider: Archivieren
-    archive_field: Archivfeld
     archive_field_placeholder: Wählen Sie ein Feld...
     archive_app_filter: App-Archivfilter aktivieren
     archive_value: Gesetzter Wert während der Archivierung...
@@ -1024,7 +1070,6 @@ field_options:
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
-    item_duplication_fields: Artikel Duplikationsfelder
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1042,15 +1087,6 @@ field_options:
       name_placeholder: Titel eingeben...
       link_name: Link
       link_placeholder: Relative oder absolute URL...
-    collection_list:
-      group_name_addLabel: Neue Gruppe hinzufügen...
-      fields:
-        group_name: Gruppen-Name
-        group_placeholder: Diese Gruppe benennen...
-        type_name: Typ
-        choices_always: Immer geöffnet
-        choices_start_open: Geöffnet starten
-        choices_start_collapsed: Eingeklappt starten
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
   directus_users:
@@ -1074,6 +1110,10 @@ field_options:
     actions_update: Aktualisieren
     actions_delete: Löschen
     actions_login: Login
+    headers:
+      header: Header
+      value: Wert
+      add: Header hinzufügen
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 no_value: Kein Wert
 do_nothing: Keine Aktion
@@ -1093,7 +1133,7 @@ referential_action_field_label_o2m: Beim Abwählen von {collection}...
 referential_action_no_action: Löschen verhindern
 referential_action_cascade: Lösche das Element in {collection} (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
-referential_action_set_default: '{field} au Standardwert setzen'
+referential_action_set_default: '{field} auf Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
@@ -1210,6 +1250,7 @@ interfaces:
     code: Code
     description: Code-Snippets schreiben oder teilen
     line_number: Zeilennummer
+    line_wrapping: Zeilenumbruch
     placeholder: Code hier eingeben...
   system-collection:
     collection: Sammlung
@@ -1241,7 +1282,7 @@ interfaces:
   presentation-divider:
     divider: Trenner
     description: Felder beschriften und in Abschnitte teilen
-    title_placeholder: Titel eingeben...
+    title_placeholder: Titel eingeben oder leer lassen, um nur eine Zeile anzuzeigen...
     inline_title: Inline-Titel
     inline_title_label: Titel in Zeile anzeigen
     margin_top: Oberer Rand
@@ -1276,6 +1317,8 @@ interfaces:
   file-image:
     image: Bild
     description: Bild auswählen oder hochladen
+    crop: Zuschneiden auf Passform
+    crop_label: Bild nach Bedarf zuschneiden
   system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
@@ -1293,6 +1336,10 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
+    edit: Bearbeiten
+    preview: Vorschau
+    editorFont: Editor Schriftart
+    previewFont: Vorschau Schriftart
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
@@ -1315,6 +1362,7 @@ interfaces:
     lnglat: Längengrad, Breitengrad
     wkt: WKT
     wkb: WKB
+    click_to_select: Klicken, um {geometry} auszuwählen
   presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
@@ -1326,7 +1374,7 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
-    field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
+    field_hint: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1377,6 +1425,8 @@ interfaces:
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
+    color_on: Farbe Ein
+    color_off: Farbe Aus
     label_placeholder: Label eingeben...
     label_default: Aktiviert
   translations:
@@ -1401,11 +1451,15 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Benutzerdefinierte Formate
     options_override: Optionen überschreiben
+    folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
+    imageToken: Bild-Token
+    imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.
     results_path: Pfad Ergebnis
     value_path: Wertpfad
+    text_path: Textpfad
     trigger: Trigger
     rate: Frequenz
   group-raw:
@@ -1465,9 +1519,27 @@ displays:
   formatted-value:
     formatted-value: Formatierter Wert
     description: Eine formatierte Version des Textes anzeigen
-    format_title: Titel formatieren
-    format_title_label: Automatische Groß-/Kleinschreibung
+    format: Format
+    format_label: Automatisches Formatieren
+    font: Schriftart
+    font_sans_serif: Sans Serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Fett
     bold_label: Fett-Schnitt verwenden
+    italic: Kursiv
+    italic_label: Kursivschrift verwenden
+    prefix: Präfix
+    prefix_label: Text vorangestellt
+    suffix: Suffix
+    suffix_label: Angehängten Text
+    color: Farbe
+    background: Hintergrund
+    icon: Symbol
+    border: Umrandung
+    border_label: Rahmen anzeigen
+    text: Text
+    text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
@@ -1536,19 +1608,16 @@ layouts:
     map: Karte
     basemap: Basiskarte
     layers: Ebenen
-    edit_custom_layers: Ebenen bearbeiten
     cluster_options: Cluster-Optionen
     cluster: Cluster Nachbardaten
     cluster_radius: Cluster-Radius
     cluster_minpoints: Kleinstes Cluster
     cluster_maxzoom: Maximaler Zoom für Cluster
-    field: Dimensionen
+    field: Geodaten-Feld
     invalid_geometry: Ungültige Geometrie
-    auto_location_filter: Auto-Filter in der Ansicht
-    search_this_area: Diesen Bereich durchsuchen
-    clear_data_filter: Datenfilter löschen
-    clear_location_filter: Standortfilter löschen
-    no_results_here: Keine Ergebnisse in diesem Bereich
+    find_location: Standort suchen...
+    default_template: Verwenden des Sammlungs-Standards...
+    no_compatible_fields: Keine kompatiblen Felder
 panels:
   metric:
     name: Metrik
@@ -1559,6 +1628,8 @@ panels:
     description: Liniendiagramm anhand von Werten im Laufe der Zeit anzeigen
     date_field: Datums-Feld
     value_field: Wert-Feld
+    fill_type: Füllart
+    curve_type: Kurventyp
   label:
     name: Label
     description: Einen Text anzeigen

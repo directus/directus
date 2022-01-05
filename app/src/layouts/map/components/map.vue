@@ -8,10 +8,9 @@
 
 <script lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css';
-import {
+import maplibre, {
 	MapboxGeoJSONFeature,
 	MapLayerMouseEvent,
-	AttributionControl,
 	NavigationControl,
 	GeolocateControl,
 	LngLatBoundsLike,
@@ -20,11 +19,14 @@ import {
 	LngLatLike,
 	AnyLayer,
 	Map,
+	AttributionControl,
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, toRefs, computed, WatchStopHandle } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+import { ShowSelect } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { useAppStore } from '@/stores';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
@@ -61,9 +63,14 @@ export default defineComponent({
 			type: Array as PropType<Array<string | number>>,
 			default: () => [],
 		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'multiple',
+		},
 	},
-	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata', 'setpopup'],
+	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata', 'updateitempopup'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
 		const appStore = useAppStore();
 		let map: Map;
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
@@ -72,13 +79,14 @@ export default defineComponent({
 		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
 		const { sidebarOpen, basemap } = toRefs(appStore);
+		const mapboxKey = getSetting('mapbox_key');
 		const basemaps = getBasemapSources();
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
 		});
 
-		const attributionControl = new AttributionControl({ compact: true });
+		const attributionControl = new AttributionControl();
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
@@ -87,13 +95,23 @@ export default defineComponent({
 			emit('fitdata');
 		});
 		const boxSelectControl = new BoxSelectControl({
-			boxElementClass: 'selection-box',
+			boxElementClass: 'map-selection-box',
 			selectButtonClass: 'mapboxgl-ctrl-select',
-			unselectButtonClass: 'mapboxgl-ctrl-unselect',
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
-		const mapboxKey = getSetting('mapbox_key');
-
+		let geocoderControl: MapboxGeocoder | undefined;
+		if (mapboxKey) {
+			const marker = document.createElement('div');
+			marker.className = 'mapboxgl-user-location-dot mapboxgl-search-location-dot';
+			geocoderControl = new MapboxGeocoder({
+				accessToken: mapboxKey,
+				collapsed: true,
+				marker: { element: marker } as any,
+				flyTo: { speed: 1.4 },
+				mapboxgl: maplibre as any,
+				placeholder: t('layouts.map.find_location'),
+			});
+		}
 		onMounted(() => {
 			setupMap();
 		});
@@ -107,16 +125,16 @@ export default defineComponent({
 			map = new Map({
 				container: 'map-container',
 				style: style.value,
-				attributionControl: false,
 				dragRotate: false,
+				attributionControl: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 
-			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }) as any, 'top-right');
+			if (geocoderControl) {
+				map.addControl(geocoderControl as any, 'top-right');
 			}
-			map.addControl(attributionControl, 'top-right');
+			map.addControl(attributionControl, 'bottom-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
@@ -125,15 +143,13 @@ export default defineComponent({
 			map.on('load', () => {
 				watch(() => style.value, updateStyle);
 				watch(() => props.bounds, fitBounds);
-				map.on('click', '__directus_polygons', onFeatureClick);
-				map.on('mousemove', '__directus_polygons', updatePopup);
-				map.on('mouseleave', '__directus_polygons', updatePopup);
-				map.on('click', '__directus_points', onFeatureClick);
-				map.on('mousemove', '__directus_points', updatePopup);
-				map.on('mouseleave', '__directus_points', updatePopup);
-				map.on('click', '__directus_lines', onFeatureClick);
-				map.on('mousemove', '__directus_lines', updatePopup);
-				map.on('mouseleave', '__directus_lines', updatePopup);
+				const activeLayers = ['__directus_polygons', '__directus_points', '__directus_lines'];
+				for (const layer of activeLayers) {
+					map.on('click', layer, onFeatureClick);
+					map.on('mousemove', layer, updatePopup);
+					map.on('mouseleave', layer, updatePopup);
+				}
+				map.on('move', updatePopupLocation);
 				map.on('click', '__directus_clusters', expandCluster);
 				map.on('mousemove', '__directus_clusters', hoverCluster);
 				map.on('mouseleave', '__directus_clusters', hoverCluster);
@@ -168,7 +184,7 @@ export default defineComponent({
 		}
 
 		function fitBounds() {
-			const bbox = props.data.bbox?.map((x) => x % 90);
+			const bbox = props.data.bbox;
 			if (map && bbox) {
 				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 100,
@@ -239,12 +255,11 @@ export default defineComponent({
 			newSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: true });
 			});
-			boxSelectControl.showUnselect(newSelection?.length);
 		}
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
-			const replace = !event.originalEvent.altKey;
+			const replace = props.showSelect === 'multiple' ? false : !event.originalEvent.altKey;
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
 					emit('featureselect', { ids: [feature.id], replace });
@@ -268,21 +283,28 @@ export default defineComponent({
 				if (feature.geometry.type === 'Point') {
 					const { x, y } = map.project(feature.geometry.coordinates as LngLatLike);
 					const rect = map.getContainer().getBoundingClientRect();
-					emit('setpopup', { x: rect.x + x, y: rect.y + y });
+					emit('updateitempopup', { position: { x: rect.x + x, y: rect.y + y } });
 				} else {
 					const { clientX: x, clientY: y } = event.originalEvent;
-					emit('setpopup', { x, y });
+					emit('updateitempopup', { position: { x, y } });
 				}
 				if (featureChanged) {
 					map.setFeatureState({ id: feature.id, source: '__directus' }, { hovered: true });
 					hoveredFeature.value = feature;
-					emit('setpopup', { item: feature.id });
+					emit('updateitempopup', { item: feature.id });
 				}
 			} else {
 				if (featureChanged) {
 					hoveredFeature.value = feature;
-					emit('setpopup', { item: null });
+					emit('updateitempopup', { item: null });
 				}
+			}
+		}
+
+		function updatePopupLocation(event: MapLayerMouseEvent) {
+			if (hoveredFeature.value && event.originalEvent) {
+				const { x, y } = event.originalEvent;
+				emit('updateitempopup', { position: { x, y } });
 			}
 		}
 
@@ -313,204 +335,15 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.mapboxgl-map {
-	font: inherit;
-}
-
-.mapboxgl-ctrl-group {
-	overflow: hidden;
-	background: none;
-
-	&:not(:empty) {
-		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
-	}
-
-	button {
-		width: 36px;
-		height: 36px;
-		background: var(--background-input) !important;
-		border: none !important;
-		transition: background-color var(--fast) var(--transition);
-
-		span {
-			display: none !important;
-		}
-
-		& + button {
-			margin-top: 1px;
-		}
-
-		&:hover {
-			background: var(--background-normal) !important;
-		}
-
-		&.active {
-			color: var(--background-subdued) !important;
-			background: var(--foreground-normal) !important;
-		}
-
-		&.hidden {
-			display: none;
-		}
-	}
-
-	button::after {
-		display: flex;
-		justify-content: center;
-		font-size: 24px;
-		font-family: 'Material Icons Outline', sans-serif;
-		font-style: normal;
-		font-variant: normal;
-		text-rendering: auto;
-		-webkit-font-smoothing: antialiased;
-	}
-}
-
-.mapboxgl-user-location-dot,
-.maplibregl-user-location-dot {
-	width: 12px;
-	height: 12px;
-
-	&::before {
-		width: 12px;
-		height: 12px;
-	}
-
-	&::after {
-		width: 16px;
-		height: 16px;
-	}
-}
-
-.maplibregl-ctrl-top-right {
-	max-width: 80%;
-}
-
-.mapboxgl-ctrl-zoom-in::after {
-	content: 'add';
-}
-
-.mapboxgl-ctrl-zoom-out::after {
-	content: 'remove';
-}
-
-.mapboxgl-ctrl-compass::after {
-	content: 'explore';
-}
-
-.mapboxgl-ctrl-geolocate::after {
-	content: 'my_location';
-}
-
-.mapboxgl-ctrl-fitdata::after {
-	content: 'crop_free';
-}
-
-.mapboxgl-ctrl-select::after {
-	content: 'highlight_alt';
-}
-
-.mapboxgl-ctrl-unselect::after {
-	content: 'clear';
-}
-
-.mapboxgl-ctrl-attrib.mapboxgl-compact {
-	min-width: 24px;
-	min-height: 24px;
-	color: var(--foreground-subdued);
-	background: var(--background-input) !important;
-	box-shadow: var(--card-shadow);
-
-	button {
-		opacity: 0.25;
-		transition: opacity var(--fast) var(--transition);
-	}
-
-	&:hover {
-		button {
-			opacity: 0.75;
-		}
-	}
-
-	.maplibregl-ctrl-attrib-inner,
-	.mapboxgl-ctrl-attrib-inner {
-		font-size: 12px;
-		line-height: 20px;
-	}
-}
-
-.mapboxgl-ctrl-geocoder {
-	font-size: inherit !important;
-	font-family: inherit !important;
-	line-height: inherit !important;
-	background-color: var(--background-page);
-
-	&,
-	&.suggestions {
-		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
-	}
-}
-
-.mapboxgl-ctrl-geocoder--input {
-	color: var(--foreground-normal) !important;
-	border-radius: var(--border-radius);
-}
-
-.mapboxgl-ctrl-geocoder .suggestions {
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
-}
-
-.mapboxgl-ctrl-geocoder .suggestions > li > a {
-	color: var(--foreground-normal);
-}
-
-.mapboxgl-ctrl-geocoder .suggestions > .active > a,
-.mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
-	color: var(--v-list-item-color-active);
-	background-color: var(--background-normal-alt);
-}
-
-.mapboxgl-ctrl-geocoder--button {
-	background: var(--background-subdued);
-}
-
-.mapboxgl-ctrl-geocoder--icon {
-	fill: var(--v-icon-color);
-}
-
-.mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {
-	fill: var(--v-icon-color-hover);
-}
-
-.mapbox-gl-geocoder--error {
-	color: var(--foreground-subdued);
-}
-
-.selection-box {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	z-index: 1000;
-	width: 0;
-	height: 0;
-	background: rgba(56, 135, 190, 0.1);
-	border: 1px solid rgb(56, 135, 190);
-	pointer-events: none;
-}
-
-#map-container.hover .mapboxgl-canvas-container {
+<style lang="scss" scoped>
+#map-container.hover :deep(.mapboxgl-canvas-container) {
 	cursor: pointer !important;
 }
 
-#map-container.select .mapboxgl-canvas-container {
+#map-container.select :deep(.mapboxgl-canvas-container) {
 	cursor: crosshair !important;
 }
-</style>
-<style lang="scss" scoped>
+
 #map-container {
 	position: relative;
 	width: 100%;

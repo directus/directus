@@ -12,8 +12,13 @@
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td v-if="showSelect" class="select cell" @click.stop>
-			<v-checkbox :model-value="isSelected" @update:model-value="$emit('item-selected', $event)" />
+		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
+			<v-checkbox
+				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
+				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
+				:model-value="isSelected"
+				@update:model-value="$emit('item-selected', $event)"
+			/>
 		</td>
 
 		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
@@ -43,6 +48,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
+import { ShowSelect } from '@directus/shared/types';
 import { Header } from '../types';
 
 export default defineComponent({
@@ -56,8 +62,8 @@ export default defineComponent({
 			required: true,
 		},
 		showSelect: {
-			type: Boolean,
-			default: false,
+			type: String as PropType<ShowSelect>,
+			default: 'none',
 		},
 		showManualSort: {
 			type: Boolean,
@@ -105,7 +111,7 @@ export default defineComponent({
 		border-bottom: var(--border-width) solid var(--border-subdued);
 
 		&:last-child {
-			padding: 0 12px 0 12px;
+			padding: 0 12px;
 		}
 
 		&.select {

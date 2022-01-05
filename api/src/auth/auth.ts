@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { AuthDriverOptions, SchemaOverview, User, SessionData } from '../types';
+import { AuthDriverOptions, SchemaOverview, User } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;
@@ -36,30 +36,26 @@ export abstract class AuthDriver {
 	 * @throws InvalidCredentialsException
 	 * @returns Data to be stored with the session
 	 */
-	async login(_user: User, _payload: Record<string, any>): Promise<SessionData> {
-		/* Optional, though should probably be set */
-		return null;
+	async login(_user: User, _payload: Record<string, any>): Promise<void> {
+		return;
 	}
 
 	/**
 	 * Handle user session refresh
 	 *
 	 * @param _user User information
-	 * @param _sessionData Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async refresh(_user: User, sessionData: SessionData): Promise<SessionData> {
-		/* Optional */
-		return sessionData;
+	async refresh(_user: User): Promise<void> {
+		return;
 	}
 
 	/**
 	 * Handle user session termination
 	 *
 	 * @param _user User information
-	 * @param _sessionData Session data
 	 */
-	async logout(_user: User, _sessionData: SessionData): Promise<void> {
-		/* Optional */
+	async logout(_user: User): Promise<void> {
+		return;
 	}
 }

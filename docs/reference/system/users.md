@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
-> which defines its granular Permissions. [Learn more about Users](/concepts/users/).
+> which defines its granular Permissions. [Learn more about Users](/getting-started/glossary/#users/).
 
 </div>
 <div class="right">
@@ -54,7 +54,7 @@ Description of the user.
 Tags for the user.
 
 `avatar` **many-to-one**\
-Avatar file. Many-to-one to [files](/reference/api/system/files/).
+Avatar file. Many-to-one to [files](/reference/files/).
 
 `language` **string**\
 Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
@@ -64,7 +64,10 @@ translations.
 One of `auto`, `light`, `dark`.
 
 `tfa_secret` **string**\
-When TFA is enabled, this holds the
+When TFA is enabled, this holds the secret key for it.
+
+`email_notifications` **boolean**\
+When this is enabled, the user will receive emails for notifications.
 
 </div>
 </div>
@@ -107,11 +110,11 @@ List all users that exist in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/api/query/#limit) [user objects](#the-user-object). If no items are available, data
+An array of up to [limit](/reference/query/#limit) [user objects](#the-user-object). If no items are available, data
 will be an empty array.
 
 </div>
@@ -124,7 +127,7 @@ GET /users
 SEARCH /users
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -164,7 +167,7 @@ List an existing user by primary key.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -223,7 +226,7 @@ Retrieve the currently authenticated user.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
@@ -265,6 +268,65 @@ query {
 
 ---
 
+## Update the Current User
+
+Update the authenticated user.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Returns
+
+Returns the updated [user object](#the-user-object) for the authenticated user.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /users/me
+```
+
+```json
+// PATCH /users/me
+
+{
+	"email": "new.email@example.com"
+}
+```
+
+### GraphQL
+
+```
+POST /graphql/system
+```
+
+```graphql
+type Mutation {
+	update_users_me(data: update_directus_users_input!): directus_users
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_users_me(data: { email: "new.email@example.com" }) {
+		email
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
 ## Create a User
 
 Create a new user
@@ -274,7 +336,7 @@ Create a new user
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -346,7 +408,7 @@ Create multiple new users
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -428,7 +490,7 @@ Update an existing user.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -494,7 +556,7 @@ Update multiple existing users.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/api/query).
+Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
@@ -696,7 +758,7 @@ Role of the new user.
 `invite_url`\
 Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter.\
 **Note**: You need to configure the
-[`USER_INVITE_URL_ALLOW_LIST` environment variable](/reference/environment-variables/#security) to enable this feature.
+[`USER_INVITE_URL_ALLOW_LIST` environment variable](/configuration/config-options/#security) to enable this feature.
 
 </div>
 

@@ -232,7 +232,7 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/roles`);
+			router.replace(`/settings/roles`);
 		}
 
 		function discardAndLeave() {

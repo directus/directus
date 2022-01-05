@@ -28,13 +28,17 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		setJunctionFields(updates, state, helperFn);
 	}
 
+	if (hasChanged('relations.o2m.collection') || hasChanged('relations.m2o.collection')) {
+		matchJunctionCollectionName(updates);
+	}
+
 	if (
 		[
 			'relations.o2m.collection',
 			'relations.o2m.field',
 			'relations.m2o.field',
 			'relations.m2o.related_collection',
-			'relations.o2m.meta?.sort_field',
+			'relations.o2m.meta.sort_field',
 		].some(hasChanged)
 	) {
 		generateCollections(updates, state, helperFn);
@@ -207,7 +211,7 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 		};
 	} else {
 		set(updates, 'collections.related', undefined);
-		updates.items = undefined;
+		updates.items = {};
 	}
 }
 
@@ -258,7 +262,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 			type: 'integer',
 			schema: {},
 			meta: {
-				hidden: true,
+				hidden: false,
 			},
 		});
 	} else {
@@ -289,6 +293,16 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	if (!getCurrent('field.field')) {
 		set(updates, 'field.field', 'translations');
 		set(updates, 'relations.o2m.meta', 'translations');
+	}
+}
+
+export function matchJunctionCollectionName(updates: StateUpdates) {
+	if (updates?.relations?.o2m?.collection && updates.relations.o2m.collection !== updates.relations.m2o?.collection) {
+		set(updates, 'relations.m2o.collection', updates.relations.o2m.collection);
+	}
+
+	if (updates?.relations?.m2o?.collection && updates.relations.m2o.collection !== updates.relations.o2m?.collection) {
+		set(updates, 'relations.o2m.collection', updates.relations.m2o.collection);
 	}
 }
 

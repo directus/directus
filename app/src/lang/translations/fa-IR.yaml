@@ -19,7 +19,9 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: شناسه
 avatar: آواتار
+application: برنامه
 default_provider: پیش‌فرض
 published: منتشر شد
 draft: پیش‌نویس
@@ -30,6 +32,7 @@ tile_size: اندازه آجر
 edit_field: ویرایش فیلد
 conditions: مزایای همکاری
 maps: نقشه ها
+switch_user: تغییر کاربر
 item_creation: ایجاد مورد
 item_revision: مشاهده ویرایش ها
 enter_a_name: یک نام وارد کنید
@@ -51,7 +54,9 @@ edit_collection: ویرایش مجموعه
 exclusive: انحصاری
 children: همراه با کودک
 db_only_click_to_configure: 'فقط پایگاه داده: برای پیکربندی کلیک کنید'
+show_active_items: نمایش آیتم های فعال
 show_archived_items: نشان دادن یادداشت‌های بایگانی شده
+show_all_items: نمایش تمامی موارد
 edited: ارزش ویرایش شد
 required: الزامی
 required_for_app_access: برای دسترسی به برنامه مورد نیاز است
@@ -65,6 +70,8 @@ create_webhook: به روزرسانی webhook
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: این آدرس ایمیل قبلا دعوت شده است
+subject: موضوع
+inbox: پیغام‌های دریافتی
 emails: پست الکترونیکی
 connection_excellent: اتصال عالی
 connection_good: اتصال خوب
@@ -86,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: نشست به پایان رسیده
 public_label: عمومی
 public_description: داده API موجود را بدون احراز هویت کنترل می‌کند.
+admin_description: نقش مدیریتی اولیه با سطح دسترسی بدون محدودیت به برنامه و API
 not_allowed: مجاز نیست
 directus_version: نسخه دایرکتوس
 node_version: نسخه نود
@@ -147,6 +155,9 @@ item_permissions: مجوزهای مورد
 field_permissions: مجوزهای مورد
 field_validation: اعتبار سنجی فیلد
 field_presets: ایستگاه از پیش تنظیم شده
+permissions_for_role: 'مواردی که نقش {role} میتواند {action}'
+fields_for_role: 'فیلدهایی که نقش {role} میتواند {action}'
+validation_for_role: 'قوانین {action} مربوط به فیلد که نقش {role} باید رعایت کند.'
 presentation_and_aliases: ارائه و نام مستعار
 revision_post_update: در اینجا این مورد پس از بروزرسانی چگونه بود.
 changes_made: در زیر تغییرات خاصی است که در این تجدید نظر ایجاد شده است.
@@ -174,6 +185,8 @@ key: کلید
 alias: نام مستعار
 bigInteger: عدد صحیح بزرگ
 boolean: بولین
+auto_refresh: تازه نمودن خودکار
+click_here: اینجا کلیک کنید
 single_file: فیلتر تک
 multiple_files: چندین فیلتر
 m2o_relationship: رابطه بسیار به یک
@@ -222,6 +235,20 @@ revision_preview: پیش نمایش ویرایش
 updates_made: حالت ارتقاء
 leave_comment: درج پیغام...
 post_comment_success: دیدگاه منتشر شد
+today: امروز
+yesterday: دیروز
+delete_comment: حذف دیدگاه
+minutes: دقیقه
+hours: ساعت
+month: ماه
+year: سال
+select_all: انتخاب همه
+months:
+  january: فروردین
+  february: اردیبهشت
+  march: اسفند
+  april: تیر
+  october: مهر
 cancel_crop: لغو برش
 original: اصیل و اصلی
 url: نشانی ‌URL
@@ -267,6 +294,7 @@ value_unique: مقدار باید یکتا باشد
 wysiwyg_options:
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
+  selectall: انتخاب همه
 fields:
   directus_collections:
     note: شرح
@@ -278,6 +306,10 @@ fields:
   directus_users:
     title: عنوان
     language: زبان
+  directus_settings:
+    module_bar: ماژول
+  directus_shares:
+    name: نام
   directus_fields:
     note: شرح
     translation: ترجمه‌های نام فیلد
@@ -292,9 +324,6 @@ field_options:
   directus_roles:
     fields:
       name_name: نام
-    collection_list:
-      fields:
-        type_name: نوع
 limit: محدوده
 interfaces:
   presentation-links:
@@ -310,6 +339,9 @@ displays:
     translations: ترجمه‌ها
   boolean:
     boolean: بولین
+  formatted-value:
+    prefix: پيشوند
+    suffix: پسوند
   labels:
     choices_value_placeholder: یک مقدار وارد کنید...
   user:

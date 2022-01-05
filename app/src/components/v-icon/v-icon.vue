@@ -9,13 +9,13 @@
 	>
 		<component :is="customIconName" v-if="customIconName" />
 		<socialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else :class="{ filled }">{{ name }}</i>
+		<i v-else :class="{ filled }" :data-icon="name"></i>
 	</span>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, h, PropType } from 'vue';
-import { library, icon, findIconDefinition, IconName } from '@fortawesome/fontawesome-svg-core';
+import { defineComponent, computed } from 'vue';
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
@@ -37,6 +37,8 @@ import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
 import CustomIconFolderLock from './custom-icons/folder_lock.vue';
 import CustomIconLogout from './custom-icons/logout.vue';
+
+import SocialIcon from './social-icon.vue';
 
 library.add(fab);
 
@@ -520,19 +522,6 @@ const socialIcons: string[] = [
 	'zhihu',
 ];
 
-const SocialIcon = defineComponent({
-	props: {
-		name: {
-			type: String as PropType<IconName>,
-			required: true,
-		},
-	},
-	render() {
-		const socialIcon = icon(findIconDefinition({ prefix: 'fab', iconName: this.name }));
-		return h({ template: socialIcon?.html[0] });
-	},
-});
-
 export default defineComponent({
 	components: {
 		CustomIconDirectus,
@@ -655,6 +644,10 @@ body {
 		text-transform: none;
 		word-wrap: normal;
 		font-feature-settings: 'liga';
+
+		&::after {
+			content: attr(data-icon);
+		}
 
 		&.filled {
 			/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */

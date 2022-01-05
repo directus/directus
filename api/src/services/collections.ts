@@ -7,9 +7,9 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
-import { ItemsService, MutationOptions } from '../services/items';
+import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview, MutationOptions } from '../types';
 import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 
@@ -26,7 +26,7 @@ export class CollectionsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -34,9 +34,9 @@ export class CollectionsService {
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 
-		const { cache, schemaCache } = getCache();
+		const { cache, systemCache } = getCache();
 		this.cache = cache;
-		this.schemaCache = schemaCache;
+		this.systemCache = systemCache;
 	}
 
 	/**
@@ -141,9 +141,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return payload.collection;
 	}
@@ -173,9 +171,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collections;
 	}
@@ -199,11 +195,27 @@ export class CollectionsService {
 		meta.push(...systemCollectionRows);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
-				.filter((permission) => {
+			const collectionsGroups: { [key: string]: string } = meta.reduce(
+				(meta, item) => ({
+					...meta,
+					[item.collection]: item.group,
+				}),
+				{}
+			);
+
+			let collectionsYouHavePermissionToRead: string[] = this.accountability
+				.permissions!.filter((permission) => {
 					return permission.action === 'read';
 				})
 				.map(({ collection }) => collection);
+
+			for (const collection of collectionsYouHavePermissionToRead) {
+				const group = collectionsGroups[collection];
+				if (group) collectionsYouHavePermissionToRead.push(group);
+				delete collectionsGroups[collection];
+			}
+
+			collectionsYouHavePermissionToRead = [...new Set([...collectionsYouHavePermissionToRead])];
 
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
@@ -258,7 +270,7 @@ export class CollectionsService {
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.schema.permissions.filter((permission) => {
+			const permissions = this.accountability.permissions!.filter((permission) => {
 				return permission.action === 'read' && collectionKeys.includes(permission.collection);
 			});
 
@@ -313,9 +325,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKey;
 	}
@@ -344,9 +354,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKeys;
 	}
@@ -424,11 +432,11 @@ export class CollectionsService {
 					}
 				}
 
-				const m2aRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
+				const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
 					return relation.meta?.one_allowed_collections?.includes(collectionKey);
 				});
 
-				for (const relation of m2aRelationsThatIncludeThisCollection) {
+				for (const relation of a2oRelationsThatIncludeThisCollection) {
 					const newAllowedCollections = relation
 						.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
 						.join(',');
@@ -445,9 +453,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKey;
 	}
@@ -476,9 +482,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKeys;
 	}

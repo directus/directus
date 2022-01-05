@@ -30,9 +30,12 @@ WORKDIR /directus
 
 COPY . .
 
+RUN apk add --update python3 make g++\
+   && rm -rf /var/cache/apk/*
+
 RUN npm install
 
 WORKDIR /directus/api
 
-CMD ["sh", "-c", "node ./cli.js bootstrap && node ./start.js;"]
+CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
 EXPOSE 8055/tcp

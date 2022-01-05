@@ -19,8 +19,12 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifikátor
 avatar: Avatar
+default_provider: Výchozí
 published: Zveřejněno
+draft: Návrh
+archived: Archivováno
 modules: Moduly
 module_bar: Panel modulů
 tile_size: Velikost dlaždice
@@ -47,6 +51,7 @@ indeterminate: Neurčitý
 edit_collection: Upravit kolekci
 exclusive: Exkluzivní
 children: Potomci
+db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení'
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
 required: Povinné
@@ -61,6 +66,8 @@ create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
+subject: Předmět
+inbox: Doručené
 emails: E-mail
 connection_excellent: Vynikající připojení
 connection_good: Dobré připojení
@@ -354,6 +361,11 @@ fields:
     role: Role
   directus_settings:
     project_name: Název projektu
+    module_bar: Panel modulů
+  directus_shares:
+    name: Jméno
+    role: Role
+    password: Heslo
   directus_fields:
     note: Poznámka
     hidden: Skryté
@@ -364,6 +376,8 @@ fields:
   directus_webhooks:
     name: Jméno
     status: Stav
+    value: Hodnota
+    collections: Kategorie
 field_options:
   directus_activity:
     create: Vytořit
@@ -376,13 +390,12 @@ field_options:
     fields:
       icon_name: Ikona
       name_name: Jméno
-    collection_list:
-      fields:
-        type_name: Typ
     collections_name: Kategorie
   directus_webhooks:
     actions_create: Vytořit
     actions_update: Úpravy
+    headers:
+      value: Hodnota
 comment: Komentář
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
@@ -462,6 +475,13 @@ displays:
     description: Zobrazit soubory
   filesize:
     filesize: Velikost souboru
+  formatted-value:
+    format: Formát
+    prefix: Prefix
+    suffix: Přípona
+    color: Barva
+    icon: Ikona
+    text: Text
   icon:
     icon: Ikona
   user:

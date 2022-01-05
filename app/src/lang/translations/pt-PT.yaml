@@ -593,6 +593,9 @@ fields:
     public_background: Fundo Público
     public_note: Nota Pública
     custom_css: CSS Personalizado
+  directus_shares:
+    name: Nome
+    role: Perfil
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -607,7 +610,6 @@ fields:
     enforce_tfa: Exigir 2FA
     users: Utilizadores na função
     module_list: Navegação do Modulo
-    collection_list: Navegação da coleção
   directus_webhooks:
     name: Nome
     status: Estado
@@ -624,9 +626,6 @@ field_options:
   directus_roles:
     fields:
       name_name: Nome
-    collection_list:
-      fields:
-        type_name: Tipo
   directus_users:
     status_dropdown_active: Ativar
   directus_webhooks:
@@ -673,6 +672,8 @@ interfaces:
     interface: Interface
   select-dropdown-m2o:
     display_template: Templates de Exibição
+  input-rich-text-md:
+    edit: Editar
   map:
     zoom: Zoom
   system-folder:
@@ -694,6 +695,11 @@ displays:
     collection: Coleção
   datetime:
     format: Formatar
+  formatted-value:
+    format: Formatar
+    prefix: Prefixo
+    suffix: Sufixo
+    text: Texto
   labels:
     choices_value_placeholder: Insira um valor...
   user:

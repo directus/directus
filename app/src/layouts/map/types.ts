@@ -1,5 +1,4 @@
-import { CameraOptions, AnyLayer } from 'maplibre-gl';
-import { GeometryFormat } from '@directus/shared/types';
+import { CameraOptions } from 'maplibre-gl';
 
 export type LayoutQuery = {
 	fields: string[];
@@ -10,8 +9,6 @@ export type LayoutQuery = {
 
 export type LayoutOptions = {
 	cameraOptions?: CameraOptions & { bbox: any };
-	customLayers?: Array<AnyLayer>;
-	geometryFormat?: GeometryFormat;
 	geometryField?: string;
 	autoLocationFilter?: boolean;
 	clusterData?: boolean;

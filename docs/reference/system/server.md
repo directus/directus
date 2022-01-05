@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Provides detailed information about the project server, its schema, and its health.
-> [Learn more about Projects](/concepts/projects/).
+> [Learn more about Projects](/getting-started/glossary/#projects).
 
 </div>
 <div class="right">
@@ -208,7 +208,7 @@ The public information is returned for everybody. Admin users get additional inf
 `project` **object**\
 Public information about the project. Used to render the Admin App public pages.
 
-See [the settings object](/reference/api/settings/#the-settings-object) for more information on the individual
+See [the settings object](/reference/system/settings/#the-settings-object) for more information on the individual
 properties of the `project` object.
 
 </div>

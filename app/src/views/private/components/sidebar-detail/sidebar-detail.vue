@@ -1,6 +1,6 @@
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button class="toggle" :class="{ open: active }" @click="toggle">
+		<button v-tooltip.left="title" class="toggle" :class="{ open: active }" @click="toggle">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" outline />
@@ -79,6 +79,11 @@ body {
 	--v-badge-color: var(--background-normal);
 
 	display: contents;
+
+	:deep(.type-label) {
+		margin-bottom: 4px;
+		font-size: 1rem;
+	}
 
 	.toggle {
 		position: relative;

@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
-> alter the schema of the database. [Learn more about Collections](/concepts/collections/).
+> alter the schema of the database. [Learn more about Collections](/getting-started/glossary/#collections).
 
 </div>
 <div class="right">
@@ -73,6 +73,24 @@ Whether or not the Admin App should allow the user to view archived items.
 `sort_field` **boolean**\
 What field holds the sort value on the collection. The Admin App uses this to allow drag-and-drop manual sorting.
 
+`accountability` **string**\
+What data is tracked. One of `all`, `activity`. See [Accountability](/configuration/data-model/#accountability) for more
+information.
+
+`item_duplication_fields` **array**\
+What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/configuration/data-model/#duplication)
+for more information.
+
+`group` **string**\
+The name of the parent collection. This is used in [grouping/nesting of collections](/configuration/data-model/#sorting-grouping).
+
+`sort` **number**\
+What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/configuration/data-model/#sorting-grouping).
+
+`collapse` **string**\
+What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`,
+`locked`.
+
 </div>
 
 #### Schema
@@ -89,6 +107,14 @@ The table name.
 The table comment.
 
 </div>
+
+::: tip
+
+["folder" collections do not hold any data](/configuration/data-model/#sorting-grouping), hence their schema would be
+`null`.
+
+:::
+
 </div>
 <div class="right">
 
@@ -116,7 +142,9 @@ The table comment.
 		"archive_value": "archived",
 		"unarchive_value": "draft",
 		"archive_app_filter": true,
-		"sort_field": "sort"
+		"sort_field": "sort",
+		"item_duplication_fields": null,
+		"sort": 1
 	},
 	"schema": {
 		"name": "pages",
@@ -155,7 +183,7 @@ GET /collections
 SEARCH /collections
 ```
 
-[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
 
 ### GraphQL
 
@@ -258,12 +286,19 @@ The `collection` property is required, all other properties of the [collection o
 optional.
 
 You are able to provide an array of `fields` to be created during the creation of the collection. See the
-[fields object](/reference/api/system/fields/#the-fields-object) for more information on what properties are available
-in a field.
+[fields object](/reference/system/fields/#the-fields-object) for more information on what properties are available in a
+field.
 
 ### Returns
 
 The [collection object](#the-collection-object) for the collection created in this request.
+
+::: tip
+
+Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
+entirely or use `schema: null` to create ["folder" collections](/configuration/data-model/#sorting-grouping).
+
+:::
 
 </div>
 <div class="right">
@@ -332,8 +367,8 @@ This endpoint doesn't currently support any query parameters.
 
 ### Request Body
 
-You can only update the `meta` values of the the [collection object](#the-collection-object). Updating the collection
-name is not supported at this time.
+You can only update the `meta` values of the [collection object](#the-collection-object). Updating the collection name
+is not supported at this time.
 
 ### Returns
 

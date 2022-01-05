@@ -30,6 +30,7 @@
 					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
+					tabindex="-1"
 					clickable
 					:disabled="!isStepUpAllowed"
 					@click="stepUp"
@@ -38,6 +39,7 @@
 					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
+					tabindex="-1"
 					clickable
 					:disabled="!isStepDownAllowed"
 					@click="stepDown"
@@ -55,8 +57,8 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
+import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -157,6 +159,7 @@ export default defineComponent({
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));
 		const attributes = computed(() => omit(attrs, ['class']));
+
 		const classes = computed(() => [
 			{
 				'full-width': props.fullWidth,
@@ -179,23 +182,13 @@ export default defineComponent({
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
 			const key = event.key.toLowerCase();
-			const systemKeys = [
-				'meta',
-				'shift',
-				'alt',
-				'backspace',
-				'tab',
-				'arrowup',
-				'arrowdown',
-				'arrowleft',
-				'arrowright',
-			];
+			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.slug === true) {
 				const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
 
-				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key);
+				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 				if (isAllowed === false) {
 					event.preventDefault();
@@ -239,7 +232,12 @@ export default defineComponent({
 			}
 
 			if (props.type === 'number') {
-				emit('update:modelValue', Number(value));
+				const parsedNumber = Number(value);
+
+				// Ignore if numeric value remains unchanged
+				if (props.modelValue !== parsedNumber) {
+					emit('update:modelValue', parsedNumber);
+				}
 			} else {
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
@@ -248,7 +246,6 @@ export default defineComponent({
 				}
 
 				if (props.dbSafe === true) {
-					value = value.toLowerCase();
 					value = value.replace(/\s/g, '_');
 					// Replace é -> e etc
 					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -413,7 +410,7 @@ body {
 		&::-webkit-outer-spin-button,
 		&::-webkit-inner-spin-button {
 			margin: 0;
-			-webkit-appearance: none;
+			appearance: none;
 		}
 
 		&:focus {
@@ -423,7 +420,7 @@ body {
 		/* Firefox */
 
 		&[type='number'] {
-			-moz-appearance: textfield;
+			appearance: textfield;
 		}
 	}
 

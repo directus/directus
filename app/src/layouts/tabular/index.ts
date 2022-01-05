@@ -142,17 +142,17 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function useItemOptions() {
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
-			const sort = syncRefProperty(layoutQuery, 'sort', () =>
-				primaryKeyField.value ? [primaryKeyField.value?.field] : []
-			);
-
-			const fields = syncRefProperty(layoutQuery, 'fields', () =>
-				fieldsInCollection.value
+			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
+			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
+			const fieldsDefaultValue = computed(() => {
+				return fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
 					.slice(0, 4)
 					.map(({ field }: Field) => field)
-					.sort()
-			);
+					.sort();
+			});
+
+			const fields = syncRefProperty(layoutQuery, 'fields', fieldsDefaultValue);
 
 			const fieldsWithRelational = computed(() => {
 				if (!props.collection) return [];
@@ -266,12 +266,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 				if (props.selectMode || selection.value?.length > 0) {
 					if (selection.value?.includes(primaryKey) === false) {
-						selection.value.push(primaryKey);
+						selection.value = selection.value.concat(primaryKey);
 					} else {
 						selection.value = selection.value.filter((item) => item !== primaryKey);
 					}
 				} else {
-					const next = router.resolve(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					const next = router.resolve(`/content/${collection.value}/${encodeURIComponent(primaryKey)}`);
 
 					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
 					else router.push(next);

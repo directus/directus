@@ -1,18 +1,18 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceTranslations from './translations.vue';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'translations',
 	name: '$t:translations',
-	icon: 'replay',
+	icon: 'translate',
 	types: ['alias'],
 	localTypes: ['translations'],
 	group: 'relational',
 	relational: true,
 	component: InterfaceTranslations,
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const fieldsStore = useFieldsStore();
 
 		const languagesCollection = relations.m2o?.related_collection;
@@ -25,7 +25,6 @@ export default defineInterface({
 				value: field.field,
 			}));
 		}
-
 		return [
 			{
 				field: 'languageField',
@@ -34,10 +33,12 @@ export default defineInterface({
 				meta: {
 					interface: 'select-dropdown',
 					options: {
+						placeholder: '$t:primary_key',
 						choices,
 					},
 				},
 			},
 		];
 	},
+	preview: PreviewSVG,
 });

@@ -8,7 +8,7 @@ import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field, Item, Filter } from '@directus/shared/types';
+import { Field, Item } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -22,6 +22,7 @@ import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions } from './types';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',
@@ -30,8 +31,7 @@ export default defineLayout<LayoutOptions>({
 	component: CalendarLayout,
 	slots: {
 		options: CalendarOptions,
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		sidebar: () => {},
+		sidebar: () => undefined,
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
@@ -41,11 +41,10 @@ export default defineLayout<LayoutOptions>({
 
 		const appStore = useAppStore();
 
+		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
-		const filter = useSync(props, 'filter', emit);
-		const search = useSync(props, 'search', emit);
 
-		const { selection, collection } = toRefs(props);
+		const { collection, filter, search } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -55,76 +54,41 @@ export default defineLayout<LayoutOptions>({
 			})
 		);
 
+		const calendarFilter = computed(() => {
+			if (!calendar.value || !startDateField.value) {
+				return;
+			}
+			const start = formatISO(calendar.value.view.activeStart);
+			const end = formatISO(calendar.value.view.activeEnd);
+			const startsHere = { [startDateField.value]: { _between: [start, end] } };
+			if (!endDateField.value) {
+				return startsHere;
+			}
+			const endsHere = { [endDateField.value]: { _between: [start, end] } };
+			const startsBefore = { [startDateField.value]: { _lte: start } };
+			const endsAfter = { [endDateField.value]: { _gte: end } };
+			const overlapsHere = { _and: [startsBefore, endsAfter] };
+			return { _or: [startsHere, endsHere, overlapsHere] };
+		});
+
 		const filterWithCalendarView = computed(() => {
-			if (!calendar.value || !startDateField.value) return filter.value;
+			if (!calendarFilter.value) return filter.value;
+			if (!filter.value) return null;
 
-			const calendarFilter: Filter = {
-				_and: [
-					{
-						[startDateField.value]: {
-							_between: [formatISO(calendar.value.view.currentStart), formatISO(calendar.value.view.currentEnd)],
-						},
-					},
-				],
+			return {
+				_and: [filter.value, calendarFilter.value],
 			};
-
-			if (filter.value) calendarFilter._and.push(filter.value);
-
-			return calendarFilter;
 		});
 
-		const template = computed({
-			get() {
-				return layoutOptions.value?.template ?? null;
-			},
-			set(newTemplate: string | null) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					template: newTemplate ?? undefined,
-				};
-			},
-		});
+		const template = syncRefProperty(layoutOptions, 'template', undefined);
+		const viewInfo = syncRefProperty(layoutOptions, 'viewInfo', undefined);
 
-		const viewInfo = computed({
-			get() {
-				return layoutOptions.value?.viewInfo;
-			},
-			set(newViewInfo: LayoutOptions['viewInfo']) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					viewInfo: newViewInfo,
-				};
-			},
-		});
-
-		const startDateField = computed({
-			get() {
-				return layoutOptions.value?.startDateField ?? null;
-			},
-			set(newStartDateField: string | null) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					startDateField: newStartDateField ?? undefined,
-				};
-			},
-		});
-
+		const startDateField = syncRefProperty(layoutOptions, 'startDateField', undefined);
 		const startDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === startDateField.value);
 		});
 
-		const endDateField = computed({
-			get() {
-				return layoutOptions.value?.endDateField ?? null;
-			},
-			set(newEndDateField: string | null) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					endDateField: newEndDateField ?? undefined,
-				};
-			},
-		});
-
+		const endDateField = syncRefProperty(layoutOptions, 'endDateField', undefined);
 		const endDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
@@ -161,7 +125,7 @@ export default defineLayout<LayoutOptions>({
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
-				contentHeight: 800,
+				height: '100%',
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
@@ -179,10 +143,12 @@ export default defineLayout<LayoutOptions>({
 						const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
 
 						if (item) {
-							if (selection.value.includes(item)) {
-								selection.value = selection.value.filter((selectedItem) => selectedItem !== item);
+							const primaryKey = item[primaryKeyField.value!.field];
+
+							if (selection.value.includes(primaryKey)) {
+								selection.value = selection.value.filter((selected) => selected !== primaryKey);
 							} else {
-								selection.value = [...selection.value, item];
+								selection.value = [...selection.value, primaryKey];
 							}
 
 							updateCalendar();
@@ -192,7 +158,7 @@ export default defineLayout<LayoutOptions>({
 
 						const endpoint = collection.value.startsWith('directus')
 							? collection.value.substring(9)
-							: `collections/${collection.value}`;
+							: `content/${collection.value}`;
 
 						router.push(`/${endpoint}/${primaryKey}`);
 					}
@@ -322,13 +288,15 @@ export default defineLayout<LayoutOptions>({
 				}
 			}
 
+			const primaryKey = item[primaryKeyField.value.field];
+
 			return {
-				id: item[primaryKeyField.value.field],
+				id: primaryKey,
 				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				className: selection.value.includes(item) ? 'selected' : undefined,
+				className: selection.value.includes(primaryKey) ? 'selected' : undefined,
 			};
 		}
 

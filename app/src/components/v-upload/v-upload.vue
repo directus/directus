@@ -55,6 +55,8 @@
 				<drawer-collection
 					collection="directus_files"
 					:active="activeDialog === 'choose'"
+					:multiple="multiple"
+					:filter="filterByFolder"
 					@update:active="activeDialog = null"
 					@input="setSelection"
 				/>
@@ -133,6 +135,11 @@ export default defineComponent({
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
 
+		const filterByFolder = computed(() => {
+			if (!props.folder) return null;
+			return { folder: { id: { _eq: props.folder } } };
+		});
+
 		return {
 			t,
 			uploading,
@@ -145,6 +152,7 @@ export default defineComponent({
 			done,
 			numberOfFiles,
 			activeDialog,
+			filterByFolder,
 			url,
 			isValidURL,
 			urlLoading,
@@ -364,7 +372,7 @@ export default defineComponent({
 
 .uploading {
 	--v-progress-linear-color: var(--white);
-	--v-progress-linear-background-color: rgb(255 255 255 / 25%);
+	--v-progress-linear-background-color: rgb(255 255 255 / 0.25);
 	--v-progress-linear-height: 8px;
 
 	color: var(--white);

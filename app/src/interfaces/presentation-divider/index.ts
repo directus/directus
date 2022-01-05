@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationDivider from './presentation-divider.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'presentation-divider',
@@ -13,6 +14,18 @@ export default defineInterface({
 	localTypes: ['presentation'],
 	group: 'presentation',
 	options: [
+		{
+			field: 'title',
+			name: '$t:title',
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'input',
+				options: {
+					placeholder: '$t:interfaces.presentation-divider.title_placeholder',
+				},
+			},
+		},
 		{
 			field: 'color',
 			name: '$t:color',
@@ -29,18 +42,6 @@ export default defineInterface({
 			meta: {
 				width: 'half',
 				interface: 'select-icon',
-			},
-		},
-		{
-			field: 'title',
-			name: '$t:title',
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input',
-				options: {
-					placeholder: '$t:interfaces.presentation-divider.title_placeholder',
-				},
 			},
 		},
 		{
@@ -74,4 +75,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });
