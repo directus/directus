@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Avatar
+application: Anwendung
 default_provider: Standard
 published: Veröffentlicht
 draft: Entwurf
@@ -31,6 +32,7 @@ tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
+switch_user: Benutzer wechseln
 item_creation: Element erstellt
 item_revision: Element überarbeitet
 enter_a_name: Namen eingeben...
@@ -768,6 +770,7 @@ adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
 creating_in: 'Element in {collection} erstellen'
 editing_in: 'Bearbeite Element in {collection}'
+viewing_in: 'Element aus {collection} wird angezeigt'
 creating_unit: 'Erstelle {unit}'
 editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
@@ -956,6 +959,8 @@ fields:
     basemaps_style: Mapbox-Stil
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribuierung
+    attribution_placeholder: '© OpenStreetMap Mitwirkende'
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
     project_name: Projekt-Name
