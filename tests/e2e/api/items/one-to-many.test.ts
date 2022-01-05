@@ -1,7 +1,7 @@
 import axios from 'axios';
 import request from 'supertest';
 import config from '../../config';
-import { getDBsToTest } from '../../get-dbs-to-test';
+import vendors from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createGuest, createMany, seedTable } from '../../setup/utils/factories';
 import { internet } from 'faker';
@@ -10,8 +10,6 @@ describe('/items', () => {
 	const databases = new Map<string, Knex>();
 
 	beforeAll(async () => {
-		const vendors = getDBsToTest();
-
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 		}
@@ -24,8 +22,8 @@ describe('/items', () => {
 	});
 
 	describe('/:collection/:id GET', () => {
-		it.each(getDBsToTest())(`%p retrieves a guest's favorite artist`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p retrieves a guest's favorite artist`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			const guest = createGuest();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
@@ -43,17 +41,13 @@ describe('/items', () => {
 	});
 
 	describe('/:collection GET', () => {
-		it.each(getDBsToTest())('%p retrieves all items from guest table with favorite_artist', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)('%p retrieves all items from guest table with favorite_artist', async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			const name = internet.userName();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
-			await seedTable(
-				databases.get(vendor)!,
-				1,
-				'guests',
-				createMany(createGuest, 10, { name, favorite_artist: artist.id })
-			);
+			const guests = createMany(createGuest, 10, { name, favorite_artist: artist.id });
+			await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
 			const response = (
 				await request(url)
@@ -73,8 +67,8 @@ describe('/items', () => {
 
 	describe('/:collection POST', () => {
 		describe('createOne', () => {
-			it.each(getDBsToTest())('%p creates one guest with a favorite_artist', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p creates one guest with a favorite_artist', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const body = createGuest();
 				body.favorite_artist = artist;
@@ -89,8 +83,8 @@ describe('/items', () => {
 			});
 		});
 		describe('createMany', () => {
-			it.each(getDBsToTest())('%p creates 5 users with a favorite_artist', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p creates 5 users with a favorite_artist', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 				const body = createMany(createGuest, 5, { favorite_artist: artist.id });

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import request from 'supertest';
 import config from '../../config';
-import { getDBsToTest } from '../../get-dbs-to-test';
+import vendors from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createEvent, createGuest, createMany, seedTable } from '../../setup/utils/factories';
 import { v4 as uuid } from 'uuid';
@@ -10,8 +10,6 @@ describe('/items', () => {
 	const databases = new Map<string, Knex>();
 
 	beforeAll(async () => {
-		const vendors = getDBsToTest();
-
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 		}
@@ -24,8 +22,8 @@ describe('/items', () => {
 	});
 
 	describe('/:collection/:id GET', () => {
-		it.each(getDBsToTest())('%p retrieves one artist', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)('%p retrieves one artist', async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
@@ -37,8 +35,8 @@ describe('/items', () => {
 
 			expect(response.body.data).toMatchObject({ name: expect.any(String) });
 		});
-		it.each(getDBsToTest())(`%p retrieves a guest's favorite artist`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p retrieves a guest's favorite artist`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const guest = createGuest();
 			const artist = createArtist();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -58,8 +56,8 @@ describe('/items', () => {
 
 			expect(response.body.data).toMatchObject({ name: expect.any(String) });
 		});
-		it.each(getDBsToTest())(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 				select: ['id'],
 			});
@@ -88,8 +86,8 @@ describe('/items', () => {
 			});
 		});
 		describe('Error handling', () => {
-			it.each(getDBsToTest())('%p returns an error when an invalid id is used', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p returns an error when an invalid id is used', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 				const response = await axios
 					.get(`${url}/items/artists/invalid_id`, {
@@ -114,8 +112,8 @@ describe('/items', () => {
 					expect(response.message).toBe('Request failed with status code 403');
 				}
 			});
-			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p returns an error when an invalid table is used', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 				const response = await axios
 					.get(`${url}/items/invalid_table/1`, {
@@ -136,8 +134,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection/:id PATCH', () => {
-		it.each(getDBsToTest())(`%p updates one artist's name with no relations`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p updates one artist's name with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
@@ -153,8 +151,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection/:id DELETE', () => {
-		it.each(getDBsToTest())(`%p deletes an artist with no relations`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p deletes an artist with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
@@ -170,8 +168,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection GET', () => {
-		it.each(getDBsToTest())('%p retrieves all items from artist table with no relations', async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)('%p retrieves all items from artist table with no relations', async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			await seedTable(databases.get(vendor)!, 50, 'artists', createArtist);
 			const response = await request(url)
 				.get('/items/artists')
@@ -182,8 +180,8 @@ describe('/items', () => {
 			expect(response.body.data.length).toBeGreaterThanOrEqual(50);
 		});
 		describe('Error handling', () => {
-			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p returns an error when an invalid table is used', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 				const response = await axios
 					.get(`${url}/items/invalid_table/`, {
@@ -206,8 +204,8 @@ describe('/items', () => {
 
 	describe('/:collection POST', () => {
 		describe('createOne', () => {
-			it.each(getDBsToTest())('%p creates one artist', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p creates one artist', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const body = createArtist();
 				const response: any = await axios.post(`${url}/items/artists`, body, {
 					headers: {
@@ -219,8 +217,8 @@ describe('/items', () => {
 			});
 		});
 		describe('createMany', () => {
-			it.each(getDBsToTest())('%p creates 5 artists', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p creates 5 artists', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const body = createMany(createArtist, 5)!;
 				const response: any = await axios.post(`${url}/items/artists`, body, {
 					headers: {
@@ -232,8 +230,8 @@ describe('/items', () => {
 			});
 		});
 		describe('Error handling', () => {
-			it.each(getDBsToTest())('%p returns an error when an invalid table is used', async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)('%p returns an error when an invalid table is used', async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const body = createArtist();
 				const response = await axios
 					.post(`${url}/items/invalid_table`, body, {
@@ -255,8 +253,8 @@ describe('/items', () => {
 	});
 
 	describe('/:collection PATCH', () => {
-		it.each(getDBsToTest())(`%p updates many artists to a different name`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p updates many artists to a different name`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 			let items;
 			const keys: any[] = [];
@@ -303,8 +301,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection DELETE', () => {
-		it.each(getDBsToTest())(`%p deletes many artists with no relations`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p deletes many artists with no relations`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artists = createMany(createArtist, 10, { id: uuid });
 			await seedTable(databases.get(vendor)!, 1, 'artists', artists);
 			const body: any[] = [];
