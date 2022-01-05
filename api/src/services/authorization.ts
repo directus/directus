@@ -246,9 +246,10 @@ export class AuthorizationService {
 				specials.includes(name)
 			);
 
-			const nullable = field.nullable || hasGenerateSpecial || field.generated;
+			const notNullable =
+				field.nullable === false || field.required === true || !hasGenerateSpecial || !field.generated;
 
-			if (!nullable) {
+			if (notNullable) {
 				requiredColumns.push(field);
 			}
 		}

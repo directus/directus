@@ -115,13 +115,16 @@ async function getDatabaseSchema(
 
 	const fields = [
 		...(await database
-			.select<{ id: number; collection: string; field: string; special: string; note: string | null }[]>(
-				'id',
-				'collection',
-				'field',
-				'special',
-				'note'
-			)
+			.select<
+				{
+					id: number;
+					collection: string;
+					field: string;
+					special: string;
+					note: string | null;
+					required: boolean | null;
+				}[]
+			>('id', 'collection', 'field', 'special', 'note', 'required')
 			.from('directus_fields')),
 		...systemFieldRows,
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
@@ -145,6 +148,7 @@ async function getDatabaseSchema(
 			scale: existing?.scale || null,
 			special: special,
 			note: field.note,
+			required: field.required,
 			alias: existing?.alias ?? true,
 		};
 	}

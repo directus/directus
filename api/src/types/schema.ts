@@ -12,6 +12,7 @@ export type FieldOverview = {
 	scale: number | null;
 	special: string[];
 	note: string | null;
+	required: boolean | null;
 	alias: boolean;
 };
 

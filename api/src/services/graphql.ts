@@ -412,9 +412,9 @@ export class GraphQLService {
 						let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(field.type);
 
 						// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
-						// can't non-null in update, as that would require every not-nullable field to be
-						// submitted on updates
-						if (field.nullable === false && action !== 'update') {
+						// can't non-null in update, as that would require every not-nullable or required field
+						// to be submitted on updates
+						if ((field.nullable === false || field.required === true) && action !== 'update') {
 							type = GraphQLNonNull(type);
 						}
 
