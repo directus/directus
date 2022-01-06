@@ -52,6 +52,7 @@ import VTemplateInput from './v-template-input.vue';
 import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
+import VMedia from './v-media';
 import VDatePicker from './v-date-picker';
 
 export function registerComponents(app: App): void {
@@ -67,6 +68,7 @@ export function registerComponents(app: App): void {
 	app.component('VCheckbox', VCheckbox);
 	app.component('VCheckboxTree', VCheckboxTree);
 	app.component('VChip', VChip);
+	app.component('VDatePicker', VDatePicker);
 	app.component('VDetail', VDetail);
 	app.component('VDialog', VDialog);
 	app.component('VDivider', VDivider);
@@ -89,6 +91,7 @@ export function registerComponents(app: App): void {
 	app.component('VListItemIcon', VListItemIcon);
 	app.component('VListItem', VListItem);
 	app.component('VList', VList);
+	app.component('VMedia', VMedia);
 	app.component('VMenu', VMenu);
 	app.component('VDrawer', VDrawer);
 	app.component('VNotice', VNotice);
@@ -111,7 +114,6 @@ export function registerComponents(app: App): void {
 	app.component('VTextarea', VTextarea);
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
-	app.component('VDatePicker', VDatePicker);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);

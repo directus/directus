@@ -10,9 +10,7 @@
 			<v-icon v-if="inModal === false" name="upload" />
 		</div>
 
-		<video v-else-if="type === 'video'" controls :src="src" />
-
-		<audio v-else-if="type === 'audio'" controls :src="src" />
+		<v-media v-else-if="type === 'video' || type === 'audio'" controls :src="src" :mime="mime" max-height="500px" />
 	</div>
 </template>
 
