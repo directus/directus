@@ -81,10 +81,12 @@ class ExtensionManager {
 		this.endpointRouter = Router();
 	}
 
-	public async initialize({ schedule } = { schedule: true }): Promise<void> {
+	public async initialize({ schedule, watch } = { schedule: true, watch: true }): Promise<void> {
 		this.isScheduleHookEnabled = schedule;
 
-		this.initializeWatcher();
+		if (watch) {
+			this.initializeWatcher();
+		}
 
 		if (!this.isLoaded) {
 			await this.load();
@@ -180,6 +182,8 @@ class ExtensionManager {
 
 	private initializeWatcher(): void {
 		if (env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development' && !this.watcher) {
+			logger.info('Watching extensions for changes...');
+
 			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
 				path.resolve(env.EXTENSIONS_PATH, pluralize(type))
 			);
@@ -187,6 +191,7 @@ class ExtensionManager {
 			this.watcher = chokidar.watch([path.resolve('.', 'package.json'), ...localExtensionPaths], {
 				ignoreInitial: true,
 			});
+
 			this.watcher
 				.on('add', () => this.reload())
 				.on('change', () => this.reload())
