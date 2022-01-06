@@ -49,8 +49,8 @@ jobs:
       - name: Build packages
         run: npm run build
 
-      - name: Sleep for 60 seconds
-        run: sleep 60s
+      - name: Sleep for 120 seconds
+        run: sleep 120s
         shell: bash
 
       - name: Run tests
