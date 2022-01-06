@@ -40,23 +40,23 @@
 			class="color-data-inputs"
 			:style="{
 				'grid-template-columns': opacity
-					? width === 'half'
+					? width.startsWith('half')
 						? 'repeat(4, 1fr)'
 						: 'repeat(6, 1fr)'
-					: width === 'half'
+					: width.startsWith('half')
 					? 'repeat(3, 1fr)'
 					: 'repeat(5, 1fr)',
 			}"
-			:class="{ stacked: width === 'half' }"
+			:class="{ stacked: width.startsWith('half') }"
 		>
 			<div
 				class="color-data-input color-type"
 				:style="{
 					'grid-column': opacity
-						? width === 'half'
+						? width.startsWith('half')
 							? '1 / span 4'
 							: '1 / span 2'
-						: width === 'half'
+						: width.startsWith('half')
 						? '1 / span 3'
 						: '1 / span 2',
 				}"
