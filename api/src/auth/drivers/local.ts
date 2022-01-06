@@ -9,6 +9,7 @@ import asyncHandler from '../../utils/async-handler';
 import env from '../../env';
 import { respond } from '../../middleware/respond';
 import { COOKIE_OPTIONS } from '../../constants';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
@@ -54,7 +55,7 @@ export function createLocalAuthRouter(provider: string): Router {
 		'/',
 		asyncHandler(async (req, res, next) => {
 			const accountability = {
-				ip: req.ip,
+				ip: getIPFromReq(req),
 				userAgent: req.get('user-agent'),
 				role: null,
 			};

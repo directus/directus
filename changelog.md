@@ -2,6 +2,90 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.4.2 (December 30, 2021)
+
+### :warning: Notice
+
+For security reasons, we've enabled the `Content-Security-Policy` header by default. This won't change the normal
+operating behavior of the API, but be aware if you were doing some trickery before that might be affected by this
+header.
+
+### :rocket: Improvements
+
+- **API**
+  - [#10778](https://github.com/directus/directus/pull/10778) Add warning when DB_CHARSET isn't explicitly configured
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - :warning: [#10776](https://github.com/directus/directus/pull/10776) Add Content-Security-Policy header by default
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10773](https://github.com/directus/directus/pull/10773) Don't force commandTimeout in redis based caches
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10765](https://github.com/directus/directus/pull/10765) Add ability to configure IP extraction
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#10762](https://github.com/directus/directus/pull/10762) Don't show badge when no revisions
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10760](https://github.com/directus/directus/pull/10760) style tweaks ([@benhaynes](https://github.com/benhaynes))
+  - [#9224](https://github.com/directus/directus/pull/9224) Enable alpha channel in color selector
+    ([@adanielyan](https://github.com/adanielyan))
+
+### :memo: Documentation
+
+- [#10761](https://github.com/directus/directus/pull/10761) Add link to Cleavr deployment guide
+  ([@armgitaar](https://github.com/armgitaar))
+- [#10622](https://github.com/directus/directus/pull/10622) `update_users_me` Alias for GraphQL API
+  ([@w0ryn](https://github.com/w0ryn))
+
+## v9.4.1 (December 28, 2021)
+
+### :rocket: Improvements
+
+- **API**
+  - [#10713](https://github.com/directus/directus/pull/10713) exclude MS-SQL system table 'sysdiagrams'
+    ([@paulboudewijn](https://github.com/paulboudewijn))
+- **App**
+  - [#10698](https://github.com/directus/directus/pull/10698) Add notice for display templates when creating M2M field
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10697](https://github.com/directus/directus/pull/10697) Add empty state to revisions
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10611](https://github.com/directus/directus/pull/10611) Update interface previews
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#6440](https://github.com/directus/directus/pull/6440) Add stacked drawers effect
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#10740](https://github.com/directus/directus/pull/10740) Fix data type inconsistencies in directus_shares table
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10736](https://github.com/directus/directus/pull/10736) Replace knex.fn.now() to Date()
+    ([@licitdev](https://github.com/licitdev))
+  - [#10674](https://github.com/directus/directus/pull/10674) check system deny list in relations for GraphQL
+    ([@azrikahar](https://github.com/azrikahar))
+- **App**
+  - [#10721](https://github.com/directus/directus/pull/10721) Tweak auto-refresh of panels
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10704](https://github.com/directus/directus/pull/10704) App: fix m2o raw value
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10703](https://github.com/directus/directus/pull/10703) App: add sort on create m2m item
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10702](https://github.com/directus/directus/pull/10702) App: fix stacked drawers on mobile
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10696](https://github.com/directus/directus/pull/10696) Fix Map Attribution Problems
+    ([@maltejur](https://github.com/maltejur))
+  - [#10691](https://github.com/directus/directus/pull/10691) Add OpenStreetMaps Attribution
+    ([@maltejur](https://github.com/maltejur))
+  - [#10576](https://github.com/directus/directus/pull/10576) fix default values from permission's field presets
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#10711](https://github.com/directus/directus/pull/10711) Fix end-to-end tests for Postgres10
+    ([@jaycammarano](https://github.com/jaycammarano))
+- **API**
+  - [#10710](https://github.com/directus/directus/pull/10710) Fix debugging random portno
+    ([@paulboudewijn](https://github.com/paulboudewijn))
+
 ## v9.4.0 (December 23, 2021)
 
 ### :sparkles: New Features

@@ -54,10 +54,10 @@ export class SharesService extends ItemsService {
 			.from('directus_shares')
 			.where('id', payload.share)
 			.andWhere((subQuery) => {
-				subQuery.whereNull('date_end').orWhere('date_end', '>=', this.knex.fn.now());
+				subQuery.whereNull('date_end').orWhere('date_end', '>=', new Date());
 			})
 			.andWhere((subQuery) => {
-				subQuery.whereNull('date_start').orWhere('date_start', '<=', this.knex.fn.now());
+				subQuery.whereNull('date_start').orWhere('date_start', '<=', new Date());
 			})
 			.andWhere((subQuery) => {
 				subQuery.whereNull('max_uses').orWhere('max_uses', '>=', this.knex.ref('times_used'));

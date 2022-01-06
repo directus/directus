@@ -2,9 +2,13 @@
 	<sidebar-detail
 		:title="t('revisions')"
 		icon="change_history"
-		:badge="!loading && revisions ? abbreviateNumber(revisionsCount) : null"
+		:badge="!loading && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 	>
 		<v-progress-linear v-if="loading" indeterminate />
+
+		<div v-else-if="revisionsCount === 0" class="empty">
+			<div class="content">{{ t('no_revisions') }}</div>
+		</div>
 
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
@@ -264,6 +268,7 @@ export default defineComponent({
 .empty {
 	margin-top: 16px;
 	margin-bottom: 16px;
+	margin-left: 2px;
 	color: var(--foreground-subdued);
 	font-style: italic;
 }

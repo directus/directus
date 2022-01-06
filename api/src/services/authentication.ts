@@ -74,7 +74,7 @@ export class AuthenticationService {
 				'u.auth_data'
 			)
 			.from('directus_users as u')
-			.innerJoin('directus_roles as r', 'u.role', 'r.id')
+			.leftJoin('directus_roles as r', 'u.role', 'r.id')
 			.where('u.id', await provider.getUserID(cloneDeep(payload)))
 			.andWhere('u.provider', providerName)
 			.first();
@@ -275,12 +275,12 @@ export class AuthenticationService {
 			.leftJoin('directus_shares AS d', 's.share', 'd.id')
 			.joinRaw('LEFT JOIN directus_roles AS r ON r.id IN (u.role, d.role)')
 			.where('s.token', refreshToken)
-			.andWhere('s.expires', '>=', this.knex.fn.now())
+			.andWhere('s.expires', '>=', new Date())
 			.andWhere((subQuery) => {
-				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', this.knex.fn.now());
+				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', new Date());
 			})
 			.andWhere((subQuery) => {
-				subQuery.whereNull('d.date_start').orWhere('d.date_start', '<=', this.knex.fn.now());
+				subQuery.whereNull('d.date_start').orWhere('d.date_start', '<=', new Date());
 			})
 			.first();
 
@@ -321,6 +321,10 @@ export class AuthenticationService {
 				collection: record.share_collection,
 				item: record.share_item,
 			};
+			tokenPayload.app_access = false;
+			tokenPayload.admin_access = false;
+
+			delete tokenPayload.id;
 		}
 
 		const customClaims = await emitter.emitFilter(

@@ -10,8 +10,19 @@ import {
 	EXTENSION_TYPES,
 } from '../constants';
 import { Accountability } from './accountability';
-import { Collection, Field, Relation, DeepPartial } from '.';
+import {
+	Collection,
+	Field,
+	Relation,
+	DeepPartial,
+	InterfaceConfig,
+	DisplayConfig,
+	LayoutConfig,
+	ModuleConfig,
+	PanelConfig,
+} from '.';
 import { LOCAL_TYPES } from '../constants';
+import { Ref } from 'vue';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -60,6 +71,14 @@ export type ExtensionManifest = {
 		host: string;
 		hidden?: boolean;
 	};
+};
+
+export type AppExtensionConfigs = {
+	interfaces: Ref<InterfaceConfig[]>;
+	displays: Ref<DisplayConfig[]>;
+	layouts: Ref<LayoutConfig[]>;
+	modules: Ref<ModuleConfig[]>;
+	panels: Ref<PanelConfig[]>;
 };
 
 export type ApiExtensionContext = {

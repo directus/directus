@@ -975,6 +975,10 @@ fields:
     transformations_all: Разрешить все трансформации
     transformations_none: Отключить трансформации
     transformations_presets: Ограничить преобразования для пресетов ниже
+  directus_shares:
+    name: Имя
+    role: Роль
+    password: Пароль
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции

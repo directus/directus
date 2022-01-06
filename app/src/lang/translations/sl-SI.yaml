@@ -800,6 +800,10 @@ fields:
     auth_login_attempts: Število poskusov prijave
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
+  directus_shares:
+    name: Ime
+    role: Vloga
+    password: Geslo
   directus_fields:
     collection: Ime zbirke
     icon: Ikona zbirke

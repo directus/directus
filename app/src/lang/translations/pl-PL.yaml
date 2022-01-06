@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identyfikator
 avatar: Awatar
+application: Aplikacja
 default_provider: Domyślny
 published: Opublikowany
 draft: Szkic
@@ -958,6 +959,8 @@ fields:
     basemaps_style: Styl Mapbox
     mapbox_key: Token dostępu do Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atrybuty
+    attribution_placeholder: '© Współtwórcy OpenStreetMap'
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
@@ -980,6 +983,10 @@ fields:
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
+  directus_shares:
+    name: Nazwa
+    role: Rola
+    password: Hasło
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
@@ -1136,6 +1143,7 @@ share: Udostępnij
 share_item: Udostępnij element
 shared_with_you: Pewien element został Ci udostępniony
 shared_enter_passcode: Wprowadź kod dostępu, aby kontynuować...
+shared_leave_blank_for_unlimited: Pozostaw puste dla nieograniczonej liczby
 shared_times_remaining: Ten link może być użyty tylko {n} razy
 shared_last_remaining: Ten link może być użyty tylko raz
 shared_uses_left: Dla dodanego bezpieczeństwa, ta wspólna strona została skonfigurowana z ograniczoną liczbą widoków. Pozostało {n} wyświetleń, po których strona nie będzie już dostępna.
@@ -1196,6 +1204,7 @@ relationship: Powiązanie
 reset: Resetuj
 reset_password: Resetuj hasło
 revisions: Wersje
+no_revisions: Brak rewizji
 revert: Przywróć
 save: Zapisz
 schema: Schemat
@@ -1283,6 +1292,7 @@ interfaces:
     description: Wprowadź lub wybierz kolor
     placeholder: Wybierz kolor...
     preset_colors: Ustawienia kolorów
+    opacity: Przezroczystość
     preset_colors_add_label: Dodaj nowy kolor...
     name_placeholder: Wprowadź nazwę koloru...
   datetime:
@@ -1347,6 +1357,7 @@ interfaces:
   list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
+    display_template_configure_notice: Możesz skonfigurować szablon wyświetlania po utworzeniu tego pola.
   select-dropdown-m2o:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
@@ -1591,6 +1602,7 @@ displays:
   related-values:
     related-values: Powiązane wartości
     description: Wyświetl wartości Raw
+    display_template_configure_notice: Możesz skonfigurować szablon wyświetlania po utworzeniu tego pola.
   user:
     user: Użytkownik
     description: Wyświetl użytkownika
