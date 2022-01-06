@@ -11,7 +11,14 @@
 			<template v-else>
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
 				<template v-else>
-					<v-image :class="imageInfo.fileType" :src="imageInfo.source" :alt="item.title" role="presentation" />
+					<v-image
+						v-if="imageInfo.fileType"
+						:class="imageInfo.fileType"
+						:src="imageInfo.source"
+						:alt="item.title"
+						role="presentation"
+					/>
+					<v-icon v-else large :name="icon" />
 				</template>
 			</template>
 		</div>
@@ -96,6 +103,9 @@ export default defineComponent({
 			if (!props.file || !props.file.type) return null;
 			if (props.file.type.startsWith('image') === true) fileType = 'image';
 			if (props.file.type.includes('svg')) fileType = 'svg';
+
+			// Show icon instead of thumbnail
+			if (!fileType) return { source: undefined, fileType };
 
 			let key = 'system-medium-cover';
 
