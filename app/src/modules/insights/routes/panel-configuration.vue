@@ -151,15 +151,14 @@ export default defineComponent({
 				edits.height = undefined;
 			}
 		});
+
 		watch(edits, (newEdits) => {
 			// Allows panels to manipulate the returned fields
-			// instead of only allowing .options to be a function make a new optional arg
-			// on PanelConFig and index.ts
-			// This should probably go in a watch on edits? Because right now it only runs when selectedPanel changes
 			if (selectedPanel.value && selectedPanel.value.alterOptions) {
-				edits.options = selectedPanel.value?.alterOptions(edits);
+				edits.options = selectedPanel.value?.alterOptions(newEdits);
 			} else {
-				edits.options = props.panel.options ?? {};
+				// this doesn't work bc props is null
+				edits.options = selectedPanel.value?.options ?? {};
 			}
 		});
 
