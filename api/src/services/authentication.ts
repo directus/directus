@@ -321,6 +321,10 @@ export class AuthenticationService {
 				collection: record.share_collection,
 				item: record.share_item,
 			};
+			tokenPayload.app_access = false;
+			tokenPayload.admin_access = false;
+
+			delete tokenPayload.id;
 		}
 
 		const customClaims = await emitter.emitFilter(
