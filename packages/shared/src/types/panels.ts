@@ -10,7 +10,7 @@ export interface PanelConfig {
 
 	component: Component;
 	options: DeepPartial<Field>[] | Component | null;
-	alterOptions?: () => Partial<Panel>;
+	alterOptions?: (selections: Partial<Panel>) => Partial<Panel>;
 	minWidth: number;
 	minHeight: number;
 }

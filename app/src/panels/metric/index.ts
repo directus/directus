@@ -260,13 +260,15 @@ export default definePanel({
 	icon: 'functions',
 	component: PanelMetric,
 	alterOptions: (selections: Partial<Panel>) => {
-		if (!selections || !selections.options || selections.options === {}) return fieldOptions;
+		// because I'm passing the whole panel now I need to return the whole panel don't I
+		// unless I return selections and only run this on second load? That way
+		if (!selections || !selections.options || selections.options === {}) return selections;
 
 		// it shouldn't get past here and yet it does because its being passed a reactive object not a regular one.
 		const fieldStore = useFieldsStore();
 		const field = fieldStore.getField(selections.options.collection, selections.options.field);
 
-		if (!field || !field.type) return fieldOptions;
+		if (!field || !field.type) return selections;
 
 		if (!['integer', 'bigInteger', 'float', 'decimal'].includes(field.type)) {
 			fieldOptions[2].meta.options.choices = [
@@ -284,7 +286,7 @@ export default definePanel({
 				},
 			];
 		}
-		return fieldOptions;
+		return selections;
 	},
 	options: fieldOptions,
 	minWidth: 8,
