@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
-import { Panel } from '@/types';
+import { Panel } from '@directus/shared/types';
 import InsightsPanel from '../components/panel.vue';
 import { useElementSize } from '@/composables/use-element-size';
 

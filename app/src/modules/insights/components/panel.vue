@@ -93,7 +93,7 @@
 
 <script lang="ts">
 import { getPanels } from '@/panels';
-import { Panel } from '@/types';
+import { Panel } from '@directus/shared/types';
 import { defineComponent, PropType, computed, ref, reactive } from 'vue';
 import { throttle, omit } from 'lodash';
 import { useI18n } from 'vue-i18n';

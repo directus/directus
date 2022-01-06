@@ -148,7 +148,7 @@ import InsightsNavigation from '../components/navigation.vue';
 import { defineComponent, computed, ref, toRefs, watch } from 'vue';
 import { useInsightsStore, useAppStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
-import { Panel } from '@/types';
+import { Panel } from '@directus/shared/types';
 import { nanoid } from 'nanoid';
 import { merge, omit } from 'lodash';
 import { router } from '@/router';
