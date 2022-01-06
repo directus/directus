@@ -31,6 +31,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Pull database images
+        run: docker compose pull
+
+      - name: Start databases containers
+        run: docker compose up -d
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
@@ -43,11 +49,8 @@ jobs:
       - name: Build packages
         run: npm run build
 
-      - name: Start databases
-        run: docker compose up -d
-
-      - name: Sleep for 20 seconds
-        run: sleep 20s
+      - name: Sleep for 30 seconds
+        run: sleep 30s
         shell: bash
 
       - name: Run tests

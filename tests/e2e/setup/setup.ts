@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import knex from 'knex';
-import { sleep } from './utils/sleep';
 import Listr from 'listr';
 import vendors from '../get-dbs-to-test';
 import config from '../config';
@@ -69,6 +68,5 @@ export default async (): Promise<void> => {
 		},
 	]).run();
 
-	await sleep(10000);
 	console.log('\n');
 };
