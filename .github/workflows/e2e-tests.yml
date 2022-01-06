@@ -15,32 +15,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      # matrix:
-      #   db:
-      #     - mssql
-      #     - mysql
-      #     - postgres
-      #     - maria
-      #     - postgres10
-      #     # - sqlite3
-      #   node-version:
-      #     - '16'
+      matrix:
+        db:
+          - mssql
+          - mysql
+          - postgres
+          - maria
+          - postgres10
+          # - sqlite3
+        node-version:
+          - '16'
     env:
       CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Pull database images
-        run: docker compose pull
-
       - name: Start databases containers
-        run: docker compose up -d
+        run: docker compose up -d --wait
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies
@@ -49,16 +46,14 @@ jobs:
       - name: Build packages
         run: npm run build
 
-      - name: Sleep for 120 seconds
-        run: sleep 120s
-        shell: bash
-
       - name: Run tests
         run: npm run test:e2e
         env:
           SECRET: TEST_SECRET
 
       - name: Run tests
+        env:
+          TEST_DB: ${{ matrix.db }}
         run: npm run test:e2e
 
   result:
