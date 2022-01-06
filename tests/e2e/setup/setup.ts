@@ -6,6 +6,7 @@ import vendors from '../get-dbs-to-test';
 import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
+import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 
 let started = false;
 
@@ -26,6 +27,8 @@ export default async (): Promise<void> => {
 						return {
 							title: config.names[vendor]!,
 							task: async () => {
+								const database = knex(config.knexConfig[vendor]!);
+								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
 								const env = {
 									...config.envs[vendor]!,
 									ADMIN_EMAIL: 'admin@example.com',
@@ -38,27 +41,12 @@ export default async (): Promise<void> => {
 									RATE_LIMITER_ENABLED: 'false',
 								};
 								spawnSync('sh', ['-lc', 'npx directus bootstrap'], { env });
-								const server = spawn('sh', ['-lc', 'npx directus start'], { env });
-								global.directus[vendor] = server;
-							},
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Migrate and seed databases',
-			task: async () => {
-				return new Listr(
-					vendors.map((vendor) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => {
-								const database = knex(config.knexConfig[vendor]!);
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
+								const server = spawn('sh', ['-lc', 'npx directus start'], { env });
+								await awaitDirectusConnection(config.envs[vendor]!.PORT as number);
+								global.directus[vendor] = server;
 							},
 						};
 					}),
