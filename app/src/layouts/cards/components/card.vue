@@ -12,7 +12,7 @@
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
 				<template v-else>
 					<v-image
-						v-if="imageInfo.fileType"
+						v-if="showThumbnail"
 						:class="imageInfo.fileType"
 						:src="imageInfo.source"
 						:alt="item.title"
@@ -118,13 +118,16 @@ export default defineComponent({
 
 			return { source, fileType };
 		});
+		const showThumbnail = computed(() => {
+			return imageInfo.value && imageInfo.value.fileType;
+		});
 		const selectionIcon = computed(() => {
 			if (!props.item) return 'radio_button_unchecked';
 
 			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
-		return { imageInfo, type, selectionIcon, toggleSelection, handleClick, imgError };
+		return { imageInfo, type, showThumbnail, selectionIcon, toggleSelection, handleClick, imgError };
 
 		function toggleSelection() {
 			if (!props.item) return null;
