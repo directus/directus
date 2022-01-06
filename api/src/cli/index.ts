@@ -20,7 +20,7 @@ export async function createCli(): Promise<Command> {
 
 	const extensionManager = getExtensionManager();
 
-	await extensionManager.initialize({ schedule: false });
+	await extensionManager.initialize({ schedule: false, watch: false });
 
 	await emitter.emitInit('cli.before', { program });
 

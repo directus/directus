@@ -35,7 +35,9 @@ import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
-import { escapeRegExp } from 'lodash';
+import { clone, escapeRegExp } from 'lodash';
+import chokidar, { FSWatcher } from 'chokidar';
+import { pluralize } from '@directus/shared/utils';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -49,36 +51,103 @@ export function getExtensionManager(): ExtensionManager {
 	return extensionManager;
 }
 
-class ExtensionManager {
-	private isInitialized = false;
-
-	private extensions: Extension[] = [];
-
-	private appExtensions: Partial<Record<AppExtensionType, string>> = {};
-
-	private apiHooks: (
+type AppExtensions = Partial<Record<AppExtensionType, string>>;
+type ApiExtensions = {
+	hooks: (
 		| { type: 'filter'; path: string; event: string; handler: FilterHandler }
 		| { type: 'action'; path: string; event: string; handler: ActionHandler }
 		| { type: 'init'; path: string; event: string; handler: InitHandler }
 		| { type: 'schedule'; path: string; task: ScheduledTask }
-	)[] = [];
-	private apiEndpoints: { path: string }[] = [];
+	)[];
+	endpoints: { path: string }[];
+};
+
+class ExtensionManager {
+	private isLoaded = false;
+	private isScheduleHookEnabled = true;
+
+	private extensions: Extension[] = [];
+
+	private appExtensions: AppExtensions = {};
+	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [] };
 
 	private apiEmitter: Emitter;
 	private endpointRouter: Router;
 
-	private isScheduleHookEnabled = true;
+	private watcher: FSWatcher | null = null;
 
 	constructor() {
 		this.apiEmitter = new Emitter();
 		this.endpointRouter = Router();
 	}
 
-	public async initialize({ schedule } = { schedule: true }): Promise<void> {
+	public async initialize({ schedule, watch } = { schedule: true, watch: true }): Promise<void> {
 		this.isScheduleHookEnabled = schedule;
 
-		if (this.isInitialized) return;
+		if (watch) {
+			this.initializeWatcher();
+		}
 
+		if (!this.isLoaded) {
+			await this.load();
+
+			this.updateWatchedExtensions(this.extensions);
+
+			const loadedExtensions = this.getExtensionsList();
+			if (loadedExtensions.length > 0) {
+				logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
+			}
+		}
+	}
+
+	public async reload(): Promise<void> {
+		if (this.isLoaded) {
+			logger.info('Reloading extensions');
+
+			const prevExtensions = clone(this.extensions);
+
+			await this.unload();
+			await this.load();
+
+			const added = this.extensions.filter(
+				(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
+			);
+			const removed = prevExtensions.filter(
+				(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
+			);
+
+			this.updateWatchedExtensions(added, removed);
+
+			const addedExtensions = added.map((extension) => extension.name);
+			const removedExtensions = removed.map((extension) => extension.name);
+			if (addedExtensions.length > 0) {
+				logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
+			}
+			if (removedExtensions.length > 0) {
+				logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
+			}
+		} else {
+			logger.warn('Extensions have to be loaded before they can be reloaded');
+		}
+	}
+
+	public getExtensionsList(type?: ExtensionType): string[] {
+		if (type === undefined) {
+			return this.extensions.map((extension) => extension.name);
+		} else {
+			return this.extensions.filter((extension) => extension.type === type).map((extension) => extension.name);
+		}
+	}
+
+	public getAppExtensions(type: AppExtensionType): string | undefined {
+		return this.appExtensions[type];
+	}
+
+	public getEndpointRouter(): Router {
+		return this.endpointRouter;
+	}
+
+	private async load(): Promise<void> {
 		try {
 			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES);
 
@@ -95,19 +164,10 @@ class ExtensionManager {
 			this.appExtensions = await this.generateExtensionBundles();
 		}
 
-		const loadedExtensions = this.listExtensions();
-		if (loadedExtensions.length > 0) {
-			logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
-		}
-
-		this.isInitialized = true;
+		this.isLoaded = true;
 	}
 
-	public async reload(): Promise<void> {
-		if (!this.isInitialized) return;
-
-		logger.info('Reloading extensions');
-
+	private async unload(): Promise<void> {
 		this.unregisterHooks();
 		this.unregisterEndpoints();
 
@@ -117,24 +177,45 @@ class ExtensionManager {
 			this.appExtensions = {};
 		}
 
-		this.isInitialized = false;
-		await this.initialize();
+		this.isLoaded = false;
 	}
 
-	public listExtensions(type?: ExtensionType): string[] {
-		if (type === undefined) {
-			return this.extensions.map((extension) => extension.name);
-		} else {
-			return this.extensions.filter((extension) => extension.type === type).map((extension) => extension.name);
+	private initializeWatcher(): void {
+		if (env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development' && !this.watcher) {
+			logger.info('Watching extensions for changes...');
+
+			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
+				path.resolve(env.EXTENSIONS_PATH, pluralize(type))
+			);
+
+			this.watcher = chokidar.watch([path.resolve('.', 'package.json'), ...localExtensionPaths], {
+				ignoreInitial: true,
+			});
+
+			this.watcher
+				.on('add', () => this.reload())
+				.on('change', () => this.reload())
+				.on('unlink', () => this.reload());
 		}
 	}
 
-	public getAppExtensions(type: AppExtensionType): string | undefined {
-		return this.appExtensions[type];
-	}
+	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
+		if (this.watcher) {
+			const toPackageExtensionPaths = (extensions: Extension[]) =>
+				extensions
+					.filter((extension) => !extension.local)
+					.map((extension) =>
+						extension.type !== 'pack'
+							? path.resolve(extension.path, extension.entrypoint || '')
+							: path.resolve(extension.path, 'package.json')
+					);
 
-	public getEndpointRouter(): Router {
-		return this.endpointRouter;
+			const addedPackageExtensionPaths = toPackageExtensionPaths(added);
+			const removedPackageExtensionPaths = toPackageExtensionPaths(removed);
+
+			this.watcher.add(addedPackageExtensionPaths);
+			this.watcher.unwatch(removedPackageExtensionPaths);
+		}
 	}
 
 	private async getExtensions(): Promise<Extension[]> {
@@ -234,7 +315,7 @@ class ExtensionManager {
 			filter: (event: string, handler: FilterHandler) => {
 				emitter.onFilter(event, handler);
 
-				this.apiHooks.push({
+				this.apiExtensions.hooks.push({
 					type: 'filter',
 					path: hookPath,
 					event,
@@ -244,7 +325,7 @@ class ExtensionManager {
 			action: (event: string, handler: ActionHandler) => {
 				emitter.onAction(event, handler);
 
-				this.apiHooks.push({
+				this.apiExtensions.hooks.push({
 					type: 'action',
 					path: hookPath,
 					event,
@@ -254,7 +335,7 @@ class ExtensionManager {
 			init: (event: string, handler: InitHandler) => {
 				emitter.onInit(event, handler);
 
-				this.apiHooks.push({
+				this.apiExtensions.hooks.push({
 					type: 'init',
 					path: hookPath,
 					event,
@@ -273,7 +354,7 @@ class ExtensionManager {
 						}
 					});
 
-					this.apiHooks.push({
+					this.apiExtensions.hooks.push({
 						type: 'schedule',
 						path: hookPath,
 						task,
@@ -317,13 +398,13 @@ class ExtensionManager {
 			getSchema,
 		});
 
-		this.apiEndpoints.push({
+		this.apiExtensions.endpoints.push({
 			path: endpointPath,
 		});
 	}
 
 	private unregisterHooks(): void {
-		for (const hook of this.apiHooks) {
+		for (const hook of this.apiExtensions.hooks) {
 			switch (hook.type) {
 				case 'filter':
 					emitter.offFilter(hook.event, hook.handler);
@@ -342,16 +423,16 @@ class ExtensionManager {
 			delete require.cache[require.resolve(hook.path)];
 		}
 
-		this.apiHooks = [];
+		this.apiExtensions.hooks = [];
 	}
 
 	private unregisterEndpoints(): void {
-		for (const endpoint of this.apiEndpoints) {
+		for (const endpoint of this.apiExtensions.endpoints) {
 			delete require.cache[require.resolve(endpoint.path)];
 		}
 
 		this.endpointRouter.stack = [];
 
-		this.apiEndpoints = [];
+		this.apiExtensions.endpoints = [];
 	}
 }
