@@ -33,11 +33,11 @@ export default defineComponent({
 	props: {
 		type: {
 			type: String as PropType<'interface' | 'display'>,
-			required: true,
+			default: 'interface',
 		},
 		extension: {
 			type: String,
-			required: true,
+			default: '',
 		},
 		showAdvanced: {
 			type: Boolean,
@@ -80,8 +80,6 @@ export default defineComponent({
 		});
 
 		const optionsFields = computed(() => {
-			if (!extensionInfo.value) return [];
-			if (!extensionInfo.value.options) return [];
 			if (usesCustomComponent.value === true) return [];
 
 			let optionsObjectOrArray;
@@ -89,6 +87,8 @@ export default defineComponent({
 			if (props.options) {
 				optionsObjectOrArray = props.options;
 			} else {
+				if (!extensionInfo.value) return [];
+				if (!extensionInfo.value?.options) return [];
 				optionsObjectOrArray = extensionInfo.value.options;
 			}
 
