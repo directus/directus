@@ -265,7 +265,7 @@ o2m_relationship: Relazione One to Many
 m2m_relationship: Relazione Many to Many
 m2a_relationship: Relazione Many to Any
 invalid_item: Oggetto non valido
-next: Il prossimo
+next: Avanti
 field_name: Nome del Campo
 translations: Traduzioni
 no_translations: Nessuna traduzione

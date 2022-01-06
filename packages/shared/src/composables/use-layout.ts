@@ -1,6 +1,6 @@
-import { getLayouts } from '@/layouts';
 import { computed, reactive, toRefs, defineComponent, Ref, PropType, Component, ComputedRef } from 'vue';
-import { Filter, Item, LayoutConfig, ShowSelect } from '@directus/shared/types';
+import { Filter, LayoutConfig, ShowSelect } from '../types';
+import { useExtensions } from './use-system';
 
 const NAME_SUFFIX = 'wrapper';
 const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery'] as const;
@@ -20,7 +20,7 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 				required: true,
 			},
 			selection: {
-				type: Array as PropType<Item[]>,
+				type: Array as PropType<(number | string)[]>,
 				default: () => [],
 			},
 			layoutOptions: {
@@ -93,7 +93,7 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 export function useLayout<Options = any, Query = any>(
 	layoutId: Ref<string | null>
 ): { layoutWrapper: ComputedRef<Component> } {
-	const { layouts } = getLayouts();
+	const { layouts } = useExtensions();
 
 	const layoutWrappers = computed(() => layouts.value.map((layout) => createLayoutWrapper<Options, Query>(layout)));
 

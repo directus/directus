@@ -335,7 +335,7 @@ class ExtensionManager {
 					emitter.offInit(hook.event, hook.handler);
 					break;
 				case 'schedule':
-					hook.task.destroy();
+					hook.task.stop();
 					break;
 			}
 
