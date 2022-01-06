@@ -19,16 +19,14 @@
 			<v-fancy-select v-model="edits.type" class="select" :items="selectItems" />
 
 			<template v-if="edits.type && selectedPanel">
-				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
+				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0 || edits.options === {}">
 					{{ t('no_options_available') }}
 				</v-notice>
 
-				<v-form
-					v-else-if="Array.isArray(selectedPanel.options)"
-					v-model="edits.options"
-					:fields="selectedPanel.options"
-					primary-key="+"
-					:initial-values="panel && panel.options"
+				<extension-options
+					v-else-if="edits.options"
+					:options="selectedPanel.options"
+					@field-values="setOptionsValues"
 				/>
 
 				<component :is="`panel-options-${selectedPanel.id}`" v-else v-model="edits.options" :collection="collection" />
@@ -88,15 +86,17 @@
 </template>
 
 <script lang="ts">
+import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { computed, defineComponent, reactive, watch, PropType } from 'vue';
 import { getPanels } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
-import { Panel } from '@/types';
+import { Panel } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	name: 'PanelConfiguration',
+	components: { ExtensionOptions },
 	props: {
 		panel: {
 			type: Object as PropType<Partial<Panel>>,
@@ -122,7 +122,7 @@ export default defineComponent({
 			height: props.panel?.height ?? undefined,
 			position_x: props.panel?.position_x ?? 1,
 			position_y: props.panel?.position_y ?? 1,
-			options: props.panel?.options ?? {},
+			options: {},
 		});
 
 		const selectItems = computed<FancySelectItem[]>(() => {
@@ -150,6 +150,16 @@ export default defineComponent({
 				edits.width = undefined;
 				edits.height = undefined;
 			}
+
+			// Allows panels to manipulate the returned fields
+			// instead of only allowing .options to be a function make a new optional arg
+			// on PanelConFig and index.ts
+			// This should probably go in a watch on edits? Because right now it only runs when selectedPanel changes
+			// if (newPanel && newPanel.alterOptions) {
+			// 	edits.options = newPanel?.alterOptions(edits);
+			// } else {
+			// 	edits.options = props.panel.options ?? {};
+			// }
 		});
 
 		return {
@@ -160,10 +170,15 @@ export default defineComponent({
 			edits,
 			t,
 			isOpen,
+			setOptionsValues,
 		};
 
 		function emitSave() {
 			emit('save', edits);
+		}
+
+		function setOptionsValues(newValues: any) {
+			edits.options = newValues;
 		}
 	},
 });
