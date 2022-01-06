@@ -24,51 +24,41 @@ jobs:
           - postgres10
           # - sqlite3
         node-version:
-          # - 12-alpine
-          # - 14-alpine
-          - 16-alpine
+          - '16'
     env:
       CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
     steps:
-      - name: Login to GitHub container registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull cached test image
-        run: |
-          docker pull $CACHED_IMAGE || true
-          docker tag $CACHED_IMAGE directus-test-image || true
-
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build packages
         run: npm run build
+
+      - name: Start databases
+        run: docker compose up -d
+
+      - name: Sleep for 20 seconds
+        run: sleep 20s
+        shell: bash
+
+      - name: Run tests
+        run: npm run test:e2e
+        env:
+          SECRET: TEST_SECRET
 
       - name: Run tests
         env:
-          TEST_NODE_VERSION: ${{ matrix.node-version }}
           TEST_DB: ${{ matrix.db }}
         run: npm run test:e2e
-
-      - name: Push updated test image
-        # Only push the new cache image on the main branch once per node version
-        if: github.ref == 'refs/heads/main' && github.repository == 'directus/directus' && matrix.db == 'postgres'
-        run: |
-          docker tag directus-test-image $CACHED_IMAGE
-          docker push $CACHED_IMAGE || true
 
   result:
     name: Result
