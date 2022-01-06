@@ -87,10 +87,10 @@
 
 <script lang="ts">
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { computed, defineComponent, reactive, watch, PropType } from 'vue';
+import { computed, defineComponent, reactive, watch, PropType, ComputedRef, ref } from 'vue';
 import { getPanels } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
-import { Panel } from '@directus/shared/types';
+import { Panel, PanelConfig } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 
@@ -137,9 +137,12 @@ export default defineComponent({
 				return item;
 			});
 		});
+		// REMOVE ANY
+		let editedPanel = ref<any>(null);
 
 		const selectedPanel = computed(() => {
-			return panels.value.find((panel) => panel.id === edits.type);
+			if (!editedPanel.value) return panels.value.find((panel) => panel.id === edits.type);
+			return editedPanel.value;
 		});
 
 		watch(selectedPanel, (newPanel) => {
@@ -153,12 +156,10 @@ export default defineComponent({
 		});
 
 		watch(edits, (newEdits) => {
-			// Allows panels to manipulate the returned fields
 			if (selectedPanel.value && selectedPanel.value.alterOptions) {
-				edits.options = selectedPanel.value?.alterOptions(newEdits);
-			} else {
-				// this doesn't work bc props is null
-				edits.options = selectedPanel.value?.options ?? {};
+				editedPanel.value = selectedPanel.value?.alterOptions(selectedPanel.value, newEdits);
+			} else if (selectedPanel.value) {
+				editedPanel.value = selectedPanel.value;
 			}
 		});
 
