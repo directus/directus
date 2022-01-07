@@ -7,6 +7,18 @@ import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
 import { flushCaches } from '../../../cache';
 
+/**
+ * Will sort the yaml keys by alphabetical order.
+ * If the key is a top level key, it will be sorted by its original order (defined in the topLevelKeys array).
+ */
+function sortYaml(a: any, b: any) {
+	const topLevelKeys = ['version', 'directus', 'collections', 'fields', 'relations'];
+	if (topLevelKeys.includes(a) && topLevelKeys.includes(b)) {
+		return 1;
+	}
+	return a > b ? 1 : -1;
+}
+
 export async function snapshot(
 	snapshotPath: string,
 	options?: { yes: boolean; format: 'json' | 'yaml'; sortyaml: boolean }
@@ -45,7 +57,7 @@ export async function snapshot(
 	try {
 		if (options?.format === 'yaml') {
 			if (options?.sortyaml === true) {
-				await fs.writeFile(filename, toYaml(snapshot, { sortKeys: true }));
+				await fs.writeFile(filename, toYaml(snapshot, { sortKeys: sortYaml }));
 			} else {
 				await fs.writeFile(filename, toYaml(snapshot));
 			}
