@@ -42,42 +42,52 @@ const fieldOptions = [
 					{
 						text: 'Count',
 						value: 'count',
+						disabled: false,
 					},
 					{
 						text: 'Count (Distinct)',
 						value: 'count_distinct',
+						disabled: false,
 					},
 					{
 						text: 'Average',
 						value: 'avg',
+						disabled: false,
 					},
 					{
 						text: 'Average (Distinct)',
 						value: 'avg_distinct',
+						disabled: false,
 					},
 					{
 						text: 'Sum',
 						value: 'sum',
+						disabled: false,
 					},
 					{
 						text: 'Sum (Distinct)',
 						value: 'sum_distinct',
+						disabled: false,
 					},
 					{
 						text: 'Minimum',
 						value: 'min',
+						disabled: false,
 					},
 					{
 						text: 'Maximum',
 						value: 'max',
+						disabled: false,
 					},
 					{
 						text: 'First',
 						value: 'first',
+						disabled: false,
 					},
 					{
 						text: 'Last',
 						value: 'last',
+						disabled: false,
 					},
 				],
 			},
@@ -273,6 +283,10 @@ export default definePanel({
 				if (!['count', 'first', 'last'].includes(choice.value)) {
 					choice.disabled = true;
 				}
+			}
+
+			if (!['count', 'first', 'last'].includes(edits.options.function)) {
+				edits.options.function = 'count';
 			}
 		} else {
 			for (const choice of fieldOptions[2].meta.options.choices) {
