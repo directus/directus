@@ -138,7 +138,7 @@ export default defineComponent({
 			});
 		});
 		// REMOVE ANY
-		let editedPanel = ref<any>(null);
+		let editedPanel = ref<any>(undefined);
 
 		const selectedPanel = computed(() => {
 			if (!editedPanel.value) return panels.value.find((panel) => panel.id === edits.type);
@@ -156,6 +156,9 @@ export default defineComponent({
 		});
 
 		watch(edits, (newEdits) => {
+			if (!selectedPanel.value || edits.type != selectedPanel.value.id) {
+				editedPanel.value = panels.value.find((panel) => panel.id === edits.type);
+			}
 			if (selectedPanel.value && selectedPanel.value.alterOptions) {
 				editedPanel.value = selectedPanel.value?.alterOptions(selectedPanel.value, newEdits);
 			} else if (selectedPanel.value) {

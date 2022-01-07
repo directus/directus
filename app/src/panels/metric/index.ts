@@ -261,8 +261,7 @@ export default definePanel({
 	component: PanelMetric,
 	alterOptions: (panel: Partial<Panel>, edits: Partial<Panel>) => {
 		if (!edits || !panel) return;
-		if (!edits.options || edits.options === {} || !edits.options.collection || !edits.options.field || !panel.options)
-			return panel;
+		if (!edits.options || !edits.options.collection || !edits.options.field || !panel.options) return panel;
 
 		const fieldStore = useFieldsStore();
 		const field = fieldStore.getField(edits.options.collection, edits.options.field);
