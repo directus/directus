@@ -1,6 +1,7 @@
 import { Request, RequestHandler } from 'express';
 import pino, { LoggerOptions } from 'pino';
 import pinoHTTP, { stdSerializers } from 'pino-http';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 import { URL } from 'url';
 import env from './env';
 
@@ -17,7 +18,33 @@ if (env.LOG_STYLE !== 'raw') {
 	pinoOptions.prettifier = require('pino-colada');
 }
 
-const logger = pino(pinoOptions);
+const loggerEnvConfig = getConfigFromEnv('LOGGER_');
+
+// Expose custom log levels into formatter function
+if (loggerEnvConfig.levels) {
+	const customLogLevels: { [key: string]: string } = {};
+
+	for (const el of loggerEnvConfig.levels.split(',')) {
+		const key_val = el.split(':');
+		customLogLevels[key_val[0].trim()] = key_val[1].trim();
+	}
+
+	pinoOptions.formatters = {
+		level(label: string, number: any) {
+			return {
+				severity: customLogLevels[label] || 'info',
+				level: number,
+			};
+		},
+		log(message: any) {
+			return { message };
+		},
+	};
+
+	delete loggerEnvConfig.levels;
+}
+
+const logger = pino(Object.assign(pinoOptions, loggerEnvConfig));
 
 export const expressLogger = pinoHTTP(
 	{
