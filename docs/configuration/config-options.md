@@ -443,6 +443,21 @@ STORAGE_LOCAL_ROOT="./uploads"
 
 :::
 
+::: warning Case sensitivity
+
+The location value(s) you specify should be capitalized when specifying the additional configuration values. For example, this will not work:
+```
+STORAGE_LOCATIONS="s3"
+STORAGE_s3_DRIVER="s3" # Will not work, lowercase "s3" ❌
+```
+but this will work:
+```
+STORAGE_LOCATIONS="s3"
+STORAGE_S3_DRIVER="s3" # Will work, "s3" is uppercased ✅
+```
+
+:::
+
 | Variable            | Description                                                                                                           | Default Value |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `STORAGE_LOCATIONS` | A CSV of storage locations (eg: `local,digitalocean,amazon`) to use. You can use any names you'd like for these keys. | `local`       |
