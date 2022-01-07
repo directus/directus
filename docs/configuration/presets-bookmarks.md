@@ -5,8 +5,9 @@
 
 ## Creating a Preset
 
-1. Navigate to **Settings > Presets & Bookmarks**
-2. Click the **Create Preset** action button in the header
+1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>bookmark_border</span> Presets &
+   Bookmarks**
+2. Click <span mi btn>add</span> in the header
 3. Complete the **other preset form fields** outlined below
 
 - **Collection** — The collection of this preset; supports any project collection, Directus Files, or Directus Users
@@ -55,8 +56,9 @@ preset priority is: User, then Role, then Global.
 
 ## Deleting a Preset
 
-1. Navigate to **Settings > Presets & Bookmarks > [Preset]**
-2. Click the red **Delete Preset** action button in the header
+1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>bookmark_border</span> Presets &
+   Bookmarks > [Preset]**
+2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change
