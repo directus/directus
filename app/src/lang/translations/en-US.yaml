@@ -1254,10 +1254,11 @@ interfaces:
     add_filter: Add Filter
     add_group: And / Or group
     add_value: Add Value
-    all: All
-    any: Any
+    logic_type_and: AND
+    logic_type_and_tooltip: All of the following
+    logic_type_or: OR
+    logic_type_or_tooltip: Any of the following
     and: and
-    of_the_following: of the following
     no_rules: No configured rules
     change_value: Click to change value
     placeholder: Drag rules here
