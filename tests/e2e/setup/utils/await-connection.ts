@@ -16,7 +16,7 @@ export async function awaitDatabaseConnection(database: Knex, checkSQL: string):
 }
 
 export async function awaitDirectusConnection(port: number): Promise<void | null> {
-	for (let attempt = 0; attempt <= 10; attempt++) {
+	for (let attempt = 0; attempt <= 15; attempt++) {
 		try {
 			await axios.get(`http://localhost:${port}/server/ping`);
 			return null; // success

@@ -6,7 +6,7 @@ import vendors from '../get-dbs-to-test';
 import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
-import { awaitDirectusConnection } from './utils/await-connection';
+import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 
 let started = false;
 
@@ -28,6 +28,7 @@ export default async (): Promise<void> => {
 							title: config.names[vendor]!,
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
+								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
 								const env = {
 									...config.envs[vendor]!,
 									ADMIN_EMAIL: 'admin@example.com',

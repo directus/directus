@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Start databases containers
-        run: docker compose up -d --wait
+        run: docker compose up -d --wait --quiet-pull
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -49,12 +49,7 @@ jobs:
       - name: Run tests
         run: npm run test:e2e
         env:
-          SECRET: TEST_SECRET
-
-      - name: Run tests
-        env:
           TEST_DB: ${{ matrix.db }}
-        run: npm run test:e2e
 
   result:
     name: Result
