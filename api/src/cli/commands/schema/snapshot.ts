@@ -9,14 +9,15 @@ import { flushCaches } from '../../../cache';
 
 /**
  * Will sort the yaml keys by alphabetical order.
- * If the key is a top level key, it will be sorted by its original order (defined in the topLevelKeys array).
+ * If the key is a top level key, it will be sorted by its original order.
  */
-function sortYaml(a: any, b: any) {
-	const topLevelKeys = ['version', 'directus', 'collections', 'fields', 'relations'];
-	if (topLevelKeys.includes(a) && topLevelKeys.includes(b)) {
-		return 1;
-	}
-	return a > b ? 1 : -1;
+function sortYaml(snapshot: any) {
+	return function sortElements(a: any, b: any) {
+		if (Object.keys(snapshot).includes(a) && Object.keys(snapshot).includes(b)) {
+			return 1;
+		}
+		return a > b ? 1 : -1;
+	};
 }
 
 export async function snapshot(
@@ -57,7 +58,7 @@ export async function snapshot(
 	try {
 		if (options?.format === 'yaml') {
 			if (options?.sortyaml === true) {
-				await fs.writeFile(filename, toYaml(snapshot, { sortKeys: sortYaml }));
+				await fs.writeFile(filename, toYaml(snapshot, { sortKeys: sortYaml(snapshot) }));
 			} else {
 				await fs.writeFile(filename, toYaml(snapshot));
 			}
