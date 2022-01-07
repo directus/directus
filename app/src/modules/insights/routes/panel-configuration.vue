@@ -26,6 +26,7 @@
 				<extension-options
 					v-else-if="edits.options"
 					:options="selectedPanel.options"
+					:values="edits.options ?? {}"
 					@field-values="setOptionsValues"
 				/>
 
@@ -111,6 +112,19 @@ export default defineComponent({
 
 		const isOpen = useDialogRoute();
 
+		const editOptionsValidator = () => {
+			if (
+				props.panel &&
+				props.panel.options &&
+				typeof props.panel.options != 'function' &&
+				props.panel.options != null
+			) {
+				return props.panel.options;
+			}
+
+			return {};
+		};
+
 		const edits = reactive<Partial<Panel>>({
 			show_header: props.panel?.show_header ?? true,
 			type: props.panel?.type || undefined,
@@ -122,7 +136,7 @@ export default defineComponent({
 			height: props.panel?.height ?? undefined,
 			position_x: props.panel?.position_x ?? 1,
 			position_y: props.panel?.position_y ?? 1,
-			options: {},
+			options: editOptionsValidator(),
 		});
 
 		const selectItems = computed<FancySelectItem[]>(() => {
@@ -137,7 +151,7 @@ export default defineComponent({
 				return item;
 			});
 		});
-		// REMOVE ANY
+
 		let editedPanel = ref<any>(undefined);
 
 		const selectedPanel = computed(() => {

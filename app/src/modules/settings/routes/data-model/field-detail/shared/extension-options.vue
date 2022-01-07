@@ -47,6 +47,12 @@ export default defineComponent({
 			type: Object,
 			required: true,
 		},
+		values: {
+			type: Object,
+			default: () => {
+				return {};
+			},
+		},
 		collection: {
 			type: String,
 			default: '',
@@ -101,7 +107,7 @@ export default defineComponent({
 			return optionsObjectOrArray.standard;
 		});
 
-		const optionsValues = ref({});
+		const optionsValues = ref(props.values);
 
 		return {
 			usesCustomComponent,
