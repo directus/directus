@@ -45,68 +45,68 @@ The file sidebar also includes the following details:
 
 #### Action Buttons
 
-- <img src="../assets/buttons/save.png" alt="Save" height="30" style="vertical-align: middle; margin: 2px"> — Saves any
-  edits made to the file
-- <img src="../assets/buttons/settings.png" alt="Edit" height="30" style="vertical-align: middle; margin: 2px"> — Refer
-  [Editing an Image](#editing-an-image)
-- <img src="../assets/buttons/download.png" alt="Download" height="30" style="vertical-align: middle; margin: 2px"> —
-  Downloads the file to your current device
-- <img src="../assets/buttons/move-file.png" alt="Move to Folder" height="30" style="vertical-align: middle; margin: 2px">
+- <span mi btn >check</span> — Saves any edits made to the file
+- <span mi btn sec>tune</span> — Refer [Editing an Image](#editing-an-image)
+- <span mi btn sec>save_alt</span> — Downloads the file to your current device
+- <img src="../assets/buttons/move-file.png" alt="Move to Folder" height="32" style="vertical-align: middle; margin: 2px 0">
   — Move the file to another folder
-- <img src="../assets/buttons/delete.png" alt="Delete" height="30" style="vertical-align: middle; margin: 2px"> —
-  Permanently removes the file and its metadata. This action is permanent and can not be undone.
+- <span mi btn dngr>delete</span> — Permanently removes the file and its metadata. This action is permanent and can not
+  be undone.
 
 ## Editing an Image
 
-Clicking the <img src="../assets/buttons/settings.png" alt="edit" height="30" style="vertical-align: middle"> action
-button on the File Detail opens an image editor for rotating, cropping, or mirroring the file.
+Clicking the <span mi btn sec>tune</span> action button on the File Detail opens an image editor for rotating, cropping,
+or mirroring the file.
 
 1. From the **File Library**, click a file to open it's detail page
-2. Click the <img src="../assets/buttons/settings.png" alt="edit" height="30" style="vertical-align: middle"> button in
-   the top right to open the image editor
+2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor
 
-![Image Editing](../assets/app/image-editing.png)
+<video alt="Image Editing" loop muted>
+  <source src="../assets/app/image-editing.mp4" type="video/mp4">
+</video>
 
-3. Make your changes and hit
-   <img src="../assets/buttons/save.png" alt="save" height="30" style="vertical-align: middle"> in the top right to save
-   the updates to the file.
+3. Make your changes and hit <span mi btn>check</span> in the top right to save the updates to the file.
 
 ## Replacing a File
 
 Clicking the image Preview on the File Detail page opens a modal where you can replace the file. This is useful if you
 want to change the file, but keep existing file info and maintain all of the file's relationships.
 
-![Replace File](../assets/app/replace-file.gif)
+<video alt="Image Editing" loop muted>
+  <source src="../assets/app/replace-file.mp4" type="video/mp4">
+</video>
 
 ## Uploading a File
 
 There are many ways that a file can be uploaded into Directus via the App. We'll cover the primary method below, but
 keep in mind that files can also be added directly through different interfaces.
 
-![Upload File](../assets/app/upload-file.gif)
+<video alt="Image Editing" loop muted>
+  <source src="../assets/app/upload-file.mp4" type="video/mp4">
+</video>
 
-1. From the **File Library**, click on the
-   <img src="../assets/buttons/add.png" alt="Add Item (+ Icon)" height="30" style="vertical-align: middle"> button
-   located in the header
+1. From the **File Library**, click on the <span mi btn >add</span> button located in the header
 2. **Upload** the file by:
    - Dragging a file from your desktop to the modal
    - Click the modal area to manually select a file from your device
-   - Clicking the <img src="../assets/buttons/options.png" alt="..." height="30" style="vertical-align: middle"> icon
-     and choosing "Import from URL"
+   - Clicking the <span mi style="vertical-align: middle; color: var(--foreground-subdued)">more_vert</span> icon and
+     choosing "Import from URL"
 
 ## Creating a Folder
 
-![Create Folder](../assets/app/create-folder.gif)
+<video alt="Image Editing" loop muted>
+  <source src="../assets/app/create-folder.mp4" type="video/mp4">
+</video>
 
-1. From the **File Library**, click on the
-   <img src="../assets/buttons/add-folder.png" alt="Create Folder (folder with plus icon)" height="30" style="vertical-align: middle">
-   button located in the header
+1. From the **File Library**, click on the <span mi btn sec>create_new_folder</span> button located in the header
 2. Fill in the folder name
 3. Click "Save"
 
 ## Renaming a Folder
 
-![Rename Folder](../assets/app/rename-folder.gif)
+<video alt="Image Editing" loop muted>
+  <source src="../assets/app/rename-folder.mp4" type="video/mp4">
+</video>
 
 1. From the **File Library**, right-click on the folder you wish to rename and select "Rename Folder"
 2. Update the folder name
@@ -114,7 +114,9 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Moving a Folder
 
-![Move Folder](../assets/app/move-folder.gif)
+<video alt="Image Editing" loop muted>
+  <source src="../assets/app/move-folder.mp4" type="video/mp4">
+</video>
 
 1. From the **File Library**, right-click on the folder you wish to move and select "Move to Folder"
 2. Select a folder that will be the new parent folder
@@ -122,7 +124,9 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Deleting a Folder
 
-![Delete Folder](../assets/app/delete-folder.gif)
+<video alt="Image Editing" loop muted>
+  <source src="../assets/app/delete-folder.mp4" type="video/mp4">
+</video>
 
 1. From the **File Library**, right-click on the folder you wish to delete and select "Delete Folder"
 2. Click "Delete"

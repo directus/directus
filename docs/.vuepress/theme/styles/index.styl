@@ -6,6 +6,7 @@
 @require './toc'
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Icons+Outlined');
 
 html, body
   padding 0
@@ -69,16 +70,60 @@ body
     border 1px solid var(--border-normal)
     border-radius 6px
 
-  img
+  img, video
     max-width 100%
     border-radius 6px
+
+
+  video
+    box-shadow 0 0 0 0px var(--primary)
+    transition box-shadow 100ms ease-in-out
+
+    &:hover
+      box-shadow 0 0 0 3px var(--primary)
 
 {$contentClass}.custom
   padding 0
   margin 0
 
-  img
+  img, video
     max-width 100%
+
+[mi]
+  font-family 'Material Icons Outlined'
+  font-weight normal
+  font-style normal
+  font-size 24px
+  line-height 1
+  letter-spacing normal
+  text-transform none
+  display inline-block
+  white-space nowrap
+  word-wrap normal
+  direction ltr
+  -moz-font-feature-settings 'liga'
+  -moz-osx-font-smoothing grayscale
+
+  &[btn]
+    color var(--foreground-inverted)
+    background-color var(--primary)
+    border-radius 50%
+    width 32px
+    height 32px
+    font-size 18px
+    vertical-align middle
+    display inline-flex
+    align-items center
+    justify-content center
+    margin 2px 0
+
+    &[dngr]
+      background-color var(--danger-10)
+      color var(--danger)
+
+    &[sec]
+      background-color var(--primary-10)
+      color var(--primary)
 
 a
   font-weight 500
