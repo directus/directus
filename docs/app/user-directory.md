@@ -8,10 +8,14 @@
 
 ## Browsing Users
 
+![User Directory Overview](../assets/app/user-directory-overview.png)
+
 Lists all users of the project, with a navigation that allows quick access to the different role groups. This page has
 the same functionality as other [Content Pages](/app/content-collections/).
 
 ## Viewing a User
+
+![User Overview](../assets/app/user-overview.png)
 
 Users are referenced throughout the app, often for accountability purposes. Hovering over a user in this context will
 provide a popover for basic information, and clicking that popover will navigate you to a readonly view of that user's
