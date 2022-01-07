@@ -9,7 +9,7 @@ import { flushCaches } from '../../../cache';
 
 export async function snapshot(
 	snapshotPath: string,
-	options?: { yes: boolean; format: 'json' | 'yaml' }
+	options?: { yes: boolean; format: 'json' | 'yaml'; sortyaml: boolean }
 ): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
 
@@ -44,7 +44,11 @@ export async function snapshot(
 
 	try {
 		if (options?.format === 'yaml') {
-			await fs.writeFile(filename, toYaml(snapshot));
+			if (options?.sortyaml === true) {
+				await fs.writeFile(filename, toYaml(snapshot, { sortKeys: true }));
+			} else {
+				await fs.writeFile(filename, toYaml(snapshot));
+			}
 		} else {
 			await fs.writeFile(filename, JSON.stringify(snapshot));
 		}

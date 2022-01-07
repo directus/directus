@@ -85,6 +85,9 @@ with your team. To generate the snapshot, run
 npx directus schema snapshot ./snapshot.yaml
 ```
 
+When generating a YAML formatted snapshot, you can pass a `--sortyaml` argument to sort the yaml alphabetically. A
+sorted yaml by alphabet won't look as pretty, but for large schemas it will help in comparing versions.
+
 #### Applying a Snapshot
 
 To make a different instance up to date with the latest changes in your data model, you can apply the snapshot. By
