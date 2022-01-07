@@ -18,7 +18,7 @@ if (env.LOG_STYLE !== 'raw') {
 	pinoOptions.prettifier = require('pino-colada');
 }
 
-const loggerEnvConfig = getConfigFromEnv('LOGGER_');
+const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
 
 // Expose custom log levels into formatter function
 if (loggerEnvConfig.levels) {
@@ -36,9 +36,6 @@ if (loggerEnvConfig.levels) {
 				level: number,
 			};
 		},
-		log(message: any) {
-			return { message };
-		},
 	};
 
 	delete loggerEnvConfig.levels;
@@ -46,9 +43,12 @@ if (loggerEnvConfig.levels) {
 
 const logger = pino(Object.assign(pinoOptions, loggerEnvConfig));
 
+const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
+
 export const expressLogger = pinoHTTP(
 	{
 		logger,
+		...httpLoggerEnvConfig,
 	},
 	{
 		serializers: {
