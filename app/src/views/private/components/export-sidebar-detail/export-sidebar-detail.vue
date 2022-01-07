@@ -101,6 +101,8 @@ export default defineComponent({
 				if (props.search) {
 					params.search = props.search;
 				}
+			} else {
+				params.limit = -1;
 			}
 
 			const exportUrl = api.getUri({
