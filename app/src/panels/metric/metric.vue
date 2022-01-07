@@ -103,10 +103,13 @@ export default defineComponent({
 						fields: [props.field],
 					},
 				});
-
 				if (props.field) {
 					if (props.function === 'first' || props.function === 'last') {
-						metric.value = Number(res.data.data[0][props.field]);
+						if (typeof res.data.data[0][props.field] === 'string') {
+							metric.value = res.data.data[0][props.field];
+						} else {
+							metric.value = Number(res.data.data[0][props.field]);
+						}
 					} else {
 						metric.value = Number(res.data.data[0][props.function][props.field]);
 					}
@@ -125,6 +128,10 @@ export default defineComponent({
 
 			if (props.abbreviate) {
 				return abbreviateNumber(metric.value, props.decimals ?? 0);
+			}
+
+			if (typeof metric.value === 'string') {
+				return metric.value;
 			}
 
 			return n(Number(metric.value), 'decimal', {
