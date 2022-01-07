@@ -74,14 +74,6 @@ body
     max-width 100%
     border-radius 6px
 
-
-  video
-    box-shadow 0 0 0 0px var(--primary)
-    transition box-shadow 100ms ease-in-out
-
-    &:hover
-      box-shadow 0 0 0 3px var(--primary)
-
 {$contentClass}.custom
   padding 0
   margin 0
@@ -93,7 +85,7 @@ body
   font-family 'Material Icons Outlined'
   font-weight normal
   font-style normal
-  font-size 24px
+  font-size 18px
   line-height 1
   letter-spacing normal
   text-transform none
@@ -108,14 +100,13 @@ body
     color var(--foreground-inverted)
     background-color var(--primary)
     border-radius 50%
-    width 32px
-    height 32px
-    font-size 18px
+    width 28px
+    height 28px
     vertical-align middle
     display inline-flex
     align-items center
     justify-content center
-    margin 2px 0
+    margin-bottom 4px
 
     &[dngr]
       background-color var(--danger-10)
@@ -136,6 +127,7 @@ body
 
   &[icon]
     vertical-align middle
+    margin-bottom 4px
     color var(--foreground-subdued)
 
     &[dark]

@@ -5,8 +5,7 @@
 
 ## Creating a Preset
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>bookmark_border</span> Presets &
-   Bookmarks**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Presets & Bookmarks**
 2. Click <span mi btn>add</span> in the header
 3. Complete the **other preset form fields** outlined below
 
@@ -56,8 +55,8 @@ preset priority is: User, then Role, then Global.
 
 ## Deleting a Preset
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>bookmark_border</span> Presets &
-   Bookmarks > [Preset]**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Presets & Bookmarks
+   <span mi icon dark>chevron_right</span> [Preset]**
 2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 

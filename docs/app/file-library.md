@@ -61,7 +61,7 @@ or mirroring the file.
 1. From the **File Library**, click a file to open it's detail page
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor
 
-<video alt="Image Editing" loop muted>
+<video alt="Image Editing" loop muted controls>
   <source src="../assets/app/image-editing.mp4" type="video/mp4">
 </video>
 
@@ -72,7 +72,7 @@ or mirroring the file.
 Clicking the image Preview on the File Detail page opens a modal where you can replace the file. This is useful if you
 want to change the file, but keep existing file info and maintain all of the file's relationships.
 
-<video alt="Replacing a File" loop muted>
+<video alt="Replacing a File" loop muted controls>
   <source src="../assets/app/replace-file.mp4" type="video/mp4">
 </video>
 
@@ -81,7 +81,7 @@ want to change the file, but keep existing file info and maintain all of the fil
 There are many ways that a file can be uploaded into Directus via the App. We'll cover the primary method below, but
 keep in mind that files can also be added directly through different interfaces.
 
-<video alt="Uploading a File" loop muted>
+<video alt="Uploading a File" loop muted controls>
   <source src="../assets/app/upload-file.mp4" type="video/mp4">
 </video>
 
@@ -93,7 +93,7 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Creating a Folder
 
-<video alt="Creating a Folder" loop muted>
+<video alt="Creating a Folder" loop muted controls>
   <source src="../assets/app/create-folder.mp4" type="video/mp4">
 </video>
 
@@ -103,7 +103,7 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Renaming a Folder
 
-<video alt="Renaming a Folder" loop muted>
+<video alt="Renaming a Folder" loop muted controls>
   <source src="../assets/app/rename-folder.mp4" type="video/mp4">
 </video>
 
@@ -113,7 +113,7 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Moving a Folder
 
-<video alt="Moving a Folder" loop muted>
+<video alt="Moving a Folder" loop muted controls>
   <source src="../assets/app/move-folder.mp4" type="video/mp4">
 </video>
 
@@ -123,7 +123,7 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Deleting a Folder
 
-<video alt="Deleting a Folder" loop muted>
+<video alt="Deleting a Folder" loop muted controls>
   <source src="../assets/app/delete-folder.mp4" type="video/mp4">
 </video>
 

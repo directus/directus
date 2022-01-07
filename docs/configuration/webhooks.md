@@ -5,7 +5,7 @@
 
 ## Creating Webhooks
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>anchor</span> Webhooks**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Webhooks**
 2. Click <span mi btn>add</span> in the header
 3. Complete the **other webhook form fields** outlined below
 
@@ -20,12 +20,14 @@
 
 ## Disabling Webhooks
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>anchor</span> Webhooks > [Webhook]**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Webhooks <span mi icon dark>chevron_right</span>
+   [Webhook]**
 2. Set the **status field to inactive**
 
 ## Deleting Webhooks
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>anchor</span> Webhooks > [Webhook]**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Webhooks <span mi icon dark>chevron_right</span>
+   [Webhook]**
 2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 

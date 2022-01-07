@@ -86,8 +86,8 @@ To learn more about the different types of Items, and all available options, see
 
 By default, all content entered into Directus is considered private. This means that no data will be returned by the
 API, unless requested by an authenticated user that has the correct permissions. In order to have the API return our
-items, we'll have to setup some permissions. Navigate to **<span mi icon dark>settings</span> Settings Module >
-<span mi icon dark>admin_panel_settings</span> Roles & Permissions**.
+items, we'll have to setup some permissions. Navigate to **Settings Module <span mi icon dark>chevron_right</span> Roles
+& Permissions**.
 
 Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select
 the public role, find your collection, and click the icon under the "eye" icon (read/view permission) to allow the

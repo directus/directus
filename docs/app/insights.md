@@ -15,7 +15,7 @@ in the navigation bar and a listing on the main page.
 
 ## Creating a Dashboard
 
-<video loop muted alt="Creating a Dashboard">
+<video loop muted alt="Creating a Dashboard" controls>
   <source src="../assets/app/create-dashboard.mp4" type="video/mp4">
 </video>
 

@@ -8,7 +8,7 @@
 
 ## Creating a User
 
-1. Navigate to the <span mi icon dark>people_alt</span> **User Library**
+1. Navigate to the **User Library**
 2. Click <span mi btn>add</span> in the header
 3. Enter an **Email Address**
 4. Optional: Complete the **other user form fields**
@@ -16,7 +16,7 @@
 
 ## Inviting a User
 
-1. Navigate to the <span mi icon dark>people_alt</span> **User Library**
+1. Navigate to the **User Library**
 2. Click <span mi btn sec>person_add</span> in the header
 3. Enter **one or more email addresses**, separated by new lines, in the modal
 4. Select the **Role** you want to assign to the user(s)
@@ -27,7 +27,7 @@ their account.
 
 ## Configuring a User
 
-1. Navigate to the <span mi icon dark>people_alt</span> **User Library**
+1. Navigate to the **User Library**
 2. **Click on the user** you wish to manage
 3. **Complete the form** of [User Fields](/app/user-directory/#editing-a-user)
 
@@ -46,7 +46,7 @@ The User Detail is only editable by the current user and admins, and the followi
 
 ## Archiving a User
 
-1. Navigate to the <span mi icon dark>people_alt</span> **User Library**
+1. Navigate to the **User Library**
 2. Click the user you with to archive to go to their User Detail page
 3. Click on <span mi btn warn>archive</span> in the header
 4. Confirm this decision by clicking **Archive** in the dialog
@@ -59,7 +59,7 @@ Archiving uses _soft-delete_, therefore archived users are unable to access the 
 
 ## Deleting a User
 
-1. Navigate to the <span mi icon dark>people_alt</span> **User Library**
+1. Navigate to the **User Library**
 2. Select one or more users you wish to delete
 3. Click on <span mi btn dngr>delete</span> in the header
 4. Confirm this decision by clicking **Delete** in the dialog
@@ -73,8 +73,7 @@ undone. Please proceed with caution.
 
 ## Creating a Role
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>admin_panel_settings</span> Roles &
-   Permissions**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Roles & Permissions**
 2. Click <span mi btn>add</span> in the header
 3. Enter a unique **Role Name**
 4. Enabling **App Access** allows logging in to the App
@@ -95,8 +94,8 @@ undone. Please proceed with caution.
 
 ## Deleting a Role
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>admin_panel_settings</span> Roles &
-   Permissions > [Role Name]**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Roles & Permissions
+   <span mi icon dark>chevron_right</span> [Role Name]**
 2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
@@ -141,8 +140,8 @@ configuration field is disabled.
 
 :::
 
-1. Navigate to **<span mi icon dark>settings</span> Settings > <span mi icon dark>admin_panel_settings</span> Roles &
-   Permissions > [Role Name]**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Roles & Permissions
+   <span mi icon dark>chevron_right</span> [Role Name]**
 2. Scroll to the **Permissions** section
 3. **Click the icon** for the collection (row) and action (column) you want to set
 4. Choose the desired permission level: <span mi icon>check</span> **All Access**, <span mi icon>block</span> **No
