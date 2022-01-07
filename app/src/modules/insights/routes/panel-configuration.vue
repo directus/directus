@@ -87,10 +87,10 @@
 
 <script lang="ts">
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { computed, defineComponent, reactive, watch, PropType, ComputedRef, ref } from 'vue';
+import { computed, defineComponent, reactive, watch, PropType, ref } from 'vue';
 import { getPanels } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
-import { Panel, PanelConfig } from '@directus/shared/types';
+import { Panel } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 
