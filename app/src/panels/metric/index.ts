@@ -269,22 +269,17 @@ export default definePanel({
 		if (!field || !field.type) return panel;
 
 		if (!['integer', 'bigInteger', 'float', 'decimal'].includes(field.type)) {
-			fieldOptions[2].meta.options.choices = [
-				{
-					text: 'Count',
-					value: 'count',
-				},
-				{
-					text: 'First',
-					value: 'first',
-				},
-				{
-					text: 'Last',
-					value: 'last',
-				},
-			];
-			panel.options = fieldOptions;
+			for (const choice of fieldOptions[2].meta.options.choices) {
+				if (!['count', 'first', 'last'].includes(choice.value)) {
+					choice.disabled = true;
+				}
+			}
+		} else {
+			for (const choice of fieldOptions[2].meta.options.choices) {
+				choice.disabled = false;
+			}
 		}
+		panel.options = fieldOptions;
 		return panel;
 	},
 	options: fieldOptions,
