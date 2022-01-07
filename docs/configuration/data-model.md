@@ -7,21 +7,22 @@
 
 ## Creating a Collection
 
-1. Click the **Create Collection** action button in the Data Model header
+1. Click <span mi btn>add</span> in the <span mi icon dark>list_alt</span> Data Model header
 2. Enter a unique **Collection Name** to be used as the database table name, API collection key, and App collection name
    default.
 3. Configure the name and type of the **Primary Key**.
    - Auto-Incremented Integer
    - Generated UUID
    - Manually Entered String
-4. Optional: Enable and rename any desired **System Fields**.
+4. Click on <span mi btn>arrow_forward</span>
+5. Optional: Enable and rename any desired **System Fields**.
    - Status
    - Sort
    - Created On
    - Created By
    - Updated On
    - Updated By
-5. Click the **Finish Setup** button
+6. Click the <span mi btn>check</span> **Finish Setup** button
 
 ::: danger Immutable Keys
 
@@ -125,7 +126,7 @@ allows for configuring which parent/relational field values will be copied.
 ## Deleting a Collection
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the red **Delete Collection** action button in the header
+2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change
@@ -143,12 +144,13 @@ with the various collections in your project. Configuring the organization of yo
 
 ### Sorting & Grouping
 
-By using the drag handles on the left of the collection, you can manually put the collections in an order that makes the
-most sense for your project. By dragging a collection underneath another collection, you can turn any collection into a
-group-parent. Groups can even be nested within other groups.
+By using the <span mi icon>drag_indicator</span> drag handles on the left of the collection, you can manually put the
+collections in an order that makes the most sense for your project. By dragging a collection underneath another
+collection, you can turn any collection into a group-parent. Groups can even be nested within other groups.
 
 Additionally, you can add special "folder" collections that are exclusively used for organizational purposes, and don't
-hold any data themselves. This can be done through the "Create Folder" button in the top right of the page.
+hold any data themselves. This can be done by clicking <span mi btn sec>create_new_folder</span> in the top right of the
+page.
 
 ### Renaming Collections
 
@@ -159,12 +161,12 @@ languages your app's users might use for the best results!
 
 ### Hiding Collections
 
-If you'd like to hide a collection from the navigation by default, but still allow your users to access them through
-other means (like relationships, or direct linking), you can set a collection be hidden by using the triple-dot "More"
-option menu on the right-hand side of the collection row, and selecting the "Make Collection Hidden" option.
+1. Navigate to **Settings > Data Model**
+2. Click on the <span mi icon>more_vert</span> icon
+3. Select the <span mi icon>visibility_off</span> **Make Collection Hidden** option
 
-Hidden collections can still be accessed by the user by right-clicking on the navigation, and choosing "Show Hidden
-Collections".
+Hidden collections can still be accessed by the user by right-clicking on the navigation, and choosing
+<span mi icon>visibility</span> "Show Hidden Collections".
 
 ::: tip Permissions
 
@@ -179,14 +181,14 @@ navigation either.
 The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
 is highly configurable, with the following field options:
 
-- **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the field's context menu
-  or edit drawer.
+- **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the
+  <span mi icon>more_vert</span> field's context menu or edit drawer.
 - **Width** — Fields have three different width options relative to the form/page. This is adjusted via the field's
   context menu or edit drawer.
-  - Half — The field is shown at half the form width
-  - Full — (Default) The field is shown at the full form width
-  - Fill — The field is shown filling the page width
-- **Sort** — Fields can be rearranged via their drag-and-drop handles.
+  - <span mi icon>border_vertical</span> Half Width — The field is shown at half the form width
+  - <span mi icon>border_right</span> Full Width — (Default) The field is shown at the full form width
+  - <span mi icon>aspect_ratio</span> Fill Width — The field is shown filling the page width
+- **Sort** — Fields can be rearranged via <span mi icon>drag_indicator</span>.
 - **Grouping** — Fields can be organized within different nested groups that are created using the normal Creating a
   Field flow. Different style groupings are available for different use-cases.
 
@@ -364,8 +366,8 @@ system collections. To get started, expand System Collections from the bottom of
 ## Duplicating a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the **More Options** icon for the field you want to duplicate
-3. Click the **Duplicate Field** option
+2. Click the <span mi icon>more_vert</span> icon for the field you want to duplicate
+3. Click the <span mi icon>content_copy</span> **Duplicate Field** option
 
 ::: warning Relational and Primary Key Fields
 
@@ -376,8 +378,8 @@ It is not currently possible to duplicate relational fields or a collection's pr
 ## Deleting a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the **More Options** icon for the field you want to delete
-3. Click the **Delete Field** option
+2. Click the <span mi icon>more_vert</span> icon for the field you want to delete
+3. Click the <span mi icon>delete</span> **Delete Field** option
 4. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change

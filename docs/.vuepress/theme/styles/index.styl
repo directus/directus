@@ -125,6 +125,22 @@ body
       background-color var(--primary-10)
       color var(--primary)
 
+    &[warn]
+      background-color var(--warning-10)
+      color var(--warning)
+
+    &[outline]
+      background-color transparent
+      border 2px solid var(--primary);
+      color var(--primary)
+
+  &[icon]
+    vertical-align middle
+    color var(--foreground-subdued)
+
+    &[dark]
+      color var(--foreground-normal-alt)
+
 a
   font-weight 500
   color var(--primary-110)
