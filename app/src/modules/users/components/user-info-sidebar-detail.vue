@@ -57,7 +57,7 @@ export default defineComponent({
 		const lastAccessDate = ref('');
 
 		watch(
-			props,
+			() => props,
 			async () => {
 				if (!props.user) return;
 				lastAccessDate.value = await localizedFormat(
