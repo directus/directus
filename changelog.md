@@ -2,6 +2,75 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.4.3 (January 7, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#10881](https://github.com/directus/directus/pull/10881) Add extension auto reloading to the API
+    ([@nickrum](https://github.com/nickrum))
+- **Extensions**
+  - [#10881](https://github.com/directus/directus/pull/10881) Add extension auto reloading to the API
+    ([@nickrum](https://github.com/nickrum))
+  - [#10849](https://github.com/directus/directus/pull/10849) Make registered extensions accessible from extensions
+    ([@nickrum](https://github.com/nickrum))
+
+### :rocket: Improvements
+
+- **App**
+  - [#10879](https://github.com/directus/directus/pull/10879) Handle broken images more gracefully
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10872](https://github.com/directus/directus/pull/10872) Use new date picker in filter, allow manual input
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **Extensions**
+  - [#10850](https://github.com/directus/directus/pull/10850) Move useLayout composable to shared and expose it through
+    extensions-sdk ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#10830](https://github.com/directus/directus/pull/10830) Default to upgrade-insecure-requests turned off
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10903](https://github.com/directus/directus/pull/10903) Fix user info sidebar watcher causing error
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10895](https://github.com/directus/directus/pull/10895) Fix color width inconsistency
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10819](https://github.com/directus/directus/pull/10819) Fix logo url in shared view
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10814](https://github.com/directus/directus/pull/10814) add translations for project descriptor & shares fields
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10812](https://github.com/directus/directus/pull/10812) prevent icons from being searchable
+    ([@azrikahar](https://github.com/azrikahar))
+- **API**
+  - [#10875](https://github.com/directus/directus/pull/10875) Fix refresh token payload structure on shared refresh
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10852](https://github.com/directus/directus/pull/10852) Add CSP directives for MapLibre to work
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10847](https://github.com/directus/directus/pull/10847) Fix running migrations in dev mode
+    ([@nickrum](https://github.com/nickrum))
+  - [#10846](https://github.com/directus/directus/pull/10846) Fix reloading hooks with schedule events
+    ([@nickrum](https://github.com/nickrum))
+  - [#10837](https://github.com/directus/directus/pull/10837) Api (Assets): fix UUID verification
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10836](https://github.com/directus/directus/pull/10836) Left Join-ing on roles to allow users without roles to
+    login ([@johnhuffsmith](https://github.com/johnhuffsmith))
+  - [#10821](https://github.com/directus/directus/pull/10821) fix file local type for displaysForType
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :memo: Documentation
+
+- [#10891](https://github.com/directus/directus/pull/10891) Clarify case rules for storage env vars
+  ([@jkjustjoshing](https://github.com/jkjustjoshing))
+- [#10827](https://github.com/directus/directus/pull/10827) Docs(SDK): use top level await upload
+  ([@joselcvarela](https://github.com/joselcvarela))
+- [#10816](https://github.com/directus/directus/pull/10816) minor fix for form closing tag in file upload example
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10813](https://github.com/directus/directus/pull/10813) update docs on descriptor in project settings
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10807](https://github.com/directus/directus/pull/10807) Add Deploy with Cleavr to Readme
+  ([@armgitaar](https://github.com/armgitaar))
+
 ## v9.4.2 (December 30, 2021)
 
 ### :warning: Notice
