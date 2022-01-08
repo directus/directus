@@ -57,19 +57,18 @@
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small />
 						<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
-							<span
-								v-tooltip="
-									filterInfo[index].name === '_and'
-										? t('interfaces.filter.logic_type_and_tooltip')
-										: t('interfaces.filter.logic_type_or_tooltip')
-								"
-								class="key"
-								@click="toggleLogic(index)"
-							>
+							<span class="key" @click="toggleLogic(index)">
 								{{
 									filterInfo[index].name === '_and'
 										? t('interfaces.filter.logic_type_and')
 										: t('interfaces.filter.logic_type_or')
+								}}
+							</span>
+							<span class="text">
+								{{
+									`- ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
+										'interfaces.filter.of_the_following'
+									)}`
 								}}
 							</span>
 						</div>
