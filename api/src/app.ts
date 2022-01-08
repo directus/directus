@@ -105,6 +105,12 @@ export default async function createApp(): Promise<express.Application> {
 						// installations. Making this opt-in rather than opt-out is a little more
 						// friendly. Ref #10806
 						upgradeInsecureRequests: null,
+
+						// These are required for MapLibre
+						workerSrc: ["'self'", 'blob:'],
+						childSrc: ["'self'", 'blob:'],
+						imgSrc: ["'self'", 'data:', 'blob:'],
+						connectSrc: ["'self'", 'https://*'],
 					},
 				},
 				getConfigFromEnv('CONTENT_SECURITY_POLICY_')

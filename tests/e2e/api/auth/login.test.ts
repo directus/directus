@@ -59,6 +59,29 @@ describe('auth', () => {
 					},
 				});
 			});
+			it.each(getDBsToTest())(
+				`%p returns an access_token, expires and a refresh_token for noRoleUser`,
+				async (vendor) => {
+					const url = `http://localhost:${config.ports[vendor]!}`;
+
+					const response = await request(url)
+						.post(`/auth/login`)
+						.send({
+							email: 'test@noroleuser.com',
+							password: 'TestNoRoleUserPassword',
+						})
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(response.body).toMatchObject({
+						data: {
+							access_token: expect.any(String),
+							expires: expect.any(Number),
+							refresh_token: expect.any(String),
+						},
+					});
+				}
+			);
 		});
 		describe('when incorrect credentials are provided', () => {
 			it.each(getDBsToTest())(`%p returns code: UNAUTHORIZED for incorrect password`, async (vendor) => {
