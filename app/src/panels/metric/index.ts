@@ -13,6 +13,8 @@ const fieldOptions = [
 			options: {
 				includeSystem: true,
 			},
+			selectedCollection: '',
+			hasBeenSelected: false,
 			width: 'half',
 		},
 	},
@@ -293,6 +295,12 @@ export default definePanel({
 				choice.disabled = false;
 			}
 		}
+		// on first run fieldOptions[1].meta.selected will not == edits.options.collection
+		if (fieldOptions[1].meta.hasBeenSelected && fieldOptions[1].meta.selectedCollection !== edits.options.collection) {
+			edits.options.field = '';
+		}
+		fieldOptions[1].meta.hasBeenSelected = true;
+		fieldOptions[1].meta.selectedCollection = edits.options.collection;
 		panel.options = fieldOptions;
 		return panel;
 	},
