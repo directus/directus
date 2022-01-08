@@ -1,14 +1,38 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificator
 avatar: Avatar
+application: Aplicație
 default_provider: Implicit
 published: Publicat
 draft: Ciornă
 archived: Arhivat
 modules: Module
 module_bar: Bară module
+tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
 maps: Hărţi
+switch_user: Schimbă utilizatorul
 item_creation: Creare articol
 item_revision: Revizuire element
 enter_a_name: Introduceți un nume...
@@ -25,28 +49,39 @@ add_field: Adaugă câmp
 role_name: Nume de rol
 branch: Ramură
 leaf: Frunză
+indeterminate: Nedeterminat
 edit_collection: Editează colecția
 exclusive: Exclusiv
 children: Copii
 db_only_click_to_configure: 'Doar baza de date: apăsați pentru configurare'
+show_active_items: Afișează elementele active
 show_archived_items: Arată elementele arhivate
+show_all_items: Afișează toate elementele
 edited: Valoare editată
 required: Necesar
 required_for_app_access: Necesar pentru acces aplicaţie
 requires_value: Necesită valoare
 create_preset: Creează presetare
+create_panel: Creează panou
 create_role: Creează Rol
 create_user: Creează utilizator
+delete_panel: Șterge panou
 create_webhook: Creează Webhook
 invite_users: Invită utilizatori
 invite: Invită
+email_already_invited: Adresa "{email}" a fost deja invitată
+subject: Subiect
+inbox: Inbox
 emails: E-mailuri
 connection_excellent: Conexiune excelentă
 connection_good: Conexiune bună
 connection_fair: Conexiune rezonabilă
 connection_poor: Conexiune slabă
+primary: Principal
 rename_folder: Redenumeşte folderul
 delete_folder: Şterge folderul
+prefix: Prefix
+suffix: Sufix
 reset_bookmark: Resetează semnul de carte
 rename_bookmark: Redenumeşte semnul de carte
 update_bookmark: Actualizează semnul de carte
@@ -56,7 +91,9 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
+public_label: Public
 public_description: Controlează ce date API sunt disponibile fără autentificare.
+admin_description: Rol administrativ inițial cu acces fără restricții la aplicație/API.
 not_allowed: Nu este permis
 directus_version: Versiune Directus
 node_version: Versiune Node
@@ -199,6 +236,8 @@ password: Parolă
 interfaces:
   filter:
     all: Tot
+  presentation-links:
+    primary: Principal
   system-collection:
     collection: Colecție
   system-collections:
@@ -213,6 +252,8 @@ displays:
   collection:
     collection: Colecție
   formatted-value:
+    prefix: Prefix
+    suffix: Sufix
     icon: Iconiță
   icon:
     icon: Iconiță
