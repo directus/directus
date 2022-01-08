@@ -62,9 +62,19 @@ type ApiExtensions = {
 	endpoints: { path: string }[];
 };
 
+type Options = {
+	schedule: boolean;
+	watch: boolean;
+};
+
+const defaultOptions: Options = {
+	schedule: true,
+	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development',
+};
+
 class ExtensionManager {
 	private isLoaded = false;
-	private isScheduleHookEnabled = true;
+	private options: Options;
 
 	private extensions: Extension[] = [];
 
@@ -77,16 +87,19 @@ class ExtensionManager {
 	private watcher: FSWatcher | null = null;
 
 	constructor() {
+		this.options = defaultOptions;
+
 		this.apiEmitter = new Emitter();
 		this.endpointRouter = Router();
 	}
 
-	public async initialize({ schedule, watch } = { schedule: true, watch: true }): Promise<void> {
-		this.isScheduleHookEnabled = schedule;
+	public async initialize(options: Partial<Options> = {}): Promise<void> {
+		this.options = {
+			...defaultOptions,
+			...options,
+		};
 
-		if (watch) {
-			this.initializeWatcher();
-		}
+		this.initializeWatcher();
 
 		if (!this.isLoaded) {
 			await this.load();
@@ -181,7 +194,7 @@ class ExtensionManager {
 	}
 
 	private initializeWatcher(): void {
-		if (env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development' && !this.watcher) {
+		if (this.options.watch && !this.watcher) {
 			logger.info('Watching extensions for changes...');
 
 			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
@@ -345,7 +358,7 @@ class ExtensionManager {
 			schedule: (cron: string, handler: ScheduleHandler) => {
 				if (validate(cron)) {
 					const task = schedule(cron, async () => {
-						if (this.isScheduleHookEnabled) {
+						if (this.options.schedule) {
 							try {
 								await handler();
 							} catch (error: any) {
