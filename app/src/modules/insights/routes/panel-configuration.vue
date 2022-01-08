@@ -169,7 +169,13 @@ export default defineComponent({
 			}
 		});
 
+		const currentPanelType = ref(edits.type);
+
 		watch(edits, (newEdits) => {
+			if (currentPanelType.value != edits.type) {
+				currentPanelType.value = edits.type;
+				edits.options = {};
+			}
 			if (!selectedPanel.value || edits.type != selectedPanel.value.id) {
 				editedPanel.value = panels.value.find((panel) => panel.id === edits.type);
 			}
