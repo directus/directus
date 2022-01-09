@@ -198,7 +198,8 @@ gcloud run deploy directus \
 Note: the value of `connectionName` from step 11 should be used as the value of `add-cloudsql-instances` without any
 prefix.
 
-15. Done! The deploy command should've told you the URL where you can access your Directus instance.
+15. Done! The deploy command should've told you the URL where you can access your Directus instance. You can login with
+    `admin@example.com` and `localpassword`.
 
 ## Additional improvements
 
