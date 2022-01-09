@@ -165,9 +165,13 @@ ADMIN_PASSWORD="localpassword"
 
 KEY="secretkey"
 SECRET="secret"
+LOGGER_LEVELS="trace:DEBUG,debug:DEBUG,info:INFO,warn:WARNING,error:ERROR,fatal:CRITICAL"
 ```
 
-Note: the value of `connectionName` from step 11 should be prefixed with `/cloudsql/` as the value of `DB_HOST`
+Notes:
+
+- the value of `connectionName` from step 11 should be prefixed with `/cloudsql/` as the value of `DB_HOST`
+- `LOGGER_LEVELS` is optional, but makes Directus logs show up with correct level in Google Cloud Logging.
 
 13. Build your container Run these commands.
 
