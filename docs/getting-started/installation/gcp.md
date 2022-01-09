@@ -32,8 +32,7 @@ variables.
 
 Running Directus in Google Cloud can and will infer costs. Please read and understand all pricing options per service
 before rolling out Directus on Google Cloud. As a rule of thumb you could say that with the setup written here the main
-costs come from a persistent Postgres setup with VPC connector in CloudSQL (if you use the micro tier) at around $20 a
-month. You can estimate the pricing here:
+costs come from a persistent Postgres in CloudSQL. You can estimate the pricing here:
 [https://cloud.google.com/products/calculator](https://cloud.google.com/products/calculator)
 
 ## Cloud Run click to deploy
