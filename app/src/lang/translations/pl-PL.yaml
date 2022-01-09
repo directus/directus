@@ -964,6 +964,7 @@ fields:
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
+    project_descriptor: Opis projektu
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
@@ -987,6 +988,10 @@ fields:
     name: Nazwa
     role: Rola
     password: Hasło
+    date_start: Data rozpoczęcia
+    date_end: Data zakończenia
+    max_uses: Maksymalna ilość użyć
+    times_used: Czas użyć
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
