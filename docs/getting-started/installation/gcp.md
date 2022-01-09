@@ -7,23 +7,15 @@ While there are many different ways to run Directus on GCP, from single
 - [Google Cloud Run](https://cloud.google.com/run)
 - [Google Cloud SQL](https://cloud.google.com/sql)
 - [Google Cloud Storage](https://cloud.google.com/storage)
-- [Google Cloud Secret Manager](https://cloud.google.com/secret-manager)
 
 ## Google Cloud Run
 
-Will run Directus in an autoscaling managed container environment. Google Cloud Run will scale back to zero instances by
-default but can be configured to meet every scalability requirements.
+We will run Directus in an autoscaling managed container environment called Google Cloud Run. Google Cloud Run will
+scale back to zero instances by default but can be configured to meet every scalability requirements.
 
-While there a numerous ways to get a Docker container up and running in Cloud Run, we will talk you through a setup that
-is secure and production ready. This means:
-
-- The database we will set up is only accessible through a private VPC, meaning only services within the Google Cloud
-  project context can access this database.
-- We will store the entire .env file of Directus encrypted in Secret Manager. This encrypted .env will be retrieved and
-  decrypted by the container instance itself upon startup.
-- Directus, while running in Google Cloud Run, will access Google Cloud Storage and Google Cloud SQL using the default
-  [Cloud Run credentials](https://cloud.google.com/run/docs/securing/service-identity), no extra Google Cloud
-  credentials are needed.
+While there a numerous ways to get a Docker container up and running in Cloud Run, we will talk you through a simple
+setup with still a lot of improvements to be made. The section [Additional improvements](#additional-improvements)
+stipulates additional improvements you can make to your setup.
 
 ## Google Cloud SQL
 
@@ -32,71 +24,195 @@ layer. In this guide we will use PostgreSQL.
 
 ## Google Cloud Storage
 
-Will be used as object/file storage.
-
-## Secret Manager
-
-## Cloud Run click to deploy
-
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/directus/directus)
-
-## Things to overthink
-
-- Cloud run request context, CPU allocation
-- Caching REDIS
-- Fixed IP
-- Cloud Scheduler
-- Cloud Tasks
+Will be used as object/file storage. Since we're running Directus in Google Cloud, it'll be authenticated and authorized
+to access all storage buckets in the same Google Cloud project by default. We just need to set it up in the environment
+variables.
 
 ## Cost
 
-Run scale back to 0 cpu allication DB persistent, cost Storage persistent cost
+Running Directus in Google Cloud can and will infer costs. Please read and understand all pricing options per service
+before rolling out Directus on Google Cloud. As a rule of thumb you could say that with the setup written here the main
+costs come from a persistent Postgres setup with VPC connector in CloudSQL (if you use the micro tier) at around $20 a
+month. You can estimate the pricing here:
+[https://cloud.google.com/products/calculator](https://cloud.google.com/products/calculator)
 
-We recommend setting up a repo in GitHub (or another Git provider) and configuring it using
-[our manual installation flow](/getting-started/installation/manual). This allows you to later hook up the repo to your
-Elastic Beanstalk instance through CodeDeploy.
+## Cloud Run click to deploy
 
-See
-[Deploying Node.js applications to Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs.html)
-for more information.
+Just to see Directus work on Google Cloud you can try it out by clicking this button. Keep in mind, this will use a non
+persistent SQLite database inside the container itself, so everything will be lost once the container shuts down. And it
+will shut down.
 
-Directus' configuration is all set through environment variables. For a full overview of all available environment
-variables, see [Environment Variables](/configuration/config-options)
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/keesvanbemmel/directus-docker)
 
-## CodeDeploy
+After deploying you can login with `admin@example.com` and `localpassword`
 
-Allows you to automatically deploy updates to your Directus instance or extensions to Elastic Beanstalk.
+## Walkthrough complete setup
 
-See
-[Automatically Deploy from GitHub Using AWS CodeDeploy](https://aws.amazon.com/blogs/devops/automatically-deploy-from-github-using-aws-codedeploy/)
-for more information.
+Let's get into it.
 
-## Simple Storage Service (S3)
+1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). We will run a lot of `gcloud` commands to
+   get your GCP environment setup.
 
-Ideal place to store files uploaded to Directus. Your bucket doesn't have to be publicly accessible to the web; Directus
-will stream files from and to the bucket in its /asset endpoint.
+2. Go over the steps for [Manually installing Directus](/getting-started/installation/manual)
 
-See [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html) for more information.
+3. Add a start script to your package.json like so:
 
-## Relational Database Service (RDS) (Aurora)
+```
+"scripts": {
+		"start": "npx directus bootstrap; npx directus start"
+}
+```
 
-While you can technically use any of the SQL based databases offered in AWS, we like to use Aurora. It's auto-scaling
-and use-based costs have worked out pretty well for us in the past.
+4. Add a new `Dockerfile` file to the root of your newly setup Directus folder and add these contents
 
-## CloudFront
+```
+FROM node:16-alpine
 
-While it's not a technical requirement, it's not a bad idea to configure a CloudFront instance in front of your EB
-environment. This protects you from DDoS attacks and allows you to cache repeated calls to assets in its CDN.
+WORKDIR /src
 
-See
-[Using Elastic Beanstalk with Amazon CloudFront](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.cloudfront.html)
-for more information.
+ADD . /src
 
-## Route 53
+RUN npm install --production
 
-The last piece of this puzzle is to assign a domain name to your CloudFront instance. You can use Route 53 for this
-purpose.
+CMD ["npm", "run", "start"]
+```
 
-See
-[Routing traffic to an Amazon CloudFront web distribution by using your domain name](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-cloudfront-distribution.html)
-for more information.
+5. Create a new project in
+   [Google Cloud](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project):
+   `gcloud projects create <your-project-id>` and make sure `your-project-id` is globally unique. Write down this ID as
+   it will be used in all subsequent gcloud commands.
+
+6. Add/link a billing account/details to your project by going here:
+   `https://console.cloud.google.com/billing/linkedaccount?project=<your-project-id>`. Since the database and storace
+   bucket are persistent, there are (costs)[#cost] involved.
+
+7. Create a storage bucket where Directus will store files:
+
+```
+gsutil mb -p <your-project-id> -c standard -l europe-west4 gs://<unique-bucket-name>/
+```
+
+Some notes:
+
+- The region (europe-west4) is the region where the bucket resides. It's a good idea, sometimes even mandatory, to set
+  all services to the same region.
+- The bucket name should be globally unique
+
+8. Create a Postgres13 database:
+
+```
+gcloud sql instances create <database-instance-name> --region=europe-west4 --tier=db-f1-micro --project=<your-project-id> --database-version=POSTGRES_13
+```
+
+Some notes:
+
+- The region (europe-west4) is the region where the database resides. It's a good idea, sometimes even mandatory, to set
+  all services to the same region.
+- The [tier](https://cloud.google.com/sql/docs/postgres/instance-settings) determines resources and cost of the
+  database. For this example we've picked the smallest one.
+- This operation will take a while. If, for some reason, the gcloud times out, you can still find your database instance
+  and its status [here](https://console.cloud.google.com/sql/instances).
+
+The output will look something like this:
+
+```
+Creating Cloud SQL instance...done.
+Created [https://sqladmin.googleapis.com/sql/v1beta4/projects/your-project-id/instances/your-project-id-pg13].
+NAME                         DATABASE_VERSION  LOCATION        TIER         PRIMARY_ADDRESS  PRIVATE_ADDRESS  STATUS
+your-project-id-pg13         POSTGRES_13       europe-west4-b  db-f1-micro  123.456.789.0    -                RUNNABLE
+```
+
+Write down the IP address (in this example `123.456.789.0`), you'll need to set it in your `.env` later
+
+9. Set the root user password in your database:
+
+```
+gcloud sql users set-password root --host=% --instance <database-instance-name> --password <your-safe-root-password> --project=<your-project-id>
+```
+
+10. Create the directus database:
+
+```
+gcloud sql databases create directus --instance=<database-instance-name> --project=<your-project-id>
+```
+
+In this example the database is called `directus`
+
+11. Get the connection name of your CloudSQL instance:
+
+```
+gcloud sql instances describe <database-instance-name> --project=<your-project-id>
+```
+
+You will need the value of `connectionName` in step 12 and 14.
+
+12. Add these items to your `.env` file:
+
+```
+DB_CLIENT="pg"
+DB_PORT="5432"
+DB_DATABASE=directus
+DB_USER=root
+DB_PASSWORD=<your-root-password>
+DB_HOST=/cloudsql/<connection-name-from-step-11>
+
+STORAGE_LOCATIONS="gcs"
+STORAGE_GCS_DRIVER="gcs"
+STORAGE_GCS_BUCKET=<your-bucket-name>
+
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="localpassword"
+
+KEY="secretkey"
+SECRET="secret"
+```
+
+Note: the value of `connectionName` from step 11 should be prefixed with `/cloudsql/` as the value of `DB_HOST`
+
+13. Build your container Run these commands.
+
+```
+docker build -t eu.gcr.io/<your-project-id>/directus .
+gcloud auth configure-docker -q
+docker push eu.gcr.io/<your-project-id>/directus
+```
+
+This will build the Docker container, authenticate your docker installation with Google Cloud Platform and push the
+container image to the container registry in your GCP project.
+
+14. Deploy your container
+
+```
+gcloud run deploy directus \
+     --project "<your-project-id>" \
+     --image "eu.gcr.io/<your-project-id>/directus:latest" \
+     --region "europe-west1" \
+     --platform "managed" \
+     --allow-unauthenticated \
+     --add-cloudsql-instances "<database-connection-name-from-step11>"
+```
+
+Note: the value of `connectionName` from step 11 should be used as the value of `add-cloudsql-instances` without any
+prefix.
+
+15. Done! The deploy command should've told you the URL where you can access your Directus instance.
+
+## Additional improvements
+
+- You should make your CloudSQL instance only accessible through a private IP and VPC connector. This way only your
+  current cloud project is able to access the database. More on this
+  [here](https://cloud.google.com/sql/docs/postgres/connect-run#private-ip).
+- You should not store your .env file locally and build it into your Dockerfile. Ideally you should save your .env file
+  in [Google Cloud Secret Manager](https://cloud.google.com/secret-manager) and in your CI/CD pipeline retrieve it and
+  put it in your conainter. Or, even better, let the container pick the .env up at runtime from Google Secret Manager.
+- Cloud Run typically allocates resources in a request context. Meaning async hooks etc will get drastically less CPU
+  and memory, often even resulting in those processes not completing. You have two options:
+  [CPU allocation](https://cloud.google.com/run/docs/configuring/cpu-allocation) that is always allocated (which will
+  increase cost) or handle everything in your extensions synchronously.
+- You could setup [caching](http://localhost:8080/configuration/config-options/#cache) using
+  [Memorystore for Redis](https://cloud.google.com/memorystore/docs/redis)
+- Since, by default, Google Cloud Run will scale back to zero instances of the container, it's impossible to use the
+  [Schedule hooks](http://localhost:8080/extensions/hooks/#schedule) since there is no container to handle those
+  shedules / cron jobs. Again you have two options: Set the minimum number of instances to 1, this will definitely
+  increase cost as at least 1 container keeps on running 24/7. Or you could use
+  [Cloud Scheduler](https://cloud.google.com/scheduler) to schedule calls to custom endpoints which will do the tasks.
