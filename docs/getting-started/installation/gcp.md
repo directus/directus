@@ -206,9 +206,10 @@ prefix.
 - You should make your CloudSQL instance only accessible through a private IP and VPC connector. This way only your
   current cloud project is able to access the database. More on this
   [here](https://cloud.google.com/sql/docs/postgres/connect-run#private-ip).
-- You should not store your .env file locally and build it into your Dockerfile. Ideally you should save your .env file
-  in [Google Cloud Secret Manager](https://cloud.google.com/secret-manager) and in your CI/CD pipeline retrieve it and
-  put it in your conainter. Or, even better, let the container pick the .env up at runtime from Google Secret Manager.
+- You should not store your `.env` file locally and build it into your Dockerfile. Ideally you should save your `.env`
+  file in [Google Cloud Secret Manager](https://cloud.google.com/secret-manager) and in your CI/CD pipeline retrieve it
+  and add it to your conainter. Or, even better, let the container pick the `.env` up at runtime from Google Secret
+  Manager.
 - Cloud Run typically allocates resources in a request context. Meaning async hooks etc will get drastically less CPU
   and memory, often even resulting in those processes not completing. You have two options:
   [CPU allocation](https://cloud.google.com/run/docs/configuring/cpu-allocation) that is always allocated (which will
