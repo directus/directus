@@ -57,10 +57,7 @@ const fieldOptions = [
 						disabled: false,
 					},
 					{
-						text: 'divider',
-						value: 'divider',
 						divider: true,
-						disabled: false,
 					},
 
 					{
