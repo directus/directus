@@ -35,7 +35,7 @@ maps: Mapas
 switch_user: Cambiar de usuario
 item_creation: Creación de artículos
 item_revision: Revisión de Elemento
-enter_a_name: Introduce un Nombre...
+enter_a_name: Ingresa_un_nombre...
 duplicate_field: Campo duplicado
 half_width: Ancho a la Mitad
 full_width: Ancho completo
@@ -50,26 +50,28 @@ role_name: Nombra un rol
 branch: Marca
 leaf: Hoja
 indeterminate: Indeterminado
-edit_collection: Editar Colección
+edit_collection: Editar_Colección
 exclusive: Exclusivo
 children: Hijo
-db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
+db_only_click_to_configure: 'Base_de_Datos_Solamente_Click_para_Configurar'
+show_active_items: Muestre_Items_Activos
 show_archived_items: Mostrar los registros archivados
+show_all_items: Muestre_Todos_los _Items
 edited: Valor editado
 required: Requerido
 required_for_app_access: Requerido para acceso a la App
 requires_value: Valor requerido
 create_preset: Crear ajuste
-create_panel: Crear Panel
+create_panel: Crear_Panel
 create_role: Crear rol
 create_user: Crear Usuario
-delete_panel: Eliminar Panel
+delete_panel: Borrar_Panel
 create_webhook: Crear un gancho web
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
 subject: Sujeto
-inbox: Buzón
+inbox: Entrada
 emails: Correos electrónicos
 connection_excellent: Conexión excelente
 connection_good: Conexión buena
@@ -91,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Control de datos disponibles por API sin autentificación.
+admin_description: Descripción_administrador.
 not_allowed: No permitido
 directus_version: Versión de Directus
 node_version: Versión Node
@@ -111,22 +114,22 @@ recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
 unarchive_confirm: '¿Está seguro que desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
-unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
+unknown_validation_errors: 'Errores_De_Validación_desconocidos:'
 validationError:
   eq: El valor debe de ser {valid}
   neq: El valor no puede ser {invalid}
-  in: 'El valor tiene que ser uno de estos: {valid}'
-  nin: 'El valor no puede ser uno de estos: {invalid}'
+  in: El_Valor_Debe_Ser{válido}
+  nin: El_Valor_No_Puede_Ser{inválido}
   contains: El valor debe de Contener {substring}
   ncontains: El valor no puede contener {substring}
-  gt: El valor tiene que ser mayor a {valid}
-  gte: El valor tiene que ser mayor o igual a {valid}
-  lt: El valor tiene que ser menor a {valid}
-  lte: El valor tiene que ser menor o igual a {valid}
-  empty: El valor tiene que estar vacío
+  gt: El_Valor_Debe_Ser_Mayor_Que{valid}
+  gte: El_Valor_Tiene_Que_Ser_Mayor_O_Igual_Que{valid}
+  lt: El_Valor_Tiene_Que_Ser_menor_Que{valid}
+  lte: El_Valor_Tiene_Que_Ser_Menor_O_Igual_A{valid}
+  empty: El_Valor_Tiene_Que_Estar_Vacío
   nempty: Este valor no puede quedar vacío
-  null: El valor tiene que ser nulo
-  nnull: El valor no puede ser nulo
+  null: El_Valor_Tiene_Que_Ser_Nulo
+  nnull: El_Valor_No_Puede_Ser_Nulo
   required: Valor requerido
   unique: El valor debe de ser único
   regex: El valor no cuenta con el formato correcto
@@ -134,32 +137,32 @@ all_access: Acceso total
 no_access: Sin acceso
 use_custom: Usar personalizado
 nullable: Deshabilitable
-allow_null_value: Permitir valor NULL
-allow_multiple: Permitir Múltiples
-allow_multiple_to_be_open: Permitir que se abran múltiples
+allow_null_value: Permita_Valor_Nulo
+allow_multiple: Permita_Multiple
+allow_multiple_to_be_open: Permita_Apertura_Múltiple
 enter_value_to_replace_nulls: Ingrese un nuevo valor para reemplazar cualquier valor NULL que se encuentre actualmente en este campo.
 field_standard: Standar
-field_presentation: Presentación y Alias
+field_presentation: Presentación_de_Campo
 field_file: Un solo Archivo
 field_files: Múltiples Archivos
 field_m2o: Relación N:1
-field_m2a: Relación M2A
+field_m2a: '-> Campo_m2a'
 field_o2m: Relación 1:N
 field_m2m: Relación M:N
 field_translations: Traducciónes
-field_group: Grupo de campos
+field_group: Campo_Grupo
 item_permissions: Permisos de registro
 field_permissions: Permisos de campo
 field_validation: Validación de campo
 field_presets: Predefinidos para Campo
-permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
-fields_for_role: 'Campos que el Rol {role} puede {action}.'
-validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
+permissions_for_role: 'Items_El{role}_Rol_Puede{action}.'
+fields_for_role: 'Campos_El{role}_Rol_puede{action}.'
+validation_for_role: 'Reglas{action}_De_Campo_El{role}_Rol_Debe_Obedecer.'
 presets_for_role: 'Valor del campo por defecto para el rol {role}.'
-presentation_and_aliases: Presentación y Alias
-revision_post_create: Este es el aspecto de este elemento cuando fue creado.
-revision_post_update: Así se vería el elemento después de la actualización.
-changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
+presentation_and_aliases: Presentación_y_Aliases
+revision_post_create: Aspecto_Una_Vez_Creado.
+revision_post_update: Aspecto_Luego_De_Actualizado.
+changes_made: Cambios.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
 hide_field_on_detail: Oculto en Detalle
 show_field_on_detail: Mostrar en Detalle
@@ -224,8 +227,8 @@ geometry.Point: Punto
 geometry.LineString: Linea
 geometry.Polygon: Polígono
 geometry.MultiPoint: Multipunto
-geometry.MultiLineString: MultiLinea
-geometry.MultiPolygon: MultiPolígono
+geometry.MultiLineString: Geometría. Línea_Múltiple
+geometry.MultiPolygon: Geometría. Polígono_Múltiple
 not_available_for_type: No habilitado para este Tipo
 create_translations: Crear traducción
 auto_refresh: Actualizar automáticamente
@@ -245,14 +248,14 @@ new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
-add_m2o_to_collection: 'Añadir M2O a "{collection}"'
-add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
-add_m2m_to_collection: 'Añadir M2M a "{collection}"'
+add_m2o_to_collection: 'Agregar_Varios_A_Uno_a_la_"{collection}"'
+add_o2m_to_collection: 'Agregar_Uno_A_Varios_A_La_"{collection}"'
+add_m2m_to_collection: 'Agregar_Varios_A_Varios_A_La_"{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinar por relación
 add_note: Agrega una nota de ayuda para los usuarios...
-add_link: Agregar Enlace
-custom_link: Enlance Personalizado
+add_link: Agregue_Enlace
+custom_link: Enlace_Personalizado
 default_value: Valor Predeterminado
 standard_field: Campo Standar
 single_file: Un solo Archivo
@@ -265,7 +268,7 @@ invalid_item: Registro invalido
 next: Siguiente
 field_name: Nombre del Campo
 translations: Traducciónes
-no_translations: Sin traducciones
+no_translations: No_Traducir
 note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
@@ -283,7 +286,7 @@ raw_value: Valor sin interpretar
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
-clear_changes: Borrar Cambios
+clear_changes: Borrar_Cambios
 reset_to_default: Restablecer ajustes por defecto
 undo_changes: Deshacer cambios
 notifications: Notificaciones
@@ -291,23 +294,23 @@ show_all_activity: Mostrar Toda La Actividad
 page_not_found: Página no encontrada
 page_not_found_body: Parece que la página que está buscando no existe.
 confirm_revert: Confirmar reversión
-confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
-display: Mostrar
+confirm_revert_body: Esto va a revertir el item al estado seleccionado.
+display: Exhibir
 settings_update_success: Configuraciones Actualizadas
 title: Título
 revision_delta_created: Creado
-revision_delta_created_externally: Creado Externamente
-revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
+revision_delta_created_externally: Creado externamente
+revision_delta_updated: '1 Campo Actualizado |{count} Campos Actualizados'
 revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 private_user: Usuario Privado
-creation_preview: Vista previa de creación
+creation_preview: Vista Previa de Creación
 revision_preview: Vista Previa de Revisión
-updates_made: Actualizaciones Realizadas
-leave_comment: Deja un comentario...
-post_comment_success: Comentario publicado
+updates_made: Actualizaciones Finalizadas
+leave_comment: Deje su Comentario...
+post_comment_success: Comentario Publicado
 item_create_success: Registro Creado | Registros Creados
 item_update_success: Registro Actualizado | Registros Actualizados
 item_delete_success: Registro Borrado | Registros Borrados
@@ -318,11 +321,11 @@ translations_collection: Traducción de la Colección
 languages_collection: Coleccion de Idiomas
 export_data: Exportar datos
 format: Formato
-use_current_filters_settings: Usar Filtros y Ajustes Actuales
+use_current_filters_settings: Use Filtros y Ajustes Corrientes
 export_collection: 'Exportar {collection}'
 last_page: Última página
 last_access: Último acceso
-fill_template: Rellenar con Valor de Plantilla
+fill_template: Llenar Con Valores de Plantilla
 a_unique_table_name: Un Nombre de Tabla Único...
 a_unique_column_name: Un nombre de Columna Único...
 enable_custom_values: Habilitar valores personalizados
@@ -331,7 +334,7 @@ move_to_folder: Mover a Carpeta
 move: Mover
 system: Sistema
 add_field_related: Agregar Campo a la Colección Relacionada
-interface_label: Interfaz
+interface_label: Conexión
 today: Hoy
 yesterday: Ayer
 delete_comment: Borrar Comentario
@@ -377,17 +380,17 @@ zoom: Lupa
 download: Descargar
 open: Abrir
 open_in_new_window: Abrir en una ventana nueva
-open_folder: Abrir carpeta "{folder}"
-foreground_color: Color de Letra
+open_folder: Abrir "{folder}" Carpeta
+foreground_color: Color de Frente
 background_color: Color de Fondo
-upload_from_device: Subir Archivo desde Dispositivo
-choose_from_library: Seleccionar Archivo desde Biblioteca
+upload_from_device: Cargar Archivo Desde el Dispositivo
+choose_from_library: Elegir Archivo desde Librería
 import_from_url: Importar archivo desde una URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
-replace_from_library: Reemplazar Archivo desde Biblioteca
-replace_from_url: Reemplazar Archivo desde URL
-no_file_selected: Sin Archivos Seleccionados
-download_file: Descargar Archivo
+replace_from_library: Reemplazar Archivo desde Librería
+replace_from_url: Reemplazar Archivo desde Enlace
+no_file_selected: No hay Archivo Seleccionado
+download_file: Bajar Archivo
 collection_key: Llave de Colección
 name: Nombre
 primary_key_field: Campo Llave Primaria
@@ -450,7 +453,7 @@ active: Activo
 move_to: Mover a...
 copy: Copiar
 copy_to: Copiar a...
-no_other_dashboards_copy: Aún no tienes un Panel.
+no_other_dashboards_copy: Todavía No tiene Otros Paneles.
 inactive: Inactivo
 users: Usuarios
 activity: Actividad
@@ -462,22 +465,22 @@ webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
 min_value: Valor Mínimo
-max_value: Valor máximo
+max_value: Valor Máximo
 automatic: Automático
 field_width: Ancho de Campo
 add_filter: Agregar Filtro
-upper_limit: Límite Superior...
-lower_limit: Límite Inferior...
-user_directory: Directorio de Usuarios
+upper_limit: Limite superior...
+lower_limit: Límite inferior...
+user_directory: Directorio del Usuario
 documentation: Documentación
-sidebar: Barra Lateral
+sidebar: Barra lateral
 duration: Duración
-charset: Codificación
+charset: Juego de caracteres
 second: segundo
-file_moved: Archivo Movido
+file_moved: Archivo movido
 collection_created: Colección Creada
 modified_on: Modificado en
-card_size: Tamaño de Tarjeta
+card_size: Tamaño de tarjeta
 sort_field: Campo Ordenamiento
 add_sort_field: Añadir campo de ordenación
 sort: Ordenar
@@ -513,7 +516,7 @@ errors:
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
-  NOT_NULL_VIOLATION: El valor no puede ser nulo
+  NOT_NULL_VIOLATION: El_Valor_No_Puede_Ser_Nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
   UNKNOWN: Error Inesperado
 security: Seguridad
@@ -716,7 +719,7 @@ wysiwyg_options:
   alignleft: Alinear a la Izquierda
   alignnone: No Alinear
   alignright: Alinear a la Derecha
-  forecolor: Color de Letra
+  forecolor: Color de Frente
   backcolor: Color de Fondo
   bold: Negrita
   italic: Cursiva
@@ -910,7 +913,7 @@ fields:
     width: Ancho
     uploaded_on: Uploaded On
     height: Alto
-    charset: Codificación
+    charset: Juego de caracteres
     duration: Duración
   directus_users:
     first_name: Nombre
