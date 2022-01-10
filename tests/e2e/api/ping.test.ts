@@ -1,14 +1,12 @@
 import request from 'supertest';
 import config from '../config';
-import { getDBsToTest } from '../get-dbs-to-test';
+import vendors from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 
 describe('/server', () => {
 	const databases = new Map<string, Knex>();
 
 	beforeAll(() => {
-		const vendors = getDBsToTest();
-
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 		}
@@ -21,10 +19,8 @@ describe('/server', () => {
 	});
 
 	describe('/ping', () => {
-		it.each(getDBsToTest())('%p', async (vendor) => {
-			// const knex = databases.get(vendor);
-
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)('%p', async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 			const response = await request(url)
 				.get('/server/ping')

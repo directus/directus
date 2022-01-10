@@ -9,7 +9,7 @@ import {
 } from './factories';
 import knex, { Knex } from 'knex';
 import config from '../../config';
-import { getDBsToTest } from '../../get-dbs-to-test';
+import vendors from '../../get-dbs-to-test';
 
 describe('Item factories', () => {
 	describe('createArtist', () => {
@@ -75,35 +75,31 @@ describe('Item factories', () => {
 describe('seeding databases', () => {
 	const databases = new Map<string, Knex>();
 	beforeAll(async () => {
-		const vendors = getDBsToTest();
-
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 		}
 	});
 	afterAll(async () => {
-		const vendors = getDBsToTest();
-
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 			await databases.get(vendor)!.destroy();
 		}
 	});
 	describe('seedTable', () => {
-		it.each(getDBsToTest())('%p returns void when there is no options', async (vendor) => {
-			const database = databases.get(vendor);
+		it.each(vendors)('%p returns void when there is no options', async (vendor) => {
+			const database = databases.get(vendor)!;
 			expect(await seedTable(database!, 5, 'artists', createArtist)).toBe(undefined);
 		});
-		it.each(getDBsToTest())('%p to insert the correct number of artists', async (vendor) => {
-			const database = databases.get(vendor);
+		it.each(vendors)('%p to insert the correct number of artists', async (vendor) => {
+			const database = databases.get(vendor)!;
 
 			expect(await seedTable(database!, 1606, 'artists', createArtist)).toBe(undefined);
 
 			const count = await database!('artists').count('*', { as: 'artists' });
 			if (typeof count[0]?.artists === 'string') expect(parseInt(count[0]?.artists)).toBeGreaterThanOrEqual(1606);
 		});
-		it.each(getDBsToTest())('%p has a response based on passed in options select and where', async (vendor) => {
-			const database = databases.get(vendor);
+		it.each(vendors)('%p has a response based on passed in options select and where', async (vendor) => {
+			const database = databases.get(vendor)!;
 			const artist = createArtist();
 			const options = { select: ['name', 'id'], where: ['name', artist.name] };
 			const insert: any = await seedTable(database!, 1, 'artists', artist, options);
@@ -112,8 +108,8 @@ describe('seeding databases', () => {
 				name: artist.name,
 			});
 		});
-		it.each(getDBsToTest())('%p has a response based on passed in options raw', async (vendor) => {
-			const database = databases.get(vendor);
+		it.each(vendors)('%p has a response based on passed in options raw', async (vendor) => {
+			const database = databases.get(vendor)!;
 			const artist = createArtist();
 			const options = { raw: `SELECT name from artists WHERE name='${artist.name}';` };
 			const response: any = await seedTable(database!, 1, 'artists', artist, options);
@@ -136,8 +132,8 @@ describe('seeding databases', () => {
 	});
 	describe('inserting factories', () => {
 		describe('createArtist', () => {
-			it.each(getDBsToTest())('%p returns an artist object of column names and values', async (vendor) => {
-				const database = databases.get(vendor);
+			it.each(vendors)('%p returns an artist object of column names and values', async (vendor) => {
+				const database = databases.get(vendor)!;
 				const artist = createArtist();
 				if (vendor === 'postgres' && typeof artist.members === 'string') {
 					const options = { select: ['*'], where: ['name', artist.name] };
@@ -163,7 +159,7 @@ describe('seeding databases', () => {
 		});
 
 		describe('createEvent', () => {
-			it.each(getDBsToTest())('%p returns an event object of column names and values', async (vendor) => {
+			it.each(vendors)('%p returns an event object of column names and values', async (vendor) => {
 				const database = databases.get(vendor)!;
 				const event = createEvent();
 				const options = { select: ['*'], where: ['id', event.id] };
@@ -194,7 +190,7 @@ describe('seeding databases', () => {
 		});
 
 		describe('createGuest', () => {
-			it.each(getDBsToTest())('%p returns an guest object of column names and values', async (vendor) => {
+			it.each(vendors)('%p returns an guest object of column names and values', async (vendor) => {
 				const database = databases.get(vendor)!;
 				const guest = createGuest();
 				const options = { select: ['*'], where: ['name', guest.name] };
@@ -222,7 +218,7 @@ describe('seeding databases', () => {
 		});
 
 		describe('createTour', () => {
-			it.each(getDBsToTest())('%p returns an tour object of column names and values', async (vendor) => {
+			it.each(vendors)('%p returns an tour object of column names and values', async (vendor) => {
 				const database = databases.get(vendor)!;
 				const tour = createTour();
 				const options = { select: ['*'], where: ['revenue', tour.revenue] };
@@ -241,7 +237,7 @@ describe('seeding databases', () => {
 		});
 
 		describe('createOrganizer', () => {
-			it.each(getDBsToTest())('%p returns an organizer object of column names and values', async (vendor) => {
+			it.each(vendors)('%p returns an organizer object of column names and values', async (vendor) => {
 				const database = databases.get(vendor)!;
 				const organizer = createOrganizer();
 				const options = { select: ['*'], where: ['id', organizer.id] };
@@ -254,7 +250,7 @@ describe('seeding databases', () => {
 		});
 
 		describe('createMany', () => {
-			it.each(getDBsToTest())('%p returns array of guests', async (vendor) => {
+			it.each(vendors)('%p returns array of guests', async (vendor) => {
 				const database = databases.get(vendor)!;
 				const artist = createArtist();
 				await seedTable(database, 1, 'artists', artist, { select: ['id'] });
@@ -270,7 +266,7 @@ describe('seeding databases', () => {
 				expect(response[0]).toMatchObject({ name: expect.any(String), favorite_artist: expect.any(String) });
 				expect(response.length).toBe(5);
 			});
-			it.each(getDBsToTest())('%p returns array of guests', async (vendor) => {
+			it.each(vendors)('%p returns array of guests', async (vendor) => {
 				const database = databases.get(vendor)!;
 				const artist = createArtist();
 				await seedTable(database, 1, 'artists', artist, { select: ['id'] });

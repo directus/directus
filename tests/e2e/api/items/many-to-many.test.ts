@@ -1,7 +1,7 @@
 import axios from 'axios';
 import request from 'supertest';
 import config from '../../config';
-import { getDBsToTest } from '../../get-dbs-to-test';
+import vendors from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createEvent, createMany, seedTable, Item } from '../../setup/utils/factories';
 
@@ -9,8 +9,6 @@ describe('/items', () => {
 	const databases = new Map<string, Knex>();
 
 	beforeAll(async () => {
-		const vendors = getDBsToTest();
-
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 		}
@@ -23,8 +21,8 @@ describe('/items', () => {
 	});
 
 	describe('/:collection/:id GET', () => {
-		it.each(getDBsToTest())(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p retrieves an artist and an event off the artists_events table`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			const event = createEvent();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
@@ -59,8 +57,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection/:id PATCH', () => {
-		it.each(getDBsToTest())(`%p updates one artists_events to a different artist`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p updates one artists_events to a different artist`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 				select: ['id'],
 			});
@@ -91,8 +89,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection/:id DELETE', () => {
-		it.each(getDBsToTest())(`%p deletes an artists_events without deleting the artist or event`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p deletes an artists_events without deleting the artist or event`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			const event = createEvent();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -130,8 +128,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection GET', () => {
-		it.each(getDBsToTest())(`%p retrieves artists and events for each entry in artists_events`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p retrieves artists and events for each entry in artists_events`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			const event = createEvent();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -161,8 +159,8 @@ describe('/items', () => {
 
 	describe('/:collection POST', () => {
 		describe('createOne', () => {
-			it.each(getDBsToTest())(`%p creates an artist_events entry`, async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)(`%p creates an artist_events entry`, async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -191,8 +189,8 @@ describe('/items', () => {
 			});
 		});
 		describe('createMany', () => {
-			it.each(getDBsToTest())(`%p creates 5 artist_events entries`, async (vendor) => {
-				const url = `http://localhost:${config.ports[vendor]!}`;
+			it.each(vendors)(`%p creates 5 artist_events entries`, async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -218,8 +216,8 @@ describe('/items', () => {
 	});
 
 	describe('/:collection PATCH', () => {
-		it.each(getDBsToTest())(`%p updates many artists_events to a different artist`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p updates many artists_events to a different artist`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			const event = createEvent();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -261,8 +259,8 @@ describe('/items', () => {
 		});
 	});
 	describe('/:collection DELETE', () => {
-		it.each(getDBsToTest())(`%p deletes many artists_events without deleting the artists or events`, async (vendor) => {
-			const url = `http://localhost:${config.ports[vendor]!}`;
+		it.each(vendors)(`%p deletes many artists_events without deleting the artists or events`, async (vendor) => {
+			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 			const artist = createArtist();
 			const event = createEvent();
 			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
