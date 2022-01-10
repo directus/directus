@@ -66,7 +66,7 @@
 							</span>
 							<span class="text">
 								{{
-									`- ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
+									`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
 										'interfaces.filter.of_the_following'
 									)}`
 								}}
