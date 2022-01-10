@@ -903,6 +903,7 @@ fields:
     transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
     additional_transforms: 其它转换
     project_name: 项目名称
+    project_descriptor: 项目描述
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
