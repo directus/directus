@@ -334,7 +334,7 @@ move_to_folder: Mover a Carpeta
 move: Mover
 system: Sistema
 add_field_related: Agregar Campo a la Colección Relacionada
-interface_label: Interfaz
+interface_label: Conexión
 today: Hoy
 yesterday: Ayer
 delete_comment: Borrar Comentario
@@ -380,17 +380,17 @@ zoom: Lupa
 download: Descargar
 open: Abrir
 open_in_new_window: Abrir en una ventana nueva
-open_folder: Abrir carpeta "{folder}"
-foreground_color: Color de Letra
+open_folder: Abrir "{folder}" Carpeta
+foreground_color: Color de Frente
 background_color: Color de Fondo
-upload_from_device: Subir Archivo desde Dispositivo
-choose_from_library: Seleccionar Archivo desde Biblioteca
+upload_from_device: Cargar Archivo Desde el Dispositivo
+choose_from_library: Elegir Archivo desde Librería
 import_from_url: Importar archivo desde una URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
-replace_from_library: Reemplazar Archivo desde Biblioteca
-replace_from_url: Reemplazar Archivo desde URL
-no_file_selected: Sin Archivos Seleccionados
-download_file: Descargar Archivo
+replace_from_library: Reemplazar Archivo desde Librería
+replace_from_url: Reemplazar Archivo desde Enlace
+no_file_selected: No hay Archivo Seleccionado
+download_file: Bajar Archivo
 collection_key: Llave de Colección
 name: Nombre
 primary_key_field: Campo Llave Primaria
@@ -453,7 +453,7 @@ active: Activo
 move_to: Mover a...
 copy: Copiar
 copy_to: Copiar a...
-no_other_dashboards_copy: Aún no tienes un Panel.
+no_other_dashboards_copy: Todavía No tiene Otros Paneles.
 inactive: Inactivo
 users: Usuarios
 activity: Actividad
@@ -465,22 +465,22 @@ webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
 min_value: Valor Mínimo
-max_value: Valor máximo
+max_value: Valor Máximo
 automatic: Automático
 field_width: Ancho de Campo
 add_filter: Agregar Filtro
-upper_limit: Límite Superior...
-lower_limit: Límite Inferior...
-user_directory: Directorio de Usuarios
+upper_limit: Limite superior...
+lower_limit: Límite inferior...
+user_directory: Directorio del Usuario
 documentation: Documentación
-sidebar: Barra Lateral
+sidebar: Barra lateral
 duration: Duración
-charset: Codificación
+charset: Juego de caracteres
 second: segundo
-file_moved: Archivo Movido
+file_moved: Archivo movido
 collection_created: Colección Creada
 modified_on: Modificado en
-card_size: Tamaño de Tarjeta
+card_size: Tamaño de tarjeta
 sort_field: Campo Ordenamiento
 add_sort_field: Añadir campo de ordenación
 sort: Ordenar
@@ -719,7 +719,7 @@ wysiwyg_options:
   alignleft: Alinear a la Izquierda
   alignnone: No Alinear
   alignright: Alinear a la Derecha
-  forecolor: Color de Letra
+  forecolor: Color de Frente
   backcolor: Color de Fondo
   bold: Negrita
   italic: Cursiva
@@ -913,7 +913,7 @@ fields:
     width: Ancho
     uploaded_on: Uploaded On
     height: Alto
-    charset: Codificación
+    charset: Juego de caracteres
     duration: Duración
   directus_users:
     first_name: Nombre
