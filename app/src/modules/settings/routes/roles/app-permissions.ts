@@ -308,6 +308,7 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 			'id',
 			'first_name',
 			'last_name',
+			'last_page',
 			'email',
 			'password',
 			'location',

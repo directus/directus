@@ -1254,6 +1254,8 @@ interfaces:
     add_filter: Add Filter
     add_group: And / Or group
     add_value: Add Value
+    logic_type_and: AND
+    logic_type_or: OR
     all: All
     any: Any
     and: and
