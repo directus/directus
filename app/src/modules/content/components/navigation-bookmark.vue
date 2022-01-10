@@ -145,7 +145,7 @@ export default defineComponent({
 						navigateTo = `/content/${props.bookmark.collection}`;
 					}
 
-					await presetsStore.delete(props.bookmark.id);
+					await presetsStore.delete([props.bookmark.id!]);
 					deleteActive.value = false;
 
 					if (navigateTo) {
