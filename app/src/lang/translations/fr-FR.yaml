@@ -964,6 +964,7 @@ fields:
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     additional_transforms: Transformations supplémentaires
     project_name: Nom du projet
+    project_descriptor: Description du projet
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
@@ -987,6 +988,10 @@ fields:
     name: Nom
     role: Rôle
     password: Mot de passe
+    date_start: Débute le
+    date_end: Se termine le
+    max_uses: Utilisations max
+    times_used: Nombre d'utilisations
   directus_fields:
     collection: Nom de la Collection
     icon: Icône de Collection
@@ -1226,6 +1231,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
