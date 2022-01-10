@@ -47,6 +47,23 @@ const fieldOptions = [
 						disabled: false,
 					},
 					{
+						text: 'First',
+						value: 'first',
+						disabled: false,
+					},
+					{
+						text: 'Last',
+						value: 'last',
+						disabled: false,
+					},
+					{
+						text: 'divider',
+						value: 'divider',
+						divider: true,
+						disabled: false,
+					},
+
+					{
 						text: 'Count (Distinct)',
 						value: 'count_distinct',
 						disabled: false,
@@ -79,16 +96,6 @@ const fieldOptions = [
 					{
 						text: 'Maximum',
 						value: 'max',
-						disabled: false,
-					},
-					{
-						text: 'First',
-						value: 'first',
-						disabled: false,
-					},
-					{
-						text: 'Last',
-						value: 'last',
 						disabled: false,
 					},
 				],
