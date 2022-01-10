@@ -3,6 +3,8 @@ import config from '../../config';
 import request from 'supertest';
 import vendors from '../../get-dbs-to-test';
 
+// Debug test
+
 describe('auth', () => {
 	describe('login', () => {
 		const databases = new Map<string, Knex>();

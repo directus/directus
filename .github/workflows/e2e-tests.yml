@@ -18,8 +18,6 @@ jobs:
       matrix:
         node-version:
           - '16'
-    env:
-      CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
