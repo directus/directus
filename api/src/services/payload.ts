@@ -284,19 +284,21 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'dateTime') {
-						const year = String(value.getUTCFullYear());
-						const month = String(value.getUTCMonth() + 1).padStart(2, '0');
-						const date = String(value.getUTCDate()).padStart(2, '0');
-						const hours = String(value.getUTCHours()).padStart(2, '0');
-						const minutes = String(value.getUTCMinutes()).padStart(2, '0');
-						const seconds = String(value.getUTCSeconds()).padStart(2, '0');
+						const year = String(value.getFullYear());
+						const month = String(value.getMonth() + 1).padStart(2, '0');
+						const day = String(value.getDate()).padStart(2, '0');
+						const hours = String(value.getHours()).padStart(2, '0');
+						const minutes = String(value.getMinutes()).padStart(2, '0');
+						const seconds = String(value.getSeconds()).padStart(2, '0');
 
-						const newValue = `${year}-${month}-${date}T${hours}:${minutes}:${seconds}`;
+						const newValue = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'date') {
-						const [year, month, day] = value.toISOString().substr(0, 10).split('-');
+						const year = String(value.getFullYear());
+						const month = String(value.getMonth() + 1).padStart(2, '0');
+						const day = String(value.getDate()).padStart(2, '0');
 
 						// Strip off the time / timezone information from a date-only value
 						const newValue = `${year}-${month}-${day}`;
@@ -308,7 +310,7 @@ export class PayloadService {
 							const [date] = value.split('T');
 							const [year, month, day] = date.split('-');
 
-							payload[name] = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+							payload[name] = new Date(Number(year), Number(month) - 1, Number(day));
 						}
 
 						if (dateColumn.type === 'dateTime') {
@@ -317,7 +319,12 @@ export class PayloadService {
 							const [hours, minutes, seconds] = time.substring(0, 8).split(':');
 
 							payload[name] = new Date(
-								Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes), Number(seconds))
+								Number(year),
+								Number(month) - 1,
+								Number(day),
+								Number(hours),
+								Number(minutes),
+								Number(seconds)
 							);
 						}
 
