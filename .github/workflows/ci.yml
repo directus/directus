@@ -71,6 +71,6 @@ jobs:
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
-    uses: directus/directus/.github/workflows/e2e-tests.yml@f831ad4a1fdfa463954a17aafc1e8198cc93c4a6
+    uses: directus/directus/.github/workflows/e2e-tests.yml@ed82632786375f6312a21d3a28b17e654942000a
     with:
       should_skip: ${{ needs.pre_check.outputs.should_skip == 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}
