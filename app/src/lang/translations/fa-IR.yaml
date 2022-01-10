@@ -171,6 +171,10 @@ language: زبان
 global: سراسری
 admins_have_all_permissions: مدیران همه مجوزها را دارند
 camera: دوربین
+sum: مجموع
+count: تعداد
+min: حداقل
+max: حداکثر
 exposure: نوردهی
 shutter: شاتر
 iso: ISO
