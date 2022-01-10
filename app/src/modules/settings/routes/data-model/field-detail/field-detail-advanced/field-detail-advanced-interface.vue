@@ -11,8 +11,10 @@
 		<extension-options
 			v-if="interfaceID && selectedInterface"
 			type="interface"
+			:options="optionsFields"
 			:extension="interfaceID"
 			show-advanced
+			@field-values="setOptions"
 		/>
 	</div>
 </template>
@@ -95,7 +97,24 @@ export default defineComponent({
 
 		const selectedInterface = computed(() => getInterface(interfaceID.value));
 
-		return { t, selectItems, selectedInterface, interfaceID, options };
+		const extensionInfo = computed(() => {
+			return getInterface(interfaceID.value);
+		});
+
+		let optionsFields = {};
+		if (typeof extensionInfo.value?.options === 'function') {
+			optionsFields = extensionInfo.value?.options(fieldDetailStore);
+		}
+		return { t, selectItems, selectedInterface, interfaceID, options, optionsFields, setOptions };
+
+		function setOptions(newOptions: Record<string, any>) {
+			fieldDetailStore.$patch((state) => {
+				state.field.meta = {
+					...state.field.meta,
+					options: newOptions,
+				};
+			});
+		}
 	},
 });
 </script>

@@ -119,8 +119,10 @@ export default defineComponent({
 		const extensionInfo = computed(() => {
 			return getInterface(props.chosenInterface);
 		});
-
-		const optionsFields = extensionInfo.value?.options(fieldDetail);
+		let optionsFields = {};
+		if (typeof extensionInfo.value?.options === 'function') {
+			optionsFields = extensionInfo.value?.options(fieldDetail);
+		}
 		watch(
 			chosenInterface,
 			(newVal, oldVal) => {

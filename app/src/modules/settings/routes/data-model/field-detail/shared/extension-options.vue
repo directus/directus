@@ -45,7 +45,9 @@ export default defineComponent({
 		},
 		options: {
 			type: Object,
-			required: true,
+			default: () => {
+				return {};
+			},
 		},
 		values: {
 			type: Object,
