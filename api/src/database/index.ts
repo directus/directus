@@ -53,6 +53,7 @@ export default function getDatabase(): Knex {
 
 	const knexConfig: Knex.Config = {
 		client: env.DB_CLIENT,
+		version: env.DB_VERSION,
 		searchPath: env.DB_SEARCH_PATH,
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
