@@ -445,12 +445,16 @@ STORAGE_LOCAL_ROOT="./uploads"
 
 ::: warning Case sensitivity
 
-The location value(s) you specify should be capitalized when specifying the additional configuration values. For example, this will not work:
+The location value(s) you specify should be capitalized when specifying the additional configuration values. For
+example, this will not work:
+
 ```
 STORAGE_LOCATIONS="s3"
 STORAGE_s3_DRIVER="s3" # Will not work, lowercase "s3" ❌
 ```
+
 but this will work:
+
 ```
 STORAGE_LOCATIONS="s3"
 STORAGE_S3_DRIVER="s3" # Will work, "s3" is uppercased ✅
@@ -678,9 +682,10 @@ AUTH_ADOBE_ICON="adobe"
 
 ## Extensions
 
-| Variable          | Description                           | Default Value  |
-| ----------------- | ------------------------------------- | -------------- |
-| `EXTENSIONS_PATH` | Path to your local extensions folder. | `./extensions` |
+| Variable                 | Description                                             | Default Value  |
+| ------------------------ | ------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`        | Path to your local extensions folder.                   | `./extensions` |
+| `EXTENSIONS_AUTO_RELOAD` | Automatically reload extensions when they have changed. | `false`        |
 
 ## Email
 
