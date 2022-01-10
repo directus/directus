@@ -82,7 +82,7 @@ CMD ["npm", "run", "start"]
    it will be used in all subsequent gcloud commands.
 
 6. Add/link a billing account/details to your project by going here:
-   `https://console.cloud.google.com/billing/linkedaccount?project=<your-project-id>`. Since the database and storace
+   `https://console.cloud.google.com/billing/linkedaccount?project=<your-project-id>`. Since the database and storage
    bucket are persistent, there are (costs)[#cost] involved.
 
 7. Create a storage bucket where Directus will store files:
@@ -214,10 +214,10 @@ prefix.
   and memory, often even resulting in those processes not completing. You have two options:
   [CPU allocation](https://cloud.google.com/run/docs/configuring/cpu-allocation) that is always allocated (which will
   increase cost) or handle everything in your extensions synchronously.
-- You could setup [caching](http://localhost:8080/configuration/config-options/#cache) using
+- You could setup [caching](/configuration/config-options/#cache) using
   [Memorystore for Redis](https://cloud.google.com/memorystore/docs/redis)
 - Since, by default, Google Cloud Run will scale back to zero instances of the container, it's impossible to use the
-  [Schedule hooks](http://localhost:8080/extensions/hooks/#schedule) since there is no container to handle those
-  shedules / cron jobs. Again you have two options: Set the minimum number of instances to 1, this will definitely
-  increase cost as at least 1 container keeps on running 24/7. Or you could use
-  [Cloud Scheduler](https://cloud.google.com/scheduler) to schedule calls to custom endpoints which will do the tasks.
+  [Schedule hooks](/extensions/hooks/#schedule) since there is no container to handle those schedules / cron jobs. Again
+  you have two options: Set the minimum number of instances to 1, this will definitely increase cost as at least 1
+  container keeps on running 24/7. Or you could use [Cloud Scheduler](https://cloud.google.com/scheduler) to schedule
+  calls to custom endpoints which will do the tasks.
