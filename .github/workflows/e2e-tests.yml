@@ -16,13 +16,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        db:
-          - mssql
-          - mysql
-          - postgres
-          - maria
-          - postgres10
-          # - sqlite3
         node-version:
           - '16'
     env:
@@ -48,8 +41,6 @@ jobs:
 
       - name: Run tests
         run: npm run test:e2e
-        env:
-          TEST_DB: ${{ matrix.db }}
 
   result:
     name: Result
