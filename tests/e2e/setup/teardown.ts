@@ -23,7 +23,6 @@ export default async function teardown(jestConfig?: GlobalConfigTsJest, _isAfter
 							title: config.names[vendor]!,
 							task: async () => {
 								const directus = global.directus[vendor];
-								directus!.stdin!.end();
 								directus!.kill();
 							},
 						};

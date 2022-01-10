@@ -44,7 +44,7 @@ export default async (): Promise<void> => {
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
-								const server = spawn('sh', ['-lc', 'npx directus start'], { env });
+								const server = spawn('sh', ['-lc', 'npx directus start'], { env, stdio: 'ignore' });
 								await awaitDirectusConnection(config.envs[vendor]!.PORT as number);
 								global.directus[vendor] = server;
 							},
