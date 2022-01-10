@@ -227,8 +227,8 @@ geometry.Point: Punto
 geometry.LineString: Linea
 geometry.Polygon: Polígono
 geometry.MultiPoint: Multipunto
-geometry.MultiLineString: MultiLinea
-geometry.MultiPolygon: MultiPolígono
+geometry.MultiLineString: Geometría. Línea_Múltiple
+geometry.MultiPolygon: Geometría. Polígono_Múltiple
 not_available_for_type: No habilitado para este Tipo
 create_translations: Crear traducción
 auto_refresh: Actualizar automáticamente
@@ -248,14 +248,14 @@ new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
-add_m2o_to_collection: 'Añadir M2O a "{collection}"'
-add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
-add_m2m_to_collection: 'Añadir M2M a "{collection}"'
+add_m2o_to_collection: 'Agregar_Varios_A_Uno_a_la_"{collection}"'
+add_o2m_to_collection: 'Agregar_Uno_A_Varios_A_La_"{collection}"'
+add_m2m_to_collection: 'Agregar_Varios_A_Varios_A_La_"{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinar por relación
 add_note: Agrega una nota de ayuda para los usuarios...
-add_link: Agregar Enlace
-custom_link: Enlance Personalizado
+add_link: Agregue_Enlace
+custom_link: Enlace_Personalizado
 default_value: Valor Predeterminado
 standard_field: Campo Standar
 single_file: Un solo Archivo
@@ -268,7 +268,7 @@ invalid_item: Registro invalido
 next: Siguiente
 field_name: Nombre del Campo
 translations: Traducciónes
-no_translations: Sin traducciones
+no_translations: No_Traducir
 note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
@@ -286,7 +286,7 @@ raw_value: Valor sin interpretar
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
-clear_changes: Borrar Cambios
+clear_changes: Borrar_Cambios
 reset_to_default: Restablecer ajustes por defecto
 undo_changes: Deshacer cambios
 notifications: Notificaciones
@@ -294,23 +294,23 @@ show_all_activity: Mostrar Toda La Actividad
 page_not_found: Página no encontrada
 page_not_found_body: Parece que la página que está buscando no existe.
 confirm_revert: Confirmar reversión
-confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
-display: Mostrar
+confirm_revert_body: Esto va a revertir el item al estado seleccionado.
+display: Exhibir
 settings_update_success: Configuraciones Actualizadas
 title: Título
 revision_delta_created: Creado
-revision_delta_created_externally: Creado Externamente
-revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
+revision_delta_created_externally: Creado externamente
+revision_delta_updated: '1 Campo Actualizado |{count} Campos Actualizados'
 revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 private_user: Usuario Privado
-creation_preview: Vista previa de creación
+creation_preview: Vista Previa de Creación
 revision_preview: Vista Previa de Revisión
-updates_made: Actualizaciones Realizadas
-leave_comment: Deja un comentario...
-post_comment_success: Comentario publicado
+updates_made: Actualizaciones Finalizadas
+leave_comment: Deje su Comentario...
+post_comment_success: Comentario Publicado
 item_create_success: Registro Creado | Registros Creados
 item_update_success: Registro Actualizado | Registros Actualizados
 item_delete_success: Registro Borrado | Registros Borrados
@@ -321,11 +321,11 @@ translations_collection: Traducción de la Colección
 languages_collection: Coleccion de Idiomas
 export_data: Exportar datos
 format: Formato
-use_current_filters_settings: Usar Filtros y Ajustes Actuales
+use_current_filters_settings: Use Filtros y Ajustes Corrientes
 export_collection: 'Exportar {collection}'
 last_page: Última página
 last_access: Último acceso
-fill_template: Rellenar con Valor de Plantilla
+fill_template: Llenar Con Valores de Plantilla
 a_unique_table_name: Un Nombre de Tabla Único...
 a_unique_column_name: Un nombre de Columna Único...
 enable_custom_values: Habilitar valores personalizados
