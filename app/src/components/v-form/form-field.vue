@@ -43,7 +43,7 @@
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
 			<v-card>
-				<v-card-title>{{ t('edit_raw_value') }}</v-card-title>
+				<v-card-title>{{ isDisabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
 					<v-textarea v-model="rawValue" :disabled="isDisabled" class="raw-value" :placeholder="t('enter_raw_value')" />
 				</v-card-text>

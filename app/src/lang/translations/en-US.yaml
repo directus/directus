@@ -289,6 +289,7 @@ foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 raw_value: Raw value
+view_raw_value: View Raw Value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 copy_value: Copy value
