@@ -41,7 +41,7 @@ export default async (): Promise<void> => {
 									CACHE_ENABLED: 'false',
 									RATE_LIMITER_ENABLED: 'false',
 								};
-								spawnSync('npx', ['directus', 'bootstrap'], { env });
+								spawnSync('npx', ['-y', 'directus', 'bootstrap'], { env });
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
