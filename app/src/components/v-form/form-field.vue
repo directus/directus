@@ -24,6 +24,7 @@
 				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
+				@copy-raw="copyRaw"
 			/>
 		</v-menu>
 		<div v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" class="label-spacer" />
@@ -146,7 +147,7 @@ export default defineComponent({
 			return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
 		});
 
-		const { showRaw, rawValue } = useRaw();
+		const { showRaw, rawValue, copyRaw } = useRaw();
 
 		const validationMessage = computed(() => {
 			if (!props.validationError) return null;
@@ -158,7 +159,7 @@ export default defineComponent({
 			}
 		});
 
-		return { t, isDisabled, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
+		return { t, isDisabled, internalValue, emitValue, showRaw, rawValue, copyRaw, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (
@@ -212,7 +213,11 @@ export default defineComponent({
 				},
 			});
 
-			return { showRaw, rawValue };
+			async function copyRaw() {
+				await navigator?.clipboard?.writeText(rawValue.value);
+			}
+
+			return { showRaw, rawValue, copyRaw };
 		}
 	},
 });

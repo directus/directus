@@ -291,6 +291,7 @@ dismiss: Dismiss
 raw_value: Raw value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
+copy_value: Copy value
 clear_value: Clear value
 clear_changes: Clear Changes
 reset_to_default: Reset to default

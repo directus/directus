@@ -1,5 +1,9 @@
 <template>
 	<v-list>
+		<v-list-item :disabled="modelValue === null" clickable @click="$emit('copy-raw')">
+			<v-list-item-icon><v-icon name="copy_outline" /></v-list-item-icon>
+			<v-list-item-content>{{ t('copy_value') }}</v-list-item-content>
+		</v-list-item>
 		<v-list-item
 			v-if="!restricted && (defaultValue === null || !isRequired)"
 			:disabled="modelValue === null"
@@ -62,7 +66,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['update:modelValue', 'unset', 'edit-raw'],
+	emits: ['update:modelValue', 'unset', 'edit-raw', 'copy-raw'],
 	setup(props) {
 		const { t } = useI18n();
 
