@@ -104,6 +104,14 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
+		watch(
+			() => props.validationErrors,
+			() => {
+				if (props.validationErrors.length === 0) return;
+				if (selection.value?.length === 0) selection.value = [rootFields.value[0].field];
+			}
+		);
+
 		return { rootFields, selection, toggleAll };
 
 		function toggleAll() {

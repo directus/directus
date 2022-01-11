@@ -1,5 +1,5 @@
 <template>
-	<v-detail :start-open="start === 'open'" class="group-detail">
+	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
 			<v-divider
 				:style="{
@@ -15,8 +15,8 @@
 					<span class="title">{{ field.name }}</span>
 				</template>
 				<v-icon
-					v-if="!active && validationMessages"
-					v-tooltip="validationMessages"
+					v-if="!active && validationMessages!.length > 0"
+					v-tooltip="validationMessages!.join('\n')"
 					class="warning"
 					name="error_outline"
 					small
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
@@ -108,6 +108,8 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
+		const detailOpen = ref(false);
+
 		const edited = computed(() => {
 			if (!props.values) return false;
 
@@ -136,12 +138,17 @@ export default defineComponent({
 				return acc;
 			}, [] as string[]);
 
-			if (errors.length === 0) return;
+			if (errors.length === 0) return [];
 
-			return errors.join('\n');
+			return errors;
 		});
 
-		return { edited, validationMessages };
+		watch(validationMessages, () => {
+			if (!validationMessages.value) return false;
+			detailOpen.value = validationMessages.value.length > 0;
+		});
+
+		return { edited, validationMessages, detailOpen };
 	},
 });
 </script>
