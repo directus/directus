@@ -1231,6 +1231,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1240,6 +1241,8 @@ interfaces:
     add_filter: Ajouter un filtre
     add_group: Et / ou groupe
     add_value: Ajouter une valeur
+    logic_type_and: AND
+    logic_type_or: OR
     all: Tout
     any: N'importe quel
     and: et
@@ -1503,7 +1506,7 @@ interfaces:
     name: Regroupement
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
-    header_icon: Icônes de l'en-tête 
+    header_icon: Icônes de l'en-tête
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut
