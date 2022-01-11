@@ -1,7 +1,7 @@
 <template>
 	<v-list>
 		<v-list-item
-			v-if="defaultValue === null || !isRequired"
+			v-if="!restricted && (defaultValue === null || !isRequired)"
 			:disabled="modelValue === null"
 			clickable
 			@click="$emit('update:modelValue', null)"
@@ -10,7 +10,7 @@
 			<v-list-item-content>{{ t('clear_value') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
-			v-if="defaultValue !== null"
+			v-if="!restricted && defaultValue !== null"
 			:disabled="modelValue === defaultValue"
 			clickable
 			@click="$emit('update:modelValue', defaultValue)"
@@ -21,7 +21,7 @@
 			<v-list-item-content>{{ t('reset_to_default') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
-			v-if="initialValue"
+			v-if="!restricted && initialValue"
 			:disabled="initialValue === undefined || modelValue === initialValue"
 			clickable
 			@click="$emit('unset', field)"
@@ -56,6 +56,10 @@ export default defineComponent({
 		initialValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: null,
+		},
+		restricted: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue', 'unset', 'edit-raw'],

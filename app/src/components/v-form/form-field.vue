@@ -1,12 +1,11 @@
 <template>
 	<div :key="field.field" class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
-		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
+		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
 					:toggle="toggle"
 					:active="active"
-					:disabled="isDisabled"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
 					:edited="isEdited"
@@ -21,6 +20,7 @@
 				:field="field"
 				:model-value="internalValue"
 				:initial-value="initialValue"
+				:restricted="isDisabled"
 				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
@@ -44,7 +44,7 @@
 			<v-card>
 				<v-card-title>{{ t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
-					<v-textarea v-model="rawValue" class="raw-value" :placeholder="t('enter_raw_value')" />
+					<v-textarea v-model="rawValue" :disabled="isDisabled" class="raw-value" :placeholder="t('enter_raw_value')" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
