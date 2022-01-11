@@ -30,6 +30,7 @@ export default async (): Promise<void> => {
 								const database = knex(config.knexConfig[vendor]!);
 								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
 								const env = {
+									...process.env,
 									...config.envs[vendor]!,
 									ADMIN_EMAIL: 'admin@example.com',
 									ADMIN_PASSWORD: 'password',
@@ -40,11 +41,11 @@ export default async (): Promise<void> => {
 									CACHE_ENABLED: 'false',
 									RATE_LIMITER_ENABLED: 'false',
 								};
-								spawnSync('sh', ['-lc', 'npx directus bootstrap'], { env });
+								spawnSync('npx', ['directus', 'bootstrap'], { env });
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
-								const server = spawn('sh', ['-lc', 'npx directus start'], { env, stdio: 'ignore' });
+								const server = spawn('npx', ['directus', 'start'], { env, stdio: 'ignore' });
 								await awaitDirectusConnection(config.envs[vendor]!.PORT as number);
 								global.directus[vendor] = server;
 							},
