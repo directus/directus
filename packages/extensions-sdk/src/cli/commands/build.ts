@@ -52,9 +52,9 @@ export default async function build(options: BuildOptions): Promise<void> {
 		}
 	}
 
-	const type = options.type || extensionManifest[EXTENSION_PKG_KEY]?.type;
-	const input = options.input || extensionManifest[EXTENSION_PKG_KEY]?.source;
-	const output = options.output || extensionManifest[EXTENSION_PKG_KEY]?.path;
+	const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
+
+	const type = options.type || extensionOptions?.type;
 
 	if (!type || !isExtension(type)) {
 		log(
@@ -65,6 +65,9 @@ export default async function build(options: BuildOptions): Promise<void> {
 		);
 		process.exit(1);
 	}
+
+	const input = options.input || (extensionOptions as { source: string })?.source;
+	const output = options.output || (extensionOptions as { path: string })?.path;
 
 	if (!input || !(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
 		log(`Entrypoint ${chalk.bold(input)} does not exist.`, 'error');

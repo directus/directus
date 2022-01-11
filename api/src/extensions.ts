@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import path from 'path';
-import { AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
+import { ApiExtension, AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntry,
@@ -15,6 +15,8 @@ import {
 	APP_SHARED_DEPS,
 	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+	PACK_EXTENSION_TYPE,
 } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter, { Emitter } from './emitter';
@@ -37,7 +39,7 @@ import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
 import { clone, escapeRegExp } from 'lodash';
 import chokidar, { FSWatcher } from 'chokidar';
-import { pluralize } from '@directus/shared/utils';
+import { isExtensionObject, pluralize } from '@directus/shared/utils';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -218,10 +220,15 @@ class ExtensionManager {
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
 				extensions
 					.filter((extension) => !extension.local)
-					.map((extension) =>
-						extension.type !== 'pack'
-							? path.resolve(extension.path, extension.entrypoint || '')
-							: path.resolve(extension.path, 'package.json')
+					.flatMap((extension) =>
+						extension.type === PACK_EXTENSION_TYPE
+							? path.resolve(extension.path, 'package.json')
+							: isExtensionObject(extension, HYBRID_EXTENSION_TYPES)
+							? [
+									path.resolve(extension.path, extension.entrypoint.app),
+									path.resolve(extension.path, extension.entrypoint.api),
+							  ]
+							: path.resolve(extension.path, extension.entrypoint)
 					);
 
 			const addedPackageExtensionPaths = toPackageExtensionPaths(added);
@@ -294,7 +301,7 @@ class ExtensionManager {
 	}
 
 	private registerHooks(): void {
-		const hooks = this.extensions.filter((extension) => extension.type === 'hook');
+		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
 
 		for (const hook of hooks) {
 			try {
@@ -307,7 +314,7 @@ class ExtensionManager {
 	}
 
 	private registerEndpoints(): void {
-		const endpoints = this.extensions.filter((extension) => extension.type === 'endpoint');
+		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
 
 		for (const endpoint of endpoints) {
 			try {
@@ -319,8 +326,8 @@ class ExtensionManager {
 		}
 	}
 
-	private registerHook(hook: Extension) {
-		const hookPath = path.resolve(hook.path, hook.entrypoint || '');
+	private registerHook(hook: ApiExtension) {
+		const hookPath = path.resolve(hook.path, hook.entrypoint);
 		const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
 
 		const register = getModuleDefault(hookInstance);
@@ -393,8 +400,8 @@ class ExtensionManager {
 		this.apiExtensions.hooks.push(hookHandler);
 	}
 
-	private registerEndpoint(endpoint: Extension, router: Router) {
-		const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint || '');
+	private registerEndpoint(endpoint: ApiExtension, router: Router) {
+		const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 		const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
 
 		const mod = getModuleDefault(endpointInstance);
