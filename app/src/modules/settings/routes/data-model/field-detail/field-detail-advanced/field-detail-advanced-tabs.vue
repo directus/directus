@@ -53,7 +53,7 @@ export default defineComponent({
 				});
 			}
 
-			if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
+			if (['o2m', 'm2o', 'm2m', 'm2a', 'files', 'file'].includes(localType.value)) {
 				tabs.splice(1, 0, {
 					text: t('relationship'),
 					value: 'relationship',
