@@ -28,7 +28,7 @@
 			/>
 
 			<transition-expand @beforeEnter="filterBorder = true" @afterLeave="filterBorder = false">
-				<div v-show="filterActive" class="filter">
+				<div v-show="filterActive" ref="filterElement" class="filter">
 					<interface-system-filter
 						class="filter-input"
 						inline
@@ -47,6 +47,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { isObject } from 'lodash';
+import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({
 	props: {
@@ -72,6 +73,22 @@ export default defineComponent({
 		const active = ref(props.modelValue !== null);
 		const filterActive = ref(false);
 		const filterBorder = ref(false);
+
+		const filterElement = ref<HTMLElement>();
+		const { width } = useElementSize(filterElement);
+
+		watch(
+			width,
+			() => {
+				if (!filterElement.value) return;
+				if (width.value > 416) {
+					filterElement.value.style.borderTopLeftRadius = width.value > 438 ? 22 + 'px' : width.value - 416 + 'px';
+				} else {
+					filterElement.value.style.borderTopLeftRadius = '0px';
+				}
+			},
+			{ immediate: true }
+		);
 
 		watch(active, (newActive: boolean) => {
 			if (newActive === true && input.value !== null) {
@@ -113,6 +130,7 @@ export default defineComponent({
 			filterActive,
 			onClickOutside,
 			filterBorder,
+			filterElement,
 		};
 
 		function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
@@ -223,10 +241,10 @@ export default defineComponent({
 
 		&::after {
 			position: absolute;
-			bottom: 0px;
-			left: 0;
-			z-index: -1;
-			width: 100%;
+			right: 2px;
+			bottom: -2px;
+			left: 2px;
+			width: auto;
 			height: 2px;
 			background-color: var(--border-subdued);
 			content: '';
@@ -262,12 +280,13 @@ export default defineComponent({
 .filter {
 	position: absolute;
 	top: 100%;
-	left: 0;
-	width: 100%;
+	right: 0;
+	width: auto;
+	min-width: 100%;
+	max-width: 50vw;
 	padding: 0;
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
-	border-top: 0;
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
 }
