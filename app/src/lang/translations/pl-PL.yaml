@@ -1240,6 +1240,8 @@ interfaces:
     add_filter: Dodaj Filtr
     add_group: I / lub grupa
     add_value: Dodaj wartość
+    logic_type_and: ORAZ
+    logic_type_or: LUB
     all: Wszystkie
     any: Dowolny
     and: i
