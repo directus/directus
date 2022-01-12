@@ -1,7 +1,6 @@
-import { isHybridExtension } from '.';
 import { EXTENSION_PKG_KEY, PACK_EXTENSION_TYPE } from '../constants';
 import { ExtensionManifest, ExtensionManifestRaw } from '../types';
-import { isExtensionPackage } from './is-extension';
+import { isExtensionPackage, isHybridExtension } from './is-extension';
 
 export function validateExtensionManifest(
 	extensionManifest: ExtensionManifestRaw

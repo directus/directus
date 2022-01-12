@@ -12,21 +12,19 @@ import {
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
+	LOCAL_TYPES,
 	PACK_EXTENSION_TYPE,
 } from '../constants';
 import { Accountability } from './accountability';
-import {
-	Collection,
-	Field,
-	Relation,
-	DeepPartial,
-	InterfaceConfig,
-	DisplayConfig,
-	LayoutConfig,
-	ModuleConfig,
-	PanelConfig,
-} from '.';
-import { LOCAL_TYPES } from '../constants';
+import { InterfaceConfig } from './interfaces';
+import { DisplayConfig } from './displays';
+import { LayoutConfig } from './layouts';
+import { ModuleConfig } from './modules';
+import { PanelConfig } from './panels';
+import { DeepPartial } from './misc';
+import { Field } from './fields';
+import { Relation } from './relations';
+import { Collection } from './collection';
 
 export type AppWithoutHybridExtensionType = typeof APP_WITHOUT_HYBRID_EXTENSION_TYPES[number];
 export type ApiWithoutHybridExtensionType = typeof API_WITHOUT_HYBRID_EXTENSION_TYPES[number];
