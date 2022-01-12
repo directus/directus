@@ -1,18 +1,18 @@
 <template>
 	<v-list>
+		<v-list-item clickable @click="$emit('edit-raw')">
+			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
+			<v-list-item-content>{{ restricted ? t('view_raw_value') : t('edit_raw_value') }}</v-list-item-content>
+		</v-list-item>
 		<v-list-item :disabled="modelValue === null" clickable @click="$emit('copy-raw')">
 			<v-list-item-icon><v-icon name="copy_outline" /></v-list-item-icon>
-			<v-list-item-content>{{ t('copy_value') }}</v-list-item-content>
+			<v-list-item-content>{{ t('copy_raw_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item
-			v-if="!restricted && (defaultValue === null || !isRequired)"
-			:disabled="modelValue === null"
-			clickable
-			@click="$emit('update:modelValue', null)"
-		>
-			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
-			<v-list-item-content>{{ t('clear_value') }}</v-list-item-content>
+		<v-list-item v-if="!restricted" clickable @click="$emit('paste-raw')">
+			<v-list-item-icon><v-icon name="paste_outline" /></v-list-item-icon>
+			<v-list-item-content>{{ t('paste_raw_value') }}</v-list-item-content>
 		</v-list-item>
+		<v-divider v-if="!restricted" />
 		<v-list-item
 			v-if="!restricted && defaultValue !== null"
 			:disabled="modelValue === defaultValue"
@@ -35,9 +35,14 @@
 			</v-list-item-icon>
 			<v-list-item-content>{{ t('undo_changes') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item clickable @click="$emit('edit-raw')">
-			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ t('raw_value') }}</v-list-item-content>
+		<v-list-item
+			v-if="!restricted && (defaultValue === null || !isRequired)"
+			:disabled="modelValue === null"
+			clickable
+			@click="$emit('update:modelValue', null)"
+		>
+			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
+			<v-list-item-content>{{ t('clear_value') }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
@@ -66,7 +71,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['update:modelValue', 'unset', 'edit-raw', 'copy-raw'],
+	emits: ['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw'],
 	setup(props) {
 		const { t } = useI18n();
 

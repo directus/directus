@@ -25,6 +25,7 @@
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
 				@copy-raw="copyRaw"
+				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
 		<div v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" class="label-spacer" />
@@ -69,6 +70,7 @@ import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { getJSType } from '@/utils/get-js-type';
+import { notify } from '@/utils/notify';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
@@ -147,7 +149,7 @@ export default defineComponent({
 			return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
 		});
 
-		const { showRaw, rawValue, copyRaw } = useRaw();
+		const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
 
 		const validationMessage = computed(() => {
 			if (!props.validationError) return null;
@@ -159,7 +161,18 @@ export default defineComponent({
 			}
 		});
 
-		return { t, isDisabled, internalValue, emitValue, showRaw, rawValue, copyRaw, validationMessage, isEdited };
+		return {
+			t,
+			isDisabled,
+			internalValue,
+			emitValue,
+			showRaw,
+			rawValue,
+			copyRaw,
+			pasteRaw,
+			validationMessage,
+			isEdited,
+		};
 
 		function emitValue(value: any) {
 			if (
@@ -214,10 +227,37 @@ export default defineComponent({
 			});
 
 			async function copyRaw() {
-				await navigator?.clipboard?.writeText(rawValue.value);
+				try {
+					await navigator?.clipboard?.writeText(rawValue.value);
+					notify({
+						type: 'success',
+						title: t('copy_raw_value_success'),
+					});
+				} catch (err: any) {
+					notify({
+						type: 'error',
+						title: t('copy_raw_value_fail'),
+					});
+				}
 			}
 
-			return { showRaw, rawValue, copyRaw };
+			async function pasteRaw() {
+				try {
+					const pasteValue = await navigator?.clipboard?.readText();
+					rawValue.value = pasteValue;
+					notify({
+						type: 'success',
+						title: t('paste_raw_value_success'),
+					});
+				} catch (err: any) {
+					notify({
+						type: 'error',
+						title: t('paste_raw_value_fail'),
+					});
+				}
+			}
+
+			return { showRaw, rawValue, copyRaw, pasteRaw };
 		}
 	},
 });
