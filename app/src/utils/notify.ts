@@ -1,9 +1,9 @@
 import { useNotificationsStore } from '@/stores/';
-import { NotificationRaw } from '@/types';
+import { SnackbarRaw } from '@/types';
 
 let store: any;
 
-export function notify(notification: NotificationRaw): void {
+export function notify(notification: SnackbarRaw): void {
 	if (!store) store = useNotificationsStore();
 	store.add(notification);
 }
