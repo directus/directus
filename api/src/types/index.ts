@@ -3,6 +3,7 @@ export * from './assets';
 export * from './ast';
 export * from './auth';
 export * from './collection';
+export * from './events';
 export * from './extensions';
 export * from './files';
 export * from './flows';

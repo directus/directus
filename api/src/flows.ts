@@ -1,13 +1,21 @@
-import { schedule, ScheduledTask, validate } from 'node-cron';
+import { schedule, validate } from 'node-cron';
 import { omit } from 'lodash';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { FlowsService } from './services';
-import { ActionHandler, FilterHandler, InitHandler } from './types';
+import {
+	ActionHandler,
+	EventHandler,
+	FilterHandler,
+	Flow,
+	FlowRaw,
+	InitHandler,
+	Operation,
+	OperationRaw,
+} from './types';
 import { getSchema } from './utils/get-schema';
 import { OperationHandler } from '@directus/shared/types';
-import { Flow, FlowRaw, Operation, OperationRaw } from './types/flows';
 
 let flowManager: FlowManager | undefined;
 
@@ -21,16 +29,10 @@ export function getFlowManager(): FlowManager {
 	return flowManager;
 }
 
-type TriggerHandler =
-	| { type: 'filter'; event: string; handler: FilterHandler }
-	| { type: 'action'; event: string; handler: ActionHandler }
-	| { type: 'init'; event: string; handler: InitHandler }
-	| { type: 'schedule'; task: ScheduledTask };
-
 class FlowManager {
 	private operations: Record<string, OperationHandler> = {};
 
-	private triggerHandlers: TriggerHandler[] = [];
+	private triggerHandlers: EventHandler[] = [];
 
 	constructor() {
 		this.addOperation('debug', (data, options) => {
@@ -53,19 +55,19 @@ class FlowManager {
 
 				emitter.onFilter(flow.options.event, handler);
 
-				this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
+				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'action') {
 				const handler: ActionHandler = (meta, context) => this.executeOperation(flow.operation, { meta, context });
 
 				emitter.onAction(flow.options.event, handler);
 
-				this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
+				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'init') {
 				const handler: InitHandler = (meta) => this.executeOperation(flow.operation, { meta });
 
 				emitter.onInit(flow.options.event, handler);
 
-				this.triggerHandlers.push({ type: flow.trigger, event: flow.options.event, handler });
+				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'schedule') {
 				if (validate(flow.options.cron)) {
 					const task = schedule(flow.options.cron, () => this.executeOperation(flow.operation));
@@ -82,13 +84,13 @@ class FlowManager {
 		for (const trigger of this.triggerHandlers) {
 			switch (trigger.type) {
 				case 'filter':
-					emitter.offFilter(trigger.event, trigger.handler);
+					emitter.offFilter(trigger.name, trigger.handler);
 					break;
 				case 'action':
-					emitter.offAction(trigger.event, trigger.handler);
+					emitter.offAction(trigger.name, trigger.handler);
 					break;
 				case 'init':
-					emitter.offInit(trigger.event, trigger.handler);
+					emitter.offInit(trigger.name, trigger.handler);
 					break;
 				case 'schedule':
 					trigger.task.stop();

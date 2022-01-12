@@ -24,12 +24,20 @@ import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
-import { HookConfig, EndpointConfig, FilterHandler, ActionHandler, InitHandler, ScheduleHandler } from './types';
+import {
+	HookConfig,
+	EndpointConfig,
+	FilterHandler,
+	ActionHandler,
+	InitHandler,
+	ScheduleHandler,
+	EventHandler,
+} from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
-import { schedule, ScheduledTask, validate } from 'node-cron';
+import { schedule, validate } from 'node-cron';
 import { rollup } from 'rollup';
 // @TODO Remove this once a new version of @rollup/plugin-virtual has been released
 // @ts-expect-error
@@ -52,12 +60,6 @@ export function getExtensionManager(): ExtensionManager {
 
 	return extensionManager;
 }
-
-type EventHandler =
-	| { type: 'filter'; name: string; handler: FilterHandler }
-	| { type: 'action'; name: string; handler: ActionHandler }
-	| { type: 'init'; name: string; handler: InitHandler }
-	| { type: 'schedule'; task: ScheduledTask };
 
 type AppExtensions = Partial<Record<AppExtensionType, string>>;
 type ApiExtensions = {
