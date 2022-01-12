@@ -194,7 +194,7 @@ exposure: Exposición
 shutter: Obturador
 iso: ISO
 focal_length: Largo focal
-schema_setup_key: Nombre de columna de este campo de la base de datos y clave API
+schema_setup_key: Base de datos columna nombre y llave de API de este campo
 create_field: Crear campo
 creating_new_field: 'Nuevo campo ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -204,29 +204,29 @@ hidden_on_detail: Oculto en Detalle
 disabled_editing_value: Deshabilitar la edición del valor
 key: Llave
 alias: Alias
-bigInteger: Número Entero (Grande)
+bigInteger: Numero entero grande
 boolean: Booleano
 date: Fecha
 date_range: Rango de fechas
-datetime: Fecha y Hora
-dateTime: Fecha y Hora
+datetime: Día hora
+dateTime: Día hora
 precision: Precisión
 decimal: Decimal
 float: Flotante
-integer: Número Entero
+integer: Entero
 json: JSON
 xml: XML
-string: Cadena de Texto
+string: Cadena
 text: Texto
 time: Hora
-timestamp: Marca de Tiempo
+timestamp: Registro de tiempo
 uuid: UUID
-hash: Hash
-geometry: Geometría (Todo)
+hash: Código criptográfico
+geometry: Geometría (All)
 geometry.Point: Punto
-geometry.LineString: Linea
+geometry.LineString: CadenaDe Lineas
 geometry.Polygon: Polígono
-geometry.MultiPoint: Multipunto
+geometry.MultiPoint: MultiPunto
 geometry.MultiLineString: Geometría. Línea_Múltiple
 geometry.MultiPolygon: Geometría. Polígono_Múltiple
 not_available_for_type: No habilitado para este Tipo
@@ -443,9 +443,9 @@ no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el bot�
 no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
 relationship_not_setup: La relación no se ha configurado correctamente
 display_template_not_setup: La opción de plantilla de Presentación está mal configurada
-collection_field_not_setup: La opción del campo de colección está mal configurada
-select_a_collection: Seleccionar una Colección
-select_a_field: Selecciona un campo
+collection_field_not_setup: La opción de recolección de campo está mal configurada
+select_a_collection: Seleccione una colección
+select_a_field: Seleccione un campo
 active: Activo
 move_to: Mover a...
 copy: Copiar
@@ -454,7 +454,7 @@ no_other_dashboards_copy: Todavía No tiene Otros Paneles.
 inactive: Inactivo
 users: Usuarios
 activity: Actividad
-activity_item: Elemento de actividad
+activity_item: Ítem de actividad
 action: Acción
 ip_address: Dirección IP
 user_agent: Navegador
@@ -476,7 +476,7 @@ charset: Juego de caracteres
 second: segundo
 file_moved: Archivo movido
 collection_created: Colección Creada
-modified_on: Modificado en
+modified_on: Modificado el
 card_size: Tamaño de tarjeta
 sort_field: Campo Ordenamiento
 add_sort_field: Añadir campo de ordenación
@@ -901,7 +901,7 @@ fields:
     type: Tipo Mime
     filesize: Tamaño del archivo
     modified_by: Modificado por
-    modified_on: Modificado en
+    modified_on: Modificado el
     created_on: Creado el
     created_by: Creado Por
     embed: Incrustado
@@ -1210,8 +1210,8 @@ interfaces:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
     collection_field: Campo de colección
-    collection_field_not_setup: La opción del campo de colección está mal configurada
-    select_a_collection: Seleccionar una Colección
+    collection_field_not_setup: La opción de recolección de campo está mal configurada
+    select_a_collection: Seleccione una colección
   presentation-divider:
     divider: Separador
     description: Etiqueta y divide los campos en secciones
@@ -1238,7 +1238,7 @@ interfaces:
     files: Archivos
     description: Seleccionar o subir múltiples archivos
   input-hash:
-    hash: Hash
+    hash: Código criptográfico
     description: Introduzca un valor para ser cifrado
     masked: Enmascarado
     masked_label: Ocultar los valores reales
