@@ -6,7 +6,7 @@ type Vendor = typeof allVendors[number];
 export type Config = {
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
 	names: Record<Vendor, string>;
-	envs: Record<Vendor, Record<string, string | number>>;
+	envs: Record<Vendor, Record<string, string>>;
 };
 
 const migrationsDir = './tests/e2e/setup/migrations';
@@ -20,6 +20,19 @@ const knexConfig = {
 	seeds: {
 		directory: seedsDir,
 	},
+};
+
+const directusConfig = {
+	...process.env,
+	ADMIN_EMAIL: 'admin@example.com',
+	ADMIN_PASSWORD: 'password',
+	KEY: 'directus-test',
+	SECRET: 'directus-test',
+	TELEMETRY: 'false',
+	CACHE_SCHEMA: 'false',
+	CACHE_ENABLED: 'false',
+	RATE_LIMITER_ENABLED: 'false',
+	LOG_LEVEL: 'error',
 };
 
 const config: Config = {
@@ -108,61 +121,68 @@ const config: Config = {
 	},
 	envs: {
 		postgres: {
+			...directusConfig,
 			DB_CLIENT: 'pg',
 			DB_HOST: `localhost`,
 			DB_USER: 'postgres',
 			DB_PASSWORD: 'secret',
 			DB_PORT: '5100',
 			DB_DATABASE: 'directus',
-			PORT: 49152,
+			PORT: '49152',
 		},
 		postgres10: {
+			...directusConfig,
 			DB_CLIENT: 'pg',
 			DB_HOST: `localhost`,
 			DB_USER: 'postgres',
 			DB_PASSWORD: 'secret',
 			DB_PORT: '5111',
 			DB_DATABASE: 'directus',
-			PORT: 49153,
+			PORT: '49153',
 		},
 		mysql: {
+			...directusConfig,
 			DB_CLIENT: 'mysql',
 			DB_HOST: `localhost`,
 			DB_PORT: '5101',
 			DB_USER: 'root',
 			DB_PASSWORD: 'secret',
 			DB_DATABASE: 'directus',
-			PORT: 49154,
+			PORT: '49154',
 		},
 		maria: {
+			...directusConfig,
 			DB_CLIENT: 'mysql',
 			DB_HOST: `localhost`,
 			DB_PORT: '5102',
 			DB_USER: 'root',
 			DB_PASSWORD: 'secret',
 			DB_DATABASE: 'directus',
-			PORT: 49155,
+			PORT: '49155',
 		},
 		mssql: {
+			...directusConfig,
 			DB_CLIENT: 'mssql',
 			DB_HOST: `localhost`,
 			DB_PORT: '5103',
 			DB_USER: 'sa',
 			DB_PASSWORD: 'Test@123',
 			DB_DATABASE: 'model',
-			PORT: 49156,
+			PORT: '49156',
 		},
 		oracle: {
+			...directusConfig,
 			DB_CLIENT: 'oracledb',
 			DB_USER: 'secretsysuser',
 			DB_PASSWORD: 'secretpassword',
 			DB_CONNECT_STRING: `localhost:5104/XE`,
-			PORT: 49157,
+			PORT: '49157',
 		},
 		sqlite3: {
+			...directusConfig,
 			DB_CLIENT: 'sqlite3',
 			DB_FILENAME: './data.db',
-			PORT: 49158,
+			PORT: '49158',
 		},
 	},
 };

@@ -7,6 +7,7 @@ import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
+import { sleep } from './utils/sleep';
 
 let started = false;
 
@@ -29,24 +30,29 @@ export default async (): Promise<void> => {
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
 								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
-								const env = {
-									...process.env,
-									...config.envs[vendor]!,
-									ADMIN_EMAIL: 'admin@example.com',
-									ADMIN_PASSWORD: 'password',
-									KEY: 'directus-test',
-									SECRET: 'directus-test',
-									TELEMETRY: 'false',
-									CACHE_SCHEMA: 'false',
-									CACHE_ENABLED: 'false',
-									RATE_LIMITER_ENABLED: 'false',
-								};
-								spawnSync('npx', ['directus', 'bootstrap'], { env });
+								const env = config.envs[vendor]!;
+								const bootstrap = spawnSync('node', ['api/cli', 'bootstrap'], { env });
+								if (bootstrap.stderr.length > 0) {
+									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
+								}
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
-								const server = spawn('npx', ['directus', 'start'], { env, stdio: 'ignore' });
-								await awaitDirectusConnection(config.envs[vendor]!.PORT as number);
+								const server = spawn('node', ['api/cli', 'start'], { env });
+								let serverOutput = '';
+								server.stdout.on('data', (data) => (serverOutput += data.toString()));
+								server.on('exit', (code) => {
+									if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
+								});
+								await sleep(5000);
+								server.on('exit', () => undefined);
+								try {
+									await awaitDirectusConnection(Number(config.envs[vendor]!.PORT));
+									global.directus[vendor] = server;
+								} catch (error: any) {
+									server.kill();
+									throw new Error(`Directus-${vendor} server failed: \n ${error.message}`);
+								}
 								global.directus[vendor] = server;
 							},
 						};
