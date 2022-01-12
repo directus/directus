@@ -463,6 +463,11 @@ export default defineComponent({
 }
 
 .node {
+	&.logic {
+		padding-right: 4px;
+		white-space: nowrap;
+	}
+
 	&.field {
 		padding-right: 4px;
 	}
