@@ -285,7 +285,10 @@ dismiss: Отхвърляне
 raw_value: Стойност в суров вид
 edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
+clear_value: Изчистване на стойността
 clear_changes: Изчистване на промените
+reset_to_default: Нулиране по подразбиране
+undo_changes: Отмяна на промените
 notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
@@ -1228,6 +1231,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1237,6 +1241,8 @@ interfaces:
     add_filter: Добавяне на филтър
     add_group: И/или група
     add_value: Добавяне на стойност
+    logic_type_and: И
+    logic_type_or: ИЛИ
     all: Всички
     any: Който и да е
     and: и
