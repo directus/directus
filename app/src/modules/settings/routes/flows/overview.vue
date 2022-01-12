@@ -97,8 +97,8 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+<script lang="ts" setup>
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { FlowRaw } from '@directus/shared/types';
 import { router } from '@/router';
@@ -109,106 +109,83 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { md } from '@/utils/md';
 import { usePermissionsStore } from '@/stores';
 
-export default defineComponent({
-	name: 'FlowsOverview',
-	components: { SettingsNavigation, flowDialog },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const permissionsStore = usePermissionsStore();
+const permissionsStore = usePermissionsStore();
 
-		const confirmDelete = ref<string | null>(null);
-		const deletingFlow = ref(false);
-		const editFlow = ref<FlowRaw | null>(null);
+const confirmDelete = ref<string | null>(null);
+const deletingFlow = ref(false);
+const editFlow = ref<FlowRaw | null>(null);
 
-		const createDialogActive = ref(false);
+const createDialogActive = ref(false);
 
-		const createAllowed = computed<boolean>(() => {
-			return permissionsStore.hasPermission('directus_flows', 'create');
-		});
-
-		const tableHeaders = [
-			{
-				text: '',
-				value: 'icon',
-				width: 42,
-				sortable: false,
-			},
-			{
-				text: t('name'),
-				value: 'name',
-				width: 240,
-			},
-			{
-				text: t('note'),
-				value: 'note',
-				width: 360,
-			},
-		];
-
-		const flows = ref<FlowRaw[]>([]);
-		const loading = ref(false);
-		const error = ref();
-
-		fetchFlows();
-
-		return {
-			flows,
-			createAllowed,
-			tableHeaders,
-			navigateToFlow,
-			createDialogActive,
-			confirmDelete,
-			deletingFlow,
-			deleteFlow,
-			editFlow,
-			t,
-			md,
-			loading,
-			error,
-			toggleFlowCreation,
-		};
-
-		async function fetchFlows() {
-			try {
-				const response = await api.get('/flows');
-				flows.value = response.data.data;
-			} catch (err) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		function navigateToFlow({ item: flow }: { item: FlowRaw }) {
-			router.push(`/settings/flows/${flow.id}`);
-		}
-
-		async function deleteFlow() {
-			if (!confirmDelete.value) return;
-
-			deletingFlow.value = true;
-
-			try {
-				await api.delete(`/flows/${confirmDelete.value}`);
-				await fetchFlows();
-				confirmDelete.value = null;
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				deletingFlow.value = false;
-			}
-		}
-
-		async function toggleFlowCreation(active: boolean) {
-			if (active === false) {
-				await fetchFlows();
-			}
-
-			createDialogActive.value = active;
-		}
-	},
+const createAllowed = computed<boolean>(() => {
+	return permissionsStore.hasPermission('directus_flows', 'create');
 });
+
+const tableHeaders = [
+	{
+		text: '',
+		value: 'icon',
+		width: 42,
+		sortable: false,
+	},
+	{
+		text: t('name'),
+		value: 'name',
+		width: 240,
+	},
+	{
+		text: t('note'),
+		value: 'note',
+		width: 360,
+	},
+];
+
+const flows = ref<FlowRaw[]>([]);
+const loading = ref(false);
+const error = ref();
+
+fetchFlows();
+
+async function fetchFlows() {
+	try {
+		const response = await api.get('/flows');
+		flows.value = response.data.data;
+	} catch (err) {
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
+}
+
+function navigateToFlow({ item: flow }: { item: FlowRaw }) {
+	router.push(`/settings/flows/${flow.id}`);
+}
+
+async function deleteFlow() {
+	if (!confirmDelete.value) return;
+
+	deletingFlow.value = true;
+
+	try {
+		await api.delete(`/flows/${confirmDelete.value}`);
+		await fetchFlows();
+		confirmDelete.value = null;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		deletingFlow.value = false;
+	}
+}
+
+async function toggleFlowCreation(active: boolean) {
+	if (active === false) {
+		await fetchFlows();
+	}
+
+	createDialogActive.value = active;
+}
 </script>
 
 <style scoped>
