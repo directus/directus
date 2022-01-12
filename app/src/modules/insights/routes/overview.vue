@@ -51,7 +51,7 @@
 					</template>
 
 					<v-list>
-						<v-list-item class="warning" clickable @click="editDashboard = item">
+						<v-list-item clickable @click="editDashboard = item">
 							<v-list-item-icon>
 								<v-icon name="edit" outline />
 							</v-list-item-icon>
@@ -204,12 +204,6 @@ export default defineComponent({
 	--v-list-item-color: var(--danger);
 	--v-list-item-color-hover: var(--danger);
 	--v-list-item-icon-color: var(--danger);
-}
-
-.v-list-item.warning {
-	--v-list-item-color: var(--warning);
-	--v-list-item-color-hover: var(--warning);
-	--v-list-item-icon-color: var(--warning);
 }
 
 .header-icon {

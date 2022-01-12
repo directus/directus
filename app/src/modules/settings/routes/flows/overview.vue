@@ -11,7 +11,7 @@
 		</template>
 
 		<template #actions>
-			<flow-dialog v-model="createDialogActive">
+			<flow-dialog :model-value="createDialogActive" @update:model-value="toggleFlowCreation">
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="createAllowed ? t('create_flow') : t('not_allowed')"
@@ -28,14 +28,19 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div v-md="t('page_help_flows_overview')" class="page-description" />
+				<div v-md="t('page_help_settings_flows_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
+		<v-info v-if="flows.length === 0 && !loading" icon="account_tree" :title="t('no_flows')" center>
+			{{ t('no_flows_copy') }}
+		</v-info>
+
 		<v-table
-			v-if="flows.length > 0"
+			v-else
 			v-model:headers="tableHeaders"
 			:items="flows"
+			:loading="loading"
 			show-resize
 			fixed-header
 			@click:row="navigateToFlow"
@@ -51,7 +56,7 @@
 					</template>
 
 					<v-list>
-						<v-list-item class="warning" clickable @click="editFlow = item">
+						<v-list-item clickable @click="editFlow = item">
 							<v-list-item-icon>
 								<v-icon name="edit" outline />
 							</v-list-item-icon>
@@ -72,10 +77,6 @@
 				</v-menu>
 			</template>
 		</v-table>
-
-		<v-info v-else icon="account_tree" :title="t('no_flows')" center>
-			{{ t('no_flows_copy') }}
-		</v-info>
 
 		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
 			<v-card>
@@ -99,7 +100,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Flow } from '@directus/shared/types';
+import { FlowRaw } from '@directus/shared/types';
 import { router } from '@/router';
 import SettingsNavigation from '../../components/navigation.vue';
 import flowDialog from './components/flow-dialog.vue';
@@ -118,7 +119,7 @@ export default defineComponent({
 
 		const confirmDelete = ref<string | null>(null);
 		const deletingFlow = ref(false);
-		const editFlow = ref<Flow | null>(null);
+		const editFlow = ref<FlowRaw | null>(null);
 
 		const createDialogActive = ref(false);
 
@@ -145,9 +146,11 @@ export default defineComponent({
 			},
 		];
 
-		const flows = ref<Flow[]>([]);
+		const flows = ref<FlowRaw[]>([]);
 		const loading = ref(false);
 		const error = ref();
+
+		fetchFlows();
 
 		return {
 			flows,
@@ -163,6 +166,7 @@ export default defineComponent({
 			md,
 			loading,
 			error,
+			toggleFlowCreation,
 		};
 
 		async function fetchFlows() {
@@ -176,7 +180,7 @@ export default defineComponent({
 			}
 		}
 
-		function navigateToFlow({ item: flow }: { item: Flow }) {
+		function navigateToFlow({ item: flow }: { item: FlowRaw }) {
 			router.push(`/flows/${flow.id}`);
 		}
 
@@ -194,6 +198,14 @@ export default defineComponent({
 			} finally {
 				deletingFlow.value = false;
 			}
+		}
+
+		async function toggleFlowCreation(active: boolean) {
+			if (active === false) {
+				await fetchFlows();
+			}
+
+			createDialogActive.value = active;
 		}
 	},
 });
@@ -214,12 +226,6 @@ export default defineComponent({
 	--v-list-item-color: var(--danger);
 	--v-list-item-color-hover: var(--danger);
 	--v-list-item-icon-color: var(--danger);
-}
-
-.v-list-item.warning {
-	--v-list-item-color: var(--warning);
-	--v-list-item-color-hover: var(--warning);
-	--v-list-item-icon-color: var(--warning);
 }
 
 .header-icon {
