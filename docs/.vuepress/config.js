@@ -1,3 +1,6 @@
+const readingTime = require('reading-time');
+const getImageUrl = require('@thumbsmith/url').default;
+
 module.exports = {
 	base: '/',
 	title: 'Directus Docs',
@@ -595,4 +598,77 @@ module.exports = {
 			},
 		],
 	],
+
+	// Runs once per page at build time
+	// https://vuepress.vuejs.org/plugin/option-api.html#extendpagedata
+	async extendPageData($page) {
+
+		// === 1. Compute props for thumbnail
+
+		// Page title
+		const title = $page.title ?? $page._context.siteConfig.title;
+
+		// Last updated date in a human readable format, ex: December 16, 2021
+		const lastUpdated = new Date($page.lastUpdated)
+			.toLocaleDateString(undefined, {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			});
+
+		// Approximate page read time, ex: 12 min read
+		const readTime = $page._content ? readingTime($page._content).text : undefined;
+
+		// Create breadcrumb array for page, ex: [ 'Configuration', 'Data Model', 'Relationships' ]
+		let breadcrumb = null;
+		const path = $page.path.replace('.html', '');
+		const sidebar = $page._context.themeConfig.sidebar;
+		const findCurrentPage = (menu, wipBreadcrumb) => {
+			for (const item of menu) {
+				if (item.path === path) {
+					breadcrumb = [...wipBreadcrumb, item.title];
+				} else if (!breadcrumb && item.children) {
+					findCurrentPage(item.children, [...wipBreadcrumb, item.title]);
+				}
+			}
+		}
+		findCurrentPage(sidebar, []);
+
+
+
+		// === 2. Build thumbnail url
+		const imageUrl = getImageUrl({
+			username: 'directus',
+			template: 'docs',
+			props: { title, lastUpdated, readTime, breadcrumb },
+			type: 'png',
+		});
+
+
+		
+		// === 3. Build dynamic meta tags
+
+		const pageUrl = `https://docs.directus.io${path}`;
+		const description = $page._context.siteConfig.description;
+		const meta = [
+			// Open Graph meta tags (facebook, linkedin, discord, slack, etc...)
+			{ property: 'og:url', content: pageUrl },
+			{ property: 'og:type', content: 'website' },
+			{ property: 'og:title', content: title },
+			{ property: 'og:description', content: description },
+			{ property: 'og:image', content: imageUrl },
+
+			// Twitter meta tags
+			{ name: 'twitter:url', content: pageUrl },
+			{ name: 'twitter:site', content: '@directus' },
+			{ name: 'twitter:title', content: title },
+			{ name: 'twitter:description', content: description },
+			{ name: 'twitter:image', content: imageUrl },
+			{ name: 'twitter:card', content: 'summary_large_image' },
+		];
+
+		// === 4. Append custom metadata to frontmatter meta
+
+		$page.frontmatter.meta = [...($page.frontmatter.meta ?? []), ...meta];
+	}
 };

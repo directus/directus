@@ -1,0 +1,139 @@
+---
+name: docs
+description: Site wide thumbnail template for the Directus docs
+default_props:
+  title: Page title goes here
+  breadcrumb:
+    - First level
+    - Second level
+    - Page in menu
+  lastUpdated: 'December 16, 2021'
+  readTime: 12 min read
+width: 1200
+height: 630
+---
+<html>
+  <head>
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- Template -->
+    <div class="container">
+
+      <div class="logo">
+        <img src="https://docs.directus.io/logo.svg" />
+      </div>
+
+      <p class="breadcrumb">
+        {{#breadcrumb}}
+          <span>{{.}}</span>
+        {{/breadcrumb}}
+      </p>
+
+      <h1 class="title">
+        {{title}}
+      </h1>
+
+      <p class="bottom-text">
+        <em>{{readTime}}</em>
+        <br />
+        <span>Last updated: {{lastUpdated}}</span>
+      </p>
+
+      <img class="diagonal-image" src="https://directus.io/assets/img/homepage-hero.svg" />
+
+    </div>
+
+    <!-- Styling -->
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body, .container {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        display: flex;
+        justify-content: flex-start;
+        font-family: 'Inter', sans-serif;
+        background-color: #00c897;
+        color: white;
+        overflow: hidden;
+      }
+      .container {
+        position: relative;
+        padding: 4rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .logo {
+        margin-top: -1rem;
+      }
+      .logo img {
+        width: 24rem;
+      }
+      .breadcrumb {
+        margin: 2rem 0 -1rem 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+        max-width: 60%;
+        height: 1em;
+      }
+      .breadcrumb span {
+        white-space: nowrap;
+      }
+      .breadcrumb span:not(:last-child)::after {
+        content: " > "
+      }
+      .breadcrumb span:last-child {
+        opacity: 0.66;
+      }
+      .title {
+        margin: auto 0;
+        max-width: 62%;
+        font-weight: 800;
+        font-size: 4.5rem;
+        line-height: 1.2;
+        hyphens: auto;
+
+        /*
+          Limit to 3 lines
+          (this will add a "..." if title is too long)
+        */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .bottom-text {
+        margin: 0 0 0 0;
+        color: white;
+      }
+      .bottom-text em {
+        font-style: normal;
+        font-weight: 700;
+        font-size: 1.8rem;
+      }
+      .bottom-text span {
+        font-style: italic;
+        font-size: 1.4rem;
+        opacity: 0.66;
+      }
+      .diagonal-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 65%;
+        transform: scale(1.1) translateY(-1rem) rotate(-10deg);
+      }
+    </style>
+  </body>
+</html>
