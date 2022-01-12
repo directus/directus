@@ -41,7 +41,7 @@ Just to see Directus work on Google Cloud you can try it out by clicking this bu
 persistent SQLite database inside the container itself, so everything will be lost once the container shuts down. And it
 will shut down.
 
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/keesvanbemmel/directus-docker)
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/directus-community/gcp-example)
 
 After deploying you can login with `admin@example.com` and `localpassword`
 
