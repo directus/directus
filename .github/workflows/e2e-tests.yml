@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Start databases containers
-        run: docker compose up -d --quiet-pull
+        run: docker compose -f tests/docker-compose.yml up -d --quiet-pull
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -38,7 +38,7 @@ jobs:
         run: npm run build
 
       - name: Wait for databases to be ready
-        run: docker compose up -d --quiet-pull --no-recreate --wait
+        run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --no-recreate --wait
 
       - name: Run tests
         run: npm run test:e2e
