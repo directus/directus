@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('name').notNullable();
 		table.string('icon', 30).notNullable().defaultTo('arrow-decision');
 		table.text('note');
-		table.string('status').notNullable();
+		table.string('status').notNullable().defaultTo('inactive');
 		table.string('trigger').notNullable();
 		table.json('options');
 	});
