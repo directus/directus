@@ -280,10 +280,7 @@ dismiss: Скрыть
 raw_value: Сырое значение
 edit_raw_value: Редактировать Сырое Значение
 enter_raw_value: Введите сырое значение...
-clear_value: Очистить значение
 clear_changes: Сбросить изменения
-reset_to_default: Вернуться к настройкам по умолчанию
-undo_changes: Отменить изменения
 notifications: Уведомления
 show_all_activity: Показать Всю Активность
 page_not_found: Страница не найдена

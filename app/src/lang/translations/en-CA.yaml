@@ -285,10 +285,7 @@ dismiss: Dismiss
 raw_value: Raw value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
-clear_value: Clear value
 clear_changes: Clear Changes
-reset_to_default: Reset to default
-undo_changes: Undo changes
 notifications: Notifications
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
@@ -1231,7 +1228,6 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
-weeks: { }
 report_error: Report Error
 start: Start
 interfaces:
