@@ -26,8 +26,12 @@
 		<div class="container">
 			<v-progress-circular v-if="loading" class="loading" indeterminate />
 
-			<div v-else class="grid">
-				<operation-block />
+			<div v-else class="grid" style="min-width: 3000px; min-height: 3000px">
+				<step-block type="trigger" />
+				<step-block type="operation" style="grid-column: 1" />
+				<step-block type="operation" style="grid-column: 1" />
+				<step-block type="error" style="grid-column: 2" />
+				<step-block type="operation" style="grid-column: 1" />
 			</div>
 		</div>
 
@@ -55,7 +59,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 
 import SettingsNotFound from '../not-found.vue';
-import OperationBlock from './components/operation-block.vue';
+import StepBlock from './components/step-block.vue';
 import SettingsNavigation from '../../components/navigation.vue';
 
 const props = defineProps({
@@ -94,6 +98,19 @@ async function fetchFlow() {
 }
 
 .container {
+	--column-size: 200px;
+	--row-size: 100px;
+	--gap-size: 40px;
+
 	padding: var(--content-padding);
+}
+
+.grid {
+	display: grid;
+	grid-template-rows: repeat(auto-fit, var(--row-size));
+	grid-template-columns: repeat(auto-fit, var(--column-size));
+	gap: var(--gap-size);
+	min-width: calc(var(--column-size) * 2);
+	min-height: calc(var(--row-size) * 2);
 }
 </style>
