@@ -478,12 +478,12 @@ file_moved: Archivo movido
 collection_created: Colección Creada
 modified_on: Modificado el
 card_size: Tamaño de tarjeta
-sort_field: Campo Ordenamiento
-add_sort_field: Añadir campo de ordenación
-sort: Ordenar
+sort_field: Elegir campo
+add_sort_field: Agregar elegir campo
+sort: Elegir
 status: Estatus
-remove: Eliminar
-toggle_manual_sorting: Alternar Ordenamiento Manual
+remove: Remover
+toggle_manual_sorting: Seleccionar elección manual
 bookmark_doesnt_exist: El Marcador no existe
 bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser encontrado.
 bookmark_doesnt_exist_cta: Regresar a Colección
@@ -884,7 +884,7 @@ fields:
     archive_app_filter: Archivar filtros de App
     archive_value: Archivar valor
     unarchive_value: Desarchivar valor
-    sort_field: Campo Ordenamiento
+    sort_field: Elegir campo
     accountability: Actividad y seguimiento de revisión
     archive_field: Campo de archivo
     item_duplication_fields: Campos de duplicación de elementos
@@ -1033,7 +1033,7 @@ field_options:
     translation: Traducción
     collection_name: Nombre de la Colección
     archive_divider: Archivar
-    sort_divider: Ordenar
+    sort_divider: Elegir
     accountability_divider: Responsabilidad
     duplication_divider: Duplicación
   directus_roles:
