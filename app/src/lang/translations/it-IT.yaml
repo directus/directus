@@ -285,10 +285,7 @@ dismiss: Chiudi
 raw_value: Valore grezzo
 edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
-clear_value: Cancella valore
 clear_changes: Annulla modifiche
-reset_to_default: Reimposta a predefinito
-undo_changes: Annulla modifica
 notifications: Notifiche
 show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
