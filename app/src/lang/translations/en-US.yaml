@@ -279,6 +279,7 @@ note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
 length: Length
+soft_length: Soft Limit
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
