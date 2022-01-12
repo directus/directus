@@ -28,12 +28,12 @@ draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
-tile_size: Tamaño del mosaico
+tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 maps: Mapas
-switch_user: Cambiar de usuario
-item_creation: Creación de artículos
+switch_user: Cambiar usuario
+item_creation: Creación de ítem
 item_revision: Revisión de Elemento
 enter_a_name: Ingresa_un_nombre...
 duplicate_field: Campo duplicado
@@ -154,7 +154,7 @@ field_group: Campo_Grupo
 item_permissions: Permisos de registro
 field_permissions: Permisos de campo
 field_validation: Validación de campo
-field_presets: Predefinidos para Campo
+field_presets: Ajustes prefijados de campo
 permissions_for_role: 'Items_El{role}_Rol_Puede{action}.'
 fields_for_role: 'Campos_El{role}_Rol_puede{action}.'
 validation_for_role: 'Reglas{action}_De_Campo_El{role}_Rol_Debe_Obedecer.'
@@ -163,37 +163,37 @@ presentation_and_aliases: Presentación_y_Aliases
 revision_post_create: Aspecto_Una_Vez_Creado.
 revision_post_update: Aspecto_Luego_De_Actualizado.
 changes_made: Cambios.
-no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
+no_relational_data: Tenga presente que datos relacionales no están incluídos.
 hide_field_on_detail: Oculto en Detalle
 show_field_on_detail: Mostrar en Detalle
 delete_field: Borrar Campo
-fields_and_layout: Campos y Diseño
+fields_and_layout: Campos y diseño
 field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
 duplicate_where_to: '¿Dónde le gustaría duplicar este campo?'
 language: Idioma
-aggregate_function: Función de agregado
-aggregate_precision: Precisión agregada
-group_aggregation: Agregación de grupo
-group_precision: Precisión del grupo
+aggregate_function: Agregar función
+aggregate_precision: Agregar precisión
+group_aggregation: Agregado de grupo
+group_precision: Precisión de grupo
 global: Global
 admins_have_all_permissions: Los Administradores tienen todos los permisos
 camera: Cámara
 show_zero: Mostrar cero
 create_in_advanced_field_creation_mode: Crear campo en modo avanzado
-continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
+continue_in_advanced_field_creation_mode: Continuar en modo avanzado de creación de campo
 sum: Suma
-sum_distinct: Sumar Diferentes
-avg: Media
-avg_distinct: Media de elementos distintos
-count: Contar
-count_distinct: Recuento de elementos distintos
+sum_distinct: Suma distinta
+avg: Promedio
+avg_distinct: Promediio distinto
+count: Cuenta
+count_distinct: Cuenta distinta
 min: Min
 max: Máx
 exposure: Exposición
-shutter: Obturación
+shutter: Obturador
 iso: ISO
-focal_length: Distancia Focal
+focal_length: Largo focal
 schema_setup_key: Nombre de columna de este campo de la base de datos y clave API
 create_field: Crear campo
 creating_new_field: 'Nuevo campo ({collection})'
@@ -285,10 +285,7 @@ dismiss: Ignorar
 raw_value: Valor sin interpretar
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
-clear_value: Limpiar valor
 clear_changes: Borrar_Cambios
-reset_to_default: Restablecer ajustes por defecto
-undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Mostrar Toda La Actividad
 page_not_found: Página no encontrada
