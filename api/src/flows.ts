@@ -4,18 +4,9 @@ import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { FlowsService } from './services';
-import {
-	ActionHandler,
-	EventHandler,
-	FilterHandler,
-	Flow,
-	FlowRaw,
-	InitHandler,
-	Operation,
-	OperationRaw,
-} from './types';
+import { ActionHandler, EventHandler, FilterHandler, InitHandler } from './types';
 import { getSchema } from './utils/get-schema';
-import { OperationHandler } from '@directus/shared/types';
+import { OperationHandler, Operation, OperationRaw, Flow, FlowRaw } from '@directus/shared/types';
 
 let flowManager: FlowManager | undefined;
 
