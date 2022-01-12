@@ -2,10 +2,9 @@ import { defineOperationApi } from '@directus/shared/utils';
 import logger from '../../logger';
 
 export default defineOperationApi({
-	id: 'debug',
+	id: 'log',
 
-	handler: (data, options) => {
-		logger.info('DEBUG');
-		logger.info(options);
+	handler: (_data, options) => {
+		logger.info(`Flow: ${options.message}`);
 	},
 });
