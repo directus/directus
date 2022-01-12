@@ -185,6 +185,7 @@ export default defineComponent({
 	}
 
 	.v-list {
+		min-width: auto;
 		margin: 0px 0px 10px;
 		padding: 20px 20px 12px;
 		border: var(--border-width) solid var(--border-subdued);
