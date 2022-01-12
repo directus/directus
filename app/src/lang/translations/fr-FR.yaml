@@ -285,7 +285,10 @@ dismiss: Ignorer
 raw_value: Valeur brute
 edit_raw_value: Modifier la valeur brute
 enter_raw_value: Saisissez une valeur brute...
+clear_value: Effacer la valeur
 clear_changes: Effacer les modifications
+reset_to_default: Restaurer la valeur par défaut
+undo_changes: Annuler les modifications
 notifications: Notifications
 show_all_activity: Afficher toute l'activité
 page_not_found: Page non trouvée
@@ -1228,6 +1231,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1237,6 +1241,8 @@ interfaces:
     add_filter: Ajouter un filtre
     add_group: Et / ou groupe
     add_value: Ajouter une valeur
+    logic_type_and: ET
+    logic_type_or: OU
     all: Tout
     any: N'importe quel
     and: et
