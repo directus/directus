@@ -81,8 +81,12 @@ export default defineComponent({
 			width,
 			() => {
 				if (!filterElement.value) return;
-				if (width.value > 416) {
-					filterElement.value.style.borderTopLeftRadius = width.value > 438 ? 22 + 'px' : width.value - 416 + 'px';
+
+				const minWidth = filterElement.value.parentElement!.offsetWidth - 4;
+
+				if (width.value > minWidth) {
+					filterElement.value.style.borderTopLeftRadius =
+						width.value > minWidth + 22 ? 22 + 'px' : width.value - minWidth + 'px';
 				} else {
 					filterElement.value.style.borderTopLeftRadius = '0px';
 				}
@@ -225,10 +229,18 @@ export default defineComponent({
 	}
 
 	&.filter-active {
-		width: 420px; // blaze it
+		width: 200px;
 
 		.icon-filter {
 			--v-icon-color: var(--primary);
+		}
+
+		@media (min-width: 600px) {
+			width: 300px;
+		}
+
+		@media (min-width: 960px) {
+			width: 420px; // blaze it
 		}
 	}
 
