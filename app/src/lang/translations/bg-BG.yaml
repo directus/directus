@@ -285,10 +285,7 @@ dismiss: Отхвърляне
 raw_value: Стойност в суров вид
 edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
-clear_value: Изчистване на стойността
 clear_changes: Изчистване на промените
-reset_to_default: Възстановяване към начално състояние
-undo_changes: Отмяна и напускане
 notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
