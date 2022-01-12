@@ -1,8 +1,9 @@
 import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
 import { getFlowManager } from '../flows';
 import { ItemsService } from './items';
+import { OperationRaw } from '../types/flows';
 
-export class OperationsService extends ItemsService {
+export class OperationsService extends ItemsService<OperationRaw> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_operations', options);
 	}

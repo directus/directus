@@ -5,6 +5,7 @@ export * from './auth';
 export * from './collection';
 export * from './extensions';
 export * from './files';
+export * from './flows';
 export * from './graphql';
 export * from './items';
 export * from './meta';

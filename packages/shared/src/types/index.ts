@@ -13,6 +13,7 @@ export * from './layouts';
 export * from './misc';
 export * from './modules';
 export * from './notifications';
+export * from './operations';
 export * from './panels';
 export * from './permissions';
 export * from './presets';
