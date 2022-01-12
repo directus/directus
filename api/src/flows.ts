@@ -129,12 +129,6 @@ class FlowManager {
 }
 
 function constructFlowTree(flow: FlowRaw): Flow {
-	if (flow.operations.length === 0)
-		return {
-			...omit(flow, ['id', 'operations']),
-			operation: null,
-		};
-
 	const rootOperation = findRootOperation(flow.operations);
 	const operationTree = constructOperationTree(rootOperation, flow.operations);
 
@@ -146,28 +140,32 @@ function constructFlowTree(flow: FlowRaw): Flow {
 	return flowTree;
 }
 
-function findRootOperation(operations: OperationRaw[]): OperationRaw {
+function findRootOperation(operations: OperationRaw[]): OperationRaw | null {
 	for (const operation of operations) {
 		if (operations.every((other) => other.next !== operation.id && other.reject !== operation.id)) {
 			return operation;
 		}
 	}
 
-	throw new Error('Circular reference in operations!');
+	return null;
 }
 
-function constructOperationTree(root: OperationRaw, operations: OperationRaw[]): Operation {
+function constructOperationTree(root: OperationRaw | null, operations: OperationRaw[]): Operation | null {
+	if (root === null) {
+		return null;
+	}
+
 	const nextOperation = root.next !== null ? operations.find((operation) => operation.id === root.next) : null;
 	const rejectOperation = root.reject !== null ? operations.find((operation) => operation.id === root.reject) : null;
 
 	if (nextOperation === undefined || rejectOperation === undefined) {
-		throw new Error('Undefined reference in operations!');
+		throw new Error('Undefined reference in operations');
 	}
 
 	const operationTree: Operation = {
 		...omit(root, ['id', 'flow']),
-		next: nextOperation !== null ? constructOperationTree(nextOperation, operations) : null,
-		reject: rejectOperation !== null ? constructOperationTree(rejectOperation, operations) : null,
+		next: constructOperationTree(nextOperation, operations),
+		reject: constructOperationTree(rejectOperation, operations),
 	};
 
 	return operationTree;
