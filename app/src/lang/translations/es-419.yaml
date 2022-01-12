@@ -484,47 +484,47 @@ sort: Elegir
 status: Estatus
 remove: Remover
 toggle_manual_sorting: Seleccionar elección manual
-bookmark_doesnt_exist: El Marcador no existe
-bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser encontrado.
-bookmark_doesnt_exist_cta: Regresar a Colección
-select_an_item: Seleccionar un Elemento...
+bookmark_doesnt_exist: El marcador no existe
+bookmark_doesnt_exist_copy: El marcador que intenta abrir no fué encontrado.
+bookmark_doesnt_exist_cta: Volver a recolección
+select_an_item: Seleccione un ítem...
 edit: Editar
 enabled: Habilitado
-disable_tfa: Desactivar 2FA
-tfa_scan_code: Escanee el código en tu aplicación de Autentificación para finalizar la configuración de 2FA
-enter_otp_to_disable_tfa: Ingrese el OTP para desactivar 2FA
-create_account: Crear Cuenta
-account_created_successfully: La Cuenta ha sido creada exitósamente
-auto_fill: Auto Rellenar
-corresponding_field: Campo Correspondiente
+disable_tfa: Deshabilitar 2FA
+tfa_scan_code: Escanee el código en el autenticador de su aplicación para finalizar la configuración del 2FA
+enter_otp_to_disable_tfa: Ingrese OTP para deshabilitar 2FA
+create_account: Crear cuenta
+account_created_successfully: Cuenta creada con exito
+auto_fill: Autollenar
+corresponding_field: Campo correspondiente
 errors:
-  COLLECTION_NOT_FOUND: "La Colección no existe"
+  COLLECTION_NOT_FOUND: "Colección no existe"
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
-  INVALID_CREDENTIALS: Usuario o contraseña incorrecta
-  INVALID_OTP: Contraseña Temporal Incorrecta
-  INVALID_PAYLOAD: Payload Inválido
-  INVALID_QUERY: Consulta Inválida
-  ITEM_LIMIT_REACHED: Límite de elementos alcanzado
-  ITEM_NOT_FOUND: Elemento no encontrado
+  INVALID_CREDENTIALS: Usuario o clave incorrectos
+  INVALID_OTP: Clave incorrecta
+  INVALID_PAYLOAD: Carga inválida
+  INVALID_QUERY: Consulta inválida
+  ITEM_LIMIT_REACHED: Limite de items alcanzado
+  ITEM_NOT_FOUND: Ítem no encontrado
   ROUTE_NOT_FOUND: No encontrado
-  RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
-  USER_SUSPENDED: Usuario Suspendido
+  RECORD_NOT_UNIQUE: Valor duplicado detectado
+  USER_SUSPENDED: Usuario suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   UNPROCESSABLE_ENTITY: Entidad no procesable
-  INTERNAL_SERVER_ERROR: Error Inesperado
+  INTERNAL_SERVER_ERROR: Error inesperado
   NOT_NULL_VIOLATION: El_Valor_No_Puede_Ser_Nulo
-  ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
-  UNKNOWN: Error Inesperado
+  ILLEGAL_ASSET_TRANSFORMATION: La imagen es demasiado grande para presentar
+  UNKNOWN: Error inesperado
 security: Seguridad
-value_hashed: Valor Hasheado de Manera Segura
-bookmark_name: Nombre del Marcador...
-create_bookmark: Crear Marcador
-edit_bookmark: Editar Marcador
+value_hashed: Valor codificado con seguridad
+bookmark_name: Nombre de marcador...
+create_bookmark: Crear marcador
+edit_bookmark: Editar marcador
 bookmarks: Marcadores
-presets: Predefinidos
-unexpected_error: Error Inesperado
-unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo más tarde.
+presets: Ajustes predeterminados
+unexpected_error: Error inesperado
+unexpected_error_copy: Ocurrió un error inesperado. Por favor, intente nuevamente mas tarde.
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
@@ -579,38 +579,38 @@ delete_advanced_filter: Borrar filtro
 change_advanced_filter_operator: Cambiar operador
 operators:
   eq: Igual a
-  neq: No es igual a
+  neq: Distinto de
   lt: Menor que
   gt: Mayor que
   lte: Menor o igual a
   gte: Mayor o igual a
   in: Es uno de
   nin: No es uno de
-  null: Es Nulo
-  nnull: No es Nulo
+  null: Es nulo
+  nnull: No es nulo
   contains: Contiene
   ncontains: No contiene
   starts_with: Comienza con
   nstarts_with: No comienza con
   ends_with: Termina con
   nends_with: No termina con
-  between: Está Entre
-  nbetween: No está Entre
+  between: Está entre
+  nbetween: No está entre
   empty: Está vacío
-  nempty: No está Vacío
+  nempty: No está vacío
   all: Contiene estas llaves
-  has: Contiene alguna de estas llaves
-  intersects: Intersección
-  nintersects: No se intersecta
-  intersects_bbox: Caja delimitadora de intersecciones
-  nintersects_bbox: No intersecta la caja delimitadora
+  has: Contiene algunas de estas llaves
+  intersects: Cruza
+  nintersects: No cruza
+  intersects_bbox: Cruza caja delimitadora
+  nintersects_bbox: No cruza caja delimitadora
 loading: Cargando...
-drop_to_upload: Arrastrar para Subir
-item: Elemento
-items: Elementos
-upload_file: Subir Archivo
-upload_file_indeterminate: Subiendo Archivo...
-upload_file_success: Archivo Subido
+drop_to_upload: Soltar para subir
+item: Ítem
+items: Ítems
+upload_file: Subir archivo
+upload_file_indeterminate: Subiendo archivo...
+upload_file_success: Archivo subido
 upload_files_indeterminate: 'Subiendo archivos {done}/{total}'
 upload_files_success: '{count} Archivos Subidos'
 upload_pending: Subida Pendiente
