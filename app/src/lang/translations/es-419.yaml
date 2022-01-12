@@ -611,22 +611,22 @@ items: Ítems
 upload_file: Subir archivo
 upload_file_indeterminate: Subiendo archivo...
 upload_file_success: Archivo subido
-upload_files_indeterminate: 'Subiendo archivos {done}/{total}'
-upload_files_success: '{count} Archivos Subidos'
-upload_pending: Subida Pendiente
-drag_file_here: Arrastre y Suelte un Archivo Aquí
-click_to_browse: Haga Clic para Navegar
-interface_options: Opciones de Interfaz
-layout_options: Opciones de Diseño
-rows: Filas
+upload_files_indeterminate: 'Subiendo archivos{done}/{total}'
+upload_files_success: '{count} Archivos subidos'
+upload_pending: Subida pendiente
+drag_file_here: Arrastrar y soltar archivo aquí
+click_to_browse: Click para ver
+interface_options: Opciones de conección
+layout_options: Opciones de diseño
+rows: Líneas
 columns: Columnas
-collection_setup: Configuración de Colección
-optional_system_fields: Campos Opcionales del Sistema
+collection_setup: Configuración de colección
+optional_system_fields: Campos opcionales de sistema
 value_unique: El valor debe de ser único
-all_activity: Toda la Actividad
-create_item: Crear Elemento
-display_template: Plantilla de Presentación
-language_display_template: Plantilla de visualización de idioma
+all_activity: Actividad total
+create_item: Crear ítem
+display_template: Mostrar plantilla
+language_display_template: Plantilla de exhibición de lenguage
 translations_display_template: Plantilla de visualización de traducciones
 n_items_selected: 'No hay Elementos Seleccionados | 1 Elemento Seleccionado | {n} Elementos Seleccionados'
 per_page: Por Página
@@ -677,26 +677,26 @@ dashboard_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta
 edit_dashboard: Editar panel de control
 delete_dashboard: Eliminar el panel
 visible: Visible
-prefix_placeholder: Texto antes del valor...
-suffix_placeholder: Texto después del valor...
-decimals_placeholder: Número de decimales...
-no_dashboards: No hay paneles
-no_dashboards_copy: Aún no tienes un Panel.
+prefix_placeholder: Texto antes de valor...
+suffix_placeholder: Texto despues de valor...
+decimals_placeholder: Numero de decimales...
+no_dashboards: Sin tableros
+no_dashboards_copy: Todavía no tiene otros paneles.
 no_data: Sin datos
-create_dashboard: Crear un Panel
-dashboard_name: Nombre del Panel
-full_screen: Pantalla Completa
-edit_panels: Editar Panel
-fit_to_screen: Ajustar a la pantalla
-image_url: Url de la imagen
-alt_text: Texto Alternativo
-media: Medios
+create_dashboard: Crear panel
+dashboard_name: Nombre del panel
+full_screen: Pantalla completa
+edit_panels: Editar paneles
+fit_to_screen: Ajustar a pantalla
+image_url: Url de imagen
+alt_text: Texto alternativo
+media: Medio
 quality: Calidad
 width: Ancho
 height: Alto
 source: Fuente
-url_placeholder: Introduzca una url...
-display_text: Mostrar texto
+url_placeholder: Ingrese un enlace...
+display_text: Exhibir texto
 display_text_placeholder: Introduzca un texto de visualización...
 interface_group_text_and_numbers: Texto y Números
 interface_group_selection: Selección
@@ -877,7 +877,7 @@ fields:
     icon: Ícono
     note: Nota
     color: Color
-    display_template: Plantilla de Presentación
+    display_template: Mostrar plantilla
     hidden: Oculto
     singleton: Singleton
     translations: Traducciones para Nombre de Colección
@@ -1027,7 +1027,7 @@ field_options:
     track_activity_revisions: Rastrear actividad y revisiones
     only_track_activity: Sólo seguimiento de actividad
     do_not_track_anything: No realizar seguimiento
-    collection_setup: Configuración de Colección
+    collection_setup: Configuración de colección
     singleton: Tratar como un sólo objeto
     language: Idioma
     translation: Traducción
@@ -1207,7 +1207,7 @@ interfaces:
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
   system-display-template:
-    display-template: Plantilla de Presentación
+    display-template: Mostrar plantilla
     description: Combinar texto estático y valores de campos dinámicos
     collection_field: Campo de colección
     collection_field_not_setup: La opción de recolección de campo está mal configurada
@@ -1262,7 +1262,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
-    display_template: Plantilla de Presentación
+    display_template: Mostrar plantilla
   input-rich-text-md:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
@@ -1335,7 +1335,7 @@ interfaces:
     label_placeholder: Ingresar una etiqueta...
     label_default: Habilitado
   translations:
-    display_template: Plantilla de Presentación
+    display_template: Mostrar plantilla
     no_collection: Sin Colección
     language_field: Campo indicador de idioma
   user:
