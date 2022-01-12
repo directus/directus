@@ -96,14 +96,14 @@ export default defineComponent({
 
 				const headerElement = mainElement?.value?.firstElementChild;
 
-				if (headerElement) {
-					const maxWidth =
-						searchElement.getBoundingClientRect().right -
-						(headerElement.getBoundingClientRect().left +
-							Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
+				if (!headerElement) return;
 
-					filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
-				}
+				const maxWidth =
+					searchElement.getBoundingClientRect().right -
+					(headerElement.getBoundingClientRect().left +
+						Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
+
+				filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
 			},
 			{ immediate: true }
 		);
