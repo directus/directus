@@ -181,7 +181,7 @@ export default defineComponent({
 		}
 
 		function navigateToFlow({ item: flow }: { item: FlowRaw }) {
-			router.push(`/flows/${flow.id}`);
+			router.push(`/settings/flows/${flow.id}`);
 		}
 
 		async function deleteFlow() {
