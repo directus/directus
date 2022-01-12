@@ -1,6 +1,13 @@
 import express, { Router } from 'express';
 import path from 'path';
-import { ApiExtension, AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
+import {
+	ApiExtension,
+	AppExtensionType,
+	Extension,
+	ExtensionType,
+	HybridExtension,
+	OperationApiConfig,
+} from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntry,
@@ -48,6 +55,8 @@ import getModuleDefault from './utils/get-module-default';
 import { clone, escapeRegExp } from 'lodash';
 import chokidar, { FSWatcher } from 'chokidar';
 import { isExtensionObject, pluralize } from '@directus/shared/utils';
+import { getFlowManager } from './flows';
+import globby from 'globby';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -65,6 +74,7 @@ type AppExtensions = Partial<Record<AppExtensionType, string>>;
 type ApiExtensions = {
 	hooks: { path: string; events: EventHandler[] }[];
 	endpoints: { path: string }[];
+	operations: { path: string }[];
 };
 
 type Options = {
@@ -84,7 +94,7 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = {};
-	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [] };
+	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [], operations: [] };
 
 	private apiEmitter: Emitter;
 	private endpointRouter: Router;
@@ -177,6 +187,7 @@ class ExtensionManager {
 
 		this.registerHooks();
 		this.registerEndpoints();
+		await this.registerOperations();
 
 		if (env.SERVE_APP) {
 			this.appExtensions = await this.generateExtensionBundles();
@@ -188,6 +199,7 @@ class ExtensionManager {
 	private async unload(): Promise<void> {
 		this.unregisterHooks();
 		this.unregisterEndpoints();
+		this.unregisterOperations();
 
 		this.apiEmitter.offAll();
 
@@ -206,7 +218,7 @@ class ExtensionManager {
 				path.resolve(env.EXTENSIONS_PATH, pluralize(type))
 			);
 
-			this.watcher = chokidar.watch([path.resolve('.', 'package.json'), ...localExtensionPaths], {
+			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
 				ignoreInitial: true,
 			});
 
@@ -307,7 +319,12 @@ class ExtensionManager {
 
 		for (const hook of hooks) {
 			try {
-				this.registerHook(hook);
+				const hookPath = path.resolve(hook.path, hook.entrypoint);
+				const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+
+				const config = getModuleDefault(hookInstance);
+
+				this.registerHook(config, hookPath);
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
 				logger.warn(error);
@@ -320,7 +337,12 @@ class ExtensionManager {
 
 		for (const endpoint of endpoints) {
 			try {
-				this.registerEndpoint(endpoint, this.endpointRouter);
+				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+
+				const config = getModuleDefault(endpointInstance);
+
+				this.registerEndpoint(config, endpointPath, this.endpointRouter);
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 				logger.warn(error);
@@ -328,14 +350,43 @@ class ExtensionManager {
 		}
 	}
 
-	private registerHook(hook: ApiExtension) {
-		const hookPath = path.resolve(hook.path, hook.entrypoint);
-		const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+	private async registerOperations(): Promise<void> {
+		const internalPaths = await globby(
+			path.posix.join(path.relative('.', __dirname).split(path.sep).join(path.posix.sep), 'operations/*/index.(js|ts)')
+		);
 
-		const register = getModuleDefault(hookInstance);
+		const internalOperations = internalPaths.map((internalPath) => {
+			const dirs = internalPath.split(path.sep);
 
+			return {
+				name: dirs[dirs.length - 2],
+				path: dirs.slice(0, -1).join(path.sep),
+				entrypoint: { api: dirs[dirs.length - 1] },
+			};
+		});
+
+		const operations = this.extensions.filter(
+			(extension): extension is HybridExtension => extension.type === 'operation'
+		);
+
+		for (const operation of [...internalOperations, ...operations]) {
+			try {
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+
+				const config = getModuleDefault(operationInstance);
+
+				this.registerOperation(config, operationPath);
+			} catch (error: any) {
+				logger.warn(`Couldn't register operation "${operation.name}"`);
+				logger.warn(error);
+			}
+		}
+	}
+
+	private registerHook(register: HookConfig, path: string) {
 		const hookHandler: { path: string; events: EventHandler[] } = {
-			path: hookPath,
+			path,
 			events: [],
 		};
 
@@ -402,14 +453,9 @@ class ExtensionManager {
 		this.apiExtensions.hooks.push(hookHandler);
 	}
 
-	private registerEndpoint(endpoint: ApiExtension, router: Router) {
-		const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-		const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
-
-		const mod = getModuleDefault(endpointInstance);
-
-		const register = typeof mod === 'function' ? mod : mod.handler;
-		const routeName = typeof mod === 'function' ? endpoint.name : mod.id;
+	private registerEndpoint(config: EndpointConfig, path: string, router: Router) {
+		const register = typeof config === 'function' ? config : config.handler;
+		const routeName = typeof config === 'function' ? config.name : config.id;
 
 		const scopedRouter = express.Router();
 		router.use(`/${routeName}`, scopedRouter);
@@ -425,7 +471,17 @@ class ExtensionManager {
 		});
 
 		this.apiExtensions.endpoints.push({
-			path: endpointPath,
+			path,
+		});
+	}
+
+	private registerOperation(config: OperationApiConfig, path: string) {
+		const flowManager = getFlowManager();
+
+		flowManager.addOperation(config.id, config.handler);
+
+		this.apiExtensions.operations.push({
+			path,
 		});
 	}
 
@@ -462,5 +518,17 @@ class ExtensionManager {
 		this.endpointRouter.stack = [];
 
 		this.apiExtensions.endpoints = [];
+	}
+
+	private unregisterOperations(): void {
+		for (const operation of this.apiExtensions.operations) {
+			delete require.cache[require.resolve(operation.path)];
+		}
+
+		const flowManager = getFlowManager();
+
+		flowManager.clearOperations();
+
+		this.apiExtensions.operations = [];
 	}
 }

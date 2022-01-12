@@ -20,6 +20,6 @@ type RegisterFunctions = {
 	schedule: (cron: string, handler: ScheduleHandler) => void;
 };
 
-type HookHandlerFunction = (register: RegisterFunctions, context: ApiExtensionContext) => void;
+type HookConfigFunction = (register: RegisterFunctions, context: ApiExtensionContext) => void;
 
-export type HookConfig = HookHandlerFunction;
+export type HookConfig = HookConfigFunction;

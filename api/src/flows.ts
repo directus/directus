@@ -34,13 +34,6 @@ class FlowManager {
 
 	private triggerHandlers: EventHandler[] = [];
 
-	constructor() {
-		this.addOperation('debug', (data, options) => {
-			logger.info('DEBUG');
-			logger.info(options);
-		});
-	}
-
 	public async initialize(): Promise<void> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
@@ -105,6 +98,10 @@ class FlowManager {
 
 	public addOperation(id: string, operation: OperationHandler): void {
 		this.operations[id] = operation;
+	}
+
+	public clearOperations(): void {
+		this.operations = {};
 	}
 
 	private async executeOperation(operation: Operation | null, data: Record<string, any> = {}): Promise<any> {

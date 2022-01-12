@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { ApiExtensionContext } from './extensions';
 
-type EndpointHandlerFunction = (router: Router, context: ApiExtensionContext) => void;
-interface EndpointAdvancedConfig {
+type EndpointConfigFunction = (router: Router, context: ApiExtensionContext) => void;
+type EndpointConfigObject = {
 	id: string;
-	handler: EndpointHandlerFunction;
-}
+	handler: EndpointConfigFunction;
+};
 
-export type EndpointConfig = EndpointHandlerFunction | EndpointAdvancedConfig;
+export type EndpointConfig = EndpointConfigFunction | EndpointConfigObject;

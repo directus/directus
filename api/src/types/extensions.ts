@@ -37,14 +37,14 @@ type RegisterFunctions = {
 	schedule: (cron: string, handler: ScheduleHandler) => void;
 };
 
-type HookHandlerFunction = (register: RegisterFunctions, context: ExtensionContext) => void;
+type HookConfigFunction = (register: RegisterFunctions, context: ExtensionContext) => void;
 
-export type HookConfig = HookHandlerFunction;
+export type HookConfig = HookConfigFunction;
 
-type EndpointHandlerFunction = (router: Router, context: ExtensionContext) => void;
-interface EndpointAdvancedConfig {
+type EndpointConfigFunction = (router: Router, context: ExtensionContext) => void;
+type EndpointConfigObject = {
 	id: string;
-	handler: EndpointHandlerFunction;
-}
+	handler: EndpointConfigFunction;
+};
 
-export type EndpointConfig = EndpointHandlerFunction | EndpointAdvancedConfig;
+export type EndpointConfig = EndpointConfigFunction | EndpointConfigObject;

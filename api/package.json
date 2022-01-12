@@ -113,6 +113,7 @@
 		"express": "^4.17.1",
 		"flat": "^5.0.2",
 		"fs-extra": "^10.0.0",
+		"globby": "^11.0.4",
 		"graphql": "^15.5.0",
 		"graphql-compose": "^9.0.1",
 		"helmet": "^4.6.0",
