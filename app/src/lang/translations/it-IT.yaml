@@ -285,7 +285,10 @@ dismiss: Chiudi
 raw_value: Valore grezzo
 edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
+clear_value: Cancella valore
 clear_changes: Annulla modifiche
+reset_to_default: Reimposta al valore predefinito
+undo_changes: Annulla le modifiche
 notifications: Notifiche
 show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
@@ -1228,6 +1231,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1237,6 +1241,8 @@ interfaces:
     add_filter: Aggiungi Filtro
     add_group: Gruppo And / Or
     add_value: Aggiungi valore
+    logic_type_and: E
+    logic_type_or: O
     all: Tutti
     any: Qualsiasi
     and: e
