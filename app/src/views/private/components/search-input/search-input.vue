@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, PropType, computed } from 'vue';
+import { defineComponent, ref, watch, PropType, computed, inject, Ref } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { isObject } from 'lodash';
 import { useElementSize } from '@/composables/use-element-size';
@@ -74,21 +74,35 @@ export default defineComponent({
 		const filterActive = ref(false);
 		const filterBorder = ref(false);
 
+		const mainElement = inject<Ref<Element | undefined>>('main-element');
 		const filterElement = ref<HTMLElement>();
-		const { width } = useElementSize(filterElement);
+		const { width: mainElementWidth } = useElementSize(mainElement!);
+		const { width: filterElementWidth } = useElementSize(filterElement);
 
 		watch(
-			width,
+			[mainElementWidth, filterElementWidth],
 			() => {
 				if (!filterElement.value) return;
 
-				const minWidth = filterElement.value.parentElement!.offsetWidth - 4;
+				const searchElement = filterElement.value.parentElement!;
+				const minWidth = searchElement.offsetWidth - 4;
 
-				if (width.value > minWidth) {
+				if (filterElementWidth.value > minWidth) {
 					filterElement.value.style.borderTopLeftRadius =
-						width.value > minWidth + 22 ? 22 + 'px' : width.value - minWidth + 'px';
+						filterElementWidth.value > minWidth + 22 ? 22 + 'px' : filterElementWidth.value - minWidth + 'px';
 				} else {
 					filterElement.value.style.borderTopLeftRadius = '0px';
+				}
+
+				const headerElement = mainElement?.value?.firstElementChild;
+
+				if (headerElement) {
+					const maxWidth =
+						searchElement.getBoundingClientRect().right -
+						(headerElement.getBoundingClientRect().left +
+							Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
+
+					filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
 				}
 			},
 			{ immediate: true }
@@ -236,10 +250,14 @@ export default defineComponent({
 		}
 
 		@media (min-width: 600px) {
-			width: 300px;
+			width: 250px;
 		}
 
 		@media (min-width: 960px) {
+			width: 300px;
+		}
+
+		@media (min-width: 1260px) {
 			width: 420px; // blaze it
 		}
 	}
@@ -295,7 +313,6 @@ export default defineComponent({
 	right: 0;
 	width: auto;
 	min-width: 100%;
-	max-width: 50vw;
 	padding: 0;
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
