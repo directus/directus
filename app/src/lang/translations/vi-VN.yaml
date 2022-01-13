@@ -1,5 +1,27 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Định danh
 avatar: Ảnh đại diện
+application: Ứng dụng
 default_provider: Mặc định
 published: Đã xuất bản
 draft: Bản nháp
@@ -10,6 +32,7 @@ tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 maps: Bản đồ
+switch_user: Đổi tài khoản
 item_revision: Xem Phiên bản
 enter_a_name: Nhập Tên...
 duplicate_field: Nhân bản Trường
@@ -28,7 +51,9 @@ indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
 children: Trẻ em
+show_active_items: Hiển thị các mục đang hoạt động
 show_archived_items: Hiển thị các mục đã Lưu Trữ
+show_all_items: Hiển thị tất cả các mục
 edited: Giá trị đã được chỉnh sửa
 required: Bắt buộc
 required_for_app_access: Yêu Cầu cho Kết Nối
@@ -42,6 +67,7 @@ create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
 invite: Mời
 email_already_invited: Email "{email}" đã được mời
+inbox: Hộp thư đến
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
 connection_good: Kết nối Tốt
