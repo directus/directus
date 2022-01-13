@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: ناسەرەوە
 avatar: وێنۆچکە
+application: ئەپڵیکەیشن
 default_provider: بنەڕەتی
 published: بڵاوکراوە
 draft: ڕەشنوس
@@ -31,6 +32,7 @@ tile_size: قەبارەی خشت
 edit_field: دەستکاری خانە
 conditions: مەرجەکان
 maps: نەخشەکان
+switch_user: گۆڕینی بەکارهێنەر
 item_creation: دروستکردنی مادە
 item_revision: گەڕاندنەوەی مادە
 enter_a_name: ناوێک تۆماربکە...
@@ -52,7 +54,9 @@ edit_collection: دەستکاری کۆمەڵە
 exclusive: تایبەت
 children: وەچەکان
 db_only_click_to_configure: 'تەنها بنکەدراو: کرتە بکە بۆ سازاندن'
+show_active_items: نیشاندانی مادە چالاکەکان
 show_archived_items: نیشاندانی مادە ئەرشیفکراوەکان
+show_all_items: نیشاندانی هەموو مادەکان
 edited: بەها دەستکاریکراوە
 required: داواکراوە
 required_for_app_access: داواکراوە بۆ دەستگەیشتن بە ئەپ
@@ -66,6 +70,7 @@ create_webhook: دروستکردنی وێبهووک
 invite_users: بانگهێشتکردنی بەکارهێنەرەکان
 invite: بانگهێشت
 email_already_invited: ئیمەیڵی "{email}" پێشتر بانگهێشتکراوە
+subject: بابەت
 emails: ئیمەیڵەکان
 connection_excellent: پەیوەندی نایاب
 connection_good: پەیوەندی باش
