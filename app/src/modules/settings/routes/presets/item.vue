@@ -313,7 +313,7 @@ export default defineComponent({
 				deleting.value = true;
 
 				try {
-					await api.delete(`/presets/${props.id}`);
+					await presetsStore.delete([Number(props.id)]);
 					router.replace(`/settings/presets`);
 				} catch (err: any) {
 					unexpectedError(err);

@@ -182,9 +182,6 @@ length: Délka
 readonly: Pouze pro čtení
 unique: Unikátní
 primary_key: Primární klíč
-clear_value: Vymazat hodnotu
-reset_to_default: Obnovit výchozí nastavení
-undo_changes: Vrátit změny
 notifications: Notifikace
 page_not_found: Stránka nenalezena
 page_not_found_body: Hledaná stránka nebyla nalezena.

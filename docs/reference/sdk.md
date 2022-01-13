@@ -487,7 +487,7 @@ await articles.readMany();
 ### Read By Query
 
 ```js
-await articles.readMany({
+await articles.readByQuery({
 	search: 'Directus',
 	filter: {
 		date_published: {
