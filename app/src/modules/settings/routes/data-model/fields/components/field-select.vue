@@ -500,12 +500,6 @@ export default defineComponent({
 	}
 }
 
-.v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
-}
-
 .icons {
 	.v-icon + .v-icon:not(:last-child) {
 		margin-left: 8px;
