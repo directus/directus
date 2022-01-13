@@ -266,6 +266,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -282,8 +283,6 @@ export default defineComponent({
 		} = useItem(collection, primaryKey);
 
 		const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
-
-		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 		const isSavable = computed(() => {
 			if (saveAllowed.value === false) return false;
