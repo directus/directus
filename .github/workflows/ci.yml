@@ -51,35 +51,41 @@ jobs:
     name: Lint
     needs: pre_check
     if: needs.pre_check.should_skip != 'true'
-    uses: directus/directus/.github/workflows/lint.yml@refactor-e2e-tests
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Use local my-action
+        uses: ./.github/workflows/lint
 
   codeql_analysis:
     name: CodeQL Analysis
     needs: pre_check
     if: needs.pre_check.should_skip != 'true'
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-      - name: Use local my-action
-        uses: ./.github/actions/my-action
-        uses: ./.github/workflows/codeql-analysis.yml
+      - name: Run codeql analysis
+        uses: ./.github/workflows/codeql-analysis
 
   unit_tests:
     name: Unit Tests
     needs: pre_check
     if: needs.pre_check.should_skip != 'true'
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-      - name: Use local my-action
-        uses: ./.github/workflows/unit-tests.yml
+      - name: Run unit tests
+        uses: ./.github/workflows/unit-tests
 
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
     if: needs.pre_check.should_skip != 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-      - name: Use local my-action
-        uses: ./.github/workflows/e2e-tests.yml
+      - name: Run end-to-end tests
+        uses: ./.github/workflows/e2e-tests
