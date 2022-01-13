@@ -6,7 +6,6 @@ import vendors from '../get-dbs-to-test';
 import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
-// import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 import { sleep } from './utils/sleep';
 
 let started = false;
