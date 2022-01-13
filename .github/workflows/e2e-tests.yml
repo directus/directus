@@ -3,10 +3,6 @@ name: End-to-End Tests
 on:
   workflow_dispatch:
   workflow_call:
-    inputs:
-      should_skip:
-        required: false
-        type: string
 
 jobs:
   test:
@@ -16,59 +12,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        db:
-          - mssql
-          - mysql
-          - postgres
-          - maria
-          - postgres10
-          # - sqlite3
         node-version:
-          # - 12-alpine
-          # - 14-alpine
-          - 16-alpine
-    env:
-      CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
+          - '16'
     steps:
-      - name: Login to GitHub container registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull cached test image
-        run: |
-          docker pull $CACHED_IMAGE || true
-          docker tag $CACHED_IMAGE directus-test-image || true
-
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Start databases containers
+        run: docker compose -f tests/docker-compose.yml up -d --quiet-pull
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build packages
         run: npm run build
 
-      - name: Run tests
-        env:
-          TEST_NODE_VERSION: ${{ matrix.node-version }}
-          TEST_DB: ${{ matrix.db }}
-        run: npm run test:e2e
+      - name: Wait for databases to be ready
+        run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --no-recreate --wait
 
-      - name: Push updated test image
-        # Only push the new cache image on the main branch once per node version
-        if: github.ref == 'refs/heads/main' && github.repository == 'directus/directus' && matrix.db == 'postgres'
-        run: |
-          docker tag directus-test-image $CACHED_IMAGE
-          docker push $CACHED_IMAGE || true
+      - name: Run tests
+        run: npm run test:e2e
 
   result:
     name: Result

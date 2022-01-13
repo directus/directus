@@ -1,44 +1,29 @@
 import { Knex } from 'knex';
 import axios from 'axios';
+import { sleep } from './sleep';
 
-export async function awaitDatabaseConnection(
-	database: Knex,
-	checkSQL: string,
-	currentAttempt = 0
-): Promise<void | null> {
-	try {
-		await database.raw(checkSQL);
-	} catch {
-		if (currentAttempt === 10) {
-			throw new Error(`Couldn't connect to DB`);
+export async function awaitDatabaseConnection(database: Knex, checkSQL: string): Promise<void | null> {
+	for (let attempt = 0; attempt <= 10; attempt++) {
+		try {
+			await database.raw(checkSQL);
+			return null; // success
+		} catch (error) {
+			await sleep(5000);
+			continue;
 		}
-
-		return new Promise((resolve) => {
-			setTimeout(async () => {
-				await awaitDatabaseConnection(database, checkSQL, currentAttempt + 1);
-				resolve(null);
-			}, 5000);
-		});
 	}
+	throw new Error(`Couldn't connect to DB`);
 }
 
-export async function awaitDirectusConnection(port = 6100, currentAttempt = 0): Promise<void | null> {
-	try {
-		await axios.get(`http://localhost:${port}/server/ping`);
-	} catch {
-		if (currentAttempt === 10) {
-			throw new Error(`Couldn't connect to Directus`);
+export async function awaitDirectusConnection(port: number): Promise<void | null> {
+	for (let attempt = 0; attempt <= 10; attempt++) {
+		try {
+			await axios.get(`http://localhost:${port}/server/ping`);
+			return null; // success
+		} catch {
+			await sleep(5000);
+			continue;
 		}
-
-		return new Promise((resolve, reject) => {
-			setTimeout(async () => {
-				try {
-					await awaitDirectusConnection(port, currentAttempt + 1);
-					resolve(null);
-				} catch (err) {
-					reject(err);
-				}
-			}, 5000);
-		});
 	}
+	throw new Error(`Couldn't connect to Directus`);
 }
