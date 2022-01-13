@@ -146,17 +146,15 @@ tests.
 
 Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is running.
 
-Navigate to the `tests` directory and run the following commands:
-
 ```bash
 # Ensure that you are testing on the lastest codebase
 npm run build
 
 # Clean up in case you ran the tests before
-docker compose -f docker-compose.yml down -v
+docker compose -f /tests/docker-compose.yml down -v
 
 # Start the necessary containers
-docker compose -f docker-compose.yml up -d --wait
+docker compose -f /tests/docker-compose.yml up -d --wait
 
 # Run the tests
 npm run test:e2e
