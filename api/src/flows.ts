@@ -20,6 +20,9 @@ export function getFlowManager(): FlowManager {
 	return flowManager;
 }
 
+const TRIGGER_KEY = '$trigger';
+const LAST_KEY = '$last';
+
 class FlowManager {
 	private operations: Record<string, OperationHandler> = {};
 
@@ -37,27 +40,26 @@ class FlowManager {
 
 		for (const flow of flowTrees) {
 			if (flow.trigger === 'filter') {
-				const handler: FilterHandler = (payload, meta, context) =>
-					this.executeOperation(flow.operation, { payload, meta, context });
+				const handler: FilterHandler = (payload, meta, context) => this.executeFlow(flow, { payload, meta, context });
 
 				emitter.onFilter(flow.options.event, handler);
 
 				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'action') {
-				const handler: ActionHandler = (meta, context) => this.executeOperation(flow.operation, { meta, context });
+				const handler: ActionHandler = (meta, context) => this.executeFlow(flow, { meta, context });
 
 				emitter.onAction(flow.options.event, handler);
 
 				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'init') {
-				const handler: InitHandler = (meta) => this.executeOperation(flow.operation, { meta });
+				const handler: InitHandler = (meta) => this.executeFlow(flow, { meta });
 
 				emitter.onInit(flow.options.event, handler);
 
 				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'schedule') {
 				if (validate(flow.options.cron)) {
-					const task = schedule(flow.options.cron, () => this.executeOperation(flow.operation));
+					const task = schedule(flow.options.cron, () => this.executeFlow(flow));
 
 					this.triggerHandlers.push({ type: flow.trigger, task });
 				} else {
@@ -98,24 +100,41 @@ class FlowManager {
 		this.operations = {};
 	}
 
-	private async executeOperation(operation: Operation | null, data: Record<string, any> = {}): Promise<any> {
-		if (operation !== null) {
-			if (operation.type in this.operations) {
-				const handler = this.operations[operation.type];
+	private async executeFlow(flow: Flow, data: Record<string, any> = {}): Promise<any> {
+		const keyedData: Record<string, any> = { [TRIGGER_KEY]: data, [LAST_KEY]: data };
 
-				try {
-					const result = await handler(data, operation.options);
+		let operation = flow.operation;
+		while (operation !== null) {
+			const { successor, data } = await this.executeOperation(operation, keyedData);
 
-					return this.executeOperation(operation.next, result ?? data);
-				} catch {
-					return this.executeOperation(operation.reject, data);
-				}
-			} else {
-				logger.warn(`Couldn't find operation ${operation.type}`);
-			}
+			keyedData[operation.key] = data;
+			keyedData[LAST_KEY] = data;
+
+			operation = successor;
 		}
 
-		return data;
+		return keyedData[flow.options.return || TRIGGER_KEY];
+	}
+
+	private async executeOperation(
+		operation: Operation,
+		keyedData: Record<string, any>
+	): Promise<{ successor: Operation | null; data: any }> {
+		if (!(operation.type in this.operations)) {
+			logger.warn(`Couldn't find operation ${operation.type}`);
+
+			return { successor: null, data: null };
+		}
+
+		const handler = this.operations[operation.type];
+
+		try {
+			const result = await handler(keyedData, operation.options);
+
+			return { successor: operation.next, data: result ?? null };
+		} catch (error: any) {
+			return { successor: operation.reject, data: error ?? null };
+		}
 	}
 }
 
