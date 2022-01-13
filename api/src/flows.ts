@@ -28,7 +28,10 @@ class FlowManager {
 	public async initialize(): Promise<void> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
-		const flows = await flowsService.readByQuery({ filter: { status: { _eq: 'active' } }, fields: ['*.*'] });
+		const flows = await flowsService.readByQuery({
+			filter: { status: { _eq: 'active' } },
+			fields: ['*', 'operations.*'],
+		});
 
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
@@ -117,7 +120,8 @@ class FlowManager {
 }
 
 function constructFlowTree(flow: FlowRaw): Flow {
-	const rootOperation = findRootOperation(flow.operations);
+	const rootOperation = flow.operations.find((operation) => operation.id === flow.operation) ?? null;
+
 	const operationTree = constructOperationTree(rootOperation, flow.operations);
 
 	const flowTree: Flow = {
@@ -126,16 +130,6 @@ function constructFlowTree(flow: FlowRaw): Flow {
 	};
 
 	return flowTree;
-}
-
-function findRootOperation(operations: OperationRaw[]): OperationRaw | null {
-	for (const operation of operations) {
-		if (operations.every((other) => other.next !== operation.id && other.reject !== operation.id)) {
-			return operation;
-		}
-	}
-
-	return null;
 }
 
 function constructOperationTree(root: OperationRaw | null, operations: OperationRaw[]): Operation | null {

@@ -3,9 +3,14 @@ table: directus_operations
 fields:
   - field: id
     special: uuid
-  - field: flow
   - field: type
+  - field: key
   - field: options
     special: json
   - field: next
   - field: reject
+  - field: flow
+  - field: date_created
+    special: date-created
+  - field: user_created
+    special: user-created

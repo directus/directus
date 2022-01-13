@@ -9,15 +9,21 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('status').notNullable().defaultTo('inactive');
 		table.string('trigger');
 		table.json('options');
+		table.uuid('operation').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
+		table.timestamp('date_created').defaultTo(knex.fn.now());
+		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
 
 	await knex.schema.createTable('directus_operations', (table) => {
 		table.uuid('id').primary();
-		table.uuid('flow').notNullable().references('id').inTable('directus_flows').onDelete('CASCADE');
 		table.string('type').notNullable();
+		table.string('key').notNullable();
 		table.json('options');
 		table.uuid('next').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 		table.uuid('reject').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
+		table.uuid('flow').notNullable().references('id').inTable('directus_flows').onDelete('CASCADE');
+		table.timestamp('date_created').defaultTo(knex.fn.now());
+		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
 }
 
