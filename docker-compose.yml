@@ -63,7 +63,7 @@
 #
 #   CockroachDB
 #     User:          admin
-#     Password:      secret
+#     Password:      --
 
 version: '3.1'
 services:
