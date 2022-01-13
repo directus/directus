@@ -8,6 +8,7 @@ on:
 jobs:
   analyze:
     name: Analyze
+    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     permissions:
       actions: read
