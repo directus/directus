@@ -153,10 +153,10 @@ Navigate to the `tests` directory and run the following commands:
 npm run build
 
 # Clean up in case you ran the tests before
-docker compose down -v
+docker compose -f tests/docker-compose.yml down -v
 
 # Start the necessary containers
-docker compose up -d --wait
+docker compose -f tests/docker-compose.yml up -d --wait
 
 # Run the tests
 npm run test:e2e
