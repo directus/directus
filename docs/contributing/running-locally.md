@@ -146,8 +146,6 @@ tests.
 
 Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is running.
 
-Navigate to the `tests` directory and run the following commands:
-
 ```bash
 # Ensure that you are testing on the lastest codebase
 npm run build
