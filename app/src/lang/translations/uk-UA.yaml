@@ -276,10 +276,7 @@ dismiss: Відмінити
 raw_value: Необроблене значення
 edit_raw_value: Змінити необроблене значення
 enter_raw_value: Введіть необроблене значення...
-clear_value: Очистити значення
 clear_changes: Очистити зміни
-reset_to_default: Відновити налаштування за умовчанням
-undo_changes: Відмінити зміни
 notifications: Сповіщення
 show_all_activity: Показати всю активність
 page_not_found: Сторінку не знайдено
@@ -962,6 +959,10 @@ fields:
     transformations_all: Дозволити всі трансформації
     transformations_none: Вимкнути трансформації
     transformations_presets: Обмежити перетворення до передустановок нижче
+  directus_shares:
+    name: Назва
+    role: Роль
+    password: Пароль
   directus_fields:
     collection: Назва колекції
     icon: Іконка колекції
@@ -1367,6 +1368,8 @@ interfaces:
     description: Багатотекстовий редактор, що пише матеріал для HTML
     toolbar: Панель інструментів
     custom_formats: Власне форматування
+    folder_note: Тека для завантажених файлів. Не може вплинути на існуючі файли.
+    imageToken: Ключ забраження
   group-detail:
     show_header: Показувати заголовок групи
     header_icon: Іконка заголовка
@@ -1407,6 +1410,18 @@ displays:
   filesize:
     filesize: Розмір файлу
     description: Показати розмір файлу
+  formatted-value:
+    format: Формат
+    font: Шрифт
+    font_serif: Некарбований
+    font_monospace: Моноширинний шрифт
+    bold: Напівжирний
+    italic: Курсив
+    prefix: Префікс
+    suffix: Суфікс
+    color: Колір
+    icon: Іконка
+    text: Текст
   icon:
     icon: Іконка
   image:

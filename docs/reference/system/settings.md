@@ -32,6 +32,9 @@ Primary key of the setting.
 `project_name` **string**\
 Name of the project, shown in the Admin App.
 
+`project_descriptor` **string**\
+Descriptor of the project, shown in the Admin App.
+
 `project_url` **string**\
 Link to the (public) website that goes with this project.
 
@@ -87,6 +90,7 @@ What modules are enabled/added globally.
 	"data": {
 		"id": 1,
 		"project_name": "Directus",
+		"project_descriptor": "Application",
 		"project_url": null,
 		"project_color": null,
 		"project_logo": null,

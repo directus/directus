@@ -66,6 +66,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { translate } from '@/utils/translate-object-values';
 
 type Role = {
 	id: number;
@@ -155,7 +156,7 @@ export default defineComponent({
 					},
 					...response.data.data.map((role: any) => {
 						return {
-							...role,
+							...translate(role),
 							count: role.users[0]?.count.id || 0,
 						};
 					}),

@@ -12,9 +12,10 @@ import ldap, {
 	OperationsError,
 } from 'ldapjs';
 import ms from 'ms';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 import Joi from 'joi';
 import { AuthDriver } from '../auth';
-import { AuthDriverOptions, User, SessionData } from '../../types';
+import { AuthDriverOptions, User } from '../../types';
 import {
 	InvalidCredentialsException,
 	InvalidPayloadException,
@@ -318,12 +319,11 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
+	async login(user: User, payload: Record<string, any>): Promise<void> {
 		await this.verify(user, payload.password);
-		return null;
 	}
 
-	async refresh(user: User): Promise<SessionData> {
+	async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
@@ -331,7 +331,6 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
 			throw new InvalidCredentialsException();
 		}
-		return null;
 	}
 }
 
@@ -363,7 +362,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 		'/',
 		asyncHandler(async (req, res, next) => {
 			const accountability = {
-				ip: req.ip,
+				ip: getIPFromReq(req),
 				userAgent: req.get('user-agent'),
 				role: null,
 			};

@@ -247,9 +247,6 @@ dismiss: ปิด
 raw_value: ข้อมูลดิบ
 edit_raw_value: แก้ไขข้อมูลดิบ
 enter_raw_value: กรุณาใส่ข้อมูลดิบ
-clear_value: ล้างค่า
-reset_to_default: คืนค่าเริ่มต้น
-undo_changes: ยกเลิกการเปลี่ยนแปลง
 notifications: การแจ้งเตือน
 show_all_activity: แสดงทุกกิจกรรม
 page_not_found: ไม่พบหน้านี้
@@ -873,6 +870,10 @@ fields:
     files_and_thumbnails: ไฟล์ และ ที่เก็บ
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
+  directus_shares:
+    name: ชื่อ
+    role: บทบาท
+    password: รหัสผ่าน
   directus_fields:
     collection: ชื่อคอลเลกชัน
     icon: ไอคอนของคอลเลกชัน
@@ -1241,6 +1242,8 @@ interfaces:
     toolbar: แถบเครื่องมือ
     custom_formats: รูปแบบที่กำหนดเอง
     options_override: ตัวเลือกแทนที่
+    imageToken: Image Token
+    imageToken_label: Image Token ที่จะถูกต่อเข้าไปที่แห่งที่มาของรูปภาพ
   input-autocomplete-api:
     input-autocomplete-api: ป้อนข้อมูลอัตโนมัติ (API)
     description: การพิมพ์ล่วงหน้าสำหรับค่า API ภายนอก
@@ -1292,9 +1295,18 @@ displays:
   formatted-value:
     formatted-value: ค่าที่ถูกกำหนดรูปแบบ
     description: แสดงข้อความในเวอร์ชั่นที่ถูกกำหนดรูปแบบ
-    format_title: รูปแบบหัวเรื่อง
-    format_title_label: จัดรูปแบบอัตโนมัติ
+    format: รูปแบบ
+    font: ฟอนท์
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: ตัวหนา
     bold_label: ใช้ตัวหนา
+    italic: ตัวเอียง
+    prefix: คำนำหน้า
+    suffix: คำต่อท้าย
+    color: สี
+    icon: ไอคอน
+    text: ข้อความแบบยาว
   formatted-json-value:
     formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว
     description: แสดงค่าของ JSON ที่ถูกจัดรูปแบบแล้ว

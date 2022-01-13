@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationDivider from './presentation-divider.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'presentation-divider',
@@ -74,4 +75,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

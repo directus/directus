@@ -8,6 +8,7 @@ import { CollectionsService, FieldsService, RelationsService } from '../services
 import { set } from 'lodash';
 import { DiffNew } from 'deep-diff';
 import { Field } from '@directus/shared/types';
+import logger from '../logger';
 
 export async function applySnapshot(
 	snapshot: Snapshot,
@@ -24,7 +25,12 @@ export async function applySnapshot(
 
 		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0].kind === 'D') {
-				await collectionsService.deleteOne(collection);
+				try {
+					await collectionsService.deleteOne(collection);
+				} catch (err) {
+					logger.error(`Failed to delete collection "${collection}"`);
+					throw err;
+				}
 			}
 
 			if (diff?.[0].kind === 'N' && diff[0].rhs) {
@@ -34,10 +40,15 @@ export async function applySnapshot(
 					.filter((fieldDiff) => fieldDiff.collection === collection)
 					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
 
-				await collectionsService.createOne({
-					...diff[0].rhs,
-					fields,
-				});
+				try {
+					await collectionsService.createOne({
+						...diff[0].rhs,
+						fields,
+					});
+				} catch (err: any) {
+					logger.error(`Failed to create collection "${collection}"`);
+					throw err;
+				}
 
 				// Now that the fields are in for this collection, we can strip them from the field
 				// edits
@@ -50,7 +61,12 @@ export async function applySnapshot(
 				});
 
 				if (newValues) {
-					await collectionsService.updateOne(collection, newValues);
+					try {
+						await collectionsService.updateOne(collection, newValues);
+					} catch (err) {
+						logger.error(`Failed to update collection "${collection}"`);
+						throw err;
+					}
 				}
 			}
 		}
@@ -59,7 +75,12 @@ export async function applySnapshot(
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0].kind === 'N') {
-				await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
+				try {
+					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
+				} catch (err) {
+					logger.error(`Failed to create field "${collection}.${field}"`);
+					throw err;
+				}
 			}
 
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
@@ -68,14 +89,24 @@ export async function applySnapshot(
 				});
 
 				if (newValues) {
-					await fieldsService.updateField(collection, {
-						...newValues,
-					});
+					try {
+						await fieldsService.updateField(collection, {
+							...newValues,
+						});
+					} catch (err) {
+						logger.error(`Failed to update field "${collection}.${field}"`);
+						throw err;
+					}
 				}
 			}
 
 			if (diff?.[0].kind === 'D') {
-				await fieldsService.deleteField(collection, field);
+				try {
+					await fieldsService.deleteField(collection, field);
+				} catch (err) {
+					logger.error(`Failed to delete field "${collection}.${field}"`);
+					throw err;
+				}
 
 				// Field deletion also cleans up the relationship. We should ignore any relationship
 				// changes attached to this now non-existing field
@@ -95,7 +126,12 @@ export async function applySnapshot(
 			}
 
 			if (diff?.[0].kind === 'N') {
-				await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
+				try {
+					await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
+				} catch (err) {
+					logger.error(`Failed to create relation "${collection}.${field}"`);
+					throw err;
+				}
 			}
 
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
@@ -104,12 +140,22 @@ export async function applySnapshot(
 				});
 
 				if (newValues) {
-					await relationsService.updateOne(collection, field, newValues);
+					try {
+						await relationsService.updateOne(collection, field, newValues);
+					} catch (err) {
+						logger.error(`Failed to update relation "${collection}.${field}"`);
+						throw err;
+					}
 				}
 			}
 
 			if (diff?.[0].kind === 'D') {
-				await relationsService.deleteOne(collection, field);
+				try {
+					await relationsService.deleteOne(collection, field);
+				} catch (err) {
+					logger.error(`Failed to delete relation "${collection}.${field}"`);
+					throw err;
+				}
 			}
 		}
 	});

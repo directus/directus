@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identificatore
 avatar: Avatar
+application: Applicazione
 default_provider: Predefinito
 published: Pubblicato
 draft: Bozza
@@ -31,6 +32,7 @@ tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
+switch_user: Cambia utente
 item_creation: Creazione elemento
 item_revision: Revisione elemento
 enter_a_name: Inserisci un nome...
@@ -52,7 +54,9 @@ edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
 db_only_click_to_configure: 'Solo Database: click per configurare'
+show_active_items: Mostra gli elementi attivi
 show_archived_items: Mostra gli elementi archiviati
+show_all_items: Mostra tutti gli elementi
 edited: Valore Modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
@@ -89,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Sessione scaduta
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
+admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
 not_allowed: Non consentito
 directus_version: Versione di Directus
 node_version: Versione Node
@@ -260,7 +265,7 @@ o2m_relationship: Relazione One to Many
 m2m_relationship: Relazione Many to Many
 m2a_relationship: Relazione Many to Any
 invalid_item: Oggetto non valido
-next: Il prossimo
+next: Avanti
 field_name: Nome del Campo
 translations: Traduzioni
 no_translations: Nessuna traduzione
@@ -282,8 +287,8 @@ edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
 clear_value: Cancella valore
 clear_changes: Annulla modifiche
-reset_to_default: Reimposta a predefinito
-undo_changes: Annulla modifica
+reset_to_default: Reimposta al valore predefinito
+undo_changes: Annulla le modifiche
 notifications: Notifiche
 show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
@@ -640,7 +645,7 @@ replace_file: Sostituisci File
 no_results: Nessun risultato
 no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
 clear_filters: Pulisci filtri
-saves_automatically: Salva Automaticamente
+saves_automatically: Salvataggio automatico
 role: Ruolo
 rule: Regola
 user: Utente
@@ -765,6 +770,7 @@ adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
 creating_in: 'Creazione elemento in {collection}'
 editing_in: 'Modifica elemento in {collection}'
+viewing_in: 'Visualizzazione dell''elemento in {collection}'
 creating_unit: 'Creazione {unit}'
 editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
@@ -953,9 +959,12 @@ fields:
     basemaps_style: Stile Mapbox
     mapbox_key: Access Token di Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribuzione
+    attribution_placeholder: '© collaboratori di OpenStreetMap'
     transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
     additional_transforms: Trasformazioni aggiuntive
     project_name: Nome del progetto
+    project_descriptor: Descrizione del progetto
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
@@ -975,6 +984,14 @@ fields:
     transformations_all: Permetti tutte le trasformazioni
     transformations_none: Disabilita le trasformazioni
     transformations_presets: Limita le trasformazioni ai preset preimpostati
+  directus_shares:
+    name: Nome
+    role: Ruolo
+    password: Password
+    date_start: Data inizio
+    date_end: Data fine
+    max_uses: Utilizzi massimi
+    times_used: Numero di utilizzi
   directus_fields:
     collection: Nome della Raccolta
     icon: Icona Raccolta
@@ -1039,7 +1056,7 @@ field_options:
     login: Accedi
     create: Creare
     update: Modifica
-    delete: Cancellazione
+    delete: Elimina
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -1101,7 +1118,7 @@ field_options:
     triggers_divider: Trigger
     actions_create: Creare
     actions_update: Modifica
-    actions_delete: Cancellazione
+    actions_delete: Elimina
     actions_login: Accedi
     headers:
       header: Header
@@ -1120,6 +1137,27 @@ start_collapsed: Inizia chiuse
 block: Blocco
 inline: In linea
 comment: Commento
+shares: Condivisioni
+unlimited_usage: Utilizzo illimitato
+uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
+no_shares: Nessuna condivisione da mostrare
+new_share: Nuova condivisione
+expired: Scaduto
+upcoming: Prossimamente
+share: Condivisione
+share_item: Condividi elemento
+shared_with_you: Un elemento è stato condiviso con te
+shared_enter_passcode: Inserisci il codice di accesso per continuare...
+shared_leave_blank_for_unlimited: Lascia vuoto per non impostare un limite
+shared_times_remaining: Questo link può essere usato solo {n} volte
+shared_last_remaining: Questo link può essere usato solo una volta
+shared_uses_left: Per una maggiore sicurezza, questa pagina condivisa è stata configurata con un numero limitato di visualizzazioni. Al momento restano {n} visualizzazioni, dopodiché la pagina non sarà più accessibile.
+share_access_page: Accedi alla pagina condivisa
+share_access_not_found: Questa pagina condivisa non esiste o ha già raggiunto il numero massimo di utilizzi consentiti.
+share_access_not_found_desc: Contatta un utente autorizzato di questo progetto per richiedere l'accesso.
+share_access_not_found_title: Pagina della condivisione sconosciuta
+share_copy_link: Copia link
+share_send_link: Invia link
 relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
 referential_action_field_label_o2m: Alla deselezione di {collection}...
@@ -1134,7 +1172,7 @@ continue_as: >-
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
-delete_label: Cancellazione
+delete_label: Elimina
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
@@ -1171,6 +1209,7 @@ relationship: Relazione
 reset: Resetta
 reset_password: Resetta la password
 revisions: Revisioni
+no_revisions: Non ci sono ancora revisioni
 revert: Ripristina
 save: Salva
 schema: Schema
@@ -1192,7 +1231,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1202,6 +1240,8 @@ interfaces:
     add_filter: Aggiungi Filtro
     add_group: Gruppo And / Or
     add_value: Aggiungi valore
+    logic_type_and: E
+    logic_type_or: O
     all: Tutti
     any: Qualsiasi
     and: e
@@ -1259,6 +1299,7 @@ interfaces:
     description: Inserisci o seleziona un valore di colore
     placeholder: Scegli un colore...
     preset_colors: Colori Predefiniti
+    opacity: Opacità
     preset_colors_add_label: Aggiungi nuovo colore...
     name_placeholder: Inserisci il nome del colore...
   datetime:
@@ -1323,6 +1364,7 @@ interfaces:
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
+    display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   select-dropdown-m2o:
     many-to-one: Molti a Uno
     description: Seleziona un singolo elemento correlato
@@ -1445,6 +1487,9 @@ interfaces:
     toolbar: Barra degli strumenti
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
+    folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
+    imageToken: Token Immagine
+    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.
@@ -1510,9 +1555,27 @@ displays:
   formatted-value:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
-    format_title: Formatta il titolo
-    format_title_label: Maiuscole automatiche
+    format: Formato
+    format_label: Formato automatico
+    font: Tipo di carattere
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Grassetto
     bold_label: Usa lo stile grassetto
+    italic: Corsivo
+    italic_label: Usa il corsivo
+    prefix: Prefisso
+    prefix_label: Prefisso
+    suffix: Suffisso
+    suffix_label: Suffisso
+    color: Colore
+    background: Sfondo
+    icon: Icona
+    border: Bordo
+    border_label: Mostra bordo
+    text: Text
+    text_placeholder: Testo opzionale ridefinito...
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
     description: Visualizza una versione formattata dell'oggetto
@@ -1550,6 +1613,7 @@ displays:
   related-values:
     related-values: Valori Correlati
     description: Visualizza i valori relativi
+    display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   user:
     user: Utente
     description: Mostra un utente directus

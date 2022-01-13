@@ -136,7 +136,7 @@ export default async function getASTFromQuery(
 				let rootField = parts[0];
 				let collectionScope: string | null = null;
 
-				// m2a related collection scoped field selector `fields=sections.section_id:headings.title`
+				// a2o related collection scoped field selector `fields=sections.section_id:headings.title`
 				if (rootField.includes(':')) {
 					const [key, scope] = rootField.split(':');
 					rootField = key;
@@ -191,14 +191,14 @@ export default async function getASTFromQuery(
 
 			let child: NestedCollectionNode | null = null;
 
-			if (relationType === 'm2a') {
+			if (relationType === 'a2o') {
 				const allowedCollections = relation.meta!.one_allowed_collections!.filter((collection) => {
 					if (!permissions) return true;
 					return permissions.some((permission) => permission.collection === collection);
 				});
 
 				child = {
-					type: 'm2a',
+					type: 'a2o',
 					names: allowedCollections,
 					children: {},
 					query: {},

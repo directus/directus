@@ -103,7 +103,12 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="t('avatar')" />
+					<img
+						v-else-if="avatarSrc && !avatarError"
+						:src="avatarSrc"
+						:alt="t('avatar')"
+						@error="avatarError = $event"
+					/>
 					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">
@@ -233,6 +238,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -254,12 +260,12 @@ export default defineComponent({
 			};
 		}
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
-
 		unsavedChanges(hasEdits);
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
+
+		const avatarError = ref(null);
 
 		const title = computed(() => {
 			if (loading.value === true) return t('loading');
@@ -369,6 +375,7 @@ export default defineComponent({
 			revisionsAllowed,
 			validationErrors,
 			revert,
+			avatarError,
 		};
 
 		function useBreadcrumb() {

@@ -44,14 +44,6 @@
 
 	<v-menu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">
 		<v-list>
-			<v-list-item v-if="hasArchive" clickable :to="`/content/${collection.collection}?archive`" exact query>
-				<v-list-item-icon>
-					<v-icon name="archive" outline />
-				</v-list-item-icon>
-				<v-list-item-content>
-					<v-text-overflow :text="t('show_archived_items')" />
-				</v-list-item-content>
-			</v-list-item>
 			<v-list-item v-if="isAdmin" clickable :to="`/settings/data-model/${collection.collection}`">
 				<v-list-item-icon>
 					<v-icon name="list_alt" />
@@ -102,10 +94,6 @@ export default defineComponent({
 
 		const childBookmarks = computed(() => getChildBookmarks(props.collection));
 
-		const hasArchive = computed(
-			() => props.collection.meta?.archive_field && props.collection.meta?.archive_app_filter
-		);
-
 		const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
 
 		const to = computed(() => (props.collection.schema ? `/content/${props.collection.collection}` : ''));
@@ -137,7 +125,7 @@ export default defineComponent({
 			}
 		});
 
-		const hasContextMenu = computed(() => hasArchive.value || isAdmin);
+		const hasContextMenu = computed(() => isAdmin);
 
 		return {
 			childCollections,
@@ -147,7 +135,6 @@ export default defineComponent({
 			matchesSearch,
 			isAdmin,
 			t,
-			hasArchive,
 			hasContextMenu,
 		};
 

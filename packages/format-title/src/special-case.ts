@@ -12,6 +12,7 @@ export default [
 	'iPad',
 	'iPhone',
 	'iPod',
+	'LinkedIn',
 	'macOS',
 	'M2M',
 	'M2O',

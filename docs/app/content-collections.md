@@ -128,6 +128,15 @@ options are available:
 6. Enter a value in the field filter's input(s)
 7. Remove unwanted filters by hovering over the field and clicking "X"
 
+## Viewing Archived Items
+
+**[Learn more about Archive](/configuration/data-model/#archive).**
+
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
+2. Navigate to the collection of the items you want to view
+3. Click "Archive" in the page sidebar
+4. Choose the desired view: `Show Items` (default), `Show Archived Items`, or `Show Items + Archived Items`
+
 ## Bookmarking Item Presets
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)

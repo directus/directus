@@ -10,8 +10,19 @@ import {
 	EXTENSION_TYPES,
 } from '../constants';
 import { Accountability } from './accountability';
-import { Collection, Field, Relation, DeepPartial } from '.';
+import {
+	Collection,
+	Field,
+	Relation,
+	DeepPartial,
+	InterfaceConfig,
+	DisplayConfig,
+	LayoutConfig,
+	ModuleConfig,
+	PanelConfig,
+} from '.';
 import { LOCAL_TYPES } from '../constants';
+import { Ref } from 'vue';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -62,22 +73,31 @@ export type ExtensionManifest = {
 	};
 };
 
+export type AppExtensionConfigs = {
+	interfaces: Ref<InterfaceConfig[]>;
+	displays: Ref<DisplayConfig[]>;
+	layouts: Ref<LayoutConfig[]>;
+	modules: Ref<ModuleConfig[]>;
+	panels: Ref<PanelConfig[]>;
+};
+
 export type ApiExtensionContext = {
 	services: any;
 	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
+	emitter: any;
 	logger: Logger;
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
 };
 
 export type ExtensionOptionsContext = {
-	collection: string;
+	collection: string | undefined;
 	editing: string;
 	field: DeepPartial<Field>;
 	relations: {
 		m2o: DeepPartial<Relation> | undefined;
-		m2a: DeepPartial<Relation> | undefined;
+		m2a?: DeepPartial<Relation> | undefined;
 		o2m: DeepPartial<Relation> | undefined;
 	};
 	collections: {

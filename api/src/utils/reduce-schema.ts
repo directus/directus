@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
 import { SchemaOverview } from '../types';
-import { Accountability, PermissionsAction } from '@directus/shared/types';
+import { Permission, PermissionsAction } from '@directus/shared/types';
 
 /**
  * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only
@@ -11,7 +11,7 @@ import { Accountability, PermissionsAction } from '@directus/shared/types';
  */
 export function reduceSchema(
 	schema: SchemaOverview,
-	accountability: Accountability | null,
+	permissions: Permission[] | null,
 	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete']
 ): SchemaOverview {
 	const reduced: SchemaOverview = {
@@ -20,7 +20,7 @@ export function reduceSchema(
 	};
 
 	const allowedFieldsInCollection =
-		accountability?.permissions
+		permissions
 			?.filter((permission) => actions.includes(permission.action))
 			.reduce((acc, permission) => {
 				if (!acc[permission.collection]) {
@@ -36,9 +36,7 @@ export function reduceSchema(
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
 		if (
-			accountability?.permissions?.some(
-				(permission) => permission.collection === collectionName && actions.includes(permission.action)
-			)
+			permissions?.some((permission) => permission.collection === collectionName && actions.includes(permission.action))
 		) {
 			const fields: SchemaOverview['collections'][string]['fields'] = {};
 
