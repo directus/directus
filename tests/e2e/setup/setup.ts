@@ -6,7 +6,8 @@ import vendors from '../get-dbs-to-test';
 import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
-import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
+// import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
+import { sleep } from './utils/sleep';
 
 let started = false;
 
@@ -28,26 +29,23 @@ export default async (): Promise<void> => {
 							title: config.names[vendor]!,
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
-								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
-								const env = {
-									...process.env,
-									...config.envs[vendor]!,
-									ADMIN_EMAIL: 'admin@example.com',
-									ADMIN_PASSWORD: 'password',
-									KEY: 'directus-test',
-									SECRET: 'directus-test',
-									TELEMETRY: 'false',
-									CACHE_SCHEMA: 'false',
-									CACHE_ENABLED: 'false',
-									RATE_LIMITER_ENABLED: 'false',
-								};
-								spawnSync('npx', ['-y', 'directus', 'bootstrap'], { env });
+								const bootstrap = spawnSync('node', ['api/cli', 'bootstrap'], { env: config.envs[vendor] });
+								if (bootstrap.stderr.length > 0) {
+									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
+								}
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
-								const server = spawn('npx', ['directus', 'start'], { env, stdio: 'ignore' });
-								await awaitDirectusConnection(config.envs[vendor]!.PORT as number);
+								const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
 								global.directus[vendor] = server;
+								let serverOutput = '';
+								server.stdout.on('data', (data) => (serverOutput += data.toString()));
+								server.on('exit', (code) => {
+									if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
+								});
+								// Give the server some time to start
+								await sleep(5000);
+								server.on('exit', () => undefined);
 							},
 						};
 					}),
@@ -55,7 +53,14 @@ export default async (): Promise<void> => {
 				);
 			},
 		},
-	]).run();
+	])
+		.run()
+		.catch((reason) => {
+			for (const server of Object.values(global.directus)) {
+				server?.kill();
+			}
+			throw new Error(reason);
+		});
 
 	console.log('\n');
 };

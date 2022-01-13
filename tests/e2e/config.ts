@@ -6,7 +6,7 @@ type Vendor = typeof allVendors[number];
 export type Config = {
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
 	names: Record<Vendor, string>;
-	envs: Record<Vendor, Record<string, string | number>>;
+	envs: Record<Vendor, Record<string, string>>;
 };
 
 const migrationsDir = './tests/e2e/setup/migrations';
@@ -22,6 +22,19 @@ const knexConfig = {
 	},
 };
 
+const directusConfig = {
+	...process.env,
+	ADMIN_EMAIL: 'admin@example.com',
+	ADMIN_PASSWORD: 'password',
+	KEY: 'directus-test',
+	SECRET: 'directus-test',
+	TELEMETRY: 'false',
+	CACHE_SCHEMA: 'false',
+	CACHE_ENABLED: 'false',
+	RATE_LIMITER_ENABLED: 'false',
+	LOG_LEVEL: 'error',
+};
+
 const config: Config = {
 	knexConfig: {
 		postgres: {
@@ -31,7 +44,7 @@ const config: Config = {
 				user: 'postgres',
 				password: 'secret',
 				host: 'localhost',
-				port: 5100,
+				port: 6100,
 			},
 			...knexConfig,
 		},
@@ -42,7 +55,7 @@ const config: Config = {
 				user: 'postgres',
 				password: 'secret',
 				host: 'localhost',
-				port: 5111,
+				port: 6101,
 			},
 			...knexConfig,
 		},
@@ -53,7 +66,7 @@ const config: Config = {
 				user: 'root',
 				password: 'secret',
 				host: 'localhost',
-				port: 5101,
+				port: 6102,
 			},
 			...knexConfig,
 		},
@@ -64,7 +77,7 @@ const config: Config = {
 				user: 'root',
 				password: 'secret',
 				host: 'localhost',
-				port: 5102,
+				port: 6103,
 			},
 			...knexConfig,
 		},
@@ -75,7 +88,7 @@ const config: Config = {
 				user: 'sa',
 				password: 'Test@123',
 				host: 'localhost',
-				port: 5103,
+				port: 6104,
 			},
 			...knexConfig,
 		},
@@ -84,7 +97,7 @@ const config: Config = {
 			connection: {
 				user: 'secretsysuser',
 				password: 'secretpassword',
-				connectString: 'localhost:5104/XE',
+				connectString: 'localhost:6105/XE',
 			},
 			...knexConfig,
 			waitTestSQL: 'SELECT 1 FROM DUAL',
@@ -108,61 +121,68 @@ const config: Config = {
 	},
 	envs: {
 		postgres: {
+			...directusConfig,
 			DB_CLIENT: 'pg',
 			DB_HOST: `localhost`,
 			DB_USER: 'postgres',
 			DB_PASSWORD: 'secret',
-			DB_PORT: '5100',
+			DB_PORT: '6100',
 			DB_DATABASE: 'directus',
-			PORT: 49152,
+			PORT: '59152',
 		},
 		postgres10: {
+			...directusConfig,
 			DB_CLIENT: 'pg',
 			DB_HOST: `localhost`,
 			DB_USER: 'postgres',
 			DB_PASSWORD: 'secret',
-			DB_PORT: '5111',
+			DB_PORT: '6101',
 			DB_DATABASE: 'directus',
-			PORT: 49153,
+			PORT: '59153',
 		},
 		mysql: {
+			...directusConfig,
 			DB_CLIENT: 'mysql',
 			DB_HOST: `localhost`,
-			DB_PORT: '5101',
+			DB_PORT: '6102',
 			DB_USER: 'root',
 			DB_PASSWORD: 'secret',
 			DB_DATABASE: 'directus',
-			PORT: 49154,
+			PORT: '59154',
 		},
 		maria: {
+			...directusConfig,
 			DB_CLIENT: 'mysql',
 			DB_HOST: `localhost`,
-			DB_PORT: '5102',
+			DB_PORT: '6103',
 			DB_USER: 'root',
 			DB_PASSWORD: 'secret',
 			DB_DATABASE: 'directus',
-			PORT: 49155,
+			PORT: '59155',
 		},
 		mssql: {
+			...directusConfig,
 			DB_CLIENT: 'mssql',
 			DB_HOST: `localhost`,
-			DB_PORT: '5103',
+			DB_PORT: '6104',
 			DB_USER: 'sa',
 			DB_PASSWORD: 'Test@123',
 			DB_DATABASE: 'model',
-			PORT: 49156,
+			PORT: '59156',
 		},
 		oracle: {
+			...directusConfig,
 			DB_CLIENT: 'oracledb',
 			DB_USER: 'secretsysuser',
 			DB_PASSWORD: 'secretpassword',
-			DB_CONNECT_STRING: `localhost:5104/XE`,
-			PORT: 49157,
+			DB_CONNECT_STRING: `localhost:6105/XE`,
+			PORT: '59157',
 		},
 		sqlite3: {
+			...directusConfig,
 			DB_CLIENT: 'sqlite3',
 			DB_FILENAME: './data.db',
-			PORT: 49158,
+			PORT: '59158',
 		},
 	},
 };
