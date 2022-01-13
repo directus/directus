@@ -128,7 +128,7 @@ const config: Config = {
 			DB_PASSWORD: 'secret',
 			DB_PORT: '6100',
 			DB_DATABASE: 'directus',
-			PORT: '49152',
+			PORT: '59152',
 		},
 		postgres10: {
 			...directusConfig,
@@ -138,7 +138,7 @@ const config: Config = {
 			DB_PASSWORD: 'secret',
 			DB_PORT: '6101',
 			DB_DATABASE: 'directus',
-			PORT: '49153',
+			PORT: '59153',
 		},
 		mysql: {
 			...directusConfig,
@@ -148,7 +148,7 @@ const config: Config = {
 			DB_USER: 'root',
 			DB_PASSWORD: 'secret',
 			DB_DATABASE: 'directus',
-			PORT: '49154',
+			PORT: '59154',
 		},
 		maria: {
 			...directusConfig,
@@ -158,7 +158,7 @@ const config: Config = {
 			DB_USER: 'root',
 			DB_PASSWORD: 'secret',
 			DB_DATABASE: 'directus',
-			PORT: '49155',
+			PORT: '59155',
 		},
 		mssql: {
 			...directusConfig,
@@ -168,7 +168,7 @@ const config: Config = {
 			DB_USER: 'sa',
 			DB_PASSWORD: 'Test@123',
 			DB_DATABASE: 'model',
-			PORT: '49156',
+			PORT: '59156',
 		},
 		oracle: {
 			...directusConfig,
@@ -176,13 +176,13 @@ const config: Config = {
 			DB_USER: 'secretsysuser',
 			DB_PASSWORD: 'secretpassword',
 			DB_CONNECT_STRING: `localhost:6105/XE`,
-			PORT: '49157',
+			PORT: '59157',
 		},
 		sqlite3: {
 			...directusConfig,
 			DB_CLIENT: 'sqlite3',
 			DB_FILENAME: './data.db',
-			PORT: '49158',
+			PORT: '59158',
 		},
 	},
 };
