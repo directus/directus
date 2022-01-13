@@ -71,6 +71,7 @@ invite_users: بانگهێشتکردنی بەکارهێنەرەکان
 invite: بانگهێشت
 email_already_invited: ئیمەیڵی "{email}" پێشتر بانگهێشتکراوە
 subject: بابەت
+inbox: هاتوەکان
 emails: ئیمەیڵەکان
 connection_excellent: پەیوەندی نایاب
 connection_good: پەیوەندی باش
