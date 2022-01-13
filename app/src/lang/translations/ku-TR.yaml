@@ -106,6 +106,9 @@ archive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەر
 archive_confirm_count: >-
   هیچ مادەیەک دیاری نەکراوە| ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیڤ بکەیت؟ | ئایا دڵنیای دەتەوێت ئەم {count} مادەیە ئەرشیڤ بکەیت؟
 reset_system_permissions_to: 'رێکخستنەوەی ڕێپێدانەکانی سیستەم بۆ:'
+recommended_defaults: بنەڕەتیە پێشنیارکراوەکان
+unarchive: ئەرشیفنەکردن
+unarchive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف نەکەیت؟
 fields:
   directus_settings:
     module_bar: شریتی مۆدیوڵەکان
