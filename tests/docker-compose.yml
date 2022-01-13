@@ -1,6 +1,6 @@
-# This composer file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
+# This composer file is meant to spin up a copy of all supported database vendors and services used in tests.
 #
-# ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
+# ONLY FOR TESTING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
 # Ports:
 #   Postgres:        6100
