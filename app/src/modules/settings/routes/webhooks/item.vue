@@ -114,6 +114,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -126,7 +127,6 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(ref('directus_webhooks'), primaryKey);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 		const confirmDelete = ref(false);
 
 		const title = computed(() => {

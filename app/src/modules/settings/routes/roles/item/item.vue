@@ -139,12 +139,10 @@ export default defineComponent({
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 
-		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
+		const { edits, hasEdits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
 			primaryKey
 		);
-
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
 		const confirmDelete = ref(false);
 
