@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identifier
 avatar: Avatar
+application: Application
 default_provider: Default
 published: Published
 draft: Draft
@@ -955,9 +956,12 @@ fields:
     basemaps_style: Mapbox Style
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribution
+    attribution_placeholder: '© OpenStreetMap contributors'
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Additional Transformations
     project_name: Project Name
+    project_descriptor: Project Descriptor
     project_url: Project URL
     project_color: Project Colour
     project_logo: Project Logo
@@ -981,6 +985,10 @@ fields:
     name: Name
     role: Role
     password: Password
+    date_start: Date Start
+    date_end: Date End
+    max_uses: Max Uses
+    times_used: Times Used
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
@@ -1137,6 +1145,7 @@ share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_enter_passcode: Enter your passcode to continue...
+shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
 shared_last_remaining: This link can only be used once
 shared_uses_left: For added security, this shared page has been configured with a limited number of views. There are currently {n} views remaining, after which, the page will no longer be accessible.
@@ -1228,6 +1237,8 @@ interfaces:
     add_filter: Add Filter
     add_group: And / Or group
     add_value: Add Value
+    logic_type_and: AND
+    logic_type_or: OR
     all: All
     any: Any
     and: and
@@ -1285,6 +1296,7 @@ interfaces:
     description: Enter or select a colour value
     placeholder: Choose a colour...
     preset_colors: Preset Colours
+    opacity: Opacity
     preset_colors_add_label: Add new colour...
     name_placeholder: Enter colour name...
   datetime:

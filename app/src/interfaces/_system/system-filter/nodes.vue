@@ -462,6 +462,17 @@ export default defineComponent({
 	}
 }
 
+.node {
+	&.logic {
+		padding-right: 4px;
+		white-space: nowrap;
+	}
+
+	&.field {
+		padding-right: 4px;
+	}
+}
+
 .group :deep(.sortable-ghost) {
 	.node .header {
 		background-color: var(--primary-alt);

@@ -287,7 +287,7 @@ edit_raw_value: Edytuj wartość surową
 enter_raw_value: Wprowadź surową wartość...
 clear_value: Wyczyść wartość
 clear_changes: Wyczyść zmiany
-reset_to_default: Zresetuj do ustawień domyślnych
+reset_to_default: Przywróć do domyślnych
 undo_changes: Cofnij zmiany
 notifications: Powiadomienia
 show_all_activity: Pokaż wszystkie aktywności
@@ -1240,6 +1240,8 @@ interfaces:
     add_filter: Dodaj Filtr
     add_group: I / lub grupa
     add_value: Dodaj wartość
+    logic_type_and: ORAZ
+    logic_type_or: LUB
     all: Wszystkie
     any: Dowolny
     and: i
