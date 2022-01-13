@@ -243,6 +243,7 @@
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
 				<archive-sidebar-detail v-if="hasArchive" :collection="collection" :archive="archive" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
+				<import-sidebar-detail :collection="collection" @refresh="refresh" />
 				<export-sidebar-detail
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
@@ -276,6 +277,7 @@ import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
+import ImportSidebarDetail from '@/views/private/components/import-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -303,6 +305,7 @@ export default defineComponent({
 		DrawerBatch,
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
+		ImportSidebarDetail,
 	},
 	props: {
 		collection: {

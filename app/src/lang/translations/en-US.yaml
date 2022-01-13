@@ -54,7 +54,7 @@ indeterminate: Indeterminate
 edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
-db_only_click_to_configure: 'Database Only: Click to Configure'
+db_only_click_to_configure: "Database Only: Click to Configure"
 show_active_items: Show Active Items
 show_archived_items: Show Archived Items
 show_all_items: Show All Items
@@ -108,9 +108,8 @@ archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
   No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count}
   items?
-reset_system_permissions_to: 'Reset System Permissions to:'
-reset_system_permissions_copy:
-  This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
+reset_system_permissions_to: "Reset System Permissions to:"
+reset_system_permissions_copy: This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
 the_following_are_minimum_permissions:
   The following are minimum permissions required when "App Access" is enabled. You can extend permissions beyond this,
   but not below.
@@ -119,7 +118,7 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
-unknown_validation_errors: 'There were validation errors for the following hidden fields:'
+unknown_validation_errors: "There were validation errors for the following hidden fields:"
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -160,10 +159,10 @@ item_permissions: Item Permissions
 field_permissions: Field Permissions
 field_validation: Field Validation
 field_presets: Field Presets
-permissions_for_role: 'Items the {role} Role can {action}.'
-fields_for_role: 'Fields the {role} Role can {action}.'
-validation_for_role: 'Field {action} rules the {role} Role must obey.'
-presets_for_role: 'Field value defaults for the {role} Role.'
+permissions_for_role: "Items the {role} Role can {action}."
+fields_for_role: "Fields the {role} Role can {action}."
+validation_for_role: "Field {action} rules the {role} Role must obey."
+presets_for_role: "Field value defaults for the {role} Role."
 presentation_and_aliases: Presentation & Aliases
 revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
@@ -201,8 +200,8 @@ iso: ISO
 focal_length: Focal Length
 schema_setup_key: This field's database column name and API key
 create_field: Create Field
-creating_new_field: 'New Field ({collection})'
-field_in_collection: '{field} ({collection})'
+creating_new_field: "New Field ({collection})"
+field_in_collection: "{field} ({collection})"
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
@@ -250,10 +249,10 @@ click_to_manage_translated_fields: >-
   it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
 no_collections_found: No collections found.
-new_data_alert: 'The following will be created within your Data Model:'
+new_data_alert: "The following will be created within your Data Model:"
 search_collection: Search Collection...
-new_field: 'New Field'
-new_collection: 'New Collection'
+new_field: "New Field"
+new_collection: "New Collection"
 add_m2o_to_collection: 'Add M2O to "{collection}"'
 add_o2m_to_collection: 'Add O2M to "{collection}"'
 add_m2m_to_collection: 'Add M2M to "{collection}"'
@@ -306,11 +305,11 @@ settings_update_success: Settings updated
 title: Title
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
-revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
+revision_delta_updated: "Updated 1 Field | Updated {count} Fields"
 revision_delta_deleted: Deleted
 revision_delta_reverted: Reverted
 revision_delta_other: Revision
-revision_delta_by: '{date} by {user}'
+revision_delta_by: "{date} by {user}"
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
@@ -325,10 +324,15 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
+import_data: Import Data
+import_collection: "Import into {collection}"
+import_data_indeterminate: Importing Data...
+import_data_success: Data Imported from {filename}
+import_data_error: Unable to Import Data
 export_data: Export Data
 format: Format
 use_current_filters_settings: Use Current Filters & Settings
-export_collection: 'Export {collection}'
+export_collection: "Export {collection}"
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -345,10 +349,10 @@ today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'h:mm a'
-date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
+date-fns_time: "h:mm:ss a"
+date-fns_time_no_seconds: "h:mm a"
+date-fns_date_short: "MMM d, u"
+date-fns_time_short: "h:mma"
 date-fns_date_short_no_year: MMM d
 minutes: Minutes
 hours: Hours
@@ -432,13 +436,13 @@ reset_interface: Reset Interface
 display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
 list-m2a: Builder (M2A)
-item_count: 'No Items | One Item | {count} Items'
+item_count: "No Items | One Item | {count} Items"
 no_items_copy: There are no items in this collection yet.
-file_count: 'No Files | One File | {count} Files'
+file_count: "No Files | One File | {count} Files"
 no_files_copy: There are no files here.
-user_count: 'No Users | One User | {count} Users'
+user_count: "No Users | One User | {count} Users"
 no_users_copy: There are no users in this role yet.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
+webhooks_count: "No Webhooks | One Webhook | {count} Webhooks"
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
@@ -554,10 +558,10 @@ update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
 make_collection_hidden: Make Collection Hidden
-start_end_of_count_items: '{start}-{end} of {count} items'
-start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
-one_item: '1 item'
-one_filtered_item: '1 filtered item'
+start_end_of_count_items: "{start}-{end} of {count} items"
+start_end_of_count_filtered_items: "{start}-{end} of {count} filtered items"
+one_item: "1 item"
+one_filtered_item: "1 filtered item"
 delete_collection_are_you_sure: >-
   Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
   permanent.
@@ -572,7 +576,7 @@ system_collections: System Collections
 placeholder: Placeholder
 icon_left: Icon Left
 icon_right: Icon Right
-count_other_revisions: '{count} Other Revisions'
+count_other_revisions: "{count} Other Revisions"
 font: Font
 sans_serif: Sans Serif
 serif: Serif
@@ -581,7 +585,7 @@ divider: Divider
 color: Color
 circle: Circle
 empty_item: Empty Item
-log_in_with: 'Log In with {provider}'
+log_in_with: "Log In with {provider}"
 conditional_styles: Conditional Styles
 advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
@@ -621,8 +625,8 @@ items: Items
 upload_file: Upload File
 upload_file_indeterminate: Uploading File...
 upload_file_success: File Uploaded
-upload_files_indeterminate: 'Uploading files {done}/{total}'
-upload_files_success: '{count} Files Uploaded'
+upload_files_indeterminate: "Uploading files {done}/{total}"
+upload_files_success: "{count} Files Uploaded"
 upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
@@ -638,7 +642,7 @@ create_item: Create Item
 display_template: Display Template
 language_display_template: Language Display Template
 translations_display_template: Translations Display Template
-n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
+n_items_selected: "No Items Selected | 1 Item Selected | {n} Items Selected"
 per_page: Per Page
 all_files: All Files
 my_files: My Files
@@ -775,12 +779,12 @@ deselect_all: Deselect All
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
-creating_in: 'Creating Item in {collection}'
-editing_in: 'Editing Item in {collection}'
-viewing_in: 'Viewing Item in {collection}'
-creating_unit: 'Creating {unit}'
-editing_unit: 'Editing {unit}'
-editing_in_batch: 'Batch Editing {count} Items'
+creating_in: "Creating Item in {collection}"
+editing_in: "Editing Item in {collection}"
+viewing_in: "Viewing Item in {collection}"
+creating_unit: "Creating {unit}"
+editing_unit: "Editing {unit}"
+editing_in_batch: "Batch Editing {count} Items"
 no_options_available: No options available
 settings_data_model: Data Model
 settings_permissions: Roles & Permissions
@@ -806,7 +810,7 @@ discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing
-page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
+page_help_collections_overview: "**Collections Overview** — List of all collections you have access to."
 page_help_collections_collection: >-
   **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
   your view, and even save bookmarks of these different configurations for quick access.
@@ -828,20 +832,20 @@ page_help_settings_datamodel_collections: >-
   as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
+page_help_settings_roles_collection: "**Browse Roles** — Lists the Admin, Public and custom User Roles."
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
   **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default
   views.
 page_help_settings_presets_item: >-
   **Preset Detail** — A form for managing bookmarks and default collection presets.
-page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
-page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
-page_help_users_collection: '**User Directory** — Lists all system users within this project.'
+page_help_settings_webhooks_collection: "**Browse Webhooks** — Lists all webhooks within the project."
+page_help_settings_webhooks_item: "**Webhook Detail** — A form for creating and managing project webhooks."
+page_help_users_collection: "**User Directory** — Lists all system users within this project."
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
-page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
-page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
+page_help_insights_overview: "**Insights** — List of dashboards you have access to."
+page_help_insights_dashboard: "**Dashboard** — Workspace for managing one or more panels"
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -1182,7 +1186,7 @@ choose_action: Choose Action
 continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
-editing_role: '{role} Role'
+editing_role: "{role} Role"
 creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete
@@ -1285,7 +1289,7 @@ interfaces:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
     allow_other: Allow Other
-    show_more: 'Show {count} more'
+    show_more: "Show {count} more"
     items_shown: Items Shown
   select-multiple-checkbox-tree:
     name: Checkboxes (Tree)
@@ -1423,7 +1427,7 @@ interfaces:
     no_collection: The collection could not be found
   system-folder:
     folder: Folder
-    description:  Select a folder
+    description: Select a folder
     field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
@@ -1560,7 +1564,7 @@ displays:
     long: Long
     short: Short
     relative: Relative
-    relative_label: 'Show relative time, eg: 5 minutes ago'
+    relative_label: "Show relative time, eg: 5 minutes ago"
   file:
     file: File
     description: Display files
