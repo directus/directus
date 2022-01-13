@@ -141,11 +141,11 @@ import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 import { isEqual } from 'lodash';
 
 type FormattedPreset = {
@@ -210,20 +210,7 @@ export default defineComponent({
 			return hasEdits.value;
 		});
 
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
 
 		return {
 			t,
