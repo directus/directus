@@ -558,13 +558,23 @@ operators:
   empty: Kosong
   nempty: Tidak kosong
 loading: Memuat...
+upload_file: Unggah Berkas
+upload_file_indeterminate: Mengunggah Berkas...
+upload_file_success: Berkas Diunggah
+upload_files_indeterminate: 'Mengunggah berkas {done}/{total}'
+upload_files_success: '{count} Berkas Diunggah'
+upload_pending: Unggahan Tertunda
 interface_options: Pilihan Antarmuka
 layout_options: Pilihan Tata Letak
 rows: Baris
 columns: Kolom
 collection_setup: Penyiapan Koleksi
 value_unique: Nilai harus unik
+all_activity: Semua Aktivitas
 display_template: Tampilan Template
+all_files: Semua Berkas
+my_files: Berkas Saya
+recent_files: Berkas Terbaru
 no_results: Tidak Ada Hasil
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
