@@ -238,6 +238,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -258,8 +259,6 @@ export default defineComponent({
 				...edits.value,
 			};
 		}
-
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
 		unsavedChanges(hasEdits);
 
