@@ -1,7 +1,7 @@
 export type OperationHandler = (
-	data: Record<string, any>,
+	data: Record<string, unknown>,
 	options: Record<string, any>
-) => Record<string, any> | void | Promise<Record<string, any>> | Promise<void>;
+) => unknown | void | Promise<unknown> | Promise<void>;
 
 export interface OperationAppConfig {
 	id: string;

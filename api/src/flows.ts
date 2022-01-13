@@ -100,8 +100,8 @@ class FlowManager {
 		this.operations = {};
 	}
 
-	private async executeFlow(flow: Flow, data: Record<string, any> = {}): Promise<any> {
-		const keyedData: Record<string, any> = { [TRIGGER_KEY]: data, [LAST_KEY]: data };
+	private async executeFlow(flow: Flow, data: unknown = null): Promise<any> {
+		const keyedData: Record<string, unknown> = { [TRIGGER_KEY]: data, [LAST_KEY]: data };
 
 		let operation = flow.operation;
 		while (operation !== null) {
@@ -118,8 +118,8 @@ class FlowManager {
 
 	private async executeOperation(
 		operation: Operation,
-		keyedData: Record<string, any>
-	): Promise<{ successor: Operation | null; data: any }> {
+		keyedData: Record<string, unknown>
+	): Promise<{ successor: Operation | null; data: unknown }> {
 		if (!(operation.type in this.operations)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
 
@@ -132,7 +132,7 @@ class FlowManager {
 			const result = await handler(keyedData, operation.options);
 
 			return { successor: operation.next, data: result ?? null };
-		} catch (error: any) {
+		} catch (error: unknown) {
 			return { successor: operation.reject, data: error ?? null };
 		}
 	}
