@@ -74,11 +74,11 @@
 			</v-dialog>
 
 			<v-button
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
+				v-tooltip.bottom="isSavable ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -185,7 +185,7 @@ import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance 
 
 import UsersNavigation from '../components/navigation.vue';
 import { setLanguage } from '@/lang/set-language';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -203,7 +203,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import { useUserStore } from '@/stores';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'UsersItem',
@@ -260,7 +260,9 @@ export default defineComponent({
 			};
 		}
 
-		unsavedChanges(hasEdits);
+		const isSavable = computed(() => saveAllowed.value && hasEdits.value);
+
+		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
@@ -279,19 +281,6 @@ export default defineComponent({
 		});
 
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
 			ref('directus_users'),
@@ -376,6 +365,7 @@ export default defineComponent({
 			validationErrors,
 			revert,
 			avatarError,
+			isSavable,
 		};
 
 		function useBreadcrumb() {
