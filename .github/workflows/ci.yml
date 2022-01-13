@@ -51,6 +51,7 @@ jobs:
     name: Lint
     needs: pre_check
     if: needs.pre_check.should_skip != 'true'
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
