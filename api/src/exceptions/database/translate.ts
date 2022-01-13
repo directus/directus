@@ -4,7 +4,6 @@ import { extractError as mssql } from './dialects/mssql';
 import { extractError as mysql } from './dialects/mysql';
 import { extractError as oracle } from './dialects/oracle';
 import { extractError as postgres } from './dialects/postgres';
-import { extractError as cockroachdb } from './dialects/cockroachdb';
 import { extractError as sqlite } from './dialects/sqlite';
 import { SQLError } from './dialects/types';
 
