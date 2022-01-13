@@ -24,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.alterTable('directus_sessions', (table) => {
-		table.uuid('user').nullable().alter();
+		table.setNullable('user');
 		table.uuid('share').references('id').inTable('directus_shares').onDelete('CASCADE');
 	});
 }
