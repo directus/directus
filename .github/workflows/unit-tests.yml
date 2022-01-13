@@ -2,10 +2,6 @@ name: Unit Tests
 
 on:
   workflow_call:
-    inputs:
-      should_skip:
-        required: false
-        type: string
 
 jobs:
   test:

@@ -198,7 +198,7 @@ import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stor
 import { subDays } from 'date-fns';
 import useFolders, { Folder } from '@/composables/use-folders';
 import useEventListener from '@/composables/use-event-listener';
-import { useLayout } from '@/composables/use-layout';
+import { useLayout } from '@directus/shared/composables';
 import uploadFiles from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';

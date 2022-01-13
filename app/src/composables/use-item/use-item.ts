@@ -17,6 +17,7 @@ import { translate } from '@/utils/translate-object-values';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
+	hasEdits: Ref<boolean>;
 	item: Ref<Record<string, any> | null>;
 	error: Ref<any>;
 	loading: Ref<boolean>;
@@ -45,6 +46,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const deleting = ref(false);
 	const archiving = ref(false);
 	const edits = ref<Record<string, any>>({});
+	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
@@ -71,6 +73,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	return {
 		edits,
+		hasEdits,
 		item,
 		error,
 		loading,
@@ -237,17 +240,20 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;
 
+			await api.patch(itemEndpoint.value, {
+				[field]: value,
+			});
+
 			item.value = {
 				...item.value,
 				[field]: value,
 			};
 
-			await api.patch(itemEndpoint.value, {
-				[field]: value,
-			});
-
 			notify({
-				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
+				title:
+					value === archiveValue
+						? i18n.global.t('item_delete_success', isBatch.value ? 2 : 1)
+						: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
 		} catch (err: any) {
@@ -292,7 +298,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	function setItemValueToResponse(response: AxiosResponse) {
-		if (collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_')) {
+		if (
+			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+		) {
 			response.data.data = translate(response.data.data);
 		}
 		if (isBatch.value === false) {

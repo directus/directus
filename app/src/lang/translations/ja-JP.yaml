@@ -101,9 +101,6 @@ updated_on: 更新日時
 updated_by: 最後に更新したユーザー
 primary_key: プライマリーキー
 raw_value: 値を加工しない
-clear_value: 値の削除
-reset_to_default: 初期化
-undo_changes: 変更を元に戻す
 notifications: 通知
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
@@ -197,6 +194,7 @@ no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
 copy: コピー
+no_other_dashboards_copy: 他のダッシュボードはまだありません。
 users: ユーザー
 activity: 操作履歴
 ip_address: IPアドレス
@@ -277,6 +275,14 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+dashboard: ダッシュボード
+dashboard_delete_confirm: このダッシュボードを削除してよろしいですか？この操作を取り消すことはできません。
+edit_dashboard: ダッシュボードを編集
+delete_dashboard: ダッシュボードを削除
+no_dashboards: ダッシュボードがありません
+no_dashboards_copy: ダッシュボードが作成されていません。
+create_dashboard: ダッシュボードを作成
+dashboard_name: ダッシュボード名
 full_screen: 全画面表示
 width: 幅
 height: 高さ
@@ -374,6 +380,9 @@ fields:
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
+  directus_shares:
+    name: 名前
+    password: パスワード
   directus_fields:
     note: 備考
     hidden: 非表示
@@ -498,6 +507,12 @@ displays:
     file: ファイル
   filesize:
     filesize: ファイルサイズ
+  formatted-value:
+    format: 書式
+    font: フォント
+    color: 色
+    icon: アイコン
+    text: テキスト
   icon:
     icon: アイコン
   labels:

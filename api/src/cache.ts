@@ -54,9 +54,7 @@ function getConfig(
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
 
-		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'), {
-			commandTimeout: 500,
-		});
+		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
 	}
 
 	if (store === 'memcache') {

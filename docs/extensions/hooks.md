@@ -224,6 +224,15 @@ The second parameter is a context object with the following properties:
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
+- `emitter` — [Event emitter](https://github.com/directus/directus/blob/main/api/src/emitter.ts) instance that can be
+  used to trigger custom events for other extensions.
+
+::: warning Event loop
+
+When implementing custom events using the emitter make sure you never directly or indirectly emit the same event your
+hook is currently handling as that would result in an infinite loop!
+
+:::
 
 ## Example: Sync with External
 

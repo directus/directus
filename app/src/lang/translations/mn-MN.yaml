@@ -86,3 +86,7 @@ limit: Хязгаар
 interfaces:
   presentation-links:
     primary: Үндсэн
+displays:
+  formatted-value:
+    prefix: Угтвар
+    suffix: Дагавар

@@ -78,6 +78,8 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5101:3306
+    cap_add:
+      - SYS_NICE
 
   maria:
     image: mariadb:10.7

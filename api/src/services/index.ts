@@ -27,3 +27,4 @@ export * from './tfa';
 export * from './users';
 export * from './utils';
 export * from './webhooks';
+export * from './shares';

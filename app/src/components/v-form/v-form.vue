@@ -39,8 +39,7 @@
 			/>
 
 			<form-field
-				v-else
-				v-show="!field.meta?.hidden"
+				v-else-if="!field.meta?.hidden"
 				:key="field.field"
 				:field="field"
 				:autofocus="index === firstEditableFieldIndex && autofocus"

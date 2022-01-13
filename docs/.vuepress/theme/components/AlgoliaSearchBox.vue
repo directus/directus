@@ -101,6 +101,7 @@ export default {
     .algolia-docsearch-suggestion
       border-color var(--border-normal)
       padding 0
+      background transparent
       .algolia-docsearch-suggestion--category-header
         padding 5px 10px
         margin-top 0

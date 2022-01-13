@@ -29,8 +29,8 @@ export default defineComponent({
 			default: null,
 		},
 		archive: {
-			type: Boolean,
-			default: false,
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {

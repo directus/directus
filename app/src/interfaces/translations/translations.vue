@@ -57,7 +57,7 @@ import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep, isEqual, assign, isNil } from 'lodash';
+import { cloneDeep, isEqual, assign } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
 import { useWindowSize } from '@/composables/use-window-size';
 import useRelation from '@/composables/use-m2m';
@@ -278,6 +278,7 @@ export default defineComponent({
 			const items = ref<Record<string, any>[]>([]);
 			const loading = ref(false);
 			const error = ref(null);
+			const isUndo = ref(false);
 
 			const firstItem = computed(() => getEditedValue(firstLang));
 			const secondItem = computed(() => getEditedValue(secondLang));
@@ -290,8 +291,9 @@ export default defineComponent({
 				(newVal, oldVal) => {
 					if (
 						newVal &&
-						isNil(newVal) !== isNil(oldVal) &&
-						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
+						!isEqual(newVal, oldVal) &&
+						newVal.every((item) => typeof item === 'string' || typeof item === 'number') &&
+						isUndo.value === false
 					) {
 						loadItems();
 					}
@@ -383,6 +385,8 @@ export default defineComponent({
 
 				if (!pkField || !langField) return;
 
+				isUndo.value = false;
+
 				let copyValue = cloneDeep(value.value ?? []);
 
 				if (pkField in values === false) {
@@ -390,6 +394,7 @@ export default defineComponent({
 
 					if (newIndex !== -1) {
 						if (Object.keys(values).length === 1 && langField in values) {
+							isUndo.value = true;
 							copyValue.splice(newIndex, 1);
 						} else {
 							copyValue[newIndex] = values;
@@ -413,6 +418,7 @@ export default defineComponent({
 						} else {
 							if (values[pkField] === item[pkField]) {
 								if (isEqual(initialValues, { ...initialValues, ...values })) {
+									isUndo.value = true;
 									return values[pkField];
 								} else {
 									return values;

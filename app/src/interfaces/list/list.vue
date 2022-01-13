@@ -51,6 +51,7 @@
 					:disabled="disabled"
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
+					autofocus
 					primary-key="+"
 					@update:model-value="trackEdits($event)"
 				/>

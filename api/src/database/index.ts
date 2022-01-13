@@ -25,6 +25,7 @@ export default function getDatabase(): Knex {
 		'DB_CONNECTION_STRING',
 		'DB_POOL',
 		'DB_EXCLUDE_TABLES',
+		'DB_VERSION',
 	]);
 
 	const poolConfig = getConfigFromEnv('DB_POOL');
@@ -53,6 +54,7 @@ export default function getDatabase(): Knex {
 
 	const knexConfig: Knex.Config = {
 		client: env.DB_CLIENT,
+		version: env.DB_VERSION,
 		searchPath: env.DB_SEARCH_PATH,
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
@@ -90,6 +92,10 @@ export default function getDatabase(): Knex {
 		// timezone conversion on the database level, especially not when other database vendors don't
 		// act the same
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
+	}
+
+	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
+		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
 	}
 
 	database = knex(knexConfig);

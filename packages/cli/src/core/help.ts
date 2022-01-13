@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import stripIndent from 'strip-indent';
+import redent from 'redent';
 
 import { header } from '../core/utils';
 
@@ -249,10 +249,10 @@ export class Help implements IHelp {
 		const variables = (text: string) => text.replace(/\$0/g, this.entrypoint);
 
 		return {
-			usage: variables(stripIndent(usage)),
-			synopsis: variables(stripIndent(synopsis)),
-			description: variables(stripIndent(description)),
-			documentation: variables(stripIndent(documentation)),
+			usage: variables(redent(usage)),
+			synopsis: variables(redent(synopsis)),
+			description: variables(redent(description)),
+			documentation: variables(redent(documentation)),
 			options: options,
 			positional: positional,
 		};

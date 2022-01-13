@@ -4,7 +4,7 @@ export function getRelationType(getRelationOptions: {
 	relation: Relation;
 	collection: string | null;
 	field: string;
-}): 'm2o' | 'o2m' | 'm2a' | null {
+}): 'm2o' | 'o2m' | 'a2o' | null {
 	const { relation, collection, field } = getRelationOptions;
 
 	if (!relation) return null;
@@ -15,7 +15,7 @@ export function getRelationType(getRelationOptions: {
 		relation.meta?.one_collection_field &&
 		relation.meta?.one_allowed_collections
 	) {
-		return 'm2a';
+		return 'a2o';
 	}
 
 	if (relation.collection === collection && relation.field === field) {

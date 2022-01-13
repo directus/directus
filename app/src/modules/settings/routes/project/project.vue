@@ -49,8 +49,8 @@ import { useSettingsStore, useServerStore } from '@/stores';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import useEditsGuard from '@/composables/use-edits-guard';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoSidebarDetail },
@@ -81,20 +81,7 @@ export default defineComponent({
 			return noEdits.value;
 		});
 
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (!noEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
 
 		return {
 			t,

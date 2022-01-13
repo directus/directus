@@ -45,6 +45,10 @@ export type FieldFilterOperator = {
 	_nnull?: boolean;
 	_contains?: string;
 	_ncontains?: string;
+	_starts_with?: string;
+	_nstarts_with?: string;
+	_ends_with?: string;
+	_nends_with?: string;
 	_between?: (string | number)[];
 	_nbetween?: (string | number)[];
 	_empty?: boolean;
