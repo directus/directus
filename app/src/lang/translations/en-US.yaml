@@ -1170,6 +1170,8 @@ share_access_not_found: This shared page either does not exist or has already ex
 share_access_not_found_desc: Please contact an authorized user of this project to request access.
 share_access_not_found_title: Unknown Share Page
 share_copy_link: Copy Link
+share_copy_link_success: Link Copied
+share_copy_link_error: Unable to Copy Link
 share_send_link: Send Link
 relational_triggers: Relational Triggers
 referential_action_field_label_m2o: On Delete of {collection}...
