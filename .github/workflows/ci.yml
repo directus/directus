@@ -51,26 +51,22 @@ jobs:
     name: Lint
     needs: pre_check
     uses: directus/directus/.github/workflows/lint.yml@main
-    with:
-      should_skip: ${{ needs.pre_check.outputs.should_skip }}
+    if: needs.pre_check.should_skip != 'true'
 
   codeql_analysis:
     name: CodeQL Analysis
     needs: pre_check
     uses: directus/directus/.github/workflows/codeql-analysis.yml@main
-    with:
-      should_skip: ${{ needs.pre_check.outputs.should_skip }}
+    if: needs.pre_check.should_skip != 'true'
 
   unit_tests:
     name: Unit Tests
     needs: pre_check
+    if: needs.pre_check.should_skip != 'true'
     uses: directus/directus/.github/workflows/unit-tests.yml@main
-    with:
-      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
     uses: directus/directus/.github/workflows/e2e-tests.yml@main
-    with:
-      should_skip: ${{ needs.pre_check.outputs.should_skip == 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}
+    if: needs.pre_check.should_skip != 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip
