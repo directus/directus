@@ -56,7 +56,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Use local my-action
-        uses: ./.github/workflows/lint.yml
+        uses: ./.github/workflows/lint
 
   codeql_analysis:
     name: CodeQL Analysis
@@ -67,7 +67,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Run codeql analysis
-        uses: ./.github/workflows/codeql-analysis.yml
+        uses: ./.github/workflows/codeql-analysis
 
   unit_tests:
     name: Unit Tests
@@ -78,7 +78,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Run unit tests
-        uses: ./.github/workflows/unit-tests.yml
+        uses: ./.github/workflows/unit-tests
 
   e2e_tests:
     name: End-to-End Tests
@@ -89,4 +89,4 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Run end-to-end tests
-        uses: ./.github/workflows/e2e-tests.yml
+        uses: ./.github/workflows/e2e-tests
