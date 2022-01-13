@@ -3,15 +3,10 @@ name: End-to-End Tests
 on:
   workflow_dispatch:
   workflow_call:
-    inputs:
-      should_skip:
-        required: false
-        type: string
 
 jobs:
   test:
     name: Test
-    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -45,7 +40,6 @@ jobs:
 
   result:
     name: Result
-    if: inputs.should_skip != 'true' && always()
     runs-on: ubuntu-latest
     needs: test
     steps:
