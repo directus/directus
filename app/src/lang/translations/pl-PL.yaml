@@ -1157,6 +1157,8 @@ share_access_not_found: Ta współdzielona strona nie istnieje lub przekroczyła
 share_access_not_found_desc: Skontaktuj się z autoryzowanym użytkownikiem tego projektu, aby poprosić o dostęp.
 share_access_not_found_title: Nieznana strona udostępniania
 share_copy_link: Kopiuj link
+share_copy_link_success: Link skopiowany
+share_copy_link_error: Nie można skopiować linku
 share_send_link: Wyślij link
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
