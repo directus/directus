@@ -228,4 +228,8 @@ export default defineComponent({
 		color: var(--foreground-subdued);
 	}
 }
+
+:deep(.v-button) .button:disabled {
+	--v-button-background-color-disabled: var(--background-normal-alt);
+}
 </style>
