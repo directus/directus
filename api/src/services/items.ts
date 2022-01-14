@@ -250,12 +250,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Get items by query
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		const authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
 		let ast = await getASTFromQuery(this.collection, query, this.schema, {
 			accountability: this.accountability,
 			// By setting the permissions action, you can read items using the permissions for another
@@ -266,6 +260,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (this.accountability && this.accountability.admin !== true) {
+			const authorizationService = new AuthorizationService({
+				accountability: this.accountability,
+				knex: this.knex,
+				schema: this.schema,
+			});
+
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
 		}
 
@@ -274,11 +274,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
-
 		if (records === null) {
 			throw new ForbiddenException();
 		}
-
 		const filteredRecords = await emitter.emitFilter(
 			`${this.eventScope}.read`,
 			records,
@@ -306,7 +304,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 			}
 		);
-
 		return filteredRecords as Item[];
 	}
 
