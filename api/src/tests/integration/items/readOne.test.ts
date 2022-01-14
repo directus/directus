@@ -3,6 +3,11 @@ import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../../services';
 import { systemSchema } from '../utils/schemas';
 
+jest.mock('../../../database/index', () => {
+	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+});
+jest.requireMock('../../../database/index');
+
 describe('ItemsService', () => {
 	let db: Knex;
 	let tracker: Tracker;

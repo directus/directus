@@ -176,8 +176,6 @@ export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqli
 			return 'mssql';
 		case 'Client_Redshift':
 			return 'redshift';
-		case 'MockClient':
-			return 'postgres';
 	}
 
 	throw new Error(`Couldn't extract database client`);
