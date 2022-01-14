@@ -25,15 +25,6 @@ describe('ItemsService', () => {
 		const rawItem = [
 			{
 				id: 1,
-				many_collection: 'items',
-				many_field: 'user_created',
-				one_collection: 'directus_users',
-				one_field: null,
-				one_collection_field: null,
-				one_allowed_collections: null,
-				junction_field: null,
-				sort_field: null,
-				one_deselect_action: 'nullify',
 			},
 		];
 		const item = { id: 1 };
