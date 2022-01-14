@@ -2,6 +2,7 @@ import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../../services';
 import { getSchema } from '../../../utils/get-schema';
+import { UUID_REGEX } from '../../../constants';
 
 describe('ItemsService', () => {
 	let db: jest.Mocked<Knex>;
@@ -17,17 +18,25 @@ describe('ItemsService', () => {
 		tracker.reset();
 	});
 
-	it('creates one item in collection directus_users', async () => {
-		const item = { email: 'test@gmail.com', password: 'TestPassword' };
+	it('creates one item in collection directus_users as ana admin', async () => {
 		tracker.on.insert('directus_users').response(1);
+		tracker.on.insert('directus_activity').responseOnce(1);
+		tracker.on.select('directus_activity').responseOnce(1);
+		tracker.on.insert('directus_revisions').responseOnce(1);
+		tracker.on.select('directus_revisions').responseOnce(1);
+
+		const item = { email: 'test@gmail.com', password: 'TestPassword' };
 
 		itemsService = new ItemsService('directus_users', {
-			// Use getSchema() to mock schema
 			knex: db,
-			accountability: { role: 'admin' },
+			accountability: { role: 'admin', admin: true },
 			schema: await getSchema(),
 		});
 
-		expect(await itemsService.createOne(item)).toBe(item);
+		const response = await itemsService.createOne(item);
+		const rEx = new RegExp(UUID_REGEX);
+
+		const uuidChecker = typeof response === 'string' ? rEx.test(response) : false;
+		expect(uuidChecker).toBe(true);
 	});
 });
