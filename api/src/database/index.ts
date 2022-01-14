@@ -19,6 +19,13 @@ export default function getDatabase(): Knex {
 		return database;
 	}
 
+	if (env.DB_CLIENT === 'mysql') {
+		if (env.DB_CHARSET) {
+			logger.warn(`DB_CHARSET has been deprecated and now has no effect.`);
+			env.DB_CHARSET = null;
+		}
+	}
+
 	const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
 		'DB_CLIENT',
 		'DB_SEARCH_PATH',
@@ -94,11 +101,8 @@ export default function getDatabase(): Knex {
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
-	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
-		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
-	}
-
 	database = knex(knexConfig);
+	validateDatabaseCharset(database);
 
 	const times: Record<string, number> = {};
 
@@ -242,4 +246,23 @@ export async function validateDatabaseExtensions(): Promise<void> {
 				logger.warn(`Geometry type not supported on ${client}`);
 		}
 	}
+}
+
+async function validateDatabaseCharset(database?: Knex): Promise<void> {
+	database = database ?? getDatabase();
+	if (getDatabaseClient(database) === 'mysql') {
+		const directusResult = await database('information_schema.columns')
+			.select(`collation_name as collation`)
+			.where({ table_name: 'directus_users', column_name: 'id' })
+			.first();
+		const databaseResult = await database.select(database.raw(`@@collation_database as collation`)).first();
+		if (directusResult?.collation === databaseResult.collation) {
+			logger.error(
+				`Directus tables collation (${directusResult.collation}) don't match your database default collation (${databaseResult.collation}).`
+			);
+			throw process.exit(1);
+		}
+		await database.raw("SET CHARACTER SET 'UTF8MB4'");
+	}
+	return;
 }
