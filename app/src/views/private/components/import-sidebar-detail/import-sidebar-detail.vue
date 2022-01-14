@@ -87,7 +87,7 @@ export default defineComponent({
 		}
 
 		function clearFileInput() {
-			fileInput.value!.value = '';
+			if (fileInput.value) fileInput.value.value = '';
 			file.value = null;
 		}
 
