@@ -3,6 +3,7 @@ import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../../services';
 import { UUID_REGEX } from '../../../constants';
 import { systemSchema } from '../utils/schemas';
+
 jest.mock('../../../database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
