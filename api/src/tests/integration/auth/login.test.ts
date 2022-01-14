@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { AuthenticationService } from 'directus';
+import { AuthenticationService } from '../../../services';
 import { getSchema } from '../../../utils/get-schema';
 
 // need to mock auth provider

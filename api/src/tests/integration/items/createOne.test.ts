@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { ItemsService } from 'directus';
+import { ItemsService } from '../../../services';
 import { getSchema } from '../../../utils/get-schema';
 
 describe('ItemsService', () => {
