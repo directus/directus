@@ -1,9 +1,8 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../../services';
-import { getSchema } from '../../../utils/get-schema';
 import { UUID_REGEX } from '../../../constants';
-
+import { systemSchema } from '../utils/schemas';
 describe('ItemsService', () => {
 	let db: jest.Mocked<Knex>;
 	let tracker: Tracker;
@@ -18,22 +17,18 @@ describe('ItemsService', () => {
 		tracker.reset();
 	});
 
-	it('creates one item in collection directus_users as an admin', async () => {
-		tracker.on.insert('directus_users').response(1);
-		tracker.on.insert('directus_activity').responseOnce(1);
-		tracker.on.select('directus_activity').responseOnce(1);
-		tracker.on.insert('directus_revisions').responseOnce(1);
-		tracker.on.select('directus_revisions').responseOnce(1);
+	it('creates one item in collection directus_users as an admin, no accountability', async () => {
+		const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', email: 'test@gmail.com', password: 'TestPassword' };
 
-		const item = { email: 'test@gmail.com', password: 'TestPassword' };
+		tracker.on.insert('directus_users').response('id');
 
 		itemsService = new ItemsService('directus_users', {
 			knex: db,
 			accountability: { role: 'admin', admin: true },
-			schema: await getSchema(),
+			schema: systemSchema,
 		});
 
-		const response = await itemsService.createOne(item);
+		const response = await itemsService.createOne(item, { emitEvents: false });
 		const rEx = new RegExp(UUID_REGEX);
 
 		const uuidChecker = typeof response === 'string' ? rEx.test(response) : false;

@@ -1,7 +1,7 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../../services';
-import { getSchema } from '../../../utils/get-schema';
+import { systemSchema } from '../utils/schemas';
 
 describe('ItemsService', () => {
 	let db: Knex;
@@ -19,7 +19,7 @@ describe('ItemsService', () => {
 	});
 
 	it('it returns one item from directus_users as admin', async () => {
-		const schema = await getSchema();
+		const schema = systemSchema;
 		const table = 'directus_users';
 
 		const rawItem = [{ id: 1 }];

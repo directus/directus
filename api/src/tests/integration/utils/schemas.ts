@@ -1,0 +1,76 @@
+import { CollectionsOverview, Relation } from '../../../types';
+
+export const systemSchema = {
+	collections: {
+		directus_users: {
+			collection: 'directus_users',
+			primary: 'id',
+			singleton: false,
+			note: '$t:directus_collection.directus_users',
+			sortField: null,
+			accountability: null,
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: null,
+					nullable: false,
+					generated: false,
+					type: 'uuid',
+					dbType: 'uuid',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+				},
+			},
+		},
+		directus_activity: {
+			collection: 'directus_activity',
+			primary: 'id',
+			singleton: false,
+			note: '$t:directus_collection.directus_activity',
+			sortField: null,
+			accountability: 'all',
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: null,
+					nullable: false,
+					generated: false,
+					type: 'uuid',
+					dbType: 'uuid',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+				},
+			},
+		},
+		directus_revisions: {
+			collection: 'directus_revisions',
+			primary: 'id',
+			singleton: false,
+			note: '$t:directus_collection.directus_revisions',
+			sortField: null,
+			accountability: 'all',
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: null,
+					nullable: false,
+					generated: false,
+					type: 'uuid',
+					dbType: 'uuid',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+				},
+			},
+		},
+	} as CollectionsOverview,
+	relations: [] as Relation[],
+};
