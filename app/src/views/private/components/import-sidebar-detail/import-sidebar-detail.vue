@@ -2,7 +2,6 @@
 	<sidebar-detail icon="playlist_add" :title="t('import_data')">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ t('file') }}</p>
 				<div v-if="uploading || importing" class="uploading">
 					<div class="type-text">
 						<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
@@ -28,7 +27,7 @@
 						/>
 						<label for="import-file" class="import-file-label"></label>
 						<span class="import-file-text" :class="{ 'no-file': !file }">
-							{{ file ? file.name : t('no_file_selected') }}
+							{{ file ? file.name : t('import_data_input_placeholder') }}
 						</span>
 					</template>
 					<template #append>
@@ -42,7 +41,7 @@
 
 			<div class="field full">
 				<v-button full-width :disabled="!file" :loading="uploading || importing" @click="importData">
-					{{ t('import_collection', { collection }) }}
+					{{ t('import_data_button') }}
 				</v-button>
 			</div>
 		</div>
