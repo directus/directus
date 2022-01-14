@@ -18,7 +18,7 @@ describe('ItemsService', () => {
 		tracker.reset();
 	});
 
-	it('creates one item in collection directus_users as ana admin', async () => {
+	it('creates one item in collection directus_users as an admin', async () => {
 		tracker.on.insert('directus_users').response(1);
 		tracker.on.insert('directus_activity').responseOnce(1);
 		tracker.on.select('directus_activity').responseOnce(1);
