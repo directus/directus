@@ -33,7 +33,7 @@
 					</template>
 					<template #append>
 						<template v-if="file">
-							<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="onDeselect" />
+							<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
 						</template>
 						<v-icon v-else name="attach_file" />
 					</template>
@@ -77,7 +77,7 @@ export default defineComponent({
 			return readableMimeType(file.value.type, true);
 		});
 
-		return { t, fileInput, file, fileExtension, onChange, onDeselect, importData, uploading, progress, importing };
+		return { t, fileInput, file, fileExtension, onChange, clearFileInput, importData, uploading, progress, importing };
 
 		function onChange(event: Event) {
 			const files = (event.target as HTMLInputElement)?.files;
@@ -87,7 +87,7 @@ export default defineComponent({
 			}
 		}
 
-		function onDeselect() {
+		function clearFileInput() {
 			fileInput.value!.value = '';
 			file.value = null;
 		}
@@ -119,7 +119,11 @@ export default defineComponent({
 							importing.value = percentCompleted === 100 ? true : false;
 						},
 					});
+
+					clearFileInput();
+
 					emit('refresh');
+
 					notify({
 						title: t('import_data_success', { filename: file.name }),
 						type: 'success',
