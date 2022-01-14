@@ -22,11 +22,7 @@ describe('ItemsService', () => {
 		const schema = await getSchema();
 		const table = 'directus_users';
 
-		const rawItem = [
-			{
-				id: 1,
-			},
-		];
+		const rawItem = [{ id: 1 }];
 		const item = { id: 1 };
 
 		tracker.on.select('directus_users').response(rawItem);
