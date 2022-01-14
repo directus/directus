@@ -1,9 +1,7 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { ItemsService } from 'directus';
-import { FieldNode } from '../../../types/ast';
+import { ItemsService } from '../../../services';
 import { getSchema } from '../../../utils/get-schema';
-import { getColumnPreprocessor } from '../../../database/run-ast';
 
 describe('ItemsService', () => {
 	let db: Knex;
@@ -11,6 +9,7 @@ describe('ItemsService', () => {
 	let itemsService: ItemsService;
 
 	beforeAll(async () => {
+		// This causes getDatabaseClient to fail
 		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
@@ -19,45 +18,33 @@ describe('ItemsService', () => {
 		tracker.reset();
 	});
 
-	it('it returns one item from [the collection] as admin', async () => {
-		// goal: mock the knex return at runAST() to return one fake item
-		// via the ItemsService.readOne()
-		// Challenges: Mocking the DB throughout the chain of events.
-		// Need to mock: DB, .env, maybe permissions?
-
-		// use getSchema() to mock the schema
-		// Test multiple permissions via accountability: { role }
-
-		// this test is less black box than I want it to be. Especially without unit tests for getColumnPreprocessor()
+	it('it returns one item from directus_users as admin', async () => {
 		const schema = await getSchema();
 		const table = 'directus_users';
-		const item = { email: 'test@gmail.com', password: 'TestPassword' };
-		const fieldNodes = [
-			{ type: 'field', name: 'id', fieldKey: 'id' },
-			{ type: 'field', name: 'status', fieldKey: 'status' },
-			{ type: 'field', name: 'sort', fieldKey: 'sort' },
-			{ type: 'field', name: 'user_created', fieldKey: 'user_created' },
-			{ type: 'field', name: 'date_created', fieldKey: 'date_created' },
-			{ type: 'field', name: 'user_updated', fieldKey: 'user_updated' },
-			{ type: 'field', name: 'date_updated', fieldKey: 'date_updated' },
-			{ type: 'field', name: 'name', fieldKey: 'name' },
-		] as FieldNode[];
 
-		// how to mock fieldNodes for the query selector?
-		const preProcess = getColumnPreprocessor(db, schema, table);
-		tracker.on.select(fieldNodes.map(preProcess)).response(item);
+		const rawItem = [
+			{
+				id: 1,
+				many_collection: 'items',
+				many_field: 'user_created',
+				one_collection: 'directus_users',
+				one_field: null,
+				one_collection_field: null,
+				one_allowed_collections: null,
+				junction_field: null,
+				sort_field: null,
+				one_deselect_action: 'nullify',
+			},
+		];
+		const item = { id: 1 };
+
+		tracker.on.select('directus_users').response(rawItem);
 
 		itemsService = new ItemsService(table, {
 			knex: db,
-			accountability: { role: 'admin' },
+			accountability: { role: 'admin', admin: true },
 			schema,
 		});
-
-		expect(
-			await itemsService.readOne('id', {
-				filter: { id: { _eq: 'cd908105-e086-4dde-b811-f7c18d7c4d3d' } },
-				sort: ['id'],
-			})
-		).toBe(item);
+		expect(await itemsService.readOne('id')).toStrictEqual(item);
 	});
 });
