@@ -299,7 +299,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				collection: this.collection,
 			},
 			{
-				database: getDatabase(),
+				database: this.knex || getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
 			}
