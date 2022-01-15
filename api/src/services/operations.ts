@@ -1,7 +1,7 @@
 import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
 import { getFlowManager } from '../flows';
 import { ItemsService } from './items';
-import { OperationRaw } from '../types/flows';
+import { OperationRaw } from '@directus/shared/types';
 
 export class OperationsService extends ItemsService<OperationRaw> {
 	constructor(options: AbstractServiceOptions) {
