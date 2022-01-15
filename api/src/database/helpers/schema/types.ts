@@ -1,7 +1,14 @@
+import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
 import { Knex } from 'knex';
 
-export abstract class MigrationHelper extends DatabaseHelper {
+type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
+
+export abstract class SchemaHelper extends DatabaseHelper {
+	isOneOfClients(clients: Clients[]): boolean {
+		return clients.includes(getDatabaseClient(this.knex));
+	}
+
 	async changeNullable(table: string, column: string, nullable: boolean): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
 			if (nullable) {
@@ -12,9 +19,13 @@ export abstract class MigrationHelper extends DatabaseHelper {
 		});
 	}
 
-	async changeToText(table: string, column: string, options: { nullable?: boolean } = {}): Promise<void> {
+	async changeToText(
+		table: string,
+		column: string,
+		options: { nullable?: boolean; default?: any } = {}
+	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
-			const b = builder.string('url');
+			const b = builder.string(column);
 
 			if (options.nullable === true) {
 				b.nullable();
@@ -24,6 +35,34 @@ export abstract class MigrationHelper extends DatabaseHelper {
 				b.notNullable();
 			}
 
+			if (options.default !== undefined) {
+				b.defaultTo(options.default);
+			}
+
+			b.alter();
+		});
+	}
+
+	async changeToInteger(
+		table: string,
+		column: string,
+		options: { nullable?: boolean; default?: any } = {}
+	): Promise<void> {
+		await this.knex.schema.alterTable(table, (builder) => {
+			const b = builder.integer(column);
+
+			if (options.nullable === true) {
+				b.nullable();
+			}
+
+			if (options.nullable === false) {
+				b.notNullable();
+			}
+
+			if (options.default !== undefined) {
+				b.defaultTo(options.default);
+			}
+
 			b.alter();
 		});
 	}
@@ -31,7 +70,7 @@ export abstract class MigrationHelper extends DatabaseHelper {
 	async changeToString(
 		table: string,
 		column: string,
-		options: { nullable?: boolean; length?: number } = {}
+		options: { nullable?: boolean; default?: any; length?: number } = {}
 	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
 			const b = builder.string(column, options.length);
@@ -44,18 +83,28 @@ export abstract class MigrationHelper extends DatabaseHelper {
 				b.notNullable();
 			}
 
+			if (options.default !== undefined) {
+				b.defaultTo(options.default);
+			}
+
 			b.alter();
 		});
 	}
 
-	protected async changeToTypeByCopy<Options extends { nullable?: boolean }>(
+	protected async changeToTypeByCopy<Options extends { nullable?: boolean; default?: any }>(
 		table: string,
 		column: string,
 		options: Options,
 		cb: (builder: Knex.CreateTableBuilder, column: string, options: Options) => Knex.ColumnBuilder
 	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
-			cb(builder, `${column}__temp`, options).alter();
+			const col = cb(builder, `${column}__temp`, options);
+
+			if (options.default !== undefined) {
+				col.defaultTo(options.default);
+			}
+
+			col.alter();
 		});
 		await this.knex.update(`${column}__temp`, this.knex.ref(column));
 		await this.knex.schema.alterTable(table, (builder) => {
