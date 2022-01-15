@@ -82,7 +82,7 @@
 		"html-entities": "2.3.2",
 		"jsonlint-mod": "1.7.6",
 		"maplibre-gl": "1.15.2",
-		"marked": "3.0.8",
+		"marked": "4.0.10",
 		"micromustache": "8.0.3",
 		"mime": "3.0.0",
 		"mitt": "3.0.0",
