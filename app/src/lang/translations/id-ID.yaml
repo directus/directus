@@ -55,6 +55,7 @@ exclusive: Ekklusif
 children: Anak
 db_only_click_to_configure: 'Hanya Database: Tekan untuk Konfigurasi'
 show_archived_items: Tampilkan Yang Diarsipkan
+show_all_items: Tampilkan semua item
 edited: Nilai Diedit
 required: Diperlukan
 required_for_app_access: Diperlukan untuk Akses Aplikasi
