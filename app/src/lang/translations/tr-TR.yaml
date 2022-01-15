@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Tanımlayıcı
 avatar: Avatar
+application: Uygulama
 default_provider: Varsayılan
 published: Yayınlandı
 draft: Taslak
@@ -284,7 +285,10 @@ dismiss: Yoksay
 raw_value: Ham veri
 edit_raw_value: Ham Değeri Düzenle
 enter_raw_value: Bir değer girin...
+clear_value: Değeri temizle
 clear_changes: Değişiklikleri iptal et
+reset_to_default: Varsayılana sıfırla
+undo_changes: Değişiklikleri geri al
 notifications: Bildirimler
 show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
@@ -570,6 +574,8 @@ color: Renk
 circle: Daire
 empty_item: Boş öğe
 log_in_with: '{provider} ile giriş yap'
+conditional_styles: Koşullu Stil
+advanced_settings: Gelişmiş Ayarlar
 advanced_filter: Gelişmiş Filtre
 delete_advanced_filter: Filtreyi Sil
 operators:
@@ -585,14 +591,24 @@ operators:
   nnull: Null değil
   contains: Şunu içerir
   ncontains: Şunu içermez
+  starts_with: Şununla başlayan
+  nstarts_with: Şununla başlamayan
+  ends_with: Şununla biten
+  nends_with: Şununla bitmeyen
   between: Arasında
   nbetween: Arasında değil
   empty: Boş olabilir
   nempty: Boş değil
   all: Bu anahtarları içeren
   has: Bu anahtarlardan bazılarını içerir
+  intersects: Kesişen
+  nintersects: Kesişmeyen
+  intersects_bbox: Sınırlayıcı kutuyla kesişen
+  nintersects_bbox: Sınırlayıcı kutuyla kesişmeyen
 loading: Yükleniyor...
 drop_to_upload: Yüklemek için dosyayı buraya bırak
+item: Öğe
+items: Öğeler
 upload_file: Dosya Yükle
 upload_file_indeterminate: Dosya Yükleniyor...
 upload_file_success: Dosya Yüklendi
@@ -600,12 +616,35 @@ upload_files_indeterminate: 'Dosyalar yükleniyor {done}/{total}'
 upload_files_success: '{count} Dosya Yüklendi'
 upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı buraya Sürükle & Bırak
+click_to_browse: Gezinmek için tıkla
+interface_options: Arayüz Ayarları
 layout_options: Sayfa Düzeni Seçenekleri
 rows: Satırlar
+columns: Sütunlar
+collection_setup: Yığın Ayarları
+optional_system_fields: Opsiyonel Sistem Alanları
 value_unique: Değer benzersiz olmalı
+all_activity: Tüm Etkinlikler
+create_item: Öğe Oluştur
 display_template: Görüntüleme Şablonu
+language_display_template: Dil Görüntüleme Şablonu
+translations_display_template: Çevirilerin Görüntü Şablonu
+per_page: Sayfa Başına
+all_files: Tüm Dosyalar
+my_files: Dosyalarım
+recent_files: Son Kullanılan Dosyalar
+create_folder: Klasör Oluştur
+edit_folder: Klasörü Düzenle
+folder_name: Klasör Adı...
+folder_key: Klasör Anahtarı...
+add_file: Dosya Ekle
+replace_file: Dosyayı Değiştir
 no_results: Sonuç Yok
+no_results_copy: Sonuçları görmek için arama filtrelerini ayarlayın veya temizleyin.
+clear_filters: Filtreleri Temizle
+saves_automatically: Otomati̇k Olarak Kaydeder
 role: Rol
+rule: Kural
 user: Kullanıcı
 create: Oluştur
 on_update: Güncellemede (On Update)
@@ -804,6 +843,7 @@ field_options:
     create: Oluştur
     update: Güncelle
   directus_collections:
+    collection_setup: Yığın Ayarları
     language: Dil
     translation: Çeviri
     collection_name: Koleksiyon Adı
