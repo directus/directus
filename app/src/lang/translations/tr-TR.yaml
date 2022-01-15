@@ -511,7 +511,7 @@ errors:
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
   ROUTE_NOT_FOUND: Bulunamadı
-  RECORD_NOT_UNIQUE: Kopya değer tespit edildi
+  RECORD_NOT_UNIQUE: Yinelenen takma ad algılandı
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
   UNPROCESSABLE_ENTITY: İşlenemeyen varlık
@@ -649,6 +649,7 @@ saves_automatically: Otomati̇k Olarak Kaydeder
 role: Rol
 rule: Kural
 user: Kullanıcı
+no_presets: Şablon yok
 create: Oluştur
 on_create: Oluşturulduğunda
 on_update: Güncellemede (On Update)
