@@ -565,6 +565,7 @@ system_collections: Sistem Koleksiyonları
 placeholder: Yertutucu
 icon_left: İkon Sol
 icon_right: İkon Sağ
+count_other_revisions: '{count} Diğer Revizyonlar'
 font: Font
 sans_serif: Sans Serif
 serif: Serif
@@ -578,6 +579,7 @@ conditional_styles: Koşullu Stil
 advanced_settings: Gelişmiş Ayarlar
 advanced_filter: Gelişmiş Filtre
 delete_advanced_filter: Filtreyi Sil
+change_advanced_filter_operator: Operatörü Değiştir
 operators:
   eq: Eşittir
   neq: Eşit değildir
@@ -629,6 +631,7 @@ create_item: Öğe Oluştur
 display_template: Görüntüleme Şablonu
 language_display_template: Dil Görüntüleme Şablonu
 translations_display_template: Çevirilerin Görüntü Şablonu
+n_items_selected: 'Seçili Öğe Yok | 1 Öğe Seçildi | {n} Öğe Seçildi'
 per_page: Sayfa Başına
 all_files: Tüm Dosyalar
 my_files: Dosyalarım
@@ -647,10 +650,13 @@ role: Rol
 rule: Kural
 user: Kullanıcı
 create: Oluştur
+on_create: Oluşturulduğunda
 on_update: Güncellemede (On Update)
 read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
+format_text: Metni Biçimlendir
+format_value: Değeri Biçimlendir
 operator: Operatör
 bold: Kalın
 toggle: Aç/Kapat
