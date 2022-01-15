@@ -257,10 +257,9 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 			.first();
 		const databaseResult = await database.select(database.raw(`@@collation_database as collation`)).first();
 		if (directusResult?.collation === databaseResult.collation) {
-			logger.error(
+			logger.warn(
 				`Directus tables collation (${directusResult.collation}) don't match your database default collation (${databaseResult.collation}).`
 			);
-			throw process.exit(1);
 		}
 		await database.raw("SET CHARACTER SET 'UTF8MB4'");
 	}
