@@ -45,28 +45,35 @@ jobs:
                 - 'api/**/*'
                 - 'tests/**/*'
                 - 'docker-compose.yml'
-                - '.github/workflows/e2e-tests.yml'
+                - '.github/workflows/{ci,e2e-tests}.yml'
+
+  # Workflows are called in every case and need to handle the value of should_skip themselves.
+  # This is needed to pass required checks on pull requests.
 
   lint:
     name: Lint
     needs: pre_check
     uses: directus/directus/.github/workflows/lint.yml@main
-    if: needs.pre_check.should_skip != 'true'
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   codeql_analysis:
     name: CodeQL Analysis
     needs: pre_check
     uses: directus/directus/.github/workflows/codeql-analysis.yml@main
-    if: needs.pre_check.should_skip != 'true'
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   unit_tests:
     name: Unit Tests
     needs: pre_check
-    if: needs.pre_check.should_skip != 'true'
     uses: directus/directus/.github/workflows/unit-tests.yml@main
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
     uses: directus/directus/.github/workflows/e2e-tests.yml@main
-    if: needs.pre_check.should_skip != 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip == 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}
