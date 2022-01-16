@@ -273,7 +273,7 @@ export class AuthenticationService {
 			.from('directus_sessions AS s')
 			.leftJoin('directus_users AS u', 's.user', 'u.id')
 			.leftJoin('directus_shares AS d', 's.share', 'd.id')
-			.leftJoin('directus_roles AS r', () => {
+			.leftJoin('directus_roles AS r', function() {
 				this.onIn('r.id', ['u.role', 'd.role']);
 			})
 			.where('s.token', refreshToken)
