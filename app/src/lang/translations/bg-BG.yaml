@@ -285,10 +285,7 @@ dismiss: Отхвърляне
 raw_value: Стойност в суров вид
 edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
-clear_value: Изчистване на стойността
 clear_changes: Изчистване на промените
-reset_to_default: Нулиране по подразбиране
-undo_changes: Отмяна на промените
 notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
@@ -1032,7 +1029,7 @@ field_options:
     auth_password_policy:
       none_text: Няма - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
-      strong_text: Силна - главни, малки, числа и специални символи
+      strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
       fit_label: Напасване
       upscaling: Уголемяване
