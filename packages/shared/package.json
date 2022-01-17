@@ -54,7 +54,7 @@
 		"express": "*",
 		"fs-extra": "10.0.0",
 		"geojson": "*",
-		"joi": "17.4.2",
+		"joi": "17.5.0",
 		"knex": "*",
 		"knex-schema-inspector": "^1.6.6",
 		"lodash": "4.17.21",
@@ -67,6 +67,6 @@
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
 		"tmp": "0.2.1",
-		"typescript": "4.5.2"
+		"typescript": "4.5.4"
 	}
 }
