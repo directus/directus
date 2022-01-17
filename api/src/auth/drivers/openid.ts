@@ -101,6 +101,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier) {
+			logger.trace('[OpenID] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -132,7 +133,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
 
 		if (!identifier) {
-			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
+			logger.warn(`[OpenID] Failed to find user identifier for provider "${this.config.provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -152,6 +153,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
+			logger.trace(
+				`[OpenID] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
+			);
 			throw new InvalidCredentialsException();
 		}
 
@@ -179,7 +183,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			try {
 				authData = JSON.parse(authData);
 			} catch {
-				logger.warn(`Session data isn't valid JSON: ${authData}`);
+				logger.warn(`[OpenID] Session data isn't valid JSON: ${authData}`);
 			}
 		}
 
@@ -204,17 +208,23 @@ const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
+			logger.trace(e, `[OpenID] Invalid grant`);
 			return new InvalidTokenException();
 		}
+
 		// Server response error
+		logger.trace(e, `[OpenID] Unknown OP error`);
 		return new ServiceUnavailableException('Service returned unexpected response', {
 			service: 'openid',
 			message: e.error_description,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
+		logger.trace(e, `[OpenID] Unknown RP error`);
 		return new InvalidCredentialsException();
 	}
+
+	logger.trace(e, `[OpenID] Unknown error`);
 	return e;
 };
 
@@ -300,11 +310,14 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						reason = 'INVALID_USER';
 					} else if (error instanceof InvalidTokenException) {
 						reason = 'INVALID_TOKEN';
+					} else {
+						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}
 
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
 
+				logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 				throw error;
 			}
 
