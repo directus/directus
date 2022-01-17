@@ -213,6 +213,9 @@ dismiss: Descarta
 raw_value: Valor en brut
 edit_raw_value: Edita valor en brut
 enter_raw_value: Introdueix valor en brut...
+clear_value: Esborra el valor
+reset_to_default: Restableix valors predeterminats
+undo_changes: Desfer els canvis
 notifications: Notificacions
 show_all_activity: Mostra tota l'activitat
 page_not_found: Pàgina no trobada

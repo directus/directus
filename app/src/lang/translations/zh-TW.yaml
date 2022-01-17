@@ -197,7 +197,10 @@ dismiss: 忽略
 raw_value: 原始值
 edit_raw_value: 編輯原始值
 enter_raw_value: 輸入原始值...
+clear_value: 清除內容
 clear_changes: 清除更改
+reset_to_default: 重設為預設值
+undo_changes: 還原變更
 notifications: 通知
 show_all_activity: 顯示所有活動
 page_not_found: 無法找到網頁

@@ -278,7 +278,10 @@ dismiss: Avfärda
 raw_value: Obearbetat värde
 edit_raw_value: Redigera obearbetat värde
 enter_raw_value: Ange obearbetat värde...
+clear_value: Rensa fält
 clear_changes: Rensa ändringar
+reset_to_default: Återställ till förval
+undo_changes: Ångra ändringar
 notifications: Aviseringar
 show_all_activity: Visa all aktivitet
 page_not_found: Sidan hittades inte

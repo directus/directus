@@ -1505,7 +1505,7 @@ interfaces:
     name: Regroupement
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
-    header_icon: Icônes de l'en-tête 
+    header_icon: Icônes de l'en-tête
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut

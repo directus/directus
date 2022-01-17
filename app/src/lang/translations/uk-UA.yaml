@@ -276,7 +276,10 @@ dismiss: Відмінити
 raw_value: Необроблене значення
 edit_raw_value: Змінити необроблене значення
 enter_raw_value: Введіть необроблене значення...
+clear_value: Очистити значення
 clear_changes: Очистити зміни
+reset_to_default: Відновити налаштування за умовчанням
+undo_changes: Відмінити зміни
 notifications: Сповіщення
 show_all_activity: Показати всю активність
 page_not_found: Сторінку не знайдено

@@ -202,6 +202,9 @@ dismiss: Lezel hebiou
 raw_value: Talvoud krai
 edit_raw_value: Kemm an talvoud krai
 enter_raw_value: Bizskrivit un talvoud krai...
+clear_value: Dilemel an talvoud
+reset_to_default: Restaoler an arventennoù dre ziouer
+undo_changes: Dizober ar c'hemmoù
 notifications: Kemennadennoù
 show_all_activity: Diskwel an oberezh a-bezh
 page_not_found: N'eo ket bet kavet ar bajenn

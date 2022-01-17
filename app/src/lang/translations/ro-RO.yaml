@@ -113,6 +113,7 @@ create_field: Creează Câmp
 auto_generate: Generare automată
 add_note: Adaugă o notă ajutătoare pentru utilizatori...
 default_value: Valoare implicită
+clear_value: Șterge valoarea
 title: Titlu
 checksum: Sumă de control
 owner: Proprietar

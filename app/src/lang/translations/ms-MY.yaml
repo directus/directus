@@ -60,6 +60,7 @@ length: Panjang
 readonly: Baca Sahaja
 unique: Unik
 primary_key: Kunci Utama
+clear_value: Kosongkan nilai
 page_not_found: Halaman Tidak Dijumpai
 page_not_found_body: Halaman yang anda cari tidak wujud
 title: Tajuk

@@ -101,6 +101,9 @@ updated_on: 更新日時
 updated_by: 最後に更新したユーザー
 primary_key: プライマリーキー
 raw_value: 値を加工しない
+clear_value: 値の削除
+reset_to_default: 初期化
+undo_changes: 変更を元に戻す
 notifications: 通知
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。

@@ -274,7 +274,10 @@ dismiss: تجاهل
 raw_value: قيمة خام
 edit_raw_value: تعديل القيمة الخام
 enter_raw_value: أدخل قيمة سطر...
+clear_value: إزالة القيمة
 clear_changes: مسح التغييرات
+reset_to_default: إعادة تعيين إلى الافتراضي
+undo_changes: التراجع عن التغييرات
 notifications: إشعارات
 show_all_activity: أظهر كل النشاط
 page_not_found: الصفحة غير موجودة
