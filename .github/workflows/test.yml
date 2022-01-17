@@ -3,15 +3,16 @@ name: Test
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      should_skip:
+        required: false
+        type: string
 
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    outputs:
-      lint: ${{ steps.lint.outcome }}
-      unit: ${{ steps.skip_check.outcome }}
-      e2e: ${{ steps.skip_check.outcome }}
+    if: inputs.should_skip != 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -49,3 +50,33 @@ jobs:
         id: e2e
         run: npm run test:e2e
         continue-on-error: true
+
+  lint-result:
+    name: E2E Tests Result
+    if: inputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Mark result as failed
+        if: needs.test.steps.lint.outcome != 'success'
+        run: exit 1
+  
+  unit-result:
+    name: E2E Tests Result
+    if: inputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Mark result as failed
+        if: needs.test.steps.unit.outcome != 'success'
+        run: exit 1
+
+  e2e-result:
+    name: E2E Tests Result
+    if: inputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Mark result as failed
+        if: needs.test.steps.e2e.outcome != 'success'
+        run: exit 1

@@ -51,10 +51,12 @@ jobs:
     name: CodeQL Analysis
     needs: pre_check
     uses: directus/directus/.github/workflows/codeql-analysis.yml@add-e2e-tests-vendors
-    if: needs.pre_check.should_skip != 'true'
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   test:
     name: Test
     needs: pre_check
     uses: directus/directus/.github/workflows/test.yml@add-e2e-tests-vendors
-    if: needs.pre_check.should_skip != 'true'
+    with:
+      should_skip: ${{ needs.pre_check.outputs.should_skip }}
