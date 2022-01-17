@@ -249,7 +249,10 @@ dismiss: Afvis
 raw_value: Rå værdi
 edit_raw_value: Rediger Rå Værdi
 enter_raw_value: Indtast rå værdi...
+clear_value: Nulstil værdi
 clear_changes: Ryd Ændringer
+reset_to_default: Nulstil til standard
+undo_changes: Fortryd ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet

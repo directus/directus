@@ -197,6 +197,9 @@ dismiss: Ignoriši
 raw_value: Vrijednost
 edit_raw_value: Izmijeni Vrijednost
 enter_raw_value: Unesi vrijednost...
+clear_value: Obriši vrijednost
+reset_to_default: Vrati na podrazumijevano
+undo_changes: Poništi izmjene
 notifications: Obavještenja
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nijе pronađеna

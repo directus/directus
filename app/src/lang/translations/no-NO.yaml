@@ -258,6 +258,9 @@ dismiss: Lukk
 raw_value: Rå verdi
 edit_raw_value: Rediger råverdi
 enter_raw_value: Legg inn råverdi...
+clear_value: Tøm innhold
+reset_to_default: Tilbakestill til standard
+undo_changes: Angre endringer
 notifications: Varsler
 show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet

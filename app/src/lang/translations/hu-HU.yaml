@@ -242,7 +242,10 @@ dismiss: Elutasít
 raw_value: Nyers érték
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
+clear_value: Érték törlése
 clear_changes: Változások törlése
+reset_to_default: Visszaállítás alaphelyzetbe
+undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található

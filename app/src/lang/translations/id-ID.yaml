@@ -278,6 +278,9 @@ dismiss: Abaikan
 raw_value: Nilai mentah
 edit_raw_value: Sunting Nilai Mentah
 enter_raw_value: Masukkan nilai mentah...
+clear_value: Bersihkan nilai
+reset_to_default: Kembalikan ke default
+undo_changes: Batalkan Perubahan
 notifications: Notifikasi
 show_all_activity: Tampilkan Semua Aktivitas
 page_not_found: Halaman Tidak Ditemukan

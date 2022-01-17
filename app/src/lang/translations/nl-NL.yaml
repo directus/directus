@@ -207,6 +207,9 @@ dismiss: Negeren
 raw_value: Ruwe waarde
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
+clear_value: Verwijder waarde
+reset_to_default: Terug naar standaardwaarde
+undo_changes: Ongedaan maken
 notifications: Notificaties
 show_all_activity: Alle activiteiten tonen
 page_not_found: Pagina niet gevonden

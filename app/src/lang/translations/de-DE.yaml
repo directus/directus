@@ -285,7 +285,10 @@ dismiss: Verwerfen
 raw_value: Rohwert
 edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
+clear_value: Wert löschen
 clear_changes: Änderungen löschen
+reset_to_default: Auf Standard zurücksetzen
+undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
