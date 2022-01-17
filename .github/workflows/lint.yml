@@ -2,6 +2,10 @@ name: Lint
 
 on:
   workflow_call:
+    inputs:
+      should_skip:
+        required: false
+        type: string
 
 jobs:
   lint:
