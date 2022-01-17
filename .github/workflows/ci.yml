@@ -45,7 +45,10 @@ jobs:
                 - 'api/**/*'
                 - 'tests/**/*'
                 - 'docker-compose.yml'
-                - '.github/workflows/e2e-tests.yml'
+                - '.github/workflows/{ci,e2e-tests}.yml'
+
+  # Workflows are called in every case and need to handle the value of should_skip themselves.
+  # This is needed to pass required checks on pull requests.
 
   lint:
     name: Lint

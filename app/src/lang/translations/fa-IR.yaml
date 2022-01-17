@@ -217,9 +217,6 @@ dismiss: نادیده گرفتن
 raw_value: مقدار خام
 edit_raw_value: ویرایش مقدار
 enter_raw_value: یک مقدار وارد کنید...
-clear_value: مقدار روشن است
-reset_to_default: بازگردانی به حالت پیش فرض
-undo_changes: برگرداندن تغییرات به حالت قبل
 notifications: اعلانات
 show_all_activity: نمایش فعالیت های اخیر
 page_not_found: برگه یافت نشد

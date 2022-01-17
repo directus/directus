@@ -194,6 +194,20 @@ prefixing the value with `{type}:`. The following types are available:
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
 
+::: tip Additional Logger Variables
+
+All `LOGGER_*` environment variables are passed to the `options` configuration of a
+[`Pino` instance](https://github.com/pinojs/pino/blob/master/docs/api.md#options). All `LOGGER_HTTP*` environment
+variables are passed to the `options` configuration of a
+[`Pino-http` instance](https://github.com/pinojs/pino-http#api). Based on your project's needs, you can extend the
+`LOGGER_*` environment variables with any config you need to pass to the logger instance. If a LOGGER_LEVELS key is
+added, these values will be passed to the logger formatter, as described
+[here](https://github.com/pinojs/pino/blob/master/docs/help.md#mapping-pino-log-levels-to-google-cloud-logging-stackdriver-serverity-levels)
+for example. The format for adding LEVELS values is:
+`LOGGER_LEVELS="trace:DEBUG,debug:DEBUG,info:INFO,warn:WARNING,error:ERROR,fatal:CRITICAL"`
+
+:::
+
 ## Database
 
 | Variable               | Description                                                                                                                                        | Default Value                 |
