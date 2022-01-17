@@ -1,5 +1,5 @@
 /** @TODO once Oracle is officially supported, enable it here */
-export const allVendors = ['mssql', 'mysql', 'postgres', /* 'oracle', */ 'maria' /*, 'sqlite3'*/, 'postgres10'];
+export const allVendors = ['mssql', 'mysql', 'postgres', 'maria', 'sqlite3', 'postgres10'];
 
 const vendors = process.env.TEST_DB?.split(',').map((v) => v.trim()) ?? allVendors;
 

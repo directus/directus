@@ -68,5 +68,5 @@ jobs:
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
-    uses: directus/directus/.github/workflows/e2e-tests.yml@main
+    uses: directus/directus/.github/workflows/e2e-tests.yml@add-e2e-tests-vendors
     if: needs.pre_check.should_skip != 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip

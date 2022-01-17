@@ -105,8 +105,9 @@ const config: Config = {
 		sqlite3: {
 			client: 'sqlite3',
 			connection: {
-				filename: './data.db',
+				filename: './test.db',
 			},
+			useNullAsDefault: true,
 			...knexConfig,
 		},
 	},
@@ -181,7 +182,7 @@ const config: Config = {
 		sqlite3: {
 			...directusConfig,
 			DB_CLIENT: 'sqlite3',
-			DB_FILENAME: './data.db',
+			DB_FILENAME: './test.db',
 			PORT: '59158',
 		},
 	},

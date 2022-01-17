@@ -18,6 +18,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Install oracle client
+        run: |
+          sudo dnf install oracle-instantclient-release-el8 && \
+          sudo dnf install oracle-instantclient-basic
+
       - name: Start databases containers
         run: docker compose -f tests/docker-compose.yml up -d --quiet-pull
 
