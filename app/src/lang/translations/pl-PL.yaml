@@ -285,10 +285,7 @@ dismiss: Anuluj
 raw_value: Wartość surowa
 edit_raw_value: Edytuj wartość surową
 enter_raw_value: Wprowadź surową wartość...
-clear_value: Wyczyść wartość
 clear_changes: Wyczyść zmiany
-reset_to_default: Przywróć do domyślnych
-undo_changes: Cofnij zmiany
 notifications: Powiadomienia
 show_all_activity: Pokaż wszystkie aktywności
 page_not_found: Nie odnaleziono strony

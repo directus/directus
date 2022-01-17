@@ -4,7 +4,7 @@ import express from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
@@ -18,7 +18,8 @@ const router = express.Router();
 router.use(useCollection('directus_files'));
 
 const multipartHandler = asyncHandler(async (req, res, next) => {
-	if (req.is('multipart/form-data') === false) return next();
+	if (req.is('multipart/form-data') === false)
+		throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
 
 	let headers: BusboyHeaders;
 
