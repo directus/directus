@@ -1,0 +1,51 @@
+name: End-to-End Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    outputs:
+      lint: ${{ steps.lint.outcome }}
+      unit: ${{ steps.skip_check.outcome }}
+      e2e: ${{ steps.skip_check.outcome }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - '16'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install and build dependencies
+        run: npm ci && npm run build
+
+      - name: Run linters
+        id: lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run unit tests
+        id: unit
+        run: npm run test
+        env:
+          SECRET: TEST_SECRET
+        continue-on-error: true
+
+      - name: Start databases for end-to-end tests
+        run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --wait
+
+      - name: Run end-to-end tests
+        id: e2e
+        run: npm run test:e2e
+        continue-on-error: true
