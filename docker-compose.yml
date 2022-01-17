@@ -63,7 +63,7 @@
 version: '3.1'
 services:
   postgres:
-    image: postgis/postgis:13-3.1-alpine
+    image: postgis/postgis:14-3.1-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -148,7 +148,7 @@ services:
       - 5110:8080
 
   postgres10:
-    image: postgis/postgis:10-3.1-alpine
+    image: postgis/postgis:14-3.1-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
