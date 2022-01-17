@@ -242,10 +242,7 @@ dismiss: Bỏ qua
 raw_value: Dữ liệu thực tế
 edit_raw_value: Thay đổi dữ liệu thực tế
 enter_raw_value: Nhập vào giá trị thực tế...
-clear_value: Xoá giá trị
 clear_changes: Xoá thay đổi
-reset_to_default: Khôi phục về mặc định
-undo_changes: Phục hồi các thay đổi
 notifications: Thông báo
 show_all_activity: Hiển Thị Tất Cả Hoạt Động
 page_not_found: Không tìm thấy trang này
