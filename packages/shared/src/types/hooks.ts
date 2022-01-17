@@ -9,9 +9,9 @@ type HookContext = {
 };
 
 type FilterHandler = (payload: any, meta: Record<string, any>, context: HookContext) => any | Promise<any>;
-type ActionHandler = (meta: Record<string, any>, context: HookContext) => void | Promise<void>;
-type InitHandler = (meta: Record<string, any>) => void | Promise<void>;
-type ScheduleHandler = () => void | Promise<void>;
+type ActionHandler = (meta: Record<string, any>, context: HookContext) => void;
+type InitHandler = (meta: Record<string, any>) => void;
+type ScheduleHandler = () => void;
 
 type RegisterFunctions = {
 	filter: (event: string, handler: FilterHandler) => void;

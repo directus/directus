@@ -26,9 +26,9 @@ export type HookContext = {
 };
 
 export type FilterHandler = (payload: any, meta: Record<string, any>, context: HookContext) => any | Promise<any>;
-export type ActionHandler = (meta: Record<string, any>, context: HookContext) => void | Promise<void>;
-export type InitHandler = (meta: Record<string, any>) => void | Promise<void>;
-export type ScheduleHandler = () => void | Promise<void>;
+export type ActionHandler = (meta: Record<string, any>, context: HookContext) => void;
+export type InitHandler = (meta: Record<string, any>) => void;
+export type ScheduleHandler = () => void;
 
 type RegisterFunctions = {
 	filter: (event: string, handler: FilterHandler) => void;
