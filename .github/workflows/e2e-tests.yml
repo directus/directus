@@ -20,9 +20,9 @@ jobs:
 
       - name: Install oracle client
         run: |
-          sudo apt install yum && \
-          sudo yum install oracle-instantclient-release-el7 && \
-          sudo yum install oracle-instantclient-basic
+          sudo apt update && sudo apt upgrade && sudo apt install dnf && \
+          sudo dnf install oracle-instantclient-release-el8 && \
+          sudo dnf install oracle-instantclient-basic
 
       - name: Start databases containers
         run: docker compose -f tests/docker-compose.yml up -d --quiet-pull
