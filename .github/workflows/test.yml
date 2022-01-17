@@ -17,8 +17,8 @@ jobs:
       fail-fast: false
     outputs:
       lint: ${{ steps.lint.outcome }}
-      unit: ${{ steps.skip_check.outcome }}
-      e2e: ${{ steps.skip_check.outcome }}
+      unit: ${{ steps.unit.outcome }}
+      e2e: ${{ steps.e2e.outcome }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -47,7 +47,7 @@ jobs:
           SECRET: TEST_SECRET
         continue-on-error: true
 
-      - name: Start databases for end-to-end tests
+      - name: Start databases
         run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --wait
 
       - name: Run end-to-end tests
@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Mark result as failed
         if: needs.test.outputs.lint != 'success'
-        run: echo ${{ needs.test.outputs.lint }} exit 1
+        run: echo ${{ needs.test.outputs.lint }} && exit 1
   
   unit-result:
     name: Unit tests result
@@ -73,7 +73,7 @@ jobs:
     steps:
       - name: Mark result as failed
         if: needs.test.outputs.unit != 'success'
-        run: echo ${{ needs.test.outputs.unit }} exit 1
+        run: echo ${{ needs.test.outputs.unit }} && exit 1
 
   e2e-result:
     name: End-to-end tests result
@@ -83,4 +83,4 @@ jobs:
     steps:
       - name: Mark result as failed
         if: needs.test.outputs.e2e != 'success'
-        run: echo ${{ needs.test.outputs.e2e }} exit 1
+        run: echo ${{ needs.test.outputs.e2e }} && exit 1
