@@ -62,7 +62,7 @@ jobs:
     needs: test
     steps:
       - name: Mark result as failed
-        if: needs.test.outputs.lint == 'success'
+        if: needs.test.outputs.lint != 'success'
         run: echo ${{ needs.test.outputs.lint }} exit 1
   
   unit-result:
@@ -72,7 +72,7 @@ jobs:
     needs: test
     steps:
       - name: Mark result as failed
-        if: needs.test.outputs.unit == 'success'
+        if: needs.test.outputs.unit != 'success'
         run: echo ${{ needs.test.outputs.unit }} exit 1
 
   e2e-result:
@@ -82,5 +82,5 @@ jobs:
     needs: test
     steps:
       - name: Mark result as failed
-        if: needs.test.outputs.e2e == 'success'
+        if: needs.test.outputs.e2e != 'success'
         run: echo ${{ needs.test.outputs.e2e }} exit 1
