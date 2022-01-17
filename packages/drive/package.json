@@ -57,7 +57,7 @@
 		"@types/fs-extra": "9.0.13",
 		"@types/jest": "27.0.3",
 		"@types/node": "16.11.9",
-		"dotenv": "10.0.0",
+		"dotenv": "14.1.0",
 		"jest": "27.3.1",
 		"npm-run-all": "4.1.5",
 		"ts-jest": "27.0.7",

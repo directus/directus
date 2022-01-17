@@ -18,11 +18,11 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"license": "GPL-3.0-only",
 	"dependencies": {
-		"chalk": "^4.1.1",
+		"chalk": "^5.0.0",
 		"commander": "^8.0.0",
-		"execa": "^5.1.1",
+		"execa": "^6.0.0",
 		"fs-extra": "^10.0.0",
-		"ora": "^5.4.0",
+		"ora": "^6.0.0",
 		"update-check": "^1.5.4"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"

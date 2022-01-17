@@ -50,7 +50,7 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
 		"axios": "*",
-		"date-fns": "2.24.0",
+		"date-fns": "2.28.0",
 		"express": "*",
 		"fs-extra": "10.0.0",
 		"geojson": "*",
