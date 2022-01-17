@@ -33,7 +33,7 @@ type BuildOptions = {
 	language: string;
 	force: boolean;
 	watch: boolean;
-	sourceMaps: boolean;
+	sourcemap: boolean;
 };
 
 export default async function build(options: BuildOptions): Promise<void> {
@@ -148,7 +148,7 @@ function getRollupOptions(
 				styles(),
 				...plugins,
 				nodeResolve({ browser: true }),
-				commonjs({ esmExternals: true, sourceMap: false }),
+				commonjs({ esmExternals: true, sourceMap: options.sourcemap }),
 				json(),
 				replace({
 					values: {
@@ -156,7 +156,7 @@ function getRollupOptions(
 					},
 					preventAssignment: true,
 				}),
-				options.sourceMaps ? null : terser(),
+				terser(),
 			],
 		};
 	} else {
@@ -167,7 +167,7 @@ function getRollupOptions(
 				language === 'typescript' ? typescript({ check: false }) : null,
 				...plugins,
 				nodeResolve(),
-				commonjs({ sourceMap: false }),
+				commonjs({ sourceMap: options.sourcemap }),
 				json(),
 				replace({
 					values: {
@@ -175,7 +175,7 @@ function getRollupOptions(
 					},
 					preventAssignment: true,
 				}),
-				options.sourceMaps ? null : terser(),
+				terser(),
 			],
 		};
 	}
@@ -187,6 +187,7 @@ function getRollupOutputOptions(type: ExtensionType, output: string, options: Bu
 			file: output,
 			format: 'es',
 			inlineDynamicImports: true,
+			sourcemap: options.sourcemap,
 		};
 	} else {
 		return {
@@ -194,7 +195,7 @@ function getRollupOutputOptions(type: ExtensionType, output: string, options: Bu
 			format: 'cjs',
 			exports: 'default',
 			inlineDynamicImports: true,
-			sourcemap: options.sourceMaps,
+			sourcemap: options.sourcemap,
 		};
 	}
 }
