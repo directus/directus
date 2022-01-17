@@ -960,6 +960,7 @@ fields:
     external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
+    email_notifications: Email Notifications
   directus_settings:
     jpg: JPEG
     png: PNG
