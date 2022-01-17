@@ -199,7 +199,12 @@ class ExtensionManager {
 			logger.info('Watching extensions for changes...');
 
 			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
-				path.resolve(env.EXTENSIONS_PATH, pluralize(type))
+				path.posix.join(
+					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
+					pluralize(type),
+					'*',
+					'index.js'
+				)
 			);
 
 			this.watcher = chokidar.watch([path.resolve('.', 'package.json'), ...localExtensionPaths], {
