@@ -2,7 +2,12 @@ import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { nanoid } from 'nanoid';
-import { ForbiddenException, InvalidPayloadException, InvalidQueryException } from '../exceptions';
+import {
+	ForbiddenException,
+	InvalidPayloadException,
+	InvalidQueryException,
+	UnsupportedMediaTypeException,
+} from '../exceptions';
 import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
 import { RevisionsService, UtilsService, ImportService } from '../services';
@@ -94,6 +99,9 @@ router.post(
 	'/import/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false)
+			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+
 		const service = new ImportService({
 			accountability: req.accountability,
 			schema: req.schema,
