@@ -69,7 +69,7 @@ data:
     one_collection: directus_flows
     one_field: operations
   - many_collection: directus_operations
-    many_field: next
+    many_field: resolve
     one_collection: directus_operations
   - many_collection: directus_operations
     many_field: reject

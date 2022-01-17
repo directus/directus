@@ -14,7 +14,7 @@ export interface Operation {
 	type: string;
 	key: string;
 	options: Record<string, any>;
-	next: Operation | null;
+	resolve: Operation | null;
 	reject: Operation | null;
 }
 
@@ -37,7 +37,7 @@ export interface OperationRaw {
 	type: string;
 	key: string;
 	options: Record<string, any>;
-	next: string | null;
+	resolve: string | null;
 	reject: string | null;
 	flow: string;
 	date_created: string;

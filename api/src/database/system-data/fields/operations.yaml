@@ -7,7 +7,7 @@ fields:
   - field: key
   - field: options
     special: json
-  - field: next
+  - field: resolve
   - field: reject
   - field: flow
   - field: date_created

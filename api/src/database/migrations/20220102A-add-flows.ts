@@ -19,7 +19,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('type').notNullable();
 		table.string('key').notNullable();
 		table.json('options');
-		table.uuid('next').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
+		table.uuid('resolve').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 		table.uuid('reject').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 		table.uuid('flow').notNullable().references('id').inTable('directus_flows').onDelete('CASCADE');
 		table.timestamp('date_created').defaultTo(knex.fn.now());

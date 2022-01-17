@@ -103,14 +103,14 @@ class FlowManager {
 	private async executeFlow(flow: Flow, data: unknown = null): Promise<any> {
 		const keyedData: Record<string, unknown> = { [TRIGGER_KEY]: data, [LAST_KEY]: data };
 
-		let operation = flow.operation;
-		while (operation !== null) {
-			const { successor, data } = await this.executeOperation(operation, keyedData);
+		let nextOperation = flow.operation;
+		while (nextOperation !== null) {
+			const { successor, data } = await this.executeOperation(nextOperation, keyedData);
 
-			keyedData[operation.key] = data;
+			keyedData[nextOperation.key] = data;
 			keyedData[LAST_KEY] = data;
 
-			operation = successor;
+			nextOperation = successor;
 		}
 
 		return keyedData[flow.options.return || TRIGGER_KEY];
@@ -131,7 +131,7 @@ class FlowManager {
 		try {
 			const result = await handler(keyedData, operation.options);
 
-			return { successor: operation.next, data: result ?? null };
+			return { successor: operation.resolve, data: result ?? null };
 		} catch (error: unknown) {
 			return { successor: operation.reject, data: error ?? null };
 		}
@@ -156,16 +156,16 @@ function constructOperationTree(root: OperationRaw | null, operations: Operation
 		return null;
 	}
 
-	const nextOperation = root.next !== null ? operations.find((operation) => operation.id === root.next) : null;
+	const resolveOperation = root.resolve !== null ? operations.find((operation) => operation.id === root.resolve) : null;
 	const rejectOperation = root.reject !== null ? operations.find((operation) => operation.id === root.reject) : null;
 
-	if (nextOperation === undefined || rejectOperation === undefined) {
+	if (resolveOperation === undefined || rejectOperation === undefined) {
 		throw new Error('Undefined reference in operations');
 	}
 
 	const operationTree: Operation = {
 		...omit(root, ['id', 'flow']),
-		next: constructOperationTree(nextOperation, operations),
+		resolve: constructOperationTree(resolveOperation, operations),
 		reject: constructOperationTree(rejectOperation, operations),
 	};
 
