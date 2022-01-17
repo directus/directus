@@ -285,10 +285,7 @@ dismiss: Ignorer
 raw_value: Valeur brute
 edit_raw_value: Modifier la valeur brute
 enter_raw_value: Saisissez une valeur brute...
-clear_value: Effacer la valeur
 clear_changes: Effacer les modifications
-reset_to_default: Restaurer la valeur par défaut
-undo_changes: Annuler les modifications
 notifications: Notifications
 show_all_activity: Afficher toute l'activité
 page_not_found: Page non trouvée
@@ -1505,7 +1502,7 @@ interfaces:
     name: Regroupement
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
-    header_icon: Icônes de l'en-tête
+    header_icon: Icônes de l'en-tête 
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut
