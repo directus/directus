@@ -247,9 +247,6 @@ dismiss: ปิด
 raw_value: ข้อมูลดิบ
 edit_raw_value: แก้ไขข้อมูลดิบ
 enter_raw_value: กรุณาใส่ข้อมูลดิบ
-clear_value: ล้างค่า
-reset_to_default: คืนค่าเริ่มต้น
-undo_changes: ยกเลิกการเปลี่ยนแปลง
 notifications: การแจ้งเตือน
 show_all_activity: แสดงทุกกิจกรรม
 page_not_found: ไม่พบหน้านี้
