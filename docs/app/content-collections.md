@@ -158,9 +158,9 @@ options are available:
 
 ## Exporting Items
 
-1. Navigate to the collection of the items you want to bookmark
+1. Navigate to the collection of the items you want to export
 2. Optional: Configure the dataset as desired (eg: layout, options, search, filters, order, etc)
 3. Click "Export Data" in the page sidebar
-4. Choose the desired format: either CSV or JSON
+4. Choose the desired format: either CSV, JSON or XML
 5. Choose whether you want to use your current Filters and Settings in the export
-6. Click the "Export" button to download the file to your device
+6. Click the "Start Export" button to download the file to your device
