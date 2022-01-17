@@ -47,26 +47,36 @@ jobs:
                 - 'docker-compose.yml'
                 - '.github/workflows/e2e-tests.yml'
 
+  build:
+    name: Build
+    needs: pre_check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Prepare repository
+        uses: ./.github/prepare
+
   lint:
     name: Lint
-    needs: pre_check
-    uses: directus/directus/.github/workflows/lint.yml@main
+    needs: [pre_check, build]
+    uses: directus/directus/.github/workflows/lint.yml@add-e2e-tests-vendors
     if: needs.pre_check.should_skip != 'true'
 
   codeql_analysis:
     name: CodeQL Analysis
-    needs: pre_check
-    uses: directus/directus/.github/workflows/codeql-analysis.yml@main
+    needs: [pre_check, build]
+    uses: directus/directus/.github/workflows/codeql-analysis.yml@add-e2e-tests-vendors
     if: needs.pre_check.should_skip != 'true'
 
   unit_tests:
     name: Unit Tests
-    needs: pre_check
+    needs: [pre_check, build]
     if: needs.pre_check.should_skip != 'true'
-    uses: directus/directus/.github/workflows/unit-tests.yml@main
+    uses: directus/directus/.github/workflows/unit-tests.yml@add-e2e-tests-vendors
 
   e2e_tests:
     name: End-to-End Tests
-    needs: pre_check
+    needs: [pre_check, build]
     uses: directus/directus/.github/workflows/e2e-tests.yml@add-e2e-tests-vendors
     if: needs.pre_check.should_skip != 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip
