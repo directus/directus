@@ -49,7 +49,15 @@ jobs:
 
       - name: Start databases
         run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --wait
-
+      
+      - name: Install oracle client
+        run: |
+          sudo apt update -y && sudo apt install -y alien libaio1 && \
+          wget https://download.oracle.com/otn_software/linux/instantclient/214000/$ORACLE_DL && \
+          sudo alien -i $ORACLE_DL
+        env:
+          ORACLE_DL=oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
+      
       - name: Run end-to-end tests
         id: e2e
         run: npm run test:e2e
