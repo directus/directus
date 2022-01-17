@@ -257,17 +257,22 @@ class ExtensionManager {
 		for (const extensionType of APP_EXTENSION_TYPES) {
 			const entry = generateExtensionsEntry(extensionType, this.extensions);
 
-			const bundle = await rollup({
-				input: 'entry',
-				external: Object.values(sharedDepsMapping),
-				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry }), alias({ entries: internalImports })],
-			});
-			const { output } = await bundle.generate({ format: 'es', compact: true });
+			try {
+				const bundle = await rollup({
+					input: 'entry',
+					external: Object.values(sharedDepsMapping),
+					makeAbsoluteExternalsRelative: false,
+					plugins: [virtual({ entry }), alias({ entries: internalImports })],
+				});
+				const { output } = await bundle.generate({ format: 'es', compact: true });
 
-			bundles[extensionType] = output[0].code;
+				bundles[extensionType] = output[0].code;
 
-			await bundle.close();
+				await bundle.close();
+			} catch (error: any) {
+				logger.warn(`Couldn't bundle App extensions`);
+				logger.warn(error);
+			}
 		}
 
 		return bundles;
