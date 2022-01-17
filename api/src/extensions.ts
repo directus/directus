@@ -54,7 +54,7 @@ import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
 import { clone, escapeRegExp } from 'lodash';
 import chokidar, { FSWatcher } from 'chokidar';
-import { isExtensionObject, pluralize } from '@directus/shared/utils';
+import { isExtensionObject, isHybridExtension, pluralize } from '@directus/shared/utils';
 import { getFlowManager } from './flows';
 import globby from 'globby';
 
@@ -214,14 +214,16 @@ class ExtensionManager {
 		if (this.options.watch && !this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
-				path.posix.join(
+			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).flatMap((type) => {
+				const typeDir = path.posix.join(
 					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
-					pluralize(type),
-					'*',
-					'index.js'
-				)
-			);
+					pluralize(type)
+				);
+
+				return isHybridExtension(type)
+					? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
+					: path.posix.join(typeDir, '*', 'index.js');
+			});
 
 			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
 				ignoreInitial: true,
