@@ -285,10 +285,7 @@ dismiss: Yoksay
 raw_value: Ham veri
 edit_raw_value: Ham Değeri Düzenle
 enter_raw_value: Bir değer girin...
-clear_value: Değeri temizle
 clear_changes: Değişiklikleri iptal et
-reset_to_default: Varsayılana sıfırla
-undo_changes: Değişiklikleri geri al
 notifications: Bildirimler
 show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
