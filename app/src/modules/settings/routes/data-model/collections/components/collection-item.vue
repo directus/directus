@@ -6,7 +6,7 @@
 			clickable
 			:class="{ hidden: collection.meta?.hidden }"
 			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
-			@click="!collection.schema ? $emit('editCollection', collection) : null"
+			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
 		>
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
@@ -185,6 +185,7 @@ export default defineComponent({
 	align-items: center;
 	height: 100%;
 	font-family: var(--family-monospace);
+	pointer-events: none;
 }
 
 .collection-icon {
