@@ -276,10 +276,7 @@ dismiss: Dispensar
 raw_value: Valor bruto
 edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
-clear_value: Limpar valor
 clear_changes: Limpar alterações
-reset_to_default: Redefinir para o padrão
-undo_changes: Desfazer alterações
 notifications: Notificações
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página não encontrada

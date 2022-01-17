@@ -285,10 +285,7 @@ dismiss: Ignorar
 raw_value: Valor sin interpretar
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
-clear_value: Limpiar valor
 clear_changes: Borrar_Cambios
-reset_to_default: Restablecer ajustes por defecto
-undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Mostrar Toda La Actividad
 page_not_found: Página no encontrada

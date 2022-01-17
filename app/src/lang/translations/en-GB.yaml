@@ -282,19 +282,9 @@ foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 raw_value: Raw value
-copy_raw_value: Copy Raw Value
-copy_raw_value_success: Copied
-copy_raw_value_fail: Copy Failed
-paste_raw_value: Paste Raw Value
-paste_raw_value_success: Pasted
-paste_raw_value_fail: Paste Failed
-view_raw_value: View Raw Value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
-clear_value: Clear Value
 clear_changes: Clear Changes
-reset_to_default: Reset to Default
-undo_changes: Undo Changes
 notifications: Notifications
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
