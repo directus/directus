@@ -186,12 +186,14 @@ function getRollupOutputOptions(type: ExtensionType, output: string, options: Bu
 		return {
 			file: output,
 			format: 'es',
+			inlineDynamicImports: true,
 		};
 	} else {
 		return {
 			file: output,
 			format: 'cjs',
 			exports: 'default',
+			inlineDynamicImports: true,
 			sourcemap: options.sourceMaps,
 		};
 	}
