@@ -20,7 +20,7 @@ jobs:
 
       - name: Install oracle client
         run: |
-          sudo apt update -y && sudo apt install -y yum && \
+          sudo add-apt-repository universe && sudo apt update -y && sudo apt install -y yum && \
           sudo yum install oracle-instantclient-release-el7 && \
           sudo yum install oracle-instantclient-basic
 
