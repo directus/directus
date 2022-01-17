@@ -100,7 +100,6 @@ const config: Config = {
 				connectString: 'localhost:6105/XE',
 			},
 			...knexConfig,
-			pool: { max: 4 },
 			waitTestSQL: 'SELECT 1 FROM DUAL',
 		},
 		sqlite3: {

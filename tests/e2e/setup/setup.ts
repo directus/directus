@@ -8,6 +8,7 @@ import global from './global';
 import { spawn, spawnSync } from 'child_process';
 import { sleep } from './utils/sleep';
 import { writeFileSync } from 'fs';
+import { awaitDatabaseConnection } from './utils/await-connection';
 
 let started = false;
 
@@ -29,6 +30,7 @@ export default async (): Promise<void> => {
 							title: config.names[vendor]!,
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
+								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
 								if (vendor === 'sqlite3') {
 									writeFileSync('test.db', '');
 									await database.raw(`PRAGMA foreign_keys = ON`);
