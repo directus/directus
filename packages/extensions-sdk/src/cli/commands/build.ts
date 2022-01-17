@@ -33,6 +33,7 @@ type BuildOptions = {
 	language: string;
 	force: boolean;
 	watch: boolean;
+	minify: boolean;
 	sourcemap: boolean;
 };
 
@@ -156,7 +157,7 @@ function getRollupOptions(
 					},
 					preventAssignment: true,
 				}),
-				terser(),
+				options.minify ? terser() : null,
 			],
 		};
 	} else {
@@ -175,7 +176,7 @@ function getRollupOptions(
 					},
 					preventAssignment: true,
 				}),
-				terser(),
+				options.minify ? terser() : null,
 			],
 		};
 	}
