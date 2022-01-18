@@ -4,7 +4,7 @@ import request from 'supertest';
 import knex, { Knex } from 'knex';
 import { find } from 'lodash';
 import { spawn, ChildProcess } from 'child_process';
-import { sleep } from '../../setup/utils/sleep';
+import { awaitDirectusConnection } from '../../setup/utils/await-connection';
 
 type SchemaDateTypesObject = {
 	id: number;
@@ -57,12 +57,14 @@ describe('schema', () => {
 			: currentTzOffset !== 180
 			? 'America/Sao_Paulo'
 			: 'America/Mexico_City';
+		const promises = [];
 
 		for (const vendor of vendors) {
+			const newServerPort = Number(config.envs[vendor]!.PORT) + 100;
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
 			config.envs[vendor]!.TZ = newTz;
-			config.envs[vendor]!.PORT = String(Number(config.envs[vendor]!.PORT) + 100);
+			config.envs[vendor]!.PORT = String(newServerPort);
 
 			const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
 			tzDirectus[vendor] = server;
@@ -72,11 +74,14 @@ describe('schema', () => {
 			server.on('exit', (code) => {
 				if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 			});
+			promises.push(async () => {
+				await awaitDirectusConnection(newServerPort);
+			});
 		}
 
 		// Give the server some time to start
-		return await sleep(5000);
-	}, 10000);
+		return await Promise.all(promises);
+	}, 60000);
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
