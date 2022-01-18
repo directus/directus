@@ -66,26 +66,30 @@ export default async (): Promise<void> => {
 							}
 
 							for (const vendor of vendors) {
-								const serverUrl = `http://${config.envs[vendor]!.DB_HOST}:${config.envs[vendor]!.PORT}`;
-								let response = await axios.get(`${serverUrl}/items/tests_flow_data?access_token=AdminToken`);
+								try {
+									const serverUrl = `http://${config.envs[vendor]!.DB_HOST}:${config.envs[vendor]!.PORT}`;
+									let response = await axios.get(`${serverUrl}/items/tests_flow_data?access_token=AdminToken`);
 
-								if (response.status !== 200) {
+									if (response.status !== 200) {
+										continue;
+									}
+
+									const body = {
+										total_tests_count: totalTestsCount,
+									};
+									response = await axios.post(`${serverUrl}/items/tests_flow_data`, body, {
+										headers: {
+											Authorization: 'Bearer AdminToken',
+											'Content-Type': 'application/json',
+										},
+									});
+
+									if (response.status === 200) {
+										process.env.serverUrl = serverUrl;
+										break;
+									}
+								} catch (err) {
 									continue;
-								}
-
-								const body = {
-									total_tests_count: totalTestsCount,
-								};
-								response = await axios.post(`${serverUrl}/items/tests_flow_data`, body, {
-									headers: {
-										Authorization: 'Bearer AdminToken',
-										'Content-Type': 'application/json',
-									},
-								});
-
-								if (response.status === 200) {
-									process.env.serverUrl = serverUrl;
-									break;
 								}
 							}
 						},
