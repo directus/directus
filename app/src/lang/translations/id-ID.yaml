@@ -739,24 +739,76 @@ wysiwyg_options:
   bullist: Daftar Bullet
   numlist: Daftar Nomor
   hr: Garis Horizontal
+  link: Tambah/Sunting Tautan
+  unlink: Hapus Tautan
+  media: Tambah /Sunting Media
+  image: Tambahkan/Sunting Gambar
   copy: Salin
+  cut: Potong
+  paste: Tempel
+  heading: Judul
+  h1: Judul 1
+  h2: Judul 2
+  h3: Judul 3
+  h4: Judul 4
+  h5: Judul 5
+  h6: Judul 6
+  fontselect: Pilih Fon
+  fontsizeselect: Pilih Ukuran Fon
+  indent: Indentasi
+  outdent: Outdent
+  undo: Undo
+  redo: Ulangi
   remove: Hapus
+  removeformat: Hapus Format
   selectall: Pilih Semua
   table: Tabel
+  visualaid: Lihat elemen tak terlihat
+  source_code: Edit Kode Sumber
+  fullscreen: Layar Penuh
+  directionality: Keterarahan
 dropdown: Dropwdown
 choices: Pilihan
+choices_option_configured_incorrectly: Pilihan dikonfigurasi dengan tidak benar
 deselect: Hapus pilihan
+deselect_all: Hapus Semua
+other: Lainnya...
+adding_user: Menambahkan Pengguna
+unknown_user: Pengguna Tidak Dikenal
+creating_in: 'Membuat Item di {collection}'
+editing_in: 'Mengedit Item di {collection}'
+viewing_in: 'Melihat Item di {collection}'
+creating_unit: 'Membuat {unit}'
+editing_unit: 'Mengedit {unit}'
 editing_in_batch: 'Mengedit Masal {count} item'
+no_options_available: Tidak ada opsi tersedia
+settings_data_model: Model Data
 settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
+settings_presets: Preset & Markah
+one_or_more_options_are_missing: Satu atau lebih opsi hilang
 scope: Lingkup
 select: Pilih...
+layout: Tata letak
+tree_view: Tampilan Pohon
+changes_are_permanent: Perubahan bersifat permanen
+preset_name_placeholder: Berfungsi sebagai bawaan saat kosong...
+preset_search_placeholder: Kueri penelusuran...
+editing_preset: Mengedit Preset
+layout_preview: Pratinjau Tata Letak
+layout_setup: Pengaturan Tata Letak
+unsaved_changes: Perubahan Tidak Disimpan
+unsaved_changes_copy: Anda yakin ingin meninggalkan halaman ini?
 discard_changes: Batalkan Perubahan
+discard_all_changes: Buang Semua Perubahan
+discard_changes_copy: Apakah Anda yakin ingin membatalkan semua perubahan yang dibuat?
 show_x_axis: Menunjukkan Sumbu X
 show_y_axis: Menunjukkan Sumbu Y
 keep_editing: Tetap Mengedit
-page_help_collections_overview: '**Collection Overview** - — Daftar semua koleksi yang perlu anda akses.'
+page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
+page_help_collections_collection: >-
+  **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
 add_new: Tambah Baru
 create_new: Buat baru
 all: Semua
@@ -779,13 +831,26 @@ fields:
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
+    archive_app_filter: Filter Aplikasi Arsip
+    archive_value: Nilai Arsip
+    unarchive_value: Batalkan pengarsipan Nilai
     sort_field: Sortir Baris
+    accountability: Pelacakan Aktifitas & Revisi
+    archive_field: Bidang Arsip
+    item_duplication_fields: Bidang Duplikasi Item
   directus_files:
+    $thumbnail: Gambar kecil
     title: Judul
     description: Deskripsi
+    tags: Tagar
     location: Lokasi
+    storage: Penyimpanan
+    filename_disk: Nama file (Piringan)
+    filename_download: Nama file (Unduh)
     metadata: Metadata
+    type: Tipe Mime
     filesize: Ukuran berkas
+    modified_by: Dimodifikasi Oleh
     modified_on: Dimodifikasi Pada
     created_on: Dibuat Pada
     created_by: Dibuat Oleh
@@ -806,11 +871,15 @@ fields:
     location: Lokasi
     title: Judul
     description: Deskripsi
+    tags: Tagar
+    user_preferences: Preferensi Pengguna
     language: Bahasa
     theme: Tema
+    theme_auto: Otomatis (Berdasarkan Sistem)
     theme_light: Mode Terang
     theme_dark: Mode Gelap
     tfa_secret: Otentikasi Dua Faktor
+    admin_options: Opsi Admin
     status: Status
     status_draft: Konsep
     status_active: Aktif
@@ -854,8 +923,11 @@ field_options:
       name_name: Nama
     collections_name: Pengumpulan
   directus_users:
+    preferences_divider: Preferensi Pengguna
+    dropdown_auto: Otomatis (Berdasarkan Sistem)
     dropdown_light: Mode Terang
     dropdown_dark: Mode Gelap
+    admin_divider: Opsi Admin
     status_dropdown_draft: Konsep
     status_dropdown_active: Aktif
   directus_webhooks:
@@ -948,6 +1020,8 @@ interfaces:
     zoom: Perbesar
   system-folder:
     folder: Direktori
+  tags:
+    tags: Tagar
   boolean:
     toggle: Beralih
     label_default: Diaktifkan
