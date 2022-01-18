@@ -7,6 +7,7 @@ import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
 import { sleep } from './utils/sleep';
+import axios from 'axios';
 
 let started = false;
 
@@ -50,6 +51,46 @@ export default async (): Promise<void> => {
 					}),
 					{ concurrent: true }
 				);
+			},
+		},
+		{
+			title: 'Setup test data flow',
+			task: async () => {
+				return new Listr([
+					{
+						title: 'Testing server connectivity and bootstrap tests flow',
+						task: async () => {
+							const totalTestsCount = Number(process.env.totalTestsCount);
+							if (isNaN(totalTestsCount)) {
+								throw 'Unable to read totalTestsCount';
+							}
+
+							for (const vendor of vendors) {
+								const serverUrl = `http://${config.envs[vendor]!.DB_HOST}:${config.envs[vendor]!.PORT}`;
+								let response = await axios.get(`${serverUrl}/items/tests_flow_data?access_token=AdminToken`);
+
+								if (response.status !== 200) {
+									continue;
+								}
+
+								const body = {
+									total_tests_count: totalTestsCount,
+								};
+								response = await axios.post(`${serverUrl}/items/tests_flow_data`, body, {
+									headers: {
+										Authorization: 'Bearer AdminToken',
+										'Content-Type': 'application/json',
+									},
+								});
+
+								if (response.status === 200) {
+									process.env.serverUrl = serverUrl;
+									break;
+								}
+							}
+						},
+					},
+				]);
 			},
 		},
 	])

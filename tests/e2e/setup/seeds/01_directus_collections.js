@@ -7,5 +7,6 @@ exports.seed = async function (knex) {
 		{ collection: 'tours' },
 		{ collection: 'tours_components' },
 		{ collection: 'organizers' },
+		{ collection: 'schema_date_types' },
 	]);
 };
