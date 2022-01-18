@@ -949,6 +949,7 @@ field_options:
     basemaps_tile: Ubin RasterJSON
     basemaps_style: Gaya Kotak peta
   directus_activity:
+    login: Masuk
     create: Buat
     update: Perbarui
   directus_collections:
@@ -1009,10 +1010,15 @@ field_options:
     status_options_active: Aktif
     status_options_inactive: Tidak aktif
     data_label: Kirim Data Acara
+    triggers_divider: Pencetus
     actions_create: Buat
     actions_update: Perbarui
+    actions_delete: Hapus
+    actions_login: Masuk
     headers:
+      header: Header
       value: Nilai
+      add: Tambah Header
 comment: Komentar
 editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
