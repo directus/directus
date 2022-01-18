@@ -75,7 +75,7 @@ export default defineComponent({
 
 		onMounted(() => fetchProviders());
 
-		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver };
+		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver, disableDefault };
 
 		async function fetchProviders() {
 			try {
