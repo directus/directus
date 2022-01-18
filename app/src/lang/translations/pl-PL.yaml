@@ -283,9 +283,19 @@ foreign_key: Klucz obcy
 finish_setup: Zakończ konfigurację
 dismiss: Anuluj
 raw_value: Wartość surowa
+copy_raw_value: Kopiuj wartość surową
+copy_raw_value_success: Skopiowano
+copy_raw_value_fail: Kopiowanie nie powiodło się
+paste_raw_value: Wklej wartość surową
+paste_raw_value_success: Wklejony
+paste_raw_value_fail: Wklejanie nie powiodło się
+view_raw_value: Zobacz wartość surową
 edit_raw_value: Edytuj wartość surową
 enter_raw_value: Wprowadź surową wartość...
+clear_value: Wyczyść wartość
 clear_changes: Wyczyść zmiany
+reset_to_default: Przywróć domyślne
+undo_changes: Cofnij zmiany
 notifications: Powiadomienia
 show_all_activity: Pokaż wszystkie aktywności
 page_not_found: Nie odnaleziono strony
@@ -944,6 +954,7 @@ fields:
     external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
+    email_notifications: Powiadomienia e-mail
   directus_settings:
     jpg: JPEG
     png: PNG

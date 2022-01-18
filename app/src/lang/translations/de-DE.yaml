@@ -1237,6 +1237,7 @@ interfaces:
     add_filter: Filter hinzufügen
     add_group: Und / Oder Gruppe
     add_value: Wert hinzufügen
+    logic_type_or: Oder
     all: Alle
     any: Irgendeiner
     and: und

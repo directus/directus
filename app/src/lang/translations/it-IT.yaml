@@ -283,9 +283,19 @@ foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
 raw_value: Valore grezzo
+copy_raw_value: Copia il valore grezzo
+copy_raw_value_success: Copiato
+copy_raw_value_fail: Copia non riuscito
+paste_raw_value: Incolla il valore grezzo
+paste_raw_value_success: Incolla
+paste_raw_value_fail: Incolla non riuscito
+view_raw_value: Visualizza il valore grezzo
 edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
+clear_value: Cancella il valore
 clear_changes: Annulla modifiche
+reset_to_default: Reimposta al valore predefinito
+undo_changes: Annulla le modifiche
 notifications: Notifiche
 show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
@@ -944,6 +954,7 @@ fields:
     external_identifier: Identificatore esterno
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
+    email_notifications: Notifiche email
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1154,6 +1165,8 @@ share_access_not_found: Questa pagina condivisa non esiste o ha già raggiunto i
 share_access_not_found_desc: Contatta un utente autorizzato di questo progetto per richiedere l'accesso.
 share_access_not_found_title: Pagina della condivisione sconosciuta
 share_copy_link: Copia link
+share_copy_link_success: Collegamento copiato
+share_copy_link_error: Impossibile copiare il collegamento
 share_send_link: Invia link
 relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
@@ -1228,6 +1241,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
