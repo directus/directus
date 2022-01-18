@@ -882,12 +882,44 @@ fields:
     admin_options: Opsi Admin
     status: Status
     status_draft: Konsep
+    status_invited: Diundang
     status_active: Aktif
+    status_suspended: Tergantung
+    status_archived: Diarsipkan
     role: Peran
+    token: Token
+    token_placeholder: Masukkan token akses aman...
+    provider: Penyedia
+    external_identifier: Pengidentifikasi Eksternal
     last_page: Halaman Terakhir
     last_access: Akses Terakhir
+    email_notifications: Email pemberitahuan
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: JaringanP
+    tiff: Bercekcok
+    mapping: Pemetaan
+    basemaps: Peta dasar
+    basemaps_raster: Raster
+    basemaps_tile: Ubin RasterJSON
+    basemaps_style: Gaya Kotak peta
+    mapbox_key: Token Akses Kotak peta
+    attribution: Atribusi
+    attribution_placeholder: Kontributor © OpenStreetMap
+    transforms_note: Nama metode Sharp dan argumennya. Lihat konstruktor https://sharp.pixelplumbing.com/api- untuk informasi lebih.
+    additional_transforms: Transformasi Tambahan
     project_name: Nama Proyek
+    project_descriptor: Deskriptor Proyek
+    project_url: URL Proyek
+    project_color: Warna Proyek
+    project_logo: Logo Proyek
+    branding: Merk & Gaya
+    public_foreground: Latar depan Publik
+    public_background: Latar belakang Publik
+    public_note: Catatan Publik
+    auth_password_policy: Kebijakan Kata sandi Autentik
+    auth_login_attempts: Upaya Login Autentik
     module_bar: Papan Modul
   directus_shares:
     name: Nama
@@ -909,19 +941,58 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Keamanan
+    additional_transforms: Transformasi Tambahan
+    transforms_note: Nama metode Sharp dan argumennya. Lihat konstruktor https://sharp.pixelplumbing.com/api- untuk informasi lebih.
+    mapbox_key: Token Akses Kotak peta
+    basemaps: Peta dasar
+    basemaps_raster: Raster
+    basemaps_tile: Ubin RasterJSON
+    basemaps_style: Gaya Kotak peta
   directus_activity:
     create: Buat
     update: Perbarui
   directus_collections:
+    track_activity_revisions: Lacak Aktifitas & Revisi
+    only_track_activity: Hanya Aktifitas Melacak
+    do_not_track_anything: Jangan Lacak Apapun
     collection_setup: Penyiapan Koleksi
+    note_placeholder: Deskripsi koleksi ini...
+    hidden_label: Sembunyikan di dalam Aplikasi
+    singleton: Perlakukan sebagai objek tunggal
     language: Bahasa
+    translation: Terjemahan
+    translation_placeholder: Masukkan terjemahan...
+    collection_name: Nama Koleksi
+    singular_unit: Satuan Tunggal
+    plural_unit: Satuan Jamak
     archive_divider: Arsip
+    archive_field_placeholder: Pilih bidang...
+    archive_app_filter: Aktifkan Filter Arsip Aplikasi
+    archive_value: Nilai yang ditetapkan saat pengarsipan...
+    unarchive_value: Nilai yang ditetapkan saat membatalkan pengarsipan...
     sort_divider: Sortir
+    sort_field: Pilih bidang...
+    accountability_divider: Akuntabilitas
+    duplication_divider: Duplikasi
+  directus_files:
+    title: Judul yang unik...
+    description: Deskripsi opsional...
+    location: Lokasi opsional...
+    storage_divider: Penamaan File
+    filename_disk: Nama pada penyimpanan disk...
+    filename_download: Nama saat mengunduh...
   directus_roles:
+    name: Nama unik untuk peran ini...
+    description: Deskripsi peran ini...
+    ip_access: Tambahkan alamat IP yang diizinkan, biarkan kosong untuk mengizinkan semua...
     fields:
       icon_name: Ikon
       name_name: Nama
+      name_placeholder: Masukkan judul...
+      link_name: Tautan
+      link_placeholder: URL Relatif atau absolut...
     collections_name: Pengumpulan
+    collections_addLabel: Tambah Koleksi...
   directus_users:
     preferences_divider: Preferensi Pengguna
     dropdown_auto: Otomatis (Berdasarkan Sistem)
@@ -929,10 +1000,15 @@ field_options:
     dropdown_dark: Mode Gelap
     admin_divider: Opsi Admin
     status_dropdown_draft: Konsep
+    status_dropdown_invited: Diundang
     status_dropdown_active: Aktif
+    status_dropdown_suspended: Tergantung
+    status_dropdown_archived: Diarsipkan
+    token: Masukkan token akses aman...
   directus_webhooks:
     status_options_active: Aktif
     status_options_inactive: Tidak aktif
+    data_label: Kirim Data Acara
     actions_create: Buat
     actions_update: Perbarui
     headers:
@@ -975,6 +1051,7 @@ sign_out: Keluar
 sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
 template: Templat
+translation_placeholder: Masukkan terjemahan...
 value: Nilai
 interfaces:
   filter:
