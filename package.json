@@ -8,7 +8,7 @@
 		"./packages/*"
 	],
 	"scripts": {
-		"lint": "npm-run-all --parallel --continue-on-error lint:*",
+		"lint": "npx run-p --continue-on-error lint:*",
 		"lint:eslint": "npx eslint .",
 		"lint:stylelint": "npx stylelint \"**/*.{css,scss,vue}\" --custom-syntax postcss-html",
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
