@@ -214,9 +214,6 @@ dismiss: Opusti
 raw_value: Vnešena vrednost
 edit_raw_value: Uredi vrednost
 enter_raw_value: Vnesite vrednost ...
-clear_value: Počisti vrednost
-reset_to_default: Ponastavi na privzeto
-undo_changes: Razveljavi spremembe
 notifications: Obvestila
 show_all_activity: Pokaži vse dejavnosti
 page_not_found: Strani ni mogoče najti

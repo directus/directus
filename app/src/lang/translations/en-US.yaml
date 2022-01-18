@@ -289,12 +289,19 @@ foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 raw_value: Raw value
+copy_raw_value: Copy Raw Value
+copy_raw_value_success: Copied
+copy_raw_value_fail: Copy Failed
+paste_raw_value: Paste Raw Value
+paste_raw_value_success: Pasted
+paste_raw_value_fail: Paste Failed
+view_raw_value: View Raw Value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
-clear_value: Clear value
+clear_value: Clear Value
 clear_changes: Clear Changes
-reset_to_default: Reset to default
-undo_changes: Undo changes
+reset_to_default: Reset to Default
+undo_changes: Undo Changes
 notifications: Notifications
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
@@ -960,6 +967,7 @@ fields:
     external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
+    email_notifications: Email Notifications
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1170,6 +1178,8 @@ share_access_not_found: This shared page either does not exist or has already ex
 share_access_not_found_desc: Please contact an authorized user of this project to request access.
 share_access_not_found_title: Unknown Share Page
 share_copy_link: Copy Link
+share_copy_link_success: Link Copied
+share_copy_link_error: Unable to Copy Link
 share_send_link: Send Link
 relational_triggers: Relational Triggers
 referential_action_field_label_m2o: On Delete of {collection}...
@@ -1254,6 +1264,8 @@ interfaces:
     add_filter: Add Filter
     add_group: And / Or group
     add_value: Add Value
+    logic_type_and: AND
+    logic_type_or: OR
     all: All
     any: Any
     and: and

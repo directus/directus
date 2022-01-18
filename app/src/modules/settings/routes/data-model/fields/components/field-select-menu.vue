@@ -107,3 +107,11 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style scoped>
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
+}
+</style>

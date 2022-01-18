@@ -1,227 +1,114 @@
-import Dockerode from 'dockerode';
 import { Knex } from 'knex';
 import { allVendors } from './get-dbs-to-test';
-import { customAlphabet } from 'nanoid';
-
-const generateID = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 type Vendor = typeof allVendors[number];
 
 export type Config = {
-	containerConfig: Record<
-		Vendor,
-		(Dockerode.ContainerSpec & Dockerode.ContainerCreateOptions & { name: string }) | false
-	>;
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
-	ports: Record<Vendor, number>;
 	names: Record<Vendor, string>;
-	envs: Record<Vendor, string[]>;
+	envs: Record<Vendor, Record<string, string>>;
 };
-
-export const processID = generateID();
-
-export const CONTAINER_PERSISTENCE_FILE = '.e2e-containers.json';
 
 const migrationsDir = './tests/e2e/setup/migrations';
 const seedsDir = './tests/e2e/setup/seeds';
 
-const config: Config = {
-	containerConfig: {
-		postgres: {
-			name: `directus-test-database-postgres-${process.pid}`,
-			Image: 'postgres:12-alpine',
-			Hostname: `directus-test-database-postgres-${process.pid}`,
-			Env: ['POSTGRES_PASSWORD=secret', 'POSTGRES_DB=directus'],
-			HostConfig: {
-				PortBindings: {
-					'5432/tcp': [{ HostPort: '6000' }],
-				},
-			},
-		},
-		postgres10: {
-			name: `directus-test-database-postgres10-${process.pid}`,
-			Image: 'postgis/postgis:10-3.1-alpine',
-			Hostname: `directus-test-database-postgres10-${process.pid}`,
-			Env: ['POSTGRES_PASSWORD=secret', 'POSTGRES_DB=directus'],
-			HostConfig: {
-				PortBindings: {
-					'5432/tcp': [{ HostPort: '6006' }],
-				},
-			},
-		},
-		mysql: {
-			name: `directus-test-database-mysql-${process.pid}`,
-			Image: 'mysql:8',
-			Cmd: ['--default-authentication-plugin=mysql_native_password'],
-			Hostname: `directus-test-database-mysql-${process.pid}`,
-			Env: ['MYSQL_ROOT_PASSWORD=secret', 'MYSQL_DATABASE=directus'],
-			HostConfig: {
-				PortBindings: {
-					'3306/tcp': [{ HostPort: '6001' }],
-				},
-			},
-		},
-		maria: {
-			name: `directus-test-database-maria-${process.pid}`,
-			Image: 'mariadb:10.5',
-			Hostname: `directus-test-database-maria-${process.pid}`,
-			Env: ['MYSQL_ROOT_PASSWORD=secret', 'MYSQL_DATABASE=directus'],
-			HostConfig: {
-				PortBindings: {
-					'3306/tcp': [{ HostPort: '6002' }],
-				},
-			},
-		},
-		mssql: {
-			name: `directus-test-database-mssql-${process.pid}`,
-			Image: 'mcr.microsoft.com/mssql/server:2019-latest',
-			Hostname: `directus-test-database-mssql-${process.pid}`,
-			Env: ['ACCEPT_EULA=Y', 'SA_PASSWORD=Test@123'],
-			HostConfig: {
-				PortBindings: {
-					'1433/tcp': [{ HostPort: '6003' }],
-				},
-			},
-		},
-		oracle: {
-			name: `directus-test-database-oracle-${process.pid}`,
-			Image: 'quillbuilduser/oracle-18-xe-micro-sq',
-			Hostname: `directus-test-database-oracle-${process.pid}`,
-			Env: [
-				'OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m',
-				'ORACLE_ALLOW_REMOTE=true',
-			],
-			HostConfig: {
-				PortBindings: {
-					'1521/tcp': [{ HostPort: '6004' }],
-				},
-			},
-		},
-		sqlite3: false,
+const knexConfig = {
+	waitTestSQL: 'SELECT 1',
+	migrations: {
+		directory: migrationsDir,
 	},
+	seeds: {
+		directory: seedsDir,
+	},
+};
+
+const directusConfig = {
+	...process.env,
+	ADMIN_EMAIL: 'admin@example.com',
+	ADMIN_PASSWORD: 'password',
+	KEY: 'directus-test',
+	SECRET: 'directus-test',
+	TELEMETRY: 'false',
+	CACHE_SCHEMA: 'false',
+	CACHE_ENABLED: 'false',
+	RATE_LIMITER_ENABLED: 'false',
+	LOG_LEVEL: 'error',
+};
+
+const config: Config = {
 	knexConfig: {
 		postgres: {
 			client: 'pg',
 			connection: {
-				host: 'localhost',
-				port: 6000,
+				database: 'directus',
 				user: 'postgres',
 				password: 'secret',
-				database: 'directus',
+				host: 'localhost',
+				port: 6100,
 			},
-			waitTestSQL: 'SELECT 1',
-			migrations: {
-				directory: migrationsDir,
-			},
-			seeds: {
-				directory: seedsDir,
-			},
+			...knexConfig,
 		},
 		postgres10: {
 			client: 'pg',
 			connection: {
-				host: 'localhost',
-				port: 6006,
+				database: 'directus',
 				user: 'postgres',
 				password: 'secret',
-				database: 'directus',
+				host: 'localhost',
+				port: 6101,
 			},
-			waitTestSQL: 'SELECT 1',
-			migrations: {
-				directory: migrationsDir,
-			},
-			seeds: {
-				directory: seedsDir,
-			},
+			...knexConfig,
 		},
 		mysql: {
 			client: 'mysql',
 			connection: {
-				host: 'localhost',
-				port: 6001,
+				database: 'directus',
 				user: 'root',
 				password: 'secret',
-				database: 'directus',
+				host: 'localhost',
+				port: 6102,
 			},
-			waitTestSQL: 'SELECT 1',
-			migrations: {
-				directory: migrationsDir,
-			},
-			seeds: {
-				directory: seedsDir,
-			},
+			...knexConfig,
 		},
 		maria: {
 			client: 'mysql',
 			connection: {
-				host: 'localhost',
-				port: 6002,
+				database: 'directus',
 				user: 'root',
 				password: 'secret',
-				database: 'directus',
+				host: 'localhost',
+				port: 6103,
 			},
-			waitTestSQL: 'SELECT 1',
-			migrations: {
-				directory: migrationsDir,
-			},
-			seeds: {
-				directory: seedsDir,
-			},
+			...knexConfig,
 		},
 		mssql: {
 			client: 'mssql',
 			connection: {
-				host: 'localhost',
-				port: 6003,
+				database: 'model',
 				user: 'sa',
 				password: 'Test@123',
-				database: 'model',
+				host: 'localhost',
+				port: 6104,
 			},
-			waitTestSQL: 'SELECT 1',
-			migrations: {
-				directory: migrationsDir,
-			},
-			seeds: {
-				directory: seedsDir,
-			},
+			...knexConfig,
 		},
 		oracle: {
 			client: 'oracledb',
 			connection: {
 				user: 'secretsysuser',
 				password: 'secretpassword',
-				connectString: 'localhost:6004/XE',
+				connectString: 'localhost:6105/XE',
 			},
+			...knexConfig,
 			waitTestSQL: 'SELECT 1 FROM DUAL',
-			migrations: {
-				directory: migrationsDir,
-			},
-			seeds: {
-				directory: seedsDir,
-			},
 		},
 		sqlite3: {
 			client: 'sqlite3',
 			connection: {
 				filename: './data.db',
 			},
-			waitTestSQL: 'SELECT 1',
-			migrations: {
-				directory: migrationsDir,
-			},
-			seeds: {
-				directory: seedsDir,
-			},
+			...knexConfig,
 		},
-	},
-	ports: {
-		postgres: 6100,
-		postgres10: 6106,
-		mysql: 6101,
-		maria: 6102,
-		mssql: 6103,
-		oracle: 6104,
-		sqlite3: 6105,
 	},
 	names: {
 		postgres: 'Postgres',
@@ -233,53 +120,70 @@ const config: Config = {
 		sqlite3: 'SQLite 3',
 	},
 	envs: {
-		postgres: [
-			'DB_CLIENT=pg',
-			`DB_HOST=directus-test-database-postgres-${process.pid}`,
-			'DB_USER=postgres',
-			'DB_PASSWORD=secret',
-			'DB_PORT=5432',
-			'DB_DATABASE=directus',
-		],
-		postgres10: [
-			'DB_CLIENT=pg',
-			`DB_HOST=directus-test-database-postgres10-${process.pid}`,
-			'DB_USER=postgres',
-			'DB_PASSWORD=secret',
-			'DB_PORT=5432',
-			'DB_DATABASE=directus',
-		],
-		mysql: [
-			'DB_CLIENT=mysql',
-			`DB_HOST=directus-test-database-mysql-${process.pid}`,
-			'DB_PORT=3306',
-			'DB_USER=root',
-			'DB_PASSWORD=secret',
-			'DB_DATABASE=directus',
-		],
-		maria: [
-			'DB_CLIENT=mysql',
-			`DB_HOST=directus-test-database-maria-${process.pid}`,
-			'DB_PORT=3306',
-			'DB_USER=root',
-			'DB_PASSWORD=secret',
-			'DB_DATABASE=directus',
-		],
-		mssql: [
-			'DB_CLIENT=mssql',
-			`DB_HOST=directus-test-database-mssql-${process.pid}`,
-			'DB_PORT=1433',
-			'DB_USER=sa',
-			'DB_PASSWORD=Test@123',
-			'DB_DATABASE=model',
-		],
-		oracle: [
-			'DB_CLIENT=oracledb',
-			'DB_USER=secretsysuser',
-			'DB_PASSWORD=secretpassword',
-			`DB_CONNECT_STRING=directus-test-database-oracle-${process.pid}:1521/XE`,
-		],
-		sqlite3: ['DB_CLIENT=sqlite3', 'DB_FILENAME=./data.db'],
+		postgres: {
+			...directusConfig,
+			DB_CLIENT: 'pg',
+			DB_HOST: `localhost`,
+			DB_USER: 'postgres',
+			DB_PASSWORD: 'secret',
+			DB_PORT: '6100',
+			DB_DATABASE: 'directus',
+			PORT: '59152',
+		},
+		postgres10: {
+			...directusConfig,
+			DB_CLIENT: 'pg',
+			DB_HOST: `localhost`,
+			DB_USER: 'postgres',
+			DB_PASSWORD: 'secret',
+			DB_PORT: '6101',
+			DB_DATABASE: 'directus',
+			PORT: '59153',
+		},
+		mysql: {
+			...directusConfig,
+			DB_CLIENT: 'mysql',
+			DB_HOST: `localhost`,
+			DB_PORT: '6102',
+			DB_USER: 'root',
+			DB_PASSWORD: 'secret',
+			DB_DATABASE: 'directus',
+			PORT: '59154',
+		},
+		maria: {
+			...directusConfig,
+			DB_CLIENT: 'mysql',
+			DB_HOST: `localhost`,
+			DB_PORT: '6103',
+			DB_USER: 'root',
+			DB_PASSWORD: 'secret',
+			DB_DATABASE: 'directus',
+			PORT: '59155',
+		},
+		mssql: {
+			...directusConfig,
+			DB_CLIENT: 'mssql',
+			DB_HOST: `localhost`,
+			DB_PORT: '6104',
+			DB_USER: 'sa',
+			DB_PASSWORD: 'Test@123',
+			DB_DATABASE: 'model',
+			PORT: '59156',
+		},
+		oracle: {
+			...directusConfig,
+			DB_CLIENT: 'oracledb',
+			DB_USER: 'secretsysuser',
+			DB_PASSWORD: 'secretpassword',
+			DB_CONNECT_STRING: `localhost:6105/XE`,
+			PORT: '59157',
+		},
+		sqlite3: {
+			...directusConfig,
+			DB_CLIENT: 'sqlite3',
+			DB_FILENAME: './data.db',
+			PORT: '59158',
+		},
 	},
 };
 

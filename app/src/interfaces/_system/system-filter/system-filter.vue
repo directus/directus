@@ -111,16 +111,10 @@ export default defineComponent({
 				}
 			},
 			set(newVal) {
-				switch (newVal.length) {
-					case 0:
-						emit('input', null);
-						break;
-					case 1:
-						emit('input', newVal[0]);
-						break;
-					default:
-						emit('input', { _and: newVal });
-						break;
+				if (newVal.length === 0) {
+					emit('input', null);
+				} else {
+					emit('input', { _and: newVal });
 				}
 			},
 		});
@@ -191,6 +185,7 @@ export default defineComponent({
 	}
 
 	.v-list {
+		min-width: auto;
 		margin: 0px 0px 10px;
 		padding: 20px 20px 12px;
 		border: var(--border-width) solid var(--border-subdued);

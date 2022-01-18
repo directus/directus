@@ -283,11 +283,18 @@ foreign_key: Klucz obcy
 finish_setup: Zakończ konfigurację
 dismiss: Anuluj
 raw_value: Wartość surowa
+copy_raw_value: Kopiuj wartość surową
+copy_raw_value_success: Skopiowano
+copy_raw_value_fail: Kopiowanie nie powiodło się
+paste_raw_value: Wklej wartość surową
+paste_raw_value_success: Wklejony
+paste_raw_value_fail: Wklejanie nie powiodło się
+view_raw_value: Zobacz wartość surową
 edit_raw_value: Edytuj wartość surową
 enter_raw_value: Wprowadź surową wartość...
 clear_value: Wyczyść wartość
 clear_changes: Wyczyść zmiany
-reset_to_default: Zresetuj do ustawień domyślnych
+reset_to_default: Przywróć domyślne
 undo_changes: Cofnij zmiany
 notifications: Powiadomienia
 show_all_activity: Pokaż wszystkie aktywności
@@ -947,6 +954,7 @@ fields:
     external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
+    email_notifications: Powiadomienia e-mail
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -964,6 +972,7 @@ fields:
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
+    project_descriptor: Opis projektu
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
@@ -987,6 +996,10 @@ fields:
     name: Nazwa
     role: Rola
     password: Hasło
+    date_start: Data rozpoczęcia
+    date_end: Data zakończenia
+    max_uses: Maksymalna ilość użyć
+    times_used: Czas użyć
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
@@ -1152,6 +1165,8 @@ share_access_not_found: Ta współdzielona strona nie istnieje lub przekroczyła
 share_access_not_found_desc: Skontaktuj się z autoryzowanym użytkownikiem tego projektu, aby poprosić o dostęp.
 share_access_not_found_title: Nieznana strona udostępniania
 share_copy_link: Kopiuj link
+share_copy_link_success: Link skopiowany
+share_copy_link_error: Nie można skopiować linku
 share_send_link: Wyślij link
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
@@ -1235,6 +1250,8 @@ interfaces:
     add_filter: Dodaj Filtr
     add_group: I / lub grupa
     add_value: Dodaj wartość
+    logic_type_and: ORAZ
+    logic_type_or: LUB
     all: Wszystkie
     any: Dowolny
     and: i

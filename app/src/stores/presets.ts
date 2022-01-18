@@ -204,11 +204,11 @@ export const usePresetsStore = defineStore({
 
 			return response.data.data;
 		},
-		async delete(id: number) {
-			await api.delete(`/presets/${id}`);
+		async delete(ids: number[]) {
+			await api.delete('/presets', { data: ids });
 
 			this.collectionPresets = this.collectionPresets.filter((preset) => {
-				return preset.id !== id;
+				return !ids.includes(preset.id!);
 			});
 		},
 

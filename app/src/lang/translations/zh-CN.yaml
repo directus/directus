@@ -247,10 +247,7 @@ dismiss: 关闭
 raw_value: 原始值
 edit_raw_value: 编辑原始值
 enter_raw_value: 输入原始值...
-clear_value: 清除
 clear_changes: 清除更改
-reset_to_default: 重置为默认值
-undo_changes: 撤销更改
 notifications: 通知
 show_all_activity: 显示所有活动
 page_not_found: 找不到页面
@@ -903,6 +900,7 @@ fields:
     transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
     additional_transforms: 其它转换
     project_name: 项目名称
+    project_descriptor: 项目描述
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo

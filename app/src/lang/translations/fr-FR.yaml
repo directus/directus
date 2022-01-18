@@ -285,10 +285,7 @@ dismiss: Ignorer
 raw_value: Valeur brute
 edit_raw_value: Modifier la valeur brute
 enter_raw_value: Saisissez une valeur brute...
-clear_value: Effacer la valeur
 clear_changes: Effacer les modifications
-reset_to_default: Rétablir les paramètres par défaut
-undo_changes: Annuler les modifications
 notifications: Notifications
 show_all_activity: Afficher toute l'activité
 page_not_found: Page non trouvée
@@ -964,6 +961,7 @@ fields:
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     additional_transforms: Transformations supplémentaires
     project_name: Nom du projet
+    project_descriptor: Description du projet
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
@@ -987,6 +985,10 @@ fields:
     name: Nom
     role: Rôle
     password: Mot de passe
+    date_start: Débute le
+    date_end: Se termine le
+    max_uses: Utilisations max
+    times_used: Nombre d'utilisations
   directus_fields:
     collection: Nom de la Collection
     icon: Icône de Collection
@@ -1235,6 +1237,8 @@ interfaces:
     add_filter: Ajouter un filtre
     add_group: Et / ou groupe
     add_value: Ajouter une valeur
+    logic_type_and: ET
+    logic_type_or: OU
     all: Tout
     any: N'importe quel
     and: et
