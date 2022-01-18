@@ -1019,6 +1019,18 @@ field_options:
       header: Header
       value: Nilai
       add: Tambah Header
+no_fields_in_collection: 'Belum ada bidang pada "{collection}" ini'
+no_value: Tidak berharga
+do_nothing: Tidak Ada
+generate_and_save_uuid: Hasilkan dan Simpan UUID
+save_current_user_id: Simpan ID Pengguna Saat ini
+save_current_user_role: Simpan Peran Pengguna Saat ini
+save_current_datetime: Simpan Tanggal/Waktu Saat ini
+always_open: Selalu Buka
+start_open: Mulai Terbuka
+start_collapsed: Mulai Runtuh
+block: Blokir
+inline: Inline
 comment: Komentar
 editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
@@ -1056,23 +1068,76 @@ sign_in: Masuk
 sign_out: Keluar
 sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
+sort_desc: Mengurut Turun
 template: Templat
+require_value_to_be_set: Membutuhkan nilai untuk ditetapkan
+translation: Terjemahan
 translation_placeholder: Masukkan terjemahan...
 value: Nilai
+view_project: Lihat Proyek
+report_error: Lapor Kesalahan
+start: Mulai
 interfaces:
   filter:
     name: Penyaring
+    description: Konfigurasikan filter objek.
     add_filter: Tambah Filter
+    add_group: Dan / Atau kelompok
+    add_value: Tambahkan Nilai
+    logic_type_and: DAN
+    logic_type_or: ATAU
     all: Semua
     any: Setiap
+    and: dan
+    of_the_following: sebagai berikut
+    no_rules: Tidak ada aturan yang dikonfigurasi
+    change_value: Klik untuk ubah nilai
+    placeholder: Seret aturan di sini
+  group-accordion:
+    name: Akordeon
+    description: Tampilkan bidang atau grup sebagai bagian akordeon
+    start: Mulai
+    all_closed: Semua Tertutup
+    first_opened: Pertama kali Dibuka
+    all_opened: Semua Dibuka
+    accordion_mode: Mode Akordeon
+    max_one_section_open: Maks 1 Bagian Dibuka
   presentation-links:
+    presentation-links: Tautan Tombol
+    links: Tautan
+    description: Tombol tautan yang dapat dikonfigurasi untuk meluncurkan URL dinamis
+    style: Gaya
     primary: Primer
+    link: Tautan
+    button: Tombol
+    error: Tidak dapat melakukan aksi ini
+  select-multiple-checkbox:
+    checkboxes: Kotak centang
+    description: Pilih diantara beberapa opsi melalui kotak centang
+    allow_other: Izinkan Lainnya
+    show_more: 'Tampilkan {count} lebih banyak'
+    items_shown: Items yang Ditampilkan
+  select-multiple-checkbox-tree:
+    name: Kotak centang (Pohon)
+    description: Pilih diantara beberapa opsi melalui kotak centang bersarang
+    value_combining: Menggabungkan Nilai
+    value_combining_note: Mengontrol nilai apa yang disimpan saat pilihan bersarang dibuat.
+    show_all: Tampilkan Semua
+    show_selected: Tampilkan yang Dipilih
   input-code:
     code: Kode
+    description: Tulis atau bagikan cuplikan kode
+    line_number: Nomor Baris
+    line_wrapping: Pembungkus Garis
+    placeholder: Masukkan kode di sini...
   system-collection:
     collection: Koleksi
+    description: Pilih diantara koleksi yang ada
+    include_system_collections: Termasuk Koleksi Sistem
   system-collections:
     collections: Pengumpulan
+    description: Pilih diantara koleksi yang ada
+    include_system_collections: Termasuk Koleksi Sistem
   select-color:
     color: Warna
   datetime:
@@ -1084,6 +1149,7 @@ interfaces:
   presentation-divider:
     divider: Pembagi/Pemecah
   select-dropdown:
+    allow_other: Izinkan Lainnya
     choices_value_placeholder: Masukkan sebuah nilai...
   file:
     file: Berkas
@@ -1099,6 +1165,13 @@ interfaces:
     display_template: Tampilan Template
   input-rich-text-md:
     edit: Edit
+    previewFont: Font Pratinjau
+    customSyntax: Blok Kustom
+    customSyntax_label: Tambahkan jenis sintaks khusus
+    customSyntax_add: Tambahkan sintaks khusus
+    box: Blokir / Sebaris
+    imageToken: Token Gambar
+    imageToken_label: Token (statis) apa yang akan ditambahkan ke sumber gambar
   map:
     zoom: Perbesar
   system-folder:
@@ -1114,6 +1187,9 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
+  input-rich-text-html:
+    imageToken: Token Gambar
+    imageToken_label: Token (statis) apa yang akan ditambahkan ke sumber gambar
 displays:
   translations:
     translations: Terjemahan
