@@ -643,25 +643,64 @@ per_page: Per Halaman
 all_files: Semua Berkas
 my_files: Berkas Saya
 recent_files: Berkas Terbaru
-create_folder: Buat Folder
+create_folder: Buat Map
+edit_folder: Sunting Map
+folder_name: Nama Folder...
+folder_key: Kunci Map...
+add_file: Tambahkan berkas
+replace_file: Ganti berkas
 no_results: Tidak Ada Hasil
+no_results_copy: Sesuaikan atau bersihkan filter pencarian untuk melihat hasil.
+clear_filters: Bersihkan Filter
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
+rule: Aturan
 user: Pengguna
+no_presets: Tidak ada preset
+no_presets_copy: Belum ada preset atau penanda buku yang disimpan.
+no_presets_cta: Tambahkan preset
+presets_only: Hanya Preset
 create: Buat
+on_create: Saat Dibuat
 on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
 select_fields: Pilih Bidang
+format_text: Format Teks
+format_value: Nilai Format
+abbreviate_value: Singkatan Nilai
+operator: Operator
 bold: Tebal
+toggle: Beralih
+icon_on: Ikon Aktif
+icon_off: Ikon Tidak Aktif
 label: Label
+insights: Wawasan
+dashboard: Dasbor
+panel: Panel
+panel_options: Opsi Panel
+panel_header: Judul Panel
+panel_name_placeholder: Beri nama panel ini...
+panel_note_placeholder: Opsi detail tentang panel ini...
+panel_delete_confirm: Apakah Anda yakin ingin menghapus panel ini? Tindakan ini tidak dapat dibatalkan.
+dashboard_delete_confirm: Apakah Anda yakin ingin menghapus dasbor ini? Tindakan ini tidak dapat dibatalkan.
+edit_dashboard: Sunting papan instrumen
+delete_dashboard: Menghapus Dasbor
+visible: Terlihat
+prefix_placeholder: Teks sebelum nilai...
+suffix_placeholder: Teks setelah nilai...
+decimals_placeholder: Jumlah tempat desimal...
 no_dashboards: Tidak ada Dasbor
+no_dashboards_copy: Anda belum memiliki dasbor.
 no_data: Tidak ada Data
 create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
 full_screen: Layar Penuh
+edit_panels: Sunting Panel
+fit_to_screen: Sesuaikan dengan Layar
 image_url: Tautan Gambar
 alt_text: Teks Alternatif
+media: Media
 quality: Kualitas
 width: Lebar
 height: Tinggi
@@ -670,8 +709,13 @@ url_placeholder: Masukkan tautan...
 display_text: Teks Tampilan
 display_text_placeholder: Masukkan teks tampilan...
 interface_group_text_and_numbers: Teks & Angka
+interface_group_selection: Pilihan
+interface_group_relational: Relasional
 interface_group_presentation: Presentasi
+interface_group_groups: Kelompok
 interface_group_other: Lainnya
+tooltip: Keterangan alat
+tooltip_placeholder: Masukkan keterangan alat...
 unlimited: Tak terbatas
 open_link_in: Buka tautan di
 new_tab: Tab baru
@@ -680,13 +724,21 @@ wysiwyg_options:
   aligncenter: Rata Tengah
   alignjustify: Rata Kanan-Kiri
   alignleft: Rata Kiri
+  alignnone: Tidak Sejajar
   alignright: Rata Kanan
   forecolor: Warna Latar Depan
   backcolor: Warna Latar Belakang
   bold: Tebal
   italic: Miring
   underline: Garis Bawah
+  strikethrough: Coret Garis
+  subscript: Berlangganan
+  superscript: Superscript
   codeblock: Kode
+  blockquote: Blockquote
+  bullist: Daftar Bullet
+  numlist: Daftar Nomor
+  hr: Garis Horizontal
   copy: Salin
   remove: Hapus
   selectall: Pilih Semua
@@ -701,7 +753,10 @@ settings_webhooks: Webhooks
 scope: Lingkup
 select: Pilih...
 discard_changes: Batalkan Perubahan
+show_x_axis: Menunjukkan Sumbu X
+show_y_axis: Menunjukkan Sumbu Y
 keep_editing: Tetap Mengedit
+page_help_collections_overview: '**Collection Overview** - — Daftar semua koleksi yang perlu anda akses.'
 add_new: Tambah Baru
 create_new: Buat baru
 all: Semua
@@ -894,6 +949,7 @@ interfaces:
   system-folder:
     folder: Direktori
   boolean:
+    toggle: Beralih
     label_default: Diaktifkan
   translations:
     display_template: Tampilan Template
@@ -906,6 +962,8 @@ displays:
     translations: Terjemahan
   boolean:
     boolean: Boolean
+    icon_on: Ikon Aktif
+    icon_off: Ikon Tidak Aktif
   collection:
     collection: Koleksi
   color:
