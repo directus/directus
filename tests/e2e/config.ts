@@ -33,6 +33,7 @@ const directusConfig = {
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: 'error',
+	SERVE_APP: 'false',
 };
 
 const config: Config = {
