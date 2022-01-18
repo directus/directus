@@ -643,17 +643,35 @@ per_page: Per Halaman
 all_files: Semua Berkas
 my_files: Berkas Saya
 recent_files: Berkas Terbaru
-create_folder: Buat Folder
+create_folder: Buat Map
+edit_folder: Sunting Map
+folder_name: Nama Folder...
+folder_key: Kunci Map...
+add_file: Tambahkan berkas
+replace_file: Ganti berkas
 no_results: Tidak Ada Hasil
+no_results_copy: Sesuaikan atau bersihkan filter pencarian untuk melihat hasil.
+clear_filters: Bersihkan Filter
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
+rule: Aturan
 user: Pengguna
+no_presets: Tidak ada preset
+no_presets_copy: Belum ada preset atau penanda buku yang disimpan.
+no_presets_cta: Tambahkan preset
+presets_only: Hanya Preset
 create: Buat
+on_create: Saat Dibuat
 on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
 select_fields: Pilih Bidang
+format_text: Format Teks
+format_value: Nilai Format
+abbreviate_value: Singkatan Nilai
+operator: Operator
 bold: Tebal
+toggle: Beralih
 label: Label
 no_dashboards: Tidak ada Dasbor
 no_data: Tidak ada Data
@@ -894,6 +912,7 @@ interfaces:
   system-folder:
     folder: Direktori
   boolean:
+    toggle: Beralih
     label_default: Diaktifkan
   translations:
     display_template: Tampilan Template
