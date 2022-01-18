@@ -88,10 +88,14 @@ export default function getDatabase(): Knex {
 	}
 
 	if (env.DB_CLIENT === 'mssql') {
+		// The MSSQL client allows more settings related to the authentication: domain, token, type, msiEndpoint, tenantId, clientId, clientSecret.
+		// Extract the clientId and clientSecret from the env when available, so that they can be used in the connection.
+		const { id: clientId, secret: clientSecret } = getConfigFromEnv('DB_CLIENT_');
+
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
 		// act the same
-		merge(knexConfig, { connection: { options: { useUTC: false } } });
+		merge(knexConfig, { connection: { clientId, clientSecret, options: { useUTC: false } } });
 	}
 
 	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
