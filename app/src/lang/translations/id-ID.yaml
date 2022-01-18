@@ -54,6 +54,7 @@ edit_collection: Edit Koleksi
 exclusive: Ekklusif
 children: Anak
 db_only_click_to_configure: 'Hanya Database: Tekan untuk Konfigurasi'
+show_active_items: Tampilkan Item Aktif
 show_archived_items: Tampilkan Yang Diarsipkan
 show_all_items: Tampilkan semua item
 edited: Nilai Diedit
@@ -92,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Sesi kadaluarsa
 public_label: Publik
 public_description: Kendalikan data API yang tersedia tanpa autentikasi.
+admin_description: Peran administratif awal tanpa batasan akses aplikasi/API.
 not_allowed: Tidak Diizinkan
 directus_version: Versi Directus
 node_version: Versi Node
