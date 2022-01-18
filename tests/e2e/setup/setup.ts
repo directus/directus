@@ -33,7 +33,6 @@ export default async (): Promise<void> => {
 								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
 								if (vendor === 'sqlite3') {
 									writeFileSync('test.db', '');
-									await database.raw(`PRAGMA foreign_keys = ON`);
 								}
 								const bootstrap = spawnSync('node', ['api/cli', 'bootstrap'], { env: config.envs[vendor] });
 								if (bootstrap.stderr.length > 0) {

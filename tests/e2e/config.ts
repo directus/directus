@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { promisify } from 'util';
 import { allVendors } from './get-dbs-to-test';
 
 type Vendor = typeof allVendors[number];
@@ -109,6 +110,13 @@ const config: Config = {
 				filename: './test.db',
 			},
 			useNullAsDefault: true,
+			pool: {
+				afterCreate: async (conn: any, callback: any) => {
+					const run = promisify(conn.run.bind(conn));
+					await run('PRAGMA foreign_keys = ON');
+					callback(null, conn);
+				},
+			},
 			...knexConfig,
 		},
 	},
