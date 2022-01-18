@@ -452,20 +452,25 @@ create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 no_collections_copy: Kamu belum memiliki Koleksi. Silakan hubungi administrator sistem.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
+display_template_not_setup: Opsi templat tampilan disalahkonfigurasikan
+collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
 select_a_collection: Pilih Koleksi
 select_a_field: Pilih Bidang
 active: Aktif
 move_to: Pindahkan ke...
 copy: Salin
 copy_to: Salin ke...
+no_other_dashboards_copy: Anda belum memiliki Dasbor lainnya.
 inactive: Tidak aktif
 users: Pengguna
 activity: Aktivitas
+activity_item: Item Aktifitas
 action: Aksi
 ip_address: Alamat IP
 user_agent: Agen pengguna
 webhooks: Webhooks
 decimals: Desimal
+value_decimals: Nilai Desimal
 min_value: Nilai minimal
 max_value: Nilai maksimal
 automatic: Otomatis
@@ -478,6 +483,7 @@ documentation: Dokumentasi
 sidebar: Bilahsamping
 duration: Durasi
 charset: Charset
+second: detik
 file_moved: Berkas Dipindahkan
 collection_created: Koleksi Dibuat
 modified_on: Dimodifikasi Pada
@@ -500,6 +506,7 @@ enter_otp_to_disable_tfa: Masukkan kode OTP untuk menonaktifkan 2FA
 create_account: Buat Akun
 account_created_successfully: Akun Berhasil Dibuat
 auto_fill: Isi Otomatis
+corresponding_field: Bidang yang sesuai
 errors:
   COLLECTION_NOT_FOUND: "Koleksi tidak tersedia"
   FIELD_NOT_FOUND: Baris tidak ditemukan
@@ -512,8 +519,12 @@ errors:
   ITEM_NOT_FOUND: Item tidak ditemukan
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
+  USER_SUSPENDED: Pengguna Ditangguhkan
+  CONTAINS_NULL_VALUES: Bidang berisi nilai nol
+  UNPROCESSABLE_ENTITY: Entitas yang tidak dapat diproses
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
+  ILLEGAL_ASSET_TRANSFORMATION: Sumber gambar terlalu besar untuk diratinjau
   UNKNOWN: Kesalahan Tidak Terduga
 security: Keamanan
 value_hashed: Nilai telah Di-hash secara Aman
@@ -548,11 +559,20 @@ start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
+delete_collection_are_you_sure: >-
+  Apakah anda yakin ingin menghapus koleksi ini? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
+collections_shown: Koleksi yang ditampilkan
+visible_collections: Koleksi yang terlihat
+hidden_collections: Koleksi yang tersembunyi
+show_hidden_collections: Tampilkan koleksi yang tersembunyi
+hide_hidden_collections: Sembunyikan koleksi yang tersembunyi
 show_header: Tampilkan Tajuk
+unmanaged_collections: Koleksi yang tidak dikonfigurasi
 system_collections: Koleksi Sistem
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
 icon_right: Ikon Kanan
+count_other_revisions: '{count} Perbaikan lainnya'
 font: Huruf
 sans_serif: Sans Serif
 serif: Serif
@@ -560,16 +580,23 @@ monospace: Monospace
 divider: Pembagi/Pemecah
 color: Warna
 circle: Lingkaran
+empty_item: Item kosong
 log_in_with: 'Masuk dengan {provider}'
+conditional_styles: Gaya Bersyarat
 advanced_settings: Pengaturan Lanjutan
 advanced_filter: Filter Lanjutan
 delete_advanced_filter: Hapus Filter
 change_advanced_filter_operator: Ganti Operator
 operators:
+  eq: Sama dengan
+  neq: Tidak sama dengan
   lt: Kurang dari
   gt: Lebih besar dari
   lte: Kurang dari atau sama dengan
   gte: Lebih besar dari atau sama dengan
+  in: Adalah salah satu dari
+  nin: Bukan salah satu dari
+  null: Adalah kosong
   nnull: Bukan null
   contains: Mengandung
   ncontains: Tidak mengandung
@@ -581,24 +608,42 @@ operators:
   nbetween: Tidak Diantara
   empty: Kosong
   nempty: Tidak kosong
+  all: Berisi kunci-kunci ini
+  has: Berisi sebagian kunci ini
+  intersects: Beririsan
+  nintersects: Tidak beririsan
+  intersects_bbox: Memotong kotak pembatas
+  nintersects_bbox: Tidak memotong kotak pembatas
 loading: Memuat...
+drop_to_upload: Lepas untuk mengunggah
+item: Barang
+items: Barang-barang
 upload_file: Unggah Berkas
 upload_file_indeterminate: Mengunggah Berkas...
 upload_file_success: Berkas Diunggah
 upload_files_indeterminate: 'Mengunggah berkas {done}/{total}'
 upload_files_success: '{count} Berkas Diunggah'
 upload_pending: Unggahan Tertunda
+drag_file_here: Geser & Lepas berkas disini
+click_to_browse: Klik untuk jelajahi
 interface_options: Pilihan Antarmuka
 layout_options: Pilihan Tata Letak
 rows: Baris
 columns: Kolom
 collection_setup: Penyiapan Koleksi
+optional_system_fields: Bidang sistem opsional
 value_unique: Nilai harus unik
 all_activity: Semua Aktivitas
+create_item: Buat item
 display_template: Tampilan Template
+language_display_template: Templat Tampilan Bahasa
+translations_display_template: Templat Tampilan Terjemahan
+n_items_selected: 'Tidak ada Item yang Dipilih | 1 Item Dipilih | {n} Item Dipilih'
+per_page: Per Halaman
 all_files: Semua Berkas
 my_files: Berkas Saya
 recent_files: Berkas Terbaru
+create_folder: Buat Folder
 no_results: Tidak Ada Hasil
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
@@ -824,6 +869,7 @@ interfaces:
     datetime: Datetime
   system-display-template:
     display-template: Tampilan Template
+    collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
     select_a_collection: Pilih Koleksi
   presentation-divider:
     divider: Pembagi/Pemecah
