@@ -14,6 +14,7 @@
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
+		"build:api": "lerna run build --ignore @directus/app",
 		"pack": "node docker/pack",
 		"release": "lerna version --force-publish --exact",
 		"test": "lerna run test",

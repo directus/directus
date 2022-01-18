@@ -28,6 +28,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build packages
+        run: npm run build:api
+
       - name: Install oracle client
         run: |
           sudo apt update -y && sudo apt install -y alien libaio1 && \
@@ -35,12 +41,6 @@ jobs:
           sudo alien -i $ORACLE_DL
         env:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build packages
-        run: npm run build
 
       - name: Start databases
         run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --wait
