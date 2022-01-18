@@ -279,7 +279,7 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'timestamp') {
-						const newValue = value.toISOString();
+						const newValue = this.helpers.date.processTimestampString(value.toISOString());
 						payload[name] = newValue;
 					}
 

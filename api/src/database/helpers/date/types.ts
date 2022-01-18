@@ -13,4 +13,7 @@ export abstract class DateHelper extends DatabaseHelper {
 	parse(date: string): string {
 		return date;
 	}
+	processTimestampString(date: string): string {
+		return date;
+	}
 }
