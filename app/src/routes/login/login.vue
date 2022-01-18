@@ -81,7 +81,7 @@ export default defineComponent({
 			try {
 				const response = await api.get('/auth');
 				providers.value = response.data.data;
-				disableDefault.value = response.data.disableDefault
+				disableDefault.value = response.data.disableDefault;
 
 				providerOptions.value = providers.value
 					.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
