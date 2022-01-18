@@ -246,6 +246,9 @@ new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
+add_m2o_to_collection: 'Tambah M2O ke "{collection}"'
+add_o2m_to_collection: 'Tambah O2M ke "{collection}"'
+add_m2m_to_collection: 'Tambah M2M ke "{collection}"'
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
@@ -278,8 +281,19 @@ foreign_key: Kunci Asing
 finish_setup: Selesai Setup
 dismiss: Abaikan
 raw_value: Nilai mentah
+copy_raw_value: Salin Nilai Asli
+copy_raw_value_success: Disalin
+copy_raw_value_fail: Gagal menyalin
+paste_raw_value: Tempel Nilai Asli
+paste_raw_value_success: Ditempelkan
+paste_raw_value_fail: Gagal Menempelkan
+view_raw_value: Lihat Nilai Asli
 edit_raw_value: Sunting Nilai Mentah
 enter_raw_value: Masukkan nilai mentah...
+clear_value: Kosongkan Nilai
+clear_changes: Kosongkan Perubahan
+reset_to_default: Atur Ulang ke Bawaan
+undo_changes: Batalkan Perubahan
 notifications: Notifikasi
 show_all_activity: Tampilkan Semua Aktivitas
 page_not_found: Halaman Tidak Ditemukan
@@ -422,14 +436,17 @@ no_files_copy: Tidak ada berkas disini.
 user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
 no_users_copy: Belum ada pengguna didalam peran ini.
 webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
+no_webhooks_copy: Belum ada webhook yang dikonfigurasi. Mulailah dengan membuat satu di bawah ini.
 no_notifications: Tidak ada Pemberitahuan
 no_notifications_copy: Selesai!
 activity_log: Catatan Aktifitas
 all_items: Semua Item
+any: Setiap
 csv: CSV
 no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
+no_collections_copy: Kamu belum memiliki Koleksi. Silakan hubungi administrator sistem.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 select_a_collection: Pilih Koleksi
 select_a_field: Pilih Bidang
@@ -788,6 +805,7 @@ interfaces:
     name: Penyaring
     add_filter: Tambah Filter
     all: Semua
+    any: Setiap
   presentation-links:
     primary: Primer
   input-code:
