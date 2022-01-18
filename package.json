@@ -8,9 +8,9 @@
 		"./packages/*"
 	],
 	"scripts": {
-		"lint": "npx run-p --continue-on-error lint:*",
-		"lint:eslint": "npx eslint .",
-		"lint:stylelint": "npx stylelint \"**/*.{css,scss,vue}\" --custom-syntax postcss-html",
+		"lint": "npm-run-all --parallel --continue-on-error lint:*",
+		"lint:eslint": "eslint .",
+		"lint:stylelint": "stylelint \"**/*.{css,scss,vue}\" --custom-syntax postcss-html",
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",

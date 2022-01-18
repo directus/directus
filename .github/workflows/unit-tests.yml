@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Build packages
-        run: npm run build -w packages/specs -w packages/drive
+        run: npm run build -w packages/specs -w packages/drive -w packages/shared
 
       - name: Run tests
         run: npm run test
