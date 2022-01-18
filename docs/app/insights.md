@@ -16,7 +16,7 @@ in the navigation bar and a listing on the main page.
 ## Creating a Dashboard
 
 <video loop muted alt="Creating a Dashboard" controls>
-  <source src="../assets/app/create-dashboard.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/app/create-dashboard-lvizc9.mp4" type="video/mp4">
 </video>
 
 1. Click the <span mi btn>add</span> button in the header.
