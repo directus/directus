@@ -107,6 +107,11 @@ module.exports = {
 							},
 							{
 								type: 'page',
+								path: '/getting-started/installation/gcp',
+								title: 'Google Cloud Platform',
+							},
+							{
+								type: 'page',
 								path: '/getting-started/installation/iis',
 								title: 'IIS',
 							},

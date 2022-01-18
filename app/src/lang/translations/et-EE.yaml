@@ -221,9 +221,6 @@ dismiss: Loobu
 raw_value: Algne väärtus
 edit_raw_value: Muuda algväärtust
 enter_raw_value: Sisesta väärtus...
-clear_value: Tühjenda väärtus
-reset_to_default: Taasta vaikeväärtused
-undo_changes: Tühista muudatused
 notifications: Teavitused
 show_all_activity: Näita kogu aktiivsust
 page_not_found: Lehekülge ei leitud

@@ -202,9 +202,6 @@ dismiss: Atmesti
 raw_value: Neapdorota reikšmė
 edit_raw_value: Redaguoti neapdorotą reikšmę
 enter_raw_value: Įvesti neapdorotą reikšmę...
-clear_value: Išvalyti reikšmę
-reset_to_default: Atstatyti numatytuosius
-undo_changes: Anuliuoti pakeitimus
 notifications: Pranešimai
 show_all_activity: Rodyti visą veiklos istoriją
 page_not_found: Puslapis nerastas

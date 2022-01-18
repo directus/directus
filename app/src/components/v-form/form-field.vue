@@ -1,12 +1,11 @@
 <template>
 	<div :key="field.field" class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
-		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
+		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
 					:toggle="toggle"
 					:active="active"
-					:disabled="isDisabled"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
 					:edited="isEdited"
@@ -21,9 +20,12 @@
 				:field="field"
 				:model-value="internalValue"
 				:initial-value="initialValue"
+				:restricted="isDisabled"
 				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
+				@copy-raw="copyRaw"
+				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
 		<div v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" class="label-spacer" />
@@ -42,9 +44,9 @@
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
 			<v-card>
-				<v-card-title>{{ t('edit_raw_value') }}</v-card-title>
+				<v-card-title>{{ isDisabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
-					<v-textarea v-model="rawValue" class="raw-value" :placeholder="t('enter_raw_value')" />
+					<v-textarea v-model="rawValue" :disabled="isDisabled" class="raw-value" :placeholder="t('enter_raw_value')" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
@@ -68,6 +70,7 @@ import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { getJSType } from '@/utils/get-js-type';
+import { notify } from '@/utils/notify';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
@@ -146,7 +149,7 @@ export default defineComponent({
 			return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
 		});
 
-		const { showRaw, rawValue } = useRaw();
+		const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
 
 		const validationMessage = computed(() => {
 			if (!props.validationError) return null;
@@ -158,7 +161,18 @@ export default defineComponent({
 			}
 		});
 
-		return { t, isDisabled, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
+		return {
+			t,
+			isDisabled,
+			internalValue,
+			emitValue,
+			showRaw,
+			rawValue,
+			copyRaw,
+			pasteRaw,
+			validationMessage,
+			isEdited,
+		};
 
 		function emitValue(value: any) {
 			if (
@@ -212,7 +226,38 @@ export default defineComponent({
 				},
 			});
 
-			return { showRaw, rawValue };
+			async function copyRaw() {
+				try {
+					await navigator?.clipboard?.writeText(rawValue.value);
+					notify({
+						type: 'success',
+						title: t('copy_raw_value_success'),
+					});
+				} catch (err: any) {
+					notify({
+						type: 'error',
+						title: t('copy_raw_value_fail'),
+					});
+				}
+			}
+
+			async function pasteRaw() {
+				try {
+					const pasteValue = await navigator?.clipboard?.readText();
+					rawValue.value = pasteValue;
+					notify({
+						type: 'success',
+						title: t('paste_raw_value_success'),
+					});
+				} catch (err: any) {
+					notify({
+						type: 'error',
+						title: t('paste_raw_value_fail'),
+					});
+				}
+			}
+
+			return { showRaw, rawValue, copyRaw, pasteRaw };
 		}
 	},
 });

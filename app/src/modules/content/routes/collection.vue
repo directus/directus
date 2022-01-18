@@ -403,20 +403,7 @@ export default defineComponent({
 			if (archiveValue === 'false') archiveValue = false;
 
 			if (props.archive === 'all') {
-				return {
-					_or: [
-						{
-							[field]: {
-								_eq: archiveValue,
-							},
-						},
-						{
-							[field]: {
-								_neq: archiveValue,
-							},
-						},
-					],
-				};
+				return null;
 			} else if (props.archive === 'archived') {
 				return {
 					[field]: {

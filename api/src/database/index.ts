@@ -25,6 +25,7 @@ export default function getDatabase(): Knex {
 		'DB_CONNECTION_STRING',
 		'DB_POOL',
 		'DB_EXCLUDE_TABLES',
+		'DB_VERSION',
 	]);
 
 	const poolConfig = getConfigFromEnv('DB_POOL');
@@ -53,6 +54,7 @@ export default function getDatabase(): Knex {
 
 	const knexConfig: Knex.Config = {
 		client: env.DB_CLIENT,
+		version: env.DB_VERSION,
 		searchPath: env.DB_SEARCH_PATH,
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {

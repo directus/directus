@@ -1,21 +1,16 @@
 /* eslint-disable no-console */
 
-import Dockerode, { ContainerSpec } from 'dockerode';
 import knex from 'knex';
-import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
-import Listr, { ListrTask } from 'listr';
-import { getDBsToTest } from '../get-dbs-to-test';
-import config, { CONTAINER_PERSISTENCE_FILE } from '../config';
-import globby from 'globby';
-import path from 'path';
-import { GlobalConfigTsJest } from 'ts-jest/dist/types';
-import { writeFileSync } from 'fs';
+import Listr from 'listr';
+import vendors from '../get-dbs-to-test';
+import config from '../config';
 import global from './global';
+import { spawn, spawnSync } from 'child_process';
+import { sleep } from './utils/sleep';
 
-const docker = new Dockerode();
 let started = false;
 
-export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
+export default async (): Promise<void> => {
 	if (started) return;
 	started = true;
 
@@ -23,271 +18,33 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 
 	console.log(`👮‍♀️ Starting tests!\n`);
 
-	const vendors = getDBsToTest();
-
-	const NODE_VERSION = process.env.TEST_NODE_VERSION || '16-alpine';
-
 	await new Listr([
 		{
-			title: 'Create Directus Docker Image',
-			task: async (_, task) => {
-				const result = await globby(['**/*', '!node_modules', '!**/node_modules', '!**/src', '!tests', '!**/tests'], {
-					cwd: path.resolve(__dirname, '..', '..', '..'),
-				});
-
-				const stream = await docker.buildImage(
-					{
-						context: path.resolve(__dirname, '..', '..', '..'),
-						src: ['Dockerfile', ...result],
-					},
-					{
-						t: 'directus-test-image',
-						buildargs: { NODE_VERSION },
-						cachefrom: ['directus-test-image'], // Docker now requires this to be an actual array, but Dockerode's types haven't been updated yet
-					} as unknown as Dockerode.ImageBuildOptions
-				);
-
-				await new Promise((resolve, reject) => {
-					docker.modem.followProgress(
-						stream,
-						(err, res) => {
-							if (err) {
-								reject(err);
-							} else {
-								resolve(res);
-							}
-						},
-						(event: any) => {
-							if (event.stream?.startsWith('Step')) {
-								task.output = event.stream;
-							}
-						}
-					);
-				});
-			},
-		},
-		{
-			title: 'Pulling Required Images',
-			task: () => {
-				return new Listr(
-					vendors
-						.map((vendor) => {
-							return {
-								title: config.names[vendor]!,
-								task: async (_, task) => {
-									const image =
-										config.containerConfig[vendor]! &&
-										(config.containerConfig[vendor]! as Dockerode.ContainerSpec).Image;
-
-									if (!image) return;
-
-									const stream = await docker.pull(image);
-
-									await new Promise((resolve, reject) => {
-										docker.modem.followProgress(
-											stream,
-											(err, res) => {
-												if (err) {
-													reject(err);
-												} else {
-													resolve(res);
-												}
-											},
-											(event: any) => {
-												if (event.stream?.startsWith('Step')) {
-													task.output = event.stream;
-												}
-											}
-										);
-									});
-								},
-							} as ListrTask;
-						})
-						.filter((t) => t),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Create Docker containers',
-			task: () => {
-				return new Listr(
-					vendors.map((vendor) => {
-						return {
-							title: config.names[vendor]!,
-							task: () => {
-								return new Listr([
-									{
-										title: 'Database',
-										task: async () => {
-											if (!config.containerConfig[vendor] || config.containerConfig[vendor] === false) return;
-											const container = await docker.createContainer(config.containerConfig[vendor]! as ContainerSpec);
-											global.databaseContainers.push({
-												vendor,
-												container,
-											});
-										},
-									},
-									{
-										title: 'Directus',
-										task: async () => {
-											const container = await docker.createContainer({
-												name: `directus-test-directus-${vendor}-${process.pid}`,
-												Image: 'directus-test-image',
-												Env: [
-													...config.envs[vendor]!,
-													'ADMIN_EMAIL=admin@example.com',
-													'ADMIN_PASSWORD=password',
-													'KEY=directus-test',
-													'SECRET=directus-test',
-													'TELEMETRY=false',
-													'CACHE_SCHEMA=false',
-													'CACHE_ENABLED=false',
-													'RATE_LIMITER_ENABLED=false',
-												],
-												HostConfig: {
-													Links:
-														vendor === 'sqlite3'
-															? undefined
-															: [
-																	`directus-test-database-${vendor}-${process.pid}:directus-test-database-${vendor}-${process.pid}`,
-															  ],
-													PortBindings: {
-														'8055/tcp': [{ HostPort: String(config.ports[vendor]!) }],
-													},
-												},
-											} as ContainerSpec);
-
-											global.directusContainers.push({
-												vendor,
-												container,
-											});
-										},
-									},
-								]);
-							},
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Start Database Docker containers',
-			task: () => {
-				return new Listr(
-					global.databaseContainers.map(({ vendor, container }) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => await container.start(),
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Create Knex instances',
-			task: () => {
-				return new Listr(
-					vendors.map((vendor) => {
-						return {
-							title: config.names[vendor]!,
-							task: () => {
-								global.knexInstances.push({ vendor, knex: knex(config.knexConfig[vendor]!) });
-							},
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Wait for databases to be ready',
-			task: async () => {
-				return new Listr(
-					global.knexInstances.map(({ vendor, knex }) => {
-						return {
-							title: config.names[vendor]!,
-
-							task: async () => {
-								// Give the database image some time to startup before checking the connection
-								await sleep(15000);
-								await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL);
-							},
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Close Knex instances',
-			task: () => {
-				return new Listr(
-					global.knexInstances.map(({ vendor, knex }) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => await knex.destroy(),
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Start Directus Docker containers',
-			task: () => {
-				return new Listr(
-					global.directusContainers.map(({ vendor, container }) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => await container.start(),
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Wait for Directus to be ready',
+			title: 'Bootstrap databases and start servers',
 			task: async () => {
 				return new Listr(
 					vendors.map((vendor) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => {
-								try {
-									await awaitDirectusConnection(config.ports[vendor]!);
-								} catch {
-									const container = global.directusContainers.find(
-										({ vendor: containerVendor }) => containerVendor === vendor
-									);
-
-									const logBuffer = await container?.container?.logs({ follow: false, stderr: true, tail: 50 });
-									const logString = logBuffer ? '\n\n' + logBuffer.toString() + '\n\n' : `Directus couldn't start.`;
-
-									throw new Error(logString);
-								}
-							},
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
-			title: 'Migrate and seed databases',
-			task: async () => {
-				return new Listr(
-					global.knexInstances.map(({ vendor }) => {
 						return {
 							title: config.names[vendor]!,
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
+								const bootstrap = spawnSync('node', ['api/cli', 'bootstrap'], { env: config.envs[vendor] });
+								if (bootstrap.stderr.length > 0) {
+									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
+								}
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
+								const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
+								global.directus[vendor] = server;
+								let serverOutput = '';
+								server.stdout.on('data', (data) => (serverOutput += data.toString()));
+								server.on('exit', (code) => {
+									if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
+								});
+								// Give the server some time to start
+								await sleep(5000);
+								server.on('exit', () => undefined);
 							},
 						};
 					}),
@@ -295,30 +52,14 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 				);
 			},
 		},
-		{
-			skip: () => !jestConfig.watch,
-			title: 'Persist container info',
-			task: () => {
-				const persistContainer = ({ container, vendor }: { container: Dockerode.Container; vendor: string }) => ({
-					id: container.id,
-					vendor,
-				});
-				const containers = {
-					db: global.databaseContainers.map(persistContainer),
-					directus: global.directusContainers.map(persistContainer),
-				};
-				writeFileSync(CONTAINER_PERSISTENCE_FILE, JSON.stringify(containers));
-			},
-		},
-	]).run();
+	])
+		.run()
+		.catch((reason) => {
+			for (const server of Object.values(global.directus)) {
+				server?.kill();
+			}
+			throw new Error(reason);
+		});
 
 	console.log('\n');
 };
-
-function sleep(ms: number) {
-	return new Promise<void>((resolve) => {
-		setTimeout(() => {
-			resolve();
-		}, ms);
-	});
-}
