@@ -227,6 +227,8 @@ geometry.Point: Titik
 geometry.LineString: StringGaris
 geometry.Polygon: Poligon
 geometry.MultiPoint: TitikMulti
+geometry.MultiLineString: Rangkaian beberapa baris
+geometry.MultiPolygon: Banyak poligon
 not_available_for_type: Tidak Tersedia Untuk Tipe Ini
 create_translations: Buat Terjemahan
 auto_refresh: Penyegaran Otomatis
@@ -311,6 +313,7 @@ revision_delta_reverted: Dikembalikan
 revision_delta_other: Revisi
 revision_delta_by: '{date} oleh {user}'
 private_user: Pengguna Pribadi
+creation_preview: Pratinjau Kreasi
 revision_preview: Pratinjau Revisi
 updates_made: Pembaruan Dibuat
 leave_comment: Tinggalkan komentar...
@@ -429,6 +432,7 @@ interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
 reset_interface: Atur ulang Antarmuka
 display_not_found: 'Tampilan "{display}" tidka ditemukan.'
 reset_display: Set ulang Tampilan
+list-m2a: Pembangun (M2A)
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
 no_items_copy: Belum ada item pada koleksi ini.
 file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
