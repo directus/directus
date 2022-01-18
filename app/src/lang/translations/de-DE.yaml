@@ -283,9 +283,19 @@ foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 raw_value: Rohwert
+copy_raw_value: Unverarbeiteten Wert kopieren
+copy_raw_value_success: Kopiert
+copy_raw_value_fail: Kopieren fehlgeschlagen
+paste_raw_value: Unverarbeiteten Wert einfügen
+paste_raw_value_success: Eingefügt
+paste_raw_value_fail: Einfügen fehlgeschlagen
+view_raw_value: Unverarbeiteten Wert anzeigen
 edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
+clear_value: Wert löschen
 clear_changes: Änderungen löschen
+reset_to_default: Auf Standardwert zurücksetzen
+undo_changes: Änderungen rückgängig machen
 notifications: Benachrichtigungen
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
@@ -944,6 +954,7 @@ fields:
     external_identifier: Externer Identifikator
     last_page: Letzte Seite
     last_access: Letzter Zugriff
+    email_notifications: E-Mail Benachrichtigungen
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1154,6 +1165,8 @@ share_access_not_found: Diese freigegebene Seite existiert entweder nicht oder h
 share_access_not_found_desc: Bitte kontaktieren Sie einen autorisierten Benutzer dieses Projekts, um Zugriff anzufordern.
 share_access_not_found_title: Unbekannte geteilte Seite
 share_copy_link: Link kopieren
+share_copy_link_success: Link kopiert
+share_copy_link_error: Der Link konnte nicht kopiert werden
 share_send_link: Link senden
 relational_triggers: Relationale Trigger
 referential_action_field_label_m2o: Beim Löschen von {collection}...
@@ -1228,6 +1241,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1237,6 +1251,7 @@ interfaces:
     add_filter: Filter hinzufügen
     add_group: Und / Oder Gruppe
     add_value: Wert hinzufügen
+    logic_type_and: Und
     logic_type_or: Oder
     all: Alle
     any: Irgendeiner
