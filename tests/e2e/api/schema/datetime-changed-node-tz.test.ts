@@ -74,13 +74,11 @@ describe('schema', () => {
 			server.on('exit', (code) => {
 				if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 			});
-			promises.push(async () => {
-				await awaitDirectusConnection(newServerPort);
-			});
+			promises.push(awaitDirectusConnection(newServerPort));
 		}
 
 		// Give the server some time to start
-		return await Promise.all(promises);
+		await Promise.all(promises);
 	}, 60000);
 
 	afterAll(async () => {
