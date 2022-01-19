@@ -13,7 +13,6 @@ export async function up(knex: Knex): Promise<void> {
 
 	await helper.changeToString('directus_relations', 'sort_field', {
 		length: 64,
-		nullable: true,
 	});
 
 	await helper.changeToString('directus_relations', 'one_deselect_action', {
