@@ -10,7 +10,17 @@
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 		/>
-
+		<template v-if="softLength">
+			<span
+				class="remaining"
+				:class="{
+					warning: percentageRemaining < 10,
+					danger: percentageRemaining < 5,
+				}"
+			>
+				{{ softLength - count }}
+			</span>
+		</template>
 		<v-dialog v-model="linkDrawerOpen">
 			<v-card>
 				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
@@ -240,6 +250,10 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		softLength: {
+			type: Number,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -251,9 +265,10 @@ export default defineComponent({
 		const { imageToken } = toRefs(props);
 
 		let tinymceEditor: HTMLElement | null;
+		let count = ref(0);
 
 		const observer = new MutationObserver((_mutations) => {
-			characterCount();
+			count.value = characterCount();
 		});
 		const config = { characterData: true, childList: true, subtree: true };
 
@@ -375,8 +390,16 @@ export default defineComponent({
 			};
 		});
 
+		const percentageRemaining = computed(() => {
+			if (!props.softLength) return null;
+			if (!count.value) return 100;
+			if (props.softLength) return 100 - (count.value / +props.softLength) * 100;
+			return 100;
+		});
 		return {
 			t,
+			percentageRemaining,
+			count,
 			editorElement,
 			editorOptions,
 			internalValue,
@@ -462,6 +485,26 @@ export default defineComponent({
 
 .grid {
 	@include form-grid;
+}
+
+.remaining {
+	position: absolute;
+	right: 10px;
+	bottom: 5px;
+	width: 24px;
+	color: var(--foreground-subdued);
+	font-weight: 600;
+	text-align: right;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.warning {
+	color: var(--warning);
+}
+
+.danger {
+	color: var(--danger);
 }
 
 .image-preview,
