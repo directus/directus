@@ -74,7 +74,7 @@
 			</v-dialog>
 
 			<v-button
-				v-tooltip.bottom="isSavable ? t('save') : t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
@@ -85,7 +85,7 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true"
+						v-if="isSavable"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -262,7 +262,7 @@ export default defineComponent({
 
 		const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
-		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
