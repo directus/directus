@@ -14,8 +14,8 @@
 			<span
 				class="remaining"
 				:class="{
-					warning: percentageRemaining < 10,
-					danger: percentageRemaining < 5,
+					warning: percRemaining < 10,
+					danger: percRemaining < 5,
 				}"
 			>
 				{{ softLength - count }}
@@ -189,7 +189,7 @@ import useLink from './useLink';
 import useSourceCode from './useSourceCode';
 import { getToken } from '@/api';
 import { getPublicURL } from '@/utils/get-root-path';
-
+import { percentageRemaining } from '../shared/character-count-no-html';
 type CustomFormat = {
 	title: string;
 	inline: string;
@@ -275,7 +275,8 @@ export default defineComponent({
 		onMounted(() => {
 			const iframe = document.getElementsByTagName('iframe');
 
-			if (iframe !== null) tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
+			if (iframe && iframe[0] && iframe[0].contentWindow)
+				tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
 			if (tinymceEditor) observer.observe(tinymceEditor, config);
 		});
 
@@ -390,15 +391,11 @@ export default defineComponent({
 			};
 		});
 
-		const percentageRemaining = computed(() => {
-			if (!props.softLength) return null;
-			if (!count.value) return 100;
-			if (props.softLength) return 100 - (count.value / +props.softLength) * 100;
-			return 100;
-		});
+		const percRemaining = computed(() => percentageRemaining(count.value, props.softLength));
+
 		return {
 			t,
-			percentageRemaining,
+			percRemaining,
 			count,
 			editorElement,
 			editorOptions,
