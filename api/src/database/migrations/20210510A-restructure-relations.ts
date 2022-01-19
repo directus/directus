@@ -7,16 +7,18 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_relations', (table) => {
 		table.dropColumns('many_primary', 'one_primary');
 		table.string('one_deselect_action').defaultTo('nullify');
-		table.string('sort_field', 64).alter();
 	});
+
+	await knex('directus_relations').update({ one_deselect_action: 'nullify' });
 
 	await helper.changeToString('directus_relations', 'sort_field', {
 		length: 64,
 		nullable: true,
 	});
 
-	await knex.schema.alterTable('directus_relations', (table) => {
-		table.string('one_deselect_action').notNullable().defaultTo('nullify').alter();
+	await helper.changeToString('directus_relations', 'one_deselect_action', {
+		nullable: false,
+		default: 'nullify',
 	});
 }
 

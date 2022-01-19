@@ -103,13 +103,14 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			if (options.default !== undefined) {
 				col.defaultTo(options.default);
 			}
-
-			col.alter();
 		});
-		await this.knex.update(`${column}__temp`, this.knex.ref(column));
+
+		await this.knex(table).update(`${column}__temp`, this.knex.ref(column));
+
 		await this.knex.schema.alterTable(table, (builder) => {
 			builder.dropColumn(column);
 		});
+
 		await this.knex.schema.alterTable(table, (builder) => {
 			builder.renameColumn(`${column}__temp`, column);
 		});
