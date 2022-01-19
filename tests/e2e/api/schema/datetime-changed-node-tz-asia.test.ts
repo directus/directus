@@ -47,21 +47,26 @@ describe('schema', () => {
 		);
 	}
 
-	const updatedSampleDates = cloneDeep(sampleDates);
-	for (const date of updatedSampleDates) {
-		date.id += updatedSampleDates.length;
+	const sampleDatesAmerica = cloneDeep(sampleDates);
+	for (const date of sampleDatesAmerica) {
+		date.id += sampleDatesAmerica.length;
+	}
+
+	const sampleDatesAsia = cloneDeep(sampleDatesAmerica);
+	for (const date of sampleDatesAsia) {
+		date.id += sampleDatesAsia.length;
 	}
 
 	beforeAll(async () => {
 		const isWindows = ['win32', 'win64'].includes(process.platform);
 		const currentTzOffset = new Date().getTimezoneOffset();
 
-		// Different timezone format for windows
+		// Different timezone format for Windows
 		const newTz = isWindows
-			? String(currentTzOffset !== 180 ? 180 * 60 : 360 * 60)
-			: currentTzOffset !== 180
-			? 'America/Sao_Paulo'
-			: 'America/Mexico_City';
+			? String(currentTzOffset !== -32400 ? -540 * 60 : -240 * 60)
+			: currentTzOffset !== -32400
+			? 'Asia/Seoul'
+			: 'Asia/Dubai';
 		const promises = [];
 
 		for (const vendor of vendors) {
@@ -97,12 +102,12 @@ describe('schema', () => {
 		}
 	});
 
-	describe('Date Types (Changed Node Timezone)', () => {
+	describe('Date Types (Changed Node Timezone Asia)', () => {
 		it.each(vendors)('%p returns existing datetime data correctly', async (vendor) => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 			const response = await request(url)
-				.get(`/items/schema_date_types?fields=*`)
+				.get(`/items/schema_date_types?fields=*&limit=${sampleDates.length}`)
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
@@ -121,12 +126,33 @@ describe('schema', () => {
 					new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 				);
 			}
+
+			const response2 = await request(url)
+				.get(`/items/schema_date_types?fields=*&offset=${sampleDatesAmerica.length}`)
+				.set('Authorization', 'Bearer AdminToken')
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			expect(response2.body.data.length).toBe(sampleDatesAmerica.length);
+
+			for (let index = 0; index < sampleDatesAmerica.length; index++) {
+				const responseObj = find(response2.body.data, (o) => {
+					return o.id === sampleDatesAmerica[index]!.id;
+				}) as SchemaDateTypesObject;
+
+				expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
+				expect(responseObj.time).toBe(sampleDatesAmerica[index]!.time);
+				expect(responseObj.datetime).toBe(sampleDatesAmerica[index]!.datetime);
+				expect(responseObj.timestamp.substring(0, 19)).toBe(
+					new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
+				);
+			}
 		});
 
 		it.each(vendors)('%p stores the correct datetime data', async (vendor) => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
-			const dates = cloneDeep(updatedSampleDates);
+			const dates = cloneDeep(sampleDatesAsia);
 
 			await request(url)
 				.post(`/items/schema_date_types`)
@@ -136,22 +162,22 @@ describe('schema', () => {
 				.expect(200);
 
 			const response = await request(url)
-				.get(`/items/schema_date_types?fields=*&offset=${updatedSampleDates.length}`)
+				.get(`/items/schema_date_types?fields=*&offset=${sampleDates.length + sampleDatesAmerica.length}`)
 				.set('Authorization', 'Bearer AdminToken')
 				.expect('Content-Type', /application\/json/)
 				.expect(200);
 
-			expect(response.body.data.length).toBe(updatedSampleDates.length);
+			expect(response.body.data.length).toBe(sampleDatesAsia.length);
 
-			for (let index = 0; index < updatedSampleDates.length; index++) {
+			for (let index = 0; index < sampleDatesAsia.length; index++) {
 				const responseObj = find(response.body.data, (o) => {
-					return o.id === updatedSampleDates[index]!.id;
+					return o.id === sampleDatesAsia[index]!.id;
 				}) as SchemaDateTypesObject;
-				expect(responseObj.date).toBe(updatedSampleDates[index]!.date);
-				expect(responseObj.time).toBe(updatedSampleDates[index]!.time);
-				expect(responseObj.datetime).toBe(updatedSampleDates[index]!.datetime);
+				expect(responseObj.date).toBe(sampleDatesAsia[index]!.date);
+				expect(responseObj.time).toBe(sampleDatesAsia[index]!.time);
+				expect(responseObj.datetime).toBe(sampleDatesAsia[index]!.datetime);
 				expect(responseObj.timestamp.substring(0, 19)).toBe(
-					new Date(updatedSampleDates[index]!.timestamp).toISOString().substring(0, 19)
+					new Date(sampleDatesAsia[index]!.timestamp).toISOString().substring(0, 19)
 				);
 			}
 		});
