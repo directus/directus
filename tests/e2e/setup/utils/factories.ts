@@ -31,7 +31,7 @@ type Organizer = {
 
 type Event = {
 	id: string;
-	time: string;
+	time: Date;
 	description: string;
 	cost: number;
 	created_at: Date;
@@ -140,8 +140,8 @@ export const createEvent = (): Event => ({
 	id: uuid(),
 	cost: 1504.04,
 	description: lorem.paragraphs(2),
-	created_at: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
-	time: randomTime(),
+	created_at: randomDateTime(),
+	time: randomDateTime(),
 	tags: `tags
 ${music.genre()}
 ${music.genre()}
@@ -156,10 +156,10 @@ export const createTour = (): Tour => ({
 
 export const createGuest = (): Guest => ({
 	id: uuid(),
-	birthday: randomDateTime(new Date(1030436120350), new Date(1633466120350)),
+	birthday: randomDateTime(),
 	name: `${name.firstName()} ${name.lastName()}`,
-	earliest_events_to_show: randomTime(),
-	latest_events_to_show: randomTime(),
+	earliest_events_to_show: randomDateTime(),
+	latest_events_to_show: randomDateTime(),
 	password: getRandomString(32),
 	shows_attended: datatype.number(),
 });
@@ -211,13 +211,8 @@ function getRandomInt(max: number) {
 	return int;
 }
 
-function randomDateTime(start: Date, end: Date) {
+function randomDateTime(start = new Date(1030436120350), end = new Date(1633466120350)) {
 	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
-
-function randomTime() {
-	const dateTime = randomDateTime(new Date(1030436120350), new Date(1633466120350)).toUTCString();
-	return dateTime.substring(17, 25);
 }
 
 function getRandomString(length: number) {

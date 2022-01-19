@@ -117,7 +117,7 @@ describe('/items', () => {
 			});
 
 			expect(response.data.data).toBe(undefined);
-			expect(await databases.get(vendor)!('artists_events').select('*').where('id', item[0].id)).toStrictEqual([]);
+			expect(await databases.get(vendor)!('artists_events').select('*').where('id', item[0].id)).toMatchObject([]);
 			expect(await databases.get(vendor)!('artists').select('name').where('id', artist.id)).toMatchObject([
 				{ name: artist.name },
 			]);
@@ -297,7 +297,7 @@ describe('/items', () => {
 
 			expect(response.data.data).toBe(undefined);
 			for (let row = 0; row < items.length; row++) {
-				expect(await databases.get(vendor)!('artists_events').select('*').where('id', items[row].id)).toStrictEqual([]);
+				expect(await databases.get(vendor)!('artists_events').select('*').where('id', items[row].id)).toMatchObject([]);
 			}
 			expect((await databases.get(vendor)!('artists').select('name').where('id', artist.id))[0].name).toBe(artist.name);
 

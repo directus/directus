@@ -53,27 +53,29 @@ jobs:
   lint:
     name: Lint
     needs: pre_check
-    uses: directus/directus/.github/workflows/lint.yml@main
+    uses: directus/directus/.github/workflows/lint.yml@add-e2e-tests-vendors
     with:
       should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   codeql_analysis:
     name: CodeQL Analysis
     needs: pre_check
-    uses: directus/directus/.github/workflows/codeql-analysis.yml@main
+    uses: directus/directus/.github/workflows/codeql-analysis.yml@add-e2e-tests-vendors
     with:
       should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   unit_tests:
     name: Unit Tests
     needs: pre_check
-    uses: directus/directus/.github/workflows/unit-tests.yml@main
+    uses: directus/directus/.github/workflows/unit-tests.yml@add-e2e-tests-vendors
     with:
       should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
-    uses: directus/directus/.github/workflows/e2e-tests.yml@main
+    uses: directus/directus/.github/workflows/e2e-tests.yml@add-e2e-tests-vendors
     with:
-      should_skip: ${{ needs.pre_check.outputs.should_skip == 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}
+      should_skip:
+        ${{ needs.pre_check.outputs.should_skip == 'true' ||
+        fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}

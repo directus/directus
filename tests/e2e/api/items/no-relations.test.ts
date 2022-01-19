@@ -37,16 +37,11 @@ describe('/items', () => {
 		});
 		it.each(vendors)(`%p retrieves a guest's favorite artist`, async (vendor) => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-			const guest = createGuest();
 			const artist = createArtist();
-			await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
-				select: ['id'],
-			});
+			const guest = createGuest();
 			guest.favorite_artist = artist.id;
-			await seedTable(databases.get(vendor)!, 1, 'guests', guest, {
-				select: ['id'],
-				where: ['name', guest.name],
-			});
+			await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+			await seedTable(databases.get(vendor)!, 1, 'guests', guest);
 
 			const response = await request(url)
 				.get(`/items/artists/${artist.id}`)
@@ -164,7 +159,7 @@ describe('/items', () => {
 			});
 
 			expect(response.data.data).toBe(undefined);
-			expect(await databases.get(vendor)!('artists').select('*').where('id', artist.id)).toStrictEqual([]);
+			expect(await databases.get(vendor)!('artists').select('*').where('id', artist.id)).toMatchObject([]);
 		});
 	});
 	describe('/:collection GET', () => {
@@ -256,31 +251,10 @@ describe('/items', () => {
 		it.each(vendors)(`%p updates many artists to a different name`, async (vendor) => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
-			let items;
-			const keys: any[] = [];
 			const artists = createMany(createArtist, 5, { id: uuid });
-			if (vendor === 'mssql') {
-				items = await seedTable(databases.get(vendor)!, 1, 'artists', artists, {
-					raw: 'SELECT TOP(10) id FROM artists ORDER BY id DESC;',
-				});
-				Object.values(items).forEach((item: any) => {
-					keys.push(item.id);
-				});
-			} else if (vendor !== 'postgres' && vendor !== 'postgres10') {
-				items = await seedTable(databases.get(vendor)!, 1, 'artists', artists, {
-					raw: 'select id from artists order by id desc limit 10;',
-				});
-				Object.values(items[0]).forEach((item: any) => {
-					keys.push(item.id);
-				});
-			} else {
-				items = await seedTable(databases.get(vendor)!, 1, 'artists', artists, {
-					raw: 'select id from artists order by id desc limit 10;',
-				});
-				Object.values(items.rows).forEach((item: any) => {
-					keys.push(item.id);
-				});
-			}
+			await seedTable(databases.get(vendor)!, 1, 'artists', artists);
+			const items = await databases.get(vendor)?.select('id').from('artists').limit(10);
+			const keys = Object.values(items ?? []).map((item: any) => item.id);
 
 			const body = {
 				keys: keys,
@@ -319,7 +293,7 @@ describe('/items', () => {
 
 			expect(response.data.data).toBe(undefined);
 			for (let row = 0; row < body.length; row++) {
-				expect(await databases.get(vendor)!('artists').select('*').where('id', body[row])).toStrictEqual([]);
+				expect(await databases.get(vendor)!('artists').select('*').where('id', body[row])).toMatchObject([]);
 			}
 		});
 	});

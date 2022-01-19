@@ -9,8 +9,8 @@ exports.up = async function (knex) {
 		table.string('name');
 		table.date('birthday');
 		table.string('search_radius');
-		table.time('earliest_events_to_show');
-		table.time('latest_events_to_show');
+		table.timestamp('earliest_events_to_show');
+		table.timestamp('latest_events_to_show');
 		table.string('password');
 		table.integer('shows_attended');
 		table.uuid('favorite_artist').references('id').inTable('artists');
@@ -21,7 +21,7 @@ exports.up = async function (knex) {
 		table.float('cost');
 		table.text('description');
 		table.text('tags');
-		table.time('time');
+		table.timestamp('time');
 	});
 	await knex.schema.createTable('tours', (table) => {
 		table.uuid('id').primary();
