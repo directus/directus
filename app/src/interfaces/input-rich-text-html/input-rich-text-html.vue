@@ -149,7 +149,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance } from 'vue';
+import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance, onMounted } from 'vue';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -249,6 +249,20 @@ export default defineComponent({
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const isEditorDirty = ref(false);
 		const { imageToken } = toRefs(props);
+
+		let tinymceEditor: HTMLElement | null;
+
+		const observer = new MutationObserver((_mutations) => {
+			characterCount();
+		});
+		const config = { characterData: true, childList: true, subtree: true };
+
+		onMounted(() => {
+			const iframe = document.getElementsByTagName('iframe');
+
+			if (iframe !== null) tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
+			if (tinymceEditor) observer.observe(tinymceEditor, config);
+		});
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
@@ -406,6 +420,16 @@ export default defineComponent({
 
 		function setDirty() {
 			isEditorDirty.value = true;
+		}
+
+		function characterCount() {
+			if (!tinymceEditor || !tinymceEditor.childNodes) return null;
+			let totalCharacters = 0;
+
+			for (const node of tinymceEditor.childNodes) {
+				if (node && node.textContent) totalCharacters += node.textContent.length;
+			}
+			return totalCharacters;
 		}
 
 		function setFocus(val: boolean) {
