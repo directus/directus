@@ -6,8 +6,8 @@ import vendors from '../get-dbs-to-test';
 import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
-import { sleep } from './utils/sleep';
 import axios from 'axios';
+import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 
 let started = false;
 
@@ -29,6 +29,8 @@ export default async (): Promise<void> => {
 							title: config.names[vendor]!,
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
+								// Confirm that database is ready for connection
+								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
 								const bootstrap = spawnSync('node', ['api/cli', 'bootstrap'], { env: config.envs[vendor] });
 								if (bootstrap.stderr.length > 0) {
 									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
@@ -44,7 +46,7 @@ export default async (): Promise<void> => {
 									if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 								});
 								// Give the server some time to start
-								await sleep(5000);
+								await awaitDirectusConnection(Number(config.envs[vendor]!.PORT!));
 								server.on('exit', () => undefined);
 							},
 						};
