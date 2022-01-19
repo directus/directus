@@ -131,7 +131,7 @@ export default defineInterface({
 					width: 'half',
 					interface: 'input',
 					options: {
-						placeholder: 255,
+						placeholder: '255',
 						min: 1,
 					},
 				},
