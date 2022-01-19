@@ -277,11 +277,14 @@ export default defineComponent({
 		const config = { characterData: true, childList: true, subtree: true };
 
 		onMounted(() => {
-			const wysiwyg = document.getElementById(props.field);
 			let iframe;
+			const wysiwyg = document.getElementById(props.field);
+
 			if (wysiwyg) iframe = wysiwyg.getElementsByTagName('iframe');
+
 			if (iframe && iframe[0] && iframe[0].contentWindow)
 				tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
+
 			if (tinymceEditor) observer.observe(tinymceEditor, config);
 		});
 
