@@ -1,4 +1,4 @@
-export const allVendors = ['mssql', 'mysql', 'postgres', 'maria', 'oracle', 'sqlite3', 'postgres10' /*'cockroachdb'*/];
+export const allVendors = ['mssql', 'mysql', 'postgres', 'maria', 'oracle', 'sqlite3', 'postgres10', 'cockroachdb'];
 
 const vendors = process.env.TEST_DB?.split(',').map((v) => v.trim()) ?? allVendors;
 

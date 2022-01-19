@@ -104,6 +104,17 @@ const config: Config = {
 			...knexConfig,
 			waitTestSQL: 'SELECT 1 FROM DUAL',
 		},
+		cockroachdb: {
+			client: 'cockroachdb',
+			connection: {
+				database: 'defaultdb',
+				user: 'root',
+				password: '',
+				host: 'localhost',
+				port: 6106,
+			},
+			...knexConfig,
+		},
 		sqlite3: {
 			client: 'sqlite3',
 			connection: {
@@ -128,6 +139,7 @@ const config: Config = {
 		mssql: 'MS SQL Server',
 		oracle: 'OracleDB',
 		sqlite3: 'SQLite 3',
+		cockroachdb: 'CockroachDB',
 	},
 	envs: {
 		postgres: {
@@ -193,6 +205,16 @@ const config: Config = {
 			DB_CLIENT: 'sqlite3',
 			DB_FILENAME: './test.db',
 			PORT: '59158',
+		},
+		cockroachdb: {
+			...directusConfig,
+			DB_CLIENT: 'cockroachdb',
+			DB_HOST: `localhost`,
+			DB_USER: 'postgres',
+			DB_PASSWORD: 'secret',
+			DB_PORT: '6101',
+			DB_DATABASE: 'directus',
+			PORT: '59159',
 		},
 	},
 };
