@@ -63,7 +63,9 @@ export default defineComponent({
 
 			if (!props.softLength) return null;
 			if (!props.value && props.softLength) return props.softLength;
-			if (props.softLength) return +props.softLength - props.value.length;
+			const realValue = props.value.replaceAll('\n', ' ').length;
+
+			if (props.softLength) return +props.softLength - realValue;
 			return null;
 		});
 
