@@ -35,9 +35,6 @@ describe('ItemsService', () => {
 		});
 
 		const response = await itemsService.createOne(item, { emitEvents: false });
-		const rEx = new RegExp(UUID_REGEX);
-
-		const uuidChecker = typeof response === 'string' ? rEx.test(response) : false;
-		expect(uuidChecker).toBe(true);
+		expect(response).toBe('6107c897-9182-40f7-b22e-4f044d1258d2');
 	});
 });
