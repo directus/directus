@@ -9,8 +9,8 @@ import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
 import { toArray } from '@directus/shared/utils';
 import { Query } from '@directus/shared/types';
-import getDatabase from './index';
-import { getGeometryHelper } from '../database/helpers/geometry';
+import getDatabase from '.';
+import { getHelpers } from '../database/helpers';
 
 type RunASTOptions = {
 	/**
@@ -46,7 +46,7 @@ export default async function runAST(
 
 	const knex = options?.knex || getDatabase();
 
-	if (ast.type === 'm2a') {
+	if (ast.type === 'a2o') {
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
@@ -141,7 +141,7 @@ async function parseCurrentLevel(
 			columnsToSelectInternal.push(child.fieldKey);
 		}
 
-		if (child.type === 'm2a') {
+		if (child.type === 'a2o') {
 			columnsToSelectInternal.push(child.relation.field);
 			columnsToSelectInternal.push(child.relation.meta!.one_collection_field!);
 		}
@@ -174,7 +174,7 @@ async function parseCurrentLevel(
 }
 
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
-	const helper = getGeometryHelper();
+	const helpers = getHelpers(knex);
 
 	return function (fieldNode: FieldNode | M2ONode): Knex.Raw<string> {
 		let field;
@@ -192,7 +192,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		}
 
 		if (field.type.startsWith('geometry')) {
-			return helper.asText(table, field.field);
+			return helpers.st.asText(table, field.field);
 		}
 
 		return getColumn(knex, table, fieldNode.name, alias);
@@ -263,7 +263,7 @@ function applyParentFilters(
 			} else {
 				nestedNode.query.union = [foreignField, foreignIds];
 			}
-		} else if (nestedNode.type === 'm2a') {
+		} else if (nestedNode.type === 'a2o') {
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
 			for (const parentItem of parentItems) {
@@ -346,7 +346,7 @@ function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
-	} else if (nestedNode.type === 'm2a') {
+	} else if (nestedNode.type === 'a2o') {
 		for (const parentItem of parentItems) {
 			if (!nestedNode.relation.meta?.one_collection_field) {
 				parentItem[nestedNode.fieldKey] = null;
@@ -381,7 +381,7 @@ function removeTemporaryFields(
 	const rawItems = cloneDeep(toArray(rawItem));
 	const items: Item[] = [];
 
-	if (ast.type === 'm2a') {
+	if (ast.type === 'a2o') {
 		const fields: Record<string, string[]> = {};
 		const nestedCollectionNodes: Record<string, NestedCollectionNode[]> = {};
 

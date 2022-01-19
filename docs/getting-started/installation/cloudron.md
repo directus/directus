@@ -6,4 +6,5 @@ Directus is available as a 1-click install on the Cloudron Store.
 
 The source code for the package can be found [here](https://git.cloudron.io/cloudron/directus-app/).
 
-You can also test the directus installation on the demo Cloudron instance - https://my.demo.cloudron.io (username: `cloudron` password: `cloudron`).
+You can also test the directus installation on the demo Cloudron instance - https://my.demo.cloudron.io (username:
+`cloudron` password: `cloudron`).

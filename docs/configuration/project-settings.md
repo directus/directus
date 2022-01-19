@@ -7,9 +7,11 @@
 
 - **Project Name** — The name used at the top of the [Navigation Bar](/app/overview/#_2-navigation-bar) and on the
   login/public pages
+- **Project Descriptor** - The descriptor shown below the Project Name at the top of the
+  [Navigation Bar](/app/overview/#_2-navigation-bar) and on the login/public pages
 - **Project URL** — The URL when clicking the logo at the top of the [Module Bar](/app/overview/#_1-module-bar)
 
-## Branding
+## Branding & Style
 
 - **Project Color** — The color used behind the logo at the top of the [Module Bar](/app/overview/#_1-module-bar), on
   the login/public pages, and for the browser's FavIcon

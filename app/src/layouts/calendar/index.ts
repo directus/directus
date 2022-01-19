@@ -41,9 +41,10 @@ export default defineLayout<LayoutOptions>({
 
 		const appStore = useAppStore();
 
+		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 
-		const { selection, collection, filter, search } = toRefs(props);
+		const { collection, filter, search } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -142,10 +143,12 @@ export default defineLayout<LayoutOptions>({
 						const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
 
 						if (item) {
-							if (selection.value.includes(item)) {
-								selection.value = selection.value.filter((selectedItem) => selectedItem !== item);
+							const primaryKey = item[primaryKeyField.value!.field];
+
+							if (selection.value.includes(primaryKey)) {
+								selection.value = selection.value.filter((selected) => selected !== primaryKey);
 							} else {
-								selection.value = [...selection.value, item];
+								selection.value = [...selection.value, primaryKey];
 							}
 
 							updateCalendar();
@@ -285,13 +288,15 @@ export default defineLayout<LayoutOptions>({
 				}
 			}
 
+			const primaryKey = item[primaryKeyField.value.field];
+
 			return {
-				id: item[primaryKeyField.value.field],
+				id: primaryKey,
 				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				className: selection.value.includes(item) ? 'selected' : undefined,
+				className: selection.value.includes(primaryKey) ? 'selected' : undefined,
 			};
 		}
 

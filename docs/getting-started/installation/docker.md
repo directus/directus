@@ -131,14 +131,14 @@ networks:
 If you are not using the `latest` tag for the Directus image you need to adjust your `docker-compose.yml` file to
 increment the tag version number, e.g.:
 
-```
+```diff
 -   image: directus/directus:9.0.0-rc.101
 +   image: directus/directus:9.0.0
 ```
 
 You can then issue the following two commands (from your docker-compose root):
 
-```
+```bash
 docker-compose pull
 docker-compose up -d
 ```

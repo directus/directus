@@ -19,7 +19,7 @@ router.get(
 
 		const extensionManager = getExtensionManager();
 
-		const extensions = extensionManager.listExtensions(type);
+		const extensions = extensionManager.getExtensionsList(type);
 
 		res.locals.payload = {
 			data: extensions,
@@ -47,7 +47,7 @@ router.get(
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		res.setHeader('Cache-Control', 'no-cache');
+		res.setHeader('Cache-Control', 'no-store');
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(extensionSource);
 	})

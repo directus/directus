@@ -1,5 +1,6 @@
 export type Notification = {
 	id: string;
+	status: string;
 	timestamp: string;
 	recipient: string;
 	sender: string | null;

@@ -1,6 +1,6 @@
 import { set } from 'lodash';
 import { State, StateUpdates } from '../types';
-import { getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 
 /**
  * In case a relational field removed the schema object, we'll have to make sure it's re-added
@@ -20,7 +20,7 @@ export function resetSchema(updates: StateUpdates, state: State) {
 export function setLocalTypeForInterface(updates: StateUpdates) {
 	if (!updates.field?.meta?.interface) return;
 
-	const chosenInterface = getInterfaces().interfaces.value.find((inter) => inter.id === updates.field!.meta!.interface);
+	const chosenInterface = getInterface(updates.field.meta.interface);
 
 	if (!chosenInterface) return;
 
@@ -36,7 +36,7 @@ export function setLocalTypeForInterface(updates: StateUpdates) {
 export function setTypeForInterface(updates: StateUpdates, state: State) {
 	if (!updates.field?.meta?.interface) return;
 
-	const chosenInterface = getInterfaces().interfaces.value.find((inter) => inter.id === updates.field!.meta!.interface);
+	const chosenInterface = getInterface(updates.field.meta.interface);
 
 	if (!chosenInterface) return updates;
 

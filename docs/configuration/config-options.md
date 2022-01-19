@@ -194,21 +194,36 @@ prefixing the value with `{type}:`. The following types are available:
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
 
+::: tip Additional Logger Variables
+
+All `LOGGER_*` environment variables are passed to the `options` configuration of a
+[`Pino` instance](https://github.com/pinojs/pino/blob/master/docs/api.md#options). All `LOGGER_HTTP*` environment
+variables are passed to the `options` configuration of a
+[`Pino-http` instance](https://github.com/pinojs/pino-http#api). Based on your project's needs, you can extend the
+`LOGGER_*` environment variables with any config you need to pass to the logger instance. If a LOGGER_LEVELS key is
+added, these values will be passed to the logger formatter, as described
+[here](https://github.com/pinojs/pino/blob/master/docs/help.md#mapping-pino-log-levels-to-google-cloud-logging-stackdriver-serverity-levels)
+for example. The format for adding LEVELS values is:
+`LOGGER_LEVELS="trace:DEBUG,debug:DEBUG,info:INFO,warn:WARNING,error:ERROR,fatal:CRITICAL"`
+
+:::
+
 ## Database
 
-| Variable               | Description                                                                                                                                        | Default Value     |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                |
-| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
-| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                |
-| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                |
-| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                |
-| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                |
-| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys` |
-| `DB_CHARSET`           | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI` |
+| Variable               | Description                                                                                                                                        | Default Value                 |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                            |
+| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                            |
+| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                            |
+| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                            |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
+| `DB_CHARSET`           | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
+| `DB_VERSION`           | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
 
 ::: tip Additional Database Variables
 
@@ -227,18 +242,21 @@ All the `DB_POOL_` prefixed options are passed to [`tarn.js`](https://github.com
 
 ## Security
 
-| Variable                         | Description                                                                                                            | Default Value            |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `KEY`                            | Unique identifier for the project.                                                                                     | --                       |
-| `SECRET`                         | Secret string for the project.                                                                                         | --                       |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                           | `15m`                    |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                       | `7d`                     |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                               | --                       |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                            | `false`                  |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                  | `lax`                    |
-| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                         | `directus_refresh_token` |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset) | --                       |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)           | --                       |
+| Variable                         | Description                                                                                                                           | Default Value            |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `KEY`                            | Unique identifier for the project.                                                                                                    | --                       |
+| `SECRET`                         | Secret string for the project.                                                                                                        | --                       |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                          | `15m`                    |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                      | `7d`                     |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                              | --                       |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                           | `false`                  |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                 | `lax`                    |
+| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                        | `directus_refresh_token` |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset)                | --                       |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)                          | --                       |
+| `IP_TRUST_PROXY`                 | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                       | true                     |
+| `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                  | false                    |
+| `CONTENT_SECURITY_POLICY`        | Custom options for the Content-Security-Policy header. See [helmet's documentation](https://helmetjs.github.io) for more information. | --                       |
 
 ::: tip Cookie Strictness
 
@@ -440,6 +458,25 @@ STORAGE_LOCAL_ROOT="./uploads"
 
 :::
 
+::: warning Case sensitivity
+
+The location value(s) you specify should be capitalized when specifying the additional configuration values. For
+example, this will not work:
+
+```
+STORAGE_LOCATIONS="s3"
+STORAGE_s3_DRIVER="s3" # Will not work, lowercase "s3" ❌
+```
+
+but this will work:
+
+```
+STORAGE_LOCATIONS="s3"
+STORAGE_S3_DRIVER="s3" # Will work, "s3" is uppercased ✅
+```
+
+:::
+
 | Variable            | Description                                                                                                           | Default Value |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `STORAGE_LOCATIONS` | A CSV of storage locations (eg: `local,digitalocean,amazon`) to use. You can use any names you'd like for these keys. | `local`       |
@@ -516,9 +553,10 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 ## Authentication
 
-| Variable         | Description                            | Default Value |
-| ---------------- | -------------------------------------- | ------------- |
-| `AUTH_PROVIDERS` | CSV of auth providers you want to use. | --            |
+| Variable               | Description                            | Default Value |
+| ---------------------- | -------------------------------------- | ------------- |
+| `AUTH_PROVIDERS`       | CSV of auth providers you want to use. | --            |
+| `AUTH_DISABLE_DEFAULT` | Disable the default auth provider      | `false`       |
 
 For each of the auth providers you list, you must provide the following configuration:
 
@@ -573,6 +611,7 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that va
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                            | `false`          |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --               |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle` |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --               |
 
 #### OpenID
 
@@ -591,6 +630,7 @@ registrations.
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                                                                                    | `false`                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --                     |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle`       |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --                     |
 
 ### LDAP (`ldap`)
 
@@ -657,9 +697,10 @@ AUTH_ADOBE_ICON="adobe"
 
 ## Extensions
 
-| Variable          | Description                           | Default Value  |
-| ----------------- | ------------------------------------- | -------------- |
-| `EXTENSIONS_PATH` | Path to your local extensions folder. | `./extensions` |
+| Variable                 | Description                                             | Default Value  |
+| ------------------------ | ------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`        | Path to your local extensions folder.                   | `./extensions` |
+| `EXTENSIONS_AUTO_RELOAD` | Automatically reload extensions when they have changed. | `false`        |
 
 ## Email
 

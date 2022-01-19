@@ -595,6 +595,19 @@ query {
 Aliases allow you rename fields on the fly, and request the same nested data set multiple times using different filters.
 
 </div>
+</div>
+<div class="two-up">
+<div class="left">
+
+::: warning Nested fields
+
+It is only possible to alias same level fields.\
+Alias for nested fields, f.e. `field.nested`, will not work.
+
+:::
+
+</div>
+
 <div class="right">
 
 ### REST API

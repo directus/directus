@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import getDatabase from '../database';
 import { AbstractServiceOptions, SchemaOverview } from '../types';
 import { Accountability } from '@directus/shared/types';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
 import StreamArray from 'stream-json/streamers/StreamArray';
 import { ItemsService } from './items';
 import { queue } from 'async';
@@ -42,7 +42,7 @@ export class ImportService {
 			case 'text/csv':
 				return await this.importCSV(collection, stream);
 			default:
-				throw new InvalidPayloadException(`Can't import files of type "${mimetype}"`);
+				throw new UnsupportedMediaTypeException(`Can't import files of type "${mimetype}"`);
 		}
 	}
 

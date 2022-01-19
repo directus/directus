@@ -73,6 +73,7 @@ import maplibre, {
 	Map,
 	NavigationControl,
 	GeolocateControl,
+	AttributionControl,
 } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 // @ts-ignore
@@ -181,6 +182,7 @@ export default defineComponent({
 		watch(location, updateProjection);
 
 		const controls = {
+			attribution: new AttributionControl(),
 			draw: new MapboxDraw(getDrawOptions(geometryType)),
 			fitData: new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds),
 			navigation: new NavigationControl({
@@ -250,14 +252,14 @@ export default defineComponent({
 			map = new Map({
 				container: container.value!,
 				style: style.value,
-				attributionControl: false,
 				dragRotate: false,
-				logoPosition: 'bottom-right',
+				logoPosition: 'bottom-left',
+				attributionControl: false,
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 			if (controls.geocoder) {
-				map.addControl(controls.geocoder, 'top-right');
+				map.addControl(controls.geocoder as any, 'top-right');
 				controls.geocoder.on('result', (event: any) => {
 					location.value = event.result.center;
 				});
@@ -269,6 +271,7 @@ export default defineComponent({
 				const { longitude, latitude } = event.coords;
 				location.value = [longitude, latitude];
 			});
+			map.addControl(controls.attribution, 'bottom-left');
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
 			map.addControl(controls.fitData, 'top-left');
@@ -336,7 +339,8 @@ export default defineComponent({
 
 		function fitDataBounds(options: CameraOptions & AnimationOptions) {
 			if (map && currentGeometry) {
-				map.fitBounds(currentGeometry.bbox! as LngLatBoundsLike, {
+				const bbox = getBBox(currentGeometry);
+				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 80,
 					maxZoom: 8,
 					...options,
@@ -432,7 +436,6 @@ export default defineComponent({
 			} else {
 				result = geometries[geometries.length - 1];
 			}
-			result!.bbox = getBBox(result!);
 			return result;
 		}
 
@@ -503,8 +506,8 @@ export default defineComponent({
 
 	.basemap-select {
 		position: absolute;
+		right: 10px;
 		bottom: 10px;
-		left: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

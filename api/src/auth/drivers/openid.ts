@@ -6,12 +6,18 @@ import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
-import { InvalidCredentialsException, ServiceUnavailableException, InvalidConfigException } from '../../exceptions';
+import { AuthDriverOptions, User, AuthData } from '../../types';
+import {
+	InvalidCredentialsException,
+	ServiceUnavailableException,
+	InvalidConfigException,
+	InvalidTokenException,
+} from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -62,17 +68,21 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	async generateAuthUrl(codeVerifier: string): Promise<string> {
+	async generateAuthUrl(codeVerifier: string, prompt = false): Promise<string> {
 		try {
 			const client = await this.client;
 			const codeChallenge = generators.codeChallenge(codeVerifier);
+			const paramsConfig = typeof this.config.params === 'object' ? this.config.params : {};
+
 			return client.authorizationUrl({
 				scope: this.config.scope ?? 'openid profile email',
+				access_type: 'offline',
+				prompt: prompt ? 'consent' : undefined,
+				...paramsConfig,
 				code_challenge: codeChallenge,
 				code_challenge_method: 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				access_type: 'offline',
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -91,6 +101,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier) {
+			logger.trace('[OpenID] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -122,7 +133,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
 
 		if (!identifier) {
-			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
+			logger.warn(`[OpenID] Failed to find user identifier for provider "${this.config.provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -142,6 +153,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
+			logger.trace(
+				`[OpenID] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
+			);
 			throw new InvalidCredentialsException();
 		}
 
@@ -158,31 +172,34 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User): Promise<SessionData> {
-		return this.refresh(user, null);
+	async login(user: User): Promise<void> {
+		return this.refresh(user);
 	}
 
-	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
+	async refresh(user: User): Promise<void> {
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
 			try {
 				authData = JSON.parse(authData);
 			} catch {
-				logger.warn(`Session data isn't valid JSON: ${authData}`);
+				logger.warn(`[OpenID] Session data isn't valid JSON: ${authData}`);
 			}
 		}
 
-		if (!authData?.refreshToken) {
-			return sessionData;
-		}
-
-		try {
-			const client = await this.client;
-			const tokenSet = await client.refresh(authData.refreshToken);
-			return { accessToken: tokenSet.access_token };
-		} catch (e) {
-			throw handleError(e);
+		if (authData?.refreshToken) {
+			try {
+				const client = await this.client;
+				const tokenSet = await client.refresh(authData.refreshToken);
+				// Update user refreshToken if provided
+				if (tokenSet.refresh_token) {
+					await this.usersService.updateOne(user.id, {
+						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+					});
+				}
+			} catch (e) {
+				throw handleError(e);
+			}
 		}
 	}
 }
@@ -191,17 +208,23 @@ const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
-			return new InvalidCredentialsException();
+			logger.trace(e, `[OpenID] Invalid grant`);
+			return new InvalidTokenException();
 		}
+
 		// Server response error
+		logger.trace(e, `[OpenID] Unknown OP error`);
 		return new ServiceUnavailableException('Service returned unexpected response', {
 			service: 'openid',
 			message: e.error_description,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
+		logger.trace(e, `[OpenID] Unknown RP error`);
 		return new InvalidCredentialsException();
 	}
+
+	logger.trace(e, `[OpenID] Unknown error`);
 	return e;
 };
 
@@ -213,7 +236,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		asyncHandler(async (req, res) => {
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
-			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect }, env.SECRET as string, {
+			const prompt = !!req.query.prompt;
+			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect, prompt }, env.SECRET as string, {
 				expiresIn: '5m',
 				issuer: 'directus',
 			});
@@ -223,7 +247,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(await provider.generateAuthUrl(codeVerifier));
+			return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
 		}),
 		respond
 	);
@@ -237,16 +261,18 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
 					verifier: string;
 					redirect?: string;
+					prompt: boolean;
 				};
-			} catch (e) {
+			} catch (e: any) {
+				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
 				throw new InvalidCredentialsException();
 			}
 
-			const { verifier, redirect } = tokenData;
+			const { verifier, redirect, prompt } = tokenData;
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
-					ip: req.ip,
+					ip: getIPFromReq(req),
 					userAgent: req.get('user-agent'),
 					role: null,
 				},
@@ -259,7 +285,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				res.clearCookie(`openid.${providerName}`);
 
 				if (!req.query.code || !req.query.state) {
-					logger.warn(`Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
+					logger.warn(`[OpenID] Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
@@ -268,6 +294,11 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					state: req.query.state,
 				});
 			} catch (error: any) {
+				// Prompt user for a new refresh_token if invalidated
+				if (error instanceof InvalidTokenException && !prompt) {
+					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
+				}
+
 				logger.warn(error);
 
 				if (redirect) {
@@ -277,11 +308,16 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						reason = 'SERVICE_UNAVAILABLE';
 					} else if (error instanceof InvalidCredentialsException) {
 						reason = 'INVALID_USER';
+					} else if (error instanceof InvalidTokenException) {
+						reason = 'INVALID_TOKEN';
+					} else {
+						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}
 
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
 
+				logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 				throw error;
 			}
 

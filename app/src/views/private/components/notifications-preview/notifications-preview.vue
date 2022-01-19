@@ -14,7 +14,7 @@
 		</transition-expand>
 
 		<sidebar-button
-			v-tooltip.left="t('notifications')"
+			v-tooltip.left="t('activity_log')"
 			:active="modelValue"
 			class="toggle"
 			icon="pending_actions"

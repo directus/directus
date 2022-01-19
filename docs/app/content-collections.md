@@ -96,7 +96,7 @@ features/options:
 An excellent choice for temporal (date/time) data, this Layout allows you to choose between a Month, Week, Day, and List
 view. The following options are included:
 
-- Display Layout
+- Display Template
 - Start Date Field
 - End Date Field
 
@@ -114,7 +114,7 @@ options are available:
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to search
-3. Type your search query into the input located in the header
+3. Type your search query into the input (magnifying glass icon) located in the header
 
 ## Filtering Items
 
@@ -122,11 +122,20 @@ options are available:
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to filter
-3. Click "Advanced Filter" in the page sidebar
+3. Click on Filter (filter icon) located in the header
 4. Click the "Add Filter" dropdown and select the field to filter on
 5. Adjust the operator (eg: "Contains") as needed by clicking on it
 6. Enter a value in the field filter's input(s)
 7. Remove unwanted filters by hovering over the field and clicking "X"
+
+## Viewing Archived Items
+
+**[Learn more about Archive](/configuration/data-model/#archive).**
+
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
+2. Navigate to the collection of the items you want to view
+3. Click "Archive" in the page sidebar
+4. Choose the desired view: `Show Items` (default), `Show Archived Items`, or `Show Items + Archived Items`
 
 ## Bookmarking Item Presets
 

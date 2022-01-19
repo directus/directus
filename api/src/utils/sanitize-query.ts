@@ -1,9 +1,9 @@
-import { flatten, get, merge, set } from 'lodash';
+import { flatten, get, isPlainObject, merge, set } from 'lodash';
 import logger from '../logger';
 import { Meta } from '../types';
 import { Query, Aggregate, Filter } from '@directus/shared/types';
 import { Accountability } from '@directus/shared/types';
-import { parseFilter, deepMap } from '@directus/shared/utils';
+import { parseFilter } from '@directus/shared/utils';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -124,18 +124,6 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 		}
 	}
 
-	filters = deepMap(filters, (val) => {
-		try {
-			const parsed = JSON.parse(val);
-
-			if (typeof parsed == 'number' && !Number.isSafeInteger(parsed)) return val;
-
-			return parsed;
-		} catch {
-			return val;
-		}
-	});
-
 	return parseFilter(filters, accountability);
 }
 
@@ -196,7 +184,7 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 				// way of knowing when to keep nesting and when to stop
 				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0];
 				parsedLevel[`_${parsedKey}`] = parsedValue;
-			} else {
+			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);
 			}
 		}

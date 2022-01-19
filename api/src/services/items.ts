@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, pick, without } from 'lodash';
+import { clone, cloneDeep, pick, without, assign } from 'lodash';
 import { getCache } from '../cache';
 import Keyv from 'keyv';
 import getDatabase from '../database';
@@ -9,7 +9,15 @@ import env from '../env';
 import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
-import { AbstractService, AbstractServiceOptions, Action, Item as AnyItem, PrimaryKey, SchemaOverview } from '../types';
+import {
+	AbstractService,
+	AbstractServiceOptions,
+	Action,
+	Item as AnyItem,
+	PrimaryKey,
+	SchemaOverview,
+	MutationOptions,
+} from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
@@ -18,23 +26,6 @@ import { ActivityService, RevisionsService } from './index';
 export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
-};
-
-export type MutationOptions = {
-	/**
-	 * Callback function that's fired whenever a revision is made in the mutation
-	 */
-	onRevisionCreate?: (pk: PrimaryKey) => void;
-
-	/**
-	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
-	 */
-	autoPurgeCache?: false;
-
-	/**
-	 * Allow disabling the emitting of hooks. Useful if a custom hook is fired (like files.upload)
-	 */
-	emitEvents?: boolean;
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -108,7 +99,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadAfterHooks =
 				opts?.emitEvents !== false
 					? await emitter.emitFilter(
-							`${this.eventScope}.create`,
+							this.eventScope === 'items'
+								? ['items.create', `${this.collection}.items.create`]
+								: `${this.eventScope}.create`,
 							payload,
 							{
 								collection: this.collection,
@@ -204,7 +197,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
-				`${this.eventScope}.create`,
+				this.eventScope === 'items' ? ['items.create', `${this.collection}.items.create`] : `${this.eventScope}.create`,
 				{
 					payload,
 					key: primaryKey,
@@ -288,10 +281,24 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
-		emitter.emitAction(
-			`${this.eventScope}.read`,
+		const filteredRecords = await emitter.emitFilter(
+			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+			records,
 			{
-				payload: records,
+				query,
+				collection: this.collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		emitter.emitAction(
+			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+			{
+				payload: filteredRecords,
 				query,
 				collection: this.collection,
 			},
@@ -302,26 +309,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		);
 
-		return records as Item[];
+		return filteredRecords as Item[];
 	}
 
 	/**
 	 * Get single item by primary key
 	 */
-	async readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Item> {
-		query = query ?? {};
-
+	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
-		const queryWithKey = {
-			...query,
-			filter: {
-				...(query.filter || {}),
-				[primaryKeyField]: {
-					_eq: key,
-				},
-			},
-		};
+		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
+		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
 		const results = await this.readByQuery(queryWithKey, opts);
 
@@ -335,26 +333,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Get multiple items by primary keys
 	 */
-	async readMany(keys: PrimaryKey[], query?: Query, opts?: QueryOptions): Promise<Item[]> {
-		query = query ?? {};
-
+	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Item[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
-		const queryWithKeys = {
-			...query,
-			filter: {
-				_and: [
-					query.filter || {},
-					{
-						[primaryKeyField]: {
-							_in: keys,
-						},
-					},
-				],
-			},
-		};
+		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
+		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		const results = await this.readByQuery(queryWithKeys, opts);
+		const results = await this.readByQuery(queryWithKey, opts);
 
 		return results;
 	}
@@ -398,7 +383,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const payloadAfterHooks =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-						`${this.eventScope}.update`,
+						this.eventScope === 'items'
+							? ['items.update', `${this.collection}.items.update`]
+							: `${this.eventScope}.update`,
 						payload,
 						{
 							keys,
@@ -519,7 +506,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
-				`${this.eventScope}.update`,
+				this.eventScope === 'items' ? ['items.update', `${this.collection}.items.update`] : `${this.eventScope}.update`,
 				{
 					payload,
 					keys,
@@ -621,7 +608,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			await emitter.emitFilter(
-				`${this.eventScope}.delete`,
+				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
 				keys,
 				{
 					collection: this.collection,
@@ -662,7 +649,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
-				`${this.eventScope}.delete`,
+				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
 				{
 					payload: keys,
 					collection: this.collection,

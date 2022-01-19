@@ -1,5 +1,5 @@
 {
-	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly"],
+	"extends": ["config:base", ":disableDependencyDashboard", "schedule:weekly", ":prHourlyLimitNone"],
 	"timezone": "America/New_York",
 	"labels": ["Dependencies"],
 	"semanticCommits": "disabled",
@@ -12,14 +12,7 @@
 	},
 	"packageRules": [
 		{
-			"matchDatasources": ["npm"],
-			"matchUpdateTypes": ["major"],
-			"groupName": "NPM dependencies (major)"
-		},
-		{
-			"matchDatasources": ["npm"],
-			"matchUpdateTypes": ["minor", "patch"],
-			"groupName": "NPM dependencies (non-major)"
+			"matchPackageNames": ["typescript", "vite", "vue", "vue-router", "pinia", "knex", "knex-schema-inspector", "jest"]
 		}
 	]
 }

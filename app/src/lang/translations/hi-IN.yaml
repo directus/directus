@@ -1,6 +1,30 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: पहचानकर्ता
+avatar: अवतार
 default_provider: Hi
 published: प्रकाशित
+draft: प्रारूप
+archived: संग्रह
 tile_size: टाइल आकार
 edit_field: एडिट फील्ड
 conditions: शर्तेँ
@@ -36,6 +60,8 @@ create_webhook: Webhook बनाएं
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
+subject: विषय
+inbox: सन्देश
 emails: इमेल्स
 connection_excellent: उत्तम कनेक्शन
 connection_good: अच्छा कनेक्शन
@@ -108,6 +134,7 @@ field_m2o: M2O रिलेशन
 field_m2a: M2A रिलेशन
 field_o2m: O2M रिलेशन
 field_m2m: M2M रिलेशन
+field_translations: अनुवाद
 item_permissions: आइटम अनुमतियां
 field_permissions: फील्ड अनुमतियाँ
 field_validation: फील्ड मान्यकरण
@@ -236,6 +263,9 @@ fields:
   directus_users:
     language: भाषा
     role: भूमिका
+  directus_shares:
+    name: नाम
+    role: भूमिका
   directus_fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
@@ -272,6 +302,14 @@ displays:
     boolean: Boolean
   color:
     color: Color
+  formatted-value:
+    font: फ़ॉन्ट
+    font_serif: Serif
+    font_monospace: Monospace
+    prefix: प्रीफिक्स
+    suffix: सफिक्स
+    color: Color
+    text: Text
   image:
     circle: Circle
   user:

@@ -9,7 +9,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
-import { getGeometryHelper } from './helpers/geometry';
+import { getHelpers } from './helpers';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -25,6 +25,7 @@ export default function getDatabase(): Knex {
 		'DB_CONNECTION_STRING',
 		'DB_POOL',
 		'DB_EXCLUDE_TABLES',
+		'DB_VERSION',
 	]);
 
 	const poolConfig = getConfigFromEnv('DB_POOL');
@@ -53,6 +54,7 @@ export default function getDatabase(): Knex {
 
 	const knexConfig: Knex.Config = {
 		client: env.DB_CLIENT,
+		version: env.DB_VERSION,
 		searchPath: env.DB_SEARCH_PATH,
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
@@ -90,6 +92,10 @@ export default function getDatabase(): Knex {
 		// timezone conversion on the database level, especially not when other database vendors don't
 		// act the same
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
+	}
+
+	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
+		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
 	}
 
 	database = knex(knexConfig);
@@ -221,11 +227,11 @@ export async function validateMigrations(): Promise<boolean> {
  */
 export async function validateDatabaseExtensions(): Promise<void> {
 	const database = getDatabase();
-	const databaseClient = getDatabaseClient(database);
-	const geometryHelper = getGeometryHelper(database);
-	const geometrySupport = await geometryHelper.supported();
+	const client = getDatabaseClient(database);
+	const helpers = getHelpers(database);
+	const geometrySupport = await helpers.st.supported();
 	if (!geometrySupport) {
-		switch (databaseClient) {
+		switch (client) {
 			case 'postgres':
 				logger.warn(`PostGIS isn't installed. Geometry type support will be limited.`);
 				break;
@@ -233,7 +239,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 				logger.warn(`Spatialite isn't installed. Geometry type support will be limited.`);
 				break;
 			default:
-				logger.warn(`Geometry type not supported on ${databaseClient}`);
+				logger.warn(`Geometry type not supported on ${client}`);
 		}
 	}
 }

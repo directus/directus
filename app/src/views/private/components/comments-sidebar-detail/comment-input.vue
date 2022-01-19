@@ -10,11 +10,21 @@
 					:items="userPreviews"
 					@trigger="triggerSearch"
 					@deactivate="showMentionDropDown = false"
+					@up="pressedUp"
+					@down="pressedDown"
+					@enter="pressedEnter"
 				/>
 			</template>
 
 			<v-list>
-				<v-list-item v-for="user in searchResult" id="suggestions" :key="user.id" clickable @click="insertUser(user)">
+				<v-list-item
+					v-for="(user, index) in searchResult"
+					id="suggestions"
+					:key="user.id"
+					clickable
+					:active="index === selectedKeyboardIndex"
+					@click="insertUser(user)"
+				>
 					<v-list-item-icon>
 						<v-avatar x-small>
 							<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
@@ -123,6 +133,7 @@ export default defineComponent({
 		);
 
 		let triggerCaretPosition = 0;
+		let selectedKeyboardIndex = ref<number>(0);
 
 		let cancelToken: CancelTokenSource | null = null;
 
@@ -199,26 +210,30 @@ export default defineComponent({
 			triggerSearch,
 			insertUser,
 			userPreviews,
+			selectedKeyboardIndex,
+			pressedUp,
+			pressedDown,
+			pressedEnter,
 		};
 
 		function insertUser(user: Record<string, any>) {
-			const text = newCommentContent.value;
+			const text = newCommentContent.value?.replaceAll(String.fromCharCode(160), ' ');
 			if (!text) return;
 
 			let countBefore = triggerCaretPosition - 1;
 			let countAfter = triggerCaretPosition;
 
-			if (text.charAt(countBefore) !== ' ') {
-				while (countBefore >= 0 && text.charAt(countBefore) !== ' ') {
+			if (text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
+				while (countBefore >= 0 && text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
 					countBefore--;
 				}
 			}
 
-			while (countAfter < text.length && text.charAt(countAfter) !== ' ') {
+			while (countAfter < text.length && text.charAt(countAfter) !== ' ' && text.charAt(countAfter) !== '\n') {
 				countAfter++;
 			}
 
-			const before = text.substring(0, countBefore);
+			const before = text.substring(0, countBefore + (text.charAt(countBefore) === '\n' ? 1 : 0));
 			const after = text.substring(countAfter);
 
 			newCommentContent.value = before + ' @' + user.id + after;
@@ -229,6 +244,7 @@ export default defineComponent({
 
 			showMentionDropDown.value = true;
 			loadUsers(searchQuery);
+			selectedKeyboardIndex.value = 0;
 		}
 
 		function avatarSource(url: string) {
@@ -266,6 +282,23 @@ export default defineComponent({
 			} finally {
 				saving.value = false;
 			}
+		}
+
+		function pressedUp() {
+			if (selectedKeyboardIndex.value > 0) {
+				selectedKeyboardIndex.value--;
+			}
+		}
+
+		function pressedDown() {
+			if (selectedKeyboardIndex.value < searchResult.value.length - 1) {
+				selectedKeyboardIndex.value++;
+			}
+		}
+
+		function pressedEnter() {
+			insertUser(searchResult.value[selectedKeyboardIndex.value]);
+			showMentionDropDown.value = false;
 		}
 	},
 });

@@ -3,7 +3,6 @@ import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { ActionHandler, Webhook, WebhookHeader } from './types';
-import { pick } from 'lodash';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
 
@@ -16,18 +15,11 @@ export async function register(): Promise<void> {
 
 	const webhooks = await webhookService.readByQuery({ filter: { status: { _eq: 'active' } } });
 	for (const webhook of webhooks) {
-		if (webhook.actions.includes('*')) {
-			const event = 'items.*';
-			const handler = createHandler(webhook);
+		for (const action of webhook.actions) {
+			const event = `items.${action}`;
+			const handler = createHandler(webhook, event);
 			emitter.onAction(event, handler);
 			registered.push({ event, handler });
-		} else {
-			for (const action of webhook.actions) {
-				const event = `items.${action}`;
-				const handler = createHandler(webhook);
-				emitter.onAction(event, handler);
-				registered.push({ event, handler });
-			}
 		}
 	}
 }
@@ -40,19 +32,20 @@ export function unregister(): void {
 	registered = [];
 }
 
-function createHandler(webhook: Webhook): ActionHandler {
-	return async (data) => {
-		if (webhook.collections.includes('*') === false && webhook.collections.includes(data.collection) === false) return;
+function createHandler(webhook: Webhook, event: string): ActionHandler {
+	return async (meta, context) => {
+		if (webhook.collections.includes(meta.collection) === false) return;
 
-		const webhookPayload = pick(data, [
-			'event',
-			'accountability.user',
-			'accountability.role',
-			'collection',
-			'item',
-			'action',
-			'payload',
-		]);
+		const webhookPayload = {
+			event,
+			accountability: context.accountability
+				? {
+						user: context.accountability.user,
+						role: context.accountability.role,
+				  }
+				: null,
+			...meta,
+		};
 
 		try {
 			await axios({

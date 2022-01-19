@@ -14,6 +14,8 @@
 #   MySQL (5.7):     5108
 #   Memcached:       5109
 #   Keycloak:        5110
+#   Postgres (10):   5111
+#   Minio Admin:     5112
 #
 # Credentials:
 #   Postgres:
@@ -76,6 +78,8 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5101:3306
+    cap_add:
+      - SYS_NICE
 
   maria:
     image: mariadb:10.7
@@ -109,9 +113,10 @@ services:
 
   minio:
     image: minio/minio:latest
-    command: server /data/minio/
+    command: server /data/minio/ --console-address :9001
     ports:
       - 5106:9000
+      - 5112:9001
 
   azure:
     image: mcr.microsoft.com/azure-storage/azurite
@@ -141,3 +146,11 @@ services:
 
     ports:
       - 5110:8080
+
+  postgres10:
+    image: postgis/postgis:10-3.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 5111:5432

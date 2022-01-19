@@ -109,7 +109,7 @@ export default defineComponent({
 
 						return {
 							...comment,
-							display: newCommentText,
+							display: newCommentText.replaceAll('\n', '<br>'),
 						};
 					});
 

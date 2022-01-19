@@ -1,5 +1,4 @@
-import { simpleHash } from './get-simple-hash';
-
+import { getSimpleHash } from '@directus/shared/utils';
 /**
  * Generate an index name for a given collection + fields combination.
  *
@@ -20,7 +19,7 @@ export function getDefaultIndexName(
 
 	if (indexName.length <= 60) return indexName;
 
-	const suffix = `__${simpleHash(indexName)}_${type}`;
+	const suffix = `__${getSimpleHash(indexName)}_${type}`;
 	const prefix = indexName.substring(0, 60 - suffix.length);
 
 	return `${prefix}${suffix}`;

@@ -1,5 +1,4 @@
 import { Component } from 'vue';
-import { Item } from './items';
 import { Filter } from './filter';
 
 export interface LayoutConfig<Options = any, Query = any> {
@@ -19,7 +18,7 @@ export interface LayoutConfig<Options = any, Query = any> {
 
 export interface LayoutProps<Options = any, Query = any> {
 	collection: string | null;
-	selection: Item[];
+	selection: (number | string)[];
 	layoutOptions: Options;
 	layoutQuery: Query;
 	filterUser: Filter | null;
@@ -27,6 +26,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	filter: Filter | null;
 	search: string | null;
 	selectMode: boolean;
+	showSelect: ShowSelect;
 	readonly: boolean;
 	resetPreset?: () => Promise<void>;
 	clearFilters?: () => void;
@@ -39,3 +39,5 @@ interface LayoutContext {
 export type LayoutState<T, Options, Query> = {
 	props: LayoutProps<Options, Query>;
 } & T;
+
+export type ShowSelect = 'none' | 'one' | 'multiple';

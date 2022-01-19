@@ -12,17 +12,27 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['m2m'],
 	group: 'relational',
-	options: ({ relations }) => {
+	options: ({ editing, relations }) => {
+		const displayTemplateMeta =
+			editing === '+'
+				? {
+						interface: 'presentation-notice',
+						options: {
+							text: '$t:interfaces.list-m2m.display_template_configure_notice',
+						},
+				  }
+				: {
+						interface: 'system-display-template',
+						options: {
+							collectionName: relations.o2m?.collection,
+						},
+				  };
+
 		return [
 			{
 				field: 'template',
 				name: '$t:display_template',
-				meta: {
-					interface: 'system-display-template',
-					options: {
-						collectionName: relations.o2m?.collection,
-					},
-				},
+				meta: displayTemplateMeta,
 			},
 			{
 				field: 'enableCreate',
@@ -50,6 +60,27 @@ export default defineInterface({
 						label: '$t:enable_select_button',
 					},
 					width: 'half',
+				},
+			},
+			{
+				field: 'filter',
+				name: '$t:filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: relations.m2o?.related_collection ?? null,
+					},
+					conditions: [
+						{
+							rule: {
+								enableSelect: {
+									_eq: false,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 		];

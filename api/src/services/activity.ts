@@ -1,5 +1,6 @@
 import { AbstractServiceOptions, PrimaryKey, Item, Action } from '../types';
-import { ItemsService, MutationOptions } from './index';
+import { ItemsService } from './items';
+import { MutationOptions } from '../types';
 import { NotificationsService } from './notifications';
 import { UsersService } from './users';
 import { AuthorizationService } from './authorization';
@@ -10,6 +11,7 @@ import logger from '../logger';
 import { userName } from '../utils/user-name';
 import { uniq } from 'lodash';
 import env from '../env';
+import validateUUID from 'uuid-validate';
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
@@ -66,10 +68,13 @@ export class ActivityService extends ItemsService {
 					let comment = data.comment;
 
 					for (const mention of mentions) {
-						comment = comment.replace(mention, userPreviews[mention.substring(1)] ?? '@Unknown User');
+						const uuid = mention.substring(1);
+						// We only match on UUIDs in the first place. This is just an extra sanity check
+						if (validateUUID(uuid) === false) continue;
+						comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
 					}
 
-					comment = `> ${comment}`;
+					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
 					const message = `
 Hello ${userName(user)},
