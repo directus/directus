@@ -62,6 +62,10 @@ export type FilterOperators<T> = {
 	_nbetween?: [T, T];
 	_contains?: T;
 	_ncontains?: T;
+	_starts_with?: T;
+	_nstarts_with?: T;
+	_ends_with?: T;
+	_nends_with?: T;
 	_empty?: boolean;
 	_nempty?: boolean;
 	_nnull?: boolean;
