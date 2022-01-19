@@ -55,6 +55,7 @@ export default defineInterface({
 						options: {
 							placeholder: '255',
 							min: 1,
+							max: field.schema?.max_length,
 						},
 					},
 				},
