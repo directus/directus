@@ -8,7 +8,7 @@
 		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="noEdits" :loading="saving" @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -68,29 +68,23 @@ export default defineComponent({
 
 		const edits = ref<{ [key: string]: any } | null>(null);
 
-		const noEdits = computed<boolean>(() => edits.value === null || Object.keys(edits.value).length === 0);
+		const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
 
 		const saving = ref(false);
 
 		useShortcut('meta+s', () => {
-			if (!noEdits.value) save();
+			if (hasEdits.value) save();
 		});
 
-		const isSavable = computed(() => {
-			if (noEdits.value === true) return false;
-			return noEdits.value;
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
 			fields,
 			initialValues,
 			edits,
-			noEdits,
+			hasEdits,
 			saving,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			save,

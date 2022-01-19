@@ -205,12 +205,7 @@ export default defineComponent({
 			if (hasEdits.value) save();
 		});
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -233,7 +228,6 @@ export default defineComponent({
 			confirmDelete,
 			updateFilters,
 			search,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
