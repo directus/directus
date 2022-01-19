@@ -103,6 +103,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			if (options.default !== undefined) {
 				col.defaultTo(options.default);
 			}
+
+			// Force new temporary column to be nullable (required, as there will already be rows in
+			// the table)
+			col.nullable();
 		});
 
 		await this.knex(table).update(`${column}__temp`, this.knex.ref(column));
@@ -115,7 +119,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			builder.renameColumn(`${column}__temp`, column);
 		});
 
-		if (options.nullable !== undefined) {
+		// We're altering the temporary column here. That starts nullable, so we only want to set it
+		// to NOT NULL when applicable
+		if (options.nullable !== undefined && options.nullable === false) {
 			await this.changeNullable(table, column, options.nullable);
 		}
 	}
