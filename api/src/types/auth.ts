@@ -26,11 +26,8 @@ export type AuthData = Record<string, any> | null;
 export interface Session {
 	token: string;
 	expires: Date;
-	data: string | Record<string, unknown> | null;
 	share: string;
 }
-
-export type SessionData = Record<string, any> | null;
 
 export type DirectusTokenPayload = {
 	id?: string;
