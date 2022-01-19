@@ -20,27 +20,27 @@ export default function getDatabase(): Knex {
 	}
 
 	const {
-		DB_CLIENT,
-		DB_SEARCH_PATH,
-		DB_CONNECTION_STRING,
-		DB_VERSION,
-		DB_POOL: poolConfig,
+		client,
+		searchPath,
+		connectionString,
+		version,
+		pool: poolConfig,
 		...connectionConfig
 	} = getConfigFromEnv('DB_', ['DB_EXCLUDE_TABLES']);
 
 	const requiredEnvVars = ['DB_CLIENT'];
 
-	if (DB_CLIENT && DB_CLIENT === 'sqlite3') {
+	if (client && client === 'sqlite3') {
 		requiredEnvVars.push('DB_FILENAME');
-	} else if (DB_CLIENT && DB_CLIENT === 'oracledb') {
-		if (!DB_CONNECTION_STRING) {
+	} else if (client && client === 'oracledb') {
+		if (!connectionString) {
 			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 		} else {
 			requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
 		}
 	} else {
-		if (DB_CLIENT === 'pg') {
-			if (!DB_CONNECTION_STRING) {
+		if (client === 'pg') {
+			if (!connectionString) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
 			}
 		} else {
@@ -51,10 +51,10 @@ export default function getDatabase(): Knex {
 	validateEnv(requiredEnvVars);
 
 	const knexConfig: Knex.Config = {
-		client: DB_CLIENT,
-		version: DB_VERSION,
-		searchPath: DB_SEARCH_PATH,
-		connection: DB_CONNECTION_STRING || connectionConfig,
+		client,
+		version,
+		searchPath,
+		connection: connectionString || connectionConfig,
 		log: {
 			warn: (msg) => {
 				// Ignore warnings about returning not being supported in some DBs
@@ -72,7 +72,7 @@ export default function getDatabase(): Knex {
 		pool: poolConfig,
 	};
 
-	if (DB_CLIENT === 'sqlite3') {
+	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
 
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
@@ -85,14 +85,14 @@ export default function getDatabase(): Knex {
 		};
 	}
 
-	if (DB_CLIENT === 'mssql') {
+	if (client === 'mssql') {
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
 		// act the same
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
-	if (DB_CLIENT === 'mysql' && !connectionConfig.DB_CHARSET) {
+	if (client === 'mysql' && !connectionConfig.charset) {
 		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
 	}
 
