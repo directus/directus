@@ -23,7 +23,7 @@ describe('/items', () => {
 
 	describe('/:collection/:id GET', () => {
 		describe('retrieves one artist', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
@@ -38,7 +38,7 @@ describe('/items', () => {
 			});
 		});
 		describe(`retrieves a guest's favorite artist`, () => {
-			it.each(vendors)(`%p`, async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const guest = createGuest();
@@ -56,7 +56,7 @@ describe('/items', () => {
 			});
 		});
 		describe('retrieves an artist and an event off the artists_events table', () => {
-			it.each(vendors)(`%p`, async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 					select: ['id'],
@@ -88,7 +88,7 @@ describe('/items', () => {
 		});
 		describe('Error handling', () => {
 			describe('returns an error when an invalid id is used', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await axios
@@ -116,7 +116,7 @@ describe('/items', () => {
 				});
 			});
 			describe('returns an error when an invalid table is used', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await axios
@@ -140,7 +140,7 @@ describe('/items', () => {
 	});
 	describe('/:collection/:id PATCH', () => {
 		describe(`updates one artist's name with no relations`, () => {
-			it.each(vendors)(`%p`, async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
@@ -159,7 +159,7 @@ describe('/items', () => {
 	});
 	describe('/:collection/:id DELETE', () => {
 		describe('deletes an artist with no relations', () => {
-			it.each(vendors)(`%p`, async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
@@ -178,7 +178,7 @@ describe('/items', () => {
 	});
 	describe('/:collection GET', () => {
 		describe('retrieves all items from artist table with no relations', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				await seedTable(databases.get(vendor)!, 50, 'artists', createArtist);
 				const response = await request(url)
@@ -192,7 +192,7 @@ describe('/items', () => {
 		});
 		describe('Error handling', () => {
 			describe('returns an error when an invalid table is used', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await axios
@@ -218,7 +218,7 @@ describe('/items', () => {
 	describe('/:collection POST', () => {
 		describe('createOne', () => {
 			describe('creates one artist', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const body = createArtist();
 					const response: any = await axios.post(`${url}/items/artists`, body, {
@@ -233,7 +233,7 @@ describe('/items', () => {
 		});
 		describe('createMany', () => {
 			describe('creates 5 artists', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const body = createMany(createArtist, 5)!;
 					const response: any = await axios.post(`${url}/items/artists`, body, {
@@ -248,7 +248,7 @@ describe('/items', () => {
 		});
 		describe('Error handling', () => {
 			describe('returns an error when an invalid table is used', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const body = createArtist();
 					const response = await axios
@@ -273,7 +273,7 @@ describe('/items', () => {
 
 	describe('/:collection PATCH', () => {
 		describe('updates many artists to a different name', () => {
-			it.each(vendors)(`%p`, async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 				const artists = createMany(createArtist, 5, { id: uuid });
@@ -302,7 +302,7 @@ describe('/items', () => {
 	});
 	describe('/:collection DELETE', () => {
 		describe('deletes many artists with no relations', () => {
-			it.each(vendors)(`%p`, async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artists = createMany(createArtist, 10, { id: uuid });
 				await seedTable(databases.get(vendor)!, 1, 'artists', artists);

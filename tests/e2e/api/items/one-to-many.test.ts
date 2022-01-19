@@ -23,7 +23,7 @@ describe('/items', () => {
 
 	describe('/:collection/:id GET', () => {
 		describe(`retrieves a guest's favorite artist`, () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const guest = createGuest();
@@ -44,7 +44,7 @@ describe('/items', () => {
 
 	describe('/:collection GET', () => {
 		describe('retrieves all items from guest table with favorite_artist', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const name = internet.userName();
@@ -72,7 +72,7 @@ describe('/items', () => {
 	describe('/:collection POST', () => {
 		describe('createOne', () => {
 			describe('creates one guest with a favorite_artist', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					const body = createGuest();
@@ -90,7 +90,7 @@ describe('/items', () => {
 		});
 		describe('createMany', () => {
 			describe('creates 5 users with a favorite_artist', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist);

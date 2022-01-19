@@ -22,7 +22,7 @@ describe('/items', () => {
 
 	describe('/:collection/:id GET', () => {
 		describe('retrieves an artist and an event off the artists_events table', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
@@ -60,7 +60,7 @@ describe('/items', () => {
 	});
 	describe('/:collection/:id PATCH', () => {
 		describe('updates one artists_events to a different artist', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 					select: ['id'],
@@ -94,7 +94,7 @@ describe('/items', () => {
 	});
 	describe('/:collection/:id DELETE', () => {
 		describe('deletes an artists_events without deleting the artist or event', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
@@ -135,7 +135,7 @@ describe('/items', () => {
 	});
 	describe('/:collection GET', () => {
 		describe('retrieves artists and events for each entry in artists_events', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
@@ -168,7 +168,7 @@ describe('/items', () => {
 	describe('/:collection POST', () => {
 		describe('createOne', () => {
 			describe('creates an artist_events entry', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					const event = createEvent();
@@ -200,7 +200,7 @@ describe('/items', () => {
 		});
 		describe('createMany', () => {
 			describe('creates 5 artist_events entries', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					const event = createEvent();
@@ -229,7 +229,7 @@ describe('/items', () => {
 
 	describe('/:collection PATCH', () => {
 		describe('updates many artists_events to a different artist', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
@@ -274,7 +274,7 @@ describe('/items', () => {
 	});
 	describe('/:collection DELETE', () => {
 		describe('deletes many artists_events without deleting the artists or events', () => {
-			it.each(vendors)('%p', async (vendor) => {
+			it.each(vendors)('%s', async (vendor) => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();

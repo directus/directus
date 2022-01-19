@@ -21,7 +21,7 @@ describe('auth', () => {
 
 		describe('when correct credentials are provided', () => {
 			describe('returns an access_token, expires and a refresh_token for admin', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await request(url)
@@ -40,7 +40,7 @@ describe('auth', () => {
 				});
 			});
 			describe('returns an access_token, expires and a refresh_token for user', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await request(url)
@@ -62,7 +62,7 @@ describe('auth', () => {
 				});
 			});
 			describe('returns an access_token, expires and a refresh_token for noRoleUser', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await request(url)
@@ -86,7 +86,7 @@ describe('auth', () => {
 		});
 		describe('when incorrect credentials are provided', () => {
 			describe('returns code: UNAUTHORIZED for incorrect password', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await request(url)
@@ -110,7 +110,7 @@ describe('auth', () => {
 				});
 			});
 			describe('returns code: UNAUTHORIZED for unregistered email', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await request(url)
@@ -135,7 +135,7 @@ describe('auth', () => {
 				});
 			});
 			describe('returns code: INVALID_CREDENTIALS for invalid email', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await request(url)
@@ -160,7 +160,7 @@ describe('auth', () => {
 				});
 			});
 			describe('returns message: "password is required" when no password is provided', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 					const response = await request(url)

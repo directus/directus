@@ -23,7 +23,7 @@ describe('/items', () => {
 	describe('/:collection GET', () => {
 		describe('Mathmatical Operators', () => {
 			describe('returns users with name _eq', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const name = internet.email();
 					const guests: any[] = createMany(createGuest, 10);
@@ -46,7 +46,7 @@ describe('/items', () => {
 				});
 			});
 			describe('returns users with name _neq', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const guests: any[] = createMany(createGuest, 10);
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
@@ -64,7 +64,7 @@ describe('/items', () => {
 
 		describe('Logical Operators', () => {
 			describe('returns users with name equality _AND favorite_artist equality', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const name = internet.email();
 					const guests: any[] = createMany(createGuest, 10, { name });
@@ -90,7 +90,7 @@ describe('/items', () => {
 				});
 			});
 			describe('returns users with name equality _OR favorite_artist equality', () => {
-				it.each(vendors)('%p', async (vendor) => {
+				it.each(vendors)('%s', async (vendor) => {
 					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const name = internet.email();
 
