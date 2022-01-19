@@ -423,7 +423,7 @@ export default defineComponent({
 		}
 
 		function characterCount() {
-			if (!tinymceEditor || !tinymceEditor.childNodes) return null;
+			if (!tinymceEditor || !tinymceEditor.childNodes) return 0;
 			let totalCharacters = 0;
 
 			for (const node of tinymceEditor.childNodes) {
