@@ -33,4 +33,9 @@ export class DateHelperMSSQL extends DateHelper {
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw('DATEPART(second, ??.??)', [table, column]);
 	}
+
+	writeTimestamp(date: string): Date {
+		const parsedDate = new Date(date);
+		return new Date(parsedDate.getTime() + parsedDate.getTimezoneOffset() * 60000);
+	}
 }

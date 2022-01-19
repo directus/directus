@@ -34,8 +34,13 @@ export class DateHelperMySQL extends DateHelper {
 		return this.knex.raw('SECOND(??.??)', [table, column]);
 	}
 
-	processTimestampString(date: string): string {
+	readTimestampString(date: string): string {
 		const parsedDate = new Date(date);
 		return new Date(parsedDate.getTime() - parsedDate.getTimezoneOffset() * 60000).toISOString();
+	}
+
+	writeTimestamp(date: string): Date {
+		const parsedDate = new Date(date);
+		return new Date(parsedDate.getTime() + parsedDate.getTimezoneOffset() * 60000);
 	}
 }

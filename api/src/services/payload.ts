@@ -1,4 +1,4 @@
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
 import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lodash';
@@ -279,7 +279,7 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'timestamp') {
-						const newValue = this.helpers.date.processTimestampString(value.toISOString());
+						const newValue = this.helpers.date.readTimestampString(value.toISOString());
 						payload[name] = newValue;
 					}
 
@@ -329,7 +329,7 @@ export class PayloadService {
 						}
 
 						if (dateColumn.type === 'timestamp') {
-							const newValue = parseISO(value);
+							const newValue = this.helpers.date.writeTimestamp(value);
 							payload[name] = newValue;
 						}
 					}
