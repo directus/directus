@@ -1,5 +1,6 @@
 import { DatabaseHelper } from '../types';
 import { Knex } from 'knex';
+import { parseISO } from 'date-fns';
 
 export abstract class DateHelper extends DatabaseHelper {
 	abstract year(table: string, column: string): Knex.Raw;
@@ -17,6 +18,6 @@ export abstract class DateHelper extends DatabaseHelper {
 		return date;
 	}
 	writeTimestamp(date: string): Date {
-		return new Date(date);
+		return parseISO(date);
 	}
 }
