@@ -16,9 +16,9 @@
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-		<template v-if="(percentageRemaining && percentageRemaining <= 20) || iconRight || softLength" #append>
+		<template v-if="(percentageRemaining !== null && percentageRemaining <= 20) || iconRight || softLength" #append>
 			<span
-				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
+				v-if="(percentageRemaining !== null && percentageRemaining <= 20) || softLength"
 				class="remaining"
 				:class="{
 					warning: percentageRemaining < 10,
