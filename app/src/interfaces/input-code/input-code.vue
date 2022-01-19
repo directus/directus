@@ -36,7 +36,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: [String, Object, Array] as PropType<string | Record<string, any> | any[]>,
+			type: [String, Object, Array, Number, Boolean] as PropType<string | Record<string, any> | any[]>,
 			default: null,
 		},
 		altOptions: {
