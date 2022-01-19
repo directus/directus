@@ -277,11 +277,6 @@ export default defineComponent({
 
 		let count = ref(0);
 
-		const observer = new MutationObserver((_mutations) => {
-			count.value = characterCountMinusHTML(document.getElementsByClassName('preview-box')[0]);
-		});
-		const config = { characterData: true, childList: true, subtree: true };
-
 		onMounted(async () => {
 			if (codemirrorEl.value) {
 				codemirror = CodeMirror(codemirrorEl.value, {
@@ -300,8 +295,17 @@ export default defineComponent({
 					emit('input', content);
 				});
 			}
-			const previewBox = document.getElementsByClassName('preview-box')[0];
-			if (previewBox) observer.observe(previewBox, config);
+
+			if (markdownInterface.value) {
+				const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+
+				const observer = new MutationObserver((_mutations) => {
+					count.value = characterCountMinusHTML(previewBox);
+				});
+				const config = { characterData: true, childList: true, subtree: true };
+
+				observer.observe(previewBox, config);
+			}
 		});
 
 		watch(
