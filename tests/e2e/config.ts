@@ -213,7 +213,7 @@ const config: Config = {
 			DB_USER: 'root',
 			DB_PASSWORD: '',
 			DB_PORT: '6106',
-			DB_DATABASE: 'directus',
+			DB_DATABASE: 'defaultdb',
 			PORT: '59159',
 		},
 	},
