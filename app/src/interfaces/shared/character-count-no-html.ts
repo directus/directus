@@ -1,4 +1,4 @@
-export const characterCountMinusHTML = (container: Element | undefined) => {
+export const characterCountMinusHTML = (container: Element | HTMLElement | undefined | null) => {
 	if (!container || !container.childNodes) return 0;
 	let totalCharacters = 0;
 	for (const node of container.childNodes) {

@@ -189,7 +189,7 @@ import useLink from './useLink';
 import useSourceCode from './useSourceCode';
 import { getToken } from '@/api';
 import { getPublicURL } from '@/utils/get-root-path';
-import { percentageRemaining } from '../shared/character-count-no-html';
+import { percentageRemaining, characterCountMinusHTML } from '../shared/character-count-no-html';
 
 type CustomFormat = {
 	title: string;
@@ -270,12 +270,6 @@ export default defineComponent({
 
 		let tinymceEditor: HTMLElement | null;
 		let count = ref(0);
-
-		const observer = new MutationObserver((_mutations) => {
-			count.value = characterCount();
-		});
-		const config = { characterData: true, childList: true, subtree: true };
-
 		onMounted(() => {
 			let iframe;
 			const wysiwyg = document.getElementById(props.field);
@@ -285,7 +279,13 @@ export default defineComponent({
 			if (iframe && iframe[0] && iframe[0].contentWindow)
 				tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
 
-			if (tinymceEditor) observer.observe(tinymceEditor, config);
+			if (tinymceEditor) {
+				const observer = new MutationObserver((_mutations) => {
+					count.value = characterCountMinusHTML(tinymceEditor);
+				});
+				const config = { characterData: true, childList: true, subtree: true };
+				observer.observe(tinymceEditor, config);
+			}
 		});
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
@@ -448,16 +448,6 @@ export default defineComponent({
 
 		function setDirty() {
 			isEditorDirty.value = true;
-		}
-
-		function characterCount() {
-			if (!tinymceEditor || !tinymceEditor.childNodes) return 0;
-			let totalCharacters = 0;
-
-			for (const node of tinymceEditor.childNodes) {
-				if (node && node.textContent) totalCharacters += node.textContent.length;
-			}
-			return totalCharacters;
 		}
 
 		function setFocus(val: boolean) {
