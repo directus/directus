@@ -26,7 +26,7 @@ describe('ItemsService', () => {
 	it('creates one item in collection directus_users as an admin, no accountability', async () => {
 		const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', email: 'test@gmail.com', password: 'TestPassword' };
 
-		tracker.on.insert('directus_users').response('id');
+		tracker.on.insert('directus_users').responseOnce('id');
 
 		itemsService = new ItemsService('directus_users', {
 			knex: db,

@@ -14,7 +14,6 @@ describe('ItemsService', () => {
 	let itemsService: ItemsService;
 
 	beforeAll(async () => {
-		// This causes getDatabaseClient to fail
 		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
@@ -30,7 +29,7 @@ describe('ItemsService', () => {
 		const rawItem = [{ id: 1 }];
 		const item = { id: 1 };
 
-		tracker.on.select('directus_users').response(rawItem);
+		tracker.on.select('directus_users').responseOnce(rawItem);
 
 		itemsService = new ItemsService(table, {
 			knex: db,
