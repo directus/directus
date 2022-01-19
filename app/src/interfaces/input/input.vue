@@ -83,7 +83,7 @@ export default defineComponent({
 		},
 		softLength: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		dbSafe: {
 			type: Boolean,
