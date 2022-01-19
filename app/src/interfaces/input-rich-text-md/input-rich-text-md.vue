@@ -174,7 +174,11 @@
 				{{ softLength - count }}
 			</span>
 		</template>
-		<div v-md="markdownString" class="preview-box"></div>
+		<div
+			v-md="markdownString"
+			class="preview-box"
+			:style="view[0] === 'preview' ? 'display:block' : 'display:none'"
+		></div>
 
 		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
 			<v-card>
