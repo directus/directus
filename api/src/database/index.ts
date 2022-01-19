@@ -19,30 +19,28 @@ export default function getDatabase(): Knex {
 		return database;
 	}
 
-	const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
-		'DB_CLIENT',
-		'DB_SEARCH_PATH',
-		'DB_CONNECTION_STRING',
-		'DB_POOL',
-		'DB_EXCLUDE_TABLES',
-		'DB_VERSION',
-	]);
-
-	const poolConfig = getConfigFromEnv('DB_POOL');
+	const {
+		DB_CLIENT,
+		DB_SEARCH_PATH,
+		DB_CONNECTION_STRING,
+		DB_VERSION,
+		DB_POOL: poolConfig,
+		...connectionConfig
+	} = getConfigFromEnv('DB_', ['DB_EXCLUDE_TABLES']);
 
 	const requiredEnvVars = ['DB_CLIENT'];
 
-	if (env.DB_CLIENT && env.DB_CLIENT === 'sqlite3') {
+	if (DB_CLIENT && DB_CLIENT === 'sqlite3') {
 		requiredEnvVars.push('DB_FILENAME');
-	} else if (env.DB_CLIENT && env.DB_CLIENT === 'oracledb') {
-		if (!env.DB_CONNECT_STRING) {
+	} else if (DB_CLIENT && DB_CLIENT === 'oracledb') {
+		if (!DB_CONNECTION_STRING) {
 			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 		} else {
 			requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
 		}
 	} else {
-		if (env.DB_CLIENT === 'pg') {
-			if (!env.DB_CONNECTION_STRING) {
+		if (DB_CLIENT === 'pg') {
+			if (!DB_CONNECTION_STRING) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
 			}
 		} else {
@@ -53,10 +51,10 @@ export default function getDatabase(): Knex {
 	validateEnv(requiredEnvVars);
 
 	const knexConfig: Knex.Config = {
-		client: env.DB_CLIENT,
-		version: env.DB_VERSION,
-		searchPath: env.DB_SEARCH_PATH,
-		connection: env.DB_CONNECTION_STRING || connectionConfig,
+		client: DB_CLIENT,
+		version: DB_VERSION,
+		searchPath: DB_SEARCH_PATH,
+		connection: DB_CONNECTION_STRING || connectionConfig,
 		log: {
 			warn: (msg) => {
 				// Ignore warnings about returning not being supported in some DBs
@@ -74,7 +72,7 @@ export default function getDatabase(): Knex {
 		pool: poolConfig,
 	};
 
-	if (env.DB_CLIENT === 'sqlite3') {
+	if (DB_CLIENT === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
 
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
@@ -87,18 +85,14 @@ export default function getDatabase(): Knex {
 		};
 	}
 
-	if (env.DB_CLIENT === 'mssql') {
-		// The MSSQL client allows more settings related to the authentication: domain, token, type, msiEndpoint, tenantId, clientId, clientSecret.
-		// Extract the clientId and clientSecret from the env when available, so that they can be used in the connection.
-		const { id: clientId, secret: clientSecret } = getConfigFromEnv('DB_CLIENT_');
-
+	if (DB_CLIENT === 'mssql') {
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
 		// act the same
-		merge(knexConfig, { connection: { clientId, clientSecret, options: { useUTC: false } } });
+		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
-	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
+	if (DB_CLIENT === 'mysql' && !connectionConfig.DB_CHARSET) {
 		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
 	}
 
