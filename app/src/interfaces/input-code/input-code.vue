@@ -119,6 +119,10 @@ export default defineComponent({
 				return JSON.stringify(props.value, null, 4);
 			}
 
+			if (typeof props.value === 'number' || typeof props.value === 'number') {
+				return JSON.stringify(props.value);
+			}
+
 			return props.value as string;
 		});
 
