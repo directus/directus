@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { promisify } from 'util';
 import { allVendors } from './get-dbs-to-test';
 
 type Vendor = typeof allVendors[number];
@@ -33,6 +34,7 @@ const directusConfig = {
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: 'error',
+	SERVE_APP: 'false',
 };
 
 const config: Config = {
@@ -105,7 +107,15 @@ const config: Config = {
 		sqlite3: {
 			client: 'sqlite3',
 			connection: {
-				filename: './data.db',
+				filename: './test.db',
+			},
+			useNullAsDefault: true,
+			pool: {
+				afterCreate: async (conn: any, callback: any) => {
+					const run = promisify(conn.run.bind(conn));
+					await run('PRAGMA foreign_keys = ON');
+					callback(null, conn);
+				},
 			},
 			...knexConfig,
 		},
@@ -181,7 +191,7 @@ const config: Config = {
 		sqlite3: {
 			...directusConfig,
 			DB_CLIENT: 'sqlite3',
-			DB_FILENAME: './data.db',
+			DB_FILENAME: './test.db',
 			PORT: '59158',
 		},
 	},

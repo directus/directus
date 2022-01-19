@@ -155,12 +155,7 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -181,7 +176,6 @@ export default defineComponent({
 			deleteAndQuit,
 			saveAndQuit,
 			hasEdits,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,

@@ -22,9 +22,14 @@ export class Emitter {
 		this.initEmitter = new EventEmitter2(emitterOptions);
 	}
 
-	public async emitFilter<T>(event: string, payload: T, meta: Record<string, any>, context: HookContext): Promise<T> {
-		const events = this.eventsToEmit(event, meta);
-		const listeners = events.flatMap((event) => this.filterEmitter.listeners(event)) as FilterHandler[];
+	public async emitFilter<T>(
+		event: string | string[],
+		payload: T,
+		meta: Record<string, any>,
+		context: HookContext
+	): Promise<T> {
+		const events = Array.isArray(event) ? event : [event];
+		const listeners: FilterHandler[] = events.flatMap((event) => this.filterEmitter.listeners(event));
 
 		let updatedPayload = payload;
 		for (const listener of listeners) {
@@ -38,8 +43,9 @@ export class Emitter {
 		return updatedPayload;
 	}
 
-	public emitAction(event: string, meta: Record<string, any>, context: HookContext): void {
-		const events = this.eventsToEmit(event, meta);
+	public emitAction(event: string | string[], meta: Record<string, any>, context: HookContext): void {
+		const events = Array.isArray(event) ? event : [event];
+
 		for (const event of events) {
 			this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
 				logger.warn(`An error was thrown while executing action "${event}"`);
@@ -85,13 +91,6 @@ export class Emitter {
 		this.filterEmitter.removeAllListeners();
 		this.actionEmitter.removeAllListeners();
 		this.initEmitter.removeAllListeners();
-	}
-
-	private eventsToEmit(event: string, meta: Record<string, any>) {
-		if (event.startsWith('items')) {
-			return [event, `${meta.collection}.${event}`];
-		}
-		return [event];
 	}
 }
 
