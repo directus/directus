@@ -119,7 +119,7 @@ export default defineComponent({
 				return JSON.stringify(props.value, null, 4);
 			}
 
-			if (typeof props.value === 'number' || typeof props.value === 'number') {
+			if (typeof props.value === 'number' || typeof props.value === 'boolean') {
 				return JSON.stringify(props.value);
 			}
 
