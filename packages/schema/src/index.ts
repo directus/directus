@@ -13,10 +13,8 @@ export default function Schema(knex: Knex): SchemaInspector {
 			constructor = require('./dialects/mysql').default;
 			break;
 		case 'Client_PG':
-			constructor = require('./dialects/postgres').default;
-			break;
 		case 'Client_CockroachDB':
-			constructor = require('./dialects/cockroachdb').default;
+			constructor = require('./dialects/postgres').default;
 			break;
 		case 'Client_SQLite3':
 			constructor = require('./dialects/sqlite').default;
