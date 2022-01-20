@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import run from '../../../database/migrations/run';
+import run from '../../../src/database/migrations/run';
 
 describe('run', () => {
 	let db: jest.Mocked<Knex>;
@@ -17,7 +17,6 @@ describe('run', () => {
 
 	describe('when passed the argument up', () => {
 		it('returns "Nothing To Updage" if no directus_migrations', async () => {
-			// note the difference between an empty array and ['Empty']
 			tracker.on.select('directus_migrations').response(['Empty']);
 			await run(db, 'up').catch((e: Error) => {
 				expect(e).toBeInstanceOf(Error);

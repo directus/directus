@@ -1,15 +1,48 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { ItemsService } from '../../../services';
-import { systemSchema } from '../utils/schemas';
+import { ItemsService } from '../../src/services';
+import { systemSchema } from '../__test-utils__/schemas';
 
-// getDatabaseClient() is locked into postgres to test the sql strings inserted.
-jest.mock('../../../database/index', () => {
+jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../../database/index');
+jest.requireMock('../../src/database/index');
 
-describe('ItemsService', () => {
+describe('createOne', () => {
+	let db: jest.Mocked<Knex>;
+	let tracker: Tracker;
+	let itemsService: ItemsService;
+	const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', email: 'test@gmail.com', password: 'TestPassword' };
+
+	beforeAll(async () => {
+		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		tracker = getTracker();
+	});
+
+	afterEach(() => {
+		tracker.reset();
+	});
+
+	it('creates one item in collection directus_users as nn admin, accountability: "null"', async () => {
+		itemsService = new ItemsService('directus_users', {
+			knex: db,
+			accountability: { role: 'admin', admin: true },
+			schema: systemSchema,
+		});
+
+		tracker.on.insert('directus_users').responseOnce(item);
+
+		const response = await itemsService.createOne(item, { emitEvents: false });
+
+		expect(tracker.history.insert.length).toBe(1);
+		expect(tracker.history.insert[0].bindings).toStrictEqual([item.id]);
+		expect(tracker.history.insert[0].sql).toBe('insert into "directus_users" ("id") values (?)');
+
+		expect(response).toBe(item.id);
+	});
+});
+
+describe('readOne', () => {
 	let db: Knex;
 	let tracker: Tracker;
 	const rawItem = [{ id: 1 }];
@@ -110,5 +143,40 @@ describe('ItemsService', () => {
 		});
 		expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
 		expect(tracker.history.select.length).toBe(0);
+	});
+});
+
+describe('readMany', () => {
+	let db: Knex;
+	let tracker: Tracker;
+
+	beforeAll(async () => {
+		db = knex({ client: MockClient });
+		tracker = getTracker();
+	});
+
+	afterEach(() => {
+		tracker.reset();
+	});
+
+	it('it returns multiple items from directus_users as admin', async () => {
+		const items = [{ id: 1 }, { id: 2 }];
+
+		tracker.on.select('directus_users').responseOnce(items);
+
+		const itemsService = new ItemsService('directus_users', {
+			knex: db,
+			accountability: { role: 'admin', admin: true },
+			schema: systemSchema,
+		});
+		const response = await itemsService.readMany([1, 2]);
+
+		expect(tracker.history.select.length).toBe(1);
+		expect(tracker.history.select[0].bindings).toStrictEqual([1, 2, 100]);
+		expect(tracker.history.select[0].sql).toBe(
+			'select "directus_users"."id" from "directus_users" where ("directus_users"."id" in (?, ?)) order by "directus_users"."id" asc limit ?'
+		);
+
+		expect(response).toStrictEqual(items);
 	});
 });
