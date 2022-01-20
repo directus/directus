@@ -891,6 +891,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: 映射
     basemaps_raster: 栅格化
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox 样式
@@ -1130,9 +1131,14 @@ interfaces:
     name: 筛选
     add_filter: 添加过滤器
     add_value: 添加值
+    logic_type_and: 逻辑与 - AND
     all: 全部
     any: 任意
     and: 和
+    of_the_following: 条件时生效
+    no_rules: 无已配置的规则
+    change_value: 点击修改名称
+    placeholder: 拖拽规则到此处
   group-accordion:
     name: 折叠
     description: 在折叠面板中显示字段或分组
@@ -1168,6 +1174,7 @@ interfaces:
     code: 代码
     description: 编辑或分享代码片段
     line_number: 行号
+    line_wrapping: 换行
     placeholder: 在此输入
   system-collection:
     collection: 数据模型
@@ -1199,6 +1206,7 @@ interfaces:
   presentation-divider:
     divider: 分隔线
     description: 标记字段并分成多个部分
+    title_placeholder: 输入标题，或者留空只显示一条线...
     inline_title: 行内标题
     inline_title_label: 在行内显示标题
     margin_top: 上边距
@@ -1233,6 +1241,8 @@ interfaces:
   file-image:
     image: 图片
     description: 选择或上传图片
+    crop: 裁剪为适合的
+    crop_label: 视需要裁剪图像
   system-interface:
     interface: 接口
     description: 选择一个现有接口
@@ -1243,6 +1253,7 @@ interfaces:
   list-m2m:
     many-to-many: 多对多
     description: 选择多个相关项目
+    display_template_configure_notice: 您可以在创建此字段后配置显示模板。
   select-dropdown-m2o:
     many-to-one: 多对一
     description: 选择一个条目
@@ -1252,6 +1263,8 @@ interfaces:
     description: 输入并预览Markdown
     edit: 编辑
     preview: 预览
+    editorFont: 编辑器字体
+    previewFont: 预览字体
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
@@ -1262,6 +1275,9 @@ interfaces:
     map: 地图
     description: 选择地图上的位置
     zoom: 缩放
+    geometry_type: 地图的几何类型
+    geometry_format: 地图的几何格式
+    default_view: 默认视图
     invalid_options: 无效选项
     invalid_format: 无效格式 ({format})
     unexpected_geometry: 需要 {expected}，但收到 {got}。
@@ -1271,6 +1287,7 @@ interfaces:
     lnglat: 经度、纬度
     wkt: WKT
     wkb: WKB
+    click_to_select: 单击以选择 {geometry}
   presentation-notice:
     notice: 提示
     description: 显示一个快捷提示
@@ -1282,6 +1299,7 @@ interfaces:
   system-folder:
     folder: 文件夹
     description: 选择文件夹
+    field_hint: 用于上传文件的文件夹。不影响现有文件。
     root_name: 文件管理
     system_default: 系统默认
   select-radio:
@@ -1340,6 +1358,7 @@ interfaces:
     display_template: 显示模板
     no_collection: 暂无模型
     toggle_split_view: 切换视图
+    language_field: 语言指示字段
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -1357,6 +1376,7 @@ interfaces:
     toolbar: 工具栏
     custom_formats: 自定义格式
     options_override: 覆盖选项
+    folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 图像Token
     imageToken_label: 添加到源图片的Token
   input-autocomplete-api:
@@ -1364,6 +1384,7 @@ interfaces:
     description: 一个事先搜索的外部API
     results_path: 结果路径
     value_path: 值路径
+    text_path: 文本路径
     trigger: 触发器
     rate: Rate
   group-raw:
@@ -1380,7 +1401,11 @@ interfaces:
 displays:
   translations:
     translations: 翻译
+    description: 翻译预览
     enable: 启用
+    user_language: 使用当前用户语言
+    default_language: 默认语言
+    language_field: 语言指示字段
   boolean:
     boolean: Boolean
     description: 显示开启或关闭状态
@@ -1420,7 +1445,9 @@ displays:
     formatted-value: 格式化值
     description: 显示文本格式化
     format: 格式
+    format_label: 自动格式
     font: 字体
+    font_sans_serif: 无衬线字体
     font_serif: 衬线字体
     font_monospace: 等宽
     bold: 加粗
@@ -1468,6 +1495,7 @@ displays:
   related-values:
     related-values: 应用值
     description: 显示相对值
+    display_template_configure_notice: 您可以在创建此字段后配置显示模板。
   user:
     user: 用户
     description: 显示一个系统用户
@@ -1514,6 +1542,8 @@ panels:
     description: 根据一段时间的值渲染线形图
     date_field: 日期字段
     value_field: 值字段
+    fill_type: 填充类型
+    curve_type: 曲线类型
   label:
     name: 标签
     description: 显示一些文本
