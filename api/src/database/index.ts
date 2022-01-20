@@ -45,7 +45,7 @@ export default function getDatabase(): Knex {
 
 		case 'cockroachdb':
 		case 'pg':
-			if (!env.DB_CONNECTION_STRING) {
+			if (!connectionString) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
 			} else {
 				requiredEnvVars.push('DB_CONNECTION_STRING');
