@@ -23,6 +23,7 @@ import {
 } from '.';
 import { LOCAL_TYPES } from '../constants';
 import { Ref } from 'vue';
+import { SchemaOverview } from './schema';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -88,7 +89,7 @@ export type ApiExtensionContext = {
 	env: Record<string, any>;
 	emitter: any;
 	logger: Logger;
-	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
+	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<SchemaOverview>;
 };
 
 export type ExtensionOptionsContext = {
