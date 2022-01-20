@@ -606,7 +606,7 @@ module.exports = {
 		// === 1. Compute props for thumbnail
 
 		// Page title
-		const title = $page.title ?? $page._context.siteConfig.title;
+		let title = $page.title ?? $page._context.siteConfig.title;
 
 		// Last updated date in a human readable format, ex: December 16, 2021
 		const lastUpdated = new Date($page.lastUpdated)
@@ -621,12 +621,14 @@ module.exports = {
 
 		// Create breadcrumb array for page, ex: [ 'Configuration', 'Data Model', 'Relationships' ]
 		let breadcrumb = null;
+		let pageTitleInMenu = null
 		const path = $page.path.replace('.html', '');
 		const sidebar = $page._context.themeConfig.sidebar;
 		const findCurrentPage = (menu, wipBreadcrumb) => {
 			for (const item of menu) {
 				if (item.path === path) {
-					breadcrumb = [...wipBreadcrumb, item.title];
+					breadcrumb = wipBreadcrumb;
+					pageTitleInMenu = item.title;
 				} else if (!breadcrumb && item.children) {
 					findCurrentPage(item.children, [...wipBreadcrumb, item.title]);
 				}
@@ -634,7 +636,10 @@ module.exports = {
 		}
 		findCurrentPage(sidebar, []);
 
-
+		// Avoid cases where the breadcrumb is the same as the title
+		if (breadcrumb && breadcrumb.at(-1) === title) {
+			title = pageTitleInMenu;
+		}
 
 		// === 2. Build thumbnail url
 		const imageUrl = getImageUrl({
@@ -665,6 +670,9 @@ module.exports = {
 			{ name: 'twitter:description', content: description },
 			{ name: 'twitter:image', content: imageUrl },
 			{ name: 'twitter:card', content: 'summary_large_image' },
+			
+			// Other
+			{ name: 'theme-color', content: '#745EFF' },
 		];
 
 		// === 4. Append custom metadata to frontmatter meta

@@ -6,7 +6,6 @@ default_props:
   breadcrumb:
     - First level
     - Second level
-    - Page in menu
   lastUpdated: 'December 16, 2021'
   readTime: 12 min read
 width: 1200
@@ -24,9 +23,7 @@ height: 630
     <!-- Template -->
     <div class="container">
 
-      <div class="logo">
-        <img src="https://docs.directus.io/logo.svg" />
-      </div>
+      <img class="logo" src="https://docs.directus.io/logo-dark.svg" />
 
       <p class="breadcrumb">
         {{#breadcrumb}}
@@ -39,12 +36,12 @@ height: 630
       </h1>
 
       <p class="bottom-text">
-        <em>{{readTime}}</em>
+        <span>{{readTime}}</span>
         <br />
-        <span>Last updated: {{lastUpdated}}</span>
+        <em>Last updated: {{lastUpdated}}</span>
       </p>
 
-      <img class="diagonal-image" src="https://directus.io/assets/img/homepage-hero.svg" />
+      <img class="right-image" src="https://docs.directus.io/dashboard-image.svg" />
 
     </div>
 
@@ -59,47 +56,48 @@ height: 630
         margin: 0;
       }
       body {
-        display: flex;
-        justify-content: flex-start;
         font-family: 'Inter', sans-serif;
-        background-color: #00c897;
-        color: white;
+        background-color: #ffffff;
+        color: #172940;
         overflow: hidden;
       }
       .container {
         position: relative;
-        padding: 4rem;
+        padding: 3.75rem;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
       }
-      .logo {
-        margin-top: -1rem;
-      }
-      .logo img {
-        width: 24rem;
+      .container::before {
+        content: '';
+        position: absolute;
+        top: -25%;
+        right: -25%;
+        bottom: -25%;
+        left: 70%;
+        transform: rotate(-10deg);
+        background-color: #FF97DC;
       }
       .breadcrumb {
-        margin: 2rem 0 -1rem 0;
+        margin: auto 0 1rem 0;
         font-size: 1.8rem;
         font-weight: 600;
         max-width: 60%;
         height: 1em;
+        color: #745EFF;
       }
       .breadcrumb span {
         white-space: nowrap;
       }
       .breadcrumb span:not(:last-child)::after {
-        content: " > "
-      }
-      .breadcrumb span:last-child {
-        opacity: 0.66;
+        content: " -> "
       }
       .title {
-        margin: auto 0;
+        margin: 0 0 auto 0;
         max-width: 62%;
-        font-weight: 800;
-        font-size: 4.5rem;
+        font-weight: 900;
+        font-size: 4.125rem;
+        letter-spacing: -1.5px;
         line-height: 1.2;
         hyphens: auto;
 
@@ -113,26 +111,21 @@ height: 630
         overflow: hidden;
       }
       .bottom-text {
-        margin: 0 0 0 0;
-        color: white;
-      }
-      .bottom-text em {
-        font-style: normal;
-        font-weight: 700;
-        font-size: 1.8rem;
+        margin: 0;
+        color: #A2B5CD;
       }
       .bottom-text span {
-        font-style: italic;
-        font-size: 1.4rem;
-        opacity: 0.66;
+        font-weight: 700;
+        font-size: 1.75rem;
       }
-      .diagonal-image {
+      .bottom-text em {
+        font-weight: 500;
+        font-size: 1.5rem;
+      }
+      .right-image {
         position: absolute;
-        top: 0;
+        top: 3rem;
         right: 0;
-        bottom: 0;
-        left: 65%;
-        transform: scale(1.1) translateY(-1rem) rotate(-10deg);
       }
     </style>
   </body>
