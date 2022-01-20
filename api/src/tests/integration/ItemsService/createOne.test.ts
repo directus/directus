@@ -35,23 +35,4 @@ describe('ItemsService', () => {
 		const response = await itemsService.createOne(item, { emitEvents: false });
 		expect(response).toBe('6107c897-9182-40f7-b22e-4f044d1258d2');
 	});
-	it('denies create on directus_users not as an admin, accountability: "all", no permissions', async () => {
-		const schema = systemSchema;
-		schema.collections.directus_users.accountability = 'all';
-
-		itemsService = new ItemsService('directus_users', {
-			knex: db,
-			accountability: {
-				role: 'user',
-				admin: false,
-			},
-			schema: schema,
-		});
-
-		tracker.on.insert('directus_users').responseOnce(item);
-
-		expect(() => itemsService.createOne(item, { emitEvents: false })).rejects.toThrow(
-			"You don't have permission to access this."
-		);
-	});
 });
