@@ -280,10 +280,7 @@ dismiss: Hylkää
 raw_value: Raaka-arvo
 edit_raw_value: Muokkaa raaka-arvoa
 enter_raw_value: Syötä raakaarvo...
-clear_value: Tyhjennä
 clear_changes: Tyhjennä muutokset
-reset_to_default: Palauta oletukseksi
-undo_changes: Peru muutokset
 notifications: Ilmoitukset
 show_all_activity: Näytä kaikki toiminta
 page_not_found: Sivua ei löydy

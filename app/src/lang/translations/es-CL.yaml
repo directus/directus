@@ -282,10 +282,7 @@ dismiss: Cerrar
 raw_value: Valor Plano
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
-clear_value: Limpiar valor
 clear_changes: Borrar Cambios
-reset_to_default: Restablecen a los predeterminados
-undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Presentar toda la actividad
 page_not_found: Página no encontrada
