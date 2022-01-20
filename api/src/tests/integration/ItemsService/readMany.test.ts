@@ -11,7 +11,6 @@ jest.requireMock('../../../database/index');
 describe('ItemsService', () => {
 	let db: Knex;
 	let tracker: Tracker;
-	let itemsService: ItemsService;
 
 	beforeAll(async () => {
 		db = knex({ client: MockClient });
@@ -22,20 +21,16 @@ describe('ItemsService', () => {
 		tracker.reset();
 	});
 
-	it('it returns one item from directus_users as admin', async () => {
-		const schema = systemSchema;
-		const table = 'directus_users';
+	it('it returns multiple items from directus_users as admin', async () => {
+		const items = [{ id: 1 }, { id: 2 }];
 
-		const rawItem = [{ id: 1 }];
-		const item = { id: 1 };
+		tracker.on.select('directus_users').responseOnce(items);
 
-		tracker.on.select('directus_users').responseOnce(rawItem);
-
-		itemsService = new ItemsService(table, {
+		const itemsService = new ItemsService('directus_users', {
 			knex: db,
 			accountability: { role: 'admin', admin: true },
-			schema,
+			schema: systemSchema,
 		});
-		expect(await itemsService.readOne('id')).toStrictEqual(item);
+		expect(await itemsService.readMany(['id'])).toStrictEqual(items);
 	});
 });
