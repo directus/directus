@@ -3,7 +3,6 @@ export * from './assets';
 export * from './ast';
 export * from './auth';
 export * from './collection';
-export * from './extensions';
 export * from './files';
 export * from './graphql';
 export * from './items';
