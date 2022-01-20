@@ -189,7 +189,7 @@ import useLink from './useLink';
 import useSourceCode from './useSourceCode';
 import { getToken } from '@/api';
 import { getPublicURL } from '@/utils/get-root-path';
-import { percentageRemaining, characterCountMinusHTML } from '../shared/character-count-no-html';
+import { percentage } from '@/utils/percentage';
 
 type CustomFormat = {
 	title: string;
@@ -281,8 +281,9 @@ export default defineComponent({
 
 			if (tinymceEditor) {
 				const observer = new MutationObserver((_mutations) => {
-					count.value = characterCountMinusHTML(tinymceEditor);
+					count.value = tinymceEditor?.textContent?.replace('\n', '')?.length ?? 0;
 				});
+
 				const config = { characterData: true, childList: true, subtree: true };
 				observer.observe(tinymceEditor, config);
 			}
@@ -399,7 +400,7 @@ export default defineComponent({
 			};
 		});
 
-		const percRemaining = computed(() => percentageRemaining(count.value, props.softLength));
+		const percRemaining = computed(() => percentage(count.value, props.softLength));
 
 		return {
 			t,

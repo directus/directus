@@ -208,7 +208,7 @@ import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
-import { characterCountMinusHTML, percentageRemaining } from '../shared/character-count-no-html';
+import { percentage } from '@/utils/percentage';
 
 export default defineComponent({
 	props: {
@@ -303,9 +303,10 @@ export default defineComponent({
 			if (markdownInterface.value) {
 				const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
 
-				const observer = new MutationObserver((_mutations) => {
-					count.value = characterCountMinusHTML(previewBox);
+				const observer = new MutationObserver(() => {
+					count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
 				});
+
 				const config = { characterData: true, childList: true, subtree: true };
 
 				observer.observe(previewBox, config);
@@ -358,7 +359,7 @@ export default defineComponent({
 			columns: 4,
 		});
 
-		const percRemaining = computed(() => percentageRemaining(count.value, props.softLength));
+		const percRemaining = computed(() => percentage(count.value, props.softLength));
 		useShortcut('meta+b', () => edit('bold'), markdownInterface);
 		useShortcut('meta+i', () => edit('italic'), markdownInterface);
 		useShortcut('meta+k', () => edit('link'), markdownInterface);
