@@ -1,5 +1,5 @@
+import { ActionHandler, FilterHandler, InitHandler } from '@directus/shared/types';
 import { ScheduledTask } from 'node-cron';
-import { ActionHandler, FilterHandler, InitHandler } from './extensions';
 
 export type EventHandler =
 	| { type: 'filter'; name: string; handler: FilterHandler }
