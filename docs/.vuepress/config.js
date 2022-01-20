@@ -254,6 +254,11 @@ module.exports = {
 						title: 'Activity Log',
 					},
 					{
+						type: 'page',
+						path: '/configuration/sso',
+						title: 'Single Sign-On (SSO)',
+					},
+					{
 						type: 'divider',
 					},
 					// {

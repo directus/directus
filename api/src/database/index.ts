@@ -21,31 +21,39 @@ export default function getDatabase(): Knex {
 
 	const {
 		client,
+		version,
 		searchPath,
 		connectionString,
-		version,
 		pool: poolConfig,
 		...connectionConfig
 	} = getConfigFromEnv('DB_', ['DB_EXCLUDE_TABLES']);
 
 	const requiredEnvVars = ['DB_CLIENT'];
 
-	if (client && client === 'sqlite3') {
-		requiredEnvVars.push('DB_FILENAME');
-	} else if (client && client === 'oracledb') {
-		if (!connectionString) {
-			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
-		} else {
-			requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
-		}
-	} else {
-		if (client === 'pg') {
+	switch (client) {
+		case 'sqlite3':
+			requiredEnvVars.push('DB_FILENAME');
+			break;
+
+		case 'oracledb':
 			if (!connectionString) {
-				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
+				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+			} else {
+				requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
 			}
-		} else {
+			break;
+
+		case 'cockroachdb':
+		case 'pg':
+			if (!env.DB_CONNECTION_STRING) {
+				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
+			} else {
+				requiredEnvVars.push('DB_CONNECTION_STRING');
+			}
+			break;
+
+		default:
 			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
-		}
 	}
 
 	validateEnv(requiredEnvVars);
@@ -157,7 +165,9 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqlite' | 'oracle' | 'mssql' | 'redshift' {
+export function getDatabaseClient(
+	database?: Knex
+): 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift' {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
@@ -165,6 +175,8 @@ export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqli
 			return 'mysql';
 		case 'Client_PG':
 			return 'postgres';
+		case 'Client_CockroachDB':
+			return 'cockroachdb';
 		case 'Client_SQLite3':
 			return 'sqlite';
 		case 'Client_Oracledb':

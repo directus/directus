@@ -22,92 +22,100 @@ describe('/items', () => {
 
 	describe('/:collection GET', () => {
 		describe('Mathmatical Operators', () => {
-			it.each(vendors)('%p returns users with name _eq', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-				const name = internet.email();
-				const guests: any[] = createMany(createGuest, 10);
-				for (const guest of guests) {
-					guest.id = uuid();
-					guest.name = name;
-				}
-				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+			describe('returns users with name _eq', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+					const name = internet.email();
+					const guests: any[] = createMany(createGuest, 10);
+					for (const guest of guests) {
+						guest.id = uuid();
+						guest.name = name;
+					}
+					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-				const response = await request(url)
-					.get(`/items/guests?filter={"name": { "_eq": "${name}" }}`)
-					.set('Authorization', 'Bearer AdminToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					const response = await request(url)
+						.get(`/items/guests?filter={"name": { "_eq": "${name}" }}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				expect(response.body.data.length).toBe(guests.length);
-				expect(response.body.data[0]).toMatchObject({
-					name: name,
+					expect(response.body.data.length).toBe(guests.length);
+					expect(response.body.data[0]).toMatchObject({
+						name: name,
+					});
 				});
 			});
-			it.each(vendors)('%p returns users with name _neq', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-				const guests: any[] = createMany(createGuest, 10);
-				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+			describe('returns users with name _neq', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+					const guests: any[] = createMany(createGuest, 10);
+					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-				const response = await request(url)
-					.get(`/items/guests?&filter={"name": { "_neq": "${guests[0].name}" }}`)
-					.set('Authorization', 'Bearer AdminToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					const response = await request(url)
+						.get(`/items/guests?&filter={"name": { "_neq": "${guests[0].name}" }}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				expect(Object.values(response.body.data).includes(guests[0].name)).toBeFalsy();
+					expect(Object.values(response.body.data).includes(guests[0].name)).toBeFalsy();
+				});
 			});
 		});
 
 		describe('Logical Operators', () => {
-			it.each(vendors)('%p returns users with name equality _AND favorite_artist equality', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-				const name = internet.email();
-				const guests: any[] = createMany(createGuest, 10, { name });
-				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
-				const artist = createArtist();
-				for (const guest of guests) {
-					guest.id = uuid();
-					guest.name = name;
-					guest.favorite_artist = artist.id;
-				}
-				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
-				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+			describe('returns users with name equality _AND favorite_artist equality', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+					const name = internet.email();
+					const guests: any[] = createMany(createGuest, 10, { name });
+					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+					const artist = createArtist();
+					for (const guest of guests) {
+						guest.id = uuid();
+						guest.name = name;
+						guest.favorite_artist = artist.id;
+					}
+					await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-				const response = await request(url)
-					.get(
-						`/items/guests?filter={"_and":[{"name": { "_eq": "${guests[0].name}" }},{"favorite_artist": { "_eq": "${guests[0].favorite_artist}" }}]}`
-					)
-					.set('Authorization', 'Bearer AdminToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					const response = await request(url)
+						.get(
+							`/items/guests?filter={"_and":[{"name": { "_eq": "${guests[0].name}" }},{"favorite_artist": { "_eq": "${guests[0].favorite_artist}" }}]}`
+						)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				expect(response.body.data.length).toBe(guests.length);
+					expect(response.body.data.length).toBe(guests.length);
+				});
 			});
-			it.each(vendors)('%p returns users with name equality _OR favorite_artist equality', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-				const name = internet.email();
+			describe('returns users with name equality _OR favorite_artist equality', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+					const name = internet.email();
 
-				const artist = createArtist();
-				const guests: any[] = createMany(createGuest, 10, { name });
-				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+					const artist = createArtist();
+					const guests: any[] = createMany(createGuest, 10, { name });
+					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-				for (const guest of guests) {
-					guest.id = uuid();
-					guest.name = internet.email();
-					guest.favorite_artist = artist.id;
-				}
-				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
-				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+					for (const guest of guests) {
+						guest.id = uuid();
+						guest.name = internet.email();
+						guest.favorite_artist = artist.id;
+					}
+					await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-				const response = await request(url)
-					.get(
-						`/items/guests?filter={"_or":[{"name": { "_eq": "${name}" }},{"favorite_artist": { "_eq": "${artist.id}" }}]}`
-					)
-					.set('Authorization', 'Bearer AdminToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					const response = await request(url)
+						.get(
+							`/items/guests?filter={"_or":[{"name": { "_eq": "${name}" }},{"favorite_artist": { "_eq": "${artist.id}" }}]}`
+						)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				expect(response.body.data.length).toBe(20);
+					expect(response.body.data.length).toBe(20);
+				});
 			});
 		});
 	});

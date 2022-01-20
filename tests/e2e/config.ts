@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { promisify } from 'util';
 import { allVendors } from './get-dbs-to-test';
 
 type Vendor = typeof allVendors[number];
@@ -33,6 +34,7 @@ const directusConfig = {
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: 'error',
+	SERVE_APP: 'false',
 };
 
 const config: Config = {
@@ -89,6 +91,7 @@ const config: Config = {
 				password: 'Test@123',
 				host: 'localhost',
 				port: 6104,
+				requestTimeout: 30000,
 			},
 			...knexConfig,
 		},
@@ -102,10 +105,29 @@ const config: Config = {
 			...knexConfig,
 			waitTestSQL: 'SELECT 1 FROM DUAL',
 		},
+		cockroachdb: {
+			client: 'cockroachdb',
+			connection: {
+				database: 'defaultdb',
+				user: 'root',
+				password: '',
+				host: 'localhost',
+				port: 6106,
+			},
+			...knexConfig,
+		},
 		sqlite3: {
 			client: 'sqlite3',
 			connection: {
-				filename: './data.db',
+				filename: './test.db',
+			},
+			useNullAsDefault: true,
+			pool: {
+				afterCreate: async (conn: any, callback: any) => {
+					const run = promisify(conn.run.bind(conn));
+					await run('PRAGMA foreign_keys = ON');
+					callback(null, conn);
+				},
 			},
 			...knexConfig,
 		},
@@ -118,6 +140,7 @@ const config: Config = {
 		mssql: 'MS SQL Server',
 		oracle: 'OracleDB',
 		sqlite3: 'SQLite 3',
+		cockroachdb: 'CockroachDB',
 	},
 	envs: {
 		postgres: {
@@ -181,8 +204,18 @@ const config: Config = {
 		sqlite3: {
 			...directusConfig,
 			DB_CLIENT: 'sqlite3',
-			DB_FILENAME: './data.db',
+			DB_FILENAME: './test.db',
 			PORT: '59158',
+		},
+		cockroachdb: {
+			...directusConfig,
+			DB_CLIENT: 'cockroachdb',
+			DB_HOST: `localhost`,
+			DB_USER: 'root',
+			DB_PASSWORD: '',
+			DB_PORT: '6106',
+			DB_DATABASE: 'defaultdb',
+			PORT: '59159',
 		},
 	},
 };

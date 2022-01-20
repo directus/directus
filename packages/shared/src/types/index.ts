@@ -18,6 +18,7 @@ export * from './permissions';
 export * from './presets';
 export * from './query';
 export * from './relations';
+export * from './schema';
 export * from './settings';
 export * from './shares';
 export * from './users';

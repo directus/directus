@@ -143,12 +143,7 @@ export default defineComponent({
 			if (hasEdits.value) saveAndAddNew();
 		});
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -170,7 +165,6 @@ export default defineComponent({
 			isBatch,
 			title,
 			validationErrors,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
