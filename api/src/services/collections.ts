@@ -9,8 +9,8 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview, MutationOptions } from '../types';
-import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
+import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
+import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 
 export type RawCollection = {

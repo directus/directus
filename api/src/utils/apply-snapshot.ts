@@ -1,4 +1,4 @@
-import { Snapshot, SnapshotDiff, SchemaOverview, Relation } from '../types';
+import { Snapshot, SnapshotDiff } from '../types';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
 import { Knex } from 'knex';
@@ -7,7 +7,7 @@ import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { set } from 'lodash';
 import { DiffNew } from 'deep-diff';
-import { Field } from '@directus/shared/types';
+import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
 
 export async function applySnapshot(
