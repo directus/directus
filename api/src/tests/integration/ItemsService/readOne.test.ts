@@ -3,7 +3,7 @@ import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../../services';
 import { systemSchema } from '../utils/schemas';
 
-// Get DB client is locked into postgres to test the strings inserted.
+// getDatabaseClient() is locked into postgres to test the sql strings inserted.
 jest.mock('../../../database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
@@ -57,15 +57,16 @@ describe('ItemsService', () => {
 			},
 			schema: systemSchema,
 		});
-		const response = await itemsService.readOne('id');
+		const response = await itemsService.readOne(1);
 
-		// Test DB Input with the sql submitted. Not db agnostic unfortunately.
+		// Test DB input with the sql submitted
 		expect(tracker.history.select.length).toBe(1);
+		expect(tracker.history.select[0].bindings).toStrictEqual([1, 100]);
 		expect(tracker.history.select[0].sql).toBe(
 			'select "directus_users"."id" from "directus_users" where ("directus_users"."id" = ?) order by "directus_users"."id" asc limit ?'
 		);
 
-		// Test Return is processed correctly.
+		// Test that the returned item is processed correctly.
 		expect(response).toStrictEqual(rawItem[0].id);
 	});
 
