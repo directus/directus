@@ -236,10 +236,9 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
-export_data: Gegevens exporteren
+label_import: Importeren
 format: Format
 use_current_filters_settings: Gebruik huidige filters & instellingen
-export_collection: 'Exporteer {collection}'
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde

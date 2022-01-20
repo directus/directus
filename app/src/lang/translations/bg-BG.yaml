@@ -326,10 +326,9 @@ related_collection: Релативна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
-export_data: Експорт на данните
+label_import: Импортиране
 format: Формат
 use_current_filters_settings: Прилагане на текущите филтри
-export_collection: 'Експорт на {collection}'
 last_page: Последна страница
 last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
