@@ -102,7 +102,7 @@ describe('/items', () => {
 							return error;
 						});
 
-					if (vendor === 'mssql' || vendor === 'postgres') {
+					if (vendor === 'mssql' || vendor === 'postgres' || vendor === 'cockroachdb') {
 						expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
 						expect(response.response.status).toBe(500);
 						expect(response.response.statusText).toBe('Internal Server Error');

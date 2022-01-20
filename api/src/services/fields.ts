@@ -262,8 +262,10 @@ export class FieldsService {
 				if (table) {
 					this.addColumnToTable(table, hookAdjustedField as Field);
 				} else {
-					await trx.schema.alterTable(collection, (table) => {
-						this.addColumnToTable(table, hookAdjustedField as Field);
+					await this.knex.transaction(async (schemaTrx) => {
+						await schemaTrx.schema.alterTable(collection, (table) => {
+							this.addColumnToTable(table, hookAdjustedField as Field);
+						});
 					});
 				}
 			}
@@ -484,8 +486,10 @@ export class FieldsService {
 				field in this.schema.collections[collection].fields &&
 				this.schema.collections[collection].fields[field].alias === false
 			) {
-				await trx.schema.table(collection, (table) => {
-					table.dropColumn(field);
+				await this.knex.transaction(async (schemaTrx) => {
+					await schemaTrx.schema.table(collection, (table) => {
+						table.dropColumn(field);
+					});
 				});
 			}
 		});
