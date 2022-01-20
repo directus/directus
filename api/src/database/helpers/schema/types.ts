@@ -121,7 +121,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 		// We're altering the temporary column here. That starts nullable, so we only want to set it
 		// to NOT NULL when applicable
-		if (options.nullable !== undefined && options.nullable === false) {
+		if (options.nullable === false) {
 			await this.changeNullable(table, column, options.nullable);
 		}
 	}
