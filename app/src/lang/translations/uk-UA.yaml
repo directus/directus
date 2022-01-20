@@ -307,10 +307,9 @@ related_collection: Пов'язана колекція
 related_collections: Схожі колекції
 translations_collection: Колекція перекладів
 languages_collection: Колекція мов
-export_data: Експорт даних
+label_import: Імпортувати
 format: Формат
 use_current_filters_settings: Використовувати поточні фільтри та налаштування
-export_collection: 'Експортувати {collection}'
 last_page: Остання сторінка
 last_access: Останній доступ
 fill_template: Заповнити значення шаблону

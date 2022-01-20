@@ -40,6 +40,7 @@ export class ImportService {
 			case 'application/json':
 				return await this.importJSON(collection, stream);
 			case 'text/csv':
+			case 'application/vnd.ms-excel':
 				return await this.importCSV(collection, stream);
 			default:
 				throw new UnsupportedMediaTypeException(`Can't import files of type "${mimetype}"`);
