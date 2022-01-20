@@ -24,7 +24,7 @@ export default function getDatabase(): Knex {
 		version,
 		searchPath,
 		connectionString,
-		pool: poolConfig,
+		pool: poolConfig = {},
 		...connectionConfig
 	} = getConfigFromEnv('DB_', ['DB_EXCLUDE_TABLES']);
 
