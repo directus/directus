@@ -31,6 +31,14 @@ describe('ItemsService', () => {
 			accountability: { role: 'admin', admin: true },
 			schema: systemSchema,
 		});
-		expect(await itemsService.readMany(['id'])).toStrictEqual(items);
+		const response = await itemsService.readMany([1, 2]);
+
+		expect(tracker.history.select.length).toBe(1);
+		expect(tracker.history.select[0].bindings).toStrictEqual([1, 2, 100]);
+		expect(tracker.history.select[0].sql).toBe(
+			'select "directus_users"."id" from "directus_users" where ("directus_users"."id" in (?, ?)) order by "directus_users"."id" asc limit ?'
+		);
+
+		expect(response).toStrictEqual(items);
 	});
 });

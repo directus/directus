@@ -73,7 +73,6 @@ describe('ItemsService', () => {
 	it('denies item from directus_users not as admin but collection accountability "all"', async () => {
 		const schema = systemSchema;
 		schema.collections.directus_users.accountability = 'all';
-		tracker.on.select('directus_users').responseOnce(rawItem);
 
 		const itemsService = new ItemsService('directus_users', {
 			knex: db,
@@ -83,11 +82,12 @@ describe('ItemsService', () => {
 			},
 			schema: schema,
 		});
+
 		expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
+		expect(tracker.history.select.length).toBe(0);
 	});
 
 	it('denies user access when permission action does not match read.', async () => {
-		tracker.on.select('directus_users').responseOnce(rawItem);
 		const itemsService = new ItemsService('directus_users', {
 			knex: db,
 			accountability: {
@@ -109,5 +109,6 @@ describe('ItemsService', () => {
 			schema: systemSchema,
 		});
 		expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
+		expect(tracker.history.select.length).toBe(0);
 	});
 });

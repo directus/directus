@@ -33,6 +33,11 @@ describe('ItemsService', () => {
 		tracker.on.insert('directus_users').responseOnce(item);
 
 		const response = await itemsService.createOne(item, { emitEvents: false });
-		expect(response).toBe('6107c897-9182-40f7-b22e-4f044d1258d2');
+
+		expect(tracker.history.insert.length).toBe(1);
+		expect(tracker.history.insert[0].bindings).toStrictEqual([item.id]);
+		expect(tracker.history.insert[0].sql).toBe('insert into "directus_users" ("id") values (?)');
+
+		expect(response).toBe(item.id);
 	});
 });
