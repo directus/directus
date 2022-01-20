@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
-import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
 import StreamArray from 'stream-json/streamers/StreamArray';
 import { ItemsService } from './items';

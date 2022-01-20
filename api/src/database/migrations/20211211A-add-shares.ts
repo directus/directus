@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_shares', (table) => {
-		table.uuid('id').primary();
+		table.uuid('id').primary().notNullable();
 		table.string('name');
 		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
 		table.string('item');
@@ -24,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.alterTable('directus_sessions', (table) => {
-		table.uuid('user').nullable().alter();
+		table.setNullable('user');
 		table.uuid('share').references('id').inTable('directus_shares').onDelete('CASCADE');
 	});
 }

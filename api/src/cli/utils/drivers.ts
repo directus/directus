@@ -1,5 +1,6 @@
 export const drivers = {
 	pg: 'PostgreSQL / Redshift',
+	cockroachdb: 'CockroachDB',
 	mysql: 'MySQL / MariaDB / Aurora',
 	sqlite3: 'SQLite',
 	mssql: 'Microsoft SQL Server',

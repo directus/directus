@@ -191,7 +191,8 @@ describe('/items', () => {
 					});
 
 					expect(response.data.data).toMatchObject({
-						id: expect.any(Number),
+						// Cockroach has auto-int in int8 (BigInt)
+						id: expect.anything(),
 						artists_id: expect.any(String),
 						events_id: expect.any(String),
 					});
