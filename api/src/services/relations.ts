@@ -1,8 +1,7 @@
 import { Knex } from 'knex';
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { SchemaOverview, Relation, RelationMeta, Accountability } from '@directus/shared/types';
-import { Query } from '@directus/shared/types';
+import { SchemaOverview, Relation, RelationMeta, Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
