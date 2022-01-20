@@ -14,6 +14,7 @@ export type OperationHandler = (
 export interface OperationAppConfig {
 	id: string;
 	name: string;
+	icon: string;
 
 	options: Record<string, any>;
 }
