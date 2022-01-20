@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { ApiExtensionContext } from './extensions';
+import { HookEndpointExtensionContext } from './extensions';
 
-type EndpointConfigFunction = (router: Router, context: ApiExtensionContext) => void;
+type EndpointConfigFunction = (router: Router, context: HookEndpointExtensionContext) => void;
 type EndpointConfigObject = {
 	id: string;
 	handler: EndpointConfigFunction;

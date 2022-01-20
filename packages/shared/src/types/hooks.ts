@@ -1,5 +1,5 @@
 import { ActionHandler, FilterHandler, InitHandler, ScheduleHandler } from './events';
-import { ApiExtensionContext } from './extensions';
+import { HookEndpointExtensionContext } from './extensions';
 
 type RegisterFunctions = {
 	filter: (event: string, handler: FilterHandler) => void;
@@ -8,6 +8,6 @@ type RegisterFunctions = {
 	schedule: (cron: string, handler: ScheduleHandler) => void;
 };
 
-type HookConfigFunction = (register: RegisterFunctions, context: ApiExtensionContext) => void;
+type HookConfigFunction = (register: RegisterFunctions, context: HookEndpointExtensionContext) => void;
 
 export type HookConfig = HookConfigFunction;

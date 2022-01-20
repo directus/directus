@@ -1,6 +1,14 @@
+import { Accountability } from './accountability';
+import { ApiExtensionContext } from './extensions';
+
+type OperationContext = ApiExtensionContext & {
+	accountability: Accountability | null;
+};
+
 export type OperationHandler = (
 	data: Record<string, unknown>,
-	options: Record<string, any>
+	options: Record<string, any>,
+	context: OperationContext
 ) => unknown | Promise<unknown> | void;
 
 export interface OperationAppConfig {

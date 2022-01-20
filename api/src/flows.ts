@@ -16,6 +16,10 @@ import {
 	ActionHandler,
 	InitHandler,
 } from '@directus/shared/types';
+import env from './env';
+import * as exceptions from './exceptions';
+import * as sharedExceptions from '@directus/shared/exceptions';
+import * as services from './services';
 
 let flowManager: FlowManager | undefined;
 
@@ -49,19 +53,33 @@ class FlowManager {
 
 		for (const flow of flowTrees) {
 			if (flow.trigger === 'filter') {
-				const handler: FilterHandler = (payload, meta, context) => this.executeFlow(flow, { payload, meta, context });
+				const handler: FilterHandler = (payload, meta, context) =>
+					this.executeFlow(
+						flow,
+						{ payload, ...meta },
+						{
+							accountability: context.accountability,
+							database: context.database,
+							getSchema: context.schema ? () => context.schema : getSchema,
+						}
+					);
 
 				emitter.onFilter(flow.options.event, handler);
 
 				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'action') {
-				const handler: ActionHandler = (meta, context) => this.executeFlow(flow, { meta, context });
+				const handler: ActionHandler = (meta, context) =>
+					this.executeFlow(flow, meta, {
+						accountability: context.accountability,
+						database: context.database,
+						getSchema: context.schema ? () => context.schema : getSchema,
+					});
 
 				emitter.onAction(flow.options.event, handler);
 
 				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'init') {
-				const handler: InitHandler = (meta) => this.executeFlow(flow, { meta });
+				const handler: InitHandler = () => this.executeFlow(flow);
 
 				emitter.onInit(flow.options.event, handler);
 
@@ -109,12 +127,12 @@ class FlowManager {
 		this.operations = {};
 	}
 
-	private async executeFlow(flow: Flow, data: unknown = null): Promise<any> {
+	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {
 		const keyedData: Record<string, unknown> = { [TRIGGER_KEY]: data, [LAST_KEY]: data };
 
 		let nextOperation = flow.operation;
 		while (nextOperation !== null) {
-			const { successor, data } = await this.executeOperation(nextOperation, keyedData);
+			const { successor, data } = await this.executeOperation(nextOperation, keyedData, context);
 
 			keyedData[nextOperation.key] = data;
 			keyedData[LAST_KEY] = data;
@@ -127,7 +145,8 @@ class FlowManager {
 
 	private async executeOperation(
 		operation: Operation,
-		keyedData: Record<string, unknown>
+		keyedData: Record<string, unknown>,
+		context: Record<string, unknown> = {}
 	): Promise<{ successor: Operation | null; data: unknown }> {
 		if (!(operation.type in this.operations)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
@@ -138,7 +157,16 @@ class FlowManager {
 		const handler = this.operations[operation.type];
 
 		try {
-			const result = await handler(keyedData, operation.options);
+			const result = await handler(keyedData, operation.options, {
+				services,
+				exceptions: { ...exceptions, ...sharedExceptions },
+				env,
+				database: getDatabase(),
+				logger,
+				getSchema,
+				accountability: null,
+				...context,
+			});
 
 			return { successor: operation.resolve, data: result ?? null };
 		} catch (error: unknown) {

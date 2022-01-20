@@ -142,9 +142,12 @@ export type ApiExtensionContext = {
 	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
-	emitter: any;
 	logger: Logger;
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<SchemaOverview>;
+};
+
+export type HookEndpointExtensionContext = ApiExtensionContext & {
+	emitter: any;
 };
 
 export type ExtensionOptionsContext = {
