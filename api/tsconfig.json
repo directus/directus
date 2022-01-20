@@ -6,12 +6,12 @@
 		"moduleResolution": "node",
 		"sourceMap": false,
 		"outDir": "dist",
-		"rootDirs": ["src", "test"],
+		"rootDir": "src",
 		"strict": true,
 		"lib": ["es2019"],
 		"skipLibCheck": true,
 		"declaration": true,
 		"resolveJsonModule": true
 	},
-	"exclude": ["node_modules", "dist", "extensions"]
+	"exclude": ["node_modules", "dist", "extensions", "tests"]
 }
