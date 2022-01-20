@@ -1,5 +1,5 @@
 import { Collection } from './collection';
-import { Relation, RelationMeta } from './relation';
+import { Relation, RelationMeta } from '@directus/shared/types';
 import { Field, FieldMeta } from '@directus/shared/types';
 import { Diff } from 'deep-diff';
 

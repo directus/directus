@@ -1,4 +1,4 @@
-import { Accountability } from '@directus/shared/types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { Router } from 'express';
 import { Knex } from 'knex';
 import { Logger } from 'pino';
@@ -7,7 +7,6 @@ import * as exceptions from '../exceptions';
 import * as services from '../services';
 import { Emitter } from '../emitter';
 import { getSchema } from '../utils/get-schema';
-import { SchemaOverview } from './schema';
 
 export type ExtensionContext = {
 	services: typeof services;
