@@ -316,10 +316,9 @@ related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
 translations_collection: Çeviri Koleksiyonu
 languages_collection: Dil Koleksiyonu
-export_data: Verileri Dışa Aktar
+label_import: İçe aktar
 format: Biçim
 use_current_filters_settings: Mevcut Filtreleri & Ayarları Kullan
-export_collection: 'Koleksiyonu ({collection}) dışarı aktar'
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablonla Doldur

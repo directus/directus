@@ -283,9 +283,19 @@ foreign_key: Външен ключ
 finish_setup: Завършване на настройката
 dismiss: Отхвърляне
 raw_value: Стойност в суров вид
+copy_raw_value: Копиране на суровата стойност
+copy_raw_value_success: Копирано
+copy_raw_value_fail: Копирането е неуспешно
+paste_raw_value: Поставяне в суров вид
+paste_raw_value_success: Поставено
+paste_raw_value_fail: Поставянето е неуспешно
+view_raw_value: Преглед на суровата стойност
 edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
+clear_value: Изчистване
 clear_changes: Изчистване на промените
+reset_to_default: Нулиране по подразбиране
+undo_changes: Отмяна на промените
 notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
@@ -316,10 +326,9 @@ related_collection: Релативна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
-export_data: Експорт на данните
+label_import: Импортиране
 format: Формат
 use_current_filters_settings: Прилагане на текущите филтри
-export_collection: 'Експорт на {collection}'
 last_page: Последна страница
 last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
@@ -944,6 +953,7 @@ fields:
     external_identifier: Външен идентификатор
     last_page: Последна страница
     last_access: Последно посещение
+    email_notifications: Известия чрез имейл
   directus_settings:
     jpg: JPEG
     png: PNG

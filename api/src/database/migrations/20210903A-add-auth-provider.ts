@@ -1,6 +1,9 @@
 import { Knex } from 'knex';
+import { getHelpers } from '../helpers';
 
 export async function up(knex: Knex): Promise<void> {
+	const helper = getHelpers(knex).schema;
+
 	await knex.schema.alterTable('directus_users', (table) => {
 		table.dropUnique(['email']);
 	});
@@ -8,7 +11,11 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_users', (table) => {
 		table.string('provider', 128).notNullable().defaultTo('default');
 		table.string('external_identifier').unique();
-		table.string('email', 128).nullable().alter();
+	});
+
+	await helper.changeToString('directus_users', 'email', {
+		nullable: true,
+		length: 128,
 	});
 
 	await knex.schema.alterTable('directus_users', (table) => {
@@ -21,11 +28,16 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
+	const helper = getHelpers(knex).schema;
+
 	await knex.schema.alterTable('directus_users', (table) => {
 		table.dropColumn('provider');
 		table.dropColumn('external_identifier');
+	});
 
-		table.string('email', 128).notNullable().alter();
+	await helper.changeToString('directus_users', 'email', {
+		nullable: false,
+		length: 128,
 	});
 
 	await knex.schema.alterTable('directus_sessions', (table) => {

@@ -25,6 +25,7 @@ import { DeepPartial } from './misc';
 import { Field } from './fields';
 import { Relation } from './relations';
 import { Collection } from './collection';
+import { SchemaOverview } from './schema';
 
 export type AppWithoutHybridExtensionType = typeof APP_WITHOUT_HYBRID_EXTENSION_TYPES[number];
 export type ApiWithoutHybridExtensionType = typeof API_WITHOUT_HYBRID_EXTENSION_TYPES[number];
@@ -143,7 +144,7 @@ export type ApiExtensionContext = {
 	env: Record<string, any>;
 	emitter: any;
 	logger: Logger;
-	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
+	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<SchemaOverview>;
 };
 
 export type ExtensionOptionsContext = {

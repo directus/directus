@@ -125,7 +125,7 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="isSavable === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -302,7 +302,7 @@ export default defineComponent({
 			return hasEdits.value;
 		});
 
-		const { confirmLeave, leaveTo } = useEditsGuard(isSavable);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
 

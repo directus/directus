@@ -3,7 +3,7 @@ import axios from 'axios';
 import { sleep } from './sleep';
 
 export async function awaitDatabaseConnection(database: Knex, checkSQL: string): Promise<void | null> {
-	for (let attempt = 0; attempt <= 10; attempt++) {
+	for (let attempt = 0; attempt <= 20; attempt++) {
 		try {
 			await database.raw(checkSQL);
 			return null; // success
@@ -16,7 +16,7 @@ export async function awaitDatabaseConnection(database: Knex, checkSQL: string):
 }
 
 export async function awaitDirectusConnection(port: number): Promise<void | null> {
-	for (let attempt = 0; attempt <= 10; attempt++) {
+	for (let attempt = 0; attempt <= 20; attempt++) {
 		try {
 			await axios.get(`http://localhost:${port}/server/ping`);
 			return null; // success

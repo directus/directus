@@ -1,12 +1,18 @@
 import express, { Router } from 'express';
 import path from 'path';
 import {
+	ActionHandler,
 	ApiExtension,
 	AppExtensionType,
+	EndpointConfig,
 	Extension,
 	ExtensionType,
+	FilterHandler,
+	HookConfig,
 	HybridExtension,
+	InitHandler,
 	OperationApiConfig,
+	ScheduleHandler,
 } from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
@@ -31,15 +37,6 @@ import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
-import {
-	HookConfig,
-	EndpointConfig,
-	FilterHandler,
-	ActionHandler,
-	InitHandler,
-	ScheduleHandler,
-	EventHandler,
-} from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
@@ -57,6 +54,7 @@ import chokidar, { FSWatcher } from 'chokidar';
 import { isExtensionObject, isHybridExtension, pluralize } from '@directus/shared/utils';
 import { getFlowManager } from './flows';
 import globby from 'globby';
+import { EventHandler } from './types';
 
 let extensionManager: ExtensionManager | undefined;
 
