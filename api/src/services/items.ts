@@ -8,14 +8,13 @@ import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
+import { Accountability, Query, PermissionsAction, SchemaOverview } from '@directus/shared/types';
 import {
 	AbstractService,
 	AbstractServiceOptions,
 	Action,
 	Item as AnyItem,
 	PrimaryKey,
-	SchemaOverview,
 	MutationOptions,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
@@ -99,7 +98,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadAfterHooks =
 				opts?.emitEvents !== false
 					? await emitter.emitFilter(
-							`${this.eventScope}.create`,
+							this.eventScope === 'items'
+								? ['items.create', `${this.collection}.items.create`]
+								: `${this.eventScope}.create`,
 							payload,
 							{
 								collection: this.collection,
@@ -195,7 +196,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
-				`${this.eventScope}.create`,
+				this.eventScope === 'items' ? ['items.create', `${this.collection}.items.create`] : `${this.eventScope}.create`,
 				{
 					payload,
 					key: primaryKey,
@@ -280,7 +281,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const filteredRecords = await emitter.emitFilter(
-			`${this.eventScope}.read`,
+			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
 			records,
 			{
 				query,
@@ -294,7 +295,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		);
 
 		emitter.emitAction(
-			`${this.eventScope}.read`,
+			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
 			{
 				payload: filteredRecords,
 				query,
@@ -381,7 +382,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const payloadAfterHooks =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-						`${this.eventScope}.update`,
+						this.eventScope === 'items'
+							? ['items.update', `${this.collection}.items.update`]
+							: `${this.eventScope}.update`,
 						payload,
 						{
 							keys,
@@ -502,7 +505,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
-				`${this.eventScope}.update`,
+				this.eventScope === 'items' ? ['items.update', `${this.collection}.items.update`] : `${this.eventScope}.update`,
 				{
 					payload,
 					keys,
@@ -604,7 +607,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			await emitter.emitFilter(
-				`${this.eventScope}.delete`,
+				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
 				keys,
 				{
 					collection: this.collection,
@@ -645,7 +648,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
-				`${this.eventScope}.delete`,
+				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
 				{
 					payload: keys,
 					collection: this.collection,

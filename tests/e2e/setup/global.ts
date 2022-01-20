@@ -1,16 +1,7 @@
-import Dockerode from 'dockerode';
-import { Knex } from 'knex';
+import { ChildProcess } from 'child_process';
 
-type Global = {
-	databaseContainers: { vendor: string; container: Dockerode.Container }[];
-	directusContainers: { vendor: string; container: Dockerode.Container }[];
-	knexInstances: { vendor: string; knex: Knex }[];
-};
-
-const global: Global = {
-	databaseContainers: [],
-	directusContainers: [],
-	knexInstances: [],
+const global = {
+	directus: {} as { [vendor: string]: ChildProcess },
 };
 
 export default global;

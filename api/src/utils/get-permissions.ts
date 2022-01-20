@@ -1,4 +1,4 @@
-import { Permission, Accountability } from '@directus/shared/types';
+import { Permission, Accountability, SchemaOverview } from '@directus/shared/types';
 import { deepMap, parseFilter } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
@@ -10,7 +10,6 @@ import { RolesService } from '../services/roles';
 import { getCache } from '../cache';
 import hash from 'object-hash';
 import env from '../env';
-import { SchemaOverview } from '../types';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
