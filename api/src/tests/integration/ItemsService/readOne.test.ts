@@ -3,6 +3,7 @@ import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../../services';
 import { systemSchema } from '../utils/schemas';
 
+// Get DB client is locked into postgres to test the strings inserted.
 jest.mock('../../../database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
@@ -56,13 +57,21 @@ describe('ItemsService', () => {
 			},
 			schema: systemSchema,
 		});
-		expect(await itemsService.readOne('id')).toStrictEqual(rawItem[0].id);
+		const response = await itemsService.readOne('id');
+
+		// Test DB Input with the sql submitted. Not db agnostic unfortunately.
+		expect(tracker.history.select.length).toBe(1);
+		expect(tracker.history.select[0].sql).toBe(
+			'select "directus_users"."id" from "directus_users" where ("directus_users"."id" = ?) order by "directus_users"."id" asc limit ?'
+		);
+
+		// Test Return is processed correctly.
+		expect(response).toStrictEqual(rawItem[0].id);
 	});
 
 	it('denies item from directus_users not as admin but collection accountability "all"', async () => {
 		const schema = systemSchema;
 		schema.collections.directus_users.accountability = 'all';
-
 		tracker.on.select('directus_users').responseOnce(rawItem);
 
 		const itemsService = new ItemsService('directus_users', {
@@ -73,12 +82,11 @@ describe('ItemsService', () => {
 			},
 			schema: schema,
 		});
-		expect(() => itemsService.readOne('id')).rejects.toThrow("You don't have permission to access this.");
+		expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
 	});
 
 	it('denies user access when permission action does not match read.', async () => {
 		tracker.on.select('directus_users').responseOnce(rawItem);
-
 		const itemsService = new ItemsService('directus_users', {
 			knex: db,
 			accountability: {
@@ -99,6 +107,6 @@ describe('ItemsService', () => {
 			},
 			schema: systemSchema,
 		});
-		expect(() => itemsService.readOne('id')).rejects.toThrow("You don't have permission to access this.");
+		expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
 	});
 });
