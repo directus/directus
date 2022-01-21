@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_flows', (table) => {
-		table.uuid('id').primary();
+		table.uuid('id').primary().notNullable();
 		table.string('name').notNullable();
 		table.string('icon', 30).notNullable().defaultTo('account_tree');
 		table.text('note');
@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.createTable('directus_operations', (table) => {
-		table.uuid('id').primary();
+		table.uuid('id').primary().notNullable();
 		table.string('name');
 		table.string('key').notNullable();
 		table.string('type').notNullable();
