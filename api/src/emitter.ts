@@ -1,6 +1,6 @@
+import { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
 import { EventEmitter2 } from 'eventemitter2';
 import logger from './logger';
-import { ActionHandler, FilterHandler, HookContext, InitHandler } from './types';
 
 export class Emitter {
 	private filterEmitter;
@@ -26,7 +26,7 @@ export class Emitter {
 		event: string | string[],
 		payload: T,
 		meta: Record<string, any>,
-		context: HookContext
+		context: EventContext
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
 		const listeners: FilterHandler[] = events.flatMap((event) => this.filterEmitter.listeners(event));
@@ -43,7 +43,7 @@ export class Emitter {
 		return updatedPayload;
 	}
 
-	public emitAction(event: string | string[], meta: Record<string, any>, context: HookContext): void {
+	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext): void {
 		const events = Array.isArray(event) ? event : [event];
 
 		for (const event of events) {

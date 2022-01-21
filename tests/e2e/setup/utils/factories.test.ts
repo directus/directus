@@ -113,7 +113,7 @@ describe('seeding databases', () => {
 			const artist = createArtist();
 			const options = { raw: `SELECT name from artists WHERE name='${artist.name}';` };
 			const response: any = await seedTable(database!, 1, 'artists', artist, options);
-			if (vendor === 'postgres') {
+			if (vendor === 'postgres' || vendor === 'cockroachdb') {
 				expect(response.rows[0]).toStrictEqual({
 					name: artist.name,
 				});
@@ -135,7 +135,7 @@ describe('seeding databases', () => {
 			it.each(vendors)('%p returns an artist object of column names and values', async (vendor) => {
 				const database = databases.get(vendor)!;
 				const artist = createArtist();
-				if (vendor === 'postgres' && typeof artist.members === 'string') {
+				if ((vendor === 'postgres' || vendor === 'cockroachdb') && typeof artist.members === 'string') {
 					const options = { select: ['*'], where: ['name', artist.name] };
 					artist.members = JSON.parse(artist.members);
 

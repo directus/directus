@@ -272,9 +272,8 @@ related_collection: Danh mục liên quan
 related_collections: Những Danh mục liên quan
 translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
-export_data: Kết Xuất Dữ Liệu
+label_import: Nhập
 format: Định dạng
-export_collection: 'Kết xuất {collection}'
 last_access: Truy cập lần cuối
 fill_template: Điền với Giá trị Mẫu
 submit: Gửi đi

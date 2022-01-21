@@ -286,10 +286,9 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
-export_data: Eksporter data
+label_import: Importer
 format: Format
 use_current_filters_settings: Bruk gjeldende filtre og innstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Siste side
 last_access: Siste tilgang
 fill_template: Fyll med malverdi
