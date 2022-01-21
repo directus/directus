@@ -10,6 +10,10 @@ jest.requireMock('../../src/database/index');
 describe('Integration Tests', () => {
 	let db: jest.Mocked<Knex>;
 	let tracker: Tracker;
+	const tables = [
+		{ tableType: 'system', schema: systemSchema, table: 'directus_users' },
+		{ tableType: 'user', schema: userSchema, table: 'authors' },
+	];
 
 	beforeAll(async () => {
 		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
@@ -20,284 +24,147 @@ describe('Integration Tests', () => {
 		tracker.reset();
 	});
 
-	describe('System Table', () => {
-		describe('createOne', () => {
-			const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', email: 'test@gmail.com', password: 'TestPassword' };
+	describe('createOne', () => {
+		const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', email: 'test@gmail.com', password: 'TestPassword' };
 
-			it('creates one item in collection directus_users as an admin, accountability: "null"', async () => {
-				const itemsService = new ItemsService('directus_users', {
-					knex: db,
-					accountability: { role: 'admin', admin: true },
-					schema: systemSchema,
-				});
-
-				tracker.on.insert('directus_users').responseOnce(item);
-
-				const response = await itemsService.createOne(item, { emitEvents: false });
-
-				expect(tracker.history.insert.length).toBe(1);
-				expect(tracker.history.insert[0].bindings).toStrictEqual([item.id]);
-				expect(tracker.history.insert[0].sql).toBe('insert into "directus_users" ("id") values (?)');
-
-				expect(response).toBe(item.id);
-			});
-		});
-
-		describe('readOne', () => {
-			const rawItem = [{ id: 1 }];
-
-			it('it returns one item from directus_users as admin', async () => {
-				tracker.on.select('directus_users').responseOnce(rawItem);
-
-				const itemsService = new ItemsService('directus_users', {
-					knex: db,
-					accountability: { role: 'admin', admin: true },
-					schema: systemSchema,
-				});
-				expect(await itemsService.readOne('id')).toStrictEqual(rawItem[0]);
+		it.each(tables)(`%s creates one item in collection as an admin, accountability: "null"`, async (table) => {
+			const itemsService = new ItemsService(table.table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: table.schema,
 			});
 
-			it('returns one item from directus_users not as admin but has permissions', async () => {
-				tracker.on.select('directus_users').responseOnce(rawItem);
+			tracker.on.insert(table.table).responseOnce(item);
 
-				const itemsService = new ItemsService('directus_users', {
-					knex: db,
-					accountability: {
-						role: 'admin',
-						admin: false,
-						permissions: [
-							{
-								id: 1,
-								role: 'admin',
-								collection: 'directus_users',
-								action: 'read',
-								permissions: {},
-								validation: {},
-								presets: {},
-								fields: [],
-							},
-						],
-					},
-					schema: systemSchema,
-				});
-				const response = await itemsService.readOne(1);
+			const response = await itemsService.createOne(item, { emitEvents: false });
 
-				// Test DB input with the sql submitted
-				expect(tracker.history.select.length).toBe(1);
-				expect(tracker.history.select[0].bindings).toStrictEqual([1, 100]);
-				expect(tracker.history.select[0].sql).toBe(
-					'select "directus_users"."id" from "directus_users" where ("directus_users"."id" = ?) order by "directus_users"."id" asc limit ?'
-				);
+			expect(tracker.history.insert.length).toBe(1);
+			expect(tracker.history.insert[0].bindings).toStrictEqual([item.id]);
+			expect(tracker.history.insert[0].sql).toBe(`insert into "${table.table}" ("id") values (?)`);
 
-				// Test that the returned item is processed correctly.
-				expect(response).toStrictEqual(rawItem[0].id);
-			});
-
-			it('denies item from directus_users not as admin but collection accountability "all"', async () => {
-				const schema = systemSchema;
-				schema.collections.directus_users.accountability = 'all';
-
-				const itemsService = new ItemsService('directus_users', {
-					knex: db,
-					accountability: {
-						role: 'admin',
-						admin: false,
-					},
-					schema: schema,
-				});
-
-				expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
-				expect(tracker.history.select.length).toBe(0);
-			});
-
-			it('denies user access when permission action does not match read.', async () => {
-				const itemsService = new ItemsService('directus_users', {
-					knex: db,
-					accountability: {
-						role: 'admin',
-						admin: false,
-						permissions: [
-							{
-								id: 1,
-								role: 'admin',
-								collection: 'directus_users',
-								action: 'create',
-								permissions: {},
-								validation: {},
-								presets: {},
-								fields: [],
-							},
-						],
-					},
-					schema: systemSchema,
-				});
-				expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
-				expect(tracker.history.select.length).toBe(0);
-			});
-		});
-
-		describe('readMany', () => {
-			const items = [{ id: 1 }, { id: 2 }];
-
-			it('it returns multiple items from directus_users as admin', async () => {
-				tracker.on.select('directus_users').responseOnce(items);
-
-				const itemsService = new ItemsService('directus_users', {
-					knex: db,
-					accountability: { role: 'admin', admin: true },
-					schema: systemSchema,
-				});
-				const response = await itemsService.readMany([1, 2]);
-
-				expect(tracker.history.select.length).toBe(1);
-				expect(tracker.history.select[0].bindings).toStrictEqual([1, 2, 100]);
-				expect(tracker.history.select[0].sql).toBe(
-					'select "directus_users"."id" from "directus_users" where ("directus_users"."id" in (?, ?)) order by "directus_users"."id" asc limit ?'
-				);
-
-				expect(response).toStrictEqual(items);
-			});
+			expect(response).toBe(item.id);
 		});
 	});
 
-	describe('User Table', () => {
-		describe('createOne', () => {
-			const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', email: 'test@gmail.com', password: 'TestPassword' };
+	describe('readOne', () => {
+		const rawItems = [{ id: 1 }, { id: 2 }];
 
-			it('creates one item in collection authors as an admin, accountability: "null"', async () => {
-				const itemsService = new ItemsService('authors', {
-					knex: db,
-					accountability: { role: 'admin', admin: true },
-					schema: userSchema,
-				});
+		it.each(tables)('%s it returns one item from table as admin', async (table) => {
+			tracker.on.select(table.table).responseOnce(rawItems);
 
-				tracker.on.insert('authors').responseOnce(item);
-
-				const response = await itemsService.createOne(item, { emitEvents: false });
-
-				expect(tracker.history.insert.length).toBe(1);
-				expect(tracker.history.insert[0].bindings).toStrictEqual([item.id]);
-				expect(tracker.history.insert[0].sql).toBe('insert into "authors" ("id") values (?)');
-
-				expect(response).toBe(item.id);
+			const itemsService = new ItemsService(table.table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: table.schema,
 			});
+			const response = await itemsService.readOne(rawItems[0].id);
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
+			expect(tracker.history.select[0].sql).toBe(
+				`select "${table.table}"."id" from "${table.table}" where "${table.table}"."id" = ? order by "${table.table}"."id" asc limit ?`
+			);
+
+			expect(response).toStrictEqual(rawItems[0]);
 		});
 
-		describe('readOne', () => {
-			const rawItem = [{ id: 1 }, { id: 2 }];
+		it.each(tables)('%s returns one item from table not as admin but has permissions', async (table) => {
+			tracker.on.select(table.table).responseOnce(rawItems);
 
-			it('it returns one item from authors as admin', async () => {
-				tracker.on.select('authors').responseOnce(rawItem);
-
-				const itemsService = new ItemsService('authors', {
-					knex: db,
-					accountability: { role: 'admin', admin: true },
-					schema: userSchema,
-				});
-				expect(await itemsService.readOne(1)).toStrictEqual(rawItem[0]);
-				expect(tracker.history.select.length).toBe(1);
-				expect(tracker.history.select[0].bindings).toStrictEqual([rawItem[0].id, 100]);
-				expect(tracker.history.select[0].sql).toBe(
-					'select "authors"."id" from "authors" where "authors"."id" = ? order by "authors"."id" asc limit ?'
-				);
+			const itemsService = new ItemsService(table.table, {
+				knex: db,
+				accountability: {
+					role: 'admin',
+					admin: false,
+					permissions: [
+						{
+							id: 1,
+							role: 'admin',
+							collection: table.table,
+							action: 'read',
+							permissions: {},
+							validation: {},
+							presets: {},
+							fields: [],
+						},
+					],
+				},
+				schema: table.schema,
 			});
+			const response = await itemsService.readOne(rawItems[0].id);
 
-			it('returns one item from authors not as admin but has permissions', async () => {
-				tracker.on.select('authors').responseOnce(rawItem);
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
+			expect(tracker.history.select[0].sql).toBe(
+				`select "${table.table}"."id" from "${table.table}" where ("${table.table}"."id" = ?) order by "${table.table}"."id" asc limit ?`
+			);
 
-				const itemsService = new ItemsService('authors', {
-					knex: db,
-					accountability: {
-						role: 'admin',
-						admin: false,
-						permissions: [
-							{
-								id: 1,
-								role: 'admin',
-								collection: 'authors',
-								action: 'read',
-								permissions: {},
-								validation: {},
-								presets: {},
-								fields: [],
-							},
-						],
-					},
-					schema: userSchema,
-				});
-				const response = await itemsService.readOne(1);
-
-				// Test DB input with the sql submitted
-				expect(tracker.history.select.length).toBe(1);
-				expect(tracker.history.select[0].bindings).toStrictEqual([1, 100]);
-				expect(tracker.history.select[0].sql).toBe(
-					'select "authors"."id" from "authors" where ("authors"."id" = ?) order by "authors"."id" asc limit ?'
-				);
-
-				// Test that the returned item is processed correctly.
-				expect(response).toStrictEqual(rawItem[0].id);
-			});
-
-			it('denies item from authors not as admin but collection accountability "all"', async () => {
-				const schema = userSchema;
-				schema.collections.authors.accountability = 'all';
-
-				const itemsService = new ItemsService('authors', {
-					knex: db,
-					accountability: {
-						role: 'admin',
-						admin: false,
-					},
-					schema: schema,
-				});
-
-				expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
-				expect(tracker.history.select.length).toBe(0);
-			});
-
-			it('denies user access when permission action does not match read.', async () => {
-				const itemsService = new ItemsService('authors', {
-					knex: db,
-					accountability: {
-						role: 'admin',
-						admin: false,
-						permissions: [
-							{
-								id: 1,
-								role: 'admin',
-								collection: 'authors',
-								action: 'create',
-								permissions: {},
-								validation: {},
-								presets: {},
-								fields: [],
-							},
-						],
-					},
-					schema: userSchema,
-				});
-				expect(() => itemsService.readOne(1)).rejects.toThrow("You don't have permission to access this.");
-				expect(tracker.history.select.length).toBe(0);
-			});
+			expect(response).toStrictEqual(rawItems[0].id);
 		});
 
-		describe('readMany', () => {
-			const items = [{ id: 1 }, { id: 2 }];
-			it('it returns multiple items from authors as admin', async () => {
-				tracker.on.select('authors').responseOnce(items);
-				const itemsService = new ItemsService('authors', {
-					knex: db,
-					accountability: { role: 'admin', admin: true },
-					schema: userSchema,
-				});
-				const response = await itemsService.readMany([1, 2]);
-				expect(tracker.history.select.length).toBe(1);
-				expect(tracker.history.select[0].bindings).toStrictEqual([1, 2, 100]);
-				expect(tracker.history.select[0].sql).toBe(
-					'select "authors"."id" from "authors" where ("authors"."id" in (?, ?)) order by "authors"."id" asc limit ?'
-				);
-				expect(response).toStrictEqual(items);
+		it.each(tables)('%s denies item from table not as admin but collection accountability "all"', async (table) => {
+			const schema = table.schema;
+			schema.collections[table.table].accountability = 'all';
+
+			const itemsService = new ItemsService(table.table, {
+				knex: db,
+				accountability: {
+					role: 'admin',
+					admin: false,
+				},
+				schema: schema,
 			});
+
+			expect(() => itemsService.readOne(rawItems[0].id)).rejects.toThrow("You don't have permission to access this.");
+			expect(tracker.history.select.length).toBe(0);
+		});
+
+		it.each(tables)('%s denies user access when permission action does not match read.', async (table) => {
+			const itemsService = new ItemsService(table.table, {
+				knex: db,
+				accountability: {
+					role: 'admin',
+					admin: false,
+					permissions: [
+						{
+							id: 1,
+							role: 'admin',
+							collection: table.table,
+							action: 'create',
+							permissions: {},
+							validation: {},
+							presets: {},
+							fields: [],
+						},
+					],
+				},
+				schema: table.schema,
+			});
+			expect(() => itemsService.readOne(rawItems[0].id)).rejects.toThrow("You don't have permission to access this.");
+			expect(tracker.history.select.length).toBe(0);
+		});
+	});
+
+	describe('readMany', () => {
+		const items = [{ id: 1 }, { id: 2 }];
+
+		it.each(tables)('%s it returns multiple items from table as admin', async (table) => {
+			tracker.on.select(table.table).responseOnce(items);
+
+			const itemsService = new ItemsService(table.table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: table.schema,
+			});
+			const response = await itemsService.readMany([1, 2]);
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual([1, 2, 100]);
+			expect(tracker.history.select[0].sql).toBe(
+				`select "${table.table}"."id" from "${table.table}" where ("${table.table}"."id" in (?, ?)) order by "${table.table}"."id" asc limit ?`
+			);
+
+			expect(response).toStrictEqual(items);
 		});
 	});
 });
