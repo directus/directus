@@ -125,7 +125,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"keyv": "^4.0.3",
 		"knex": "^0.95.14",
-		"knex-schema-inspector": "1.7.0",
+		"knex-schema-inspector": "^1.7.1",
 		"ldapjs": "^2.3.1",
 		"liquidjs": "^9.25.0",
 		"lodash": "^4.17.21",
