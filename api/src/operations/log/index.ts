@@ -4,7 +4,7 @@ import logger from '../../logger';
 export default defineOperationApi({
 	id: 'log',
 
-	handler: (_data, options) => {
-		logger.info(`Flow: ${options.message}`);
+	handler: ({ message }) => {
+		logger.info(`Flow: ${String(message)}`);
 	},
 });

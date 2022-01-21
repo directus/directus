@@ -1,4 +1,5 @@
 import { schedule, validate } from 'node-cron';
+import { get } from 'micromustache';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
@@ -11,6 +12,7 @@ import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import * as services from './services';
+import { renderMustache } from './utils/render-mustache';
 
 let flowManager: FlowManager | undefined;
 
@@ -131,7 +133,7 @@ class FlowManager {
 			nextOperation = successor;
 		}
 
-		return keyedData[flow.options.return || TRIGGER_KEY];
+		return flow.options.return ? get(keyedData, flow.options.return) : undefined;
 	}
 
 	private async executeOperation(
@@ -147,14 +149,17 @@ class FlowManager {
 
 		const handler = this.operations[operation.type];
 
+		const options = renderMustache(operation.options, keyedData);
+
 		try {
-			const result = await handler(keyedData, operation.options, {
+			const result = await handler(options, {
 				services,
 				exceptions: { ...exceptions, ...sharedExceptions },
 				env,
 				database: getDatabase(),
 				logger,
 				getSchema,
+				data: keyedData,
 				accountability: null,
 				...context,
 			});

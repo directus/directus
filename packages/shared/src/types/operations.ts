@@ -2,12 +2,12 @@ import { Accountability } from './accountability';
 import { ApiExtensionContext } from './extensions';
 
 type OperationContext = ApiExtensionContext & {
+	data: Record<string, unknown>;
 	accountability: Accountability | null;
 };
 
 export type OperationHandler = (
-	data: Record<string, unknown>,
-	options: Record<string, any>,
+	options: Record<string, unknown>,
 	context: OperationContext
 ) => unknown | Promise<unknown> | void;
 
@@ -16,7 +16,7 @@ export interface OperationAppConfig {
 	name: string;
 	icon: string;
 
-	options: Record<string, any>;
+	options: Record<string, unknown>;
 }
 
 export interface OperationApiConfig {
