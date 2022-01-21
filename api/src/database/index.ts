@@ -96,6 +96,18 @@ export default function getDatabase(): Knex {
 		};
 	}
 
+	if (env.DB_CLIENT === 'cockroachdb') {
+		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			logger.trace('Setting CRDB serial_normalization and default_int_size');
+			const run = promisify(conn.query.bind(conn));
+
+			await run('SET serial_normalization = "sql_sequence"');
+			await run('SET default_int_size = 4');
+
+			callback(null, conn);
+		};
+	}
+
 	if (env.DB_CLIENT === 'mssql') {
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
