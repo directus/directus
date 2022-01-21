@@ -484,7 +484,7 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
-						path: '/guides/sso',
+						path: '/configuration/sso',
 						title: 'Single Sign-On (SSO)',
 					},
 				],

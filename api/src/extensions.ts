@@ -1,6 +1,16 @@
 import express, { Router } from 'express';
 import path from 'path';
-import { AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
+import {
+	ActionHandler,
+	AppExtensionType,
+	EndpointConfig,
+	Extension,
+	ExtensionType,
+	FilterHandler,
+	HookConfig,
+	InitHandler,
+	ScheduleHandler,
+} from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntry,
@@ -22,7 +32,6 @@ import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
-import { HookConfig, EndpointConfig, FilterHandler, ActionHandler, InitHandler, ScheduleHandler } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 

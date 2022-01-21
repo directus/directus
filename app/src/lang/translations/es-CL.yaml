@@ -313,10 +313,9 @@ related_collection: Colección relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de Colección
 languages_collection: Colección de Idiomas
-export_data: Exportar Datos
+label_import: Importar
 format: Formato
 use_current_filters_settings: Usar Filtros y Ajustes Actuales
-export_collection: 'Exportar {collection}'
 last_page: Última Página
 last_access: Último Acceso
 fill_template: Rellenar con Valor de Plantilla

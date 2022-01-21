@@ -114,6 +114,14 @@ const config: Config = {
 				host: 'localhost',
 				port: 6106,
 			},
+			pool: {
+				afterCreate: async (conn: any, callback: any) => {
+					const run = promisify(conn.query.bind(conn));
+					await run('SET serial_normalization = "sql_sequence"');
+					await run('SET default_int_size = 4');
+					callback(null, conn);
+				},
+			},
 			...knexConfig,
 		},
 		sqlite3: {

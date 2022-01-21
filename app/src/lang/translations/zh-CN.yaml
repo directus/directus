@@ -317,10 +317,9 @@ related_collection: 相关模型
 related_collections: 相关模型
 translations_collection: 翻译模型
 languages_collection: 语言模型
-export_data: 导出数据
+label_import: 导入
 format: 格式
 use_current_filters_settings: 使用当前筛选器和设置
-export_collection: '导出 {collection}'
 last_page: 尾页
 last_access: 上次访问
 fill_template: 使用模板填入
