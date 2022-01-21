@@ -1,10 +1,10 @@
 export const drivers = {
 	pg: 'PostgreSQL / Redshift',
-	cockroachdb: 'CockroachDB',
+	cockroachdb: 'CockroachDB (Beta)',
 	mysql: 'MySQL / MariaDB / Aurora',
 	sqlite3: 'SQLite',
 	mssql: 'Microsoft SQL Server',
-	oracledb: 'Oracle Database (Alpha)',
+	oracledb: 'Oracle Database',
 };
 
 export function getDriverForClient(client: string): keyof typeof drivers | null {
