@@ -28,3 +28,32 @@ export const systemSchema = {
 	} as CollectionsOverview,
 	relations: [] as Relation[],
 };
+
+export const userSchema = {
+	collections: {
+		authors: {
+			collection: 'authors',
+			primary: 'id',
+			singleton: false,
+			note: 'authors',
+			sortField: null,
+			accountability: null,
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: null,
+					nullable: false,
+					generated: false,
+					type: 'uuid',
+					dbType: 'uuid',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+				},
+			},
+		},
+	} as CollectionsOverview,
+	relations: [] as Relation[],
+};
