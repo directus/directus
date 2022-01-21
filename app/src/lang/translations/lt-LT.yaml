@@ -230,10 +230,8 @@ this_collection: Ši kolekcija
 related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 languages_collection: Kalbų kolekcija
-export_data: Eksportuoti duomenis
 format: Formatas
 use_current_filters_settings: Naudoti dabartinius filtrus ir nustatymus
-export_collection: 'Exportuoti {collection}'
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
 fill_template: Užpildyti reikšme iš ruošinio

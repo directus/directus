@@ -326,10 +326,9 @@ related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
 translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
-export_data: Ekspor Data
+label_import: Impor
 format: Format
 use_current_filters_settings: Gunakan Filter Saat Ini & Pengaturan
-export_collection: 'Ekspor {collection}'
 last_page: Halaman Terakhir
 last_access: Akses Terakhir
 fill_template: Isi dengan Nilai Template
