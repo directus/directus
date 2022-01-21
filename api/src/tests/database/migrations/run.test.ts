@@ -68,9 +68,9 @@ describe('run', () => {
 		it(`returns "Couldn't find migration" if an invalid migration object is supplied`, async () => {
 			tracker.on.select('directus_migrations').response([
 				{
-					version: '20211230A',
+					version: '202018129A',
 					name: 'Fake Migration',
-					timestamp: '2021-11-27 11:36:56.471595-05',
+					timestamp: '2020-00-32 11:36:56.471595-05',
 				},
 			]);
 			await run(db, 'down').catch((e: Error) => {
