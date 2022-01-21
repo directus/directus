@@ -19,7 +19,7 @@
 			<v-fancy-select v-model="edits.type" class="select" :items="selectItems" />
 
 			<template v-if="edits.type && selectedPanel">
-				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0 || edits.options === {}">
+				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
 					{{ t('no_options_available') }}
 				</v-notice>
 
