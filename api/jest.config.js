@@ -4,7 +4,7 @@ require('dotenv').config();
 
 module.exports = {
 	...base,
-	roots: ['<rootDir>/tests', '<rootDir>/src'],
+	roots: ['<rootDir>/tests'],
 	verbose: true,
 	setupFiles: ['dotenv/config'],
 	testURL: process.env.TEST_URL || 'http://localhost',
