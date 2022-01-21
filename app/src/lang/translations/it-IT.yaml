@@ -273,6 +273,7 @@ note: Nota
 enter_a_value: Inserisci un valore...
 enter_a_placeholder: Inserisci un segnaposto...
 length: Lunghezza
+soft_length: Limite consigliato
 precision_scale: Precisione & Scala
 readonly: Sola lettura
 unique: Unico
@@ -326,9 +327,17 @@ related_collection: Raccolta Correlata
 related_collections: Raccolte Correlate
 translations_collection: Raccolta di traduzioni
 languages_collection: Raccolta di Lingue
+import_data_input_placeholder: CSV o JSON...
+import_data_button: Avvia l'importazione
+import_data_indeterminate: Importazione dei dati...
+import_data_success: Dati importati con successo da {filename}
+import_data_error: La struttura dei dati di questo file non corrisponde alla raccolta.
 label_import: Importa
+label_export: Esporta
+import_export: Importa / Esporta
 format: Formato
 use_current_filters_settings: Usa i filtri e le impostazioni correnti
+export_data_button: Avvia l'esportazione
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
 fill_template: Riempi con il valore del modello
@@ -1240,6 +1249,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
