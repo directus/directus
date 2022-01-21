@@ -1,18 +1,22 @@
 type TriggerType = 'filter' | 'action' | 'init' | 'schedule';
+type Status = 'active' | 'inactive';
 
 export interface Flow {
 	name: string;
 	icon: string;
 	note: string;
-	status: 'active' | 'inactive';
+	status: Status;
 	trigger: TriggerType | null;
 	options: Record<string, any>;
 	operation: Operation | null;
 }
 
 export interface Operation {
-	type: string;
+	name: string | null;
 	key: string;
+	type: string;
+	position_x: number;
+	position_y: number;
 	options: Record<string, any>;
 	resolve: Operation | null;
 	reject: Operation | null;
@@ -23,7 +27,7 @@ export interface FlowRaw {
 	name: string;
 	icon: string;
 	note: string;
-	status: 'active' | 'inactive';
+	status: Status;
 	trigger: TriggerType | null;
 	options: Record<string, any>;
 	operation: string | null;
@@ -34,8 +38,11 @@ export interface FlowRaw {
 
 export interface OperationRaw {
 	id: string;
-	type: string;
+	name: string | null;
 	key: string;
+	type: string;
+	position_x: number;
+	position_y: number;
 	options: Record<string, any>;
 	resolve: string | null;
 	reject: string | null;

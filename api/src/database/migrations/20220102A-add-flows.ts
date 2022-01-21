@@ -16,8 +16,11 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.createTable('directus_operations', (table) => {
 		table.uuid('id').primary();
-		table.string('type').notNullable();
+		table.string('name');
 		table.string('key').notNullable();
+		table.string('type').notNullable();
+		table.integer('position_x').notNullable();
+		table.integer('position_y').notNullable();
 		table.json('options');
 		table.uuid('resolve').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 		table.uuid('reject').unique().references('id').inTable('directus_operations').onDelete('SET NULL');

@@ -3,8 +3,11 @@ table: directus_operations
 fields:
   - field: id
     special: uuid
-  - field: type
+  - field: name
   - field: key
+  - field: type
+  - field: position_x
+  - field: position_y
   - field: options
     special: json
   - field: resolve
