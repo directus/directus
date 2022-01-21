@@ -1,21 +1,12 @@
 import { schedule, validate } from 'node-cron';
-import { omit } from 'lodash';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { FlowsService } from './services';
 import { EventHandler } from './types';
 import { getSchema } from './utils/get-schema';
-import {
-	OperationHandler,
-	Operation,
-	OperationRaw,
-	Flow,
-	FlowRaw,
-	FilterHandler,
-	ActionHandler,
-	InitHandler,
-} from '@directus/shared/types';
+import { constructFlowTree } from './utils/construct-flow-tree';
+import { OperationHandler, Operation, Flow, FilterHandler, ActionHandler, InitHandler } from '@directus/shared/types';
 import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
@@ -173,38 +164,4 @@ class FlowManager {
 			return { successor: operation.reject, data: error ?? null };
 		}
 	}
-}
-
-function constructFlowTree(flow: FlowRaw): Flow {
-	const rootOperation = flow.operations.find((operation) => operation.id === flow.operation) ?? null;
-
-	const operationTree = constructOperationTree(rootOperation, flow.operations);
-
-	const flowTree: Flow = {
-		...omit(flow, ['id', 'operations']),
-		operation: operationTree,
-	};
-
-	return flowTree;
-}
-
-function constructOperationTree(root: OperationRaw | null, operations: OperationRaw[]): Operation | null {
-	if (root === null) {
-		return null;
-	}
-
-	const resolveOperation = root.resolve !== null ? operations.find((operation) => operation.id === root.resolve) : null;
-	const rejectOperation = root.reject !== null ? operations.find((operation) => operation.id === root.reject) : null;
-
-	if (resolveOperation === undefined || rejectOperation === undefined) {
-		throw new Error('Undefined reference in operations');
-	}
-
-	const operationTree: Operation = {
-		...omit(root, ['id', 'flow']),
-		resolve: constructOperationTree(resolveOperation, operations),
-		reject: constructOperationTree(rejectOperation, operations),
-	};
-
-	return operationTree;
 }
