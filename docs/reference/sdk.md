@@ -478,6 +478,30 @@ await articles.createMany([
 ]);
 ```
 
+### Read By Query
+
+```js
+await articles.readByQuery({
+	search: 'Directus',
+	filter: {
+		date_published: {
+			_gte: '$NOW',
+		},
+	},
+});
+```
+
+### Read All
+
+```js
+await articles.readByQuery({
+	// By default API limits results to 100.
+	// With -1, it will return all results, but it may lead to performance degradation
+	// for large result sets.
+	limit: -1,
+});
+```
+
 ### Read Single Item
 
 ```js
@@ -495,19 +519,14 @@ await articles.readOne(15, {
 ### Read Multiple Items
 
 ```js
-await articles.readMany({
-	search: 'Directus',
-	filter: {
-		date_published: {
-			_gte: '$NOW',
-		},
-	},
-});
+await articles.readMany([15, 16, 17]);
 ```
 
+Supports optional query:
+
 ```js
-await articles.readMany({
-	limit: -1,
+await articles.readMany([15, 16, 17], {
+	fields: ['title'],
 });
 ```
 
