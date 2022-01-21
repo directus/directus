@@ -21,7 +21,7 @@ const directus = new Directus('http://directus.example.com');
 
 async function start() {
 	// We don't need to authenticate if data is public
-	const publicData = await directus.items('public').readMany({ meta: 'total_count' });
+	const publicData = await directus.items('public').readByQuery({ meta: 'total_count' });
 
 	console.log({
 		items: publicData.data,
@@ -55,7 +55,7 @@ async function start() {
 	}
 
 	// After authentication, we can fetch the private data in case the user has access to it
-	const privateData = await directus.items('privateData').readMany({ meta: 'total_count' });
+	const privateData = await directus.items('privateData').readByQuery({ meta: 'total_count' });
 
 	console.log({
 		items: privateData.data,
