@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Avatar
+application: Anwendung
 default_provider: Standard
 published: Veröffentlicht
 draft: Entwurf
@@ -31,6 +32,7 @@ tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
+switch_user: Benutzer wechseln
 item_creation: Element erstellt
 item_revision: Element überarbeitet
 enter_a_name: Namen eingeben...
@@ -52,7 +54,9 @@ edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
+show_active_items: Aktive Elemente anzeigen
 show_archived_items: Zeige archivierte Elemente
+show_all_items: Alle Elemente anzeigen
 edited: Bearbeiteter Wert
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
@@ -89,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
 directus_version: Directus-Version
 node_version: Node-Version
@@ -278,12 +283,19 @@ foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 raw_value: Rohwert
+copy_raw_value: Unverarbeiteten Wert kopieren
+copy_raw_value_success: Kopiert
+copy_raw_value_fail: Kopieren fehlgeschlagen
+paste_raw_value: Unverarbeiteten Wert einfügen
+paste_raw_value_success: Eingefügt
+paste_raw_value_fail: Einfügen fehlgeschlagen
+view_raw_value: Unverarbeiteten Wert anzeigen
 edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
 clear_changes: Änderungen löschen
-reset_to_default: Auf Standard zurücksetzen
-undo_changes: Änderungen verwerfen
+reset_to_default: Auf Standardwert zurücksetzen
+undo_changes: Änderungen rückgängig machen
 notifications: Benachrichtigungen
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
@@ -314,10 +326,9 @@ related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
 translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
-export_data: Daten exportieren
+label_import: Importieren
 format: Format
 use_current_filters_settings: Aktuelle Filter & Einstellungen verwenden
-export_collection: '{collection} exportieren'
 last_page: Letzte Seite
 last_access: Letzter Zugriff
 fill_template: Mit Vorlagenwert füllen
@@ -765,6 +776,7 @@ adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
 creating_in: 'Element in {collection} erstellen'
 editing_in: 'Bearbeite Element in {collection}'
+viewing_in: 'Element aus {collection} wird angezeigt'
 creating_unit: 'Erstelle {unit}'
 editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
@@ -885,6 +897,7 @@ fields:
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
     archive_field: Archivfeld
+    item_duplication_fields: Vervielfältigungsfelder
   directus_files:
     $thumbnail: Miniaturansicht
     title: Titel
@@ -940,6 +953,7 @@ fields:
     external_identifier: Externer Identifikator
     last_page: Letzte Seite
     last_access: Letzter Zugriff
+    email_notifications: E-Mail Benachrichtigungen
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -952,9 +966,12 @@ fields:
     basemaps_style: Mapbox-Stil
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribuierung
+    attribution_placeholder: '© OpenStreetMap Mitwirkende'
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
     project_name: Projekt-Name
+    project_descriptor: Projekt-Beschreiber
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
@@ -974,6 +991,14 @@ fields:
     transformations_all: Alle Transformationen erlauben
     transformations_none: Transformationen deaktivieren
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
+  directus_shares:
+    name: Name
+    role: Rolle
+    password: Passwort
+    date_start: Anfangsdatum
+    date_end: Enddatum
+    max_uses: Max. Verwendungen
+    times_used: Anzahl der Nutzungen
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon
@@ -1016,6 +1041,7 @@ field_options:
       weak_text: Schwach - Minimum 8 Zeichen
       strong_text: Stark - Groß / Klein / Zahlen / Spezialzeichen
     storage_asset_presets:
+      fit_label: Passform
       upscaling: Hochskalierung
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
@@ -1027,6 +1053,7 @@ field_options:
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basiskarte
+    basemaps_name_placeholder: Geben Sie den Basemap-Namen ein...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1117,13 +1144,36 @@ start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
+shares: Freigaben
+unlimited_usage: Unbegrenzte Nutzung
+uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
+no_shares: Keine Freigaben zum Anzeigen
+new_share: Neue Freigabe
+expired: Abgelaufen
+upcoming: Bevorstehend
+share: Teilen
+share_item: Element teilen
+shared_with_you: Ein Element wurde mit dir geteilt
+shared_enter_passcode: Kennwort eingeben um fortzufahren...
+shared_leave_blank_for_unlimited: Leer lassen für kein Limit
+shared_times_remaining: Dieser Link kann nur {n} mal verwendet werden
+shared_last_remaining: Dieser Link kann nur einmal verwendet werden
+shared_uses_left: Für zusätzliche Sicherheit wurde diese freigegebene Seite mit einer begrenzten Anzahl von Aufrufen konfiguriert. Derzeit sind noch {n} Aufrufe verbleiben, danach wird die Seite nicht mehr zugänglich sein.
+share_access_page: Auf gemeinsame Seite zugreifen
+share_access_not_found: Diese freigegebene Seite existiert entweder nicht oder hat bereits die maximale Anzahl an erlaubten Verwendungen überschritten.
+share_access_not_found_desc: Bitte kontaktieren Sie einen autorisierten Benutzer dieses Projekts, um Zugriff anzufordern.
+share_access_not_found_title: Unbekannte geteilte Seite
+share_copy_link: Link kopieren
+share_copy_link_success: Link kopiert
+share_copy_link_error: Der Link konnte nicht kopiert werden
+share_send_link: Link senden
 relational_triggers: Relationale Trigger
 referential_action_field_label_m2o: Beim Löschen von {collection}...
 referential_action_field_label_o2m: Beim Abwählen von {collection}...
 referential_action_no_action: Löschen verhindern
 referential_action_cascade: Lösche das Element in {collection} (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
-referential_action_set_default: '{field} au Standardwert setzen'
+referential_action_set_default: '{field} auf Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
@@ -1168,6 +1218,7 @@ relationship: Beziehung
 reset: Zurücksetzen
 reset_password: Passwort zurücksetzen
 revisions: Revisionen
+no_revisions: Noch keine Revision
 revert: Zurücksetzen
 save: Speichern
 schema: Schema
@@ -1198,6 +1249,8 @@ interfaces:
     add_filter: Filter hinzufügen
     add_group: Und / Oder Gruppe
     add_value: Wert hinzufügen
+    logic_type_and: Und
+    logic_type_or: Oder
     all: Alle
     any: Irgendeiner
     and: und
@@ -1255,6 +1308,7 @@ interfaces:
     description: Farbwert eingeben oder auswählen
     placeholder: Farbe wählen...
     preset_colors: Farben für Vorlage
+    opacity: Deckkraft
     preset_colors_add_label: Farbe hinzufügen...
     name_placeholder: Farbnamen eingeben...
   datetime:
@@ -1307,6 +1361,7 @@ interfaces:
   file-image:
     image: Bild
     description: Bild auswählen oder hochladen
+    crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
   system-interface:
     interface: Benutzeroberfläche
@@ -1318,6 +1373,7 @@ interfaces:
   list-m2m:
     many-to-many: n:n
     description: Mehrere verwandte Elemente auswählen
+    display_template_configure_notice: Sie können die Anzeige-Vorlage nach dem Erstellen dieses Feldes konfigurieren.
   select-dropdown-m2o:
     many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
@@ -1440,6 +1496,9 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Benutzerdefinierte Formate
     options_override: Optionen überschreiben
+    folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
+    imageToken: Bild-Token
+    imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.
@@ -1505,9 +1564,27 @@ displays:
   formatted-value:
     formatted-value: Formatierter Wert
     description: Eine formatierte Version des Textes anzeigen
-    format_title: Titel formatieren
-    format_title_label: Automatische Groß-/Kleinschreibung
+    format: Format
+    format_label: Automatisches Formatieren
+    font: Schriftart
+    font_sans_serif: Sans Serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Fett
     bold_label: Fett-Schnitt verwenden
+    italic: Kursiv
+    italic_label: Kursivschrift verwenden
+    prefix: Präfix
+    prefix_label: Text vorangestellt
+    suffix: Suffix
+    suffix_label: Angehängten Text
+    color: Farbe
+    background: Hintergrund
+    icon: Symbol
+    border: Umrandung
+    border_label: Rahmen anzeigen
+    text: Text
+    text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
@@ -1545,6 +1622,7 @@ displays:
   related-values:
     related-values: Verwandte Werte
     description: Relative Werte anzeigen
+    display_template_configure_notice: Sie können die Anzeige-Vorlage nach dem Erstellen dieses Feldes konfigurieren.
   user:
     user: Benutzer
     description: Benutzer anzeigen

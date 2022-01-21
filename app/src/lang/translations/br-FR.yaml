@@ -202,9 +202,6 @@ dismiss: Lezel hebiou
 raw_value: Talvoud krai
 edit_raw_value: Kemm an talvoud krai
 enter_raw_value: Bizskrivit un talvoud krai...
-clear_value: Dilemel an talvoud
-reset_to_default: Restaoler an arventennoù dre ziouer
-undo_changes: Dizober ar c'hemmoù
 notifications: Kemennadennoù
 show_all_activity: Diskwel an oberezh a-bezh
 page_not_found: N'eo ket bet kavet ar bajenn
@@ -234,10 +231,8 @@ related_collection: Dastumad liammet
 related_collections: Dastumadoù liammet
 translations_collection: Dastumad troidigezhioù
 languages_collection: Dastumad yezhoù
-export_data: Ezporzh ar roadennoù
 format: Furmad
 use_current_filters_settings: Ober gant ar siloù hag an arventennoù war-implij
-export_collection: 'Ezporzhiañ {collection}'
 last_page: Pajenn ziwezhañ
 last_access: Mont diwezhañ
 fill_template: Leuniañ gant talvoudegezh ar patrom
@@ -747,6 +742,10 @@ fields:
     auth_password_policy: Politikerezh ar gerioù-tremen
     auth_login_attempts: Taolioù kevreañ
     custom_css: Personelaat an CSS
+  directus_shares:
+    name: Anv
+    role: Roll
+    password: Ger-tremen
   directus_fields:
     collection: Anv an dastumad
     icon: Arlun an Dastumad
@@ -1069,6 +1068,8 @@ interfaces:
     toolbar: Barrenn ostilhoù
     custom_formats: Furmadoù personelaet
     options_override: Erlec'hiañ an dibarzhioù
+    imageToken: Token ur skeudenn
+    imageToken_label: Peseurt token (statek) ouzhpennañ d'an tarzhoù skeudennoù
   input-autocomplete-api:
     input-autocomplete-api: Maezienn Emleuniet (API)
     description: Un doare klask evit an talvoudoù API diavaez.
@@ -1120,9 +1121,17 @@ displays:
   formatted-value:
     formatted-value: Talvoud furmadet
     description: Diskwel an destenn en ur stumm furmadet
-    format_title: Furmadiñ an titl
-    format_title_label: Furmad emgefreek ar c'hased lizherennoù
+    format: Furmad
+    font: Font arouezennoù
+    font_serif: Sérif
+    bold: Tev
     bold_label: Implij ar stil e tev
+    italic: Italek
+    prefix: Rakger
+    suffix: Lostger
+    color: Liv
+    icon: Arlun
+    text: Testenn
   formatted-json-value:
     formatted-json-value: Talvoud JSON furmadet
     description: Diskwel an dra en ur stumm furmadet

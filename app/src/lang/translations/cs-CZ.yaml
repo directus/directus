@@ -182,9 +182,6 @@ length: Délka
 readonly: Pouze pro čtení
 unique: Unikátní
 primary_key: Primární klíč
-clear_value: Vymazat hodnotu
-reset_to_default: Obnovit výchozí nastavení
-undo_changes: Vrátit změny
 notifications: Notifikace
 page_not_found: Stránka nenalezena
 page_not_found_body: Hledaná stránka nebyla nalezena.
@@ -192,7 +189,6 @@ title: Název
 leave_comment: Napsat komentář...
 this_collection: Tato kategorie
 related_collection: Související kategorie
-export_data: Exportovat data
 format: Formát
 submit: Potvrdit
 move_to_folder: Přesunout do složky
@@ -362,6 +358,10 @@ fields:
   directus_settings:
     project_name: Název projektu
     module_bar: Panel modulů
+  directus_shares:
+    name: Jméno
+    role: Role
+    password: Heslo
   directus_fields:
     note: Poznámka
     hidden: Skryté
@@ -471,6 +471,13 @@ displays:
     description: Zobrazit soubory
   filesize:
     filesize: Velikost souboru
+  formatted-value:
+    format: Formát
+    prefix: Prefix
+    suffix: Přípona
+    color: Barva
+    icon: Ikona
+    text: Text
   icon:
     icon: Ikona
   user:

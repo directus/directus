@@ -38,6 +38,7 @@
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div
 						class="v-menu-content"
+						:class="{ 'full-height': fullHeight, seamless }"
 						@click.stop="onContentClick"
 						@pointerenter.stop="onPointerEnter"
 						@pointerleave.stop="onPointerLeave"
@@ -110,6 +111,14 @@ export default defineComponent({
 		offsetX: {
 			type: Number,
 			default: 0,
+		},
+		fullHeight: {
+			type: Boolean,
+			default: false,
+		},
+		seamless: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
@@ -399,6 +408,14 @@ body {
 	.v-list {
 		--v-list-background-color: transparent;
 	}
+}
+
+.v-menu-content.full-height {
+	max-height: none;
+}
+
+.v-menu-content.seamless {
+	padding: 0;
 }
 
 [data-placement='top'] > .v-menu-content {

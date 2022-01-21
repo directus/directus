@@ -207,9 +207,6 @@ dismiss: Negeren
 raw_value: Ruwe waarde
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
-clear_value: Verwijder waarde
-reset_to_default: Terug naar standaardwaarde
-undo_changes: Ongedaan maken
 notifications: Notificaties
 show_all_activity: Alle activiteiten tonen
 page_not_found: Pagina niet gevonden
@@ -239,10 +236,9 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
-export_data: Gegevens exporteren
+label_import: Importeren
 format: Format
 use_current_filters_settings: Gebruik huidige filters & instellingen
-export_collection: 'Exporteer {collection}'
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde
@@ -768,6 +764,10 @@ fields:
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
     custom_css: Aangepastte CSS
+  directus_shares:
+    name: Naam
+    role: Rol
+    password: Wachtwoord
   directus_fields:
     collection: Collectie naam
     icon: Collectie Icoon
@@ -1020,6 +1020,7 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
+    imageToken: Afbeeldingstoken
 displays:
   translations:
     translations: Vertalingen
@@ -1061,9 +1062,18 @@ displays:
   formatted-value:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
-    format_title: Formatteer titel
-    format_title_label: Fix hoofdletters automatisch
+    format: Format
+    font: Letterype
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Vetgedrukt
     bold_label: Gebruik bold
+    italic: Cursief
+    prefix: Voorvoegsel
+    suffix: Achtervoegsel
+    color: Kleur
+    icon: Icoon
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven

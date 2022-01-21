@@ -125,6 +125,7 @@ class Plugin {
 		this.urlGraphql = '';
 		this.url = '';
 		this.refreshInterval = 0;
+		this.authPromise = null;
 	}
 
 	async setOptions(options) {
@@ -132,21 +133,17 @@ class Plugin {
 
 		if (isEmpty(url)) error('"url" must be defined');
 
+		if (this.directus) return this.authPromise;
+
 		const hasAuth = !!auth;
 		const hasToken = !isEmpty(auth?.token);
 		const hasEmail = !isEmpty(auth?.email);
 		const hasPassword = !isEmpty(auth?.password);
 		const hasCredentials = hasEmail && hasPassword;
 
-		if (hasAuth && !hasToken && !hasCredentials)
-			error('"auth.token" or ("auth.email" and "auth.password") must be defined');
-
-		if (hasAuth && !hasToken) error('("auth.email" and "auth.password") must be defined if "auth.token" is not set');
-
-		if (hasToken && hasCredentials)
-			warning('"auth.token", "auth.email" and "auth.password" are all set, but only "auth.token" will be used');
-
-		if (!hasAuth) warning('no "auth" option were defined. Resources will be fetched with public role');
+		if (hasAuth) {
+			if (!hasToken && !hasCredentials) error('"auth.token" or ("auth.email" and "auth.password") must be defined');
+		} else warning('no "auth" option were defined. Resources will be fetched with public role');
 
 		try {
 			const baseUrl = new URL(url);
@@ -164,12 +161,12 @@ class Plugin {
 		}
 
 		try {
-			if (!this.directus) this.directus = new Directus(this.url);
+			this.directus = new Directus(this.url);
 
-			if (hasToken) await this.directus.auth.static(auth.token);
+			if (hasToken) this.authPromise = await this.directus.auth.static(auth.token);
 
 			if (hasCredentials)
-				await this.directus.auth.login({ email: this.options?.auth?.email, password: this.options?.auth?.password });
+				this.authPromise = await this.directus.auth.login({ email: auth?.email, password: auth?.password });
 		} catch (err) {
 			error(`authentication failed with: ${err.message}\nAre credentials valid?`);
 		}
@@ -180,6 +177,8 @@ class Plugin {
 			error('"dev.refresh" should be a number in seconds or a string with ms format, i.e. 5s, 5m, 5h, ...');
 
 		this.options = options;
+
+		return this.authPromise;
 	}
 
 	getOptions() {

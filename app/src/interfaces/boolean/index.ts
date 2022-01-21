@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceBoolean from './boolean.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'boolean',
@@ -69,4 +70,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

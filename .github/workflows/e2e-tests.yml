@@ -16,59 +16,37 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        db:
-          - mssql
-          - mysql
-          - postgres
-          - maria
-          - postgres10
-          # - sqlite3
         node-version:
-          # - 12-alpine
-          # - 14-alpine
-          - 16-alpine
-    env:
-      CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
+          - '16'
     steps:
-      - name: Login to GitHub container registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull cached test image
-        run: |
-          docker pull $CACHED_IMAGE || true
-          docker tag $CACHED_IMAGE directus-test-image || true
-
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline
 
-      - name: Build
-        run: npm run build
+      - name: Build packages
+        run: npm run build:api
+
+      - name: Install oracle client
+        run: |
+          sudo apt update -y && sudo apt install -y alien libaio1 && \
+          wget https://download.oracle.com/otn_software/linux/instantclient/214000/$ORACLE_DL && \
+          sudo alien -i $ORACLE_DL
+        env:
+          ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
+
+      - name: Start databases
+        run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --wait
 
       - name: Run tests
-        env:
-          TEST_NODE_VERSION: ${{ matrix.node-version }}
-          TEST_DB: ${{ matrix.db }}
         run: npm run test:e2e
-
-      - name: Push updated test image
-        # Only push the new cache image on the main branch once per node version
-        if: github.ref == 'refs/heads/main' && github.repository == 'directus/directus' && matrix.db == 'postgres'
-        run: |
-          docker tag directus-test-image $CACHED_IMAGE
-          docker push $CACHED_IMAGE || true
 
   result:
     name: Result

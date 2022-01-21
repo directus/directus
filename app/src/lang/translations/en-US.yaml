@@ -22,6 +22,7 @@
 
 identifier: Identifier
 avatar: Avatar
+application: Application
 default_provider: Default
 published: Published
 draft: Draft
@@ -32,6 +33,7 @@ tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
+switch_user: Switch User
 item_creation: Item Creation
 item_revision: Item Revision
 enter_a_name: Enter a Name...
@@ -53,7 +55,9 @@ edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
 db_only_click_to_configure: 'Database Only: Click to Configure'
+show_active_items: Show Active Items
 show_archived_items: Show Archived Items
+show_all_items: Show All Items
 edited: Value Edited
 required: Required
 required_for_app_access: Required for App Access
@@ -90,6 +94,7 @@ logoutReason:
   SESSION_EXPIRED: Session expired
 public_label: Public
 public_description: Controls what API data is available without authenticating.
+admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
 directus_version: Directus Version
 node_version: Node Version
@@ -274,6 +279,7 @@ note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
 length: Length
+soft_length: Soft Limit
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
@@ -284,12 +290,19 @@ foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 raw_value: Raw value
+copy_raw_value: Copy Raw Value
+copy_raw_value_success: Copied
+copy_raw_value_fail: Copy Failed
+paste_raw_value: Paste Raw Value
+paste_raw_value_success: Pasted
+paste_raw_value_fail: Paste Failed
+view_raw_value: View Raw Value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
-clear_value: Clear value
+clear_value: Clear Value
 clear_changes: Clear Changes
-reset_to_default: Reset to default
-undo_changes: Undo changes
+reset_to_default: Reset to Default
+undo_changes: Undo Changes
 notifications: Notifications
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
@@ -320,10 +333,17 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
-export_data: Export Data
+import_data_input_placeholder: CSV or JSON...
+import_data_button: Start Import
+import_data_indeterminate: Importing Data...
+import_data_success: Data successfully imported from {filename}
+import_data_error: This file's data structure doesn't match the collection.
+label_import: Import
+label_export: Export
+import_export: Import / Export
 format: Format
 use_current_filters_settings: Use Current Filters & Settings
-export_collection: 'Export {collection}'
+export_data_button: Start Export
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -772,6 +792,7 @@ adding_user: Adding User
 unknown_user: Unknown User
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
+viewing_in: 'Viewing Item in {collection}'
 creating_unit: 'Creating {unit}'
 editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
@@ -954,6 +975,7 @@ fields:
     external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
+    email_notifications: Email Notifications
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -966,9 +988,12 @@ fields:
     basemaps_style: Mapbox Style
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribution
+    attribution_placeholder: © OpenStreetMap contributors
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Additional Transformations
     project_name: Project Name
+    project_descriptor: Project Descriptor
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
@@ -988,6 +1013,14 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
+  directus_shares:
+    name: Name
+    role: Role
+    password: Password
+    date_start: Date Start
+    date_end: Date End
+    max_uses: Max Uses
+    times_used: Times Used
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
@@ -1133,6 +1166,29 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+shares: Shares
+unlimited_usage: Unlimited usage
+uses_left: No uses left | 1 use left | {n} uses left
+no_shares: No shares to show
+new_share: New Share
+expired: Expired
+upcoming: Upcoming
+share: Share
+share_item: Share Item
+shared_with_you: An item has been shared with you
+shared_enter_passcode: Enter your passcode to continue...
+shared_leave_blank_for_unlimited: Leave blank for unlimited
+shared_times_remaining: This link can only be used {n} times
+shared_last_remaining: This link can only be used once
+shared_uses_left: For added security, this shared page has been configured with a limited number of views. There are currently {n} views remaining, after which, the page will no longer be accessible.
+share_access_page: Access Shared Page
+share_access_not_found: This shared page either does not exist or has already exceeded the maximum number of allowed uses.
+share_access_not_found_desc: Please contact an authorized user of this project to request access.
+share_access_not_found_title: Unknown Share Page
+share_copy_link: Copy Link
+share_copy_link_success: Link Copied
+share_copy_link_error: Unable to Copy Link
+share_send_link: Send Link
 relational_triggers: Relational Triggers
 referential_action_field_label_m2o: On Delete of {collection}...
 referential_action_field_label_o2m: On Deselect of {collection}...
@@ -1184,6 +1240,7 @@ relationship: Relationship
 reset: Reset
 reset_password: Reset Password
 revisions: Revisions
+no_revisions: No Revisions Yet
 revert: Revert
 save: Save
 schema: Schema
@@ -1215,6 +1272,8 @@ interfaces:
     add_filter: Add Filter
     add_group: And / Or group
     add_value: Add Value
+    logic_type_and: AND
+    logic_type_or: OR
     all: All
     any: Any
     and: and
@@ -1272,6 +1331,7 @@ interfaces:
     description: Enter or select a color value
     placeholder: Choose a color...
     preset_colors: Preset Colors
+    opacity: Opacity
     preset_colors_add_label: Add new color...
     name_placeholder: Enter color name...
   datetime:
@@ -1336,6 +1396,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
     description: Select a single related item
@@ -1458,6 +1519,9 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     options_override: Options Override
+    folder_note: Folder for uploaded files. Does not affect existing files.
+    imageToken: Image Token
+    imageToken_label: What (static) token to append to image sources
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
@@ -1524,9 +1588,27 @@ displays:
   formatted-value:
     formatted-value: Formatted Value
     description: Display a formatted version of the text
-    format_title: Format Title
-    format_title_label: Auto-format casing
+    format: Format
+    format_label: Auto format
+    font: Font
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Bold
     bold_label: Use bold style
+    italic: Italic
+    italic_label: Use italic style
+    prefix: Prefix
+    prefix_label: Prepend text
+    suffix: Suffix
+    suffix_label: Appended Text
+    color: Color
+    background: Background
+    icon: Icon
+    border: Border
+    border_label: Show border
+    text: Text
+    text_placeholder: Optional value override...
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
@@ -1564,6 +1646,7 @@ displays:
   related-values:
     related-values: Related Values
     description: Display relative values
+    display_template_configure_notice: You can configure the display template after creating this field.
   user:
     user: User
     description: Display a directus user

@@ -280,10 +280,7 @@ dismiss: Скрыть
 raw_value: Сырое значение
 edit_raw_value: Редактировать Сырое Значение
 enter_raw_value: Введите сырое значение...
-clear_value: Очистить значение
 clear_changes: Сбросить изменения
-reset_to_default: Вернуться к настройкам по умолчанию
-undo_changes: Отменить изменения
 notifications: Уведомления
 show_all_activity: Показать Всю Активность
 page_not_found: Страница не найдена
@@ -314,10 +311,9 @@ related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция Языков
-export_data: Экспорт Данных
+label_import: Импорт
 format: Формат
 use_current_filters_settings: Использовать Текущие Фильтры и Настройки
-export_collection: 'Экспорт {collection}'
 last_page: Последняя Страница
 last_access: Последний Доступ
 fill_template: Заполнить Шаблонным Значением
@@ -975,6 +971,10 @@ fields:
     transformations_all: Разрешить все трансформации
     transformations_none: Отключить трансформации
     transformations_presets: Ограничить преобразования для пресетов ниже
+  directus_shares:
+    name: Имя
+    role: Роль
+    password: Пароль
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
@@ -1439,6 +1439,9 @@ interfaces:
     toolbar: Панель инструментов
     custom_formats: Пользовательские форматы
     options_override: Переопределение параметров
+    folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
+    imageToken: Ключ изображения
+    imageToken_label: Статичный ключ, добавляемый к адресам изображений
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
     description: Автодополнение значений поиска через внешний API.
@@ -1503,9 +1506,18 @@ displays:
   formatted-value:
     formatted-value: Форматированное Значение
     description: Показывать форматированную версию текста
-    format_title: Форматировать Заголовок
-    format_title_label: Авто-форматировать заглавные
+    format: Формат
+    font: Шрифт
+    font_serif: Serif
+    font_monospace: Моноширинный
+    bold: Жирный
     bold_label: Использовать жирный шрифт
+    italic: Наклонный
+    prefix: Префикс
+    suffix: Суффикс
+    color: Цвет
+    icon: Иконка
+    text: Текст
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта

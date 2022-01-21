@@ -52,7 +52,9 @@ edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
 db_only_click_to_configure: 'Apenas banco de dados: Clique p/ configurar'
+show_active_items: Exibir Itens Ativos
 show_archived_items: Mostrar itens arquivados
+show_all_items: Mostrar todos os itens
 edited: Valor editado
 required: Obrigatório
 required_for_app_access: Obrigatório para o Acesso ao Aplicativo
@@ -66,6 +68,8 @@ create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
+subject: Assunto
+inbox: Caixa de entrada
 emails: Emails
 connection_excellent: Conexão excelente
 connection_good: Conexão boa
@@ -90,7 +94,7 @@ public_description: Controla quais dados da API estão disponíveis sem autentic
 not_allowed: Não permitido
 directus_version: Versão do Directus
 node_version: Versão Node
-node_uptime: Node Uptime
+node_uptime: Tempo de atividade do Node
 os_type: Tipo de SO
 os_version: Versão do SO
 os_uptime: Tempo de atividade do SO
@@ -177,6 +181,9 @@ continue_in_advanced_field_creation_mode: Continuar a criação do campo no modo
 sum: Soma
 sum_distinct: Soma distinta
 avg: Média
+avg_distinct: Média distinta
+count: Quantidade
+count_distinct: Contagem distinta
 min: Mínimo
 max: Máximo
 exposure: Exposição
@@ -196,6 +203,7 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Data
+date_range: Período
 datetime: DateTime
 dateTime: DateTime
 precision: Precisão
@@ -232,6 +240,8 @@ new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 search_collection: Pesquisar Coleção...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
+add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
+add_o2m_to_collection: 'Adicionar O2M a "{collection}"'
 choose_a_type: Escolha um tipo...
 determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
@@ -266,10 +276,7 @@ dismiss: Dispensar
 raw_value: Valor bruto
 edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
-clear_value: Limpar valor
 clear_changes: Limpar alterações
-reset_to_default: Redefinir para o padrão
-undo_changes: Desfazer alterações
 notifications: Notificações
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página não encontrada
@@ -300,10 +307,9 @@ related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
 translations_collection: Coleção de traduções
 languages_collection: Coleção de idiomas
-export_data: Exportar dados
+label_import: Importar
 format: Formato
 use_current_filters_settings: Usar filtros e configurações atuais
-export_collection: 'Exportar {collection}'
 last_page: Última página
 last_access: Último acesso
 fill_template: Preencher com valor de template
@@ -435,6 +441,7 @@ copy_to: Copiar para...
 inactive: Inativo
 users: Usuários
 activity: Atividade
+activity_item: Feed de atividade
 action: Ação
 ip_address: Endereço de IP
 user_agent: Agente de Usuário
@@ -799,6 +806,11 @@ collections: Coleções
 singleton: Singleton
 singleton_label: Tratar como objeto único
 system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
+directus_collection:
+  directus_dashboards: Painéis dentro do módulo Insights
+  directus_folders: Fornece diretórios virtuais para arquivos
+  directus_users: Usuários do sistema para a plataforma
+  directus_webhooks: Configuração para solicitações HTTP baseadas em eventos
 fields:
   directus_activity:
     item: Chave Primária do Item
@@ -824,6 +836,8 @@ fields:
     unarchive_value: Valor quando desarquivado
     sort_field: Campo de ordenação
     accountability: Rastreamento de Atividades e Revisões
+    archive_field: Arquivar Campo
+    item_duplication_fields: Campos de item duplicado
   directus_files:
     $thumbnail: Miniatura
     title: Título
@@ -876,6 +890,7 @@ fields:
     token: Token
     token_placeholder: Digite um token de acesso seguro...
     provider: Provedor
+    external_identifier: Identificador externo
     last_page: Última página
     last_access: Último acesso
   directus_settings:
@@ -883,8 +898,12 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Mapeamento
+    basemaps_raster: Rasterizar
+    mapbox_key: Token de Acesso Mapbox
     additional_transforms: Transformações Adicionais
     project_name: Nome do projeto
+    project_descriptor: Descrição do projeto
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
@@ -896,9 +915,18 @@ fields:
     auth_login_attempts: Tentativas de autenticação
     files_and_thumbnails: Arquivos e armazenamento
     storage_default_folder: Pasta padrão
+    storage_asset_presets: Predefinições de Transformação de Arquivos
+    storage_asset_transform: Transformações Permitidas
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
     module_bar: Barra de módulo
+    transformations_all: Permitir todas as transformações
+    transformations_none: Desativar transformações
+    transformations_presets: Limitar transformações às predefinições abaixo
+  directus_shares:
+    name: Nome
+    role: Função
+    password: Senha
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -931,18 +959,26 @@ field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
     project_logo_note: 40x40 SVG/PNG (Branco)
+    public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
     auth_password_policy:
       none_text: Nenhum – Não Recomendado
     storage_asset_presets:
       fit_label: Ajustar
+      upscaling: Upscaling
       fit:
+        contain_text: Contém (preservar proporção)
+        cover_text: Capa (forçar tamanho exato)
         fit_text: Ajustar dentro
         outside_text: Ajustar fora
     additional_transforms: Transformações Adicionais
+    mapbox_key: Token de Acesso Mapbox
+    basemaps_name_placeholder: Digite o nome do basemap...
+    basemaps_raster: Rasterizar
     files_divider_title: Arquivos e Miniaturas
     overrides_divider_title: Substituições de Aplicativos
   directus_activity:
+    login: Entrar
     create: Criar
     update: Alteração
     delete: Excluir
@@ -955,8 +991,10 @@ field_options:
     language: Idioma
     translation: Tradução
     collection_name: Nome da coleção
+    plural_unit: Unidade Plural
     archive_divider: Arquivar
     sort_divider: Ordenar
+    accountability_divider: Responsabilidade
   directus_roles:
     fields:
       icon_name: Ícone
@@ -1283,6 +1321,8 @@ interfaces:
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
     options_override: Sobrescrever opções
+    imageToken: Token da imagem
+    imageToken_label: Qual token (estático) a ser adicionado nas imagens
   input-autocomplete-api:
     input-autocomplete-api: Entrada de preenchimento automático (API)
     description: Um tipo de pesquisa para valores de API externos.
@@ -1334,9 +1374,18 @@ displays:
   formatted-value:
     formatted-value: Valor formatado
     description: Exibe uma versão formatada do texto
-    format_title: Formatar título
-    format_title_label: Auto-formatar capitalização
+    format: Formato
+    font: Fonte
+    font_serif: Serif
+    font_monospace: Monoespaçada
+    bold: Negrito
     bold_label: Usar estilo negrito
+    italic: Itálico
+    prefix: Prefixo
+    suffix: Sufixo
+    color: Cor
+    icon: Ícone
+    text: Texto
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
     description: Exibe uma versão formatada do objeto

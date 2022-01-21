@@ -46,7 +46,7 @@ export default function usePreview(
 			if (isEqual(newVal, oldVal)) return;
 
 			loading.value = true;
-			const { junctionField, relationPkField, junctionPkField, relationCollection } = relation.value;
+			const { junctionField, relationPkField, relationCollection } = relation.value;
 			if (junctionField === null) return;
 
 			// Load the junction items so we have access to the id's in the related collection

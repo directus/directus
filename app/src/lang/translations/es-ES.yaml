@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identificador
 avatar: Avatar
+application: Aplicación
 default_provider: Por defecto
 published: Publicado
 draft: Borrador
@@ -31,6 +32,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
 maps: Mapas
+switch_user: Cambiar de usuario
 item_creation: Creación de artículos
 item_revision: Revisión de Elemento
 enter_a_name: Introduce un Nombre...
@@ -280,10 +282,7 @@ dismiss: Cerrar
 raw_value: Valor Plano
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
-clear_value: Limpiar valor
 clear_changes: Borrar Cambios
-reset_to_default: Restablecer ajustes
-undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Presentar toda la actividad
 page_not_found: Página No Encontrada
@@ -314,10 +313,9 @@ related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de Colección
 languages_collection: Colección de Idiomas
-export_data: Exportar Datos
+label_import: Importar
 format: Formato
 use_current_filters_settings: Usar Filtros y Ajustes Actuales
-export_collection: 'Exportar {collection}'
 last_page: Última Página
 last_access: Último Acceso
 fill_template: Rellenar con Valor de Plantilla
@@ -971,6 +969,10 @@ fields:
     storage_asset_transform: Transformaciones permitidas
     custom_css: CSS Personalizado
     module_bar: Barra de módulos
+  directus_shares:
+    name: Nombre
+    role: Rol
+    password: Contraseña
   directus_fields:
     collection: Nombre de Colección
     icon: Ícono de Colección
@@ -1028,6 +1030,8 @@ field_options:
     collection_name: Nombre de Colección
     archive_divider: Archivar
     sort_divider: Ordenar
+    accountability_divider: Responsabilidad
+    duplication_divider: Duplicación
   directus_roles:
     description: Una descripción de este rol...
     fields:
@@ -1343,6 +1347,8 @@ interfaces:
     toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
     options_override: Sobrescribir Opciones
+    imageToken: Token de Imagen
+    imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
   input-autocomplete-api:
     results_path: Ruta de Resultados
     trigger: Disparador
@@ -1393,9 +1399,18 @@ displays:
   formatted-value:
     formatted-value: Valor Formateado
     description: Presentar una versión formateada del texto
-    format_title: Formatear Título
-    format_title_label: Auto-formato
+    format: Formato
+    font: Fuente
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Negrita
     bold_label: Usar negritas
+    italic: Cursiva
+    prefix: Prefijo
+    suffix: Sufijo
+    color: Color
+    icon: Ícono
+    text: Texto
   formatted-json-value:
     formatted-json-value: Valor JSON Formateado
     description: Presentar una versión formateada del objeto

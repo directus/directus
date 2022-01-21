@@ -249,10 +249,7 @@ dismiss: Afvis
 raw_value: Rå værdi
 edit_raw_value: Rediger Rå Værdi
 enter_raw_value: Indtast rå værdi...
-clear_value: Nulstil værdi
 clear_changes: Ryd Ændringer
-reset_to_default: Nulstil til standard
-undo_changes: Fortryd ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
@@ -283,10 +280,9 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
-export_data: Eksporter data
+label_import: Importér
 format: Format
 use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi
@@ -903,6 +899,10 @@ fields:
     auth_login_attempts: Auth Login Forsøg
     overrides: App Tilsidesættelser
     module_bar: Modul Bar
+  directus_shares:
+    name: Navn
+    role: Rolle
+    password: Adgangskode
   directus_fields:
     collection: Samlingens Navn
     icon: Samlingsikon
@@ -1330,6 +1330,7 @@ interfaces:
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
     options_override: Tilsidesæt
+    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater
@@ -1391,9 +1392,16 @@ displays:
   formatted-value:
     formatted-value: Formateret Værdi
     description: Vis en formateret version af teksten
-    format_title: Formatér Titel
-    format_title_label: Automatisk formatering af kabinet
+    format: Format
+    font: Font
+    font_serif: Serif
+    bold: Fed
     bold_label: Use bold style
+    prefix: Præfiks
+    suffix: Suffiks
+    color: Farve
+    icon: Ikon
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet

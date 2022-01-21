@@ -7,10 +7,10 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
-import { ItemsService, MutationOptions } from '../services/items';
+import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview } from '../types';
-import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
+import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
+import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 
 export type RawCollection = {
@@ -122,12 +122,14 @@ export class CollectionsService {
 					return field;
 				});
 
-				await trx.schema.createTable(payload.collection, (table) => {
-					for (const field of payload.fields!) {
-						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-							fieldsService.addColumnToTable(table, field);
+				await this.knex.transaction(async (schemaTrx) => {
+					await schemaTrx.schema.createTable(payload.collection, (table) => {
+						for (const field of payload.fields!) {
+							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+								fieldsService.addColumnToTable(table, field);
+							}
 						}
-					}
+					});
 				});
 
 				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
@@ -432,11 +434,11 @@ export class CollectionsService {
 					}
 				}
 
-				const m2aRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
+				const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
 					return relation.meta?.one_allowed_collections?.includes(collectionKey);
 				});
 
-				for (const relation of m2aRelationsThatIncludeThisCollection) {
+				for (const relation of a2oRelationsThatIncludeThisCollection) {
 					const newAllowedCollections = relation
 						.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
 						.join(',');
@@ -445,7 +447,9 @@ export class CollectionsService {
 						.where({ id: relation.meta!.id });
 				}
 
-				await trx.schema.dropTable(collectionKey);
+				await this.knex.transaction(async (schemaTrx) => {
+					await schemaTrx.schema.dropTable(collectionKey);
+				});
 			}
 		});
 
