@@ -164,7 +164,9 @@ describe('Integration Tests', () => {
 			);
 		});
 		describe('Global Query Params', () => {
-			it.each(Object.keys(schemas))(`%s Filter: {id: {_eq: ${rawItems[1].id}}}`, async (schema) => {
+			/* @TODO Rijk does this test anything if the sql is the same? */
+			/* Should I spy on the filter function or something? */
+			it.each(Object.keys(schemas))(`Filter: %s {id: {_eq: ${rawItems[1].id}}}`, async (schema) => {
 				tracker.on.select(schemas[schema].table).responseOnce([rawItems[1]]);
 
 				const itemsService = new ItemsService(schemas[schema].table, {
