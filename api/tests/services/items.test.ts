@@ -163,28 +163,6 @@ describe('Integration Tests', () => {
 				}
 			);
 		});
-		describe('Global Query Params', () => {
-			/* @TODO Rijk does this test anything if the sql is the same? */
-			/* Should I spy on the filter function or something? */
-			it.each(Object.keys(schemas))(`Filter: %s {id: {_eq: ${rawItems[1].id}}}`, async (schema) => {
-				tracker.on.select(schemas[schema].table).responseOnce([rawItems[1]]);
-
-				const itemsService = new ItemsService(schemas[schema].table, {
-					knex: db,
-					accountability: { role: 'admin', admin: true },
-					schema: schemas[schema].schema,
-				});
-				const response = await itemsService.readOne(rawItems[1].id, { filter: { id: { _eq: rawItems[1].id } } });
-
-				expect(tracker.history.select.length).toBe(1);
-				expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[1].id, 100]);
-				expect(tracker.history.select[0].sql).toBe(
-					`select "${schemas[schema].table}"."id" from "${schemas[schema].table}" where "${schemas[schema].table}"."id" = ? order by "${schemas[schema].table}"."id" asc limit ?`
-				);
-
-				expect(response).toStrictEqual(rawItems[1]);
-			});
-		});
 	});
 
 	describe('readMany', () => {
@@ -207,6 +185,27 @@ describe('Integration Tests', () => {
 			);
 
 			expect(response).toStrictEqual(items);
+		});
+
+		describe('Global Query Params', () => {
+			it.each(Object.keys(schemas))(`Filter: %s {id: {_eq: ${items[1].id}}}`, async (schema) => {
+				tracker.on.select(schemas[schema].table).responseOnce([items[1]]);
+
+				const itemsService = new ItemsService(schemas[schema].table, {
+					knex: db,
+					accountability: { role: 'admin', admin: true },
+					schema: schemas[schema].schema,
+				});
+				const response = await itemsService.readMany([], { filter: { id: { _eq: items[1].id } } });
+
+				expect(tracker.history.select.length).toBe(1);
+				expect(tracker.history.select[0].bindings).toStrictEqual([0, items[1].id, 100]);
+				expect(tracker.history.select[0].sql).toBe(
+					`select "${schemas[schema].table}"."id" from "${schemas[schema].table}" where (1 = ? and "${schemas[schema].table}"."id" = ?) order by "${schemas[schema].table}"."id" asc limit ?`
+				);
+
+				expect(response).toStrictEqual([items[1]]);
+			});
 		});
 	});
 });
