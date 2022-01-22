@@ -1,6 +1,10 @@
 import { defineOperationApi } from '@directus/shared/utils';
 
-export default defineOperationApi({
+type Options = {
+	milliseconds: string | number;
+};
+
+export default defineOperationApi<Options>({
 	id: 'sleep',
 
 	handler: async ({ milliseconds }) => {

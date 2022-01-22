@@ -6,8 +6,8 @@ type OperationContext = ApiExtensionContext & {
 	accountability: Accountability | null;
 };
 
-export type OperationHandler = (
-	options: Record<string, unknown>,
+export type OperationHandler<Options = Record<string, unknown>> = (
+	options: Options,
 	context: OperationContext
 ) => unknown | Promise<unknown> | void;
 
@@ -19,8 +19,8 @@ export interface OperationAppConfig {
 	options: Record<string, unknown>;
 }
 
-export interface OperationApiConfig {
+export interface OperationApiConfig<Options = Record<string, unknown>> {
 	id: string;
 
-	handler: OperationHandler;
+	handler: OperationHandler<Options>;
 }

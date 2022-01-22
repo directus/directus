@@ -1,7 +1,11 @@
 import { defineOperationApi } from '@directus/shared/utils';
 import logger from '../../logger';
 
-export default defineOperationApi({
+type Options = {
+	message: unknown;
+};
+
+export default defineOperationApi<Options>({
 	id: 'log',
 
 	handler: ({ message }) => {

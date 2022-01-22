@@ -44,6 +44,8 @@ export function defineOperationApp(config: OperationAppConfig): OperationAppConf
 	return config;
 }
 
-export function defineOperationApi(config: OperationApiConfig): OperationApiConfig {
+export function defineOperationApi<Options = Record<string, unknown>>(
+	config: OperationApiConfig<Options>
+): OperationApiConfig<Options> {
 	return config;
 }
