@@ -9,3 +9,14 @@ export const sqlFieldFormatter = (schema: Record<string, any>, table: string) =>
 	sql += `"${table}"."${fields[fields.length - 1]}"`;
 	return sql;
 };
+
+export const sqlFieldList = (schema: Record<string, any>, table: string) => {
+	const fields = Object.keys(schema.collections[table].fields);
+	let sql = '';
+
+	for (const field of fields.slice(0, fields.length - 1)) {
+		sql += `"${field}", `;
+	}
+	sql += `"${fields[fields.length - 1]}"`;
+	return sql;
+};

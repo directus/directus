@@ -1,7 +1,7 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../src/services';
-import { sqlFieldFormatter } from '../__test-utils__/items-utils';
+import { sqlFieldFormatter, sqlFieldList } from '../__test-utils__/items-utils';
 import { systemSchema, userSchema } from '../__test-utils__/schemas';
 
 jest.mock('../../src/database/index', () => {
@@ -47,7 +47,9 @@ describe('Integration Tests', () => {
 
 				expect(tracker.history.insert.length).toBe(1);
 				expect(tracker.history.insert[0].bindings).toStrictEqual([item.id, item.name]);
-				expect(tracker.history.insert[0].sql).toBe(`insert into "${table}" ("id", "name") values (?, ?)`);
+				expect(tracker.history.insert[0].sql).toBe(
+					`insert into "${table}" (${sqlFieldList(schemas[schema].schema, table)}) values (?, ?)`
+				);
 
 				expect(response).toBe(item.id);
 			}
@@ -73,9 +75,10 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
 				expect(tracker.history.select[0].sql).toBe(
-					`select ${sqlFieldFormatter(schemas[schema].schema, table)} from "${table}" where "${
-						schemas[schema].tables
-					}"."id" = ? order by "${schemas[schema].tables}"."id" asc limit ?`
+					`select ${sqlFieldFormatter(
+						schemas[schema].schema,
+						table
+					)} from "${table}" where "${table}"."id" = ? order by "${table}"."id" asc limit ?`
 				);
 
 				expect(response).toStrictEqual(rawItems[0]);
