@@ -182,7 +182,10 @@ describe('Integration Tests', () => {
 	});
 
 	describe('readMany', () => {
-		const items = [{ id: 1 }, { id: 2 }];
+		const items = [
+			{ id: 1, name: 'string1' },
+			{ id: 2, name: 'string2' },
+		];
 
 		it.each(Object.keys(schemas))('%s it returns multiple items from tables as admin', async (schema) => {
 			const table = schemas[schema].tables[0];
@@ -228,6 +231,32 @@ describe('Integration Tests', () => {
 						schemas[schema].schema,
 						table
 					)} from "${table}" where (1 = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+				);
+
+				expect(response).toStrictEqual([items[1]]);
+			});
+
+			it.each(Object.keys(schemas))(`Filter: %s _or`, async (schema) => {
+				const table = schemas[schema].tables[0];
+
+				tracker.on.select(table).responseOnce([items[1]]);
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: { role: 'admin', admin: true },
+					schema: schemas[schema].schema,
+				});
+				const response = await itemsService.readMany([], {
+					filter: { _or: [{ id: { _eq: items[1].id } }, { name: { _eq: items[1].name } }] },
+				});
+
+				expect(tracker.history.select.length).toBe(1);
+				expect(tracker.history.select[0].bindings).toStrictEqual([0, items[1].id, items[1].name, 100]);
+				expect(tracker.history.select[0].sql).toBe(
+					`select ${sqlFieldFormatter(
+						schemas[schema].schema,
+						table
+					)} from "${table}" where (1 = ? and ("${table}"."id" = ? or "${table}"."name" = ?)) order by "${table}"."id" asc limit ?`
 				);
 
 				expect(response).toStrictEqual([items[1]]);
