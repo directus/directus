@@ -72,7 +72,7 @@ export default async (): Promise<void> => {
 
 							for (const vendor of vendors) {
 								try {
-									const serverUrl = `http://${config.envs[vendor]!.DB_HOST}:${config.envs[vendor]!.PORT}`;
+									const serverUrl = `http://localhost:${config.envs[vendor]!.PORT}`;
 									let response = await axios.get(`${serverUrl}/items/tests_flow_data?access_token=AdminToken`);
 
 									if (response.status !== 200) {
@@ -96,6 +96,10 @@ export default async (): Promise<void> => {
 								} catch (err) {
 									continue;
 								}
+							}
+
+							if (!process.env.serverUrl) {
+								throw 'Unable to connect to any directus server';
 							}
 						},
 					},
