@@ -8,7 +8,7 @@ export async function awaitDatabaseConnection(database: Knex, checkSQL: string):
 			await database.raw(checkSQL);
 			return null; // success
 		} catch (error) {
-			await sleep(3000);
+			await sleep(5000);
 			continue;
 		}
 	}
@@ -21,7 +21,7 @@ export async function awaitDirectusConnection(port: number): Promise<void | null
 			await axios.get(`http://localhost:${port}/server/ping`);
 			return null; // success
 		} catch {
-			await sleep(3000);
+			await sleep(5000);
 			continue;
 		}
 	}
