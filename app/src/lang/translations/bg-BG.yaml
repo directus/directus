@@ -283,9 +283,19 @@ foreign_key: Външен ключ
 finish_setup: Завършване на настройката
 dismiss: Отхвърляне
 raw_value: Стойност в суров вид
+copy_raw_value: Копиране на суровата стойност
+copy_raw_value_success: Копирано
+copy_raw_value_fail: Копирането е неуспешно
+paste_raw_value: Поставяне в суров вид
+paste_raw_value_success: Поставено
+paste_raw_value_fail: Поставянето е неуспешно
+view_raw_value: Преглед на суровата стойност
 edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
+clear_value: Изчистване
 clear_changes: Изчистване на промените
+reset_to_default: Нулиране по подразбиране
+undo_changes: Отмяна на промените
 notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
@@ -944,6 +954,7 @@ fields:
     external_identifier: Външен идентификатор
     last_page: Последна страница
     last_access: Последно посещение
+    email_notifications: Известия чрез имейл
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1230,6 +1241,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:

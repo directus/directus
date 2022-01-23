@@ -19,7 +19,7 @@ describe('/server', () => {
 	});
 
 	describe('/ping', () => {
-		it.each(vendors)('%p', async (vendor) => {
+		it.each(vendors)('%s', async (vendor) => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 			const response = await request(url)

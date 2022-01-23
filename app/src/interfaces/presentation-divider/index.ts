@@ -45,21 +45,6 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'marginTop',
-			name: '$t:interfaces.presentation-divider.margin_top',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:interfaces.presentation-divider.margin_top_label',
-				},
-			},
-			schema: {
-				default_value: true,
-			},
-		},
-		{
 			field: 'inlineTitle',
 			name: '$t:interfaces.presentation-divider.inline_title',
 			type: 'boolean',
