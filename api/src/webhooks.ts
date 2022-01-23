@@ -2,9 +2,10 @@ import axios from 'axios';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
-import { ActionHandler, Webhook, WebhookHeader } from './types';
+import { Webhook, WebhookHeader } from './types';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
+import { ActionHandler } from '@directus/shared/types';
 
 let registered: { event: string; handler: ActionHandler }[] = [];
 

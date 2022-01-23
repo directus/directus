@@ -1,8 +1,8 @@
 <template>
 	<div v-if="collection.collection.startsWith('directus_') === false">
 		<v-menu placement="left-start" show-arrow>
-			<template #activator="{ toggle, deactivate }">
-				<v-icon name="more_vert" clickable class="ctx-toggle" @click.stop.prevent="toggle" @focusout="deactivate" />
+			<template #activator="{ toggle }">
+				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<v-list>
 				<v-list-item clickable class="danger" @click="deleteActive = true">

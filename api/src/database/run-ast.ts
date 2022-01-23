@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { clone, cloneDeep, pick, uniq, merge } from 'lodash';
 import { PayloadService } from '../services/payload';
-import { Item, SchemaOverview } from '../types';
+import { Item, SchemaOverview } from '@directus/shared/types';
 import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';

@@ -280,10 +280,9 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
-export_data: Eksporter data
+label_import: Importér
 format: Format
 use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi
