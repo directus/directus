@@ -33,14 +33,14 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import { Knex } from 'knex';
-import { mapKeys, pick, omit } from 'lodash';
+import { mapKeys, pick } from 'lodash';
 import ms from 'ms';
 import { getCache } from '../../cache';
 import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
 import { getExtensionManager } from '../../extensions';
-import { Accountability, Query } from '@directus/shared/types';
+import { Accountability } from '@directus/shared/types';
 import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../../types';
 import { getGraphQLType } from '../../utils/get-graphql-type';
 import { reduceSchema } from '../../utils/reduce-schema';
@@ -61,7 +61,6 @@ import { DEFAULT_AUTH_PROVIDER } from '../../constants';
 import { GraphQLDate, GraphQLGeoJSON, GraphQLVoid } from '../../types';
 import { formatGQLError } from './shared/format-gql-error';
 import { getService } from './shared/get-service';
-import { parseArgs } from './shared/parse-args';
 import { getQuery } from './shared/get-query';
 import { replaceFragmentsInSelections } from './shared/replace-fragments-in-selections';
 import { ResolveQuery } from './resolve-query';
@@ -814,7 +813,11 @@ export class GraphQLService {
 						},
 					},
 				});
-
+				const resolver = new ResolveQuery({
+					knex: self.knex,
+					accountability: self.accountability,
+					schema: schema.read,
+				});
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
 					args: collection.singleton
@@ -841,7 +844,7 @@ export class GraphQLService {
 						? ReadCollectionTypes[collection.collection]
 						: [ReadCollectionTypes[collection.collection]],
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-						const result = await self.resolveQuery(info);
+						const result = await resolver.resolveQuery(info, self.scope);
 						context.data = result;
 						return result;
 					},
@@ -864,7 +867,7 @@ export class GraphQLService {
 						},
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-						const result = await self.resolveQuery(info);
+						const result = await resolver.resolveQuery(info, self.scope);
 						context.data = result;
 
 						return result;
@@ -879,7 +882,7 @@ export class GraphQLService {
 							id: GraphQLNonNull(GraphQLID),
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-							const result = await self.resolveQuery(info);
+							const result = await resolver.resolveQuery(info, self.scope);
 							context.data = result;
 							return result;
 						},
@@ -1096,67 +1099,6 @@ export class GraphQLService {
 
 			return { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes };
 		}
-	}
-
-	/**
-	 * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into
-	 * Directus' query structure which is then executed by the services.
-	 */
-	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
-		const resolver = new ResolveQuery({ knex: this.knex, accountability: this.accountability, schema: this.schema });
-
-		let collection = info.fieldName;
-		if (this.scope === 'system') collection = `directus_${collection}`;
-		const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
-
-		if (!selections) return null;
-		const args: Record<string, any> = parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
-
-		let query: Record<string, any>;
-
-		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
-
-		if (isAggregate) {
-			query = resolver.getAggregateQuery(args, selections);
-			collection = collection.slice(0, -11);
-		} else {
-			query = getQuery(args, selections, info.variableValues, this.accountability);
-
-			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
-				collection = collection.slice(0, -6);
-			}
-		}
-		if (args.id) {
-			query.filter = {
-				_and: [
-					query.filter || {},
-					{
-						[this.schema.collections[collection].primary]: {
-							_eq: args.id,
-						},
-					},
-				],
-			};
-
-			query.limit = 1;
-		}
-
-		const result = await resolver.read(collection, query);
-
-		if (args.id) {
-			return result?.[0] || null;
-		}
-
-		if (query.group) {
-			// for every entry in result add a group field based on query.group;
-			const aggregateKeys = Object.keys(query.aggregate ?? {});
-
-			result.map((field: Item) => {
-				field.group = omit(field, aggregateKeys);
-			});
-		}
-
-		return result;
 	}
 
 	async resolveMutation(
