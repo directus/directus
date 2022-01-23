@@ -25,7 +25,7 @@ describe('schema', () => {
 				date: `2022-01-05`,
 				time: `${hour}:11:11`,
 				datetime: `2022-01-05T${hour}:11:11`,
-				timestamp: `2022-01-05T${hour}:11:11-08:00`,
+				timestamp: `2022-01-05T${hour}:11:11-01:00`,
 			},
 			{
 				id: 2 + i * 3,
@@ -39,7 +39,7 @@ describe('schema', () => {
 				date: `2022-01-15`,
 				time: `${hour}:33:33`,
 				datetime: `2022-01-15T${hour}:33:33`,
-				timestamp: `2022-01-15T${hour}:33:33+08:00`,
+				timestamp: `2022-01-15T${hour}:33:33+02:00`,
 			}
 		);
 	}
@@ -62,6 +62,13 @@ describe('schema', () => {
 				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 				const dates = cloneDeep(sampleDates);
+
+				if (vendor === 'sqlite3') {
+					// Dates have to be in UTC for SQLite
+					for (const date of dates) {
+						date.timestamp = new Date(date.timestamp).toISOString();
+					}
+				}
 
 				await request(url)
 					.post(`/items/schema_date_types`)

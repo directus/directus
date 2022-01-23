@@ -17,6 +17,13 @@ type SchemaDateTypesObject = {
 describe('schema', () => {
 	const databases = new Map<string, Knex>();
 	const tzDirectus = {} as { [vendor: string]: ChildProcess };
+	const currentTzOffset = new Date().getTimezoneOffset();
+	const isWindows = ['win32', 'win64'].includes(process.platform);
+
+	const newTzOffset = currentTzOffset !== -540 ? -540 : -240;
+
+	// Different timezone format for Windows
+	const newTz = isWindows ? String(newTzOffset * 60) : newTzOffset === -540 ? 'Asia/Seoul' : 'Asia/Dubai';
 
 	const sampleDates: SchemaDateTypesObject[] = [];
 
@@ -28,7 +35,7 @@ describe('schema', () => {
 				date: `2022-01-05`,
 				time: `${hour}:11:11`,
 				datetime: `2022-01-05T${hour}:11:11`,
-				timestamp: `2022-01-05T${hour}:11:11-08:00`,
+				timestamp: `2022-01-05T${hour}:11:11-01:00`,
 			},
 			{
 				id: 2 + i * 3,
@@ -42,7 +49,7 @@ describe('schema', () => {
 				date: `2022-01-15`,
 				time: `${hour}:33:33`,
 				datetime: `2022-01-15T${hour}:33:33`,
-				timestamp: `2022-01-15T${hour}:33:33+08:00`,
+				timestamp: `2022-01-15T${hour}:33:33+02:00`,
 			}
 		);
 	}
@@ -58,15 +65,6 @@ describe('schema', () => {
 	}
 
 	beforeAll(async () => {
-		const isWindows = ['win32', 'win64'].includes(process.platform);
-		const currentTzOffset = new Date().getTimezoneOffset();
-
-		// Different timezone format for Windows
-		const newTz = isWindows
-			? String(currentTzOffset !== -32400 ? -540 * 60 : -240 * 60)
-			: currentTzOffset !== -32400
-			? 'Asia/Seoul'
-			: 'Asia/Dubai';
 		const promises = [];
 
 		for (const vendor of vendors) {
@@ -119,6 +117,26 @@ describe('schema', () => {
 					return o.id === sampleDates[index]!.id;
 				}) as SchemaDateTypesObject;
 
+				if (vendor === 'sqlite3') {
+					// Dates are saved in milliseconds at 00:00:00
+					const newDateString = new Date(
+						new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() - newTzOffset * 60 * 1000
+					).toISOString();
+
+					const newDateTimeString = new Date(
+						new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000
+					).toISOString();
+					const newTimeStampString = new Date(
+						new Date(sampleDates[index]!.timestamp).valueOf() - newTzOffset * 60 * 1000
+					).toISOString();
+
+					expect(responseObj.date).toBe(newDateString.substring(0, 10));
+					expect(responseObj.time).toBe(sampleDates[index]!.time);
+					expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+					expect(responseObj.timestamp.substring(0, 19)).toBe(newTimeStampString.substring(0, 19));
+					continue;
+				}
+
 				expect(responseObj.date).toBe(sampleDates[index]!.date);
 				expect(responseObj.time).toBe(sampleDates[index]!.time);
 				expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
@@ -126,6 +144,8 @@ describe('schema', () => {
 					new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 				);
 			}
+
+			const americanTzOffset = currentTzOffset !== 180 ? 180 : 360;
 
 			const response2 = await request(url)
 				.get(`/items/schema_date_types?fields=*&offset=${sampleDatesAmerica.length}`)
@@ -140,6 +160,27 @@ describe('schema', () => {
 					return o.id === sampleDatesAmerica[index]!.id;
 				}) as SchemaDateTypesObject;
 
+				if (vendor === 'sqlite3') {
+					// Dates are saved in milliseconds at 00:00:00
+					const newDateString = new Date(
+						new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() -
+							(newTzOffset - americanTzOffset) * 60 * 1000
+					).toISOString();
+
+					const newDateTimeString = new Date(
+						new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - (newTzOffset - americanTzOffset) * 60 * 1000
+					).toISOString();
+					const newTimeStampString = new Date(
+						new Date(sampleDates[index]!.timestamp).valueOf() - (newTzOffset - americanTzOffset) * 60 * 1000
+					).toISOString();
+
+					expect(responseObj.date).toBe(newDateString.substring(0, 10));
+					expect(responseObj.time).toBe(sampleDates[index]!.time);
+					expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+					expect(responseObj.timestamp.substring(0, 19)).toBe(newTimeStampString.substring(0, 19));
+					continue;
+				}
+
 				expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
 				expect(responseObj.time).toBe(sampleDatesAmerica[index]!.time);
 				expect(responseObj.datetime).toBe(sampleDatesAmerica[index]!.datetime);
@@ -153,6 +194,13 @@ describe('schema', () => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 			const dates = cloneDeep(sampleDatesAsia);
+
+			if (vendor === 'sqlite3') {
+				// Dates have to be in UTC for SQLite
+				for (const date of dates) {
+					date.timestamp = new Date(date.timestamp).toISOString();
+				}
+			}
 
 			await request(url)
 				.post(`/items/schema_date_types`)
