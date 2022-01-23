@@ -7,12 +7,12 @@ import { getService } from './shared/get-service';
 
 export class ResolveQuery {
 	schema: SchemaOverview;
-	knex: Knex<any, unknown[]>;
+	knex: Knex;
 	accountability: Accountability | null;
 
-	constructor(options: { knex: Knex; accountabilty: Accountability | null; schema: SchemaOverview }) {
+	constructor(options: { knex: Knex; accountability: Accountability | null; schema: SchemaOverview }) {
 		this.knex = options.knex;
-		this.accountability = options.accountabilty;
+		this.accountability = options.accountability;
 		this.schema = options.schema;
 	}
 

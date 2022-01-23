@@ -44,7 +44,11 @@ describe('Class ResolveQuery', () => {
 			const schema = cloneDeep(userSchema);
 			schema.collections.authors.singleton = true;
 
-			const adminResolver = new ResolveQuery({ knex: mockKnex, accountabilty: { admin: true, role: 'admin' }, schema });
+			const adminResolver = new ResolveQuery({
+				knex: mockKnex,
+				accountability: { admin: true, role: 'admin' },
+				schema,
+			});
 
 			const result = await adminResolver.read('authors', {});
 			expect(result).toStrictEqual({ singleton: true });
@@ -53,7 +57,7 @@ describe('Class ResolveQuery', () => {
 		it('readByQuery', async () => {
 			const adminResolver = new ResolveQuery({
 				knex: mockKnex,
-				accountabilty: { admin: true, role: 'admin' },
+				accountability: { admin: true, role: 'admin' },
 				schema: userSchema,
 			});
 
@@ -65,7 +69,7 @@ describe('Class ResolveQuery', () => {
 	describe('getAggregateQuery', () => {
 		const adminResolvers = new ResolveQuery({
 			knex: mockKnex,
-			accountabilty: { admin: true, role: 'admin' },
+			accountability: { admin: true, role: 'admin' },
 			schema: userSchema,
 		});
 		it('__type is ignored in the aggregate query', async () => {
@@ -91,7 +95,7 @@ describe('Class ResolveQuery', () => {
 		it("doesn't fail when accountability is null", async () => {
 			const nullAccountability = new ResolveQuery({
 				knex: mockKnex,
-				accountabilty: null,
+				accountability: null,
 				schema: userSchema,
 			});
 			const result = await nullAccountability.getAggregateQuery({ aggregate: { sum: ['WowAUniqueInlineFragment'] } }, [

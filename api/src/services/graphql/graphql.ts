@@ -65,6 +65,7 @@ import { parseArgs } from './shared/parse-args';
 import { getQuery } from './shared/get-query';
 import { replaceFragmentsInSelections } from './shared/replace-fragments-in-selections';
 import { ResolveQuery } from './resolve-query';
+import { ResolveMutation } from './resolve-mutation';
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
@@ -1102,7 +1103,7 @@ export class GraphQLService {
 	 * Directus' query structure which is then executed by the services.
 	 */
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
-		const resolvers = new ResolveQuery({ knex: this.knex, accountabilty: this.accountability, schema: this.schema });
+		const resolver = new ResolveQuery({ knex: this.knex, accountability: this.accountability, schema: this.schema });
 
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
@@ -1116,7 +1117,7 @@ export class GraphQLService {
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
 		if (isAggregate) {
-			query = resolvers.getAggregateQuery(args, selections);
+			query = resolver.getAggregateQuery(args, selections);
 			collection = collection.slice(0, -11);
 		} else {
 			query = getQuery(args, selections, info.variableValues, this.accountability);
@@ -1140,7 +1141,7 @@ export class GraphQLService {
 			query.limit = 1;
 		}
 
-		const result = await resolvers.read(collection, query);
+		const result = await resolver.read(collection, query);
 
 		if (args.id) {
 			return result?.[0] || null;
@@ -1162,6 +1163,7 @@ export class GraphQLService {
 		args: Record<string, any>,
 		info: GraphQLResolveInfo
 	): Promise<Partial<Item> | boolean | undefined> {
+		const resolver = new ResolveMutation({ knex: this.knex, accountability: this.accountability, schema: this.schema });
 		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
 		let collection = info.fieldName.substring(action.length + 1);
 		if (this.scope === 'system') collection = `directus_${collection}`;
@@ -1180,7 +1182,7 @@ export class GraphQLService {
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
 		if (singleton && action === 'update') {
-			return await this.upsertSingleton(collection, args.data, query);
+			return await resolver.upsertSingleton(collection, args.data, query);
 		}
 
 		const service = getService(
@@ -1223,33 +1225,6 @@ export class GraphQLService {
 			}
 		} catch (err: any) {
 			return formatGQLError(err);
-		}
-	}
-
-	/**
-	 * Upsert and read singleton item
-	 */
-	async upsertSingleton(
-		collection: string,
-		body: Record<string, any> | Record<string, any>[],
-		query: Query
-	): Promise<Partial<Item> | boolean> {
-		const service = getService(
-			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
-			collection
-		);
-
-		try {
-			await service.upsertSingleton(body);
-
-			if ((query.fields || []).length > 0) {
-				const result = await service.readSingleton(query);
-				return result;
-			}
-
-			return true;
-		} catch (err: any) {
-			throw formatGQLError(err);
 		}
 	}
 
