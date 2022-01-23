@@ -13,7 +13,6 @@ jest.mock('../../../services/', () => {
 	};
 });
 
-// jest.mock('../../../services/graphql/shared/get-service', () => {})
 describe('Class ResolveMutation', () => {
 	const mockKnex = knex({ client: MockClient });
 

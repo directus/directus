@@ -41,7 +41,7 @@ jest.mock('../../../services/', () => {
 
 describe('Class ResolveQuery', () => {
 	const mockKnex = knex({ client: MockClient });
-	describe('resolveQuery', () => {
+	describe('resolveQuery()', () => {
 		const gqlScalarType = new GraphQLScalarType({
 			name: 'name',
 			serialize(value) {
@@ -123,6 +123,7 @@ describe('Class ResolveQuery', () => {
 			},
 			variableValues: {},
 		} as GraphQLResolveInfo;
+
 		it('returns the readByQuery mock when not a singleton', async () => {
 			const adminResolver = new ResolveQuery({
 				knex: mockKnex,
