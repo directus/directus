@@ -67,6 +67,7 @@ import { getService } from './shared/get-service';
 import { parseArgs } from './shared/parse-args';
 import { getQuery } from './shared/get-query';
 import { replaceFragmentsInSelections } from './shared/replace-fragments-in-selections';
+import { Resolvers } from './resolvers';
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
@@ -1104,6 +1105,8 @@ export class GraphQLService {
 	 * Directus' query structure which is then executed by the services.
 	 */
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
+		const resolvers = new Resolvers({ knex: this.knex, accountabilty: this.accountability, schema: this.schema });
+
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
 		const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
@@ -1140,7 +1143,7 @@ export class GraphQLService {
 			query.limit = 1;
 		}
 
-		const result = await this.read(collection, query);
+		const result = await resolvers.read(collection, query);
 
 		if (args.id) {
 			return result?.[0] || null;
@@ -1224,22 +1227,6 @@ export class GraphQLService {
 		} catch (err: any) {
 			return formatGQLError(err);
 		}
-	}
-
-	/**
-	 * Execute the read action on the correct service. Checks for singleton as well.
-	 */
-	async read(collection: string, query: Query): Promise<Partial<Item>> {
-		const service = getService(
-			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
-			collection
-		);
-
-		const result = this.schema.collections[collection].singleton
-			? await service.readSingleton(query, { stripNonRequested: false })
-			: await service.readByQuery(query, { stripNonRequested: false });
-
-		return result;
 	}
 
 	/**
