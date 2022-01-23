@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Индентификатор
 avatar: Аватар
+application: Приложение
 default_provider: По умолчанию
 published: Опубликовано
 draft: Черновик
@@ -31,6 +32,7 @@ tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
 maps: Карты
+switch_user: Сменить пользователя
 item_creation: Создание элемента
 item_revision: Пересмотр Элемента
 enter_a_name: Введите название...
@@ -52,7 +54,9 @@ edit_collection: Изменить коллекцию
 exclusive: Эксклюзивный
 children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для настройки'
+show_active_items: Показать активные элементы
 show_archived_items: Показать элементы в архиве
+show_all_items: Показывать все
 edited: Значение изменено
 required: Обязательно
 required_for_app_access: Требуется для доступа к приложению
@@ -89,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Сессия истекла
 public_label: Публичный
 public_description: Управляет какие данные доступны по API без аутентификации.
+admin_description: Инициализация админстративных прав с неограниченным доступом к приложениям/API.
 not_allowed: Не Разрешено
 directus_version: Версия Directus
 node_version: Версия Node
@@ -268,6 +273,7 @@ note: Заметка
 enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
 length: Длина
+soft_length: Ограничение
 precision_scale: Точность и Масштаб
 readonly: Только для чтения
 unique: Уникальный
@@ -278,9 +284,15 @@ foreign_key: Внешний Ключ
 finish_setup: Завершить Настройку
 dismiss: Скрыть
 raw_value: Сырое значение
+copy_raw_value_success: Скопировано
+copy_raw_value_fail: Сбой копирования
+paste_raw_value_success: Вставлено
+paste_raw_value_fail: Ошибка вставки
 edit_raw_value: Редактировать Сырое Значение
 enter_raw_value: Введите сырое значение...
+clear_value: Очистить значение
 clear_changes: Сбросить изменения
+undo_changes: Отменить изменения
 notifications: Уведомления
 show_all_activity: Показать Всю Активность
 page_not_found: Страница не найдена
@@ -311,9 +323,17 @@ related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция Языков
+import_data_input_placeholder: CSV или JSON...
+import_data_button: Начать импорт
+import_data_indeterminate: Импорт данных...
+import_data_success: Данные успешно импортированы из {filename}
+import_data_error: Структура данных этого файла не соответствует коллекции.
 label_import: Импорт
+label_export: Экспорт
+import_export: Импорт / Экспорт
 format: Формат
 use_current_filters_settings: Использовать Текущие Фильтры и Настройки
+export_data_button: Начать экспорт
 last_page: Последняя Страница
 last_access: Последний Доступ
 fill_template: Заполнить Шаблонным Значением
@@ -761,6 +781,7 @@ adding_user: Добавление Пользователя
 unknown_user: Неизвестный Пользователь
 creating_in: 'Создание Элемента в {collection}'
 editing_in: 'Редактирование Элемента в {collection}'
+viewing_in: 'Просмотр элемента в {collection}'
 creating_unit: 'Создание {unit}'
 editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
@@ -937,6 +958,7 @@ fields:
     external_identifier: Внешний Идентификатор
     last_page: Последняя Страница
     last_access: Последний Доступ
+    email_notifications: Уведомления по Email
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -952,6 +974,7 @@ fields:
     transforms_note: Имя метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Дополнительные преобразования
     project_name: Название проекта
+    project_descriptor: Описание проекта
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
@@ -975,6 +998,8 @@ fields:
     name: Имя
     role: Роль
     password: Пароль
+    date_start: Дата начала
+    date_end: Дата Окончания
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
@@ -1120,6 +1145,11 @@ start_collapsed: Начать свернутым
 block: Блокировать
 inline: Строчный
 comment: Комментарий
+shared_enter_passcode: Для продолжения введите пароль...
+shared_leave_blank_for_unlimited: Оставьте пустым для неограниченного
+shared_times_remaining: Ссылка может быть использована {n} раз
+shared_last_remaining: Одноразовая ссылка
+shared_uses_left: Для безопасности, количество просмотров страницы ограничено. В настоящее время осталось {n} просмотра, после чего страница больше не будет доступна.
 relational_triggers: Реляционные триггеры
 referential_action_field_label_m2o: При удалении {collection}...
 referential_action_field_label_o2m: При отмене выбора {collection}...
