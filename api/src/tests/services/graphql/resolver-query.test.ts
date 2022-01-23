@@ -1,5 +1,5 @@
 import { ResolveQuery } from '../../../services/graphql/resolve-query';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { MockClient } from 'knex-mock-client';
 import { userSchema } from '../../__test-utils__/schemas';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
@@ -31,14 +31,8 @@ jest.mock('../../../services/', () => {
 });
 
 describe('Class ResolveQuery', () => {
-	let tracker: Tracker;
 	const mockKnex = knex({ client: MockClient });
-	beforeAll(() => {
-		tracker = getTracker();
-	});
-	afterEach(() => {
-		tracker.reset();
-	});
+
 	describe('read', () => {
 		it('readSingleton', async () => {
 			const schema = cloneDeep(userSchema);
