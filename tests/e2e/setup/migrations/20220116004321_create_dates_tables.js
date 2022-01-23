@@ -1,6 +1,6 @@
 exports.up = async function (knex) {
 	await knex.schema.createTable('schema_date_types', (table) => {
-		table.integer('id').primary();
+		table.integer('id').primary().notNullable();
 		table.date('date');
 		table.time('time');
 		table.datetime('datetime', { useTz: false });
