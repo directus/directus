@@ -61,4 +61,46 @@ describe('Class Resolvers', () => {
 			expect(result).toStrictEqual({ singleton: false });
 		});
 	});
+
+	describe('getAggregateQuery', () => {
+		const adminResolvers = new Resolvers({
+			knex: mockKnex,
+			accountabilty: { admin: true, role: 'admin' },
+			schema: userSchema,
+		});
+		it('__type is ignored in the aggregate query', async () => {
+			const result = await adminResolvers.getAggregateQuery({ aggregate: { sum: ['name'] } }, [
+				{
+					kind: 'Field',
+					name: { kind: 'Name', value: '__type' },
+				},
+			]);
+			expect(result).toStrictEqual({ aggregate: {} });
+		});
+
+		it('sum works', async () => {
+			const result = await adminResolvers.getAggregateQuery({ aggregate: { sum: ['WowAUniqueInlineFragment'] } }, [
+				{
+					kind: 'Field',
+					name: { kind: 'Name', value: 'WowAUniqueInlineFragment' },
+				},
+			]);
+			expect(result).toStrictEqual({ aggregate: { WowAUniqueInlineFragment: [] } });
+		});
+
+		it("doesn't fail when accountability is null", async () => {
+			const adminResolvers = new Resolvers({
+				knex: mockKnex,
+				accountabilty: null,
+				schema: userSchema,
+			});
+			const result = await adminResolvers.getAggregateQuery({ aggregate: { sum: ['WowAUniqueInlineFragment'] } }, [
+				{
+					kind: 'Field',
+					name: { kind: 'Name', value: 'WowAUniqueInlineFragment' },
+				},
+			]);
+			expect(result).toStrictEqual({ aggregate: { WowAUniqueInlineFragment: [] } });
+		});
+	});
 });

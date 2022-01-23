@@ -1,5 +1,8 @@
-import { Accountability, Item, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Aggregate, Item, Query, SchemaOverview } from '@directus/shared/types';
+import { FieldNode, SelectionNode } from 'graphql';
 import { Knex } from 'knex';
+import { sanitizeQuery } from '../../utils/sanitize-query';
+import { validateQuery } from '../../utils/validate-query';
 import { getService } from './shared/get-service';
 
 export class Resolvers {
@@ -26,5 +29,38 @@ export class Resolvers {
 			: await service.readByQuery(query, { stripNonRequested: false });
 
 		return result;
+	}
+
+	/**
+	 * Resolve the aggregation query based on the requested aggregated fields
+	 */
+	async getAggregateQuery(rawQuery: Query, selections: readonly SelectionNode[]): Promise<Query> {
+		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+
+		query.aggregate = {};
+
+		for (let aggregationGroup of selections) {
+			if ((aggregationGroup.kind === 'Field') !== true) continue;
+
+			aggregationGroup = aggregationGroup as FieldNode;
+
+			// filter out graphql pointers, like __typename
+			if (aggregationGroup.name.value.startsWith('__')) continue;
+
+			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
+
+			query.aggregate[aggregateProperty] =
+				aggregationGroup.selectionSet?.selections
+					// filter out graphql pointers, like __typename
+					.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
+					.map((selectionNode) => {
+						selectionNode = selectionNode as FieldNode;
+						return selectionNode.name.value;
+					}) ?? [];
+		}
+
+		validateQuery(query);
+
+		return query;
 	}
 }

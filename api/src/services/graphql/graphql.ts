@@ -1119,7 +1119,7 @@ export class GraphQLService {
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
 		if (isAggregate) {
-			query = this.getAggregateQuery(args, selections);
+			query = resolvers.getAggregateQuery(args, selections);
 			collection = collection.slice(0, -11);
 		} else {
 			query = getQuery(args, selections, info.variableValues, this.accountability);
@@ -1254,39 +1254,6 @@ export class GraphQLService {
 		} catch (err: any) {
 			throw formatGQLError(err);
 		}
-	}
-
-	/**
-	 * Resolve the aggregation query based on the requested aggregated fields
-	 */
-	getAggregateQuery(rawQuery: Query, selections: readonly SelectionNode[]): Query {
-		const query: Query = sanitizeQuery(rawQuery, this.accountability);
-
-		query.aggregate = {};
-
-		for (let aggregationGroup of selections) {
-			if ((aggregationGroup.kind === 'Field') !== true) continue;
-
-			aggregationGroup = aggregationGroup as FieldNode;
-
-			// filter out graphql pointers, like __typename
-			if (aggregationGroup.name.value.startsWith('__')) continue;
-
-			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
-
-			query.aggregate[aggregateProperty] =
-				aggregationGroup.selectionSet?.selections
-					// filter out graphql pointers, like __typename
-					.filter((selectionNode) => !(selectionNode as FieldNode)?.name.value.startsWith('__'))
-					.map((selectionNode) => {
-						selectionNode = selectionNode as FieldNode;
-						return selectionNode.name.value;
-					}) ?? [];
-		}
-
-		validateQuery(query);
-
-		return query;
 	}
 
 	injectSystemResolvers(
