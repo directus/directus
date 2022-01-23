@@ -8,7 +8,7 @@ import {
 	GraphQLType,
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
-import { GraphQLDate, GraphQLGeoJSON } from '../services/graphql';
+import { GraphQLDate, GraphQLGeoJSON } from '../types';
 import { Type } from '@directus/shared/types';
 
 export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLScalarType | GraphQLList<GraphQLType> {

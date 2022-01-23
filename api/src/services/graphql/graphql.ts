@@ -1,8 +1,6 @@
 import argon2 from 'argon2';
-import { validateQuery } from '../utils/validate-query';
+import { validateQuery } from '../../utils/validate-query';
 import {
-	ArgumentNode,
-	BooleanValueNode,
 	execute,
 	ExecutionResult,
 	FieldNode,
@@ -11,7 +9,6 @@ import {
 	FragmentDefinitionNode,
 	GraphQLBoolean,
 	GraphQLEnumType,
-	GraphQLError,
 	GraphQLFloat,
 	GraphQLID,
 	GraphQLInt,
@@ -24,16 +21,11 @@ import {
 	GraphQLSchema,
 	GraphQLString,
 	GraphQLUnionType,
-	InlineFragmentNode,
-	IntValueNode,
-	ObjectFieldNode,
-	ObjectValueNode,
 	SelectionNode,
 	specifiedRules,
-	StringValueNode,
 	validate,
 } from 'graphql';
-import { Filter, SchemaOverview } from '@directus/shared/types';
+import { SchemaOverview } from '@directus/shared/types';
 import {
 	GraphQLJSON,
 	InputTypeComposer,
@@ -44,84 +36,50 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, set, uniq, pick, transform, isObject, omit } from 'lodash';
+import { mapKeys, pick, omit } from 'lodash';
 import ms from 'ms';
-import { getCache } from '../cache';
-import getDatabase from '../database';
-import env from '../env';
-import { BaseException } from '@directus/shared/exceptions';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
-import { getExtensionManager } from '../extensions';
+import { getCache } from '../../cache';
+import getDatabase from '../../database';
+import env from '../../env';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
+import { getExtensionManager } from '../../extensions';
 import { Accountability, Query, Aggregate } from '@directus/shared/types';
-import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../types';
-import { getGraphQLType } from '../utils/get-graphql-type';
-import { reduceSchema } from '../utils/reduce-schema';
-import { sanitizeQuery } from '../utils/sanitize-query';
-import { ActivityService } from './activity';
-import { AuthenticationService } from './authentication';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
-import { FilesService } from './files';
-import { FoldersService } from './folders';
-import { ItemsService } from './items';
-import { PermissionsService } from './permissions';
-import { PresetsService } from './presets';
-import { NotificationsService } from './notifications';
-import { RelationsService } from './relations';
-import { RevisionsService } from './revisions';
-import { RolesService } from './roles';
-import { ServerService } from './server';
-import { SettingsService } from './settings';
-import { SharesService } from './shares';
-import { SpecificationService } from './specifications';
-import { TFAService } from './tfa';
-import { UsersService } from './users';
-import { UtilsService } from './utils';
-import { WebhooksService } from './webhooks';
-import { generateHash } from '../utils/generate-hash';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
-
-const GraphQLVoid = new GraphQLScalarType({
-	name: 'Void',
-
-	description: 'Represents NULL values',
-
-	serialize() {
-		return null;
-	},
-
-	parseValue() {
-		return null;
-	},
-
-	parseLiteral() {
-		return null;
-	},
-});
-
-export const GraphQLGeoJSON = new GraphQLScalarType({
-	...GraphQLJSON,
-	name: 'GraphQLGeoJSON',
-	description: 'GeoJSON value',
-});
-
-export const GraphQLDate = new GraphQLScalarType({
-	...GraphQLString,
-	name: 'Date',
-	description: 'ISO8601 Date values',
-});
+import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../../types';
+import { getGraphQLType } from '../../utils/get-graphql-type';
+import { reduceSchema } from '../../utils/reduce-schema';
+import { sanitizeQuery } from '../../utils/sanitize-query';
+import { ActivityService } from '../activity';
+import { AuthenticationService } from '../authentication';
+import { CollectionsService } from '../collections';
+import { FieldsService } from '../fields';
+import { FilesService } from '../files';
+import { RelationsService } from '../relations';
+import { RevisionsService } from '../revisions';
+import { ServerService } from '../server';
+import { SpecificationService } from '../specifications';
+import { TFAService } from '../tfa';
+import { UsersService } from '../users';
+import { UtilsService } from '../utils';
+import { generateHash } from '../../utils/generate-hash';
+import { DEFAULT_AUTH_PROVIDER } from '../../constants';
+import { GraphQLDate, GraphQLGeoJSON, GraphQLVoid } from '../../types';
+import { formatGQLError } from './shared/format-gql-error';
+import { getService } from './shared/get-service';
+import { parseArgs } from './shared/parse-args';
+import { getQuery } from './shared/get-query';
+import { replaceFragmentsInSelections } from './shared/replace-fragments-in-selections';
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
  */
-const SYSTEM_DENY_LIST = [
+export const SYSTEM_DENY_LIST = [
 	'directus_collections',
 	'directus_fields',
 	'directus_relations',
 	'directus_migrations',
 	'directus_sessions',
 ];
-const READ_ONLY = ['directus_activity', 'directus_revisions'];
+export const READ_ONLY = ['directus_activity', 'directus_revisions'];
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -1149,10 +1107,10 @@ export class GraphQLService {
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
-		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+		const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
 		if (!selections) return null;
-		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
+		const args: Record<string, any> = parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 
 		let query: Record<string, any>;
 
@@ -1162,7 +1120,7 @@ export class GraphQLService {
 			query = this.getAggregateQuery(args, selections);
 			collection = collection.slice(0, -11);
 		} else {
-			query = this.getQuery(args, selections, info.variableValues);
+			query = getQuery(args, selections, info.variableValues, this.accountability);
 
 			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 				collection = collection.slice(0, -6);
@@ -1209,8 +1167,8 @@ export class GraphQLService {
 		let collection = info.fieldName.substring(action.length + 1);
 		if (this.scope === 'system') collection = `directus_${collection}`;
 
-		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
-		const query = this.getQuery(args, selections || [], info.variableValues);
+		const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+		const query = getQuery(args, selections || [], info.variableValues, this.accountability);
 
 		const singleton =
 			collection.endsWith('_items') === false &&
@@ -1226,7 +1184,10 @@ export class GraphQLService {
 			return await this.upsertSingleton(collection, args.data, query);
 		}
 
-		const service = this.getService(collection);
+		const service = getService(
+			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
+			collection
+		);
 		const hasQuery = (query.fields || []).length > 0;
 
 		try {
@@ -1262,7 +1223,7 @@ export class GraphQLService {
 				}
 			}
 		} catch (err: any) {
-			return this.formatError(err);
+			return formatGQLError(err);
 		}
 	}
 
@@ -1270,7 +1231,10 @@ export class GraphQLService {
 	 * Execute the read action on the correct service. Checks for singleton as well.
 	 */
 	async read(collection: string, query: Query): Promise<Partial<Item>> {
-		const service = this.getService(collection);
+		const service = getService(
+			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
+			collection
+		);
 
 		const result = this.schema.collections[collection].singleton
 			? await service.readSingleton(query, { stripNonRequested: false })
@@ -1287,7 +1251,10 @@ export class GraphQLService {
 		body: Record<string, any> | Record<string, any>[],
 		query: Query
 	): Promise<Partial<Item> | boolean> {
-		const service = this.getService(collection);
+		const service = getService(
+			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
+			collection
+		);
 
 		try {
 			await service.upsertSingleton(body);
@@ -1299,177 +1266,8 @@ export class GraphQLService {
 
 			return true;
 		} catch (err: any) {
-			throw this.formatError(err);
+			throw formatGQLError(err);
 		}
-	}
-
-	/**
-	 * GraphQL's regular resolver `args` variable only contains the "top-level" arguments. Seeing that we convert the
-	 * whole nested tree into one big query using Directus' own query resolver, we want to have a nested structure of
-	 * arguments for the whole resolving tree, which can later be transformed into Directus' AST using `deep`.
-	 * In order to do that, we'll parse over all ArgumentNodes and ObjectFieldNodes to manually recreate an object structure
-	 * of arguments
-	 */
-	parseArgs(
-		args: readonly ArgumentNode[] | readonly ObjectFieldNode[],
-		variableValues: GraphQLResolveInfo['variableValues']
-	): Record<string, any> {
-		if (!args || args.length === 0) return {};
-
-		const parseObjectValue = (arg: ObjectValueNode) => {
-			return this.parseArgs(arg.fields, variableValues);
-		};
-
-		const argsObject: any = {};
-
-		for (const argument of args) {
-			if (argument.value.kind === 'ObjectValue') {
-				argsObject[argument.name.value] = parseObjectValue(argument.value);
-			} else if (argument.value.kind === 'Variable') {
-				argsObject[argument.name.value] = variableValues[argument.value.name.value];
-			} else if (argument.value.kind === 'ListValue') {
-				const values: any = [];
-
-				for (const valueNode of argument.value.values) {
-					if (valueNode.kind === 'ObjectValue') {
-						values.push(this.parseArgs(valueNode.fields, variableValues));
-					} else {
-						values.push((valueNode as any).value);
-					}
-				}
-
-				argsObject[argument.name.value] = values;
-			} else {
-				argsObject[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
-			}
-		}
-
-		return argsObject;
-	}
-
-	/**
-	 * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
-	 * Directus' `fields` query for use in the resolver. Also applies variables where appropriate.
-	 */
-	getQuery(
-		rawQuery: Query,
-		selections: readonly SelectionNode[],
-		variableValues: GraphQLResolveInfo['variableValues']
-	): Query {
-		const query: Query = sanitizeQuery(rawQuery, this.accountability);
-
-		const parseAliases = (selections: readonly SelectionNode[]) => {
-			const aliases: Record<string, string> = {};
-
-			for (const selection of selections) {
-				if (selection.kind !== 'Field') continue;
-
-				if (selection.alias?.value) {
-					aliases[selection.alias.value] = selection.name.value;
-				}
-			}
-
-			return aliases;
-		};
-
-		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
-			const fields: string[] = [];
-
-			for (let selection of selections) {
-				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
-
-				selection = selection as FieldNode | InlineFragmentNode;
-
-				let current: string;
-
-				// Union type (Many-to-Any)
-				if (selection.kind === 'InlineFragment') {
-					if (selection.typeCondition!.name.value.startsWith('__')) continue;
-
-					current = `${parent}:${selection.typeCondition!.name.value}`;
-				}
-				// Any other field type
-				else {
-					// filter out graphql pointers, like __typename
-					if (selection.name.value.startsWith('__')) continue;
-
-					current = selection.name.value;
-
-					if (parent) {
-						current = `${parent}.${current}`;
-					}
-				}
-
-				if (selection.selectionSet) {
-					let children: string[];
-
-					if (current.endsWith('_func')) {
-						children = [];
-
-						const rootField = current.slice(0, -5);
-
-						for (const subSelection of selection.selectionSet.selections) {
-							if (subSelection.kind !== 'Field') continue;
-							children.push(`${subSelection.name!.value}(${rootField})`);
-						}
-					} else {
-						children = parseFields(selection.selectionSet.selections, current);
-					}
-
-					fields.push(...children);
-				} else {
-					fields.push(current);
-				}
-
-				if (selection.kind === 'Field' && selection.arguments && selection.arguments.length > 0) {
-					if (selection.arguments && selection.arguments.length > 0) {
-						if (!query.deep) query.deep = {};
-
-						const args: Record<string, any> = this.parseArgs(selection.arguments, variableValues);
-
-						set(
-							query.deep,
-							current,
-							merge(
-								get(query.deep, current),
-								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
-							)
-						);
-					}
-				}
-			}
-
-			return uniq(fields);
-		};
-
-		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
-			if (!filter) return filter;
-
-			return replaceFuncDeep(filter);
-
-			function replaceFuncDeep(filter: Record<string, any>) {
-				return transform(filter, (result: Record<string, any>, value, key) => {
-					let currentKey = key;
-
-					if (typeof key === 'string' && key.endsWith('_func')) {
-						const functionName = Object.keys(value)[0]!;
-						currentKey = `${functionName}(${currentKey.slice(0, -5)})`;
-
-						result[currentKey] = Object.values(value)[0]!;
-					} else {
-						result[currentKey] = isObject(value) ? replaceFuncDeep(value) : value;
-					}
-				});
-			}
-		};
-
-		query.alias = parseAliases(selections);
-		query.fields = parseFields(selections);
-		query.filter = replaceFuncs(query.filter);
-
-		validateQuery(query);
-
-		return query;
 	}
 
 	/**
@@ -1503,89 +1301,6 @@ export class GraphQLService {
 		validateQuery(query);
 
 		return query;
-	}
-	/**
-	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
-	 */
-	formatError(error: BaseException | BaseException[]): GraphQLError {
-		if (Array.isArray(error)) {
-			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
-		}
-
-		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
-	}
-
-	/**
-	 * Select the correct service for the given collection. This allows the individual services to run
-	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
-	 */
-	getService(collection: string): ItemsService {
-		const opts = {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		};
-
-		switch (collection) {
-			case 'directus_activity':
-				return new ActivityService(opts);
-			case 'directus_files':
-				return new FilesService(opts);
-			case 'directus_folders':
-				return new FoldersService(opts);
-			case 'directus_permissions':
-				return new PermissionsService(opts);
-			case 'directus_presets':
-				return new PresetsService(opts);
-			case 'directus_notifications':
-				return new NotificationsService(opts);
-			case 'directus_revisions':
-				return new RevisionsService(opts);
-			case 'directus_roles':
-				return new RolesService(opts);
-			case 'directus_settings':
-				return new SettingsService(opts);
-			case 'directus_users':
-				return new UsersService(opts);
-			case 'directus_webhooks':
-				return new WebhooksService(opts);
-			case 'directus_shares':
-				return new SharesService(opts);
-			default:
-				return new ItemsService(collection, opts);
-		}
-	}
-
-	/**
-	 * Replace all fragments in a selectionset for the actual selection set as defined in the fragment
-	 * Effectively merges the selections with the fragments used in those selections
-	 */
-	replaceFragmentsInSelections(
-		selections: readonly SelectionNode[] | undefined,
-		fragments: Record<string, FragmentDefinitionNode>
-	): readonly SelectionNode[] | null {
-		if (!selections) return null;
-
-		const result = flatten(
-			selections.map((selection) => {
-				// Fragments can contains fragments themselves. This allows for nested fragments
-				if (selection.kind === 'FragmentSpread') {
-					return this.replaceFragmentsInSelections(fragments[selection.name.value].selectionSet.selections, fragments);
-				}
-
-				// Nested relational fields can also contain fragments
-				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') && selection.selectionSet) {
-					selection.selectionSet.selections = this.replaceFragmentsInSelections(
-						selection.selectionSet.selections,
-						fragments
-					) as readonly SelectionNode[];
-				}
-
-				return selection;
-			})
-		).filter((s) => s) as SelectionNode[];
-
-		return result;
 	}
 
 	injectSystemResolvers(
@@ -2446,11 +2161,11 @@ export class GraphQLService {
 					resolve: async (_, args, __, info) => {
 						if (!this.accountability?.user) return null;
 						const service = new UsersService({ schema: this.schema, accountability: this.accountability });
-						const selections = this.replaceFragmentsInSelections(
+						const selections = replaceFragmentsInSelections(
 							info.fieldNodes[0]?.selectionSet?.selections,
 							info.fragments
 						);
-						const query = this.getQuery(args, selections || [], info.variableValues);
+						const query = getQuery(args, selections || [], info.variableValues, this.accountability);
 
 						return await service.readOne(this.accountability.user, query);
 					},
@@ -2475,11 +2190,11 @@ export class GraphQLService {
 						await service.updateOne(this.accountability.user, args.data);
 
 						if ('directus_users' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
+							const selections = replaceFragmentsInSelections(
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = getQuery(args, selections || [], info.variableValues, this.accountability);
 
 							return await service.readOne(this.accountability.user, query);
 						}
@@ -2513,11 +2228,11 @@ export class GraphQLService {
 						});
 
 						if ('directus_activity' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
+							const selections = replaceFragmentsInSelections(
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = getQuery(args, selections || [], info.variableValues, this.accountability);
 
 							return await service.readOne(primaryKey, query);
 						}
@@ -2544,11 +2259,11 @@ export class GraphQLService {
 						const primaryKey = await service.updateOne(args.id, { comment: args.comment });
 
 						if ('directus_activity' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
+							const selections = replaceFragmentsInSelections(
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = getQuery(args, selections || [], info.variableValues, this.accountability);
 
 							return await service.readOne(primaryKey, query);
 						}
@@ -2594,11 +2309,11 @@ export class GraphQLService {
 						const primaryKey = await service.importOne(args.url, args.data);
 
 						if ('directus_files' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
+							const selections = replaceFragmentsInSelections(
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = getQuery(args, selections || [], info.variableValues, this.accountability);
 							return await service.readOne(primaryKey, query);
 						}
 

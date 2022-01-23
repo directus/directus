@@ -20,7 +20,7 @@ import { Accountability, Field, Type, Permission, SchemaOverview, Relation } fro
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
-import { GraphQLService } from './graphql';
+import { GraphQLService } from './graphql/graphql';
 import { RelationsService } from './relations';
 
 export class SpecificationService {

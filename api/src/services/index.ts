@@ -8,7 +8,7 @@ export * from './dashboards';
 export * from './fields';
 export * from './files';
 export * from './folders';
-export * from './graphql';
+export * from './graphql/graphql';
 export * from './import';
 export * from './mail';
 export * from './meta';
