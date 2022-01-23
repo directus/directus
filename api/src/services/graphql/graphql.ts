@@ -1,9 +1,7 @@
 import argon2 from 'argon2';
-import { validateQuery } from '../../utils/validate-query';
 import {
 	execute,
 	ExecutionResult,
-	FieldNode,
 	formatError,
 	FormattedExecutionResult,
 	GraphQLBoolean,
@@ -42,11 +40,10 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
 import { getExtensionManager } from '../../extensions';
-import { Accountability, Query, Aggregate } from '@directus/shared/types';
+import { Accountability, Query } from '@directus/shared/types';
 import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../../types';
 import { getGraphQLType } from '../../utils/get-graphql-type';
 import { reduceSchema } from '../../utils/reduce-schema';
-import { sanitizeQuery } from '../../utils/sanitize-query';
 import { ActivityService } from '../activity';
 import { AuthenticationService } from '../authentication';
 import { CollectionsService } from '../collections';
@@ -67,7 +64,7 @@ import { getService } from './shared/get-service';
 import { parseArgs } from './shared/parse-args';
 import { getQuery } from './shared/get-query';
 import { replaceFragmentsInSelections } from './shared/replace-fragments-in-selections';
-import { Resolvers } from './resolvers';
+import { ResolveQuery } from './resolve-query';
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
@@ -1105,7 +1102,7 @@ export class GraphQLService {
 	 * Directus' query structure which is then executed by the services.
 	 */
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
-		const resolvers = new Resolvers({ knex: this.knex, accountabilty: this.accountability, schema: this.schema });
+		const resolvers = new ResolveQuery({ knex: this.knex, accountabilty: this.accountability, schema: this.schema });
 
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;

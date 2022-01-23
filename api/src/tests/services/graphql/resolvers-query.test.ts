@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../services/graphql/resolvers';
+import { ResolveQuery } from '../../../services/graphql/resolve-query';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { userSchema } from '../../__test-utils__/schemas';
 import knex from 'knex';
@@ -30,7 +30,7 @@ jest.mock('../../../services/', () => {
 	};
 });
 
-describe('Class Resolvers', () => {
+describe('Class ResolveQuery', () => {
 	let tracker: Tracker;
 	const mockKnex = knex({ client: MockClient });
 	beforeAll(() => {
@@ -44,26 +44,26 @@ describe('Class Resolvers', () => {
 			const schema = cloneDeep(userSchema);
 			schema.collections.authors.singleton = true;
 
-			const adminResolvers = new Resolvers({ knex: mockKnex, accountabilty: { admin: true, role: 'admin' }, schema });
+			const adminResolver = new ResolveQuery({ knex: mockKnex, accountabilty: { admin: true, role: 'admin' }, schema });
 
-			const result = await adminResolvers.read('authors', {});
+			const result = await adminResolver.read('authors', {});
 			expect(result).toStrictEqual({ singleton: true });
 		});
 
 		it('readByQuery', async () => {
-			const adminResolvers = new Resolvers({
+			const adminResolver = new ResolveQuery({
 				knex: mockKnex,
 				accountabilty: { admin: true, role: 'admin' },
 				schema: userSchema,
 			});
 
-			const result = await adminResolvers.read('authors', {});
+			const result = await adminResolver.read('authors', {});
 			expect(result).toStrictEqual({ singleton: false });
 		});
 	});
 
 	describe('getAggregateQuery', () => {
-		const adminResolvers = new Resolvers({
+		const adminResolvers = new ResolveQuery({
 			knex: mockKnex,
 			accountabilty: { admin: true, role: 'admin' },
 			schema: userSchema,
@@ -89,12 +89,12 @@ describe('Class Resolvers', () => {
 		});
 
 		it("doesn't fail when accountability is null", async () => {
-			const adminResolvers = new Resolvers({
+			const nullAccountability = new ResolveQuery({
 				knex: mockKnex,
 				accountabilty: null,
 				schema: userSchema,
 			});
-			const result = await adminResolvers.getAggregateQuery({ aggregate: { sum: ['WowAUniqueInlineFragment'] } }, [
+			const result = await nullAccountability.getAggregateQuery({ aggregate: { sum: ['WowAUniqueInlineFragment'] } }, [
 				{
 					kind: 'Field',
 					name: { kind: 'Name', value: 'WowAUniqueInlineFragment' },

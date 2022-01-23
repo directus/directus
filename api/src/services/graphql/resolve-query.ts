@@ -5,13 +5,14 @@ import { sanitizeQuery } from '../../utils/sanitize-query';
 import { validateQuery } from '../../utils/validate-query';
 import { getService } from './shared/get-service';
 
-export class Resolvers {
+export class ResolveQuery {
 	schema: SchemaOverview;
-	knex: Knex<any, unknown[]> | undefined;
+	knex: Knex<any, unknown[]>;
 	accountability: Accountability | null;
 
 	constructor(options: { knex: Knex; accountabilty: Accountability | null; schema: SchemaOverview }) {
-		(this.knex = options.knex), (this.accountability = options.accountabilty);
+		this.knex = options.knex;
+		this.accountability = options.accountabilty;
 		this.schema = options.schema;
 	}
 
