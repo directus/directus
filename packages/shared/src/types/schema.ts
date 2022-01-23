@@ -1,5 +1,5 @@
-import { Type } from '@directus/shared/types';
-import { Relation } from './relation';
+import { Type } from './fields';
+import { Relation } from './relations';
 
 export type FieldOverview = {
 	field: string;

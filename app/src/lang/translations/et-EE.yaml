@@ -250,10 +250,8 @@ related_collection: Seotud kogu
 related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
-export_data: Ekspordi andmed
 format: Vorming
 use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
-export_collection: 'Ekspordi {collection}'
 last_page: Viimane leht
 last_access: Viimati vaadatud
 fill_template: Täida mallist

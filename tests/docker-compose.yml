@@ -2,13 +2,6 @@
 #
 # ONLY FOR TESTING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
-# Ports:
-#   Postgres:        6100
-#   MySQL:           6101
-#   MariaDB:         6102
-#   MS SQL:          6103
-#   Oracle:          6104
-#
 # Credentials:
 #   Postgres:
 #     User:          postgres
@@ -31,6 +24,9 @@
 #     Password:      secretpassword
 #     Role:          SYSDEFAULT
 #     SID:           XE
+#
+#   CockroachDB:
+#     User:          root
 
 version: '3.1'
 services:
@@ -85,3 +81,9 @@ services:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
     shm_size: '1gb' # more like smh-size ammirite 🥁
+
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v21.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 6106:26257

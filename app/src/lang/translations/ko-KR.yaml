@@ -79,7 +79,6 @@ length: 길이
 unique: 고유
 post_comment_success: 댓글 작성됨
 format: 형식
-export_collection: '컬렉션 내보내기'
 last_page: 마지막 페이지
 last_access: 최근 접속
 submit: 확인
