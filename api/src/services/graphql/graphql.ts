@@ -6,7 +6,6 @@ import {
 	FieldNode,
 	formatError,
 	FormattedExecutionResult,
-	FragmentDefinitionNode,
 	GraphQLBoolean,
 	GraphQLEnumType,
 	GraphQLFloat,
