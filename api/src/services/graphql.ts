@@ -80,10 +80,6 @@ import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 import { generateHash } from '../utils/generate-hash';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import * as exceptions from '../exceptions';
-import * as services from '../services';
-import logger from '../logger';
-import { getSchema } from '../utils/get-schema';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -235,57 +231,6 @@ export class GraphQLService {
 				schema
 			);
 		}
-
-		const extensionManager = getExtensionManager();
-
-		extensionManager.listExtensions('endpoint').map((extension) => {
-			const endpointConfig = extensionManager.getEndpointConfig(extension);
-			if (!endpointConfig || typeof endpointConfig === 'function') return;
-
-			const { queries, mutations } = endpointConfig;
-			if (queries) {
-				queries.map((query) => {
-					const { operationName, fields, resolver, variables } = query;
-
-					if (!operationName || !fields || !resolver) {
-						logger.warn(`Couldn't register custom graphql query "${endpointConfig.id}"`);
-					} else {
-						schemaComposer.Query.addFields({
-							[operationName]: {
-								type: schemaComposer.createObjectTC({
-									name: `endpoint_${operationName}`,
-									fields: fields,
-								}),
-								resolve: (_, input) =>
-									resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
-								...(variables && { args: variables }),
-							},
-						});
-					}
-				});
-			}
-			if (mutations) {
-				mutations.map((mutation) => {
-					const { operationName, fields, resolver, variables } = mutation;
-
-					if (!operationName || !fields || !resolver) {
-						logger.warn(`Couldn't register custom graphql mutation "${endpointConfig.id}"`);
-					} else {
-						schemaComposer.Mutation.addFields({
-							[operationName]: {
-								type: schemaComposer.createObjectTC({
-									name: `endpoint_${operationName}`,
-									fields: fields,
-								}),
-								resolve: (_, input) =>
-									resolver(_, input, { services, exceptions, env, database: getDatabase(), logger, getSchema }),
-								...(variables && { args: variables }),
-							},
-						});
-					}
-				});
-			}
-		});
 
 		const readableCollections = Object.values(schema.read.collections)
 			.filter((collection) => collection.collection in ReadCollectionTypes)
