@@ -311,10 +311,9 @@ related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция Языков
-export_data: Экспорт Данных
+label_import: Импорт
 format: Формат
 use_current_filters_settings: Использовать Текущие Фильтры и Настройки
-export_collection: 'Экспорт {collection}'
 last_page: Последняя Страница
 last_access: Последний Доступ
 fill_template: Заполнить Шаблонным Значением

@@ -1,5 +1,5 @@
 <template>
-	<div class="wysiwyg" :class="{ disabled }">
+	<div :id="field" class="wysiwyg" :class="{ disabled }">
 		<editor
 			ref="editorElement"
 			v-model="internalValue"
@@ -10,7 +10,17 @@
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 		/>
-
+		<template v-if="softLength">
+			<span
+				class="remaining"
+				:class="{
+					warning: percRemaining < 10,
+					danger: percRemaining < 5,
+				}"
+			>
+				{{ softLength - count }}
+			</span>
+		</template>
 		<v-dialog v-model="linkDrawerOpen">
 			<v-card>
 				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
@@ -149,7 +159,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance } from 'vue';
+import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance, onMounted } from 'vue';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -179,6 +189,7 @@ import useLink from './useLink';
 import useSourceCode from './useSourceCode';
 import { getToken } from '@/api';
 import { getPublicURL } from '@/utils/get-root-path';
+import { percentage } from '@/utils/percentage';
 
 type CustomFormat = {
 	title: string;
@@ -192,6 +203,10 @@ export default defineComponent({
 	components: { Editor },
 	props: {
 		value: {
+			type: String,
+			default: '',
+		},
+		field: {
 			type: String,
 			default: '',
 		},
@@ -240,15 +255,39 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		softLength: {
+			type: Number,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
-
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const isEditorDirty = ref(false);
 		const { imageToken } = toRefs(props);
+
+		let tinymceEditor: HTMLElement | null;
+		let count = ref(0);
+		onMounted(() => {
+			let iframe;
+			const wysiwyg = document.getElementById(props.field);
+
+			if (wysiwyg) iframe = wysiwyg.getElementsByTagName('iframe');
+
+			if (iframe && iframe[0] && iframe[0].contentWindow)
+				tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
+
+			if (tinymceEditor) {
+				const observer = new MutationObserver((_mutations) => {
+					count.value = tinymceEditor?.textContent?.replace('\n', '')?.length ?? 0;
+				});
+
+				const config = { characterData: true, childList: true, subtree: true };
+				observer.observe(tinymceEditor, config);
+			}
+		});
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
@@ -361,8 +400,12 @@ export default defineComponent({
 			};
 		});
 
+		const percRemaining = computed(() => percentage(count.value, props.softLength));
+
 		return {
 			t,
+			percRemaining,
+			count,
 			editorElement,
 			editorOptions,
 			internalValue,
@@ -438,6 +481,26 @@ export default defineComponent({
 
 .grid {
 	@include form-grid;
+}
+
+.remaining {
+	position: absolute;
+	right: 10px;
+	bottom: 5px;
+	width: 24px;
+	color: var(--foreground-subdued);
+	font-weight: 600;
+	text-align: right;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.warning {
+	color: var(--warning);
+}
+
+.danger {
+	color: var(--danger);
 }
 
 .image-preview,

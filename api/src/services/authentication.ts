@@ -11,16 +11,8 @@ import { InvalidCredentialsException, InvalidOTPException, UserSuspendedExceptio
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
-import {
-	AbstractServiceOptions,
-	Action,
-	SchemaOverview,
-	Session,
-	User,
-	DirectusTokenPayload,
-	LoginResult,
-} from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, Session, User, DirectusTokenPayload, LoginResult } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { SettingsService } from './settings';
 import { clone, cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';

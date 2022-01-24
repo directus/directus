@@ -5,8 +5,8 @@ import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lo
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview, Alterations } from '../types';
-import { Accountability, Query } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, Alterations } from '../types';
+import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import { unflatten } from 'flat';
