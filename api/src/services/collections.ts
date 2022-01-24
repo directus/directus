@@ -122,7 +122,7 @@ export class CollectionsService {
 					return field;
 				});
 
-				await this.knex.transaction(async (schemaTrx) => {
+				await trx.transaction(async (schemaTrx) => {
 					await schemaTrx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
@@ -447,7 +447,7 @@ export class CollectionsService {
 						.where({ id: relation.meta!.id });
 				}
 
-				await this.knex.transaction(async (schemaTrx) => {
+				await trx.transaction(async (schemaTrx) => {
 					await schemaTrx.schema.dropTable(collectionKey);
 				});
 			}
