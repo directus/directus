@@ -273,6 +273,7 @@ note: Бележка
 enter_a_value: Въвеждане на стойност...
 enter_a_placeholder: Въвеждане на подсказката...
 length: Дължина
+soft_length: Гъвкав лимит
 precision_scale: Прецизност и мащаб
 readonly: Само за четене
 unique: Без повторения
@@ -326,9 +327,17 @@ related_collection: Релативна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
+import_data_input_placeholder: CSV или JSON...
+import_data_button: Започване на импортирането
+import_data_indeterminate: Импортиране на данните...
+import_data_success: Данните от {filename}, бяха успешно импортирани
+import_data_error: Структурата на данните от файла, не отговаря на колекцията.
 label_import: Импортиране
+label_export: Експортиране
+import_export: Импорт / Експорт
 format: Формат
 use_current_filters_settings: Прилагане на текущите филтри
+export_data_button: Започване на експортирането
 last_page: Последна страница
 last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
@@ -1240,6 +1249,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
