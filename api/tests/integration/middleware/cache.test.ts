@@ -1,9 +1,9 @@
 import express from 'express';
 import request from 'supertest';
-import checkCacheMiddleware from '../../src/middleware/cache';
+import checkCacheMiddleware from '../../../src/middleware/cache';
 
-jest.mock('../../src/cache');
-jest.mock('../../src/env', () => ({
+jest.mock('../../../src/cache');
+jest.mock('../../../src/env', () => ({
 	CACHE_ENABLED: true,
 	CACHE_NAMESPACE: 'test',
 	CACHE_STORE: 'memory',
@@ -11,8 +11,8 @@ jest.mock('../../src/env', () => ({
 	CACHE_CONTROL_S_MAXAGE: true,
 }));
 
-const { cache } = jest.requireMock('../../src/cache');
-const env = jest.requireMock('../../src/env');
+const { cache } = jest.requireMock('../../../src/cache');
+const env = jest.requireMock('../../../src/env');
 
 const handler = jest.fn((req, res) => res.json({ data: 'Uncached value' }));
 const setup = () => express().use(checkCacheMiddleware).all('/items/test', handler);

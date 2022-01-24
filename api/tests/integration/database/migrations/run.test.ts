@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import run from '../../../src/database/migrations/run';
+import run from '../../../../src/database/migrations/run';
 
 describe('run', () => {
 	let db: jest.Mocked<Knex>;

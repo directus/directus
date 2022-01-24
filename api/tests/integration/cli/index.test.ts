@@ -1,9 +1,9 @@
 import { Command } from 'commander';
 import { Extension, HookConfig } from '@directus/shared/types';
-import { createCli } from '../../src/cli/index';
+import { createCli } from '../../../src/cli/index';
 
-jest.mock('../../src/env', () => ({
-	...jest.requireActual('../../src/env').default,
+jest.mock('../../../src/env', () => ({
+	...jest.requireActual('../../../src/env').default,
 	EXTENSIONS_PATH: '',
 	SERVE_APP: false,
 	DB_CLIENT: 'pg',
