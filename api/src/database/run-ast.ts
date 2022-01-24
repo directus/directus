@@ -230,7 +230,7 @@ function applyParentFilters(
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id);
 			const limit = nestedNode.query.limit;
 
-			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
+			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } }, limit: -1 } });
 		} else if (nestedNode.type === 'o2m') {
 			const relatedM2OisFetched = !!nestedNode.children.find((child) => {
 				return child.type === 'field' && child.name === nestedNode.relation.field;
@@ -256,7 +256,7 @@ function applyParentFilters(
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id);
 			const limit = nestedNode.query.limit;
 
-			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
+			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } }, limit: -1 } });
 		} else if (nestedNode.type === 'a2o') {
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
@@ -271,7 +271,9 @@ function applyParentFilters(
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 				const limit = nestedNode.query[relatedCollection].limit;
 
-				merge(nestedNode, { query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } } });
+				merge(nestedNode, {
+					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } }, limit: -1 },
+				});
 			}
 		}
 	}
