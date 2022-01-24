@@ -147,6 +147,11 @@ module.exports = {
 						path: '/getting-started/glossary',
 						title: 'Glossary',
 					},
+					{
+						type: 'page',
+						path: '/getting-started/faqs',
+						title: 'FAQs',
+					},
 				],
 			},
 			{
