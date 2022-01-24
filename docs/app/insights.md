@@ -100,7 +100,7 @@ list that could be generated from your dataset.
 
 ### Metrics Overview
 
-Metrics panels allow you to aggregate numeric fields into a single number.
+Metrics panels allow you to aggregate Field Items down to a single value.
 
 #### Metrics Panel Options
 
@@ -127,7 +127,7 @@ Aggregate functions takes a list of values and returns one single value.
 - **First** - Selects the first Item out of all Items in a Field.
 - **Last** - Selects the last Item out of all Items in a Field.
 
-::: tip First and Last First and last are not aggregate functions in the traditional sense. However, they have been
+::: tip First and Last First and Last are not aggregate functions in the traditional sense. However, they have been
 placed in this panel because _(philosophically speaking)_ finding the first or last Item means that all Items in the
 Field need to be considered. :::
 
