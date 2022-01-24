@@ -28,7 +28,7 @@ Alternatively, you can export a configuration object to be able to customize the
 ```js
 export default {
 	id: 'greet',
-	register: (router) => {
+	handler: (router) => {
 		router.get('/', (req, res) => res.send('Hello, World!'));
 		router.get('/intro', (req, res) => res.send('Nice to meet you.'));
 		router.get('/goodbye', (req, res) => res.send('Goodbye!'));
@@ -41,7 +41,7 @@ The routes of this endpoint are accessible at `/greet`, `/greet/intro` and `/gre
 #### Available Options
 
 - `id` — The unique key for this endpoint. Each route of your endpoint will be a sub-route of `/<id>`.
-- `register` — The endpoint's register function.
+- `handler` — The endpoint's handler function.
 
 ## Register Function
 
