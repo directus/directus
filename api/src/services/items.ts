@@ -205,7 +205,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				{
 					// This hook is called async. If we would pass the transaction here, the hook can be
 					// called after the transaction is done #5460
-					database: getDatabase(),
+					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
 				}
@@ -511,7 +511,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				{
 					// This hook is called async. If we would pass the transaction here, the hook can be
 					// called after the transaction is done #5460
-					database: getDatabase(),
+					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
 				}
@@ -653,7 +653,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				{
 					// This hook is called async. If we would pass the transaction here, the hook can be
 					// called after the transaction is done #5460
-					database: getDatabase(),
+					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
 				}
