@@ -119,7 +119,23 @@ export default defineComponent({
 		});
 
 		watch(
-			() => props,
+			[
+				() => props.collection,
+				() => props.dateField,
+				() => props.valueField,
+				() => props.function,
+				() => props.precision,
+				() => props.range,
+				() => props.color,
+				() => props.fillType,
+				() => props.curveType,
+				() => props.decimals,
+				() => props.min,
+				() => props.max,
+				() => props.filter,
+				() => props.showXAxis,
+				() => props.showYAxis,
+			],
 			() => {
 				fetchData();
 				chart.value?.destroy();

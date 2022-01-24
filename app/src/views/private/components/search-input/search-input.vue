@@ -28,7 +28,7 @@
 			/>
 
 			<transition-expand @beforeEnter="filterBorder = true" @afterLeave="filterBorder = false">
-				<div v-show="filterActive" class="filter">
+				<div v-show="filterActive" ref="filterElement" class="filter">
 					<interface-system-filter
 						class="filter-input"
 						inline
@@ -44,9 +44,10 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, PropType, computed } from 'vue';
+import { defineComponent, ref, watch, PropType, computed, inject, Ref } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { isObject } from 'lodash';
+import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({
 	props: {
@@ -72,6 +73,40 @@ export default defineComponent({
 		const active = ref(props.modelValue !== null);
 		const filterActive = ref(false);
 		const filterBorder = ref(false);
+
+		const mainElement = inject<Ref<Element | undefined>>('main-element');
+		const filterElement = ref<HTMLElement>();
+		const { width: mainElementWidth } = useElementSize(mainElement!);
+		const { width: filterElementWidth } = useElementSize(filterElement);
+
+		watch(
+			[mainElementWidth, filterElementWidth],
+			() => {
+				if (!filterElement.value) return;
+
+				const searchElement = filterElement.value.parentElement!;
+				const minWidth = searchElement.offsetWidth - 4;
+
+				if (filterElementWidth.value > minWidth) {
+					filterElement.value.style.borderTopLeftRadius =
+						filterElementWidth.value > minWidth + 22 ? 22 + 'px' : filterElementWidth.value - minWidth + 'px';
+				} else {
+					filterElement.value.style.borderTopLeftRadius = '0px';
+				}
+
+				const headerElement = mainElement?.value?.firstElementChild;
+
+				if (!headerElement) return;
+
+				const maxWidth =
+					searchElement.getBoundingClientRect().right -
+					(headerElement.getBoundingClientRect().left +
+						Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
+
+				filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
+			},
+			{ immediate: true }
+		);
 
 		watch(active, (newActive: boolean) => {
 			if (newActive === true && input.value !== null) {
@@ -113,6 +148,7 @@ export default defineComponent({
 			filterActive,
 			onClickOutside,
 			filterBorder,
+			filterElement,
 		};
 
 		function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
@@ -207,10 +243,22 @@ export default defineComponent({
 	}
 
 	&.filter-active {
-		width: 420px; // blaze it
+		width: 200px;
 
 		.icon-filter {
 			--v-icon-color: var(--primary);
+		}
+
+		@media (min-width: 600px) {
+			width: 250px;
+		}
+
+		@media (min-width: 960px) {
+			width: 300px;
+		}
+
+		@media (min-width: 1260px) {
+			width: 420px; // blaze it
 		}
 	}
 
@@ -223,10 +271,10 @@ export default defineComponent({
 
 		&::after {
 			position: absolute;
-			bottom: 0px;
-			left: 0;
-			z-index: -1;
-			width: 100%;
+			right: 2px;
+			bottom: -2px;
+			left: 2px;
+			width: auto;
 			height: 2px;
 			background-color: var(--border-subdued);
 			content: '';
@@ -262,12 +310,12 @@ export default defineComponent({
 .filter {
 	position: absolute;
 	top: 100%;
-	left: 0;
-	width: 100%;
+	right: 0;
+	width: auto;
+	min-width: 100%;
 	padding: 0;
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
-	border-top: 0;
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
 }

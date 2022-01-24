@@ -2,6 +2,159 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.4.3 (January 7, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#10881](https://github.com/directus/directus/pull/10881) Add extension auto reloading to the API
+    ([@nickrum](https://github.com/nickrum))
+- **Extensions**
+  - [#10881](https://github.com/directus/directus/pull/10881) Add extension auto reloading to the API
+    ([@nickrum](https://github.com/nickrum))
+  - [#10849](https://github.com/directus/directus/pull/10849) Make registered extensions accessible from extensions
+    ([@nickrum](https://github.com/nickrum))
+
+### :rocket: Improvements
+
+- **App**
+  - [#10879](https://github.com/directus/directus/pull/10879) Handle broken images more gracefully
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10872](https://github.com/directus/directus/pull/10872) Use new date picker in filter, allow manual input
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **Extensions**
+  - [#10850](https://github.com/directus/directus/pull/10850) Move useLayout composable to shared and expose it through
+    extensions-sdk ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#10830](https://github.com/directus/directus/pull/10830) Default to upgrade-insecure-requests turned off
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#10903](https://github.com/directus/directus/pull/10903) Fix user info sidebar watcher causing error
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10895](https://github.com/directus/directus/pull/10895) Fix color width inconsistency
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10819](https://github.com/directus/directus/pull/10819) Fix logo url in shared view
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10814](https://github.com/directus/directus/pull/10814) add translations for project descriptor & shares fields
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10812](https://github.com/directus/directus/pull/10812) prevent icons from being searchable
+    ([@azrikahar](https://github.com/azrikahar))
+- **API**
+  - [#10875](https://github.com/directus/directus/pull/10875) Fix refresh token payload structure on shared refresh
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10852](https://github.com/directus/directus/pull/10852) Add CSP directives for MapLibre to work
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10847](https://github.com/directus/directus/pull/10847) Fix running migrations in dev mode
+    ([@nickrum](https://github.com/nickrum))
+  - [#10846](https://github.com/directus/directus/pull/10846) Fix reloading hooks with schedule events
+    ([@nickrum](https://github.com/nickrum))
+  - [#10837](https://github.com/directus/directus/pull/10837) Api (Assets): fix UUID verification
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10836](https://github.com/directus/directus/pull/10836) Left Join-ing on roles to allow users without roles to
+    login ([@johnhuffsmith](https://github.com/johnhuffsmith))
+  - [#10821](https://github.com/directus/directus/pull/10821) fix file local type for displaysForType
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :memo: Documentation
+
+- [#10891](https://github.com/directus/directus/pull/10891) Clarify case rules for storage env vars
+  ([@jkjustjoshing](https://github.com/jkjustjoshing))
+- [#10827](https://github.com/directus/directus/pull/10827) Docs(SDK): use top level await upload
+  ([@joselcvarela](https://github.com/joselcvarela))
+- [#10816](https://github.com/directus/directus/pull/10816) minor fix for form closing tag in file upload example
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10813](https://github.com/directus/directus/pull/10813) update docs on descriptor in project settings
+  ([@azrikahar](https://github.com/azrikahar))
+- [#10807](https://github.com/directus/directus/pull/10807) Add Deploy with Cleavr to Readme
+  ([@armgitaar](https://github.com/armgitaar))
+
+## v9.4.2 (December 30, 2021)
+
+### :warning: Notice
+
+For security reasons, we've enabled the `Content-Security-Policy` header by default. This won't change the normal
+operating behavior of the API, but be aware if you were doing some trickery before that might be affected by this
+header.
+
+### :rocket: Improvements
+
+- **API**
+  - [#10778](https://github.com/directus/directus/pull/10778) Add warning when DB_CHARSET isn't explicitly configured
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - :warning: [#10776](https://github.com/directus/directus/pull/10776) Add Content-Security-Policy header by default
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10773](https://github.com/directus/directus/pull/10773) Don't force commandTimeout in redis based caches
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10765](https://github.com/directus/directus/pull/10765) Add ability to configure IP extraction
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#10762](https://github.com/directus/directus/pull/10762) Don't show badge when no revisions
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10760](https://github.com/directus/directus/pull/10760) style tweaks ([@benhaynes](https://github.com/benhaynes))
+  - [#9224](https://github.com/directus/directus/pull/9224) Enable alpha channel in color selector
+    ([@adanielyan](https://github.com/adanielyan))
+
+### :memo: Documentation
+
+- [#10761](https://github.com/directus/directus/pull/10761) Add link to Cleavr deployment guide
+  ([@armgitaar](https://github.com/armgitaar))
+- [#10622](https://github.com/directus/directus/pull/10622) `update_users_me` Alias for GraphQL API
+  ([@w0ryn](https://github.com/w0ryn))
+
+## v9.4.1 (December 28, 2021)
+
+### :rocket: Improvements
+
+- **API**
+  - [#10713](https://github.com/directus/directus/pull/10713) exclude MS-SQL system table 'sysdiagrams'
+    ([@paulboudewijn](https://github.com/paulboudewijn))
+- **App**
+  - [#10698](https://github.com/directus/directus/pull/10698) Add notice for display templates when creating M2M field
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10697](https://github.com/directus/directus/pull/10697) Add empty state to revisions
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#10611](https://github.com/directus/directus/pull/10611) Update interface previews
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#6440](https://github.com/directus/directus/pull/6440) Add stacked drawers effect
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#10740](https://github.com/directus/directus/pull/10740) Fix data type inconsistencies in directus_shares table
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10736](https://github.com/directus/directus/pull/10736) Replace knex.fn.now() to Date()
+    ([@licitdev](https://github.com/licitdev))
+  - [#10674](https://github.com/directus/directus/pull/10674) check system deny list in relations for GraphQL
+    ([@azrikahar](https://github.com/azrikahar))
+- **App**
+  - [#10721](https://github.com/directus/directus/pull/10721) Tweak auto-refresh of panels
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#10704](https://github.com/directus/directus/pull/10704) App: fix m2o raw value
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10703](https://github.com/directus/directus/pull/10703) App: add sort on create m2m item
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10702](https://github.com/directus/directus/pull/10702) App: fix stacked drawers on mobile
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#10696](https://github.com/directus/directus/pull/10696) Fix Map Attribution Problems
+    ([@maltejur](https://github.com/maltejur))
+  - [#10691](https://github.com/directus/directus/pull/10691) Add OpenStreetMaps Attribution
+    ([@maltejur](https://github.com/maltejur))
+  - [#10576](https://github.com/directus/directus/pull/10576) fix default values from permission's field presets
+    ([@azrikahar](https://github.com/azrikahar))
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#10711](https://github.com/directus/directus/pull/10711) Fix end-to-end tests for Postgres10
+    ([@jaycammarano](https://github.com/jaycammarano))
+- **API**
+  - [#10710](https://github.com/directus/directus/pull/10710) Fix debugging random portno
+    ([@paulboudewijn](https://github.com/paulboudewijn))
+
 ## v9.4.0 (December 23, 2021)
 
 ### :sparkles: New Features

@@ -247,6 +247,7 @@
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
+					@refresh="refresh"
 				/>
 			</template>
 
@@ -271,12 +272,12 @@ import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
 import ContentNotFound from './not-found.vue';
-import { useCollection } from '@directus/shared/composables';
-import { useLayout } from '@/composables/use-layout';
+import { useCollection, useLayout } from '@directus/shared/composables';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -304,6 +305,7 @@ export default defineComponent({
 		DrawerBatch,
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
+		ExportSidebarDetail,
 	},
 	props: {
 		collection: {
@@ -404,20 +406,7 @@ export default defineComponent({
 			if (archiveValue === 'false') archiveValue = false;
 
 			if (props.archive === 'all') {
-				return {
-					_or: [
-						{
-							[field]: {
-								_eq: archiveValue,
-							},
-						},
-						{
-							[field]: {
-								_neq: archiveValue,
-							},
-						},
-					],
-				};
+				return null;
 			} else if (props.archive === 'archived') {
 				return {
 					[field]: {
