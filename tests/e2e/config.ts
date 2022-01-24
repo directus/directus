@@ -91,7 +91,7 @@ const config: Config = {
 				password: 'Test@123',
 				host: 'localhost',
 				port: 6104,
-				requestTimeout: 30000,
+				requestTimeout: 60000,
 			},
 			...knexConfig,
 		},
