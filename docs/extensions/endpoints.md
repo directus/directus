@@ -49,11 +49,11 @@ The register function receives the two parameters `router` and `context`. `route
 `context` is an object with the following properties:
 
 - `services` — All API internal services.
-- `exceptions` — API exception objects that can be used to throw "proper" errors.
+- `exceptions` — API exception objects that can be used to throw "proper" errors.
 - `database` — Knex instance that is connected to the current database.
 - `getSchema` — Async function that reads the full available schema for use in services
-- `env` — Parsed environment variables.
-- `logger` — [Pino](https://github.com/pinojs/pino) instance.
+- `env` — Parsed environment variables.
+- `logger` — [Pino](https://github.com/pinojs/pino) instance.
 - `emitter` — [Event emitter](https://github.com/directus/directus/blob/main/api/src/emitter.ts) instance that can be
   used to trigger custom events for other extensions.
 
