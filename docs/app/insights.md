@@ -36,7 +36,7 @@ Dashboard view, edit, and create permissions are
 
 ### Create, Edit, and Delete Dashboards
 
-![Add, Edit and Delete Dashboards in Directus Insights](https://cdn.directus.io/docs/v9/app-guide/insights/add-edit-delete-dashboards-220123A.webp)
+![How to Add, Edit and Delete Dashboards in Directus Insights](https://cdn.directus.io/docs/v9/app-guide/insights/add-edit-delete-dashboards-220123A.webp)
 
 1. Click the (`+`) icon in the page header to create a new Dashboard.
 2. Click the item option to edit or delete a Dashboard.
