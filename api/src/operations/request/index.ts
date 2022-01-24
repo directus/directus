@@ -4,7 +4,7 @@ import axios, { Method } from 'axios';
 type Options = {
 	url: string;
 	method: Method;
-	data: unknown;
+	data: string;
 	headers: Record<string, string>;
 };
 
