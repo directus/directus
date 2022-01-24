@@ -305,10 +305,9 @@ related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
-export_data: تصدير البيانات
+label_import: إستيراد
 format: التنسيق
 use_current_filters_settings: استخدام التصفية و الإعدادات الحالية
-export_collection: 'تصدير {collection}'
 last_page: آخر صفحة
 last_access: آخر وصول
 fill_template: املأ بقيمة النموذج

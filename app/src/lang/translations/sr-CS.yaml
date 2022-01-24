@@ -226,10 +226,8 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
-export_data: Izvoz Podataka
 format: Format
 use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
-export_collection: 'Izvoz {collection}'
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona

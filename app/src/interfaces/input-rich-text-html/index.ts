@@ -269,6 +269,19 @@ export default defineInterface({
 		],
 		advanced: [
 			{
+				field: 'softLength',
+				name: '$t:soft_length',
+				type: 'integer',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						placeholder: '255',
+						min: 1,
+					},
+				},
+			},
+			{
 				field: 'customFormats',
 				name: '$t:interfaces.input-rich-text-html.custom_formats',
 				type: 'json',
