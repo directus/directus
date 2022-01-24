@@ -273,6 +273,7 @@ note: Notatka
 enter_a_value: Wprowadź wartość...
 enter_a_placeholder: Wprowadź tekst zastępczy...
 length: Długość
+soft_length: Limit miękki
 precision_scale: Precyzja i Skala
 readonly: Tylko do odczytu
 unique: Unikalne
@@ -326,9 +327,17 @@ related_collection: Powiązana kolekcja
 related_collections: Powiązane kolekcje
 translations_collection: Kolekcja tłumaczeń
 languages_collection: Kolekcja języków
+import_data_input_placeholder: CSV lub JSON...
+import_data_button: Rozpocznij import
+import_data_indeterminate: Importowanie danych...
+import_data_success: Pomyślnie zaimportowano dane z {filename}
+import_data_error: Struktura danych tego pliku nie pasuje do kolekcji.
 label_import: Importuj
+label_export: Eksportuj
+import_export: Import / Eksport
 format: Formatowanie
 use_current_filters_settings: Użyj obecnych filtrów i ustawień
+export_data_button: Rozpocznij eksport
 last_page: Ostatnia strona
 last_access: Ostatni dostęp
 fill_template: Wypełnij wartością szablonu
@@ -1240,6 +1249,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1567,15 +1577,19 @@ displays:
     format: Formatowanie
     format_label: Automatyczny format
     font: Czcionka
+    font_sans_serif: Bezszeryfowa
     font_serif: Szeryfowa
     font_monospace: Monospace
     bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
     italic: Kursywa
+    italic_label: Użyj stylu italic
     prefix: Przedrostek
     prefix_label: Poprzedni tekst
     suffix: Przyrostek
+    suffix_label: Tekst dodany
     color: Kolor
+    background: Tło
     icon: Ikona
     border: Krawędź
     border_label: Pokaż obramowanie
