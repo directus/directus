@@ -84,11 +84,36 @@ export default async function runAST(
 		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
-			const nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
+			let nestedItems: Item[] | null = [];
 
-			if (nestedItems) {
-				// Merge all fetched nested records with the parent items
-				items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
+			if (nestedNode.type === 'o2m') {
+				const BATCH_SIZE = 75000;
+
+				let hasMore = true;
+
+				let batchCount = 0;
+
+				while (hasMore) {
+					const node = merge({}, nestedNode, { query: { limit: BATCH_SIZE, offset: batchCount * BATCH_SIZE } });
+					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
+
+					if (nestedItems) {
+						items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
+					}
+
+					if (!nestedItems || nestedItems.length < BATCH_SIZE) {
+						hasMore = false;
+					}
+
+					batchCount++;
+				}
+			} else {
+				nestedItems = (await runAST(nestedNode, schema, { knex, nested: true })) as Item[] | null;
+
+				if (nestedItems) {
+					// Merge all fetched nested records with the parent items
+					items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
+				}
 			}
 		}
 
@@ -228,9 +253,8 @@ function applyParentFilters(
 		if (nestedNode.type === 'm2o') {
 			const foreignField = schema.collections[nestedNode.relation.related_collection!].primary;
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id);
-			const limit = nestedNode.query.limit;
 
-			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } }, limit: -1 } });
+			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
 		} else if (nestedNode.type === 'o2m') {
 			const relatedM2OisFetched = !!nestedNode.children.find((child) => {
 				return child.type === 'field' && child.name === nestedNode.relation.field;
@@ -254,9 +278,8 @@ function applyParentFilters(
 
 			const foreignField = nestedNode.relation.field;
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id);
-			const limit = nestedNode.query.limit;
 
-			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } }, limit: -1 } });
+			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
 		} else if (nestedNode.type === 'a2o') {
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
@@ -269,10 +292,9 @@ function applyParentFilters(
 			for (const relatedCollection of nestedNode.names) {
 				const foreignField = nestedNode.relatedKey[relatedCollection];
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
-				const limit = nestedNode.query[relatedCollection].limit;
 
 				merge(nestedNode, {
-					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } }, limit: -1 },
+					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } },
 				});
 			}
 		}
@@ -303,41 +325,43 @@ function mergeWithParentItems(
 		}
 	} else if (nestedNode.type === 'o2m') {
 		for (const parentItem of parentItems) {
-			const itemChildren = nestedItems
-				.filter((nestedItem) => {
-					if (nestedItem === null) return false;
-					if (Array.isArray(nestedItem[nestedNode.relation.field])) return true;
+			if (!parentItem[nestedNode.fieldKey]) parentItem[nestedNode.fieldKey] = [] as Item[];
 
-					return (
-						nestedItem[nestedNode.relation.field] ==
-							parentItem[schema.collections[nestedNode.relation.related_collection!].primary] ||
-						nestedItem[nestedNode.relation.field]?.[
-							schema.collections[nestedNode.relation.related_collection!].primary
-						] == parentItem[schema.collections[nestedNode.relation.related_collection!].primary]
-					);
-				})
-				.sort((a, b) => {
-					// This is pre-filled in get-ast-from-query
-					const sortField = nestedNode.query.sort![0]!;
-					let column = sortField;
-					let order: 'asc' | 'desc' = 'asc';
+			const itemChildren = nestedItems.filter((nestedItem) => {
+				if (nestedItem === null) return false;
+				if (Array.isArray(nestedItem[nestedNode.relation.field])) return true;
 
-					if (sortField.startsWith('-')) {
-						column = sortField.substring(1);
-						order = 'desc';
-					}
+				return (
+					nestedItem[nestedNode.relation.field] ==
+						parentItem[schema.collections[nestedNode.relation.related_collection!].primary] ||
+					nestedItem[nestedNode.relation.field]?.[
+						schema.collections[nestedNode.relation.related_collection!].primary
+					] == parentItem[schema.collections[nestedNode.relation.related_collection!].primary]
+				);
+			});
 
-					if (a[column] === b[column]) return 0;
-					if (a[column] === null) return 1;
-					if (b[column] === null) return -1;
-					if (order === 'asc') {
-						return a[column] < b[column] ? -1 : 1;
-					} else {
-						return a[column] < b[column] ? 1 : -1;
-					}
-				});
+			parentItem[nestedNode.fieldKey].push(...itemChildren);
+			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
+			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {
+				// This is pre-filled in get-ast-from-query
+				const sortField = nestedNode.query.sort![0]!;
+				let column = sortField;
+				let order: 'asc' | 'desc' = 'asc';
 
-			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
+				if (sortField.startsWith('-')) {
+					column = sortField.substring(1);
+					order = 'desc';
+				}
+
+				if (a[column] === b[column]) return 0;
+				if (a[column] === null) return 1;
+				if (b[column] === null) return -1;
+				if (order === 'asc') {
+					return a[column] < b[column] ? -1 : 1;
+				} else {
+					return a[column] < b[column] ? 1 : -1;
+				}
+			});
 		}
 	} else if (nestedNode.type === 'a2o') {
 		for (const parentItem of parentItems) {
