@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Check for skippable jobs
         id: skip_check
-        # Switch back to fkirc/skip-duplicate-actions@master once https://github.com/fkirc/skip-duplicate-actions/pull/159 has been merged
+        # Switch back to fkirc/skip-duplicate-actions@master once https://github.com/fkirc/skip-duplicate-actions/pull/159 has been merged
         uses: paescuj/skip-duplicate-actions@path-filters
         # Don't skip any jobs if the pre-check should fail for any reason
         # (setting this on step-level makes sure the pre-check will still be marked as 'passed',
