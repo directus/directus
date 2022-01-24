@@ -41,7 +41,7 @@ The routes of this endpoint are accessible at `/greet`, `/greet/intro` and `/gre
 #### Available Options
 
 - `id` — The unique key for this endpoint. Each route of your endpoint will be a sub-route of `/<id>`.
-- `register` — The endpoint's register function.
+- `handler` — The endpoint's handler function.
 
 ## Register Function
 
