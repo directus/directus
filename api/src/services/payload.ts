@@ -118,9 +118,18 @@ export class PayloadService {
 			return value;
 		},
 		async csv({ action, value }) {
-			if (!value) return;
-			if (action === 'read' && Array.isArray(value) === false) return value.split(',');
-			if (Array.isArray(value)) return value.join(',');
+			if (Array.isArray(value) === false && typeof value !== 'string') return;
+
+			if (action === 'read' && Array.isArray(value) === false) {
+				if (value === '') return [];
+
+				return value.split(',');
+			}
+
+			if (Array.isArray(value)) {
+				return value.join(',');
+			}
+
 			return value;
 		},
 	};

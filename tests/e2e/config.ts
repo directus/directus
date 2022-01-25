@@ -91,7 +91,7 @@ const config: Config = {
 				password: 'Test@123',
 				host: 'localhost',
 				port: 6104,
-				requestTimeout: 30000,
+				requestTimeout: 60000,
 			},
 			...knexConfig,
 		},
@@ -113,6 +113,14 @@ const config: Config = {
 				password: '',
 				host: 'localhost',
 				port: 6106,
+			},
+			pool: {
+				afterCreate: async (conn: any, callback: any) => {
+					const run = promisify(conn.query.bind(conn));
+					await run('SET serial_normalization = "sql_sequence"');
+					await run('SET default_int_size = 4');
+					callback(null, conn);
+				},
 			},
 			...knexConfig,
 		},

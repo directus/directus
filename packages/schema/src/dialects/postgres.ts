@@ -62,6 +62,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           AND pg_attribute.attnum = ANY (pg_index.indkey)
           AND indisprimary
           AND indnatts = 1
+			 AND relkind != 'S'
       `,
 				[this.explodedSchema.join(',')]
 			),

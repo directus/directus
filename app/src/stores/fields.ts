@@ -253,6 +253,35 @@ export const useFieldsStore = defineStore({
 			});
 		},
 		/**
+		 * Retrieve sorted fields including groups. This is necessary because
+		 * fields inside groups starts their sort number from 1 to N again.
+		 */
+		getFieldsForCollectionSorted(collection: string): Field[] {
+			const fields = this.fields
+				.filter((field) => field.collection === collection)
+				.filter(
+					(field: Field) =>
+						field.meta?.special?.includes('group') ||
+						(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+				);
+
+			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
+
+			const sortGroupFields = (a: Field, b: Field) => {
+				if (!a.meta?.sort || !b.meta?.sort) return 0;
+				return a.meta.sort - b.meta.sort;
+			};
+
+			for (const [index, field] of nonGroupFields.entries()) {
+				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+				if (groupFields.length) {
+					nonGroupFields.splice(index + 1, 0, ...groupFields.sort(sortGroupFields));
+				}
+			}
+
+			return nonGroupFields;
+		},
+		/**
 		 * Retrieve field info for a field or a related field
 		 */
 		getField(collection: string, fieldKey: string): Field | null {

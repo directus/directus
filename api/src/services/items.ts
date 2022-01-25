@@ -123,7 +123,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
-			// In case of manual string / UUID primary keys, they PK already exists in the object we're saving.
+			// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			try {
@@ -205,7 +205,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				{
 					// This hook is called async. If we would pass the transaction here, the hook can be
 					// called after the transaction is done #5460
-					database: getDatabase(),
+					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
 				}
@@ -251,12 +251,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Get items by query
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		const authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
 		let ast = await getASTFromQuery(this.collection, query, this.schema, {
 			accountability: this.accountability,
 			// By setting the permissions action, you can read items using the permissions for another
@@ -267,6 +261,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (this.accountability && this.accountability.admin !== true) {
+			const authorizationService = new AuthorizationService({
+				accountability: this.accountability,
+				knex: this.knex,
+				schema: this.schema,
+			});
+
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
 		}
 
@@ -275,11 +275,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
-
 		if (records === null) {
 			throw new ForbiddenException();
 		}
-
 		const filteredRecords = await emitter.emitFilter(
 			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
 			records,
@@ -302,12 +300,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				collection: this.collection,
 			},
 			{
-				database: getDatabase(),
+				database: this.knex || getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
 			}
 		);
-
 		return filteredRecords as Item[];
 	}
 
@@ -514,7 +511,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				{
 					// This hook is called async. If we would pass the transaction here, the hook can be
 					// called after the transaction is done #5460
-					database: getDatabase(),
+					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
 				}
@@ -656,7 +653,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				{
 					// This hook is called async. If we would pass the transaction here, the hook can be
 					// called after the transaction is done #5460
-					database: getDatabase(),
+					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
 				}

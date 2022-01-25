@@ -1,28 +1,17 @@
 {
 	"compilerOptions": {
-		"target": "ES2018",
-		"lib": ["ES2018"],
-		"module": "CommonJS",
-		"moduleResolution": "node",
-		"declaration": true,
-		"declarationMap": true,
-		"strict": true,
-		"noFallthroughCasesInSwitch": true,
+		"module": "commonjs",
 		"esModuleInterop": true,
-		"noImplicitAny": true,
-		"noImplicitThis": true,
-		"noImplicitReturns": true,
-		"noUnusedLocals": true,
-		"noUncheckedIndexedAccess": true,
-		"noUnusedParameters": true,
-		"alwaysStrict": true,
-		"strictNullChecks": true,
-		"strictFunctionTypes": true,
-		"strictBindCallApply": true,
-		"strictPropertyInitialization": true,
-		"resolveJsonModule": false,
+		"target": "ES2019",
+		"moduleResolution": "node",
+		"sourceMap": false,
+		"outDir": "dist",
+		"rootDir": "src",
+		"strict": true,
+		"lib": ["es2019"],
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"allowSyntheticDefaultImports": true
-	}
+		"declaration": true,
+		"resolveJsonModule": true
+	},
+	"exclude": ["node_modules", "dist", "extensions"]
 }
