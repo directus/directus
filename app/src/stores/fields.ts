@@ -253,7 +253,8 @@ export const useFieldsStore = defineStore({
 			});
 		},
 		/**
-		 * Retrieve sorted fields including groups
+		 * Retrieve sorted fields including groups. This is necessary because
+		 * fields inside groups starts their sort number from 1 to N again.
 		 */
 		getFieldsForCollectionSorted(collection: string): Field[] {
 			const fields = this.fields
