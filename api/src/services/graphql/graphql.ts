@@ -18,7 +18,6 @@ import {
 	GraphQLSchema,
 	GraphQLString,
 	GraphQLUnionType,
-	SelectionNode,
 	specifiedRules,
 	validate,
 } from 'graphql';
@@ -953,6 +952,11 @@ export class GraphQLService {
 		}
 
 		function getWritableTypes() {
+			const resolver = new ResolveMutation({
+				knex: self.knex,
+				accountability: self.accountability,
+				schema: self.schema,
+			});
 			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
 			const { CollectionTypes: UpdateCollectionTypes } = getTypes('update');
 			const DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>> = {};
@@ -974,14 +978,14 @@ export class GraphQLService {
 							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
 							: undefined,
 						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-							await self.resolveMutation(args, info),
+							await resolver.resolveMutation(args, info, self.scope),
 					});
 
 					CreateCollectionTypes[collection.collection].addResolver({
 						name: `create_${collection.collection}_item`,
 						type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
 						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-							await self.resolveMutation(args, info),
+							await resolver.resolveMutation(args, info, self.scope),
 					});
 
 					CreateCollectionTypes[collection.collection].getResolver(`create_${collection.collection}_items`).addArgs({
@@ -1026,7 +1030,7 @@ export class GraphQLService {
 								).NonNull,
 							},
 							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-								await self.resolveMutation(args, info),
+								await resolver.resolveMutation(args, info, self.scope),
 						});
 					} else {
 						UpdateCollectionTypes[collection.collection].addResolver({
@@ -1042,7 +1046,7 @@ export class GraphQLService {
 								).NonNull,
 							},
 							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-								await self.resolveMutation(args, info),
+								await resolver.resolveMutation(args, info, self.scope),
 						});
 
 						UpdateCollectionTypes[collection.collection].addResolver({
@@ -1055,7 +1059,7 @@ export class GraphQLService {
 								).NonNull,
 							},
 							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-								await self.resolveMutation(args, info),
+								await resolver.resolveMutation(args, info, self.scope),
 						});
 					}
 				}
@@ -1083,7 +1087,7 @@ export class GraphQLService {
 						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
 					},
 					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-						await self.resolveMutation(args, info),
+						await resolver.resolveMutation(args, info, self.scope),
 				});
 
 				DeleteCollectionTypes.one.addResolver({
@@ -1093,80 +1097,11 @@ export class GraphQLService {
 						id: GraphQLNonNull(GraphQLID),
 					},
 					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-						await self.resolveMutation(args, info),
+						await resolver.resolveMutation(args, info, self.scope),
 				});
 			}
 
 			return { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes };
-		}
-	}
-
-	async resolveMutation(
-		args: Record<string, any>,
-		info: GraphQLResolveInfo
-	): Promise<Partial<Item> | boolean | undefined> {
-		const resolver = new ResolveMutation({ knex: this.knex, accountability: this.accountability, schema: this.schema });
-		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
-		let collection = info.fieldName.substring(action.length + 1);
-		if (this.scope === 'system') collection = `directus_${collection}`;
-
-		const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
-		const query = getQuery(args, selections || [], info.variableValues, this.accountability);
-
-		const singleton =
-			collection.endsWith('_items') === false &&
-			collection.endsWith('_item') === false &&
-			collection in this.schema.collections;
-
-		const single = collection.endsWith('_items') === false;
-
-		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
-		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
-
-		if (singleton && action === 'update') {
-			return await resolver.upsertSingleton(collection, args.data, query);
-		}
-
-		const service = getService(
-			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
-			collection
-		);
-		const hasQuery = (query.fields || []).length > 0;
-
-		try {
-			if (single) {
-				if (action === 'create') {
-					const key = await service.createOne(args.data);
-					return hasQuery ? await service.readOne(key, query) : true;
-				}
-
-				if (action === 'update') {
-					const key = await service.updateOne(args.id, args.data);
-					return hasQuery ? await service.readOne(key, query) : true;
-				}
-
-				if (action === 'delete') {
-					await service.deleteOne(args.id);
-					return { id: args.id };
-				}
-			} else {
-				if (action === 'create') {
-					const keys = await service.createMany(args.data);
-					return hasQuery ? await service.readMany(keys, query) : true;
-				}
-
-				if (action === 'update') {
-					const keys = await service.updateMany(args.ids, args.data);
-					return hasQuery ? await service.readMany(keys, query) : true;
-				}
-
-				if (action === 'delete') {
-					const keys = await service.deleteMany(args.ids);
-					return { ids: keys };
-				}
-			}
-		} catch (err: any) {
-			return formatGQLError(err);
 		}
 	}
 
