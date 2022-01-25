@@ -13,25 +13,27 @@ if (require.main === module) {
 export default async function teardown(jestConfig?: GlobalConfigTsJest, _isAfterWatch = false): Promise<void> {
 	if (jestConfig?.watch || jestConfig?.watchAll) return;
 
-	await new Listr([
-		{
-			title: 'Stop Directus servers',
-			task: () => {
-				return new Listr(
-					vendors.map((vendor) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => {
-								const directus = global.directus[vendor];
-								directus!.kill();
-							},
-						};
-					}),
-					{ concurrent: true, exitOnError: false }
-				);
+	if (!process.env.TEST_LOCAL) {
+		await new Listr([
+			{
+				title: 'Stop Directus servers',
+				task: () => {
+					return new Listr(
+						vendors.map((vendor) => {
+							return {
+								title: config.names[vendor]!,
+								task: async () => {
+									const directus = global.directus[vendor];
+									directus!.kill();
+								},
+							};
+						}),
+						{ concurrent: true, exitOnError: false }
+					);
+				},
 			},
-		},
-	]).run();
+		]).run();
+	}
 
 	console.log('\n');
 
