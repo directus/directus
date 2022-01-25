@@ -58,29 +58,9 @@ export default defineComponent({
 		const internalPermission = useSync(props, 'permission', emit);
 
 		const fieldsInCollection = computed(() => {
-			const fields = fieldsStore
-				.getFieldsForCollection(props.permission.collection)
-				.filter(
-					(field: Field) =>
-						field.meta?.special?.includes('group') ||
-						(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
-				);
+			const fields = fieldsStore.getFieldsForCollectionSorted(props.permission.collection);
 
-			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
-
-			const sortGroupFields = (a: Field, b: Field) => {
-				if (!a.meta?.sort || !b.meta?.sort) return 0;
-				return a.meta.sort - b.meta.sort;
-			};
-
-			for (const [index, field] of nonGroupFields.entries()) {
-				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
-				if (groupFields.length) {
-					nonGroupFields.splice(index + 1, 0, ...groupFields.sort(sortGroupFields));
-				}
-			}
-
-			return nonGroupFields.map((field: Field) => {
+			return fields.map((field: Field) => {
 				return {
 					text: field.name,
 					value: field.field,
