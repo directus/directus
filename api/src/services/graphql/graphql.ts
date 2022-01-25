@@ -58,8 +58,6 @@ import { UtilsService } from '../utils';
 import { generateHash } from '../../utils/generate-hash';
 import { DEFAULT_AUTH_PROVIDER } from '../../constants';
 import { GraphQLDate, GraphQLGeoJSON, GraphQLVoid } from '../../types';
-import { formatGQLError } from './shared/format-gql-error';
-import { getService } from './shared/get-service';
 import { getQuery } from './shared/get-query';
 import { replaceFragmentsInSelections } from './shared/replace-fragments-in-selections';
 import { ResolveQuery } from './resolve-query';
