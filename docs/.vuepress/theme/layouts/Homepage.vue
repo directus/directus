@@ -334,7 +334,7 @@
 					/>
 				</svg>
 				<h2>Getting Started</h2>
-				<span>Get started with Directus, learning basic concepts and instructions for popular use cases.</span>
+				<span>Installation, an overview of basic concepts, and understanding the Directus ecosystem.</span>
 				<u>Learn More</u>
 			</a>
 			<a href="/app/overview/" class="panel">
@@ -426,11 +426,6 @@
 		<script type="text/javascript" id="hs-script-loader" async defer src="//js-na1.hs-scripts.com/20534155.js"></script>
 		<!-- End of HubSpot Embed Code -->
 	</div>
-
-	<!-- Start of HubSpot Embed Code -->
-	<script type="text/javascript" id="hs-script-loader" async defer src="//js-na1.hs-scripts.com/20534155.js"></script>
-	<!-- End of HubSpot Embed Code -->
-
 </template>
 
 <script>
@@ -456,7 +451,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="stylus">
 .homepage {
 	max-width: 1140px;
 	margin: 90px auto 40px;
@@ -469,7 +464,7 @@ export default {
 	width: 100%;
 	min-height: 220px;
 	overflow: hidden;
-	background-color: #00c897;
+	background-color: var(--primary);
 	border-radius: 4px;
 }
 
@@ -517,14 +512,14 @@ export default {
 	margin-bottom: 30px;
 	padding: 40px;
 	overflow: hidden;
-	border: 2px solid #f0f4f9;
+	border: 2px solid var(--border-subdued);
 	border-radius: 4px;
 	cursor: pointer;
 	transition: border 0.25s ease;
 }
 
 .panel:hover {
-	border-color: #00c897;
+	border-color: var(--primary);
 }
 
 .panel svg {
@@ -534,14 +529,14 @@ export default {
 
 .panel h2 {
 	margin: 24px 0 16px !important;
-	color: #172940;
+	color: var(--foreground-normal-alt);
 	font-weight: 800;
 	line-height: 1.3;
 	border-bottom: none;
 }
 
 .panel span {
-	color: #a2b5cd;
+	color: var(--foreground-subdued);
 }
 
 .panel u {
@@ -586,8 +581,15 @@ export default {
 }
 
 @media (max-width: 700px) {
+	.header .text {
+		top: 20px;
+		right: 20px;
+		bottom: 20px;
+		left: 20px;
+	}
+
 	.header .text h1 {
-		font-size: 42px;
+		font-size: clamp(30px, 7vw, 42px);
 	}
 
 	.panel {

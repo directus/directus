@@ -36,6 +36,19 @@ export default defineInterface({
 					placeholder: 'result.predictions',
 					font: 'monospace',
 				},
+				width: 'full',
+			},
+		},
+		{
+			field: 'textPath',
+			name: '$t:interfaces.input-autocomplete-api.text_path',
+			type: 'string',
+			meta: {
+				interface: 'input',
+				options: {
+					placeholder: 'structured_main_text',
+					font: 'monospace',
+				},
 				width: 'half',
 			},
 		},
@@ -46,7 +59,7 @@ export default defineInterface({
 			meta: {
 				interface: 'input',
 				options: {
-					placeholder: 'structured_main_text',
+					placeholder: 'structured_main_value',
 					font: 'monospace',
 				},
 				width: 'half',

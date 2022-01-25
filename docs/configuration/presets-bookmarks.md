@@ -24,8 +24,8 @@ Each preset saves all of the information needed to recreate a view of the collec
 - **Layout** — The Layout the preset applies to
 - **Layout Query** — Order direction, order field, pagination, etc
 - **Layout Options** — The configuration of all layout options
-- **Search** — Any fulltext search query applied
-- **Filters** — Any advanced fitlers applied
+- **Search** — Any full-text search query applied
+- **Filters** — Any advanced filters applied
 - **User** — Optional; scopes to a specific user
 - **Role** — Optional; scopes to a specific role
 - **Bookmark Name** — Optional; determines if the preset is a bookmark

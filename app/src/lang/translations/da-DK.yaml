@@ -152,7 +152,6 @@ global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
 show_zero: Vis Nul
-create_in_advanced_field_creation_mode: Opret i avanceret feltskabelsestilstand
 continue_in_advanced_field_creation_mode: Fortsæt i avanceret feltskabelsestilstand
 sum: Sum
 sum_distinct: Sum Distinkt
@@ -194,7 +193,6 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
-geometry: Geometri
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret Oversættelser
 auto_refresh: Opdater Automatisk
@@ -251,10 +249,7 @@ dismiss: Afvis
 raw_value: Rå værdi
 edit_raw_value: Rediger Rå Værdi
 enter_raw_value: Indtast rå værdi...
-clear_value: Nulstil værdi
 clear_changes: Ryd Ændringer
-reset_to_default: Nulstil til standard
-undo_changes: Fortryd ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
@@ -285,10 +280,9 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
-export_data: Eksporter data
+label_import: Importér
 format: Format
 use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi
@@ -898,17 +892,17 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farve
     project_logo: Projekt Logo
-    public_pages: Offentlige Sider
     public_foreground: Offentlig Forgrund
     public_background: Offentlig Baggrund
     public_note: Offentlig Note
     auth_password_policy: Auth Adgangskode Politik
     auth_login_attempts: Auth Login Forsøg
-    files_and_thumbnails: Filer Og Miniaturer
-    storage_default_folder: Standard Lagerplads Mappe
-    storage_asset_presets: Lagring Aktiv Forudindstillinger
-    storage_asset_transform: Lagring Aktiv Transform
     overrides: App Tilsidesættelser
+    module_bar: Modul Bar
+  directus_shares:
+    name: Navn
+    role: Rolle
+    password: Adgangskode
   directus_fields:
     collection: Samlingens Navn
     icon: Samlingsikon
@@ -924,7 +918,6 @@ fields:
     ip_access: Ip Adgang
     enforce_tfa: Kræv 2FA
     users: Brugere i Rolle
-    collection_list: Samling Navigation
   directus_webhooks:
     name: Navn
     method: Metode
@@ -934,10 +927,10 @@ fields:
     data_label: Send Begivenhedsdata
     triggers: Udløsere
     actions: Handlinger
+    collections: Samlinger
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
-    project_logo_note: Login- & Logo Baggrund
     public_note_placeholder: En kort, offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
@@ -974,7 +967,6 @@ field_options:
     singular_unit: Ental Enhed
     plural_unit: Flertalsenhed
     archive_divider: Arkiver
-    archive_field: Arkivér Felt
     archive_field_placeholder: Vælg et felt...
     archive_app_filter: Aktiver App Arkivfilter
     archive_value: Værdi sat når arkiverer...
@@ -983,7 +975,6 @@ field_options:
     sort_field: Vælg et felt...
     accountability_divider: Ansvarlighed
     duplication_divider: Duplikering
-    item_duplication_fields: Element Duplikationsfelter
   directus_files:
     title: En unik titel...
     description: En valgfri beskrivelse...
@@ -1001,15 +992,6 @@ field_options:
       name_placeholder: Indtast en titel...
       link_name: Link
       link_placeholder: Relativ eller absolut URL...
-    collection_list:
-      group_name_addLabel: Tilføj Ny Gruppe...
-      fields:
-        group_name: Gruppens Navn
-        group_placeholder: Markér denne gruppe...
-        type_name: Type
-        choices_always: Åbn Altid
-        choices_start_open: Start Åben
-        choices_start_collapsed: Start Sammenbrudt
     collections_name: Samlinger
     collections_addLabel: Tilføj Samling...
   directus_users:
@@ -1194,7 +1176,6 @@ interfaces:
   presentation-divider:
     divider: Opdeler
     description: Etiket og opdel felter i sektioner
-    title_placeholder: Indtast en titel...
     inline_title: Indlejret Titel
     inline_title_label: Vis titel inde i linien
     margin_top: Margen Top
@@ -1244,6 +1225,7 @@ interfaces:
     display_template: Vis Skabelon
   input-rich-text-md:
     description: Indtast og vis markdown
+    edit: Rediger
     customSyntax: Brugerdefinerede Blokke
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
@@ -1274,7 +1256,6 @@ interfaces:
   system-folder:
     folder: Mappe
     description: Vælg en mappe
-    field_hint: Sætter nyligt uploadede filer i den valgte mappe. påvirker ikke eksisterende filer der er valgt.
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder
   select-radio:
@@ -1323,6 +1304,8 @@ interfaces:
   boolean:
     toggle: Skift
     description: Skift mellem tænd og sluk
+    color_on: Farve Til
+    color_off: Farve Fra
     label_placeholder: Indtast en etiket...
     label_default: Aktiveret
   translations:
@@ -1347,6 +1330,7 @@ interfaces:
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
     options_override: Tilsidesæt
+    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater
@@ -1408,9 +1392,16 @@ displays:
   formatted-value:
     formatted-value: Formateret Værdi
     description: Vis en formateret version af teksten
-    format_title: Formatér Titel
-    format_title_label: Automatisk formatering af kabinet
+    format: Format
+    font: Font
+    font_serif: Serif
+    bold: Fed
     bold_label: Use bold style
+    prefix: Præfiks
+    suffix: Suffiks
+    color: Farve
+    icon: Ikon
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet

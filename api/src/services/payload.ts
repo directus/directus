@@ -5,13 +5,12 @@ import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lo
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview, Alterations } from '../types';
-import { Accountability, Query } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, Alterations } from '../types';
+import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import { unflatten } from 'flat';
-import { isNativeGeometry } from '../utils/geometry';
-import { getGeometryHelper } from '../database/helpers/geometry';
+import { getHelpers, Helpers } from '../database/helpers';
 import { parse as wktToGeoJSON } from 'wellknown';
 import { generateHash } from '../utils/generate-hash';
 
@@ -34,12 +33,14 @@ type Transformers = {
 export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
+	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
+		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 
@@ -117,9 +118,18 @@ export class PayloadService {
 			return value;
 		},
 		async csv({ action, value }) {
-			if (!value) return;
-			if (action === 'read' && Array.isArray(value) === false) return value.split(',');
-			if (Array.isArray(value)) return value.join(',');
+			if (Array.isArray(value) === false && typeof value !== 'string') return;
+
+			if (action === 'read' && Array.isArray(value) === false) {
+				if (value === '') return [];
+
+				return value.split(',');
+			}
+
+			if (Array.isArray(value)) {
+				return value.join(',');
+			}
+
 			return value;
 		},
 	};
@@ -226,17 +236,13 @@ export class PayloadService {
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
-		const helper = getGeometryHelper();
-
 		const process =
 			action == 'read'
-				? (value: any) => {
-						if (typeof value === 'string') return wktToGeoJSON(value);
-				  }
-				: (value: any) => helper.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
+				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
+				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {

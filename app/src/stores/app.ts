@@ -4,6 +4,7 @@ export const useAppStore = defineStore({
 	id: 'appStore',
 	state: () => ({
 		sidebarOpen: false,
+		notificationsDrawerOpen: false,
 		fullScreen: false,
 		hydrated: false,
 		hydrating: false,

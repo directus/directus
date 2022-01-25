@@ -4,9 +4,8 @@
 
 import { Knex } from 'knex';
 import { cloneDeep, mapKeys, omitBy, uniq } from 'lodash';
-import { Accountability } from '@directus/shared/types';
-import { AST, FieldNode, NestedCollectionNode, SchemaOverview } from '../types';
-import { Query, PermissionsAction } from '@directus/shared/types';
+import { AST, FieldNode, NestedCollectionNode } from '../types';
+import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 
 type GetASTOptions = {
@@ -32,9 +31,9 @@ export default async function getASTFromQuery(
 
 	const permissions =
 		accountability && accountability.admin !== true
-			? schema.permissions.filter((permission) => {
+			? accountability?.permissions?.filter((permission) => {
 					return permission.action === action;
-			  })
+			  }) ?? []
 			: null;
 
 	const ast: AST = {
@@ -136,7 +135,7 @@ export default async function getASTFromQuery(
 				let rootField = parts[0];
 				let collectionScope: string | null = null;
 
-				// m2a related collection scoped field selector `fields=sections.section_id:headings.title`
+				// a2o related collection scoped field selector `fields=sections.section_id:headings.title`
 				if (rootField.includes(':')) {
 					const [key, scope] = rootField.split(':');
 					rootField = key;
@@ -191,14 +190,14 @@ export default async function getASTFromQuery(
 
 			let child: NestedCollectionNode | null = null;
 
-			if (relationType === 'm2a') {
+			if (relationType === 'a2o') {
 				const allowedCollections = relation.meta!.one_allowed_collections!.filter((collection) => {
 					if (!permissions) return true;
 					return permissions.some((permission) => permission.collection === collection);
 				});
 
 				child = {
-					type: 'm2a',
+					type: 'a2o',
 					names: allowedCollections,
 					children: {},
 					query: {},

@@ -1,18 +1,11 @@
-import { isFunction } from 'lodash';
-import { computed, Ref } from 'vue';
+import { computed, Ref, unref } from 'vue';
 
-export function syncRefProperty<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T] | (() => R[T])) {
+export function syncRefProperty<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T] | Ref<R[T]>) {
 	return computed<R[T]>({
-		get: () => {
-			if (ref.value?.[key]) {
-				return ref.value[key];
-			}
-
-			if (isFunction(defaultValue)) return defaultValue();
-
-			return defaultValue;
+		get() {
+			return ref.value?.[key] ?? unref(defaultValue);
 		},
-		set: (value: R[T]) => {
+		set(value: R[T]) {
 			ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
 		},
 	});

@@ -88,16 +88,16 @@ What makes Directus so flexible is that it has been designed from the ground up 
 avoid a feature ceiling. In addition to offering our software's codebase as open-source, we've included the following
 extension types in the platform's App and API.
 
-- **[API Endpoints](/extensions/api-endpoints/)** — Custom registered API endpoints
 - **[Displays](/extensions/displays/)** — A small inline preview of a field's value
 - **[Email Templates](/extensions/email-templates/)** — Custom structure and formatting for emails
+- **[Endpoints](/extensions/endpoints/)** — Custom registered API endpoints
 - **[Hooks](/extensions/hooks/)** — Event and interval hooks for triggering custom logic
 - **[Interfaces](/extensions/interfaces/)** — How you view or interact with a field and its value
 - **[Layouts](/extensions/layouts/)** — How you browse, view or interact with a set of Items in a Collection
 - **[Migrations](/extensions/migrations/)** — Custom migrations for tracking project schema and content updates
 - **[Modules](/extensions/modules/)** — The highest and broadest level of organization within the App
 - **[Panels](/extensions/panels/)** — A way to view dashboard data within the Insights Module
-- **[Themes](/extensions/themes/)** — Whitelabeling through App Themes and CSS Overrides
+- **[Themes](/extensions/themes/)** — Whitelabeling through App Themes and Custom CSS
 
 ## The Directus Ecosystem
 

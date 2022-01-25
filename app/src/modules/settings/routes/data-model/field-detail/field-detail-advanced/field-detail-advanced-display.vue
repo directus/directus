@@ -15,11 +15,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { getDisplays } from '@/displays';
-import { getInterfaces } from '@/interfaces';
+import { getDisplay } from '@/displays';
+import { getInterface } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { clone } from 'lodash';
-import { InterfaceConfig, DisplayConfig } from '@directus/shared/types';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
@@ -36,12 +35,7 @@ export default defineComponent({
 		const interfaceID = computed(() => field.value.meta?.interface);
 		const display = syncFieldDetailStoreProperty('field.meta.display');
 
-		const { displays } = getDisplays();
-		const { interfaces } = getInterfaces();
-
-		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === interfaceID.value);
-		});
+		const selectedInterface = computed(() => getInterface(interfaceID.value));
 
 		const selectItems = computed(() => {
 			let recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
@@ -83,9 +77,7 @@ export default defineComponent({
 			return recommendedItems;
 		});
 
-		const selectedDisplay = computed(() => {
-			return displays.value.find((displayConfig: DisplayConfig) => displayConfig.id === display.value);
-		});
+		const selectedDisplay = computed(() => getDisplay(display.value));
 
 		return { t, selectItems, selectedDisplay, display };
 	},

@@ -37,7 +37,9 @@ tracks the event type, user, timestamp, IP address, user-agent, and any associat
 
 Collections are containers for specific types of Items and contain any number of fields. Each collection represents a
 **table** in your database. By default, the [title formatter](#title-formatter) is used to display any existing database
-table names as human-readable collection titles.
+table names as human-readable collection titles. There are also "folder" collections that are
+[exclusively used for organizational purposes](/configuration/data-model/#sorting-grouping), and don't hold any data
+themselves.
 
 Collections can be organized in any way that is appropriate for your project. You can architect them platform-specific
 (eg: _pages_ of a website), or in a more platform-agnostic way (eg: raw _customers_ of your business). While there's no
@@ -130,6 +132,21 @@ As you might have guessed, files includes images, videos, PDFs, text documents, 
 technically be stored as code in the database, it is far more common to manage them as individual assets on a "drive".
 The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
 an excellent Digital Asset Management system.
+
+## Icons
+
+### Material Icons
+
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
+outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
+`account_circle_outline`.
+
+### Social Icons
+
+They are Font Awesome 5's brands icons. Full list of icons
+[can be found here](https://fontawesome.com/v5.15/icons?d=gallery&s=brands). When using them as one of the auth provider
+icons, make sure to use underscores, such as `blogger_b` for
+[blogger-b](https://fontawesome.com/v5.15/icons/blogger-b?style=brands) icon.
 
 ## Interfaces
 
@@ -226,9 +243,12 @@ two main ways to achieve multitenancy:
 
 ## Panels
 
-Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a
-[Dashboard](#dashboards) and can be positioned and resized as needed.
-[Panels are a Modular Extension Type](/extensions/panels/).
+Panels are modular units of data visualization that exist within the [Insights module](/app/insights). Each panel exists
+within a [Dashboard](#dashboards) and can be positioned and resized as needed.
+
+### Relevant Guides
+
+- [Creating a Custom Panel](/extensions/panels/)
 
 ## Permissions
 
@@ -237,8 +257,8 @@ platform. Extremely granular, these filter-based permissions control access for 
 
 ## Presets
 
-Presets store the exact state of a [collection page](#collections) page. They are used to set layout defaults for a
-user, or to define bookmarks that can be used to quickly recall specific datasets.
+Presets store the exact state of a [collection page](#collections). They are used to set layout defaults for a user, or
+to define bookmarks that can be used to quickly recall specific datasets.
 
 #### Relevant Guides
 

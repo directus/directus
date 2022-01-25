@@ -1,7 +1,7 @@
 <template>
 	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<div class="label type-title" :class="{ active }" @click="handleModifier($event, toggle)">
+			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				{{ field.name }}
 				<v-icon
@@ -113,6 +113,13 @@ export default defineComponent({
 				});
 		});
 
+		const edited = computed(() => {
+			if (!props.values) return false;
+
+			const editedFields = Object.keys(props.values);
+			return fieldsInSection.value.some((field) => editedFields.includes(field.field)) ? true : false;
+		});
+
 		const validationMessage = computed(() => {
 			const validationError = props.validationErrors.find((error) => error.field === props.field.field);
 			if (validationError === undefined) return;
@@ -124,7 +131,7 @@ export default defineComponent({
 			}
 		});
 
-		return { fieldsInSection, handleModifier, validationMessage };
+		return { fieldsInSection, edited, handleModifier, validationMessage };
 
 		function handleModifier(event: MouseEvent, toggle: () => void) {
 			if (props.multiple === false) {
@@ -152,6 +159,7 @@ export default defineComponent({
 }
 
 .label {
+	position: relative;
 	display: flex;
 	align-items: center;
 	margin: 8px 0;
@@ -163,6 +171,19 @@ export default defineComponent({
 .label:hover,
 .label.active {
 	color: var(--foreground-normal);
+}
+
+.label.edited::before {
+	position: absolute;
+	top: 14px;
+	left: -7px;
+	display: block;
+	width: 4px;
+	height: 4px;
+	background-color: var(--foreground-subdued);
+	border-radius: 4px;
+	content: '';
+	pointer-events: none;
 }
 
 .icon {

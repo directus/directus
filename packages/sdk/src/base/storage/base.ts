@@ -1,20 +1,32 @@
 import { IStorage } from '../../storage';
 
-export abstract class BaseStorage implements IStorage {
+export type StorageOptions = {
+	prefix?: string;
+};
+
+enum Keys {
+	AuthToken = 'auth_token',
+	RefreshToken = 'auth_refresh_token',
+	Expires = 'auth_expires',
+}
+
+export abstract class BaseStorage extends IStorage {
+	protected prefix: string;
+
 	get auth_token(): string | null {
-		return this.get('auth_token');
+		return this.get(Keys.AuthToken);
 	}
 
 	set auth_token(value: string | null) {
 		if (value === null) {
-			this.delete('auth_token');
+			this.delete(Keys.AuthToken);
 		} else {
-			this.set('auth_token', value);
+			this.set(Keys.AuthToken, value);
 		}
 	}
 
 	get auth_expires(): number | null {
-		const value = this.get('auth_expires');
+		const value = this.get(Keys.Expires);
 		if (value === null) {
 			return null;
 		}
@@ -23,25 +35,31 @@ export abstract class BaseStorage implements IStorage {
 
 	set auth_expires(value: number | null) {
 		if (value === null) {
-			this.delete('auth_expires');
+			this.delete(Keys.Expires);
 		} else {
-			this.set('auth_expires', value!.toString());
+			this.set(Keys.Expires, value!.toString());
 		}
 	}
 
 	get auth_refresh_token(): string | null {
-		return this.get('auth_refresh_token');
+		return this.get(Keys.RefreshToken);
 	}
 
 	set auth_refresh_token(value: string | null) {
 		if (value === null) {
-			this.delete('auth_refresh_token');
+			this.delete(Keys.RefreshToken);
 		} else {
-			this.set('auth_refresh_token', value);
+			this.set(Keys.RefreshToken, value);
 		}
 	}
 
 	abstract get(key: string): string | null;
 	abstract set(key: string, value: string): string;
 	abstract delete(key: string): string | null;
+
+	constructor(options?: StorageOptions) {
+		super();
+
+		this.prefix = options?.prefix ?? '';
+	}
 }

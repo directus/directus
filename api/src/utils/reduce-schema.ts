@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
-import { SchemaOverview } from '../types';
-import { PermissionsAction } from '@directus/shared/types';
+
+import { Permission, PermissionsAction, SchemaOverview } from '@directus/shared/types';
 
 /**
  * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only
@@ -11,33 +11,32 @@ import { PermissionsAction } from '@directus/shared/types';
  */
 export function reduceSchema(
 	schema: SchemaOverview,
+	permissions: Permission[] | null,
 	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete']
 ): SchemaOverview {
 	const reduced: SchemaOverview = {
 		collections: {},
 		relations: [],
-		permissions: schema.permissions,
 	};
 
-	const allowedFieldsInCollection = schema.permissions
-		.filter((permission) => actions.includes(permission.action))
-		.reduce((acc, permission) => {
-			if (!acc[permission.collection]) {
-				acc[permission.collection] = [];
-			}
+	const allowedFieldsInCollection =
+		permissions
+			?.filter((permission) => actions.includes(permission.action))
+			.reduce((acc, permission) => {
+				if (!acc[permission.collection]) {
+					acc[permission.collection] = [];
+				}
 
-			if (permission.fields) {
-				acc[permission.collection] = uniq([...acc[permission.collection], ...permission.fields]);
-			}
+				if (permission.fields) {
+					acc[permission.collection] = uniq([...acc[permission.collection], ...permission.fields]);
+				}
 
-			return acc;
-		}, {} as { [collection: string]: string[] });
+				return acc;
+			}, {} as { [collection: string]: string[] }) ?? {};
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
 		if (
-			schema.permissions.some(
-				(permission) => permission.collection === collectionName && actions.includes(permission.action)
-			)
+			permissions?.some((permission) => permission.collection === collectionName && actions.includes(permission.action))
 		) {
 			const fields: SchemaOverview['collections'][string]['fields'] = {};
 

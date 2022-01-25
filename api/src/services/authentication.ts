@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import getDatabase from '../database';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
@@ -11,13 +11,12 @@ import { InvalidCredentialsException, InvalidOTPException, UserSuspendedExceptio
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
-import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, Session, User, DirectusTokenPayload, LoginResult } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge, clone, cloneDeep, omit } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
-import logger from '../logger';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
@@ -44,7 +43,7 @@ export class AuthenticationService {
 		providerName: string = DEFAULT_AUTH_PROVIDER,
 		payload: Record<string, any>,
 		otp?: string
-	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
+	): Promise<LoginResult> {
 		const STALL_TIME = 100;
 		const timeStart = performance.now();
 
@@ -52,51 +51,56 @@ export class AuthenticationService {
 
 		const user = await this.knex
 			.select<User & { tfa_secret: string | null }>(
-				'id',
-				'first_name',
-				'last_name',
-				'email',
-				'password',
-				'status',
-				'role',
-				'tfa_secret',
-				'provider',
-				'external_identifier',
-				'auth_data'
+				'u.id',
+				'u.first_name',
+				'u.last_name',
+				'u.email',
+				'u.password',
+				'u.status',
+				'u.role',
+				'r.admin_access',
+				'r.app_access',
+				'u.tfa_secret',
+				'u.provider',
+				'u.external_identifier',
+				'u.auth_data'
 			)
-			.from('directus_users')
-			.where('id', await provider.getUserID(cloneDeep(payload)))
-			.andWhere('provider', providerName)
+			.from('directus_users as u')
+			.leftJoin('directus_roles as r', 'u.role', 'r.id')
+			.where('u.id', await provider.getUserID(cloneDeep(payload)))
+			.andWhere('u.provider', providerName)
 			.first();
 
-		const updatedPayload = await emitter.emitAsync('auth.login.before', {
-			event: 'auth.login.before',
-			action: 'login',
-			schema: this.schema,
-			payload: payload,
-			provider: providerName,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
-
-		if (updatedPayload) {
-			payload = updatedPayload.length > 0 ? updatedPayload.reduce((acc, val) => merge(acc, val), {}) : payload;
-		}
+		const updatedPayload = await emitter.emitFilter(
+			'auth.login',
+			payload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', {
-				event: 'auth.login',
-				action: 'login',
-				schema: this.schema,
-				payload: payload,
-				provider: providerName,
-				accountability: this.accountability,
-				status,
-				user: user?.id,
-				database: this.knex,
-			});
+			emitter.emitAction(
+				'auth.login',
+				{
+					payload: updatedPayload,
+					status,
+					user: user?.id,
+					provider: providerName,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		};
 
 		if (user?.status !== 'active') {
@@ -134,10 +138,8 @@ export class AuthenticationService {
 			}
 		}
 
-		let sessionData: SessionData = null;
-
 		try {
-			sessionData = await provider.login(clone(user), cloneDeep(payload));
+			await provider.login(clone(user), cloneDeep(updatedPayload));
 		} catch (e) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -161,28 +163,30 @@ export class AuthenticationService {
 			}
 		}
 
-		let tokenPayload = {
+		const tokenPayload = {
 			id: user.id,
+			role: user.role,
+			app_access: user.app_access,
+			admin_access: user.admin_access,
 		};
 
-		const customClaims = await emitter.emitAsync('auth.jwt.before', tokenPayload, {
-			event: 'auth.jwt.before',
-			action: 'jwt',
-			schema: this.schema,
-			payload: tokenPayload,
-			provider: providerName,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+				type: 'login',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
-		if (customClaims) {
-			tokenPayload =
-				customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), tokenPayload) : tokenPayload;
-		}
-
-		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
@@ -196,7 +200,6 @@ export class AuthenticationService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
-			data: sessionData && JSON.stringify(sessionData),
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
@@ -236,9 +239,134 @@ export class AuthenticationService {
 		}
 
 		const record = await this.knex
-			.select<Session & User>(
-				's.expires',
-				's.data',
+			.select({
+				session_expires: 's.expires',
+				user_id: 'u.id',
+				user_first_name: 'u.first_name',
+				user_last_name: 'u.last_name',
+				user_email: 'u.email',
+				user_password: 'u.password',
+				user_status: 'u.status',
+				user_provider: 'u.provider',
+				user_external_identifier: 'u.external_identifier',
+				user_auth_data: 'u.auth_data',
+				role_id: 'r.id',
+				role_admin_access: 'r.admin_access',
+				role_app_access: 'r.app_access',
+				share_id: 'd.id',
+				share_item: 'd.item',
+				share_role: 'd.role',
+				share_collection: 'd.collection',
+				share_start: 'd.date_start',
+				share_end: 'd.date_end',
+				share_times_used: 'd.times_used',
+				share_max_uses: 'd.max_uses',
+			})
+			.from('directus_sessions AS s')
+			.leftJoin('directus_users AS u', 's.user', 'u.id')
+			.leftJoin('directus_shares AS d', 's.share', 'd.id')
+			.leftJoin('directus_roles AS r', (join) => {
+				join.onIn('r.id', [this.knex.ref('u.role'), this.knex.ref('d.role')]);
+			})
+			.where('s.token', refreshToken)
+			.andWhere('s.expires', '>=', new Date())
+			.andWhere((subQuery) => {
+				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', new Date());
+			})
+			.andWhere((subQuery) => {
+				subQuery.whereNull('d.date_start').orWhere('d.date_start', '<=', new Date());
+			})
+			.first();
+
+		if (!record || (!record.share_id && !record.user_id)) {
+			throw new InvalidCredentialsException();
+		}
+
+		if (record.user_id) {
+			const provider = getAuthProvider(record.user_provider);
+
+			await provider.refresh({
+				id: record.user_id,
+				first_name: record.user_first_name,
+				last_name: record.user_last_name,
+				email: record.user_email,
+				password: record.user_password,
+				status: record.user_status,
+				provider: record.user_provider,
+				external_identifier: record.user_external_identifier,
+				auth_data: record.user_auth_data,
+				role: record.role_id,
+				app_access: record.role_app_access,
+				admin_access: record.role_admin_access,
+			});
+		}
+
+		const tokenPayload: DirectusTokenPayload = {
+			id: record.user_id,
+			role: record.role_id,
+			app_access: record.role_app_access,
+			admin_access: record.role_admin_access,
+		};
+
+		if (record.share_id) {
+			tokenPayload.share = record.share_id;
+			tokenPayload.role = record.share_role;
+			tokenPayload.share_scope = {
+				collection: record.share_collection,
+				item: record.share_item,
+			};
+			tokenPayload.app_access = false;
+			tokenPayload.admin_access = false;
+
+			delete tokenPayload.id;
+		}
+
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: record.user_id,
+				provider: record.user_provider,
+				type: 'refresh',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
+			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
+		});
+
+		const newRefreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+
+		await this.knex('directus_sessions')
+			.update({
+				token: newRefreshToken,
+				expires: refreshTokenExpiration,
+			})
+			.where({ token: refreshToken });
+
+		if (record.user_id) {
+			await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user_id });
+		}
+
+		return {
+			accessToken,
+			refreshToken: newRefreshToken,
+			expires: ms(env.ACCESS_TOKEN_TTL as string),
+			id: record.user_id,
+		};
+	}
+
+	async logout(refreshToken: string): Promise<void> {
+		const record = await this.knex
+			.select<User & Session>(
 				'u.id',
 				'u.first_name',
 				'u.last_name',
@@ -255,85 +383,11 @@ export class AuthenticationService {
 			.where('s.token', refreshToken)
 			.first();
 
-		if (!record || record.expires < new Date()) {
-			throw new InvalidCredentialsException();
-		}
-
-		let { data: sessionData } = record;
-		const user = omit(record, 'data');
-
-		if (typeof sessionData === 'string') {
-			try {
-				sessionData = JSON.parse(sessionData);
-			} catch {
-				logger.warn(`Session data isn't valid JSON: ${sessionData}`);
-			}
-		}
-
-		const provider = getAuthProvider(user.provider);
-
-		const newSessionData = await provider.refresh(clone(user), sessionData as SessionData);
-
-		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
-			issuer: 'directus',
-		});
-
-		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
-
-		await this.knex('directus_sessions')
-			.update({
-				token: newRefreshToken,
-				expires: refreshTokenExpiration,
-				data: newSessionData && JSON.stringify(newSessionData),
-			})
-			.where({ token: refreshToken });
-
-		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
-
-		return {
-			accessToken,
-			refreshToken: newRefreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
-			id: user.id,
-		};
-	}
-
-	async logout(refreshToken: string): Promise<void> {
-		const record = await this.knex
-			.select<User & Session>(
-				'u.id',
-				'u.first_name',
-				'u.last_name',
-				'u.email',
-				'u.password',
-				'u.status',
-				'u.role',
-				'u.provider',
-				'u.external_identifier',
-				'u.auth_data',
-				's.data'
-			)
-			.from('directus_sessions as s')
-			.innerJoin('directus_users as u', 's.user', 'u.id')
-			.where('s.token', refreshToken)
-			.first();
-
 		if (record) {
-			let { data: sessionData } = record;
-			const user = omit(record, 'data');
-
-			if (typeof sessionData === 'string') {
-				try {
-					sessionData = JSON.parse(sessionData);
-				} catch {
-					logger.warn(`Session data isn't valid JSON: ${sessionData}`);
-				}
-			}
+			const user = record;
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout(clone(user), sessionData as SessionData);
+			await provider.logout(clone(user));
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}

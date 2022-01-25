@@ -19,7 +19,7 @@ npm init directus-project example-project
 Once the installation is complete, you can start Directus by navigating to your project folder (in this case
 `example-project`) and running:
 
-```
+```bash
 npx directus start
 ```
 

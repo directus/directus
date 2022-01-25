@@ -110,6 +110,7 @@ export default defineComponent({
 
 		const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
 		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+		const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
 		const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
 
 		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
@@ -149,19 +150,6 @@ export default defineComponent({
 			}
 
 			return t('add_field_related');
-		});
-
-		const correspondingFieldKey = computed({
-			get() {
-				return correspondingField.value?.field;
-			},
-			set(key: string | undefined) {
-				if (!hasCorresponding.value) {
-					hasCorresponding.value = true;
-				}
-
-				correspondingField.value!.field = key;
-			},
 		});
 
 		return {

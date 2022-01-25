@@ -4,6 +4,7 @@ columns:
   id:
     type: uuid
     primary: true
+    nullable: false
   first_name:
     type: string
     length: 50

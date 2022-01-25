@@ -101,11 +101,11 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials, provider.value);
+				await login({ provider: provider.value, credentials });
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;
-				router.push(lastPage || '/collections');
+				router.push(lastPage || '/content');
 			} catch (err: any) {
 				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 					requiresTFA.value = true;

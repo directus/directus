@@ -126,7 +126,7 @@ function flatten(items, res) {
   .inner
     min-height 2rem
     margin-top 0
-    border-top 2px solid $borderColor
+    border-top 2px solid var(--border-subdued)
     padding-top 1rem
     overflow auto // clear float
   .next

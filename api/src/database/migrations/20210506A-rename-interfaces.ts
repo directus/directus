@@ -31,7 +31,7 @@ const changes: [string, string, Record<string, any>?][] = [
 	['toggle', 'boolean'],
 	['translations', 'translations'],
 	['tree-view', 'list-o2m-tree-view'],
-	['user', 'select-dropdown-m2o', { template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}' }],
+	['user', 'select-dropdown-m2o', { template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}' }],
 	['wysiwyg', 'input-rich-text-html'],
 
 	// System:

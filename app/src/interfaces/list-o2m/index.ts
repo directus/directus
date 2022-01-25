@@ -1,7 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceListO2M from './list-o2m.vue';
 import PreviewSVG from './preview.svg?raw';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 
 export default defineInterface({
 	id: 'list-o2m',
@@ -13,7 +12,7 @@ export default defineInterface({
 	localTypes: ['o2m'],
 	group: 'relational',
 	relational: true,
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const collection = relations.o2m?.collection;
 
 		return [
@@ -54,6 +53,27 @@ export default defineInterface({
 						label: '$t:enable_select_button',
 					},
 					width: 'half',
+				},
+			},
+			{
+				field: 'filter',
+				name: '$t:filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: collection,
+					},
+					conditions: [
+						{
+							rule: {
+								enableSelect: {
+									_eq: false,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 		];

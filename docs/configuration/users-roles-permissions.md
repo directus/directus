@@ -88,8 +88,6 @@ undone. Please proceed with caution.
 - **IP Access** — An allow-list of IP addresses from which the platform can be accessed, empty allows all
 - **Require 2FA** — Forces all users within this role to use two-factor authentication
 - **Users in Role** — A list of all users within this role
-- **Module Navigation** — Overrides the visible modules
-- **Collection Navigation** — Overrides the collection module's navigation
 
 ## Deleting a Role
 
@@ -177,7 +175,7 @@ App's soft-delete and manual sorting features.
 ### Delete (Custom Access)
 
 5. **Item Permissions** control which items can be deleted, as defined by the
-   [Filter Rules](/configuration/filter-rules/)) entered.
+   [Filter Rules](/configuration/filter-rules/) entered.
 
 ---
 

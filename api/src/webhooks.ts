@@ -1,14 +1,13 @@
 import axios from 'axios';
-import { ListenerFn } from 'eventemitter2';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { Webhook, WebhookHeader } from './types';
-import { pick } from 'lodash';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
+import { ActionHandler } from '@directus/shared/types';
 
-let registered: { event: string; handler: ListenerFn }[] = [];
+let registered: { event: string; handler: ActionHandler }[] = [];
 
 export async function register(): Promise<void> {
 	unregister();
@@ -17,43 +16,37 @@ export async function register(): Promise<void> {
 
 	const webhooks = await webhookService.readByQuery({ filter: { status: { _eq: 'active' } } });
 	for (const webhook of webhooks) {
-		if (webhook.actions.includes('*')) {
-			const event = 'items.*';
-			const handler = createHandler(webhook);
-			emitter.on(event, handler);
+		for (const action of webhook.actions) {
+			const event = `items.${action}`;
+			const handler = createHandler(webhook, event);
+			emitter.onAction(event, handler);
 			registered.push({ event, handler });
-		} else {
-			for (const action of webhook.actions) {
-				const event = `items.${action}`;
-				const handler = createHandler(webhook);
-				emitter.on(event, handler);
-				registered.push({ event, handler });
-			}
 		}
 	}
 }
 
 export function unregister(): void {
 	for (const { event, handler } of registered) {
-		emitter.off(event, handler);
+		emitter.offAction(event, handler);
 	}
 
 	registered = [];
 }
 
-function createHandler(webhook: Webhook): ListenerFn {
-	return async (data) => {
-		if (webhook.collections.includes('*') === false && webhook.collections.includes(data.collection) === false) return;
+function createHandler(webhook: Webhook, event: string): ActionHandler {
+	return async (meta, context) => {
+		if (webhook.collections.includes(meta.collection) === false) return;
 
-		const webhookPayload = pick(data, [
-			'event',
-			'accountability.user',
-			'accountability.role',
-			'collection',
-			'item',
-			'action',
-			'payload',
-		]);
+		const webhookPayload = {
+			event,
+			accountability: context.accountability
+				? {
+						user: context.accountability.user,
+						role: context.accountability.role,
+				  }
+				: null,
+			...meta,
+		};
 
 		try {
 			await axios({

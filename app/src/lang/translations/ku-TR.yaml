@@ -1,1 +1,128 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: ناسەرەوە
+avatar: وێنۆچکە
+application: ئەپڵیکەیشن
+default_provider: بنەڕەتی
+published: بڵاوکراوە
+draft: ڕەشنوس
+archived: ئەرشیفکراو
+modules: مۆدیوڵەکان
+module_bar: شریتی مۆدیوڵەکان
+tile_size: قەبارەی خشت
+edit_field: دەستکاری خانە
+conditions: مەرجەکان
+maps: نەخشەکان
+switch_user: گۆڕینی بەکارهێنەر
+item_creation: دروستکردنی مادە
+item_revision: گەڕاندنەوەی مادە
+enter_a_name: ناوێک تۆماربکە...
+duplicate_field: لەبەرگرتنەوەی خانە
+half_width: نیوەی پانی
+full_width: پانی تەواو
+group: دەستە
+and: و
+or: یان
+fill_width: پڕکردنی پانی
+field_name_translations: وەرگێڕانەکانی ناوی خانە
+enter_password_to_enable_tfa: تێپەڕەوشەت بنوسە بۆ کاراکردنی سەلمێنەری دوو-فاکتەر
+add_field: زیادکردنی خانە
+role_name: ناوی پلە
+branch: لق
+leaf: گەڵا
+indeterminate: دیاری نەکراو
+edit_collection: دەستکاری کۆمەڵە
+exclusive: تایبەت
+children: وەچەکان
+db_only_click_to_configure: 'تەنها بنکەدراو: کرتە بکە بۆ سازاندن'
+show_active_items: نیشاندانی مادە چالاکەکان
+show_archived_items: نیشاندانی مادە ئەرشیفکراوەکان
+show_all_items: نیشاندانی هەموو مادەکان
+edited: بەها دەستکاریکراوە
+required: داواکراوە
+required_for_app_access: داواکراوە بۆ دەستگەیشتن بە ئەپ
+requires_value: پێویستی بە بەهایە
+create_preset: دروستکردنی پێشوەختە
+create_panel: دروستکردنی پانێڵ
+create_role: دروستکردنی پلە
+create_user: دروستکردنی بەکارهێنەر
+delete_panel: سڕینەوەی پانێڵ
+create_webhook: دروستکردنی وێبهووک
+invite_users: بانگهێشتکردنی بەکارهێنەرەکان
+invite: بانگهێشت
+email_already_invited: ئیمەیڵی "{email}" پێشتر بانگهێشتکراوە
+subject: بابەت
+inbox: هاتوەکان
+emails: ئیمەیڵەکان
+connection_excellent: پەیوەندی نایاب
+connection_good: پەیوەندی باش
+connection_fair: پەیوەندی خراپ
+connection_poor: پەیوەندی زۆر خراپ
+primary: سەرەکی
+rename_folder: ناولێنانەوەی بوخچە
+delete_folder: سڕینەوەی بوخچە
+prefix: پێشگر
+suffix: پاشگر
+reset_bookmark: ڕێکخستنەوەی نیشانکەر
+rename_bookmark: ناولێنانەوەی نیشانکەر
+update_bookmark: نوێکردنەوەی نیشانکەر
+delete_bookmark: سڕینەوەی نیشانکەر
+delete_bookmark_copy: >-
+  ئایا دڵنیای کە دەتەوێت نیشانکەری "{bookmark}" بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە.
+logoutReason:
+  SIGN_OUT: دەرچوون
+  SESSION_EXPIRED: دەورە بەسەرچوو
+public_label: گشتی
+public_description: کۆنتڕۆڵکردنی ئەوەی کام دەیتایەی API بەردەستە بەبێ ڕەسەنایەتی.
+not_allowed: ڕێگەپێنەدراوە
+directus_version: وەشانی دایرێکتەس
+node_version: وەشانی نۆد
+node_uptime: چالاکی نۆد
+os_type: جۆری سیستەم
+os_version: وەشانی سیستەم
+os_uptime: چالاکی سیستەم
+os_totalmem: بیرگەی سیستەم
+archive: ئەرشیڤ
+archive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف بکەیت؟
+archive_confirm_count: >-
+  هیچ مادەیەک دیاری نەکراوە| ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیڤ بکەیت؟ | ئایا دڵنیای دەتەوێت ئەم {count} مادەیە ئەرشیڤ بکەیت؟
+reset_system_permissions_to: 'رێکخستنەوەی ڕێپێدانەکانی سیستەم بۆ:'
+recommended_defaults: بنەڕەتیە پێشنیارکراوەکان
+unarchive: ئەرشیفنەکردن
+unarchive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف نەکەیت؟
+fields:
+  directus_settings:
+    module_bar: شریتی مۆدیوڵەکان
+  directus_fields:
+    translation: وەرگێڕانەکانی ناوی خانە
+  directus_roles:
+    name: ناوی پلە
+field_options:
+  directus_collections:
+    archive_divider: ئەرشیڤ
+interfaces:
+  presentation-links:
+    primary: سەرەکی
+displays:
+  formatted-value:
+    prefix: پێشگر
+    suffix: پاشگر

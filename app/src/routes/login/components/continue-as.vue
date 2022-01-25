@@ -24,6 +24,7 @@ import { hydrate } from '@/hydrate';
 import { useRouter } from 'vue-router';
 import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { logout } from '@/auth';
 
 export default defineComponent({
 	setup() {
@@ -55,6 +56,10 @@ export default defineComponent({
 					},
 				});
 
+				if (response.data.data.share) {
+					await logout();
+				}
+
 				name.value = userName(response.data.data);
 				lastPage.value = response.data.data.last_page;
 			} catch (err: any) {
@@ -66,7 +71,7 @@ export default defineComponent({
 
 		async function hydrateAndLogin() {
 			await hydrate();
-			router.push(lastPage.value || `/collections`);
+			router.push(lastPage.value || `/content`);
 		}
 	},
 });

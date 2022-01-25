@@ -8,6 +8,7 @@ export type BasemapSource = {
 	type: 'raster' | 'tile' | 'style';
 	url: string;
 	tileSize?: number;
+	attribution?: string;
 };
 
 const defaultBasemap: BasemapSource = {
@@ -15,6 +16,7 @@ const defaultBasemap: BasemapSource = {
 	type: 'raster',
 	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 	tileSize: 256,
+	attribution: '© OpenStreetMap contributors',
 };
 
 const baseStyle: Style = {
@@ -38,6 +40,7 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 	} else {
 		const style: Style = { ...baseStyle };
 		const source: RasterSource = { type: 'raster' };
+		if (basemap.attribution) source.attribution = basemap.attribution;
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
 			source.tileSize = basemap.tileSize || 512;

@@ -56,7 +56,6 @@ fields:
       iconRight: local_offer
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
@@ -91,12 +90,17 @@ fields:
     special: conceal
     width: half
 
+  - field: email_notifications
+    interface: boolean
+    width: half
+    special: boolean
+
   - field: admin_divider
     interface: presentation-divider
     options:
       icon: verified_user
       title: $t:fields.directus_users.admin_options
-      color: '#E35169'
+      color: 'var(--danger)'
     special:
       - alias
       - no-data

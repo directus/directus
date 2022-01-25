@@ -15,8 +15,8 @@ import {
 import { version } from '../../package.json';
 import getDatabase from '../database';
 import env from '../env';
-import { AbstractServiceOptions, Collection, Relation, SchemaOverview } from '../types';
-import { Accountability, Field, Type, Permission } from '@directus/shared/types';
+import { AbstractServiceOptions, Collection } from '../types';
+import { Accountability, Field, Type, Permission, SchemaOverview, Relation } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
@@ -92,7 +92,7 @@ class OASSpecsService implements SpecificationSubService {
 		const collections = await this.collectionsService.readByQuery();
 		const fields = await this.fieldsService.readAll();
 		const relations = (await this.relationsService.readAll()) as Relation[];
-		const permissions = this.schema.permissions;
+		const permissions = this.accountability?.permissions ?? [];
 
 		const tags = await this.generateTags(collections);
 		const paths = await this.generatePaths(permissions, tags);
@@ -454,7 +454,7 @@ class OASSpecsService implements SpecificationSubService {
 						},
 					],
 				};
-			} else if (relationType === 'm2a') {
+			} else if (relationType === 'a2o') {
 				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
@@ -551,7 +551,25 @@ class OASSpecsService implements SpecificationSubService {
 			format: 'uuid',
 		},
 		geometry: {
-			type: 'string',
+			type: 'object',
+		},
+		'geometry.Point': {
+			type: 'object',
+		},
+		'geometry.LineString': {
+			type: 'object',
+		},
+		'geometry.Polygon': {
+			type: 'object',
+		},
+		'geometry.MultiPoint': {
+			type: 'object',
+		},
+		'geometry.MultiLineString': {
+			type: 'object',
+		},
+		'geometry.MultiPolygon': {
+			type: 'object',
 		},
 	};
 }

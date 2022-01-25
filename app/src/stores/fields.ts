@@ -241,7 +241,8 @@ export const useFieldsStore = defineStore({
 		getFieldsForCollection(collection: string): Field[] {
 			return orderBy(
 				this.fields.filter((field) => field.collection === collection),
-				[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)]
+				[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)],
+				['desc', 'asc']
 			);
 		},
 		getFieldsForCollectionAlphabetical(collection: string): Field[] {
@@ -250,6 +251,35 @@ export const useFieldsStore = defineStore({
 				else if (a.field > b.field) return 1;
 				else return 1;
 			});
+		},
+		/**
+		 * Retrieve sorted fields including groups. This is necessary because
+		 * fields inside groups starts their sort number from 1 to N again.
+		 */
+		getFieldsForCollectionSorted(collection: string): Field[] {
+			const fields = this.fields
+				.filter((field) => field.collection === collection)
+				.filter(
+					(field: Field) =>
+						field.meta?.special?.includes('group') ||
+						(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+				);
+
+			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
+
+			const sortGroupFields = (a: Field, b: Field) => {
+				if (!a.meta?.sort || !b.meta?.sort) return 0;
+				return a.meta.sort - b.meta.sort;
+			};
+
+			for (const [index, field] of nonGroupFields.entries()) {
+				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+				if (groupFields.length) {
+					nonGroupFields.splice(index + 1, 0, ...groupFields.sort(sortGroupFields));
+				}
+			}
+
+			return nonGroupFields;
 		},
 		/**
 		 * Retrieve field info for a field or a related field
@@ -268,19 +298,24 @@ export const useFieldsStore = defineStore({
 		 */
 		getRelationalField(collection: string, fields: string) {
 			const relationsStore = useRelationsStore();
-			const parts = fields.split('.');
+			const [field, ...path] = fields.split('.');
+			if (field.includes(':')) {
+				const [_, collection] = field.split(':');
+				return this.getField(collection, path.join('.'));
+			}
 
-			const relation = relationsStore
-				.getRelationsForField(collection, parts[0])
-				?.find(
-					(relation: Relation) => relation.field === parts[0] || relation.meta?.one_field === parts[0]
-				) as Relation;
+			const relations = relationsStore.getRelationsForField(collection, field);
+			const relation = relations?.find((relation: Relation) => {
+				return relation.field === field || relation.meta?.one_field === field;
+			});
 
 			if (relation === undefined) return false;
 
-			const relatedCollection = relation.field === parts[0] ? relation.related_collection : relation.collection;
-			parts.shift();
-			const relatedField = parts.join('.');
+			const relatedCollection = relation.field === field ? relation.related_collection : relation.collection;
+
+			if (relatedCollection === null) return false;
+
+			const relatedField = path.join('.');
 			return this.getField(relatedCollection, relatedField);
 		},
 	},

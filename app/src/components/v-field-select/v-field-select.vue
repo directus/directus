@@ -27,7 +27,7 @@
 					</v-button>
 				</template>
 
-				<v-list :mandatory="false" @toggle="loadFieldRelations($event.value, 1)">
+				<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
 					<field-list-item
 						v-for="field in availableFields"
 						:key="field.key"

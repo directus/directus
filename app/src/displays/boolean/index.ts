@@ -65,9 +65,6 @@ export default defineDisplay({
 				interface: 'select-color',
 				width: 'half',
 			},
-			schema: {
-				default_value: '#00C897',
-			},
 		},
 		{
 			field: 'colorOff',
@@ -76,9 +73,6 @@ export default defineDisplay({
 			meta: {
 				interface: 'select-color',
 				width: 'half',
-			},
-			schema: {
-				default_value: '#B0BEC5',
 			},
 		},
 	],

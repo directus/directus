@@ -1,15 +1,22 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, merge, pick, without } from 'lodash';
+import { clone, cloneDeep, pick, without, assign } from 'lodash';
 import { getCache } from '../cache';
 import Keyv from 'keyv';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import { Accountability, Query, PermissionsAction } from '@directus/shared/types';
-import { AbstractService, AbstractServiceOptions, Action, Item as AnyItem, PrimaryKey, SchemaOverview } from '../types';
+import { Accountability, Query, PermissionsAction, SchemaOverview } from '@directus/shared/types';
+import {
+	AbstractService,
+	AbstractServiceOptions,
+	Action,
+	Item as AnyItem,
+	PrimaryKey,
+	MutationOptions,
+} from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
@@ -18,23 +25,6 @@ import { ActivityService, RevisionsService } from './index';
 export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
-};
-
-export type MutationOptions = {
-	/**
-	 * Callback function that's fired whenever a revision is made in the mutation
-	 */
-	onRevisionCreate?: (pk: PrimaryKey) => void;
-
-	/**
-	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
-	 */
-	autoPurgeCache?: false;
-
-	/**
-	 * Allow disabling the emitting of hooks. Useful if a custom hook is fired (like files.upload)
-	 */
-	emitEvents?: boolean;
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -105,26 +95,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
-			const hooksResult =
+			const payloadAfterHooks =
 				opts?.emitEvents !== false
-					? (
-							await emitter.emitAsync(`${this.eventScope}.create.before`, payload, {
-								event: `${this.eventScope}.create.before`,
-								accountability: this.accountability,
+					? await emitter.emitFilter(
+							this.eventScope === 'items'
+								? ['items.create', `${this.collection}.items.create`]
+								: `${this.eventScope}.create`,
+							payload,
+							{
 								collection: this.collection,
-								item: null,
-								action: 'create',
-								payload,
-								schema: this.schema,
+							},
+							{
 								database: trx,
-							})
-					  ).filter((val) => val)
-					: [];
-
-			// The events are fired last-to-first based on when they were created. By reversing the
-			// output array of results, we ensure that the augmentations are applied in
-			// "chronological" order
-			const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
+								schema: this.schema,
+								accountability: this.accountability,
+							}
+					  )
+					: payload;
 
 			const payloadWithPresets = this.accountability
 				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
@@ -136,7 +123,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
-			// In case of manual string / UUID primary keys, they PK already exists in the object we're saving.
+			// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			try {
@@ -208,18 +195,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.create`, {
-				event: `${this.eventScope}.create`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: primaryKey,
-				action: 'create',
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				this.eventScope === 'items' ? ['items.create', `${this.collection}.items.create`] : `${this.eventScope}.create`,
+				{
+					payload,
+					key: primaryKey,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: this.knex || getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
@@ -261,12 +251,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Get items by query
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		const authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
 		let ast = await getASTFromQuery(this.collection, query, this.schema, {
 			accountability: this.accountability,
 			// By setting the permissions action, you can read items using the permissions for another
@@ -277,6 +261,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (this.accountability && this.accountability.admin !== true) {
+			const authorizationService = new AuthorizationService({
+				accountability: this.accountability,
+				knex: this.knex,
+				schema: this.schema,
+			});
+
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
 		}
 
@@ -285,42 +275,47 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
-
 		if (records === null) {
 			throw new ForbiddenException();
 		}
+		const filteredRecords = await emitter.emitFilter(
+			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+			records,
+			{
+				query,
+				collection: this.collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
-		emitAsyncSafe(`${this.eventScope}.read`, {
-			event: `${this.eventScope}.read`,
-			accountability: this.accountability,
-			collection: this.collection,
-			query,
-			action: 'read',
-			payload: records,
-			schema: this.schema,
-			database: getDatabase(),
-		});
-
-		return records as Item[];
+		emitter.emitAction(
+			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+			{
+				payload: filteredRecords,
+				query,
+				collection: this.collection,
+			},
+			{
+				database: this.knex || getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+		return filteredRecords as Item[];
 	}
 
 	/**
 	 * Get single item by primary key
 	 */
-	async readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Item> {
-		query = query ?? {};
-
+	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
-		const queryWithKey = {
-			...query,
-			filter: {
-				...(query.filter || {}),
-				[primaryKeyField]: {
-					_eq: key,
-				},
-			},
-		};
+		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
+		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
 		const results = await this.readByQuery(queryWithKey, opts);
 
@@ -334,26 +329,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Get multiple items by primary keys
 	 */
-	async readMany(keys: PrimaryKey[], query?: Query, opts?: QueryOptions): Promise<Item[]> {
-		query = query ?? {};
-
+	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Item[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
-		const queryWithKeys = {
-			...query,
-			filter: {
-				_and: [
-					query.filter || {},
-					{
-						[primaryKeyField]: {
-							_in: keys,
-						},
-					},
-				],
-			},
-		};
+		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
+		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		const results = await this.readByQuery(queryWithKeys, opts);
+		const results = await this.readByQuery(queryWithKey, opts);
 
 		return results;
 	}
@@ -394,26 +376,24 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
-		const hooksResult =
+		const payloadAfterHooks =
 			opts?.emitEvents !== false
-				? (
-						await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
-							event: `${this.eventScope}.update.before`,
-							accountability: this.accountability,
+				? await emitter.emitFilter(
+						this.eventScope === 'items'
+							? ['items.update', `${this.collection}.items.update`]
+							: `${this.eventScope}.update`,
+						payload,
+						{
+							keys,
 							collection: this.collection,
-							item: keys,
-							action: 'update',
-							payload,
-							schema: this.schema,
+						},
+						{
 							database: this.knex,
-						})
-				  ).filter((val) => val)
-				: [];
-
-		// The events are fired last-to-first based on when they were created. By reversing the
-		// output array of results, we ensure that the augmentations are applied in
-		// "chronological" order
-		const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
+							schema: this.schema,
+							accountability: this.accountability,
+						}
+				  )
+				: payload;
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
@@ -521,18 +501,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.update`, {
-				event: `${this.eventScope}.update`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'update',
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				this.eventScope === 'items' ? ['items.update', `${this.collection}.items.update`] : `${this.eventScope}.update`,
+				{
+					payload,
+					keys,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: this.knex || getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		return keys;
@@ -620,16 +603,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			await emitter.emitAsync(`${this.eventScope}.delete.before`, {
-				event: `${this.eventScope}.delete.before`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'delete',
-				payload: null,
-				schema: this.schema,
-				database: this.knex,
-			});
+			await emitter.emitFilter(
+				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
+				keys,
+				{
+					collection: this.collection,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		await this.knex.transaction(async (trx) => {
@@ -659,18 +644,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.delete`, {
-				event: `${this.eventScope}.delete`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'delete',
-				payload: null,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
+				{
+					payload: keys,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: this.knex || getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		return keys;

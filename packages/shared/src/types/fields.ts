@@ -43,7 +43,7 @@ export interface FieldRaw {
 	collection: string;
 	field: string;
 	type: Type;
-	schema: (Column & { geometry_type?: string }) | null;
+	schema: Column | null;
 	meta: FieldMeta | null;
 }
 

@@ -171,7 +171,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
 			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
-			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort.value);
+			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value || !props.collection) return [];
@@ -208,7 +208,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-			return `/collections/${props.collection}/${encodeURIComponent(item[primaryKeyField.value.field])}`;
+			return `/content/${props.collection}/${encodeURIComponent(item[primaryKeyField.value.field])}`;
 		}
 
 		function selectAll() {
