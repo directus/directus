@@ -6,6 +6,10 @@
 
 <iframe src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboards-220123A.mp4"></iframe>
 
+<video autoplay muted loop>
+<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboards-220123A.mp4" type="video/mp4" />
+</video>
+
 [[toc]]
 
 ## How it Works
