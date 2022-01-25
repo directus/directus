@@ -1,8 +1,13 @@
-import { defineDisplay /*getFieldsFromTemplate*/ } from '@directus/shared/utils';
+import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
 import DisplayTranslations from './translations.vue';
 import { useFieldsStore } from '@/stores';
-// import { useRelationsStore } from '@/stores';
-// import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { useRelationsStore } from '@/stores';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+
+type Options = {
+	template: string;
+	languageField: string;
+};
 
 export default defineDisplay({
 	id: 'translations',
@@ -71,44 +76,41 @@ export default defineDisplay({
 	},
 	types: ['alias'],
 	localTypes: ['translations'],
-	// old version
-	fields: ['*.*'],
-	// new version
-	// fields: (options: Options | null, { field, collection }) => {
-	// 	const fieldsStore = useFieldsStore();
-	// 	const relationsStore = useRelationsStore();
-	// 	const relations = relationsStore.getRelationsForField(collection, field);
+	fields: (options: Options | null, { field, collection }) => {
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+		const relations = relationsStore.getRelationsForField(collection, field);
 
-	// 	const translationsRelation = relations.find(
-	// 		(relation) => relation.related_collection === collection && relation.meta?.one_field === field
-	// 	);
+		const translationsRelation = relations.find(
+			(relation) => relation.related_collection === collection && relation.meta?.one_field === field
+		);
 
-	// 	const languagesRelation = relations.find((relation) => relation !== translationsRelation);
+		const languagesRelation = relations.find((relation) => relation !== translationsRelation);
 
-	// 	const translationCollection = translationsRelation?.related_collection;
-	// 	const languagesCollection = languagesRelation?.related_collection;
+		const translationCollection = translationsRelation?.related_collection;
+		const languagesCollection = languagesRelation?.related_collection;
 
-	// 	if (!translationCollection || !languagesCollection) return [];
+		if (!translationCollection || !languagesCollection) return [];
 
-	// 	const translationsPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(translationCollection);
-	// 	const languagesPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(languagesCollection);
+		const translationsPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(translationCollection);
+		const languagesPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(languagesCollection);
 
-	// 	const fields = options?.template
-	// 		? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection)
-	// 		: [];
+		const fields = options?.template
+			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection)
+			: [];
 
-	// 	if (translationsPrimaryKeyField && !fields.includes(translationsPrimaryKeyField.field)) {
-	// 		fields.push(translationsPrimaryKeyField.field);
-	// 	}
+		if (translationsPrimaryKeyField && !fields.includes(translationsPrimaryKeyField.field)) {
+			fields.push(translationsPrimaryKeyField.field);
+		}
 
-	// 	if (languagesRelation && languagesPrimaryKeyField && !fields.includes(languagesRelation.field)) {
-	// 		fields.push(`${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
+		if (languagesRelation && languagesPrimaryKeyField && !fields.includes(languagesRelation.field)) {
+			fields.push(`${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
 
-	// 		if (options?.languageField) {
-	// 			fields.push(`${languagesRelation.field}.${options.languageField}`);
-	// 		}
-	// 	}
+			if (options?.languageField) {
+				fields.push(`${languagesRelation.field}.${options.languageField}`);
+			}
+		}
 
-	// 	return fields;
-	// },
+		return fields;
+	},
 });
