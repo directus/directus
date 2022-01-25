@@ -1,15 +1,15 @@
 import { ResolveQuery } from '../../../../src/services/graphql/resolve-query';
 import { MockClient } from 'knex-mock-client';
-import { userSchema } from '../../__test-utils__/schemas';
+import { userSchema } from '../../../__test-utils__/schemas';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
 
-jest.mock('../../../database/index', () => {
+jest.mock('../../../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../../database/index');
+jest.requireMock('../../../../src/database/index');
 
-jest.mock('../../../services/', () => {
+jest.mock('../../../../src/services/', () => {
 	return {
 		ItemsService: jest.fn().mockReturnValue({
 			readSingleton: jest.fn().mockReturnValue({ singleton: true }),

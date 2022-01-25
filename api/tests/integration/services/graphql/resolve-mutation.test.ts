@@ -2,9 +2,9 @@ import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
 import { ResolveMutation } from '../../../../src/services/graphql/resolve-mutation';
-import { userSchema } from '../../__test-utils__/schemas';
+import { userSchema } from '../../../__test-utils__/schemas';
 
-jest.mock('../../../services/', () => {
+jest.mock('../../../../src/services', () => {
 	return {
 		ItemsService: jest.fn().mockReturnValue({
 			readSingleton: jest.fn().mockReturnValue({ itsHit: true }),

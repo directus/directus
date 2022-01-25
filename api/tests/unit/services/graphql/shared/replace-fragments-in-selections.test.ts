@@ -1,13 +1,7 @@
-import { FragmentDefinitionNode, FragmentSpreadNode, InlineFragmentNode, SelectionNode } from 'graphql';
-import { cloneDeep } from 'lodash';
-import { replaceFragmentsInSelections } from '../../../../services/graphql/shared/replace-fragments-in-selections';
+import { FragmentDefinitionNode, InlineFragmentNode, SelectionNode } from 'graphql';
+import { replaceFragmentsInSelections } from '../../../../../src/services/graphql/shared/replace-fragments-in-selections';
 
 describe('replaceFragmentsInSelections', () => {
-	const fragmentSpread = {
-		kind: 'FragmentSpread',
-		name: { kind: 'Name', value: 'Spread' },
-		directives: [{ kind: 'Directive', name: { kind: 'Name', value: 'directive' } }],
-	} as FragmentSpreadNode;
 	const inlineFragment = {
 		kind: 'InlineFragment',
 		typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TheFirstInlineFragment' } },

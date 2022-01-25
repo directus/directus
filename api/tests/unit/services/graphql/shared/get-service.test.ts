@@ -16,9 +16,9 @@ import {
 	SharesService,
 } from '../../../../../src/services/';
 import { getService } from '../../../../../src/services/graphql/shared/get-service';
-import { userSchema } from '../../../__test-utils__/schemas';
+import { userSchema } from '../../../../__test-utils__/schemas';
 
-jest.mock('../../../../services/', () => {
+jest.mock('../../../../../src/services/', () => {
 	return {
 		ItemsService: jest.fn().mockReturnThis(),
 		ActivityService: jest.fn().mockReturnThis(),
