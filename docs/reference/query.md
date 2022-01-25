@@ -706,7 +706,7 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 Names aren't allowed to include any special characters in GraphQL, preventing the `()` syntax from being used.
 
 As an alternative, the above functions can be used by appending `_func` at the end of the field name, and using the
-function name as the nested field (see the example on the right).
+function name as the nested field (see the example that follows).
 
 :::
 
