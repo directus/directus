@@ -90,6 +90,30 @@ export const aggregationInfo = {
 	variableValues: {},
 } as GraphQLResolveInfo;
 
+export const createOneQuery = {
+	fieldName: 'create_authors',
+	fieldNodes: fieldNodes,
+	returnType: gqlScalarType,
+	parentType: gqlObjectType,
+	path: {
+		prev: undefined,
+		key: 'name',
+		typename: undefined,
+	},
+	schema: new GraphQLSchema({}),
+	fragments,
+	rootValue: '',
+	operation: {
+		kind: 'OperationDefinition',
+		operation: 'mutation',
+		selectionSet: {
+			kind: 'SelectionSet',
+			selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+		},
+	},
+	variableValues: {},
+} as GraphQLResolveInfo;
+
 export const noSelections = {
 	fieldName: 'name',
 	fieldNodes: [],
