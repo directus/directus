@@ -291,7 +291,7 @@ related collections, storing all links between them. You can leave this set to "
 naming defaults, or disable it to select existing options or enter custom names.
 
 Lastly, you should select any desired Related Collections. Unlike other relationships, you can't _create_ these related
-collections here, so ensure all related collections you need are created before hand.
+collections here, so ensure all related collections you need are created beforehand.
 
 ::: tip Auto-generating
 
