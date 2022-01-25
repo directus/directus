@@ -118,7 +118,7 @@ reason, when selecting existing fields, options will be disabled if they don't h
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
 the M2O field (see above) that pairs with this O2M.
 
-The optional **Sort Field** can be used enable manual reordering of items within this O2M field. This is configured by
+The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured by
 selecting an existing numeric type field (highlights green) from the Related Collection, or entering the name of a new
 field to be created.
 
@@ -137,7 +137,7 @@ field to be created.
 
 The Translations relationship is just a special version of the standard O2M. Just like the O2M, it creates an
 [Alias](/getting-started/glossary/#alias) field that is used to list all related items (the translations). Translations
-themselves are stored in a separate collection, which is then further related to _third_ collection that stores all
+themselves are stored in a separate collection, which is then further related to a _third_ collection that stores all
 languages.
 
 ### Setup
@@ -150,7 +150,7 @@ fields and relationships will then be automatically created and configured.
 ![Translations](../assets/guides/fields/translations-2.png)
 
 If you choose to switch to **manual setup**, you will be presented with a similar relationship setup to O2M or M2M. The
-parent collection and primary key are know, so those fields are disabled.
+parent collection and primary key are known, so those fields are disabled.
 
 Next, we configure the Translation Collection. Set to "Auto Fill" by default, this will enter intelligent naming based
 on related names, and disables all fields. Disabling Auto Fill will enable all fields, allowing you to name the
@@ -219,7 +219,7 @@ intelligent naming defaults, or disable it to select existing options or enter c
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
 the reverse M2M field on the _related_ collection.
 
-The optional **Sort Field** can be used enable manual reordering of items within this O2M field. This is configured by
+The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured by
 selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a new
 field to be created.
 
@@ -258,7 +258,7 @@ Below is an example of a M2A relationship:
 pages (Collection)
 - id
 - name
-- *sections* (O2M/M2A alias field that lists references from "sections")
+- *sections* (O2M/M2A alias field that lists references from "page_sections")
 
 page_sections (Junction Collection)
 - id
@@ -291,7 +291,7 @@ related collections, storing all links between them. You can leave this set to "
 naming defaults, or disable it to select existing options or enter custom names.
 
 Lastly, you should select any desired Related Collections. Unlike other relationships, you can't _create_ these related
-collections here, so ensure all related collections you need are created before hand.
+collections here, so ensure all related collections you need are created beforehand.
 
 ::: tip Auto-generating
 
@@ -300,7 +300,7 @@ you save the changes on the new M2A field.
 
 :::
 
-The optional **Sort Field** can be used enable manual reordering of items within this M2A field. This is configured by
+The optional **Sort Field** can be used to enable manual reordering of items within this M2A field. This is configured by
 selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a new
 field to be created.
 

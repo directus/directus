@@ -41,16 +41,19 @@ export default async (): Promise<void> => {
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
-								const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
-								global.directus[vendor] = server;
-								let serverOutput = '';
-								server.stdout.on('data', (data) => (serverOutput += data.toString()));
-								server.on('exit', (code) => {
-									if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
-								});
-								// Give the server some time to start
-								await sleep(5000);
-								server.on('exit', () => undefined);
+
+								if (!process.env.TEST_LOCAL) {
+									const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
+									global.directus[vendor] = server;
+									let serverOutput = '';
+									server.stdout.on('data', (data) => (serverOutput += data.toString()));
+									server.on('exit', (code) => {
+										if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
+									});
+									// Give the server some time to start
+									await sleep(5000);
+									server.on('exit', () => undefined);
+								}
 							},
 						};
 					}),
