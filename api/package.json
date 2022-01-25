@@ -63,7 +63,8 @@
 		"cleanup": "rimraf dist",
 		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
-		"test": "jest --coverage",
+		"test": "jest",
+		"test:coverage": "jest --coverage",
 		"test:watch": "jest --watchAll"
 	},
 	"engines": {
