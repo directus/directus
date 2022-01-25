@@ -1,7 +1,6 @@
-import { defineDisplay/*, getFieldsFromTemplate*/ } from '@directus/shared/utils';
+import { defineDisplay /*getFieldsFromTemplate*/ } from '@directus/shared/utils';
 import DisplayTranslations from './translations.vue';
 import { useFieldsStore } from '@/stores';
-// import { ExtensionsOptionsContext } from '@directus/shared/types';
 // import { useRelationsStore } from '@/stores';
 // import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
@@ -72,7 +71,9 @@ export default defineDisplay({
 	},
 	types: ['alias'],
 	localTypes: ['translations'],
+	// old version
 	fields: ['*.*'],
+	// new version
 	// fields: (options: Options | null, { field, collection }) => {
 	// 	const fieldsStore = useFieldsStore();
 	// 	const relationsStore = useRelationsStore();
