@@ -22,7 +22,6 @@ export class ResolveMutation {
 		info: GraphQLResolveInfo,
 		scope: string
 	): Promise<Partial<Item> | boolean | undefined> {
-		const resolver = new ResolveMutation({ knex: this.knex, accountability: this.accountability, schema: this.schema });
 		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
 		let collection = info.fieldName.substring(action.length + 1);
 		if (scope === 'system') collection = `directus_${collection}`;
@@ -41,7 +40,7 @@ export class ResolveMutation {
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
 		if (singleton && action === 'update') {
-			return await resolver.upsertSingleton(collection, args.data, query);
+			return await this.upsertSingleton(collection, args.data, query);
 		}
 
 		const service = getService(
