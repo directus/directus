@@ -1,6 +1,6 @@
 import axios from 'axios';
 import request from 'supertest';
-import config from '../../config';
+import config, { getUrl } from '../../config';
 import vendors from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createGuest, createMany, seedTable } from '../../setup/utils/factories';
@@ -24,14 +24,13 @@ describe('/items', () => {
 	describe('/:collection/:id GET', () => {
 		describe(`retrieves a guest's favorite artist`, () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const guest = createGuest();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 				guest.favorite_artist = artist.id;
 				await seedTable(databases.get(vendor)!, 1, 'guests', guest);
 
-				const response = await request(url)
+				const response = await request(getUrl(vendor))
 					.get(`/items/guests/${guest.id}?fields=favorite_artist.*`)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
@@ -45,7 +44,6 @@ describe('/items', () => {
 	describe('/:collection GET', () => {
 		describe('retrieves all items from guest table with favorite_artist', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const name = internet.userName();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
@@ -53,7 +51,7 @@ describe('/items', () => {
 				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
 				const response = (
-					await request(url)
+					await request(getUrl(vendor))
 						.get(`/items/guests?filter={"name": { "_eq": "${name}" }}`)
 						.set('Authorization', 'Bearer AdminToken')
 						.expect('Content-Type', /application\/json/)
@@ -73,12 +71,11 @@ describe('/items', () => {
 		describe('createOne', () => {
 			describe('creates one guest with a favorite_artist', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					const body = createGuest();
 					body.favorite_artist = artist;
 
-					const response: any = await axios.post(`${url}/items/guests`, body, {
+					const response: any = await axios.post(`${getUrl(vendor)}/items/guests`, body, {
 						headers: {
 							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
@@ -91,12 +88,11 @@ describe('/items', () => {
 		describe('createMany', () => {
 			describe('creates 5 users with a favorite_artist', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 					const body = createMany(createGuest, 5, { favorite_artist: artist.id });
 
-					const response: any = await axios.post(`${url}/items/guests`, body, {
+					const response: any = await axios.post(`${getUrl(vendor)}/items/guests`, body, {
 						headers: {
 							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import request from 'supertest';
-import config from '../config';
+import config, { getUrl } from '../config';
 import vendors from '../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 
@@ -20,9 +20,7 @@ describe('/server', () => {
 
 	describe('/ping', () => {
 		it.each(vendors)('%s', async (vendor) => {
-			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-
-			const response = await request(url)
+			const response = await request(getUrl(vendor))
 				.get('/server/ping')
 				.expect('Content-Type', /text\/html/)
 				.expect(200);
