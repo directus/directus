@@ -131,13 +131,21 @@ Aggregate functions takes a list of values and returns one single value.
 - **First** - Selects the first Item out of all Items in a Field.
 - **Last** - Selects the last Item out of all Items in a Field.
 
-::: tip First and Last First and Last are not aggregate functions in the traditional sense. However, they have been
-placed in this panel because _(philosophically speaking)_ finding the first or last Item means that all Items in the
-Field need to be considered. :::
+::: tip First and Last
 
-::: tip Why are some Fields grayed out? Certain Fields cannot be used with certain aggregate functions. For example, you
-cannot use the average function on words, because words cannot be averaged. When something like this happens, Fields
-will be grayed out and unselectable in the `field dropdown list`. :::
+First and Last are not aggregate functions in the traditional sense. However, they have been placed in this panel
+because _(philosophically speaking)_ finding the first or last Item means that all Items in the Field need to be
+considered.
+
+:::
+
+::: tip Why are some Fields grayed out?
+
+Certain Fields cannot be used with certain aggregate functions. For example, you cannot use the average function on
+words, because words cannot be averaged. When something like this happens, Fields will be grayed out and unselectable in
+the `field dropdown list`.
+
+:::
 
 #### Style and Format Options
 
@@ -152,7 +160,11 @@ will be grayed out and unselectable in the `field dropdown list`. :::
 
 The Time Series panel allows you to build graphs and see how data changes over time.
 
-::: warning Time-oriented metrics only In order to use this panel, your Collection will need a datetime Field. :::
+::: warning Time-oriented metrics only
+
+In order to use this panel, your Collection will need a datetime Field.
+
+:::
 
 ![Time Series Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-time-series-options-220123A.webp)
 
