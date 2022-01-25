@@ -15,7 +15,7 @@ installations.
 ## REST vs. GraphQL
 
 **There is no difference in the functionality available between the REST and GraphQL endpoints.** The functionality
-available in both is mapped to same set of core services, meaning that you don't lose any performance or capabilities by
+available in both is mapped to the same set of core services, meaning that you don't lose any performance or capabilities by
 choosing one or the other.
 
 Which one you choose is ultimately up to you.
