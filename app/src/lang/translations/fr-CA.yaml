@@ -273,6 +273,7 @@ note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un texte d'indication...
 length: Taille
+soft_length: Limite de souplesse
 precision_scale: Précision et échelle
 readonly: Lecture seule
 unique: Unique
@@ -283,9 +284,19 @@ foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
 dismiss: Ignorer
 raw_value: Valeur brute
+copy_raw_value: Copier la valeur brute
+copy_raw_value_success: Copié
+copy_raw_value_fail: Échec de la copie
+paste_raw_value: Coller la valeur brute
+paste_raw_value_success: Collé
+paste_raw_value_fail: Échec du collage
+view_raw_value: Voir la valeur brute
 edit_raw_value: Modifier la valeur brute
 enter_raw_value: Saisissez une valeur brute...
+clear_value: Effacer la valeur
 clear_changes: Effacer les modifications
+reset_to_default: Revenir à la valeur par défaut
+undo_changes: Annuler les modifications
 notifications: Notifications
 show_all_activity: Afficher toute l'activité
 page_not_found: Page non trouvée
@@ -316,9 +327,17 @@ related_collection: Collection associée
 related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
+import_data_input_placeholder: CSV ou JSON...
+import_data_button: Commencer l'importation
+import_data_indeterminate: Importation des données...
+import_data_success: Données importées avec succès depuis {filename}
+import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 label_import: Importer
+label_export: Exportation
+import_export: Importer/Exporter
 format: Format
 use_current_filters_settings: Utiliser les filtres et paramètres actuels
+export_data_button: Démarrer l'exportation
 last_page: Dernière page
 last_access: Dernier accès
 fill_template: Remplir avec un exemple
@@ -943,6 +962,7 @@ fields:
     external_identifier: Identifiant externe
     last_page: Dernière page
     last_access: Dernier accès
+    email_notifications: Notifications par e-mail
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1153,6 +1173,8 @@ share_access_not_found: Cette page partagée n'existe pas ou a dépassé le nomb
 share_access_not_found_desc: Veuillez contacter un utilisateur autorisé de ce projet pour demander un accès.
 share_access_not_found_title: Page partagée inconnue
 share_copy_link: Copier le lien
+share_copy_link_success: Lien copié
+share_copy_link_error: Impossible de copier le lien
 share_send_link: Envoyer le lien
 relational_triggers: Déclencheurs relationnels
 referential_action_field_label_m2o: Lors de la suppression d'un(e) {collection} ...
