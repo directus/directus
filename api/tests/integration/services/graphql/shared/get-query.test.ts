@@ -1,6 +1,6 @@
 import { SelectionNode } from 'graphql';
 import { cloneDeep } from 'lodash';
-import { getQuery } from '../../../../services/graphql/shared/get-query';
+import { getQuery } from '../../../../../src/services/graphql/shared/get-query';
 
 describe('getQuery', () => {
 	const accountability = { admin: true, role: 'admin' };

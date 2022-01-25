@@ -1,7 +1,7 @@
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
-import { ResolveMutation } from '../../../services/graphql/resolve-mutation';
+import { ResolveMutation } from '../../../../src/services/graphql/resolve-mutation';
 import { userSchema } from '../../__test-utils__/schemas';
 
 jest.mock('../../../services/', () => {

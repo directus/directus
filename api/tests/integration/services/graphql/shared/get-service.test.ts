@@ -14,8 +14,8 @@ import {
 	UsersService,
 	WebhooksService,
 	SharesService,
-} from '../../../../services/';
-import { getService } from '../../../../services/graphql/shared/get-service';
+} from '../../../../../src/services/';
+import { getService } from '../../../../../src/services/graphql/shared/get-service';
 import { userSchema } from '../../../__test-utils__/schemas';
 
 jest.mock('../../../../services/', () => {

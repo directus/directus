@@ -1,6 +1,6 @@
 import { BaseException } from '@directus/shared/exceptions';
 import { GraphQLError } from 'graphql';
-import { formatGQLError } from '../../../../services/graphql/shared/format-gql-error';
+import { formatGQLError } from '../../../../../src/services/graphql/shared/format-gql-error';
 
 describe('formatGQLError', () => {
 	// Are these tests worth anything besides the hundo coverage?

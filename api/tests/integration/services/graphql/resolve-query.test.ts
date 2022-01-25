@@ -1,4 +1,4 @@
-import { ResolveQuery } from '../../../services/graphql/resolve-query';
+import { ResolveQuery } from '../../../../src/services/graphql/resolve-query';
 import { MockClient } from 'knex-mock-client';
 import { userSchema } from '../../__test-utils__/schemas';
 import knex from 'knex';

@@ -1,4 +1,4 @@
-import { parseArgs } from '../../../../services/graphql/shared/parse-args';
+import { parseArgs } from '../../../../../src/services/graphql/shared/parse-args';
 
 describe('parseArgs', () => {
 	it('returns the name and value of the StringValue', () => {

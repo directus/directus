@@ -262,7 +262,7 @@ export class FieldsService {
 				if (table) {
 					this.addColumnToTable(table, hookAdjustedField as Field);
 				} else {
-					await this.knex.transaction(async (schemaTrx) => {
+					await trx.transaction(async (schemaTrx) => {
 						await schemaTrx.schema.alterTable(collection, (table) => {
 							this.addColumnToTable(table, hookAdjustedField as Field);
 						});
@@ -486,7 +486,7 @@ export class FieldsService {
 				field in this.schema.collections[collection].fields &&
 				this.schema.collections[collection].fields[field].alias === false
 			) {
-				await this.knex.transaction(async (schemaTrx) => {
+				await trx.transaction(async (schemaTrx) => {
 					await schemaTrx.schema.table(collection, (table) => {
 						table.dropColumn(field);
 					});
