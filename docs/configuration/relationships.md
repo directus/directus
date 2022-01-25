@@ -258,7 +258,7 @@ Below is an example of a M2A relationship:
 pages (Collection)
 - id
 - name
-- *sections* (O2M/M2A alias field that lists references from "sections")
+- *sections* (O2M/M2A alias field that lists references from "page_sections")
 
 page_sections (Junction Collection)
 - id
