@@ -150,7 +150,7 @@ fields and relationships will then be automatically created and configured.
 ![Translations](../assets/guides/fields/translations-2.png)
 
 If you choose to switch to **manual setup**, you will be presented with a similar relationship setup to O2M or M2M. The
-parent collection and primary key are know, so those fields are disabled.
+parent collection and primary key are known, so those fields are disabled.
 
 Next, we configure the Translation Collection. Set to "Auto Fill" by default, this will enter intelligent naming based
 on related names, and disables all fields. Disabling Auto Fill will enable all fields, allowing you to name the
