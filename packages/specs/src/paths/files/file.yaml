@@ -4,6 +4,9 @@ get:
   tags:
     - Files
   operationId: getFile
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
     '200':
       description: Successful request
@@ -23,11 +26,36 @@ patch:
   tags:
     - Files
   operationId: updateFile
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       application/json:
         schema:
           type: object
+          properties:
+            title:
+              description: Title for the file. Is extracted from the filename on upload, but can be edited by the user.
+              example: User Avatar
+              type: string
+            description:
+              description: Description for the file.
+              type: string
+              nullable: true
+            folder:
+              description: Virtual folder where this file resides in.
+              example: null
+              oneOf:
+                - type: string
+                - $ref: '../../openapi.yaml#/components/schemas/Folders'
+              nullable: true
+            tags:
+              description: Tags for the file. Is automatically populated based on EXIF data for images.
+              type: array
+              nullable: true
+              items:
+                type: string
   responses:
     '200':
       description: Successful request
@@ -53,4 +81,4 @@ delete:
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Id'
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'
