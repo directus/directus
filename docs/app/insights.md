@@ -24,7 +24,7 @@ insight.
 3. Click "Save".
 4. Click the edit icon in the page header.
 5. Hit the "Create Panel" (`+`) in the page header.
-6. Select a Panel type.
+6. Select a Panel type. [Learn More about panel types.](#panels-overview)
 7. Adjust the Panel Options to customize the analytics metric.
 
 ## Dashboards Overview
