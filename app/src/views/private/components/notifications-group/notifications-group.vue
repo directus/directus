@@ -1,5 +1,5 @@
 <template>
-	<transition-group class="notifications-group" name="slide-fade" tag="div">
+	<transition-group class="notifications-group" :class="{ 'sidebar-open': !dense }" name="slide-fade" tag="div">
 		<slot />
 		<notification-item
 			v-for="(notification, index) in queue"
@@ -47,6 +47,13 @@ export default defineComponent({
 	> *,
 	> :deep(*) {
 		direction: ltr;
+	}
+
+	&.sidebar-open {
+		top: auto;
+		right: 12px;
+		bottom: 76px;
+		left: auto;
 	}
 
 	@media (min-width: 960px) {
