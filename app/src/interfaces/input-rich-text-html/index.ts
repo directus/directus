@@ -153,6 +153,10 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.backcolor',
 							},
 							{
+								value: 'removeformat',
+								text: '$t:wysiwyg_options.removeformat',
+							},
+							{
 								value: 'cut',
 								text: '$t:wysiwyg_options.cut',
 							},
@@ -167,10 +171,6 @@ export default defineInterface({
 							{
 								value: 'remove',
 								text: '$t:wysiwyg_options.remove',
-							},
-							{
-								value: 'removeformat',
-								text: '$t:wysiwyg_options.removeformat',
 							},
 							{
 								value: 'selectall',
