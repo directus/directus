@@ -74,11 +74,12 @@ export const useFieldsStore = defineStore({
 			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
+					const literalInterpolatedTranslation = translation.replace(/([{}@$|])/g, "{'$1'}");
 
 					i18n.global.mergeLocaleMessage(language, {
 						fields: {
 							[field.collection]: {
-								[field.field]: translation,
+								[field.field]: literalInterpolatedTranslation,
 							},
 						},
 					});
