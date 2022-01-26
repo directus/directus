@@ -563,6 +563,8 @@ update_collection_success: Zaktualizowana kolekcja
 delete_collection_success: Usunięta kolekcja
 make_collection_visible: Spraw, aby kolekcja była widoczna
 make_collection_hidden: Spraw, aby kolekcja była ukryta
+make_folder_visible: Uwidocznij folder
+make_folder_hidden: Ukryj folder
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
@@ -1249,6 +1251,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
