@@ -169,7 +169,7 @@ In order to use this Panel, your Collection will need a datetime Field.
 
 - **Collection** – Selects the Collection you want to analyze.
 - **Color** – Sets color of your graph curve.
-- **Group Aggregation** – Selects the type of aggregation to perform.
+- **Group Aggregation** – Selects the type of aggregation to perform. [Learn more.](#more-on-aggregate-functions)
 - **Group Precision** – Sets the time interval to aggregate by _(days, weeks, months, etc.)_.
 - **Date Field** – Selects the datetime Field used along the x-axis.
 - **Date Range** – Selects the time range from which data should be displayed.
