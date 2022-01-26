@@ -6,8 +6,8 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
-import { AbstractServiceOptions, SchemaOverview } from '../../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
 import { Url } from '../../utils/url';
@@ -48,12 +48,12 @@ export class MailService {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
-		const from = options.from || (env.EMAIL_FROM as string);
+		const defaultTemplateData = await this.getDefaultTemplateData();
+
+		const from = `${defaultTemplateData.projectName} <${options.from || (env.EMAIL_FROM as string)}>`;
 
 		if (template) {
 			let templateData = template.data;
-
-			const defaultTemplateData = await this.getDefaultTemplateData();
 
 			templateData = {
 				...defaultTemplateData,

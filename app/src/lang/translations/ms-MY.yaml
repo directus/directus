@@ -60,7 +60,6 @@ length: Panjang
 readonly: Baca Sahaja
 unique: Unik
 primary_key: Kunci Utama
-clear_value: Kosongkan nilai
 page_not_found: Halaman Tidak Dijumpai
 page_not_found_body: Halaman yang anda cari tidak wujud
 title: Tajuk
@@ -155,6 +154,11 @@ fields:
     role: Peranan
   directus_settings:
     project_name: Nama Projek
+    module_bar: Modul.bar
+  directus_shares:
+    name: Nama
+    role: Peranan
+    password: Katalaluan
   directus_fields:
     note: Nota
     translation: Terjemahan nama bidang
@@ -165,6 +169,7 @@ fields:
     name: Nama
     status: Status
     value: Nilai
+    collections: Koleksi-koleksi
 field_options:
   directus_activity:
     create: Cipta
@@ -228,6 +233,10 @@ displays:
     collection: Koleksi
   file:
     file: Fail
+  formatted-value:
+    prefix: Awalan
+    suffix: Akhiran
+    text: Teks
   user:
     avatar: Avatar
     name: Nama

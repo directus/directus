@@ -42,9 +42,7 @@ export default function useRelation(collection: Ref<string>, field: Ref<string>)
 	const relation = computed(() => {
 		return relations.value.find(
 			(relation) =>
-				relation.collection === junction.value.collection &&
-				relation.field !== junction.value.field &&
-				relation.field === junction.value.meta?.junction_field
+				relation.collection === junction.value.collection && relation.field === junction.value.meta?.junction_field
 		) as Relation;
 	});
 

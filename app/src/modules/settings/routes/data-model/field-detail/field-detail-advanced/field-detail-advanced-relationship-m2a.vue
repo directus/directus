@@ -62,7 +62,12 @@
 
 		<div class="sort-field">
 			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
-			<related-field-select v-model="sortField" :collection="junctionCollection" :placeholder="t('add_sort_field')" />
+			<related-field-select
+				v-model="sortField"
+				:collection="junctionCollection"
+				:placeholder="t('add_sort_field')"
+				:nullable="true"
+			/>
 		</div>
 
 		<div class="relational-triggers">

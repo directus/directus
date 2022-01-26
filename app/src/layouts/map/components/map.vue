@@ -11,7 +11,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibre, {
 	MapboxGeoJSONFeature,
 	MapLayerMouseEvent,
-	AttributionControl,
 	NavigationControl,
 	GeolocateControl,
 	LngLatBoundsLike,
@@ -20,12 +19,14 @@ import maplibre, {
 	LngLatLike,
 	AnyLayer,
 	Map,
+	AttributionControl,
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, toRefs, computed, WatchStopHandle } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { ShowSelect } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { useAppStore } from '@/stores';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
@@ -62,6 +63,10 @@ export default defineComponent({
 			type: Array as PropType<Array<string | number>>,
 			default: () => [],
 		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'multiple',
+		},
 	},
 	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata', 'updateitempopup'],
 	setup(props, { emit }) {
@@ -81,7 +86,7 @@ export default defineComponent({
 			return getStyleFromBasemapSource(source);
 		});
 
-		const attributionControl = new AttributionControl({ compact: true });
+		const attributionControl = new AttributionControl();
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
@@ -120,8 +125,8 @@ export default defineComponent({
 			map = new Map({
 				container: 'map-container',
 				style: style.value,
-				attributionControl: false,
 				dragRotate: false,
+				attributionControl: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -129,7 +134,7 @@ export default defineComponent({
 			if (geocoderControl) {
 				map.addControl(geocoderControl as any, 'top-right');
 			}
-			map.addControl(attributionControl, 'top-right');
+			map.addControl(attributionControl, 'bottom-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
@@ -254,7 +259,7 @@ export default defineComponent({
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
-			const replace = !event.originalEvent.altKey;
+			const replace = props.showSelect === 'multiple' ? false : !event.originalEvent.altKey;
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
 					emit('featureselect', { ids: [feature.id], replace });

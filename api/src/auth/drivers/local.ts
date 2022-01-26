@@ -1,14 +1,15 @@
 import { Router } from 'express';
 import argon2 from 'argon2';
-import ms from 'ms';
 import Joi from 'joi';
 import { AuthDriver } from '../auth';
-import { User, SessionData } from '../../types';
+import { User } from '../../types';
 import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
 import { AuthenticationService } from '../../services';
 import asyncHandler from '../../utils/async-handler';
 import env from '../../env';
 import { respond } from '../../middleware/respond';
+import { COOKIE_OPTIONS } from '../../constants';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
@@ -35,16 +36,15 @@ export class LocalAuthDriver extends AuthDriver {
 		}
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
+	async login(user: User, payload: Record<string, any>): Promise<void> {
 		await this.verify(user, payload.password);
-		return null;
 	}
 }
 
 export function createLocalAuthRouter(provider: string): Router {
 	const router = Router();
 
-	const loginSchema = Joi.object({
+	const userLoginSchema = Joi.object({
 		email: Joi.string().email().required(),
 		password: Joi.string().required(),
 		mode: Joi.string().valid('cookie', 'json'),
@@ -55,7 +55,7 @@ export function createLocalAuthRouter(provider: string): Router {
 		'/',
 		asyncHandler(async (req, res, next) => {
 			const accountability = {
-				ip: req.ip,
+				ip: getIPFromReq(req),
 				userAgent: req.get('user-agent'),
 				role: null,
 			};
@@ -65,7 +65,7 @@ export function createLocalAuthRouter(provider: string): Router {
 				schema: req.schema,
 			});
 
-			const { error } = loginSchema.validate(req.body);
+			const { error } = userLoginSchema.validate(req.body);
 
 			if (error) {
 				throw new InvalidPayloadException(error.message);
@@ -88,13 +88,7 @@ export function createLocalAuthRouter(provider: string): Router {
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
-					httpOnly: true,
-					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
-				});
+				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
 			}
 
 			res.locals.payload = payload;

@@ -5,6 +5,7 @@ columns:
     type: string
     length: 64
     primary: true
+    nullable: false
   icon:
     type: string
     length: 30

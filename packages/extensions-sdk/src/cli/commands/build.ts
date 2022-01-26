@@ -26,7 +26,16 @@ import { getLanguageFromPath, isLanguage } from '../utils/languages';
 import { Language } from '../types';
 import loadConfig from '../utils/load-config';
 
-type BuildOptions = { type: string; input: string; output: string; language: string; force: boolean; watch: boolean };
+type BuildOptions = {
+	type: string;
+	input: string;
+	output: string;
+	language: string;
+	force: boolean;
+	watch: boolean;
+	minify: boolean;
+	sourcemap: boolean;
+};
 
 export default async function build(options: BuildOptions): Promise<void> {
 	const packagePath = path.resolve('package.json');
@@ -79,8 +88,8 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 	const spinner = ora('Building Directus extension...').start();
 
-	const rollupOptions = getRollupOptions(type, language, input, config.plugins);
-	const rollupOutputOptions = getRollupOutputOptions(type, output);
+	const rollupOptions = getRollupOptions(type, language, input, config.plugins, options);
+	const rollupOutputOptions = getRollupOutputOptions(type, output, options);
 
 	if (options.watch) {
 		const watcher = rollupWatch({
@@ -127,7 +136,8 @@ function getRollupOptions(
 	type: ExtensionType,
 	language: Language,
 	input: string,
-	plugins: Plugin[] = []
+	plugins: Plugin[] = [],
+	options: BuildOptions
 ): RollupOptions {
 	if (isAppExtension(type)) {
 		return {
@@ -139,7 +149,7 @@ function getRollupOptions(
 				styles(),
 				...plugins,
 				nodeResolve({ browser: true }),
-				commonjs({ esmExternals: true, sourceMap: false }),
+				commonjs({ esmExternals: true, sourceMap: options.sourcemap }),
 				json(),
 				replace({
 					values: {
@@ -147,7 +157,7 @@ function getRollupOptions(
 					},
 					preventAssignment: true,
 				}),
-				terser(),
+				options.minify ? terser() : null,
 			],
 		};
 	} else {
@@ -158,7 +168,7 @@ function getRollupOptions(
 				language === 'typescript' ? typescript({ check: false }) : null,
 				...plugins,
 				nodeResolve(),
-				commonjs({ sourceMap: false }),
+				commonjs({ sourceMap: options.sourcemap }),
 				json(),
 				replace({
 					values: {
@@ -166,23 +176,27 @@ function getRollupOptions(
 					},
 					preventAssignment: true,
 				}),
-				terser(),
+				options.minify ? terser() : null,
 			],
 		};
 	}
 }
 
-function getRollupOutputOptions(type: ExtensionType, output: string): RollupOutputOptions {
+function getRollupOutputOptions(type: ExtensionType, output: string, options: BuildOptions): RollupOutputOptions {
 	if (isAppExtension(type)) {
 		return {
 			file: output,
 			format: 'es',
+			inlineDynamicImports: true,
+			sourcemap: options.sourcemap,
 		};
 	} else {
 		return {
 			file: output,
 			format: 'cjs',
 			exports: 'default',
+			inlineDynamicImports: true,
+			sourcemap: options.sourcemap,
 		};
 	}
 }

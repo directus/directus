@@ -190,9 +190,24 @@ export default defineComponent({
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	padding-bottom: 24px;
+}
+
+.field-select {
+	margin: 4px;
+}
+
+.field-select:deep(.field-grid) {
+	grid-gap: 0;
+}
+
+.field-select:deep(.field-grid.group.full.nested) {
+	margin: 4px 0;
+
+	.field-select {
+		margin: 4px;
+	}
 }
 
 .add-field {

@@ -175,7 +175,7 @@ App's soft-delete and manual sorting features.
 ### Delete (Custom Access)
 
 5. **Item Permissions** control which items can be deleted, as defined by the
-   [Filter Rules](/configuration/filter-rules/)) entered.
+   [Filter Rules](/configuration/filter-rules/) entered.
 
 ---
 

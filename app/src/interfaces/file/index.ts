@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceFile from './file.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'file',
@@ -27,4 +28,5 @@ export default defineInterface({
 		},
 	],
 	recommendedDisplays: ['file'],
+	preview: PreviewSVG,
 });
