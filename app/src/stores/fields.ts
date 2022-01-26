@@ -75,10 +75,13 @@ export const useFieldsStore = defineStore({
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
+					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
+					const literalInterpolatedTranslation = translation.replace(/([{}@$|])/g, "{'$1'}");
+
 					i18n.global.mergeLocaleMessage(language, {
 						fields: {
 							[field.collection]: {
-								[field.field]: translation,
+								[field.field]: literalInterpolatedTranslation,
 							},
 						},
 					});
