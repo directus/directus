@@ -221,7 +221,7 @@ This pane controls the technical details of the field's database column.
   changed once created, however you can use [Field Name Translations](/configuration/data-model/#field) to override how
   it's displayed in the App.
 - **Type** — (Required) How the data is saved to the database; See
-  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown maybe be limited or even
+  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown may be limited or even
   disabled based on your chosen Field category.
 - **Length** — (Only for certain types) For String types this determines the number of characters that can be stored in
   the database. For Float and Decimal types, this control becomes **Precision & Scale**.

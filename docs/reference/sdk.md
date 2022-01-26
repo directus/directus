@@ -402,8 +402,6 @@ again.
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#options.storage.prefix) for each
 one.
 
-When using
-
 ## Items
 
 You can get an instance of the item handler by providing the collection (and type, in the case of TypeScript) to the

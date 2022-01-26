@@ -71,7 +71,7 @@ AUTH_GOOGLE_DEFAULT_ROLE_ID="XXXX" # Replace XXXX with the role ID you would wan
 
 ## Seamless SSO
 
-While sometimes you want your users to directly have access to Directus Application, in other cases you may need to
+While sometimes you want your users to directly have access to the Directus Application, in other cases you may need to
 fetch private data from Directus in your client using external providers. In this cases, it is needed a special
 configuration to work across domains, but is simple as:
 

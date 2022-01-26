@@ -15,7 +15,7 @@ installations.
 ## REST vs. GraphQL
 
 **There is no difference in the functionality available between the REST and GraphQL endpoints.** The functionality
-available in both is mapped to same set of core services, meaning that you don't lose any performance or capabilities by
+available in both is mapped to the same set of core services, meaning that you don't lose any performance or capabilities by
 choosing one or the other.
 
 Which one you choose is ultimately up to you.
@@ -252,8 +252,8 @@ Useful reading:
 ## System data in GraphQL
 
 Due to restrictions in GraphQL itself, it's impossible to properly scope/namespace system functionality from regular
-data access. In order to prevent any naming conflicts between user-created and system data, we've scoped the access to
-the two into two endpoints for user and system data respectively: `/graphql` and `/graphql/system`. Both endpoints share
+data access. In order to prevent any naming conflicts between user-created and system data, we've scoped the access of
+the two into separate endpoints for user and system data respectively: `/graphql` and `/graphql/system`. Both endpoints share
 the same underlying schema, so **nested relations will work as expected** regardless if they "cross over" between user
 and system data. The only difference in the two endpoints are the root query and mutation fields available.
 
