@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('project_language').notNullable().defaultTo('en-US');
 	});
 	await knex.schema.alterTable('directus_users', (table) => {
-		table.string('language').defaultTo(null).alter();
+		table.string('language').defaultTo(null);
 	});
 }
 
@@ -14,6 +14,6 @@ export async function down(knex: Knex): Promise<void> {
 		table.dropColumn('project_language');
 	});
 	await knex.schema.alterTable('directus_users', (table) => {
-		table.string('language').defaultTo('en-US').alter();
+		table.string('language').defaultTo('en-US');
 	});
 }
