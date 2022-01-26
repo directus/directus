@@ -28,11 +28,6 @@ properties:
     description: Whether or not this role enforces the use of 2FA.
     example: false
     type: boolean
-  collection_list:
-    description: Custom override for the admin app collection navigation.
-    example: null
-    type: object
-    nullable: true
   admin_access:
     description: Admin role. If true, skips all permission checks.
     example: false

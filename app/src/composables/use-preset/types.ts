@@ -1,14 +1,9 @@
-export type Filter = {
-	locked?: boolean;
-	field: string;
-	operator: string;
-	value: string | number;
-};
+import { Filter } from '@directus/shared/types';
 
 export type Preset = {
 	id: number;
 	collection: string;
-	filters: null | Filter[];
+	filter: Filter | null;
 	role: number | null;
 	search: string | null;
 	title: string | null;

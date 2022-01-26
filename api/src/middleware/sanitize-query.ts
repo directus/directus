@@ -7,7 +7,7 @@ import { RequestHandler } from 'express';
 import { sanitizeQuery } from '../utils/sanitize-query';
 import { validateQuery } from '../utils/validate-query';
 
-const sanitizeQueryMiddleware: RequestHandler = (req, res, next) => {
+const sanitizeQueryMiddleware: RequestHandler = (req, _res, next) => {
 	req.sanitizedQuery = {};
 	if (!req.query) return;
 

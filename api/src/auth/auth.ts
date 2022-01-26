@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-
+import { SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
-import { User, SessionData } from '../types';
+import { AuthDriverOptions, User } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;
+	schema: SchemaOverview;
 
-	constructor(knex: Knex, _config: Record<string, any>) {
-		this.knex = knex;
+	constructor(options: AuthDriverOptions, _config: Record<string, any>) {
+		this.knex = options.knex;
+		this.schema = options.schema;
 	}
 
 	/**
@@ -36,29 +37,26 @@ export abstract class AuthDriver {
 	 * @throws InvalidCredentialsException
 	 * @returns Data to be stored with the session
 	 */
-	async login(_user: User, _payload: Record<string, any>): Promise<SessionData> {
-		/* Optional, though should probably be set */
-		return null;
+	async login(_user: User, _payload: Record<string, any>): Promise<void> {
+		return;
 	}
 
 	/**
 	 * Handle user session refresh
 	 *
 	 * @param _user User information
-	 * @param _sessionData Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async refresh(_user: User, _sessionData: SessionData): Promise<void> {
-		/* Optional */
+	async refresh(_user: User): Promise<void> {
+		return;
 	}
 
 	/**
 	 * Handle user session termination
 	 *
 	 * @param _user User information
-	 * @param _sessionData Session data
 	 */
-	async logout(_user: User, _sessionData: SessionData): Promise<void> {
-		/* Optional */
+	async logout(_user: User): Promise<void> {
+		return;
 	}
 }

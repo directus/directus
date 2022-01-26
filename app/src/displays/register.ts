@@ -25,12 +25,10 @@ export async function registerDisplays(app: App): Promise<void> {
 	displaysRaw.value = displays;
 
 	displaysRaw.value.forEach((display: DisplayConfig) => {
-		if (typeof display.handler !== 'function') {
-			app.component('display-' + display.id, display.handler);
-		}
+		app.component(`display-${display.id}`, display.component);
 
-		if (typeof display.options !== 'function' && display.options !== null) {
-			app.component('display-options-' + display.id, display.options);
+		if (typeof display.options !== 'function' && Array.isArray(display.options) === false && display.options !== null) {
+			app.component(`display-options-${display.id}`, display.options);
 		}
 	});
 }

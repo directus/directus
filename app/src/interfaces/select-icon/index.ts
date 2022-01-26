@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectIcon from './select-icon.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'select-icon',
@@ -8,6 +9,8 @@ export default defineInterface({
 	icon: 'insert_emoticon',
 	component: InterfaceSelectIcon,
 	types: ['string'],
+	group: 'selection',
 	options: [],
 	recommendedDisplays: ['icon'],
+	preview: PreviewSVG,
 });

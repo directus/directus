@@ -1,7 +1,7 @@
 <template>
 	<div class="repeater">
 		<v-notice v-if="!value || value.length === 0">
-			{{ t('no_items') }}
+			{{ placeholder }}
 		</v-notice>
 
 		<v-list v-if="value && value.length > 0">
@@ -51,6 +51,7 @@
 					:disabled="disabled"
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
+					autofocus
 					primary-key="+"
 					@update:model-value="trackEdits($event)"
 				/>
@@ -100,7 +101,7 @@ export default defineComponent({
 		},
 		addLabel: {
 			type: String,
-			default: i18n.global.t('create_new'),
+			default: () => i18n.global.t('create_new'),
 		},
 		limit: {
 			type: Number,
@@ -112,11 +113,15 @@ export default defineComponent({
 		},
 		headerPlaceholder: {
 			type: String,
-			default: i18n.global.t('empty_item'),
+			default: () => i18n.global.t('empty_item'),
 		},
 		collection: {
 			type: String,
 			default: null,
+		},
+		placeholder: {
+			type: String,
+			default: () => i18n.global.t('no_items'),
 		},
 	},
 	emits: ['input'],
@@ -127,7 +132,9 @@ export default defineComponent({
 		const drawerOpen = computed(() => active.value !== null);
 		const { value } = toRefs(props);
 
-		const templateWithDefaults = computed(() => props.template || `{{${props.fields[0].field}}}`);
+		const templateWithDefaults = computed(() =>
+			props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : ''
+		);
 
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
@@ -157,7 +164,7 @@ export default defineComponent({
 			props.fields?.map((field) => {
 				return {
 					...field,
-					name: formatTitle(field.field!),
+					name: formatTitle(field.name ?? field.field!),
 				};
 			})
 		);
@@ -207,7 +214,8 @@ export default defineComponent({
 		}
 
 		function trackEdits(updatedValues: any) {
-			Object.assign(edits.value, updatedValues);
+			const combinedValues = Object.assign({}, defaults.value, updatedValues);
+			Object.assign(edits.value, combinedValues);
 		}
 
 		function checkDiscard() {
@@ -249,7 +257,6 @@ export default defineComponent({
 			const newDefaults: any = {};
 
 			props.fields.forEach((field) => {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
 
@@ -264,7 +271,7 @@ export default defineComponent({
 		}
 
 		function emitValue(value: null | any[]) {
-			if (value === null || value.length === 0) {
+			if (!value || value.length === 0) {
 				return emit('input', null);
 			}
 
@@ -284,6 +291,7 @@ export default defineComponent({
 				emitValue(props.value.slice(0, -1));
 			}
 
+			edits.value = {};
 			active.value = null;
 		}
 	},

@@ -29,9 +29,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, PropType } from 'vue';
+import { defineComponent, ref, watchEffect, computed, PropType } from 'vue';
 import api from '@/api';
-import { isEqual } from 'lodash';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import DrawerItem from '@/views/private/components/drawer-item';
@@ -96,16 +95,7 @@ export default defineComponent({
 
 		const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 
-		fetchData();
-
-		watch(
-			() => props,
-			(newOptions, oldOptions) => {
-				if (isEqual(newOptions, oldOptions)) return;
-				fetchData();
-			},
-			{ deep: true, immediate: true }
-		);
+		watchEffect(async () => await fetchData());
 
 		return {
 			list,

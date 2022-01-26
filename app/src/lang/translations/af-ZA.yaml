@@ -19,14 +19,33 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifiseerder
 avatar: Profiel prentjie
+default_provider: Verstek
+published: Gepubliseer
+draft: Draft
+archived: Geargiveer
+modules: Modules
+module_bar: Modulebalk
+tile_size: Teëlgrootte
+edit_field: Wysig veld
+conditions: Voorwaardes
+maps: Kaarte
+switch_user: Verander gebruiker
+item_creation: Item skepping
+item_revision: Item Hersiening
+enter_a_name: Voer 'n naam in...
+duplicate_field: Dupliseer veld
+half_width: Halwe breedte
+full_width: Volle breedte
+and: En
+or: Of
 create_role: Skep Rol
 language: Taal
 create_field: Skep Veld
 auto_generate: Auto-Genereer
 add_note: Voeg 'n nuttige nota vir gebruikers...
 default_value: Standaard Waarde
-clear_value: Vee waarde uit
 title: Titel
 checksum: Kontrolesom
 owner: Eienaar
@@ -36,6 +55,9 @@ comments: Kommentaar
 create_collection: Skep Versameling
 users: Gebruikers
 activity: Aktiwiteit
+action: Aksie
+ip_address: IP Adres
+user_agent: Gebruiker Agent
 duration: Tydsduur
 status: Status
 bookmarks: Boekmerke
@@ -97,6 +119,11 @@ fields:
     tfa_secret: Twee-Faktor Verifikasie
     status: Status
     role: Rol
+  directus_settings:
+    module_bar: Modulebalk
+  directus_shares:
+    role: Rol
+    password: Wagwoord
   directus_fields:
     display_template: Modelvorm
   directus_roles:
@@ -116,6 +143,8 @@ email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
+  filter:
+    all: Alle
   input-code:
     code: Kode
   system-collection:

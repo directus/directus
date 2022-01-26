@@ -1,6 +1,8 @@
 <template>
 	<private-view :title="collectionInfo && collectionInfo.name">
-		<template #headline>{{ t('settings_data_model') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
 				<v-icon name="arrow_back" />
@@ -104,10 +106,10 @@ import { useCollection } from '@directus/shared/composables';
 import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -142,7 +144,10 @@ export default defineComponent({
 			collection
 		);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const hasEdits = computed<boolean>(() => {
+			if (!edits.value.meta) return false;
+			return Object.keys(edits.value.meta).length > 0;
+		});
 
 		useShortcut('meta+s', () => {
 			if (hasEdits.value) saveAndStay();
@@ -150,25 +155,7 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -189,7 +176,6 @@ export default defineComponent({
 			deleteAndQuit,
 			saveAndQuit,
 			hasEdits,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
@@ -199,7 +185,7 @@ export default defineComponent({
 			await remove();
 			await collectionsStore.hydrate();
 			await fieldsStore.hydrate();
-			router.push(`/settings/data-model`);
+			router.replace(`/settings/data-model`);
 		}
 
 		async function saveAndStay() {

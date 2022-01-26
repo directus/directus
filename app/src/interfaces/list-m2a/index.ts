@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceListM2A from './list-m2a.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'list-m2a',
@@ -8,7 +9,8 @@ export default defineInterface({
 	component: InterfaceListM2A,
 	relational: true,
 	types: ['alias'],
-	groups: ['m2a'],
+	localTypes: ['m2a'],
+	group: 'relational',
 	options: [
 		{
 			field: 'enableSelect',
@@ -39,4 +41,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

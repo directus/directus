@@ -4,6 +4,7 @@ import env from '../env';
 interface AuthProvider {
 	name: string;
 	driver: string;
+	icon?: string;
 }
 
 export function getAuthProviders(): AuthProvider[] {
@@ -12,5 +13,6 @@ export function getAuthProviders(): AuthProvider[] {
 		.map((provider) => ({
 			name: provider,
 			driver: env[`AUTH_${provider.toUpperCase()}_DRIVER`],
+			icon: env[`AUTH_${provider.toUpperCase()}_ICON`],
 		}));
 }

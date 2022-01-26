@@ -2,7 +2,7 @@ import { isEmpty, notEmpty } from '@/utils/is-empty/';
 import { isEqual } from 'lodash';
 import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 
-type GroupableInstance = {
+export type GroupableInstance = {
 	active: Ref<boolean>;
 	value: string | number | undefined;
 };
@@ -48,13 +48,20 @@ export function useGroupable(options?: GroupableOptions): UsableGroupable {
 		register,
 		unregister,
 		toggle,
+		selection,
 	}: {
 		register: (item: GroupableInstance) => void;
 		unregister: (item: GroupableInstance) => void;
 		toggle: (item: GroupableInstance) => void;
+		selection: Ref<(number | string)[]>;
 	} = parentFunctions;
 
-	const active = ref(options?.active?.value === true ? true : false);
+	let startActive = false;
+
+	if (options?.active?.value === true) startActive = true;
+	if (options?.value && selection.value.includes(options.value)) startActive = true;
+
+	const active = ref(startActive);
 	const item = { active, value: options?.value };
 
 	register(item);
@@ -94,6 +101,7 @@ export function useGroupable(options?: GroupableOptions): UsableGroupable {
 type GroupableParentState = {
 	selection?: Ref<(string | number)[] | undefined> | Ref<readonly (string | number)[] | undefined>;
 	onSelectionChange?: (newSelectionValues: readonly (string | number)[]) => void;
+	onToggle?: (item: GroupableInstance) => void;
 };
 
 type GroupableParentOptions = {
@@ -147,11 +155,11 @@ export function useGroupableParent(
 
 	// Provide the needed functions to all children groupable components. Note: nested item groups
 	// will override the item-group namespace, making nested item groups possible.
-	provide(group, { register, unregister, toggle });
+	provide(group, { register, unregister, toggle, selection });
 
 	// Whenever the value of the selection changes, we have to update all the children's internal
 	// states. If not, you can have an activated item that's not actually active.
-	watch(selection, updateChildren);
+	watch(selection, updateChildren, { immediate: true });
 
 	// It takes a tick before all children are rendered, this will make sure the start state of the
 	// children matches the start selection
@@ -201,6 +209,10 @@ export function useGroupableParent(
 			toggleMultiple(item);
 		} else {
 			toggleSingle(item);
+		}
+
+		if (notEmpty(state.onToggle)) {
+			state.onToggle(item);
 		}
 	}
 

@@ -19,34 +19,69 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identificator
 avatar: Avatar
+application: Aplicație
+default_provider: Implicit
+published: Publicat
+draft: Ciornă
+archived: Arhivat
+modules: Module
+module_bar: Bară module
+tile_size: Dimensiune titlu
 edit_field: Editează câmp
+conditions: Condiții
+maps: Hărţi
+switch_user: Schimbă utilizatorul
+item_creation: Creare articol
 item_revision: Revizuire element
+enter_a_name: Introduceți un nume...
 duplicate_field: Duplicare câmp
 half_width: Jumătate de lăţime
 full_width: Lăţime totală
+group: Grup
+and: Şi
+or: Sau
 fill_width: Umple lăţime
 field_name_translations: Traducerile numelui câmpului
 enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
 add_field: Adaugă câmp
 role_name: Nume de rol
-db_only_click_to_configure: 'Doar baza de date: Apăsaţi pentru a configura '
+branch: Ramură
+leaf: Frunză
+indeterminate: Nedeterminat
+edit_collection: Editează colecția
+exclusive: Exclusiv
+children: Copii
+db_only_click_to_configure: 'Doar baza de date: apăsați pentru configurare'
+show_active_items: Afișează elementele active
 show_archived_items: Arată elementele arhivate
+show_all_items: Afișează toate elementele
+edited: Valoare editată
 required: Necesar
+required_for_app_access: Necesar pentru acces aplicaţie
 requires_value: Necesită valoare
 create_preset: Creează presetare
+create_panel: Creează panou
 create_role: Creează Rol
 create_user: Creează utilizator
+delete_panel: Șterge panou
 create_webhook: Creează Webhook
 invite_users: Invită utilizatori
 invite: Invită
+email_already_invited: Adresa "{email}" a fost deja invitată
+subject: Subiect
+inbox: Inbox
 emails: E-mailuri
 connection_excellent: Conexiune excelentă
 connection_good: Conexiune bună
 connection_fair: Conexiune rezonabilă
 connection_poor: Conexiune slabă
+primary: Principal
 rename_folder: Redenumeşte folderul
 delete_folder: Şterge folderul
+prefix: Prefix
+suffix: Sufix
 reset_bookmark: Resetează semnul de carte
 rename_bookmark: Redenumeşte semnul de carte
 update_bookmark: Actualizează semnul de carte
@@ -56,7 +91,9 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
+public_label: Public
 public_description: Controlează ce date API sunt disponibile fără autentificare.
+admin_description: Rol administrativ inițial cu acces fără restricții la aplicație/API.
 not_allowed: Nu este permis
 directus_version: Versiune Directus
 node_version: Versiune Node
@@ -76,7 +113,6 @@ create_field: Creează Câmp
 auto_generate: Generare automată
 add_note: Adaugă o notă ajutătoare pentru utilizatori...
 default_value: Valoare implicită
-clear_value: Șterge valoarea
 title: Titlu
 checksum: Sumă de control
 owner: Proprietar
@@ -87,6 +123,9 @@ comments: Comentarii
 create_collection: Creează Colecție
 users: Utilizatori
 activity: Activitate
+action: Acţiune
+ip_address: Adresă IP
+user_agent: User Agent
 duration: Durată
 status: Stare
 bookmarks: Semne de carte
@@ -155,6 +194,11 @@ fields:
     tfa_secret: Autentificare în doi pași
     status: Stare
     role: Rol
+  directus_settings:
+    module_bar: Bară module
+  directus_shares:
+    role: Rol
+    password: Parolă
   directus_fields:
     hidden: Ascuns
     translation: Traducerile numelui câmpului
@@ -163,6 +207,7 @@ fields:
     description: Descriere
   directus_webhooks:
     status: Stare
+    collections: Colecții
 field_options:
   directus_activity:
     create: Creează
@@ -188,6 +233,10 @@ icon: Iconiță
 info: Info
 password: Parolă
 interfaces:
+  filter:
+    all: Tot
+  presentation-links:
+    primary: Principal
   system-collection:
     collection: Colecție
   system-collections:
@@ -201,6 +250,10 @@ interfaces:
 displays:
   collection:
     collection: Colecție
+  formatted-value:
+    prefix: Prefix
+    suffix: Sufix
+    icon: Iconiță
   icon:
     icon: Iconiță
   user:

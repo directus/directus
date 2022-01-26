@@ -1,14 +1,7 @@
 import { BaseStorage } from './base';
 
 export class MemoryStorage extends BaseStorage {
-	private prefix: string;
-	private values: Record<string, string>;
-
-	constructor(prefix = '') {
-		super();
-		this.values = {};
-		this.prefix = prefix;
-	}
+	private values: Record<string, string> = {};
 
 	get(key: string): string | null {
 		const k = this.key(key);

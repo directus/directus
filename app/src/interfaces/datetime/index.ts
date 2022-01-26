@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceDateTime from './datetime.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'datetime',
@@ -8,31 +9,42 @@ export default defineInterface({
 	icon: 'today',
 	component: InterfaceDateTime,
 	types: ['dateTime', 'date', 'time', 'timestamp'],
-	options: [
-		{
-			field: 'includeSeconds',
-			name: '$t:interfaces.datetime.include_seconds',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
+	group: 'selection',
+	options: ({ field }) => {
+		if (field.type === 'date') {
+			if (field.meta?.options) {
+				field.meta.options = {};
+			}
+			return [];
+		}
+
+		return [
+			{
+				field: 'includeSeconds',
+				name: '$t:interfaces.datetime.include_seconds',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
+					default_value: false,
+				},
 			},
-			schema: {
-				default_value: false,
+			{
+				field: 'use24',
+				name: '$t:interfaces.datetime.use_24',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
+					default_value: true,
+				},
 			},
-		},
-		{
-			field: 'use24',
-			name: '$t:interfaces.datetime.use_24',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-			},
-			schema: {
-				default_value: true,
-			},
-		},
-	],
+		];
+	},
 	recommendedDisplays: ['datetime'],
+	preview: PreviewSVG,
 });

@@ -1,6 +1,7 @@
 import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
-import { AbstractServiceOptions, PrimaryKey, Query, Alterations, Item } from '../types';
-import { ItemsService, MutationOptions } from './items';
+import { AbstractServiceOptions, MutationOptions, PrimaryKey, Alterations, Item } from '../types';
+import { Query } from '@directus/shared/types';
+import { ItemsService } from './items';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
 import { UsersService } from './users';
@@ -147,15 +148,5 @@ export class RolesService extends ItemsService {
 
 	deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		return super.deleteByQuery(query, opts);
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		return await this.deleteOne(key);
 	}
 }

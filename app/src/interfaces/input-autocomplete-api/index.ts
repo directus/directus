@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceInputAutocompleteAPI from './input-autocomplete-api.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'input-autocomplete-api',
@@ -8,7 +9,8 @@ export default defineInterface({
 	icon: 'find_in_page',
 	component: InterfaceInputAutocompleteAPI,
 	types: ['string', 'text'],
-	groups: ['standard'],
+	localTypes: ['standard'],
+	group: 'standard',
 	recommendedDisplays: ['formatted-value'],
 	options: [
 		{
@@ -34,6 +36,19 @@ export default defineInterface({
 					placeholder: 'result.predictions',
 					font: 'monospace',
 				},
+				width: 'full',
+			},
+		},
+		{
+			field: 'textPath',
+			name: '$t:interfaces.input-autocomplete-api.text_path',
+			type: 'string',
+			meta: {
+				interface: 'input',
+				options: {
+					placeholder: 'structured_main_text',
+					font: 'monospace',
+				},
 				width: 'half',
 			},
 		},
@@ -44,7 +59,7 @@ export default defineInterface({
 			meta: {
 				interface: 'input',
 				options: {
-					placeholder: 'structured_main_text',
+					placeholder: 'structured_main_value',
 					font: 'monospace',
 				},
 				width: 'half',
@@ -135,4 +150,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

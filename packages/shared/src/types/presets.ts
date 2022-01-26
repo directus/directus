@@ -1,12 +1,4 @@
-import { FilterOperator } from './filter';
-
-export type AppFilter = {
-	key: string;
-	field: string;
-	operator: FilterOperator;
-	value: string;
-	locked?: boolean;
-};
+import { Filter } from './filter';
 
 export type Preset = {
 	id?: number;
@@ -15,7 +7,7 @@ export type Preset = {
 	role: string | null;
 	collection: string;
 	search: string | null;
-	filters: readonly AppFilter[] | null;
+	filter: Filter | null;
 	layout: string | null;
 	layout_query: { [layout: string]: any } | null;
 	layout_options: { [layout: string]: any } | null;

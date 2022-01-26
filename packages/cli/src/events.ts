@@ -1,7 +1,7 @@
 import { Command } from './command';
 import { IOutput } from './output';
 
-export type Listener<T extends any = any, P extends any = any, R = any> =
+export type Listener<T = any, P = any, R = any> =
 	| ((...args: P[]) => Promise<R>)
 	| ((...args: P[]) => R)
 	| ((this: T, ...args: P[]) => Promise<R>)

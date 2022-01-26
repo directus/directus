@@ -3,7 +3,7 @@
  */
 
 import { Accountability } from '@directus/shared/types';
-import { Query } from './query';
+import { Query } from '@directus/shared/types';
 import { SchemaOverview } from './schema';
 
 export {};

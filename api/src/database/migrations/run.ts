@@ -7,16 +7,14 @@ import logger from '../../logger';
 import { Migration } from '../../types';
 import { orderBy } from 'lodash';
 
-export default async function run(database: Knex, direction: 'up' | 'down' | 'latest'): Promise<void> {
+export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
-	migrationFiles = migrationFiles.filter(
-		(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
-	);
+	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
 	customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
@@ -25,6 +23,11 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		...migrationFiles.map((path) => parseFilePath(path)),
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
 	].sort((a, b) => (a.version > b.version ? 1 : -1));
+
+	const migrationKeys = new Set(migrations.map((m) => m.version));
+	if (migrations.length > migrationKeys.size) {
+		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
+	}
 
 	function parseFilePath(filePath: string, custom = false) {
 		const version = filePath.split('-')[0];
@@ -62,7 +65,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { up } = require(nextVersion.file);
 
-		logger.info(`Applying ${nextVersion.name}...`);
+		if (log) {
+			logger.info(`Applying ${nextVersion.name}...`);
+		}
 
 		await up(database);
 		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
@@ -83,7 +88,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { down } = require(migration.file);
 
-		logger.info(`Undoing ${migration.name}...`);
+		if (log) {
+			logger.info(`Undoing ${migration.name}...`);
+		}
 
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
@@ -94,7 +101,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			if (migration.completed === false) {
 				const { up } = require(migration.file);
 
-				logger.info(`Applying ${migration.name}...`);
+				if (log) {
+					logger.info(`Applying ${migration.name}...`);
+				}
 
 				await up(database);
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');

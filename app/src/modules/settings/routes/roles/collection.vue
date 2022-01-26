@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_permissions')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -66,6 +66,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { translate } from '@/utils/translate-object-values';
 
 type Role = {
 	id: number;
@@ -130,7 +131,19 @@ export default defineComponent({
 
 			try {
 				const response = await api.get(`/roles`, {
-					params: { limit: -1, fields: 'id,name,description,icon,users.id', sort: 'name' },
+					params: {
+						limit: -1,
+						fields: ['id', 'name', 'description', 'icon', 'users'],
+						deep: {
+							users: {
+								_aggregate: { count: 'id' },
+								_groupBy: ['role'],
+								_sort: 'role',
+								_limit: -1,
+							},
+						},
+						sort: 'name',
+					},
 				});
 
 				roles.value = [
@@ -143,8 +156,8 @@ export default defineComponent({
 					},
 					...response.data.data.map((role: any) => {
 						return {
-							...role,
-							count: (role.users || []).length,
+							...translate(role),
+							count: role.users[0]?.count.id || 0,
 						};
 					}),
 				];
@@ -155,7 +168,7 @@ export default defineComponent({
 			}
 		}
 
-		function navigateToRole(item: Role) {
+		function navigateToRole({ item }: { item: Role }) {
 			router.push(`/settings/roles/${item.id}`);
 		}
 	},

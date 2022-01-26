@@ -54,7 +54,7 @@ export default defineComponent({
 				}
 			}
 
-			&.large {
+			&.nav {
 				&.three-line,
 				&.two-line {
 					#{$this} {

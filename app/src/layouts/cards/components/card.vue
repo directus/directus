@@ -239,7 +239,7 @@ export default defineComponent({
 				left: 0;
 				width: 100%;
 				height: 100%;
-				background-image: linear-gradient(-180deg, rgba(38, 50, 56, 0.1) 10%, rgba(38, 50, 56, 0));
+				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
 				content: '';
 			}
 		}

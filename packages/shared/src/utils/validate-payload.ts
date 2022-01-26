@@ -45,7 +45,7 @@ export function validatePayload(
 			errors.push(...nestedErrors);
 		}
 	} else {
-		const schema = generateJoi(filter, options);
+		const schema = generateJoi(filter as FieldFilter, options);
 
 		const { error } = schema.validate(payload, { abortEarly: false });
 

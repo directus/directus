@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import { computed, ComputedRef, Ref, ref } from 'vue';
-import { RelationInfo } from './use-relation';
+import { RelationInfo } from '@/composables/use-m2m';
 
 type UsableSelection = {
 	stageSelection: (newSelection: (number | string)[]) => void;
@@ -10,6 +10,7 @@ type UsableSelection = {
 
 export default function useSelection(
 	items: Ref<Record<string, any>[]>,
+	initialItems: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
 ): UsableSelection {
@@ -30,9 +31,22 @@ export default function useSelection(
 	});
 
 	function stageSelection(newSelection: (number | string)[]) {
-		const { junctionField } = relation.value;
+		const { junctionField, relationPkField } = relation.value;
 
-		const selection = newSelection.map((item) => ({ [junctionField]: item }));
+		const selection = newSelection.map((item) => {
+			const initial = initialItems.value.find((existent) => existent[junctionField][relationPkField] === item);
+			const draft = items.value.find((draft) => draft[junctionField][relationPkField] === item);
+
+			return {
+				...initial,
+				...draft,
+				[junctionField]: {
+					...initial?.[relationPkField],
+					...draft?.[relationPkField],
+					[relationPkField]: item,
+				},
+			};
+		});
 
 		if (selection.length === 0) emit(null);
 		else emit(selection);

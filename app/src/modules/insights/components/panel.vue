@@ -420,7 +420,7 @@ export default defineComponent({
 	display: flex;
 	gap: 4px;
 	align-items: center;
-	padding: 12px 12px 8px 12px;
+	padding: 12px 12px 8px;
 	background-color: var(--background-page);
 	border-top-right-radius: var(--border-radius-outline);
 }

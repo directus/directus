@@ -1,10 +1,10 @@
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
 import SidebarDetail from '@/views/private/components/sidebar-detail/';
 import UserPopover from '@/views/private/components/user-popover';
 import ValueNull from '@/views/private/components/value-null';
+import DocsWrapper from '@/views/private/components/docs-wrapper';
 import { App } from 'vue';
 import TransitionBounce from './transition/bounce';
 import TransitionDialog from './transition/dialog';
@@ -47,9 +47,11 @@ import VSlider from './v-slider/';
 import VSwitch from './v-switch/';
 import VTable from './v-table/';
 import VTabs, { VTab, VTabItem, VTabsItems } from './v-tabs/';
+import VTemplateInput from './v-template-input.vue';
 import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
+import VDatePicker from './v-date-picker';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -103,9 +105,11 @@ export function registerComponents(app: App): void {
 	app.component('VTable', VTable);
 	app.component('VTabsItems', VTabsItems);
 	app.component('VTabs', VTabs);
+	app.component('VTemplateInput', VTemplateInput);
 	app.component('VTextarea', VTextarea);
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
+	app.component('VDatePicker', VDatePicker);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);
@@ -113,9 +117,9 @@ export function registerComponents(app: App): void {
 
 	app.component('RenderDisplay', RenderDisplay);
 	app.component('RenderTemplate', RenderTemplate);
-	app.component('FilterSidebarDetail', FilterSidebarDetail);
 	app.component('ExportSidebarDetail', ExportSidebarDetail);
 	app.component('SidebarDetail', SidebarDetail);
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
+	app.component('DocsWrapper', DocsWrapper);
 }

@@ -76,7 +76,7 @@ export default {
   &.is-sub-group
     padding-left 0
     & > .sidebar-heading
-      font-size 0.95em
+      font-size 1em
       line-height 1.4
       font-weight normal
       padding-left 2rem
@@ -90,7 +90,7 @@ export default {
       border-left none
 
 .sidebar-heading
-  color $textColor
+  color var(--foreground-normal-alt)
   transition color .15s ease
   cursor pointer
   font-size 1.1em
@@ -110,10 +110,10 @@ export default {
   &.clickable
     &.active
       font-weight 600
-      color $accentColor
-      border-left-color $accentColor
+      color var(--primary)
+      border-left-color var(--primary)
     &:hover
-      color $accentColor
+      color var(--primary)
 
 .sidebar-group-items
   transition height .1s ease-out
