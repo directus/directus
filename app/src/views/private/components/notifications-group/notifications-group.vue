@@ -1,12 +1,12 @@
 <template>
-	<transition-group class="notifications-group" :class="{ 'sidebar-open': !dense }" name="slide-fade" tag="div">
+	<transition-group class="notifications-group" :class="{ 'sidebar-open': sidebarOpen }" name="slide-fade" tag="div">
 		<slot />
 		<notification-item
 			v-for="(notification, index) in queue"
 			:key="notification.id"
 			v-bind="notification"
 			:tail="index === queue.length - 1"
-			:dense="dense"
+			:dense="sidebarOpen === false"
 			:show-close="notification.persist === true && notification.closeable !== false"
 		/>
 	</transition-group>
@@ -20,7 +20,7 @@ import NotificationItem from '../notification-item';
 export default defineComponent({
 	components: { NotificationItem },
 	props: {
-		dense: {
+		sidebarOpen: {
 			type: Boolean,
 			default: false,
 		},
