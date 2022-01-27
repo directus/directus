@@ -10,9 +10,11 @@ import {
 	deleteOneMutation,
 	updateManyMutation,
 	deleteManyMutation,
+	singletonMutation,
 } from '../../../__test-utils__/gql-queries';
 import { Query } from '@directus/shared/types';
 import { PrimaryKey } from '../../../../src/types';
+import { GraphQLError } from 'graphql';
 
 jest.mock('../../../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
@@ -35,12 +37,15 @@ describe('Class ResolveMutation', () => {
 		let updateOne: any;
 		let deleteMany: any;
 		let deleteOne: any;
+		let upsert: any;
 		let readMany: jest.SpyInstance<Promise<any[]>, [keys: PrimaryKey[], query?: Query, opts?: QueryOptions]>;
 		let readOne: jest.SpyInstance<Promise<any>, [key: PrimaryKey, query?: Query, opts?: QueryOptions]>;
+		let readSingleton: any;
 
 		beforeEach(() => {
 			readOne = jest.spyOn(ItemsService.prototype, 'readOne');
 			readMany = jest.spyOn(ItemsService.prototype, 'readMany');
+			readSingleton = jest.spyOn(ItemsService.prototype, 'readMany');
 
 			createMany = jest.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([1]);
 			createOne = jest.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(1);
@@ -50,12 +55,17 @@ describe('Class ResolveMutation', () => {
 
 			deleteMany = jest.spyOn(ItemsService.prototype, 'deleteMany').mockResolvedValue([1]);
 			deleteOne = jest.spyOn(ItemsService.prototype, 'deleteOne').mockResolvedValue(1);
+
+			upsert = jest.spyOn(ItemsService.prototype, 'upsertSingleton').mockResolvedValue(1);
+			readSingleton = jest.spyOn(ItemsService.prototype, 'readSingleton').mockResolvedValue([{ id: 1 }]);
 		});
 
 		afterEach(() => {
 			options = { knex: mockKnex, accountability: { admin: true, role: 'admin' }, schema: userSchema };
 			readMany.mockRestore();
 			readOne.mockRestore();
+			readSingleton.mockRestore();
+			upsert.mockRestore();
 			createMany.mockRestore();
 			createOne.mockRestore();
 			updateMany.mockRestore();
@@ -191,6 +201,39 @@ describe('Class ResolveMutation', () => {
 
 				expect(deleteMany.mock.calls.length).toBe(1);
 				expect(deleteMany.mock.calls[0][0]).toStrictEqual(undefined);
+			});
+		});
+
+		describe('singleton', () => {
+			it.each(Object.keys(scopes))('%s', async (scope) => {
+				readSingleton.mockResolvedValue({ id: 1 });
+
+				let table = scopes[scope].tables[0];
+				options.schema = scopes[scope].schema;
+
+				if (scope === 'system') table = 'users';
+
+				resolver = new ResolveMutation(options);
+
+				const response = await resolver.resolveMutation({}, singletonMutation(table), scope);
+				expect(response).toStrictEqual({ id: 1 });
+
+				expect(upsert.mock.calls.length).toBe(1);
+				expect(upsert.mock.calls[0][0]).toStrictEqual(undefined);
+			});
+		});
+
+		describe('error', () => {
+			it.each(Object.keys(scopes))('%s', async (scope) => {
+				readSingleton.mockResolvedValue({ id: 1 });
+
+				const table = 'notATable';
+				options.schema = scopes[scope].schema;
+
+				resolver = new ResolveMutation(options);
+
+				const response = await resolver.resolveMutation({}, singletonMutation(table), scope);
+				expect(response).toBeInstanceOf(GraphQLError);
 			});
 		});
 	});
