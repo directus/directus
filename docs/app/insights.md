@@ -5,7 +5,7 @@
 > able to setup key data metrics in just a few clicks.
 
 <video autoplay muted loop>
-<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboards-220123A.mp4" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboard-220123A.mp4" type="video/mp4" />
 </video>
 
 [[toc]]
@@ -16,7 +16,7 @@ First, create a Dashboard, then fill the Dashboard with Panels. Each Panel provi
 insight.
 
 <video autoplay muted loop>
-<source src="https://cdn.directus.io/docs/v9/app-guide/insights/create-dashboard-and-panel-220123A.mp4" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/app-guide/insights/create-dashboards-and-panels-220123A.mp4" type="video/mp4" />
 </video>
 
 1. Click the "Create Dashboard" action button (`+`) in the page header.
