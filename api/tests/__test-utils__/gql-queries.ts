@@ -42,29 +42,6 @@ const fieldNodes = [
 		},
 	},
 ] as FieldNode[];
-export const info = {
-	fieldName: 'authors',
-	fieldNodes: fieldNodes,
-	returnType: gqlScalarType,
-	parentType: gqlObjectType,
-	path: {
-		prev: undefined,
-		key: 'name',
-		typename: undefined,
-	},
-	schema: new GraphQLSchema({}),
-	fragments,
-	rootValue: '',
-	operation: {
-		kind: 'OperationDefinition',
-		operation: 'query',
-		selectionSet: {
-			kind: 'SelectionSet',
-			selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
-		},
-	},
-	variableValues: {},
-} as GraphQLResolveInfo;
 
 export const aggregationInfo = {
 	fieldName: 'authors_aggregated',
@@ -90,7 +67,7 @@ export const aggregationInfo = {
 	variableValues: {},
 } as GraphQLResolveInfo;
 
-export const createManyQuery = (table: string) => {
+export const createManyMutation = (table: string) => {
 	return {
 		fieldName: `create_${table}_items`,
 		fieldNodes: fieldNodes,
@@ -116,6 +93,135 @@ export const createManyQuery = (table: string) => {
 	} as GraphQLResolveInfo;
 };
 
+export const createOneMutation = (table: string) => {
+	return {
+		fieldName: `create_${table}_item`,
+		fieldNodes: fieldNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
+		},
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'mutation',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo;
+};
+
+export const updateManyMutation = (table: string) => {
+	return {
+		fieldName: `update_${table}_items`,
+		fieldNodes: fieldNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
+		},
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'mutation',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo;
+};
+
+export const updateOneMutation = (table: string) => {
+	return {
+		fieldName: `update_${table}_item`,
+		fieldNodes: fieldNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
+		},
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'mutation',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo;
+};
+
+export const deleteManyMutation = (table: string) => {
+	return {
+		fieldName: `delete_${table}_items`,
+		fieldNodes: fieldNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
+		},
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'mutation',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo;
+};
+
+export const deleteOneMutation = (table: string) => {
+	return {
+		fieldName: `delete_${table}_item`,
+		fieldNodes: fieldNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
+		},
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'mutation',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo;
+};
 export const noSelections = {
 	fieldName: 'name',
 	fieldNodes: [],
