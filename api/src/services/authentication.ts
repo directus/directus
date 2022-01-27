@@ -49,6 +49,24 @@ export class AuthenticationService {
 
 		const provider = getAuthProvider(providerName);
 
+		let userId;
+		try {
+			userId = await provider.getUserID(cloneDeep(payload));
+		} catch (e) {
+			await emitter.emitFilter(
+				'request.error',
+				e,
+				{},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
+			await stall(STALL_TIME, timeStart);
+			throw e;
+		}
+
 		const user = await this.knex
 			.select<User & { tfa_secret: string | null }>(
 				'u.id',
@@ -67,7 +85,7 @@ export class AuthenticationService {
 			)
 			.from('directus_users as u')
 			.leftJoin('directus_roles as r', 'u.role', 'r.id')
-			.where('u.id', await provider.getUserID(cloneDeep(payload)))
+			.where('u.id', userId)
 			.andWhere('u.provider', providerName)
 			.first();
 
