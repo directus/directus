@@ -87,13 +87,6 @@ describe('schema', () => {
 
 			const dates = cloneDeep(sampleDates);
 
-			// if (vendor === 'sqlite3') {
-			// 	// Dates have to be in UTC for SQLite
-			// 	for (const date of dates) {
-			// 		date.timestamp = new Date(date.timestamp).toISOString();
-			// 	}
-			// }
-
 			await request(url)
 				.post(`/items/schema_date_types`)
 				.send(dates)
