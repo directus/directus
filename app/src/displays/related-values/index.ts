@@ -44,7 +44,7 @@ export default defineDisplay({
 			},
 		];
 
-		if (canDisplayInline && editing === '+') {
+		if (canDisplayInline && editing !== '+') {
 			fields.push(
 				{
 					field: 'displayInline',
