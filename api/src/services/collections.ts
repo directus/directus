@@ -2,7 +2,7 @@ import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
-import getDatabase, { getSchemaInspector } from '../database';
+import getDatabase, { getSchemaInspector, getDatabaseClient } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -117,6 +117,34 @@ export class CollectionsService {
 							field: field.field,
 							collection: payload.collection!,
 						};
+					}
+
+					const addFlag = (flag: string) => {
+						if (!field.meta) {
+							field.meta = {
+								special: [flag],
+							} as FieldMeta;
+						} else if (!field.meta.special) {
+							field.meta.special = [flag];
+						} else {
+							field.meta.special.push(flag);
+						}
+					};
+
+					// Add flags for specific database type overrides
+					switch (getDatabaseClient(this.knex)) {
+						case 'sqlite':
+							if (field.type === 'timestamp') {
+								addFlag('sqlite-timestamp-in-datetime');
+							}
+							break;
+						case 'oracle':
+							if (field.type === 'time') {
+								addFlag('oracle-time-in-timestamp');
+							} else if (field.type === 'dateTime') {
+								addFlag('oracle-datetime-in-timestamp');
+							}
+							break;
 					}
 
 					return field;
