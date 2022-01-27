@@ -3,7 +3,7 @@ import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { userSchema } from '../../../__test-utils__/schemas';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
-import { info, aggregationInfo, noSelections } from '../../../__test-utils__/gql-queries';
+import { aggregationInfo, info, noSelections } from '../../../__test-utils__/gql-queries';
 
 jest.mock('../../../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
