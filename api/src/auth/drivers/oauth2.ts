@@ -158,7 +158,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			{
 				identifier,
 				provider: this.config.provider,
-				tokenSet,
+				accessToken: tokenSet.access_token,
 			},
 			{
 				database: getDatabase(),
