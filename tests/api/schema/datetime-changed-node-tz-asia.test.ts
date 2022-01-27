@@ -189,36 +189,40 @@ describe('schema', () => {
 		});
 
 		describe('stores the correct datetime data', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				const dates = cloneDeep(sampleDatesAsia);
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					const dates = cloneDeep(sampleDatesAsia);
 
-				await request(getUrl(vendor))
-					.post(`/items/schema_date_types`)
-					.send(dates)
-					.set('Authorization', 'Bearer AdminToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					await request(getUrl(vendor))
+						.post(`/items/schema_date_types`)
+						.send(dates)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				const response = await request(getUrl(vendor))
-					.get(`/items/schema_date_types?fields=*&offset=${sampleDates.length + sampleDatesAmerica.length}`)
-					.set('Authorization', 'Bearer AdminToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					const response = await request(getUrl(vendor))
+						.get(`/items/schema_date_types?fields=*&offset=${sampleDates.length + sampleDatesAmerica.length}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				expect(response.body.data.length).toBe(sampleDatesAsia.length);
+					expect(response.body.data.length).toBe(sampleDatesAsia.length);
 
-				for (let index = 0; index < sampleDatesAsia.length; index++) {
-					const responseObj = find(response.body.data, (o) => {
-						return o.id === sampleDatesAsia[index]!.id;
-					}) as SchemaDateTypesObject;
-					expect(responseObj.date).toBe(sampleDatesAsia[index]!.date);
-					expect(responseObj.time).toBe(sampleDatesAsia[index]!.time);
-					expect(responseObj.datetime).toBe(sampleDatesAsia[index]!.datetime);
-					expect(responseObj.timestamp.substring(0, 19)).toBe(
-						new Date(sampleDatesAsia[index]!.timestamp).toISOString().substring(0, 19)
-					);
-				}
-			});
+					for (let index = 0; index < sampleDatesAsia.length; index++) {
+						const responseObj = find(response.body.data, (o) => {
+							return o.id === sampleDatesAsia[index]!.id;
+						}) as SchemaDateTypesObject;
+						expect(responseObj.date).toBe(sampleDatesAsia[index]!.date);
+						expect(responseObj.time).toBe(sampleDatesAsia[index]!.time);
+						expect(responseObj.datetime).toBe(sampleDatesAsia[index]!.datetime);
+						expect(responseObj.timestamp.substring(0, 19)).toBe(
+							new Date(sampleDatesAsia[index]!.timestamp).toISOString().substring(0, 19)
+						);
+					}
+				},
+				10000
+			);
 		});
 	});
 });
