@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.4.3",
+	"version": "9.5.0",
 	"description": "",
 	"main": "dist/index.js",
 	"exports": {
