@@ -152,6 +152,7 @@ export default ({ schedule }) => {
 | `request.error`               | The request errors   | --                                   |
 | `database.error`              | The database error   | `client`                             |
 | `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
+| `auth.login`                  | The new user payload | `identifier`, `provider`, `tokenSet` |
 | `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
 | `(<collection>.)items.read`   | The read item        | `collection`                         |
 | `(<collection>.)items.create` | The new item         | `collection`                         |

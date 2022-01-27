@@ -18,6 +18,8 @@ import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import emitter from '../../emitter';
+import getDatabase from '../../database';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
