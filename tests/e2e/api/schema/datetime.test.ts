@@ -57,10 +57,11 @@ describe('schema', () => {
 	});
 
 	describe('Date Types', () => {
-		it.each(vendors)('%p update datetime field schema', async (vendor) => {
-			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+		it.each(vendors)(
+			'%p update datetime field schema',
+			async (vendor) => {
+				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
-			if (vendor === 'sqlite3') {
 				await request(url)
 					.patch(`/collections/schema_date_types`)
 					.send({
@@ -70,18 +71,45 @@ describe('schema', () => {
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
-				await request(url)
-					.patch(`/fields/schema_date_types/timestamp`)
-					.send({
-						meta: {
-							special: ['sqlite-timestamp-in-datetime'],
-						},
-					})
-					.set('Authorization', 'Bearer AdminToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
-			}
-		});
+				switch (vendor) {
+					case 'sqlite3':
+						await request(url)
+							.patch(`/fields/schema_date_types/timestamp`)
+							.send({
+								meta: {
+									special: ['sqlite-timestamp-in-datetime'],
+								},
+							})
+							.set('Authorization', 'Bearer AdminToken')
+							.expect('Content-Type', /application\/json/)
+							.expect(200);
+						break;
+					case 'oracle':
+						await request(url)
+							.patch(`/fields/schema_date_types/time`)
+							.send({
+								meta: {
+									special: ['oracle-time-in-timestamp'],
+								},
+							})
+							.set('Authorization', 'Bearer AdminToken')
+							.expect('Content-Type', /application\/json/)
+							.expect(200);
+						await request(url)
+							.patch(`/fields/schema_date_types/datetime`)
+							.send({
+								meta: {
+									special: ['oracle-datetime-in-timestamp'],
+								},
+							})
+							.set('Authorization', 'Bearer AdminToken')
+							.expect('Content-Type', /application\/json/)
+							.expect(200);
+						break;
+				}
+			},
+			10000
+		);
 		it.each(vendors)('%p stores the correct datetime data', async (vendor) => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 

@@ -172,6 +172,10 @@ export class FieldsService {
 		for (const field of result) {
 			if (field.meta?.special?.includes('sqlite-timestamp-in-datetime')) {
 				field.type = 'timestamp';
+			} else if (field.meta?.special?.includes('oracle-time-in-timestamp')) {
+				field.type = 'time';
+			} else if (field.meta?.special?.includes('oracle-datetime-in-timestamp')) {
+				field.type = 'dateTime';
 			}
 		}
 
@@ -245,20 +249,30 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
+		const addFlag = (flag: string) => {
+			if (!field.meta) {
+				field.meta = {
+					special: [flag],
+				} as FieldMeta;
+			} else if (!field.meta.special) {
+				field.meta.special = [flag];
+			} else {
+				field.meta.special.push(flag);
+			}
+		};
+
 		// Add flags for specific database type overrides
 		switch (getDatabaseClient(this.knex)) {
 			case 'sqlite':
 				if (field.type === 'timestamp') {
-					const flag = 'sqlite-timestamp-in-datetime';
-					if (!field.meta) {
-						field.meta = {
-							special: [flag],
-						} as FieldMeta;
-					} else if (!field.meta.special) {
-						field.meta.special = [flag];
-					} else {
-						field.meta.special.push(flag);
-					}
+					addFlag('sqlite-timestamp-in-datetime');
+				}
+				break;
+			case 'oracle':
+				if (field.type === 'time') {
+					addFlag('oracle-time-in-timestamp');
+				} else if (field.type === 'dateTime') {
+					addFlag('oracle-datetime-in-timestamp');
 				}
 				break;
 		}
