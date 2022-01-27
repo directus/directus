@@ -123,6 +123,16 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
+		async 'sqlite-timestamp-in-datetime'({ action, value }) {
+			if (action !== 'read') {
+				// Convert incoming timestamps to UTC if timezone info is provided
+				if (typeof value === 'string' && value.length > 19) {
+					const newDate = new Date(value);
+					return new Date(newDate.getTime() - newDate.getTimezoneOffset() * 60 * 1000).toISOString().split('Z')[0];
+				}
+			}
+			return value;
+		},
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
@@ -251,6 +261,13 @@ export class PayloadService {
 	 */
 	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
+
+		// Update specific database type overrides
+		for (const [_name, field] of fieldsInCollection) {
+			if (field.special.includes('sqlite-timestamp-in-datetime')) {
+				field.type = 'timestamp';
+			}
+		}
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
 			['dateTime', 'date', 'timestamp'].includes(field.type)

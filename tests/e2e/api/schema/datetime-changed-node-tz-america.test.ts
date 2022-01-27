@@ -124,14 +124,13 @@ describe('schema', () => {
 					const newDateTimeString = new Date(
 						new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000
 					).toISOString();
-					const newTimeStampString = new Date(
-						new Date(sampleDates[index]!.timestamp).valueOf() - newTzOffset * 60 * 1000
-					).toISOString();
 
 					expect(responseObj.date).toBe(newDateString.substring(0, 10));
 					expect(responseObj.time).toBe(sampleDates[index]!.time);
 					expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
-					expect(responseObj.timestamp.substring(0, 19)).toBe(newTimeStampString.substring(0, 19));
+					expect(responseObj.timestamp.substring(0, 19)).toBe(
+						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+					);
 					continue;
 				}
 				expect(responseObj.date).toBe(sampleDates[index]!.date);
@@ -147,13 +146,6 @@ describe('schema', () => {
 			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 
 			const dates = cloneDeep(sampleDatesAmerica);
-
-			if (vendor === 'sqlite3') {
-				// Dates have to be in UTC for SQLite
-				for (const date of dates) {
-					date.timestamp = new Date(date.timestamp).toISOString();
-				}
-			}
 
 			await request(url)
 				.post(`/items/schema_date_types`)

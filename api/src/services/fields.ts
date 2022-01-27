@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
-import getDatabase, { getSchemaInspector } from '../database';
+import getDatabase, { getSchemaInspector, getDatabaseClient } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
 import emitter from '../emitter';
 import env from '../env';
@@ -168,6 +168,13 @@ export class FieldsService {
 			});
 		}
 
+		// Update specific database type overrides
+		for (const field of result) {
+			if (field.meta?.special?.includes('sqlite-timestamp-in-datetime')) {
+				field.type = 'timestamp';
+			}
+		}
+
 		return result;
 	}
 
@@ -236,6 +243,24 @@ export class FieldsService {
 		// Check if field already exists, either as a column, or as a row in directus_fields
 		if (exists) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+		}
+
+		// Add flags for specific database type overrides
+		switch (getDatabaseClient(this.knex)) {
+			case 'sqlite':
+				if (field.type === 'timestamp') {
+					const flag = 'sqlite-timestamp-in-datetime';
+					if (!field.meta) {
+						field.meta = {
+							special: [flag],
+						} as FieldMeta;
+					} else if (!field.meta.special) {
+						field.meta.special = [flag];
+					} else {
+						field.meta.special.push(flag);
+					}
+				}
+				break;
 		}
 
 		await this.knex.transaction(async (trx) => {
