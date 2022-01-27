@@ -24,16 +24,14 @@ describe('Class ResolveMutation', () => {
 
 		beforeEach(() => {
 			itemService = jest.spyOn(ItemsService, 'ItemsService').mockReturnValue({
-				readByQuery: jest.fn(),
-				upsertSingleton: jest.fn(),
-				readSingleton: jest.fn(),
+				readByQuery: { readByQuery: true },
+				upsertSingleton: { upsertSingleton: true },
+				readSingleton: { readSingleton: true },
 			} as any);
-
-			get = jest.spyOn(GetService, 'getService').mockReturnValue(itemService as any);
 		});
 
 		afterEach(() => {
-			get.mockRestore();
+			// get.mockRestore();
 			itemService.mockRestore();
 		});
 
@@ -42,7 +40,21 @@ describe('Class ResolveMutation', () => {
 			const resolver = new ResolveMutation(options);
 			resolver.resolveMutation({}, info, 'user');
 
-			expect(itemService.mock).toBe(1);
+			expect(itemService.mock.calls.length).toBe(1);
+			expect(itemService.mock.calls[0][0]).toStrictEqual('');
+
+			expect(itemService.mock.results.length).toBe(1);
+			expect(itemService.mock.results).toBe([
+				{
+					type: 'return',
+					value: {
+						readByQuery: true,
+						readSingleton: true,
+						upsertSingleton: true,
+					},
+				},
+			]);
+
 			expect(itemService.mock.instances.length).toBe(1);
 			expect(itemService.mock.instances).toBe(1);
 		});
