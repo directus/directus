@@ -1,4 +1,4 @@
-import config from '../../config';
+import config, { getUrl } from '../../config';
 import vendors from '../../get-dbs-to-test';
 import request from 'supertest';
 import knex, { Knex } from 'knex';
@@ -57,90 +57,90 @@ describe('schema', () => {
 	});
 
 	describe('Date Types', () => {
-		it.each(vendors)(
-			'%p update datetime field schema',
-			async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+		describe('update datetime field schema', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					await request(getUrl(vendor))
+						.patch(`/collections/schema_date_types`)
+						.send({
+							meta: {},
+						})
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				await request(url)
-					.patch(`/collections/schema_date_types`)
-					.send({
-						meta: {},
-					})
+					switch (vendor) {
+						case 'sqlite3':
+							await request(getUrl(vendor))
+								.patch(`/fields/schema_date_types/timestamp`)
+								.send({
+									meta: {
+										special: ['sqlite-timestamp-in-datetime'],
+									},
+								})
+								.set('Authorization', 'Bearer AdminToken')
+								.expect('Content-Type', /application\/json/)
+								.expect(200);
+							break;
+						case 'oracle':
+							await request(getUrl(vendor))
+								.patch(`/fields/schema_date_types/time`)
+								.send({
+									meta: {
+										special: ['oracle-time-in-timestamp'],
+									},
+								})
+								.set('Authorization', 'Bearer AdminToken')
+								.expect('Content-Type', /application\/json/)
+								.expect(200);
+							await request(getUrl(vendor))
+								.patch(`/fields/schema_date_types/datetime`)
+								.send({
+									meta: {
+										special: ['oracle-datetime-in-timestamp'],
+									},
+								})
+								.set('Authorization', 'Bearer AdminToken')
+								.expect('Content-Type', /application\/json/)
+								.expect(200);
+							break;
+					}
+				},
+				10000
+			);
+		});
+		describe('stores the correct datetime data', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const dates = cloneDeep(sampleDates);
+
+				await request(getUrl(vendor))
+					.post(`/items/schema_date_types`)
+					.send(dates)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
-				switch (vendor) {
-					case 'sqlite3':
-						await request(url)
-							.patch(`/fields/schema_date_types/timestamp`)
-							.send({
-								meta: {
-									special: ['sqlite-timestamp-in-datetime'],
-								},
-							})
-							.set('Authorization', 'Bearer AdminToken')
-							.expect('Content-Type', /application\/json/)
-							.expect(200);
-						break;
-					case 'oracle':
-						await request(url)
-							.patch(`/fields/schema_date_types/time`)
-							.send({
-								meta: {
-									special: ['oracle-time-in-timestamp'],
-								},
-							})
-							.set('Authorization', 'Bearer AdminToken')
-							.expect('Content-Type', /application\/json/)
-							.expect(200);
-						await request(url)
-							.patch(`/fields/schema_date_types/datetime`)
-							.send({
-								meta: {
-									special: ['oracle-datetime-in-timestamp'],
-								},
-							})
-							.set('Authorization', 'Bearer AdminToken')
-							.expect('Content-Type', /application\/json/)
-							.expect(200);
-						break;
+				const response = await request(getUrl(vendor))
+					.get(`/items/schema_date_types?fields=*`)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				expect(response.body.data.length).toBe(sampleDates.length);
+
+				for (let index = 0; index < sampleDates.length; index++) {
+					const responseObj = find(response.body.data, (o) => {
+						return o.id === sampleDates[index]!.id;
+					}) as SchemaDateTypesObject;
+					expect(responseObj.date).toBe(sampleDates[index]!.date);
+					expect(responseObj.time).toBe(sampleDates[index]!.time);
+					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+					expect(responseObj.timestamp.substring(0, 19)).toBe(
+						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+					);
 				}
-			},
-			10000
-		);
-		it.each(vendors)('%p stores the correct datetime data', async (vendor) => {
-			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-
-			const dates = cloneDeep(sampleDates);
-
-			await request(url)
-				.post(`/items/schema_date_types`)
-				.send(dates)
-				.set('Authorization', 'Bearer AdminToken')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
-
-			const response = await request(url)
-				.get(`/items/schema_date_types?fields=*`)
-				.set('Authorization', 'Bearer AdminToken')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
-
-			expect(response.body.data.length).toBe(sampleDates.length);
-
-			for (let index = 0; index < sampleDates.length; index++) {
-				const responseObj = find(response.body.data, (o) => {
-					return o.id === sampleDates[index]!.id;
-				}) as SchemaDateTypesObject;
-				expect(responseObj.date).toBe(sampleDates[index]!.date);
-				expect(responseObj.time).toBe(sampleDates[index]!.time);
-				expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
-				expect(responseObj.timestamp.substring(0, 19)).toBe(
-					new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
-				);
-			}
+			});
 		});
 	});
 });

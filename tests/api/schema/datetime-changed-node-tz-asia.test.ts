@@ -1,4 +1,4 @@
-import config from '../../config';
+import config, { getUrl } from '../../config';
 import vendors from '../../get-dbs-to-test';
 import request from 'supertest';
 import knex, { Knex } from 'knex';
@@ -101,124 +101,124 @@ describe('schema', () => {
 	});
 
 	describe('Date Types (Changed Node Timezone Asia)', () => {
-		it.each(vendors)('%p returns existing datetime data correctly', async (vendor) => {
-			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+		describe('returns existing datetime data correctly', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const response = await request(getUrl(vendor))
+					.get(`/items/schema_date_types?fields=*&limit=${sampleDates.length}`)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
 
-			const response = await request(url)
-				.get(`/items/schema_date_types?fields=*&limit=${sampleDates.length}`)
-				.set('Authorization', 'Bearer AdminToken')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
+				expect(response.body.data.length).toBe(sampleDates.length);
 
-			expect(response.body.data.length).toBe(sampleDates.length);
+				for (let index = 0; index < sampleDates.length; index++) {
+					const responseObj = find(response.body.data, (o) => {
+						return o.id === sampleDates[index]!.id;
+					}) as SchemaDateTypesObject;
 
-			for (let index = 0; index < sampleDates.length; index++) {
-				const responseObj = find(response.body.data, (o) => {
-					return o.id === sampleDates[index]!.id;
-				}) as SchemaDateTypesObject;
+					if (vendor === 'sqlite3') {
+						// Dates are saved in milliseconds at 00:00:00
+						const newDateString = new Date(
+							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() - newTzOffset * 60 * 1000
+						).toISOString();
 
-				if (vendor === 'sqlite3') {
-					// Dates are saved in milliseconds at 00:00:00
-					const newDateString = new Date(
-						new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() - newTzOffset * 60 * 1000
-					).toISOString();
+						const newDateTimeString = new Date(
+							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000
+						).toISOString();
 
-					const newDateTimeString = new Date(
-						new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000
-					).toISOString();
+						expect(responseObj.date).toBe(newDateString.substring(0, 10));
+						expect(responseObj.time).toBe(sampleDates[index]!.time);
+						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+						expect(responseObj.timestamp.substring(0, 19)).toBe(
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+						);
+						continue;
+					}
 
-					expect(responseObj.date).toBe(newDateString.substring(0, 10));
+					expect(responseObj.date).toBe(sampleDates[index]!.date);
 					expect(responseObj.time).toBe(sampleDates[index]!.time);
-					expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
 						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 					);
-					continue;
 				}
 
-				expect(responseObj.date).toBe(sampleDates[index]!.date);
-				expect(responseObj.time).toBe(sampleDates[index]!.time);
-				expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
-				expect(responseObj.timestamp.substring(0, 19)).toBe(
-					new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
-				);
-			}
+				const americanTzOffset = currentTzOffset !== 180 ? 180 : 360;
 
-			const americanTzOffset = currentTzOffset !== 180 ? 180 : 360;
+				const response2 = await request(getUrl(vendor))
+					.get(`/items/schema_date_types?fields=*&offset=${sampleDatesAmerica.length}`)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
 
-			const response2 = await request(url)
-				.get(`/items/schema_date_types?fields=*&offset=${sampleDatesAmerica.length}`)
-				.set('Authorization', 'Bearer AdminToken')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
+				expect(response2.body.data.length).toBe(sampleDatesAmerica.length);
 
-			expect(response2.body.data.length).toBe(sampleDatesAmerica.length);
+				for (let index = 0; index < sampleDatesAmerica.length; index++) {
+					const responseObj = find(response2.body.data, (o) => {
+						return o.id === sampleDatesAmerica[index]!.id;
+					}) as SchemaDateTypesObject;
 
-			for (let index = 0; index < sampleDatesAmerica.length; index++) {
-				const responseObj = find(response2.body.data, (o) => {
-					return o.id === sampleDatesAmerica[index]!.id;
-				}) as SchemaDateTypesObject;
+					if (vendor === 'sqlite3') {
+						// Dates are saved in milliseconds at 00:00:00
+						const newDateString = new Date(
+							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() -
+								(newTzOffset - americanTzOffset) * 60 * 1000
+						).toISOString();
 
-				if (vendor === 'sqlite3') {
-					// Dates are saved in milliseconds at 00:00:00
-					const newDateString = new Date(
-						new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() -
-							(newTzOffset - americanTzOffset) * 60 * 1000
-					).toISOString();
+						const newDateTimeString = new Date(
+							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - (newTzOffset - americanTzOffset) * 60 * 1000
+						).toISOString();
 
-					const newDateTimeString = new Date(
-						new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - (newTzOffset - americanTzOffset) * 60 * 1000
-					).toISOString();
+						expect(responseObj.date).toBe(newDateString.substring(0, 10));
+						expect(responseObj.time).toBe(sampleDates[index]!.time);
+						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+						expect(responseObj.timestamp.substring(0, 19)).toBe(
+							new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
+						);
+						continue;
+					}
 
-					expect(responseObj.date).toBe(newDateString.substring(0, 10));
-					expect(responseObj.time).toBe(sampleDates[index]!.time);
-					expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+					expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
+					expect(responseObj.time).toBe(sampleDatesAmerica[index]!.time);
+					expect(responseObj.datetime).toBe(sampleDatesAmerica[index]!.datetime);
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
 						new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
 					);
-					continue;
 				}
-
-				expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
-				expect(responseObj.time).toBe(sampleDatesAmerica[index]!.time);
-				expect(responseObj.datetime).toBe(sampleDatesAmerica[index]!.datetime);
-				expect(responseObj.timestamp.substring(0, 19)).toBe(
-					new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
-				);
-			}
+			});
 		});
 
-		it.each(vendors)('%p stores the correct datetime data', async (vendor) => {
-			const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
+		describe('returns existing datetime data correctly', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const dates = cloneDeep(sampleDatesAsia);
 
-			const dates = cloneDeep(sampleDatesAsia);
+				await request(getUrl(vendor))
+					.post(`/items/schema_date_types`)
+					.send(dates)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
 
-			await request(url)
-				.post(`/items/schema_date_types`)
-				.send(dates)
-				.set('Authorization', 'Bearer AdminToken')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
+				const response = await request(getUrl(vendor))
+					.get(`/items/schema_date_types?fields=*&offset=${sampleDates.length + sampleDatesAmerica.length}`)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
 
-			const response = await request(url)
-				.get(`/items/schema_date_types?fields=*&offset=${sampleDates.length + sampleDatesAmerica.length}`)
-				.set('Authorization', 'Bearer AdminToken')
-				.expect('Content-Type', /application\/json/)
-				.expect(200);
+				expect(response.body.data.length).toBe(sampleDatesAsia.length);
 
-			expect(response.body.data.length).toBe(sampleDatesAsia.length);
-
-			for (let index = 0; index < sampleDatesAsia.length; index++) {
-				const responseObj = find(response.body.data, (o) => {
-					return o.id === sampleDatesAsia[index]!.id;
-				}) as SchemaDateTypesObject;
-				expect(responseObj.date).toBe(sampleDatesAsia[index]!.date);
-				expect(responseObj.time).toBe(sampleDatesAsia[index]!.time);
-				expect(responseObj.datetime).toBe(sampleDatesAsia[index]!.datetime);
-				expect(responseObj.timestamp.substring(0, 19)).toBe(
-					new Date(sampleDatesAsia[index]!.timestamp).toISOString().substring(0, 19)
-				);
-			}
+				for (let index = 0; index < sampleDatesAsia.length; index++) {
+					const responseObj = find(response.body.data, (o) => {
+						return o.id === sampleDatesAsia[index]!.id;
+					}) as SchemaDateTypesObject;
+					expect(responseObj.date).toBe(sampleDatesAsia[index]!.date);
+					expect(responseObj.time).toBe(sampleDatesAsia[index]!.time);
+					expect(responseObj.datetime).toBe(sampleDatesAsia[index]!.datetime);
+					expect(responseObj.timestamp.substring(0, 19)).toBe(
+						new Date(sampleDatesAsia[index]!.timestamp).toISOString().substring(0, 19)
+					);
+				}
+			});
 		});
 	});
 });
