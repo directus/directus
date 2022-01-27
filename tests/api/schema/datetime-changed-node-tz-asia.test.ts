@@ -188,7 +188,7 @@ describe('schema', () => {
 			});
 		});
 
-		describe('returns existing datetime data correctly', () => {
+		describe('stores the correct datetime data', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				const dates = cloneDeep(sampleDatesAsia);
 
