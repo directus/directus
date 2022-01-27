@@ -1,7 +1,7 @@
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { ResolveMutation } from '../../../../src/services/graphql/resolve-mutation';
-import { ItemsService } from '../../../../src/services/items';
+import { ItemsService, QueryOptions } from '../../../../src/services/items';
 import { systemSchema, userSchema } from '../../../__test-utils__/schemas';
 import {
 	createManyMutation,
@@ -11,6 +11,8 @@ import {
 	updateManyMutation,
 	deleteManyMutation,
 } from '../../../__test-utils__/gql-queries';
+import { Query } from '@directus/shared/types';
+import { PrimaryKey } from '../../../../src/types';
 
 jest.mock('../../../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
@@ -33,45 +35,39 @@ describe('Class ResolveMutation', () => {
 		let updateOne: any;
 		let deleteMany: any;
 		let deleteOne: any;
-		let readMany: any;
-		let readOne: any;
+		let readMany: jest.SpyInstance<Promise<any[]>, [keys: PrimaryKey[], query?: Query, opts?: QueryOptions]>;
+		let readOne: jest.SpyInstance<Promise<any>, [key: PrimaryKey, query?: Query, opts?: QueryOptions]>;
 
 		beforeEach(() => {
-			createMany = jest.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([1]);
-			readMany = jest.spyOn(ItemsService.prototype, 'readMany').mockResolvedValueOnce(['createMany']);
+			readOne = jest.spyOn(ItemsService.prototype, 'readOne');
+			readMany = jest.spyOn(ItemsService.prototype, 'readMany');
 
+			createMany = jest.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([1]);
 			createOne = jest.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(1);
-			readOne = jest.spyOn(ItemsService.prototype, 'readOne').mockResolvedValueOnce('createOne');
 
 			updateMany = jest.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
-			readMany = jest.spyOn(ItemsService.prototype, 'readMany').mockResolvedValueOnce(['updateMany']);
-
 			updateOne = jest.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(1);
-			readOne = jest.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue('updateOne');
 
 			deleteMany = jest.spyOn(ItemsService.prototype, 'deleteMany').mockResolvedValue([1]);
-			readMany = jest.spyOn(ItemsService.prototype, 'readMany').mockResolvedValueOnce(['deleteMany']);
-
 			deleteOne = jest.spyOn(ItemsService.prototype, 'deleteOne').mockResolvedValue(1);
-			readOne = jest.spyOn(ItemsService.prototype, 'readOne').mockResolvedValueOnce('deleteOne');
 		});
 
 		afterEach(() => {
 			options = { knex: mockKnex, accountability: { admin: true, role: 'admin' }, schema: userSchema };
+			readMany.mockRestore();
+			readOne.mockRestore();
 			createMany.mockRestore();
 			createOne.mockRestore();
 			updateMany.mockRestore();
 			updateOne.mockRestore();
 			deleteMany.mockRestore();
 			deleteOne.mockRestore();
-			readMany.mockRestore();
-			readOne.mockRestore();
 		});
 
 		describe('createMany with no args', () => {
 			it.each(Object.keys(scopes))('%s', async (scope) => {
 				const table = scopes[scope].tables[0];
-
+				readMany.mockResolvedValueOnce(['createMany']);
 				options.schema = scopes[scope].schema;
 
 				resolver = new ResolveMutation(options);
@@ -96,84 +92,102 @@ describe('Class ResolveMutation', () => {
 
 		describe('createOne with no args', () => {
 			it.each(Object.keys(scopes))('%s', async (scope) => {
+				readOne.mockResolvedValueOnce('createOne');
+
 				const table = scopes[scope].tables[0];
 
 				options.schema = scopes[scope].schema;
 
 				resolver = new ResolveMutation(options);
 
-				await resolver.resolveMutation({}, updateManyMutation(table), scope);
-				// expect(response).toStrictEqual('updateMany');
+				const response = await resolver.resolveMutation({}, createOneMutation(table), scope);
 
-				expect(updateMany.mock.calls.length).toBe(1);
-				expect(updateMany.mock.calls[0][0]).toStrictEqual(undefined);
+				expect(createOne.mock.calls.length).toBe(1);
+				expect(createOne.mock.calls[0][0]).toStrictEqual(undefined);
 
-				// expect(readOne.mock.calls.length).toStrictEqual(1);
-				// expect(readOne.mock.calls[0][0]).toStrictEqual(1);
-				// expect(readOne.mock.calls[0][1]).toStrictEqual({"alias": {}, "fields": ["date"], "filter": undefined});
-				// expect(await readOne.mock.results[0].value).toStrictEqual('updateMany');
+				expect(readOne.mock.calls.length).toStrictEqual(1);
+				expect(readOne.mock.calls[0][0]).toStrictEqual(1);
+				expect(readOne.mock.calls[0][1]).toStrictEqual({ alias: {}, fields: ['date'], filter: undefined });
+				expect(await readOne.mock.results[0].value).toStrictEqual('createOne');
+				expect(response).toStrictEqual('createOne');
 			});
 		});
 
 		describe('updateOne with no args', () => {
-			it.each(Object.keys(scopes))('%s', (scope) => {
+			it.each(Object.keys(scopes))('%s', async (scope) => {
+				readOne.mockResolvedValueOnce('updateOne');
+
 				const table = scopes[scope].tables[0];
 
 				options.schema = scopes[scope].schema;
 
 				resolver = new ResolveMutation(options);
 
-				resolver.resolveMutation({}, updateOneMutation(table), scope);
+				const response = await resolver.resolveMutation({}, updateOneMutation(table), scope);
 
 				expect(updateOne.mock.calls.length).toBe(1);
 				expect(updateOne.mock.calls[0][0]).toStrictEqual(undefined);
-				expect(updateOne.mock.results.length).toBe(1);
+
+				expect(readOne.mock.calls.length).toStrictEqual(1);
+				expect(readOne.mock.calls[0][0]).toStrictEqual(1);
+				expect(readOne.mock.calls[0][1]).toStrictEqual({ alias: {}, fields: ['date'], filter: undefined });
+				expect(await readOne.mock.results[0].value).toStrictEqual('updateOne');
+				expect(response).toStrictEqual('updateOne');
 			});
 		});
 
 		describe('updateMany with no args', () => {
 			it.each(Object.keys(scopes))('%s', async (scope) => {
+				readMany.mockResolvedValueOnce(['updateMany']);
+
 				const table = scopes[scope].tables[0];
 
 				options.schema = scopes[scope].schema;
 
 				resolver = new ResolveMutation(options);
 
-				await resolver.resolveMutation({}, updateManyMutation(table), scope);
-				// expect(response).toStrictEqual(['updateMany']);
+				const response = await resolver.resolveMutation({}, updateManyMutation(table), scope);
+				expect(response).toStrictEqual(['updateMany']);
 
 				expect(updateMany.mock.calls.length).toBe(1);
 				expect(updateMany.mock.calls[0][0]).toStrictEqual(undefined);
 
-				// expect(readMany.mock.calls.length).toStrictEqual(1);
-				// expect(readMany.mock.calls[0][0]).toStrictEqual([1]);
-				// expect(readMany.mock.calls[0][1]).toStrictEqual({"alias": {}, "fields": ["date"], "filter": undefined});
-				// expect(await readMany.mock.results[0].value).toStrictEqual(['updateMany']);
+				expect(readMany.mock.calls.length).toStrictEqual(1);
+				expect(readMany.mock.calls[0][0]).toStrictEqual([1]);
+				expect(readMany.mock.calls[0][1]).toStrictEqual({ alias: {}, fields: ['date'], filter: undefined });
+				expect(await readMany.mock.results[0].value).toStrictEqual(['updateMany']);
 			});
 		});
+
 		describe('deleteOne with no args', () => {
-			it.each(Object.keys(scopes))('%s', (scope) => {
+			it.each(Object.keys(scopes))('%s', async (scope) => {
+				readOne.mockResolvedValueOnce('deleteOne');
+
 				const table = scopes[scope].tables[0];
 
 				options.schema = scopes[scope].schema;
 
 				resolver = new ResolveMutation(options);
 
-				resolver.resolveMutation({}, deleteOneMutation(table), scope);
+				const response = await resolver.resolveMutation({}, deleteOneMutation(table), scope);
 
 				expect(deleteOne.mock.calls.length).toBe(1);
 				expect(deleteOne.mock.calls[0][0]).toStrictEqual(undefined);
 			});
 		});
+
 		describe('deleteMany with no args', () => {
-			it.each(Object.keys(scopes))('%s', (scope) => {
+			it.each(Object.keys(scopes))('%s', async (scope) => {
+				readMany.mockResolvedValueOnce([{ ids: [1] }]);
+
 				const table = scopes[scope].tables[0];
 
 				options.schema = scopes[scope].schema;
 
 				resolver = new ResolveMutation(options);
 
-				resolver.resolveMutation({}, deleteManyMutation(table), scope);
+				const response = await resolver.resolveMutation({}, deleteManyMutation(table), scope);
+				expect(response).toStrictEqual({ ids: [1] });
 
 				expect(deleteMany.mock.calls.length).toBe(1);
 				expect(deleteMany.mock.calls[0][0]).toStrictEqual(undefined);
