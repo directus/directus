@@ -15,7 +15,7 @@
 			</div>
 
 			<div v-else class="chips" @click.stop="toggle">
-				<v-chip v-for="item in inlineResults" :key="item[primaryKeyFieldPath]" x-small>
+				<v-chip v-for="item in inlineResults" :key="item[primaryKeyFieldPath]">
 					<render-template
 						:template="internalTemplate"
 						:item="item"
@@ -207,29 +207,33 @@ export default defineComponent({
 	}
 }
 
-.chips-container {
-	width: 100%;
-	height: calc(var(--table-row-height) - 16px);
-}
-
 .chips {
 	display: flex;
 	gap: 5px;
 	align-items: center;
 	width: 100%;
+	height: calc(var(--table-row-height) - 16px);
 	font-size: 0.9rem;
+}
+</style>
 
-	> .v-chip {
+<style lang="scss">
+.chips .v-chip {
+	.chip-content {
 		height: 100%;
+	}
 
-		.render-template {
-			padding-right: 0;
-		}
+	.render-template {
+		padding-right: 0;
+	}
 
-		img {
-			max-height: calc(100% - 8px);
-			margin-right: 5px;
-		}
+	img {
+		max-height: calc(100% - 8px);
+	}
+
+	img,
+	.color-dot {
+		margin-right: 5px;
 	}
 }
 </style>
