@@ -90,29 +90,31 @@ export const aggregationInfo = {
 	variableValues: {},
 } as GraphQLResolveInfo;
 
-export const createManyQuery = {
-	fieldName: 'create_authors_items',
-	fieldNodes: fieldNodes,
-	returnType: gqlScalarType,
-	parentType: gqlObjectType,
-	path: {
-		prev: undefined,
-		key: 'name',
-		typename: undefined,
-	},
-	schema: new GraphQLSchema({}),
-	fragments,
-	rootValue: '',
-	operation: {
-		kind: 'OperationDefinition',
-		operation: 'mutation',
-		selectionSet: {
-			kind: 'SelectionSet',
-			selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+export const createManyQuery = (table: string) => {
+	return {
+		fieldName: `create_${table}_items`,
+		fieldNodes: fieldNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
 		},
-	},
-	variableValues: {},
-} as GraphQLResolveInfo;
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'mutation',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo;
+};
 
 export const noSelections = {
 	fieldName: 'name',
