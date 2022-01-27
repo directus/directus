@@ -13,7 +13,7 @@ declare global {
 class CustomEnvironment extends NodeEnvironment {
 	constructor(config: any, context: any) {
 		super(config);
-		this.global.testFilePath = String(context.testPath).split('e2e')[1]!;
+		this.global.testFilePath = String(context.testPath).split('tests')[1]!;
 	}
 
 	async setup() {
