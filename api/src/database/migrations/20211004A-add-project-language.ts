@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('project_language').notNullable().defaultTo('en-US');
 	});
 	await knex.schema.alterTable('directus_users', (table) => {
-		table.string('language').nullable().alter();
+		table.string('language').defaultTo(null).alter();
 	});
 }
 
