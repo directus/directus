@@ -85,7 +85,7 @@ describe('schema', () => {
 
 		// Give the server some time to start
 		await Promise.all(promises);
-	}, 60000);
+	}, 120000);
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
