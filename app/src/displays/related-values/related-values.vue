@@ -230,10 +230,12 @@ export default defineComponent({
 	img {
 		max-height: calc(100% - 8px);
 	}
+}
 
-	img,
-	.color-dot {
-		margin-right: 5px;
-	}
+.chips .v-chip .render-template img,
+.chips .v-chip .render-template .color-dot,
+.v-list.links .render-template img,
+.v-list.links .render-template .color-dot {
+	margin-right: 5px;
 }
 </style>
