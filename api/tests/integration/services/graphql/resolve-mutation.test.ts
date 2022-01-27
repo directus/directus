@@ -2,67 +2,38 @@ import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { userSchema } from '../../../__test-utils__/schemas';
 import { ResolveMutation } from '../../../../src/services/graphql/resolve-mutation';
-import { info } from '../../../__test-utils__/gql-queries';
-import * as ItemsService from '../../../../src/services/items';
-// import * as GetService from '../../../../src/services/graphql/shared/get-service';
-import { Item, AbstractServiceOptions } from '../../../../src/types';
-
+import { createManyQuery } from '../../../__test-utils__/gql-queries';
+import { ItemsService } from '../../../../src/services/items';
 jest.mock('../../../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
 
 describe('Class ResolveMutation', () => {
 	const mockKnex = knex({ client: MockClient });
-	// mock class ItemsService to see which functions are called and what args they are passed
 
 	describe('resolveMutation()', () => {
-		// let get: jest.SpyInstance<ItemsService.ItemsService<Item>, [options: AbstractServiceOptions, collection: string]>;
-		let itemService: jest.SpyInstance<
-			ItemsService.ItemsService<Item>,
-			[collection: string, options: AbstractServiceOptions]
-		>;
+		const options = { knex: mockKnex, accountability: { admin: true, role: 'admin' }, schema: userSchema };
+		let resolver: ResolveMutation;
+		let createMany: any;
 
-		beforeEach(() => {
-			itemService = jest.spyOn(ItemsService, 'ItemsService').mockImplementation(
-				() =>
-					({
-						createOn: { createOne: true },
-						readByQuery: { readByQuery: true },
-						readSingleton: { readSingleton: true },
-						upsertSingleton: { upsertSingleton: true },
-					} as any)
-			);
+		beforeAll(() => {
+			createMany = jest.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue(['id']);
+			resolver = new ResolveMutation(options);
 		});
 
 		afterEach(() => {
-			// get.mockRestore();
-			itemService.mockRestore();
+			createMany.mockRestore();
 		});
 
-		it('', () => {
-			const options = { knex: mockKnex, accountability: { admin: true, role: 'admin' }, schema: userSchema };
-			const resolver = new ResolveMutation(options);
-			resolver.resolveMutation({}, info, 'user');
+		it('createMany with no args', () => {
+			resolver.resolveMutation({}, createManyQuery, 'user');
+			expect(createMany.mock.calls.length).toBe(1);
 
-			expect(itemService.mock.calls.length).toBe(1);
-			expect(itemService.mock.calls[0][0]).toStrictEqual('');
+			// check that args aren't passed
+			expect(createMany.mock.calls[0][0]).toStrictEqual(undefined);
 
-			expect(itemService.mock.results.length).toBe(1);
-			// We want results to contain the response from one of these functions
-			expect(itemService.mock.results).toBe([
-				{
-					type: 'return',
-					value: {
-						createOne: true,
-						readByQuery: true,
-						readSingleton: true,
-						upsertSingleton: true,
-					},
-				},
-			]);
-
-			expect(itemService.mock.instances.length).toBe(1);
-			expect(itemService.mock.instances).toBe(1);
+			// Need to figure out was results /should/ be
+			expect(createMany.mock.results.length).toBe(1);
 		});
 	});
 });

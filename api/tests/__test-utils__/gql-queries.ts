@@ -90,8 +90,8 @@ export const aggregationInfo = {
 	variableValues: {},
 } as GraphQLResolveInfo;
 
-export const createOneQuery = {
-	fieldName: 'create_authors',
+export const createManyQuery = {
+	fieldName: 'create_authors_items',
 	fieldNodes: fieldNodes,
 	returnType: gqlScalarType,
 	parentType: gqlObjectType,
