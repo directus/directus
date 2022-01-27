@@ -80,6 +80,7 @@
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
+			:filter="customFilter"
 			@input="stageSelection"
 		/>
 	</div>
@@ -87,7 +88,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
+import { defineComponent, computed, ref, toRefs, watch, PropType, inject } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import { useCollection } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -96,6 +97,10 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
+import { deepMap } from '@directus/shared/utils';
 
 /**
  * @NOTE
@@ -132,10 +137,28 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const values = inject('values', ref<Record<string, any>>({}));
+
+		const customFilter = computed(() => {
+			return parseFilter(
+				deepMap(props.filter, (val: any) => {
+					if (val && typeof val === 'string') {
+						return render(val, values.value);
+					}
+
+					return val;
+				})
+			);
+		});
 
 		const { collection } = toRefs(props);
 
@@ -178,6 +201,7 @@ export default defineComponent({
 			stageEdits,
 			editModalActive,
 			relatedPrimaryKeyField,
+			customFilter,
 		};
 
 		function useCurrent() {

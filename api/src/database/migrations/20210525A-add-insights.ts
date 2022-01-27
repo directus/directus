@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_dashboards', (table) => {
-		table.uuid('id').primary();
+		table.uuid('id').primary().notNullable();
 		table.string('name').notNullable();
 		table.string('icon', 30).notNullable().defaultTo('dashboard');
 		table.text('note');
@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.createTable('directus_panels', (table) => {
-		table.uuid('id').primary();
+		table.uuid('id').primary().notNullable();
 		table.uuid('dashboard').notNullable().references('id').inTable('directus_dashboards').onDelete('CASCADE');
 		table.string('name');
 		table.string('icon', 30).defaultTo('insert_chart');

@@ -278,10 +278,7 @@ dismiss: Avfärda
 raw_value: Obearbetat värde
 edit_raw_value: Redigera obearbetat värde
 enter_raw_value: Ange obearbetat värde...
-clear_value: Rensa fält
 clear_changes: Rensa ändringar
-reset_to_default: Återställ till förval
-undo_changes: Ångra ändringar
 notifications: Aviseringar
 show_all_activity: Visa all aktivitet
 page_not_found: Sidan hittades inte
@@ -311,10 +308,9 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
-export_data: Exportera data
+label_import: Importera
 format: Format
 use_current_filters_settings: Använd befintliga filter & inställningar
-export_collection: 'Exportera {collection}'
 last_page: Sista sidan
 last_access: Senaste åtkomsten
 fill_template: Fyll med mallens värden
@@ -938,6 +934,10 @@ fields:
     transformations_all: Tillåt alla transformationer
     transformations_none: Inaktivera transformationer
     transformations_presets: Begränsa transformationer till inställningarna nedan
+  directus_shares:
+    name: Namn
+    role: Roll
+    password: Lösenord
   directus_fields:
     collection: Namn kollektion
     icon: Ikon kollektion
@@ -1382,6 +1382,9 @@ interfaces:
     toolbar: Verktygsfält
     custom_formats: Anpassade format
     options_override: Skriv över alternativ
+    folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
+    imageToken: Bildnyckel
+    imageToken_label: Token (statiskt) att lägga till på bildkällor
   input-autocomplete-api:
     results_path: Sökväg för resultat
     trigger: Utlösare
@@ -1439,9 +1442,18 @@ displays:
   formatted-value:
     formatted-value: Formaterat värde
     description: Visa en formaterad version av texten
-    format_title: Formatera titel
-    format_title_label: Auto-formatera inkapsling
+    format: Format
+    font: Typsnitt
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Fet
     bold_label: Använd fet stil
+    italic: Kursiv
+    prefix: Prefix
+    suffix: Suffix
+    color: Färg
+    icon: Ikon
+    text: Text
   formatted-json-value:
     formatted-json-value: Formaterat JSON-värde
     description: Visa en formaterad version av objektet

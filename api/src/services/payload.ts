@@ -5,8 +5,8 @@ import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lo
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview, Alterations } from '../types';
-import { Accountability, Query } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, Alterations } from '../types';
+import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import { unflatten } from 'flat';
@@ -118,9 +118,18 @@ export class PayloadService {
 			return value;
 		},
 		async csv({ action, value }) {
-			if (!value) return;
-			if (action === 'read' && Array.isArray(value) === false) return value.split(',');
-			if (Array.isArray(value)) return value.join(',');
+			if (Array.isArray(value) === false && typeof value !== 'string') return;
+
+			if (action === 'read' && Array.isArray(value) === false) {
+				if (value === '') return [];
+
+				return value.split(',');
+			}
+
+			if (Array.isArray(value)) {
+				return value.join(',');
+			}
+
 			return value;
 		},
 	};

@@ -29,8 +29,8 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/) or
-[AWS Elastic Beanstalk](/getting-started/installation/aws)
+[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/),
+[Google Cloud Platform](/getting-started/installation/gcp) or [AWS Elastic Beanstalk](/getting-started/installation/aws)
 
 ::: tip First User
 
@@ -96,6 +96,48 @@ To apply the generated snapshot, run
 
 ```
 npx directus schema apply ./path/to/snapshot.yaml
+```
+
+### Creating Users
+
+To create a new user with a specific role, run
+
+```
+npx directus users create --email <user-email> --password <password> --role <role-uuid>
+```
+
+#### Updating User Password
+
+To update the password of an existing user, run
+
+```
+npx directus users passwd --email <user-email> --password <new-password>
+```
+
+### Creating Roles
+
+To create a new role, run
+
+```
+npx directus roles create --role <role-name>
+```
+
+These roles are created with the
+[minimum permissions required](/configuration/users-roles-permissions/#configuring-system-permissions) to properly
+access the App by default.
+
+To create a new role with admin access, set the `--admin` flag to `true`, such as
+
+```
+npx directus roles create --role <role-name> --admin true
+```
+
+### Count Items in a Collection
+
+To count the amount of items in a given collection, run
+
+```
+npx directus count <collection-name>
 ```
 
 ---

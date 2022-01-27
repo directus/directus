@@ -107,6 +107,11 @@ module.exports = {
 							},
 							{
 								type: 'page',
+								path: '/getting-started/installation/gcp',
+								title: 'Google Cloud Platform',
+							},
+							{
+								type: 'page',
 								path: '/getting-started/installation/iis',
 								title: 'IIS',
 							},
@@ -247,6 +252,11 @@ module.exports = {
 						type: 'page',
 						path: '/configuration/activity-log',
 						title: 'Activity Log',
+					},
+					{
+						type: 'page',
+						path: '/configuration/sso',
+						title: 'Single Sign-On (SSO)',
 					},
 					{
 						type: 'divider',
@@ -474,7 +484,7 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
-						path: '/guides/sso',
+						path: '/configuration/sso',
 						title: 'Single Sign-On (SSO)',
 					},
 				],

@@ -42,7 +42,13 @@
 
 			<router-link :to="userProfileLink">
 				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
-					<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
+					<img
+						v-if="avatarURL && !avatarError"
+						:src="avatarURL"
+						:alt="userFullName"
+						class="avatar-image"
+						@error="avatarError = $event"
+					/>
 					<v-icon v-else name="account_circle" outline />
 				</v-avatar>
 			</router-link>
@@ -73,11 +79,11 @@ export default defineComponent({
 		const signOutActive = ref(false);
 
 		const avatarURL = computed<string | null>(() => {
-			if (userStore.currentUser === null) return null;
-			if (userStore.currentUser.avatar === null) return null;
-
+			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
 			return addTokenToURL(getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
+
+		const avatarError = ref(null);
 
 		const userProfileLink = computed<string>(() => {
 			const id = userStore.currentUser?.id;
@@ -90,7 +96,17 @@ export default defineComponent({
 
 		const userFullName = userStore.fullName;
 
-		return { t, userFullName, avatarURL, userProfileLink, signOutActive, signOutLink, notificationsDrawerOpen, unread };
+		return {
+			t,
+			userFullName,
+			avatarURL,
+			userProfileLink,
+			signOutActive,
+			signOutLink,
+			notificationsDrawerOpen,
+			unread,
+			avatarError,
+		};
 	},
 });
 </script>

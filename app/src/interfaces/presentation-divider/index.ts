@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationDivider from './presentation-divider.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'presentation-divider',
@@ -44,21 +45,6 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'marginTop',
-			name: '$t:interfaces.presentation-divider.margin_top',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:interfaces.presentation-divider.margin_top_label',
-				},
-			},
-			schema: {
-				default_value: true,
-			},
-		},
-		{
 			field: 'inlineTitle',
 			name: '$t:interfaces.presentation-divider.inline_title',
 			type: 'boolean',
@@ -74,4 +60,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

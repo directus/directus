@@ -122,7 +122,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 						continue;
 					}
 
-					// Related collection doesn't exist for m2a relationship types
+					// Related collection doesn't exist for a2o relationship types
 					if (related_collection) {
 						message += `-> ${related_collection}`;
 					}

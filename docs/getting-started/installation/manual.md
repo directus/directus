@@ -16,7 +16,7 @@ npm init -y
 ```
 
 We recommend aliasing the `start` script to Directus' start for easier deployments to services like
-[AWS](/getting-started/installation/aws/) or
+[AWS](/getting-started/installation/aws/), [Google Cloud Platform](/getting-started/installation/gcp) or
 [DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/).
 
 ```json
