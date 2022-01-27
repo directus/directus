@@ -94,92 +94,90 @@ describe('Class ResolveMutation', () => {
 			});
 		});
 
-		// 	describe('createOne with no args', () => {
-		// 		it.each(Object.keys(scopes))('%s',async (scope) => {
-		// 			const table = scopes[scope].tables[0];
+		describe('createOne with no args', () => {
+			it.each(Object.keys(scopes))('%s', async (scope) => {
+				const table = scopes[scope].tables[0];
 
-		// 			options.schema = scopes[scope].schema;
+				options.schema = scopes[scope].schema;
 
-		// 			resolver = new ResolveMutation(options);
+				resolver = new ResolveMutation(options);
 
-		// 			const response = await resolver.resolveMutation({}, updateManyMutation(table), scope);
-		// 			expect(response).toStrictEqual('updateMany');
+				await resolver.resolveMutation({}, updateManyMutation(table), scope);
+				// expect(response).toStrictEqual('updateMany');
 
-		// 			expect(updateMany.mock.calls.length).toBe(1);
-		// 			expect(updateMany.mock.calls[0][0]).toStrictEqual(undefined);
+				expect(updateMany.mock.calls.length).toBe(1);
+				expect(updateMany.mock.calls[0][0]).toStrictEqual(undefined);
 
-		// 			expect(readOne.mock.calls.length).toStrictEqual(1);
-		// 			expect(readOne.mock.calls[0][0]).toStrictEqual(1);
-		// 			expect(readOne.mock.calls[0][1]).toStrictEqual({"alias": {}, "fields": ["date"], "filter": undefined});
-		// 			expect(await readOne.mock.results[0].value).toStrictEqual('updateMany');
+				// expect(readOne.mock.calls.length).toStrictEqual(1);
+				// expect(readOne.mock.calls[0][0]).toStrictEqual(1);
+				// expect(readOne.mock.calls[0][1]).toStrictEqual({"alias": {}, "fields": ["date"], "filter": undefined});
+				// expect(await readOne.mock.results[0].value).toStrictEqual('updateMany');
+			});
+		});
 
-		// 		});
-		// 	});
+		describe('updateOne with no args', () => {
+			it.each(Object.keys(scopes))('%s', (scope) => {
+				const table = scopes[scope].tables[0];
 
-		// 	describe('updateOne with no args', () => {
-		// 		it.each(Object.keys(scopes))('%s', (scope) => {
-		// 			const table = scopes[scope].tables[0];
+				options.schema = scopes[scope].schema;
 
-		// 			options.schema = scopes[scope].schema;
+				resolver = new ResolveMutation(options);
 
-		// 			resolver = new ResolveMutation(options);
+				resolver.resolveMutation({}, updateOneMutation(table), scope);
 
-		// 			resolver.resolveMutation({}, updateOneMutation(table), scope);
+				expect(updateOne.mock.calls.length).toBe(1);
+				expect(updateOne.mock.calls[0][0]).toStrictEqual(undefined);
+				expect(updateOne.mock.results.length).toBe(1);
+			});
+		});
 
-		// 			expect(updateOne.mock.calls.length).toBe(1);
-		// 			expect(updateOne.mock.calls[0][0]).toStrictEqual(undefined);
-		// 			expect(updateOne.mock.results.length).toBe(1);
-		// 		});
-		// 	});
+		describe('updateMany with no args', () => {
+			it.each(Object.keys(scopes))('%s', async (scope) => {
+				const table = scopes[scope].tables[0];
 
-		// 	describe('updateMany with no args', () => {
-		// 		it.each(Object.keys(scopes))('%s', async (scope) => {
-		// 			const table = scopes[scope].tables[0];
+				options.schema = scopes[scope].schema;
 
-		// 			options.schema = scopes[scope].schema;
+				resolver = new ResolveMutation(options);
 
-		// 			resolver = new ResolveMutation(options);
+				await resolver.resolveMutation({}, updateManyMutation(table), scope);
+				// expect(response).toStrictEqual(['updateMany']);
 
-		// 			const response = await resolver.resolveMutation({}, updateManyMutation(table), scope);
-		// 			expect(response).toStrictEqual(['updateMany']);
+				expect(updateMany.mock.calls.length).toBe(1);
+				expect(updateMany.mock.calls[0][0]).toStrictEqual(undefined);
 
-		// 			expect(updateMany.mock.calls.length).toBe(1);
-		// 			expect(updateMany.mock.calls[0][0]).toStrictEqual(undefined);
+				// expect(readMany.mock.calls.length).toStrictEqual(1);
+				// expect(readMany.mock.calls[0][0]).toStrictEqual([1]);
+				// expect(readMany.mock.calls[0][1]).toStrictEqual({"alias": {}, "fields": ["date"], "filter": undefined});
+				// expect(await readMany.mock.results[0].value).toStrictEqual(['updateMany']);
+			});
+		});
+		describe('deleteOne with no args', () => {
+			it.each(Object.keys(scopes))('%s', (scope) => {
+				const table = scopes[scope].tables[0];
 
-		// 			expect(readMany.mock.calls.length).toStrictEqual(1);
-		// 			expect(readMany.mock.calls[0][0]).toStrictEqual([1]);
-		// 			expect(readMany.mock.calls[0][1]).toStrictEqual({"alias": {}, "fields": ["date"], "filter": undefined});
-		// 			expect(await readMany.mock.results[0].value).toStrictEqual(['updateMany']);
+				options.schema = scopes[scope].schema;
 
-		// 		});
-		// 	});
-		// 	describe('deleteOne with no args', () => {
-		// 		it.each(Object.keys(scopes))('%s', (scope) => {
-		// 			const table = scopes[scope].tables[0];
+				resolver = new ResolveMutation(options);
 
-		// 			options.schema = scopes[scope].schema;
+				resolver.resolveMutation({}, deleteOneMutation(table), scope);
 
-		// 			resolver = new ResolveMutation(options);
+				expect(deleteOne.mock.calls.length).toBe(1);
+				expect(deleteOne.mock.calls[0][0]).toStrictEqual(undefined);
+			});
+		});
+		describe('deleteMany with no args', () => {
+			it.each(Object.keys(scopes))('%s', (scope) => {
+				const table = scopes[scope].tables[0];
 
-		// 			resolver.resolveMutation({}, deleteOneMutation(table), scope);
+				options.schema = scopes[scope].schema;
 
-		// 			expect(deleteOne.mock.calls.length).toBe(1);
-		// 			expect(deleteOne.mock.calls[0][0]).toStrictEqual(undefined);
-		// 		});
-		// 	});
-		// 	describe('deleteMany with no args', () => {
-		// 		it.each(Object.keys(scopes))('%s', (scope) => {
-		// 			const table = scopes[scope].tables[0];
+				resolver = new ResolveMutation(options);
 
-		// 			options.schema = scopes[scope].schema;
+				resolver.resolveMutation({}, deleteManyMutation(table), scope);
 
-		// 			resolver = new ResolveMutation(options);
-
-		// 			resolver.resolveMutation({}, deleteManyMutation(table), scope);
-
-		// 			expect(deleteMany.mock.calls.length).toBe(1);
-		// 			expect(deleteMany.mock.calls[0][0]).toStrictEqual(undefined);
-		// 		});
-		// });
+				expect(deleteMany.mock.calls.length).toBe(1);
+				expect(deleteMany.mock.calls[0][0]).toStrictEqual(undefined);
+			});
+		});
 	});
 });
