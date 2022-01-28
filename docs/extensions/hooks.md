@@ -169,6 +169,14 @@ export default ({ schedule }) => {
 
 :::
 
+::: tip Providers Authentication
+
+`auth.register` is triggered only for `openid` and `oauth2` providers. Moreover
+`AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` has to be enabled. `accessToken` is return by the corresponding providers
+and should not be mistaken with Directus accessToken.
+
+:::
+
 ### Action Events
 
 | Name                          | Meta                                                |
