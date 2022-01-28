@@ -1,8 +1,41 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificator
 avatar: Profielafbeelding
+application: Applicatie
+default_provider: Standaard
+published: Gepubliceerd
+draft: Concept
+archived: Gearchiveerd
+modules: Modules
+module_bar: Modulebalk
+tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
+maps: Kaarten
+switch_user: Andere gebruiker
+item_creation: Item Aanmaken
 item_revision: Item revisie
+enter_a_name: Vul een naam in...
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
@@ -17,20 +50,28 @@ role_name: Rol Naam
 branch: Tak
 leaf: Blad
 indeterminate: Onbepaald
+edit_collection: Collectie bewerken
 exclusive: Exclusief
 children: Onderliggende
+db_only_click_to_configure: 'Aleen in de databank: Klik om te configureren'
+show_active_items: Toon actieve items
 show_archived_items: Toon Gearchiveerde Items
+show_all_items: Toon alle items
 edited: Waarde bewerkt
 required: Vereist
 required_for_app_access: Vereist voor toegang tot de app
 requires_value: Vereist waarde
 create_preset: Voorkeur Aanmaken
+create_panel: Paneel maken
 create_role: Maak rol
 create_user: Gebruiker Aanmaken
+delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
+subject: Onderwerp
+inbox: Inbox
 emails: E-mails
 connection_excellent: Uitstekende Verbinding
 connection_good: Goede Verbinding
@@ -52,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Sessie verlopen
 public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
+admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
 not_allowed: Niet toegestaan
 directus_version: Directus Versie
 node_version: Node Versie
@@ -157,6 +199,8 @@ time: Tijd
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry.Polygon: Veelhoek
+geometry.MultiPoint: Multipoint
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_refresh: Automatische verversen
@@ -236,6 +280,7 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
+import_data_success: Gegevens succesvol geïmporteerd uit {filename}
 label_import: Importeren
 format: Format
 use_current_filters_settings: Gebruik huidige filters & instellingen
@@ -764,6 +809,7 @@ fields:
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
     custom_css: Aangepastte CSS
+    module_bar: Modulebalk
   directus_shares:
     name: Naam
     role: Rol
