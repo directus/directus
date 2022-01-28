@@ -200,6 +200,11 @@ module.exports = {
 						path: '/app/settings',
 						title: 'Settings',
 					},
+					{
+						type: 'page',
+						path: '/app/flters',
+						title: 'Filters',
+					},
 				],
 			},
 			{
