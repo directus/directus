@@ -42,29 +42,54 @@ const fieldNodes = [
 		},
 	},
 ] as FieldNode[];
-export const info = {
-	fieldName: 'authors',
-	fieldNodes: fieldNodes,
-	returnType: gqlScalarType,
-	parentType: gqlObjectType,
-	path: {
-		prev: undefined,
-		key: 'name',
-		typename: undefined,
-	},
-	schema: new GraphQLSchema({}),
-	fragments,
-	rootValue: '',
-	operation: {
-		kind: 'OperationDefinition',
-		operation: 'query',
+
+const argNodes = [
+	{
+		kind: 'Field',
+		name: { kind: 'Name', value: 'date' },
+		arguments: [
+			{
+				kind: 'Argument',
+				name: { kind: 'Name', value: 'id' },
+				value: { kind: 'ListValue', values: [{ kind: 'StringValue', value: 'id' }] },
+			},
+		],
 		selectionSet: {
 			kind: 'SelectionSet',
-			selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			selections: [
+				{
+					kind: 'Field',
+					name: { kind: 'Name', value: 'date' },
+				},
+			],
 		},
 	},
-	variableValues: {},
-} as GraphQLResolveInfo;
+] as FieldNode[];
+
+export const info = (table: string) =>
+	({
+		fieldName: table,
+		fieldNodes: fieldNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
+		},
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'query',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo);
 
 export const aggregationInfo = {
 	fieldName: 'authors_aggregated',
@@ -89,6 +114,31 @@ export const aggregationInfo = {
 	},
 	variableValues: {},
 } as GraphQLResolveInfo;
+
+export const argsById = (table: string) =>
+	({
+		fieldName: table,
+		fieldNodes: argNodes,
+		returnType: gqlScalarType,
+		parentType: gqlObjectType,
+		path: {
+			prev: undefined,
+			key: 'name',
+			typename: undefined,
+		},
+		schema: new GraphQLSchema({}),
+		fragments,
+		rootValue: '',
+		operation: {
+			kind: 'OperationDefinition',
+			operation: 'query',
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [{ kind: 'Field', name: { kind: 'Name', value: 'An Operation field' } }],
+			},
+		},
+		variableValues: {},
+	} as GraphQLResolveInfo);
 
 export const createManyMutation = (table: string) => {
 	return {

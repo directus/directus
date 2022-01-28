@@ -45,7 +45,7 @@ describe('Class ResolveMutation', () => {
 		beforeEach(() => {
 			readOne = jest.spyOn(ItemsService.prototype, 'readOne');
 			readMany = jest.spyOn(ItemsService.prototype, 'readMany');
-			readSingleton = jest.spyOn(ItemsService.prototype, 'readMany');
+			readSingleton = jest.spyOn(ItemsService.prototype, 'readSingleton');
 
 			createMany = jest.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([1]);
 			createOne = jest.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(1);
@@ -55,9 +55,7 @@ describe('Class ResolveMutation', () => {
 
 			deleteMany = jest.spyOn(ItemsService.prototype, 'deleteMany').mockResolvedValue([1]);
 			deleteOne = jest.spyOn(ItemsService.prototype, 'deleteOne').mockResolvedValue(1);
-
 			upsert = jest.spyOn(ItemsService.prototype, 'upsertSingleton').mockResolvedValue(1);
-			readSingleton = jest.spyOn(ItemsService.prototype, 'readSingleton').mockResolvedValue([{ id: 1 }]);
 		});
 
 		afterEach(() => {
@@ -211,7 +209,7 @@ describe('Class ResolveMutation', () => {
 				let table = scopes[scope].tables[0];
 				options.schema = scopes[scope].schema;
 
-				if (scope === 'system') table = 'users';
+				if (scope === 'system') table = table.substring(9);
 
 				resolver = new ResolveMutation(options);
 
