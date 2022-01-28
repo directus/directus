@@ -146,10 +146,6 @@ export type ApiExtensionContext = {
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<SchemaOverview>;
 };
 
-export type HookEndpointExtensionContext = ApiExtensionContext & {
-	emitter: any;
-};
-
 export type ExtensionOptionsContext = {
 	collection: string | undefined;
 	editing: string;
