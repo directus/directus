@@ -281,9 +281,13 @@ related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
 import_data_success: Gegevens succesvol geïmporteerd uit {filename}
+import_data_error: De gegevensstructuur van dit bestand komt niet overeen met de collectie.
 label_import: Importeren
+label_export: Exporteren
+import_export: Importeren / Exporteren
 format: Format
 use_current_filters_settings: Gebruik huidige filters & instellingen
+export_data_button: Start exporteren
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde
@@ -305,6 +309,8 @@ date-fns_time_no_seconds: 'H:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Minuten
+hours: Uren
 month: Maand
 year: Jaar
 select_all: Alles selecteren
@@ -339,6 +345,7 @@ zoom: Zoom
 download: Downloaden
 open: Openen
 open_in_new_window: Openen in nieuw venster
+open_folder: Open map "{folder}"
 foreground_color: Voorgrondkleur
 background_color: Achtergrond kleur
 upload_from_device: Bestand uploaden van apparaat
@@ -391,7 +398,12 @@ no_files_copy: Er zijn geen bestanden hier.
 user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
 no_users_copy: Er zijn nog geen gebruikers in deze rol.
 webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
+no_webhooks_copy: Er zijn nog geen webhooks geconfigureerd. Ga aan de slag door er hieronder een aan te maken.
+no_notifications: Geen meldingen
+no_notifications_copy: Je bent helemaal mee!
+activity_log: Activiteitenlogboek
 all_items: Alle items
+any: Eender
 csv: CSV
 no_collections: Geen collecties
 create_collection: Maak collectie
@@ -940,6 +952,7 @@ interfaces:
   filter:
     add_filter: Filter toevoegen
     all: Alle
+    any: Eender
   presentation-links:
     primary: Primair
   input-code:
