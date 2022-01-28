@@ -194,6 +194,20 @@ prefixing the value with `{type}:`. The following types are available:
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
 
+::: tip Additional Logger Variables
+
+All `LOGGER_*` environment variables are passed to the `options` configuration of a
+[`Pino` instance](https://github.com/pinojs/pino/blob/master/docs/api.md#options). All `LOGGER_HTTP*` environment
+variables are passed to the `options` configuration of a
+[`Pino-http` instance](https://github.com/pinojs/pino-http#api). Based on your project's needs, you can extend the
+`LOGGER_*` environment variables with any config you need to pass to the logger instance. If a LOGGER_LEVELS key is
+added, these values will be passed to the logger formatter, as described
+[here](https://github.com/pinojs/pino/blob/master/docs/help.md#mapping-pino-log-levels-to-google-cloud-logging-stackdriver-serverity-levels)
+for example. The format for adding LEVELS values is:
+`LOGGER_LEVELS="trace:DEBUG,debug:DEBUG,info:INFO,warn:WARNING,error:ERROR,fatal:CRITICAL"`
+
+:::
+
 ## Database
 
 | Variable               | Description                                                                                                                                        | Default Value                 |
@@ -209,6 +223,7 @@ needs to be publicly available on the internet.
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                            |
 | `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
 | `DB_CHARSET`           | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
+| `DB_VERSION`           | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
 
 ::: tip Additional Database Variables
 
@@ -362,7 +377,7 @@ RATE_LIMITER_REDIS="redis://@127.0.0.1"
 ## Cache
 
 Directus has a built-in data-caching option. Enabling this will cache the output of requests (based on the current user
-and exact query parameters used) into to configured cache storage location. This drastically improves API performance,
+and exact query parameters used) into configured cache storage location. This drastically improves API performance,
 as subsequent requests are served straight from this cache. Enabling cache will also make Directus return accurate
 cache-control headers. Depending on your setup, this will further improve performance by caching the request in
 middleman servers (like CDNs) and even the browser.
@@ -445,12 +460,16 @@ STORAGE_LOCAL_ROOT="./uploads"
 
 ::: warning Case sensitivity
 
-The location value(s) you specify should be capitalized when specifying the additional configuration values. For example, this will not work:
+The location value(s) you specify should be capitalized when specifying the additional configuration values. For
+example, this will not work:
+
 ```
 STORAGE_LOCATIONS="s3"
 STORAGE_s3_DRIVER="s3" # Will not work, lowercase "s3" ❌
 ```
+
 but this will work:
+
 ```
 STORAGE_LOCATIONS="s3"
 STORAGE_S3_DRIVER="s3" # Will work, "s3" is uppercased ✅
@@ -678,9 +697,10 @@ AUTH_ADOBE_ICON="adobe"
 
 ## Extensions
 
-| Variable          | Description                           | Default Value  |
-| ----------------- | ------------------------------------- | -------------- |
-| `EXTENSIONS_PATH` | Path to your local extensions folder. | `./extensions` |
+| Variable                 | Description                                             | Default Value  |
+| ------------------------ | ------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`        | Path to your local extensions folder.                   | `./extensions` |
+| `EXTENSIONS_AUTO_RELOAD` | Automatically reload extensions when they have changed. | `false`        |
 
 ## Email
 

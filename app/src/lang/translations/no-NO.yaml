@@ -258,9 +258,6 @@ dismiss: Lukk
 raw_value: Rå verdi
 edit_raw_value: Rediger råverdi
 enter_raw_value: Legg inn råverdi...
-clear_value: Tøm innhold
-reset_to_default: Tilbakestill til standard
-undo_changes: Angre endringer
 notifications: Varsler
 show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet
@@ -289,10 +286,9 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
-export_data: Eksporter data
+label_import: Importer
 format: Format
 use_current_filters_settings: Bruk gjeldende filtre og innstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Siste side
 last_access: Siste tilgang
 fill_template: Fyll med malverdi

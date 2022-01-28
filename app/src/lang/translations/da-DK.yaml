@@ -249,10 +249,7 @@ dismiss: Afvis
 raw_value: Rå værdi
 edit_raw_value: Rediger Rå Værdi
 enter_raw_value: Indtast rå værdi...
-clear_value: Nulstil værdi
 clear_changes: Ryd Ændringer
-reset_to_default: Nulstil til standard
-undo_changes: Fortryd ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
@@ -283,10 +280,9 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
-export_data: Eksporter data
+label_import: Importér
 format: Format
 use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi

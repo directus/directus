@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Tanımlayıcı
 avatar: Avatar
+application: Uygulama
 default_provider: Varsayılan
 published: Yayınlandı
 draft: Taslak
@@ -284,10 +285,7 @@ dismiss: Yoksay
 raw_value: Ham veri
 edit_raw_value: Ham Değeri Düzenle
 enter_raw_value: Bir değer girin...
-clear_value: Değeri Temizle
 clear_changes: Değişiklikleri iptal et
-reset_to_default: Öntanımlı girdilere sıfırla
-undo_changes: Değişiklikleri geri al
 notifications: Bildirimler
 show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
@@ -318,10 +316,9 @@ related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
 translations_collection: Çeviri Koleksiyonu
 languages_collection: Dil Koleksiyonu
-export_data: Verileri Dışa Aktar
+label_import: İçe aktar
 format: Biçim
 use_current_filters_settings: Mevcut Filtreleri & Ayarları Kullan
-export_collection: 'Koleksiyonu ({collection}) dışarı aktar'
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablonla Doldur
@@ -510,7 +507,7 @@ errors:
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
   ROUTE_NOT_FOUND: Bulunamadı
-  RECORD_NOT_UNIQUE: Kopya değer tespit edildi
+  RECORD_NOT_UNIQUE: Yinelenen takma ad algılandı
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
   UNPROCESSABLE_ENTITY: İşlenemeyen varlık
@@ -564,6 +561,7 @@ system_collections: Sistem Koleksiyonları
 placeholder: Yertutucu
 icon_left: İkon Sol
 icon_right: İkon Sağ
+count_other_revisions: '{count} Diğer Revizyonlar'
 font: Font
 sans_serif: Sans Serif
 serif: Serif
@@ -573,8 +571,11 @@ color: Renk
 circle: Daire
 empty_item: Boş öğe
 log_in_with: '{provider} ile giriş yap'
+conditional_styles: Koşullu Stil
+advanced_settings: Gelişmiş Ayarlar
 advanced_filter: Gelişmiş Filtre
 delete_advanced_filter: Filtreyi Sil
+change_advanced_filter_operator: Operatörü Değiştir
 operators:
   eq: Eşittir
   neq: Eşit değildir
@@ -588,14 +589,24 @@ operators:
   nnull: Null değil
   contains: Şunu içerir
   ncontains: Şunu içermez
+  starts_with: Şununla başlayan
+  nstarts_with: Şununla başlamayan
+  ends_with: Şununla biten
+  nends_with: Şununla bitmeyen
   between: Arasında
   nbetween: Arasında değil
   empty: Boş olabilir
   nempty: Boş değil
   all: Bu anahtarları içeren
   has: Bu anahtarlardan bazılarını içerir
+  intersects: Kesişen
+  nintersects: Kesişmeyen
+  intersects_bbox: Sınırlayıcı kutuyla kesişen
+  nintersects_bbox: Sınırlayıcı kutuyla kesişmeyen
 loading: Yükleniyor...
 drop_to_upload: Yüklemek için dosyayı buraya bırak
+item: Öğe
+items: Öğeler
 upload_file: Dosya Yükle
 upload_file_indeterminate: Dosya Yükleniyor...
 upload_file_success: Dosya Yüklendi
@@ -603,18 +614,46 @@ upload_files_indeterminate: 'Dosyalar yükleniyor {done}/{total}'
 upload_files_success: '{count} Dosya Yüklendi'
 upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı buraya Sürükle & Bırak
+click_to_browse: Gezinmek için tıkla
+interface_options: Arayüz Ayarları
 layout_options: Sayfa Düzeni Seçenekleri
 rows: Satırlar
+columns: Sütunlar
+collection_setup: Yığın Ayarları
+optional_system_fields: Opsiyonel Sistem Alanları
 value_unique: Değer benzersiz olmalı
+all_activity: Tüm Etkinlikler
+create_item: Öğe Oluştur
 display_template: Görüntüleme Şablonu
+language_display_template: Dil Görüntüleme Şablonu
+translations_display_template: Çevirilerin Görüntü Şablonu
+n_items_selected: 'Seçili Öğe Yok | 1 Öğe Seçildi | {n} Öğe Seçildi'
+per_page: Sayfa Başına
+all_files: Tüm Dosyalar
+my_files: Dosyalarım
+recent_files: Son Kullanılan Dosyalar
+create_folder: Klasör Oluştur
+edit_folder: Klasörü Düzenle
+folder_name: Klasör Adı...
+folder_key: Klasör Anahtarı...
+add_file: Dosya Ekle
+replace_file: Dosyayı Değiştir
 no_results: Sonuç Yok
+no_results_copy: Sonuçları görmek için arama filtrelerini ayarlayın veya temizleyin.
+clear_filters: Filtreleri Temizle
+saves_automatically: Otomati̇k Olarak Kaydeder
 role: Rol
+rule: Kural
 user: Kullanıcı
+no_presets: Şablon yok
 create: Oluştur
+on_create: Oluşturulduğunda
 on_update: Güncellemede (On Update)
 read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
+format_text: Metni Biçimlendir
+format_value: Değeri Biçimlendir
 operator: Operatör
 bold: Kalın
 toggle: Aç/Kapat
@@ -807,6 +846,7 @@ field_options:
     create: Oluştur
     update: Güncelle
   directus_collections:
+    collection_setup: Yığın Ayarları
     language: Dil
     translation: Çeviri
     collection_name: Koleksiyon Adı

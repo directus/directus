@@ -11,9 +11,8 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
-import { Field, FieldMeta, RawField, Type } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../types';
+import { Field, FieldMeta, RawField, Type, Accountability, SchemaOverview } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '@directus/shared/utils';
@@ -263,8 +262,10 @@ export class FieldsService {
 				if (table) {
 					this.addColumnToTable(table, hookAdjustedField as Field);
 				} else {
-					await trx.schema.alterTable(collection, (table) => {
-						this.addColumnToTable(table, hookAdjustedField as Field);
+					await trx.transaction(async (schemaTrx) => {
+						await schemaTrx.schema.alterTable(collection, (table) => {
+							this.addColumnToTable(table, hookAdjustedField as Field);
+						});
 					});
 				}
 			}
@@ -485,8 +486,10 @@ export class FieldsService {
 				field in this.schema.collections[collection].fields &&
 				this.schema.collections[collection].fields[field].alias === false
 			) {
-				await trx.schema.table(collection, (table) => {
-					table.dropColumn(field);
+				await trx.transaction(async (schemaTrx) => {
+					await schemaTrx.schema.table(collection, (table) => {
+						table.dropColumn(field);
+					});
 				});
 			}
 		});

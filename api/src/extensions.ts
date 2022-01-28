@@ -1,6 +1,16 @@
 import express, { Router } from 'express';
 import path from 'path';
-import { AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
+import {
+	ActionHandler,
+	AppExtensionType,
+	EndpointConfig,
+	Extension,
+	ExtensionType,
+	FilterHandler,
+	HookConfig,
+	InitHandler,
+	ScheduleHandler,
+} from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntry,
@@ -22,7 +32,6 @@ import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
-import { HookConfig, EndpointConfig, FilterHandler, ActionHandler, InitHandler, ScheduleHandler } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
@@ -51,20 +60,31 @@ export function getExtensionManager(): ExtensionManager {
 	return extensionManager;
 }
 
+type EventHandler =
+	| { type: 'filter'; name: string; handler: FilterHandler }
+	| { type: 'action'; name: string; handler: ActionHandler }
+	| { type: 'init'; name: string; handler: InitHandler }
+	| { type: 'schedule'; task: ScheduledTask };
+
 type AppExtensions = Partial<Record<AppExtensionType, string>>;
 type ApiExtensions = {
-	hooks: (
-		| { type: 'filter'; path: string; event: string; handler: FilterHandler }
-		| { type: 'action'; path: string; event: string; handler: ActionHandler }
-		| { type: 'init'; path: string; event: string; handler: InitHandler }
-		| { type: 'schedule'; path: string; task: ScheduledTask }
-	)[];
+	hooks: { path: string; events: EventHandler[] }[];
 	endpoints: { path: string }[];
+};
+
+type Options = {
+	schedule: boolean;
+	watch: boolean;
+};
+
+const defaultOptions: Options = {
+	schedule: true,
+	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development',
 };
 
 class ExtensionManager {
 	private isLoaded = false;
-	private isScheduleHookEnabled = true;
+	private options: Options;
 
 	private extensions: Extension[] = [];
 
@@ -77,16 +97,19 @@ class ExtensionManager {
 	private watcher: FSWatcher | null = null;
 
 	constructor() {
+		this.options = defaultOptions;
+
 		this.apiEmitter = new Emitter();
 		this.endpointRouter = Router();
 	}
 
-	public async initialize({ schedule, watch } = { schedule: true, watch: true }): Promise<void> {
-		this.isScheduleHookEnabled = schedule;
+	public async initialize(options: Partial<Options> = {}): Promise<void> {
+		this.options = {
+			...defaultOptions,
+			...options,
+		};
 
-		if (watch) {
-			this.initializeWatcher();
-		}
+		this.initializeWatcher();
 
 		if (!this.isLoaded) {
 			await this.load();
@@ -181,11 +204,16 @@ class ExtensionManager {
 	}
 
 	private initializeWatcher(): void {
-		if (env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development' && !this.watcher) {
+		if (this.options.watch && !this.watcher) {
 			logger.info('Watching extensions for changes...');
 
 			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
-				path.resolve(env.EXTENSIONS_PATH, pluralize(type))
+				path.posix.join(
+					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
+					pluralize(type),
+					'*',
+					'index.js'
+				)
 			);
 
 			this.watcher = chokidar.watch([path.resolve('.', 'package.json'), ...localExtensionPaths], {
@@ -243,17 +271,22 @@ class ExtensionManager {
 		for (const extensionType of APP_EXTENSION_TYPES) {
 			const entry = generateExtensionsEntry(extensionType, this.extensions);
 
-			const bundle = await rollup({
-				input: 'entry',
-				external: Object.values(sharedDepsMapping),
-				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry }), alias({ entries: internalImports })],
-			});
-			const { output } = await bundle.generate({ format: 'es', compact: true });
+			try {
+				const bundle = await rollup({
+					input: 'entry',
+					external: Object.values(sharedDepsMapping),
+					makeAbsoluteExternalsRelative: false,
+					plugins: [virtual({ entry }), alias({ entries: internalImports })],
+				});
+				const { output } = await bundle.generate({ format: 'es', compact: true });
 
-			bundles[extensionType] = output[0].code;
+				bundles[extensionType] = output[0].code;
 
-			await bundle.close();
+				await bundle.close();
+			} catch (error: any) {
+				logger.warn(`Couldn't bundle App extensions`);
+				logger.warn(error);
+			}
 		}
 
 		return bundles;
@@ -311,41 +344,43 @@ class ExtensionManager {
 
 		const register = getModuleDefault(hookInstance);
 
+		const hookHandler: { path: string; events: EventHandler[] } = {
+			path: hookPath,
+			events: [],
+		};
+
 		const registerFunctions = {
 			filter: (event: string, handler: FilterHandler) => {
 				emitter.onFilter(event, handler);
 
-				this.apiExtensions.hooks.push({
+				hookHandler.events.push({
 					type: 'filter',
-					path: hookPath,
-					event,
+					name: event,
 					handler,
 				});
 			},
 			action: (event: string, handler: ActionHandler) => {
 				emitter.onAction(event, handler);
 
-				this.apiExtensions.hooks.push({
+				hookHandler.events.push({
 					type: 'action',
-					path: hookPath,
-					event,
+					name: event,
 					handler,
 				});
 			},
 			init: (event: string, handler: InitHandler) => {
 				emitter.onInit(event, handler);
 
-				this.apiExtensions.hooks.push({
+				hookHandler.events.push({
 					type: 'init',
-					path: hookPath,
-					event,
+					name: event,
 					handler,
 				});
 			},
 			schedule: (cron: string, handler: ScheduleHandler) => {
 				if (validate(cron)) {
 					const task = schedule(cron, async () => {
-						if (this.isScheduleHookEnabled) {
+						if (this.options.schedule) {
 							try {
 								await handler();
 							} catch (error: any) {
@@ -354,9 +389,8 @@ class ExtensionManager {
 						}
 					});
 
-					this.apiExtensions.hooks.push({
+					hookHandler.events.push({
 						type: 'schedule',
-						path: hookPath,
 						task,
 					});
 				} else {
@@ -374,6 +408,8 @@ class ExtensionManager {
 			logger,
 			getSchema,
 		});
+
+		this.apiExtensions.hooks.push(hookHandler);
 	}
 
 	private registerEndpoint(endpoint: Extension, router: Router) {
@@ -405,19 +441,21 @@ class ExtensionManager {
 
 	private unregisterHooks(): void {
 		for (const hook of this.apiExtensions.hooks) {
-			switch (hook.type) {
-				case 'filter':
-					emitter.offFilter(hook.event, hook.handler);
-					break;
-				case 'action':
-					emitter.offAction(hook.event, hook.handler);
-					break;
-				case 'init':
-					emitter.offInit(hook.event, hook.handler);
-					break;
-				case 'schedule':
-					hook.task.stop();
-					break;
+			for (const event of hook.events) {
+				switch (event.type) {
+					case 'filter':
+						emitter.offFilter(event.name, event.handler);
+						break;
+					case 'action':
+						emitter.offAction(event.name, event.handler);
+						break;
+					case 'init':
+						emitter.offInit(event.name, event.handler);
+						break;
+					case 'schedule':
+						event.task.stop();
+						break;
+				}
 			}
 
 			delete require.cache[require.resolve(hook.path)];

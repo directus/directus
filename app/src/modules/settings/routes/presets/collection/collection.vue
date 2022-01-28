@@ -91,7 +91,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore, usePresetsStore } from '@/stores/';
 import { getLayout } from '@/layouts';
 import { useRouter } from 'vue-router';
 import ValueNull from '@/views/private/components/value-null';
@@ -131,6 +131,7 @@ export default defineComponent({
 		const { loading, presets, getPresets } = usePresets();
 		const { headers } = useTable();
 		const { confirmDelete, deleting, deleteSelection } = useDelete();
+		const presetsStore = usePresetsStore();
 
 		getPresets();
 
@@ -277,7 +278,7 @@ export default defineComponent({
 
 				try {
 					const IDs = selection.value.map((item) => item.id);
-					await api.delete(`/presets`, { data: IDs });
+					await presetsStore.delete(IDs);
 					selection.value = [];
 					await getPresets();
 					confirmDelete.value = false;

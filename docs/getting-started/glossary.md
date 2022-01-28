@@ -130,7 +130,7 @@ a **column** in your database. For example, an `articles` [Collection](#collecti
 
 As you might have guessed, files includes images, videos, PDFs, text documents, or anything else. While files can
 technically be stored as code in the database, it is far more common to manage them as individual assets on a "drive".
-The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
+The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it is
 an excellent Digital Asset Management system.
 
 ## Icons
@@ -163,7 +163,7 @@ proprietary options, such as seating charts, QR codes, or Stripe customer info.
 
 ## Items
 
-Item are objects within a Collection which contain values for one or more fields. Each collection represents a
+Items are objects within a Collection which contain values for one or more fields. Each collection represents a
 **record** in your database.
 
 Items are the primary building blocks of your project content. Similar to a "row" within a spreadsheet, all data within
