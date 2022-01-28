@@ -25,7 +25,7 @@ ARG REPOSITORY=directus/directus
 LABEL directus.version="${VERSION}"
 
 # Default environment variables
-# (see https://docs.directus.io/reference/environment-variables/)
+# (see https://docs.directus.io/reference/environment-variables/)
 ENV \
   DB_CLIENT="sqlite3" \
   DB_FILENAME="/directus/database/database.sqlite" \
