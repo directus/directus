@@ -563,6 +563,8 @@ update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 make_collection_visible: Rendi visibile la raccolta
 make_collection_hidden: Rendi nascosta la raccolta
+make_folder_visible: Rendi visibile la cartella
+make_folder_hidden: Rendi nascosta la cartella
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
@@ -1249,6 +1251,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
