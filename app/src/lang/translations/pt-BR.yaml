@@ -250,6 +250,7 @@ new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
 add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
 add_o2m_to_collection: 'Adicionar O2M a "{collection}"'
+add_m2m_to_collection: 'Adicionar M2O a "{collection}"'
 choose_a_type: Escolha um tipo...
 determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
@@ -272,6 +273,7 @@ note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Adicionar um placeholder...
 length: Comprimento
+soft_length: Limite leve
 precision_scale: Precisão e Escala
 readonly: Leitura apenas
 unique: Único
