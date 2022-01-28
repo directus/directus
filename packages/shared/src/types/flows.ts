@@ -1,7 +1,8 @@
-type TriggerType = 'filter' | 'action' | 'init' | 'schedule';
+type TriggerType = 'filter' | 'action' | 'init' | 'schedule' | 'operation';
 type Status = 'active' | 'inactive';
 
 export interface Flow {
+	id: string;
 	name: string;
 	icon: string;
 	note: string;
@@ -12,6 +13,7 @@ export interface Flow {
 }
 
 export interface Operation {
+	id: string;
 	name: string | null;
 	key: string;
 	type: string;

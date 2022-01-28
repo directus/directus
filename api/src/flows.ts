@@ -33,6 +33,7 @@ class FlowManager {
 	private operations: Record<string, OperationHandler> = {};
 
 	private triggerHandlers: EventHandler[] = [];
+	private operationHandlers: Record<string, any> = {};
 
 	public async initialize(): Promise<void> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
@@ -85,6 +86,10 @@ class FlowManager {
 				} else {
 					logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options.cron}`);
 				}
+			} else if (flow.trigger === 'operation') {
+				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
+
+				this.operationHandlers[flow.id] = handler;
 			}
 		}
 	}
@@ -108,6 +113,7 @@ class FlowManager {
 		}
 
 		this.triggerHandlers = [];
+		this.operationHandlers = {};
 
 		await this.initialize();
 	}
@@ -118,6 +124,18 @@ class FlowManager {
 
 	public clearOperations(): void {
 		this.operations = {};
+	}
+
+	public async executeOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		if (!(id in this.operationHandlers)) {
+			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
+
+			return null;
+		}
+
+		const handler = this.operationHandlers[id];
+
+		return handler(data, context);
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {

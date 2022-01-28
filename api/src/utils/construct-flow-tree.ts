@@ -7,7 +7,7 @@ export function constructFlowTree(flow: FlowRaw): Flow {
 	const operationTree = constructOperationTree(rootOperation, flow.operations);
 
 	const flowTree: Flow = {
-		...omit(flow, ['id', 'operations']),
+		...omit(flow, 'operations'),
 		operation: operationTree,
 	};
 
@@ -27,7 +27,7 @@ function constructOperationTree(root: OperationRaw | null, operations: Operation
 	}
 
 	const operationTree: Operation = {
-		...omit(root, ['id', 'flow']),
+		...omit(root, 'flow'),
 		resolve: constructOperationTree(resolveOperation, operations),
 		reject: constructOperationTree(rejectOperation, operations),
 	};
