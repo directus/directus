@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identificador
 avatar: Imagem de Perfil
+application: Aplicação
 default_provider: Padrão
 published: Publicado
 draft: Rascunho
@@ -31,6 +32,7 @@ tile_size: Tamanho do ladrilho
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
+switch_user: Alternar Usuário
 item_creation: Criação de ítem
 item_revision: Revisão do item
 enter_a_name: Insira um nome...
@@ -91,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Sessão expirada
 public_label: Publico
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
+admin_description: Função administrativa inicial com acesso irrestrito ao aplicativo.
 not_allowed: Não permitido
 directus_version: Versão do Directus
 node_version: Versão Node
@@ -172,6 +175,7 @@ language: Idioma
 aggregate_function: Agregar função
 aggregate_precision: Agregar precisão
 group_aggregation: Grupo de agregação
+group_precision: Precisão do Grupo
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmera
@@ -220,7 +224,11 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (Todos)
 geometry.Point: Ponto
+geometry.LineString: Linha de texto
 geometry.Polygon: Polígono
+geometry.MultiPoint: MultiPonto
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: Multipolígono
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
