@@ -517,6 +517,11 @@ module.exports = {
 						path: '/contributing/translations',
 						title: 'Translating the App',
 					},
+					{
+						type: 'page',
+						path: '/contributing/docs-guidelines',
+						title: 'Docs Guidelines',
+					},
 				],
 			},
 		],
