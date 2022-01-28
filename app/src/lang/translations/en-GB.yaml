@@ -284,10 +284,7 @@ dismiss: Dismiss
 raw_value: Raw value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
-clear_value: Clear value
 clear_changes: Clear Changes
-reset_to_default: Reset to default
-undo_changes: Undo changes
 notifications: Notifications
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
@@ -318,10 +315,9 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
-export_data: Export Data
+label_import: Import
 format: Format
 use_current_filters_settings: Use Current Filters & Settings
-export_collection: 'Export {collection}'
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value

@@ -11,7 +11,7 @@
 
 		<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
 
-		<login-form v-else :provider="provider" />
+		<login-form v-else-if="!disableDefault" :provider="provider" />
 
 		<sso-links v-if="!authenticated" :providers="providers" />
 
@@ -56,6 +56,7 @@ export default defineComponent({
 		const appStore = useAppStore();
 
 		const providers = ref<{ driver: string; name: string }[]>([]);
+		const disableDefault = ref<boolean>(false);
 		const provider = ref(DEFAULT_AUTH_PROVIDER);
 		const providerOptions = ref<{ text: string; value: string }[]>([]);
 		const driver = ref('local');
@@ -74,18 +75,19 @@ export default defineComponent({
 
 		onMounted(() => fetchProviders());
 
-		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver };
+		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver, disableDefault };
 
 		async function fetchProviders() {
 			try {
 				const response = await api.get('/auth');
 				providers.value = response.data.data;
+				disableDefault.value = response.data.disableDefault;
 
 				providerOptions.value = providers.value
 					.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
 					.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
 
-				if (!response.data.disableDefault) {
+				if (!disableDefault.value) {
 					providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
 				} else {
 					providerSelect.value = providerOptions.value[0]?.value;

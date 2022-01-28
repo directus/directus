@@ -16,6 +16,7 @@
 #   Keycloak:        5110
 #   Postgres (10):   5111
 #   Minio Admin:     5112
+#   CockroachDB:     5113
 #
 # Credentials:
 #   Postgres:
@@ -59,6 +60,10 @@
 #   Keycloak
 #     User:          admin
 #     Password:      secret
+#
+#   CockroachDB
+#     User:          admin
+#     Password:      --
 
 version: '3.1'
 services:
@@ -78,6 +83,8 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5101:3306
+    cap_add:
+      - SYS_NICE
 
   maria:
     image: mariadb:10.7
@@ -141,7 +148,6 @@ services:
       KEYCLOAK_PASSWORD: secret
       DB_ADDR: ''
       DB_VENDOR: h2
-
     ports:
       - 5110:8080
 
@@ -152,3 +158,9 @@ services:
       POSTGRES_DB: directus
     ports:
       - 5111:5432
+
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v21.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 5113:26257

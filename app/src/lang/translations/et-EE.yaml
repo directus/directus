@@ -221,9 +221,6 @@ dismiss: Loobu
 raw_value: Algne väärtus
 edit_raw_value: Muuda algväärtust
 enter_raw_value: Sisesta väärtus...
-clear_value: Tühjenda väärtus
-reset_to_default: Taasta vaikeväärtused
-undo_changes: Tühista muudatused
 notifications: Teavitused
 show_all_activity: Näita kogu aktiivsust
 page_not_found: Lehekülge ei leitud
@@ -253,10 +250,8 @@ related_collection: Seotud kogu
 related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
-export_data: Ekspordi andmed
 format: Vorming
 use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
-export_collection: 'Ekspordi {collection}'
 last_page: Viimane leht
 last_access: Viimati vaadatud
 fill_template: Täida mallist

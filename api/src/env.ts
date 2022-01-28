@@ -59,6 +59,7 @@ const defaults: Record<string, any> = {
 	AUTH_DISABLE_DEFAULT: false,
 
 	EXTENSIONS_PATH: './extensions',
+	EXTENSIONS_AUTO_RELOAD: false,
 
 	EMAIL_FROM: 'no-reply@directus.io',
 	EMAIL_TRANSPORT: 'sendmail',

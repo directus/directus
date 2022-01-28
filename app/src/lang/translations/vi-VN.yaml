@@ -1,5 +1,27 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Định danh
 avatar: Ảnh đại diện
+application: Ứng dụng
 default_provider: Mặc định
 published: Đã xuất bản
 draft: Bản nháp
@@ -10,6 +32,8 @@ tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 maps: Bản đồ
+switch_user: Đổi tài khoản
+item_creation: Khởi tạo item
 item_revision: Xem Phiên bản
 enter_a_name: Nhập Tên...
 duplicate_field: Nhân bản Trường
@@ -28,7 +52,10 @@ indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
 children: Trẻ em
+db_only_click_to_configure: 'Dành riêng cho dữ liệu: Chọn để cấu hình'
+show_active_items: Hiển thị các mục đang hoạt động
 show_archived_items: Hiển thị các mục đã Lưu Trữ
+show_all_items: Hiển thị tất cả các mục
 edited: Giá trị đã được chỉnh sửa
 required: Bắt buộc
 required_for_app_access: Yêu Cầu cho Kết Nối
@@ -42,6 +69,7 @@ create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
 invite: Mời
 email_already_invited: Email "{email}" đã được mời
+inbox: Hộp thư đến
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
 connection_good: Kết nối Tốt
@@ -121,6 +149,7 @@ item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
 field_validation: Xác Thực Trường
 field_presets: Các Mẫu Trường Tạo Sẵn
+changes_made: Các thay đổi trong phiên bản này hiển thị bên dưới.
 hide_field_on_detail: Ẩn chi tiết
 show_field_on_detail: Hiển thị chi tiết
 delete_field: Xóa Trường
@@ -134,7 +163,11 @@ global: Toàn cục
 admins_have_all_permissions: Các quản trị viên có toàn quyền
 camera: Camera
 show_zero: Hiển số không
+create_in_advanced_field_creation_mode: Tạo trường trong chế độ nâng cao
+continue_in_advanced_field_creation_mode: Tiếp tục tạo trường trong chế độ nâng cao
 sum: Tổng
+min: Tối thiểu
+max: Tối đa
 exposure: Độ phơi sáng
 shutter: Màn trập
 iso: ISO
@@ -150,6 +183,7 @@ alias: Bí danh
 bigInteger: Big Integer
 boolean: Boolean
 date: Ngày tháng
+date_range: Khoảng thời gian
 datetime: Ngày Giờ
 dateTime: Ngày Giờ
 decimal: Dạng thập phân
@@ -162,12 +196,15 @@ text: Đoạn văn bản
 time: Thời gian
 timestamp: Mốc thời gian
 uuid: UUID
+hash: Hash
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
+auto_refresh: Tự động Làm mới
 auto_generate: Tự khởi tạo
 this_will_auto_setup_fields_relations: Các trường và mối quan hệ bắt buộc sẽ được tự động tạo ra.
 click_here: Nhấn vào đây
 to_manually_setup_translations: để tạo các bản dịch một cách thủ công.
+fields_group: Nhóm dữ liệu
 no_collections_found: Không có bảng dữ liệu.
 search_collection: Chọn Bảng...
 new_field: 'Trường mới'
@@ -205,10 +242,7 @@ dismiss: Bỏ qua
 raw_value: Dữ liệu thực tế
 edit_raw_value: Thay đổi dữ liệu thực tế
 enter_raw_value: Nhập vào giá trị thực tế...
-clear_value: Xoá giá trị
 clear_changes: Xoá thay đổi
-reset_to_default: Khôi phục về mặc định
-undo_changes: Phục hồi các thay đổi
 notifications: Thông báo
 show_all_activity: Hiển Thị Tất Cả Hoạt Động
 page_not_found: Không tìm thấy trang này
@@ -238,9 +272,8 @@ related_collection: Danh mục liên quan
 related_collections: Những Danh mục liên quan
 translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
-export_data: Kết Xuất Dữ Liệu
+label_import: Nhập
 format: Định dạng
-export_collection: 'Kết xuất {collection}'
 last_access: Truy cập lần cuối
 fill_template: Điền với Giá trị Mẫu
 submit: Gửi đi
@@ -787,6 +820,8 @@ interfaces:
     file: Tệp
   files:
     files: Tệp
+  input-hash:
+    hash: Hash
   select-icon:
     icon: Biểu tượng
   system-interface:

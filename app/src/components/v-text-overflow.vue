@@ -1,5 +1,5 @@
 <template>
-	<div ref="el" v-tooltip="hasEllipsis && text" class="v-text-overflow">
+	<div ref="el" v-tooltip:[placement]="hasEllipsis && text" class="v-text-overflow">
 		<v-highlight v-if="highlight" :query="highlight" :text="text" />
 		<template v-else>{{ text }}</template>
 	</div>
@@ -18,6 +18,11 @@ export default defineComponent({
 		highlight: {
 			type: String,
 			default: null,
+		},
+		placement: {
+			type: String,
+			default: 'top',
+			validator: (val: string) => ['top', 'bottom', 'left', 'right', 'start', 'end'].includes(val),
 		},
 	},
 	setup() {

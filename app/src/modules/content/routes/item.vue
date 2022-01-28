@@ -125,7 +125,7 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="isSavable === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -212,9 +212,9 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import useShortcut from '@/composables/use-shortcut';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import useTemplateData from '@/composables/use-template-data';
@@ -266,6 +266,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -282,8 +283,6 @@ export default defineComponent({
 		} = useItem(collection, primaryKey);
 
 		const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
-
-		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 		const isSavable = computed(() => {
 			if (saveAllowed.value === false) return false;
@@ -303,13 +302,9 @@ export default defineComponent({
 			return hasEdits.value;
 		});
 
-		unsavedChanges(isSavable);
-
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
 
 		const title = computed(() => {
 			if (te(`collection_names_singular.${props.collection}`)) {
@@ -349,16 +344,6 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAndAddNew, form);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, shareAllowed, fields, revisionsAllowed } =
 			usePermissions(collection, item, isNew);

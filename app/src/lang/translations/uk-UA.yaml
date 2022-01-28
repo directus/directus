@@ -276,10 +276,7 @@ dismiss: Відмінити
 raw_value: Необроблене значення
 edit_raw_value: Змінити необроблене значення
 enter_raw_value: Введіть необроблене значення...
-clear_value: Очистити значення
 clear_changes: Очистити зміни
-reset_to_default: Відновити налаштування за умовчанням
-undo_changes: Відмінити зміни
 notifications: Сповіщення
 show_all_activity: Показати всю активність
 page_not_found: Сторінку не знайдено
@@ -310,10 +307,9 @@ related_collection: Пов'язана колекція
 related_collections: Схожі колекції
 translations_collection: Колекція перекладів
 languages_collection: Колекція мов
-export_data: Експорт даних
+label_import: Імпортувати
 format: Формат
 use_current_filters_settings: Використовувати поточні фільтри та налаштування
-export_collection: 'Експортувати {collection}'
 last_page: Остання сторінка
 last_access: Останній доступ
 fill_template: Заповнити значення шаблону
