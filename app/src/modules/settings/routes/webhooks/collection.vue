@@ -48,7 +48,7 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="t('edit')"
 					rounded
 					icon
