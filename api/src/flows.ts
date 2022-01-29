@@ -131,6 +131,8 @@ class FlowManager {
 		this.triggerHandlers = [];
 		this.operationHandlers = {};
 
+		this.flowOperations = {};
+
 		await this.initialize();
 	}
 
