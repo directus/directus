@@ -61,8 +61,8 @@ or mirroring the file.
 1. From the **File Library**, click a file to open it's detail page
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor
 
-<video alt="Image Editing" loop muted controls>
-  <source src="https://cdn.directus.io/docs/app/image-editing-lvizc9.mp4" type="video/mp4">
+<video alt="Image Editing" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/image-editing-220129A.mp4" type="video/mp4">
 </video>
 
 3. Make your changes and hit <span mi btn>check</span> in the top right to save the updates to the file.
@@ -72,8 +72,8 @@ or mirroring the file.
 Clicking the image Preview on the File Detail page opens a modal where you can replace the file. This is useful if you
 want to change the file, but keep existing file info and maintain all of the file's relationships.
 
-<video alt="Replacing a File" loop muted controls>
-  <source src="https://cdn.directus.io/docs/app/replace-file-lvizc9.mp4" type="video/mp4">
+<video alt="Replacing a File" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replace-file-220129A.mp4" type="video/mp4">
 </video>
 
 ## Uploading a File
@@ -81,8 +81,8 @@ want to change the file, but keep existing file info and maintain all of the fil
 There are many ways that a file can be uploaded into Directus via the App. We'll cover the primary method below, but
 keep in mind that files can also be added directly through different interfaces.
 
-<video alt="Uploading a File" loop muted controls>
-  <source src="https://cdn.directus.io/docs/app/upload-file-lvizc9.mp4" type="video/mp4">
+<video alt="Uploading a File" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/upload-file-220129A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click on the <span mi btn >add</span> button located in the header
@@ -93,8 +93,8 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Creating a Folder
 
-<video alt="Creating a Folder" loop muted controls>
-  <source src="https://cdn.directus.io/docs/app/create-folder-lvizc9.mp4" type="video/mp4">
+<video alt="Creating a Folder" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/create-folder-220129A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click on the <span mi btn sec>create_new_folder</span> button located in the header
@@ -103,8 +103,8 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Renaming a Folder
 
-<video alt="Renaming a Folder" loop muted controls>
-  <source src="https://cdn.directus.io/docs/app/rename-folder-lvizc9.mp4" type="video/mp4">
+<video alt="Renaming a Folder" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/rename-folder-220129A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to rename and select "Rename Folder"
@@ -113,8 +113,8 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Moving a Folder
 
-<video alt="Moving a Folder" loop muted controls>
-  <source src="https://cdn.directus.io/docs/app/move-folder-lvizc9.mp4" type="video/mp4">
+<video alt="Moving a Folder" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/move-folder-220129A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to move and select "Move to Folder"
@@ -123,8 +123,8 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Deleting a Folder
 
-<video alt="Deleting a Folder" loop muted controls>
-  <source src="https://cdn.directus.io/docs/app/delete-folder-lvizc9.mp4" type="video/mp4">
+<video alt="Deleting a Folder" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/delete-folder-220129A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to delete and select "Delete Folder"
