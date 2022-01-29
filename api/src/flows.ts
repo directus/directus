@@ -33,7 +33,7 @@ class FlowManager {
 	private operations: Record<string, OperationHandler> = {};
 
 	private triggerHandlers: EventHandler[] = [];
-	private operationHandlers: Record<string, any> = {};
+	private operationFlowHandlers: Record<string, any> = {};
 
 	private flowOperations: Record<string, any> = {};
 
@@ -105,7 +105,7 @@ class FlowManager {
 			} else if (flow.trigger === 'operation') {
 				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
 
-				this.operationHandlers[flow.id] = handler;
+				this.operationFlowHandlers[flow.id] = handler;
 			}
 		}
 	}
@@ -129,7 +129,7 @@ class FlowManager {
 		}
 
 		this.triggerHandlers = [];
-		this.operationHandlers = {};
+		this.operationFlowHandlers = {};
 
 		this.flowOperations = {};
 
@@ -145,13 +145,13 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
-		if (!(id in this.operationHandlers)) {
+		if (!(id in this.operationFlowHandlers)) {
 			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
 
 			return null;
 		}
 
-		const handler = this.operationHandlers[id];
+		const handler = this.operationFlowHandlers[id];
 
 		return handler(data, context);
 	}
