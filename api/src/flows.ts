@@ -34,6 +34,7 @@ class FlowManager {
 
 	private triggerHandlers: EventHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
+	private webhookFlowHandlers: Record<string, any> = {};
 
 	private flowOperations: Record<string, any> = {};
 
@@ -106,6 +107,10 @@ class FlowManager {
 				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
 
 				this.operationFlowHandlers[flow.id] = handler;
+			} else if (flow.trigger === 'webhook') {
+				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
+
+				this.webhookFlowHandlers[flow.id] = handler;
 			}
 		}
 	}
@@ -130,6 +135,7 @@ class FlowManager {
 
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
+		this.webhookFlowHandlers = {};
 
 		this.flowOperations = {};
 
@@ -152,6 +158,18 @@ class FlowManager {
 		}
 
 		const handler = this.operationFlowHandlers[id];
+
+		return handler(data, context);
+	}
+
+	public async runWebhookFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		if (!(id in this.webhookFlowHandlers)) {
+			logger.warn(`Couldn't find webhook triggered flow with id "${id}"`);
+
+			return null;
+		}
+
+		const handler = this.webhookFlowHandlers[id];
 
 		return handler(data, context);
 	}

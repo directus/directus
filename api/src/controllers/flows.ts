@@ -1,5 +1,7 @@
 import express from 'express';
+import { UUID_REGEX } from '../constants';
 import { ForbiddenException } from '../exceptions';
+import { getFlowManager } from '../flows';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
@@ -10,6 +12,17 @@ import asyncHandler from '../utils/async-handler';
 const router = express.Router();
 
 router.use(useCollection('directus_flows'));
+
+router.post(
+	`/trigger/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, res) => {
+		const flowManager = getFlowManager();
+
+		const result = await flowManager.runWebhookFlow(req.params.pk, req.body, { accountability: req.accountability });
+
+		res.json(result);
+	})
+);
 
 router.post(
 	'/',
