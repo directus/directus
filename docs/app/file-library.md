@@ -48,7 +48,7 @@ The file sidebar also includes the following details:
 - <span mi btn >check</span> — Saves any edits made to the file
 - <span mi btn sec>tune</span> — Refer [Editing an Image](#editing-an-image)
 - <span mi btn sec>save_alt</span> — Downloads the file to your current device
-- <img src="../assets/buttons/move-file.png" alt="Move to Folder" height="32" style="vertical-align: middle; margin: 2px 0">
+- <img src="../assets/buttons/move-file.png" alt="Move to Folder" height="32" style="vertical-align: middle; margin: 2px 0; box-shadow: none">
   — Move the file to another folder
 - <span mi btn dngr>delete</span> — Permanently removes the file and its metadata. This action is permanent and can not
   be undone.
