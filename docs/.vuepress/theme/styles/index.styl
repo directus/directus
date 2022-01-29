@@ -6,6 +6,7 @@
 @require './toc'
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Icons+Outlined');
 
 html, body
   padding 0
@@ -69,7 +70,7 @@ body
     border 1px solid var(--border-normal)
     border-radius 6px
 
-  img
+  img, video
     max-width 100%
     border-radius 6px
 
@@ -77,8 +78,60 @@ body
   padding 0
   margin 0
 
-  img
+  img, video
     max-width 100%
+
+[mi]
+  font-family 'Material Icons Outlined'
+  font-weight normal
+  font-style normal
+  font-size 18px
+  line-height 1
+  letter-spacing normal
+  text-transform none
+  display inline-block
+  white-space nowrap
+  word-wrap normal
+  direction ltr
+  -moz-font-feature-settings 'liga'
+  -moz-osx-font-smoothing grayscale
+
+  &[btn]
+    color var(--foreground-inverted)
+    background-color var(--primary)
+    border-radius 50%
+    width 28px
+    height 28px
+    vertical-align middle
+    display inline-flex
+    align-items center
+    justify-content center
+    margin-bottom 4px
+
+    &[dngr]
+      background-color var(--danger-10)
+      color var(--danger)
+
+    &[sec]
+      background-color var(--primary-10)
+      color var(--primary)
+
+    &[warn]
+      background-color var(--warning-10)
+      color var(--warning)
+
+    &[outline]
+      background-color transparent
+      border 2px solid var(--primary);
+      color var(--primary)
+
+  &[icon]
+    vertical-align middle
+    margin-bottom 4px
+    color var(--foreground-subdued)
+
+    &[dark]
+      color var(--foreground-normal-alt)
 
 a
   font-weight 500
