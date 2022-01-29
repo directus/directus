@@ -126,7 +126,7 @@ class FlowManager {
 		this.operations = {};
 	}
 
-	public async executeOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
 		if (!(id in this.operationHandlers)) {
 			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
 
