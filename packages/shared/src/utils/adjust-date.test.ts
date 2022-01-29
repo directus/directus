@@ -45,4 +45,34 @@ describe('Adjust a given date by a given change in duration.', () => {
 		const adjustedDate = new Date('2021-09-20T21:06:51.516Z');
 		expect(adjustDate(date, '-1.0ms')).toStrictEqual(adjustedDate);
 	});
+
+	it('calculates `tomorrow` date', () => {
+		const adjustedDate = new Date('2021-09-21T00:00:00.000Z');
+		expect(adjustDate(date, '+1 day | format: yyyy-MM-dd 00:00')).toStrictEqual(adjustedDate);
+	});
+
+	it('calculates `following month on first day` date', () => {
+		const adjustedDate = new Date('2021-10-01T00:00:00.000Z');
+		expect(adjustDate(date, '+1 month | format: yyyy-MM-01 00:00')).toStrictEqual(adjustedDate);
+	});
+
+	it('calculates `on the 15th of following month` date', () => {
+		const adjustedDate = new Date('2021-10-15T00:00:00.000Z');
+		expect(adjustDate(date, '+1 month | format: yyyy-MM-15 00:00')).toStrictEqual(adjustedDate);
+	});
+
+	it('calculates `following year` date', () => {
+		const adjustedDate = new Date('2022-01-01T00:00:00.000Z');
+		expect(adjustDate(date, '+1 year | format: yyyy-01-01 00:00')).toStrictEqual(adjustedDate);
+	});
+
+	it('calculates `july of following year` date', () => {
+		const adjustedDate = new Date('2022-07-01T00:00:00.000Z');
+		expect(adjustDate(date, '+1 year | format: yyyy-07-01 00:00')).toStrictEqual(adjustedDate);
+	});
+
+	it('calculates `july the 21st of following year` date', () => {
+		const adjustedDate = new Date('2022-07-21T00:00:00.000Z');
+		expect(adjustDate(date, '+1 year | format: yyyy-07-21 00:00')).toStrictEqual(adjustedDate);
+	});
 });

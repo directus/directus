@@ -1,4 +1,14 @@
-import { addYears, addWeeks, addMonths, addDays, addHours, addMinutes, addSeconds, addMilliseconds } from 'date-fns';
+import {
+	addYears,
+	addWeeks,
+	addMonths,
+	addDays,
+	addHours,
+	addMinutes,
+	addSeconds,
+	addMilliseconds,
+	format,
+} from 'date-fns';
 import { clone } from 'lodash';
 
 /**
@@ -10,6 +20,26 @@ import { clone } from 'lodash';
 export function adjustDate(date: Date, adjustment: string): Date | undefined {
 	date = clone(date);
 
+	const [mainTask, ...pipedTasks] = adjustment.split('|');
+
+	if (!mainTask) {
+		return undefined;
+	}
+
+	const result = applyMainTask(date, mainTask);
+
+	if (result === undefined) {
+		return undefined;
+	}
+
+	try {
+		return applyPipedTasks(result, pipedTasks);
+	} catch (e) {
+		return undefined;
+	}
+}
+
+function applyMainTask(date: Date, adjustment: string): Date | undefined {
 	const match =
 		/^((?:-|\+)?\d*?\.?\d+?) *?(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|months?|mth|mo|years?|yrs?|y)?$/i.exec(
 			adjustment.trim()
@@ -67,4 +97,26 @@ export function adjustDate(date: Date, adjustment: string): Date | undefined {
 		default:
 			return undefined;
 	}
+}
+
+function applyPipedTasks(date: Date, pipedTasks: string[]): Date | undefined {
+	for (const taskString of pipedTasks) {
+		const [task, instruction] = splitTask(taskString);
+		if (task === 'format') {
+			date = new Date(format(date, instruction));
+		}
+	}
+	return date;
+}
+
+/**
+ * Returns the match before first occurrence of a ':' character.
+ *
+ */
+function splitTask(taskString: string): [string, string] {
+	const [task, ...rest] = taskString.split(':');
+	if (!task) {
+		throw new Error(`Invalid task: ${taskString}`);
+	}
+	return [task.trim(), rest.join(':').trim()];
 }
