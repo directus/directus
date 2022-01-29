@@ -75,10 +75,13 @@ export const useFieldsStore = defineStore({
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
+					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
+					const literalInterpolatedTranslation = translation.replace(/([{}@$|])/g, "{'$1'}");
+
 					i18n.global.mergeLocaleMessage(language, {
 						fields: {
 							[field.collection]: {
-								[field.field]: translation,
+								[field.field]: literalInterpolatedTranslation,
 							},
 						},
 					});
@@ -251,6 +254,35 @@ export const useFieldsStore = defineStore({
 				else if (a.field > b.field) return 1;
 				else return 1;
 			});
+		},
+		/**
+		 * Retrieve sorted fields including groups. This is necessary because
+		 * fields inside groups starts their sort number from 1 to N again.
+		 */
+		getFieldsForCollectionSorted(collection: string): Field[] {
+			const fields = this.fields
+				.filter((field) => field.collection === collection)
+				.filter(
+					(field: Field) =>
+						field.meta?.special?.includes('group') ||
+						(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+				);
+
+			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
+
+			const sortGroupFields = (a: Field, b: Field) => {
+				if (!a.meta?.sort || !b.meta?.sort) return 0;
+				return a.meta.sort - b.meta.sort;
+			};
+
+			for (const [index, field] of nonGroupFields.entries()) {
+				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+				if (groupFields.length) {
+					nonGroupFields.splice(index + 1, 0, ...groupFields.sort(sortGroupFields));
+				}
+			}
+
+			return nonGroupFields;
 		},
 		/**
 		 * Retrieve field info for a field or a related field

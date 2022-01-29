@@ -4,7 +4,7 @@
 > use-case _(be it business intelligence, user progress tracking, web traffic conversions, or whatever!)_ you will be
 > able to setup key data metrics in just a few clicks.
 
-<video autoplay muted loop>
+<video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboard-220123A.mp4" type="video/mp4" />
 </video>
 
@@ -15,15 +15,15 @@
 First, create a Dashboard, then fill the Dashboard with Panels. Each Panel provides some unique type of analytics
 insight.
 
-<video autoplay muted loop>
+<video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/app-guide/insights/create-dashboards-and-panels-220123A.mp4" type="video/mp4" />
 </video>
 
-1. Click the "Create Dashboard" action button (`+`) in the page header.
+1. Click the "Create Dashboard" action button <span mi btn >add</span> in the page header.
 2. Fill in the dashboard name, icon and note.
 3. Click "Save".
 4. Click the edit icon in the page header.
-5. Hit the "Create Panel" (`+`) in the page header.
+5. Hit the "Create Panel" <span mi btn >add</span> in the page header.
 6. Select a Panel type. [Learn More about panel types.](#panels-overview)
 7. Adjust the Panel Options to customize the analytics metric.
 
@@ -42,7 +42,7 @@ Dashboard view, edit, and create permissions are
 
 ![How to Add, Edit and Delete Dashboards in Directus Insights](https://cdn.directus.io/docs/v9/app-guide/insights/add-edit-delete-dashboards-220123A.webp)
 
-1. Click the (`+`) icon in the page header to create a new Dashboard.
+1. Click the <span mi btn >add</span> icon in the page header to create a new Dashboard.
 2. Click the item option to edit or delete a Dashboard.
 
 ## Panels Overview

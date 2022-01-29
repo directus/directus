@@ -24,14 +24,14 @@ export default defineInterface({
 						'bold',
 						'italic',
 						'underline',
-						'removeformat',
-						'customLink',
-						'bullist',
-						'numlist',
-						'blockquote',
 						'h1',
 						'h2',
 						'h3',
+						'numlist',
+						'bullist',
+						'removeformat',
+						'blockquote',
+						'customLink',
 						'customImage',
 						'customMedia',
 						'hr',
@@ -45,32 +45,12 @@ export default defineInterface({
 					options: {
 						choices: [
 							{
-								value: 'aligncenter',
-								text: '$t:wysiwyg_options.aligncenter',
+								value: 'undo',
+								text: '$t:wysiwyg_options.undo',
 							},
 							{
-								value: 'alignjustify',
-								text: '$t:wysiwyg_options.alignjustify',
-							},
-							{
-								value: 'alignleft',
-								text: '$t:wysiwyg_options.alignleft',
-							},
-							{
-								value: 'alignnone',
-								text: '$t:wysiwyg_options.alignnone',
-							},
-							{
-								value: 'alignright',
-								text: '$t:wysiwyg_options.alignright',
-							},
-							{
-								value: 'forecolor',
-								text: '$t:wysiwyg_options.forecolor',
-							},
-							{
-								value: 'backcolor',
-								text: '$t:wysiwyg_options.backcolor',
+								value: 'redo',
+								text: '$t:wysiwyg_options.redo',
 							},
 							{
 								value: 'bold',
@@ -97,48 +77,12 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.superscript',
 							},
 							{
-								value: 'blockquote',
-								text: '$t:wysiwyg_options.blockquote',
+								value: 'fontselect',
+								text: '$t:wysiwyg_options.fontselect',
 							},
 							{
-								value: 'bullist',
-								text: '$t:wysiwyg_options.bullist',
-							},
-							{
-								value: 'numlist',
-								text: '$t:wysiwyg_options.numlist',
-							},
-							{
-								value: 'hr',
-								text: '$t:wysiwyg_options.hr',
-							},
-							{
-								value: 'customLink',
-								text: '$t:wysiwyg_options.link',
-							},
-							{
-								value: 'unlink',
-								text: '$t:wysiwyg_options.unlink',
-							},
-							{
-								value: 'customMedia',
-								text: '$t:wysiwyg_options.media',
-							},
-							{
-								value: 'customImage',
-								text: '$t:wysiwyg_options.image',
-							},
-							{
-								value: 'copy',
-								text: '$t:wysiwyg_options.copy',
-							},
-							{
-								value: 'cut',
-								text: '$t:wysiwyg_options.cut',
-							},
-							{
-								value: 'paste',
-								text: '$t:wysiwyg_options.paste',
+								value: 'fontsizeselect',
+								text: '$t:wysiwyg_options.fontsizeselect',
 							},
 							{
 								value: 'h1',
@@ -165,12 +109,24 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.h6',
 							},
 							{
-								value: 'fontselect',
-								text: '$t:wysiwyg_options.fontselect',
+								value: 'alignleft',
+								text: '$t:wysiwyg_options.alignleft',
 							},
 							{
-								value: 'fontsizeselect',
-								text: '$t:wysiwyg_options.fontsizeselect',
+								value: 'aligncenter',
+								text: '$t:wysiwyg_options.aligncenter',
+							},
+							{
+								value: 'alignright',
+								text: '$t:wysiwyg_options.alignright',
+							},
+							{
+								value: 'alignjustify',
+								text: '$t:wysiwyg_options.alignjustify',
+							},
+							{
+								value: 'alignnone',
+								text: '$t:wysiwyg_options.alignnone',
 							},
 							{
 								value: 'indent',
@@ -181,32 +137,72 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.outdent',
 							},
 							{
-								value: 'undo',
-								text: '$t:wysiwyg_options.undo',
+								value: 'numlist',
+								text: '$t:wysiwyg_options.numlist',
 							},
 							{
-								value: 'redo',
-								text: '$t:wysiwyg_options.redo',
+								value: 'bullist',
+								text: '$t:wysiwyg_options.bullist',
 							},
 							{
-								value: 'remove',
-								text: '$t:wysiwyg_options.remove',
+								value: 'forecolor',
+								text: '$t:wysiwyg_options.forecolor',
+							},
+							{
+								value: 'backcolor',
+								text: '$t:wysiwyg_options.backcolor',
 							},
 							{
 								value: 'removeformat',
 								text: '$t:wysiwyg_options.removeformat',
 							},
 							{
+								value: 'cut',
+								text: '$t:wysiwyg_options.cut',
+							},
+							{
+								value: 'copy',
+								text: '$t:wysiwyg_options.copy',
+							},
+							{
+								value: 'paste',
+								text: '$t:wysiwyg_options.paste',
+							},
+							{
+								value: 'remove',
+								text: '$t:wysiwyg_options.remove',
+							},
+							{
 								value: 'selectall',
 								text: '$t:wysiwyg_options.selectall',
+							},
+							{
+								value: 'blockquote',
+								text: '$t:wysiwyg_options.blockquote',
+							},
+							{
+								value: 'customLink',
+								text: '$t:wysiwyg_options.link',
+							},
+							{
+								value: 'unlink',
+								text: '$t:wysiwyg_options.unlink',
+							},
+							{
+								value: 'customImage',
+								text: '$t:wysiwyg_options.image',
+							},
+							{
+								value: 'customMedia',
+								text: '$t:wysiwyg_options.media',
 							},
 							{
 								value: 'table',
 								text: '$t:wysiwyg_options.table',
 							},
 							{
-								value: 'visualaid',
-								text: '$t:wysiwyg_options.visualaid',
+								value: 'hr',
+								text: '$t:wysiwyg_options.hr',
 							},
 							{
 								value: 'code',
@@ -215,6 +211,10 @@ export default defineInterface({
 							{
 								value: 'fullscreen',
 								text: '$t:wysiwyg_options.fullscreen',
+							},
+							{
+								value: 'visualaid',
+								text: '$t:wysiwyg_options.visualaid',
 							},
 							{
 								value: 'ltr rtl',
