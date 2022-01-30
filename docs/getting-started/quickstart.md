@@ -68,12 +68,13 @@ To learn more about the different types of Fields, and all available options, se
 
 ## 5. Create an Item
 
-Now that we have a Collection with a Field configured, it's time to start adding some content. Navigate to the
-Collections Module (top left), open your created Collection, and click the "+" button in the top-right to get started.
+Now that we have a Collection with a Field configured, it's time to start adding some content. Navigate to the Content
+Module (top left), and click <span mi btn>add</span> in the top-right to get started.
 
 ![Directus Create Item](../assets/getting-started/quickstart/create-item.png)
 
-Once you're happy with your creation, click the checkmark in the top-right to save your item to the database.
+Once you're happy with your creation, click <span mi btn>check</span> in the top-right to save your item to the
+database.
 
 ::: tip More Info on Items
 
@@ -85,7 +86,8 @@ To learn more about the different types of Items, and all available options, see
 
 By default, all content entered into Directus is considered private. This means that no data will be returned by the
 API, unless requested by an authenticated user that has the correct permissions. In order to have the API return our
-items, we'll have to setup some permissions. Navigate to **Settings Module > Roles & Permissions**.
+items, we'll have to setup some permissions. Navigate to **Settings Module <span mi icon dark>chevron_right</span> Roles
+& Permissions**.
 
 Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select
 the public role, find your collection, and click the icon under the "eye" icon (read/view permission) to allow the

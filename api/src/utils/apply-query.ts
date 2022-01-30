@@ -305,7 +305,7 @@ export function applyFilter(
 					);
 				}
 
-				if (relationType === 'm2o' || subQuery === true) {
+				if (relationType === 'm2o' || subQuery === true || (relationType === 'o2m' && parentAlias !== undefined)) {
 					let parent: string;
 
 					if (relationType === 'm2o') {

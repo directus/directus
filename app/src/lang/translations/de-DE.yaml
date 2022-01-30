@@ -273,6 +273,7 @@ note: Notiz
 enter_a_value: Gib einen Wert ein...
 enter_a_placeholder: Platzhalter eingeben...
 length: Länge
+soft_length: Soft Limit
 precision_scale: Präzision & Skalierung
 readonly: Lesezugriff
 unique: Eindeutig
@@ -326,9 +327,17 @@ related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
 translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
-label_import: Importieren
+import_data_input_placeholder: CSV oder JSON...
+import_data_button: Import starten
+import_data_indeterminate: Importiere Daten...
+import_data_success: Daten erfolgreich aus {filename} importiert
+import_data_error: Die Datenstruktur der Datei stimmt nicht mit der Sammlung überein.
+label_import: Import
+label_export: Export
+import_export: Import / Export
 format: Format
 use_current_filters_settings: Aktuelle Filter & Einstellungen verwenden
+export_data_button: Export starten
 last_page: Letzte Seite
 last_access: Letzter Zugriff
 fill_template: Mit Vorlagenwert füllen
@@ -372,7 +381,7 @@ drag_mode: Drag-Modus
 cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
-import_label: Importieren
+import_label: Import
 file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
@@ -554,6 +563,8 @@ update_collection_success: Sammlung aktualisiert
 delete_collection_success: Sammlung gelöscht
 make_collection_visible: Sammlung sichtbar machen
 make_collection_hidden: Sammlung verstecken
+make_folder_visible: Ordner sichtbar machen
+make_folder_hidden: Ordner verstecken
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
@@ -626,7 +637,7 @@ upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
 interface_options: Schnittstellenoptionen
-layout_options: Optionen für Ansicht
+layout_options: Ansichtsoptionen
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
@@ -783,7 +794,7 @@ editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
 settings_permissions: Rollen & Berechtigungen
-settings_project: Projekt-Einstellungen
+settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
@@ -971,10 +982,10 @@ fields:
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
     project_name: Projekt-Name
-    project_descriptor: Projekt-Beschreiber
+    project_descriptor: Projektuntertitel
     project_url: Projekt-URL
-    project_color: Projekt-Farbe
-    project_logo: Projekt-Logo
+    project_color: Projektfarbe
+    project_logo: Projektlogo
     branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
@@ -983,7 +994,7 @@ fields:
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Speicher
     storage_default_folder: Standardordner
-    storage_asset_presets: Transformations-Voreinstellungen
+    storage_asset_presets: Assets-Transformationsvorgaben
     storage_asset_transform: Erlaubte Transformationen
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
@@ -1240,6 +1251,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
