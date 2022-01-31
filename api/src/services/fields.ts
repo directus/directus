@@ -561,7 +561,7 @@ export class FieldsService {
 			}
 		} else if (field.schema?.is_nullable === true) {
 			if (!alter || alter?.is_nullable === false) {
-				column.nullable();	
+				column.nullable();
 			}
 		}
 
