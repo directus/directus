@@ -85,6 +85,14 @@ with your team. To generate the snapshot, run
 npx directus schema snapshot ./snapshot.yaml
 ```
 
+To run non-interactively (e.g. when running in a CI/CD workflow), run
+
+```
+npx directus schema snapshot --yes true ./snapshot.yaml
+```
+
+Note, that this will force overwrite existing snapshot files.
+
 #### Applying a Snapshot
 
 To make a different instance up to date with the latest changes in your data model, you can apply the snapshot. By
@@ -98,7 +106,7 @@ To apply the generated snapshot, run
 npx directus schema apply ./path/to/snapshot.yaml
 ```
 
-To skip manual verification (e.g. when running in a CI workflow), run
+To run non-interactively (e.g. when running in a CI/CD workflow), run
 
 ```
 npx directus schema apply --yes true ./path/to/snapshot.yaml
