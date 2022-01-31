@@ -836,12 +836,20 @@ interfaces:
     allow_other_label: Permite alte valori
     allow_none: Nu permite niciuna
     allow_none_label: Nu permite nicio selecție
+    choices_name_placeholder: Introduceți un nume...
+    choices_value_placeholder: Introduceți o valoare...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (multiplu)
+    description: Selectați mai multe valori dintr-un dropdown
   file:
     file: Fişier
+    description: Selectați sau încărcați un fișier
   files:
     files: Fişiere
+    description: Selectați sau încărcați mai multe fișiere
   input-hash:
     hash: Hash
+    description: Introduceți o valoare pentru a fi criptată
   select-icon:
     icon: Iconiță
   select-dropdown-m2o:
