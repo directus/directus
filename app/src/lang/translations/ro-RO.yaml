@@ -140,8 +140,58 @@ nullable: Nulabil
 allow_null_value: Permite valoarea NULL
 allow_multiple: Permite mai multe
 allow_multiple_to_be_open: Permite ca mai multe să fie deschise
+enter_value_to_replace_nulls: Vă rugăm să introduceţi o nouă valoare pentru a înlocui orice valoare NULL din acest câmp.
+field_standard: Standard
+field_presentation: Prezentare și alias-uri
+field_file: Fișier unic
+field_files: Fişiere multiple
+field_m2o: Relație M2O
+field_m2a: Relație M2A
+field_o2m: Relație O2M
+field_m2m: Relație M2M
+field_translations: Traduceri
+field_group: Grup de câmpuri
+item_permissions: Permisiuni element
+field_permissions: Permisiuni câmp
+field_validation: Validare câmp
+field_presets: Presetări câmp
+permissions_for_role: 'Elemente pe care rolul {role} le poate {action}.'
+fields_for_role: 'Câmpuri pe care rolul {role} le poate {action}.'
+validation_for_role: 'Reguli ale câmpului {action} pe care rolul {role} trebuie să le respecte.'
+presets_for_role: 'Valori implicite ale câmpului pentru rolul {role}.'
+presentation_and_aliases: Prezentare și alias-uri
 create_field: Creează Câmp
+decimal: Zecimal
+float: Float
+integer: Întreg
+json: JSON
+xml: XML
+string: Şir (String)
+text: Text
+time: Timp
+timestamp: Marcă temporală
+uuid: UUID
+hash: Hash
+geometry: Geometrie (toate)
+geometry.Point: Punct
+geometry.LineString: Șir de linii (LineString)
+geometry.Polygon: Poligon
+geometry.MultiPoint: Multi-punct
+geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
+geometry.MultiPolygon: Multipoligon
+not_available_for_type: Indisponibil pentru acest tip
+create_translations: Creare traduceri
+auto_refresh: Actualizare Automată
+refresh_interval: Interval de actualizare
+no_refresh: Nu actualiza
+refresh_interval_seconds: Actualizează Instantaneu | În fiecare secundă | La fiecare {seconds} secunde
+refresh_interval_minutes: la fiecare minut | la fiecare {minutes} minute
 auto_generate: Generare automată
+this_will_auto_setup_fields_relations: Aceasta va configura automat toate câmpurile şi relaţiile obligatorii.
+click_here: Click aici
+to_manually_setup_translations: pentru a configura manual traducerile.
+click_to_manage_translated_fields: >-
+  Nu există încă câmpuri traduse. Click aici pentru a le crea. | Există un câmp tradus. Click aici pentru a îl gestiona. Există {count} câmpuri traduse. Click aici pentru a le gestiona.
 add_note: Adaugă o notă ajutătoare pentru utilizatori...
 default_value: Valoare implicită
 title: Titlu
@@ -277,6 +327,8 @@ interfaces:
     collections: Colecții
   files:
     files: Fişiere
+  input-hash:
+    hash: Hash
   select-icon:
     icon: Iconiță
   tags:
@@ -288,6 +340,7 @@ displays:
     prefix: Prefix
     suffix: Sufix
     icon: Iconiță
+    text: Text
   icon:
     icon: Iconiță
   user:
