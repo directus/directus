@@ -59,3 +59,7 @@ npx directus database migrate:latest
 ```
 
 You may want to add additional steps to reflect other responsibilities of `directus bootstrap`.
+
+## Logger
+
+The logger is an instance of `pino`. You can find the documentation [here](https://github.com/pinojs/pino/blob/master/docs/api.md#logger)
