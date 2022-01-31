@@ -556,11 +556,11 @@ export class FieldsService {
 		}
 
 		if (field.schema?.is_nullable === false) {
-			if (!alter || alter?.is_nullable === true) {
+			if (!alter || alter.is_nullable === true) {
 				column.notNullable();
 			}
 		} else if (field.schema?.is_nullable === true) {
-			if (!alter || alter?.is_nullable === false) {
+			if (!alter || alter.is_nullable === false) {
 				column.nullable();
 			}
 		}
