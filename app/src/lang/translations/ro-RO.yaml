@@ -252,13 +252,72 @@ add_field_related: Adaugă câmp la colecția conexă
 interface_label: Interfață
 today: Azi
 yesterday: Ieri
+delete_comment: Ștergere comentariu
+date-fns_date: PPP
+minutes: Minute
+hours: Ore
+month: Lună
+year: An
+select_all: Selectează tot
+months:
+  january: Ianuarie
+  february: Februarie
 checksum: Sumă de control
 owner: Proprietar
 download: Descărcați
 created_by: Creat De
 created_on: Creat Pe
+manual_string: Șir introdus manual
+save_and_create_new: Salvează și creează nou
+save_and_stay: Salvează și rămâi
+save_as_copy: Salvează sub formă de copie
+creating_items: Creare de elemente
+enable_create_button: Activează butonul de creare
+selecting_items: Selectare elemente
+enable_select_button: Activează butonul de selectare
 comments: Comentarii
+no_comments: Nici un comentariu încă
+click_to_expand: Click pentru a extinde
+select_item: Selectaţi elementul
+no_items: Niciun element
+search_items: Caută elemente...
+disabled: Dezactivat
+information: Informaţii
+report_bug: Raportare eroare
+request_feature: Solicită o funcționalitate
+interface_not_found: 'Interfața "{interface}" nu a fost găsită.'
+reset_interface: Resetează interfața
+display_not_found: 'Afișarea "{display}" nu a fost găsită.'
+reset_display: Resetare afişaj
+list-m2a: Constructor (M2A)
+item_count: 'Nu există elemente | Un element | {count} elemente'
+no_items_copy: Nu sunt articole în această colecţie încă.
+file_count: 'Nu există fișiere | Un fișiere | {count} fișiere'
+no_files_copy: Nu există fişiere aici.
+user_count: 'Niciun utilizator | Un Utilizator | {count} utilizatori'
+no_users_copy: Nu sunt utilizatori în acest rol.
+webhooks_count: 'Niciun Webhook | Un Webhook | {count} Webhook-uri'
+no_webhooks_copy: Nici un webhook nu a fost configurat încă. Începeți prin a crea unul de mai jos.
+no_notifications: Nicio notificare
+no_notifications_copy: Ești cu toate la zi!
+activity_log: Jurnal de activitate
+all_items: Toate elementele
+any: Oricare
+csv: CSV
+no_collections: Nicio colecție
 create_collection: Creează Colecție
+no_collections_copy_admin: Încă nu aveți nicio colecție. Click pe butonul de mai jos pentru a începe.
+no_collections_copy: Încă nu aveți nicio colecție. Vă rugăm să contactați administratorul de sistem.
+relationship_not_setup: Relația nu a fost configurată corect
+display_template_not_setup: Opțiunea de afișare a șablonului este configurată greșit
+collection_field_not_setup: Opțiunea câmpului de colecții este configurată greșit
+select_a_collection: Selectează o colecție
+select_a_field: Selectează un câmp
+active: Activ
+move_to: Mutare în...
+copy: Copiază
+copy_to: Copiază în...
+no_other_dashboards_copy: Încă nu aveți alte tablouri de bord.
 users: Utilizatori
 activity: Activitate
 action: Acţiune
@@ -267,19 +326,129 @@ user_agent: User Agent
 duration: Durată
 status: Stare
 errors:
+  RECORD_NOT_UNIQUE: Valoare duplicat detectată
+  USER_SUSPENDED: Utilizator suspendat
+  CONTAINS_NULL_VALUES: Câmpul conține valori null
+  UNPROCESSABLE_ENTITY: Entitate neprocesabilă
+  INTERNAL_SERVER_ERROR: Eroare neașteptată
   NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
+  ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
+  UNKNOWN: Eroare neașteptată
+security: Securitate
+value_hashed: Valoare criptată în mod securizat
+bookmark_name: Denumirea semnului de carte...
+create_bookmark: Creează semn de carte
+edit_bookmark: Editează semn de carte
 bookmarks: Semne de carte
+presets: Presetări
+unexpected_error: Eroare neașteptată
+unexpected_error_copy: A apărut o eroare neașteptată. Te rugăm să încerci din nou mai târziu.
+copy_details: Copiază detaliile
+no_app_access: Fără acces la aplicație
+no_app_access_copy: Acest utilizator nu are permisiunea de a utiliza aplicația de administrare.
+password_reset_sent: Ți-am trimis un link securizat pentru a-ți reseta parola
+password_reset_successful: Parola a fost modificată cu succes
 back: Înapoi
+filter: Filtru
+editing_image: Editare imagine
+square: Pătrat
+free: Liber
+flip_horizontal: Întoarce orizontal
+flip_vertical: Întoarce vertical
+aspect_ratio: Proporție
+rotate: Rotire
+all_users: Toți utilizatorii
+delete_collection: Șterge Colecția
+update_collection_success: Colecție actualizată
+delete_collection_success: Colecție ștearsă
+make_collection_visible: Faceți colecția vizibilă
+make_collection_hidden: Ascundeți colecția
+make_folder_visible: Faceți folderul vizibil
+make_folder_hidden: Ascundeți folderul
+start_end_of_count_items: '{start}-{end} din {count} elemente'
+start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
+one_item: '1 element'
+one_filtered_item: '1 element filtrat'
+delete_collection_are_you_sure: >-
+  Sigur doriți să ștergeți această colecție? Această acțiune va șterge colecția și toate articolele din ea. Acțiunea este permanentă.
+collections_shown: Colecții afișate
+visible_collections: Colecții vizibile
+hidden_collections: Colecții ascunse
+show_hidden_collections: Arată colecțiile ascunse
+hide_hidden_collections: Ascunde colecțiile ascunse
+show_header: Arată antet
+unmanaged_collections: Colecții neconfigurate
+system_collections: Colecții de sistem
+placeholder: Substituent (placeholder)
 operators:
   gt: Mai mare ca
   gte: Mai mare sau egal cu
   contains: Conține
+drag_file_here: Trageți și plasați un fișier aici
+click_to_browse: Click pentru a naviga
+interface_options: Opțiuni interfață
+layout_options: Opțiuni layout
+rows: Rânduri
+columns: Coloane
+collection_setup: Configurare colecție
+optional_system_fields: Câmpuri de sistem opționale
 value_unique: Valoarea trebuie să fie unică
+all_activity: Toată activitatea
+create_item: Creare element
+display_template: Afişare şablon
+language_display_template: Șablon de afişare a limbii
+translations_display_template: Șablon de afișare a traducerilor
+n_items_selected: 'Niciun element selectat | Un element selectat | {n} elemente selectate'
+per_page: Pe fiecare pagină
+all_files: Toate fişierele
+my_files: Fișierele mele
+recent_files: Fișiere recente
+create_folder: Creare folder
+edit_folder: Editare folder
+folder_name: Nume folder...
+folder_key: Cheie folder...
+add_file: Adaugă fișier
+replace_file: Înlocuire fişier
+no_results: Niciun rezultat
+no_results_copy: Ajustaţi sau ştergeţi filtrele de căutare pentru a vedea rezultatele.
+clear_filters: Șterge filtrele
+saves_automatically: Se salvează automat
 role: Rol
+rule: Regulă
+user: Utilizator
+no_presets: Fără presetări
+no_presets_copy: Nu au fost salvate deocamdată presetări sau marcaje.
+no_presets_cta: Adăugare presetare
+presets_only: Numai presetări
 create: Creează
+on_create: La creare
+on_update: La actualizare
+read: Citire
+update: Actualizare
+select_fields: Selectare câmpuri
+format_text: Formatați textul
+format_value: Formatați valoarea
+abbreviate_value: Abreviați valoarea
+operator: Operator
+bold: Bold
+toggle: Comutare
+icon_on: Iconiță activată
+icon_off: Iconiță dezactivată
+label: Etichetă
+insights: Analize
+dashboard: Panou
 width: Lățime
 height: Înălţime
 wysiwyg_options:
+  bold: Bold
+  strikethrough: Tăiat
+  subscript: Scris jos
+  superscript: Scris sus
+  codeblock: Cod
+  blockquote: Citat
+  bullist: Listă punctată
+  numlist: Listă numerotată
+  selectall: Selectează tot
   table: Tabel
 choices: Opțiuni
 deselect: Deselectaţi
@@ -305,6 +474,7 @@ fields:
   directus_collections:
     collection: Colecție
     icon: Iconiță
+    display_template: Afişare şablon
     hidden: Ascuns
   directus_files:
     title: Titlu
@@ -334,6 +504,7 @@ fields:
     theme: Temă
     tfa_secret: Autentificare în doi pași
     status: Stare
+    status_active: Activ
     role: Rol
     last_page: Ultima Pagină
     last_access: Ultima accesare
@@ -352,16 +523,24 @@ fields:
     status: Stare
     collections: Colecții
 field_options:
+  directus_settings:
+    security_divider_title: Securitate
   directus_activity:
     create: Creează
+    update: Actualizare
   directus_collections:
+    collection_setup: Configurare colecție
     archive_divider: Arhivează
   directus_roles:
     fields:
       icon_name: Iconiță
     collections_name: Colecții
+  directus_users:
+    status_dropdown_active: Activ
   directus_webhooks:
+    status_options_active: Activ
     actions_create: Creează
+    actions_update: Actualizare
 comment: Comentariu
 delete_field_are_you_sure: >-
   Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.
@@ -377,28 +556,48 @@ info: Info
 password: Parolă
 interfaces:
   filter:
+    name: Filtru
     all: Tot
+    any: Oricare
   presentation-links:
     primary: Principal
+  input-code:
+    code: Cod
   system-collection:
     collection: Colecție
   system-collections:
     collections: Colecții
+  system-display-template:
+    display-template: Afişare şablon
+    collection_field_not_setup: Opțiunea câmpului de colecții este configurată greșit
+    select_a_collection: Selectează o colecție
   files:
     files: Fişiere
   input-hash:
     hash: Hash
   select-icon:
     icon: Iconiță
+  select-dropdown-m2o:
+    display_template: Afişare şablon
   tags:
     tags: Etichete
+  boolean:
+    toggle: Comutare
+  translations:
+    display_template: Afişare şablon
+  user:
+    user: Utilizator
 displays:
+  boolean:
+    icon_on: Iconiță activată
+    icon_off: Iconiță dezactivată
   collection:
     collection: Colecție
   datetime:
     format: Format
   formatted-value:
     format: Format
+    bold: Bold
     prefix: Prefix
     suffix: Sufix
     icon: Iconiță
@@ -406,6 +605,7 @@ displays:
   icon:
     icon: Iconiță
   user:
+    user: Utilizator
     avatar: Avatar
     both: Ambele
 layouts:
@@ -419,3 +619,6 @@ layouts:
     comfortable: Confortabil
     compact: Compact
     cozy: Comod
+panels:
+  label:
+    name: Etichetă
