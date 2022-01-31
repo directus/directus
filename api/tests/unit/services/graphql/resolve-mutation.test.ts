@@ -1,20 +1,30 @@
+import { Query } from '@directus/shared/types';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
 import { ResolveMutation } from '../../../../src/services/graphql/resolve-mutation';
+import { ItemsService, QueryOptions } from '../../../../src/services/items';
+import { PrimaryKey, MutationOptions } from '../../../../src/types';
 import { userSchema } from '../../../__test-utils__/schemas';
 
-jest.mock('../../../../src/services', () => {
-	return {
-		ItemsService: jest.fn().mockReturnValue({
-			readSingleton: jest.fn().mockReturnValue({ itsHit: true }),
-			upsertSingleton: jest.fn().mockReturnValue({}),
-		}),
-	};
+jest.mock('../../../../src/database/index', () => {
+	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
 
 describe('Class ResolveMutation', () => {
+	let readSingleton: jest.SpyInstance<Promise<Partial<any>>, [query: Query, opts?: QueryOptions]>;
+	let upsertSingleton: jest.SpyInstance<Promise<PrimaryKey>, [data: Partial<any>, opts?: MutationOptions]>;
 	const mockKnex = knex({ client: MockClient });
+
+	beforeEach(() => {
+		readSingleton = jest.spyOn(ItemsService.prototype, 'readSingleton').mockResolvedValue({ id: 1 });
+		upsertSingleton = jest.spyOn(ItemsService.prototype, 'upsertSingleton').mockResolvedValue(1);
+	});
+
+	afterEach(() => {
+		readSingleton.mockRestore();
+		upsertSingleton.mockRestore();
+	});
 
 	describe('upsertSingleton', () => {
 		const schema = cloneDeep(userSchema);
@@ -33,7 +43,7 @@ describe('Class ResolveMutation', () => {
 
 		it('returns readSingleton(query) when there are query fields', async () => {
 			const result = await adminResolver.upsertSingleton('authors', {}, { fields: ['name'] });
-			expect(result).toStrictEqual({ itsHit: true });
+			expect(result).toStrictEqual({ id: 1 });
 		});
 	});
 });

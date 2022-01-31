@@ -3,35 +3,27 @@ import { MockClient } from 'knex-mock-client';
 import { userSchema } from '../../../__test-utils__/schemas';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
+import { ItemsService, QueryOptions } from '../../../../src/services/items';
+import { Query } from '@directus/shared/types';
 
 jest.mock('../../../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../../../src/database/index');
-
-jest.mock('../../../../src/services/', () => {
-	return {
-		ItemsService: jest.fn().mockReturnValue({
-			readSingleton: jest.fn().mockReturnValue({ singleton: true }),
-			readByQuery: jest.fn().mockReturnValue({ singleton: false }),
-		}),
-		ActivityService: jest.fn().mockReturnThis(),
-		FilesService: jest.fn().mockReturnThis(),
-		FoldersService: jest.fn().mockReturnThis(),
-		PermissionsService: jest.fn().mockReturnThis(),
-		PresetsService: jest.fn().mockReturnThis(),
-		NotificationsService: jest.fn().mockReturnThis(),
-		RevisionsService: jest.fn().mockReturnThis(),
-		RolesService: jest.fn().mockReturnThis(),
-		SettingsService: jest.fn().mockReturnThis(),
-		UsersService: jest.fn().mockReturnThis(),
-		WebhooksService: jest.fn().mockReturnThis(),
-		SharesService: jest.fn().mockReturnThis(),
-	};
-});
 
 describe('Class ResolveQuery', () => {
 	const mockKnex = knex({ client: MockClient });
+	let readSingleton: jest.SpyInstance<Promise<Partial<any>>, [query: Query, opts?: QueryOptions]>;
+	let readByQuery: jest.SpyInstance<Promise<any[]>, [query: Query, opts?: QueryOptions]>;
+
+	beforeEach(() => {
+		readSingleton = jest.spyOn(ItemsService.prototype, 'readSingleton').mockResolvedValue({ id: 1 });
+		readByQuery = jest.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue(['id']);
+	});
+
+	afterEach(() => {
+		readSingleton.mockRestore();
+		readByQuery.mockRestore();
+	});
 
 	describe('read', () => {
 		it('readSingleton', async () => {
