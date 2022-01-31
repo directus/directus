@@ -106,9 +106,40 @@ archive: Arhivează
 archive_confirm: Sunteţi sigur că doriţi să arhivaţi acest element?
 archive_confirm_count: >-
   Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi aceste {count} elemente?
+reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
+reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate pe care le-ați aplicat colecțiilor de sistem. Sunteți sigur?
+the_following_are_minimum_permissions: Acestea sunt permisiunile minime necesare atunci când "Acces aplicații" este activat. Poți să extinzi permisiunile mai departe, dar nu mai jos.
+app_access_minimum: Acces aplicație minim
+recommended_defaults: Valori implicite recomandate
 unarchive: Dezarhivare
 unarchive_confirm: Sunteţi sigur că doriţi să dezarhivaţi acest element?
 nested_files_folders_will_be_moved: Fişierele şi folderele suprapuse vor fi mutate cu un nivel mai sus.
+unknown_validation_errors: 'Au existat erori de validare pentru următoarele câmpuri ascunse:'
+validationError:
+  eq: Valoarea trebuie să fie {valid}
+  neq: Valoarea nu poate fi {invalid}
+  in: Valoarea trebuie să fie una dintre {valid}
+  nin: Valoarea nu poate fi una dintre {invalid}
+  contains: Valoarea trebuie să conțină {substring}
+  ncontains: Valoarea nu poate conține {substring}
+  gt: Valoarea trebuie să fie mai mare de {valid}
+  gte: Valoarea trebuie să fie mai mare sau egală cu {valid}
+  lt: Valoarea trebuie să fie mai mică de {valid}
+  lte: Valoarea trebuie să fie mai mică sau egală cu {valid}
+  empty: Valoarea trebuie să fie goală
+  nempty: Valoarea nu poate fi goală
+  null: Valoarea trebuie să fie nulă
+  nnull: Valoarea nu poate fi nulă
+  required: Valoarea este obligatorie
+  unique: Valoarea trebuie să fie unică
+  regex: Valoarea nu are formatul corect
+all_access: Acces complet
+no_access: Fără acces
+use_custom: Utilizează valoare personalizată
+nullable: Nulabil
+allow_null_value: Permite valoarea NULL
+allow_multiple: Permite mai multe
+allow_multiple_to_be_open: Permite ca mai multe să fie deschise
 create_field: Creează Câmp
 auto_generate: Generare automată
 add_note: Adaugă o notă ajutătoare pentru utilizatori...
@@ -128,12 +159,15 @@ ip_address: Adresă IP
 user_agent: User Agent
 duration: Durată
 status: Stare
+errors:
+  NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
 bookmarks: Semne de carte
 back: Înapoi
 operators:
   gt: Mai mare ca
   gte: Mai mare sau egal cu
   contains: Conține
+value_unique: Valoarea trebuie să fie unică
 role: Rol
 create: Creează
 width: Lățime
