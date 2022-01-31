@@ -19,12 +19,13 @@ for example:
 
 ## Structure
 
-Migrations have to export an `up` and a `down` function. These functions get a [Knex](http://knexjs.org) instance that
-can be used to do virtually whatever.
+Migrations have to export an `up` and a `down` function. These functions get a [Knex](http://knexjs.org) instance, that
+can be used to do virtually whatever, and optional logging parameters.
 
 ```js
 module.exports = {
-	async up(knex) {
+	async up(knex, { logger, log }) {
+		if (log) logger.warn('Creating test table');
 		await knex.schema.createTable('test', (table) => {
 			table.increments();
 			table.string('rijk');
