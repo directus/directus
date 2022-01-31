@@ -98,6 +98,12 @@ To apply the generated snapshot, run
 npx directus schema apply ./path/to/snapshot.yaml
 ```
 
+To skip manual verification (e.g. when running in a CI workflow), run
+
+```
+npx directus schema apply --yes true ./path/to/snapshot.yaml
+```
+
 ### Creating Users
 
 To create a new user with a specific role, run
