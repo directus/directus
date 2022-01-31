@@ -555,10 +555,14 @@ export class FieldsService {
 			}
 		}
 
-		if (field.schema?.is_nullable !== undefined && field.schema.is_nullable === false) {
-			column.notNullable();
-		} else {
-			column.nullable();
+		if (field.schema?.is_nullable === false) {
+			if (!alter || alter.is_nullable === true) {
+				column.notNullable();
+			}
+		} else if (field.schema?.is_nullable === true) {
+			if (!alter || alter.is_nullable === false) {
+				column.nullable();
+			}
 		}
 
 		if (field.schema?.is_primary_key) {

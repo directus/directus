@@ -5,8 +5,8 @@
 
 ## Creating a Preset
 
-1. Navigate to **Settings > Presets & Bookmarks**
-2. Click the **Create Preset** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Presets & Bookmarks**
+2. Click <span mi btn>add</span> in the header
 3. Complete the **other preset form fields** outlined below
 
 - **Collection** — The collection of this preset; supports any project collection, Directus Files, or Directus Users
@@ -55,8 +55,9 @@ preset priority is: User, then Role, then Global.
 
 ## Deleting a Preset
 
-1. Navigate to **Settings > Presets & Bookmarks > [Preset]**
-2. Click the red **Delete Preset** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Presets & Bookmarks
+   <span mi icon dark>chevron_right</span> [Preset]**
+2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change
