@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> All events within Directus are tracked and stored in the activities collection. This gives you full
-> accountability over everything that happens. [Learn more about Activity](/getting-started/glossary/#activity).
+> All events within Directus are tracked and stored in the activities collection. This gives you full accountability
+> over everything that happens. [Learn more about Activity](/getting-started/glossary/#activity).
 
 </div>
 <div class="right">
