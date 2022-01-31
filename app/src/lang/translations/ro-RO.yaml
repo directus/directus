@@ -192,9 +192,66 @@ click_here: Click aici
 to_manually_setup_translations: pentru a configura manual traducerile.
 click_to_manage_translated_fields: >-
   Nu există încă câmpuri traduse. Click aici pentru a le crea. | Există un câmp tradus. Click aici pentru a îl gestiona. Există {count} câmpuri traduse. Click aici pentru a le gestiona.
+fields_group: Grup de câmpuri
+no_collections_found: Nicio colecție găsită.
+new_data_alert: 'Următoarele vor fi create în cadrul modelului dumneavoastră de date:'
+search_collection: Căutare în colecție...
+new_field: 'Câmp nou'
+new_collection: 'Colecție nouă'
+add_m2o_to_collection: 'Adaugă M2O la "{collection}"'
+add_o2m_to_collection: 'Adaugă O2M la "{collection}"'
+add_m2m_to_collection: 'Adaugă M2M la "{collection}"'
+choose_a_type: Alege un tip...
+determined_by_relationship: Determinat de Relație
 add_note: Adaugă o notă ajutătoare pentru utilizatori...
+add_link: Adaugă link
+custom_link: Link personalizat
 default_value: Valoare implicită
+standard_field: Câmp standard
+single_file: Fişier unic
+multiple_files: Fişiere multiple
+m2o_relationship: Relație mai multe la unu (M2O)
+o2m_relationship: Relație unu la mai multe (O2M)
+m2m_relationship: Relație mai multe la mai multe (M2M)
+m2a_relationship: Relație mai multe la oricare (M2A)
+invalid_item: Element invalid
 title: Titlu
+updates_made: Actualizări realizate
+leave_comment: Lasă un comentariu...
+post_comment_success: Comentariu postat
+item_create_success: Element creat | Elemente create
+item_update_success: Element actualizat | Elemente actualizate
+item_delete_success: Element șters | Elemente șterse
+this_collection: Această Colecție
+related_collection: Colecție conexă
+related_collections: Colecții conexe
+translations_collection: Colecție de traduceri
+languages_collection: Colecție de limbi
+import_data_input_placeholder: CSV sau JSON...
+import_data_button: Începe importul
+import_data_indeterminate: Se importă datele...
+import_data_success: Date importate cu succes din {filename}
+import_data_error: Structura de date a acestui fișier nu se potrivește cu colecția.
+label_import: Importă
+label_export: Exportă
+import_export: Importă / Exportă
+format: Format
+use_current_filters_settings: Folosește filtrele și setările curente
+export_data_button: Începe exportul
+last_page: Ultima Pagină
+last_access: Ultima accesare
+fill_template: Completează cu valoarea din șablon
+a_unique_table_name: Un nume unic de tabel...
+a_unique_column_name: Un nume unic de coloană...
+enable_custom_values: Activare valori personalizate
+submit: Trimite
+move_to_folder: Mutare în folder
+move: Mutare
+system: Sistem
+add_field_related: Adaugă câmp la colecția conexă
+interface_label: Interfață
+today: Azi
+yesterday: Ieri
 checksum: Sumă de control
 owner: Proprietar
 download: Descărcați
@@ -278,6 +335,8 @@ fields:
     tfa_secret: Autentificare în doi pași
     status: Stare
     role: Rol
+    last_page: Ultima Pagină
+    last_access: Ultima accesare
   directus_settings:
     module_bar: Bară module
   directus_shares:
@@ -336,7 +395,10 @@ interfaces:
 displays:
   collection:
     collection: Colecție
+  datetime:
+    format: Format
   formatted-value:
+    format: Format
     prefix: Prefix
     suffix: Sufix
     icon: Iconiță
