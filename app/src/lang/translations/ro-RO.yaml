@@ -682,8 +682,8 @@ abbreviate_value: Abreviați valoarea
 operator: Operator
 bold: Bold
 toggle: Comutare
-icon_on: Iconiță activată
-icon_off: Iconiță dezactivată
+icon_on: Pictogramă activată
+icon_off: Pictogramă dezactivată
 label: Etichetă
 insights: Analize
 dashboard: Panou
@@ -816,14 +816,27 @@ discard_changes_copy: Ești sigur că vrei să renunți la toate modificările f
 show_x_axis: Arată axa X
 show_y_axis: Arată axa Y
 keep_editing: Continuă editarea
+activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
+create_new: Creează nou
 all: Tot
+none: Niciunul
+no_layout_collection_selected_yet: Nici un aspect/colecție selectate încă
 batch_delete_confirm: >-
   Nu au fost selectate articole | Sigur doriți să ștergeți acest articol? Această acțiune nu poate fi anulată. | Sigur doriți să ștergeți aceste {count} elemente? Această acțiune nu poate fi anulată.
 cancel: Anulează
+no_upscale: Nu suprascala imaginile
 collection: Colecție
 collections: Colecții
+content: Conținut
+singleton: Singleton
+singleton_label: Tratează ca un singur obiect
+system_fields_locked: Câmpurile de sistem sunt blocate și nu pot fi editate
 directus_collection:
+  directus_activity: Jurnale de responsabilitate pentru toate evenimentele
+  directus_collections: Configurare suplimentară pentru colecții și metadate
+  directus_dashboards: Tablouri de bord din modulul de analize
+  directus_fields: Configurare suplimentară pentru colecții și metadate
   directus_files: Metadate pentru toate activele gestionate în fișier
   directus_folders: Oferă directoare virtuale pentru fișiere
   directus_migrations: Ce versiune a bazei de date utilizaţi
@@ -851,7 +864,7 @@ fields:
     revisions: Revizii
   directus_collections:
     collection: Colecție
-    icon: Iconiță
+    icon: Pictogramă
     note: Notă
     color: Culoare
     display_template: Afişare şablon
@@ -922,6 +935,17 @@ fields:
     last_access: Ultima accesare
     email_notifications: Notificări prin e-mail
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: Mapare
+    basemaps: Basemaps
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stil Mapbox
+    mapbox_key: Token-ul de acces Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Atribuire
     attribution_placeholder: '© contributori OpenStreetMap'
     transforms_note: Numele metodei Sharp și argumentele sale. Vezi https://sharp.pixelplumbing.com/api-constructor pentru mai multe informații.
@@ -1051,9 +1075,15 @@ field_options:
     filename_disk: Nume la stocarea pe disc...
     filename_download: Nume la descărcare...
   directus_roles:
+    name: Numele unic pentru acest rol...
+    description: O descriere a acestui rol...
+    ip_access: Adaugă adresele IP permise, lasă gol pentru a le permite pe toate...
     fields:
-      icon_name: Iconiță
+      icon_name: Pictogramă
       name_name: Nume
+      name_placeholder: Introduceți un titlu...
+      link_name: Link
+      link_placeholder: URL relativ sau absolut...
     collections_name: Colecții
     collections_addLabel: Adaugă Colecție...
   directus_users:
@@ -1148,7 +1178,7 @@ file: Fişier
 file_library: Bibliotecă de fișiere
 forgot_password: Am uitat parola
 hidden: Ascuns
-icon: Iconiță
+icon: Pictogramă
 info: Info
 normal: Normal
 success: Succes
@@ -1305,7 +1335,7 @@ interfaces:
     masked: Mascat
     masked_label: Ascunde valorile reale
   select-icon:
-    icon: Iconiță
+    icon: Pictogramă
     description: Selectaţi o pictogramă dintr-o listă
     search_for_icon: Căutare pictogramă...
   file-image:
@@ -1339,8 +1369,31 @@ interfaces:
     zoom: Zoom
   system-folder:
     folder: Folder
+    system_default: Setări implicite ale sistemului
+  select-radio:
+    radio-buttons: Butoane radio
+    description: Selectați una dintre mai multe opțiuni
+  list:
+    repeater: Repetator
+    description: Creează mai multe intrări ale aceleiași structuri
+    edit_fields: Editare câmpuri
+    add_label: 'Eticheta „Creează nou”'
+    field_name_placeholder: Introduceți numele câmpului...
+    field_note_placeholder: Introduceți nota câmpului...
+  slider:
+    slider: Glisor
+    description: Selectați un număr folosind un glisor
+    always_show_value: Arată întotdeauna valoarea
   tags:
     tags: Etichete
+    description: Selectați sau adăugați etichete
+    whitespace: Spațiu alb
+    hyphen: Înlocuiește cu cratimă
+    underscore: Înlocuiește cu underscore
+    remove: Elimină spațiul alb
+    capitalization: Capitalizare
+    uppercase: Convertește la majuscule
+    lowercase: Convertește la minuscule
     auto_formatter: Folosește formatarea automată pentru titlu
     alphabetize: Așează în ordine alfabetică
     alphabetize_label: Forțează ordinea alfabetică
@@ -1404,25 +1457,60 @@ interfaces:
     rate: Evaluează
   group-raw:
     name: Grup brut
-    description: Afișează câmpul așa cum este
+    description: Redă câmpul așa cum este
+  group-detail:
+    name: Grup de detalii
+    description: Redă câmpurile ca o secțiune care se poate restrânge
+    show_header: Arată antetul grupului
+    header_icon: Pictogramă antet
+    header_color: Culoare antet
+    start_open: Începe deschis
+    start_closed: Începe închis
 displays:
   translations:
     translations: Traduceri
+    description: Previzualizare traduceri
+    enable: Activare
+    user_language: Folosește limba curentă a utilizatorului
+    default_language: Limba implicită
     language_field: Câmp indicator limbă
   boolean:
     boolean: Boolean
-    icon_on: Iconiță activată
-    icon_off: Iconiță dezactivată
+    description: Afișare stări pornite și oprite
+    label_on: Etichetă activată
+    label_on_placeholder: Introduceți o etichetă de activare...
+    label_off: Etichetă dezactivată
+    label_off_placeholder: Introduceți o etichetă de dezactivare...
+    icon_on: Pictogramă activată
+    icon_off: Pictogramă dezactivată
+    color_on: Culoare activată
+    color_off: Culoare dezactivată
   collection:
     collection: Colecție
+    description: Afișează o colecție
+    icon_label: Arată pictograma colecției
   color:
     color: Culoare
+    description: Afișează un punct colorat
+    default_color: Culoare implicită
   datetime:
     datetime: Data
+    description: Afișare valori legate de timp
     format: Format
+    format_note: >-
+      Formatul personalizat acceptă __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Lung
+    short: Scurt
+    relative: Relativ
+    relative_label: 'Arată timpul relativ, de exemplu: acum 5 minute'
   file:
     file: Fişier
+    description: Afişare fişiere
+  filesize:
+    filesize: Dimensiune fișier
+    description: Afișează dimensiunea unui fișier
   formatted-value:
+    formatted-value: Valoare formatată
     format: Format
     font: Font
     font_serif: Serif
@@ -1432,10 +1520,10 @@ displays:
     prefix: Prefix
     suffix: Sufix
     color: Culoare
-    icon: Iconiță
+    icon: Pictogramă
     text: Text
   icon:
-    icon: Iconiță
+    icon: Pictogramă
   image:
     circle: Cerc
   labels:
@@ -1458,6 +1546,11 @@ layouts:
     comfortable: Confortabil
     compact: Compact
     cozy: Comod
+  map:
+    cluster_options: Opțiuni de grupare
+    cluster: Grupează datele apropiate
 panels:
+  time_series:
+    description: Redă o diagramă a liniei bazată pe valorile în timp
   label:
     name: Etichetă
