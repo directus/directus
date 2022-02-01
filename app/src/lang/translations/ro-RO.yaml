@@ -31,18 +31,18 @@ module_bar: Bară module
 tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
-maps: Hărţi
+maps: Hărți
 switch_user: Schimbă utilizatorul
-item_creation: Creare articol
+item_creation: Creare element
 item_revision: Revizuire element
 enter_a_name: Introduceți un nume...
 duplicate_field: Duplicare câmp
 half_width: Jumătate de lăţime
-full_width: Lăţime totală
+full_width: Lățime completă
 group: Grup
-and: Şi
+and: Și
 or: Sau
-fill_width: Umple lăţime
+fill_width: Umple lățimea
 field_name_translations: Traducerile numelui câmpului
 enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
 add_field: Adaugă câmp
@@ -816,6 +816,37 @@ discard_changes_copy: Ești sigur că vrei să renunți la toate modificările f
 show_x_axis: Arată axa X
 show_y_axis: Arată axa Y
 keep_editing: Continuă editarea
+page_help_collections_overview: '**Prezentare generală colecție** - Lista tuturor colecțiilor la care aveți acces.'
+page_help_collections_collection: >-
+  **Răsfoiește elementele** — Listează toate elementele {collection} la care ai acces. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
+page_help_collections_item: >-
+  **Detaliile elementului** - Un formular pentru vizualizarea și gestionarea acestui element. Această bară conține de asemenea o istorie completă a revizuirilor și a comentariilor încorporate.
+page_help_activity_collection: >-
+  **Răsfoiește activitatea** — O listare cuprinzătoare a întregii activității în sistem și conținut a utilizatorilor tăi.
+page_help_docs_global: >-
+  **Prezentare generală a documentației** - Documente special adaptate versiunii și schemei acestui proiect.
+page_help_files_collection: >-
+  **Bibliotecă de fișiere** - Listează toate activele fișierelor încărcate în acest proiect. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
+page_help_files_item: >-
+  **Detaliile fișierului** - Un formular pentru gestionarea metadatelor fișierelor, editarea activului original și actualizarea setărilor de acces.
+page_help_settings_project: "**Setări proiect** — Opțiuni de configurare globală a proiectului tău."
+page_help_settings_datamodel_collections: >-
+  **Modelul de date: Colecții** — Listează toate colecțiile disponibile. Aceasta include colecții vizibile, ascunse și de sistem, precum și tabele de baze de date negestionate care pot fi adăugate.
+page_help_settings_datamodel_fields: >-
+  **Modelul de date: Colecție** — Un formular pentru gestionarea acestei colecții și a câmpurilor sale.
+page_help_settings_roles_collection: '**Răsfoiește roluri** — Listează rolurile de utilizator Admin, Public și personalizat.'
+page_help_settings_roles_item: "**Detaliile rolurilor** - Gestionează permisiunile unui rol și alte setări."
+page_help_settings_presets_collection: >-
+  **Răsfoiește presetările** — Listează toate presetările din proiect, inclusiv: utilizatorul, rolul și semnele de carte globale, precum și vizualizările implicite.
+page_help_settings_presets_item: >-
+  **Detalii presetare** — Un formular pentru gestionarea marcajelor și presetărilor implicite de colectare.
+page_help_settings_webhooks_collection: '**Răsfoiește Webhooks** — Listează toate webhook-urile din cadrul proiectului.'
+page_help_settings_webhooks_item: '**Webhook Detail** - Un formular pentru crearea și gestionarea webhook-urilor proiectului.'
+page_help_users_collection: '**Folderul de utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
+page_help_users_item: >-
+  **Detaliile utilizatorului** - Gestionați informațiile despre cont sau vizualizați detaliile altor utilizatori.
+page_help_insights_overview: '**Analize** - Lista tablourilor de bord la care ai acces.'
+page_help_insights_dashboard: '**Tablou de bord** - Spațiu de lucru pentru administrarea unuia sau mai multor panouri'
 activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
 create_new: Creează nou
@@ -1220,6 +1251,7 @@ translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
 view_project: Vezi proiect
+weeks: { }
 report_error: Raportare eroare
 start: Pornire
 interfaces:
@@ -1365,10 +1397,42 @@ interfaces:
     preview: Previzualizare
     editorFont: Font pentru editor
     previewFont: Font pentru previzualizare
+    customSyntax: Blocuri personalizate
+    customSyntax_label: Adăugați tipuri de sintaxă personalizate
+    customSyntax_add: Adaugă sintaxă personalizată
+    box: Bloc / În linie
+    imageToken: Token imagine
+    imageToken_label: Ce token (static) să fie anexat la sursele imaginii
   map:
+    map: Hartă
+    description: Selectați o locație pe hartă
     zoom: Zoom
+    geometry_type: Tip geometrie
+    geometry_format: Format geometrie
+    default_view: Vizualizare implicită
+    invalid_options: Opțiuni nevalide
+    invalid_format: Format nevalid ({format})
+    unexpected_geometry: Așteptat {expected}, primit {got}.
+    fit_bounds: Potrivește afișarea la date
+    native: Nativ
+    geojson: GeoJSON
+    lnglat: Longitudine, latitudine
+    wkt: WKT
+    wkb: WKO
+    click_to_select: Click pentru a selecta {geometry}
+  presentation-notice:
+    notice: Observație
+    description: Afișează o scurtă observație
+    text: Introduceți conținutul observațiilor aici...
+  list-o2m:
+    one-to-many: Unu la mulți
+    description: Selectați mai multe elemente asociate
+    no_collection: Colecția nu a putut fi găsită
   system-folder:
     folder: Folder
+    description: Selectați un folder
+    field_hint: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
+    root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
   select-radio:
     radio-buttons: Butoane radio
@@ -1511,46 +1575,122 @@ displays:
     description: Afișează dimensiunea unui fișier
   formatted-value:
     formatted-value: Valoare formatată
+    description: Afișează o versiune formatată a textului
     format: Format
+    format_label: Formatează automat
     font: Font
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospațiu
     bold: Bold
+    bold_label: Folosește stil îngroșat
     italic: Cursiv
+    italic_label: Folosește stil cursiv
     prefix: Prefix
+    prefix_label: Preatașează text
     suffix: Sufix
+    suffix_label: Text adăugat
     color: Culoare
+    background: Fundal
     icon: Pictogramă
+    border: Chenar
+    border_label: Arată chenarul
     text: Text
+    text_placeholder: Suprascrie valoarea opțională...
+  formatted-json-value:
+    formatted-json-value: Valoare JSON formatată
+    description: Afișează o versiune formatată a obiectului
   icon:
     icon: Pictogramă
+    description: Afișează o pictogramă
+    filled: Completat
+    filled_label: Folosește varianta completată
   image:
+    image: Imagine
+    description: Afișează o previzualizare minusculă a imaginii
     circle: Cerc
+    circle_label: Afișează ca cerc
   labels:
+    labels: Etichete
+    description: Afișează fie o singură etichetă fie o listă
+    default_foreground: Prim-plan implicit
+    default_background: Fundal implicit
+    format_label: Formatează fiecare etichetă
+    show_as_dot: Arată ca punct
     choices_value_placeholder: Introduceți o valoare...
+    choices_text_placeholder: Introduceți un text...
+  mime-type:
+    mime-type: Tip MIME
+    description: Arată tipul MIME al unui fișier
+    extension_only: Doar extensie
+    extension_only_label: Arată doar extensia fișierului
+  rating:
+    rating: Rating
+    description: Vizualizați un număr ca stele în raport cu valoarea maximă
+    simple: Simplu
+    simple_label: Arată stelele într-un format simplu
+  raw:
+    raw: Valoare brută
   related-values:
+    related-values: Valori asociate
+    description: Afișare valori relative
     display_template_configure_notice: Puteți configura șablonul de afișare după crearea acestui câmp.
   user:
     user: Utilizator
+    description: Afișează un utilizator directus
     avatar: Avatar
     name: Nume
     both: Ambele
+    circle_label: Arată utilizatorul într-un cerc
 layouts:
   cards:
     cards: Carduri
-    image_source: Sursa Imaginii
+    image_source: Sursa imaginii
+    image_fit: Potrivire imagine
+    crop: Decupare
+    contain: Încadrează
     title: Titlu
     subtitle: Subtitlu
   tabular:
     tabular: Tabel
+    fields: Câmpuri
+    spacing: Spațiere
     comfortable: Confortabil
     compact: Compact
     cozy: Comod
+  calendar:
+    calendar: Calendar
+    start_date_field: Câmp dată de început
+    end_date_field: Câmp dată de sfârșit
   map:
-    cluster_options: Opțiuni de grupare
-    cluster: Grupează datele apropiate
+    map: Hartă
+    basemap: Basemap
+    layers: Straturi
+    cluster_options: Opțiuni cluster
+    cluster: Cluster date apropiate
+    cluster_radius: Raza cluster
+    cluster_minpoints: Dimensiune minimă cluster
+    cluster_maxzoom: Zoom maxim pentru cluster
+    field: Câmp geospațial
+    invalid_geometry: Geometrie nevalidă
+    find_location: Găsește locația...
+    default_template: Se folosește Implicit Colecția...
+    no_compatible_fields: Nu există câmpuri compatibile
 panels:
+  metric:
+    name: Metric
+    description: Arată o singură valoare bazată pe o interogare
+    field: Câmp
   time_series:
+    name: Serii de timp
     description: Redă o diagramă a liniei bazată pe valorile în timp
+    date_field: Câmp dată
+    value_field: Câmp valoare
+    fill_type: Tip de completare
+    curve_type: Tipul curbei
   label:
     name: Etichetă
+    description: Arată niște text
+  list:
+    name: Listă
+    description: Filtrează și afișează câmpuri dintr-o colecție
