@@ -354,6 +354,7 @@ today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
 date-fns_date: PPP
+date-fns_time: 'o:mm:ss a'
 minutes: Minute
 hours: Ore
 month: Lună
@@ -624,8 +625,23 @@ interface_group_relational: Relațional
 interface_group_presentation: Prezentare
 interface_group_groups: Grupuri
 interface_group_other: Altele
+tooltip: Sugestii
+tooltip_placeholder: Introduceți o sugestie...
+unlimited: Nelimitat
+open_link_in: Deschide link-ul în
+new_tab: Tab Nou
+current_tab: Tab curent
 wysiwyg_options:
+  aligncenter: Aliniere centru
+  alignjustify: Aliniere pe toată lățimea
+  alignleft: Aliniere la stânga
+  alignnone: Nicio aliniere
+  alignright: Aliniere la dreapta
+  forecolor: Culoare prim plan
+  backcolor: Culoare fundal
   bold: Bold
+  italic: Cursiv
+  underline: Subliniat
   strikethrough: Tăiat
   subscript: Scris jos
   superscript: Scris sus
@@ -681,6 +697,19 @@ settings_data_model: Model de date
 settings_permissions: Roluri şi permisiuni
 settings_project: Setările proiectului
 settings_webhooks: Webhook-uri
+settings_presets: Presetări și semne de carte
+one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
+scope: Scope
+select: Selectare...
+layout: Aspect
+tree_view: Vizualizare ramificată
+changes_are_permanent: Schimbările sunt permanente
+preset_name_placeholder: Servește ca implicit atunci când e gol...
+preset_search_placeholder: Șir de căutare...
+editing_preset: Editare presetare
+layout_preview: Previzualizare aspect
+layout_setup: Configurare aspect
+unsaved_changes: Modificări nesalvate
 discard_changes: Renunță la modificări
 add_new: Adaugare intrare nouă
 all: Tot
@@ -788,17 +817,55 @@ fields:
     last_access: Ultima accesare
     email_notifications: Notificări prin e-mail
   directus_settings:
+    attribution: Atribuire
+    attribution_placeholder: '© contributori OpenStreetMap'
+    transforms_note: Numele metodei Sharp și argumentele sale. Vezi https://sharp.pixelplumbing.com/api-constructor pentru mai multe informații.
+    additional_transforms: Transformări suplimentare
+    project_name: Nume proiect
+    project_descriptor: Descriptor proiect
+    project_url: Url proiect
+    project_color: Culoare proiect
+    project_logo: Logo proiect
+    branding: Branding și stil
+    public_foreground: Prim-plan public
+    public_background: Fundal public
+    public_note: Notă publică
+    auth_password_policy: Politică setări parole
+    auth_login_attempts: Încercări de conectare
+    files_and_thumbnails: Fișiere și stocare
+    storage_default_folder: Folder implicit
+    storage_asset_presets: Presetări de transformare
+    storage_asset_transform: Transformări permise
+    overrides: Suprascrieri ale aplicației
+    custom_css: CSS personalizat
     module_bar: Bară module
+    transformations_all: Permite toate transformările
+    transformations_none: Dezactivează transformările
+    transformations_presets: Limitează transformările la presetările de mai jos
   directus_shares:
+    name: Nume
     role: Rol
     password: Parolă
+    date_start: Data de început
+    date_end: Data de sfârșit
+    max_uses: Utilizări maxime
+    times_used: Număr de utilizări
   directus_fields:
+    collection: Numele colecției
+    icon: Pictogramă colecție
     note: Notă
     hidden: Ascuns
+    singleton: Singleton
     translation: Traducerile numelui câmpului
+    display_template: Șablon
   directus_roles:
     name: Nume de rol
+    icon: Pictogramă rol
     description: Descriere
+    app_access: Acces aplicație
+    admin_access: Acces administrator
+    ip_access: Acces IP
+    enforce_tfa: Necesită 2FA
     users: Utilizatori în rol
     module_list: Navigare în module
   directus_webhooks:
@@ -864,7 +931,20 @@ field_options:
     plural_unit: Unitate la plural
     archive_divider: Arhivează
     archive_field_placeholder: Alegeți un câmp...
+    archive_app_filter: Activează filtrul de arhivă al aplicației
+    archive_value: Valoare setată la arhivare...
+    unarchive_value: Valoare setată la dezarhivare...
     sort_divider: Sortează
+    sort_field: Alegeți un câmp...
+    accountability_divider: Responsabilitate
+    duplication_divider: Duplicare
+  directus_files:
+    title: Un titlu unic...
+    description: O descriere opțională...
+    location: O locație opțională...
+    storage_divider: Numirea fișierelor
+    filename_disk: Nume la stocarea pe disc...
+    filename_download: Nume la descărcare...
   directus_roles:
     fields:
       icon_name: Iconiță
@@ -889,6 +969,7 @@ field_options:
     actions_delete: Ștergere
     headers:
       header: Antet
+      value: Valoare
 comment: Comentariu
 shared_leave_blank_for_unlimited: Lăsați necompletat pentru nelimitat
 shared_times_remaining: Acest link poate fi folosit de doar {n} ori
@@ -954,15 +1035,53 @@ reset: Resetează
 reset_password: Resetează parola
 revisions: Revizii
 no_revisions: Nicio revizuire încă
+sort_desc: Sortează descrescător
+template: Șablon
+require_value_to_be_set: Necesită setarea valorii
+translation: Traducere
 translation_placeholder: Introduceți o traducere...
+value: Valoare
+view_project: Vezi proiect
+report_error: Raportare eroare
+start: Pornire
 interfaces:
   filter:
     name: Filtru
+    description: Configurați un obiect filtru.
+    add_filter: Adaugă filtru
+    add_group: Grup și/sau
+    add_value: Adaugă Valoare
+    logic_type_and: ȘI
+    logic_type_or: SAU
     all: Tot
     any: Oricare
+    and: şi
+    of_the_following: din următoarele
+    no_rules: Nu există reguli configurate
+    change_value: Click pentru a schimba valoarea
+    placeholder: Trage regulile aici
+  group-accordion:
+    name: Acordeon
+    description: Afișează câmpurile sau grupurile ca secțiuni acordeon
+    start: Pornire
+    all_closed: Toate închise
+    first_opened: Prima deschisă
+    all_opened: Toate deschise
+    accordion_mode: Mod acordeon
+    max_one_section_open: Cel mult o secțiune deschisă
   presentation-links:
+    presentation-links: Link-uri buton
+    links: Link-uri
+    description: Link-uri buton configurabile pentru lansarea de url-uri dinamice
+    style: Stil
     primary: Principal
+    link: Link-uri
+    button: Butoane
+    error: Nu se poate efectua acțiunea
   select-multiple-checkbox:
+    checkboxes: Casete de selectare
+    description: Alegeți dintre mai multe opțiuni prin bifarea căsuțelor
+    allow_other: Permite altele
     show_more: 'Arată încă {count}'
     items_shown: Elemente afișate
   select-multiple-checkbox-tree:
@@ -1035,14 +1154,34 @@ interfaces:
   input-hash:
     hash: Hash
     description: Introduceți o valoare pentru a fi criptată
+    masked: Mascat
+    masked_label: Ascunde valorile reale
   select-icon:
     icon: Iconiță
+    description: Selectaţi o pictogramă dintr-o listă
+    search_for_icon: Căutare pictogramă...
+  file-image:
+    image: Imagine
+    description: Selectați sau încărcați o imagine
+    crop: Decupează pentru a potrivi
+    crop_label: Decupează imaginea după necesități
+  system-interface:
+    interface: Interfață
+    description: Selectaţi o interfaţă existentă
+    placeholder: Selectați o interfață...
+  system-interface-options:
+    interface-options: Opțiuni interfață
+    description: Un modal pentru selectarea opțiunilor unei interfețe
+  list-m2m:
+    many-to-many: Multe la multe
   select-dropdown-m2o:
     display_template: Afişare şablon
   input-rich-text-md:
     edit: Editare
   tags:
     tags: Etichete
+  input:
+    mask: Mascat
   boolean:
     toggle: Comutare
     label_default: Activat
@@ -1074,6 +1213,7 @@ displays:
     font_serif: Serif
     font_monospace: Monospațiu
     bold: Bold
+    italic: Cursiv
     prefix: Prefix
     suffix: Sufix
     color: Culoare
