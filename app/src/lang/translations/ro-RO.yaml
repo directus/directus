@@ -354,7 +354,11 @@ today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
 date-fns_date: PPP
-date-fns_time: 'o:mm:ss a'
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM, d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: d MMM
 minutes: Minute
 hours: Ore
 month: Lună
@@ -373,16 +377,51 @@ months:
   october: Octombrie
   november: Noiembrie
   december: Decembrie
+drag_mode: Mod tragere
+cancel_crop: Anulează decuparea
+original: Original
+url: URL
+import_label: Importă
+file_details: Detalii fișier
+dimensions: Dimensiuni
+size: Mărime
 created: Creat
+modified: Modificat
 checksum: Sumă de control
 owner: Proprietar
+edited_by: Editat de
+folder: Folder
+zoom: Zoom
 download: Descărcați
+open: Deschide
+open_in_new_window: Deschide în fereastră nouă
+open_folder: Deschide folderul „{folder}”
+foreground_color: Culoare prim plan
+background_color: Culoare fundal
+upload_from_device: Încarcă fișier de pe dispozitiv
+choose_from_library: Alegeți fișierul din bibliotecă
+import_from_url: Importă fișierul din url
+replace_from_device: Înlocuiţi fişierul de pe dispozitiv
+replace_from_library: Înlocuiește fișierul din bibliotecă
+replace_from_url: Înlocuiţi fişierul din url
+no_file_selected: Niciun fișier selectat
+download_file: Descarcă fișier
+collection_key: Cheie colecție
+name: Nume
+primary_key_field: Câmp cheie principală
+type: Tip
+creating_new_collection: Crearea unei colecții noi
 created_by: Creat De
 created_on: Creat Pe
+creating_collection_info: Numește colecția și setează câmpul său „cheie” unic...
+creating_collection_system: Activează și redenumește oricare dintre aceste câmpuri opționale.
+auto_increment_integer: Numar incrementat automat
+generated_uuid: UUID generat
 manual_string: Șir introdus manual
 save_and_create_new: Salvează și creează nou
 save_and_stay: Salvează și rămâi
 save_as_copy: Salvează sub formă de copie
+add_existing: Adaugă existent
 creating_items: Creare de elemente
 enable_create_button: Activează butonul de creare
 selecting_items: Selectare elemente
@@ -430,11 +469,21 @@ move_to: Mutare în...
 copy: Copiază
 copy_to: Copiază în...
 no_other_dashboards_copy: Încă nu aveți alte tablouri de bord.
+inactive: Inactiv
 users: Utilizatori
 activity: Activitate
+activity_item: Element de activitate
 action: Acţiune
 ip_address: Adresă IP
 user_agent: User Agent
+webhooks: Webhook-uri
+decimals: Zecimale
+value_decimals: Valoare zecimale
+min_value: Valoare minimă
+max_value: Valoare maximă
+automatic: Automat
+field_width: Lățime câmp
+add_filter: Adaugă filtru
 upper_limit: Limita superioară...
 lower_limit: Limită inferioară...
 user_directory: Folder de utilizatori
@@ -710,7 +759,13 @@ editing_preset: Editare presetare
 layout_preview: Previzualizare aspect
 layout_setup: Configurare aspect
 unsaved_changes: Modificări nesalvate
+unsaved_changes_copy: Ești sigur că vrei să părăsești această pagină?
 discard_changes: Renunță la modificări
+discard_all_changes: Renunță la toate modificările
+discard_changes_copy: Ești sigur că vrei să renunți la toate modificările făcute?
+show_x_axis: Arată axa X
+show_y_axis: Arată axa Y
+keep_editing: Continuă editarea
 add_new: Adaugare intrare nouă
 all: Tot
 batch_delete_confirm: >-
@@ -948,6 +1003,7 @@ field_options:
   directus_roles:
     fields:
       icon_name: Iconiță
+      name_name: Nume
     collections_name: Colecții
   directus_users:
     preferences_divider: Preferințe utilizator
@@ -962,6 +1018,7 @@ field_options:
     token: Introduceți un token de acces securizat...
   directus_webhooks:
     status_options_active: Activ
+    status_options_inactive: Inactiv
     data_label: Trimite date eveniment
     triggers_divider: Declanșatori
     actions_create: Creează
@@ -1178,6 +1235,10 @@ interfaces:
     display_template: Afişare şablon
   input-rich-text-md:
     edit: Editare
+  map:
+    zoom: Zoom
+  system-folder:
+    folder: Folder
   tags:
     tags: Etichete
   input:
@@ -1228,6 +1289,7 @@ displays:
   user:
     user: Utilizator
     avatar: Avatar
+    name: Nume
     both: Ambele
 layouts:
   cards:
