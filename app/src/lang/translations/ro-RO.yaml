@@ -592,10 +592,48 @@ color: Culoare
 circle: Cerc
 empty_item: Element gol
 log_in_with: 'Conectează-te cu {provider}'
+conditional_styles: Stiluri condiționale
+advanced_settings: Setări avansate
+advanced_filter: Filtru avansat
+delete_advanced_filter: Ștergere filtru
+change_advanced_filter_operator: Schimbă operatorul
 operators:
+  eq: Egal
+  neq: Nu este egal
+  lt: Mai mic decât
   gt: Mai mare ca
+  lte: Mai mic sau egal cu
   gte: Mai mare sau egal cu
+  in: Este unul dintre
+  nin: Nu este unul dintre
+  null: Este nul
+  nnull: Nu este nul
   contains: Conține
+  ncontains: Nu conține
+  starts_with: Începe cu
+  nstarts_with: Nu începe cu
+  ends_with: Se termină cu
+  nends_with: Nu se termină cu
+  between: Este între
+  nbetween: Nu este între
+  empty: Este gol
+  nempty: Nu este gol
+  all: Conține aceste chei
+  has: Conține unele dintre aceste chei
+  intersects: Intersectează
+  nintersects: Nu intersectează
+  intersects_bbox: Intersectează caseta de încadrare
+  nintersects_bbox: Nu intersectează caseta de încadrare
+loading: Se încarcă...
+drop_to_upload: Plasează pentru a încărca
+item: Element
+items: Elemente
+upload_file: Încarcă fișier
+upload_file_indeterminate: Se încarcă fișierul...
+upload_file_success: Fișier încărcat
+upload_files_indeterminate: 'Se încarcă fișierele {done}/{total}'
+upload_files_success: '{count} fișiere încărcate'
+upload_pending: Încărcare în așteptare
 drag_file_here: Trageți și plasați un fișier aici
 click_to_browse: Click pentru a naviga
 interface_options: Opțiuni interfață
@@ -649,6 +687,18 @@ icon_off: Iconiță dezactivată
 label: Etichetă
 insights: Analize
 dashboard: Panou
+panel: Panou
+panel_options: Opțiuni panou
+panel_header: Antet panou
+panel_name_placeholder: Numește acest panou...
+panel_note_placeholder: Detalii opționale despre acest panou...
+panel_delete_confirm: Sunteţi sigur că doriţi să ştergeţi acest panou? Această acţiune nu poate fi anulată.
+dashboard_delete_confirm: Sunteţi sigur că doriţi să ştergeţi acest tablou de bord? Această acţiune nu poate fi anulată.
+edit_dashboard: Editare tablou de bord
+delete_dashboard: Ştergere tablou de bord
+visible: Vizibil
+prefix_placeholder: Text înainte de valoare...
+suffix_placeholder: Text după valoare...
 decimals_placeholder: Numărul de zecimale...
 no_dashboards: Niciun tablou de bord
 no_dashboards_copy: Încă nu aveți tablouri de bord.
@@ -1005,6 +1055,7 @@ field_options:
       icon_name: Iconiță
       name_name: Nume
     collections_name: Colecții
+    collections_addLabel: Adaugă Colecție...
   directus_users:
     preferences_divider: Preferințe utilizator
     dropdown_auto: Automat (bazat pe sistem)
@@ -1012,6 +1063,7 @@ field_options:
     dropdown_dark: Mod întunecat
     admin_divider: Opţiuni Admin
     status_dropdown_draft: Ciornă
+    status_dropdown_invited: Invitat
     status_dropdown_active: Activ
     status_dropdown_suspended: Suspendat
     status_dropdown_archived: Arhivat
@@ -1024,10 +1076,35 @@ field_options:
     actions_create: Creează
     actions_update: Actualizare
     actions_delete: Ștergere
+    actions_login: Autentificare
     headers:
       header: Antet
       value: Valoare
+      add: Adaugă antet
+no_fields_in_collection: 'Încă nu există câmpuri în "{collection}"'
+no_value: Nicio valoare
+do_nothing: Nu face nimic
+generate_and_save_uuid: Generează și salvează UUID
+save_current_user_id: Salvează ID-ul utilizatorului curent
+save_current_user_role: Salvează rolul utilizatorului curent
+save_current_datetime: Salvează Data/Ora Curentă
+always_open: Întotdeauna deschis
+start_open: Începe deschis
+start_collapsed: Începe închis
+block: Blochează
+inline: Pe aceeași linie
 comment: Comentariu
+shares: Distribuiri
+unlimited_usage: Utilizare nelimitată
+uses_left: Nu a mai rămas nicio utilizare | O utilizare rămasă | {n} utilizări rămase
+no_shares: Nici o distribuire de afișat
+new_share: Distribuire nouă
+expired: Expirat
+upcoming: Urmează
+share: Distribuie
+share_item: Distribuie element
+shared_with_you: Un element a fost distribuit către tine
+shared_enter_passcode: Introduceți parola pentru a continua...
 shared_leave_blank_for_unlimited: Lăsați necompletat pentru nelimitat
 shared_times_remaining: Acest link poate fi folosit de doar {n} ori
 shared_last_remaining: Acest link poate fi folosit doar o dată
@@ -1092,6 +1169,20 @@ reset: Resetează
 reset_password: Resetează parola
 revisions: Revizii
 no_revisions: Nicio revizuire încă
+revert: Revenire
+save: Salvează
+schema: Schema
+search: Caută
+select_existing: Selectează din ce există
+select_field_type: Selectează un tip de câmp
+select_interface: Selectează o interfață
+settings: Setări
+sign_in: Autentificare
+sign_out: Deconectare
+sign_out_confirm: Ești sigur că vrei să te deconectezi?
+something_went_wrong: Ceva nu a funcţionat corect.
+sort_direction: Sortează direcția
+sort_asc: Sortează ascendent
 sort_desc: Sortează descrescător
 template: Șablon
 require_value_to_be_set: Necesită setarea valorii
@@ -1231,30 +1322,93 @@ interfaces:
     description: Un modal pentru selectarea opțiunilor unei interfețe
   list-m2m:
     many-to-many: Multe la multe
+    description: Selectaţi mai multe elemente de joncţiune asociate
+    display_template_configure_notice: Puteți configura șablonul de afișare după crearea acestui câmp.
   select-dropdown-m2o:
+    many-to-one: Mulți la unu
+    description: Selectați un singur element asociat
     display_template: Afişare şablon
   input-rich-text-md:
+    markdown: Markdown
+    description: Introduceți și previzualizați codul markdown
     edit: Editare
+    preview: Previzualizare
+    editorFont: Font pentru editor
+    previewFont: Font pentru previzualizare
   map:
     zoom: Zoom
   system-folder:
     folder: Folder
   tags:
     tags: Etichete
+    auto_formatter: Folosește formatarea automată pentru titlu
+    alphabetize: Așează în ordine alfabetică
+    alphabetize_label: Forțează ordinea alfabetică
+    add_tags: Adaugă etichete...
   input:
+    input: Input
+    description: Introduceți manual o valoare
+    trim: Trunchiază
+    trim_label: Trunchiază începutul și sfârșitul
     mask: Mascat
+    mask_label: Ascunde valoarea reală
+    clear: Valoare ștearsă
+    clear_label: Salvează ca șir gol
+    minimum_value: Valoare minimă
+    maximum_value: Valoare maximă
+    step_interval: Interval pas
+    slug: Slugify
+    slug_label: Faceți valoarea sigură pentru folosirea ca url
+  input-multiline:
+    textarea: Zonă de text
+    description: Introduceți text brut pe mai multe linii
   boolean:
     toggle: Comutare
+    description: Comutare între pornit și oprit
+    color_on: Culoare activată
+    color_off: Culoare dezactivată
+    label_placeholder: Introduceți o etichetă...
     label_default: Activat
   translations:
     display_template: Afişare şablon
+    no_collection: Nicio colecție
+    toggle_split_view: Comutare vizualizare împărțită
+    language_field: Câmp indicator limbă
+  list-o2m-tree-view:
+    description: Vizualizare ramificată pentru elemente imbricate recursive unu-la-mai multe
+    recursive_only: Interfața de vizualizare ramificată funcționează numai pentru relații recursive.
   user:
     user: Utilizator
+    description: Selectați un utilizator directus existent
+    select_mode: Selectați modul
     modes:
+      auto: Automat
       dropdown: Listă verticală
+      modal: Modal
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Un editor de text formatat care scrie conţinut HTML
+    toolbar: Bară de instrumente
+    custom_formats: Formate personalizate
+    options_override: Suprascriere opțiuni
+    folder_note: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
+    imageToken: Token imagine
+    imageToken_label: Ce token (static) să anexeze la sursele imaginii
+  input-autocomplete-api:
+    input-autocomplete-api: Autocompletare input (API)
+    description: O căutare a literelor în avans pentru valori API externe.
+    results_path: Calea rezultatelor
+    value_path: Calea valorii
+    text_path: Calea textului
+    trigger: Declanșator
+    rate: Evaluează
+  group-raw:
+    name: Grup brut
+    description: Afișează câmpul așa cum este
 displays:
   translations:
     translations: Traduceri
+    language_field: Câmp indicator limbă
   boolean:
     boolean: Boolean
     icon_on: Iconiță activată
@@ -1286,6 +1440,8 @@ displays:
     circle: Cerc
   labels:
     choices_value_placeholder: Introduceți o valoare...
+  related-values:
+    display_template_configure_notice: Puteți configura șablonul de afișare după crearea acestui câmp.
   user:
     user: Utilizator
     avatar: Avatar
