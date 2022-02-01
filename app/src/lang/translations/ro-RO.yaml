@@ -160,7 +160,57 @@ fields_for_role: 'Câmpuri pe care rolul {role} le poate {action}.'
 validation_for_role: 'Reguli ale câmpului {action} pe care rolul {role} trebuie să le respecte.'
 presets_for_role: 'Valori implicite ale câmpului pentru rolul {role}.'
 presentation_and_aliases: Prezentare și alias-uri
+revision_post_create: Iată cum arăta acest element când a fost creat.
+revision_post_update: Iată cum arăta acest element după actualizare.
+changes_made: Mai jos sunt modificările specifice aduse acestei revizuiri.
+no_relational_data: Rețineți că datele relaționale nu sunt incluse aici.
+hide_field_on_detail: Ascunde câmpul în detalii
+show_field_on_detail: Arată câmpul în detalii
+delete_field: Ștergere câmp
+fields_and_layout: Câmpuri & Layout
+field_create_success: 'Câmp creat: „{field}”'
+field_update_success: 'Câmp actualizat: „{field}”'
+duplicate_where_to: Unde doriți să duplicați acest câmp?
+language: Limba
+aggregate_function: Funcție agregată
+aggregate_precision: Precizie agregată
+group_aggregation: Agregare de grup
+group_precision: Precizie grup
+global: Global
+admins_have_all_permissions: Administratorii au toate permisiunile
+camera: Cameră
+show_zero: Arată zero
+create_in_advanced_field_creation_mode: Crează câmp în modul avansat
+continue_in_advanced_field_creation_mode: Continuă în modul de creare a câmpurilor avansate
+sum: Sum
+sum_distinct: Sumă distinctă
+avg: Medie
+avg_distinct: Medie distinctă
+count: Numărătoare
+count_distinct: Numărătoare distinctă
+min: Minim
+max: Maxim
+exposure: Expunere
+shutter: Obturator
+iso: ISO
+focal_length: Lungime focală
+schema_setup_key: Numele coloanei din baza de date pentru acest câmp și cheia API
 create_field: Creează Câmp
+creating_new_field: 'Câmp nou ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Resetează preferințele paginii
+hidden_field: Câmp ascuns
+hidden_on_detail: Ascuns în detalii
+disabled_editing_value: Dezactivează valoarea de editare
+key: Cheie
+alias: Alias
+bigInteger: Întreg mare
+boolean: Boolean
+date: Data
+date_range: Perioada
+datetime: Dată și Oră
+dateTime: Dată și Oră
+precision: Precizie
 decimal: Zecimal
 float: Float
 integer: Întreg
@@ -262,6 +312,16 @@ select_all: Selectează tot
 months:
   january: Ianuarie
   february: Februarie
+  march: Martie
+  april: Aprilie
+  may: Mai
+  june: Iunie
+  july: Iulie
+  august: August
+  september: Septembrie
+  october: Octombrie
+  november: Noiembrie
+  december: Decembrie
 checksum: Sumă de control
 owner: Proprietar
 download: Descărcați
@@ -866,6 +926,7 @@ interfaces:
       dropdown: Listă verticală
 displays:
   boolean:
+    boolean: Boolean
     icon_on: Iconiță activată
     icon_off: Iconiță dezactivată
   collection:
