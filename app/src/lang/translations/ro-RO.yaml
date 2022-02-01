@@ -265,7 +265,57 @@ o2m_relationship: Relație unu la mai multe (O2M)
 m2m_relationship: Relație mai multe la mai multe (M2M)
 m2a_relationship: Relație mai multe la oricare (M2A)
 invalid_item: Element invalid
+next: Urmatorul
+field_name: Nume câmp
+translations: Traduceri
+no_translations: Nici o traducere
+note: Notă
+enter_a_value: Introduceți o valoare...
+enter_a_placeholder: Introduceți un substituent...
+length: Lungime
+soft_length: Limită permisivă
+precision_scale: Precizie & scară
+readonly: Doar citire (readonly)
+unique: Unic
+updated_on: Actualizat pe
+updated_by: Actualizat de
+primary_key: Cheie principală
+foreign_key: Cheie străină
+finish_setup: Finalizează configurarea
+dismiss: Renunţaţi
+raw_value: Valoare brută
+copy_raw_value: Copiază valoarea brută
+copy_raw_value_success: Copiat
+copy_raw_value_fail: Copiere eșuată
+paste_raw_value: Lipiți valoarea brută
+paste_raw_value_success: Lipit
+paste_raw_value_fail: Lipire eșuată
+view_raw_value: Vezi valoarea brută
+edit_raw_value: Editează valoarea brută
+enter_raw_value: Introduceți valoarea brută...
+clear_value: Șterge valoarea
+clear_changes: Șterge schimbările
+reset_to_default: Resetare la valorile implicite
+undo_changes: Anulează modificările
+notifications: Notificări
+show_all_activity: Arată toată activitatea
+page_not_found: Pagina nu a fost găsită
+page_not_found_body: Pagina pe care o cauţi nu pare să existe.
+confirm_revert: Confirmare revenire
+confirm_revert_body: Această acțiune va reseta elementul la starea selectată.
+display: Afişare
+settings_update_success: Setări actualizate
 title: Titlu
+revision_delta_created: Creat
+revision_delta_created_externally: Creat extern
+revision_delta_updated: '1 câmp actualizat | {count} câmpuri actualizate'
+revision_delta_deleted: Șters
+revision_delta_reverted: Resetat
+revision_delta_other: Revizuire
+revision_delta_by: '{date} de {user}'
+private_user: Utilizator privat
+creation_preview: Previzualizare creare
+revision_preview: Previzualizare revizie
 updates_made: Actualizări realizate
 leave_comment: Lasă un comentariu...
 post_comment_success: Comentariu postat
@@ -322,6 +372,7 @@ months:
   october: Octombrie
   november: Noiembrie
   december: Decembrie
+created: Creat
 checksum: Sumă de control
 owner: Proprietar
 download: Descărcați
@@ -383,10 +434,48 @@ activity: Activitate
 action: Acţiune
 ip_address: Adresă IP
 user_agent: User Agent
+upper_limit: Limita superioară...
+lower_limit: Limită inferioară...
+user_directory: Folder de utilizatori
+documentation: Documentație
+sidebar: Bară laterală
 duration: Durată
+charset: Setul de caractere
+second: secundă
+file_moved: Fișier mutat
+collection_created: Colecție creată
+modified_on: Modificat la
+card_size: Mărimea cardului
+sort_field: Câmp de sortare
+add_sort_field: Adaugă câmp de sortare
+sort: Sortează
 status: Stare
 remove: Elimină
+toggle_manual_sorting: Activează sortarea manuală
+bookmark_doesnt_exist: Semnul de carte nu există
+bookmark_doesnt_exist_copy: Semnul de carte pe care încerci să îl deschizi nu a putut fi găsit.
+bookmark_doesnt_exist_cta: Revenire la colecție
+select_an_item: Selectați un element...
+edit: Editare
+enabled: Activat
+disable_tfa: Dezactivează 2FA
+tfa_scan_code: Scanează codul din aplicația de autentificare pentru a finaliza configurarea 2FA
+enter_otp_to_disable_tfa: Introduceți OTP pentru a dezactiva 2FA
+create_account: Creare cont
+account_created_successfully: Cont creat cu succes
+auto_fill: Completare automată
+corresponding_field: Câmp corespondent
 errors:
+  COLLECTION_NOT_FOUND: "Colecția nu există"
+  FIELD_NOT_FOUND: Câmpul nu a fost găsit
+  FORBIDDEN: Interzis
+  INVALID_CREDENTIALS: Nume utilizator sau parolă greșite
+  INVALID_OTP: Parolă de unică folosință greșită
+  INVALID_PAYLOAD: Conținut invalid
+  INVALID_QUERY: Interogare invalidă
+  ITEM_LIMIT_REACHED: S-a atins limita de elemente
+  ITEM_NOT_FOUND: Elementul nu a fost găsit
+  ROUTE_NOT_FOUND: Nu a fost găsit
   RECORD_NOT_UNIQUE: Valoare duplicat detectată
   USER_SUSPENDED: Utilizator suspendat
   CONTAINS_NULL_VALUES: Câmpul conține valori null
@@ -441,6 +530,18 @@ show_header: Arată antet
 unmanaged_collections: Colecții neconfigurate
 system_collections: Colecții de sistem
 placeholder: Substituent (placeholder)
+icon_left: Pictograma stânga
+icon_right: Pictograma dreapta
+count_other_revisions: '{count} alte revizuiri'
+font: Font
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospațiu
+divider: Separator
+color: Culoare
+circle: Cerc
+empty_item: Element gol
+log_in_with: 'Conectează-te cu {provider}'
 operators:
   gt: Mai mare ca
   gte: Mai mare sau egal cu
@@ -498,9 +599,31 @@ icon_off: Iconiță dezactivată
 label: Etichetă
 insights: Analize
 dashboard: Panou
+decimals_placeholder: Numărul de zecimale...
+no_dashboards: Niciun tablou de bord
+no_dashboards_copy: Încă nu aveți tablouri de bord.
+no_data: Nu există date
+create_dashboard: Creează tablou de bord
+dashboard_name: Nume tablou de bord
 full_screen: Pe tot ecranul
+edit_panels: Editare panouri
+fit_to_screen: Potrivire pe ecran
+image_url: Url imagine
+alt_text: Text alternativ
+media: Media
+quality: Calitate
 width: Lățime
 height: Înălţime
+source: Sursa
+url_placeholder: Introduceți un url...
+display_text: Afișare text
+display_text_placeholder: Introduceți un text de afișat...
+interface_group_text_and_numbers: Text & Numere
+interface_group_selection: Selecţie
+interface_group_relational: Relațional
+interface_group_presentation: Prezentare
+interface_group_groups: Grupuri
+interface_group_other: Altele
 wysiwyg_options:
   bold: Bold
   strikethrough: Tăiat
@@ -670,6 +793,7 @@ fields:
     role: Rol
     password: Parolă
   directus_fields:
+    note: Notă
     hidden: Ascuns
     translation: Traducerile numelui câmpului
   directus_roles:
@@ -740,6 +864,7 @@ field_options:
     plural_unit: Unitate la plural
     archive_divider: Arhivează
     archive_field_placeholder: Alegeți un câmp...
+    sort_divider: Sortează
   directus_roles:
     fields:
       icon_name: Iconiță
@@ -914,10 +1039,13 @@ interfaces:
     icon: Iconiță
   select-dropdown-m2o:
     display_template: Afişare şablon
+  input-rich-text-md:
+    edit: Editare
   tags:
     tags: Etichete
   boolean:
     toggle: Comutare
+    label_default: Activat
   translations:
     display_template: Afişare şablon
   user:
@@ -925,12 +1053,16 @@ interfaces:
     modes:
       dropdown: Listă verticală
 displays:
+  translations:
+    translations: Traduceri
   boolean:
     boolean: Boolean
     icon_on: Iconiță activată
     icon_off: Iconiță dezactivată
   collection:
     collection: Colecție
+  color:
+    color: Culoare
   datetime:
     datetime: Data
     format: Format
@@ -938,13 +1070,21 @@ displays:
     file: Fişier
   formatted-value:
     format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Monospațiu
     bold: Bold
     prefix: Prefix
     suffix: Sufix
+    color: Culoare
     icon: Iconiță
     text: Text
   icon:
     icon: Iconiță
+  image:
+    circle: Cerc
+  labels:
+    choices_value_placeholder: Introduceți o valoare...
   user:
     user: Utilizator
     avatar: Avatar
