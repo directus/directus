@@ -33,6 +33,7 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"sideEffects": false,
 	"scripts": {
 		"build": "run-p \"build:* -- {@}\" --",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
