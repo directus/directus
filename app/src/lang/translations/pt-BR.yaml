@@ -1094,12 +1094,25 @@ field_options:
     sort_divider: Ordenar
     sort_field: Escolha um campo...
     accountability_divider: Responsabilidade
+    duplication_divider: Duplicação
+  directus_files:
+    title: Um título único...
+    description: Uma descrição opcional...
+    location: Uma localização opcional...
+    storage_divider: Nomeação de Arquivos
+    filename_disk: Nome no armazenamento do disco...
+    filename_download: Nome ao baixar...
   directus_roles:
+    name: O nome único para este papel...
+    description: Uma descrição deste papel...
+    ip_access: Adicione endereços IP permitidos ou deixe em branco para permitir todos...
     fields:
       icon_name: Ícone
       name_name: Nome
       name_placeholder: Insira um título...
+      link_placeholder: URL relativa ou absoluta...
     collections_name: Coleções
+    collections_addLabel: Adicionar Coleção...
   directus_users:
     preferences_divider: Preferências do Usuário
     dropdown_auto: Automático (Baseado no Sistema)
@@ -1129,6 +1142,7 @@ generate_and_save_uuid: Gerar e salvar UUID
 save_current_user_id: Salvar ID de usuário atual
 save_current_user_role: Salvar a Função de Usuário Atual
 save_current_datetime: Salvar data/hora atual
+start_open: Iniciar Aberto
 block: Bloco
 inline: Em linha
 comment: Comentário
@@ -1256,6 +1270,7 @@ interfaces:
     description: Digite ou selecione um valor de cor
     placeholder: Escolha uma cor...
     preset_colors: Cores predefinidas
+    opacity: Opacidade
     preset_colors_add_label: Adicionar nova cor...
     name_placeholder: Inserir nome da cor...
   datetime:
@@ -1273,6 +1288,7 @@ interfaces:
   presentation-divider:
     divider: Divisor
     description: Rotular e dividir campos em seções
+    title_placeholder: Insira um título ou deixe em branco para mostrar apenas uma linha...
     inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
@@ -1307,6 +1323,8 @@ interfaces:
   file-image:
     image: Imagem
     description: Selecione ou envie uma imagem
+    crop: Cortar para Caber
+    crop_label: Cortar a imagem conforme necessário
   system-interface:
     interface: Interface
     description: Selecione uma interface existente
@@ -1317,6 +1335,7 @@ interfaces:
   list-m2m:
     many-to-many: Muitos para muitos
     description: Selecione vários itens de junção relacionados
+    display_template_configure_notice: Você pode configurar o modelo de exibição após criar este campo.
   select-dropdown-m2o:
     many-to-one: Muitos para um
     description: Selecione um único item relacionado
@@ -1325,6 +1344,9 @@ interfaces:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
     edit: Editar
+    preview: Pré-visualizar
+    editorFont: Fonte do Editor
+    previewFont: Fonte da Pré-visualização
     customSyntax: Blocos personalizados
     customSyntax_label: Adicionar tipos de sintaxe personalizados
     customSyntax_add: Adicionar sintaxe personalizada
@@ -1332,10 +1354,22 @@ interfaces:
     imageToken: Token da imagem
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
   map:
+    map: Mapa
+    description: Selecione uma localização no mapa
     zoom: Zoom
+    geometry_type: Tipo da Geometria
+    geometry_format: Formato da Geometria
+    default_view: Exibição Padrão
     invalid_options: Opções inválidas
     invalid_format: Formato inválido ({format})
     unexpected_geometry: Esperado {expected}, obtido {got}.
+    fit_bounds: Ajustar a visão aos dados
+    native: Nativo
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Clique para selecionar {geometry}
   presentation-notice:
     notice: Aviso
     description: Mostrar um breve aviso
@@ -1347,6 +1381,7 @@ interfaces:
   system-folder:
     folder: Pasta
     description: Selecionar uma pasta
+    field_hint: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1404,6 +1439,8 @@ interfaces:
   translations:
     display_template: Modelo de exibição
     no_collection: Nenhuma coleção
+    toggle_split_view: Alternar Visualização Dividida
+    language_field: Campo Indicador de Idioma
   list-o2m-tree-view:
     description: Visualização de árvore para itens recursivos aninhados um-para-muitos
     recursive_only: A interface de exibição em árvore só funciona para relações recursivas.
@@ -1421,6 +1458,7 @@ interfaces:
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
     options_override: Sobrescrever opções
+    folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     imageToken: Token da imagem
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
   input-autocomplete-api:
@@ -1428,14 +1466,28 @@ interfaces:
     description: Um tipo de pesquisa para valores de API externos.
     results_path: Caminho de resultados
     value_path: Caminho do Valor
+    text_path: Caminho do Texto
     trigger: Acionar
     rate: Avaliar
+  group-raw:
+    name: Grupo Simples
+    description: Renderiza os campos como estão
+  group-detail:
+    name: Grupo Detalhado
+    description: Renderiza os campos como uma seção dobrável
+    show_header: Exibir Cabeçalho do Grupo
+    header_icon: Ícone do Cabeçalho
+    header_color: Cor do Cabeçalho
+    start_open: Iniciar Aberto
+    start_closed: Iniciar Fechado
 displays:
   translations:
     translations: Traduções
     description: Pré-visualizar traduções
     enable: Habilitar
+    user_language: Usar o Idioma do Usuário Atual
     default_language: Idioma padrão
+    language_field: Campo Indicador de Idioma
   boolean:
     boolean: Boolean
     description: Exibir estados ativados e desativados
@@ -1523,6 +1575,7 @@ displays:
   related-values:
     related-values: Valores Relacionados
     description: Exibir valores relativos
+    display_template_configure_notice: Você pode configurar o modelo de exibição após criar este campo.
   user:
     user: Usuário
     description: Exibe um usuário do Directus
@@ -1550,6 +1603,8 @@ layouts:
     calendar: Calendário
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
+  map:
+    map: Mapa
 panels:
   metric:
     name: Métrico
