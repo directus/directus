@@ -284,9 +284,19 @@ foreign_key: Chave Extrangeira
 finish_setup: Concluir a instalação
 dismiss: Dispensar
 raw_value: Valor bruto
+copy_raw_value: Copiar Valor Bruto
+copy_raw_value_success: Copiado
+copy_raw_value_fail: Falha ao Copiar
+paste_raw_value: Colar Valor Bruto
+paste_raw_value_success: Colado
+paste_raw_value_fail: Falha ao Colar
+view_raw_value: Ver Valor Bruto
 edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
+clear_value: Limpar Valor
 clear_changes: Limpar alterações
+reset_to_default: Restaurar Padrões
+undo_changes: Desfazer Alterações
 notifications: Notificações
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página não encontrada
@@ -317,9 +327,17 @@ related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
 translations_collection: Coleção de traduções
 languages_collection: Coleção de idiomas
+import_data_input_placeholder: CSV ou JSON...
+import_data_button: Iniciar Importação
+import_data_indeterminate: Importando Dados...
+import_data_success: Dados importados com sucesso de {filename}
+import_data_error: A estrutura de dados deste arquivo não condiz com a coleção.
 label_import: Importar
+label_export: Exportar
+import_export: Importar / Exportar
 format: Formato
 use_current_filters_settings: Usar filtros e configurações atuais
+export_data_button: Iniciar Exportação
 last_page: Última página
 last_access: Último acesso
 fill_template: Preencher com valor de template
@@ -432,6 +450,7 @@ no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
 no_webhooks_copy: Nenhum webhook foi configurado ainda. Comece criando um abaixo.
 no_notifications: Sem Notificações
+no_notifications_copy: Você está em dia!
 activity_log: Registro de atividades
 all_items: Todos os itens
 any: Qualquer
@@ -449,6 +468,7 @@ active: Ativo
 move_to: Mover para...
 copy: Copiar
 copy_to: Copiar para...
+no_other_dashboards_copy: Você ainda não tem nenhum outro painel.
 inactive: Inativo
 users: Usuários
 activity: Atividade
@@ -541,6 +561,10 @@ all_users: Todos os usuários
 delete_collection: Excluir coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção excluída
+make_collection_visible: Tornar Coleção Visível
+make_collection_hidden: Tornar Coleção Oculta
+make_folder_visible: Tornar Pasta Visível
+make_folder_hidden: Tornar Pasta Oculta
 start_end_of_count_items: '{start}-{end} de {count} itens'
 start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
 one_item: '1 item'
@@ -552,6 +576,7 @@ visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
 show_hidden_collections: Mostrar Coleções Ocultas
 hide_hidden_collections: Não Mostrar Coleções Ocultas
+show_header: Exibir Cabeçalho
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
 placeholder: Placeholder
@@ -567,6 +592,7 @@ color: Cor
 circle: Círculo
 empty_item: Item vazio
 log_in_with: 'Entrar com {provider}'
+conditional_styles: Estilos Condicionais
 advanced_settings: Configurações Avançadas
 advanced_filter: Filtro avançado
 delete_advanced_filter: Excluir Filtro
@@ -628,7 +654,9 @@ all_files: Todos os arquivos
 my_files: Meus arquivos
 recent_files: Arquivos recentes
 create_folder: Criar pasta
+edit_folder: Editar Pasta
 folder_name: Nome da pasta...
+folder_key: Chave da Pasta...
 add_file: Adicionar arquivo
 replace_file: Substituir arquivo
 no_results: Sem resultados
