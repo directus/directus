@@ -871,6 +871,14 @@ directus_collection:
   directus_folders: Fornece diretórios virtuais para arquivos
   directus_migrations: Qual versão do banco de dados você está utilizando
   directus_panels: Painéis individuais nos dashboards de Visões
+  directus_permissions: Permissões de acesso para cada papel
+  directus_notifications: Notificações enviadas aos usuários
+  directus_presets: Predefinições para padrões de coleção e favoritos
+  directus_relations: Configurações e metadados do relacionamento
+  directus_revisions: Cópia de dados de todas as atividades
+  directus_roles: Grupos de permissão para usuários do sistema
+  directus_sessions: Informações da sessão do usuário
+  directus_settings: Opções de configuração do projeto
   directus_users: Usuários do sistema para a plataforma
   directus_webhooks: Configuração para solicitações HTTP baseadas em eventos
 fields:
@@ -955,6 +963,7 @@ fields:
     external_identifier: Identificador externo
     last_page: Última página
     last_access: Último acesso
+    email_notifications: Notificações por Email
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -962,7 +971,13 @@ fields:
     tiff: Tiff
     mapping: Mapeamento
     basemaps_raster: Rasterizar
+    basemaps_tile: Rasterizado TileJSON
+    basemaps_style: Estilo Mapbox
     mapbox_key: Token de Acesso Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribuição
+    attribution_placeholder: '© Contribuidores do OpenStreetMap'
+    transforms_note: O nome do método da biblioteca Sharp e seus argumentos. Veja https://sharp.pixelplumbing.com/api-constructor para mais informações.
     additional_transforms: Transformações Adicionais
     project_name: Nome do projeto
     project_descriptor: Descrição do projeto
@@ -989,6 +1004,10 @@ fields:
     name: Nome
     role: Função
     password: Senha
+    date_start: Data Inicial
+    date_end: Data Final
+    max_uses: Quantidade Máxima de Usos
+    times_used: Quantidade de Usos
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -1012,7 +1031,9 @@ fields:
     method: Método 
     status: Status
     data: Dados
+    header: Cabeçalho
     value: Valor
+    headers: Cabeçalhos de Requisição
     data_label: Enviar Dados do Evento
     triggers: Gatilhos
     actions: Ações
@@ -1020,11 +1041,14 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
+    project_color_note: Fundo de Login & Logo
     project_logo_note: 40x40 SVG/PNG (Branco)
     public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
     auth_password_policy:
       none_text: Nenhum – Não Recomendado
+      weak_text: Fraca — Mínimo de 8 Caracteres
+      strong_text: Forte — Maiúsculas / Minúsculas / Números / Especiais
     storage_asset_presets:
       fit_label: Ajustar
       upscaling: Upscaling
@@ -1034,9 +1058,13 @@ field_options:
         fit_text: Ajustar dentro
         outside_text: Ajustar fora
     additional_transforms: Transformações Adicionais
+    transforms_note: O nome do método da biblioteca Sharp e seus argumentos. Veja https://sharp.pixelplumbing.com/api-constructor para mais informações.
     mapbox_key: Token de Acesso Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps_name_placeholder: Digite o nome do basemap...
     basemaps_raster: Rasterizar
+    basemaps_tile: Rasterizado TileJSON
+    basemaps_style: Estilo Mapbox
     files_divider_title: Arquivos e Miniaturas
     overrides_divider_title: Substituições de Aplicativos
   directus_activity:
@@ -1049,13 +1077,22 @@ field_options:
     only_track_activity: Acompanhar apenas Atividade
     do_not_track_anything: Não rastreie nada
     collection_setup: Configurando coleção
+    note_placeholder: Uma descrição desta coleção...
+    hidden_label: Ocultar no App
     singleton: Tratar como objeto único
     language: Idioma
     translation: Tradução
+    translation_placeholder: Insira uma tradução...
     collection_name: Nome da coleção
+    singular_unit: Unidade Singular
     plural_unit: Unidade Plural
     archive_divider: Arquivar
+    archive_field_placeholder: Escolha um campo...
+    archive_app_filter: Habilitar Filtro de Arquivo do App
+    archive_value: Valor definido ao arquivar...
+    unarchive_value: Valor definido ao desarquivar...
     sort_divider: Ordenar
+    sort_field: Escolha um campo...
     accountability_divider: Responsabilidade
   directus_roles:
     fields:
@@ -1084,6 +1121,7 @@ field_options:
     actions_update: Alteração
     actions_delete: Excluir
     headers:
+      header: Cabeçalho
       value: Valor
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
 do_nothing: Não fazer nada
