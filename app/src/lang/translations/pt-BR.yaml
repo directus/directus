@@ -43,7 +43,7 @@ group: Grupos
 and: E
 or: Ou
 fill_width: Preencher
-field_name_translations: Traduções Dos Nomes Dos Campos
+field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
 role_name: Nome do cargo
@@ -268,7 +268,7 @@ invalid_item: Item inválido
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
-no_translations: Nenhuma tradução
+no_translations: Nenhuma Tradução
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Adicionar um placeholder...
@@ -325,7 +325,7 @@ item_delete_success: Item deletado | Itens deletados
 this_collection: Esta coleção
 related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
-translations_collection: Coleção de traduções
+translations_collection: Coleção de Traduções
 languages_collection: Coleção de idiomas
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Iniciar Importação
@@ -1014,7 +1014,7 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: Traduções Dos Nomes Dos Campos
+    translation: Traduções do Nome do Campo
     display_template: Template
   directus_roles:
     name: Nome do cargo
