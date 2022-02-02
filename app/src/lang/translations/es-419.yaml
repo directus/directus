@@ -283,9 +283,14 @@ foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
 dismiss: Ignorar
 raw_value: Valor sin interpretar
+copy_raw_value_success: Copiado
+paste_raw_value_success: Pegado
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
+clear_value: Limpiar Valor
 clear_changes: Borrar_Cambios
+reset_to_default: Restablecer ajustes por defecto
+undo_changes: Revertir Cambios
 notifications: Notificaciones
 show_all_activity: Mostrar Toda La Actividad
 page_not_found: Página no encontrada
@@ -316,6 +321,9 @@ related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de la Colección
 languages_collection: Coleccion de Idiomas
+import_data_input_placeholder: CSV o JSON...
+import_data_button: Empezar Importación
+import_data_indeterminate: Importando Datos...
 label_import: Importar
 format: Formato
 use_current_filters_settings: Use Filtros y Ajustes Corrientes
@@ -436,12 +444,12 @@ activity_log: Registro de actividad
 all_items: Todos los Elementos
 any: Cualquiera
 csv: CSV
-no_collections: Sin Colecciones
-create_collection: Crear colección
-no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el botón para empezar.
-no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
+no_collections: No Colecciones
+create_collection: Crear Colección
+no_collections_copy_admin: Aún no tienes colecciones. Presiona el botón de abajo para iniciar.
+no_collections_copy: Aún no tienes colecciones. Por favor, póngase en contacto con el administrador del sistema.
 relationship_not_setup: La relación no se ha configurado correctamente
-display_template_not_setup: La opción de plantilla de Presentación está mal configurada
+display_template_not_setup: La plantilla para mostrar está mal configurada
 collection_field_not_setup: La opción de recolección de campo está mal configurada
 select_a_collection: Seleccione una colección
 select_a_field: Seleccione un campo
@@ -459,7 +467,7 @@ ip_address: Dirección IP
 user_agent: Navegador
 webhooks: Webhooks
 decimals: Decimales
-value_decimals: Valor Decimal
+value_decimals: Valor de Decimales
 min_value: Valor Mínimo
 max_value: Valor Máximo
 automatic: Automático
@@ -525,31 +533,33 @@ presets: Ajustes predeterminados
 unexpected_error: Error inesperado
 unexpected_error_copy: Ocurrió un error inesperado. Por favor, intente nuevamente mas tarde.
 copy_details: Copiar Detalles
-no_app_access: Sin Acceso al App
-no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
-password_reset_sent: Le hemos enviado un enlace seguro para restablecer su contraseña
-password_reset_successful: Contraseña restablecida exitósamente
+no_app_access: Sin acceso a la aplicación
+no_app_access_copy: Este usuario no tiene permiso para usar la aplicación de administración.
+password_reset_sent: Te hemos enviado un enlace seguro para restablecer tu contraseña
+password_reset_successful: Restablecimiento de contraseña con éxito
 back: Regresar
 filter: Filtro
-editing_image: Editar Imagen
-square: Cuadrado
-free: Libre
-flip_horizontal: Voltear Horizontal
-flip_vertical: Voltear Vertical
+editing_image: Editando Imagen
+square: Cuadro
+free: Gratis
+flip_horizontal: Voltear Horizontalmente
+flip_vertical: Voltear Verticalmente
 aspect_ratio: Relación de Aspecto
 rotate: Rotar
 all_users: Todos los Usuarios
 delete_collection: Eliminar Colección
 update_collection_success: Colección Actualizada
 delete_collection_success: Colección Eliminada
-make_collection_visible: Hacer visible la colección
-make_collection_hidden: Hacer que la colección se oculte
+make_collection_visible: Hacer Colección Visible
+make_collection_hidden: Hacer Colección Oculta
+make_folder_visible: Hacer Carpeta Visible
+make_folder_hidden: Hacer Carpeta Oculta
 start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
-  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
+  ¿Seguro que quieres eliminar esta colección? Esto eliminará la colección y todos los elementos que contiene. Esta acción es permanente.
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -562,7 +572,7 @@ placeholder: Valor de Ejemplo
 icon_left: Icono Izquierdo
 icon_right: Icono Derecho
 count_other_revisions: '{count} otras revisiones'
-font: Fuente
+font: Tipografía
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
@@ -742,14 +752,14 @@ wysiwyg_options:
   h4: Título 4
   h5: Título 5
   h6: Título 6
-  fontselect: Seleccionar Fuente
+  fontselect: Seleccionar Tipografía
   fontsizeselect: Seleccionar Tamaño de Fuente
   indent: Indentar
   outdent: Anular Indentación
-  undo: Deshacer
+  undo: Revertir
   redo: Rehacer
   remove: Eliminar
-  removeformat: Quitar Formato
+  removeformat: Eliminar Formato
   selectall: Seleccionar Todos
   table: Tabla
   visualaid: Ver elementos invisibles
@@ -964,8 +974,8 @@ fields:
     public_foreground: Superficie Pública
     public_background: Fondo Público
     public_note: Notas Públicas
-    auth_password_policy: Política de Contraseña para Autentificación
-    auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
+    auth_password_policy: Políticas de autenticación
+    auth_login_attempts: Intentos de inicio de sesión
     files_and_thumbnails: Archivos y almacenamiento
     storage_default_folder: Carpeta por defecto
     storage_asset_presets: Ajustes de transformación
@@ -1007,7 +1017,9 @@ field_options:
   directus_settings:
     security_divider_title: Seguridad
     auth_password_policy:
-      weak_text: Débil - 8 caracteres mínimos
+      none_text: Ninguna - No Recomendado
+      weak_text: Débil - Mínimo 8 caracteres
+      strong_text: Fuerte – Mayúsculas / Minúsculas / Números / Caracteres Especiales
     additional_transforms: Transformaciones adicionales
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     mapbox_key: Token de acceso Mapbox
@@ -1075,6 +1087,7 @@ save_current_datetime: Guardar Fecha y Hora Actual
 block: Bloque
 inline: Alineado
 comment: Comentar
+share_access_not_found_desc: Póngase en contacto con un usuario autorizado de este proyecto para solicitar acceso.
 relational_triggers: Disparadores Relacionales
 referential_action_field_label_m2o: Al eliminar {collection}...
 referential_action_field_label_o2m: Al deseleccionar {collection}...
@@ -1085,7 +1098,7 @@ referential_action_set_default: Establecer {field} a su valor predeterminado
 choose_action: Elegir acción
 continue_label: Continuar
 continue_as: >-
-  Actualmente {name} ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
+  {name} esta actualmente autentificado. Sí reconoces esta cuenta, presiona continuar.
 editing_role: 'Rol {role}'
 creating_webhook: Creando Webhook
 default_label: Por defecto
@@ -1403,7 +1416,7 @@ displays:
     formatted-value: Valor Formateado
     description: Presentar una versión formateada del texto
     format: Formato
-    font: Fuente
+    font: Tipografía
     font_serif: Serif
     font_monospace: Monospace
     bold: Negrita
