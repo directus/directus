@@ -62,11 +62,11 @@ required: Requerido
 required_for_app_access: Requerido para acceso a la App
 requires_value: Valor requerido
 create_preset: Crear ajuste
-create_panel: Crear_Panel
+create_panel: Crear Panel
 create_role: Crear rol
 create_user: Crear Usuario
 delete_panel: Borrar_Panel
-create_webhook: Crear un gancho web
+create_webhook: Crear un Webhook
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
@@ -436,8 +436,8 @@ file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
 no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
-webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
-no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando uno a continuación.
+webhooks_count: 'No Webhooks | Un Webhook | {count} Webhooks'
+no_webhooks_copy: Aún no se han configurado webhooks. Comience creando uno a continuación.
 no_notifications: Sin notificaciones
 no_notifications_copy: '¡Estás al día!'
 activity_log: Registro de actividad
@@ -828,8 +828,8 @@ page_help_settings_presets_collection: >-
   **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
 page_help_settings_presets_item: >-
   **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
-page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
-page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_settings_webhooks_collection: '**Examinar webhooks** — Enumera todos los webhooks del proyecto.'
+page_help_settings_webhooks_item: '**Detalles de webhook** — Un formulario para crear y administrar webhooks de proyectos.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
@@ -869,7 +869,7 @@ directus_collection:
   directus_sessions: Información de sesión de usuario
   directus_settings: Opciones de configuración del proyecto
   directus_users: Usuarios del sistema para la plataforma
-  directus_webhooks: Configuración de peticiones HTTP basadas en eventos
+  directus_webhooks: Configuración para solicitudes HTTP basadas en eventos
 fields:
   directus_activity:
     item: Clave Primaria del registro
@@ -1009,7 +1009,7 @@ fields:
     method: Método
     status: Estatus
     data: Datos
-    header: Encabezado
+    header: Cabecera
     value: Valor
     actions: Acciones
     collections: Colecciones
@@ -1072,11 +1072,11 @@ field_options:
     status_options_inactive: Inactivo
     triggers_divider: Disparadores
     actions_create: Crear
-    actions_update: Actualización
+    actions_update: Actualizar
     actions_delete: Eliminar
     actions_login: Iniciar sesión
     headers:
-      header: Encabezado
+      header: Cabecera
       value: Valor
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 do_nothing: No hacer nada
