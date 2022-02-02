@@ -677,6 +677,7 @@ read: Leitura
 update: Alteração
 select_fields: Selecionar campos
 format_text: Formatar texto
+abbreviate_value: Abreviar Valor
 operator: Operador
 bold: Negrito
 toggle: Alternar
@@ -685,6 +686,9 @@ icon_off: Ícone desligado
 label: Rótulo
 insights: Estatísticas
 dashboard: Painel
+panel: Painel
+panel_options: Opções do Painel
+panel_header: Cabeçalho do Painel
 panel_name_placeholder: Nomeie este painel...
 panel_note_placeholder: Detalhes opcionais sobre este painel...
 panel_delete_confirm: Tem certeza que deseja deletar este painel? Esta ação não pode ser desfeita.
@@ -692,6 +696,9 @@ dashboard_delete_confirm: Tem certeza que deseja deletar este painel inteiro? Es
 edit_dashboard: Editar painel
 delete_dashboard: Excluir painel
 visible: Visível
+prefix_placeholder: Texto antes do valor...
+suffix_placeholder: Texto depois do valor...
+decimals_placeholder: Número de casas decimais...
 no_dashboards: Sem painéis
 no_dashboards_copy: Você ainda não tem nenhum painel.
 no_data: Sem dados
@@ -713,6 +720,9 @@ display_text_placeholder: Digite um texto de exibição...
 interface_group_text_and_numbers: Texto e números
 interface_group_selection: Seleção
 interface_group_relational: Relacional
+interface_group_presentation: Apresentação
+interface_group_groups: Grupos
+interface_group_other: Outros
 tooltip: Dica
 tooltip_placeholder: Insira uma dica de ferramenta...
 unlimited: Ilimitado
@@ -776,6 +786,7 @@ adding_user: Adicionando usuário
 unknown_user: Usuário desconhecido
 creating_in: 'Criando Item em {collection}'
 editing_in: 'Editando Item em {collection}'
+viewing_in: 'Visualizando Item em {collection}'
 creating_unit: 'Criando {unit}'
 editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
@@ -799,9 +810,12 @@ layout_setup: Configuração de Layout
 unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
+discard_all_changes: Descartar Todas as Alterações
+discard_changes_copy: Tem certeza que deseja descartar todas as alterações?
 show_x_axis: Mostrar eixo X
 show_y_axis: Mostrar eixo Y
 keep_editing: Continuar editando
+page_help_collections_overview: '**Visão Geral das Coleções** — Lista de todas as coleções às quais você tem acesso.'
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 page_help_collections_item: >-
@@ -830,6 +844,8 @@ page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário par
 page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
 page_help_users_item: >-
   **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
+page_help_insights_overview: '**Visões** — Lista de painéis que aos quais você tem acesso.'
+page_help_insights_dashboard: '**Dashboard** — Área de trabalho para gerenciar um ou mais painéis'
 activity_feed: Feed de atividade
 add_new: Adicionar Novo
 create_new: Criar novo
@@ -842,12 +858,19 @@ cancel: Cancelar
 no_upscale: Não ampliar imagens
 collection: Coleção
 collections: Coleções
+content: Conteúdo
 singleton: Singleton
 singleton_label: Tratar como objeto único
 system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
 directus_collection:
+  directus_activity: Histórico de responsabilidade para todos os eventos
+  directus_collections: Configurações e metadados adicionais da coleção
   directus_dashboards: Painéis dentro do módulo Insights
+  directus_fields: Configurações e metadados adicionais do campo
+  directus_files: Metadados de todos os arquivos gerenciados
   directus_folders: Fornece diretórios virtuais para arquivos
+  directus_migrations: Qual versão do banco de dados você está utilizando
+  directus_panels: Painéis individuais nos dashboards de Visões
   directus_users: Usuários do sistema para a plataforma
   directus_webhooks: Configuração para solicitações HTTP baseadas em eventos
 fields:
