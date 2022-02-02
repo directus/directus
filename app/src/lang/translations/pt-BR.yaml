@@ -496,7 +496,7 @@ file_moved: Arquivo movido
 collection_created: Coleção criada
 modified_on: Modificado em
 card_size: Tamanho do cartão
-sort_field: Campo de ordenação
+sort_field: Campo de Ordenação
 add_sort_field: Adicionar campo de ordenação
 sort: Ordenar
 status: Status
@@ -901,12 +901,12 @@ fields:
     hidden: Oculto
     singleton: Singleton
     translations: Traduções do nome da coleção
-    archive_app_filter: Filtro de arquivados
-    archive_value: Valor quando arquivado
-    unarchive_value: Valor quando desarquivado
-    sort_field: Campo de ordenação
+    archive_app_filter: Filtro do Arquivo do App
+    archive_value: Valor quando Arquivado
+    unarchive_value: Valor quando Desarquivado
+    sort_field: Campo de Ordenação
     accountability: Rastreamento de Atividades e Revisões
-    archive_field: Arquivar Campo
+    archive_field: Campo de Arquivação
     item_duplication_fields: Campos de item duplicado
   directus_files:
     $thumbnail: Miniatura
@@ -1527,13 +1527,17 @@ displays:
     formatted-value: Valor formatado
     description: Exibe uma versão formatada do texto
     format: Formato
+    format_label: Capitalização automática
     font: Fonte
+    font_sans_serif: Sem serifa
     font_serif: Serif
     font_monospace: Monoespaçada
     bold: Negrito
     bold_label: Usar estilo negrito
     italic: Itálico
+    italic_label: Usar estilo itálico
     prefix: Prefixo
+    prefix_label: Texto prefixo
     suffix: Sufixo
     color: Cor
     icon: Ícone
