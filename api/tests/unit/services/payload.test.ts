@@ -1,8 +1,5 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { ItemsService } from '../../../src/services';
-import { sqlFieldFormatter, sqlFieldList } from '../../__test-utils__/items-utils';
-import { systemSchema, userSchema } from '../../__test-utils__/schemas';
 import { PayloadService } from '../../../src/services';
 
 jest.mock('../../../src/database/index', () => {
