@@ -242,10 +242,9 @@ related_collection: Col·lecció relacionada
 related_collections: Col·leccions relacionades
 translations_collection: Col·lecció de traduccions
 languages_collection: Col·lecció de idiomes
-export_data: Exporta les dades
+label_import: Importa
 format: Format
 use_current_filters_settings: Utilitza els filtres i ajustaments actuals
-export_collection: 'Exporta {collection}'
 last_page: Última pàgina
 last_access: Últim accés
 fill_template: Emplena amb el valor de plantilla

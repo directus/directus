@@ -308,10 +308,9 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
-export_data: Exportera data
+label_import: Importera
 format: Format
 use_current_filters_settings: Använd befintliga filter & inställningar
-export_collection: 'Exportera {collection}'
 last_page: Sista sidan
 last_access: Senaste åtkomsten
 fill_template: Fyll med mallens värden

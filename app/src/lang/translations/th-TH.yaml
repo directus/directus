@@ -276,10 +276,9 @@ related_collection: คอลเลกชันที่เกี่ยวข้
 related_collections: คอลเลกชันที่เกี่ยวข้อง
 translations_collection: การแปลตาราง
 languages_collection: คอลเลกชันภาษา
-export_data: ส่งข้อมูลออก
+label_import: นำ​เข้า
 format: รูปแบบ
 use_current_filters_settings: ใช้ตัวกรองและการตั้งค่าปัจจุบัน
-export_collection: 'ส่งออก {collection}'
 last_page: หน้าสุดท้าย
 last_access: การเข้าถึงล่าสุด
 fill_template: กรอกด้วยค่าจากแม่แบบ

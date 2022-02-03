@@ -1,5 +1,4 @@
-import { Query } from '@directus/shared/types';
-import { Relation } from './relation';
+import { Query, Relation } from '@directus/shared/types';
 
 export type M2ONode = {
 	type: 'm2o';

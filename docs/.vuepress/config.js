@@ -254,6 +254,11 @@ module.exports = {
 						title: 'Activity Log',
 					},
 					{
+						type: 'page',
+						path: '/configuration/sso',
+						title: 'Single Sign-On (SSO)',
+					},
+					{
 						type: 'divider',
 					},
 					// {
@@ -471,16 +476,6 @@ module.exports = {
 						type: 'page',
 						path: '/extensions/themes',
 						title: 'Themes',
-					},
-				],
-			},
-			{
-				title: 'Guides',
-				children: [
-					{
-						type: 'page',
-						path: '/guides/sso',
-						title: 'Single Sign-On (SSO)',
 					},
 				],
 			},

@@ -9,8 +9,8 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview, MutationOptions } from '../types';
-import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
+import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
+import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 
 export type RawCollection = {
@@ -122,12 +122,14 @@ export class CollectionsService {
 					return field;
 				});
 
-				await trx.schema.createTable(payload.collection, (table) => {
-					for (const field of payload.fields!) {
-						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-							fieldsService.addColumnToTable(table, field);
+				await trx.transaction(async (schemaTrx) => {
+					await schemaTrx.schema.createTable(payload.collection, (table) => {
+						for (const field of payload.fields!) {
+							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+								fieldsService.addColumnToTable(table, field);
+							}
 						}
-					}
+					});
 				});
 
 				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
@@ -445,7 +447,9 @@ export class CollectionsService {
 						.where({ id: relation.meta!.id });
 				}
 
-				await trx.schema.dropTable(collectionKey);
+				await trx.transaction(async (schemaTrx) => {
+					await schemaTrx.schema.dropTable(collectionKey);
+				});
 			}
 		});
 

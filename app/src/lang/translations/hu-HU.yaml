@@ -273,10 +273,9 @@ related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
-export_data: Adatok exportálása
+label_import: Importálás
 format: Formátum
 use_current_filters_settings: Aktuális szűrők és beállítások használata
-export_collection: '{collection} exportálása'
 last_page: Utolsó oldal
 last_access: Utolsó hozzáférés
 fill_template: Kitöltés sablon értékkel

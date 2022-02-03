@@ -41,7 +41,7 @@
 					<v-input
 						v-model="maxLength"
 						type="number"
-						min="1"
+						:min="1"
 						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
 						:disabled="isExisting || type !== 'string'"
 					/>

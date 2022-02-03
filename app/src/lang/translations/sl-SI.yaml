@@ -243,10 +243,9 @@ related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
-export_data: Izvozi podatke
+label_import: Uvoz
 format: Oblika
 use_current_filters_settings: Uporabi trenutne filtre in nastavitve
-export_collection: 'Izvozi "{collection}"'
 last_page: Zadnja stran
 last_access: Zadnji dostop
 fill_template: Izpolni z vrednostjo obrazca
