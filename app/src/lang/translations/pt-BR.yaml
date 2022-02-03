@@ -28,92 +28,92 @@ draft: Rascunho
 archived: Arquivado
 modules: Módulos
 module_bar: Barra de Módulos
-tile_size: Tamanho do ladrilho
+tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
 switch_user: Alternar Usuário
-item_creation: Criação de ítem
-item_revision: Revisão do item
+item_creation: Criação do Item
+item_revision: Revisão do Item
 enter_a_name: Insira um nome...
-duplicate_field: Duplicar campo
-half_width: Meia largura
-full_width: Largura total
-group: Grupos
+duplicate_field: Duplicar Campo
+half_width: Meia Largura
+full_width: Largura Total
+group: Grupo
 and: E
 or: Ou
-fill_width: Preencher
+fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
-role_name: Nome do cargo
+role_name: Nome do Cargo
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
 edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
-db_only_click_to_configure: 'Apenas banco de dados: Clique p/ configurar'
+db_only_click_to_configure: 'Apenas Banco de Dados: Clique para Configurar'
 show_active_items: Exibir Itens Ativos
-show_archived_items: Mostrar itens arquivados
-show_all_items: Mostrar todos os itens
-edited: Valor editado
+show_archived_items: Exibir Itens Arquivados
+show_all_items: Exibir Todos os Itens
+edited: Valor Editado
 required: Obrigatório
-required_for_app_access: Obrigatório para o Acesso ao Aplicativo
+required_for_app_access: Obrigatório para Acesso ao App
 requires_value: Requer valor
-create_preset: Criar predefinição
-create_panel: Criar painel
-create_role: Criar Função
-create_user: Criar usuário
+create_preset: Criar Predefinição
+create_panel: Criar Painel
+create_role: Criar Cargo
+create_user: Criar Usuário
 delete_panel: Excluir Painel
-create_webhook: Criar Webgancho
+create_webhook: Criar Webhook
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 subject: Assunto
-inbox: Caixa de entrada
+inbox: Caixa de Entrada
 emails: Emails
-connection_excellent: Conexão excelente
-connection_good: Conexão boa
-connection_fair: Conexão razoável
-connection_poor: Conexão ruim
+connection_excellent: Conexão Excelente
+connection_good: Conexão Boa
+connection_fair: Conexão Razoável
+connection_poor: Conexão Ruim
 primary: Primário
 rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
-reset_bookmark: Redefinir marcadores
-rename_bookmark: Renomear marcador
-update_bookmark: Atualizar Marcador
-delete_bookmark: Deletar Marcador
+reset_bookmark: Redefinir Favoritos
+rename_bookmark: Renomear Favorito
+update_bookmark: Atualizar Favorito
+delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-
-  Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
+  Tem certeza que deseja deletar o favorito "{bookmark}"? Esta ação não pode ser desfeita.
 logoutReason:
-  SIGN_OUT: Desconectado
+  SIGN_OUT: Deslogado
   SESSION_EXPIRED: Sessão expirada
-public_label: Publico
+public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
-admin_description: Função administrativa inicial com acesso irrestrito ao aplicativo.
-not_allowed: Não permitido
+admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
+not_allowed: Não Permitido
 directus_version: Versão do Directus
 node_version: Versão Node
-node_uptime: Tempo de atividade do Node
+node_uptime: Tempo de Atividade do Node
 os_type: Tipo de SO
 os_version: Versão do SO
-os_uptime: Tempo de atividade do SO
+os_uptime: Tempo de Atividade do SO
 os_totalmem: Memória do SO
 archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
 archive_confirm_count: >-
-  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+  Nenhum Item Selecionado | Você tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
 reset_system_permissions_to: 'Redefinir Permissões do Sistema Para:'
-reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Você tem certeza?
-the_following_are_minimum_permissions: As permissões seguintes, são as mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disso, mas não abaixo.
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você possa ter aplicado às coleções do sistema. Você tem certeza?
+the_following_are_minimum_permissions: As permissões seguintes são as mínimas necessárias quando o "Acesso ao App" estiver habilitado. Você pode estender as permissões além disso, mas não abaixo.
 app_access_minimum: Acesso Mínimo ao App
 recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
-unarchive_confirm: Tem certeza de que deseja desarquivar este item?
-nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos para um nível acima.
+unarchive_confirm: Você tem certeza que deseja desarquivar este item?
+nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
 unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
@@ -1017,7 +1017,7 @@ fields:
     translation: Traduções do Nome do Campo
     display_template: Template
   directus_roles:
-    name: Nome do cargo
+    name: Nome do Cargo
     icon: Ícone do cargo
     description: Descrição
     app_access: Acesso ao app
