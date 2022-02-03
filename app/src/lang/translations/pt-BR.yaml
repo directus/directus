@@ -27,7 +27,7 @@ published: Publicado
 draft: Rascunho
 archived: Arquivado
 modules: Módulos
-module_bar: Barra de módulo
+module_bar: Barra de Módulos
 tile_size: Tamanho do ladrilho
 edit_field: Editar campo
 conditions: Condições
@@ -996,7 +996,7 @@ fields:
     storage_asset_transform: Transformações Permitidas
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
-    module_bar: Barra de módulo
+    module_bar: Barra de Módulos
     transformations_all: Permitir todas as transformações
     transformations_none: Desativar transformações
     transformations_presets: Limitar transformações às predefinições abaixo
