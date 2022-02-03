@@ -127,67 +127,67 @@ validationError:
   lt: O valor tem de ser menor que {valid}
   lte: O valor tem de ser menor ou igual a {valid}
   empty: O valor tem de ser vazio
-  nempty: Valor não pode estar vazio
-  null: Valor precisa ser nulo
-  nnull: Valor não pode ser nulo
-  required: Valor obrigatório
+  nempty: O valor não pode estar vazio
+  null: O valor precisa ser nulo
+  nnull: O valor não pode ser nulo
+  required: O valor é obrigatório
   unique: O valor deve ser único
   regex: O valor não tem o formato correto
 all_access: Acesso Total
-no_access: Sem acesso
+no_access: Sem Acesso
 use_custom: Usar Personalizado
-nullable: Aceita nulos
-allow_null_value: Permitir valores NULL
+nullable: Anulável
+allow_null_value: Permitir valor NULL
 allow_multiple: Permitir Múltiplos
-allow_multiple_to_be_open: Permissão para abrir vários
-enter_value_to_replace_nulls: Por favor digite um novo valor que substituirá todos os NULLs presentes neste campo.
+allow_multiple_to_be_open: Permitir a Abertura de Múltiplos
+enter_value_to_replace_nulls: Por favor, insira um novo valor que substituirá todos os NULLs presentes neste campo.
 field_standard: Padrão
-field_presentation: Apresentação e pseudônimos
-field_file: Arquivo único
-field_files: Múltiplos arquivos
+field_presentation: Apresentação & Pseudônimos
+field_file: Arquivo Único
+field_files: Múltiplos Arquivos
 field_m2o: Relacionamento M2O
 field_m2a: Relacionamento M2A
 field_o2m: Relacionamento O2M
 field_m2m: Relacionamento M2M
 field_translations: Traduções
 field_group: Grupo de Campos
-item_permissions: Permissões do Item
-field_permissions: Permissões dos campos
-field_validation: Validação dos campos
-field_presets: Predefinições de campo
-permissions_for_role: 'Itens que o cargo {role} pode {action}.'
-fields_for_role: 'Campos que o cargo {role} pode {action}.'
-validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
-presets_for_role: 'Valores de campo padrões para a função {role}.'
-presentation_and_aliases: Apresentação e pseudônimos
+item_permissions: Permissões dos Items
+field_permissions: Permissões dos Campos
+field_validation: Validação dos Campos
+field_presets: Predefinições dos Campos
+permissions_for_role: 'Itens que o Cargo {role} pode {action}.'
+fields_for_role: 'Campos que o Cargo {role} pode {action}.'
+validation_for_role: 'As regras de {action} do campo que o Cargo {role} deve obedecer.'
+presets_for_role: 'Valores padrões de campo para o Cargo {role}.'
+presentation_and_aliases: Apresentação & Pseudônimos
 revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
-no_relational_data: Tenha em mente que os dados relacionados não estão incluídos aqui.
+no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
-delete_field: Excluir campo
-fields_and_layout: Campos e Layout
-field_create_success: 'Campo criado: "{field}"'
-field_update_success: 'Campo atualizado: "{field}"'
+delete_field: Excluir Campo
+fields_and_layout: Campos & Layout
+field_create_success: 'Campo Criado: "{field}"'
+field_update_success: 'Campo Atualizado: "{field}"'
 duplicate_where_to: Para onde você gostaria de duplicar este campo?
 language: Idioma
-aggregate_function: Agregar função
-aggregate_precision: Agregar precisão
-group_aggregation: Grupo de agregação
+aggregate_function: Função de Agregação
+aggregate_precision: Precisão de Agregação
+group_aggregation: Agregação go Grupo
 group_precision: Precisão do Grupo
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmera
-show_zero: Mostrar zero
-create_in_advanced_field_creation_mode: Criar campo no modo avançado
-continue_in_advanced_field_creation_mode: Continuar a criação do campo no modo avançado
+show_zero: Mostrar Zero
+create_in_advanced_field_creation_mode: Criar Campo no Modo Avançado
+continue_in_advanced_field_creation_mode: Continuar a Criação do Campo no Modo Avançado
 sum: Soma
-sum_distinct: Soma distinta
+sum_distinct: Soma Distinta
 avg: Média
-avg_distinct: Média distinta
-count: Quantidade
-count_distinct: Contagem distinta
+avg_distinct: Média Distinta
+count: Contagem
+count_distinct: Contagem Distinta
 min: Mínimo
 max: Máximo
 exposure: Exposição
@@ -531,7 +531,7 @@ errors:
   CONTAINS_NULL_VALUES: O campo contém valores nulos
   UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro inesperado
-  NOT_NULL_VIOLATION: Valor não pode ser nulo
+  NOT_NULL_VIOLATION: O valor não pode ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
   UNKNOWN: Erro inesperado
 security: Segurança
