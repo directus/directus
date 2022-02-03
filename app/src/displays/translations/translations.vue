@@ -3,8 +3,8 @@
 	<div v-else class="display-translations">
 		<render-template :template="internalTemplate" :item="displayItem" :collection="junctionCollection.collection" />
 		<v-menu class="menu" show-arrow :disabled="value.length === 0">
-			<template #activator="{ toggle, deactivate }">
-				<v-icon small class="icon" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
+			<template #activator="{ toggle, deactivate, active }">
+				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
 			</template>
 
 			<v-list class="links">
@@ -142,9 +142,11 @@ export default defineComponent({
 	.icon {
 		color: var(--foreground-subdued);
 		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
 	}
 
-	&:hover .icon {
+	&:hover .icon,
+	.icon.active {
 		opacity: 1;
 	}
 }
