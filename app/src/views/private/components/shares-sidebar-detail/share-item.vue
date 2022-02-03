@@ -26,7 +26,7 @@
 							<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 							<v-list-item-content>{{ t('edit') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item v-if="deleteAllowed" clickable @click="$emit('delete')">
+						<v-list-item v-if="deleteAllowed" clickable class="danger" @click="$emit('delete')">
 							<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 							<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
 						</v-list-item>
@@ -119,6 +119,12 @@ export default defineComponent({
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 0;
+}
+
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
 }
 
 .share-item-info {

@@ -279,6 +279,7 @@ note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
 length: Length
+soft_length: Soft Limit
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
@@ -289,12 +290,19 @@ foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 raw_value: Raw value
+copy_raw_value: Copy Raw Value
+copy_raw_value_success: Copied
+copy_raw_value_fail: Copy Failed
+paste_raw_value: Paste Raw Value
+paste_raw_value_success: Pasted
+paste_raw_value_fail: Paste Failed
+view_raw_value: View Raw Value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
-clear_value: Clear value
+clear_value: Clear Value
 clear_changes: Clear Changes
-reset_to_default: Reset to default
-undo_changes: Undo changes
+reset_to_default: Reset to Default
+undo_changes: Undo Changes
 notifications: Notifications
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
@@ -325,10 +333,17 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
-export_data: Export Data
+import_data_input_placeholder: CSV or JSON...
+import_data_button: Start Import
+import_data_indeterminate: Importing Data...
+import_data_success: Data successfully imported from {filename}
+import_data_error: This file's data structure doesn't match the collection.
+label_import: Import
+label_export: Export
+import_export: Import / Export
 format: Format
 use_current_filters_settings: Use Current Filters & Settings
-export_collection: 'Export {collection}'
+export_data_button: Start Export
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -554,6 +569,8 @@ update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
 make_collection_hidden: Make Collection Hidden
+make_folder_visible: Make Folder Visible
+make_folder_hidden: Make Folder Hidden
 start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
@@ -960,6 +977,7 @@ fields:
     external_identifier: External Identifier
     last_page: Last Page
     last_access: Last Access
+    email_notifications: Email Notifications
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1170,6 +1188,8 @@ share_access_not_found: This shared page either does not exist or has already ex
 share_access_not_found_desc: Please contact an authorized user of this project to request access.
 share_access_not_found_title: Unknown Share Page
 share_copy_link: Copy Link
+share_copy_link_success: Link Copied
+share_copy_link_error: Unable to Copy Link
 share_send_link: Send Link
 relational_triggers: Relational Triggers
 referential_action_field_label_m2o: On Delete of {collection}...

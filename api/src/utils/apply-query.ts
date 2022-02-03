@@ -3,8 +3,15 @@ import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Relation, RelationMeta, SchemaOverview } from '../types';
-import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/types';
+import {
+	Aggregate,
+	Filter,
+	LogicalFilterAND,
+	Query,
+	Relation,
+	RelationMeta,
+	SchemaOverview,
+} from '@directus/shared/types';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
@@ -298,7 +305,7 @@ export function applyFilter(
 					);
 				}
 
-				if (relationType === 'm2o' || subQuery === true) {
+				if (relationType === 'm2o' || subQuery === true || (relationType === 'o2m' && parentAlias !== undefined)) {
 					let parent: string;
 
 					if (relationType === 'm2o') {

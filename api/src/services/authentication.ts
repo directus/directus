@@ -11,16 +11,8 @@ import { InvalidCredentialsException, InvalidOTPException, UserSuspendedExceptio
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
-import {
-	AbstractServiceOptions,
-	Action,
-	SchemaOverview,
-	Session,
-	User,
-	DirectusTokenPayload,
-	LoginResult,
-} from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, Session, User, DirectusTokenPayload, LoginResult } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { SettingsService } from './settings';
 import { clone, cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
@@ -273,7 +265,9 @@ export class AuthenticationService {
 			.from('directus_sessions AS s')
 			.leftJoin('directus_users AS u', 's.user', 'u.id')
 			.leftJoin('directus_shares AS d', 's.share', 'd.id')
-			.joinRaw('LEFT JOIN directus_roles AS r ON r.id IN (u.role, d.role)')
+			.leftJoin('directus_roles AS r', (join) => {
+				join.onIn('r.id', [this.knex.ref('u.role'), this.knex.ref('d.role')]);
+			})
 			.where('s.token', refreshToken)
 			.andWhere('s.expires', '>=', new Date())
 			.andWhere((subQuery) => {

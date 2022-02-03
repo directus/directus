@@ -37,6 +37,9 @@ export const useUserStore = defineStore({
 				const fields = [
 					'id',
 					'language',
+					'first_name',
+					'last_name',
+					'email',
 					'last_page',
 					'theme',
 					'avatar.id',

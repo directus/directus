@@ -214,9 +214,6 @@ dismiss: Opusti
 raw_value: Vnešena vrednost
 edit_raw_value: Uredi vrednost
 enter_raw_value: Vnesite vrednost ...
-clear_value: Počisti vrednost
-reset_to_default: Ponastavi na privzeto
-undo_changes: Razveljavi spremembe
 notifications: Obvestila
 show_all_activity: Pokaži vse dejavnosti
 page_not_found: Strani ni mogoče najti
@@ -246,10 +243,9 @@ related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
-export_data: Izvozi podatke
+label_import: Uvoz
 format: Oblika
 use_current_filters_settings: Uporabi trenutne filtre in nastavitve
-export_collection: 'Izvozi "{collection}"'
 last_page: Zadnja stran
 last_access: Zadnji dostop
 fill_template: Izpolni z vrednostjo obrazca

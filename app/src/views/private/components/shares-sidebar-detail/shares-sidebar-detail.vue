@@ -80,6 +80,7 @@ import { defineComponent, ref, computed } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { notify } from '@/utils/notify';
 import { Share } from '@directus/shared/types';
 
 import api from '@/api';
@@ -167,7 +168,18 @@ export default defineComponent({
 
 		async function copy(id: string) {
 			const url = window.location.origin + getRootPath() + 'admin/shared/' + id;
-			await navigator?.clipboard?.writeText(url);
+			try {
+				await navigator?.clipboard?.writeText(url);
+				notify({
+					type: 'success',
+					title: t('share_copy_link_success'),
+				});
+			} catch (err: any) {
+				notify({
+					type: 'error',
+					title: t('share_copy_link_error'),
+				});
+			}
 		}
 
 		function select(id: string) {
