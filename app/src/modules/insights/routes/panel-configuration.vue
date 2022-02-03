@@ -18,20 +18,13 @@
 
 			<v-fancy-select v-model="edits.type" class="select" :items="selectItems" />
 
-			<template v-if="edits.type && selectedPanel">
-				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
-					{{ t('no_options_available') }}
-				</v-notice>
-
-				<extension-options
-					v-else-if="edits.options"
-					:options="selectedPanel.options"
-					:values="edits.options ?? {}"
-					@field-values="setOptionsValues"
-				/>
-
-				<component :is="`panel-options-${selectedPanel.id}`" v-else v-model="edits.options" :collection="collection" />
-			</template>
+			<extension-options
+				v-if="edits.type"
+				v-model="edits.options"
+				:options="customOptionsFields"
+				type="panel"
+				:extension="edits.type"
+			/>
 
 			<v-divider :inline-title="false" large>
 				<template #icon><v-icon name="info" /></template>
@@ -89,7 +82,7 @@
 <script lang="ts">
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { computed, defineComponent, reactive, watch, PropType, ref } from 'vue';
-import { getPanels } from '@/panels';
+import { getPanels, getPanel } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
@@ -139,14 +132,11 @@ export default defineComponent({
 			});
 		});
 
-		let editedPanel = ref<any>(undefined);
-
-		const selectedPanel = computed(() => {
-			if (!editedPanel.value) return panels.value.find((panel) => panel.id === edits.type);
-			return editedPanel.value;
+		const extensionInfo = computed(() => {
+			return getPanel(edits.type);
 		});
 
-		watch(selectedPanel, (newPanel) => {
+		watch(extensionInfo, (newPanel) => {
 			if (newPanel) {
 				edits.width = newPanel.minWidth;
 				edits.height = newPanel.minHeight;
@@ -156,32 +146,23 @@ export default defineComponent({
 			}
 		});
 
-		const currentPanelType = ref(edits.type);
+		const customOptionsFields = computed(() => {
+			if (typeof extensionInfo.value?.options === 'function') {
+				return extensionInfo.value?.options(edits);
+			}
 
-		watch(edits, (newEdits) => {
-			if (currentPanelType.value != edits.type) {
-				currentPanelType.value = edits.type;
-				edits.options = {};
-			}
-			if (!selectedPanel.value || edits.type != selectedPanel.value.id) {
-				editedPanel.value = panels.value.find((panel) => panel.id === edits.type);
-			}
-			if (selectedPanel.value && selectedPanel.value.alterOptions) {
-				editedPanel.value = selectedPanel.value?.alterOptions(selectedPanel.value, newEdits);
-			} else if (selectedPanel.value) {
-				editedPanel.value = selectedPanel.value;
-			}
+			return null;
 		});
 
 		return {
 			selectItems,
-			selectedPanel,
 			close,
 			emitSave,
 			edits,
 			t,
 			isOpen,
 			setOptionsValues,
+			customOptionsFields,
 		};
 
 		function emitSave() {

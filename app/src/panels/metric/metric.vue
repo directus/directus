@@ -77,7 +77,7 @@ export default defineComponent({
 	setup(props) {
 		const { n } = useI18n();
 
-		const metric = ref();
+		const metric = ref<number | string>();
 		const loading = ref(false);
 
 		watchEffect(async () => {
@@ -103,6 +103,7 @@ export default defineComponent({
 						fields: [props.field],
 					},
 				});
+
 				if (props.field) {
 					if (props.function === 'first' || props.function === 'last') {
 						if (typeof res.data.data[0][props.field] === 'string') {

@@ -1,4 +1,4 @@
-import { Component } from 'vue';
+import { Component, ComponentOptions } from 'vue';
 import { DeepPartial } from './misc';
 import { Field } from './fields';
 
@@ -9,8 +9,14 @@ export interface PanelConfig {
 	description?: string;
 
 	component: Component;
-	options: DeepPartial<Field>[] | Component | null;
-	alterOptions?: ((panel: Partial<Panel>, edits: Partial<Panel>) => Partial<Panel> | undefined) | undefined;
+	options:
+		| DeepPartial<Field>[]
+		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
+		| ((
+				ctx: Partial<Panel>
+		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
+		| ComponentOptions
+		| null;
 	minWidth: number;
 	minHeight: number;
 }

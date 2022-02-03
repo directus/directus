@@ -9,23 +9,23 @@
 		class="extension-options"
 		:fields="optionsFields"
 		primary-key="+"
-		@update:model-value="$emit('field-values', optionsValues)"
 	/>
 
 	<component
 		:is="`${type}-options-${extensionInfo.id}`"
 		v-else
+		v-model="optionsValues"
 		:value="optionsValues"
 		:collection="collection"
 		:field="field"
-		@update:model-value="$emit('field-values', optionsValues)"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
+import { getPanel } from '@/panels';
 import { useI18n } from 'vue-i18n';
 import { Field } from '@directus/shared/types';
 
@@ -33,7 +33,7 @@ export default defineComponent({
 	props: {
 		type: {
 			type: String as PropType<'interface' | 'display' | 'panel'>,
-			default: 'interface',
+			required: true,
 		},
 		extension: {
 			type: String,
@@ -47,7 +47,7 @@ export default defineComponent({
 			type: Object,
 			default: null,
 		},
-		values: {
+		modelValue: {
 			type: Object,
 			default: () => ({}),
 		},
@@ -57,11 +57,11 @@ export default defineComponent({
 		},
 		field: {
 			type: Object as PropType<Field>,
-			default: () => ({}),
+			default: null,
 		},
 	},
-	emits: ['field-values'],
-	setup(props) {
+	emits: ['update:model-value'],
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const extensionInfo = computed(() => {
@@ -70,6 +70,8 @@ export default defineComponent({
 					return getInterface(props.extension);
 				case 'display':
 					return getDisplay(props.extension);
+				case 'panel':
+					return getPanel(props.extension);
 				default:
 					return null;
 			}
@@ -94,6 +96,8 @@ export default defineComponent({
 				optionsObjectOrArray = extensionInfo.value.options;
 			}
 
+			if (!optionsObjectOrArray) return [];
+
 			if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
 
 			if (props.showAdvanced) {
@@ -103,7 +107,14 @@ export default defineComponent({
 			return optionsObjectOrArray.standard;
 		});
 
-		const optionsValues = ref(props.values);
+		const optionsValues = computed({
+			get() {
+				return props.modelValue;
+			},
+			set(values: Record<string, any>) {
+				emit('update:model-value', values);
+			},
+		});
 
 		return {
 			usesCustomComponent,

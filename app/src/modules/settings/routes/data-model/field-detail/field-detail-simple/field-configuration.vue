@@ -44,10 +44,10 @@
 			</template>
 
 			<extension-options
+				v-model="options"
 				type="interface"
 				:extension="chosenInterface"
-				:options="optionsFields"
-				@field-values="setOptions"
+				:options="customOptionsFields"
 			/>
 
 			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
@@ -85,9 +85,9 @@ export default defineComponent({
 	},
 	emits: ['save', 'toggleAdvanced'],
 	setup(props) {
-		const fieldDetail = useFieldDetailStore();
+		const fieldDetailStore = useFieldDetailStore();
 
-		const { readyToSave, saving, localType } = storeToRefs(fieldDetail);
+		const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
 
 		const { t } = useI18n();
 
@@ -145,6 +145,20 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
+		const options = computed({
+			get() {
+				return fieldDetailStore.field.meta?.options ?? {};
+			},
+			set(newOptions: Record<string, any>) {
+				fieldDetailStore.$patch((state) => {
+					state.field.meta = {
+						...(state.field.meta ?? {}),
+						options: newOptions,
+					};
+				});
+			},
+		});
+
 		return {
 			key,
 			t,
@@ -158,18 +172,9 @@ export default defineComponent({
 			readyToSave,
 			saving,
 			localType,
-			setOptions,
-			optionsFields,
+			customOptionsFields,
+			options,
 		};
-
-		function setOptions(newOptions: Record<string, any>) {
-			fieldDetail.$patch((state) => {
-				state.field.meta = {
-					...state.field.meta,
-					options: newOptions,
-				};
-			});
-		}
 	},
 });
 </script>
