@@ -119,10 +119,15 @@ export default defineComponent({
 		const extensionInfo = computed(() => {
 			return getInterface(props.chosenInterface);
 		});
-		let optionsFields = {};
-		if (typeof extensionInfo.value?.options === 'function') {
-			optionsFields = extensionInfo.value?.options(fieldDetail);
-		}
+
+		const customOptionsFields = computed(() => {
+			if (typeof extensionInfo.value?.options === 'function') {
+				return extensionInfo.value?.options(fieldDetailStore);
+			}
+
+			return null;
+		});
+
 		watch(
 			chosenInterface,
 			(newVal, oldVal) => {

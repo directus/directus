@@ -11,7 +11,7 @@
 		<extension-options
 			v-if="interfaceID && selectedInterface"
 			type="interface"
-			:options="optionsFields"
+			:options="customOptionsFields"
 			:extension="interfaceID"
 			show-advanced
 			@field-values="setOptions"
@@ -101,11 +101,15 @@ export default defineComponent({
 			return getInterface(interfaceID.value);
 		});
 
-		let optionsFields = {};
-		if (typeof extensionInfo.value?.options === 'function') {
-			optionsFields = extensionInfo.value?.options(fieldDetailStore);
-		}
-		return { t, selectItems, selectedInterface, interfaceID, options, optionsFields, setOptions };
+		const customOptionsFields = computed(() => {
+			if (typeof extensionInfo.value?.options === 'function') {
+				return extensionInfo.value?.options(fieldDetailStore);
+			}
+
+			return null;
+		});
+
+		return { t, selectItems, selectedInterface, interfaceID, options, customOptionsFields, setOptions };
 
 		function setOptions(newOptions: Record<string, any>) {
 			fieldDetailStore.$patch((state) => {

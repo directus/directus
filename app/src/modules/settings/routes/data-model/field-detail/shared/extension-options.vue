@@ -32,12 +32,12 @@ import { Field } from '@directus/shared/types';
 export default defineComponent({
 	props: {
 		type: {
-			type: String as PropType<'interface' | 'display'>,
+			type: String as PropType<'interface' | 'display' | 'panel'>,
 			default: 'interface',
 		},
 		extension: {
 			type: String,
-			default: '',
+			default: null,
 		},
 		showAdvanced: {
 			type: Boolean,
@@ -45,15 +45,11 @@ export default defineComponent({
 		},
 		options: {
 			type: Object,
-			default: () => {
-				return {};
-			},
+			default: null,
 		},
 		values: {
 			type: Object,
-			default: () => {
-				return {};
-			},
+			default: () => ({}),
 		},
 		collection: {
 			type: String,
@@ -61,9 +57,7 @@ export default defineComponent({
 		},
 		field: {
 			type: Object as PropType<Field>,
-			default: () => {
-				return {};
-			},
+			default: () => ({}),
 		},
 	},
 	emits: ['field-values'],
