@@ -19,13 +19,6 @@ export default function getDatabase(): Knex {
 		return database;
 	}
 
-	if (env.DB_CLIENT === 'mysql') {
-		if (env.DB_CHARSET) {
-			logger.warn(`DB_CHARSET has been deprecated and now has no effect.`);
-			env.DB_CHARSET = null;
-		}
-	}
-
 	const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
 		'DB_CLIENT',
 		'DB_SEARCH_PATH',
@@ -110,7 +103,7 @@ export default function getDatabase(): Knex {
 		.on('query', (queryInfo) => {
 			times[queryInfo.__knexUid] = performance.now();
 		})
-		.on('query-response', (response, queryInfo) => {
+		.on('query-response', (_response, queryInfo) => {
 			const delta = performance.now() - times[queryInfo.__knexUid];
 			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 			delete times[queryInfo.__knexUid];
@@ -251,17 +244,37 @@ export async function validateDatabaseExtensions(): Promise<void> {
 async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
 	if (getDatabaseClient(database) === 'mysql') {
-		const directusResult = await database('information_schema.columns')
-			.select(`collation_name as collation`)
-			.where({ table_name: 'directus_users', column_name: 'id' })
-			.first();
-		const databaseResult = await database.select(database.raw(`@@collation_database as collation`)).first();
-		if (directusResult?.collation === databaseResult.collation) {
-			logger.warn(
-				`Directus tables collation (${directusResult.collation}) don't match your database default collation (${databaseResult.collation}).`
+		if (env.DB_CHARSET) {
+			logger.error(`Using DB_CHARSET can lead to many issues and is strongly discouraged.`);
+		}
+
+		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
+
+		const tables = await database('information_schema.tables')
+			.select({ name: 'TABLE_NAME', collation: 'TABLE_COLLATION' })
+			.where({ TABLE_SCHEMA: env.DB_DATABASE });
+
+		const columns = await database('information_schema.columns')
+			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME' })
+			.where({ TABLE_SCHEMA: env.DB_DATABASE })
+			.whereNot({ COLLATION_NAME: collation });
+
+		let inconsistencies = '';
+		for (const table of tables) {
+			const tableColumns = columns.filter((column) => column.table_name === table.name);
+			const tableHasInvalidCollation = table.collation !== collation;
+			if (tableHasInvalidCollation || tableColumns.length > 0) {
+				inconsistencies += `\t\t- Table "${table.name}":  ${table.collation}\n`;
+				for (const column of tableColumns) {
+					inconsistencies += `\t\t  - Column "${column.name}": Collation ${column.collation}\n`;
+				}
+			}
+		}
+		if (inconsistencies) {
+			logger.error(
+				`Some tables and columns do not match your database default collation (${collation}):\n${inconsistencies}`
 			);
 		}
-		await database.raw("SET CHARACTER SET 'UTF8MB4'");
 	}
 	return;
 }
