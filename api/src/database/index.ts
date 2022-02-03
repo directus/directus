@@ -115,11 +115,8 @@ export default function getDatabase(): Knex {
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
-	if (env.DB_CLIENT === 'mysql' && !env.DB_CHARSET) {
-		logger.warn(`DB_CHARSET hasn't been set. Please make sure DB_CHARSET matches your database's collation.`);
-	}
-
 	database = knex(knexConfig);
+	validateDatabaseCharset(database);
 
 	const times: Record<string, number> = {};
 
@@ -127,7 +124,7 @@ export default function getDatabase(): Knex {
 		.on('query', (queryInfo) => {
 			times[queryInfo.__knexUid] = performance.now();
 		})
-		.on('query-response', (response, queryInfo) => {
+		.on('query-response', (_response, queryInfo) => {
 			const delta = performance.now() - times[queryInfo.__knexUid];
 			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 			delete times[queryInfo.__knexUid];
@@ -267,4 +264,48 @@ export async function validateDatabaseExtensions(): Promise<void> {
 				logger.warn(`Geometry type not supported on ${client}`);
 		}
 	}
+}
+
+async function validateDatabaseCharset(database?: Knex): Promise<void> {
+	database = database ?? getDatabase();
+
+	if (getDatabaseClient(database) === 'mysql') {
+		if (env.DB_CHARSET) {
+			logger.warn(
+				`Using custom DB_CHARSET "${env.DB_CHARSET}". Using a charset different from the database's default can cause problems in relationships. Omitting DB_CHARSET is strongly recommended.`
+			);
+		}
+
+		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
+
+		const tables = await database('information_schema.tables')
+			.select({ name: 'TABLE_NAME', collation: 'TABLE_COLLATION' })
+			.where({ TABLE_SCHEMA: env.DB_DATABASE });
+
+		const columns = await database('information_schema.columns')
+			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME' })
+			.where({ TABLE_SCHEMA: env.DB_DATABASE })
+			.whereNot({ COLLATION_NAME: collation });
+
+		let inconsistencies = '';
+		for (const table of tables) {
+			const tableColumns = columns.filter((column) => column.table_name === table.name);
+			const tableHasInvalidCollation = table.collation !== collation;
+			if (tableHasInvalidCollation || tableColumns.length > 0) {
+				inconsistencies += `\t\t- Table "${table.name}": "${table.collation}"\n`;
+
+				for (const column of tableColumns) {
+					inconsistencies += `\t\t  - Column "${column.name}": "${column.collation}"\n`;
+				}
+			}
+		}
+
+		if (inconsistencies) {
+			logger.warn(
+				`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`
+			);
+		}
+	}
+
+	return;
 }
