@@ -268,9 +268,12 @@ export async function validateDatabaseExtensions(): Promise<void> {
 
 async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
+
 	if (getDatabaseClient(database) === 'mysql') {
 		if (env.DB_CHARSET) {
-			logger.error(`Using DB_CHARSET can lead to many issues and is strongly discouraged.`);
+			logger.warn(
+				`Using custom DB_CHARSET "${env.DB_CHARSET}". Using a charset different from the database's default can cause problems in relationships. Omitting DB_CHARSET is strongly recommended.`
+			);
 		}
 
 		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
@@ -289,17 +292,20 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 			const tableColumns = columns.filter((column) => column.table_name === table.name);
 			const tableHasInvalidCollation = table.collation !== collation;
 			if (tableHasInvalidCollation || tableColumns.length > 0) {
-				inconsistencies += `\t\t- Table "${table.name}":  ${table.collation}\n`;
+				inconsistencies += `\t\t- Table "${table.name}": "${table.collation}"\n`;
+
 				for (const column of tableColumns) {
-					inconsistencies += `\t\t  - Column "${column.name}": Collation ${column.collation}\n`;
+					inconsistencies += `\t\t  - Column "${column.name}": "${column.collation}"\n`;
 				}
 			}
 		}
+
 		if (inconsistencies) {
-			logger.error(
-				`Some tables and columns do not match your database default collation (${collation}):\n${inconsistencies}`
+			logger.warn(
+				`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`
 			);
 		}
 	}
+
 	return;
 }
