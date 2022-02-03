@@ -193,27 +193,27 @@ max: Máximo
 exposure: Exposição
 shutter: Obturador
 iso: ISO
-focal_length: Distância focal
-schema_setup_key: O nome da coluna do banco de dados deste campo e a chave API
+focal_length: Distância Focal
+schema_setup_key: O nome da coluna do banco de dados e a chave de API deste campo
 create_field: Criar Campo
-creating_new_field: 'Novo campo ({collection})'
+creating_new_field: 'Novo Campo ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Redefinir preferências da página
-hidden_field: Campo oculto
+reset_page_preferences: Redefinir Preferências da Página
+hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
 disabled_editing_value: Desativar edição do valor
 key: Chave
-alias: Alias
+alias: Pseudônimo
 bigInteger: Big Integer
-boolean: Boolean
+boolean: Booleano
 date: Data
 date_range: Período
-datetime: DateTime
-dateTime: DateTime
+datetime: Data e Hora
+dateTime: Data e Hora
 precision: Precisão
 decimal: Decimal
-float: Float
-integer: Integer
+float: Ponto Flutuante
+integer: Inteiro
 json: JSON
 xml: XML
 string: String
@@ -224,7 +224,7 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (Todos)
 geometry.Point: Ponto
-geometry.LineString: Linha de texto
+geometry.LineString: Linha de Texto
 geometry.Polygon: Polígono
 geometry.MultiPoint: MultiPonto
 geometry.MultiLineString: MultiLineString
@@ -1489,7 +1489,7 @@ displays:
     default_language: Idioma padrão
     language_field: Campo Indicador de Idioma
   boolean:
-    boolean: Boolean
+    boolean: Booleano
     description: Exibir estados ativados e desativados
     label_on: Rótulo ligado
     label_on_placeholder: Digite o rótulo para ligado...
