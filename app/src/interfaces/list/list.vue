@@ -23,7 +23,7 @@
 				</template>
 			</draggable>
 		</v-list>
-		<v-button v-if="showAddNew" class="add-new" @click="addNew">
+		<v-button class="add-new" :disabled="!enableAddNew" @click="addNew">
 			{{ addLabel }}
 		</v-button>
 
@@ -103,7 +103,11 @@ export default defineComponent({
 			type: String,
 			default: () => i18n.global.t('create_new'),
 		},
-		limit: {
+		minEntries: {
+			type: Number,
+			default: null,
+		},
+		maxEntries: {
 			type: Number,
 			default: null,
 		},
@@ -136,11 +140,11 @@ export default defineComponent({
 			props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : ''
 		);
 
-		const showAddNew = computed(() => {
+		const enableAddNew = computed(() => {
 			if (props.disabled) return false;
-			if (props.value === null) return true;
-			if (props.limit === null) return true;
-			if (Array.isArray(props.value) && props.value.length < props.limit) return true;
+			if (props.maxEntries === null) return true;
+			if (props.value === null) return props.maxEntries > 0;
+			if (Array.isArray(props.value) && props.value.length < props.maxEntries) return true;
 			return false;
 		});
 
@@ -178,7 +182,7 @@ export default defineComponent({
 			updateValues,
 			removeItem,
 			addNew,
-			showAddNew,
+			enableAddNew,
 			hideDragImage,
 			active,
 			drawerOpen,

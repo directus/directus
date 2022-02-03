@@ -5,9 +5,19 @@
 			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
 		</div>
 
-		<div class="grid-element half">
+		<div class="grid-element half-right">
 			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
 			<v-input v-model="addLabel" class="input" :placeholder="t('create_new')" />
+		</div>
+
+		<div class="grid-element half">
+			<p class="type-label">{{ t('interfaces.list.min_entries') }}</p>
+			<v-input v-model="minEntries" type="number" min="0" class="input" />
+		</div>
+
+		<div class="grid-element half-right">
+			<p class="type-label">{{ t('interfaces.list.max_entries') }}</p>
+			<v-input v-model="maxEntries" type="number" :min="minEntries || 0" class="input" />
 		</div>
 
 		<div class="grid-element full">
@@ -183,7 +193,32 @@ export default defineComponent({
 			},
 		});
 
-		return { t, repeaterValue, repeaterFields, template, addLabel };
+		const minEntries = computed({
+			get() {
+				return props.value?.minEntries;
+			},
+			set(newMinEntries: number) {
+				emit('input', {
+					...(props.value || {}),
+					maxEntries: props.value?.maxEntries < newMinEntries ? newMinEntries : props.value?.maxEntries,
+					minEntries: newMinEntries,
+				});
+			},
+		});
+
+		const maxEntries = computed({
+			get() {
+				return props.value?.maxEntries;
+			},
+			set(newMaxEntries: number) {
+				emit('input', {
+					...(props.value || {}),
+					maxEntries: newMaxEntries,
+				});
+			},
+		});
+
+		return { t, repeaterValue, repeaterFields, template, addLabel, minEntries, maxEntries };
 	},
 });
 </script>
