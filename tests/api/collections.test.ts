@@ -124,7 +124,7 @@ describe('/collections', () => {
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(204);
 
-				expect(response.body).toBeNull();
+				expect(response.body).toBe({});
 				expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(false);
 			});
 
@@ -140,11 +140,11 @@ describe('/collections', () => {
 				expect(await db('directus_collections').select().where({ collection: TEST_COLLECTION_NAME })).toHaveLength(1);
 
 				const response = await request(getUrl(vendor))
-					.post('/collections/' + TEST_COLLECTION_NAME)
+					.delete('/collections/' + TEST_COLLECTION_NAME)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(204);
 
-				expect(response.body).toBeNull();
+				expect(response.body).toBe({});
 				expect(await db('directus_collections').select().where({ collection: TEST_COLLECTION_NAME })).toHaveLength(0);
 			});
 		});
