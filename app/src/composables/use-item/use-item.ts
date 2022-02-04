@@ -14,6 +14,7 @@ import { FailedValidationException } from '@directus/shared/exceptions';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { applyConditions } from '@/utils/apply-conditions';
 import { translate } from '@/utils/translate-object-values';
+import { usePermissions } from '../use-permissions';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -37,7 +38,7 @@ type UsableItem = {
 };
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
-	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
@@ -60,6 +61,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
+
+	const { fields } = usePermissions(collection, item, isNew);
 
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
