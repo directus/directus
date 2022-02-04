@@ -124,7 +124,7 @@ describe('/collections', () => {
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(204);
 
-				expect(response.body).toBe({});
+				expect(response.body).toEqual({});
 				expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(false);
 			});
 
@@ -144,7 +144,7 @@ describe('/collections', () => {
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(204);
 
-				expect(response.body).toBe({});
+				expect(response.body).toEqual({});
 				expect(await db('directus_collections').select().where({ collection: TEST_COLLECTION_NAME })).toHaveLength(0);
 			});
 		});
