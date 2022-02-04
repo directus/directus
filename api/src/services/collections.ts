@@ -377,7 +377,7 @@ export class CollectionsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
-			if (collectionToBeDeleted!.schema !== null) {
+			if (collectionToBeDeleted!.schema) {
 				await trx.schema.dropTable(collectionKey);
 			}
 
