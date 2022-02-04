@@ -1,4 +1,4 @@
-#tooltip {
+.tooltip, #tooltip {
 	$arrow-alignment: 5px;
 
 	--tooltip-foreground-color: var(--foreground-inverted);
@@ -20,6 +20,10 @@
 	&.inverted {
 		--tooltip-foreground-color: var(--foreground-normal);
 		--tooltip-background-color: var(--background-subdued);
+	}
+
+	&.monospace {
+		font-family: var(--family-monospace);
 	}
 
 	&.visible {

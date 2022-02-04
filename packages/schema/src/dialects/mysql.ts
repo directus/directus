@@ -53,6 +53,7 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 				...column,
 				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
+				is_generated: column.extra?.endsWith('GENERATED') ?? false,
 				data_type: dataType,
 			};
 		}

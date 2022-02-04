@@ -5,7 +5,7 @@ import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { cloneDeep, get, merge } from 'lodash';
 import { Ref, ref, watch } from 'vue';
-import { RelationInfo } from './use-relation';
+import { RelationInfo } from '@/composables/use-m2m';
 import { getEndpoint } from '@/utils/get-endpoint';
 
 type UsablePreview = {

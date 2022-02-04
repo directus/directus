@@ -28,6 +28,7 @@
 					<v-list-item
 						:dense="sortedItems.length > 4"
 						block
+						clickable
 						:disabled="disabled || updateAllowed === false"
 						@click="editItem(element)"
 					>

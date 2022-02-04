@@ -75,4 +75,10 @@ data:
     one_collection: directus_users
   - many_collection: directus_settings
     many_field: storage_default_folder
-    one_collection: directus_files
+    one_collection: directus_folders
+  - many_collection: directus_dashboards
+    many_field: user_created
+    one_collection: directus_users
+  - many_collection: directus_panels
+    many_field: user_created
+    one_collection: directus_users

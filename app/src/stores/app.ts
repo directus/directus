@@ -9,6 +9,7 @@ export const useAppStore = defineStore({
 		hydrating: false,
 		error: null,
 		authenticated: false,
+		accessTokenExpiry: 0,
 		basemap: 'OpenStreetMap',
 	}),
 });

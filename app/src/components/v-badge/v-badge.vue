@@ -46,8 +46,8 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style lang="scss" scoped>
+:global(body) {
 	--v-badge-color: var(--white);
 	--v-badge-background-color: var(--danger);
 	--v-badge-border-color: var(--background-page);
@@ -55,15 +55,13 @@ body {
 	--v-badge-offset-y: 0px;
 	--v-badge-size: 16px;
 }
-</style>
 
-<style lang="scss" scoped>
 .v-badge {
 	position: relative;
 	display: inline-block;
 
 	&.bordered {
-		--v-badge-size: 20px;
+		--v-badge-size: 18px;
 	}
 
 	&.dot {
@@ -87,8 +85,8 @@ body {
 		height: var(--v-badge-size);
 		padding: 0 5px;
 		color: var(--v-badge-color);
-		font-weight: 600;
-		font-size: 11px;
+		font-weight: 800;
+		font-size: 9px;
 		background-color: var(--v-badge-background-color);
 		border-radius: calc(var(--v-badge-size) / 2);
 

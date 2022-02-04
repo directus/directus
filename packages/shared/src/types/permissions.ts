@@ -1,10 +1,15 @@
+import { Filter } from './filter';
+
+export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comment' | 'explain';
+
 export type Permission = {
-	id: number;
+	id?: number;
 	role: string | null;
 	collection: string;
-	action: 'create' | 'read' | 'update' | 'delete';
-	permissions: Record<string, any> | null;
-	validation: Record<string, any> | null;
+	action: PermissionsAction;
+	permissions: Filter | null;
+	validation: Filter | null;
 	presets: Record<string, any> | null;
 	fields: string[] | null;
+	system?: true;
 };

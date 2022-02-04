@@ -22,7 +22,7 @@ export const useSettingsStore = defineStore({
 		},
 
 		async updateSettings(updates: { [key: string]: any }) {
-			const settingsCopy = { ...this.settings };
+			const settingsCopy = { ...(this.settings as Settings) };
 			const newSettings = merge({}, this.settings, updates);
 
 			this.settings = newSettings;

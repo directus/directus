@@ -213,14 +213,20 @@ export class AzureBlobWebServicesStorage extends Storage {
 		return { raw: result };
 	}
 
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public async put(
+		location: string,
+		content: Buffer | NodeJS.ReadableStream | string,
+		type?: string
+	): Promise<Response> {
 		location = this._fullPath(location);
 
 		const blockBlobClient = this.$containerClient.getBlockBlobClient(location);
 
 		try {
 			if (isReadableStream(content)) {
-				const result = await blockBlobClient.uploadStream(content as Readable);
+				const result = await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {
+					blobHTTPHeaders: { blobContentType: type ?? 'application/octet-stream' },
+				});
 				return { raw: result };
 			}
 

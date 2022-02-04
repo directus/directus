@@ -4,13 +4,15 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="layoutFilters"
-		v-model:search-query="searchQuery"
+		:filter="layoutFilter"
+		:search="search"
 		:collection="values.collection"
 		readonly
 	>
 		<private-view :title="t('editing_preset')">
-			<template #headline>{{ t('settings_presets') }}</template>
+			<template #headline>
+				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
+			</template>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact :to="backLink">
 					<v-icon name="arrow_back" />
@@ -93,7 +95,7 @@
 
 				<div class="layout-sidebar">
 					<sidebar-detail icon="search" :title="t('search')">
-						<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+						<v-input v-model="search" :placeholder="t('preset_search_placeholder')"></v-input>
 					</sidebar-detail>
 
 					<component
@@ -113,6 +115,19 @@
 					</sidebar-detail>
 				</div>
 			</template>
+
+			<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+				<v-card>
+					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+					<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+					<v-card-actions>
+						<v-button secondary @click="discardAndLeave">
+							{{ t('discard_changes') }}
+						</v-button>
+						<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 		</private-view>
 	</component>
 </template>
@@ -126,9 +141,11 @@ import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@/composables/use-layout';
+import useShortcut from '@/composables/use-shortcut';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 type FormattedPreset = {
 	id: number;
@@ -141,7 +158,7 @@ type FormattedPreset = {
 	layout_query: Record<string, any> | null;
 
 	layout_options: Record<string, any> | null;
-	filters: readonly Filter[] | null;
+	filter: Filter | null;
 };
 
 export default defineComponent({
@@ -166,14 +183,13 @@ export default defineComponent({
 
 		const { loading, preset } = usePreset();
 		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, searchQuery } =
-			useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, search } = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
-		const layoutFilters = computed<any>({
+		const layoutFilter = computed<any>({
 			get() {
-				return values.value.filters || [];
+				return values.value.filter ?? null;
 			},
 			set(newFilters) {
 				updateFilters(newFilters);
@@ -183,6 +199,30 @@ export default defineComponent({
 		const layout = computed(() => values.value.layout);
 
 		const { layoutWrapper } = useLayout(layout);
+
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) save();
+		});
+
+		const isSavable = computed(() => {
+			if (hasEdits.value === true) return true;
+			return hasEdits.value;
+		});
+
+		unsavedChanges(isSavable);
+
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
 		return {
 			t,
@@ -198,13 +238,17 @@ export default defineComponent({
 			layoutWrapper,
 			layoutQuery,
 			layoutOptions,
-			layoutFilters,
+			layoutFilter,
 			hasEdits,
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
 			updateFilters,
-			searchQuery,
+			search,
+			isSavable,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		function useSave() {
@@ -223,7 +267,7 @@ export default defineComponent({
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
 				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
-				if (edits.value.filters) editsParsed.filters = edits.value.filters;
+				if (edits.value.filter) editsParsed.filter = edits.value.filter;
 				editsParsed.search = edits.value.search;
 
 				if (edits.value.scope) {
@@ -291,7 +335,7 @@ export default defineComponent({
 					scope: 'all',
 					layout_query: null,
 					layout_options: null,
-					filters: null,
+					filter: null,
 				};
 				if (isNew.value === true) return defaultValues;
 				if (preset.value === null) return defaultValues;
@@ -305,7 +349,6 @@ export default defineComponent({
 				}
 
 				const value: FormattedPreset = {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					id: preset.value.id!,
 					collection: preset.value.collection,
 					layout: preset.value.layout,
@@ -314,7 +357,7 @@ export default defineComponent({
 					scope: scope,
 					layout_query: preset.value.layout_query,
 					layout_options: preset.value.layout_options,
-					filters: preset.value.filters,
+					filter: preset.value.filter,
 				};
 
 				return value;
@@ -363,7 +406,7 @@ export default defineComponent({
 				},
 			});
 
-			const searchQuery = computed<string | null>({
+			const search = computed<string | null>({
 				get() {
 					return values.value.search;
 				},
@@ -375,12 +418,12 @@ export default defineComponent({
 				},
 			});
 
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, searchQuery };
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, search };
 
-			function updateFilters(newFilters: Filter) {
+			function updateFilters(newFilter: Filter) {
 				edits.value = {
 					...edits.value,
-					filters: newFilters,
+					filter: newFilter,
 				};
 			}
 		}
@@ -496,6 +539,13 @@ export default defineComponent({
 
 			return { fields };
 		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
+		}
 	},
 });
 </script>
@@ -533,9 +583,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--primary);
-	--sidebar-detail-color: var(--primary);
-	--sidebar-detail-color-active: var(--primary);
+	--sidebar-detail-icon-color: var(--warning);
+	--sidebar-detail-color: var(--warning);
+	--sidebar-detail-color-active: var(--warning);
 	--form-vertical-gap: 24px;
 
 	display: contents;
@@ -543,6 +593,7 @@ export default defineComponent({
 
 :deep(.layout-options) {
 	--form-vertical-gap: 24px;
+
 	@include form-grid;
 }
 

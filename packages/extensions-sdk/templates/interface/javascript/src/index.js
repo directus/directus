@@ -3,9 +3,9 @@ import InterfaceComponent from './interface.vue';
 export default {
 	id: 'custom',
 	name: 'Custom',
-	description: 'This is my custom interface!',
 	icon: 'box',
+	description: 'This is my custom interface!',
 	component: InterfaceComponent,
-	types: ['string'],
 	options: null,
+	types: ['string'],
 };

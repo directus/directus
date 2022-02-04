@@ -7,7 +7,8 @@ export default defineInterface({
 	description: '$t:interfaces.group-detail.description',
 	icon: 'menu_open',
 	component: InterfaceGroupDetail,
-	groups: ['group'],
+	localTypes: ['group'],
+	group: 'group',
 	types: ['alias'],
 	options: [
 		{

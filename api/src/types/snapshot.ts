@@ -1,15 +1,18 @@
 import { Collection } from './collection';
-import { Relation } from './relation';
-import { Field } from '@directus/shared/types';
+import { Relation, RelationMeta } from './relation';
+import { Field, FieldMeta } from '@directus/shared/types';
 import { Diff } from 'deep-diff';
 
 export type Snapshot = {
 	version: number;
 	directus: string;
 	collections: Collection[];
-	fields: Field[];
-	relations: Relation[];
+	fields: SnapshotField[];
+	relations: SnapshotRelation[];
 };
+
+export type SnapshotField = Field & { meta: Omit<FieldMeta, 'id'> };
+export type SnapshotRelation = Relation & { meta: Omit<RelationMeta, 'id'> };
 
 export type SnapshotDiff = {
 	collections: {
@@ -19,12 +22,12 @@ export type SnapshotDiff = {
 	fields: {
 		collection: string;
 		field: string;
-		diff: Diff<Field | undefined>[];
+		diff: Diff<SnapshotField | undefined>[];
 	}[];
 	relations: {
 		collection: string;
 		field: string;
 		related_collection: string | null;
-		diff: Diff<Relation | undefined>[];
+		diff: Diff<SnapshotRelation | undefined>[];
 	}[];
 };

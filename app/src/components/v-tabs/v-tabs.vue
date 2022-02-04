@@ -1,5 +1,5 @@
 <template>
-	<v-list v-if="vertical" class="v-tabs vertical alt-colors" large>
+	<v-list v-if="vertical" class="v-tabs vertical alt-colors" nav>
 		<slot />
 	</v-list>
 	<div v-else class="v-tabs horizontal">

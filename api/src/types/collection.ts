@@ -16,5 +16,5 @@ export type Collection = {
 	collection: string;
 	fields?: Field[];
 	meta: CollectionMeta | null;
-	schema: Table;
+	schema: Table | null;
 };

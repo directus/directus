@@ -8,6 +8,7 @@ export default defineInterface({
 	icon: 'check_box',
 	component: InterfaceBoolean,
 	types: ['boolean'],
+	group: 'selection',
 	recommendedDisplays: ['boolean'],
 	options: [
 		{

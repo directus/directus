@@ -36,10 +36,10 @@
 			:class="{ seconds: includeSeconds, 'use-24': use24 }"
 		>
 			<div class="hour">
-				<v-select v-model="hours" :items="hourItems" />
+				<v-select v-model="hours" :placeholder="t('hours')" :items="hourItems" />
 			</div>
 			<div class="minutes">
-				<v-select v-model="minutes" :items="minutesSecondItems" />
+				<v-select v-model="minutes" :placeholder="t('minutes')" :items="minutesSecondItems" />
 			</div>
 			<div v-if="includeSeconds" class="seconds">
 				<v-select v-model="seconds" :items="minutesSecondItems" />

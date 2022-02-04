@@ -10,7 +10,6 @@ import { AbstractServiceOptions, SchemaOverview } from '../../types';
 import { Accountability } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
-import prettier from 'prettier';
 import { Url } from '../../utils/url';
 
 const liquidEngine = new Liquid({
@@ -66,7 +65,10 @@ export class MailService {
 
 		if (typeof html === 'string') {
 			// Some email clients start acting funky when line length exceeds 75 characters. See #6074
-			html = prettier.format(html as string, { parser: 'html', printWidth: 70, tabWidth: 0 });
+			html = html
+				.split('\n')
+				.map((line) => line.trim())
+				.join('\n');
 		}
 
 		await this.mailer.sendMail({ ...emailOptions, from, html });

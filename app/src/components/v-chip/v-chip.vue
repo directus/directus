@@ -129,12 +129,14 @@ body {
 
 	&.x-small {
 		height: 20px;
+		padding: 0 4px;
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
-		height: 26px;
+		height: 24px;
+		padding: 0 4px;
 		font-size: 14px;
 		border-radius: 12px;
 	}

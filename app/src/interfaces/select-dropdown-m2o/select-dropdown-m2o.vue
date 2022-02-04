@@ -191,7 +191,6 @@ export default defineComponent({
 					// of the item and fetch it from the API to render the preview
 					if (
 						newValue !== null &&
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						newValue !== currentItem.value?.[relatedPrimaryKeyField.value!.field] &&
 						(typeof newValue === 'string' || typeof newValue === 'number')
 					) {

@@ -13,8 +13,20 @@
 						{{ t('delete_collection') }}
 					</v-list-item-content>
 				</v-list-item>
+
+				<v-list-item clickable @click="update({ meta: { hidden: !collection.meta?.hidden } })">
+					<template v-if="collection.meta?.hidden === false">
+						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
+						<v-list-item-content>{{ t('make_collection_hidden') }}</v-list-item-content>
+					</template>
+					<template v-else>
+						<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
+						<v-list-item-content>{{ t('make_collection_visible') }}</v-list-item-content>
+					</template>
+				</v-list-item>
 			</v-list>
 		</v-menu>
+
 		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
 				<v-card-title>{{ t('delete_collection_are_you_sure') }}</v-card-title>
@@ -34,7 +46,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import { Collection } from '@directus/shared/types';
+import { Collection } from '@/types';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
@@ -50,7 +62,11 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const { deleting, deleteActive, deleteCollection } = useDelete();
 
-		return { t, deleting, deleteActive, deleteCollection };
+		return { t, deleting, deleteActive, deleteCollection, update };
+
+		async function update(updates: Partial<Collection>) {
+			await collectionsStore.updateCollection(props.collection.collection, updates);
+		}
 
 		function useDelete() {
 			const deleting = ref(false);

@@ -28,12 +28,13 @@ import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
-import { emitAsyncSafe } from './emitter';
+import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
-import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
+import { getExtensionManager } from './extensions';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
+import getPermissions from './middleware/get-permissions';
 import cache from './middleware/cache';
 import { checkIP } from './middleware/check-ip';
 import cors from './middleware/cors';
@@ -47,8 +48,8 @@ import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
-import { session } from './middleware/session';
 import { flushCaches } from './cache';
+import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 
 export default async function createApp(): Promise<express.Application> {
@@ -74,21 +75,21 @@ export default async function createApp(): Promise<express.Application> {
 
 	await flushCaches();
 
-	await initializeExtensions();
+	await registerAuthProviders();
 
-	registerExtensionHooks();
+	const extensionManager = getExtensionManager();
+
+	await extensionManager.initialize();
 
 	const app = express();
-
-	const customRouter = express.Router();
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
-	await emitAsyncSafe('init.before', { app });
+	await emitter.emitInit('app.before', { app });
 
-	await emitAsyncSafe('middlewares.init.before', { app });
+	await emitter.emitInit('middlewares.before', { app });
 
 	app.use(expressLogger);
 
@@ -128,20 +129,17 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env.SERVE_APP) {
-		const adminPath = require.resolve('@directus/app/dist/index.html');
+		const adminPath = require.resolve('@directus/app');
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL
-		let html = fse.readFileSync(adminPath, 'utf-8');
-		html = html.replace(
-			/<meta charset="utf-8" \/>/,
-			`<meta charset="utf-8" />\n\t\t<base href="${adminUrl.toString({ rootRelative: true })}/">`
-		);
+		const html = await fse.readFile(adminPath, 'utf8');
+		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		app.get('/admin', (req, res) => res.send(html));
+		app.get('/admin', (req, res) => res.send(htmlWithBase));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
-			res.send(html);
+			res.send(htmlWithBase);
 		});
 	}
 
@@ -150,22 +148,21 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(rateLimiter);
 	}
 
-	// We only rely on cookie-sessions in the oAuth flow where it's required
-	app.use(session);
-
 	app.use(authenticate);
 
 	app.use(checkIP);
 
 	app.use(sanitizeQuery);
 
-	await emitAsyncSafe('middlewares.init.after', { app });
-
-	await emitAsyncSafe('routes.init.before', { app });
-
 	app.use(cache);
 
 	app.use(schema);
+
+	app.use(getPermissions);
+
+	await emitter.emitInit('middlewares.after', { app });
+
+	await emitter.emitInit('routes.before', { app });
 
 	app.use('/auth', authRouter);
 
@@ -192,24 +189,22 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 
-	app.use(customRouter);
-
-	// Register custom hooks / endpoints
-	await emitAsyncSafe('routes.custom.init.before', { app });
-	registerExtensionEndpoints(customRouter);
-	await emitAsyncSafe('routes.custom.init.after', { app });
+	// Register custom endpoints
+	await emitter.emitInit('routes.custom.before', { app });
+	app.use(extensionManager.getEndpointRouter());
+	await emitter.emitInit('routes.custom.after', { app });
 
 	app.use(notFoundHandler);
 	app.use(errorHandler);
 
-	await emitAsyncSafe('routes.init.after', { app });
+	await emitter.emitInit('routes.after', { app });
 
 	// Register all webhooks
 	await registerWebhooks();
 
 	track('serverStarted');
 
-	emitAsyncSafe('init');
+	await emitter.emitInit('app.after', { app });
 
 	return app;
 }

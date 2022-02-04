@@ -237,7 +237,7 @@ export default defineComponent({
 
 		// Offset for partially visible sidebar
 		@media (min-width: 960px) {
-			margin-right: 64px;
+			margin-right: 60px;
 		}
 
 		@media (min-width: 1260px) {

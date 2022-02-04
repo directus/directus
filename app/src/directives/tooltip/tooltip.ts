@@ -84,6 +84,10 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		tooltip.classList.remove('inverted');
 	}
 
+	if (binding.modifiers.monospace) {
+		tooltip.classList.add('monospace');
+	}
+
 	if (binding.modifiers.bottom) {
 		if (binding.modifiers.start) {
 			left += arrowAlign;

@@ -56,7 +56,6 @@ fields:
       iconRight: local_offer
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
@@ -150,3 +149,20 @@ fields:
     display: datetime
     display_options:
       relative: true
+
+  - field: provider
+    width: half
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:default_provider
+          value: default
+
+  - field: external_identifier
+    width: half
+    options:
+      iconRight: account_circle
+    interface: input
+
+  - field: auth_data
+    hidden: true

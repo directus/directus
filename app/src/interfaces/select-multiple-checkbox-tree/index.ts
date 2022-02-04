@@ -69,6 +69,7 @@ export default defineInterface({
 	component: InterfaceSelectMultipleCheckboxesTree,
 	description: '$t:interfaces.select-multiple-checkbox-tree.description',
 	types: ['json', 'csv'],
+	group: 'selection',
 	options: [
 		{
 			field: 'choices',

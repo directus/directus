@@ -13,13 +13,7 @@ product.
 ### GitHub Sponsors
 
 Monthly donations via [GitHub Sponsors](https://github.com/sponsors/directus) are the most reliable form of financial
-support. Donate to the organization, or directly to our core developers!
-
-- [Directus](https://github.com/sponsors/directus) — Organization
-  - [benhaynes](https://github.com/benhaynes) — Project Lead
-  - [rijkvanzanten](https://github.com/rijkvanzanten) — Technical Lead
-  - [WoLfulus](https://github.com/WoLfulus) — DevOps
-  - [Nitwel](https://github.com/Nitwel) — Developer
+support. Donate to the organization, or directly to [our core developers](https://github.com/orgs/directus/people)!
 
 ### Sponsored Work
 
@@ -45,10 +39,11 @@ Squashing bugs, optimizing the codebase, increasing test coverage, and adding ne
 Not technical? We have plenty of documentation that can always use some extra attention. Learn more in our
 [Contributors Guide](/contributing/introduction).
 
-### Translations
+### App Translations
 
-Every translation enables users in new languages to use our international platform. Our
-[Crowdin integration](https://locales.directus.io) makes polishing existing translations or creating new ones a breeze.
+Every [translation](/contributing/translations/) of the App enables users in new languages to use our international
+platform. Our [Crowdin integration](https://locales.directus.io) makes polishing existing translations or creating new
+ones a breeze.
 
 ### Bug Reporting
 
@@ -68,3 +63,8 @@ expensive, but you can help us avoid these costs with the following quick option
 - **Testimonials** — _One sentence._ Even that was a sentence, and it was only two words! If you're a fan of Directus,
   we'd love to hear why with a short endorsement. Shoot us an [email](mailto:info@directus.io),
   [Tweet](https://twitter.com/directus), or [Discord](https://directus.chat) message with your name, title, and company.
+- **Reviews** — The following popular rating platforms allow for you to post your rating and testimonial publicly, which
+  automatically gives it more exposure.
+  - [G2](https://www.g2.com/products/directus/reviews)
+  - [Capterra](https://www.capterra.com/p/156619/Directus/)
+  - [TrustRadius](https://www.trustradius.com/products/directus/reviews)

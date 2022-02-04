@@ -6,8 +6,9 @@ export default defineDisplay({
 	name: '$t:displays.file.file',
 	description: '$t:displays.file.description',
 	icon: 'insert_drive_file',
-	handler: DisplayFile,
+	component: DisplayFile,
 	types: ['uuid'],
+	localTypes: ['file'],
 	options: [],
 	fields: ['id', 'type', 'title'],
 });

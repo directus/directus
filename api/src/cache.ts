@@ -6,26 +6,26 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { validateEnv } from './utils/validate-env';
 
 let cache: Keyv | null = null;
-let schemaCache: Keyv | null = null;
+let systemCache: Keyv | null = null;
 
-export function getCache(): { cache: Keyv | null; schemaCache: Keyv | null } {
+export function getCache(): { cache: Keyv | null; systemCache: Keyv } {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
 		cache = getKeyvInstance(ms(env.CACHE_TTL as string));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
-	if (env.CACHE_SCHEMA !== false && schemaCache === null) {
-		schemaCache = getKeyvInstance(typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined, '_schema');
-		schemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+	if (systemCache === null) {
+		systemCache = getKeyvInstance(undefined, '_system');
+		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
-	return { cache, schemaCache };
+	return { cache, systemCache };
 }
 
 export async function flushCaches(): Promise<void> {
-	const { schemaCache, cache } = getCache();
-	await schemaCache?.clear();
+	const { systemCache, cache } = getCache();
+	await systemCache?.clear();
 	await cache?.clear();
 }
 

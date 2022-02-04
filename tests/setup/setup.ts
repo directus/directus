@@ -141,6 +141,9 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 													'KEY=directus-test',
 													'SECRET=directus-test',
 													'TELEMETRY=false',
+													'CACHE_SCHEMA=false',
+													'CACHE_ENABLED=false',
+													'RATE_LIMITER_ENABLED=false',
 												],
 												HostConfig: {
 													Links:
@@ -248,7 +251,39 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 					vendors.map((vendor) => {
 						return {
 							title: config.names[vendor]!,
-							task: async () => await awaitDirectusConnection(config.ports[vendor]!),
+							task: async () => {
+								try {
+									await awaitDirectusConnection(config.ports[vendor]!);
+								} catch {
+									const container = global.directusContainers.find(
+										({ vendor: containerVendor }) => containerVendor === vendor
+									);
+
+									const logBuffer = await container?.container?.logs({ follow: false, stderr: true, tail: 50 });
+									const logString = logBuffer ? '\n\n' + logBuffer.toString() + '\n\n' : `Directus couldn't start.`;
+
+									throw new Error(logString);
+								}
+							},
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
+		},
+		{
+			title: 'Migrate and seed databases',
+			task: async () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => {
+								const database = knex(config.knexConfig[vendor]!);
+								await database.migrate.latest();
+								await database.seed.run();
+								await database.destroy();
+							},
 						};
 					}),
 					{ concurrent: true }

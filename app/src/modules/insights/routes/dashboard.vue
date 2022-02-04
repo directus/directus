@@ -88,7 +88,7 @@
 		<router-view
 			name="detail"
 			:dashboard-key="primaryKey"
-			:panel="panels.find((panel) => panel.id === panelKey)"
+			:panel="panelKey ? panels.find((panel) => panel.id === panelKey) : null"
 			@save="stageConfiguration"
 			@cancel="$router.push(`/insights/${primaryKey}`)"
 		/>

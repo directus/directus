@@ -34,9 +34,6 @@ patch:
       application/json:
         schema:
           properties:
-            collection_listing:
-              description: Custom override for the admin app collection navigation.
-              type: string
             description:
               description: Description of the role.
               type: string

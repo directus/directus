@@ -10,7 +10,8 @@ hr.sidebar-divider
   display inline-block
   color $textColor
   border-left 0.25rem solid transparent
-  margin 0.35rem 1rem 0.35rem 1.25rem
-  width: 100%
+  border-top-width 1px
+  margin 0.35rem 1.25rem 0.35rem 1.25rem
+  width: calc(100% - 2.5rem)
   box-sizing: border-box
 </style>

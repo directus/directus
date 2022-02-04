@@ -9,14 +9,16 @@ export default defineComponent({
 	props: {
 		value: {
 			type: String,
-			required: true,
+			default: null,
 		},
 	},
 	emits: ['input'],
-	methods: {
-		handleChange(value: string) {
-			this.$emit('input', value);
-		},
+	setup(props, { emit }) {
+		return { handleChange };
+
+		function handleChange(value: string): void {
+			emit('input', value);
+		}
 	},
 });
 </script>

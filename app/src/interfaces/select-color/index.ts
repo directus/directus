@@ -9,6 +9,7 @@ export default defineInterface({
 	component: InterfaceColor,
 	types: ['string'],
 	recommendedDisplays: ['color'],
+	group: 'selection',
 	options: [
 		{
 			field: 'presets',

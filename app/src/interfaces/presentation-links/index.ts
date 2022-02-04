@@ -10,18 +10,16 @@ export default defineInterface({
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
-	groups: ['presentation'],
-	options: [
+	localTypes: ['presentation'],
+	group: 'presentation',
+	options: ({ collection }) => [
 		{
 			field: 'links',
-			type: 'json',
 			name: '$t:interfaces.presentation-links.links',
+			type: 'json',
 			meta: {
-				width: 'full',
 				interface: 'list',
 				options: {
-					placeholder: '$t:title',
-					template: '{{ label }}',
 					fields: [
 						{
 							field: 'label',
@@ -73,8 +71,9 @@ export default defineInterface({
 							name: '$t:url',
 							meta: {
 								width: 'full',
-								interface: 'input',
+								interface: 'system-display-template',
 								options: {
+									collectionName: collection,
 									font: 'monospace',
 									placeholder: 'https://example.com/articles/{{ id }}/{{ slug }}',
 								},

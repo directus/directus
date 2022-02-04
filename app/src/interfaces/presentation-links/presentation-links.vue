@@ -8,7 +8,8 @@
 			:secondary="link.type !== 'primary'"
 			:disabled="disabled"
 			:icon="!link.label"
-			:href="link.url"
+			:href="link.href"
+			:to="link.to"
 		>
 			<v-icon v-if="link.icon" left :name="link.icon" />
 			<span v-if="link.label">{{ link.label }}</span>
@@ -19,6 +20,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, inject, computed } from 'vue';
 import { render } from 'micromustache';
+import { omit } from 'lodash';
 
 type Link = {
 	icon: string;
@@ -42,10 +44,18 @@ export default defineComponent({
 		const values = inject('values', ref<Record<string, any>>({}));
 
 		const linksParsed = computed(() => {
-			return props.links.map((link) => ({
-				...link,
-				url: render(link.url ?? '', values.value),
-			}));
+			return props.links.map((link) => {
+				const parsedLink = omit<Record<string, any>>(link, ['url']);
+				const linkValue = render(link.url ?? '', values.value);
+
+				if (linkValue.startsWith('/')) {
+					parsedLink.to = linkValue;
+				} else {
+					parsedLink.href = linkValue;
+				}
+
+				return parsedLink;
+			});
 		});
 
 		return {

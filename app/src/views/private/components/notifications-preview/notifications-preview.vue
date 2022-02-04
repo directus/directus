@@ -3,7 +3,7 @@
 		<transition-expand tag="div">
 			<div v-if="modelValue" class="inline">
 				<div class="padding-box">
-					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
+					<router-link class="link" to="/notifications" :class="{ 'has-items': lastFour.length > 0 }">
 						{{ t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">
@@ -89,7 +89,7 @@ export default defineComponent({
 	bottom: 100%;
 	width: 100%;
 	background-color: var(--background-normal);
-	box-shadow: 0px -4px 12px rgba(38, 50, 56, 0.1);
+	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {
 		position: relative;

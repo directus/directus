@@ -132,7 +132,6 @@ body {
 			padding: 8px 0;
 			background-color: var(--background-page);
 			cursor: pointer;
-			-webkit-appearance: none;
 			appearance: none;
 
 			&::-webkit-slider-runnable-track {
@@ -163,7 +162,6 @@ body {
 				box-shadow: none;
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				transition: all var(--fast) var(--transition);
-				-webkit-appearance: none;
 				appearance: none;
 			}
 
@@ -179,7 +177,6 @@ body {
 				box-shadow: none;
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				transition: all var(--fast) var(--transition);
-				-webkit-appearance: none;
 				appearance: none;
 			}
 		}

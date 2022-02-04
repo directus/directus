@@ -26,6 +26,54 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		fields: ['*'],
 	},
 	{
+		collection: 'directus_dashboards',
+		action: 'create',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_dashboards',
+		action: 'read',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_dashboards',
+		action: 'update',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_dashboards',
+		action: 'delete',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
+		action: 'create',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
+		action: 'read',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
+		action: 'update',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_panels',
+		action: 'delete',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
 		collection: 'directus_folders',
 		action: 'create',
 		permissions: {},
@@ -162,12 +210,11 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_presets',
 		action: 'create',
-		validation: [
-			{
-				user: null,
+		validation: {
+			user: {
 				_eq: '$CURRENT_USER',
 			},
-		],
+		},
 	},
 	{
 		collection: 'directus_presets',

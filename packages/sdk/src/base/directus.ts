@@ -1,4 +1,4 @@
-import { IAuth } from '../auth';
+import { IAuth, AuthOptions } from '../auth';
 import { IDirectus } from '../directus';
 import {
 	ActivityHandler,
@@ -17,24 +17,28 @@ import {
 	UtilsHandler,
 } from '../handlers';
 import { IItems } from '../items';
-import { ITransport } from '../transport';
+import { ITransport, TransportOptions } from '../transport';
 import { ItemsHandler } from './items';
-import { AxiosTransport } from './transport';
+import { Transport } from './transport';
 import { Auth } from './auth';
 import { IStorage } from '../storage';
-import { LocalStorage, MemoryStorage } from './storage';
-import { TypeMap, TypeOf } from '../types';
+import { LocalStorage, MemoryStorage, StorageOptions } from './storage';
+import { TypeMap, TypeOf, PartialBy } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
 import { ISingleton } from '../singleton';
 import { SingletonHandler } from '../handlers/singleton';
 
+export type DirectusStorageOptions = StorageOptions & { mode?: 'LocalStorage' | 'MemoryStorage' };
+
 export type DirectusOptions = {
-	auth?: IAuth;
-	transport?: ITransport;
-	storage?: IStorage;
+	auth?: IAuth | PartialBy<AuthOptions, 'transport' | 'storage'>;
+	transport?: ITransport | TransportOptions;
+	storage?: IStorage | DirectusStorageOptions;
 };
 
 export class Directus<T extends TypeMap> implements IDirectus<T> {
+	private _url: string;
+	private _options?: DirectusOptions;
 	private _auth: IAuth;
 	private _transport: ITransport;
 	private _storage: IStorage;
@@ -63,15 +67,58 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
-		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
-		this._transport =
-			options?.transport ||
-			new AxiosTransport(url, this._storage, async () => {
-				await this._auth.refresh();
-			});
-		this._auth = options?.auth || new Auth(this._transport, this._storage);
+		this._url = url;
+		this._options = options;
 		this._items = {};
 		this._singletons = {};
+
+		if (this._options?.storage && this._options?.storage instanceof IStorage) this._storage = this._options.storage;
+		else {
+			const directusStorageOptions = this._options?.storage as DirectusStorageOptions | undefined;
+			const { mode, ...storageOptions } = directusStorageOptions ?? {};
+
+			if (mode === 'MemoryStorage' || typeof window === 'undefined') {
+				this._storage = new MemoryStorage(storageOptions);
+			} else {
+				this._storage = new LocalStorage(storageOptions);
+			}
+		}
+
+		if (this._options?.transport && this._options?.transport instanceof ITransport)
+			this._transport = this._options.transport;
+		else {
+			this._transport = new Transport({
+				url: this.url,
+				beforeRequest: (config) => {
+					const token = this.storage.auth_token;
+					const bearer = token
+						? token.startsWith(`Bearer `)
+							? String(this.storage.auth_token)
+							: `Bearer ${this.storage.auth_token}`
+						: '';
+
+					return {
+						...config,
+						headers: {
+							Authorization: bearer,
+							...config.headers,
+						},
+					};
+				},
+			});
+		}
+
+		if (this._options?.auth && this._options?.auth instanceof IAuth) this._auth = this._options.auth;
+		else
+			this._auth = new Auth({
+				transport: this._transport,
+				storage: this._storage,
+				...this._options?.auth,
+			} as AuthOptions);
+	}
+
+	get url() {
+		return this._url;
 	}
 
 	get auth(): IAuth {

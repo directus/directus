@@ -22,6 +22,7 @@
 						v-if="allowedCollections.includes(element[anyRelation.meta.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
+						clickable
 						@click="editExisting((value || [])[element.$index])"
 					>
 						<v-icon
@@ -140,7 +141,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
-import { Collection, Relation } from '@directus/shared/types';
+import { Relation } from '@directus/shared/types';
+import { Collection } from '@/types';
 import DrawerCollection from '@/views/private/components/drawer-collection/';
 import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';

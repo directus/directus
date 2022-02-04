@@ -5,6 +5,7 @@
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
 			@contextmenu.prevent.stop="activateContextMenu"
+			@focusout="deactivateContextMenu"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -20,6 +21,7 @@
 			scope="files-navigation"
 			disable-groupable-parent
 			@contextmenu.prevent.stop="activateContextMenu"
+			@focusout="deactivateContextMenu"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -167,6 +169,7 @@ export default defineComponent({
 			deleteSaving,
 			contextMenu,
 			activateContextMenu,
+			deactivateContextMenu,
 		};
 
 		function useRenameFolder() {
@@ -290,6 +293,10 @@ export default defineComponent({
 
 		function activateContextMenu(event: PointerEvent) {
 			contextMenu.value.activate(event);
+		}
+
+		function deactivateContextMenu() {
+			contextMenu.value.deactivate();
 		}
 	},
 });

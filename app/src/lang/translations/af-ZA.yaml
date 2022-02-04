@@ -1,4 +1,5 @@
 ---
+avatar: Profiel prentjie
 create_role: Skep Rol
 language: Taal
 create_field: Skep Veld
@@ -15,6 +16,9 @@ comments: Kommentaar
 create_collection: Skep Versameling
 users: Gebruikers
 activity: Aktiwiteit
+action: Aksie
+ip_address: IP Adres
+user_agent: Gebruiker Agent
 duration: Tydsduur
 status: Status
 bookmarks: Boekmerke
@@ -95,6 +99,8 @@ email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
+  filter:
+    all: Alle
   input-code:
     code: Kode
   system-collection:

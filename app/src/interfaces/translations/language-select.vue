@@ -19,6 +19,7 @@
 					<v-progress-linear
 						v-tooltip="`${Math.round((item.current / item.max) * 100)}%`"
 						:value="item.progress"
+						rounded
 						colorful
 					/>
 				</div>

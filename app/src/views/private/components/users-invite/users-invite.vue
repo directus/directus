@@ -11,7 +11,7 @@
 				<div class="grid">
 					<div class="field">
 						<div class="type-label">{{ t('emails') }}</div>
-						<v-textarea v-model="emails" :nullable="false" :placeholder="t('email_examples')" />
+						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
 					<div v-if="role === null" class="field">
 						<div class="type-label">{{ t('role') }}</div>

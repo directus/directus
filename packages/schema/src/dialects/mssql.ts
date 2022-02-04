@@ -16,7 +16,8 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 				c.DATA_TYPE as data_type,
 				c.CHARACTER_MAXIMUM_LENGTH as max_length,
 				pk.PK_SET as column_key,
-				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') as is_identity
+				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') as is_identity,
+				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsComputed') as is_generated
 			FROM
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
 			LEFT JOIN (

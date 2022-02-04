@@ -63,7 +63,11 @@ export type FilterOperators =
 	| '_null'
 	| '_nnull'
 	| '_empty'
-	| '_nempty';
+	| '_nempty'
+	| '_intersects'
+	| '_nintersects'
+	| '_intersects_bbox'
+	| '_nintersects_bbox';
 
 export type FilterOperator<T, K extends keyof T> = {
 	[O in FilterOperators]?: Filter<T> | T[K];

@@ -24,8 +24,8 @@ export default defineDisplay({
 		},
 	],
 	types: ['string'],
-	handler: (value: string, options) => {
-		if (options && options.showAsExtension) {
+	component: ({ value, showAsExtension }: { value: string; showAsExtension: boolean }) => {
+		if (showAsExtension) {
 			return mime.getExtension(value);
 		}
 

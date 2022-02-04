@@ -1,6 +1,6 @@
 import { Ref, ref } from 'vue';
 import { get, isEqual } from 'lodash';
-import { RelationInfo } from './use-relation';
+import { RelationInfo } from '@/composables/use-m2m';
 
 type UsableEdit = {
 	currentlyEditing: Ref<string | number | null>;

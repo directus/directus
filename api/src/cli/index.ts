@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
 import { startServer } from '../server';
-import { emitAsyncSafe } from '../emitter';
-import { initializeExtensions, registerExtensionHooks } from '../extensions';
+import emitter from '../emitter';
+import { getExtensionManager } from '../extensions';
 import bootstrap from './commands/bootstrap';
 import count from './commands/count';
 import dbInstall from './commands/database/install';
@@ -18,10 +18,11 @@ const pkg = require('../../package.json');
 export async function createCli(): Promise<Command> {
 	const program = new Command();
 
-	await initializeExtensions();
-	registerExtensionHooks();
+	const extensionManager = getExtensionManager();
 
-	await emitAsyncSafe('cli.init.before', { program });
+	await extensionManager.initialize({ schedule: false });
+
+	await emitter.emitInit('cli.before', { program });
 
 	program.name('directus').usage('[command] [options]');
 	program.version(pkg.version, '-v, --version');
@@ -94,7 +95,7 @@ export async function createCli(): Promise<Command> {
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
 
-	await emitAsyncSafe('cli.init.after', { program });
+	await emitter.emitInit('cli.after', { program });
 
 	return program;
 }

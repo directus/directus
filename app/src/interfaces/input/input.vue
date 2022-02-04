@@ -126,7 +126,7 @@ export default defineComponent({
 		});
 
 		const inputType = computed(() => {
-			if (props.masked) return 'new-password';
+			if (props.masked) return 'password';
 			if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type)) return 'number';
 			return 'text';
 		});

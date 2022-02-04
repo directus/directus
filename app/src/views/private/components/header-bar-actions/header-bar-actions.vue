@@ -57,6 +57,7 @@ export default defineComponent({
 	flex-shrink: 0;
 	margin-right: 8px;
 }
+
 @media (min-width: 960px) {
 	.actions .expand {
 		display: none;
