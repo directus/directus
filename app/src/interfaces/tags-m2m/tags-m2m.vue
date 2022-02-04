@@ -1,22 +1,23 @@
 <template>
-	<v-notice type="warning" v-if="!junction || !relation || !junction.junction_field">
+	<v-notice v-if="!relationInfo.junctionCollection || !relationInfo.relationCollection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
-	<div class="tags-m2m" v-else>
+	<div v-else class="tags-m2m">
 		<v-menu
 			v-model="menuActive"
 			:close-on-click="true"
 			:close-on-content-click="closeOnSelect"
-			attached
 			:disabled="disabled"
+			attached
 		>
 			<template #activator>
 				<v-input
 					v-model="localInput"
 					:placeholder="placeholder"
 					:disabled="disabled"
-					@keydown="onKeyDown"
-					@focus="activateMenu"
+					@keydown="onInputKeyDown"
+					@focus="() => (menuActive = true)"
+					@blur="() => (menuActive = false)"
 				>
 					<template #prepend>
 						<v-icon v-if="iconLeft" :name="iconLeft" />
@@ -27,24 +28,27 @@
 					</template>
 				</v-input>
 			</template>
-			<v-list>
-				<v-list-item v-if="allowCustom && localInput" @click="addItemFromCurrentInput">
+
+			<v-list v-if="showAddCustom || suggestedItems.length">
+				<v-list-item v-if="showAddCustom" @click="addItemFromInput">
 					<v-list-item-content class="add-custom">
 						{{ t('interfaces.tags-m2m.new-item-with', { argument: localInput }) }}
 					</v-list-item-content>
 				</v-list-item>
+
 				<template v-if="suggestedItems.length">
 					<v-list-item
 						v-for="(item, index) in suggestedItems"
-						:key="item[relation.one_primary]"
-						@click="() => addItemFromSuggestion(item)"
+						:key="item[relationInfo.relationPkField]"
 						:active="index === suggestedItemsSelected"
+						@click="() => addItemFromSuggestion(item)"
 					>
 						<v-list-item-content>
-							<render-template :template="displayTemplate" :item="item" :collection="relation.one_collection" />
+							<render-template :template="template" :item="item" :collection="relationInfo.relationCollection" />
 						</v-list-item-content>
 					</v-list-item>
 				</template>
+
 				<template v-else-if="!allowCustom">
 					<v-list-item class="no-items">
 						{{ t('no_items') }}
@@ -52,20 +56,22 @@
 				</template>
 			</v-list>
 		</v-menu>
-		<div class="tags" v-if="sortedItems.length > 0">
+
+		<div v-if="sortedItems.length > 0" class="tags">
 			<v-chip
 				v-for="(item, index) in sortedItems"
-				:disabled="disabled"
 				:key="index"
+				:disabled="disabled"
 				class="tag"
 				small
 				label
+				clickable
 				@click="() => deleteItem(item)"
 			>
 				<render-template
-					:template="displayTemplate"
-					:item="item[junction.junction_field]"
-					:collection="relation.one_collection"
+					:template="template"
+					:item="item[relationInfo.junctionField]"
+					:collection="relationInfo.relationCollection"
 				/>
 			</v-chip>
 		</div>
@@ -74,14 +80,17 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType, toRefs, watch, computed } from 'vue';
-import useActions from '../list-m2m/use-actions';
-import useRelation from '../list-m2m/use-relation';
-import usePreview from '../list-m2m/use-preview';
-import useEdit from '../list-m2m/use-edit';
-import useSelection from '../list-m2m/use-selection';
-import api from '@/api';
 import { debounce } from 'lodash';
 import { useI18n } from 'vue-i18n';
+import useRelation from '@/composables/use-m2m';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import api from '@/api';
+
+import useActions from '../list-m2m/use-actions';
+import usePreview from '../list-m2m/use-preview';
 
 export default defineComponent({
 	props: {
@@ -131,29 +140,43 @@ export default defineComponent({
 		},
 		iconLeft: {
 			type: String,
-			default: 'local_offer',
+			default: null,
 		},
 		iconRight: {
 			type: String,
+			default: 'local_offer',
+		},
+		filter: {
+			type: Object as PropType<Filter>,
 			default: null,
 		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
-		const { value, collection, field, referencingField } = toRefs(props);
+
+		const { value, collection, field } = toRefs(props);
+		const { relationInfo } = useRelation(collection, field);
+
 		const localInput = ref<string>('');
-		const suggestedItems = ref<object[]>([]);
+		const menuActive = ref<boolean>(false);
+
+		const suggestedItems = ref<Record<string, any>[]>([]);
 		const suggestedItemsSelected = ref<number | null>(null);
-		const menuActive = ref(false);
 
-		const { junction, relation, relationInfo } = useRelation(collection, field);
+		const fields = computed(() => {
+			if (!props.displayTemplate) return getFieldsFromTemplate(props.displayTemplate);
+			return adjustFieldsForDisplays(
+				getFieldsFromTemplate(props.displayTemplate),
+				relationInfo.value.relationCollection
+			);
+		});
 
-		const displayTemplateFields = props.displayTemplate
-			? (props.displayTemplate.match(/{{([^}]+)}}/g) || []).map((field) => field.replace(/[{}]/g, ''))
-			: [props.referencingField];
+		const relationFields = computed(() => {
+			return fields.value.map((field) => relationInfo.value.junctionField + '.' + field);
+		});
 
-		const fields = ref<string[]>(displayTemplateFields.map((field) => relationInfo.value.junctionField + '.' + field));
+		const template = props.displayTemplate || `{{${props.referencingField}}}`;
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
 			value,
@@ -163,7 +186,7 @@ export default defineComponent({
 
 		const { items } = usePreview(
 			value,
-			fields,
+			relationFields,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -171,42 +194,44 @@ export default defineComponent({
 			getPrimaryKeys
 		);
 
-		const { stageEdits } = useEdit(value, relationInfo, emitter);
-
-		const { stageSelection } = useSelection(value, items, relationInfo, emitter);
-
 		const sortedItems = computed(() => {
-			if (!props.alphabetize) return items.value;
+			if (!props.alphabetize || !relationInfo.value.junctionField) return items.value;
 
-			return items.value.sort((a, b) => {
-				return a[relationInfo.value.junctionField][referencingField.value].localeCompare(
-					b[relationInfo.value.junctionField][referencingField.value]
-				);
-			});
+			// eslint-disable-next-line vue/no-side-effects-in-computed-properties
+			const sorted = items.value.sort(
+				(a: Record<string, Record<string, any>>, b: Record<string, Record<string, any>>) => {
+					const aVal: string = a[relationInfo.value.junctionField][props.referencingField];
+					const bVal: string = b[relationInfo.value.junctionField][props.referencingField];
+
+					return aVal.localeCompare(bVal);
+				}
+			);
+
+			return sorted;
 		});
 
-		watch(suggestedItems, () => activateMenu());
+		const showAddCustom = computed(() => {
+			return (
+				props.allowCustom &&
+				localInput.value?.trim() &&
+				!itemValueAvailable(localInput.value) &&
+				!itemValueStaged(localInput.value)
+			);
+		});
 
-		watch(
-			localInput,
-			debounce((newValue, oldValue) => {
-				if (newValue === oldValue) return;
-
-				updateSuggestions(newValue);
-			}, 500)
-		);
+		watch(localInput, debounce(refreshSuggestions, 500));
 
 		return {
 			menuActive,
-			activateMenu,
-			junction,
-			relation,
+			showAddCustom,
+			relationInfo,
 			localInput,
-			onKeyDown,
+			template,
 			suggestedItems,
 			suggestedItemsSelected,
 			sortedItems,
-			addItemFromCurrentInput,
+			onInputKeyDown,
+			addItemFromInput,
 			addItemFromSuggestion,
 			deleteItem,
 			t,
@@ -216,92 +241,54 @@ export default defineComponent({
 			emit('input', newVal);
 		}
 
-		function activateMenu() {
-			menuActive.value = suggestedItems.value.length > 0 || !!localInput.value.trim();
-		}
-
-		async function onKeyDown(event: KeyboardEvent) {
-			if (event.key === 'Escape') {
-				event.preventDefault();
-				menuActive.value = false;
-			} else if (event.key === 'Enter') {
-				event.preventDefault();
-				if (suggestedItemsSelected.value !== null && suggestedItems.value[suggestedItemsSelected.value]) {
-					menuActive.value = false;
-					addItemFromSuggestion(suggestedItems.value[suggestedItemsSelected.value]);
-					localInput.value = '';
-				} else if (props.allowCustom) {
-					menuActive.value = false;
-					addItemFromCurrentInput();
-					localInput.value = '';
-				}
-			} else if (event.key === 'ArrowUp') {
-				event.preventDefault();
-				menuActive.value = true;
-
-				if (suggestedItems.value.length < 1) return;
-
-				if (
-					suggestedItemsSelected.value === null ||
-					suggestedItemsSelected.value < 1 ||
-					!suggestedItems.value[suggestedItemsSelected.value]
-				) {
-					suggestedItemsSelected.value = suggestedItems.value.length - 1;
-				} else {
-					suggestedItemsSelected.value--;
-				}
-			} else if (event.key === 'ArrowDown' || event.key === 'Tab') {
-				event.preventDefault();
-				menuActive.value = true;
-
-				if (suggestedItems.value.length < 1) return;
-
-				if (
-					suggestedItemsSelected.value === null ||
-					suggestedItemsSelected.value >= suggestedItems.value.length - 1 ||
-					!suggestedItems.value[suggestedItemsSelected.value]
-				) {
-					suggestedItemsSelected.value = 0;
-				} else {
-					suggestedItemsSelected.value++;
-				}
-			}
-		}
-
-		function itemValueExists(value: string) {
-			return items.value.find((item) => item[relationInfo.value.junctionField][props.referencingField] === value);
-		}
-
 		function addItemFromSuggestion(item: any) {
-			stageSelection([item[relationInfo.value.relationPkField]]);
-		}
-
-		function addItemFromCurrentInput() {
-			const value = localInput.value.trim();
-			if (!value || itemValueExists(value)) {
-				return;
+			if (props.closeOnSelect) {
+				menuActive.value = false;
 			}
 
-			findByKeyword(value).then((item) => {
-				if (item) {
-					stageSelection([item[relationInfo.value.relationPkField]]);
-				} else if (props.allowCustom) {
-					stageEdits({
-						[relationInfo.value.junctionField as string]: {
-							[props.referencingField]: value,
-						},
-					});
-				}
-			});
+			const { junctionField } = relationInfo.value;
+			emitter([...(props.value || []), { [junctionField]: item }]);
 		}
 
-		async function updateSuggestions(keyword: string) {
+		async function addItemFromInput() {
+			const value = localInput.value?.trim();
+			if (!value || itemValueStaged(value)) return;
+
+			try {
+				const item = await findByKeyword(value);
+				if (item) {
+					addItemFromSuggestion(item);
+				} else if (props.allowCustom) {
+					addItemFromSuggestion({ [props.referencingField]: value });
+				}
+			} catch (err: any) {
+				// eslint-disable-next-line no-console
+				console.warn(err);
+			}
+		}
+
+		function itemValueStaged(value: string): boolean {
+			if (!value) return false;
+
+			return !!items.value.find((item) => item[relationInfo.value.junctionField][props.referencingField] === value);
+		}
+
+		function itemValueAvailable(value: string): boolean {
+			if (!value) return false;
+
+			return !!suggestedItems.value.find((item) => item[props.referencingField] === value);
+		}
+
+		async function refreshSuggestions(keyword: string) {
 			suggestedItemsSelected.value = null;
 
-			if (keyword.length < 1) {
+			if (!keyword || keyword.length < 1) {
 				suggestedItems.value = [];
 				return;
 			}
+
+			const filter = parseFilter(props.filter) || {};
+
 			const currentIds = items.value
 				.map((i) => i[relationInfo.value.junctionField][relationInfo.value.relationPkField])
 				.filter((i) => !!i);
@@ -309,7 +296,7 @@ export default defineComponent({
 			const query = {
 				params: {
 					limit: 10,
-					fields: [relationInfo.value.relationPkField, ...displayTemplateFields],
+					fields: [relationInfo.value.relationPkField, ...fields.value],
 					filter: {
 						[props.referencingField]: {
 							_contains: keyword,
@@ -317,24 +304,26 @@ export default defineComponent({
 						[relationInfo.value.relationPkField]: {
 							_nin: currentIds.join(','),
 						},
+						...filter,
 					},
-					sort: props.referencingField,
+					sort: props.alphabetize ? props.referencingField : '-' + relationInfo.value.relationPkField,
 				},
 			};
 
 			const response = await api.get(`items/${relationInfo.value.relationCollection}`, query);
-			if (response?.data.data && Array.isArray(response.data.data)) {
+			if (response?.data?.data && Array.isArray(response.data.data)) {
 				suggestedItems.value = response.data.data;
+				menuActive.value = true;
 			} else {
 				suggestedItems.value = [];
 			}
 		}
 
-		async function findByKeyword(keyword: string) {
+		async function findByKeyword(keyword: string): Promise<Record<string, any> | null> {
 			const response = await api.get(`items/${relationInfo.value.relationCollection}`, {
 				params: {
-					single: true,
-					fields: [relationInfo.value.relationPkField, ...displayTemplateFields],
+					limit: 1,
+					fields: [relationInfo.value.relationPkField, ...fields.value],
 					filter: {
 						[props.referencingField]: {
 							_eq: keyword,
@@ -342,7 +331,62 @@ export default defineComponent({
 					},
 				},
 			});
-			return response?.data.data as Record<string, any>;
+
+			return response?.data?.data?.pop() || null;
+		}
+
+		async function onInputKeyDown(event: KeyboardEvent) {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				menuActive.value = false;
+				return;
+			}
+
+			if (event.key === 'Enter') {
+				event.preventDefault();
+
+				if (suggestedItemsSelected.value !== null && suggestedItems.value[suggestedItemsSelected.value]) {
+					addItemFromSuggestion(suggestedItems.value[suggestedItemsSelected.value]);
+					localInput.value = '';
+				} else if (props.allowCustom) {
+					addItemFromInput();
+					localInput.value = '';
+				}
+
+				return;
+			}
+
+			if (event.key === 'ArrowUp') {
+				event.preventDefault();
+
+				if (suggestedItems.value.length < 1) return;
+
+				// Select previous from the list, if on top, then go last.
+				suggestedItemsSelected.value =
+					suggestedItemsSelected.value === null ||
+					suggestedItemsSelected.value < 1 ||
+					!suggestedItems.value[suggestedItemsSelected.value]
+						? suggestedItems.value.length - 1
+						: suggestedItemsSelected.value - 1;
+
+				return;
+			}
+
+			if (event.key === 'ArrowDown' || event.key === 'Tab') {
+				event.preventDefault();
+
+				if (suggestedItems.value.length < 1) return;
+
+				// Select next from the list, if bottom, then go first.
+				suggestedItemsSelected.value =
+					suggestedItemsSelected.value === null ||
+					suggestedItemsSelected.value >= suggestedItems.value.length - 1 ||
+					!suggestedItems.value[suggestedItemsSelected.value]
+						? 0
+						: suggestedItemsSelected.value + 1;
+
+				return;
+			}
 		}
 	},
 });
@@ -362,7 +406,7 @@ export default defineComponent({
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0 0;
+	padding: 4px 0px 0px;
 
 	.tag {
 		margin-top: 8px;
@@ -370,12 +414,17 @@ export default defineComponent({
 	}
 
 	.v-chip {
+		--v-chip-background-color: var(--primary);
+		--v-chip-color: var(--foreground-inverted);
 		--v-chip-background-color-hover: var(--danger);
 		--v-chip-close-color: var(--v-chip-background-color);
 		--v-chip-close-color-hover: var(--white);
 
+		transition: all var(--fast) var(--transition);
+
 		&:hover {
 			--v-chip-close-color: var(--white);
+
 			:deep(.chip-content .close-outline .close:hover) {
 				--v-icon-color: var(--danger);
 			}

@@ -1398,6 +1398,12 @@ interfaces:
     alphabetize: Alphabetize
     alphabetize_label: Force Alphabetical Order
     add_tags: Add tags...
+  tags-m2m:
+    tags-m2m: Tags (M2M)
+    description: Select multiple related junction items like tags with autocomplete
+    reference-field: Referencing Field
+    close-on-select: Close on select
+    new-item-with: Add new item "{argument}"...
   input:
     input: Input
     description: Manually enter a value
