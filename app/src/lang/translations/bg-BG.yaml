@@ -533,6 +533,9 @@ errors:
   INTERNAL_SERVER_ERROR: Неочаквана грешка
   NOT_NULL_VIOLATION: Стойността не трябва да е null
   ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
+  VALUE_TOO_LONG: Стойността е твърде дълга
+  VALUE_OUT_OF_RANGE: Стойността е извън границите
+  INVALID_FOREIGN_KEY: Невалиден външен ключ
   UNKNOWN: Неочаквана грешка
 security: Сигурност
 value_hashed: Хеширана стойност
@@ -563,6 +566,8 @@ update_collection_success: Обновена колекция
 delete_collection_success: Изтрита колекция
 make_collection_visible: Показване на колекцията
 make_collection_hidden: Скриване на колекцията
+make_folder_visible: Папката е видима
+make_folder_hidden: Папката е скрита
 start_end_of_count_items: '{start}-{end} от {count} записа'
 start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
 one_item: '1 запис'
@@ -1249,6 +1254,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
