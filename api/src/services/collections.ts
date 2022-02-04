@@ -68,22 +68,6 @@ export class CollectionsService {
 		// transactions.
 		await this.knex.transaction(async (trx) => {
 			if (payload.schema) {
-				const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
-
-				await trx.schema.createTable(payload.collection, (table) => {
-					for (const field of payload.fields!) {
-						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-							fieldsService.addColumnToTable(table, field);
-						}
-					}
-				});
-
-				const fieldItemsService = new ItemsService('directus_fields', {
-					knex: trx,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-
 				// Directus heavily relies on the primary key of a collection, so we have to make sure that
 				// every collection that is created has a primary key. If no primary key field is created
 				// while making the collection, we default to an auto incremented id named `id`
@@ -115,6 +99,22 @@ export class CollectionsService {
 					}
 
 					return field;
+				});
+
+				const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+
+				await trx.schema.createTable(payload.collection, (table) => {
+					for (const field of payload.fields!) {
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							fieldsService.addColumnToTable(table, field);
+						}
+					}
+				});
+
+				const fieldItemsService = new ItemsService('directus_fields', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
 				});
 
 				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];

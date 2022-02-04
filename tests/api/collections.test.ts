@@ -84,9 +84,8 @@ describe('/collections', () => {
 					.expect(200);
 
 				expect(response.body.data.collection).toBe(TEST_DB_NAME);
-				expect(response.body.data.schema).toBeNull();
 				expect(response.body.data.meta.collection).toBe(TEST_DB_NAME);
-				expect(response.body.data.schema.table_name).toBe(TEST_DB_NAME);
+				expect(response.body.data.schema.name).toBe(TEST_DB_NAME);
 				expect(await db.schema.hasTable(TEST_DB_NAME)).toBe(true);
 			});
 
@@ -95,7 +94,7 @@ describe('/collections', () => {
 
 				const response = await request(getUrl(vendor))
 					.post('/collections')
-					.send({ collection: TEST_DB_NAME, meta: {} })
+					.send({ collection: TEST_DB_NAME, meta: {}, schema: null })
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(200);
 
