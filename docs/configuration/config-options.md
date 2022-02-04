@@ -377,8 +377,8 @@ RATE_LIMITER_REDIS="redis://@127.0.0.1"
 ## Cache
 
 Directus has a built-in data-caching option. Enabling this will cache the output of requests (based on the current user
-and exact query parameters used) into configured cache storage location. This drastically improves API performance,
-as subsequent requests are served straight from this cache. Enabling cache will also make Directus return accurate
+and exact query parameters used) into configured cache storage location. This drastically improves API performance, as
+subsequent requests are served straight from this cache. Enabling cache will also make Directus return accurate
 cache-control headers. Depending on your setup, this will further improve performance by caching the request in
 middleman servers (like CDNs) and even the browser.
 
