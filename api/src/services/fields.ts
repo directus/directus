@@ -262,10 +262,8 @@ export class FieldsService {
 				if (table) {
 					this.addColumnToTable(table, hookAdjustedField as Field);
 				} else {
-					await trx.transaction(async (schemaTrx) => {
-						await schemaTrx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, hookAdjustedField as Field);
-						});
+					await trx.schema.alterTable(collection, (table) => {
+						this.addColumnToTable(table, hookAdjustedField as Field);
 					});
 				}
 			}
@@ -406,6 +404,16 @@ export class FieldsService {
 		);
 
 		await this.knex.transaction(async (trx) => {
+			if (
+				this.schema.collections[collection] &&
+				field in this.schema.collections[collection].fields &&
+				this.schema.collections[collection].fields[field].alias === false
+			) {
+				await trx.schema.table(collection, (table) => {
+					table.dropColumn(field);
+				});
+			}
+
 			const relations = this.schema.relations.filter((relation) => {
 				return (
 					(relation.collection === collection && relation.field === field) ||
@@ -480,18 +488,6 @@ export class FieldsService {
 			}
 
 			await trx('directus_fields').delete().where({ collection, field });
-
-			if (
-				this.schema.collections[collection] &&
-				field in this.schema.collections[collection].fields &&
-				this.schema.collections[collection].fields[field].alias === false
-			) {
-				await trx.transaction(async (schemaTrx) => {
-					await schemaTrx.schema.table(collection, (table) => {
-						table.dropColumn(field);
-					});
-				});
-			}
 		});
 
 		if (this.cache && env.CACHE_AUTO_PURGE) {
