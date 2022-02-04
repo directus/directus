@@ -533,6 +533,9 @@ errors:
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
   ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
+  VALUE_TOO_LONG: Il valore è troppo lungo
+  VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
+  INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
@@ -1251,6 +1254,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
