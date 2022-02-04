@@ -95,7 +95,7 @@ describe('/collections', () => {
 
 				const response = await request(getUrl(vendor))
 					.post('/collections')
-					.send({ collection: TEST_DB_NAME, meta: {}, schema: null })
+					.send({ collection: TEST_DB_NAME, meta: {} })
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(200);
 
