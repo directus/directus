@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, defineComponent, PropType } from 'vue';
+import { computed, ref, defineComponent, PropType, watch } from 'vue';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
@@ -75,6 +75,34 @@ export default defineComponent({
 		});
 
 		const openSelection = ref<(string | number)[]>([]);
+
+		watch(
+			() => props.search,
+			(newValue) => {
+				if (!newValue) return;
+
+				const selection = new Set([...openSelection.value, ...search(newValue, props.choices)]);
+
+				openSelection.value = [...selection];
+			},
+			{ immediate: true }
+		);
+
+		function search(text: string, target: Record<string, any>[]) {
+			const selection: string[] = [];
+
+			for (const item of target) {
+				if (item[props.itemText].toLowerCase().includes(text.toLowerCase())) {
+					selection.push(item[props.itemValue]);
+				}
+
+				if (item[props.itemChildren]) {
+					selection.push(...search(text, item[props.itemChildren]));
+				}
+			}
+
+			return selection;
+		}
 
 		return { value, openSelection };
 	},

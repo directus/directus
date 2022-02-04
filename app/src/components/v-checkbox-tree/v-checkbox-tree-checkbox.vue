@@ -165,7 +165,7 @@ export default defineComponent({
 				return visibleChildrenValues.value.length > 0;
 			}
 
-			return typeof props.search === 'string' && props.search.length > 0;
+			return undefined;
 		});
 
 		const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);
