@@ -11,13 +11,13 @@
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ t('interfaces.list.min_entries') }}</p>
-			<v-input v-model="minEntries" type="number" min="0" class="input" />
+			<p class="type-label">{{ t('interfaces.list.min_items') }}</p>
+			<v-input v-model="minItems" type="number" min="0" class="input" />
 		</div>
 
 		<div class="grid-element half-right">
-			<p class="type-label">{{ t('interfaces.list.max_entries') }}</p>
-			<v-input v-model="maxEntries" type="number" :min="minEntries || 0" class="input" />
+			<p class="type-label">{{ t('interfaces.list.max_items') }}</p>
+			<v-input v-model="maxItems" type="number" :min="minItems || 0" class="input" />
 		</div>
 
 		<div class="grid-element full">
@@ -193,32 +193,32 @@ export default defineComponent({
 			},
 		});
 
-		const minEntries = computed({
+		const minItems = computed({
 			get() {
-				return props.value?.minEntries;
+				return props.value?.minItems;
 			},
-			set(newMinEntries: number) {
+			set(newMinItems: number) {
 				emit('input', {
 					...(props.value || {}),
-					maxEntries: props.value?.maxEntries < newMinEntries ? newMinEntries : props.value?.maxEntries,
-					minEntries: newMinEntries,
+					maxItems: props.value?.maxItems < newMinItems ? newMinItems : props.value?.maxItems,
+					minItems: newMinItems,
 				});
 			},
 		});
 
-		const maxEntries = computed({
+		const maxItems = computed({
 			get() {
-				return props.value?.maxEntries;
+				return props.value?.maxItems;
 			},
-			set(newMaxEntries: number) {
+			set(newMaxItems: number) {
 				emit('input', {
 					...(props.value || {}),
-					maxEntries: newMaxEntries,
+					maxItems: newMaxItems,
 				});
 			},
 		});
 
-		return { t, repeaterValue, repeaterFields, template, addLabel, minEntries, maxEntries };
+		return { t, repeaterValue, repeaterFields, template, addLabel, minItems, maxItems };
 	},
 });
 </script>

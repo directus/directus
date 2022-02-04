@@ -103,11 +103,11 @@ export default defineComponent({
 			type: String,
 			default: () => i18n.global.t('create_new'),
 		},
-		minEntries: {
+		minItems: {
 			type: Number,
 			default: null,
 		},
-		maxEntries: {
+		maxItems: {
 			type: Number,
 			default: null,
 		},
@@ -142,9 +142,9 @@ export default defineComponent({
 
 		const enableAddNew = computed(() => {
 			if (props.disabled) return false;
-			if (props.maxEntries === null) return true;
-			if (props.value === null) return props.maxEntries > 0;
-			if (Array.isArray(props.value) && props.value.length < props.maxEntries) return true;
+			if (props.maxItems === null) return true;
+			if (props.value === null) return props.maxItems > 0;
+			if (Array.isArray(props.value) && props.value.length < props.maxItems) return true;
 			return false;
 		});
 
