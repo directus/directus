@@ -14,7 +14,7 @@ disabled or hidden based on permissions.
 
 ## Updating an Item
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview#1.-module-bar)
 2. Navigate to the collection of the item you want to update
 3. Click on the item within the current layout (eg: on the row of the table)
 4. Update the Item Detail form
@@ -39,7 +39,7 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 ## Deleting an Item
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview#1.-module-bar)
 2. Navigate to the collection of the item you want to delete
 3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
 4. Click the "Delete Item" (trash icon) button located in the header
@@ -54,10 +54,10 @@ icon) button located in the header.
 
 ## Archiving an Item
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview#1.-module-bar)
 2. Navigate to the collection of the item you want to archive
 3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
-4. Click the "Archive Item" (trash icon) button located in the header
+4. Click the "Archive Item" (archive icon) button located in the header
 5. Confirm the action within the dialog by clicking "Archive"
 
 ::: warning Requires Configuration
@@ -75,7 +75,7 @@ icon) button located in the header.
 
 ## Reverting an Item
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview#1.-module-bar)
 2. Navigate to the collection of the item you want to archive
 3. Click on an item to navigate to its Detail page
 4. Click "Revisions" in the page sidebar
@@ -85,9 +85,14 @@ icon) button located in the header.
 
 ## Commenting on an Item
 
-1. Navigate to the [Collections Module](/concepts/application/#collections)
+1. Navigate to the [Content Module](/app/overview#1.-module-bar)
 2. Navigate to the collection of the item you want to comment on
 3. Click on an item to navigate to its Detail page
 4. Click "Comments" in the page sidebar
 5. Type your message within the input
 6. Click the "Submit" button
+
+### Mentions
+
+You can also mention any user by typing `@` along with their name or email in your comment. They will then receive a
+notification which will direct them to your comment.

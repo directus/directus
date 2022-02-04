@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Индентификатор
 avatar: Аватар
+application: Приложение
 default_provider: По умолчанию
 published: Опубликовано
 draft: Черновик
@@ -31,6 +32,7 @@ tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
 maps: Карты
+switch_user: Сменить пользователя
 item_creation: Создание элемента
 item_revision: Пересмотр Элемента
 enter_a_name: Введите название...
@@ -52,9 +54,11 @@ edit_collection: Изменить коллекцию
 exclusive: Эксклюзивный
 children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для настройки'
+show_active_items: Показать активные элементы
 show_archived_items: Показать элементы в архиве
+show_all_items: Показывать все
 edited: Значение изменено
-required: Необходимые
+required: Обязательно
 required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
 create_preset: Создать Пресет
@@ -66,6 +70,8 @@ create_webhook: Создать веб-хук
 invite_users: Пригласить пользователей
 invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
+subject: Тема
+inbox: Входящие
 emails: Email-адреса
 connection_excellent: Отличное Подключение
 connection_good: Хорошее соединение
@@ -87,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Сессия истекла
 public_label: Публичный
 public_description: Управляет какие данные доступны по API без аутентификации.
+admin_description: Инициализация админстративных прав с неограниченным доступом к приложениям/API.
 not_allowed: Не Разрешено
 directus_version: Версия Directus
 node_version: Версия Node
@@ -173,7 +180,7 @@ global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
 show_zero: Показать нулевое
-create_in_advanced_field_creation_mode: Создание расширенного поля
+create_in_advanced_field_creation_mode: Создать поле в расширенном режиме
 continue_in_advanced_field_creation_mode: Создание расширенного поля
 sum: Сумма
 sum_distinct: Сумма уникальных
@@ -215,7 +222,13 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия
+geometry: Геометрия (Все)
+geometry.Point: Точка
+geometry.LineString: LineString
+geometry.Polygon: Многоугольник
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: Мультиполигон
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_refresh: Авто обновление
@@ -235,6 +248,9 @@ new_data_alert: 'В вашей модели данных будет создан
 search_collection: Поиск коллекций...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
+add_m2o_to_collection: 'Добавить M2O в "{collection}"'
+add_o2m_to_collection: 'Добавить O2M в "{collection}"'
+add_m2m_to_collection: 'Добавить M2M в "{collection}"'
 choose_a_type: Выберите Тип...
 determined_by_relationship: Определяется отношением
 add_note: Добавить заметку для пользователей...
@@ -257,6 +273,7 @@ note: Заметка
 enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
 length: Длина
+soft_length: Ограничение
 precision_scale: Точность и Масштаб
 readonly: Только для чтения
 unique: Уникальный
@@ -267,11 +284,14 @@ foreign_key: Внешний Ключ
 finish_setup: Завершить Настройку
 dismiss: Скрыть
 raw_value: Сырое значение
+copy_raw_value_success: Скопировано
+copy_raw_value_fail: Сбой копирования
+paste_raw_value_success: Вставлено
+paste_raw_value_fail: Ошибка вставки
 edit_raw_value: Редактировать Сырое Значение
 enter_raw_value: Введите сырое значение...
 clear_value: Очистить значение
 clear_changes: Сбросить изменения
-reset_to_default: Вернуться к настройкам по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
 show_all_activity: Показать Всю Активность
@@ -303,10 +323,17 @@ related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция Языков
-export_data: Экспорт Данных
+import_data_input_placeholder: CSV или JSON...
+import_data_button: Начать импорт
+import_data_indeterminate: Импорт данных...
+import_data_success: Данные успешно импортированы из {filename}
+import_data_error: Структура данных этого файла не соответствует коллекции.
+label_import: Импорт
+label_export: Экспорт
+import_export: Импорт / Экспорт
 format: Формат
 use_current_filters_settings: Использовать Текущие Фильтры и Настройки
-export_collection: 'Экспорт {collection}'
+export_data_button: Начать экспорт
 last_page: Последняя Страница
 last_access: Последний Доступ
 fill_template: Заполнить Шаблонным Значением
@@ -364,6 +391,7 @@ zoom: Масштаб
 download: Загрузить
 open: Открыть
 open_in_new_window: Открыть в новом окне
+open_folder: Открыть папку "{folder}"
 foreground_color: Цвет Переднего Плана
 background_color: Цвет Фона
 upload_from_device: Загрузить Файл с Устройства
@@ -417,6 +445,9 @@ user_count: 'Нет Пользователей | Один Пользовател
 no_users_copy: В этой роли пока нет пользователей.
 webhooks_count: 'Нет Веб-хуков | Один Веб-хук | {count} Веб-хуков'
 no_webhooks_copy: Веб-хуки еще не настроены. Начните с создания одного из них ниже.
+no_notifications: Нет уведомлений
+no_notifications_copy: У вас всё получилось!
+activity_log: Журнал событий
 all_items: Все Элементы
 any: Любой
 csv: CSV
@@ -437,6 +468,7 @@ no_other_dashboards_copy: У вас пока нет других Досок.
 inactive: Неактивный
 users: Пользователи
 activity: Активность
+activity_item: Элемент деятельности
 action: Действие
 ip_address: IP-адрес
 user_agent: Пользовательский агент
@@ -450,7 +482,7 @@ field_width: Ширина поля
 add_filter: Добавить Фильтр
 upper_limit: Верхний предел...
 lower_limit: Нижний предел...
-user_directory: Папка Пользователей
+user_directory: Пользователи
 documentation: Документация
 sidebar: Боковая панель
 duration: Продолжительность
@@ -525,6 +557,7 @@ all_users: Все пользователи
 delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
+make_collection_visible: Сделать коллекцию видимой
 make_collection_hidden: Сделать коллекцию скрытой
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
@@ -617,6 +650,7 @@ recent_files: Недавние Файлы
 create_folder: Создать Папку
 edit_folder: Изменить папку
 folder_name: Название Папки...
+folder_key: Ключ папки...
 add_file: Добавить Файл
 replace_file: Заменить Файл
 no_results: Нет результатов
@@ -645,6 +679,7 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
+insights: Прогнозы
 dashboard: Доска
 panel: Панель
 panel_options: Параметры панели
@@ -677,6 +712,11 @@ source: Источник
 url_placeholder: Введите адрес url...
 display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
+interface_group_text_and_numbers: Текст и номера
+interface_group_selection: Выделенное
+interface_group_relational: Относительный
+interface_group_presentation: Презентация
+interface_group_groups: Группы
 interface_group_other: Другие
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
@@ -741,6 +781,7 @@ adding_user: Добавление Пользователя
 unknown_user: Неизвестный Пользователь
 creating_in: 'Создание Элемента в {collection}'
 editing_in: 'Редактирование Элемента в {collection}'
+viewing_in: 'Просмотр элемента в {collection}'
 creating_unit: 'Создание {unit}'
 editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
@@ -764,6 +805,7 @@ layout_setup: Настройка Макета
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
+discard_all_changes: Отменить Все Изменения
 discard_changes_copy: Вы хотите отменить все внесённые изменения?
 show_x_axis: Показать ось X
 show_y_axis: Показать ось Y
@@ -794,7 +836,7 @@ page_help_settings_presets_item: >-
   **Карточка Пресета** — Форма для управления пресетами закладок и коллекций по умолчанию.
 page_help_settings_webhooks_collection: '**Просмотр Веб-хуков** — Список всех веб-хуков в проекте.'
 page_help_settings_webhooks_item: '**Карточка Веб-хука** — Форма для создания и управления вебхуками проекта.'
-page_help_users_collection: '**Папка Пользователей** — Список всех системных пользователей в этом проекте.'
+page_help_users_collection: '**Пользователи** — Список всех системных пользователей в этом проекте.'
 page_help_users_item: >-
   **Карточка Пользователя** — Управляйте данными вашего аккаунта или просматривайте данные других пользователей.
 page_help_insights_overview: '**Аналитики** — список досок, к которым у вас есть доступ.'
@@ -811,17 +853,21 @@ cancel: Отмена
 no_upscale: Не масштабировать изображения
 collection: Коллекция
 collections: Коллекции
+content: Контент
 singleton: Синглтон
 singleton_label: Считать одним объектом
 system_fields_locked: Системные поля заблокированы и не могут быть изменены
 directus_collection:
   directus_activity: Журналы отчетности по всем событиям
   directus_collections: Дополнительные настройки коллекции и метаданные
+  directus_dashboards: Панели инструментов в модуле Insights
   directus_fields: Дополнительные настройки полей и метаданные
   directus_files: Метаданные для всех управляемых файлов
   directus_folders: Предоставляет виртуальные папки для файлов
   directus_migrations: Какую версию базы данных вы используете
+  directus_panels: Индивидуальные панели мониторинга
   directus_permissions: Права доступа для каждой роли
+  directus_notifications: Уведомления, отправленные пользователям
   directus_presets: Пресеты для коллекций по умолчанию и закладки
   directus_relations: Настройки связей и метаданные
   directus_revisions: Снимки данных для всех действий
@@ -855,6 +901,8 @@ fields:
     unarchive_value: Значение для извлеченных из архива
     sort_field: Поле сортировки
     accountability: Отслеживание активности и редакций
+    archive_field: Архивировать поле
+    item_duplication_fields: Поля дублирования предметов
   directus_files:
     $thumbnail: Миниатюра
     title: Название
@@ -906,13 +954,17 @@ fields:
     role: Роль
     token: Ключ доступа
     token_placeholder: Укажите достаточно защищенный ключ доступа
+    provider: Провайдер
+    external_identifier: Внешний Идентификатор
     last_page: Последняя Страница
     last_access: Последний Доступ
+    email_notifications: Уведомления по Email
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Отображения
     basemaps: Основа карты
     basemaps_raster: Растр
     basemaps_tile: Растр TileJSON
@@ -922,16 +974,32 @@ fields:
     transforms_note: Имя метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Дополнительные преобразования
     project_name: Название проекта
+    project_descriptor: Описание проекта
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
+    branding: Брендинг
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
     auth_password_policy: Минимальная сложность пароля
     auth_login_attempts: Попыток войти
+    files_and_thumbnails: Хранилище файлов
+    storage_default_folder: Папка по умолчанию
+    storage_asset_presets: Пресеты трансформации
+    storage_asset_transform: Разрешенные трансформации
     overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
+    module_bar: Панель модулей
+    transformations_all: Разрешить все трансформации
+    transformations_none: Отключить трансформации
+    transformations_presets: Ограничить преобразования для пресетов ниже
+  directus_shares:
+    name: Имя
+    role: Роль
+    password: Пароль
+    date_start: Дата начала
+    date_end: Дата Окончания
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
@@ -955,14 +1023,18 @@ fields:
     method: Метод
     status: Статус
     data: Данные
+    header: Header
     value: Значение
+    headers: Заголовки запроса
     data_label: Отправлять данные о событии
     triggers: Триггеры
     actions: Действия
+    collections: Коллекции
 field_options:
   directus_settings:
     project_name_placeholder: Мой проект
-    project_logo_note: Фон логина и логотипа
+    project_color_note: Логин и фон логотипа
+    project_logo_note: Белый 40х40 SVG/PNG
     public_note_placeholder: Короткое, публичное сообщение, которое поддерживает markdown форматирование...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -970,6 +1042,8 @@ field_options:
       weak_text: Слабый – минимум 8 символов
       strong_text: Крепкий – строчные, прописные, цифры, специальные
     storage_asset_presets:
+      fit_label: Подогнать по размеру
+      upscaling: Увеличение
       fit:
         contain_text: Вместить (с сохранением пропорций)
         cover_text: Покрыть (точный размер)
@@ -980,6 +1054,7 @@ field_options:
     mapbox_key: Токен доступа Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Основа карты
+    basemaps_name_placeholder: Введите название базовой карты...
     basemaps_raster: Растр
     basemaps_tile: Raster TileJSON
     basemaps_style: Стиль Mapbox
@@ -1000,7 +1075,10 @@ field_options:
     singleton: Считать одним объектом
     language: Язык
     translation: Перевод
+    translation_placeholder: Введите перевод...
     collection_name: Название Коллекции
+    singular_unit: Единичный блок
+    plural_unit: Множественное число
     archive_divider: Архив
     archive_field_placeholder: Выберите поле...
     archive_app_filter: Включить фильтр архива приложения
@@ -1009,6 +1087,7 @@ field_options:
     sort_divider: Сортировать
     sort_field: Выберите поле...
     accountability_divider: Подотчетность
+    duplication_divider: Дублирование
   directus_files:
     title: Уникальное название...
     description: Описание (необязательно)...
@@ -1050,7 +1129,9 @@ field_options:
     actions_delete: Удалить
     actions_login: Войти
     headers:
+      header: Header
       value: Значение
+      add: Добавить заголовок
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
 no_value: Нет значения
 do_nothing: Ничего не Делать
@@ -1064,6 +1145,18 @@ start_collapsed: Начать свернутым
 block: Блокировать
 inline: Строчный
 comment: Комментарий
+new_share: Новая публикация
+expired: Истекло
+share: Поделиться
+shared_enter_passcode: Для продолжения введите пароль...
+shared_leave_blank_for_unlimited: Оставьте пустым для неограниченного
+shared_times_remaining: Ссылка может быть использована {n} раз
+shared_last_remaining: Одноразовая ссылка
+shared_uses_left: Для безопасности, количество просмотров страницы ограничено. В настоящее время осталось {n} просмотра, после чего страница больше не будет доступна.
+share_copy_link: Скопировать ссылку
+share_copy_link_success: Ссылка скопирована
+share_copy_link_error: Невозможно скопировать ссылку
+share_send_link: Отправить ссылку
 relational_triggers: Реляционные триггеры
 referential_action_field_label_m2o: При удалении {collection}...
 referential_action_field_label_o2m: При отмене выбора {collection}...
@@ -1133,6 +1226,7 @@ sort_desc: По Убыванию
 template: Шаблон
 require_value_to_be_set: Требовать установки значения
 translation: Перевод
+translation_placeholder: Введите перевод...
 value: Значение
 view_project: Просмотр Проекта
 report_error: Сообщить об Ошибке
@@ -1144,10 +1238,14 @@ interfaces:
     add_filter: Добавить Фильтр
     add_group: Группа и/или
     add_value: Добавить значение
+    logic_type_and: И
+    logic_type_or: ИЛИ
     all: Все
     any: Любой
     and: и
+    of_the_following: из следующих (follow)
     no_rules: Правила не установлены
+    change_value: Нажмите, чтобы изменить значение
     placeholder: Перетащите правила сюда
   group-accordion:
     name: Аккордеон
@@ -1198,6 +1296,7 @@ interfaces:
     description: Введите или выберите значение цвета
     placeholder: Выберите цвет...
     preset_colors: Предустановленные цвета
+    opacity: Прозрачность
     preset_colors_add_label: Добавить новый цвет...
     name_placeholder: Введите название цвета...
   datetime:
@@ -1215,7 +1314,7 @@ interfaces:
   presentation-divider:
     divider: Разделитель
     description: Разделить поля на секции с заголовками
-    title_placeholder: Введите название...
+    title_placeholder: Введите название, или оставьте пустым, чтобы показать только строку...
     inline_title: Строчный заголовок
     inline_title_label: Показать заголовок внутри строки
     margin_top: Отступ сверху
@@ -1250,6 +1349,7 @@ interfaces:
   file-image:
     image: Изображение
     description: Выберите или загрузите изображение
+    crop: Обрезать по размеру
   system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
@@ -1267,6 +1367,8 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Ввод и предварительный просмотр markdown
+    edit: Редактирование
+    preview: Предпросмотр
     customSyntax: Произвольные блоки
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
@@ -1277,6 +1379,9 @@ interfaces:
     map: Карта
     description: Указать место на карте
     zoom: Масштаб
+    geometry_type: Тип геометрии
+    geometry_format: Формат геометрии
+    default_view: Вид по умолчанию
     invalid_options: Некорректные настройки
     invalid_format: Некорректный формат ({format})
     unexpected_geometry: Ожидалось {expected}, а встретилось {got}.
@@ -1286,6 +1391,7 @@ interfaces:
     lnglat: Долгота, широта (Lon, Lat)
     wkt: WKT
     wkb: WKB
+    click_to_select: Нажмите, чтобы выбрать {geometry}
   presentation-notice:
     notice: Уведомление
     description: Показать короткое уведомление
@@ -1297,6 +1403,7 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
+    field_hint: Папка для загруженных файлов. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:
@@ -1347,12 +1454,15 @@ interfaces:
   boolean:
     toggle: Переключить
     description: Переключение вкл / выкл
+    color_on: Цвет Вкл
+    color_off: Цвет Выкл
     label_placeholder: Введите метку...
     label_default: Включен
   translations:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
     toggle_split_view: Переключить Раздельный Вид
+    language_field: Языковое поле
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Дерево можно выбрать для рекурсивных отношений
@@ -1370,6 +1480,9 @@ interfaces:
     toolbar: Панель инструментов
     custom_formats: Пользовательские форматы
     options_override: Переопределение параметров
+    folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
+    imageToken: Ключ изображения
+    imageToken_label: Статичный ключ, добавляемый к адресам изображений
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
     description: Автодополнение значений поиска через внешний API.
@@ -1395,6 +1508,7 @@ displays:
     enable: Включить
     user_language: Использовать текущий язык пользователя
     default_language: Язык по умолчанию
+    language_field: Языковое поле
   boolean:
     boolean: Логическое
     description: Отображать состояния вкл и выкл
@@ -1433,9 +1547,19 @@ displays:
   formatted-value:
     formatted-value: Форматированное Значение
     description: Показывать форматированную версию текста
-    format_title: Форматировать Заголовок
-    format_title_label: Авто-форматировать заглавные
+    format: Формат
+    font: Шрифт
+    font_serif: Serif
+    font_monospace: Моноширинный
+    bold: Жирный
     bold_label: Использовать жирный шрифт
+    italic: Наклонный
+    prefix: Префикс
+    suffix: Суффикс
+    color: Цвет
+    background: Фон
+    icon: Иконка
+    text: Текст
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта
@@ -1505,10 +1629,15 @@ layouts:
     basemap: Основа карты
     layers: Слои
     cluster_options: Настройки кластеров
+    cluster: Ближайшие данные кластера
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
+    field: Геопространственное поле
     invalid_geometry: Некорректная геометрия
+    find_location: Найти локацию...
+    default_template: Использование коллекции по умолчанию...
+    no_compatible_fields: Нет совместимых полей
 panels:
   metric:
     name: Метрика

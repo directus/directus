@@ -24,6 +24,19 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'softLength',
+			name: '$t:soft_length',
+			type: 'integer',
+			meta: {
+				width: 'half',
+				interface: 'input',
+				options: {
+					placeholder: '255',
+					min: 1,
+				},
+			},
+		},
+		{
 			field: 'trim',
 			name: '$t:interfaces.input.trim',
 			type: 'boolean',

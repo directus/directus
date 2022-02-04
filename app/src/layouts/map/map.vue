@@ -18,13 +18,15 @@
 			@updateitempopup="updateItemPopup"
 		/>
 
-		<div
-			v-if="itemPopup.item"
-			class="popup"
-			:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
-		>
-			<render-template :template="template" :item="itemPopup.item" :collection="collection" />
-		</div>
+		<transition name="fade">
+			<div
+				v-if="itemPopup.item"
+				class="popup"
+				:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
+			>
+				<render-template :template="template" :item="itemPopup.item" :collection="collection" />
+			</div>
+		</transition>
 
 		<transition name="fade">
 			<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
@@ -50,9 +52,8 @@
 
 		<template v-if="loading || itemCount > 0">
 			<div class="footer">
-				<div class="pagination">
+				<div v-if="totalPages > 1" class="pagination">
 					<v-pagination
-						v-if="totalPages > 1"
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -200,7 +201,7 @@ export default defineComponent({
 			default: () => undefined,
 		},
 		itemPopup: {
-			type: [String, Number],
+			type: Object as PropType<{ item?: any; position?: { x: number; y: number } }>,
 			default: () => undefined,
 		},
 		updateItemPopup: {
@@ -282,6 +283,10 @@ export default defineComponent({
 	pointer-events: none;
 }
 
+.render-template {
+	padding-right: 0;
+}
+
 .mapboxgl-ctrl-dropdown {
 	display: flex;
 	align-items: center;
@@ -292,6 +297,7 @@ export default defineComponent({
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--background-page);
 	border-radius: var(--border-radius);
+	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
 	span {
 		width: auto;
@@ -314,13 +320,13 @@ export default defineComponent({
 
 .footer {
 	position: absolute;
-	right: 10px;
-	bottom: 10px;
-	left: 10px;
+	right: 0;
+	bottom: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
+	padding: 10px;
 	overflow: hidden;
 	background-color: transparent !important;
 
@@ -328,9 +334,25 @@ export default defineComponent({
 		--v-button-height: 28px;
 
 		display: inline-block;
+		margin-right: 10px;
+	}
+}
 
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+</style>
+<style lang="scss">
+.footer {
+	.pagination {
 		button {
-			box-shadow: 0 0 2px 1px rgb(0 0 0 / 0.2);
+			box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 		}
 	}
 }

@@ -30,10 +30,6 @@
   to: '/app/settings'
   icon: settings
 
-- name: Help & Support
-  to: '/getting-started/support'
-  icon: support_agent
-
 - name: Backing Directus
   to: '/getting-started/backing-directus'
   icon: card_giftcard

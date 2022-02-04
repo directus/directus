@@ -86,6 +86,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from 'vue';
+import { ShowSelect } from '@directus/shared/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -130,8 +131,8 @@ export default defineComponent({
 			default: false,
 		},
 		showSelect: {
-			type: Boolean,
-			default: false,
+			type: String as PropType<ShowSelect>,
+			default: 'none',
 		},
 		showResize: {
 			type: Boolean,
@@ -256,7 +257,7 @@ export default defineComponent({
 
 		const fullColSpan = computed<string>(() => {
 			let length = internalHeaders.value.length + 1; // +1 account for spacer
-			if (props.showSelect) length++;
+			if (props.showSelect !== 'none') length++;
 			if (props.showManualSort) length++;
 			if (hasItemAppendSlot.value) length++;
 
@@ -295,7 +296,7 @@ export default defineComponent({
 				})
 				.reduce((acc, val) => (acc += ' ' + val), '');
 
-			if (props.showSelect) gridTemplateColumns = '36px ' + gridTemplateColumns;
+			if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
 			if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
 
 			gridTemplateColumns = gridTemplateColumns + ' 1fr';

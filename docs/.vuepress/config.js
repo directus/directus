@@ -87,6 +87,11 @@ module.exports = {
 							},
 							{
 								type: 'page',
+								path: '/getting-started/installation/cloudron',
+								title: 'Cloudron',
+							},
+							{
+								type: 'page',
 								path: '/getting-started/installation/cli',
 								title: 'CLI',
 							},
@@ -99,6 +104,11 @@ module.exports = {
 								type: 'page',
 								path: '/getting-started/installation/docker',
 								title: 'Docker',
+							},
+							{
+								type: 'page',
+								path: '/getting-started/installation/gcp',
+								title: 'Google Cloud Platform',
 							},
 							{
 								type: 'page',
@@ -149,13 +159,21 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/app/content-collections',
-						title: 'Content Collections',
-					},
-					{
-						type: 'page',
-						path: '/app/content-items',
-						title: 'Content Items',
+						path: '/app/content',
+						title: 'Content',
+						collapsable: false,
+						children: [
+							{
+								type: 'page',
+								path: '/app/content-collections',
+								title: 'Content Collections',
+							},
+							{
+								type: 'page',
+								path: '/app/content-items',
+								title: 'Content Items',
+							},
+						],
 					},
 					{
 						type: 'page',
@@ -234,6 +252,11 @@ module.exports = {
 						type: 'page',
 						path: '/configuration/activity-log',
 						title: 'Activity Log',
+					},
+					{
+						type: 'page',
+						path: '/configuration/sso',
+						title: 'Single Sign-On (SSO)',
 					},
 					{
 						type: 'divider',
@@ -336,6 +359,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/reference/system/notifications',
+						title: 'Notifications',
+					},
+					{
+						type: 'page',
 						path: '/reference/system/permissions',
 						title: 'Permissions',
 					},
@@ -396,8 +424,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/extensions/api-endpoints',
-						title: 'API Endpoints',
+						path: '/extensions/creating-extensions',
+						title: 'Creating Extensions',
 					},
 					{
 						type: 'page',
@@ -408,6 +436,11 @@ module.exports = {
 						type: 'page',
 						path: '/extensions/email-templates',
 						title: 'Email Templates',
+					},
+					{
+						type: 'page',
+						path: '/extensions/endpoints',
+						title: 'Endpoints',
 					},
 					{
 						type: 'page',

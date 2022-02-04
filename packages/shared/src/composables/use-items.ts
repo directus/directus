@@ -83,7 +83,9 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				newLimit !== oldLimit ||
 				newSearch !== oldSearch
 			) {
-				page.value = 1;
+				if (oldCollection) {
+					page.value = 1;
+				}
 			}
 
 			if (newCollection !== oldCollection) {

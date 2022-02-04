@@ -15,7 +15,7 @@ export default defineModule({
 			children: [
 				{
 					path: '',
-					redirect: '/docs/getting-started/introduction/',
+					redirect: '/docs/app/overview',
 				},
 				...getRoutes(docs),
 			],

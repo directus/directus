@@ -49,6 +49,18 @@ export default defineInterface({
 					interface: 'boolean',
 				},
 				schema: {
+					default_value: true,
+				},
+			},
+			{
+				field: 'lineWrapping',
+				name: '$t:interfaces.input-code.line_wrapping',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
 					default_value: false,
 				},
 			},
@@ -75,7 +87,7 @@ export default defineInterface({
 				name: '$t:language',
 				type: 'string',
 				meta: {
-					width: 'half',
+					width: 'full',
 					interface: 'select-dropdown',
 					options: { choices },
 				},

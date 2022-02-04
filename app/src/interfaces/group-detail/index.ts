@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceGroupDetail from './group-detail.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'group-detail',
@@ -54,4 +55,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

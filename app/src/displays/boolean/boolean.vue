@@ -35,11 +35,11 @@ export default defineComponent({
 		},
 		colorOn: {
 			type: String,
-			default: '#00C897',
+			default: 'var(--primary)',
 		},
 		colorOff: {
 			type: String,
-			default: '#B0BEC5',
+			default: 'var(--foreground-subdued)',
 		},
 	},
 	setup(props) {

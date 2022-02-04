@@ -75,9 +75,9 @@ export default defineComponent({
 		});
 
 		watch(
-			() => props.id,
-			(newID, oldID) => {
-				if (newID && newID !== oldID) {
+			[() => props.id, internalActive],
+			([newID, newActive]) => {
+				if (newActive && newID) {
 					fetchFile();
 				}
 			},
