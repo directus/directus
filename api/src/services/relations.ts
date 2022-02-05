@@ -143,6 +143,15 @@ export class RelationsService {
 			);
 		}
 
+		const columnInfo = await this.schemaInspector.columnInfo(relation.collection, relation.field);
+
+		// A primary key should not be a foreign key
+		if (columnInfo.is_primary_key) {
+			throw new InvalidPayloadException(
+				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
+			);
+		}
+
 		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
 			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
 		}
