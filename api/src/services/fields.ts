@@ -11,9 +11,8 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
-import { Field, FieldMeta, RawField, Type } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../types';
+import { Field, FieldMeta, RawField, Type, Accountability, SchemaOverview } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '@directus/shared/utils';
@@ -405,6 +404,16 @@ export class FieldsService {
 		);
 
 		await this.knex.transaction(async (trx) => {
+			if (
+				this.schema.collections[collection] &&
+				field in this.schema.collections[collection].fields &&
+				this.schema.collections[collection].fields[field].alias === false
+			) {
+				await trx.schema.table(collection, (table) => {
+					table.dropColumn(field);
+				});
+			}
+
 			const relations = this.schema.relations.filter((relation) => {
 				return (
 					(relation.collection === collection && relation.field === field) ||
@@ -479,16 +488,6 @@ export class FieldsService {
 			}
 
 			await trx('directus_fields').delete().where({ collection, field });
-
-			if (
-				this.schema.collections[collection] &&
-				field in this.schema.collections[collection].fields &&
-				this.schema.collections[collection].fields[field].alias === false
-			) {
-				await trx.schema.table(collection, (table) => {
-					table.dropColumn(field);
-				});
-			}
 		});
 
 		if (this.cache && env.CACHE_AUTO_PURGE) {
@@ -552,10 +551,14 @@ export class FieldsService {
 			}
 		}
 
-		if (field.schema?.is_nullable !== undefined && field.schema.is_nullable === false) {
-			column.notNullable();
-		} else {
-			column.nullable();
+		if (field.schema?.is_nullable === false) {
+			if (!alter || alter.is_nullable === true) {
+				column.notNullable();
+			}
+		} else if (field.schema?.is_nullable === true) {
+			if (!alter || alter.is_nullable === false) {
+				column.nullable();
+			}
 		}
 
 		if (field.schema?.is_primary_key) {

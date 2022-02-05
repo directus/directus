@@ -36,7 +36,6 @@ text: Текст
 auto_generate: Аутоматски генериши
 add_note: Додај помоћну напомену за кориснике...
 default_value: Подразумевана вредност
-clear_value: Обриши вредност
 title: Наслов
 leave_comment: Оставите коментар...
 months:
@@ -126,6 +125,10 @@ fields:
     tfa_secret: Дво-факторска аутентификација
     status: Стање
     role: Рола
+  directus_shares:
+    name: Име
+    role: Рола
+    password: Лозинка
   directus_fields:
     display_template: Шаблон
   directus_roles:
@@ -166,6 +169,8 @@ interfaces:
 displays:
   collection:
     collection: Колекција
+  formatted-value:
+    text: Текст
   user:
     avatar: Аватар
     name: Име

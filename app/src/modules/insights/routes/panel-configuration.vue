@@ -18,21 +18,13 @@
 
 			<v-fancy-select v-model="edits.type" class="select" :items="selectItems" />
 
-			<template v-if="edits.type && selectedPanel">
-				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
-					{{ t('no_options_available') }}
-				</v-notice>
-
-				<v-form
-					v-else-if="Array.isArray(selectedPanel.options)"
-					v-model="edits.options"
-					:fields="selectedPanel.options"
-					primary-key="+"
-					:initial-values="panel && panel.options"
-				/>
-
-				<component :is="`panel-options-${selectedPanel.id}`" v-else v-model="edits.options" :collection="collection" />
-			</template>
+			<extension-options
+				v-if="edits.type"
+				v-model="edits.options"
+				:options="customOptionsFields"
+				type="panel"
+				:extension="edits.type"
+			/>
 
 			<v-divider :inline-title="false" large>
 				<template #icon><v-icon name="info" /></template>
@@ -88,15 +80,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, watch, PropType } from 'vue';
-import { getPanels } from '@/panels';
+import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
+import { computed, defineComponent, reactive, watch, PropType, ref } from 'vue';
+import { getPanels, getPanel } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
-import { Panel } from '@/types';
+import { Panel } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	name: 'PanelConfiguration',
+	components: { ExtensionOptions },
 	props: {
 		panel: {
 			type: Object as PropType<Partial<Panel>>,
@@ -138,11 +132,11 @@ export default defineComponent({
 			});
 		});
 
-		const selectedPanel = computed(() => {
-			return panels.value.find((panel) => panel.id === edits.type);
+		const extensionInfo = computed(() => {
+			return getPanel(edits.type);
 		});
 
-		watch(selectedPanel, (newPanel) => {
+		watch(extensionInfo, (newPanel) => {
 			if (newPanel) {
 				edits.width = newPanel.minWidth;
 				edits.height = newPanel.minHeight;
@@ -152,18 +146,31 @@ export default defineComponent({
 			}
 		});
 
+		const customOptionsFields = computed(() => {
+			if (typeof extensionInfo.value?.options === 'function') {
+				return extensionInfo.value?.options(edits);
+			}
+
+			return null;
+		});
+
 		return {
 			selectItems,
-			selectedPanel,
 			close,
 			emitSave,
 			edits,
 			t,
 			isOpen,
+			setOptionsValues,
+			customOptionsFields,
 		};
 
 		function emitSave() {
 			emit('save', edits);
+		}
+
+		function setOptionsValues(newValues: any) {
+			edits.options = newValues;
 		}
 	},
 });

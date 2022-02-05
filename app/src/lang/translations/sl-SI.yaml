@@ -214,9 +214,6 @@ dismiss: Opusti
 raw_value: Vnešena vrednost
 edit_raw_value: Uredi vrednost
 enter_raw_value: Vnesite vrednost ...
-clear_value: Počisti vrednost
-reset_to_default: Ponastavi na privzeto
-undo_changes: Razveljavi spremembe
 notifications: Obvestila
 show_all_activity: Pokaži vse dejavnosti
 page_not_found: Strani ni mogoče najti
@@ -246,10 +243,9 @@ related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
-export_data: Izvozi podatke
+label_import: Uvoz
 format: Oblika
 use_current_filters_settings: Uporabi trenutne filtre in nastavitve
-export_collection: 'Izvozi "{collection}"'
 last_page: Zadnja stran
 last_access: Zadnji dostop
 fill_template: Izpolni z vrednostjo obrazca
@@ -800,6 +796,10 @@ fields:
     auth_login_attempts: Število poskusov prijave
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
+  directus_shares:
+    name: Ime
+    role: Vloga
+    password: Geslo
   directus_fields:
     collection: Ime zbirke
     icon: Ikona zbirke
@@ -1225,6 +1225,8 @@ interfaces:
     toolbar: Orodna vrstica
     custom_formats: Prilagojene oblike
     options_override: Preglasitev opcij
+    imageToken: Žeton slike
+    imageToken_label: Kateri statični žeton se naj doda k sliki
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Iskalnik za zunanje API vrednosti.
@@ -1284,9 +1286,18 @@ displays:
   formatted-value:
     formatted-value: Oblikovana vrednost
     description: Prikaži oblikovano verzijo teksta
-    format_title: Oblikuj naslov
-    format_title_label: Avtomatska velikost črk
+    format: Oblika
+    font: Pisava
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Krepko
     bold_label: Uporabi krepke črke
+    italic: Ležeče
+    prefix: Predpona
+    suffix: Pripona
+    color: Barva
+    icon: Ikona
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Oblikovana JSON vrednost
     description: Prikaži oblikovano verzijo objekta

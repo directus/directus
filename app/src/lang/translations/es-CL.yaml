@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identificador
 avatar: Avatar
+application: Aplicación
 default_provider: Por defecto
 published: Publicado
 draft: Borrador
@@ -31,6 +32,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
 maps: Mapas
+switch_user: Cambiar de usuario
 item_creation: Creación de artículos
 item_revision: Revisión de Elemento
 enter_a_name: Introduce un Nombre...
@@ -280,10 +282,7 @@ dismiss: Cerrar
 raw_value: Valor Plano
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
-clear_value: Limpiar valor
 clear_changes: Borrar Cambios
-reset_to_default: Restablecen a los predeterminados
-undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Presentar toda la actividad
 page_not_found: Página no encontrada
@@ -314,10 +313,9 @@ related_collection: Colección relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de Colección
 languages_collection: Colección de Idiomas
-export_data: Exportar Datos
+label_import: Importar
 format: Formato
 use_current_filters_settings: Usar Filtros y Ajustes Actuales
-export_collection: 'Exportar {collection}'
 last_page: Última Página
 last_access: Último Acceso
 fill_template: Rellenar con Valor de Plantilla
@@ -929,6 +927,7 @@ fields:
     tfa_secret: Autenticación de dos factores
     admin_options: Opciones de Admin
     status: Estado
+    status_draft: Borrador
     status_invited: Invitado
     status_active: Activo
     status_suspended: Suspendido
@@ -970,6 +969,10 @@ fields:
     storage_asset_transform: Transformaciones permitidas
     custom_css: CSS Personalizado
     module_bar: Barra de módulos
+  directus_shares:
+    name: Nombre
+    role: Rol
+    password: Contraseña
   directus_fields:
     collection: Nombre de Colección
     icon: Ícono de Colección
@@ -990,6 +993,7 @@ fields:
     module_list: Navegación en Módulo
   directus_webhooks:
     name: Nombre
+    method: Método
     status: Estado
     data: Datos
     header: Encabezado
@@ -999,6 +1003,8 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Seguridad
+    auth_password_policy:
+      weak_text: Débil - 8 caracteres mínimos
     additional_transforms: Transformaciones adicionales
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     mapbox_key: Token de acceso Mapbox
@@ -1024,18 +1030,24 @@ field_options:
     collection_name: Nombre de Colección
     archive_divider: Archivar
     sort_divider: Ordenar
+    accountability_divider: Responsabilidad
+    duplication_divider: Duplicación
   directus_roles:
+    description: Una descripción de este rol...
     fields:
       icon_name: Icono
       name_name: Nombre
       name_placeholder: Ingresar un título...
     collections_name: Colecciones
+    collections_addLabel: Añadir Colección...
   directus_users:
     preferences_divider: Preferencias de usuario
     dropdown_auto: Automático (basado en el sistema)
     dropdown_light: Modo luz
     dropdown_dark: Modo Oscuro
     admin_divider: Opciones de Admin
+    status_dropdown_draft: Borrador
+    status_dropdown_invited: Invitado
     status_dropdown_active: Activo
     status_dropdown_suspended: Suspendido
     status_dropdown_archived: Archivado
@@ -1137,9 +1149,11 @@ interfaces:
   filter:
     name: Filtro
     add_filter: Agregar Filtro
+    add_group: Y / O grupo
     all: Todo
     any: Cualquiera
     and: "y"
+    change_value: Haga clic para cambiar el valor
   group-accordion:
     start: Iniciar
     all_closed: Todo Cerrado
@@ -1160,6 +1174,8 @@ interfaces:
     allow_other: Permitir otro
     show_more: 'Mostrar {count} más'
     items_shown: Elementos Mostrados
+  select-multiple-checkbox-tree:
+    show_all: Mostrar todo
   input-code:
     code: Código
     description: Escribir o compartir fragmentos de código
@@ -1254,6 +1270,7 @@ interfaces:
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
   map:
+    map: Mapa
     zoom: Zoom
     native: Nativo
     geojson: GeoJSON
@@ -1294,6 +1311,7 @@ interfaces:
     add_tags: Agregar etiquetas...
   input:
     input: Entrada
+    description: Introduzca manualmente un valor
     trim: Recortar
     mask: Enmascarado
     mask_label: Ocultar el valor real
@@ -1329,6 +1347,8 @@ interfaces:
     toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
     options_override: Sobrescribir Opciones
+    imageToken: Token de Imagen
+    imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
   input-autocomplete-api:
     results_path: Ruta de Resultados
     trigger: Disparador
@@ -1379,9 +1399,18 @@ displays:
   formatted-value:
     formatted-value: Valor Formateado
     description: Presentar una versión formateada del texto
-    format_title: Formatear Título
-    format_title_label: Auto-formato
+    format: Formato
+    font: Fuente
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Negrita
     bold_label: Usar negritas
+    italic: Cursiva
+    prefix: Prefijo
+    suffix: Sufijo
+    color: Color
+    icon: Icono
+    text: Texto
   formatted-json-value:
     formatted-json-value: Valor JSON Formateado
     description: Presentar una versión formateada del objeto

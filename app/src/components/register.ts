@@ -1,4 +1,4 @@
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
 import SidebarDetail from '@/views/private/components/sidebar-detail/';
@@ -51,6 +51,7 @@ import VTemplateInput from './v-template-input.vue';
 import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
+import VDatePicker from './v-date-picker';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -108,6 +109,7 @@ export function registerComponents(app: App): void {
 	app.component('VTextarea', VTextarea);
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
+	app.component('VDatePicker', VDatePicker);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);

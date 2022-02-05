@@ -10,7 +10,9 @@
 
 		<extension-options
 			v-if="interfaceID && selectedInterface"
+			v-model="options"
 			type="interface"
+			:options="customOptionsFields"
 			:extension="interfaceID"
 			show-advanced
 		/>
@@ -34,7 +36,6 @@ export default defineComponent({
 		const fieldDetailStore = useFieldDetailStore();
 
 		const interfaceID = syncFieldDetailStoreProperty('field.meta.interface');
-		const options = syncFieldDetailStoreProperty('field.meta.options');
 
 		const { field, interfacesForType } = storeToRefs(fieldDetailStore);
 		const type = computed(() => field.value.type);
@@ -95,7 +96,33 @@ export default defineComponent({
 
 		const selectedInterface = computed(() => getInterface(interfaceID.value));
 
-		return { t, selectItems, selectedInterface, interfaceID, options };
+		const extensionInfo = computed(() => {
+			return getInterface(interfaceID.value);
+		});
+
+		const customOptionsFields = computed(() => {
+			if (typeof extensionInfo.value?.options === 'function') {
+				return extensionInfo.value?.options(fieldDetailStore);
+			}
+
+			return null;
+		});
+
+		const options = computed({
+			get() {
+				return fieldDetailStore.field.meta?.options ?? {};
+			},
+			set(newOptions: Record<string, any>) {
+				fieldDetailStore.$patch((state) => {
+					state.field.meta = {
+						...(state.field.meta ?? {}),
+						options: newOptions,
+					};
+				});
+			},
+		});
+
+		return { t, selectItems, selectedInterface, interfaceID, customOptionsFields, options };
 	},
 });
 </script>

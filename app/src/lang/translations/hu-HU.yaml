@@ -242,10 +242,7 @@ dismiss: Elutasít
 raw_value: Nyers érték
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
-clear_value: Érték törlése
 clear_changes: Változások törlése
-reset_to_default: Visszaállítás alaphelyzetbe
-undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
@@ -276,10 +273,9 @@ related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
-export_data: Adatok exportálása
+label_import: Importálás
 format: Formátum
 use_current_filters_settings: Aktuális szűrők és beállítások használata
-export_collection: '{collection} exportálása'
 last_page: Utolsó oldal
 last_access: Utolsó hozzáférés
 fill_template: Kitöltés sablon értékkel
@@ -909,6 +905,10 @@ fields:
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
     module_bar: Modulsáv
+  directus_shares:
+    name: Név
+    role: Szerepkör
+    password: Jelszó
   directus_fields:
     collection: Gyűjtemény neve
     icon: Gyűjtemény ikonja
@@ -1351,6 +1351,8 @@ interfaces:
     toolbar: Eszköztár
     custom_formats: Egyéni formátumok
     options_override: Beállítások felülírása
+    imageToken: Kép token
+    imageToken_label: Milyen (statikus) tokent csatoljunk a képforrásokhoz
   input-autocomplete-api:
     input-autocomplete-api: Automatikus kiegészítés (API)
     description: Külső API-értékek keresési típusvezetője (automatikus kiegészítés).
@@ -1409,9 +1411,18 @@ displays:
   formatted-value:
     formatted-value: Formázott érték
     description: A szöveg formázott változatának megjelenítése
-    format_title: Cím formázása
-    format_title_label: Automatikus nagybetű / kisbetű
+    format: Formátum
+    font: Betűtípus
+    font_serif: Talpas
+    font_monospace: Egyterű
+    bold: Félkövér
     bold_label: Vastag stílus használata
+    italic: Dőlt
+    prefix: Előtag
+    suffix: Utótag
+    color: Szín
+    icon: Ikon
+    text: Szöveg
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
     description: Az objektum formázott változatának megjelenítése

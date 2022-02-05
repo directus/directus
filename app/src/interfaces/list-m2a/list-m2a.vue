@@ -68,7 +68,7 @@
 			</draggable>
 		</v-list>
 
-		<div class="buttons">
+		<div v-if="!disabled" class="buttons">
 			<v-menu v-if="enableCreate" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button @click="toggle">
@@ -201,7 +201,7 @@ export default defineComponent({
 			useEdits();
 		const { onSort } = useManualSort();
 
-		watch(props, fetchValues, { immediate: true, deep: true });
+		watch(() => props.value, fetchValues, { immediate: true, deep: true });
 
 		return {
 			t,
