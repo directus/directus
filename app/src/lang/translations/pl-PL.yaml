@@ -533,6 +533,9 @@ errors:
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
   ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
+  VALUE_TOO_LONG: Wartość jest zbyt długa
+  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
+  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
@@ -1251,6 +1254,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
