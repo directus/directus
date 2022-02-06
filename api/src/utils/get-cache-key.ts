@@ -10,7 +10,9 @@ export function getCacheKey(req: Request): string {
 	const info = {
 		user: req.accountability?.user || null,
 		path,
-		query: isGraphQl ? pick(req.query, ['query', 'variables']) : req.sanitizedQuery,
+		query: isGraphQl
+			? pick(req.method.toLowerCase() === 'get' ? req.query : req.body, ['query', 'variables'])
+			: req.sanitizedQuery,
 	};
 
 	const key = hash(info);
