@@ -15,6 +15,7 @@ const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 
+	LISTEN: 'localhost',
 	PORT: 8055,
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
@@ -82,6 +83,7 @@ const defaults: Record<string, any> = {
 // Allows us to force certain environment variable into a type, instead of relying
 // on the auto-parsed type in processValues. ref #3705
 const typeMap: Record<string, string> = {
+	LISTEN: 'string',
 	PORT: 'string',
 
 	DB_NAME: 'string',
