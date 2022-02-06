@@ -13,7 +13,7 @@ import { getOperationAST } from 'graphql';
 import { GraphQLParams } from '../types';
 
 const shouldCacheResponse = (req: Request, res: Response) => {
-	const isCacheable = (() => {
+	const isCacheable = () => {
 		if (req.method.toLowerCase() === 'get') {
 			return true;
 		}
@@ -31,9 +31,9 @@ const shouldCacheResponse = (req: Request, res: Response) => {
 		}
 
 		return false;
-	})();
+	};
 
-	return !req.sanitizedQuery.export && res.locals.cache !== false && isCacheable;
+	return !req.sanitizedQuery.export && res.locals.cache !== false && isCacheable();
 };
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
