@@ -18,9 +18,9 @@ export default definePanel({
 				: null;
 		});
 
-		const supportsAggregate = computed(() => {
-			return fieldType.value ? ['integer', 'bigInteger', 'float', 'decimal'].includes(fieldType.value) : false;
-		});
+		const supportsAggregate = computed(() =>
+			fieldType.value ? ['integer', 'bigInteger', 'float', 'decimal'].includes(fieldType.value) : false
+		);
 
 		return [
 			{
