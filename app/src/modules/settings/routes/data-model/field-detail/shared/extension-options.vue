@@ -14,10 +14,10 @@
 	<component
 		:is="`${type}-options-${extensionInfo.id}`"
 		v-else
-		v-model="optionsValues"
 		:value="optionsValues"
 		:collection="collection"
 		:field="field"
+		@input="optionsValues = $event"
 	/>
 </template>
 
