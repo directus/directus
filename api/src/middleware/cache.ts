@@ -31,11 +31,10 @@ const canBeCached = (req: Request) => {
 };
 
 const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
-	const { cache } = getCache();
-
-	if (!canBeCached(req)) return next();
 	if (env.CACHE_ENABLED !== true) return next();
+	const { cache } = getCache();
 	if (!cache) return next();
+	if (!canBeCached(req)) return next();
 
 	if (req.headers['cache-control']?.includes('no-store') || req.headers['Cache-Control']?.includes('no-store')) {
 		return next();
