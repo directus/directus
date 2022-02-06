@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import { Request, RequestHandler, Response } from 'express';
 import { Transform, transforms } from 'json2csv';
 import ms from 'ms';
 import { PassThrough } from 'stream';
@@ -9,17 +9,37 @@ import { getCacheKey } from '../utils/get-cache-key';
 import { parse as toXML } from 'js2xmlparser';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 import logger from '../logger';
+import { getOperationAST } from 'graphql';
+import { GraphQLParams } from '../types';
+
+const shouldCacheResponse = (req: Request, res: Response) => {
+	const isCacheable = (() => {
+		if (req.method.toLowerCase() === 'get') {
+			return true;
+		}
+
+		if (req.method.toLowerCase() === 'post') {
+			const graphqlParams: GraphQLParams = res.locals.graphqlParams;
+			const isGraphQl = graphqlParams != null;
+
+			if (!isGraphQl) {
+				return false;
+			}
+
+			const operationAST = getOperationAST(graphqlParams.document, graphqlParams.operationName);
+			return operationAST?.operation === 'query';
+		}
+
+		return false;
+	})();
+
+	return !req.sanitizedQuery.export && res.locals.cache !== false && isCacheable;
+};
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
 
-	if (
-		req.method.toLowerCase() === 'get' &&
-		env.CACHE_ENABLED === true &&
-		cache &&
-		!req.sanitizedQuery.export &&
-		res.locals.cache !== false
-	) {
+	if (env.CACHE_ENABLED === true && cache && shouldCacheResponse(req, res)) {
 		const key = getCacheKey(req);
 
 		try {
