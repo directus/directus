@@ -12,7 +12,7 @@
 	/>
 
 	<component
-		:is="`${type}-options-${extensionInfo.id}`"
+		:is="`${type}-options-${extensionInfo!.id}`"
 		v-else
 		:value="optionsValues"
 		:collection="collection"
