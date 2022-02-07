@@ -2,7 +2,7 @@
 
 While there are many different ways to run Directus on GCP, from single
 [Compute Engine](https://cloud.google.com/compute) instances to a full
-[Kubernetes Enginge](https://cloud.google.com/kubernetes-engine) stack, we like the following combination of services:
+[Kubernetes Engine](https://cloud.google.com/kubernetes-engine) stack, we like the following combination of services:
 
 - [Google Cloud Run](https://cloud.google.com/run)
 - [Google Cloud SQL](https://cloud.google.com/sql)
