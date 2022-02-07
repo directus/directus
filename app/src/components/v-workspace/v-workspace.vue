@@ -18,6 +18,7 @@
 				:panel="panel"
 				:edit-mode="editMode"
 				:now="now"
+				@edit="$emit('edit', panel)"
 				@update="$emit('update', { edits: $event, id: panel.id })"
 				@move="$emit('move', panel.id)"
 				@delete="$emit('delete', panel.id)"
@@ -54,7 +55,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['update', 'move', 'delete', 'duplicate'],
+	emits: ['update', 'move', 'delete', 'duplicate', 'edit'],
 	setup(props) {
 		const mainElement = inject('main-element', ref<Element>());
 		const mainElementSize = useElementSize(mainElement);

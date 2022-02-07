@@ -79,6 +79,7 @@
 			:panels="panels"
 			:zoom-to-fit="zoomToFit"
 			:now="now"
+			@edit="editPanel"
 			@update="stagePanelEdits"
 			@move="movePanelID = $event"
 			@delete="deletePanel"
@@ -92,7 +93,6 @@
 					:show-header="props.panel.show_header"
 					:height="props.panel.height"
 					:width="props.panel.width"
-					:dashboard="panel.dashboard"
 					:now="now"
 				/>
 			</template>
@@ -328,6 +328,7 @@ export default defineComponent({
 			deletePanel,
 			attemptCancelChanges,
 			duplicatePanel,
+			editPanel,
 			movePanelLoading,
 			t,
 			toggleFullScreen,
@@ -453,6 +454,10 @@ export default defineComponent({
 			newPanel.position_x = newPanel.position_x + 2;
 			newPanel.position_y = newPanel.position_y + 2;
 			stagePanelEdits({ edits: newPanel, id: '+' });
+		}
+
+		function editPanel(panel: Panel) {
+			router.push(`/insights/${panel.dashboard}/${panel.id}`);
 		}
 
 		function toggleFullScreen() {

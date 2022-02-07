@@ -21,13 +21,7 @@
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<v-icon
-				v-tooltip="t('edit')"
-				class="edit-icon"
-				name="edit"
-				clickable
-				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
-			/>
+			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click.stop="$emit('edit', panel)" />
 
 			<v-menu placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
@@ -105,7 +99,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['update', 'move', 'duplicate', 'delete'],
+	emits: ['update', 'move', 'duplicate', 'delete', 'edit'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 		const { panels } = getPanels();
