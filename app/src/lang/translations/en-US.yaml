@@ -1527,8 +1527,8 @@ interfaces:
     custom_formats: Custom Formats
     options_override: Options Override
     folder_note: Folder for uploaded files. Does not affect existing files.
-    imageToken: Image Token
-    imageToken_label: What (static) token to append to image sources
+    staticAccessToken: Static Access Token
+    staticAccessToken_label: Static access token is appended to the assets' URL
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.

@@ -258,10 +258,10 @@ export default defineInterface({
 			},
 			{
 				field: 'staticAccessToken',
-				name: '$t:interfaces.input-rich-text-md.staticAccessToken',
+				name: '$t:interfaces.input-rich-text-html.staticAccessToken',
 				type: 'string',
 				meta: {
-					note: '$t:interfaces.input-rich-text-md.staticAccessToken_label',
+					note: '$t:interfaces.input-rich-text-html.staticAccessToken_label',
 					width: 'half',
 					interface: 'input',
 				},
