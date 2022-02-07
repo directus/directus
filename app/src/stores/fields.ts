@@ -74,6 +74,10 @@ export const useFieldsStore = defineStore({
 			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
+					
+					if (!translation) {
+						continue;
+					}
 
 					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
 					const literalInterpolatedTranslation = translation.replace(/([{}@$|])/g, "{'$1'}");
