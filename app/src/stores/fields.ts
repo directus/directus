@@ -76,7 +76,7 @@ export const useFieldsStore = defineStore({
 					const { language, translation } = field.meta.translations[i];
 
 					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
-					const literalInterpolatedTranslation = translation.replace(/([{}@$|])/g, "{'$1'}");
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : '';
 
 					i18n.global.mergeLocaleMessage(language, {
 						fields: {
