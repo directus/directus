@@ -1,7 +1,6 @@
 import { computed } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { definePanel } from '@directus/shared/utils';
-import { Panel } from '@directus/shared/types';
 import PanelMetric from './metric.vue';
 
 export default definePanel({
@@ -10,17 +9,17 @@ export default definePanel({
 	description: '$t:panels.metric.description',
 	icon: 'functions',
 	component: PanelMetric,
-	options: (edits) => {
+	options: ({ options }) => {
 		const fieldsStore = useFieldsStore();
 
 		const fieldType = computed(() => {
-			const fieldStore = useFieldsStore();
-			const field = fieldStore.getField(edits.options?.collection, edits.options?.field);
-			return field?.type ?? null;
+			return options?.collection && options?.field
+				? fieldsStore.getField(options.collection, options.field)?.type
+				: null;
 		});
 
-		const supportsAggregate = computed(
-			() => fieldType.value && ['integer', 'bigInteger', 'float', 'decimal'].includes(fieldType.value)
+		const supportsAggregate = computed(() =>
+			fieldType.value ? ['integer', 'bigInteger', 'float', 'decimal'].includes(fieldType.value) : false
 		);
 
 		return [
