@@ -34,11 +34,7 @@ type UsableMedia = {
 	mediaButton: MediaButton;
 };
 
-export default function useMedia(
-	editor: Ref<any>,
-	isEditorDirty: Ref<boolean>,
-	staticAccessToken: Ref<string | undefined>
-): UsableMedia {
+export default function useMedia(editor: Ref<any>, staticAccessToken: Ref<string | undefined>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video', 'audio']);
@@ -189,7 +185,6 @@ export default function useMedia(
 	function saveMedia() {
 		if (embed.value === '') return;
 
-		isEditorDirty.value = true;
 		if (startEmbed.value !== '') {
 			const updatedContent = editor.value.getContent().replace(startEmbed.value, embed.value);
 			editor.value.setContent(updatedContent);

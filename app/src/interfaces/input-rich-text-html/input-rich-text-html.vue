@@ -6,7 +6,6 @@
 			:init="editorOptions"
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
-			@dirty="setDirty"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 		/>
@@ -187,13 +186,10 @@ import 'tinymce/icons/default';
 
 import Editor from '@tinymce/tinymce-vue';
 import getEditorStyles from './get-editor-styles';
-import { escapeRegExp } from 'lodash';
 import useImage from './useImage';
 import useMedia from './useMedia';
 import useLink from './useLink';
 import useSourceCode from './useSourceCode';
-import { getToken } from '@/api';
-import { getPublicURL } from '@/utils/get-root-path';
 import { percentage } from '@/utils/percentage';
 
 type CustomFormat = {
@@ -270,13 +266,13 @@ export default defineComponent({
 		const { t } = useI18n();
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
-		const isEditorDirty = ref(false);
 		const { staticAccessToken } = toRefs(props);
 
 		let tinymceEditor: HTMLElement | null;
 		let count = ref(0);
 		onMounted(() => {
 			let iframe;
+			let contentLoaded = false;
 			const wysiwyg = document.getElementById(props.field);
 
 			if (wysiwyg) iframe = wysiwyg.getElementsByTagName('iframe');
@@ -287,6 +283,11 @@ export default defineComponent({
 			if (tinymceEditor) {
 				const observer = new MutationObserver((_mutations) => {
 					count.value = tinymceEditor?.textContent?.replace('\n', '')?.length ?? 0;
+					if (!contentLoaded) {
+						contentLoaded = true;
+					} else {
+						emit('input', editorRef.value.getContent());
+					}
 				});
 
 				const config = { characterData: true, childList: true, subtree: true };
@@ -296,7 +297,6 @@ export default defineComponent({
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
-			isEditorDirty,
 			staticAccessToken
 		);
 
@@ -312,24 +312,18 @@ export default defineComponent({
 			mediaWidth,
 			mediaSource,
 			mediaButton,
-		} = useMedia(editorRef, isEditorDirty, staticAccessToken);
+		} = useMedia(editorRef, staticAccessToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef, isEditorDirty);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
 
-		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(
-			editorRef,
-			isEditorDirty
-		);
+		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
 		const internalValue = computed({
 			get() {
 				return props.value || '';
 			},
-			set(newValue: string) {
-				if (!isEditorDirty.value) return;
-				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					emit('input', newValue);
-				}
+			set() {
+				return;
 			},
 		});
 
@@ -388,7 +382,6 @@ export default defineComponent({
 			editorOptions,
 			internalValue,
 			setFocus,
-			setDirty,
 			onImageSelect,
 			saveImage,
 			imageDrawerOpen,
@@ -423,10 +416,6 @@ export default defineComponent({
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 			editor.ui.registry.addToggleButton('customLink', linkButton);
 			editor.ui.registry.addButton('customCode', sourceCodeButton);
-		}
-
-		function setDirty() {
-			isEditorDirty.value = true;
 		}
 
 		function setFocus(val: boolean) {
