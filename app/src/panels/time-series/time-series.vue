@@ -33,7 +33,6 @@ export default defineComponent({
 			type: Date,
 			required: true,
 		},
-
 		collection: {
 			type: String,
 			required: true,
