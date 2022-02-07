@@ -321,41 +321,14 @@ export default defineComponent({
 			isEditorDirty
 		);
 
-		const replaceTokens = (value: string, token: string | null) => {
-			const url = getPublicURL();
-			const regex = new RegExp(
-				`(<[^]+?=")(${escapeRegExp(
-					url
-				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
-				'gi'
-			);
-
-			return value.replace(regex, (_, pre, matchedUrl, post) => {
-				const matched = new URL(matchedUrl.replace(/&amp;/g, '&'));
-				const params = new URLSearchParams(matched.search);
-
-				if (!token) {
-					params.delete('access_token');
-				} else {
-					params.set('access_token', token);
-				}
-
-				const paramsString = params.toString().length > 0 ? `?${params.toString().replace(/&/g, '&amp;')}` : '';
-
-				return `${pre}${matched.origin}${matched.pathname}${paramsString}${post}`;
-			});
-		};
-
 		const internalValue = computed({
 			get() {
-				if (!props.value) return '';
-				return replaceTokens(props.value, props.staticAccessToken ?? getToken());
+				return props.value || '';
 			},
 			set(newValue: string) {
 				if (!isEditorDirty.value) return;
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					const removeToken = replaceTokens(newValue, props.staticAccessToken ?? null);
-					emit('input', removeToken);
+					emit('input', newValue);
 				}
 			},
 		});

@@ -1,8 +1,7 @@
-import { addTokenToURL } from '@/api';
+import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
 import { computed, Ref, ref, watch } from 'vue';
-import { replaceUrlAccessToken } from '@/utils/replace-url-access-token';
 
 type MediaSelection = {
 	sourceUrl: string;
@@ -11,7 +10,6 @@ type MediaSelection = {
 	tag?: 'video' | 'audio' | 'iframe';
 	type?: string;
 	previewUrl?: string;
-	embedUrl?: string;
 };
 
 type MediaButton = {
@@ -82,9 +80,11 @@ export default function useMedia(
 			return mediaSelection.value?.sourceUrl;
 		},
 		set(newSource: any) {
-			mediaSelection.value = { ...mediaSelection.value, sourceUrl: newSource };
-			mediaSelection.value.previewUrl = addTokenToURL(newSource, staticAccessToken.value);
-			mediaSelection.value.embedUrl = replaceUrlAccessToken(newSource, staticAccessToken.value);
+			mediaSelection.value = {
+				...mediaSelection.value,
+				sourceUrl: newSource,
+			};
+			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, staticAccessToken.value || getToken());
 		},
 	});
 
@@ -111,10 +111,10 @@ export default function useMedia(
 	watch(mediaSelection, (vid) => {
 		if (embed.value === '') {
 			if (vid === null) return;
-			embed.value = `<${vid.tag} width="${vid.width}" height="${vid.height}" controls><source src="${vid.embedUrl}" type="${vid.type}" /></${vid.tag}>`;
+			embed.value = `<${vid.tag} width="${vid.width}" height="${vid.height}" controls><source src="${vid.sourceUrl}" type="${vid.type}" /></${vid.tag}>`;
 		} else {
 			embed.value = embed.value
-				.replace(/src=".*?"/g, `src="${vid?.embedUrl}"`)
+				.replace(/src=".*?"/g, `src="${vid?.sourceUrl}"`)
 				.replace(/width=".*?"/g, `width="${vid?.width}"`)
 				.replace(/height=".*?"/g, `height="${vid?.height}"`)
 				.replace(/type=".*?"/g, `type="${vid?.type}"`)
@@ -128,19 +128,15 @@ export default function useMedia(
 			mediaSelection.value = null;
 		} else {
 			const tag = /<(video|audio|iframe)/g.exec(newEmbed)?.[1];
-			const url = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
+			const sourceUrl = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const type = /type="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 
-			if (url === undefined) return;
+			if (sourceUrl === undefined) return;
 
 			// Add temporarily access token for preview
-			const previewUrl = addTokenToURL(url, staticAccessToken.value);
-			// Remove token for source
-			const sourceUrl = replaceUrlAccessToken(url, null);
-			// Display static access token only
-			const embedUrl = replaceUrlAccessToken(url, staticAccessToken.value);
+			const previewUrl = replaceUrlAccessToken(sourceUrl, staticAccessToken.value || getToken());
 
 			mediaSelection.value = {
 				tag: tag === 'audio' ? 'audio' : tag === 'iframe' ? 'iframe' : 'video',
@@ -149,7 +145,6 @@ export default function useMedia(
 				height,
 				type,
 				previewUrl,
-				embedUrl,
 			};
 		}
 	});
@@ -182,13 +177,12 @@ export default function useMedia(
 		const tag = media.type.startsWith('audio') ? 'audio' : 'video';
 
 		mediaSelection.value = {
-			sourceUrl,
+			sourceUrl: replaceUrlAccessToken(sourceUrl, staticAccessToken.value),
 			width: media.width || 300,
 			height: media.height || 150,
 			tag,
 			type: media.type,
-			previewUrl: addTokenToURL(sourceUrl, staticAccessToken.value),
-			embedUrl: replaceUrlAccessToken(sourceUrl, staticAccessToken.value),
+			previewUrl: replaceUrlAccessToken(sourceUrl, staticAccessToken.value || getToken()),
 		};
 	}
 
@@ -203,5 +197,28 @@ export default function useMedia(
 			editor.value.selection.setContent(embed.value);
 		}
 		closeMediaDrawer();
+	}
+
+	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
+		// Only process assets URL
+		if (!url.includes(getPublicURL() + 'assets/')) {
+			return url;
+		}
+		try {
+			const parsedUrl = new URL(url);
+			const params = new URLSearchParams(parsedUrl.search);
+
+			if (!token) {
+				params.delete('access_token');
+			} else {
+				params.set('access_token', token);
+			}
+
+			return Array.from(params).length > 0
+				? `${parsedUrl.origin}${parsedUrl.pathname}?${params.toString()}`
+				: `${parsedUrl.origin}${parsedUrl.pathname}`;
+		} catch {
+			return url;
+		}
 	}
 }

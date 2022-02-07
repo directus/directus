@@ -338,20 +338,7 @@ export default defineComponent({
 		});
 
 		const markdownString = computed(() => {
-			let mdString = props.value || '';
-
-			if (!props.staticAccessToken) {
-				const baseUrl = getPublicURL() + 'assets/';
-				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
-
-				const images = Array.from(mdString.matchAll(regex));
-
-				for (const image of images) {
-					mdString = mdString.replace(image[1], addTokenToURL(image[1]));
-				}
-			}
-
-			return mdString;
+			return props.value || '';
 		});
 
 		const table = reactive({
@@ -400,7 +387,7 @@ export default defineComponent({
 				url += '?access_token=' + props.staticAccessToken;
 			}
 
-			codemirror.replaceSelection(`![](${url})`);
+			codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
 
 			imageDialogOpen.value = false;
 		}

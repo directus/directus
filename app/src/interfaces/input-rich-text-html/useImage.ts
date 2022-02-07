@@ -1,9 +1,8 @@
-import { addTokenToURL } from '@/api';
+import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { Ref, ref } from 'vue';
-import { replaceUrlAccessToken } from '@/utils/replace-url-access-token';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -45,24 +44,22 @@ export default function useImage(
 
 			if (buttonApi.isActive()) {
 				const node = editor.value.selection.getNode() as HTMLImageElement;
-				const previewUrl = node.getAttribute('src');
-				const imageUrlParams = previewUrl ? new URL(previewUrl).searchParams : undefined;
+				const imageUrl = node.getAttribute('src');
+				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
 				const alt = node.getAttribute('alt');
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
 
-				if (previewUrl === null || alt === null) {
+				if (imageUrl === null || alt === null) {
 					return;
 				}
-
-				const imageUrl = replaceUrlAccessToken(previewUrl, null);
 
 				imageSelection.value = {
 					imageUrl,
 					alt,
 					width,
 					height,
-					previewUrl,
+					previewUrl: replaceUrlAccessToken(imageUrl, staticAccessToken.value ?? getToken()),
 				};
 			} else {
 				imageSelection.value = null;
@@ -89,30 +86,50 @@ export default function useImage(
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		const imageUrl = getPublicURL() + 'assets/' + image.id;
+		const assetUrl = getPublicURL() + 'assets/' + image.id;
 
 		imageSelection.value = {
-			imageUrl,
+			imageUrl: replaceUrlAccessToken(assetUrl, staticAccessToken.value),
 			alt: image.title,
 			width: image.width,
 			height: image.height,
-			previewUrl: addTokenToURL(imageUrl, staticAccessToken.value),
+			previewUrl: replaceUrlAccessToken(assetUrl, staticAccessToken.value ?? getToken()),
 		};
 	}
 
 	function saveImage() {
 		const img = imageSelection.value;
 		if (img === null) return;
-		const resizedImageUrl = addTokenToURL(
-			addQueryToPath(img.imageUrl, {
-				...(img.width ? { width: img.width.toString() } : {}),
-				...(img.height ? { height: img.height.toString() } : {}),
-			}),
-			staticAccessToken.value
-		);
+		const resizedImageUrl = addQueryToPath(img.imageUrl, {
+			...(img.width ? { width: img.width.toString() } : {}),
+			...(img.height ? { height: img.height.toString() } : {}),
+		});
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		isEditorDirty.value = true;
 		editor.value.selection.setContent(imageHtml);
 		closeImageDrawer();
+	}
+
+	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
+		// Only process assets URL
+		if (!url.includes(getPublicURL() + 'assets/')) {
+			return url;
+		}
+		try {
+			const parsedUrl = new URL(url);
+			const params = new URLSearchParams(parsedUrl.search);
+
+			if (!token) {
+				params.delete('access_token');
+			} else {
+				params.set('access_token', token);
+			}
+
+			return Array.from(params).length > 0
+				? `${parsedUrl.origin}${parsedUrl.pathname}?${params.toString()}`
+				: `${parsedUrl.origin}${parsedUrl.pathname}`;
+		} catch {
+			return url;
+		}
 	}
 }
