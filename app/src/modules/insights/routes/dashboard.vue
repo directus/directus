@@ -74,7 +74,7 @@
 			<insights-navigation />
 		</template>
 
-		<insights-workspace
+		<v-workspace
 			:edit-mode="editMode"
 			:panels="panels"
 			:zoom-to-fit="zoomToFit"
@@ -83,7 +83,20 @@
 			@move="movePanelID = $event"
 			@delete="deletePanel"
 			@duplicate="duplicatePanel"
-		/>
+		>
+			<template #default="props">
+				<component
+					:is="`panel-${props.panel.type}`"
+					v-bind="props.panel.options"
+					:id="props.panel.id"
+					:show-header="props.panel.show_header"
+					:height="props.panel.height"
+					:width="props.panel.width"
+					:dashboard="panel.dashboard"
+					:now="now"
+				/>
+			</template>
+		</v-workspace>
 
 		<router-view
 			name="detail"
@@ -156,14 +169,13 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
-import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
-	components: { InsightsNotFound, InsightsNavigation, InsightsWorkspace },
+	components: { InsightsNotFound, InsightsNavigation },
 	props: {
 		primaryKey: {
 			type: String,

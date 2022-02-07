@@ -12,7 +12,7 @@
 				height: workspaceSize.height + 'px',
 			}"
 		>
-			<insights-panel
+			<v-workspace-panel
 				v-for="panel in panels"
 				:key="panel.id"
 				:panel="panel"
@@ -22,7 +22,9 @@
 				@move="$emit('move', panel.id)"
 				@delete="$emit('delete', panel.id)"
 				@duplicate="$emit('duplicate', panel)"
-			/>
+			>
+				<slot :panel="panel"></slot>
+			</v-workspace-panel>
 		</div>
 	</div>
 </template>
@@ -30,12 +32,10 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, inject, ref } from 'vue';
 import { Panel } from '@directus/shared/types';
-import InsightsPanel from '../components/panel.vue';
 import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({
 	name: 'InsightsWorkspace',
-	components: { InsightsPanel },
 	props: {
 		panels: {
 			type: Array as PropType<Panel[]>,
