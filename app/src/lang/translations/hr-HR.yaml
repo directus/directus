@@ -1,1 +1,116 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikator
+avatar: Avatar
+application: Aplikacija
+default_provider: Zadano
+published: Objavljeno
+draft: Skica
+archived: Arhivirano
+modules: Moduli
+module_bar: Bočni izbornik
+tile_size: Veličina pločice
+edit_field: Uredi polje
+conditions: Uvjeti
+switch_user: Promjena korisnika
+item_creation: Nova stavka
+item_revision: Revizija stavke
+enter_a_name: Unesite ime...
+duplicate_field: Dupliciraj polje
+half_width: Pola širine
+full_width: Puna širina
+group: Grupa
+and: I
+or: Ili
+fill_width: Širina ispune
+field_name_translations: Prijevodi naziva polja
+enter_password_to_enable_tfa: Unesite svoju lozinku za aktivaciju dvofaktorske autentifikacije
+add_field: Dodaj polje
+role_name: Naziv uloge
+branch: Grana
+leaf: List
+indeterminate: Neodređeno
+edit_collection: Uredi zbirku
+exclusive: Ekskluzivno
+children: Djeca
+db_only_click_to_configure: 'Samo za bave podataka: Kliknite za konfiguriranje'
+show_active_items: Prikaži aktivne stavke
+show_archived_items: Prikaži arhivirane stavke
+show_all_items: Prikaži sve stavke
+edited: Uređivano
+required: Obavezno
+required_for_app_access: Potrebno za pristup aplikacije
+requires_value: Obavezna vrijednost
+create_preset: Izrada unaprijed postavljene konfiguracije
+create_panel: Kreiraj ploču
+create_role: Stvori novu ulogu
+create_user: Dodaj korisnika
+delete_panel: Ukloni ploču
+create_webhook: Kreiraj webhook
+invite_users: Pozovite korisnike
+invite: Pozovi
+validationError:
+  gt: Vrijednost mora biti veća od {valid}
+  gte: Vrijednost mora biti veća ili jednaka {valid}
+  lt: Vrijednost mora biti manja od {valid}
+  lte: Vrijednost mora biti manja ili jednaka {valid}
+  empty: Vrijednost mora biti prazna
+  nempty: Vrijednost ne smije biti prazna
+  null: Vrijednost mora biti null
+  nnull: Vrijednost ne smije biti null
+  required: Vrijednost je obavezna
+  unique: Vrijednost mora biti jedinsrvena
+  regex: Vrijednost nije ispravno formatirana
+all_access: Puni prostup
+no_access: Bez pristupa
+use_custom: Prilagođeno
+nullable: Nullable
+allow_null_value: Dozvoli NULL vrijednost
+allow_multiple: Dozvoli više odabranih
+allow_multiple_to_be_open: Dozvoli više otvorenih
+enter_value_to_replace_nulls: Unesite novu vrijednost da biste zamijenili sve NULL vrijednosti koje se trenutno nalaze unutar ovog polja.
+field_standard: Standardno
+field_presentation: Prezentacija i pseudonimi
+field_file: Datoteka
+field_files: Više datoteka
+field_m2o: M2O odnos
+field_m2a: M2A odnos
+field_o2m: O2M odnos
+field_m2m: M2M odnos
+field_translations: Prijevodi
+field_group: Grupno polje
+item_permissions: Dopuštenja stavke
+field_permissions: Dopuštenja polja
+field_validation: Validacija polja
+field_presets: Postavke polja
+permissions_for_role: 'Stavke koje {role} može {action}.'
+fields_for_role: 'Stavke koje {role} može {action}.'
+errors:
+  NOT_NULL_VIOLATION: Vrijednost ne smije biti null
+value_unique: Vrijednost mora biti jedinsrvena
+fields:
+  directus_settings:
+    module_bar: Bočni izbornik
+  directus_fields:
+    translation: Prijevodi naziva polja
+  directus_roles:
+    name: Naziv uloge
