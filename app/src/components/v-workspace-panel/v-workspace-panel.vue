@@ -77,16 +77,7 @@
 		</div>
 
 		<div class="panel-content" :class="{ 'has-header': panel.show_header }">
-			<component
-				:is="`panel-${panel.type}`"
-				v-bind="panel.options"
-				:id="panel.id"
-				:show-header="panel.show_header"
-				:height="panel.height"
-				:width="panel.width"
-				:dashboard="panel.dashboard"
-				:now="now"
-			/>
+			<slot :panel="panel"></slot>
 		</div>
 	</div>
 </template>

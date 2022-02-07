@@ -52,6 +52,8 @@ import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
 import VDatePicker from './v-date-picker';
+import VWorkspace from './v-workspace';
+import VWorkspacePanel from './v-workspace-panel';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -110,6 +112,8 @@ export function registerComponents(app: App): void {
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
 	app.component('VDatePicker', VDatePicker);
+	app.component('VWorkspace', VWorkspace);
+	app.component('VWorkspacePanel', VWorkspacePanel);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);
