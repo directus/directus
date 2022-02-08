@@ -104,13 +104,167 @@ field_validation: Validacija polja
 field_presets: Postavke polja
 permissions_for_role: 'Stavke koje {role} može {action}.'
 fields_for_role: 'Stavke koje {role} može {action}.'
+validation_for_role: 'Polje {action} diktira {role} mora poštivati.'
+presets_for_role: 'Zadane vrijednosti polja za ulogu {role}.'
+presentation_and_aliases: Prezentacija i pseudonimi
+revision_post_create: Evo kako je ova stavka izgledala kada je nastala.
+revision_post_update: Evo kako je ova stavka izgledala nakon ažuriranja.
+changes_made: U nastavku se nalazi pregled promjena nastalih u ovoj reviziji.
+no_relational_data: Vodite računa da ovdje nisu uključeni relacijski podaci.
+hide_field_on_detail: Sakrij polje na detaljima
+show_field_on_detail: Prikaži polje na detaljima
+delete_field: Izbriši polje
+fields_and_layout: Polja i raspored
+field_create_success: 'Polje kreirano: "{field}"'
+field_update_success: 'Polje ažurirano: "{field}"'
+duplicate_where_to: Gdje biste željeli duplicirati ovo polje?
+language: Jezik
+geometry: Geometrija (sve)
+geometry.Point: Točka
+geometry.LineString: Linijski niz
+geometry.Polygon: Poligon
+geometry.MultiPoint: Više točaka
+geometry.MultiLineString: Višelinijski niz
+geometry.MultiPolygon: Višestruki poligon
+not_available_for_type: Nije dostupno za ovu vrstu
+create_translations: Dodaj prijevod
+auto_refresh: Automatsko osvježavanje
+refresh_interval: Interval osvježavanja
+no_refresh: Prestani osvježavati
+refresh_interval_seconds: Osvježi odmah | Svake sekunde | Svakih {seconds} sekundi
+refresh_interval_minutes: Svake minute | Svakih {minutes} minuta
+auto_generate: Automatsko generiranje
+this_will_auto_setup_fields_relations: Ovo će automatski postaviti sva potrebna polja i odnose.
+click_here: Kliknite ovdje
+to_manually_setup_translations: za ručno postavljanje prijevoda.
+click_to_manage_translated_fields: >-
+  187 / 5,000
+  Translation results
+  Još nema prevedenih polja. Kliknite ovdje da biste ih stvorili. | Postoji jedno prevedeno polje. Kliknite ovdje za upravljanje. | Postoji {count} prevedenih polja. Kliknite ovdje za upravljanje poljima.
+fields_group: Grupno polje
+no_collections_found: Nije pronađena nijedna zbirka.
+new_data_alert: 'Sljedeće će se stvoriti unutar vašeg podatkovnog modela:'
+search_collection: Pretraži zbirku...
+new_field: 'Novo polje'
+new_collection: 'Nova zbirka'
+add_m2o_to_collection: 'Dodaj M2O u "{collection}"'
+add_o2m_to_collection: 'Dodaj O2M u "{collection}"'
+add_m2m_to_collection: 'Dodaj M2M u "{collection}"'
+choose_a_type: Odaberi vrstu...
+determined_by_relationship: Određeno relacijom
+add_note: Dodajte korisnu napomenu za korisnike...
+add_link: Dodaj poveznicu
+custom_link: Prilagođena poveznica
+default_value: Zadana vrijednost
+standard_field: Standardno polje
+single_file: Datoteka
+multiple_files: Više datoteka
+m2o_relationship: Many to One odnos
+o2m_relationship: One to Many odnos
+m2m_relationship: Many to Manu odnos
+m2a_relationship: Many to Any odnos
+invalid_item: Nevažeća stavka
+next: Nastavi
+field_name: Naziv polja
+translations: Prijevodi
+no_translations: Nema prijevoda
+note: Napomena
+enter_a_value: Unesite vrijednost...
+enter_a_placeholder: Unesite rezervirano mjesto...
+length: Dužina
+related_collection: Povezana zbirka
+related_collections: Povezane zbirke
+translations_collection: Zbirka prijevoda
+languages_collection: Zbirka jezika
+import_data_input_placeholder: CSV ili JSON...
+import_data_button: Pokreni uvoz
+import_data_indeterminate: Uvozim podatke...
+import_data_success: Podaci uspješno uvezeni iz {filename}
+import_data_error: Struktura podataka ove datoteke ne odgovara zbirci.
+label_import: Uvoz
+label_export: Izvoz
+import_export: Uvoz / Izvoz
+format: Format
+use_current_filters_settings: Koristite trenutne filtere i postavke
+export_data_button: Pokreni izvoz
+last_page: Zadnja stranica
+last_access: Zadnji pristup
+fill_template: Ispunite vrijednošću predloška
+a_unique_table_name: Jedinstveni naziv tablice...
+a_unique_column_name: Jedinstveni naziv stupca...
+enable_custom_values: Omogući prilagođene vrijednosti
+submit: Pošalji
+move_to_folder: Premjesti u mapu
+move: Premjesti
+system: Sustav
+add_field_related: Dodaj polje povezanoj zbirci
+interface_label: Sučelje
+today: Danas
+yesterday: Jučer
+delete_comment: Obriši komentar
+date-fns_date: PPP
+date-fns_time: 'h:mm.ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: Minuta
+hours: Sati
+month: Mjesec
+year: Godina
+select_all: Odaberi sve
+months:
+  january: Siječanj
+  february: Veljača
+  march: Ožujak
+  april: Travanj
+  may: Svibanj
+  june: Lipanj
+  july: Srpanj
+  august: Kolovoz
+  september: Rujan
+selecting_items: Odabir stavki
+enable_select_button: Omogući gumb za odabir
+comments: Komentari
+no_comments: Još nema komentara
+click_to_expand: Klikni za proširenje
+select_item: Odaberi stavku
+no_items: Nema stavki
+search_items: Pretraži stavke...
+disabled: Onemogućeno
+information: Informacije
+report_bug: Prijavi grešku
 errors:
   NOT_NULL_VIOLATION: Vrijednost ne smije biti null
 value_unique: Vrijednost mora biti jedinsrvena
+wysiwyg_options:
+  selectall: Odaberi sve
 fields:
+  directus_collections:
+    note: Napomena
+  directus_users:
+    language: Jezik
+    last_page: Zadnja stranica
+    last_access: Zadnji pristup
   directus_settings:
     module_bar: Bočni izbornik
   directus_fields:
+    note: Napomena
     translation: Prijevodi naziva polja
   directus_roles:
     name: Naziv uloge
+field_options:
+  directus_collections:
+    language: Jezik
+interfaces:
+  select-dropdown:
+    choices_value_placeholder: Unesite vrijednost...
+displays:
+  translations:
+    translations: Prijevodi
+  datetime:
+    format: Format
+  formatted-value:
+    format: Format
+  labels:
+    choices_value_placeholder: Unesite vrijednost...
