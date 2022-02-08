@@ -31,6 +31,7 @@ module_bar: Bočni izbornik
 tile_size: Veličina pločice
 edit_field: Uredi polje
 conditions: Uvjeti
+maps: Karte
 switch_user: Promjena korisnika
 item_creation: Nova stavka
 item_revision: Revizija stavke
@@ -171,6 +172,36 @@ field_create_success: 'Polje kreirano: "{field}"'
 field_update_success: 'Polje ažurirano: "{field}"'
 duplicate_where_to: Gdje biste željeli duplicirati ovo polje?
 language: Jezik
+aggregate_function: Zbirna funkcija
+aggregate_precision: Zbirna preciznost
+group_aggregation: Grupno združivanje
+group_precision: Grupna preciznost
+global: Globalno
+admins_have_all_permissions: Administratori imaju sva dopuštenja
+camera: Kamera
+show_zero: Pokaži nulu
+create_in_advanced_field_creation_mode: Kreiraj polje u naprednom načinu rada
+continue_in_advanced_field_creation_mode: Nastavi u naprednom načinu izrade polja
+sum: Zbroj
+sum_distinct: Zbroj razlikovno
+avg: Prosjek
+avg_distinct: Prosječno razlikovno
+count: Zbroj
+count_distinct: Zbroj razlikovno
+min: Min
+max: Max
+exposure: Ekspozicija
+shutter: Zatvarač
+iso: ISO
+focal_length: Žarišna duljina
+schema_setup_key: Naziv stupca baze podataka ovog polja i API ključ
+create_field: Kreiraj polje
+creating_new_field: 'Novo polje ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Resetiraj postavke stranice
+hidden_field: Skriveno polje
+hidden_on_detail: Skriveno na detaljima
+disabled_editing_value: Onemogući uređivanje vrijednosti
 hash: Hash
 geometry: Geometrija (sve)
 geometry.Point: Točka
