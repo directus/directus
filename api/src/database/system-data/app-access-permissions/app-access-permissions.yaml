@@ -62,14 +62,14 @@
   permissions:
     recipient:
       _eq: $CURRENT_USER
-  fields: '*'
 
 - collection: directus_notifications
   action: update
   permissions:
     recipient:
       _eq: $CURRENT_USER
-  fields: 'status'
+  fields:
+    - status
 
 - collection: directus_users
   action: read
