@@ -273,6 +273,7 @@ users: Korisnici
 activity: Aktivnost
 activity_item: Stavka aktivnosti
 action: Radnja
+remove: Ukloni
 errors:
   ROUTE_NOT_FOUND: Nije pronađeno
   RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
@@ -328,49 +329,224 @@ visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
 drop_to_upload: Ispustite za prijenos
 item: Stavka
+items: Stavke
+upload_file: Prenesi datoteku
+upload_file_indeterminate: Prijenos datoteke...
+upload_file_success: Datoteka prenesena
+upload_files_indeterminate: 'Prijenos datoteka {done}/{total}'
+upload_files_success: '{count} datoteka preneseno'
+upload_pending: Prijenos na čekanju
+drag_file_here: Povucite i ispustite datoteku ovdje
+click_to_browse: Kliknite za pregledavanje
+interface_options: Opcije sučelja
+layout_options: Mogućnosti izgleda
+rows: Retci
+columns: Stupci
+collection_setup: Postavljanje zbirke
+optional_system_fields: Opcionalna sistemska polja
 value_unique: Vrijednost mora biti jedinsrvena
+all_activity: Sve aktivnosti
+create_item: Dodaj novu stavku
+display_template: Predložak prikaza
+language_display_template: Predložak prikaza jezika
+translations_display_template: Predložak prikaza prijevoda
+n_items_selected: 'Nema odabranih stavki | 1 stavka odabrana | {n} odabranih stavki'
+per_page: Po stranici
+all_files: Sve datoteke
+my_files: Moje datoteke
+recent_files: Nedavno korištene datoteke
+create_folder: Kreiraj mapu
+edit_folder: Uredi mapu
+folder_name: Naziv mape...
+folder_key: Ključ mape...
+add_file: Dodaj datoteku
+replace_file: Zamijeni datoteku
+no_results: Nema rezultata
+no_results_copy: Podesite ili obrišite filtre pretraživanja da biste vidjeli rezultate.
+clear_filters: Poništi filtere
+saves_automatically: Automatski sprema
+role: Uloge
+rule: Pravilo
+user: Korisnik
+no_presets: Nema unaprijed postavljenih postavki
+no_presets_copy: Još nisu spremljene nikakve unaprijed postavljene postavke ili oznake.
+no_presets_cta: Dodaj unaprijed podešenu postavku
+presets_only: Samo unaprijed postavljene postavke
+create: Kreiraj
+on_create: Prilikom kreiranja
+on_update: Prilikom ažuriranja
+read: Čitaj
+update: Ažuriraj
+select_fields: Odaberite polja
+full_screen: Puni zaslon
+unlimited: Neograničeno
+open_link_in: Otvori poveznicu u
+new_tab: Nova kartica
+current_tab: Trenutna kartica
 wysiwyg_options:
+  aligncenter: Centriraj
+  alignjustify: Poravnaj od ruba do ruba
+  alignleft: Poravnaj lijevo
+  alignnone: Bez poravnavanja
+  alignright: Poravnaj desno
+  forecolor: Boja prednjeg plana
+  backcolor: Boja pozadine
+  bold: Podebljano
+  italic: Kurziv
+  underline: Podcrtano
+  strikethrough: Precrtano
+  subscript: Subscript
+  superscript: Superscript
+  codeblock: Kôd
+  blockquote: Blok citat
+  bullist: Popis sa grafičkim oznakama
+  numlist: Numerirani popis
+  hr: Vodoravno pravilo
+  link: Dodaj/uredi poveznicu
+  unlink: Ukloni poveznicu
+  media: Dodaj/uredi medijski zapis
+  image: Dodaj/uredi sliku
+  copy: Kopiraj
+  cut: Izreži
+  paste: Zalijepi
+  heading: Naslov
+  h1: Zaglavlje 1
+  h2: Zaglavlje 2
+  h3: Zaglavlje 3
+  h4: Zaglavlje 4
+  h5: Zaglavlje 5
+  h6: Zaglavlje 6
+  fontselect: Odaberi font
+  fontsizeselect: Odaberi veličinu slova
+  indent: Uvuci
+  outdent: Izvuci
+  undo: Povrat
+  redo: Ponovi
+  remove: Ukloni
+  removeformat: Ukloni formatiranje
   selectall: Odaberi sve
+  table: Tablica
+  visualaid: Prikaži nevidljive elemente
+  source_code: Uredi izvorni kod
+  fullscreen: Puni zaslon
+  directionality: Usmjerenost
+dropdown: Padajući izbornik
+page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
+page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
+page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
+page_help_users_item: >-
+  **Pojedinosti o korisniku** — Upravljajte podacima o svom računu ili pregledajte pojedinosti drugih korisnika.
+page_help_insights_overview: '**Uvidi** — Popis nadzornih ploča kojima imate pristup.'
+page_help_insights_dashboard: '**Nadzorna ploča** — Radni prostor za upravljanje jednom ili više ploča'
+activity_feed: Sadržaj aktivnosti
+add_new: Dodaj novi
+create_new: Kreiraj novi
+all: Sve
+none: Ništa
+no_layout_collection_selected_yet: Još nije odabran izgled/zbirka
+batch_delete_confirm: >-
+  Nije odabrana nijedna stavka | Jeste li sigurni da želite izbrisati ovu stavku? Ova se radnja ne može poništiti. | Jeste li sigurni da želite izbrisati ovih {count} stavki? Ova se radnja ne može poništiti.
+cancel: Odustani
+no_upscale: Ne povećavaj slike
+collection: Zbirka
+collections: Zbirke
+content: Sadržaj
+singleton: Singleton
+singleton_label: Tretiraj kao jedan objekt
+system_fields_locked: Polja sustava su zaključana i ne mogu se uređivati
+directus_collection:
+  directus_activity: Dnevnici odgovornosti za sve događaje
+  directus_collections: Dodatna konfiguracija zbirke i metapodaci
+  directus_dashboards: Nadzorne ploče unutar modula s uvidima
+  directus_fields: Dodatna konfiguracija polja i metapodaci
+  directus_files: Metapodaci za sva upravljana datotečna sredstva
+  directus_folders: Pruža virtualne direktorije za datoteke
+  directus_migrations: Koju verziju baze podataka koristite
+  directus_panels: Pojedinačne ploče unutar nadzornih ploča s uvidima
 fields:
+  directus_activity:
+    collection: Zbirka
   directus_collections:
+    collection: Zbirka
     note: Napomena
+    display_template: Predložak prikaza
+    singleton: Singleton
   directus_users:
     language: Jezik
     status_active: Aktivan
+    role: Uloge
     last_page: Zadnja stranica
     last_access: Zadnji pristup
   directus_settings:
     module_bar: Bočni izbornik
+  directus_shares:
+    role: Uloge
   directus_fields:
     note: Napomena
+    singleton: Singleton
     translation: Prijevodi naziva polja
   directus_roles:
     name: Naziv uloge
+  directus_webhooks:
+    collections: Zbirke
 field_options:
   directus_settings:
     security_divider_title: Sigurnost
+  directus_activity:
+    create: Kreiraj
+    update: Ažuriraj
   directus_collections:
+    collection_setup: Postavljanje zbirke
+    singleton: Tretiraj kao jedan objekt
     language: Jezik
+  directus_roles:
+    collections_name: Zbirke
   directus_users:
     status_dropdown_active: Aktivan
   directus_webhooks:
     status_options_active: Aktivan
     status_options_inactive: Neaktivan
+    actions_create: Kreiraj
+    actions_update: Ažuriraj
 interfaces:
   filter:
     name: Filter
+    all: Sve
     any: Bilo koji
+  input-code:
+    code: Kôd
+  system-collection:
+    collection: Zbirka
+  system-collections:
+    collections: Zbirke
   system-display-template:
+    display-template: Predložak prikaza
     collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
     select_a_collection: Odaberite zbirku
   select-dropdown:
     choices_value_placeholder: Unesite vrijednost...
+  select-dropdown-m2o:
+    display_template: Predložak prikaza
+  translations:
+    display_template: Predložak prikaza
+  user:
+    user: Korisnik
+    modes:
+      dropdown: Padajući izbornik
 displays:
   translations:
     translations: Prijevodi
+  collection:
+    collection: Zbirka
   datetime:
     format: Format
   formatted-value:
     format: Format
+    italic: Kurziv
   labels:
     choices_value_placeholder: Unesite vrijednost...
+  user:
+    user: Korisnik
+layouts:
+  tabular:
+    tabular: Tablica
