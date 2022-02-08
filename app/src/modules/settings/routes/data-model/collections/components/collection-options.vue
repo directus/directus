@@ -33,13 +33,15 @@
 
 		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
-				<v-card-title>{{ t('delete_collection_are_you_sure') }}</v-card-title>
+				<v-card-title>
+					{{ collection.schema ? t('delete_collection_are_you_sure') : t('delete_folder_are_you_sure') }}
+				</v-card-title>
 				<v-card-actions>
 					<v-button :disabled="deleting" secondary @click="deleteActive = null">
 						{{ t('cancel') }}
 					</v-button>
 					<v-button :loading="deleting" kind="danger" @click="deleteCollection">
-						{{ t('delete_collection') }}
+						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

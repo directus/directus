@@ -4,6 +4,10 @@
 		transition-property: transform, border-radius;
 	}
 
+	.container.right:not(:nth-last-child(-n + 5)) {
+		display: none;
+	}
+
 	.container.right:not(:last-of-type) .v-drawer {
 		overflow: hidden;
 	}

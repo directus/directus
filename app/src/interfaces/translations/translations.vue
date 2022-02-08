@@ -289,12 +289,7 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(newVal, oldVal) => {
-					if (
-						newVal &&
-						!isEqual(newVal, oldVal) &&
-						newVal.every((item) => typeof item === 'string' || typeof item === 'number') &&
-						isUndo.value === false
-					) {
+					if (newVal && !oldVal && !isEqual(newVal, oldVal) && isUndo.value === false) {
 						loadItems();
 					}
 

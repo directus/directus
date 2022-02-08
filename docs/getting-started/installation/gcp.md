@@ -2,7 +2,7 @@
 
 While there are many different ways to run Directus on GCP, from single
 [Compute Engine](https://cloud.google.com/compute) instances to a full
-[Kubernetes Enginge](https://cloud.google.com/kubernetes-engine) stack, we like the following combination of services:
+[Kubernetes Engine](https://cloud.google.com/kubernetes-engine) stack, we like the following combination of services:
 
 - [Google Cloud Run](https://cloud.google.com/run)
 - [Google Cloud SQL](https://cloud.google.com/sql)
@@ -164,13 +164,25 @@ ADMIN_PASSWORD="localpassword"
 
 KEY="secretkey"
 SECRET="secret"
+
+####################################################################################################
+## Google Cloud Logging
+
+LOG_STYLE="raw"
 LOGGER_LEVELS="trace:DEBUG,debug:DEBUG,info:INFO,warn:WARNING,error:ERROR,fatal:CRITICAL"
+LOGGER_MESSAGE_KEY="message"
+
+####################################################################################################
+## With this setting you can set the level at which requests are logged
+
+LOGGER_HTTP_USE_LEVEL="debug"
 ```
 
 Notes:
 
 - the value of `connectionName` from step 11 should be prefixed with `/cloudsql/` as the value of `DB_HOST`
-- `LOGGER_LEVELS` is optional, but makes Directus logs show up with correct level in Google Cloud Logging.
+- Google Cloud Logging variables are optional, but they make Directus logs show up with correct level in Google Cloud
+  Logging.
 
 13. Build your container Run these commands.
 
