@@ -74,7 +74,7 @@
 			:selection="selectedPrimaryKeys"
 			:filter="customFilter"
 			multiple
-			@input="$emit('input', $event.length > 0 ? $event : null)"
+			@input="stageSelections"
 		/>
 	</div>
 </template>
@@ -178,7 +178,7 @@ export default defineComponent({
 		);
 
 		const { items, loading } = usePreview();
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, stageSelections, cancelEdit } = useEdits();
 		const { selectModalActive, selectedPrimaryKeys } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
 
@@ -193,6 +193,7 @@ export default defineComponent({
 			relatedCollection,
 			editsAtStart,
 			stageEdits,
+			stageSelections,
 			cancelEdit,
 			selectModalActive,
 			deleteItem,
@@ -394,7 +395,7 @@ export default defineComponent({
 			// This keeps track of the starting values so we can match with it
 			const editsAtStart = ref({});
 
-			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
+			return { currentlyEditing, editItem, editsAtStart, stageEdits, stageSelections, cancelEdit };
 
 			function editItem(item: any) {
 				const pkField = relatedPrimaryKeyField.value?.field;
@@ -444,6 +445,11 @@ export default defineComponent({
 
 				if (newValue.length === 0) emit('input', null);
 				else emit('input', newValue);
+			}
+
+			function stageSelections(selectedKeys: any) {
+				const newValues = [...selectedKeys, ...(props.value || []).filter((item) => typeof item === 'object')];
+				emit('input', newValues);
 			}
 
 			function cancelEdit() {
