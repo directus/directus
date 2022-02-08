@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identifier
 avatar: Avatar
+application: Application
 default_provider: Default
 published: Published
 draft: Draft
@@ -272,6 +273,7 @@ note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
 length: Length
+soft_length: Soft Limit
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
@@ -282,8 +284,16 @@ foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 raw_value: Raw value
+copy_raw_value: Copy Raw Value
+copy_raw_value_success: Copied
+copy_raw_value_fail: Copy Failed
+paste_raw_value: Paste Raw Value
+paste_raw_value_success: Pasted
+paste_raw_value_fail: Paste Failed
+view_raw_value: View Raw Value
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
+clear_value: Clear Value
 clear_changes: Clear Changes
 notifications: Notifications
 show_all_activity: Show All Activity
