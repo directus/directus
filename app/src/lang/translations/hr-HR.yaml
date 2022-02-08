@@ -324,6 +324,7 @@ post_comment_success: Komentar objavljen
 item_create_success: Stavka kreirana | Stavke kreirane
 item_update_success: Stavka ažurirana | Stavke ažurirane
 item_delete_success: Stavka obrisana | Stavke obrisane
+this_collection: Ova zbirka
 related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prijevoda
@@ -375,7 +376,55 @@ months:
   july: Srpanj
   august: Kolovoz
   september: Rujan
+  october: Listopad
+  november: Studeni
+  december: Prosinac
+drag_mode: Način povlačenja
+cancel_crop: Otkaži obrezivanje
+original: Izvornik
+url: URL
+import_label: Uvoz
+file_details: Pojedinosti datoteke
+dimensions: Dimenzije
+size: Veličina
 created: Kreirano
+modified: Izmijenjeno
+checksum: Kontrolni broj
+owner: Vlasnik
+edited_by: Uredio/la
+folder: Mapa
+zoom: Uvećaj
+download: Preuzmi
+open: Otvori
+open_in_new_window: Otvori u novom prozoru
+open_folder: Otvori "{folder}" mapu
+foreground_color: Boja prednjeg plana
+background_color: Boja pozadine
+upload_from_device: Prenesi s uređaja
+choose_from_library: Odaberite dadoteku iz biblioteke
+import_from_url: Uvezi datoteku s URL-a
+replace_from_device: Zamijenite datoteku s uređaja
+replace_from_library: Zamijenite datoteku iz biblioteke
+replace_from_url: Zamijenite datoteku s URL-a
+no_file_selected: Niti jedna datoteka nije odabrana
+download_file: Preuzmi datoteku
+collection_key: Ključ zbirke
+name: Naziv
+primary_key_field: Polje primarnog ključa
+type: Tip
+creating_new_collection: Kreiraj novu zbirku
+created_by: Kreirao/la
+created_on: Kreirano
+creating_collection_info: Imenujte zbirku i postavite njeno jedinstveno polje "ključa"...
+creating_collection_system: Omogućite i preimenujte bilo koje od ovih neobaveznih polja.
+auto_increment_integer: Automatski inkrementirani cijeli broj
+generated_uuid: Generiraj UUID
+manual_string: Ručno uneseni niz
+save_and_create_new: Spremi i kreiraj novo
+save_and_stay: Spremi i ostani
+save_as_copy: Spremi kao kopiju
+add_existing: Dodaj postojeći
+creating_items: Izrada stavki
 selecting_items: Odabir stavki
 enable_select_button: Omogući gumb za odabir
 comments: Komentari
@@ -950,27 +999,52 @@ field_options:
       strong_text: Jaka – velika / mala slova / brojevi / posebna
     storage_asset_presets:
       fit_label: Fit
+      upscaling: Povećanje veličine (upscaling)
+      fit:
+        contain_text: Sadrži (sačuvaj omjer slike)
+        cover_text: Cover (forsiraj točnu veličinu)
+        fit_text: Uklopi unutar
+        outside_text: Uklopi izvan
     additional_transforms: Dodatne transformacije
     transforms_note: Naziv Sharp metode i njezini argumenti. Pogledajte https://sharp.pixelplumbing.com/api-constructor za više informacija.
     mapbox_key: Mapbox pristupni token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Osnovne karte
+    basemaps_name_placeholder: Unesite naziv osnovne karte...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox stil
+    files_divider_title: Datoteke i minijature
     overrides_divider_title: Aplikacija nadjačava
   directus_activity:
+    login: Prijava
     create: Kreiraj
     update: Ažuriraj
     delete: Obriši
   directus_collections:
+    track_activity_revisions: Praćenje aktivnost i revizija
+    only_track_activity: Prati samo aktivnost
+    do_not_track_anything: Nemoj pratiti ništa
     collection_setup: Postavljanje zbirke
+    note_placeholder: Opis ove kolekcije...
+    hidden_label: Sakrij unutar aplikacije
     singleton: Tretiraj kao jedan objekt
     language: Jezik
+    translation: Prijevod
+    translation_placeholder: Unesite prijevod...
     collection_name: Ime zbirke
+    singular_unit: Jedinica singulara
+    plural_unit: Jedinica množine
     archive_divider: Arhiva
+    archive_field_placeholder: Odaberite polje...
+    archive_app_filter: Omogućite filtar arhive aplikacija
+    archive_value: Vrijednost postavljena prilikom arhiviranja...
+    unarchive_value: Vrijednost postavljena prilikom dearhiviranja...
     sort_divider: Sortiraj
+    sort_field: Odaberite polje...
   directus_roles:
+    fields:
+      name_name: Naziv
     collections_name: Zbirke
   directus_users:
     preferences_divider: Preferencije korisnika
@@ -1052,6 +1126,7 @@ fallback_icon: Rezervna ikona
 hidden: Skriveno
 password: Lozinka
 template: Predložak
+translation_placeholder: Unesite prijevod...
 interfaces:
   filter:
     name: Filter
@@ -1133,6 +1208,8 @@ interfaces:
     choices_value_placeholder: Unesite vrijednost...
   input-hash:
     hash: Hash
+  file-image:
+    image: Slika
   select-dropdown-m2o:
     display_template: Predložak prikaza
   input-rich-text-md:
@@ -1198,6 +1275,8 @@ interfaces:
     add_tags: Dodajte oznake...
   boolean:
     toggle: Uključi/isključi
+    color_on: Boja ulkjučena
+    color_off: Boja isključena
     label_default: Omogućeno
   translations:
     display_template: Predložak prikaza
@@ -1216,35 +1295,86 @@ displays:
     enable: Omogući
     user_language: Koristi jezik trenutnog korisnika
     default_language: Zadani jezik
+    language_field: Polje indikatora jezika
   boolean:
     boolean: Boolean
+    description: Prikaz uključenih i isključenih stanja
+    label_on: Oznaka uključena
+    label_on_placeholder: Unesite uključeno oznaku...
+    label_off: Oznaka isključena
+    label_off_placeholder: Unesite isključeno oznaku...
     icon_on: Ikona uključena
     icon_off: Ikona isključena
+    color_on: Boja ulkjučena
+    color_off: Boja isključena
   collection:
     collection: Zbirka
+    description: Prikaži zbirku
+    icon_label: Prikaži ikonu zbirke
   color:
     color: Boja
+    description: Prikaži točku u boji
+    default_color: Zadana boja
   datetime:
     datetime: Datum i vrijeme
+    description: Prikaži vrijednosti koje se odnose na vrijeme
     format: Format
+    format_note: >-
+      Prilagođeni format prihvaća __[Tablica simbola polja datuma](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Dugo
+    short: Kratko
+    relative: Relativno
+    relative_label: 'Prikaži relativno vrijeme, npr.: prije 5 minuta'
+  file:
+    file: Datoteka
+    description: Prikaži datoteke
+  filesize:
+    filesize: Veličina datoteke
+    description: Prikaži veličinu datoteke
   formatted-value:
+    formatted-value: Formatirana vrijednost
+    description: Prikaži formatiranu verziju teksta
     format: Format
+    format_label: Automatski formatiraj
     font: Font
+    font_sans_serif: Sans Serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Podebljano
+    bold_label: Koristi podebljani stil
     italic: Kurziv
+    italic_label: Koristi kurziv stil
     prefix: Prefiks
+    prefix_label: Dodaj tekst na početak
     suffix: Sufiks
+    suffix_label: Dodatni tekst
     color: Boja
+    background: Pozadina
+    icon: Ikona
+    border: Obrub
+    border_label: Prikaži rubove
     text: Tekst
+    text_placeholder: Opcionalno nadjačavanje vrijednosti...
+  formatted-json-value:
+    formatted-json-value: Formatirana JSON vrijednost
+    description: Prikaži formatiranu verziju objekta
+  icon:
+    icon: Ikona
+    description: Prikaži ikonu
+    filled: Ispunjeno
+    filled_label: Koristite ispunjenu varijantu
   image:
+    image: Slika
+    description: Prikaži minijaturni pregled slike
     circle: Krug
+    circle_label: Prikaži kao krug
   labels:
+    labels: Oznake
     choices_value_placeholder: Unesite vrijednost...
   user:
     user: Korisnik
     avatar: Avatar
+    name: Naziv
 layouts:
   cards:
     title: Naslov
@@ -1253,5 +1383,14 @@ layouts:
   map:
     map: Karta
 panels:
+  time_series:
+    date_field: Polje datuma
+    value_field: Polje vrijednosti
+    fill_type: Vrsta ispune
+    curve_type: Tip krivulje
   label:
     name: Oznaka
+    description: Prikaži malo teksta
+  list:
+    name: Lista
+    description: Filtrirajte i navedite polja iz zbirke
