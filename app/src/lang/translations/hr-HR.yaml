@@ -526,12 +526,61 @@ one_item: '1 stavka'
 one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati ovu zbirku? Time ćete izbrisati zbirku i sve stavke u njoj. Radnju nije moguće poništiti.
+delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati ovu mapu? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
 show_hidden_collections: Prikaži skrivene zbirke
 hide_hidden_collections: Sakrij skrivene zbirke
 show_header: Pokaži zaglavlje
+unmanaged_collections: Nekonfigurirane zbirke
+system_collections: Zbirke sustava
+placeholder: Rezervirano mjesto
+icon_left: Ikona lijevo
+icon_right: Ikona desno
+count_other_revisions: '{count} drugih revizija'
+font: Font
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Razdjelnik
+color: Boja
+circle: Krug
+empty_item: Prazna stavka
+log_in_with: 'Prijavi se putem {provider}'
+conditional_styles: Uvjetni stilovi
+advanced_settings: Napredne postavke
+advanced_filter: Napredni filter
+delete_advanced_filter: Ukloni filter
+change_advanced_filter_operator: Promjena operatora
+operators:
+  eq: Jednako
+  neq: Nije jednako
+  lt: Manje od
+  gt: Veće od
+  lte: Manje od ili jednako
+  gte: Veće od ili jednako
+  in: Jedno je od
+  nin: Nije jedno od
+  null: Je null
+  nnull: Nije null
+  contains: Sadrži
+  ncontains: Ne sadrži
+  starts_with: Počinje sa
+  nstarts_with: Ne počinje s
+  ends_with: Završava s
+  nends_with: Ne završava s
+  between: Je između
+  nbetween: Nije između
+  empty: Je prazno
+  nempty: Nije prazno
+  all: Sadrži ove ključeve
+  has: Sadrži neke od ovih ključeva
+  intersects: Presijeca
+  nintersects: Ne presijeca
+  intersects_bbox: Presijeca granični okvir
+  nintersects_bbox: Ne presijeca granični okvir
+loading: Učitavanje...
 drop_to_upload: Ispustite za prijenos
 item: Stavka
 items: Stavke
@@ -583,6 +632,8 @@ on_update: Prilikom ažuriranja
 read: Čitaj
 update: Ažuriraj
 select_fields: Odaberite polja
+format_text: Formatiraj tekst
+format_value: Formatiraj vrijednost
 operator: Operater
 bold: Podebljano
 toggle: Uključi/isključi
@@ -744,7 +795,9 @@ fields:
     collection: Zbirke
     icon: Ikona
     note: Napomena
+    color: Boja
     display_template: Predložak prikaza
+    hidden: Skriveno
     singleton: Singleton
     archive_app_filter: Arhivirajte filtar aplikacija
     archive_value: Vrijednost arhive
@@ -821,22 +874,72 @@ fields:
     basemaps_style: Mapbox stil
     mapbox_key: Mapbox pristupni token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribucija
+    attribution_placeholder: '© OpenStreetMap suradnici'
+    transforms_note: Naziv Sharp metode i njezini argumenti. Pogledajte https://sharp.pixelplumbing.com/api-constructor za više informacija.
+    additional_transforms: Dodatne transformacije
+    project_name: Naziv projekta
+    project_descriptor: Opis projekta
+    project_url: URL projekta
+    project_color: Boja projekta
+    project_logo: Logotip projekta
+    branding: Brendiranje i stil
+    public_foreground: Javni prvi plan
+    public_background: Javna pozadina
+    public_note: Javna napomena
+    auth_password_policy: Pravila za lozinku
+    auth_login_attempts: Broj pokušava prijave
+    files_and_thumbnails: Datoteke i pohrana
+    storage_default_folder: Zadana mapa
+    storage_asset_presets: Zadane postavke transformacije
+    storage_asset_transform: Dozvoljene transformacije
+    overrides: Aplikacija nadjačava
+    custom_css: Prilagođeni CSS
     module_bar: Bočni izbornik
+    transformations_all: Dozvoli sve transformacije
+    transformations_none: Onemogući transformacije
+    transformations_presets: Ograničite transformacije na unaprijed postavljene postavke u nastavku
   directus_shares:
+    name: Ime
     role: Uloge
     password: Lozinka
+    date_start: Početni datum
+    date_end: Završni datum
+    max_uses: Maksimalno upotreba
+    times_used: Upotrijebljeno puta
   directus_fields:
+    collection: Ime zbirke
+    icon: Ikona zbirke
     note: Napomena
+    hidden: Skriveno
     singleton: Singleton
     translation: Prijevodi naziva polja
+    display_template: Predložak
   directus_roles:
     name: Naziv uloge
+    icon: Ikona uloge
     description: Opis
+    app_access: Pristup aplikaciji
+    admin_access: Administratorski pristup
+    ip_access: IP pristup
+    enforce_tfa: Zahtijevaj 2FA
+    users: Korisnici s ulogom
+    module_list: Navigacija modula
   directus_webhooks:
+    name: Ime
+    method: Metoda
     status: Status
+    data: Podaci
+    header: Zaglavlje
+    value: Vrijednosti
+    headers: Zaglavlja zahtijeva
+    data_label: Pošalji podatke o događaju
+    triggers: Okidači
+    actions: Radnje
     collections: Zbirke
 field_options:
   directus_settings:
+    project_name_placeholder: Moj projekt...
     project_color_note: Pozadina i logotip za prijavu
     project_logo_note: Bijela 40x40 SVG/PNG
     public_note_placeholder: Kratka, javna poruka koja podržava markdown formatiranje...
@@ -847,19 +950,24 @@ field_options:
       strong_text: Jaka – velika / mala slova / brojevi / posebna
     storage_asset_presets:
       fit_label: Fit
+    additional_transforms: Dodatne transformacije
+    transforms_note: Naziv Sharp metode i njezini argumenti. Pogledajte https://sharp.pixelplumbing.com/api-constructor za više informacija.
     mapbox_key: Mapbox pristupni token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Osnovne karte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox stil
+    overrides_divider_title: Aplikacija nadjačava
   directus_activity:
     create: Kreiraj
     update: Ažuriraj
+    delete: Obriši
   directus_collections:
     collection_setup: Postavljanje zbirke
     singleton: Tretiraj kao jedan objekt
     language: Jezik
+    collection_name: Ime zbirke
     archive_divider: Arhiva
     sort_divider: Sortiraj
   directus_roles:
@@ -878,18 +986,87 @@ field_options:
   directus_webhooks:
     status_options_active: Aktivan
     status_options_inactive: Neaktivan
+    data_label: Pošalji podatke o događaju
+    triggers_divider: Okidači
     actions_create: Kreiraj
     actions_update: Ažuriraj
+    actions_delete: Obriši
+    headers:
+      header: Zaglavlje
+save_current_datetime: Spremi trenutni datum/vrijeme
+always_open: Uvijek otvoreno
+start_open: Počni otvoren
+start_collapsed: Počni skupljen
+block: Blok
+inline: Inline
 comment: Komentar
+shares: Dijeljenja
+unlimited_usage: Neograničena upotreba
+uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
+no_shares: Nema dijeljenja za prikaz
+new_share: Novo dijeljenje
+expired: Isteklo
+upcoming: Nadolazeće
+share: Podijeli
+share_item: Podijeli stavku
+shared_with_you: Stavka je podijeljena s vama
+shared_enter_passcode: Unesite šifru za nastavak...
+shared_leave_blank_for_unlimited: Ostavite prazno za neograničeno
+shared_times_remaining: Ova se poveznica može koristiti samo {n} puta
+shared_last_remaining: Ova se poveznica može koristiti samo jednom
+shared_uses_left: Radi dodatne sigurnosti, ova dijeljena stranica je konfigurirana s ograničenim brojem pregleda. Trenutno je preostalo {n} pregleda, nakon čega stranica više neće biti dostupna.
+share_access_page: Pristup dijeljenoj stranici
+share_access_not_found: Ova dijeljena stranica ili ne postoji ili je već premašila maksimalni broj dopuštenih upotreba.
+share_access_not_found_desc: Molimo kontaktirajte ovlaštenog korisnika ovog projekta kako biste zatražili pristup.
+share_access_not_found_title: Nepoznata dijeljena stranica
+share_copy_link: Kopiraj poveznicu
+share_copy_link_success: Poveznica kopirana
+share_copy_link_error: Nije moguće kopirati poveznicu
+share_send_link: Pošalji poveznicu
+relational_triggers: Relacijski okidači
+referential_action_field_label_m2o: Nakon brisanja {collection}...
+referential_action_field_label_o2m: Nakon poništavanja odabira {collection}...
+referential_action_no_action: Onemogući brisanje
+referential_action_cascade: Izbriši {collection} stavku (kaskadno)
+referential_action_set_null: Poništite polje {field}
+referential_action_set_default: Postavite {field} na zadanu vrijednost
+choose_action: Odaberite radnju
+continue_label: Nastavi
+continue_as: >-
+  {name} je trenutno prijavljen/a. Ako prepoznate ovaj račun, pritisnite Nastavi.
+editing_role: '{role} uloga'
+creating_webhook: Kreiraj web-dojavnik
+default_label: Zadano
+delete_label: Obriši
+delete_are_you_sure: >-
+  Ova radnja je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
+delete_field_are_you_sure: >-
+  Jeste li sigurni da želite izbrisati polje "{field}"? Ova se radnja ne može poništiti.
 description: Opis
+done: Gotovo
+duplicate: Dupliciraj
+limit: Limitiraj
 email: E-mail
+embed: Ugradi
+fallback_icon: Rezervna ikona
+hidden: Skriveno
 password: Lozinka
+template: Predložak
 interfaces:
   filter:
     name: Filter
     add_filter: Dodaj filter
     all: Sve
     any: Bilo koji
+    of_the_following: od sljedećih
+    no_rules: Nema konfiguriranih pravila
+    change_value: Kliknite za promjenu vrijednosti
+    placeholder: Povucite pravila ovdje
+  group-accordion:
+    name: Harmonika
+    description: Prikaži polja ili grupe kao odjeljke harmonike
+    start: Započni
+    all_closed: Sve zatvoreno
   presentation-links:
     primary: Primarno
   input-code:
@@ -898,10 +1075,14 @@ interfaces:
     collection: Zbirka
   system-collections:
     collections: Zbirke
+  select-color:
+    color: Boja
   system-display-template:
     display-template: Predložak prikaza
     collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
     select_a_collection: Odaberite zbirku
+  presentation-divider:
+    divider: Razdjelnik
   select-dropdown:
     choices_value_placeholder: Unesite vrijednost...
   input-hash:
@@ -930,15 +1111,23 @@ displays:
     icon_off: Ikona isključena
   collection:
     collection: Zbirka
+  color:
+    color: Boja
   datetime:
     format: Format
   formatted-value:
     format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Monospace
     bold: Podebljano
     italic: Kurziv
     prefix: Prefiks
     suffix: Sufiks
+    color: Boja
     text: Tekst
+  image:
+    circle: Krug
   labels:
     choices_value_placeholder: Unesite vrijednost...
   user:
