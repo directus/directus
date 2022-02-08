@@ -202,6 +202,25 @@ reset_page_preferences: Resetiraj postavke stranice
 hidden_field: Skriveno polje
 hidden_on_detail: Skriveno na detaljima
 disabled_editing_value: Onemogući uređivanje vrijednosti
+key: Ključ
+alias: Pseudonim
+bigInteger: Veliki cijeli broj
+boolean: Boolean
+date: Datum
+date_range: Raspon datuma
+datetime: Datum i vrijeme
+dateTime: Datum i vrijeme
+precision: Točnost
+decimal: Decimalni
+float: Plutajući
+integer: Cijeli broj
+json: JSON
+xml: XML
+string: Niz
+text: Tekst
+time: Vrijeme
+timestamp: Vremenska oznaka
+uuid: UUID
 hash: Hash
 geometry: Geometrija (sve)
 geometry.Point: Točka
@@ -906,6 +925,7 @@ displays:
   translations:
     translations: Prijevodi
   boolean:
+    boolean: Boolean
     icon_on: Ikona uključena
     icon_off: Ikona isključena
   collection:
@@ -918,6 +938,7 @@ displays:
     italic: Kurziv
     prefix: Prefiks
     suffix: Sufiks
+    text: Tekst
   labels:
     choices_value_placeholder: Unesite vrijednost...
   user:
