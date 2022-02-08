@@ -425,6 +425,7 @@ save_and_stay: Spremi i ostani
 save_as_copy: Spremi kao kopiju
 add_existing: Dodaj postojeći
 creating_items: Izrada stavki
+enable_create_button: Omogući gumb za stvaranje
 selecting_items: Odabir stavki
 enable_select_button: Omogući gumb za odabir
 comments: Komentari
@@ -683,6 +684,7 @@ update: Ažuriraj
 select_fields: Odaberite polja
 format_text: Formatiraj tekst
 format_value: Formatiraj vrijednost
+abbreviate_value: Skraćena vrijednost
 operator: Operater
 bold: Podebljano
 toggle: Uključi/isključi
@@ -786,7 +788,49 @@ choices: Izbori
 choices_option_configured_incorrectly: Izbori su pogrešno konfigurirani
 deselect: Odznači
 deselect_all: Odznači sve
+other: Drugo...
+adding_user: Dodavanje korisnika
+unknown_user: Nepoznati korisnik
+creating_in: 'Stvaranje stavke u {collection}'
+editing_in: 'Uređivanje stavke u {collection}'
+viewing_in: 'Pregledavanje stavke u {collection}'
+creating_unit: 'Kreiranje {unit}'
+editing_unit: 'Uređivanje {unit}'
+editing_in_batch: 'Skupno uređivanje {count} stavki'
+no_options_available: Nema dostupnih opcija
+settings_data_model: Model podataka
+settings_permissions: Uloge i dopuštenja
+settings_project: Postavke projekta
 settings_webhooks: Web-dojavnici
+settings_presets: Zadane postavke i oznake
+one_or_more_options_are_missing: Nedostaje jedna ili više opcija
+scope: Opseg
+select: Odaberite...
+layout: Raspored
+tree_view: Prikaz stabla
+changes_are_permanent: Promjene su trajne
+preset_name_placeholder: Služi kao zadano kada je prazno...
+preset_search_placeholder: Upit za pretragu...
+editing_preset: Uređivanje unaprijed postavljenih postavki
+layout_preview: Pretpregled rasporeda
+layout_setup: Postavljanje rasporeda
+unsaved_changes: Nespremljene promjene
+unsaved_changes_copy: Jeste li sigurni da želite napustiti ovu stranicu?
+discard_changes: Odbaci promjene
+discard_all_changes: Odbaci sve promjene
+discard_changes_copy: Jeste li sigurni da želite odbaciti sve napravljene promjene?
+show_x_axis: Prikaži X os
+show_y_axis: Prikaži Y os
+keep_editing: Nastavite uređivati
+page_help_collections_overview: '**Pregled zbirki** — Popis svih zbirki kojima imate pristup.'
+page_help_collections_collection: >-
+  **Pregledaj stavke** — Popisuje sve stavke iz {collection} kojima imate pristup. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
+page_help_collections_item: >-
+  **Detalji stavke** — Obrazac za pregled i upravljanje ovom stavkom. Ova bočna traka također sadrži potpunu povijest revizija i ugrađenih komentara.
+page_help_activity_collection: >-
+  **Aktivnost pregledavanja** — opsežan popis svih aktivnosti sustava i sadržaja vašeg korisnika.
+page_help_docs_global: >-
+  **Pregled dokumentacije** — Dokumenti posebno prilagođeni verziji i shemi ovog projekta.
 page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
@@ -1042,10 +1086,27 @@ field_options:
     unarchive_value: Vrijednost postavljena prilikom dearhiviranja...
     sort_divider: Sortiraj
     sort_field: Odaberite polje...
+    accountability_divider: Odgovornost
+    duplication_divider: Umnožavanje
+  directus_files:
+    title: Jedinstven naslov...
+    description: Neobavezan opis...
+    location: Neobavezna lokacija...
+    storage_divider: Imenovanje datoteka
+    filename_disk: Naziv na disku...
+    filename_download: Naziv prilikom preuzimanja...
   directus_roles:
+    name: Jedinstveni naziv za ovu ulogu...
+    description: Opis uloge...
+    ip_access: Dodajte dopuštene IP adrese, ostavite prazno da dopustite sve...
     fields:
+      icon_name: Ikona
       name_name: Naziv
+      name_placeholder: Unesite naslov...
+      link_name: Poveznica
+      link_placeholder: Relativni ili apsolutni URL...
     collections_name: Zbirke
+    collections_addLabel: Dodaj zbirku...
   directus_users:
     preferences_divider: Preferencije korisnika
     dropdown_auto: Automatski (na temelju sustava)
@@ -1053,6 +1114,7 @@ field_options:
     dropdown_dark: Tamni način
     admin_divider: Administratorske opcije
     status_dropdown_draft: Skica
+    status_dropdown_invited: Pozvani
     status_dropdown_active: Aktivan
     status_dropdown_suspended: Suspendiran
     status_dropdown_archived: Arhivirano
@@ -1065,8 +1127,17 @@ field_options:
     actions_create: Kreiraj
     actions_update: Ažuriraj
     actions_delete: Obriši
+    actions_login: Prijava
     headers:
       header: Zaglavlje
+      value: Vrijednost
+      add: Dodajte zaglavlje
+no_fields_in_collection: 'Još nema polja u "{collection}"'
+no_value: Nema vrijednosti
+do_nothing: Ne čini ništa
+generate_and_save_uuid: Generiraj i spremi UUID
+save_current_user_id: Spremi ID trenutnog korisnika
+save_current_user_role: Spremi ulogu trenutnog korisnika
 save_current_datetime: Spremi trenutni datum/vrijeme
 always_open: Uvijek otvoreno
 start_open: Počni otvoren
@@ -1123,6 +1194,8 @@ limit: Limitiraj
 email: E-mail
 embed: Ugradi
 fallback_icon: Rezervna ikona
+field: Polje | Polja
+file: Datoteka
 hidden: Skriveno
 password: Lozinka
 template: Predložak
@@ -1203,17 +1276,72 @@ interfaces:
     select_a_collection: Odaberite zbirku
   presentation-divider:
     divider: Razdjelnik
+    description: Označite i podijelite polja u odjeljke
+    title_placeholder: Unesite naslov ili ostavite prazno da bi se prikazao samo redak...
+    inline_title: Inline naslov
+    inline_title_label: Prikaži naslov unutar retka
+    margin_top: Gornja margina
+    margin_top_label: Povećaj gornju marginu
   select-dropdown:
+    description: Odaberite vrijednost iz padajućeg izbornika
+    choices_placeholder: Dodaj novi izbor
     allow_other: Dopusti drugo
+    allow_other_label: Dopusti druge vrijednosti
+    allow_none: Ne dopusti ništa
+    allow_none_label: Dopusti bez odabira
+    choices_name_placeholder: Unesite naziv...
     choices_value_placeholder: Unesite vrijednost...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Padajući izbornik (više)
+    description: Odaberite više vrijednosti iz padajućeg izbornika
+  file:
+    file: Datoteka
+    description: Odaberite ili prenesite datoteku
+  files:
+    files: Datoteke
+    description: Odaberite ili prenesite više datoteka
   input-hash:
     hash: Hash
+    description: Unesite vrijednost koju želite hashirati
+    masked: Maskirano
+    masked_label: Sakrij prave vrijednosti
+  select-icon:
+    icon: Ikona
+    description: Odaberite ikonu iz padakućeg izbornika
+    search_for_icon: Traži ikonu...
   file-image:
     image: Slika
+    description: Odaberite ili prenesite sliku
+    crop: Obreži kako bi stalo
+    crop_label: Obreži sliku prema potrebi
+  system-interface:
+    interface: Sučelje
+    description: Odaberite postojeće sučelje
+    placeholder: Odaberite sučelje...
+  system-interface-options:
+    interface-options: Opcije sučelja
+    description: Modal za odabir opcija sučelja
+  list-m2m:
+    many-to-many: Many to Many
+    description: Odaberite više povezanih spojnih stavki
+    display_template_configure_notice: Možete konfigurirati predložak prikaza nakon kreiranja ovog polja.
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Odaberite jednu srodnu stavku
     display_template: Predložak prikaza
   input-rich-text-md:
+    markdown: Markdown
+    description: Unesite i pregledajte markdown
     edit: Uredi
+    preview: Pretpregled
+    editorFont: Font uređivača
+    previewFont: Pregled fonta
+    customSyntax: Prilagođeni blokovi
+    customSyntax_label: Dodajte prilagođene vrste sintakse
+    customSyntax_add: Dodajte prilagođenu sintaksu
+    box: Blok / Inline
+    imageToken: Token slike
+    imageToken_label: Koji (statički) token dodati izvorima slike
   map:
     map: Karta
     description: Odaberite lokaciju na karti
@@ -1273,6 +1401,11 @@ interfaces:
     alphabetize: Abecedno
     alphabetize_label: Nametni abecedno razvrstavanje
     add_tags: Dodajte oznake...
+  input:
+    input: Unos
+    description: Ručno unesite vrijednost
+    trim: Skrati
+    mask: Maskirano
   boolean:
     toggle: Uključi/isključi
     color_on: Boja ulkjučena
@@ -1286,6 +1419,8 @@ interfaces:
       dropdown: Padajući izbornik
   input-rich-text-html:
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
+    imageToken: Token slike
+    imageToken_label: Koji (statički) token dodati izvorima slike
   group-detail:
     start_closed: Započni zatvoren
 displays:
@@ -1371,19 +1506,69 @@ displays:
   labels:
     labels: Oznake
     choices_value_placeholder: Unesite vrijednost...
+  mime-type:
+    extension_only: Samo ekstenzija
+    extension_only_label: Prikaži samo ekstenziju datoteke
+  rating:
+    rating: Ocjena
+    description: Vizualizirajte broj kao zvjezdice u odnosu na maksimalnu vrijednost
+    simple: Jednostavno
+    simple_label: Prikaži zvijezde u jednostavnom formatu
+  raw:
+    raw: Neobrađena vrijednost
+  related-values:
+    related-values: Povezane vrijednosti
+    description: Prikaz relativnih vrijednosti
+    display_template_configure_notice: Možete konfigurirati predložak prikaza nakon kreiranja ovog polja.
   user:
     user: Korisnik
+    description: Prikaži Directus korisnika
     avatar: Avatar
     name: Naziv
+    both: Oboje
+    circle_label: Prikaži korisnika u krugu
 layouts:
   cards:
+    cards: Kartice
+    image_source: Izvor slike
+    image_fit: Slika odgovara
+    crop: Obreži
+    contain: Sadrži
     title: Naslov
+    subtitle: Podnaslov
   tabular:
     tabular: Tablica
+    fields: Polja
+    spacing: Razmak
+    comfortable: Udobno
+    compact: Kompaktno
+    cozy: Udobno
+  calendar:
+    calendar: Kalendar
+    start_date_field: Polje datuma početka
+    end_date_field: Polje datuma završetka
   map:
     map: Karta
+    basemap: Osnovna karta
+    layers: Slojevi
+    cluster_options: Opcije grupiranja
+    cluster: Grupiraj podatke u blizini
+    cluster_radius: Radijus grupiranja
+    cluster_minpoints: Minimalna veličina grupiranja
+    cluster_maxzoom: Maksimalni zum za grupiranje
+    field: Geoprostorno polje
+    invalid_geometry: Nevažeća geometrija
+    find_location: Pronađi lokaciju...
+    default_template: Korištenje zadane zbirke...
+    no_compatible_fields: Nema kompatibilnih polja
 panels:
+  metric:
+    name: Metrički
+    description: Prikaži jednu vrijednost na temelju upita
+    field: Polje
   time_series:
+    name: Vremenske serije
+    description: Izradite linijski grafikon na temelju vrijednosti tijekom vremena
     date_field: Polje datuma
     value_field: Polje vrijednosti
     fill_type: Vrsta ispune
