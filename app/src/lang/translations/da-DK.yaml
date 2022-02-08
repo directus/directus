@@ -31,6 +31,7 @@ edit_collection: Rediger Samling
 exclusive: Eksklusiv
 children: Underordnede
 db_only_click_to_configure: 'Kun database: Klik for at indstille'
+show_active_items: Vis Aktive Elementer
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
 required: Påkrævet
@@ -624,6 +625,7 @@ toggle: Skift
 icon_on: Ikon Til
 icon_off: Ikon Fra
 label: Etiket
+insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
 panel_options: Panel Indstillinger
