@@ -384,8 +384,49 @@ value_decimals: Decimalne vrijednosti
 min_value: Min. vrijednost
 max_value: Max. vrijednost
 automatic: Automatski
+field_width: Širina polja
+add_filter: Dodaj filter
+upper_limit: Gornja granica...
+lower_limit: Donja granica...
+user_directory: Imenik korisnika
+documentation: Dokumentacija
+sidebar: Bočna traka
+duration: Trajanje
+charset: Skup znakova
+second: sekunda
+file_moved: Datoteka premještena
+collection_created: Zbirka kreirana
+modified_on: Ažurirano
+card_size: Veličina kartice
+sort_field: Polje za sortiranje
+add_sort_field: Dodaj polje za sortiranje
+sort: Sortiraj
+status: Status
 remove: Ukloni
+toggle_manual_sorting: Uključi/isključi ručno sortiranje
+bookmark_doesnt_exist: Oznaka ne postoji
+bookmark_doesnt_exist_copy: Oznaka koju pokušavate otvoriti nije pronađena.
+bookmark_doesnt_exist_cta: Povratak u zbirku
+select_an_item: Odaberi stavku...
+edit: Uredi
+enabled: Omogućeno
+disable_tfa: Onemogući 2FA
+tfa_scan_code: Skenirajte kod u svojoj aplikaciji za autentifikaciju da biste dovršili postavljanje 2FA
+enter_otp_to_disable_tfa: Unesite OTP da biste onemogućili 2FA
+create_account: Kreiraj račun
+account_created_successfully: Račun je uspješno kreiran
+auto_fill: Automatsko ispunjavanje
+corresponding_field: Pripadajuće polje
 errors:
+  COLLECTION_NOT_FOUND: "Zbirka ne postoji"
+  FIELD_NOT_FOUND: Polje nije pronađeno
+  FORBIDDEN: Zabranjeno
+  INVALID_CREDENTIALS: Pogrešno korisničko ime ili lozinka
+  INVALID_OTP: Pogrešna jednokratna lozinka
+  INVALID_PAYLOAD: Neispravan payload
+  INVALID_QUERY: Neispravan upit
+  ITEM_LIMIT_REACHED: Dosegnuto je ograničenje stavke
+  ITEM_NOT_FOUND: Stavka nije pronađena
   ROUTE_NOT_FOUND: Nije pronađeno
   RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
   USER_SUSPENDED: Suspendirani korisnik
@@ -438,6 +479,9 @@ delete_collection_are_you_sure: >-
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
+show_hidden_collections: Prikaži skrivene zbirke
+hide_hidden_collections: Sakrij skrivene zbirke
+show_header: Pokaži zaglavlje
 drop_to_upload: Ispustite za prijenos
 item: Stavka
 items: Stavke
@@ -489,7 +533,53 @@ on_update: Prilikom ažuriranja
 read: Čitaj
 update: Ažuriraj
 select_fields: Odaberite polja
+operator: Operater
+bold: Podebljano
+toggle: Uključi/isključi
+icon_on: Ikona uključena
+icon_off: Ikona isključena
+label: Oznaka
+insights: Uvidi
+dashboard: Upravljačka ploča
+panel: Panel
+panel_options: Postavke ploče
+panel_header: Zaglavlje ploče
+panel_name_placeholder: Imenujte ovu ploču...
+panel_note_placeholder: Neobavezni detalji o ovoj ploči...
+panel_delete_confirm: Jeste li sigurni da želite izbrisati ovu ploču? Ova se radnja ne može poništiti.
+dashboard_delete_confirm: Jeste li sigurni da želite izbrisati ovu nadzornu ploču? Ova se radnja ne može poništiti.
+edit_dashboard: Uredi nadzornu ploču
+delete_dashboard: Izbriši nadzornu ploču
+visible: Vidljivo
+prefix_placeholder: Tekst prije vrijednosti...
+suffix_placeholder: Tekst nakon vrijednosti...
+decimals_placeholder: Broj decimalnih mjesta...
+no_dashboards: Nema upravljačkih ploča
+no_dashboards_copy: Još nemate nijednu nadzornu ploču.
+no_data: Nema podataka
+create_dashboard: Kreiraj nadzornu ploču
+dashboard_name: Naziv nadzorne ploče
 full_screen: Puni zaslon
+edit_panels: Uredi ploče
+fit_to_screen: Prilagodi ekranu
+image_url: Url slike
+alt_text: Alternativni tekst
+media: Mediji
+quality: Kvaliteta
+width: Širina
+height: Visina
+source: Izvor
+url_placeholder: Unesite url...
+display_text: Prikaz teksta
+display_text_placeholder: Unesite tekst za prikaz...
+interface_group_text_and_numbers: Tekst i brojevi
+interface_group_selection: Izbor
+interface_group_relational: Relacijski
+interface_group_presentation: Prezentacija
+interface_group_groups: Grupe
+interface_group_other: Drugo
+tooltip: Tooltip
+tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
 new_tab: Nova kartica
@@ -542,6 +632,10 @@ wysiwyg_options:
   fullscreen: Puni zaslon
   directionality: Usmjerenost
 dropdown: Padajući izbornik
+choices: Izbori
+choices_option_configured_incorrectly: Izbori su pogrešno konfigurirani
+deselect: Odznači
+deselect_all: Odznači sve
 settings_webhooks: Web-dojavnici
 page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
@@ -602,11 +696,58 @@ fields:
     note: Napomena
     display_template: Predložak prikaza
     singleton: Singleton
+    archive_app_filter: Arhivirajte filtar aplikacija
+    archive_value: Vrijednost arhive
+    unarchive_value: Poništi arhiviranje vrijednosti
+    sort_field: Polje za sortiranje
+    accountability: Praćenje aktivnosti i revizija
+    archive_field: Arhivsko polje
+    item_duplication_fields: Polje za dupliciranje stavke
   directus_files:
+    $thumbnail: Minijatura
     title: Naslov
+    description: Opis
+    tags: Oznake
+    location: Lokacija
+    storage: Prostor za pohranu
+    filename_disk: Naziv datoteke (disk)
+    filename_download: Naziv datoteke (Preuzimanje)
+    metadata: Metapodaci
+    type: Mime tip
+    filesize: Veličina datoteke
+    modified_by: Ažurirao/la
+    modified_on: Ažurirano
+    created_on: Kreirano
+    created_by: Kreirao/la
+    embed: Ugradi
+    uploaded_by: Prenio/la
+    folder: Mapa
+    width: Širina
+    uploaded_on: Preneseno
+    height: Visina
+    charset: Skup znakova
+    duration: Trajanje
   directus_users:
+    first_name: Ime
+    last_name: Prezime
+    email: E-mail
+    password: Lozinka
+    avatar: Avatar
+    location: Lokacija
     title: Naslov
+    description: Opis
+    tags: Oznake
+    user_preferences: Preferencije korisnika
     language: Jezik
+    theme: Tema
+    theme_auto: Automatski (na temelju sustava)
+    theme_light: Svijetli način
+    theme_dark: Tamni način
+    tfa_secret: Dvofaktorska autentifikacija
+    admin_options: Administratorske opcije
+    status: Status
+    status_draft: Skica
+    status_invited: Pozvani
     status_active: Aktivan
     status_suspended: Suspendiran
     status_archived: Arhivirano
@@ -623,20 +764,45 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Mapiranje
+    basemaps: Osnovne karte
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox stil
+    mapbox_key: Mapbox pristupni token
+    mapbox_placeholder: pk.eyJ1Ijo.....
     module_bar: Bočni izbornik
   directus_shares:
     role: Uloge
+    password: Lozinka
   directus_fields:
     note: Napomena
     singleton: Singleton
     translation: Prijevodi naziva polja
   directus_roles:
     name: Naziv uloge
+    description: Opis
   directus_webhooks:
+    status: Status
     collections: Zbirke
 field_options:
   directus_settings:
+    project_color_note: Pozadina i logotip za prijavu
+    project_logo_note: Bijela 40x40 SVG/PNG
+    public_note_placeholder: Kratka, javna poruka koja podržava markdown formatiranje...
     security_divider_title: Sigurnost
+    auth_password_policy:
+      none_text: Ništa – ne preporučuje se
+      weak_text: Slaba – najmanje 8 znakova
+      strong_text: Jaka – velika / mala slova / brojevi / posebna
+    storage_asset_presets:
+      fit_label: Fit
+    mapbox_key: Mapbox pristupni token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Osnovne karte
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox stil
   directus_activity:
     create: Kreiraj
     update: Ažuriraj
@@ -645,9 +811,16 @@ field_options:
     singleton: Tretiraj kao jedan objekt
     language: Jezik
     archive_divider: Arhiva
+    sort_divider: Sortiraj
   directus_roles:
     collections_name: Zbirke
   directus_users:
+    preferences_divider: Preferencije korisnika
+    dropdown_auto: Automatski (na temelju sustava)
+    dropdown_light: Svijetli način
+    dropdown_dark: Tamni način
+    admin_divider: Administratorske opcije
+    status_dropdown_draft: Skica
     status_dropdown_active: Aktivan
     status_dropdown_suspended: Suspendiran
     status_dropdown_archived: Arhivirano
@@ -658,9 +831,13 @@ field_options:
     actions_create: Kreiraj
     actions_update: Ažuriraj
 comment: Komentar
+description: Opis
+email: E-mail
+password: Lozinka
 interfaces:
   filter:
     name: Filter
+    add_filter: Dodaj filter
     all: Sve
     any: Bilo koji
   presentation-links:
@@ -681,6 +858,13 @@ interfaces:
     hash: Hash
   select-dropdown-m2o:
     display_template: Predložak prikaza
+  input-rich-text-md:
+    edit: Uredi
+  tags:
+    tags: Oznake
+  boolean:
+    toggle: Uključi/isključi
+    label_default: Omogućeno
   translations:
     display_template: Predložak prikaza
   user:
@@ -690,12 +874,16 @@ interfaces:
 displays:
   translations:
     translations: Prijevodi
+  boolean:
+    icon_on: Ikona uključena
+    icon_off: Ikona isključena
   collection:
     collection: Zbirka
   datetime:
     format: Format
   formatted-value:
     format: Format
+    bold: Podebljano
     italic: Kurziv
     prefix: Prefiks
     suffix: Sufiks
@@ -703,8 +891,12 @@ displays:
     choices_value_placeholder: Unesite vrijednost...
   user:
     user: Korisnik
+    avatar: Avatar
 layouts:
   cards:
     title: Naslov
   tabular:
     tabular: Tablica
+panels:
+  label:
+    name: Oznaka
