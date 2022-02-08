@@ -24,13 +24,13 @@
 				:disabled="!relation.meta.sort_field"
 				@update:model-value="sortItems($event)"
 			>
-				<template #item="{ element }">
+				<template #item="{ element, index }">
 					<v-list-item
 						:dense="sortedItems.length > 4"
 						block
 						clickable
 						:disabled="disabled || updateAllowed === false"
-						@click="editItem(element)"
+						@click="editItem(element, index)"
 					>
 						<v-icon
 							v-if="relation.meta.sort_field"
@@ -397,19 +397,18 @@ export default defineComponent({
 
 			return { currentlyEditing, editItem, editsAtStart, stageEdits, stageSelections, cancelEdit };
 
-			function editItem(item: any) {
+			function editItem(item: any, index: number) {
 				const pkField = relatedPrimaryKeyField.value?.field;
-				if (!pkField) return;
+				if (!pkField || !props.value || index === -1) return;
 				const hasPrimaryKey = pkField in item;
 
-				const edits = (props.value || []).find(
-					(edit: any) =>
-						typeof edit === 'object' &&
-						relatedPrimaryKeyField.value?.field &&
-						edit[relatedPrimaryKeyField.value?.field] === item[relatedPrimaryKeyField.value?.field]
-				);
+				const foundItem = props.value[index];
+				if (typeof foundItem === 'object' && pkField in foundItem) {
+					editsAtStart.value = foundItem;
+				} else {
+					editsAtStart.value = hasPrimaryKey ? { [pkField]: item[pkField] || {} } : foundItem;
+				}
 
-				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';
 			}
 
