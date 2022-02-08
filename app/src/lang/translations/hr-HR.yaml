@@ -831,6 +831,21 @@ page_help_activity_collection: >-
   **Aktivnost pregledavanja** — opsežan popis svih aktivnosti sustava i sadržaja vašeg korisnika.
 page_help_docs_global: >-
   **Pregled dokumentacije** — Dokumenti posebno prilagođeni verziji i shemi ovog projekta.
+page_help_files_collection: >-
+  **Biblioteka datoteka** — Navodi sve datotečne materijale prenesene u ovaj projekt. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
+page_help_files_item: >-
+  **Detalji datoteke** — Obrazac za upravljanje metapodacima datoteke, uređivanje izvornog materijala i ažuriranje postavki pristupa.
+page_help_settings_project: "**Postavke projekta** — Globalne opcije konfiguracije vašeg projekta."
+page_help_settings_datamodel_collections: >-
+  **Model podataka: zbirke** — Navodi sve dostupne zbirke. To uključuje vidljive, skrivene i sustavne zbirke, kao i neupravljane tablice baze podataka koje se mogu dodati.
+page_help_settings_datamodel_fields: >-
+  **Model podataka: zbirka** — Obrazac za upravljanje ovom zbirkom i njezinim poljima.
+page_help_settings_roles_collection: '**Pregledaj uloge** — Navodi administratorske, javne i prilagođene korisničke uloge.'
+page_help_settings_roles_item: "**Pojedinosti o ulozi** — Upravljajte dopuštenjima uloge i drugim postavkama."
+page_help_settings_presets_collection: >-
+  **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, uloge i globalne oznake, kao i zadane prikaze.
+page_help_settings_presets_item: >-
+  **Unaprijed postavljene pojedinosti** — Obrazac za upravljanje oznakama i zadanim postavkama zbirke.
 page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
@@ -892,6 +907,7 @@ fields:
     display_template: Predložak prikaza
     hidden: Skriveno
     singleton: Singleton
+    translations: Prijevodi imenovanja zbirke
     archive_app_filter: Arhivirajte filtar aplikacija
     archive_value: Vrijednost arhive
     unarchive_value: Poništi arhiviranje vrijednosti
@@ -1405,23 +1421,69 @@ interfaces:
     input: Unos
     description: Ručno unesite vrijednost
     trim: Skrati
+    trim_label: Skrati početak i kraj
     mask: Maskirano
+    mask_label: Sakrij prave vrijednosti
+    clear: Izbrisana vrijednost
+    clear_label: Spremi kao prazan niz
+    minimum_value: Minimalna vrijednost
+    maximum_value: Maksimalna vrijednost
+    step_interval: Interval koraka
+    slug: Slugify
+    slug_label: Neka unesena vrijednost bude "URL safe"
+  input-multiline:
+    textarea: Tekstualno područje
+    description: Unesite običan tekst u više redaka
   boolean:
     toggle: Uključi/isključi
+    description: Prebacivanje između uključivanja i isključivanja
     color_on: Boja ulkjučena
     color_off: Boja isključena
+    label_placeholder: Unesite oznaku...
     label_default: Omogućeno
   translations:
     display_template: Predložak prikaza
+    no_collection: Nema zbirke
+    toggle_split_view: Uključi/isključi podijeljeni prikaz
+    language_field: Polje indikatora jezika
+  list-o2m-tree-view:
+    description: Prikaz stabla za ugniježđene rekurzivne one-to-many stavke
+    recursive_only: Sučelje prikaza stabla radi samo za rekurzivne odnose.
   user:
     user: Korisnik
+    description: Odaberite postojećeg Directus korisnika
+    select_mode: Odaberite način rada
     modes:
+      auto: Automatski
       dropdown: Padajući izbornik
+      modal: Modal
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Uređivač bogatog teksta koji piše HTML sadržaj
+    toolbar: Alatna traka
+    custom_formats: Prilagođeni formati
+    options_override: Nadjačavanje opcija
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     imageToken: Token slike
     imageToken_label: Koji (statički) token dodati izvorima slike
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete unos (API)
+    description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'
+    results_path: Putanja rezultata
+    value_path: Putanja vrijednosti
+    text_path: Putanja teksta
+    trigger: Okidač
+    rate: Ocijeni
+  group-raw:
+    name: Neobrađena grupa
+    description: Renderirajte polja onakva kakva jesu
   group-detail:
+    name: Grupa detalja
+    description: Renderirajte polja kao sklopivi odjeljak
+    show_header: Prikaži zaglavlje grupe
+    header_icon: Ikona zaglavlja
+    header_color: Boja zaglavlja
+    start_open: Počni otvoren
     start_closed: Započni zatvoren
 displays:
   translations:
@@ -1505,8 +1567,16 @@ displays:
     circle_label: Prikaži kao krug
   labels:
     labels: Oznake
+    description: Prikažite jednu ili popis oznaka
+    default_foreground: Zadani prednji plan
+    default_background: Zadana pozadina
+    format_label: Formatiraj svaku oznaku
+    show_as_dot: Prikaži kao točku
     choices_value_placeholder: Unesite vrijednost...
+    choices_text_placeholder: Unesite tekst...
   mime-type:
+    mime-type: MIME Tip
+    description: Prikaži MIME tip datoteke
     extension_only: Samo ekstenzija
     extension_only_label: Prikaži samo ekstenziju datoteke
   rating:
