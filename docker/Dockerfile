@@ -39,6 +39,10 @@ RUN \
   # Create directory for Directus with corresponding ownership
   # (can be omitted on newer Docker versions since WORKDIR below will do the same)
   && mkdir /directus && chown node:node /directus
+  
+# Add support for specifying the timezone of the container
+# using the "TZ" environment variable. 
+RUN apk add tzdata
 
 # Switch to user 'node' and directory '/directus'
 USER node
