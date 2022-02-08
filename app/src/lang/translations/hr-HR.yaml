@@ -68,7 +68,59 @@ delete_panel: Ukloni ploču
 create_webhook: Kreiraj webhook
 invite_users: Pozovite korisnike
 invite: Pozovi
+email_already_invited: Adresa e-pošte "{email}" već pozvana
+subject: Predmet
+inbox: Ulazna pošta
+emails: Poruke e-pošte
+connection_excellent: Izvrsna veza
+connection_good: Dobra veza
+connection_fair: Solidna veza
+connection_poor: Loša veza
+primary: Primarno
+rename_folder: Preimenuj mapu
+delete_folder: Izbriši mapu
+prefix: Prefiks
+suffix: Sufiks
+reset_bookmark: Poništi oznaku
+rename_bookmark: Preimenuj oznaku
+update_bookmark: Ažuriraj oznaku
+delete_bookmark: Obriši oznaku
+delete_bookmark_copy: >-
+  Jeste li sigurni da želite izbrisati oznaku "{bookmark}"? Ova se radnja ne može poništiti.
+logoutReason:
+  SIGN_OUT: Odjavljen
+  SESSION_EXPIRED: Istekla sesija
+public_label: Javno
+public_description: Određuje koji su API podaci dostupni bez provjere autentičnosti.
+admin_description: Početna administrativna uloga s neograničenim pristupom aplikaciji/API-ju.
+not_allowed: Nije dopušteno
+directus_version: Directus verzija
+node_version: Node verzija
+node_uptime: Node vrijeme rada
+os_type: Vrsta OS-a
+os_version: OS verzija
+os_uptime: OS vrijeme rada
+os_totalmem: OS memorija
+archive: Arhiva
+archive_confirm: Jeste li sigurni da želite arhivirati ovu stavku?
+archive_confirm_count: >-
+  Nema odabranih stavki | Jeste li sigurni da želite arhivirati ovu stavku? | Jeste li sigurni da želite arhivirati ovih {count} stavki?
+reset_system_permissions_to: 'Resetirajte dopuštenja sustava na:'
+reset_system_permissions_copy: Ova će radnja prebrisati sva prilagođena dopuštenja koja ste možda primijenili na zbirke sustava. Jesi li sigurni?
+the_following_are_minimum_permissions: Sljedeće su minimalne dozvole potrebne kada je omogućen "Pristup aplikaciji". Dozvole možete proširiti izvan ovog, ali ne ispod.
+app_access_minimum: Minimum za pristup aplikaciji
+recommended_defaults: Preporučene zadane postavke
+unarchive: Poništi arhiviranje
+unarchive_confirm: Jeste li sigurni da želite poništiti arhiviranje ove stavke?
+nested_files_folders_will_be_moved: Ugniježđene datoteke i mape bit će premještene za jednu razinu gore.
+unknown_validation_errors: 'Došlo je do pogrešaka provjere valjanosti za sljedeća skrivena polja:'
 validationError:
+  eq: Vrijednost mora biti {valid}
+  neq: Vrijednost ne može biti {invalid}
+  in: Vrijednost mora biti jedna od {valid}
+  nin: Vrijednost ne može biti jedna od {invalid}
+  contains: Vrijednost mora sadržavati {substring}
+  ncontains: Vrijednost ne može sadržavati {substring}
   gt: Vrijednost mora biti veća od {valid}
   gte: Vrijednost mora biti veća ili jednaka {valid}
   lt: Vrijednost mora biti manja od {valid}
@@ -119,6 +171,7 @@ field_create_success: 'Polje kreirano: "{field}"'
 field_update_success: 'Polje ažurirano: "{field}"'
 duplicate_where_to: Gdje biste željeli duplicirati ovo polje?
 language: Jezik
+hash: Hash
 geometry: Geometrija (sve)
 geometry.Point: Točka
 geometry.LineString: Linijski niz
@@ -172,6 +225,55 @@ note: Napomena
 enter_a_value: Unesite vrijednost...
 enter_a_placeholder: Unesite rezervirano mjesto...
 length: Dužina
+soft_length: Soft limit
+precision_scale: Preciznost i razmjer
+readonly: Samo za čitanje
+unique: Jedinstven
+updated_on: Ažurirano
+updated_by: Ažurirao/la
+primary_key: Primarni ključ
+foreign_key: Strani ključ
+finish_setup: Završi postavljanje
+dismiss: Odbaci
+raw_value: Neobrađena vrijednost
+copy_raw_value: Kopiraj neobrađenu vrijednost
+copy_raw_value_success: Kopirano
+copy_raw_value_fail: Kopiranje nije uspjelo
+paste_raw_value: Zalijepi neobrađenu vrijednost
+paste_raw_value_success: Zalijepljeno
+paste_raw_value_fail: Lijepljenje nije uspjelo
+view_raw_value: Pogledaj neobrađenu vrijednost
+edit_raw_value: Uredi neobrađenu vrijednost
+enter_raw_value: Unesite neobrađenu vrijednost...
+clear_value: Očisti vrijednost
+clear_changes: Očisti izmjene
+reset_to_default: Vrati na zadano
+undo_changes: Poništi promjene
+notifications: Obavijesti
+show_all_activity: Prikaži svu aktivnost
+page_not_found: Stranica nije pronađena
+page_not_found_body: Stranica koju tražite ne postoji.
+confirm_revert: Potvrdite vraćanje
+confirm_revert_body: Ovo će vratiti stavku u odabrano stanje.
+display: Prikaz
+settings_update_success: Postavke su ažurirane
+title: Naslov
+revision_delta_created: Kreirano
+revision_delta_created_externally: Kreirano izvana
+revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
+revision_delta_deleted: Obrisano
+revision_delta_reverted: Vraćeno
+revision_delta_other: Revizija
+revision_delta_by: '{date} od strane {user}'
+private_user: Privatni korisnik
+creation_preview: Pretpregled izrade
+revision_preview: Pretpregled revizije
+updates_made: Ažuriranja napravljena
+leave_comment: Ostavite komentar...
+post_comment_success: Komentar objavljen
+item_create_success: Stavka kreirana | Stavke kreirane
+item_update_success: Stavka ažurirana | Stavke ažurirane
+item_delete_success: Stavka obrisana | Stavke obrisane
 related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prijevoda
@@ -223,6 +325,7 @@ months:
   july: Srpanj
   august: Kolovoz
   september: Rujan
+created: Kreirano
 selecting_items: Odabir stavki
 enable_select_button: Omogući gumb za odabir
 comments: Komentari
@@ -273,6 +376,14 @@ users: Korisnici
 activity: Aktivnost
 activity_item: Stavka aktivnosti
 action: Radnja
+ip_address: IP Adresa
+user_agent: Korisnički Agent
+webhooks: Web-dojavnici
+decimals: Decimale
+value_decimals: Decimalne vrijednosti
+min_value: Min. vrijednost
+max_value: Max. vrijednost
+automatic: Automatski
 remove: Ukloni
 errors:
   ROUTE_NOT_FOUND: Nije pronađeno
@@ -431,6 +542,7 @@ wysiwyg_options:
   fullscreen: Puni zaslon
   directionality: Usmjerenost
 dropdown: Padajući izbornik
+settings_webhooks: Web-dojavnici
 page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
@@ -463,21 +575,54 @@ directus_collection:
   directus_folders: Pruža virtualne direktorije za datoteke
   directus_migrations: Koju verziju baze podataka koristite
   directus_panels: Pojedinačne ploče unutar nadzornih ploča s uvidima
+  directus_permissions: Dozvole pristupa za svaku ulogu
+  directus_notifications: Obavijesti poslane korisnicima
+  directus_presets: Unaprijed postavljene postavke za zbirke i oznake
+  directus_relations: Konfiguracija odnosa i metapodaci
+  directus_revisions: Snimke podataka za sve aktivnosti
+  directus_roles: Grupe dopuštenja za korisnike sustava
+  directus_sessions: Informacije o sesiji korisnika
+  directus_settings: Opcije konfiguracije projekta
+  directus_users: Korisnici sustava za platformu
+  directus_webhooks: Konfiguracija za HTTP zahtjeve temeljene na događajima
 fields:
   directus_activity:
+    item: Primarni ključ stavke
+    action: Radnja
     collection: Zbirka
+    timestamp: Radnja na
+    user: Radnja od strane
+    comment: Komentar
+    user_agent: Korisnički Agent
+    ip: IP Adresa
+    revisions: Revizije
   directus_collections:
-    collection: Zbirka
+    collection: Zbirke
+    icon: Ikona
     note: Napomena
     display_template: Predložak prikaza
     singleton: Singleton
+  directus_files:
+    title: Naslov
   directus_users:
+    title: Naslov
     language: Jezik
     status_active: Aktivan
+    status_suspended: Suspendiran
+    status_archived: Arhivirano
     role: Uloge
+    token: Token
+    token_placeholder: Unesite siguran pristupni token...
+    provider: Pružatelj
+    external_identifier: Vanjski identifikator
     last_page: Zadnja stranica
     last_access: Zadnji pristup
+    email_notifications: Obavijesti e-pošte
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
     module_bar: Bočni izbornik
   directus_shares:
     role: Uloge
@@ -499,20 +644,27 @@ field_options:
     collection_setup: Postavljanje zbirke
     singleton: Tretiraj kao jedan objekt
     language: Jezik
+    archive_divider: Arhiva
   directus_roles:
     collections_name: Zbirke
   directus_users:
     status_dropdown_active: Aktivan
+    status_dropdown_suspended: Suspendiran
+    status_dropdown_archived: Arhivirano
+    token: Unesite siguran pristupni token...
   directus_webhooks:
     status_options_active: Aktivan
     status_options_inactive: Neaktivan
     actions_create: Kreiraj
     actions_update: Ažuriraj
+comment: Komentar
 interfaces:
   filter:
     name: Filter
     all: Sve
     any: Bilo koji
+  presentation-links:
+    primary: Primarno
   input-code:
     code: Kôd
   system-collection:
@@ -525,6 +677,8 @@ interfaces:
     select_a_collection: Odaberite zbirku
   select-dropdown:
     choices_value_placeholder: Unesite vrijednost...
+  input-hash:
+    hash: Hash
   select-dropdown-m2o:
     display_template: Predložak prikaza
   translations:
@@ -543,10 +697,14 @@ displays:
   formatted-value:
     format: Format
     italic: Kurziv
+    prefix: Prefiks
+    suffix: Sufiks
   labels:
     choices_value_placeholder: Unesite vrijednost...
   user:
     user: Korisnik
 layouts:
+  cards:
+    title: Naslov
   tabular:
     tabular: Tablica
