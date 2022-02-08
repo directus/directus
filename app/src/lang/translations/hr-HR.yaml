@@ -1110,8 +1110,20 @@ interfaces:
   select-color:
     color: Boja
     description: Unesite ili odaberite vrijednost boje
+    placeholder: Odaberite boju...
+    preset_colors: Unaprijed postavljene boje
+    opacity: Prozirnost
+    preset_colors_add_label: Dodaj novu boju...
+    name_placeholder: Unesite naziv boje...
+  datetime:
+    datetime: Datum i vrijeme
+    description: Unesite datume i vremena
+    include_seconds: Uključi sekunde
+    set_to_now: Postavi na sad
+    use_24: Koristi 24-satni format
   system-display-template:
     display-template: Predložak prikaza
+    description: Pomiješajte statički tekst i dinamičke vrijednosti polja
     collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
     select_a_collection: Odaberite zbirku
   presentation-divider:
@@ -1125,8 +1137,65 @@ interfaces:
     display_template: Predložak prikaza
   input-rich-text-md:
     edit: Uredi
+  map:
+    map: Karta
+    description: Odaberite lokaciju na karti
+    zoom: Uvećaj
+    geometry_type: Vrsta geometrije
+    geometry_format: Geometrijski format
+    default_view: Zadani prikaz
+    invalid_options: Neispravne opcije
+    invalid_format: Neispravan format ({format})
+    unexpected_geometry: Očekivalo se {expected}, dobiveno {got}.
+    fit_bounds: Prilagodi prikaz podacima
+    native: Izvorno
+    geojson: GeoJSON
+    lnglat: Geografska dužina, širina
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Kliknite za odabir {geometry}
+  presentation-notice:
+    notice: Napomena
+    description: Prikaži kratku obavijest
+    text: Ovdje unesite sadržaj obavijesti...
+  list-o2m:
+    one-to-many: One to Many
+    description: Odaberite više povezanih stavki
+    no_collection: Zbirka nije pronađena
+  system-folder:
+    folder: Mapa
+    description: Odaberite mapu
+    field_hint: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
+    root_name: Korijen biblioteke datoteka
+    system_default: Sistemski zadano
+  select-radio:
+    radio-buttons: Radio gumbi
+    description: Odaberite jedan od više izbora
+  list:
+    repeater: Ponavljač
+    description: Napravite više unosa iste strukture
+    edit_fields: Uredi polja
+    add_label: '"Stvori novo" oznaka'
+    field_name_placeholder: Unesite naziv polja...
+    field_note_placeholder: Unesite napomenu o polju...
+  slider:
+    slider: Klizač
+    description: Odaberite broj pomoću klizača
+    always_show_value: Uvijek prikazuj vrijednost
   tags:
     tags: Oznake
+    description: Odaberite ili dodajte oznake
+    whitespace: Razmaci
+    hyphen: Zamijeni crticom
+    underscore: Zamijeni podvlakom
+    remove: Ukloni razmak
+    capitalization: Velika slova (capitalization)
+    uppercase: Pretvori u velika slova
+    lowercase: Pretvori u mala slova
+    auto_formatter: Koristite automatsko oblikovanje naslova
+    alphabetize: Abecedno
+    alphabetize_label: Nametni abecedno razvrstavanje
+    add_tags: Dodajte oznake...
   boolean:
     toggle: Uključi/isključi
     label_default: Omogućeno
@@ -1136,9 +1205,17 @@ interfaces:
     user: Korisnik
     modes:
       dropdown: Padajući izbornik
+  input-rich-text-html:
+    folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
+  group-detail:
+    start_closed: Započni zatvoren
 displays:
   translations:
     translations: Prijevodi
+    description: Pregled prijevoda
+    enable: Omogući
+    user_language: Koristi jezik trenutnog korisnika
+    default_language: Zadani jezik
   boolean:
     boolean: Boolean
     icon_on: Ikona uključena
@@ -1148,6 +1225,7 @@ displays:
   color:
     color: Boja
   datetime:
+    datetime: Datum i vrijeme
     format: Format
   formatted-value:
     format: Format
@@ -1172,6 +1250,8 @@ layouts:
     title: Naslov
   tabular:
     tabular: Tablica
+  map:
+    map: Karta
 panels:
   label:
     name: Oznaka
