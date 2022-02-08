@@ -1067,16 +1067,49 @@ interfaces:
     description: Prikaži polja ili grupe kao odjeljke harmonike
     start: Započni
     all_closed: Sve zatvoreno
+    first_opened: Prvo otvoreno
+    all_opened: Sve otvoreno
+    accordion_mode: Način rada harmonike
+    max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
+    presentation-links: Veze gumba
+    links: Poveznice
+    description: Konfigurabilni gumbi veza za pokretanje dinamičkih URL-ova
+    style: Stil
     primary: Primarno
+    link: Poveznice
+    button: Gumbi
+    error: Radnju nije moguće izvesti
+  select-multiple-checkbox:
+    checkboxes: Potvrdni okviri
+    description: Birajte između više opcija putem potvrdnih okvira
+    allow_other: Dopusti drugo
+    show_more: 'Prikaži još {count}'
+    items_shown: Stavki prikazano
+  select-multiple-checkbox-tree:
+    name: Potvrdni okviri (stablo)
+    description: Birajte između više opcija putem ugniježđenih potvrdnih okvira
+    value_combining: Kombiniranje vrijednosti
+    value_combining_note: Kontrolira koja se vrijednost pohranjuje kada se naprave ugniježđeni odabiri.
+    show_all: Prikaži sve
+    show_selected: Prikaži odabrano
   input-code:
     code: Kôd
+    description: Napišite ili podijelite isječke koda
+    line_number: Broj linije
+    line_wrapping: Omatanje linija
+    placeholder: Unesite kod ovdje...
   system-collection:
     collection: Zbirka
+    description: Odaberite između postojećih zbirki
+    include_system_collections: Uključite zbirke sustava
   system-collections:
     collections: Zbirke
+    description: Odaberite između postojećih zbirki
+    include_system_collections: Ulkjučuje zbirke sustava
   select-color:
     color: Boja
+    description: Unesite ili odaberite vrijednost boje
   system-display-template:
     display-template: Predložak prikaza
     collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
@@ -1084,6 +1117,7 @@ interfaces:
   presentation-divider:
     divider: Razdjelnik
   select-dropdown:
+    allow_other: Dopusti drugo
     choices_value_placeholder: Unesite vrijednost...
   input-hash:
     hash: Hash
