@@ -123,11 +123,11 @@ export async function createServer(): Promise<http.Server> {
 export async function startServer(): Promise<void> {
 	const server = await createServer();
 
-	const listen = env.LISTEN;
+	const host = env.HOST;
 	const port = env.PORT;
 
 	server
-		.listen(port, listen, () => {
+		.listen(port, host, () => {
 			checkForUpdate(pkg)
 				.then((update) => {
 					if (update) {
@@ -138,7 +138,7 @@ export async function startServer(): Promise<void> {
 					// No need to log/warn here. The update message is only an informative nice-to-have
 				});
 
-			logger.info(`Server started at http://${listen}:${port}`);
+			logger.info(`Server started at http://${host}:${port}`);
 
 			emitter.emitAction(
 				'server.start',
