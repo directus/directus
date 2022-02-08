@@ -36,7 +36,7 @@
 			placeholder="--"
 			@input="emitValue($event.target.value)"
 		/>
-		<v-menu :show-arrow="true" placement="bottom-start" seamless full-height>
+		<v-menu :close-on-content-click="false" :show-arrow="true" placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
 				<v-icon class="preview" name="event" small @click="toggle" />
 			</template>
