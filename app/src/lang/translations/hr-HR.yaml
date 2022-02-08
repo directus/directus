@@ -234,8 +234,100 @@ search_items: Pretraži stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
+request_feature: Zatraži značajku
+interface_not_found: 'Sučelje "{interface}" nije pronađeno.'
+reset_interface: Resetiraj sučelje
+display_not_found: 'Prikaz "{display}" nije pronađen.'
+reset_display: Resetiraj prikaz
+list-m2a: Graditelj (M2A)
+item_count: 'Nema stavki | Jedna stavka | {count} stavki'
+no_items_copy: Nema stavki u ovoj zbirci.
+file_count: 'Nema datoteka | Jedna datoteka | Broj datoteka: {count}'
+no_files_copy: Nema datoteka.
+user_count: 'Nema korisnika | Jedan korisnik | Broj korisnika: {count}'
+no_users_copy: Još nema korisnika s ovom ulogom.
+webhooks_count: 'Nema web-dojavnika| Jedan web-dojavnik | {count} web-dojavnika'
+no_webhooks_copy: Još nije konfiguriran nijedan web-dojavnik. Započnite stvaranjem jednog u nastavku.
+no_notifications: Nema obavijesti
+no_notifications_copy: Upoznati ste s svime!
+activity_log: Dnevnik aktivnosti
+all_items: Sve stavke
+any: Bilo koji
+csv: CSV
+no_collections: Nema zbirki
+create_collection: Nova zbirka
+no_collections_copy_admin: Još nemate niti jednu zbirku. Kliknite gumb u nastavku da biste započeli.
+no_collections_copy: Još nemate nijednu zbirku. Obratite se administratoru.
+relationship_not_setup: Odnos nije ispravno konfiguriran
+display_template_not_setup: Opcija predloška prikaza je pogrešno konfigurirana
+collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
+select_a_collection: Odaberite zbirku
+select_a_field: Odaberite polje
+active: Aktivan
+move_to: Premjesti u...
+copy: Kopiraj
+copy_to: Kopiraj u...
+no_other_dashboards_copy: Još nemate nijednu drugu nadzornu ploču.
+inactive: Neaktivan
+users: Korisnici
+activity: Aktivnost
+activity_item: Stavka aktivnosti
+action: Radnja
 errors:
+  ROUTE_NOT_FOUND: Nije pronađeno
+  RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
+  USER_SUSPENDED: Suspendirani korisnik
+  CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
+  UNPROCESSABLE_ENTITY: Entitet koji se ne može obraditi
+  INTERNAL_SERVER_ERROR: Neočekivana greška
   NOT_NULL_VIOLATION: Vrijednost ne smije biti null
+  ILLEGAL_ASSET_TRANSFORMATION: Izvor slike prevelik za pregled
+  VALUE_TOO_LONG: Vrijednost je preduga
+  VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
+  INVALID_FOREIGN_KEY: Neispravan strani ključ
+  UNKNOWN: Neočekivana greška
+security: Sigurnost
+value_hashed: Sigurno kriptirana vrijednost
+bookmark_name: Naziv oznake...
+create_bookmark: Stvori oznaku
+edit_bookmark: Uredi oznaku
+bookmarks: Oznake
+presets: Unaprijed postavljene postavke
+unexpected_error: Neočekivana greška
+unexpected_error_copy: Došlo je do neočekivane greške, molimo pokušajte ponovo kasnije.
+copy_details: Kopiraj pojedinosti
+no_app_access: Nema pristupa aplikaciji
+no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
+password_reset_sent: Poslali smo vam sigurnu vezu za poništavanje lozinke
+password_reset_successful: Lozinka je uspješno resetirana
+back: Povratak
+filter: Filter
+editing_image: Uređivanje slike
+square: Kvadrat
+free: Slobodni omjer stranica
+flip_horizontal: Okreni horizontalno
+flip_vertical: Okreni okomito
+aspect_ratio: Omjer prikaza
+rotate: Rotiraj
+all_users: Svi korisnici
+delete_collection: Obriši zbirku
+update_collection_success: Ažurirana zbirka
+delete_collection_success: Obrisana zbirka
+make_collection_visible: Učini zbirku vidljivom
+make_collection_hidden: Učini zbirku skrivenom
+make_folder_visible: Učini mapu vidljivom
+make_folder_hidden: Učini mapu skrivenom
+start_end_of_count_items: '{start}-{end} od {count} stavki'
+start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
+one_item: '1 stavka'
+one_filtered_item: '1 filtrirana stavka'
+delete_collection_are_you_sure: >-
+  Jeste li sigurni da želite izbrisati ovu zbirku? Time ćete izbrisati zbirku i sve stavke u njoj. Radnju nije moguće poništiti.
+collections_shown: Prikazane zbirke
+visible_collections: Vidljive zbirke
+hidden_collections: Skrivene zbirke
+drop_to_upload: Ispustite za prijenos
+item: Stavka
 value_unique: Vrijednost mora biti jedinsrvena
 wysiwyg_options:
   selectall: Odaberi sve
@@ -244,6 +336,7 @@ fields:
     note: Napomena
   directus_users:
     language: Jezik
+    status_active: Aktivan
     last_page: Zadnja stranica
     last_access: Zadnji pristup
   directus_settings:
@@ -254,9 +347,22 @@ fields:
   directus_roles:
     name: Naziv uloge
 field_options:
+  directus_settings:
+    security_divider_title: Sigurnost
   directus_collections:
     language: Jezik
+  directus_users:
+    status_dropdown_active: Aktivan
+  directus_webhooks:
+    status_options_active: Aktivan
+    status_options_inactive: Neaktivan
 interfaces:
+  filter:
+    name: Filter
+    any: Bilo koji
+  system-display-template:
+    collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
+    select_a_collection: Odaberite zbirku
   select-dropdown:
     choices_value_placeholder: Unesite vrijednost...
 displays:
