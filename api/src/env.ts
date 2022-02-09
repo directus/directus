@@ -19,7 +19,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
 
-	DB_EXCLUDE_TABLES: 'spatial_ref_sys',
+	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',
@@ -29,8 +29,6 @@ const defaults: Record<string, any> = {
 	RATE_LIMITER_POINTS: 25,
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
-
-	SESSION_STORE: 'memory',
 
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
@@ -55,10 +53,13 @@ const defaults: Record<string, any> = {
 	CACHE_AUTO_PURGE: false,
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
+	CACHE_PERMISSIONS: true,
 
-	OAUTH_PROVIDERS: '',
+	AUTH_PROVIDERS: '',
+	AUTH_DISABLE_DEFAULT: false,
 
 	EXTENSIONS_PATH: './extensions',
+	EXTENSIONS_AUTO_RELOAD: false,
 
 	EMAIL_FROM: 'no-reply@directus.io',
 	EMAIL_TRANSPORT: 'sendmail',
@@ -71,6 +72,9 @@ const defaults: Record<string, any> = {
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
+
+	IP_TRUST_PROXY: true,
+	IP_CUSTOM_HEADER: false,
 
 	SERVE_APP: true,
 };
@@ -85,6 +89,8 @@ const typeMap: Record<string, string> = {
 	DB_PASSWORD: 'string',
 	DB_DATABASE: 'string',
 	DB_PORT: 'number',
+
+	DB_EXCLUDE_TABLES: 'array',
 };
 
 let env: Record<string, any> = {

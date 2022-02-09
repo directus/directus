@@ -40,7 +40,7 @@
 			v-model:active="selectDrawer"
 			:collection="collection"
 			:selection="[]"
-			:filters="selectionFilters"
+			:filter="customFilter"
 			multiple
 			@input="stageSelection"
 		/>
@@ -49,16 +49,20 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, PropType, onMounted, watch } from 'vue';
+import { defineComponent, ref, computed, PropType, onMounted, watch, inject } from 'vue';
 import { useCollection } from '@directus/shared/composables';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
-import { Filter, Relation } from '@directus/shared/types';
+import { Relation } from '@directus/shared/types';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
+import { deepMap } from '@directus/shared/utils';
 
 export default defineComponent({
 	components: { NestedDraggable, DrawerCollection, DrawerItem },
@@ -95,10 +99,28 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const values = inject('values', ref<Record<string, any>>({}));
+
+		const customFilter = computed(() => {
+			return parseFilter(
+				deepMap(props.filter, (val: any) => {
+					if (val && typeof val === 'string') {
+						return render(val, values.value);
+					}
+
+					return val;
+				})
+			);
+		});
 
 		const relationsStore = useRelationsStore();
 		const openItems = ref([]);
@@ -107,7 +129,7 @@ export default defineComponent({
 		const { info, primaryKeyField } = useCollection(relation.value.related_collection!);
 		const { loading, error, stagedValues, fetchValues, emitValue } = useValues();
 
-		const { stageSelection, selectDrawer, selectionFilters } = useSelection();
+		const { stageSelection, selectDrawer } = useSelection();
 		const { addNewActive, addNew } = useAddNew();
 
 		const template = computed(() => {
@@ -135,9 +157,9 @@ export default defineComponent({
 			emitValue,
 			stageSelection,
 			selectDrawer,
-			selectionFilters,
 			addNewActive,
 			addNew,
+			customFilter,
 		};
 
 		function useValues() {
@@ -253,30 +275,7 @@ export default defineComponent({
 				}
 			});
 
-			const selectionFilters = computed<Filter[]>(() => {
-				const pkField = primaryKeyField.value?.field;
-
-				if (selectedPrimaryKeys.value.length === 0) return [];
-
-				return [
-					{
-						key: 'selection',
-						field: pkField,
-						operator: 'nin',
-						value: selectedPrimaryKeys.value.join(','),
-						locked: true,
-					},
-					{
-						key: 'parent',
-						field: relation.value.field,
-						operator: 'null',
-						value: true,
-						locked: true,
-					},
-				] as Filter[];
-			});
-
-			return { stageSelection, selectDrawer, selectionFilters };
+			return { stageSelection, selectDrawer };
 
 			async function stageSelection(newSelection: (number | string)[]) {
 				loading.value = true;

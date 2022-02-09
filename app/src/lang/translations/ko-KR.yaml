@@ -1,4 +1,5 @@
 ---
+avatar: 아바타
 edit_field: 필드 편집
 item_revision: 아이템 리비전
 duplicate_field: 중복 필드
@@ -79,7 +80,6 @@ length: 길이
 unique: 고유
 post_comment_success: 댓글 작성됨
 format: 형식
-export_collection: '컬렉션 내보내기'
 last_page: 마지막 페이지
 last_access: 최근 접속
 submit: 확인
@@ -127,17 +127,19 @@ fields:
 field_options:
   directus_collections:
     language: 언어
-  directus_roles:
-    collection_list:
-      fields:
-        type_name: 타입
 interfaces:
   select-dropdown:
     choices_value_placeholder: 값 입력
   system-interface:
     interface: 인터페이스
 displays:
+  translations:
+    translations: 번역
   datetime:
     format: 형식
+  formatted-value:
+    format: 형식
+    prefix: 접두사
+    suffix: 접미사
   labels:
     choices_value_placeholder: 값 입력

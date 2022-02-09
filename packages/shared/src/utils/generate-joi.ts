@@ -2,12 +2,12 @@ import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema, Dat
 import { escapeRegExp, merge } from 'lodash';
 import { FieldFilter } from '../types/filter';
 
-interface StringSchema extends BaseStringSchema {
+export interface StringSchema extends BaseStringSchema {
 	contains(substring: string): this;
 	ncontains(substring: string): this;
 }
 
-const Joi: typeof BaseJoi = BaseJoi.extend({
+export const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
 	base: BaseJoi.string(),
 	messages: {
@@ -31,7 +31,6 @@ const Joi: typeof BaseJoi = BaseJoi.extend({
 				if (value.includes(substring) === false) {
 					return helpers.error('string.contains', { substring });
 				}
-
 				return value;
 			},
 		},

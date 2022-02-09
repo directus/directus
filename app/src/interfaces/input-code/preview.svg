@@ -1,0 +1,14 @@
+<svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<rect x="18" y="15" width="120" height="66" rx="6" fill="var(--background-page)" class="glow" />
+	<rect x="19" y="16" width="118" height="64" rx="5" stroke="var(--primary)" stroke-width="2" />
+	<rect x="28" y="25" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="28" y="45.148" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="28" y="55.222" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="28" y="65.296" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="28" y="35.074" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="42" y="25" width="10" height="6" rx="2" fill="var(--primary)" />
+	<rect x="46" y="35" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="46" y="45" width="60" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="46" y="55" width="40" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="42" y="65" width="10" height="6" rx="2" fill="var(--primary)" />
+</svg>

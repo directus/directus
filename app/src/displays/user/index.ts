@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.user.description',
 	types: ['uuid'],
 	icon: 'person',
-	handler: DisplayUser,
+	component: DisplayUser,
 	options: [
 		{
 			field: 'display',

@@ -11,7 +11,7 @@ database ready to connect to.
 Run the following command in your terminal and follow the prompts.
 
 ```bash
-npx create-directus-project example-project
+npm init directus-project example-project
 ```
 
 ![Successful installation](../assets/getting-started/quickstart/terminal-install.png)
@@ -19,7 +19,7 @@ npx create-directus-project example-project
 Once the installation is complete, you can start Directus by navigating to your project folder (in this case
 `example-project`) and running:
 
-```
+```bash
 npx directus start
 ```
 
@@ -45,7 +45,7 @@ to make it your own!
 
 ::: tip More Info on Collections
 
-For a more in-depth guide to setting up Collections, see [Collections](/guides/collections).
+For a more in-depth guide to setting up Collections, see [Collections](/app/content-collections).
 
 :::
 
@@ -61,22 +61,24 @@ sticking to the defaults for now. These defaults use the "String" datatype and "
 
 ::: tip More Info on Fields
 
-To learn more about the different types of Fields, and all available options, see [Fields](/guides/fields).
+To learn more about the different types of Fields, and all available options, see
+[Fields](/getting-started/glossary/#fields).
 
 :::
 
 ## 5. Create an Item
 
-Now that we have a Collection with a Field configured, it's time to start adding some content. Navigate to the
-Collections Module (top left), open your created Collection, and click the "+" button in the top-right to get started.
+Now that we have a Collection with a Field configured, it's time to start adding some content. Navigate to the Content
+Module (top left), and click <span mi btn>add</span> in the top-right to get started.
 
 ![Directus Create Item](../assets/getting-started/quickstart/create-item.png)
 
-Once you're happy with your creation, click the checkmark in the top-right to save your item to the database.
+Once you're happy with your creation, click <span mi btn>check</span> in the top-right to save your item to the
+database.
 
 ::: tip More Info on Items
 
-To learn more about the different types of Items, and all available options, see [Items](/guides/items).
+To learn more about the different types of Items, and all available options, see [Items](/app/content-items/).
 
 :::
 
@@ -84,7 +86,8 @@ To learn more about the different types of Items, and all available options, see
 
 By default, all content entered into Directus is considered private. This means that no data will be returned by the
 API, unless requested by an authenticated user that has the correct permissions. In order to have the API return our
-items, we'll have to setup some permissions. Navigate to **Settings Module > Roles & Permissions**.
+items, we'll have to setup some permissions. Navigate to **Settings Module <span mi icon dark>chevron_right</span> Roles
+& Permissions**.
 
 Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select
 the public role, find your collection, and click the icon under the "eye" icon (read/view permission) to allow the
@@ -95,7 +98,7 @@ public role to read the items in your collection.
 ::: tip More Info on Roles & Permissions
 
 Roles & Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting up
-roles & permissions, see [Roles](/guides/roles) & [Permissions](/guides/permissions).
+roles & permissions, see [Roles](/reference/system/roles) & [Permissions](/reference/system/permissions).
 
 :::
 
@@ -103,7 +106,7 @@ roles & permissions, see [Roles](/guides/roles) & [Permissions](/guides/permissi
 
 Now that your project has some content in it, it's time to start using this content externally. Data can be accessed in
 a number of ways, including the REST API, GraphQL, the CLI, or even straight from the database. In this case, we'll use
-[the `/items/` REST API endpoint](/reference/api/items) to retrieve the item we just created.
+[the `/items/` REST API endpoint](/reference/items) to retrieve the item we just created.
 
 Using your browser, or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud), open
 [http://localhost:8055/items/articles](http://localhost:8055/items/articles).

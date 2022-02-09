@@ -4,8 +4,8 @@
 
 import { Knex } from 'knex';
 import { cloneDeep, mapKeys, omitBy, uniq } from 'lodash';
-import { Accountability } from '@directus/shared/types';
-import { AST, FieldNode, NestedCollectionNode, PermissionsAction, Query, SchemaOverview } from '../types';
+import { AST, FieldNode, NestedCollectionNode } from '../types';
+import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 
 type GetASTOptions = {
@@ -31,9 +31,9 @@ export default async function getASTFromQuery(
 
 	const permissions =
 		accountability && accountability.admin !== true
-			? schema.permissions.filter((permission) => {
+			? accountability?.permissions?.filter((permission) => {
 					return permission.action === action;
-			  })
+			  }) ?? []
 			: null;
 
 	const ast: AST = {
@@ -87,7 +87,7 @@ export default async function getASTFromQuery(
 			sortField = query.group[0];
 		}
 
-		query.sort = [{ column: sortField, order: 'asc' }];
+		query.sort = [sortField];
 	}
 
 	// When no group by is supplied, but an aggregate function is used, only a single row will be
@@ -135,7 +135,7 @@ export default async function getASTFromQuery(
 				let rootField = parts[0];
 				let collectionScope: string | null = null;
 
-				// m2a related collection scoped field selector `fields=sections.section_id:headings.title`
+				// a2o related collection scoped field selector `fields=sections.section_id:headings.title`
 				if (rootField.includes(':')) {
 					const [key, scope] = rootField.split(':');
 					rootField = key;
@@ -190,14 +190,14 @@ export default async function getASTFromQuery(
 
 			let child: NestedCollectionNode | null = null;
 
-			if (relationType === 'm2a') {
+			if (relationType === 'a2o') {
 				const allowedCollections = relation.meta!.one_allowed_collections!.filter((collection) => {
 					if (!permissions) return true;
 					return permissions.some((permission) => permission.collection === collection);
 				});
 
 				child = {
-					type: 'm2a',
+					type: 'a2o',
 					names: allowedCollections,
 					children: {},
 					query: {},
@@ -235,9 +235,7 @@ export default async function getASTFromQuery(
 				};
 
 				if (relationType === 'o2m' && !child!.query.sort) {
-					child!.query.sort = [
-						{ column: relation.meta?.sort_field || schema.collections[relation.collection].primary, order: 'asc' },
-					];
+					child!.query.sort = [relation.meta?.sort_field || schema.collections[relation.collection].primary];
 				}
 			}
 

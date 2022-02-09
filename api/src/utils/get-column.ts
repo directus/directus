@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { FunctionsHelper } from '../database/functions';
+import { getHelpers } from '../database/helpers';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 
@@ -19,14 +19,14 @@ export function getColumn(
 	column: string,
 	alias: string | false = applyFunctionToColumnName(column)
 ): Knex.Raw {
-	const fn = FunctionsHelper(knex);
+	const { date: fn } = getHelpers(knex);
 
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0];
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
 
 		if (functionName in fn) {
-			const result = fn[functionName as keyof typeof fn](table, columnName);
+			const result = fn[functionName as keyof typeof fn](table, columnName) as Knex.Raw;
 
 			if (alias) {
 				return knex.raw(result + ' AS ??', [alias]);

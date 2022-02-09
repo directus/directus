@@ -22,7 +22,7 @@ export type FieldMeta = {
 	id: number;
 	collection: string;
 	field: string;
-	group: number | null;
+	group: string | null;
 	hidden: boolean;
 	interface: string | null;
 	display: string | null;
@@ -43,7 +43,7 @@ export interface FieldRaw {
 	collection: string;
 	field: string;
 	type: Type;
-	schema: (Column & { geometry_type?: string }) | null;
+	schema: Column | null;
 	meta: FieldMeta | null;
 }
 

@@ -19,7 +19,12 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+identifier: Identifikátor
+avatar: Avatar
+default_provider: Výchozí
 published: Zveřejněno
+draft: Návrh
+archived: Archivováno
 modules: Moduly
 module_bar: Panel modulů
 tile_size: Velikost dlaždice
@@ -46,7 +51,7 @@ indeterminate: Neurčitý
 edit_collection: Upravit kolekci
 exclusive: Exkluzivní
 children: Potomci
-db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
+db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení'
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
 required: Povinné
@@ -61,6 +66,8 @@ create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
+subject: Předmět
+inbox: Doručené
 emails: E-mail
 connection_excellent: Vynikající připojení
 connection_good: Dobré připojení
@@ -175,9 +182,6 @@ length: Délka
 readonly: Pouze pro čtení
 unique: Unikátní
 primary_key: Primární klíč
-clear_value: Vymazat hodnotu
-reset_to_default: Obnovit výchozí nastavení
-undo_changes: Vrátit změny
 notifications: Notifikace
 page_not_found: Stránka nenalezena
 page_not_found_body: Hledaná stránka nebyla nalezena.
@@ -185,7 +189,6 @@ title: Název
 leave_comment: Napsat komentář...
 this_collection: Tato kategorie
 related_collection: Související kategorie
-export_data: Exportovat data
 format: Formát
 submit: Potvrdit
 move_to_folder: Přesunout do složky
@@ -222,6 +225,9 @@ create_collection: Vytvořit kategorii
 copy: Kopírovat
 users: Uživatelé
 activity: Aktivita
+action: Akce
+ip_address: IP adresa
+user_agent: Uživatelský agent
 webhooks: Webhooky
 field_width: Šířka pole
 user_directory: Uživatelé
@@ -314,6 +320,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    color: Barva
     hidden: Skryté
   directus_files:
     title: Název
@@ -350,6 +357,11 @@ fields:
     role: Role
   directus_settings:
     project_name: Název projektu
+    module_bar: Panel modulů
+  directus_shares:
+    name: Jméno
+    role: Role
+    password: Heslo
   directus_fields:
     note: Poznámka
     hidden: Skryté
@@ -360,24 +372,26 @@ fields:
   directus_webhooks:
     name: Jméno
     status: Stav
+    value: Hodnota
+    collections: Kategorie
 field_options:
   directus_activity:
     create: Vytořit
     update: Úpravy
   directus_collections:
     language: Jazyk
+    translation: Překlad
     archive_divider: Archivovat
   directus_roles:
     fields:
       icon_name: Ikona
       name_name: Jméno
-    collection_list:
-      fields:
-        type_name: Typ
     collections_name: Kategorie
   directus_webhooks:
     actions_create: Vytořit
     actions_update: Úpravy
+    headers:
+      value: Hodnota
 comment: Komentář
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
@@ -421,6 +435,8 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
+  filter:
+    all: Vše
   presentation-links:
     primary: Primární
   system-collection:
@@ -455,6 +471,13 @@ displays:
     description: Zobrazit soubory
   filesize:
     filesize: Velikost souboru
+  formatted-value:
+    format: Formát
+    prefix: Prefix
+    suffix: Přípona
+    color: Barva
+    icon: Ikona
+    text: Text
   icon:
     icon: Ikona
   user:

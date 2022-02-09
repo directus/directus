@@ -5,7 +5,7 @@
 				:style="{
 					'--v-divider-label-color': headerColor,
 				}"
-				:class="{ active }"
+				:class="{ active, edited }"
 				:inline-title="false"
 				large
 				@click="toggle"
@@ -30,10 +30,11 @@
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.id"
+			:group="field.meta.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
+			:disabled="disabled"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>
@@ -47,7 +48,7 @@ import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
-	name: 'InterfaceGroupRaw',
+	name: 'InterfaceGroupDetail',
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -108,6 +109,13 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
+		const edited = computed(() => {
+			if (!props.values) return false;
+
+			const editedFields = Object.keys(props.values);
+			return props.fields.some((field) => editedFields.includes(field.field)) ? true : false;
+		});
+
 		const validationMessages = computed(() => {
 			if (!props.validationErrors) return;
 
@@ -134,7 +142,7 @@ export default defineComponent({
 			return errors.join('\n');
 		});
 
-		return { validationMessages };
+		return { edited, validationMessages };
 	},
 });
 </script>
@@ -156,6 +164,23 @@ export default defineComponent({
 
 .v-divider.active .expand-icon {
 	transform: rotate(0) !important;
+}
+
+.v-divider .title {
+	position: relative;
+}
+
+.v-divider.edited:not(.active) .title::before {
+	position: absolute;
+	top: 14px;
+	left: -7px;
+	display: block;
+	width: 4px;
+	height: 4px;
+	background-color: var(--foreground-subdued);
+	border-radius: 4px;
+	content: '';
+	pointer-events: none;
 }
 
 .header-icon {

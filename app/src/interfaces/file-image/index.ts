@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceFileImage from './file-image.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'file-image',
@@ -8,7 +9,8 @@ export default defineInterface({
 	icon: 'insert_photo',
 	component: InterfaceFileImage,
 	types: ['uuid'],
-	groups: ['file'],
+	localTypes: ['file'],
+	group: 'relational',
 	relational: true,
 	options: [
 		{
@@ -16,7 +18,7 @@ export default defineInterface({
 			name: '$t:interfaces.system-folder.folder',
 			type: 'uuid',
 			meta: {
-				width: 'full',
+				width: 'half',
 				interface: 'system-folder',
 				note: '$t:interfaces.system-folder.field_hint',
 			},
@@ -24,6 +26,22 @@ export default defineInterface({
 				default_value: undefined,
 			},
 		},
+		{
+			field: 'crop',
+			name: '$t:interfaces.file-image.crop',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: '$t:interfaces.file-image.crop_label',
+				},
+			},
+			schema: {
+				default_value: true,
+			},
+		},
 	],
 	recommendedDisplays: ['image'],
+	preview: PreviewSVG,
 });

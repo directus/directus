@@ -218,7 +218,7 @@ export class LocalFileSystemStorage extends Storage {
 
 			for await (const file of dir) {
 				const fileName = join(prefixDirectory, file.name);
-				if (fileName.startsWith(prefix)) {
+				if (fileName.toLowerCase().startsWith(prefix.toLowerCase())) {
 					if (file.isDirectory()) {
 						yield* this._flatDirIterator(join(fileName, sep), originalPrefix);
 					} else if (file.isFile()) {

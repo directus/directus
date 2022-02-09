@@ -152,6 +152,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .folder-picker {
+	--v-list-item-background-color-hover: var(--background-normal-alt);
+	--v-list-item-background-color-active: var(--background-normal-alt);
+
 	padding: 12px;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);

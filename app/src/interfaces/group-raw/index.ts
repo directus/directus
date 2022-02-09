@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceGroupRaw from './group-raw.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'group-raw',
@@ -7,7 +8,9 @@ export default defineInterface({
 	description: '$t:interfaces.group-raw.description',
 	icon: 'view_in_ar',
 	component: InterfaceGroupRaw,
-	groups: ['group'],
+	localTypes: ['group'],
+	group: 'group',
 	types: ['alias'],
 	options: [],
+	preview: PreviewSVG,
 });

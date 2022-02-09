@@ -1,5 +1,6 @@
 import nock, { back, BackMode } from 'nock';
 import { setImmediate, setTimeout, clearImmediate } from 'timers';
+import argon2 from 'argon2';
 
 export const URL = process.env.TEST_URL || 'http://localhost';
 export const MODE = process.env.TEST_MODE || 'dryrun';
@@ -95,4 +96,13 @@ export async function timers(
 		jest.clearAllTimers();
 		jest.useRealTimers();
 	}
+}
+
+export function generateHash(stringToHash: string): Promise<string> {
+	const buffer = 'string' as unknown as Buffer;
+	const argon2HashConfigOptions = { test: 'test', associatedData: buffer }; // Disallow the HASH_RAW option, see https://github.com/directus/directus/discussions/7670#discussioncomment-1255805
+	// test, if specified, must be passed as a Buffer to argon2.hash, see https://github.com/ranisalt/node-argon2/wiki/Options#test
+	if ('test' in argon2HashConfigOptions)
+		argon2HashConfigOptions.associatedData = Buffer.from(argon2HashConfigOptions.associatedData);
+	return argon2.hash(stringToHash, argon2HashConfigOptions);
 }

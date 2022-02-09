@@ -14,13 +14,13 @@
 		</transition-expand>
 
 		<sidebar-button
-			v-tooltip.left="t('notifications')"
+			v-tooltip.left="t('activity_log')"
 			:active="modelValue"
 			class="toggle"
-			icon="notifications"
+			icon="pending_actions"
 			@click="$emit('update:modelValue', !modelValue)"
 		>
-			{{ t('notifications') }}
+			{{ t('activity_log') }}
 		</sidebar-button>
 	</div>
 </template>
@@ -89,7 +89,7 @@ export default defineComponent({
 	bottom: 100%;
 	width: 100%;
 	background-color: var(--background-normal);
-	box-shadow: 0px -4px 12px rgba(38, 50, 56, 0.1);
+	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {
 		position: relative;

@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="t('settings_project')">
-		<template #headline>{{ t('settings') }}</template>
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="public" />
@@ -8,7 +8,7 @@
 		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="noEdits" :loading="saving" @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -24,6 +24,19 @@
 		<template #sidebar>
 			<project-info-sidebar-detail />
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -35,11 +48,16 @@ import { useCollection } from '@directus/shared/composables';
 import { useSettingsStore, useServerStore } from '@/stores';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
+import useShortcut from '@/composables/use-shortcut';
+import useEditsGuard from '@/composables/use-edits-guard';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoSidebarDetail },
 	setup() {
 		const { t } = useI18n();
+
+		const router = useRouter();
 
 		const settingsStore = useSettingsStore();
 		const serverStore = useServerStore();
@@ -50,11 +68,28 @@ export default defineComponent({
 
 		const edits = ref<{ [key: string]: any } | null>(null);
 
-		const noEdits = computed<boolean>(() => edits.value === null || Object.keys(edits.value).length === 0);
+		const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
 
 		const saving = ref(false);
 
-		return { t, fields, initialValues, edits, noEdits, saving, save };
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) save();
+		});
+
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+		return {
+			t,
+			fields,
+			initialValues,
+			edits,
+			hasEdits,
+			saving,
+			confirmLeave,
+			leaveTo,
+			save,
+			discardAndLeave,
+		};
 
 		async function save() {
 			if (edits.value === null) return;
@@ -64,6 +99,13 @@ export default defineComponent({
 			edits.value = null;
 			saving.value = false;
 			initialValues.value = clone(settingsStore.settings);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });

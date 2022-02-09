@@ -26,10 +26,6 @@ export const usePermissionsStore = defineStore({
 					rawPermission.validation = parseFilter(rawPermission.validation);
 				}
 
-				if (rawPermission.presets) {
-					rawPermission.presets = parseFilter(rawPermission.presets);
-				}
-
 				return rawPermission;
 			});
 		},

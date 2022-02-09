@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceGroupDetail from './group-detail.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'group-detail',
@@ -7,7 +8,8 @@ export default defineInterface({
 	description: '$t:interfaces.group-detail.description',
 	icon: 'menu_open',
 	component: InterfaceGroupDetail,
-	groups: ['group'],
+	localTypes: ['group'],
+	group: 'group',
 	types: ['alias'],
 	options: [
 		{
@@ -53,4 +55,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

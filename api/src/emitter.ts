@@ -1,28 +1,99 @@
+import { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
 import { EventEmitter2 } from 'eventemitter2';
 import logger from './logger';
 
-const emitter = new EventEmitter2({
-	wildcard: true,
-	verboseMemoryLeak: true,
-	delimiter: '.',
+export class Emitter {
+	private filterEmitter;
+	private actionEmitter;
+	private initEmitter;
 
-	// This will ignore the "unspecified event" error
-	ignoreErrors: true,
-});
+	constructor() {
+		const emitterOptions = {
+			wildcard: true,
+			verboseMemoryLeak: true,
+			delimiter: '.',
 
-/**
- * Emit async events without throwing errors. Just log them out as warnings.
- * @param name
- * @param args
- */
-export async function emitAsyncSafe(name: string, ...args: any[]): Promise<any> {
-	try {
-		return await emitter.emitAsync(name, ...args);
-	} catch (err: any) {
-		logger.warn(`An error was thrown while executing hook "${name}"`);
-		logger.warn(err);
+			// This will ignore the "unspecified event" error
+			ignoreErrors: true,
+		};
+
+		this.filterEmitter = new EventEmitter2(emitterOptions);
+		this.actionEmitter = new EventEmitter2(emitterOptions);
+		this.initEmitter = new EventEmitter2(emitterOptions);
 	}
-	return [];
+
+	public async emitFilter<T>(
+		event: string | string[],
+		payload: T,
+		meta: Record<string, any>,
+		context: EventContext
+	): Promise<T> {
+		const events = Array.isArray(event) ? event : [event];
+		const listeners: FilterHandler[] = events.flatMap((event) => this.filterEmitter.listeners(event));
+
+		let updatedPayload = payload;
+		for (const listener of listeners) {
+			const result = await listener(updatedPayload, meta, context);
+
+			if (result !== undefined) {
+				updatedPayload = result;
+			}
+		}
+
+		return updatedPayload;
+	}
+
+	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext): void {
+		const events = Array.isArray(event) ? event : [event];
+
+		for (const event of events) {
+			this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
+				logger.warn(`An error was thrown while executing action "${event}"`);
+				logger.warn(err);
+			});
+		}
+	}
+
+	public async emitInit(event: string, meta: Record<string, any>): Promise<void> {
+		try {
+			await this.initEmitter.emitAsync(event, meta);
+		} catch (err: any) {
+			logger.warn(`An error was thrown while executing init "${event}"`);
+			logger.warn(err);
+		}
+	}
+
+	public onFilter(event: string, handler: FilterHandler): void {
+		this.filterEmitter.on(event, handler);
+	}
+
+	public onAction(event: string, handler: ActionHandler): void {
+		this.actionEmitter.on(event, handler);
+	}
+
+	public onInit(event: string, handler: InitHandler): void {
+		this.initEmitter.on(event, handler);
+	}
+
+	public offFilter(event: string, handler: FilterHandler): void {
+		this.filterEmitter.off(event, handler);
+	}
+
+	public offAction(event: string, handler: ActionHandler): void {
+		this.actionEmitter.off(event, handler);
+	}
+
+	public offInit(event: string, handler: InitHandler): void {
+		this.initEmitter.off(event, handler);
+	}
+
+	public offAll(): void {
+		this.filterEmitter.removeAllListeners();
+		this.actionEmitter.removeAllListeners();
+		this.initEmitter.removeAllListeners();
+	}
 }
+
+const emitter = new Emitter();
 
 export default emitter;

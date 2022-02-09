@@ -1,6 +1,8 @@
 <template>
 	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
-		<template #headline>{{ t('settings_permissions') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
@@ -84,6 +86,19 @@
 			<role-info-sidebar-detail :role="item" />
 			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -99,6 +114,8 @@ import { useUserStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
+import useShortcut from '@/composables/use-shortcut';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'RolesItem',
@@ -122,12 +139,10 @@ export default defineComponent({
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 
-		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
+		const { edits, hasEdits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
 			primaryKey
 		);
-
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
 		const confirmDelete = ref(false);
 
@@ -149,6 +164,12 @@ export default defineComponent({
 			return !!values.app_access;
 		});
 
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) saveAndStay();
+		});
+
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
 		return {
 			t,
 			item,
@@ -165,6 +186,9 @@ export default defineComponent({
 			adminEnabled,
 			userInviteModalActive,
 			appAccess,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		/**
@@ -174,6 +198,11 @@ export default defineComponent({
 		 * in case we're changing the current user's role
 		 */
 
+		async function saveAndStay() {
+			await save();
+			await userStore.hydrate();
+		}
+
 		async function saveAndQuit() {
 			await save();
 			await userStore.hydrate();
@@ -182,7 +211,14 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/roles`);
+			router.replace(`/settings/roles`);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });

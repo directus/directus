@@ -6,12 +6,12 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		v-model:filters="filters"
-		v-model:search-query="searchQuery"
+		:filter="filter"
+		:search="search"
 		collection="directus_webhooks"
 	>
 		<private-view :title="t('webhooks')">
-			<template #headline>{{ t('settings') }}</template>
+			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
@@ -24,7 +24,7 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="searchQuery" />
+				<search-input v-model="search" collection="directus_webhooks" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -48,7 +48,7 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="t('edit')"
 					rounded
 					icon
@@ -104,7 +104,7 @@ import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import { usePreset } from '@/composables/use-preset';
-import { useLayout } from '@/composables/use-layout';
+import { useLayout } from '@directus/shared/composables';
 import api from '@/api';
 import SearchInput from '@/views/private/components/search-input';
 
@@ -121,7 +121,7 @@ export default defineComponent({
 		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_webhooks'));
+		const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_webhooks'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
@@ -136,12 +136,12 @@ export default defineComponent({
 			deleting,
 			layoutRef,
 			layoutWrapper,
-			filters,
+			filter,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
-			searchQuery,
+			search,
 			clearFilters,
 		};
 
@@ -186,8 +186,8 @@ export default defineComponent({
 		}
 
 		function clearFilters() {
-			filters.value = [];
-			searchQuery.value = null;
+			filter.value = null;
+			search.value = null;
 		}
 	},
 });

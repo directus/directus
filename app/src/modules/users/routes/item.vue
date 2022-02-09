@@ -78,17 +78,18 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true"
+						v-if="isSavable"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -102,7 +103,12 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.email" />
+					<img
+						v-else-if="avatarSrc && !avatarError"
+						:src="avatarSrc"
+						:alt="t('avatar')"
+						@error="avatarError = $event"
+					/>
 					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">
@@ -116,7 +122,7 @@
 							{{ userName(item) }}
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
-						<div class="email">
+						<div v-if="item.email" class="email">
 							<v-icon name="alternate_email" small outline />
 							{{ item.email }}
 						</div>
@@ -162,6 +168,7 @@
 				ref="revisionsDrawerDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
@@ -178,7 +185,7 @@ import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance 
 
 import UsersNavigation from '../components/navigation.vue';
 import { setLanguage } from '@/lang/set-language';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -196,7 +203,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import { useUserStore } from '@/stores';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'UsersItem',
@@ -231,6 +238,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -252,12 +260,14 @@ export default defineComponent({
 			};
 		}
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
-		unsavedChanges(hasEdits);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
+
+		const avatarError = ref(null);
 
 		const title = computed(() => {
 			if (loading.value === true) return t('loading');
@@ -271,19 +281,6 @@ export default defineComponent({
 		});
 
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
 			ref('directus_users'),
@@ -304,7 +301,13 @@ export default defineComponent({
 		];
 
 		const fieldsFiltered = computed(() => {
-			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
+			return fields.value.filter((field: Field) => {
+				// These fields should only be editable when creating new users
+				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
+					field.meta.readonly = true;
+				}
+				return !fieldsDenyList.includes(field.field);
+			});
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
@@ -336,6 +339,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			revisionsDrawerDetail,
 			previewLoading,
@@ -359,6 +363,9 @@ export default defineComponent({
 			userName,
 			revisionsAllowed,
 			validationErrors,
+			revert,
+			avatarError,
+			isSavable,
 		};
 
 		function useBreadcrumb() {
@@ -391,7 +398,6 @@ export default defineComponent({
 				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem.id;
 					router.replace(`/users/${newPrimaryKey}`);
 				}
@@ -423,7 +429,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/users`);
+				router.replace(`/users`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -485,7 +491,13 @@ export default defineComponent({
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		async function toggleArchive() {
@@ -496,6 +508,13 @@ export default defineComponent({
 			} else {
 				confirmArchive.value = false;
 			}
+		}
+
+		function revert(values: Record<string, any>) {
+			edits.value = {
+				...edits.value,
+				...values,
+			};
 		}
 	},
 });

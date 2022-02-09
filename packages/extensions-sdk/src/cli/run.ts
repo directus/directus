@@ -25,6 +25,8 @@ program
 	.option('-l, --language <language>', 'overwrite the language to use')
 	.option('-f, --force', 'ignore the package manifest')
 	.option('-w, --watch', 'watch and rebuild on changes')
+	.option('--no-minify', 'disable minification')
+	.option('--sourcemap', 'include source maps in output')
 	.action(build);
 
 program.parse(process.argv);

@@ -1,4 +1,6 @@
 ---
+avatar: Avatar
+published: Objavljeno
 edit_field: Izmijeni
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
@@ -9,7 +11,6 @@ field_name_translations: Prevodi Polja
 enter_password_to_enable_tfa: Unesite vašu lozinku kako biste uključili dvostruku potvrdu autentičnosti
 add_field: Dodaj Polje
 role_name: Naziv uloge
-db_only_click_to_configure: 'Samo za bazu podataka: Kliknite za Podešavanje '
 show_archived_items: Prikaži arhivirane stavke
 edited: Vrijednost izmijenjena
 required: Obavezno
@@ -134,6 +135,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Date
 datetime: DateTime
+dateTime: DateTime
 decimal: Decimal
 float: Float
 integer: Integer
@@ -164,9 +166,6 @@ new_data_alert: 'Sljedeće će biti kreirano u sklopu Modela Podataka:'
 search_collection: Pretraži Kolekciju...
 new_field: 'Novo Polje'
 new_collection: 'Nova Kolekcija'
-add_m2o_to_collection: 'Dodaj Many-to-One relaciju na "{collection}"'
-add_o2m_to_collection: 'Dodaj One-to-Many relaciju na "{collection}"'
-add_m2m_to_collection: 'Dodaj Many-to-Many relaciju na "{collection}"'
 choose_a_type: Izaberi Tip...
 determined_by_relationship: Određeno Relacijom
 add_note: Dodaj korisnu napomenu korisnicima...
@@ -198,9 +197,6 @@ dismiss: Ignoriši
 raw_value: Vrijednost
 edit_raw_value: Izmijeni Vrijednost
 enter_raw_value: Unesi vrijednost...
-clear_value: Obriši vrijednost
-reset_to_default: Vrati na podrazumijevano
-undo_changes: Poništi izmjene
 notifications: Obavještenja
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nijе pronađеna
@@ -230,10 +226,8 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
-export_data: Izvoz Podataka
 format: Format
 use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
-export_collection: 'Izvoz {collection}'
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
@@ -354,6 +348,9 @@ active: Aktivan
 copy: Kopiraj
 users: Korisnici
 activity: Aktivnost
+action: Akcija
+ip_address: IP adresa
+user_agent: Korisnički Agent
 webhooks: Webhooks
 field_width: Širina Polja
 add_filter: Dodaj Filter
@@ -685,6 +682,7 @@ fields:
     collection: Kolekcija
     icon: Ikonica
     note: Napomena
+    color: Boja
     display_template: Šablon za Prikaz
     hidden: Sakriveno
     singleton: Singleton
@@ -747,9 +745,11 @@ fields:
     public_note: Opis Projekta
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
-    storage_asset_presets: Izgled prostora za skladištenje
-    storage_asset_transform: Transformacija sredstava za skladištenje
     custom_css: Prilagođeni CSS
+  directus_shares:
+    name: Ime
+    role: Uloga
+    password: Lozinka
   directus_fields:
     collection: Ime Kolekcije
     icon: Ikonica Kolekcije
@@ -768,10 +768,11 @@ fields:
     enforce_tfa: Traži 2FA
     users: Svi korisnici ove Uloge
     module_list: Navigacija Modula
-    collection_list: Navigacija Kolekcije
   directus_webhooks:
     name: Ime
     status: Status
+    value: Vrijednost
+    collections: Kolekcije
 field_options:
   directus_activity:
     create: Kreiraj
@@ -783,16 +784,15 @@ field_options:
     collection_setup: Podešavanje Kolekcije
     singleton: Tretiraj kao jedinstven objekat
     language: Jezik
+    translation: Prevodi
+    collection_name: Ime Kolekcije
     archive_divider: Arhiviraj
-    divider: Sortiranje
+    sort_divider: Sortiranje
   directus_roles:
     fields:
       icon_name: Ikonica
       name_name: Ime
       name_placeholder: Unesi naslov...
-    collection_list:
-      fields:
-        type_name: Tip
     collections_name: Kolekcije
   directus_users:
     status_dropdown_active: Aktivan
@@ -800,6 +800,8 @@ field_options:
     status_options_active: Aktivan
     actions_create: Kreiraj
     actions_update: Ažuriranje
+    headers:
+      value: Vrijednost
 no_fields_in_collection: 'Trenutno ne postoji nijedno polje u "{collection}" kolekciji'
 do_nothing: Ne radi ništa
 generate_and_save_uuid: Generiši i Sačuvaj UUID
@@ -875,6 +877,9 @@ value: Vrijednost
 view_project: Pregledaj Projekat
 report_error: Prijavi Grešku
 interfaces:
+  filter:
+    add_filter: Dodaj Filter
+    all: Svi
   presentation-links:
     presentation-links: Linkovi dugmeta
     links: Linkovi
@@ -925,7 +930,6 @@ interfaces:
   presentation-divider:
     divider: Djelilac
     description: Označi i podijeli polja u sekcije
-    title_placeholder: Unesi naslov...
     inline_title: Linijski Naslov
     inline_title_label: Prikaži naslov u liniji
     margin_top: Gornja Margina
@@ -977,6 +981,7 @@ interfaces:
   input-rich-text-md:
     markdown: Smanjenje
     description: Unesi i pregledaj opcije smanjenja
+    edit: Izmijeni
     customSyntax: Prilagođeni Blokovi
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
@@ -1043,6 +1048,8 @@ interfaces:
   boolean:
     toggle: Isključi / Uključi
     description: Prebaci između uključeno i isključeno
+    color_on: Boja Uključena
+    color_off: Boja Isključena
     label_placeholder: Unesi ime...
     label_default: Omogućen
   translations:
@@ -1065,6 +1072,8 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
+    imageToken: Token Fotografije
+    imageToken_label: Koji (statični) token prikačiti na izvore slika
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.
@@ -1073,6 +1082,8 @@ interfaces:
     trigger: Okidač
     rate: Ocjena
 displays:
+  translations:
+    translations: Prevodi
   boolean:
     boolean: Boolean
     description: Prikaži uključena i isključena stanja
@@ -1111,9 +1122,18 @@ displays:
   formatted-value:
     formatted-value: Formatirana Vrijednost
     description: Prikaži formatiranu verziju teksta
-    format_title: Formatiraj Naslov
-    format_title_label: Automatsko formatiranje naslova
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Fiksni razmak
+    bold: Podebljano
     bold_label: Koristi podebljan stil
+    italic: Kurziv
+    prefix: Prefiks
+    suffix: Sufiks
+    color: Boja
+    icon: Ikonica
+    text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta

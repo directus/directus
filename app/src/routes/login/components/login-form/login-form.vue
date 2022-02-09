@@ -16,16 +16,13 @@
 				{{ t('forgot_password') }}
 			</router-link>
 		</div>
-
-		<sso-links />
 	</form>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
@@ -38,12 +35,18 @@ type Credentials = {
 };
 
 export default defineComponent({
-	components: { ssoLinks },
-	setup() {
+	props: {
+		provider: {
+			type: String,
+			required: true,
+		},
+	},
+	setup(props) {
 		const { t } = useI18n();
 
 		const router = useRouter();
 
+		const { provider } = toRefs(props);
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
@@ -54,6 +57,14 @@ export default defineComponent({
 
 		watch(email, () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
+		});
+
+		watch(provider, () => {
+			email.value = null;
+			password.value = null;
+			error.value = null;
+			otp.value = null;
+			requiresTFA.value = false;
 		});
 
 		const errorFormatted = computed(() => {
@@ -68,7 +79,18 @@ export default defineComponent({
 			return null;
 		});
 
-		return { t, errorFormatted, error, email, password, onSubmit, loggingIn, translateAPIError, otp, requiresTFA };
+		return {
+			t,
+			errorFormatted,
+			error,
+			email,
+			password,
+			onSubmit,
+			loggingIn,
+			translateAPIError,
+			otp,
+			requiresTFA,
+		};
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;
@@ -85,11 +107,14 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials);
+				await login({ provider: provider.value, credentials });
+
+				const redirectQuery = router.currentRoute.value.query.redirect as string;
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;
-				router.push(lastPage || '/collections');
+
+				router.push(redirectQuery || lastPage || '/content');
 			} catch (err: any) {
 				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 					requiresTFA.value = true;

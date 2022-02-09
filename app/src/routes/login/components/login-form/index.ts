@@ -1,4 +1,4 @@
 import LoginForm from './login-form.vue';
+import LdapForm from './ldap-form.vue';
 
-export { LoginForm };
-export default LoginForm;
+export { LoginForm, LdapForm };

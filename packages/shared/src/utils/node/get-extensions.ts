@@ -18,9 +18,9 @@ export async function getPackageExtensions(root: string, types: readonly Extensi
 
 	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
 
-	return listExtensionsChildren(extensionNames);
+	return listExtensionsChildren(extensionNames, root);
 
-	async function listExtensionsChildren(extensionNames: string[], root?: string) {
+	async function listExtensionsChildren(extensionNames: string[], root: string) {
 		const extensions: Extension[] = [];
 
 		for (const extensionName of extensionNames) {
@@ -45,7 +45,6 @@ export async function getPackageExtensions(root: string, types: readonly Extensi
 						host: extensionManifest[EXTENSION_PKG_KEY].host,
 						children: extensionChildren,
 						local: false,
-						root: root === undefined,
 					};
 
 					extensions.push(extension);
@@ -59,7 +58,6 @@ export async function getPackageExtensions(root: string, types: readonly Extensi
 						entrypoint: extensionManifest[EXTENSION_PKG_KEY].path,
 						host: extensionManifest[EXTENSION_PKG_KEY].host,
 						local: false,
-						root: root === undefined,
 					});
 				}
 			}
@@ -88,7 +86,6 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 					type: extensionType,
 					entrypoint: 'index.js',
 					local: true,
-					root: true,
 				});
 			}
 		} catch {

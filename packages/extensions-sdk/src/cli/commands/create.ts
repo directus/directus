@@ -74,7 +74,6 @@ export default async function create(type: string, name: string, options: Create
 			path: 'dist/index.js',
 			source: `src/index.${languageToShort(options.language)}`,
 			host: `^${pkg.version}`,
-			hidden: false,
 		},
 		scripts: {
 			build: 'directus-extension build',

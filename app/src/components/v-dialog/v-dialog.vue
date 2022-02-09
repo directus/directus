@@ -2,7 +2,16 @@
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
-		<teleport to="#dialog-outlet">
+		<teleport v-if="placement === 'right'" to="#drawer-outlet">
+			<transition-dialog @after-leave="leave">
+				<div v-if="internalActive" class="container" :class="[className, placement]">
+					<v-overlay active absolute @click="emitToggle" />
+					<slot />
+				</div>
+			</transition-dialog>
+		</teleport>
+
+		<teleport v-else to="#dialog-outlet">
 			<transition-dialog @after-leave="leave">
 				<div v-if="internalActive" class="container" :class="[className, placement]">
 					<v-overlay active absolute @click="emitToggle" />
@@ -101,7 +110,7 @@ export default defineComponent({
 
 .container > :slotted(*) {
 	z-index: 2;
-	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+	box-shadow: 0px 4px 12px rgb(38 50 56 / 0.1);
 }
 
 .container.center {

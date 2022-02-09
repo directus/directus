@@ -21,13 +21,13 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!junction.meta.sort_field"
+				:disabled="!junction.meta?.sort_field"
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
-					<v-list-item :dense="sortedItems.length > 4" block @click="editItem(element)">
+					<v-list-item :dense="sortedItems.length > 4" block clickable @click="editItem(element)">
 						<v-icon
-							v-if="junction.meta.sort_field"
+							v-if="junction.meta?.sort_field"
 							name="drag_handle"
 							class="drag-handle"
 							left
@@ -46,7 +46,7 @@
 		</v-list>
 
 		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="showEditModal">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableCreate && createAllowed" @click="createNew()">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
@@ -70,39 +70,34 @@
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
 			:selection="selectedPrimaryKeys"
+			:filter="customFilter"
 			multiple
 			@input="stageSelection"
 		/>
-
-		<v-dialog v-if="!disabled" v-model="showUpload">
-			<v-card>
-				<v-card-title>{{ t('upload_file') }}</v-card-title>
-				<v-card-text><v-upload multiple from-url @input="onUpload" /></v-card-text>
-				<v-card-actions>
-					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, toRefs, ref } from 'vue';
+import { defineComponent, computed, PropType, toRefs, inject, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
 import Draggable from 'vuedraggable';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
+import { deepMap } from '@directus/shared/utils';
 
 import useActions from './use-actions';
-import useRelation from './use-relation';
+import useRelation from '@/composables/use-m2m';
 import usePreview from './use-preview';
 import useEdit from './use-edit';
+import usePermissions from './use-permissions';
 import useSelection from './use-selection';
 import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { usePermissionsStore, useUserStore } from '@/stores';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -139,13 +134,28 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const permissionsStore = usePermissionsStore();
-		const userStore = useUserStore();
+		const values = inject('values', ref<Record<string, any>>({}));
+
+		const customFilter = computed(() => {
+			return parseFilter(
+				deepMap(props.filter, (val: any) => {
+					if (val && typeof val === 'string') {
+						return render(val, values.value);
+					}
+
+					return val;
+				})
+			);
+		});
 
 		const { value, collection, field } = toRefs(props);
 
@@ -184,7 +194,7 @@ export default defineComponent({
 			emitter
 		);
 
-		const { tableHeaders, items, loading } = usePreview(
+		const { tableHeaders, items, initialItems, loading } = usePreview(
 			value,
 			fields,
 			relationInfo,
@@ -194,16 +204,27 @@ export default defineComponent({
 			getPrimaryKeys
 		);
 
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
-			useEdit(value, relationInfo, emitter);
+		const {
+			currentlyEditing,
+			editItem,
+			createNew,
+			editsAtStart,
+			stageEdits,
+			cancelEdit,
+			relatedPrimaryKey,
+			editModalActive,
+		} = useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(items, relationInfo, emitter);
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(
+			items,
+			initialItems,
+			relationInfo,
+			emitter
+		);
 
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
-		const { createAllowed, selectAllowed } = usePermissions();
-
-		const { showUpload, onUpload } = useUpload();
+		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
 
 		return {
 			t,
@@ -213,6 +234,7 @@ export default defineComponent({
 			loading,
 			currentlyEditing,
 			editItem,
+			createNew,
 			junctionCollection,
 			relationCollection,
 			editsAtStart,
@@ -233,73 +255,11 @@ export default defineComponent({
 			templateWithDefaults,
 			createAllowed,
 			selectAllowed,
-			showEditModal,
-			onUpload,
-			showUpload,
+			customFilter,
 		};
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
-		}
-
-		function usePermissions() {
-			const createAllowed = computed(() => {
-				const admin = userStore.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const hasJunctionPermissions = !!permissionsStore.permissions.find(
-					(permission) =>
-						permission.action === 'create' && permission.collection === junctionCollection.value.collection
-				);
-
-				const hasRelatedPermissions = !!permissionsStore.permissions.find(
-					(permission) =>
-						permission.action === 'create' && permission.collection === relationCollection.value.collection
-				);
-
-				return hasJunctionPermissions && hasRelatedPermissions;
-			});
-
-			const selectAllowed = computed(() => {
-				const admin = userStore.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const hasJunctionPermissions = !!permissionsStore.permissions.find(
-					(permission) =>
-						permission.action === 'create' && permission.collection === junctionCollection.value.collection
-				);
-
-				return hasJunctionPermissions;
-			});
-
-			return { createAllowed, selectAllowed };
-		}
-
-		function showEditModal() {
-			if (relationCollection.value.collection === 'directus_files') {
-				showUpload.value = true;
-			} else {
-				editModalActive.value = true;
-			}
-		}
-
-		function useUpload() {
-			const showUpload = ref(false);
-
-			return { showUpload, onUpload };
-
-			function onUpload(files: Record<string, any>[]) {
-				showUpload.value = false;
-				if (files.length === 0) return;
-				const { junctionField } = relationInfo.value;
-				const filesAsJunctionRows = files.map((file) => {
-					return {
-						[junctionField]: file.id,
-					};
-				});
-
-				emit('input', [...(props.value || []), ...filesAsJunctionRows]);
-			}
 		}
 	},
 });

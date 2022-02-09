@@ -1,16 +1,11 @@
 <template>
 	<div class="form-grid">
-		<div class="field half-left">
-			<div class="type-label">{{ t('interfaces.map.geometry_format') }}</div>
-			<v-input v-model="geometryFormat" :disabled="true" :value="t(`interfaces.map.${compatibleFormat}`)" />
-		</div>
-		<div class="field half-right">
+		<div v-if="!nativeGeometryType && field.type !== 'csv'" class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
 				:placeholder="t('any')"
 				:show-deselect="true"
-				:disabled="!!nativeGeometryType || geometryFormat == 'lnglat'"
 				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>
@@ -25,8 +20,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { GEOMETRY_TYPES } from '@directus/shared/constants';
-import { Field, GeometryType, GeometryFormat, GeometryOptions } from '@directus/shared/types';
-import { getGeometryFormatForType } from '@/utils/geometry';
+import { Field, GeometryType, GeometryOptions } from '@directus/shared/types';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
@@ -39,7 +33,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fieldData: {
+		field: {
 			type: Object as PropType<Field>,
 			default: null,
 		},
@@ -52,24 +46,28 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const isGeometry = props.fieldData.type == 'geometry';
-		const nativeGeometryType = isGeometry ? (props.fieldData!.schema!.geometry_type as GeometryType) : undefined;
-		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
-
-		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
-		const geometryType = ref<GeometryType>(
-			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
-		);
+		const nativeGeometryType = computed(() => props.field.type.split('.')[1] as GeometryType);
+		const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
-		watch(
-			[geometryFormat, geometryType, defaultView],
-			() => {
-				const type = geometryFormat.value == 'lnglat' ? 'Point' : geometryType;
-				emit('input', { defaultView, geometryFormat, geometryType: type });
-			},
-			{ immediate: true }
-		);
+		watch(() => props.field.type, watchType);
+		watch(nativeGeometryType, watchNativeType);
+		watch([geometryType, defaultView], input, { immediate: true });
+
+		function watchType(type: string | undefined) {
+			if (type === 'csv') geometryType.value = 'Point';
+		}
+
+		function watchNativeType(type: GeometryType) {
+			geometryType.value = type;
+		}
+
+		function input() {
+			emit('input', {
+				defaultView,
+				geometryType: geometryType.value,
+			});
+		}
 
 		const mapContainer = ref<HTMLElement | null>(null);
 		let map: Map;
@@ -87,7 +85,6 @@ export default defineComponent({
 			map = new Map({
 				container: mapContainer.value!,
 				style: style.value,
-				attributionControl: false,
 				...(defaultView.value || {}),
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -106,10 +103,7 @@ export default defineComponent({
 
 		return {
 			t,
-			isGeometry,
 			nativeGeometryType,
-			compatibleFormat,
-			geometryFormat,
 			GEOMETRY_TYPES,
 			geometryType,
 			mapContainer,

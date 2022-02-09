@@ -5,6 +5,9 @@ export type Webhook = {
 	url: string;
 	status: 'active' | 'inactive';
 	data: boolean;
-	actions: string;
-	collections: string;
+	actions: string[];
+	collections: string[];
+	headers: WebhookHeader[];
 };
+
+export type WebhookHeader = { header: string; value: string };

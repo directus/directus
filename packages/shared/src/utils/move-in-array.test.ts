@@ -1,4 +1,4 @@
-import { moveInArray } from '.';
+import { moveInArray } from './move-in-array';
 
 describe('moveInArray', () => {
 	const testArray = [1, 2, 3, 4, 5, 6];

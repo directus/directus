@@ -29,7 +29,7 @@
 			</div>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('revert')" class="revert" icon rounded @click="revert">
+				<v-button v-if="hasPastRevision" v-tooltip.bottom="t('revert')" class="revert" icon rounded @click="revert">
 					<v-icon name="restore" />
 				</v-button>
 				<v-button v-tooltip.bottom="t('done')" icon rounded @click="internalActive = false">
@@ -110,9 +110,13 @@ export default defineComponent({
 				  ];
 		});
 
+		const hasPastRevision = computed(() => {
+			return currentRevision.value?.activity.action !== 'create' ? true : false;
+		});
+
 		watchEffect(() => (currentTab.value = [tabs.value[0].value]));
 
-		return { t, internalActive, internalCurrent, title, currentRevision, currentTab, tabs, revert };
+		return { t, internalActive, internalCurrent, title, currentRevision, currentTab, tabs, hasPastRevision, revert };
 
 		function revert() {
 			if (!currentRevision.value) return;

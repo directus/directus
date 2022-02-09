@@ -10,7 +10,7 @@ const { modulesRaw } = getModules();
 let queuedModules: ModuleConfig[] = [];
 
 export async function loadModules(): Promise<void> {
-	const moduleModules = import.meta.globEager('./*/**/index.ts');
+	const moduleModules = import.meta.globEager('./*/index.ts');
 
 	const modules: ModuleConfig[] = Object.values(moduleModules).map((module) => module.default);
 

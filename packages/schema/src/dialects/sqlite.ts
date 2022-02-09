@@ -10,6 +10,7 @@ type RawColumn = {
 	name: string;
 	type: string;
 	notnull: 0 | 1;
+	hidden: 0 | 1 | 2;
 	dflt_value: any;
 	pk: 0 | 1;
 };
@@ -24,11 +25,12 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 		const overview: SchemaOverview = {};
 
 		for (const table of tables) {
-			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_info(??)`, table);
+			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
 
 			if (table in overview === false) {
+				const primaryKeys = columns.filter((column) => column.pk !== 0);
 				overview[table] = {
-					primary: columns.find((column) => column.pk == 1)!.name!,
+					primary: primaryKeys.length !== 1 ? (undefined as any) : primaryKeys[0]!.name!,
 					columns: {},
 				};
 			}
@@ -42,6 +44,7 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 							? 'AUTO_INCREMENT'
 							: stripQuotes(column.dflt_value),
 					is_nullable: column.notnull == 0,
+					is_generated: column.hidden !== 0,
 					data_type: extractType(column.type),
 					max_length: extractMaxLength(column.type),
 					numeric_precision: null,

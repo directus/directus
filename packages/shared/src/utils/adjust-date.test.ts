@@ -1,4 +1,4 @@
-import { adjustDate } from '.';
+import { adjustDate } from './adjust-date';
 
 describe('Adjust a given date by a given change in duration.', () => {
 	const date = new Date('2021-09-20T21:06:51.517Z');

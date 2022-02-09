@@ -1,8 +1,11 @@
 ---
+avatar: Avatar
 auto_generate: Automaticky generovať
 add_note: Pridať užitočnú poznámku pre užívateľov...
 comments: Komentáre
 activity: Aktivita
+ip_address: IP adresa
+user_agent: Užívateľský agent
 bookmarks: Záložky
 back: Späť
 role: Rola
@@ -27,9 +30,14 @@ fields:
     theme: Téma
     tfa_secret: Dvojfaktorová autentifikácia
     role: Rola
+  directus_shares:
+    role: Rola
+    password: Heslo
 email: E-mail
 password: Heslo
 interfaces:
+  filter:
+    all: Všetko
   system-collection:
     collection: Zbierka
 displays:

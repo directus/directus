@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectDropdown from './select-dropdown.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'select-dropdown',
@@ -7,8 +8,10 @@ export default defineInterface({
 	description: '$t:interfaces.select-dropdown.description',
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceSelectDropdown,
-	types: ['string'],
-	options: [
+	types: ['string', 'integer', 'float', 'bigInteger'],
+	group: 'selection',
+	preview: PreviewSVG,
+	options: ({ field }) => [
 		{
 			field: 'choices',
 			type: 'json',
@@ -34,7 +37,7 @@ export default defineInterface({
 						},
 						{
 							field: 'value',
-							type: 'string',
+							type: field.type,
 							name: '$t:value',
 							meta: {
 								interface: 'input',

@@ -6,7 +6,7 @@ export default defineDisplay({
 	name: '$t:displays.rating.rating',
 	description: '$t:displays.rating.description',
 	icon: 'star',
-	handler: DisplayRating,
+	component: DisplayRating,
 	options: [
 		{
 			field: 'simple',

@@ -1,18 +1,13 @@
 import Joi from 'joi';
 import { isPlainObject } from 'lodash';
 import { InvalidQueryException } from '../exceptions';
-import { Query } from '../types';
+import { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
 	group: Joi.array().items(Joi.string()),
-	sort: Joi.array().items(
-		Joi.object({
-			column: Joi.string(),
-			order: Joi.string().valid('asc', 'desc'),
-		})
-	),
+	sort: Joi.array().items(Joi.string()),
 	filter: Joi.object({}).unknown(),
 	limit: Joi.number(),
 	offset: Joi.number(),
@@ -108,7 +103,7 @@ function validateFilterPrimitive(value: any, key: string) {
 		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
 	}
 
-	if (typeof value === 'number' && Number.isNaN(value)) {
+	if (typeof value === 'number' && (Number.isNaN(value) || !Number.isSafeInteger(value))) {
 		throw new InvalidQueryException(`The filter value for "${key}" is not a valid number`);
 	}
 
@@ -130,6 +125,7 @@ function validateList(value: any, key: string) {
 }
 
 function validateBoolean(value: any, key: string) {
+	if (value === null) return true;
 	if (typeof value !== 'boolean') {
 		throw new InvalidQueryException(`"${key}" has to be a boolean`);
 	}
@@ -138,6 +134,7 @@ function validateBoolean(value: any, key: string) {
 }
 
 function validateGeometry(value: any, key: string) {
+	if (value === null) return true;
 	try {
 		stringify(value);
 	} catch {

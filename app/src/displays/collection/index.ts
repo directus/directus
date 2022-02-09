@@ -7,7 +7,7 @@ export default defineDisplay({
 	description: '$t:displays.collection.description',
 	types: ['string'],
 	icon: 'label',
-	handler: DisplayCollection,
+	component: DisplayCollection,
 	options: [
 		{
 			field: 'icon',

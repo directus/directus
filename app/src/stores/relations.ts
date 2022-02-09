@@ -1,6 +1,8 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/';
-import { Relation } from '@directus/shared/types';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Relation, DeepPartial } from '@directus/shared/types';
+import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';
 
 export const useRelationsStore = defineStore({
@@ -20,6 +22,34 @@ export const useRelationsStore = defineStore({
 			return this.relations.filter((relation) => {
 				return relation.collection === collection || relation.related_collection === collection;
 			});
+		},
+		async upsertRelation(collection: string, field: string, values: DeepPartial<Relation>) {
+			const existing = this.getRelationForField(collection, field);
+
+			try {
+				if (existing) {
+					if (isEqual(existing, values)) return;
+
+					const updatedRelationResponse = await api.patch<{ data: Relation }>(
+						`/relations/${collection}/${field}`,
+						values
+					);
+
+					this.relations = this.relations.map((relation) => {
+						if (relation.collection === collection && relation.field === field) {
+							return updatedRelationResponse.data.data;
+						}
+
+						return relation;
+					});
+				} else {
+					const createdRelationResponse = await api.post<{ data: Relation }>(`/relations`, values);
+
+					this.relations = [...this.relations, createdRelationResponse.data.data];
+				}
+			} catch (err: any) {
+				unexpectedError(err);
+			}
 		},
 		/**
 		 * Retrieve all relation rows that apply to the current field. Regardless of relational direction

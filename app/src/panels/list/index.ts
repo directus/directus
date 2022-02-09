@@ -88,15 +88,13 @@ export default definePanel({
 			type: 'json',
 			name: '$t:filter',
 			meta: {
-				interface: 'code',
-				note: '[Learn More: Filter Rules](/admin/docs/reference/filter-rules)',
+				interface: 'system-filter',
 				options: {
-					language: 'json',
-					placeholder: '{\n\t<field>: {\n\t\t<operator>: <value>\n\t}\n}',
+					collectionField: 'collection',
 				},
 			},
 		},
 	],
-	minWidth: 16,
-	minHeight: 12,
+	minWidth: 12,
+	minHeight: 6,
 });

@@ -68,28 +68,55 @@ This will set-up the required tables for Directus and make sure all the migratio
 
 ## 7. Start the development server
 
-Run the following command from the root directory.
+First you need to choose what packages you want to work on. Then, you should run the `dev` script on that package. You
+can see their names and list of scripts in their related `package.json`. Example of running APP:
 
 ```bash
-npm run dev
+npm run dev -w @directus/app
 ```
 
-To work on a specific part of the platform, like just the app+api, you can provide the `scope` option as follows:
+If you want to work on multiple packages at once, you should create a new instance of your terminal for each package:
+Example of running Api, App:
+
+<table>
+  <tr>
+  <th>
+  Terminal 1 [Api]
+  </th>
+  <th>
+  Terminal 2 [App]
+  </th>
+  </tr>
+  <tr>
+  <td>
 
 ```bash
-npm run dev -- --scope directus --scope @directus/app
+npm run dev -w directus
 ```
 
-::: warning Server startup
+  </td>
+  <td>
 
-When using `npm run dev` without a provided `scope`, `ts-node-dev` can get a little confused with the many restarts on
-first launch. Keep an eye out for the "directus: Server started at port xxxx" message. If that doesn't show up, try
-restarting `npm run dev`.
+```bash
+npm run dev -w @directus/app
+```
 
-:::
+  </td>
+  </tr>
+</table>
 
-If are looking to work on the Documentation (public website version), you can navigate to the `docs` directory and run
-the following command:
+---
+
+To work on the Documentation (public website version), you should navigate to the `docs` directory and run the following
+command:
+
+```bash
+npm install
+```
+
+<sup>ℹ This is necessary because the way vue-server-renderer imports vue</sup>
+
+Then you should run
 
 ```bash
 npm run dev:site
@@ -97,8 +124,7 @@ npm run dev:site
 
 ::: tip
 
-If you encounter errors during this installation process, make sure your node version meets the
-[minimum requirements](/guides/installation/cli)
+If you encounter errors during this installation process, make sure your node version meets the minimum requirements
 
 :::
 
@@ -106,3 +132,30 @@ If you encounter errors during this installation process, make sure your node ve
 
 At this point you are ready to start working on Directus! Before diving in however, it's worth reading through the
 introduction to [Contributing](/contributing/introduction).
+
+::: tip Debugging
+
+Check our Wiki for a [guide](https://github.com/directus/directus/wiki/debugging) on debugging the app and api.
+
+:::
+
+## 9. Running tests
+
+Tests run automatically through GitHub Actions. However you may wish to run the tests locally especially when you write
+tests.
+
+Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is running.
+
+```bash
+# Ensure that you are testing on the lastest codebase
+npm run build
+
+# Clean up in case you ran the tests before
+docker compose -f tests/docker-compose.yml down -v
+
+# Start the necessary containers
+docker compose -f tests/docker-compose.yml up -d --wait
+
+# Run the tests
+npm run test:e2e
+```

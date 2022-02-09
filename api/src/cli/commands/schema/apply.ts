@@ -3,17 +3,28 @@ import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
-import getDatabase from '../../../database';
+import getDatabase, { validateDatabaseConnection, isInstalled } from '../../../database';
 import logger from '../../../logger';
 import { Snapshot } from '../../../types';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
 import { applySnapshot } from '../../../utils/apply-snapshot';
+import { flushCaches } from '../../../cache';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
 
 	const database = getDatabase();
+
+	await validateDatabaseConnection(database);
+
+	await flushCaches();
+
+	if ((await isInstalled()) === false) {
+		logger.error(`Directus isn't installed on this database. Please run "directus bootstrap" first.`);
+		database.destroy();
+		process.exit(0);
+	}
 
 	let snapshot: Snapshot;
 
@@ -59,6 +70,8 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 						message += `\n  - ${chalk.red('Delete')} ${collection}`;
 					} else if (diff[0]?.kind === 'N') {
 						message += `\n  - ${chalk.green('Create')} ${collection}`;
+					} else if (diff[0]?.kind === 'A') {
+						message += `\n  - ${chalk.blue('Update')} ${collection}`;
 					}
 				}
 			}
@@ -80,6 +93,8 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
 					} else if (diff[0]?.kind === 'N') {
 						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
+					} else if (diff[0]?.kind === 'A') {
+						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 					}
 				}
 			}
@@ -89,7 +104,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 
 				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
 					if (diff[0]?.kind === 'E') {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field} -> ${related_collection}`;
+						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
 							if (change.kind === 'E') {
@@ -98,9 +113,18 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 							}
 						}
 					} else if (diff[0]?.kind === 'D') {
-						message += `\n  - ${chalk.red('Delete')} ${collection}.${field} -> ${related_collection}`;
+						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
 					} else if (diff[0]?.kind === 'N') {
-						message += `\n  - ${chalk.green('Create')} ${collection}.${field} -> ${related_collection}`;
+						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
+					} else if (diff[0]?.kind === 'A') {
+						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+					} else {
+						continue;
+					}
+
+					// Related collection doesn't exist for a2o relationship types
+					if (related_collection) {
+						message += `-> ${related_collection}`;
 					}
 				}
 			}

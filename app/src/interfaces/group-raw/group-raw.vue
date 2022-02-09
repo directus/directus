@@ -5,9 +5,10 @@
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.id"
+			:group="field.meta.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
+			:disabled="disabled"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</div>

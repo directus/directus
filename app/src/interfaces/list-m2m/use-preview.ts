@@ -3,14 +3,15 @@ import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { cloneDeep, get, merge } from 'lodash';
+import { cloneDeep, get, merge, isEqual } from 'lodash';
 import { Ref, ref, watch } from 'vue';
-import { RelationInfo } from './use-relation';
+import { RelationInfo } from '@/composables/use-m2m';
 import { getEndpoint } from '@/utils/get-endpoint';
 
 type UsablePreview = {
 	tableHeaders: Ref<Header[]>;
 	items: Ref<Record<string, any>[]>;
+	initialItems: Ref<Record<string, any>[]>;
 	loading: Ref<boolean>;
 	error: Ref<any>;
 };
@@ -30,19 +31,22 @@ export default function usePreview(
 	const fieldsStore = useFieldsStore();
 	const tableHeaders = ref<Header[]>([]);
 	const loading = ref(false);
+	const initialItems = ref<Record<string, any>[]>([]);
 	const items = ref<Record<string, any>[]>([]);
 	const error = ref<any>(null);
 
 	watch(
 		() => value.value,
-		async (newVal) => {
+		async (newVal, oldVal) => {
 			if (newVal === null) {
 				items.value = [];
 				return;
 			}
 
+			if (isEqual(newVal, oldVal)) return;
+
 			loading.value = true;
-			const { junctionField, relationPkField, junctionPkField, relationCollection } = relation.value;
+			const { junctionField, relationPkField, relationCollection } = relation.value;
 			if (junctionField === null) return;
 
 			// Load the junction items so we have access to the id's in the related collection
@@ -85,12 +89,14 @@ export default function usePreview(
 					.map((item) => {
 						const updatedItem = updatedItems.find(
 							(updated) =>
-								get(updated, [junctionField, junctionPkField]) === get(item, [junctionField, junctionPkField])
+								get(updated, [junctionField, relationPkField]) === get(item, [junctionField, relationPkField])
 						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
 					})
 					.concat(...newItems);
+
+				if (!initialItems.value.length) initialItems.value = responseData;
 
 				items.value = responseData;
 			} catch (err: any) {
@@ -140,7 +146,7 @@ export default function usePreview(
 		{ immediate: true }
 	);
 
-	return { tableHeaders, items, loading, error };
+	return { tableHeaders, items, initialItems, loading, error };
 
 	function getRelatedFields(fields: string[]) {
 		const { junctionField } = relation.value;

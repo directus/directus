@@ -49,7 +49,6 @@ body {
 .v-breadcrumb {
 	display: flex;
 	align-items: center;
-	font-size: 12px;
 
 	.section {
 		display: contents;
@@ -89,10 +88,6 @@ body {
 				cursor: default;
 			}
 		}
-	}
-
-	@media (min-width: 600px) {
-		font-size: inherit;
 	}
 }
 </style>
