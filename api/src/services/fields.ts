@@ -421,12 +421,6 @@ export class FieldsService {
 				);
 			});
 
-			const relationsService = new RelationsService({
-				knex: trx,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
-
 			const fieldsService = new FieldsService({
 				knex: trx,
 				accountability: this.accountability,
@@ -436,13 +430,9 @@ export class FieldsService {
 			for (const relation of relations) {
 				const isM2O = relation.collection === collection && relation.field === field;
 
-				// If the current field is a m2o, delete the related o2m if it exists and remove the relationship
-				if (isM2O) {
-					await relationsService.deleteOne(collection, field);
-
-					if (relation.related_collection && relation.meta?.one_field) {
-						await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
-					}
+				// If the current field is a m2o, delete the related o2m if it exists
+				if (isM2O && relation.related_collection && relation.meta?.one_field) {
+					await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
 				}
 
 				// If the current field is a o2m, just delete the one field config from the relation
