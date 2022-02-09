@@ -188,7 +188,7 @@ prefixing the value with `{type}:`. The following types are available:
 | Variable                   | Description                                                                                                | Default Value |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
 | `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`        |
-| `HOST`					 | IP or host the API listen on.																			  | `0.0.0.0`   |
+| `HOST`                     | IP or host the API listen on.                                                                              | `0.0.0.0`     |
 | `PORT`                     | What port to run the API under.                                                                            | `8055`        |
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
