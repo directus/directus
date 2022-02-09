@@ -32,7 +32,6 @@ import { Permission, Role } from '@directus/shared/types';
 import { Field } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 import { useFieldsStore } from '@/stores';
-import { clone, orderBy } from 'lodash';
 
 export default defineComponent({
 	props: {

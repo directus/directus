@@ -130,8 +130,8 @@ a **column** in your database. For example, an `articles` [Collection](#collecti
 
 As you might have guessed, files includes images, videos, PDFs, text documents, or anything else. While files can
 technically be stored as code in the database, it is far more common to manage them as individual assets on a "drive".
-The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it is
-an excellent Digital Asset Management system.
+The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
+is an excellent Digital Asset Management system.
 
 ## Icons
 

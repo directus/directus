@@ -533,6 +533,9 @@ errors:
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
   ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
+  VALUE_TOO_LONG: Wartość jest zbyt długa
+  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
+  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
@@ -563,12 +566,15 @@ update_collection_success: Zaktualizowana kolekcja
 delete_collection_success: Usunięta kolekcja
 make_collection_visible: Spraw, aby kolekcja była widoczna
 make_collection_hidden: Spraw, aby kolekcja była ukryta
+make_folder_visible: Uwidocznij folder
+make_folder_hidden: Ukryj folder
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
 one_filtered_item: '1 przefiltrowany element'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć tę kolekcję? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. Ta akcja jest trwała.
+delete_folder_are_you_sure: Czy na pewno chcesz usunąć ten folder? Zagnieżdżone foldery i kolekcje zostaną przeniesione na najwyższy poziom.
 collections_shown: Wyświetlane kolekcje
 visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
@@ -1249,6 +1255,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:

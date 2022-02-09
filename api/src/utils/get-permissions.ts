@@ -1,5 +1,5 @@
 import { Permission, Accountability, SchemaOverview } from '@directus/shared/types';
-import { deepMap, parseFilter } from '@directus/shared/utils';
+import { deepMap, parseFilter, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
@@ -193,7 +193,7 @@ function processPermissions(
 	return permissions.map((permission) => {
 		permission.permissions = parseFilter(permission.permissions, accountability!, filterContext);
 		permission.validation = parseFilter(permission.validation, accountability!, filterContext);
-		permission.presets = parseFilter(permission.presets, accountability!, filterContext);
+		permission.presets = parsePreset(permission.presets, accountability!, filterContext);
 
 		return permission;
 	});

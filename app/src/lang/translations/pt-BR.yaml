@@ -21,96 +21,99 @@
 #'Proxy', 'Intl'
 identifier: Identificador
 avatar: Imagem de Perfil
+application: Aplicação
 default_provider: Padrão
 published: Publicado
 draft: Rascunho
 archived: Arquivado
 modules: Módulos
-module_bar: Barra de módulo
-tile_size: Tamanho do ladrilho
+module_bar: Barra de Módulos
+tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
-item_creation: Criação de ítem
-item_revision: Revisão do item
+switch_user: Alternar Usuário
+item_creation: Criação do Item
+item_revision: Revisão do Item
 enter_a_name: Insira um nome...
-duplicate_field: Duplicar campo
-half_width: Meia largura
-full_width: Largura total
-group: Grupos
+duplicate_field: Duplicar Campo
+half_width: Meia Largura
+full_width: Largura Total
+group: Grupo
 and: E
 or: Ou
-fill_width: Preencher
-field_name_translations: Traduções Dos Nomes Dos Campos
+fill_width: Preencher Largura
+field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
-role_name: Nome do cargo
+role_name: Nome do Cargo
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
 edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
-db_only_click_to_configure: 'Apenas banco de dados: Clique p/ configurar'
+db_only_click_to_configure: 'Apenas Banco de Dados: Clique para Configurar'
 show_active_items: Exibir Itens Ativos
-show_archived_items: Mostrar itens arquivados
-show_all_items: Mostrar todos os itens
-edited: Valor editado
+show_archived_items: Exibir Itens Arquivados
+show_all_items: Exibir Todos os Itens
+edited: Valor Editado
 required: Obrigatório
-required_for_app_access: Obrigatório para o Acesso ao Aplicativo
+required_for_app_access: Obrigatório para Acesso ao App
 requires_value: Requer valor
-create_preset: Criar predefinição
-create_panel: Criar painel
-create_role: Criar Função
-create_user: Criar usuário
+create_preset: Criar Predefinição
+create_panel: Criar Painel
+create_role: Criar Cargo
+create_user: Criar Usuário
 delete_panel: Excluir Painel
-create_webhook: Criar Webgancho
+create_webhook: Criar Webhook
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 subject: Assunto
-inbox: Caixa de entrada
+inbox: Caixa de Entrada
 emails: Emails
-connection_excellent: Conexão excelente
-connection_good: Conexão boa
-connection_fair: Conexão razoável
-connection_poor: Conexão ruim
+connection_excellent: Conexão Excelente
+connection_good: Conexão Boa
+connection_fair: Conexão Razoável
+connection_poor: Conexão Ruim
 primary: Primário
 rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
-reset_bookmark: Redefinir marcadores
-rename_bookmark: Renomear marcador
-update_bookmark: Atualizar Marcador
-delete_bookmark: Deletar Marcador
+reset_bookmark: Redefinir Favoritos
+rename_bookmark: Renomear Favorito
+update_bookmark: Atualizar Favorito
+delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-
-  Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
+  Tem certeza que deseja deletar o favorito "{bookmark}"? Esta ação não pode ser desfeita.
 logoutReason:
-  SIGN_OUT: Desconectado
+  SIGN_OUT: Deslogado
   SESSION_EXPIRED: Sessão expirada
-public_label: Publico
+public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
-not_allowed: Não permitido
+admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
+not_allowed: Não Permitido
 directus_version: Versão do Directus
 node_version: Versão Node
-node_uptime: Tempo de atividade do Node
+node_uptime: Tempo de Atividade do Node
 os_type: Tipo de SO
 os_version: Versão do SO
-os_uptime: Tempo de atividade do SO
+os_uptime: Tempo de Atividade do SO
 os_totalmem: Memória do SO
 archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
 archive_confirm_count: >-
-  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+  Nenhum Item Selecionado | Você tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
 reset_system_permissions_to: 'Redefinir Permissões do Sistema Para:'
-reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Você tem certeza?
-the_following_are_minimum_permissions: As permissões seguintes, são as mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disso, mas não abaixo.
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você possa ter aplicado às coleções do sistema. Você tem certeza?
+the_following_are_minimum_permissions: As permissões seguintes são as mínimas necessárias quando o "Acesso ao App" estiver habilitado. Você pode estender as permissões além disso, mas não abaixo.
 app_access_minimum: Acesso Mínimo ao App
 recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
-unarchive_confirm: Tem certeza de que deseja desarquivar este item?
-nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos para um nível acima.
+unarchive_confirm: Você tem certeza que deseja desarquivar este item?
+nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
 unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
@@ -124,92 +127,93 @@ validationError:
   lt: O valor tem de ser menor que {valid}
   lte: O valor tem de ser menor ou igual a {valid}
   empty: O valor tem de ser vazio
-  nempty: Valor não pode estar vazio
-  null: Valor precisa ser nulo
-  nnull: Valor não pode ser nulo
-  required: Valor obrigatório
+  nempty: O valor não pode estar vazio
+  null: O valor precisa ser nulo
+  nnull: O valor não pode ser nulo
+  required: O valor é obrigatório
   unique: O valor deve ser único
   regex: O valor não tem o formato correto
 all_access: Acesso Total
-no_access: Sem acesso
+no_access: Sem Acesso
 use_custom: Usar Personalizado
-nullable: Aceita nulos
-allow_null_value: Permitir valores NULL
+nullable: Anulável
+allow_null_value: Permitir valor NULL
 allow_multiple: Permitir Múltiplos
-allow_multiple_to_be_open: Permissão para abrir vários
-enter_value_to_replace_nulls: Por favor digite um novo valor que substituirá todos os NULLs presentes neste campo.
+allow_multiple_to_be_open: Permitir a Abertura de Múltiplos
+enter_value_to_replace_nulls: Por favor, insira um novo valor que substituirá todos os NULLs presentes neste campo.
 field_standard: Padrão
-field_presentation: Apresentação e pseudônimos
-field_file: Arquivo único
-field_files: Múltiplos arquivos
+field_presentation: Apresentação & Pseudônimos
+field_file: Arquivo Único
+field_files: Múltiplos Arquivos
 field_m2o: Relacionamento M2O
 field_m2a: Relacionamento M2A
 field_o2m: Relacionamento O2M
 field_m2m: Relacionamento M2M
 field_translations: Traduções
 field_group: Grupo de Campos
-item_permissions: Permissões do Item
-field_permissions: Permissões dos campos
-field_validation: Validação dos campos
-field_presets: Predefinições de campo
-permissions_for_role: 'Itens que o cargo {role} pode {action}.'
-fields_for_role: 'Campos que o cargo {role} pode {action}.'
-validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
-presets_for_role: 'Valores de campo padrões para a função {role}.'
-presentation_and_aliases: Apresentação e pseudônimos
+item_permissions: Permissões dos Items
+field_permissions: Permissões dos Campos
+field_validation: Validação dos Campos
+field_presets: Predefinições dos Campos
+permissions_for_role: 'Itens que o Cargo {role} pode {action}.'
+fields_for_role: 'Campos que o Cargo {role} pode {action}.'
+validation_for_role: 'As regras de {action} do campo que o Cargo {role} deve obedecer.'
+presets_for_role: 'Valores padrões de campo para o Cargo {role}.'
+presentation_and_aliases: Apresentação & Pseudônimos
 revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
-no_relational_data: Tenha em mente que os dados relacionados não estão incluídos aqui.
+no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
-delete_field: Excluir campo
-fields_and_layout: Campos e Layout
-field_create_success: 'Campo criado: "{field}"'
-field_update_success: 'Campo atualizado: "{field}"'
+delete_field: Excluir Campo
+fields_and_layout: Campos & Layout
+field_create_success: 'Campo Criado: "{field}"'
+field_update_success: 'Campo Atualizado: "{field}"'
 duplicate_where_to: Para onde você gostaria de duplicar este campo?
 language: Idioma
-aggregate_function: Agregar função
-aggregate_precision: Agregar precisão
-group_aggregation: Grupo de agregação
+aggregate_function: Função de Agregação
+aggregate_precision: Precisão de Agregação
+group_aggregation: Agregação go Grupo
+group_precision: Precisão do Grupo
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmera
-show_zero: Mostrar zero
-create_in_advanced_field_creation_mode: Criar campo no modo avançado
-continue_in_advanced_field_creation_mode: Continuar a criação do campo no modo avançado
+show_zero: Mostrar Zero
+create_in_advanced_field_creation_mode: Criar Campo no Modo Avançado
+continue_in_advanced_field_creation_mode: Continuar a Criação do Campo no Modo Avançado
 sum: Soma
-sum_distinct: Soma distinta
+sum_distinct: Soma Distinta
 avg: Média
-avg_distinct: Média distinta
-count: Quantidade
-count_distinct: Contagem distinta
+avg_distinct: Média Distinta
+count: Contagem
+count_distinct: Contagem Distinta
 min: Mínimo
 max: Máximo
 exposure: Exposição
 shutter: Obturador
 iso: ISO
-focal_length: Distância focal
-schema_setup_key: O nome da coluna do banco de dados deste campo e a chave API
+focal_length: Distância Focal
+schema_setup_key: O nome da coluna do banco de dados e a chave de API deste campo
 create_field: Criar Campo
-creating_new_field: 'Novo campo ({collection})'
+creating_new_field: 'Novo Campo ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Redefinir preferências da página
-hidden_field: Campo oculto
+reset_page_preferences: Redefinir Preferências da Página
+hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
 disabled_editing_value: Desativar edição do valor
 key: Chave
-alias: Alias
+alias: Pseudônimo
 bigInteger: Big Integer
-boolean: Boolean
+boolean: Booleano
 date: Data
 date_range: Período
-datetime: DateTime
-dateTime: DateTime
+datetime: Data e Hora
+dateTime: Data e Hora
 precision: Precisão
 decimal: Decimal
-float: Float
-integer: Integer
+float: Ponto Flutuante
+integer: Inteiro
 json: JSON
 xml: XML
 string: String
@@ -220,7 +224,11 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (Todos)
 geometry.Point: Ponto
+geometry.LineString: Linha de Texto
 geometry.Polygon: Polígono
+geometry.MultiPoint: MultiPonto
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: Multipolígono
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
@@ -242,6 +250,7 @@ new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
 add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
 add_o2m_to_collection: 'Adicionar O2M a "{collection}"'
+add_m2m_to_collection: 'Adicionar M2O a "{collection}"'
 choose_a_type: Escolha um tipo...
 determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
@@ -259,11 +268,12 @@ invalid_item: Item inválido
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
-no_translations: Nenhuma tradução
+no_translations: Nenhuma Tradução
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Adicionar um placeholder...
 length: Comprimento
+soft_length: Limite leve
 precision_scale: Precisão e Escala
 readonly: Leitura apenas
 unique: Único
@@ -274,9 +284,19 @@ foreign_key: Chave Extrangeira
 finish_setup: Concluir a instalação
 dismiss: Dispensar
 raw_value: Valor bruto
+copy_raw_value: Copiar Valor Bruto
+copy_raw_value_success: Copiado
+copy_raw_value_fail: Falha ao Copiar
+paste_raw_value: Colar Valor Bruto
+paste_raw_value_success: Colado
+paste_raw_value_fail: Falha ao Colar
+view_raw_value: Ver Valor Bruto
 edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
+clear_value: Limpar Valor
 clear_changes: Limpar alterações
+reset_to_default: Restaurar Padrões
+undo_changes: Desfazer Alterações
 notifications: Notificações
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página não encontrada
@@ -305,11 +325,19 @@ item_delete_success: Item deletado | Itens deletados
 this_collection: Esta coleção
 related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
-translations_collection: Coleção de traduções
+translations_collection: Coleção de Traduções
 languages_collection: Coleção de idiomas
+import_data_input_placeholder: CSV ou JSON...
+import_data_button: Iniciar Importação
+import_data_indeterminate: Importando Dados...
+import_data_success: Dados importados com sucesso de {filename}
+import_data_error: A estrutura de dados deste arquivo não condiz com a coleção.
 label_import: Importar
+label_export: Exportar
+import_export: Importar / Exportar
 format: Formato
 use_current_filters_settings: Usar filtros e configurações atuais
+export_data_button: Iniciar Exportação
 last_page: Última página
 last_access: Último acesso
 fill_template: Preencher com valor de template
@@ -421,6 +449,8 @@ user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
 no_webhooks_copy: Nenhum webhook foi configurado ainda. Comece criando um abaixo.
+no_notifications: Sem Notificações
+no_notifications_copy: Você está em dia!
 activity_log: Registro de atividades
 all_items: Todos os itens
 any: Qualquer
@@ -438,6 +468,7 @@ active: Ativo
 move_to: Mover para...
 copy: Copiar
 copy_to: Copiar para...
+no_other_dashboards_copy: Você ainda não tem nenhum outro painel.
 inactive: Inativo
 users: Usuários
 activity: Atividade
@@ -465,7 +496,7 @@ file_moved: Arquivo movido
 collection_created: Coleção criada
 modified_on: Modificado em
 card_size: Tamanho do cartão
-sort_field: Campo de ordenação
+sort_field: Campo de Ordenação
 add_sort_field: Adicionar campo de ordenação
 sort: Ordenar
 status: Status
@@ -500,7 +531,7 @@ errors:
   CONTAINS_NULL_VALUES: O campo contém valores nulos
   UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro inesperado
-  NOT_NULL_VIOLATION: Valor não pode ser nulo
+  NOT_NULL_VIOLATION: O valor não pode ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
   UNKNOWN: Erro inesperado
 security: Segurança
@@ -530,6 +561,10 @@ all_users: Todos os usuários
 delete_collection: Excluir coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção excluída
+make_collection_visible: Tornar Coleção Visível
+make_collection_hidden: Tornar Coleção Oculta
+make_folder_visible: Tornar Pasta Visível
+make_folder_hidden: Tornar Pasta Oculta
 start_end_of_count_items: '{start}-{end} de {count} itens'
 start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
 one_item: '1 item'
@@ -541,6 +576,7 @@ visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
 show_hidden_collections: Mostrar Coleções Ocultas
 hide_hidden_collections: Não Mostrar Coleções Ocultas
+show_header: Exibir Cabeçalho
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
 placeholder: Placeholder
@@ -556,6 +592,7 @@ color: Cor
 circle: Círculo
 empty_item: Item vazio
 log_in_with: 'Entrar com {provider}'
+conditional_styles: Estilos Condicionais
 advanced_settings: Configurações Avançadas
 advanced_filter: Filtro avançado
 delete_advanced_filter: Excluir Filtro
@@ -617,7 +654,9 @@ all_files: Todos os arquivos
 my_files: Meus arquivos
 recent_files: Arquivos recentes
 create_folder: Criar pasta
+edit_folder: Editar Pasta
 folder_name: Nome da pasta...
+folder_key: Chave da Pasta...
 add_file: Adicionar arquivo
 replace_file: Substituir arquivo
 no_results: Sem resultados
@@ -638,6 +677,7 @@ read: Leitura
 update: Alteração
 select_fields: Selecionar campos
 format_text: Formatar texto
+abbreviate_value: Abreviar Valor
 operator: Operador
 bold: Negrito
 toggle: Alternar
@@ -646,6 +686,9 @@ icon_off: Ícone desligado
 label: Rótulo
 insights: Estatísticas
 dashboard: Painel
+panel: Painel
+panel_options: Opções do Painel
+panel_header: Cabeçalho do Painel
 panel_name_placeholder: Nomeie este painel...
 panel_note_placeholder: Detalhes opcionais sobre este painel...
 panel_delete_confirm: Tem certeza que deseja deletar este painel? Esta ação não pode ser desfeita.
@@ -653,6 +696,9 @@ dashboard_delete_confirm: Tem certeza que deseja deletar este painel inteiro? Es
 edit_dashboard: Editar painel
 delete_dashboard: Excluir painel
 visible: Visível
+prefix_placeholder: Texto antes do valor...
+suffix_placeholder: Texto depois do valor...
+decimals_placeholder: Número de casas decimais...
 no_dashboards: Sem painéis
 no_dashboards_copy: Você ainda não tem nenhum painel.
 no_data: Sem dados
@@ -674,6 +720,9 @@ display_text_placeholder: Digite um texto de exibição...
 interface_group_text_and_numbers: Texto e números
 interface_group_selection: Seleção
 interface_group_relational: Relacional
+interface_group_presentation: Apresentação
+interface_group_groups: Grupos
+interface_group_other: Outros
 tooltip: Dica
 tooltip_placeholder: Insira uma dica de ferramenta...
 unlimited: Ilimitado
@@ -737,6 +786,7 @@ adding_user: Adicionando usuário
 unknown_user: Usuário desconhecido
 creating_in: 'Criando Item em {collection}'
 editing_in: 'Editando Item em {collection}'
+viewing_in: 'Visualizando Item em {collection}'
 creating_unit: 'Criando {unit}'
 editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
@@ -760,9 +810,12 @@ layout_setup: Configuração de Layout
 unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
+discard_all_changes: Descartar Todas as Alterações
+discard_changes_copy: Tem certeza que deseja descartar todas as alterações?
 show_x_axis: Mostrar eixo X
 show_y_axis: Mostrar eixo Y
 keep_editing: Continuar editando
+page_help_collections_overview: '**Visão Geral das Coleções** — Lista de todas as coleções às quais você tem acesso.'
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 page_help_collections_item: >-
@@ -791,6 +844,8 @@ page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário par
 page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
 page_help_users_item: >-
   **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
+page_help_insights_overview: '**Visões** — Lista de painéis que aos quais você tem acesso.'
+page_help_insights_dashboard: '**Dashboard** — Área de trabalho para gerenciar um ou mais painéis'
 activity_feed: Feed de atividade
 add_new: Adicionar Novo
 create_new: Criar novo
@@ -803,12 +858,27 @@ cancel: Cancelar
 no_upscale: Não ampliar imagens
 collection: Coleção
 collections: Coleções
+content: Conteúdo
 singleton: Singleton
 singleton_label: Tratar como objeto único
 system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
 directus_collection:
+  directus_activity: Histórico de responsabilidade para todos os eventos
+  directus_collections: Configurações e metadados adicionais da coleção
   directus_dashboards: Painéis dentro do módulo Insights
+  directus_fields: Configurações e metadados adicionais do campo
+  directus_files: Metadados de todos os arquivos gerenciados
   directus_folders: Fornece diretórios virtuais para arquivos
+  directus_migrations: Qual versão do banco de dados você está utilizando
+  directus_panels: Painéis individuais nos dashboards de Visões
+  directus_permissions: Permissões de acesso para cada papel
+  directus_notifications: Notificações enviadas aos usuários
+  directus_presets: Predefinições para padrões de coleção e favoritos
+  directus_relations: Configurações e metadados do relacionamento
+  directus_revisions: Cópia de dados de todas as atividades
+  directus_roles: Grupos de permissão para usuários do sistema
+  directus_sessions: Informações da sessão do usuário
+  directus_settings: Opções de configuração do projeto
   directus_users: Usuários do sistema para a plataforma
   directus_webhooks: Configuração para solicitações HTTP baseadas em eventos
 fields:
@@ -831,12 +901,12 @@ fields:
     hidden: Oculto
     singleton: Singleton
     translations: Traduções do nome da coleção
-    archive_app_filter: Filtro de arquivados
-    archive_value: Valor quando arquivado
-    unarchive_value: Valor quando desarquivado
-    sort_field: Campo de ordenação
+    archive_app_filter: Filtro do Arquivo do App
+    archive_value: Valor quando Arquivado
+    unarchive_value: Valor quando Desarquivado
+    sort_field: Campo de Ordenação
     accountability: Rastreamento de Atividades e Revisões
-    archive_field: Arquivar Campo
+    archive_field: Campo de Arquivação
     item_duplication_fields: Campos de item duplicado
   directus_files:
     $thumbnail: Miniatura
@@ -893,6 +963,7 @@ fields:
     external_identifier: Identificador externo
     last_page: Última página
     last_access: Último acesso
+    email_notifications: Notificações por Email
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -900,7 +971,13 @@ fields:
     tiff: Tiff
     mapping: Mapeamento
     basemaps_raster: Rasterizar
+    basemaps_tile: Rasterizado TileJSON
+    basemaps_style: Estilo Mapbox
     mapbox_key: Token de Acesso Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribuição
+    attribution_placeholder: '© Contribuidores do OpenStreetMap'
+    transforms_note: O nome do método da biblioteca Sharp e seus argumentos. Veja https://sharp.pixelplumbing.com/api-constructor para mais informações.
     additional_transforms: Transformações Adicionais
     project_name: Nome do projeto
     project_descriptor: Descrição do projeto
@@ -919,7 +996,7 @@ fields:
     storage_asset_transform: Transformações Permitidas
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
-    module_bar: Barra de módulo
+    module_bar: Barra de Módulos
     transformations_all: Permitir todas as transformações
     transformations_none: Desativar transformações
     transformations_presets: Limitar transformações às predefinições abaixo
@@ -927,16 +1004,20 @@ fields:
     name: Nome
     role: Função
     password: Senha
+    date_start: Data Inicial
+    date_end: Data Final
+    max_uses: Quantidade Máxima de Usos
+    times_used: Quantidade de Usos
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: Traduções Dos Nomes Dos Campos
+    translation: Traduções do Nome do Campo
     display_template: Template
   directus_roles:
-    name: Nome do cargo
+    name: Nome do Cargo
     icon: Ícone do cargo
     description: Descrição
     app_access: Acesso ao app
@@ -950,7 +1031,9 @@ fields:
     method: Método 
     status: Status
     data: Dados
+    header: Cabeçalho
     value: Valor
+    headers: Cabeçalhos de Requisição
     data_label: Enviar Dados do Evento
     triggers: Gatilhos
     actions: Ações
@@ -958,11 +1041,14 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
+    project_color_note: Fundo de Login & Logo
     project_logo_note: 40x40 SVG/PNG (Branco)
     public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
     auth_password_policy:
       none_text: Nenhum – Não Recomendado
+      weak_text: Fraca — Mínimo de 8 Caracteres
+      strong_text: Forte — Maiúsculas / Minúsculas / Números / Especiais
     storage_asset_presets:
       fit_label: Ajustar
       upscaling: Upscaling
@@ -972,9 +1058,13 @@ field_options:
         fit_text: Ajustar dentro
         outside_text: Ajustar fora
     additional_transforms: Transformações Adicionais
+    transforms_note: O nome do método da biblioteca Sharp e seus argumentos. Veja https://sharp.pixelplumbing.com/api-constructor para mais informações.
     mapbox_key: Token de Acesso Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps_name_placeholder: Digite o nome do basemap...
     basemaps_raster: Rasterizar
+    basemaps_tile: Rasterizado TileJSON
+    basemaps_style: Estilo Mapbox
     files_divider_title: Arquivos e Miniaturas
     overrides_divider_title: Substituições de Aplicativos
   directus_activity:
@@ -987,20 +1077,42 @@ field_options:
     only_track_activity: Acompanhar apenas Atividade
     do_not_track_anything: Não rastreie nada
     collection_setup: Configurando coleção
+    note_placeholder: Uma descrição desta coleção...
+    hidden_label: Ocultar no App
     singleton: Tratar como objeto único
     language: Idioma
     translation: Tradução
+    translation_placeholder: Insira uma tradução...
     collection_name: Nome da coleção
+    singular_unit: Unidade Singular
     plural_unit: Unidade Plural
     archive_divider: Arquivar
+    archive_field_placeholder: Escolha um campo...
+    archive_app_filter: Habilitar Filtro de Arquivo do App
+    archive_value: Valor definido ao arquivar...
+    unarchive_value: Valor definido ao desarquivar...
     sort_divider: Ordenar
+    sort_field: Escolha um campo...
     accountability_divider: Responsabilidade
+    duplication_divider: Duplicação
+  directus_files:
+    title: Um título único...
+    description: Uma descrição opcional...
+    location: Uma localização opcional...
+    storage_divider: Nomeação de Arquivos
+    filename_disk: Nome no armazenamento do disco...
+    filename_download: Nome ao baixar...
   directus_roles:
+    name: O nome único para este papel...
+    description: Uma descrição deste papel...
+    ip_access: Adicione endereços IP permitidos ou deixe em branco para permitir todos...
     fields:
       icon_name: Ícone
       name_name: Nome
       name_placeholder: Insira um título...
+      link_placeholder: URL relativa ou absoluta...
     collections_name: Coleções
+    collections_addLabel: Adicionar Coleção...
   directus_users:
     preferences_divider: Preferências do Usuário
     dropdown_auto: Automático (Baseado no Sistema)
@@ -1022,6 +1134,7 @@ field_options:
     actions_update: Alteração
     actions_delete: Excluir
     headers:
+      header: Cabeçalho
       value: Valor
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
 do_nothing: Não fazer nada
@@ -1029,6 +1142,7 @@ generate_and_save_uuid: Gerar e salvar UUID
 save_current_user_id: Salvar ID de usuário atual
 save_current_user_role: Salvar a Função de Usuário Atual
 save_current_datetime: Salvar data/hora atual
+start_open: Iniciar Aberto
 block: Bloco
 inline: Em linha
 comment: Comentário
@@ -1156,6 +1270,7 @@ interfaces:
     description: Digite ou selecione um valor de cor
     placeholder: Escolha uma cor...
     preset_colors: Cores predefinidas
+    opacity: Opacidade
     preset_colors_add_label: Adicionar nova cor...
     name_placeholder: Inserir nome da cor...
   datetime:
@@ -1173,6 +1288,7 @@ interfaces:
   presentation-divider:
     divider: Divisor
     description: Rotular e dividir campos em seções
+    title_placeholder: Insira um título ou deixe em branco para mostrar apenas uma linha...
     inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
@@ -1207,6 +1323,8 @@ interfaces:
   file-image:
     image: Imagem
     description: Selecione ou envie uma imagem
+    crop: Cortar para Caber
+    crop_label: Cortar a imagem conforme necessário
   system-interface:
     interface: Interface
     description: Selecione uma interface existente
@@ -1217,6 +1335,7 @@ interfaces:
   list-m2m:
     many-to-many: Muitos para muitos
     description: Selecione vários itens de junção relacionados
+    display_template_configure_notice: Você pode configurar o modelo de exibição após criar este campo.
   select-dropdown-m2o:
     many-to-one: Muitos para um
     description: Selecione um único item relacionado
@@ -1225,6 +1344,9 @@ interfaces:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
     edit: Editar
+    preview: Pré-visualizar
+    editorFont: Fonte do Editor
+    previewFont: Fonte da Pré-visualização
     customSyntax: Blocos personalizados
     customSyntax_label: Adicionar tipos de sintaxe personalizados
     customSyntax_add: Adicionar sintaxe personalizada
@@ -1232,10 +1354,22 @@ interfaces:
     imageToken: Token da imagem
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
   map:
+    map: Mapa
+    description: Selecione uma localização no mapa
     zoom: Zoom
+    geometry_type: Tipo da Geometria
+    geometry_format: Formato da Geometria
+    default_view: Exibição Padrão
     invalid_options: Opções inválidas
     invalid_format: Formato inválido ({format})
     unexpected_geometry: Esperado {expected}, obtido {got}.
+    fit_bounds: Ajustar a visão aos dados
+    native: Nativo
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Clique para selecionar {geometry}
   presentation-notice:
     notice: Aviso
     description: Mostrar um breve aviso
@@ -1247,6 +1381,7 @@ interfaces:
   system-folder:
     folder: Pasta
     description: Selecionar uma pasta
+    field_hint: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1304,6 +1439,8 @@ interfaces:
   translations:
     display_template: Modelo de exibição
     no_collection: Nenhuma coleção
+    toggle_split_view: Alternar Visualização Dividida
+    language_field: Campo Indicador de Idioma
   list-o2m-tree-view:
     description: Visualização de árvore para itens recursivos aninhados um-para-muitos
     recursive_only: A interface de exibição em árvore só funciona para relações recursivas.
@@ -1321,6 +1458,7 @@ interfaces:
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
     options_override: Sobrescrever opções
+    folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     imageToken: Token da imagem
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
   input-autocomplete-api:
@@ -1328,16 +1466,30 @@ interfaces:
     description: Um tipo de pesquisa para valores de API externos.
     results_path: Caminho de resultados
     value_path: Caminho do Valor
+    text_path: Caminho do Texto
     trigger: Acionar
     rate: Avaliar
+  group-raw:
+    name: Grupo Simples
+    description: Renderiza os campos como estão
+  group-detail:
+    name: Grupo Detalhado
+    description: Renderiza os campos como uma seção dobrável
+    show_header: Exibir Cabeçalho do Grupo
+    header_icon: Ícone do Cabeçalho
+    header_color: Cor do Cabeçalho
+    start_open: Iniciar Aberto
+    start_closed: Iniciar Fechado
 displays:
   translations:
     translations: Traduções
     description: Pré-visualizar traduções
     enable: Habilitar
+    user_language: Usar o Idioma do Usuário Atual
     default_language: Idioma padrão
+    language_field: Campo Indicador de Idioma
   boolean:
-    boolean: Boolean
+    boolean: Booleano
     description: Exibir estados ativados e desativados
     label_on: Rótulo ligado
     label_on_placeholder: Digite o rótulo para ligado...
@@ -1375,13 +1527,17 @@ displays:
     formatted-value: Valor formatado
     description: Exibe uma versão formatada do texto
     format: Formato
+    format_label: Capitalização automática
     font: Fonte
+    font_sans_serif: Sem serifa
     font_serif: Serif
     font_monospace: Monoespaçada
     bold: Negrito
     bold_label: Usar estilo negrito
     italic: Itálico
+    italic_label: Usar estilo itálico
     prefix: Prefixo
+    prefix_label: Texto prefixo
     suffix: Sufixo
     color: Cor
     icon: Ícone
@@ -1423,6 +1579,7 @@ displays:
   related-values:
     related-values: Valores Relacionados
     description: Exibir valores relativos
+    display_template_configure_notice: Você pode configurar o modelo de exibição após criar este campo.
   user:
     user: Usuário
     description: Exibe um usuário do Directus
@@ -1450,6 +1607,8 @@ layouts:
     calendar: Calendário
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
+  map:
+    map: Mapa
 panels:
   metric:
     name: Métrico

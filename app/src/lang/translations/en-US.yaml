@@ -539,6 +539,9 @@ errors:
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  VALUE_TOO_LONG: Value is too long
+  VALUE_OUT_OF_RANGE: Value is out of range
+  INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
 security: Security
 value_hashed: Value Securely Hashed
@@ -578,6 +581,7 @@ one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
   permanent.
+delete_folder_are_you_sure: Are you sure you want to delete this folder? Nested folders and collections will be moved to the top most level.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections

@@ -533,6 +533,9 @@ errors:
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
   ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
+  VALUE_TOO_LONG: Il valore è troppo lungo
+  VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
+  INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
@@ -563,6 +566,8 @@ update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 make_collection_visible: Rendi visibile la raccolta
 make_collection_hidden: Rendi nascosta la raccolta
+make_folder_visible: Rendi visibile la cartella
+make_folder_hidden: Rendi nascosta la cartella
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'

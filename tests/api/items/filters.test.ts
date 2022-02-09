@@ -1,4 +1,4 @@
-import config from '../../config';
+import config, { getUrl } from '../../config';
 import vendors from '../../get-dbs-to-test';
 import request from 'supertest';
 import knex, { Knex } from 'knex';
@@ -24,7 +24,6 @@ describe('/items', () => {
 		describe('Mathmatical Operators', () => {
 			describe('returns users with name _eq', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const name = internet.email();
 					const guests: any[] = createMany(createGuest, 10);
 					for (const guest of guests) {
@@ -33,7 +32,7 @@ describe('/items', () => {
 					}
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-					const response = await request(url)
+					const response = await request(getUrl(vendor))
 						.get(`/items/guests?filter={"name": { "_eq": "${name}" }}`)
 						.set('Authorization', 'Bearer AdminToken')
 						.expect('Content-Type', /application\/json/)
@@ -47,11 +46,10 @@ describe('/items', () => {
 			});
 			describe('returns users with name _neq', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const guests: any[] = createMany(createGuest, 10);
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-					const response = await request(url)
+					const response = await request(getUrl(vendor))
 						.get(`/items/guests?&filter={"name": { "_neq": "${guests[0].name}" }}`)
 						.set('Authorization', 'Bearer AdminToken')
 						.expect('Content-Type', /application\/json/)
@@ -65,7 +63,6 @@ describe('/items', () => {
 		describe('Logical Operators', () => {
 			describe('returns users with name equality _AND favorite_artist equality', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const name = internet.email();
 					const guests: any[] = createMany(createGuest, 10, { name });
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
@@ -78,7 +75,7 @@ describe('/items', () => {
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-					const response = await request(url)
+					const response = await request(getUrl(vendor))
 						.get(
 							`/items/guests?filter={"_and":[{"name": { "_eq": "${guests[0].name}" }},{"favorite_artist": { "_eq": "${guests[0].favorite_artist}" }}]}`
 						)
@@ -91,7 +88,6 @@ describe('/items', () => {
 			});
 			describe('returns users with name equality _OR favorite_artist equality', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const name = internet.email();
 
 					const artist = createArtist();
@@ -106,7 +102,7 @@ describe('/items', () => {
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
-					const response = await request(url)
+					const response = await request(getUrl(vendor))
 						.get(
 							`/items/guests?filter={"_or":[{"name": { "_eq": "${name}" }},{"favorite_artist": { "_eq": "${artist.id}" }}]}`
 						)

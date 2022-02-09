@@ -525,7 +525,6 @@ textarea {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	width: 24px;
 	color: var(--foreground-subdued);
 	font-weight: 600;
 	text-align: right;

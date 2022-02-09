@@ -118,9 +118,9 @@ reason, when selecting existing fields, options will be disabled if they don't h
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
 the M2O field (see above) that pairs with this O2M.
 
-The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured by
-selecting an existing numeric type field (highlights green) from the Related Collection, or entering the name of a new
-field to be created.
+The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured
+by selecting an existing numeric type field (highlights green) from the Related Collection, or entering the name of a
+new field to be created.
 
 **Relational Triggers** allow for control over what happens when a relationship is broken. There are two options:
 
@@ -219,9 +219,9 @@ intelligent naming defaults, or disable it to select existing options or enter c
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
 the reverse M2M field on the _related_ collection.
 
-The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured by
-selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a new
-field to be created.
+The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured
+by selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a
+new field to be created.
 
 **Relational Triggers** allow for control over what happens when a relationship is broken. There are three options:
 
@@ -300,9 +300,9 @@ you save the changes on the new M2A field.
 
 :::
 
-The optional **Sort Field** can be used to enable manual reordering of items within this M2A field. This is configured by
-selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a new
-field to be created.
+The optional **Sort Field** can be used to enable manual reordering of items within this M2A field. This is configured
+by selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a
+new field to be created.
 
 **Relational Triggers** allow for control over what happens when a relationship is broken. There are three options:
 
