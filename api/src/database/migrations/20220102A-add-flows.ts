@@ -9,7 +9,6 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('status').notNullable().defaultTo('inactive');
 		table.string('trigger');
 		table.json('options');
-		table.uuid('operation').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
@@ -22,11 +21,18 @@ export async function up(knex: Knex): Promise<void> {
 		table.integer('position_x').notNullable();
 		table.integer('position_y').notNullable();
 		table.json('options');
+		table.timestamp('date_created').defaultTo(knex.fn.now());
+		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
+	});
+
+	await knex.schema.alterTable('directus_flows', (table) => {
+		table.uuid('operation').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
+	});
+
+	await knex.schema.alterTable('directus_operations', (table) => {
 		table.uuid('resolve').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 		table.uuid('reject').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 		table.uuid('flow').notNullable().references('id').inTable('directus_flows').onDelete('CASCADE');
-		table.timestamp('date_created').defaultTo(knex.fn.now());
-		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
 }
 

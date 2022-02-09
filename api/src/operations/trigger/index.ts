@@ -18,9 +18,9 @@ export default defineOperationApi<Options>({
 		let result: unknown | unknown[];
 
 		if (multiple && Array.isArray(parsedData)) {
-			result = await Promise.all(parsedData.map((data) => flowManager.executeOperationFlow(flow, data, context)));
+			result = await Promise.all(parsedData.map((data) => flowManager.runOperationFlow(flow, data, context)));
 		} else {
-			result = await flowManager.executeOperationFlow(flow, parsedData, context);
+			result = await flowManager.runOperationFlow(flow, parsedData, context);
 		}
 
 		return result;
