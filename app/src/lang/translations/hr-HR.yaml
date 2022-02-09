@@ -1212,16 +1212,66 @@ embed: Ugradi
 fallback_icon: Rezervna ikona
 field: Polje | Polja
 file: Datoteka
+file_library: Biblioteka datoteka
+forgot_password: Zaboravljena lozinka
 hidden: Skriveno
+icon: Ikona
+info: Informacija
+normal: Normalno
+success: Uspješno
+warning: Upozorenje
+danger: Opasnost
+junction_collection: Zbirka spojeva
+latency: Latencija
+login: Prijavite se
+my_activity: Moja aktivnost
+not_authenticated: Nije autentificirano
+authenticated: Autentificirano
+options: Opcije
+otp: Jednokratna lozinka
 password: Lozinka
+permissions: Dopuštenja
+relationship: Odnos
+reset: Ponovno postavi
+reset_password: Resetiraj lozinku
+revisions: Revizije
+no_revisions: Još nema revizija
+revert: Vrati
+save: Spremi
+schema: Shema
+search: Traži
+select_existing: Odaberi postojeće
+select_field_type: Odaberite vrstu polja
+select_interface: Odaberite sučelje
+settings: Postavke
+sign_in: Prijava
+sign_out: Odjava
+sign_out_confirm: Jeste li sigurni da se želite odjaviti?
+something_went_wrong: Nešto je pošlo po zlu.
+sort_direction: Smjer sortiranja
+sort_asc: Sortiraj uzlazno
+sort_desc: Sortiraj silazno
 template: Predložak
+require_value_to_be_set: Zahtijevj postavljanje vrijednosti
+translation: Prijevod
 translation_placeholder: Unesite prijevod...
+value: Vrijednost
+view_project: Pogledaj projekt
+weeks: { }
+report_error: Prijavi grešku
+start: Započni
 interfaces:
   filter:
     name: Filter
+    description: Konfiguriraj objekt filtera.
     add_filter: Dodaj filter
+    add_group: I / Ili grupa
+    add_value: Dodaj vrijednost
+    logic_type_and: I
+    logic_type_or: ILI
     all: Sve
     any: Bilo koji
+    and: i
     of_the_following: od sljedećih
     no_rules: Nema konfiguriranih pravila
     change_value: Kliknite za promjenu vrijednosti
@@ -1288,6 +1338,7 @@ interfaces:
   system-display-template:
     display-template: Predložak prikaza
     description: Pomiješajte statički tekst i dinamičke vrijednosti polja
+    collection_field: Polje zbirke
     collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
     select_a_collection: Odaberite zbirku
   presentation-divider:
