@@ -7,7 +7,7 @@ import { find, cloneDeep } from 'lodash';
 type SchemaDateTypesObject = {
 	id: number;
 	date: string;
-	time: string;
+	time?: string;
 	datetime: string;
 	timestamp: string;
 };
@@ -100,11 +100,18 @@ describe('schema', () => {
 				10000
 			);
 		});
+
 		describe('stores the correct datetime data', () => {
 			it.each(vendors)(
 				'%s',
 				async (vendor) => {
 					const dates = cloneDeep(sampleDates);
+
+					if (vendor === 'oracle') {
+						for (const date of dates) {
+							delete date.time;
+						}
+					}
 
 					await request(getUrl(vendor))
 						.post(`/items/schema_date_types`)
@@ -125,6 +132,16 @@ describe('schema', () => {
 						const responseObj = find(response.body.data, (o) => {
 							return o.id === sampleDates[index]!.id;
 						}) as SchemaDateTypesObject;
+
+						if (vendor === 'oracle') {
+							expect(responseObj.date).toBe(sampleDates[index]!.date);
+							expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+							expect(responseObj.timestamp.substring(0, 19)).toBe(
+								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							);
+							continue;
+						}
+
 						expect(responseObj.date).toBe(sampleDates[index]!.date);
 						expect(responseObj.time).toBe(sampleDates[index]!.time);
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
