@@ -355,6 +355,7 @@ interface_label: Sučelje
 today: Danas
 yesterday: Jučer
 delete_comment: Obriši komentar
+delete_share: Izbriši dijeljenje
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -1257,6 +1258,7 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
+weeks: { }
 report_error: Prijavi grešku
 start: Započni
 interfaces:
