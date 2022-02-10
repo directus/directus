@@ -17,7 +17,6 @@ import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
-import { RelationsService } from './relations';
 import { getHelpers, Helpers } from '../database/helpers';
 import Keyv from 'keyv';
 
