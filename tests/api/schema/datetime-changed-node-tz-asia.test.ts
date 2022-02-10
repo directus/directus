@@ -189,6 +189,7 @@ describe('schema', () => {
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
 						);
+						continue;
 					}
 
 					expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
