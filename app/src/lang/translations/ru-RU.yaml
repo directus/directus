@@ -1145,12 +1145,17 @@ start_collapsed: Начать свернутым
 block: Блокировать
 inline: Строчный
 comment: Комментарий
+new_share: Новая публикация
+expired: Истекло
+share: Поделиться
 shared_enter_passcode: Для продолжения введите пароль...
 shared_leave_blank_for_unlimited: Оставьте пустым для неограниченного
 shared_times_remaining: Ссылка может быть использована {n} раз
 shared_last_remaining: Одноразовая ссылка
 shared_uses_left: Для безопасности, количество просмотров страницы ограничено. В настоящее время осталось {n} просмотра, после чего страница больше не будет доступна.
 share_copy_link: Скопировать ссылку
+share_copy_link_success: Ссылка скопирована
+share_copy_link_error: Невозможно скопировать ссылку
 share_send_link: Отправить ссылку
 relational_triggers: Реляционные триггеры
 referential_action_field_label_m2o: При удалении {collection}...
@@ -1233,6 +1238,8 @@ interfaces:
     add_filter: Добавить Фильтр
     add_group: Группа и/или
     add_value: Добавить значение
+    logic_type_and: И
+    logic_type_or: ИЛИ
     all: Все
     any: Любой
     and: и
@@ -1289,6 +1296,7 @@ interfaces:
     description: Введите или выберите значение цвета
     placeholder: Выберите цвет...
     preset_colors: Предустановленные цвета
+    opacity: Прозрачность
     preset_colors_add_label: Добавить новый цвет...
     name_placeholder: Введите название цвета...
   datetime:
@@ -1341,6 +1349,7 @@ interfaces:
   file-image:
     image: Изображение
     description: Выберите или загрузите изображение
+    crop: Обрезать по размеру
   system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
@@ -1548,6 +1557,7 @@ displays:
     prefix: Префикс
     suffix: Суффикс
     color: Цвет
+    background: Фон
     icon: Иконка
     text: Текст
   formatted-json-value:

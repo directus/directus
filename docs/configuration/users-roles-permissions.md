@@ -9,16 +9,18 @@
 ## Creating a User
 
 1. Navigate to the **User Library**
-2. Click the **Create User** action button in the header
+2. Click <span mi btn>add</span> in the header
 3. Enter an **Email Address**
 4. Optional: Complete the **other user form fields**
+5. Click <span mi btn>check</span> to save the user.
 
 ## Inviting a User
 
 1. Navigate to the **User Library**
-2. Click the **Invite Users** button in the header
+2. Click <span mi btn sec>person_add</span> in the header
 3. Enter **one or more email addresses**, separated by new lines, in the modal
-4. Click **Invite**
+4. Select the **Role** you want to assign to the user(s)
+5. Click **Invite**
 
 At this point the invited user(s) will receive an email with a link to the App where they set a password and enable
 their account.
@@ -46,7 +48,7 @@ The User Detail is only editable by the current user and admins, and the followi
 
 1. Navigate to the **User Library**
 2. Click the user you with to archive to go to their User Detail page
-3. Click the orange **Archive User** action button in the header
+3. Click on <span mi btn warn>archive</span> in the header
 4. Confirm this decision by clicking **Archive** in the dialog
 
 ::: warning Disables Access
@@ -59,7 +61,7 @@ Archiving uses _soft-delete_, therefore archived users are unable to access the 
 
 1. Navigate to the **User Library**
 2. Select one or more users you wish to delete
-3. Click the red **Delete User** action button in the header
+3. Click on <span mi btn dngr>delete</span> in the header
 4. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change
@@ -71,11 +73,12 @@ undone. Please proceed with caution.
 
 ## Creating a Role
 
-1. Navigate to **Settings > Roles & Permissions**
-2. Click the **Create Role** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Roles & Permissions**
+2. Click <span mi btn>add</span> in the header
 3. Enter a unique **Role Name**
 4. Enabling **App Access** allows logging in to the App
 5. Enabling **Admin Access** gives full permission to project data and Settings
+6. Click on **Save** to save the role
 
 ## Configuring a Role
 
@@ -91,8 +94,9 @@ undone. Please proceed with caution.
 
 ## Deleting a Role
 
-1. Navigate to **Settings > Roles & Permissions > [Role Name]**
-2. Click the red **Delete Role** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Roles & Permissions
+   <span mi icon dark>chevron_right</span> [Role Name]**
+2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
 ::: warning Users in a Deleted Role
@@ -136,13 +140,16 @@ configuration field is disabled.
 
 :::
 
-1. Navigate to **Settings > Roles & Permissions > [Role Name]**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Roles & Permissions
+   <span mi icon dark>chevron_right</span> [Role Name]**
 2. Scroll to the **Permissions** section
 3. **Click the icon** for the collection (row) and action (column) you want to set
-4. Choose the desired permission level: **All Access**, **No Access**, or **Use Custom**
+4. Choose the desired permission level: <span mi icon>check</span> **All Access**, <span mi icon>block</span> **No
+   Access**, or <span mi icon>rule</span> **Use Custom**
 
-**If you selected "All Access" or "No Access" then setup is complete.** If you chose to customize permissions then
-continue with the appropriate guide below based on the relevant _action_.
+**If you selected "<span mi icon>check</span> All Access" or "<span mi icon>block</span> No Access" then setup is
+complete.** If you chose to customize permissions then continue with the appropriate guide below based on the relevant
+_action_.
 
 ### Create (Custom Access)
 

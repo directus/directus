@@ -297,6 +297,15 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 		action: 'read',
 	},
 	{
+		collection: 'directus_shares',
+		action: 'read',
+		permissions: {
+			user_created: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+	},
+	{
 		collection: 'directus_users',
 		action: 'read',
 		permissions: {
