@@ -142,16 +142,6 @@ export class PayloadService {
 			}
 			return value;
 		},
-		async 'oracle-time-in-timestamp'({ action, value }) {
-			if (action === 'read') {
-				if (value instanceof Date) {
-					return value.toISOString().substring(11, 19);
-				}
-			} else if (typeof value === 'string') {
-				return new Date(`1970-01-01T${value}Z`);
-			}
-			return value;
-		},
 		async 'oracle-datetime-in-timestamp'({ value }) {
 			return value;
 		},
@@ -288,8 +278,6 @@ export class PayloadService {
 		for (const [_name, field] of fieldsInCollection) {
 			if (field.special.includes('sqlite-timestamp-in-datetime')) {
 				field.type = 'timestamp';
-			} else if (field.special.includes('oracle-time-in-timestamp')) {
-				field.type = 'time';
 			} else if (field.special.includes('oracle-datetime-in-timestamp')) {
 				field.type = 'dateTime';
 			}

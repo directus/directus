@@ -85,16 +85,6 @@ describe('schema', () => {
 							break;
 						case 'oracle':
 							await request(getUrl(vendor))
-								.patch(`/fields/schema_date_types/time`)
-								.send({
-									meta: {
-										special: ['oracle-time-in-timestamp'],
-									},
-								})
-								.set('Authorization', 'Bearer AdminToken')
-								.expect('Content-Type', /application\/json/)
-								.expect(200);
-							await request(getUrl(vendor))
 								.patch(`/fields/schema_date_types/datetime`)
 								.send({
 									meta: {

@@ -118,9 +118,7 @@ export class CollectionsService {
 							}
 							break;
 						case 'oracle':
-							if (field.type === 'time') {
-								addFlag('oracle-time-in-timestamp');
-							} else if (field.type === 'dateTime') {
+							if (field.type === 'dateTime') {
 								addFlag('oracle-datetime-in-timestamp');
 							}
 							break;

@@ -172,8 +172,6 @@ export class FieldsService {
 		for (const field of result) {
 			if (field.meta?.special?.includes('sqlite-timestamp-in-datetime')) {
 				field.type = 'timestamp';
-			} else if (field.meta?.special?.includes('oracle-time-in-timestamp')) {
-				field.type = 'time';
 			} else if (field.meta?.special?.includes('oracle-datetime-in-timestamp')) {
 				field.type = 'dateTime';
 			}
@@ -269,9 +267,7 @@ export class FieldsService {
 				}
 				break;
 			case 'oracle':
-				if (field.type === 'time') {
-					addFlag('oracle-time-in-timestamp');
-				} else if (field.type === 'dateTime') {
+				if (field.type === 'dateTime') {
 					addFlag('oracle-datetime-in-timestamp');
 				}
 				break;
