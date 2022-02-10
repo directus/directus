@@ -23,17 +23,37 @@
 			<settings-navigation />
 		</template>
 
+		<!-- @edit="editPanel"
+				@update="stagePanelEdits"
+				@move="movePanelID = $event"
+				@delete="deletePanel"
+				@duplicate="duplicatePanel" -->
 		<div class="container">
 			<v-progress-circular v-if="loading" class="loading" indeterminate />
+			<v-workspace v-else :panels="panels" :edit-mode="true">
+				<template>
+					<step-block type="trigger" />
+					<!-- 					<component
+						:is="`panel-${props.panel.type}`"
+						v-bind="props.panel.options"
+						:id="props.panel.id"
+						:show-header="props.panel.show_header"
+						:height="props.panel.height"
+						:width="props.panel.width"
+						:now="now"
+					/> -->
+				</template>
+			</v-workspace>
+		</div>
 
-			<div v-else class="grid" style="min-width: 3000px; min-height: 3000px">
+		<!-- 		<div v-else class="grid" style="min-width: 3000px; min-height: 3000px">
 				<step-block type="trigger" />
 				<step-block type="operation" style="grid-column: 1" />
 				<step-block type="operation" style="grid-column: 1" />
 				<step-block type="error" style="grid-column: 2" />
 				<step-block type="operation" style="grid-column: 1" />
 			</div>
-		</div>
+ -->
 
 		<!-- <v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -72,6 +92,31 @@ const props = defineProps({
 const currentFlow = ref<FlowRaw>();
 const loading = ref(true);
 const { t } = useI18n();
+
+const panels = [
+	{
+		position_x: 2,
+		position_y: 2,
+		height: 10,
+		width: 10,
+		show_header: true,
+		icon: 'place',
+		color: 'red',
+		id: '1',
+		borderRadius: [30, 30, 30, 30],
+	},
+	{
+		position_x: 2,
+		position_y: 20,
+		height: 10,
+		width: 10,
+		show_header: true,
+		icon: 'map',
+		color: 'blue',
+		id: '1',
+		borderRadius: [30, 30, 30, 30],
+	},
+];
 
 fetchFlow();
 

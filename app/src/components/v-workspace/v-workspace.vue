@@ -17,7 +17,6 @@
 				:key="panel.id"
 				:panel="panel"
 				:edit-mode="editMode"
-				:now="now"
 				@edit="$emit('edit', panel)"
 				@update="$emit('update', { edits: $event, id: panel.id })"
 				@move="$emit('move', panel.id)"
@@ -49,10 +48,6 @@ export default defineComponent({
 		zoomToFit: {
 			type: Boolean,
 			default: false,
-		},
-		now: {
-			type: Date,
-			required: true,
 		},
 	},
 	emits: ['update', 'move', 'delete', 'duplicate', 'edit'],

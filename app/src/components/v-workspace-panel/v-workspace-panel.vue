@@ -94,10 +94,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		now: {
-			type: Date,
-			required: true,
-		},
 	},
 	emits: ['update', 'move', 'duplicate', 'delete', 'edit'],
 	setup(props, { emit }) {
