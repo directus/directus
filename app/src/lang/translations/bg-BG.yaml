@@ -353,6 +353,7 @@ interface_label: Интерфейс
 today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
+delete_share: Изтриване на споделянето
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -574,6 +575,7 @@ one_item: '1 запис'
 one_filtered_item: '1 филтриран запис'
 delete_collection_are_you_sure: >-
   Сигурни ли сте, че искате да изтриете колекцията? Всички записи и самата колекция ще бъдат изтрити. Действието е завинаги.
+delete_folder_are_you_sure: Сигурни ли сте, че искате да изтриете папката? Подпапките и колекциите ще бъдат преместени към кореновата папка.
 collections_shown: Показани колекции
 visible_collections: Видими колекции
 hidden_collections: Скрити колекции
@@ -1254,6 +1256,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
