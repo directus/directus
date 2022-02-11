@@ -222,11 +222,13 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: 几何学(全部)
+geometry: 几何要素(全部)
 geometry.Point: 点
-geometry.LineString: LineString多边形链
+geometry.LineString: 单线段
 geometry.Polygon: 多边形
-geometry.MultiPoint: 多点
+geometry.MultiPoint: 多点要素
+geometry.MultiLineString: 多线要素
+geometry.MultiPolygon: 复杂多边型
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -246,6 +248,9 @@ new_data_alert: '以下将在您的模型中创建：'
 search_collection: 搜索模型...
 new_field: '新建字段'
 new_collection: '新建模型'
+add_m2o_to_collection: '添加 M2O 到 "{collection}"'
+add_o2m_to_collection: '添加 O2M 到 "{collection}"'
+add_m2m_to_collection: '添加M2M到"{collection}"'
 choose_a_type: 选择类型...
 determined_by_relationship: 由关系确定
 add_note: 为用户添加有用的注释...
@@ -324,9 +329,15 @@ translations_collection: 翻译模型
 languages_collection: 语言模型
 import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
+import_data_indeterminate: 导入数据中
+import_data_success: 成功从 {filename} 导入数据
+import_data_error: 此文件的数据结构与收藏不匹配。
 label_import: 导入
+label_export: 导出
+import_export: 导入 / 导出
 format: 格式
 use_current_filters_settings: 使用当前筛选器和设置
+export_data_button: 开始导出
 last_page: 尾页
 last_access: 上次访问
 fill_template: 使用模板填入
@@ -342,6 +353,7 @@ interface_label: 接口
 today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
+delete_share: 删除分享
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -439,6 +451,7 @@ no_users_copy: 该角色下还没有用户。
 webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
 no_webhooks_copy: 尚未配置任何Webhooks，来创建一个吧。
 no_notifications: 无通知
+no_notifications_copy: 你已全部搞定！
 activity_log: 活动日志
 all_items: 所有项目
 any: 任意
@@ -521,6 +534,9 @@ errors:
   INTERNAL_SERVER_ERROR: 未知错误
   NOT_NULL_VIOLATION: 值不能为null
   ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
+  VALUE_TOO_LONG: 数值太长
+  VALUE_OUT_OF_RANGE: 数值超出范围
+  INVALID_FOREIGN_KEY: 无效的外键
   UNKNOWN: 未知错误
 security: 安全
 value_hashed: 哈希值
@@ -549,13 +565,17 @@ all_users: 全部用户
 delete_collection: 删除模型
 update_collection_success: 模型已更新
 delete_collection_success: 模型已删除
+make_collection_visible: 显示收藏
 make_collection_hidden: 隐藏收藏集
+make_folder_visible: 显示文件夹
+make_folder_hidden: 隐藏文件夹
 start_end_of_count_items: '{count} 个项目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个项目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤项目'
 delete_collection_are_you_sure: >-
   您确定要删除此模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
+delete_folder_are_you_sure: 您确定要删除此文件夹吗？嵌套文件夹和收藏将被移动到最上层。
 collections_shown: 展开模型
 visible_collections: 显示模型
 hidden_collections: 隐藏模型
@@ -670,6 +690,7 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+insights: 洞察分析
 dashboard: 控制面板
 panel: 面板
 panel_options: 选项
@@ -850,10 +871,12 @@ system_fields_locked: 系统字段已锁定，无法编辑
 directus_collection:
   directus_activity: 所有事件操作日志
   directus_collections: 其他集合配置和元数据
+  directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
   directus_folders: 虚拟文件目录
   directus_migrations: 您的数据库版本是
+  directus_panels: Insights仪表板中的个别面板
   directus_permissions: 每个角色的访问权限
   directus_notifications: 发送给用户的通知
   directus_presets: 书签/预设默认值
@@ -890,6 +913,7 @@ fields:
     sort_field: 排序字段
     accountability: 活动和版本修订跟踪
     archive_field: 归档字段
+    item_duplication_fields: 项目重复字段
   directus_files:
     $thumbnail: 缩略图
     title: 标题
@@ -941,6 +965,7 @@ fields:
     role: 角色
     token: Token
     token_placeholder: 请输入安全访问令牌...
+    provider: 提供方
     external_identifier: 外部标识符
     last_page: 尾页
     last_access: 上次访问
@@ -957,6 +982,7 @@ fields:
     basemaps_style: Mapbox 样式
     mapbox_key: Mapbox 访问令牌
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: 属性
     attribution_placeholder: '© OpenStreetMap 贡献者'
     transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
     additional_transforms: 其它转换
@@ -965,6 +991,7 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
+    branding: 品牌和样式
     public_foreground: 公共前景
     public_background: 公共背景
     public_note: 公共便笺
@@ -973,9 +1000,13 @@ fields:
     files_and_thumbnails: 文件和存储
     storage_default_folder: 默认文件夹
     storage_asset_presets: 转换预设
+    storage_asset_transform: 允许的转换
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
     module_bar: 模块栏
+    transformations_all: 允许所有转换
+    transformations_none: 禁用转换
+    transformations_presets: 限制转换到下面预设
   directus_shares:
     name: 名称
     role: 角色
@@ -1061,6 +1092,8 @@ field_options:
     translation: 翻译
     translation_placeholder: 输入翻译...
     collection_name: 模型名称
+    singular_unit: 单一单位
+    plural_unit: 复数单位
     archive_divider: 存档
     archive_field_placeholder: 选择字段...
     archive_app_filter: 启用归档功能
@@ -1129,6 +1162,7 @@ inline: 内联
 comment: 注释
 shares: 共享
 unlimited_usage: 无限使用
+uses_left: 无剩余使用次数 | 仅剩1次使用次数 | 还有 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
 expired: 已过期
@@ -1137,6 +1171,7 @@ share: 分享
 share_item: 分享项目
 shared_with_you: 已与您分享一个项目
 shared_enter_passcode: 输入您的密码以继续...
+shared_leave_blank_for_unlimited: 留空表示无限制
 shared_times_remaining: 此链接只能使用 {n} 次
 shared_last_remaining: 此链接只能使用一次
 shared_uses_left: 为了增加安全性，该共享页面已被设置成只可显示有限次。 目前还剩下 {n} 次显示，此后本页面将无法访问。
@@ -1221,6 +1256,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:
@@ -1289,6 +1325,7 @@ interfaces:
     description: 输入或选择颜色
     placeholder: 选择颜色
     preset_colors: 预设颜色
+    opacity: 不透明度
     preset_colors_add_label: 添加新颜色...
     name_placeholder: 输入颜色名称...
   datetime:
@@ -1635,6 +1672,7 @@ layouts:
     basemap: 底图
     layers: 图层
     cluster_options: 集群选项
+    cluster: 集群附近数据
     cluster_radius: 集群半径
     cluster_minpoints: 集群最小尺寸
     cluster_maxzoom: 集群的最大缩放
