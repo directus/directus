@@ -222,7 +222,11 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: 几何学(全部)
 geometry.Point: 点
+geometry.LineString: LineString多边形链
+geometry.Polygon: 多边形
+geometry.MultiPoint: 多点
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -264,6 +268,7 @@ note: 注释
 enter_a_value: 请输入值...
 enter_a_placeholder: 输入占位符...
 length: 长度
+soft_length: 软限制
 precision_scale: 精度和缩放
 readonly: 只读
 unique: 唯一
@@ -317,6 +322,8 @@ related_collection: 相关模型
 related_collections: 相关模型
 translations_collection: 翻译模型
 languages_collection: 语言模型
+import_data_input_placeholder: CSV 或 JSON
+import_data_button: 开始导入
 label_import: 导入
 format: 格式
 use_current_filters_settings: 使用当前筛选器和设置
