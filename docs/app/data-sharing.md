@@ -20,7 +20,7 @@ associated with your account. The link will take the user to a page with nothing
 At this time, Shares are read-only. However, data sharing is a fully extensible feature that could support full CRUD
 permissions. PRs to address this are welcome.
 
-Looking to sponsor an extension? Need dedicated engineering support on an enterprise project? [Contact Sales]()
+Interested in financially sponsoring this extension? [Contact us](https://directus.io/contact/).
 
 :::
 
@@ -76,13 +76,13 @@ message that says "Page Not Found". To avoid this, logout of the browser before 
 - **Start Date** – Selects the first date that the Share can be accessed.
 - **End Date** – Selects the last date that the Share can be accessed.
 - **Max Uses** – Sets total number of times the shared Item can be viewed.
-- **Times Used** - Displays number of times Item was viewed.
+- **Times Used** - Displays number of times the shared Item was viewed.
 
-## Roles and Permissions for Shares
+## Who Can Create / View Data Shares?
 
-Your ability to create shares will be based on your Role's permissions. If you are an `Administrator`,
-_congratulations_! You can share any Item you want. However, other Roles will likely have limits created on their Share
-permissions.
+A User's ability to create shares will be based on their Role's permissions. If you are an `Administrator`,
+_congratulations_! You can share any Item you want. However, other Roles created will likely have limits set on their
+Share permissions.
 
 Any given Share will have the same read permissions as the Role it was assigned. This permission set is baked into the
 hyperlink provided.
@@ -96,42 +96,120 @@ understand both Roles and Permissions thoroughly to use Shares properly_. Here a
 - Set view permissions of relationally linked items.
 - Restrict Role access to specific IP address(es).
 
-Learn all about configuring permissions [here](configuration/users-roles-permissions/#configuring-permissions).
+::: warning You must understand Users, Roles and Permissions
+
+The following sections are quite lean on explanation and all refer to
+[Users, Roles, and Permissions](/configuration/users-roles-permissions/#configuring-permissions).
+
+:::
 
 ## Is Data Sharing Safe?
 
 We obviously don't want to expose Items unless they are explicitly shared, however some Items may be linked to Items in
 other Collections. So, in addition to inheriting the role's permissions, the API automatically generates and injects a
 permissions set so that only the shared Item _(and the Items relationally linked to the shared Item)_ can be viewed. But
-again, as noted [just above](#roles-and-permissions-for-shares), view-ability is dependent on whether the Role assigned
-allows read access to those Collections in the first place.
+again, as noted just above, view-ability is dependent on whether the Role assigned allows read access to those
+Collections in the first place.
 
-## Creating a new Role from Share Options Menu
+## Creating / Editing a Role
 
-While you can create a Role _on-the-fly_ in the Share Options Menu, you will still need to navigate to **Settings >
-Roles and Permissions > [Role Name]** to assign its read permissions.
+![Creating / Editing a Role within Shares](image.webp)
 
-## Limit Sharing for Specific Collections
+_If your Role has the correct permissions configured_, you can create a new Role and assign it to a Share _on-the-fly_
+in the Share Options Menu. But you will still need to navigate to **Settings > Roles and Permissions > [Role Name]** to
+configure any read permissions. Learn more [here](/configuration/users-roles-permissions/).
 
-You can limit which Collections a Role is allowed to share from within **Settings > Roles and Permissions > [Role
-Name]**.
+### Create a new Role
+
+1. Navigate into **Share Options Menu**.
+2. Click into the Role input box.
+3. If no Role is assigned, click <span mi btn>add</span> to create a New Role.
+4. Fill out the "Creating Item in Directus Roles" according to your needs.
+5. Click <span mi btn>check</span> to confirm and create Role.
+
+### Edit an assigned Role
+
+1. Navigate into **Share Options Menu**.
+2. Click into <span mi icon>open_in_new</span> to create a new Role.
+3. Adjust Role details in "Creating Item in Directus Roles" according to your needs.
+4. Click <span mi btn>check</span> to confirm edits.
+
+::: warning You're editing the actual Role!!
+
+If you edit a Role in this menu, these changes will take effect app-wide, not just in the context of a specific Share.
+
+:::
+
+## Limit Sharing to Specific Collections
+
+You can limit which Collections a Role is allowed to share.
+
+1. Navigate to **Settings > Roles and Permissions**.
+2. Select the **[Role Name]** that will be responsible for creating the Share.
+3. Find the **[Collection]** you wish to set Filter(s) for and click the icon in the column under
+   <span mi icon>share</span>. A small popup menu will appear.
+4. Select <span mi>check</span> to enable and <span mi>block</span> to disable Shares on this collection.
 
 ## Limit Sharing to Specific Items
 
-Sometimes you may want a given Role to be able to share some Items but not others. Within **Settings > Roles and
-Permissions > [Role Name] > Use Custom**, you can create filters to control which Role is allowed to share which
-particular Item within the system. This allows you to do things like _only share reports that are marked as 'Done'_.
+Sometimes you may want a given Role to be able to share some Items but not others. Filters allow you to control exactly
+which Items a Role will be able to share, enabling you to do things like _only share reports that are marked as 'Done'_.
+
+### How to Set a Filter:
+
+1. Navigate to **Settings > Roles and Permissions**.
+2. Select the **[Role Name]** that will be responsible for creating the Share.
+3. Find the **[Collection]** you wish to set Filter(s) for and click the icon in the column under
+   <span mi icon>share</span>. A small popup menu will appear.
+4. Select <span mi icon>rule</span>**Use Custom** and a side menu will appear.
+5. Create your Filter(s) as needed.
 
 ## Limit Sharing of Item Fields
 
-When you create a Share on an Item, you must associate a Role _(and thus the Role's permissions)_ to the Item. This
-process allows fine tune control of the exact fields _(including relational fields)_ that get shared. Learn more
-[here](http://localhost:8080/configuration/users-roles-permissions/#configuring-permissions).
+When you create a Share on some Item, you must associate a Role _(and thus the Role's permissions)_ to the Item. This
+allows you to set read permissions for the exact fields _(including relational fields)_ that can get shared.
+
+### How to Limit Field Visibility
+
+1. Navigate to **Settings > Roles and Permissions**.
+2. Select the **[Role Name]** that is assigned to the Share.
+3. Find the **[Collection]** and click the icon in the column under the <span mi icon>visibility</span> icon. A small
+   popup menu will appear.
+4. Select <span mi icon>rule</span>**Use Custom** and a side menu will appear.
+5. Click **Field Permissions**.
+6. Click to check the Collection Fields you'd like to allow read permissions on.
+7. Select <span mi>check</span> in the side menu Header to confirm changes.
+
+## Creating a New User
+
+![Create User within Shares](image.webp)
+
+Once you have configured a Role, you may want to add Users into this Role. Creating a Role from the Shares is just the
+same as creating a new User in **User Directory > All Users >** <span mi btn>add</span>. It is a _real_ User, available
+globally throughout the app.
+
+To create a new User within the Share Options Menu:
+
+1. Navigate into **Share Options Menu > Add / Edit Role Menu > Users In Role**.
+2. Click "Create New". This will open **Creating Item in Directus Users**.
+3. Configure the new User as desired.
+4. Click <span mi btn>check</span> to confirm and create new User.
+
+## Adding an Existing User
+
+![Add Existing User Menu]()
+
+To add an existing User:
+
+1. Navigate into **Share Options Menu > Add / Edit Role Menu > Users In Role**.
+2. Click "Add Existing".
+3. Click on the User(s) you wish to add.
+4. Click the <span mi btn>check</span> icon to confirm your selection.
 
 ## Extensibility Options
 
-Directus Core is completely open-source, modular and extensible. Learn more about Extensions
-[here](extensions/introduction/).
+Directus Core is completely open-source, modular and extensible. Extensions allow you to expand or modify any part of
+Directus to fit your needs. Learn more [here](extensions/introduction/).
 
 ## Tutorial
 
