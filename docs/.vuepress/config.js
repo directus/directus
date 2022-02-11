@@ -173,6 +173,11 @@ module.exports = {
 								path: '/app/content-items',
 								title: 'Content Items',
 							},
+							{
+								type: 'page',
+								path: '/app/data-sharing',
+								title: 'Data Sharing',
+							},
 						],
 					},
 					{
