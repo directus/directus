@@ -1,6 +1,6 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { useRelationsStore } from '@/stores/';
+import { useRelationsStore, useCollectionsStore } from '@/stores/';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
@@ -212,6 +212,7 @@ export const useFieldsStore = defineStore({
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
 			const relationsStore = useRelationsStore();
+			const collectionsStore = useCollectionsStore();
 
 			const stateClone = [...this.fields];
 			const relationsStateClone = [...relationsStore.relations];
@@ -228,6 +229,7 @@ export const useFieldsStore = defineStore({
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
+				await collectionsStore.hydrate();
 			} catch (err: any) {
 				this.fields = stateClone;
 				relationsStore.relations = relationsStateClone;
