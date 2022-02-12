@@ -47,7 +47,7 @@ Interested in financially sponsoring this extension? [Contact us](https://direct
 8. Hover over the new Share Interface and click the <span mi icon>more_horiz</span> button on the right side of your
    Share.
 
-![Copy / Send / Edit / Delete Shares Menu]()
+![copy send edit delete shares menu](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/copy-send-edit-delete-shares-menu-20220211A.webp)
 
 9. From here you have 4 options:
    - **Copy Link** – Creates a hyperlink to share. Click "Copy Link" and share link with the user.
@@ -70,8 +70,8 @@ message that says "Page Not Found". To avoid this, logout of the browser before 
 ![Share Options Menu](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/shares-options-menu-20220209A.webp)
 
 - **Name** – Adds a name to describe the Share.
-- **Role** – Assigns an existing Role, or alternatively, clicking <span mi icon>add</span> lets you create a new Role on
-  the fly.
+- **Role** – Assigns a Role for the Share to inherit permissions from. Learn more under
+  [Assigning a Role](#assigning-a-role).
 - **Password** – Creates a password that must be used to access the shared Item.
 - **Start Date** – Selects the first date that the Share can be accessed.
 - **End Date** – Selects the last date that the Share can be accessed.
@@ -111,27 +111,40 @@ permissions set so that only the shared Item _(and the Items relationally linked
 again, as noted just above, view-ability is dependent on whether the Role assigned allows read access to those
 Collections in the first place.
 
+## Assigning an Existing Role
+
+The Role option allows you to assign a Role to the Share. The Share will take on the read permissions of the Role
+assigned.
+
+![Select Role for Share](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/select-role-for-share-20220210A.webp)
+
+### Assign an existing Role
+
+1. Navigate into **Share Options Menu**.
+2. Click the Role input box. A side menu will appear.
+3. Select the Role you'd like your Share to inherit permissions from.
+4. Click <span mi btn>check</span> to confirm.
+
 ## Creating / Editing a Role
 
-![Creating / Editing a Role within Shares](image.webp)
-
-_If your Role has the correct permissions configured_, you can create a new Role and assign it to a Share _on-the-fly_
+_If your Role has the correct permissions configured_, you can create a new Role and assign it to a Share _"on the fly"_
 in the Share Options Menu. But you will still need to navigate to **Settings > Roles and Permissions > [Role Name]** to
-configure any read permissions. Learn more [here](/configuration/users-roles-permissions/).
+configure any read permissions. Learn more [here](/configuration/users-roles-permissions).
+
+![Creating / Editing a Role within Shares](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/creating-and-editing-roles-within-shares-20220211A.webp)
 
 ### Create a new Role
 
 1. Navigate into **Share Options Menu**.
-2. Click into the Role input box.
-3. If no Role is assigned, click <span mi btn>add</span> to create a New Role.
-4. Fill out the "Creating Item in Directus Roles" according to your needs.
-5. Click <span mi btn>check</span> to confirm and create Role.
+2. Click <span mi icon>add</span> and the Role Options Menu will appear.
+3. Fill out the options to create the Role according to your needs.
+4. Click <span mi btn>check</span> to confirm Role creation.
 
 ### Edit an assigned Role
 
 1. Navigate into **Share Options Menu**.
-2. Click into <span mi icon>open_in_new</span> to create a new Role.
-3. Adjust Role details in "Creating Item in Directus Roles" according to your needs.
+2. Click <span mi icon>open_in_new</span> and the Role Options Menu will appear.
+3. Edit Role options according to your needs.
 4. Click <span mi btn>check</span> to confirm edits.
 
 ::: warning You're editing the actual Role!!
@@ -147,7 +160,7 @@ You can limit which Collections a Role is allowed to share.
 1. Navigate to **Settings > Roles and Permissions**.
 2. Select the **[Role Name]** that will be responsible for creating the Share.
 3. Find the **[Collection]** you wish to set Filter(s) for and click the icon in the column under
-   <span mi icon>share</span>. A small popup menu will appear.
+   <span mi icon>share</span> and a small menu will appear.
 4. Select <span mi>check</span> to enable and <span mi>block</span> to disable Shares on this collection.
 
 ## Limit Sharing to Specific Items
@@ -160,7 +173,7 @@ which Items a Role will be able to share, enabling you to do things like _only s
 1. Navigate to **Settings > Roles and Permissions**.
 2. Select the **[Role Name]** that will be responsible for creating the Share.
 3. Find the **[Collection]** you wish to set Filter(s) for and click the icon in the column under
-   <span mi icon>share</span>. A small popup menu will appear.
+   <span mi icon>share</span> and a small menu will appear.
 4. Select <span mi icon>rule</span>**Use Custom** and a side menu will appear.
 5. Create your Filter(s) as needed.
 
@@ -174,7 +187,7 @@ allows you to set read permissions for the exact fields _(including relational f
 1. Navigate to **Settings > Roles and Permissions**.
 2. Select the **[Role Name]** that is assigned to the Share.
 3. Find the **[Collection]** and click the icon in the column under the <span mi icon>visibility</span> icon. A small
-   popup menu will appear.
+   menu will appear.
 4. Select <span mi icon>rule</span>**Use Custom** and a side menu will appear.
 5. Click **Field Permissions**.
 6. Click to check the Collection Fields you'd like to allow read permissions on.
@@ -182,7 +195,7 @@ allows you to set read permissions for the exact fields _(including relational f
 
 ## Creating a New User
 
-![Create User within Shares](image.webp)
+![Create User within Shares](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/creating-a-new-user-within-shares-20220211A.webp)
 
 Once you have configured a Role, you may want to add Users into this Role. Creating a Role from the Shares is just the
 same as creating a new User in **User Directory > All Users >** <span mi btn>add</span>. It is a _real_ User, available
@@ -197,7 +210,7 @@ To create a new User within the Share Options Menu:
 
 ## Adding an Existing User
 
-![Add Existing User Menu]()
+![Add Existing User Menu](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/add-existing-user-menu-20220211A.webp)
 
 To add an existing User:
 
