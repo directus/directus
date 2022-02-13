@@ -44,13 +44,23 @@
 			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ t('clear_value') }}</v-list-item-content>
 		</v-list-item>
+		<v-divider />
+		<v-list-item
+			class="model-field"
+			:disabled="!isAdmin"
+			:to="isAdmin ? `/settings/data-model/${field.collection}/${field.field}` : undefined"
+		>
+			<v-list-item-icon><v-icon name="tune" /></v-list-item-icon>
+			<v-list-item-content>{{ field.field }}</v-list-item-content>
+		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@directus/shared/types';
+import { useUserStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -74,6 +84,7 @@ export default defineComponent({
 	emits: ['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw'],
 	setup(props) {
 		const { t } = useI18n();
+		const userStore = useUserStore();
 
 		const defaultValue = computed(() => {
 			const savedValue = props.field?.schema?.default_value;
@@ -84,7 +95,15 @@ export default defineComponent({
 			return props.field?.schema?.is_nullable === false;
 		});
 
-		return { t, defaultValue, isRequired };
+		const isAdmin = ref(userStore.isAdmin);
+
+		return { t, defaultValue, isRequired, isAdmin };
 	},
 });
 </script>
+
+<style scoped>
+.model-field :deep(div) {
+	font-family: monospace;
+}
+</style>
