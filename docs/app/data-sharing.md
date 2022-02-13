@@ -3,17 +3,19 @@
 > Data Sharing allows you to create a hyperlink to share Items with Users that do not have the proper permissions to
 > view items in the Collection.
 
-![What Shares look like](video.mp4)
+<video autoplay muted loop controls>
+<source src="https://cdn.directus.io/docs/v9/app-guide/content/data-shares/whats-a-share-look-like-20220212A.mp4" type="video/mp4" />
+</video>
 
 [[toc]]
 
 ## What's a Share?
 
 In a given Project, some Collections will likely be hidden for the Public as well as other Roles. There may be cases
-when you want to share an Item with a person (or people) that don't have the permissions to see it. This is where Shares
-come in to play. Shares let other people see an Item, even if they don't have proper permissions and even if they're not
-Users in the Directus instance. Once a Share is created, you can then _share it_ via hyperlink or from the email
-associated with your account. The link will take the user to a page with nothing but the content of that shared Item.
+when you want to share an Item with a person _(or people)_ that don't have the permissions to see it. This is where
+Shares come in to play. Shares give other people access to an Item, even if they don't have proper permissions and even
+if they're not Users in the Directus instance. Once a Share is created, you can then _share it_ via hyperlink or email.
+The link leads to a page with nothing but the content of that shared Item.
 
 ::: tip Read-only permissions
 
@@ -24,9 +26,20 @@ Interested in financially sponsoring this extension? [Contact us](https://direct
 
 :::
 
+::: warning You Must Understand Users, Roles and Permissions!
+
+You will need to understand how
+[Users, Roles, and Permissions](/configuration/users-roles-permissions/#configuring-permissions) work in Directus to
+configure Data Shares properly. That said, if you're unfamiliar with those concepts, it is quite reasonable to learn
+them in tandem with Data Shares.
+
+:::
+
 ## How it Works
 
-![How to create a Data Share](video.mp4)
+<video autoplay muted loop controls>
+<source src="https://cdn.directus.io/docs/v9/app-guide/content/data-shares/how-it-works-20220212A.mp4" type="video/mp4" />
+</video>
 
 1. Navigate to the Content Module.
 2. Navigate to the Collection of the Item you want to share.
@@ -60,8 +73,9 @@ Once the link is opened by a user, a custom page displaying the Shared Item will
 
 ::: warning Logout before using
 
-If you click a link while logged in to Directus, it may try to direct you to the Directus App, which will yield a
-message that says "Page Not Found". To avoid this, logout of the browser before opening the link.
+If you click a Data Share link while logged in to Directus, it may try to direct you to the Directus App, which will
+yield a message that says "Page Not Found". To avoid this when testing a Share, you can logout of the app before opening
+the link or simply open the link in another browser.
 
 :::
 
@@ -95,13 +109,6 @@ understand both Roles and Permissions thoroughly to use Shares properly_. Here a
 - Set specific Fields a Role can view or share.
 - Set view permissions of relationally linked items.
 - Restrict Role access to specific IP address(es).
-
-::: warning You must understand Users, Roles and Permissions
-
-The following sections are quite lean on explanation and all refer to
-[Users, Roles, and Permissions](/configuration/users-roles-permissions/#configuring-permissions).
-
-:::
 
 ## Is Data Sharing Safe?
 
