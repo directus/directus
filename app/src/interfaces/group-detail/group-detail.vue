@@ -34,6 +34,7 @@
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
+			:disabled="disabled"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>

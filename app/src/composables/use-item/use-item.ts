@@ -14,9 +14,11 @@ import { FailedValidationException } from '@directus/shared/exceptions';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { applyConditions } from '@/utils/apply-conditions';
 import { translate } from '@/utils/translate-object-values';
+import { usePermissions } from '../use-permissions';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
+	hasEdits: Ref<boolean>;
 	item: Ref<Record<string, any> | null>;
 	error: Ref<any>;
 	loading: Ref<boolean>;
@@ -36,7 +38,7 @@ type UsableItem = {
 };
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
-	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
@@ -45,6 +47,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const deleting = ref(false);
 	const archiving = ref(false);
 	const edits = ref<Record<string, any>>({});
+	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
@@ -59,6 +62,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
+	const { fields } = usePermissions(collection, item, isNew);
+
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
 			return getEndpoint(collection.value);
@@ -71,6 +76,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	return {
 		edits,
+		hasEdits,
 		item,
 		error,
 		loading,

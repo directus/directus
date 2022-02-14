@@ -31,4 +31,5 @@ export default [
 	'UHD',
 	'5K',
 	'8K',
+	'LDAP',
 ];

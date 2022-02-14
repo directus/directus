@@ -402,8 +402,6 @@ again.
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#options.storage.prefix) for each
 one.
 
-When using
-
 ## Items
 
 You can get an instance of the item handler by providing the collection (and type, in the case of TypeScript) to the
@@ -478,16 +476,24 @@ await articles.createMany([
 ]);
 ```
 
-### Read All
+### Read Single Item
 
 ```js
-await articles.readMany();
+await articles.readOne(15);
 ```
 
-### Read By Query
+Supports optional query:
 
 ```js
-await articles.readByQuery({
+await articles.readOne(15, {
+	fields: ['title'],
+});
+```
+
+### Read Multiple Items
+
+```js
+await articles.readMany({
 	search: 'Directus',
 	filter: {
 		date_published: {
@@ -497,16 +503,32 @@ await articles.readByQuery({
 });
 ```
 
-### Read By Primary Key(s)
+```js
+await articles.readMany({
+	limit: -1,
+});
+```
+
+### Update Single Item
 
 ```js
-await articles.readOne(15);
+await articles.updateOne(15, {
+	title: 'This articles now has a different title',
+});
 ```
 
 Supports optional query:
 
 ```js
-await articles.readOne(15, { fields: ['title'] });
+await articles.updateOne(
+	42,
+	{
+		title: 'This articles now has a similar title',
+	},
+	{
+		fields: ['title'],
+	}
+);
 ```
 
 ### Update Multiple Items

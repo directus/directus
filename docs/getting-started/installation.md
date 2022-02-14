@@ -25,6 +25,7 @@ While Directus is always completely free, you will likely need to pay for these 
 - [Generic Ubuntu](/getting-started/installation/ubuntu/)
 - [Internet Information Services (IIS)](/getting-started/installation/iis)
 - [Amazon AWS](/getting-started/installation/aws)
+- [Google Cloud Platform](/getting-started/installation/gcp)
 - [DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform)
 - [Shared Hosting with Plesk](/getting-started/installation/plesk)
 - [Cleavr.io](https://docs.cleavr.io/guides/directus)

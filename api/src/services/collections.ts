@@ -9,8 +9,8 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview, MutationOptions } from '../types';
-import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
+import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
+import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 
 export type RawCollection = {
@@ -67,28 +67,7 @@ export class CollectionsService {
 		// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
 		// transactions.
 		await this.knex.transaction(async (trx) => {
-			if (payload.meta) {
-				const collectionItemsService = new ItemsService('directus_collections', {
-					knex: trx,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-
-				await collectionItemsService.createOne({
-					...payload.meta,
-					collection: payload.collection,
-				});
-			}
-
 			if (payload.schema) {
-				const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
-
-				const fieldItemsService = new ItemsService('directus_fields', {
-					knex: trx,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-
 				// Directus heavily relies on the primary key of a collection, so we have to make sure that
 				// every collection that is created has a primary key. If no primary key field is created
 				// while making the collection, we default to an auto incremented id named `id`
@@ -122,6 +101,8 @@ export class CollectionsService {
 					return field;
 				});
 
+				const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+
 				await trx.schema.createTable(payload.collection, (table) => {
 					for (const field of payload.fields!) {
 						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
@@ -130,8 +111,27 @@ export class CollectionsService {
 					}
 				});
 
+				const fieldItemsService = new ItemsService('directus_fields', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
 				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
 				await fieldItemsService.createMany(fieldPayloads);
+			}
+
+			if (payload.meta) {
+				const collectionItemsService = new ItemsService('directus_collections', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				await collectionItemsService.createOne({
+					...payload.meta,
+					collection: payload.collection,
+				});
 			}
 
 			return payload.collection;
@@ -377,6 +377,10 @@ export class CollectionsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
+			if (collectionToBeDeleted!.schema) {
+				await trx.schema.dropTable(collectionKey);
+			}
+
 			// Make sure this collection isn't used as a group in any other collections
 			await trx('directus_collections').update({ group: null }).where({ group: collectionKey });
 
@@ -444,8 +448,6 @@ export class CollectionsService {
 						.update({ one_allowed_collections: newAllowedCollections })
 						.where({ id: relation.meta!.id });
 				}
-
-				await trx.schema.dropTable(collectionKey);
 			}
 		});
 

@@ -29,8 +29,8 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/) or
-[AWS Elastic Beanstalk](/getting-started/installation/aws)
+[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/),
+[Google Cloud Platform](/getting-started/installation/gcp) or [AWS Elastic Beanstalk](/getting-started/installation/aws)
 
 ::: tip First User
 
@@ -85,6 +85,14 @@ with your team. To generate the snapshot, run
 npx directus schema snapshot ./snapshot.yaml
 ```
 
+To run non-interactively (e.g. when running in a CI/CD workflow), run
+
+```
+npx directus schema snapshot --yes ./snapshot.yaml
+```
+
+Note, that this will force overwrite existing snapshot files.
+
 #### Applying a Snapshot
 
 To make a different instance up to date with the latest changes in your data model, you can apply the snapshot. By
@@ -96,6 +104,12 @@ To apply the generated snapshot, run
 
 ```
 npx directus schema apply ./path/to/snapshot.yaml
+```
+
+To run non-interactively (e.g. when running in a CI/CD workflow), run
+
+```
+npx directus schema apply --yes ./path/to/snapshot.yaml
 ```
 
 ### Creating Users

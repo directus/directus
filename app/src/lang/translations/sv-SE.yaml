@@ -278,10 +278,7 @@ dismiss: Avfärda
 raw_value: Obearbetat värde
 edit_raw_value: Redigera obearbetat värde
 enter_raw_value: Ange obearbetat värde...
-clear_value: Rensa fält
 clear_changes: Rensa ändringar
-reset_to_default: Återställ till förval
-undo_changes: Ångra ändringar
 notifications: Aviseringar
 show_all_activity: Visa all aktivitet
 page_not_found: Sidan hittades inte
@@ -311,10 +308,9 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
-export_data: Exportera data
+label_import: Importera
 format: Format
 use_current_filters_settings: Använd befintliga filter & inställningar
-export_collection: 'Exportera {collection}'
 last_page: Sista sidan
 last_access: Senaste åtkomsten
 fill_template: Fyll med mallens värden
