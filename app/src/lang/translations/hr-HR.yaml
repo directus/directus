@@ -31,6 +31,7 @@ module_bar: Bočni izbornik
 tile_size: Veličina pločice
 edit_field: Uredi polje
 conditions: Uvjeti
+maps: Karte
 switch_user: Promjena korisnika
 item_creation: Nova stavka
 item_revision: Revizija stavke
@@ -171,6 +172,55 @@ field_create_success: 'Polje kreirano: "{field}"'
 field_update_success: 'Polje ažurirano: "{field}"'
 duplicate_where_to: Gdje biste željeli duplicirati ovo polje?
 language: Jezik
+aggregate_function: Zbirna funkcija
+aggregate_precision: Zbirna preciznost
+group_aggregation: Grupno združivanje
+group_precision: Grupna preciznost
+global: Globalno
+admins_have_all_permissions: Administratori imaju sva dopuštenja
+camera: Kamera
+show_zero: Pokaži nulu
+create_in_advanced_field_creation_mode: Kreiraj polje u naprednom načinu rada
+continue_in_advanced_field_creation_mode: Nastavi u naprednom načinu izrade polja
+sum: Zbroj
+sum_distinct: Zbroj razlikovno
+avg: Prosjek
+avg_distinct: Prosječno razlikovno
+count: Zbroj
+count_distinct: Zbroj razlikovno
+min: Min
+max: Max
+exposure: Ekspozicija
+shutter: Zatvarač
+iso: ISO
+focal_length: Žarišna duljina
+schema_setup_key: Naziv stupca baze podataka ovog polja i API ključ
+create_field: Kreiraj polje
+creating_new_field: 'Novo polje ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Resetiraj postavke stranice
+hidden_field: Skriveno polje
+hidden_on_detail: Skriveno na detaljima
+disabled_editing_value: Onemogući uređivanje vrijednosti
+key: Ključ
+alias: Pseudonim
+bigInteger: Veliki cijeli broj
+boolean: Boolean
+date: Datum
+date_range: Raspon datuma
+datetime: Datum i vrijeme
+dateTime: Datum i vrijeme
+precision: Točnost
+decimal: Decimalni
+float: Plutajući
+integer: Cijeli broj
+json: JSON
+xml: XML
+string: Niz
+text: Tekst
+time: Vrijeme
+timestamp: Vremenska oznaka
+uuid: UUID
 hash: Hash
 geometry: Geometrija (sve)
 geometry.Point: Točka
@@ -274,6 +324,7 @@ post_comment_success: Komentar objavljen
 item_create_success: Stavka kreirana | Stavke kreirane
 item_update_success: Stavka ažurirana | Stavke ažurirane
 item_delete_success: Stavka obrisana | Stavke obrisane
+this_collection: Ova zbirka
 related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prijevoda
@@ -304,6 +355,7 @@ interface_label: Sučelje
 today: Danas
 yesterday: Jučer
 delete_comment: Obriši komentar
+delete_share: Izbriši dijeljenje
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -325,7 +377,56 @@ months:
   july: Srpanj
   august: Kolovoz
   september: Rujan
+  october: Listopad
+  november: Studeni
+  december: Prosinac
+drag_mode: Način povlačenja
+cancel_crop: Otkaži obrezivanje
+original: Izvornik
+url: URL
+import_label: Uvoz
+file_details: Pojedinosti datoteke
+dimensions: Dimenzije
+size: Veličina
 created: Kreirano
+modified: Izmijenjeno
+checksum: Kontrolni broj
+owner: Vlasnik
+edited_by: Uredio/la
+folder: Mapa
+zoom: Uvećaj
+download: Preuzmi
+open: Otvori
+open_in_new_window: Otvori u novom prozoru
+open_folder: Otvori "{folder}" mapu
+foreground_color: Boja prednjeg plana
+background_color: Boja pozadine
+upload_from_device: Prenesi s uređaja
+choose_from_library: Odaberite dadoteku iz biblioteke
+import_from_url: Uvezi datoteku s URL-a
+replace_from_device: Zamijenite datoteku s uređaja
+replace_from_library: Zamijenite datoteku iz biblioteke
+replace_from_url: Zamijenite datoteku s URL-a
+no_file_selected: Niti jedna datoteka nije odabrana
+download_file: Preuzmi datoteku
+collection_key: Ključ zbirke
+name: Naziv
+primary_key_field: Polje primarnog ključa
+type: Tip
+creating_new_collection: Kreiraj novu zbirku
+created_by: Kreirao/la
+created_on: Kreirano
+creating_collection_info: Imenujte zbirku i postavite njeno jedinstveno polje "ključa"...
+creating_collection_system: Omogućite i preimenujte bilo koje od ovih neobaveznih polja.
+auto_increment_integer: Automatski inkrementirani cijeli broj
+generated_uuid: Generiraj UUID
+manual_string: Ručno uneseni niz
+save_and_create_new: Spremi i kreiraj novo
+save_and_stay: Spremi i ostani
+save_as_copy: Spremi kao kopiju
+add_existing: Dodaj postojeći
+creating_items: Izrada stavki
+enable_create_button: Omogući gumb za stvaranje
 selecting_items: Odabir stavki
 enable_select_button: Omogući gumb za odabir
 comments: Komentari
@@ -476,12 +577,61 @@ one_item: '1 stavka'
 one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati ovu zbirku? Time ćete izbrisati zbirku i sve stavke u njoj. Radnju nije moguće poništiti.
+delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati ovu mapu? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
 show_hidden_collections: Prikaži skrivene zbirke
 hide_hidden_collections: Sakrij skrivene zbirke
 show_header: Pokaži zaglavlje
+unmanaged_collections: Nekonfigurirane zbirke
+system_collections: Zbirke sustava
+placeholder: Rezervirano mjesto
+icon_left: Ikona lijevo
+icon_right: Ikona desno
+count_other_revisions: '{count} drugih revizija'
+font: Font
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Razdjelnik
+color: Boja
+circle: Krug
+empty_item: Prazna stavka
+log_in_with: 'Prijavi se putem {provider}'
+conditional_styles: Uvjetni stilovi
+advanced_settings: Napredne postavke
+advanced_filter: Napredni filter
+delete_advanced_filter: Ukloni filter
+change_advanced_filter_operator: Promjena operatora
+operators:
+  eq: Jednako
+  neq: Nije jednako
+  lt: Manje od
+  gt: Veće od
+  lte: Manje od ili jednako
+  gte: Veće od ili jednako
+  in: Jedno je od
+  nin: Nije jedno od
+  null: Je null
+  nnull: Nije null
+  contains: Sadrži
+  ncontains: Ne sadrži
+  starts_with: Počinje sa
+  nstarts_with: Ne počinje s
+  ends_with: Završava s
+  nends_with: Ne završava s
+  between: Je između
+  nbetween: Nije između
+  empty: Je prazno
+  nempty: Nije prazno
+  all: Sadrži ove ključeve
+  has: Sadrži neke od ovih ključeva
+  intersects: Presijeca
+  nintersects: Ne presijeca
+  intersects_bbox: Presijeca granični okvir
+  nintersects_bbox: Ne presijeca granični okvir
+loading: Učitavanje...
 drop_to_upload: Ispustite za prijenos
 item: Stavka
 items: Stavke
@@ -533,6 +683,9 @@ on_update: Prilikom ažuriranja
 read: Čitaj
 update: Ažuriraj
 select_fields: Odaberite polja
+format_text: Formatiraj tekst
+format_value: Formatiraj vrijednost
+abbreviate_value: Skraćena vrijednost
 operator: Operater
 bold: Podebljano
 toggle: Uključi/isključi
@@ -636,7 +789,64 @@ choices: Izbori
 choices_option_configured_incorrectly: Izbori su pogrešno konfigurirani
 deselect: Odznači
 deselect_all: Odznači sve
+other: Drugo...
+adding_user: Dodavanje korisnika
+unknown_user: Nepoznati korisnik
+creating_in: 'Stvaranje stavke u {collection}'
+editing_in: 'Uređivanje stavke u {collection}'
+viewing_in: 'Pregledavanje stavke u {collection}'
+creating_unit: 'Kreiranje {unit}'
+editing_unit: 'Uređivanje {unit}'
+editing_in_batch: 'Skupno uređivanje {count} stavki'
+no_options_available: Nema dostupnih opcija
+settings_data_model: Model podataka
+settings_permissions: Uloge i dopuštenja
+settings_project: Postavke projekta
 settings_webhooks: Web-dojavnici
+settings_presets: Zadane postavke i oznake
+one_or_more_options_are_missing: Nedostaje jedna ili više opcija
+scope: Opseg
+select: Odaberite...
+layout: Raspored
+tree_view: Prikaz stabla
+changes_are_permanent: Promjene su trajne
+preset_name_placeholder: Služi kao zadano kada je prazno...
+preset_search_placeholder: Upit za pretragu...
+editing_preset: Uređivanje unaprijed postavljenih postavki
+layout_preview: Pretpregled rasporeda
+layout_setup: Postavljanje rasporeda
+unsaved_changes: Nespremljene promjene
+unsaved_changes_copy: Jeste li sigurni da želite napustiti ovu stranicu?
+discard_changes: Odbaci promjene
+discard_all_changes: Odbaci sve promjene
+discard_changes_copy: Jeste li sigurni da želite odbaciti sve napravljene promjene?
+show_x_axis: Prikaži X os
+show_y_axis: Prikaži Y os
+keep_editing: Nastavite uređivati
+page_help_collections_overview: '**Pregled zbirki** — Popis svih zbirki kojima imate pristup.'
+page_help_collections_collection: >-
+  **Pregledaj stavke** — Popisuje sve stavke iz {collection} kojima imate pristup. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
+page_help_collections_item: >-
+  **Detalji stavke** — Obrazac za pregled i upravljanje ovom stavkom. Ova bočna traka također sadrži potpunu povijest revizija i ugrađenih komentara.
+page_help_activity_collection: >-
+  **Aktivnost pregledavanja** — opsežan popis svih aktivnosti sustava i sadržaja vašeg korisnika.
+page_help_docs_global: >-
+  **Pregled dokumentacije** — Dokumenti posebno prilagođeni verziji i shemi ovog projekta.
+page_help_files_collection: >-
+  **Biblioteka datoteka** — Navodi sve datotečne materijale prenesene u ovaj projekt. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
+page_help_files_item: >-
+  **Detalji datoteke** — Obrazac za upravljanje metapodacima datoteke, uređivanje izvornog materijala i ažuriranje postavki pristupa.
+page_help_settings_project: "**Postavke projekta** — Globalne opcije konfiguracije vašeg projekta."
+page_help_settings_datamodel_collections: >-
+  **Model podataka: zbirke** — Navodi sve dostupne zbirke. To uključuje vidljive, skrivene i sustavne zbirke, kao i neupravljane tablice baze podataka koje se mogu dodati.
+page_help_settings_datamodel_fields: >-
+  **Model podataka: zbirka** — Obrazac za upravljanje ovom zbirkom i njezinim poljima.
+page_help_settings_roles_collection: '**Pregledaj uloge** — Navodi administratorske, javne i prilagođene korisničke uloge.'
+page_help_settings_roles_item: "**Pojedinosti o ulozi** — Upravljajte dopuštenjima uloge i drugim postavkama."
+page_help_settings_presets_collection: >-
+  **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, uloge i globalne oznake, kao i zadane prikaze.
+page_help_settings_presets_item: >-
+  **Unaprijed postavljene pojedinosti** — Obrazac za upravljanje oznakama i zadanim postavkama zbirke.
 page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
@@ -694,8 +904,11 @@ fields:
     collection: Zbirke
     icon: Ikona
     note: Napomena
+    color: Boja
     display_template: Predložak prikaza
+    hidden: Skriveno
     singleton: Singleton
+    translations: Prijevodi imenovanja zbirke
     archive_app_filter: Arhivirajte filtar aplikacija
     archive_value: Vrijednost arhive
     unarchive_value: Poništi arhiviranje vrijednosti
@@ -771,22 +984,72 @@ fields:
     basemaps_style: Mapbox stil
     mapbox_key: Mapbox pristupni token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribucija
+    attribution_placeholder: '© OpenStreetMap suradnici'
+    transforms_note: Naziv Sharp metode i njezini argumenti. Pogledajte https://sharp.pixelplumbing.com/api-constructor za više informacija.
+    additional_transforms: Dodatne transformacije
+    project_name: Naziv projekta
+    project_descriptor: Opis projekta
+    project_url: URL projekta
+    project_color: Boja projekta
+    project_logo: Logotip projekta
+    branding: Brendiranje i stil
+    public_foreground: Javni prvi plan
+    public_background: Javna pozadina
+    public_note: Javna napomena
+    auth_password_policy: Pravila za lozinku
+    auth_login_attempts: Broj pokušava prijave
+    files_and_thumbnails: Datoteke i pohrana
+    storage_default_folder: Zadana mapa
+    storage_asset_presets: Zadane postavke transformacije
+    storage_asset_transform: Dozvoljene transformacije
+    overrides: Aplikacija nadjačava
+    custom_css: Prilagođeni CSS
     module_bar: Bočni izbornik
+    transformations_all: Dozvoli sve transformacije
+    transformations_none: Onemogući transformacije
+    transformations_presets: Ograničite transformacije na unaprijed postavljene postavke u nastavku
   directus_shares:
+    name: Ime
     role: Uloge
     password: Lozinka
+    date_start: Početni datum
+    date_end: Završni datum
+    max_uses: Maksimalno upotreba
+    times_used: Upotrijebljeno puta
   directus_fields:
+    collection: Ime zbirke
+    icon: Ikona zbirke
     note: Napomena
+    hidden: Skriveno
     singleton: Singleton
     translation: Prijevodi naziva polja
+    display_template: Predložak
   directus_roles:
     name: Naziv uloge
+    icon: Ikona uloge
     description: Opis
+    app_access: Pristup aplikaciji
+    admin_access: Administratorski pristup
+    ip_access: IP pristup
+    enforce_tfa: Zahtijevaj 2FA
+    users: Korisnici s ulogom
+    module_list: Navigacija modula
   directus_webhooks:
+    name: Ime
+    method: Metoda
     status: Status
+    data: Podaci
+    header: Zaglavlje
+    value: Vrijednosti
+    headers: Zaglavlja zahtijeva
+    data_label: Pošalji podatke o događaju
+    triggers: Okidači
+    actions: Radnje
     collections: Zbirke
 field_options:
   directus_settings:
+    project_name_placeholder: Moj projekt...
     project_color_note: Pozadina i logotip za prijavu
     project_logo_note: Bijela 40x40 SVG/PNG
     public_note_placeholder: Kratka, javna poruka koja podržava markdown formatiranje...
@@ -797,23 +1060,70 @@ field_options:
       strong_text: Jaka – velika / mala slova / brojevi / posebna
     storage_asset_presets:
       fit_label: Fit
+      upscaling: Povećanje veličine (upscaling)
+      fit:
+        contain_text: Sadrži (sačuvaj omjer slike)
+        cover_text: Cover (forsiraj točnu veličinu)
+        fit_text: Uklopi unutar
+        outside_text: Uklopi izvan
+    additional_transforms: Dodatne transformacije
+    transforms_note: Naziv Sharp metode i njezini argumenti. Pogledajte https://sharp.pixelplumbing.com/api-constructor za više informacija.
     mapbox_key: Mapbox pristupni token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Osnovne karte
+    basemaps_name_placeholder: Unesite naziv osnovne karte...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox stil
+    files_divider_title: Datoteke i minijature
+    overrides_divider_title: Aplikacija nadjačava
   directus_activity:
+    login: Prijava
     create: Kreiraj
     update: Ažuriraj
+    delete: Obriši
   directus_collections:
+    track_activity_revisions: Praćenje aktivnost i revizija
+    only_track_activity: Prati samo aktivnost
+    do_not_track_anything: Nemoj pratiti ništa
     collection_setup: Postavljanje zbirke
+    note_placeholder: Opis ove kolekcije...
+    hidden_label: Sakrij unutar aplikacije
     singleton: Tretiraj kao jedan objekt
     language: Jezik
+    translation: Prijevod
+    translation_placeholder: Unesite prijevod...
+    collection_name: Ime zbirke
+    singular_unit: Jedinica singulara
+    plural_unit: Jedinica množine
     archive_divider: Arhiva
+    archive_field_placeholder: Odaberite polje...
+    archive_app_filter: Omogućite filtar arhive aplikacija
+    archive_value: Vrijednost postavljena prilikom arhiviranja...
+    unarchive_value: Vrijednost postavljena prilikom dearhiviranja...
     sort_divider: Sortiraj
+    sort_field: Odaberite polje...
+    accountability_divider: Odgovornost
+    duplication_divider: Umnožavanje
+  directus_files:
+    title: Jedinstven naslov...
+    description: Neobavezan opis...
+    location: Neobavezna lokacija...
+    storage_divider: Imenovanje datoteka
+    filename_disk: Naziv na disku...
+    filename_download: Naziv prilikom preuzimanja...
   directus_roles:
+    name: Jedinstveni naziv za ovu ulogu...
+    description: Opis uloge...
+    ip_access: Dodajte dopuštene IP adrese, ostavite prazno da dopustite sve...
+    fields:
+      icon_name: Ikona
+      name_name: Naziv
+      name_placeholder: Unesite naslov...
+      link_name: Poveznica
+      link_placeholder: Relativni ili apsolutni URL...
     collections_name: Zbirke
+    collections_addLabel: Dodaj zbirku...
   directus_users:
     preferences_divider: Preferencije korisnika
     dropdown_auto: Automatski (na temelju sustava)
@@ -821,6 +1131,7 @@ field_options:
     dropdown_dark: Tamni način
     admin_divider: Administratorske opcije
     status_dropdown_draft: Skica
+    status_dropdown_invited: Pozvani
     status_dropdown_active: Aktivan
     status_dropdown_suspended: Suspendiran
     status_dropdown_archived: Arhivirano
@@ -828,75 +1139,565 @@ field_options:
   directus_webhooks:
     status_options_active: Aktivan
     status_options_inactive: Neaktivan
+    data_label: Pošalji podatke o događaju
+    triggers_divider: Okidači
     actions_create: Kreiraj
     actions_update: Ažuriraj
+    actions_delete: Obriši
+    actions_login: Prijava
+    headers:
+      header: Zaglavlje
+      value: Vrijednost
+      add: Dodajte zaglavlje
+no_fields_in_collection: 'Još nema polja u "{collection}"'
+no_value: Nema vrijednosti
+do_nothing: Ne čini ništa
+generate_and_save_uuid: Generiraj i spremi UUID
+save_current_user_id: Spremi ID trenutnog korisnika
+save_current_user_role: Spremi ulogu trenutnog korisnika
+save_current_datetime: Spremi trenutni datum/vrijeme
+always_open: Uvijek otvoreno
+start_open: Počni otvoren
+start_collapsed: Počni skupljen
+block: Blok
+inline: Inline
 comment: Komentar
+shares: Dijeljenja
+unlimited_usage: Neograničena upotreba
+uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
+no_shares: Nema dijeljenja za prikaz
+new_share: Novo dijeljenje
+expired: Isteklo
+upcoming: Nadolazeće
+share: Podijeli
+share_item: Podijeli stavku
+shared_with_you: Stavka je podijeljena s vama
+shared_enter_passcode: Unesite šifru za nastavak...
+shared_leave_blank_for_unlimited: Ostavite prazno za neograničeno
+shared_times_remaining: Ova se poveznica može koristiti samo {n} puta
+shared_last_remaining: Ova se poveznica može koristiti samo jednom
+shared_uses_left: Radi dodatne sigurnosti, ova dijeljena stranica je konfigurirana s ograničenim brojem pregleda. Trenutno je preostalo {n} pregleda, nakon čega stranica više neće biti dostupna.
+share_access_page: Pristup dijeljenoj stranici
+share_access_not_found: Ova dijeljena stranica ili ne postoji ili je već premašila maksimalni broj dopuštenih upotreba.
+share_access_not_found_desc: Molimo kontaktirajte ovlaštenog korisnika ovog projekta kako biste zatražili pristup.
+share_access_not_found_title: Nepoznata dijeljena stranica
+share_copy_link: Kopiraj poveznicu
+share_copy_link_success: Poveznica kopirana
+share_copy_link_error: Nije moguće kopirati poveznicu
+share_send_link: Pošalji poveznicu
+relational_triggers: Relacijski okidači
+referential_action_field_label_m2o: Nakon brisanja {collection}...
+referential_action_field_label_o2m: Nakon poništavanja odabira {collection}...
+referential_action_no_action: Onemogući brisanje
+referential_action_cascade: Izbriši {collection} stavku (kaskadno)
+referential_action_set_null: Poništite polje {field}
+referential_action_set_default: Postavite {field} na zadanu vrijednost
+choose_action: Odaberite radnju
+continue_label: Nastavi
+continue_as: >-
+  {name} je trenutno prijavljen/a. Ako prepoznate ovaj račun, pritisnite Nastavi.
+editing_role: '{role} uloga'
+creating_webhook: Kreiraj web-dojavnik
+default_label: Zadano
+delete_label: Obriši
+delete_are_you_sure: >-
+  Ova radnja je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
+delete_field_are_you_sure: >-
+  Jeste li sigurni da želite izbrisati polje "{field}"? Ova se radnja ne može poništiti.
 description: Opis
+done: Gotovo
+duplicate: Dupliciraj
+limit: Limitiraj
 email: E-mail
+embed: Ugradi
+fallback_icon: Rezervna ikona
+field: Polje | Polja
+file: Datoteka
+file_library: Biblioteka datoteka
+forgot_password: Zaboravljena lozinka
+hidden: Skriveno
+icon: Ikona
+info: Informacija
+normal: Normalno
+success: Uspješno
+warning: Upozorenje
+danger: Opasnost
+junction_collection: Zbirka spojeva
+latency: Latencija
+login: Prijavite se
+my_activity: Moja aktivnost
+not_authenticated: Nije autentificirano
+authenticated: Autentificirano
+options: Opcije
+otp: Jednokratna lozinka
 password: Lozinka
+permissions: Dopuštenja
+relationship: Odnos
+reset: Ponovno postavi
+reset_password: Resetiraj lozinku
+revisions: Revizije
+no_revisions: Još nema revizija
+revert: Vrati
+save: Spremi
+schema: Shema
+search: Traži
+select_existing: Odaberi postojeće
+select_field_type: Odaberite vrstu polja
+select_interface: Odaberite sučelje
+settings: Postavke
+sign_in: Prijava
+sign_out: Odjava
+sign_out_confirm: Jeste li sigurni da se želite odjaviti?
+something_went_wrong: Nešto je pošlo po zlu.
+sort_direction: Smjer sortiranja
+sort_asc: Sortiraj uzlazno
+sort_desc: Sortiraj silazno
+template: Predložak
+require_value_to_be_set: Zahtijevj postavljanje vrijednosti
+translation: Prijevod
+translation_placeholder: Unesite prijevod...
+value: Vrijednost
+view_project: Pogledaj projekt
+weeks: { }
+report_error: Prijavi grešku
+start: Započni
 interfaces:
   filter:
     name: Filter
+    description: Konfiguriraj objekt filtera.
     add_filter: Dodaj filter
+    add_group: I / Ili grupa
+    add_value: Dodaj vrijednost
+    logic_type_and: I
+    logic_type_or: ILI
     all: Sve
     any: Bilo koji
+    and: i
+    of_the_following: od sljedećih
+    no_rules: Nema konfiguriranih pravila
+    change_value: Kliknite za promjenu vrijednosti
+    placeholder: Povucite pravila ovdje
+  group-accordion:
+    name: Harmonika
+    description: Prikaži polja ili grupe kao odjeljke harmonike
+    start: Započni
+    all_closed: Sve zatvoreno
+    first_opened: Prvo otvoreno
+    all_opened: Sve otvoreno
+    accordion_mode: Način rada harmonike
+    max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
+    presentation-links: Veze gumba
+    links: Poveznice
+    description: Konfigurabilni gumbi veza za pokretanje dinamičkih URL-ova
+    style: Stil
     primary: Primarno
+    link: Poveznice
+    button: Gumbi
+    error: Radnju nije moguće izvesti
+  select-multiple-checkbox:
+    checkboxes: Potvrdni okviri
+    description: Birajte između više opcija putem potvrdnih okvira
+    allow_other: Dopusti drugo
+    show_more: 'Prikaži još {count}'
+    items_shown: Stavki prikazano
+  select-multiple-checkbox-tree:
+    name: Potvrdni okviri (stablo)
+    description: Birajte između više opcija putem ugniježđenih potvrdnih okvira
+    value_combining: Kombiniranje vrijednosti
+    value_combining_note: Kontrolira koja se vrijednost pohranjuje kada se naprave ugniježđeni odabiri.
+    show_all: Prikaži sve
+    show_selected: Prikaži odabrano
   input-code:
     code: Kôd
+    description: Napišite ili podijelite isječke koda
+    line_number: Broj linije
+    line_wrapping: Omatanje linija
+    placeholder: Unesite kod ovdje...
   system-collection:
     collection: Zbirka
+    description: Odaberite između postojećih zbirki
+    include_system_collections: Uključite zbirke sustava
   system-collections:
     collections: Zbirke
+    description: Odaberite između postojećih zbirki
+    include_system_collections: Ulkjučuje zbirke sustava
+  select-color:
+    color: Boja
+    description: Unesite ili odaberite vrijednost boje
+    placeholder: Odaberite boju...
+    preset_colors: Unaprijed postavljene boje
+    opacity: Prozirnost
+    preset_colors_add_label: Dodaj novu boju...
+    name_placeholder: Unesite naziv boje...
+  datetime:
+    datetime: Datum i vrijeme
+    description: Unesite datume i vremena
+    include_seconds: Uključi sekunde
+    set_to_now: Postavi na sad
+    use_24: Koristi 24-satni format
   system-display-template:
     display-template: Predložak prikaza
+    description: Pomiješajte statički tekst i dinamičke vrijednosti polja
+    collection_field: Polje zbirke
     collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
     select_a_collection: Odaberite zbirku
+  presentation-divider:
+    divider: Razdjelnik
+    description: Označite i podijelite polja u odjeljke
+    title_placeholder: Unesite naslov ili ostavite prazno da bi se prikazao samo redak...
+    inline_title: Inline naslov
+    inline_title_label: Prikaži naslov unutar retka
+    margin_top: Gornja margina
+    margin_top_label: Povećaj gornju marginu
   select-dropdown:
+    description: Odaberite vrijednost iz padajućeg izbornika
+    choices_placeholder: Dodaj novi izbor
+    allow_other: Dopusti drugo
+    allow_other_label: Dopusti druge vrijednosti
+    allow_none: Ne dopusti ništa
+    allow_none_label: Dopusti bez odabira
+    choices_name_placeholder: Unesite naziv...
     choices_value_placeholder: Unesite vrijednost...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Padajući izbornik (više)
+    description: Odaberite više vrijednosti iz padajućeg izbornika
+  file:
+    file: Datoteka
+    description: Odaberite ili prenesite datoteku
+  files:
+    files: Datoteke
+    description: Odaberite ili prenesite više datoteka
   input-hash:
     hash: Hash
+    description: Unesite vrijednost koju želite hashirati
+    masked: Maskirano
+    masked_label: Sakrij prave vrijednosti
+  select-icon:
+    icon: Ikona
+    description: Odaberite ikonu iz padakućeg izbornika
+    search_for_icon: Traži ikonu...
+  file-image:
+    image: Slika
+    description: Odaberite ili prenesite sliku
+    crop: Obreži kako bi stalo
+    crop_label: Obreži sliku prema potrebi
+  system-interface:
+    interface: Sučelje
+    description: Odaberite postojeće sučelje
+    placeholder: Odaberite sučelje...
+  system-interface-options:
+    interface-options: Opcije sučelja
+    description: Modal za odabir opcija sučelja
+  list-m2m:
+    many-to-many: Many to Many
+    description: Odaberite više povezanih spojnih stavki
+    display_template_configure_notice: Možete konfigurirati predložak prikaza nakon kreiranja ovog polja.
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Odaberite jednu srodnu stavku
     display_template: Predložak prikaza
   input-rich-text-md:
+    markdown: Markdown
+    description: Unesite i pregledajte markdown
     edit: Uredi
+    preview: Pretpregled
+    editorFont: Font uređivača
+    previewFont: Pregled fonta
+    customSyntax: Prilagođeni blokovi
+    customSyntax_label: Dodajte prilagođene vrste sintakse
+    customSyntax_add: Dodajte prilagođenu sintaksu
+    box: Blok / Inline
+    imageToken: Token slike
+    imageToken_label: Koji (statički) token dodati izvorima slike
+  map:
+    map: Karta
+    description: Odaberite lokaciju na karti
+    zoom: Uvećaj
+    geometry_type: Vrsta geometrije
+    geometry_format: Geometrijski format
+    default_view: Zadani prikaz
+    invalid_options: Neispravne opcije
+    invalid_format: Neispravan format ({format})
+    unexpected_geometry: Očekivalo se {expected}, dobiveno {got}.
+    fit_bounds: Prilagodi prikaz podacima
+    native: Izvorno
+    geojson: GeoJSON
+    lnglat: Geografska dužina, širina
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Kliknite za odabir {geometry}
+  presentation-notice:
+    notice: Napomena
+    description: Prikaži kratku obavijest
+    text: Ovdje unesite sadržaj obavijesti...
+  list-o2m:
+    one-to-many: One to Many
+    description: Odaberite više povezanih stavki
+    no_collection: Zbirka nije pronađena
+  system-folder:
+    folder: Mapa
+    description: Odaberite mapu
+    field_hint: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
+    root_name: Korijen biblioteke datoteka
+    system_default: Sistemski zadano
+  select-radio:
+    radio-buttons: Radio gumbi
+    description: Odaberite jedan od više izbora
+  list:
+    repeater: Ponavljač
+    description: Napravite više unosa iste strukture
+    edit_fields: Uredi polja
+    add_label: '"Stvori novo" oznaka'
+    field_name_placeholder: Unesite naziv polja...
+    field_note_placeholder: Unesite napomenu o polju...
+  slider:
+    slider: Klizač
+    description: Odaberite broj pomoću klizača
+    always_show_value: Uvijek prikazuj vrijednost
   tags:
     tags: Oznake
+    description: Odaberite ili dodajte oznake
+    whitespace: Razmaci
+    hyphen: Zamijeni crticom
+    underscore: Zamijeni podvlakom
+    remove: Ukloni razmak
+    capitalization: Velika slova (capitalization)
+    uppercase: Pretvori u velika slova
+    lowercase: Pretvori u mala slova
+    auto_formatter: Koristite automatsko oblikovanje naslova
+    alphabetize: Abecedno
+    alphabetize_label: Nametni abecedno razvrstavanje
+    add_tags: Dodajte oznake...
+  input:
+    input: Unos
+    description: Ručno unesite vrijednost
+    trim: Skrati
+    trim_label: Skrati početak i kraj
+    mask: Maskirano
+    mask_label: Sakrij prave vrijednosti
+    clear: Izbrisana vrijednost
+    clear_label: Spremi kao prazan niz
+    minimum_value: Minimalna vrijednost
+    maximum_value: Maksimalna vrijednost
+    step_interval: Interval koraka
+    slug: Slugify
+    slug_label: Neka unesena vrijednost bude "URL safe"
+  input-multiline:
+    textarea: Tekstualno područje
+    description: Unesite običan tekst u više redaka
   boolean:
     toggle: Uključi/isključi
+    description: Prebacivanje između uključivanja i isključivanja
+    color_on: Boja ulkjučena
+    color_off: Boja isključena
+    label_placeholder: Unesite oznaku...
     label_default: Omogućeno
   translations:
     display_template: Predložak prikaza
+    no_collection: Nema zbirke
+    toggle_split_view: Uključi/isključi podijeljeni prikaz
+    language_field: Polje indikatora jezika
+  list-o2m-tree-view:
+    description: Prikaz stabla za ugniježđene rekurzivne one-to-many stavke
+    recursive_only: Sučelje prikaza stabla radi samo za rekurzivne odnose.
   user:
     user: Korisnik
+    description: Odaberite postojećeg Directus korisnika
+    select_mode: Odaberite način rada
     modes:
+      auto: Automatski
       dropdown: Padajući izbornik
+      modal: Modal
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Uređivač bogatog teksta koji piše HTML sadržaj
+    toolbar: Alatna traka
+    custom_formats: Prilagođeni formati
+    options_override: Nadjačavanje opcija
+    folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
+    imageToken: Token slike
+    imageToken_label: Koji (statički) token dodati izvorima slike
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete unos (API)
+    description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'
+    results_path: Putanja rezultata
+    value_path: Putanja vrijednosti
+    text_path: Putanja teksta
+    trigger: Okidač
+    rate: Ocijeni
+  group-raw:
+    name: Neobrađena grupa
+    description: Renderirajte polja onakva kakva jesu
+  group-detail:
+    name: Grupa detalja
+    description: Renderirajte polja kao sklopivi odjeljak
+    show_header: Prikaži zaglavlje grupe
+    header_icon: Ikona zaglavlja
+    header_color: Boja zaglavlja
+    start_open: Počni otvoren
+    start_closed: Započni zatvoren
 displays:
   translations:
     translations: Prijevodi
+    description: Pregled prijevoda
+    enable: Omogući
+    user_language: Koristi jezik trenutnog korisnika
+    default_language: Zadani jezik
+    language_field: Polje indikatora jezika
   boolean:
+    boolean: Boolean
+    description: Prikaz uključenih i isključenih stanja
+    label_on: Oznaka uključena
+    label_on_placeholder: Unesite uključeno oznaku...
+    label_off: Oznaka isključena
+    label_off_placeholder: Unesite isključeno oznaku...
     icon_on: Ikona uključena
     icon_off: Ikona isključena
+    color_on: Boja ulkjučena
+    color_off: Boja isključena
   collection:
     collection: Zbirka
+    description: Prikaži zbirku
+    icon_label: Prikaži ikonu zbirke
+  color:
+    color: Boja
+    description: Prikaži točku u boji
+    default_color: Zadana boja
   datetime:
+    datetime: Datum i vrijeme
+    description: Prikaži vrijednosti koje se odnose na vrijeme
     format: Format
+    format_note: >-
+      Prilagođeni format prihvaća __[Tablica simbola polja datuma](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Dugo
+    short: Kratko
+    relative: Relativno
+    relative_label: 'Prikaži relativno vrijeme, npr.: prije 5 minuta'
+  file:
+    file: Datoteka
+    description: Prikaži datoteke
+  filesize:
+    filesize: Veličina datoteke
+    description: Prikaži veličinu datoteke
   formatted-value:
+    formatted-value: Formatirana vrijednost
+    description: Prikaži formatiranu verziju teksta
     format: Format
+    format_label: Automatski formatiraj
+    font: Font
+    font_sans_serif: Sans Serif
+    font_serif: Serif
+    font_monospace: Monospace
     bold: Podebljano
+    bold_label: Koristi podebljani stil
     italic: Kurziv
+    italic_label: Koristi kurziv stil
     prefix: Prefiks
+    prefix_label: Dodaj tekst na početak
     suffix: Sufiks
+    suffix_label: Dodatni tekst
+    color: Boja
+    background: Pozadina
+    icon: Ikona
+    border: Obrub
+    border_label: Prikaži rubove
+    text: Tekst
+    text_placeholder: Opcionalno nadjačavanje vrijednosti...
+  formatted-json-value:
+    formatted-json-value: Formatirana JSON vrijednost
+    description: Prikaži formatiranu verziju objekta
+  icon:
+    icon: Ikona
+    description: Prikaži ikonu
+    filled: Ispunjeno
+    filled_label: Koristite ispunjenu varijantu
+  image:
+    image: Slika
+    description: Prikaži minijaturni pregled slike
+    circle: Krug
+    circle_label: Prikaži kao krug
   labels:
+    labels: Oznake
+    description: Prikažite jednu ili popis oznaka
+    default_foreground: Zadani prednji plan
+    default_background: Zadana pozadina
+    format_label: Formatiraj svaku oznaku
+    show_as_dot: Prikaži kao točku
     choices_value_placeholder: Unesite vrijednost...
+    choices_text_placeholder: Unesite tekst...
+  mime-type:
+    mime-type: MIME Tip
+    description: Prikaži MIME tip datoteke
+    extension_only: Samo ekstenzija
+    extension_only_label: Prikaži samo ekstenziju datoteke
+  rating:
+    rating: Ocjena
+    description: Vizualizirajte broj kao zvjezdice u odnosu na maksimalnu vrijednost
+    simple: Jednostavno
+    simple_label: Prikaži zvijezde u jednostavnom formatu
+  raw:
+    raw: Neobrađena vrijednost
+  related-values:
+    related-values: Povezane vrijednosti
+    description: Prikaz relativnih vrijednosti
+    display_template_configure_notice: Možete konfigurirati predložak prikaza nakon kreiranja ovog polja.
   user:
     user: Korisnik
+    description: Prikaži Directus korisnika
     avatar: Avatar
+    name: Naziv
+    both: Oboje
+    circle_label: Prikaži korisnika u krugu
 layouts:
   cards:
+    cards: Kartice
+    image_source: Izvor slike
+    image_fit: Slika odgovara
+    crop: Obreži
+    contain: Sadrži
     title: Naslov
+    subtitle: Podnaslov
   tabular:
     tabular: Tablica
+    fields: Polja
+    spacing: Razmak
+    comfortable: Udobno
+    compact: Kompaktno
+    cozy: Udobno
+  calendar:
+    calendar: Kalendar
+    start_date_field: Polje datuma početka
+    end_date_field: Polje datuma završetka
+  map:
+    map: Karta
+    basemap: Osnovna karta
+    layers: Slojevi
+    cluster_options: Opcije grupiranja
+    cluster: Grupiraj podatke u blizini
+    cluster_radius: Radijus grupiranja
+    cluster_minpoints: Minimalna veličina grupiranja
+    cluster_maxzoom: Maksimalni zum za grupiranje
+    field: Geoprostorno polje
+    invalid_geometry: Nevažeća geometrija
+    find_location: Pronađi lokaciju...
+    default_template: Korištenje zadane zbirke...
+    no_compatible_fields: Nema kompatibilnih polja
 panels:
+  metric:
+    name: Metrički
+    description: Prikaži jednu vrijednost na temelju upita
+    field: Polje
+  time_series:
+    name: Vremenske serije
+    description: Izradite linijski grafikon na temelju vrijednosti tijekom vremena
+    date_field: Polje datuma
+    value_field: Polje vrijednosti
+    fill_type: Vrsta ispune
+    curve_type: Tip krivulje
   label:
     name: Oznaka
+    description: Prikaži malo teksta
+  list:
+    name: Lista
+    description: Filtrirajte i navedite polja iz zbirke

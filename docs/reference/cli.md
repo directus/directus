@@ -88,7 +88,7 @@ npx directus schema snapshot ./snapshot.yaml
 To run non-interactively (e.g. when running in a CI/CD workflow), run
 
 ```
-npx directus schema snapshot --yes true ./snapshot.yaml
+npx directus schema snapshot --yes ./snapshot.yaml
 ```
 
 Note, that this will force overwrite existing snapshot files.
@@ -109,7 +109,7 @@ npx directus schema apply ./path/to/snapshot.yaml
 To run non-interactively (e.g. when running in a CI/CD workflow), run
 
 ```
-npx directus schema apply --yes true ./path/to/snapshot.yaml
+npx directus schema apply --yes ./path/to/snapshot.yaml
 ```
 
 ### Creating Users
