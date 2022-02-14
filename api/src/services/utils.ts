@@ -122,8 +122,10 @@ export class UtilsService {
 		}
 
 		emitter.emitAction(
-			['items.sort_updated', `${collection}.items.sort_updated`],
-			{ collection },
+			['items.sort_update', `${collection}.items.sort_update`],
+			{
+				collection,
+			},
 			{
 				database: this.knex,
 				schema: this.schema,
