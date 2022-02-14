@@ -27,93 +27,93 @@ published: Publicado
 draft: Rascunho
 archived: Arquivado
 modules: Módulos
-module_bar: Barra de módulo
-tile_size: Tamanho do ladrilho
+module_bar: Barra de Módulos
+tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
 switch_user: Alternar Usuário
-item_creation: Criação de ítem
-item_revision: Revisão do item
+item_creation: Criação do Item
+item_revision: Revisão do Item
 enter_a_name: Insira um nome...
-duplicate_field: Duplicar campo
-half_width: Meia largura
-full_width: Largura total
-group: Grupos
+duplicate_field: Duplicar Campo
+half_width: Meia Largura
+full_width: Largura Total
+group: Grupo
 and: E
 or: Ou
-fill_width: Preencher
+fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
-role_name: Nome do cargo
+role_name: Nome do Cargo
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
 edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
-db_only_click_to_configure: 'Apenas banco de dados: Clique p/ configurar'
+db_only_click_to_configure: 'Apenas Banco de Dados: Clique para Configurar'
 show_active_items: Exibir Itens Ativos
-show_archived_items: Mostrar itens arquivados
-show_all_items: Mostrar todos os itens
-edited: Valor editado
+show_archived_items: Exibir Itens Arquivados
+show_all_items: Exibir Todos os Itens
+edited: Valor Editado
 required: Obrigatório
-required_for_app_access: Obrigatório para o Acesso ao Aplicativo
+required_for_app_access: Obrigatório para Acesso ao App
 requires_value: Requer valor
-create_preset: Criar predefinição
-create_panel: Criar painel
-create_role: Criar Função
-create_user: Criar usuário
+create_preset: Criar Predefinição
+create_panel: Criar Painel
+create_role: Criar Cargo
+create_user: Criar Usuário
 delete_panel: Excluir Painel
-create_webhook: Criar Webgancho
+create_webhook: Criar Webhook
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 subject: Assunto
-inbox: Caixa de entrada
+inbox: Caixa de Entrada
 emails: Emails
-connection_excellent: Conexão excelente
-connection_good: Conexão boa
-connection_fair: Conexão razoável
-connection_poor: Conexão ruim
+connection_excellent: Conexão Excelente
+connection_good: Conexão Boa
+connection_fair: Conexão Razoável
+connection_poor: Conexão Ruim
 primary: Primário
 rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
-reset_bookmark: Redefinir marcadores
-rename_bookmark: Renomear marcador
-update_bookmark: Atualizar Marcador
-delete_bookmark: Deletar Marcador
+reset_bookmark: Redefinir Favoritos
+rename_bookmark: Renomear Favorito
+update_bookmark: Atualizar Favorito
+delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-
-  Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
+  Tem certeza que deseja deletar o favorito "{bookmark}"? Esta ação não pode ser desfeita.
 logoutReason:
-  SIGN_OUT: Desconectado
+  SIGN_OUT: Deslogado
   SESSION_EXPIRED: Sessão expirada
-public_label: Publico
+public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
-admin_description: Função administrativa inicial com acesso irrestrito ao aplicativo.
-not_allowed: Não permitido
+admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
+not_allowed: Não Permitido
 directus_version: Versão do Directus
 node_version: Versão Node
-node_uptime: Tempo de atividade do Node
+node_uptime: Tempo de Atividade do Node
 os_type: Tipo de SO
 os_version: Versão do SO
-os_uptime: Tempo de atividade do SO
+os_uptime: Tempo de Atividade do SO
 os_totalmem: Memória do SO
 archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
 archive_confirm_count: >-
-  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+  Nenhum Item Selecionado | Você tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
 reset_system_permissions_to: 'Redefinir Permissões do Sistema Para:'
-reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Você tem certeza?
-the_following_are_minimum_permissions: As permissões seguintes, são as mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disso, mas não abaixo.
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você possa ter aplicado às coleções do sistema. Você tem certeza?
+the_following_are_minimum_permissions: As permissões seguintes são as mínimas necessárias quando o "Acesso ao App" estiver habilitado. Você pode estender as permissões além disso, mas não abaixo.
 app_access_minimum: Acesso Mínimo ao App
 recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
-unarchive_confirm: Tem certeza de que deseja desarquivar este item?
-nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos para um nível acima.
+unarchive_confirm: Você tem certeza que deseja desarquivar este item?
+nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
 unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
@@ -127,93 +127,93 @@ validationError:
   lt: O valor tem de ser menor que {valid}
   lte: O valor tem de ser menor ou igual a {valid}
   empty: O valor tem de ser vazio
-  nempty: Valor não pode estar vazio
-  null: Valor precisa ser nulo
-  nnull: Valor não pode ser nulo
-  required: Valor obrigatório
+  nempty: O valor não pode estar vazio
+  null: O valor precisa ser nulo
+  nnull: O valor não pode ser nulo
+  required: O valor é obrigatório
   unique: O valor deve ser único
   regex: O valor não tem o formato correto
 all_access: Acesso Total
-no_access: Sem acesso
+no_access: Sem Acesso
 use_custom: Usar Personalizado
-nullable: Aceita nulos
-allow_null_value: Permitir valores NULL
+nullable: Anulável
+allow_null_value: Permitir valor NULL
 allow_multiple: Permitir Múltiplos
-allow_multiple_to_be_open: Permissão para abrir vários
-enter_value_to_replace_nulls: Por favor digite um novo valor que substituirá todos os NULLs presentes neste campo.
+allow_multiple_to_be_open: Permitir a Abertura de Múltiplos
+enter_value_to_replace_nulls: Por favor, insira um novo valor que substituirá todos os NULLs presentes neste campo.
 field_standard: Padrão
-field_presentation: Apresentação e pseudônimos
-field_file: Arquivo único
-field_files: Múltiplos arquivos
+field_presentation: Apresentação & Pseudônimos
+field_file: Arquivo Único
+field_files: Múltiplos Arquivos
 field_m2o: Relacionamento M2O
 field_m2a: Relacionamento M2A
 field_o2m: Relacionamento O2M
 field_m2m: Relacionamento M2M
 field_translations: Traduções
 field_group: Grupo de Campos
-item_permissions: Permissões do Item
-field_permissions: Permissões dos campos
-field_validation: Validação dos campos
-field_presets: Predefinições de campo
-permissions_for_role: 'Itens que o cargo {role} pode {action}.'
-fields_for_role: 'Campos que o cargo {role} pode {action}.'
-validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
-presets_for_role: 'Valores de campo padrões para a função {role}.'
-presentation_and_aliases: Apresentação e pseudônimos
+item_permissions: Permissões dos Items
+field_permissions: Permissões dos Campos
+field_validation: Validação dos Campos
+field_presets: Predefinições dos Campos
+permissions_for_role: 'Itens que o Cargo {role} pode {action}.'
+fields_for_role: 'Campos que o Cargo {role} pode {action}.'
+validation_for_role: 'As regras de {action} do campo que o Cargo {role} deve obedecer.'
+presets_for_role: 'Valores padrões de campo para o Cargo {role}.'
+presentation_and_aliases: Apresentação & Pseudônimos
 revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
-no_relational_data: Tenha em mente que os dados relacionados não estão incluídos aqui.
+no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
-delete_field: Excluir campo
-fields_and_layout: Campos e Layout
-field_create_success: 'Campo criado: "{field}"'
-field_update_success: 'Campo atualizado: "{field}"'
+delete_field: Excluir Campo
+fields_and_layout: Campos & Layout
+field_create_success: 'Campo Criado: "{field}"'
+field_update_success: 'Campo Atualizado: "{field}"'
 duplicate_where_to: Para onde você gostaria de duplicar este campo?
 language: Idioma
-aggregate_function: Agregar função
-aggregate_precision: Agregar precisão
-group_aggregation: Grupo de agregação
+aggregate_function: Função de Agregação
+aggregate_precision: Precisão de Agregação
+group_aggregation: Agregação go Grupo
 group_precision: Precisão do Grupo
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmera
-show_zero: Mostrar zero
-create_in_advanced_field_creation_mode: Criar campo no modo avançado
-continue_in_advanced_field_creation_mode: Continuar a criação do campo no modo avançado
+show_zero: Mostrar Zero
+create_in_advanced_field_creation_mode: Criar Campo no Modo Avançado
+continue_in_advanced_field_creation_mode: Continuar a Criação do Campo no Modo Avançado
 sum: Soma
-sum_distinct: Soma distinta
+sum_distinct: Soma Distinta
 avg: Média
-avg_distinct: Média distinta
-count: Quantidade
-count_distinct: Contagem distinta
+avg_distinct: Média Distinta
+count: Contagem
+count_distinct: Contagem Distinta
 min: Mínimo
 max: Máximo
 exposure: Exposição
 shutter: Obturador
 iso: ISO
-focal_length: Distância focal
-schema_setup_key: O nome da coluna do banco de dados deste campo e a chave API
+focal_length: Distância Focal
+schema_setup_key: O nome da coluna do banco de dados e a chave de API deste campo
 create_field: Criar Campo
-creating_new_field: 'Novo campo ({collection})'
+creating_new_field: 'Novo Campo ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Redefinir preferências da página
-hidden_field: Campo oculto
+reset_page_preferences: Redefinir Preferências da Página
+hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
 disabled_editing_value: Desativar edição do valor
 key: Chave
-alias: Alias
+alias: Pseudônimo
 bigInteger: Big Integer
-boolean: Boolean
+boolean: Booleano
 date: Data
 date_range: Período
-datetime: DateTime
-dateTime: DateTime
+datetime: Data e Hora
+dateTime: Data e Hora
 precision: Precisão
 decimal: Decimal
-float: Float
-integer: Integer
+float: Ponto Flutuante
+integer: Inteiro
 json: JSON
 xml: XML
 string: String
@@ -224,7 +224,7 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (Todos)
 geometry.Point: Ponto
-geometry.LineString: Linha de texto
+geometry.LineString: Linha de Texto
 geometry.Polygon: Polígono
 geometry.MultiPoint: MultiPonto
 geometry.MultiLineString: MultiLineString
@@ -531,7 +531,7 @@ errors:
   CONTAINS_NULL_VALUES: O campo contém valores nulos
   UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro inesperado
-  NOT_NULL_VIOLATION: Valor não pode ser nulo
+  NOT_NULL_VIOLATION: O valor não pode ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
   UNKNOWN: Erro inesperado
 security: Segurança
@@ -996,7 +996,7 @@ fields:
     storage_asset_transform: Transformações Permitidas
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
-    module_bar: Barra de módulo
+    module_bar: Barra de Módulos
     transformations_all: Permitir todas as transformações
     transformations_none: Desativar transformações
     transformations_presets: Limitar transformações às predefinições abaixo
@@ -1017,7 +1017,7 @@ fields:
     translation: Traduções do Nome do Campo
     display_template: Template
   directus_roles:
-    name: Nome do cargo
+    name: Nome do Cargo
     icon: Ícone do cargo
     description: Descrição
     app_access: Acesso ao app
@@ -1489,7 +1489,7 @@ displays:
     default_language: Idioma padrão
     language_field: Campo Indicador de Idioma
   boolean:
-    boolean: Boolean
+    boolean: Booleano
     description: Exibir estados ativados e desativados
     label_on: Rótulo ligado
     label_on_placeholder: Digite o rótulo para ligado...
