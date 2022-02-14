@@ -316,10 +316,6 @@ export default defineComponent({
 	cursor: pointer;
 }
 
-.drag-handle {
-	cursor: grap;
-}
-
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
