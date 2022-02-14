@@ -35,6 +35,7 @@
 			:loading="loading"
 			:batch-mode="batchMode"
 			:disabled="disabled"
+			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>
