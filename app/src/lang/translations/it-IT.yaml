@@ -353,6 +353,7 @@ interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
+delete_share: Elimina condivisione
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -574,6 +575,7 @@ one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione è permanente.
+delete_folder_are_you_sure: Sei sicuro di voler eliminare questa cartella? Le cartelle e le collezioni annidate verranno spostate al livello più alto.
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
@@ -1254,6 +1256,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
