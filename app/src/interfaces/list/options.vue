@@ -11,12 +11,12 @@
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ t('interfaces.list.min_items') }}</p>
+			<p class="type-label">{{ t('min_items') }}</p>
 			<v-input v-model="minItems" type="number" min="0" class="input" />
 		</div>
 
 		<div class="grid-element half-right">
-			<p class="type-label">{{ t('interfaces.list.max_items') }}</p>
+			<p class="type-label">{{ t('max_items') }}</p>
 			<v-input v-model="maxItems" type="number" :min="minItems || 0" class="input" />
 		</div>
 
