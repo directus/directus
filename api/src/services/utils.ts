@@ -4,6 +4,7 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, PrimaryKey } from '../types';
 import { Accountability, SchemaOverview } from '@directus/shared/types';
+import emitter from '../emitter';
 
 export class UtilsService {
 	knex: Knex;
@@ -119,5 +120,15 @@ export class UtilsService {
 				.andWhere(sortField, '<=', sourceSortValue)
 				.andWhereNot({ [primaryKeyField]: item });
 		}
+
+		emitter.emitAction(
+			['items.sort_updated', `${collection}.items.sort_updated`],
+			{ collection },
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 }
