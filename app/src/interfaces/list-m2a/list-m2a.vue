@@ -720,7 +720,6 @@ export default defineComponent({
 	--v-icon-color: var(--foreground-subdued);
 	--v-icon-color-hover: var(--danger);
 
-	margin-right: 8px;
 	color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
