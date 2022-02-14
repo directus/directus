@@ -63,6 +63,18 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'maxItems',
+				name: '$t:max_items',
+				type: 'integer',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						min: 0,
+					},
+				},
+			},
+			{
 				field: 'filter',
 				name: '$t:filter',
 				type: 'json',

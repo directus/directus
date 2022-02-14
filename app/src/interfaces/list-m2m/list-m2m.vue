@@ -46,8 +46,10 @@
 		</v-list>
 
 		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="createNew()">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
+			<v-button v-if="enableCreate && createAllowed" :disabled="!isMaxItems" @click="createNew()">
+				{{ t('create_new') }}
+			</v-button>
+			<v-button v-if="enableSelect && selectAllowed" :disabled="!isMaxItems" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 		</div>
@@ -133,6 +135,10 @@ export default defineComponent({
 		enableSelect: {
 			type: Boolean,
 			default: true,
+		},
+		maxItems: {
+			type: Number,
+			default: null,
 		},
 		filter: {
 			type: Object as PropType<Filter>,
@@ -226,6 +232,14 @@ export default defineComponent({
 
 		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
 
+		const isMaxItems = computed(() => {
+			if (props.disabled) return false;
+			if (props.maxItems === null) return true;
+			if (props.value === null) return props.maxItems > 0;
+			if (Array.isArray(props.value) && props.value.length < props.maxItems) return true;
+			return false;
+		});
+
 		return {
 			t,
 			junction,
@@ -255,6 +269,7 @@ export default defineComponent({
 			templateWithDefaults,
 			createAllowed,
 			selectAllowed,
+			isMaxItems,
 			customFilter,
 		};
 

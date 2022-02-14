@@ -71,7 +71,7 @@
 		<div v-if="!disabled" class="buttons">
 			<v-menu v-if="enableCreate" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button @click="toggle">
+					<v-button :disabled="!isMaxItems" @click="toggle">
 						{{ t('create_new') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
@@ -92,7 +92,7 @@
 
 			<v-menu v-if="enableSelect" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button class="existing" @click="toggle">
+					<v-button class="existing" :disabled="!isMaxItems" @click="toggle">
 						{{ t('add_existing') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
@@ -184,6 +184,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		maxItems: {
+			type: Number,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -203,6 +207,14 @@ export default defineComponent({
 
 		watch(() => props.value, fetchValues, { immediate: true, deep: true });
 
+		const isMaxItems = computed(() => {
+			if (props.disabled) return false;
+			if (props.maxItems === null) return true;
+			if (props.value === null) return props.maxItems > 0;
+			if (Array.isArray(props.value) && props.value.length < props.maxItems) return true;
+			return false;
+		});
+
 		return {
 			t,
 			previewValues,
@@ -219,6 +231,7 @@ export default defineComponent({
 			cancelEdit,
 			editExisting,
 			createNew,
+			isMaxItems,
 			previewLoading,
 			deselect,
 			relatedItemValues,
