@@ -169,7 +169,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
-import { md } from '@/utils/md';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
 
@@ -335,7 +334,6 @@ export default defineComponent({
 			zoomToFit,
 			fullScreen,
 			toggleZoomToFit,
-			md,
 			movePanelChoices,
 			movePanelTo,
 			confirmLeave,

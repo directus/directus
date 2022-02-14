@@ -59,7 +59,7 @@
 			({{ positioning.x - 1 }}:{{ positioning.y - 1 }}) {{ positioning.width }}×{{ positioning.height }}
 		</div>
 
-		<div v-if="editMode" class="resize-handlers">
+		<div v-if="editMode && resizable" class="resize-handlers">
 			<div class="top" @pointerdown.stop="onPointerDown('resize-top', $event)" />
 			<div class="right" @pointerdown.stop="onPointerDown('resize-right', $event)" />
 			<div class="bottom" @pointerdown.stop="onPointerDown('resize-bottom', $event)" />
@@ -93,6 +93,10 @@ export default defineComponent({
 		editMode: {
 			type: Boolean,
 			default: false,
+		},
+		resizable: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	emits: ['update', 'move', 'duplicate', 'delete', 'edit'],

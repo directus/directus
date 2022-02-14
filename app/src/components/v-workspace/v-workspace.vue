@@ -17,6 +17,7 @@
 				:key="panel.id"
 				:panel="panel"
 				:edit-mode="editMode"
+				:resizable="resizable"
 				@edit="$emit('edit', panel)"
 				@update="$emit('update', { edits: $event, id: panel.id })"
 				@move="$emit('move', panel.id)"
@@ -48,6 +49,10 @@ export default defineComponent({
 		zoomToFit: {
 			type: Boolean,
 			default: false,
+		},
+		resizable: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	emits: ['update', 'move', 'delete', 'duplicate', 'edit'],
