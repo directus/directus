@@ -47,6 +47,7 @@ import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupDetail',
@@ -145,8 +146,9 @@ export default defineComponent({
 			return errors;
 		});
 
-		watch(validationMessages, () => {
-			if (!validationMessages.value) return false;
+		watch(validationMessages, (newVal, oldVal) => {
+			if (!validationMessages.value) return;
+			if (isEqual(newVal, oldVal)) return;
 			detailOpen.value = validationMessages.value.length > 0;
 		});
 

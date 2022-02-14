@@ -26,6 +26,7 @@ import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, computed, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupAccordion',
@@ -106,8 +107,9 @@ export default defineComponent({
 
 		watch(
 			() => props.validationErrors,
-			() => {
-				if (props.validationErrors.length === 0) return;
+			(newVal, oldVal) => {
+				if (!props.validationErrors) return;
+				if (isEqual(newVal, oldVal)) return;
 				if (selection.value?.length === 0) selection.value = [rootFields.value[0].field];
 			}
 		);
