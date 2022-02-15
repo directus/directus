@@ -327,7 +327,7 @@
 		<div class="panels">
 			<a href="/getting-started/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="30" cy="30" r="30" fill="#00C897" />
+					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
 						d="M33 21.98v7.04h-9.84l-1.18 1.17v-8.2H33Zm.98-1.96H21a.96.96 0 0 0-.98.98v14.02L24 30.98h9.98a1 1 0 0 0 1.04-.98v-9a1 1 0 0 0-1.04-.98ZM39 24h-2.02v9H24v2.02c0 .51.47.98.98.98H36l3.98 3.98v-15A.99.99 0 0 0 39 24Z"
 						fill="#fff"
@@ -339,7 +339,7 @@
 			</a>
 			<a href="/app/overview/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="30" cy="30" r="30" fill="#00C897" />
+					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
 						d="M21.98 24h18v-2.02h-18c-1.07 0-1.96.94-1.96 2.02v11.02H18v3h14.02v-3H21.98V24Zm19.04 2.02h-6a1 1 0 0 0-1.04.98v9.98c0 .57.47 1.04 1.04 1.04h6c.51 0 .98-.47.98-1.04V27a.99.99 0 0 0-.98-.98Zm-1.04 9H36v-7.04h3.98v7.04Z"
 						fill="#fff"
@@ -351,7 +351,7 @@
 			</a>
 			<a href="/configuration/config-options/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="30" cy="30" r="30" fill="#00C897" />
+					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
 						d="M21 35.02v1.96h6v-1.96h-6Zm0-12v1.96h9.98v-1.96H21ZM30.98 39v-2.02H39v-1.96h-8.02V33h-1.96v6h1.96Zm-6-12v2.02H21v1.96h3.98V33H27v-6h-2.02ZM39 30.98v-1.96h-9.98v1.96H39ZM33 27h2.02v-2.02H39v-1.96h-3.98V21H33v6Z"
 						fill="#fff"
@@ -363,7 +363,7 @@
 			</a>
 			<a href="/reference/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="30" cy="30" r="30" fill="#00C897" />
+					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
 						d="M30 29.02c-1.08 0-2.02.89-2.02 1.96 0 1.13.94 2.02 2.02 2.02s2.02-.9 2.02-2.02c0-1.07-.94-1.96-2.02-1.96Zm6 1.96a6.01 6.01 0 1 0-9 5.2l.98-1.73A4.02 4.02 0 0 1 30 27c2.2 0 3.98 1.78 3.98 3.98 0 1.5-.8 2.77-1.96 3.47L33 36.2a5.99 5.99 0 0 0 3-5.2ZM30 21a10 10 0 0 0-5.02 18.66l.99-1.74a8.14 8.14 0 0 1-3.99-6.94A8 8 0 0 1 30 23.02a8 8 0 0 1 8.02 7.96 8.08 8.08 0 0 1-4.04 6.94l1.04 1.74A10 10 0 0 0 30 21Z"
 						fill="#fff"
@@ -375,7 +375,7 @@
 			</a>
 			<a href="/extensions/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="30" cy="30" r="30" fill="#00C897" />
+					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
 						d="M33.98 27v4.64l-3.46 3.52v1.82h-1.04v-1.82l-3.46-3.52V27h7.96Zm0-6h-1.96v3.98h-4.04V21h-1.96v3.98h-.05A2 2 0 0 0 24 27v5.48L27.52 36v3h4.96v-3L36 32.48V27c0-1.08-.9-2.02-2.02-2.02V21Z"
 						fill="#fff"
@@ -387,7 +387,7 @@
 			</a>
 			<a href="/contributing/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="30" cy="30" r="30" fill="#00C897" />
+					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
 						d="M34.5 21c-1.73 0-3.42.8-4.5 2.1a5.89 5.89 0 0 0-4.5-2.1 5.43 5.43 0 0 0-5.48 5.48c0 3.8 3.37 6.9 8.53 11.58L30 39.33l1.45-1.31c5.16-4.65 8.53-7.74 8.53-11.54 0-3.04-2.39-5.48-5.48-5.48Zm-4.4 15.56-.1.1-.1-.1c-4.77-4.31-7.92-7.17-7.92-10.08 0-1.96 1.5-3.46 3.52-3.46 1.55 0 3.05.98 3.56 2.34h1.88a3.88 3.88 0 0 1 3.56-2.34c2.02 0 3.52 1.5 3.52 3.46 0 2.91-3.15 5.77-7.93 10.08Z"
 						fill="#fff"
