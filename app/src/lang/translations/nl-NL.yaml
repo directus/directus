@@ -138,6 +138,8 @@ no_access: Geen toegang
 use_custom: Gebruik aangepaste
 nullable: Mag NULL zijn
 allow_null_value: NULL waarde toestaan
+allow_multiple: Meerdere toestaan
+allow_multiple_to_be_open: Toestaan dat meerdere worden geopend
 enter_value_to_replace_nulls: Voer een nieuwe waarde in om alle NULL's in dit veld te vervangen.
 field_standard: Standaard
 field_presentation: Presentatie & Aliasen
@@ -158,6 +160,8 @@ fields_for_role: 'Velden die de rol "{role}" kan {action}.'
 validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
 presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
 presentation_and_aliases: Presentatie & Aliasen
+revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
+revision_post_update: Zo zag dit item eruit na de update.
 hide_field_on_detail: Veld Verbergen
 show_field_on_detail: Veld Tonen
 delete_field: Veld Verwijderen
@@ -166,9 +170,19 @@ field_create_success: 'Veld aangemaakt: "{field}"'
 field_update_success: 'Veld bijgewerkt: "{field}"'
 duplicate_where_to: Waar wil je dit veld naar dupliceren?
 language: Taal
+aggregate_function: Geaggregeerde Functie
 global: Wereldwijd
 admins_have_all_permissions: Admins hebben alle permissies
 camera: Camera
+show_zero: Toon nul
+sum: Som
+sum_distinct: Som Uniek
+avg: Gemiddeld
+avg_distinct: Gemiddeld Uniek
+count: Aantal
+count_distinct: Aantal Uniek
+min: Minimum
+max: Maximum
 exposure: Exposure
 shutter: Sluitertijd
 iso: ISO
@@ -186,8 +200,10 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Datum
+date_range: Datumbereik
 datetime: DateTime
 dateTime: DateTime
+precision: Precisie
 decimal: Decimaal
 float: Float
 integer: Integer
@@ -199,6 +215,8 @@ time: Tijd
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometrie (Alle)
+geometry.Point: Punt
 geometry.Polygon: Veelhoek
 geometry.MultiPoint: Multipoint
 not_available_for_type: Niet beschikbaar voor dit type
@@ -249,6 +267,8 @@ foreign_key: Foreign Key
 finish_setup: Setup voltooien
 dismiss: Negeren
 raw_value: Ruwe waarde
+copy_raw_value_success: Gekopieerd
+copy_raw_value_fail: Kopiëren mislukt
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
 notifications: Notificaties
