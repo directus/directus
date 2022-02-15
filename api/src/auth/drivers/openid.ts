@@ -120,7 +120,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			if (client.issuer.metadata.userinfo_endpoint) {
 				userInfo = {
 					...userInfo,
-					...(await client.userinfo(tokenSet.access_token!))
+					...(await client.userinfo(tokenSet.access_token!)),
 				};
 			}
 		} catch (e) {
