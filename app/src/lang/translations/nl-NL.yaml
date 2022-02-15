@@ -241,6 +241,8 @@ new_collection: 'Nieuwe collectie'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
+add_link: Link toevoegen
+custom_link: Aangepaste Link
 default_value: Standaardwaarde
 standard_field: Standaard veld
 single_file: Enkel bestand
@@ -253,10 +255,12 @@ invalid_item: Ongeldig item
 next: Volgende
 field_name: Veldnaam
 translations: Vertalingen
+no_translations: Geen vertalingen
 note: Notitie
 enter_a_value: Voer een waarde in...
 enter_a_placeholder: Voer een placeholder in...
 length: Lengte
+soft_length: Zachte limiet
 precision_scale: Precisie & schaal
 readonly: Alleen lezen
 unique: Uniek
@@ -269,6 +273,8 @@ dismiss: Negeren
 raw_value: Ruwe waarde
 copy_raw_value_success: Gekopieerd
 copy_raw_value_fail: Kopiëren mislukt
+paste_raw_value_success: Geplakt
+paste_raw_value_fail: Plakken mislukt
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
 notifications: Notificaties
@@ -300,6 +306,8 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
+import_data_button: Importeren starten
+import_data_indeterminate: Gegevens importeren...
 import_data_success: Gegevens succesvol geïmporteerd uit {filename}
 import_data_error: De gegevensstructuur van dit bestand komt niet overeen met de collectie.
 label_import: Importeren
@@ -505,6 +513,7 @@ no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te geb
 password_reset_sent: We hebben je een beveiligde link gestuurd om je wachtwoord te resetten
 password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
 back: Terug
+filter: Filter
 editing_image: Afbeelding bewerken
 square: Vierkant
 free: Vrij
@@ -516,6 +525,7 @@ all_users: Alle gebruikers
 delete_collection: Collectie verwijderen
 update_collection_success: Collectie bijgewerkt
 delete_collection_success: Collectie verwijderd
+make_collection_visible: Maak Collectie Zichtbaar
 start_end_of_count_items: '{start}-{end} van {count} items'
 start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
 one_item: '1 item'
@@ -598,7 +608,9 @@ all_files: Alle bestanden
 my_files: Mijn bestanden
 recent_files: Recente bestanden
 create_folder: Map aanmaken
+edit_folder: Bewerk Map
 folder_name: Map Naam...
+folder_key: Map Sleutel...
 add_file: Bestand toevoegen
 replace_file: Vervang Bestand
 no_results: Geen resultaten
@@ -970,6 +982,7 @@ view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
   filter:
+    name: Filter
     add_filter: Filter toevoegen
     all: Alle
     any: Eender
