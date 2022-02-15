@@ -6,6 +6,7 @@
 		<field-detail-advanced-interface v-if="currentTab === 'interface'" />
 		<field-detail-advanced-display v-if="currentTab === 'display'" />
 		<field-detail-advanced-conditions v-if="currentTab === 'conditions'" />
+		<field-detail-advanced-validation v-if="currentTab === 'validation'" />
 	</div>
 </template>
 
@@ -17,6 +18,7 @@ import FieldDetailAdvancedField from './field-detail-advanced-field.vue';
 import FieldDetailAdvancedInterface from './field-detail-advanced-interface.vue';
 import FieldDetailAdvancedDisplay from './field-detail-advanced-display.vue';
 import FieldDetailAdvancedConditions from './field-detail-advanced-conditions.vue';
+import FieldDetailAdvancedValidation from './field-detail-advanced-validation.vue';
 
 export default defineComponent({
 	components: {
@@ -26,6 +28,7 @@ export default defineComponent({
 		FieldDetailAdvancedInterface,
 		FieldDetailAdvancedDisplay,
 		FieldDetailAdvancedConditions,
+		FieldDetailAdvancedValidation,
 	},
 	props: {
 		currentTab: {

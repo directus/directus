@@ -119,6 +119,7 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+validation: Validation
 validation_errors_notice: 'The following fields have invalid values:'
 validationError:
   eq: Value has to be {valid}
