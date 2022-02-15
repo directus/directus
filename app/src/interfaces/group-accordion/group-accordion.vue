@@ -110,7 +110,10 @@ export default defineComponent({
 			(newVal, oldVal) => {
 				if (!props.validationErrors) return;
 				if (isEqual(newVal, oldVal)) return;
-				if (selection.value?.length === 0) selection.value = [rootFields.value[0].field];
+				const includedFieldsWithErrors = props.validationErrors.filter((validationError) =>
+					rootFields.value.find((rootField) => rootField.field === validationError.field)
+				);
+				if (includedFieldsWithErrors.length > 0) selection.value = [includedFieldsWithErrors[0].field];
 			}
 		);
 
