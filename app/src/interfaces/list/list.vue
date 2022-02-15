@@ -18,7 +18,7 @@
 						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template :fields="fields" :item="{ ...defaults, ...element }" :template="templateWithDefaults" />
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
+						<v-icon v-if="!disabled" name="clear" class="clear-icon" @click.stop="removeItem(element)" />
 					</v-list-item>
 				</template>
 			</draggable>
@@ -303,10 +303,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-notice {
-	margin-bottom: 4px;
-}
-
 .v-list {
 	--v-list-padding: 0 0 4px;
 }
@@ -314,6 +310,14 @@ export default defineComponent({
 .v-list-item {
 	display: flex;
 	cursor: pointer;
+}
+
+.clear-icon {
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--danger);
+	}
 }
 
 .drawer-item-content {

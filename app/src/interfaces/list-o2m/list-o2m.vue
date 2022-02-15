@@ -41,7 +41,12 @@
 						/>
 						<render-template :collection="relation.collection" :item="element" :template="templateWithDefaults" />
 						<div class="spacer" />
-						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
+						<v-icon
+							v-if="!disabled && updateAllowed"
+							name="clear"
+							class="clear-icon"
+							@click.stop="deleteItem(element)"
+						/>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -520,6 +525,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-list {
 	--v-list-padding: 0 0 4px;
+}
+
+.clear-icon {
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--danger);
+	}
 }
 
 .actions {
