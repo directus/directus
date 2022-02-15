@@ -58,6 +58,8 @@ export type ValidationError = {
 	code: string;
 	field: string;
 	type: FilterOperator;
+	hidden?: boolean;
+	group: string | null;
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;

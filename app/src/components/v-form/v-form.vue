@@ -2,15 +2,21 @@
 	<div ref="el" class="v-form" :class="gridClass">
 		<v-notice v-if="!nested && validationErrors.length > 0" type="danger" class="full">
 			<div>
-				<p>{{ t('unknown_validation_errors') }}</p>
+				<p>{{ t('validation_errors_notice') }}</p>
 				<ul>
 					<li v-for="(validationError, index) of validationErrors" :key="index">
-						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
+						<strong v-if="validationError.field && validationError.hidden && validationError.group">
+							{{ `[${validationError.field}] (${t('hidden_in_group', { group: validationError.group })}) — ` }}
+						</strong>
+						<strong v-else-if="validationError.field && validationError.hidden">
+							{{ `[${validationError.field}] (${t('hidden')}) — ` }}
+						</strong>
+						<strong v-else-if="validationError.field">{{ `[${validationError.field}] — ` }}</strong>
 						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
 							{{ t('validationError.unique', validationError) }}
 						</template>
 						<template v-else>
-							{{ t(`validationError.${validationError.code}`, validationError) }}
+							{{ t(`validationError.${validationError.type}`, validationError) }}
 						</template>
 					</li>
 				</ul>
