@@ -12,18 +12,52 @@ Run the following command in your terminal and follow the prompts.
 
 ```bash
 npm init directus-project example-project
+
+? Choose your database client: SQLite # use up/down arrow keys to select SQL type
+? Database File Path: <file-path>/example-project/data.db #(re)defines .db file path
+
+Create your first admin user:
+? Email: admin@example.com
+? Password: ********
+
+Your project has been created at <file-path>/example-project.
+
+The configuration can be found in <file-path>/example-project/.env
 ```
 
-![Successful installation](../assets/getting-started/quickstart/terminal-install.png)
-
 Once the installation is complete, you can start Directus by navigating to your project folder (in this case
-`example-project`) and running:
+example-project) and running:
 
 ```bash
 npx directus start
 ```
 
-![Server started](../assets/getting-started/quickstart/terminal-start.png)
+After that, you will see this message:
+
+```bash
+✨ Server started at http://localhost:8055
+```
+
+#### Other Options
+
+When you link other types of SQL to Directus, you may have additional prompts:
+
+- **Database Host** – IP address for your database.
+- **Port** – Port number your database is running on.
+- **Database Name** – Name of your existing database.
+- **Database User** – Name of existing user in database.
+- **Database Password** – Password to enter database.
+- **Enable SSL** – Select `Y` for yes or `N` for no.
+- **Root** – Provide the root name.
+
+Simply configure these according to your project's needs.
+
+::: warning Directus seeds your database
+
+Directus installs a few dozen tables into the database it is linked to; so if you're adding it to a database with
+existing data, _be warned_! That said, installing Directus will not alter the existing data tables.
+
+:::
 
 ## 2. Login to App
 
