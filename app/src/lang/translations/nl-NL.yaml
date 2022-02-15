@@ -34,7 +34,7 @@ conditions: Voorwaarden
 maps: Kaarten
 switch_user: Andere gebruiker
 item_creation: Item Aanmaken
-item_revision: Item revisie
+item_revision: Item Revisie
 enter_a_name: Vul een naam in...
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
@@ -44,7 +44,7 @@ and: En
 or: Of
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
-enter_password_to_enable_tfa: Voer je wachtwoord in om Two-Factor Authentication te activeren
+enter_password_to_enable_tfa: Voer je wachtwoord in om Tweestapsverificatie in te schakelen
 add_field: Voeg Veld Toe
 role_name: Rol Naam
 branch: Tak
@@ -610,7 +610,7 @@ recent_files: Recente bestanden
 create_folder: Map aanmaken
 edit_folder: Bewerk Map
 folder_name: Map Naam...
-folder_key: Map Sleutel...
+folder_key: Mapsleutel...
 add_file: Bestand toevoegen
 replace_file: Vervang Bestand
 no_results: Geen resultaten
@@ -635,6 +635,17 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+insights: Inzichten
+dashboard: Dashboard
+panel: Paneel
+panel_options: Paneelopties
+panel_header: Paneelrubriek
+panel_name_placeholder: Benoem dit paneel...
+panel_note_placeholder: Optionele details over dit paneel...
+visible: Zichtbaar
+no_dashboards: Geen Dashboards
+no_dashboards_copy: Je hebt nog geen dashboards.
+no_data: Geen gegevens
 full_screen: Volledig scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
