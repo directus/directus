@@ -1,6 +1,6 @@
 <template>
 	<div :key="field.field" class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
-		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow>
+		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow full-height>
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"

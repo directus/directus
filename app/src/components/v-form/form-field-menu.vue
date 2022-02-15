@@ -50,8 +50,10 @@
 			:disabled="!isAdmin"
 			:to="isAdmin ? `/settings/data-model/${field.collection}/${field.field}` : undefined"
 		>
-			<v-list-item-icon><v-icon name="tune" /></v-list-item-icon>
-			<v-list-item-content>{{ field.field }}</v-list-item-content>
+			<v-list-item-icon><v-icon name="settings" /></v-list-item-icon>
+			<v-list-item-content>
+				<code>{{ field.field }}</code>
+			</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
@@ -101,9 +103,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style scoped>
-.model-field :deep(div) {
-	font-family: monospace;
-}
-</style>
