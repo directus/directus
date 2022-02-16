@@ -12,8 +12,8 @@ import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
@@ -37,6 +37,7 @@ export class ServerService {
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
+				'project_descriptor',
 				'project_logo',
 				'project_color',
 				'public_foreground',

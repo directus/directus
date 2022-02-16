@@ -20,7 +20,7 @@
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
-			:type="fieldInfo.type"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value"
 			@input="value = $event"
 		/>
@@ -34,7 +34,7 @@
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
-				:type="fieldInfo.type"
+				:type="fieldInfo?.type ?? 'unknown'"
 				:value="val"
 				:focus="false"
 				:choices="choices"
@@ -47,7 +47,7 @@
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
-			:type="fieldInfo.type"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[0]"
 			@input="setValueAt(0, $event)"
 		/>
@@ -55,7 +55,7 @@
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
-			:type="fieldInfo.type"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[1]"
 			@input="setValueAt(1, $event)"
 		/>

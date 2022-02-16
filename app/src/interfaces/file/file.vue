@@ -8,6 +8,7 @@
 						v-else
 						clickable
 						readonly
+						:disabled="disabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
@@ -20,7 +21,12 @@
 									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
-								<img v-if="imageThumbnail" :src="imageThumbnail" :alt="file.title" />
+								<img
+									v-if="imageThumbnail && !imageThumbnailError"
+									:src="imageThumbnail"
+									:alt="file.title"
+									@error="imageThumbnailError = $event"
+								/>
 								<span v-else-if="fileExtension" class="extension">
 									{{ fileExtension }}
 								</span>
@@ -84,6 +90,7 @@
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
+			:disabled="disabled"
 			@input="stageEdits"
 		/>
 
@@ -195,6 +202,8 @@ export default defineComponent({
 			return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
 		});
 
+		const imageThumbnailError = ref(null);
+
 		const { edits, stageEdits } = useEdits();
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 
@@ -217,6 +226,7 @@ export default defineComponent({
 			editDrawerActive,
 			edits,
 			stageEdits,
+			imageThumbnailError,
 		};
 
 		function useFile() {

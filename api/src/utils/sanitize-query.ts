@@ -1,4 +1,4 @@
-import { flatten, get, merge, set } from 'lodash';
+import { flatten, get, isPlainObject, merge, set } from 'lodash';
 import logger from '../logger';
 import { Meta } from '../types';
 import { Query, Aggregate, Filter } from '@directus/shared/types';
@@ -126,7 +126,7 @@ async function sanitizeFilter(
 	rolesService: RolesService,
 	accountability: Accountability | null
 ) {
-	let filters: Filter = rawFilter;
+	let filters: Filter | null = rawFilter;
 
 	if (typeof rawFilter === 'string') {
 		try {
@@ -186,9 +186,7 @@ async function sanitizeFilter(
 		});
 	}
 
-	filters = parseFilter(filters, accountability, filterContext);
-
-	return filters;
+	return parseFilter(filters, accountability, filterContext);
 }
 
 function sanitizeLimit(rawLimit: any) {
@@ -251,8 +249,9 @@ function sanitizeDeep(
 				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, usersService, rolesService, accountability);
 				// ...however we want to keep them for the nested structure of deep, otherwise there's no
 				// way of knowing when to keep nesting and when to stop
-				parsedLevel[key] = Object.values(parsedSubQuery)[0];
-			} else {
+				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0];
+				parsedLevel[`_${parsedKey}`] = parsedValue;
+			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);
 			}
 		}

@@ -1,7 +1,7 @@
 <template>
-	<transition-group name="dialog" tag="span" v-bind="$attrs">
+	<transition name="dialog">
 		<slot />
-	</transition-group>
+	</transition>
 </template>
 
 <style lang="scss">

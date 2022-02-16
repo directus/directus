@@ -2,22 +2,26 @@ import { Router } from 'express';
 import ldap, {
 	Client,
 	Error,
+	EqualityFilter,
 	SearchCallbackResponse,
 	SearchEntry,
+	LDAPResult,
 	InappropriateAuthenticationError,
 	InvalidCredentialsError,
 	InsufficientAccessRightsError,
 	OperationsError,
 } from 'ldapjs';
 import ms from 'ms';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 import Joi from 'joi';
 import { AuthDriver } from '../auth';
-import { AuthDriverOptions, User, SessionData } from '../../types';
+import { AuthDriverOptions, User } from '../../types';
 import {
 	InvalidCredentialsException,
 	InvalidPayloadException,
 	ServiceUnavailableException,
 	InvalidConfigException,
+	UnexpectedResponseException,
 } from '../../exceptions';
 import { AuthenticationService, UsersService } from '../../services';
 import asyncHandler from '../../utils/async-handler';
@@ -97,21 +101,27 @@ export class LDAPAuthDriver extends AuthDriver {
 						}
 					});
 				});
+
+				res.on('end', (result: LDAPResult | null) => {
+					if (result?.status === 0) {
+						// Handle edge case with IBM systems where authenticated bind user could not fetch their DN
+						reject(new UnexpectedResponseException('Failed to find bind user record'));
+					}
+				});
 			});
 		});
 	}
 
 	private async fetchUserDn(identifier: string): Promise<string | undefined> {
-		const { userDn, userAttribute } = this.config;
+		const { userDn, userAttribute, userScope } = this.config;
 
 		return new Promise((resolve, reject) => {
 			// Search for the user in LDAP by attribute
 			this.bindClient.search(
 				userDn,
 				{
-					attributes: ['cn'],
-					filter: `(${userAttribute ?? 'cn'}=${identifier})`,
-					scope: 'one',
+					filter: new EqualityFilter({ attribute: userAttribute ?? 'cn', value: identifier }),
+					scope: userScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
@@ -120,8 +130,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						const userCn = typeof object.cn === 'object' ? object.cn[0] : object.cn;
-						resolve(`cn=${userCn},${userDn}`.toLowerCase());
+						resolve(object.dn.toLowerCase());
 					});
 
 					res.on('error', (err: Error) => {
@@ -177,7 +186,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	private async fetchUserGroups(userDn: string): Promise<string[]> {
-		const { groupDn, groupAttribute } = this.config;
+		const { groupDn, groupAttribute, groupScope } = this.config;
 
 		if (!groupDn) {
 			return Promise.resolve([]);
@@ -191,8 +200,8 @@ export class LDAPAuthDriver extends AuthDriver {
 				groupDn,
 				{
 					attributes: ['cn'],
-					filter: `(${groupAttribute ?? 'member'}=${userDn})`,
-					scope: 'one',
+					filter: new EqualityFilter({ attribute: groupAttribute ?? 'member', value: userDn }),
+					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
@@ -300,22 +309,21 @@ export class LDAPAuthDriver extends AuthDriver {
 			});
 
 			client.bind(user.external_identifier!, password, (err: Error | null) => {
-				client.destroy();
 				if (err) {
 					reject(handleError(err));
-					return;
+				} else {
+					resolve();
 				}
-				resolve();
+				client.destroy();
 			});
 		});
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
+	async login(user: User, payload: Record<string, any>): Promise<void> {
 		await this.verify(user, payload.password);
-		return null;
 	}
 
-	async refresh(user: User): Promise<SessionData> {
+	async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
@@ -323,7 +331,6 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
 			throw new InvalidCredentialsException();
 		}
-		return null;
 	}
 }
 
@@ -355,7 +362,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 		'/',
 		asyncHandler(async (req, res, next) => {
 			const accountability = {
-				ip: req.ip,
+				ip: getIPFromReq(req),
 				userAgent: req.get('user-agent'),
 				role: null,
 			};

@@ -9,7 +9,7 @@ import { validateQuery } from '../utils/validate-query';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
 
-const sanitizeQueryMiddleware: RequestHandler = async (req, res, next) => {
+const sanitizeQueryMiddleware: RequestHandler = async (req, _res, next) => {
 	req.sanitizedQuery = {};
 	if (!req.query) return;
 

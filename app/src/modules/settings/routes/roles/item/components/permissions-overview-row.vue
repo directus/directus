@@ -41,6 +41,14 @@
 			:loading="isLoading('delete')"
 			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'delete')"
 		/>
+		<permissions-overview-toggle
+			action="share"
+			:collection="collection"
+			:role="role"
+			:permissions="permissions"
+			:loading="isLoading('share')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'share')"
+		/>
 	</div>
 </template>
 

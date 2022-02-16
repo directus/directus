@@ -1,4 +1,4 @@
-import { Snapshot, SnapshotDiff, SchemaOverview, Relation } from '../types';
+import { Snapshot, SnapshotDiff } from '../types';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
 import { Knex } from 'knex';
@@ -7,7 +7,8 @@ import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { set } from 'lodash';
 import { DiffNew } from 'deep-diff';
-import { Field } from '@directus/shared/types';
+import { Field, Relation, SchemaOverview } from '@directus/shared/types';
+import logger from '../logger';
 
 export async function applySnapshot(
 	snapshot: Snapshot,
@@ -24,7 +25,12 @@ export async function applySnapshot(
 
 		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0].kind === 'D') {
-				await collectionsService.deleteOne(collection);
+				try {
+					await collectionsService.deleteOne(collection);
+				} catch (err) {
+					logger.error(`Failed to delete collection "${collection}"`);
+					throw err;
+				}
 			}
 
 			if (diff?.[0].kind === 'N' && diff[0].rhs) {
@@ -34,24 +40,34 @@ export async function applySnapshot(
 					.filter((fieldDiff) => fieldDiff.collection === collection)
 					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
 
-				await collectionsService.createOne({
-					...diff[0].rhs,
-					fields,
-				});
+				try {
+					await collectionsService.createOne({
+						...diff[0].rhs,
+						fields,
+					});
+				} catch (err: any) {
+					logger.error(`Failed to create collection "${collection}"`);
+					throw err;
+				}
 
 				// Now that the fields are in for this collection, we can strip them from the field
 				// edits
 				snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
 			}
 
-			if (diff?.[0].kind === 'E') {
-				const updates = diff.reduce((acc, edit) => {
-					if (edit.kind !== 'E') return acc;
-					set(acc, edit.path!, edit.rhs);
-					return acc;
-				}, {});
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+				const newValues = snapshot.collections.find((field) => {
+					return field.collection === collection;
+				});
 
-				await collectionsService.updateOne(collection, updates);
+				if (newValues) {
+					try {
+						await collectionsService.updateOne(collection, newValues);
+					} catch (err) {
+						logger.error(`Failed to update collection "${collection}"`);
+						throw err;
+					}
+				}
 			}
 		}
 
@@ -59,25 +75,38 @@ export async function applySnapshot(
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0].kind === 'N') {
-				await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
+				try {
+					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
+				} catch (err) {
+					logger.error(`Failed to create field "${collection}.${field}"`);
+					throw err;
+				}
 			}
 
-			if (diff?.[0].kind === 'E') {
-				const updates = diff.reduce((acc, edit) => {
-					if (edit.kind !== 'E') return acc;
-					set(acc, edit.path!, edit.rhs);
-					return acc;
-				}, {});
-
-				await fieldsService.updateField(collection, {
-					field,
-					type: 'unknown', // If the type was updated, the updates spread will overwrite it
-					...updates,
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+				const newValues = snapshot.fields.find((snapshotField) => {
+					return snapshotField.collection === collection && snapshotField.field === field;
 				});
+
+				if (newValues) {
+					try {
+						await fieldsService.updateField(collection, {
+							...newValues,
+						});
+					} catch (err) {
+						logger.error(`Failed to update field "${collection}.${field}"`);
+						throw err;
+					}
+				}
 			}
 
 			if (diff?.[0].kind === 'D') {
-				await fieldsService.deleteField(collection, field);
+				try {
+					await fieldsService.deleteField(collection, field);
+				} catch (err) {
+					logger.error(`Failed to delete field "${collection}.${field}"`);
+					throw err;
+				}
 
 				// Field deletion also cleans up the relationship. We should ignore any relationship
 				// changes attached to this now non-existing field
@@ -90,22 +119,43 @@ export async function applySnapshot(
 		const relationsService = new RelationsService({ knex: trx, schema: await getSchema({ database: trx }) });
 
 		for (const { collection, field, diff } of snapshotDiff.relations) {
-			if (diff?.[0].kind === 'N') {
-				await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
+			const structure = {};
+
+			for (const diffEdit of diff) {
+				set(structure, diffEdit.path!, undefined);
 			}
 
-			if (diff?.[0].kind === 'E') {
-				const updates = diff.reduce((acc, edit) => {
-					if (edit.kind !== 'E') return acc;
-					set(acc, edit.path!, edit.rhs);
-					return acc;
-				}, {});
+			if (diff?.[0].kind === 'N') {
+				try {
+					await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
+				} catch (err) {
+					logger.error(`Failed to create relation "${collection}.${field}"`);
+					throw err;
+				}
+			}
 
-				await relationsService.updateOne(collection, field, updates);
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+				const newValues = snapshot.relations.find((relation) => {
+					return relation.collection === collection && relation.field === field;
+				});
+
+				if (newValues) {
+					try {
+						await relationsService.updateOne(collection, field, newValues);
+					} catch (err) {
+						logger.error(`Failed to update relation "${collection}.${field}"`);
+						throw err;
+					}
+				}
 			}
 
 			if (diff?.[0].kind === 'D') {
-				await relationsService.deleteOne(collection, field);
+				try {
+					await relationsService.deleteOne(collection, field);
+				} catch (err) {
+					logger.error(`Failed to delete relation "${collection}.${field}"`);
+					throw err;
+				}
 			}
 		}
 	});

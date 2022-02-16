@@ -5,8 +5,8 @@
 
 ## Creating a Preset
 
-1. Navigate to **Settings > Presets & Bookmarks**
-2. Click the **Create Preset** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Presets & Bookmarks**
+2. Click <span mi btn>add</span> in the header
 3. Complete the **other preset form fields** outlined below
 
 - **Collection** — The collection of this preset; supports any project collection, Directus Files, or Directus Users
@@ -24,8 +24,8 @@ Each preset saves all of the information needed to recreate a view of the collec
 - **Layout** — The Layout the preset applies to
 - **Layout Query** — Order direction, order field, pagination, etc
 - **Layout Options** — The configuration of all layout options
-- **Search** — Any fulltext search query applied
-- **Filters** — Any advanced fitlers applied
+- **Search** — Any full-text search query applied
+- **Filters** — Any advanced filters applied
 - **User** — Optional; scopes to a specific user
 - **Role** — Optional; scopes to a specific role
 - **Bookmark Name** — Optional; determines if the preset is a bookmark
@@ -55,8 +55,9 @@ preset priority is: User, then Role, then Global.
 
 ## Deleting a Preset
 
-1. Navigate to **Settings > Presets & Bookmarks > [Preset]**
-2. Click the red **Delete Preset** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Presets & Bookmarks
+   <span mi icon dark>chevron_right</span> [Preset]**
+2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change

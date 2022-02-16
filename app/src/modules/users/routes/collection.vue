@@ -60,7 +60,7 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
@@ -171,7 +171,7 @@ import SearchInput from '@/views/private/components/search-input';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
-import { useLayout } from '@/composables/use-layout';
+import { useLayout } from '@directus/shared/composables';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Role } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';

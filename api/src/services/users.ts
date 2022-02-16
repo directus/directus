@@ -6,17 +6,17 @@ import env from '../env';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview } from '../types';
-import { Query } from '@directus/shared/types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
+import { Query, SchemaOverview, Accountability } from '@directus/shared/types';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
 import { Url } from '../utils/url';
-import { ItemsService, MutationOptions } from './items';
+import { ItemsService } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
 import { stall } from '../utils/stall';
 import { performance } from 'perf_hooks';
+import { getSimpleHash } from '@directus/shared/utils';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -217,8 +217,10 @@ export class UsersService extends ItemsService {
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		await this.checkRemainingAdminExistence(keys);
-		await super.deleteMany(keys, opts);
 
+		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+
+		await super.deleteMany(keys, opts);
 		return keys;
 	}
 
@@ -307,7 +309,7 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex.select('status').from('directus_users').where({ email }).first();
+		const user = await this.knex.select('status', 'password').from('directus_users').where({ email }).first();
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
@@ -320,7 +322,7 @@ export class UsersService extends ItemsService {
 			accountability: this.accountability,
 		});
 
-		const payload = { email, scope: 'password-reset' };
+		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 		const subjectLine = subject ? subject : 'Password Reset Request';
@@ -341,16 +343,19 @@ export class UsersService extends ItemsService {
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
+		const { email, scope, hash } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
+			hash: string;
 		};
 
-		if (scope !== 'password-reset') throw new ForbiddenException();
+		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
 
-		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
+		await this.checkPasswordPolicy([password]);
 
-		if (user?.status !== 'active') {
+		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
+
+		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
 			throw new ForbiddenException();
 		}
 

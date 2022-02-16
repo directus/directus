@@ -21,13 +21,13 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!junction.meta.sort_field"
+				:disabled="!junction.meta?.sort_field"
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
 					<v-list-item :dense="sortedItems.length > 4" block clickable @click="editItem(element)">
 						<v-icon
-							v-if="junction.meta.sort_field"
+							v-if="junction.meta?.sort_field"
 							name="drag_handle"
 							class="drag-handle"
 							left
@@ -46,7 +46,7 @@
 		</v-list>
 
 		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="editModalActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableCreate && createAllowed" @click="createNew()">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
@@ -70,6 +70,7 @@
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
 			:selection="selectedPrimaryKeys"
+			:filter="customFilter"
 			multiple
 			@input="stageSelection"
 		/>
@@ -78,11 +79,15 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, toRefs } from 'vue';
+import { defineComponent, computed, PropType, toRefs, inject, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
 import Draggable from 'vuedraggable';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
+import { deepMap } from '@directus/shared/utils';
 
 import useActions from './use-actions';
 import useRelation from '@/composables/use-m2m';
@@ -129,10 +134,28 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const values = inject('values', ref<Record<string, any>>({}));
+
+		const customFilter = computed(() => {
+			return parseFilter(
+				deepMap(props.filter, (val: any) => {
+					if (val && typeof val === 'string') {
+						return render(val, values.value);
+					}
+
+					return val;
+				})
+			);
+		});
 
 		const { value, collection, field } = toRefs(props);
 
@@ -171,7 +194,7 @@ export default defineComponent({
 			emitter
 		);
 
-		const { tableHeaders, items, loading } = usePreview(
+		const { tableHeaders, items, initialItems, loading } = usePreview(
 			value,
 			fields,
 			relationInfo,
@@ -181,10 +204,23 @@ export default defineComponent({
 			getPrimaryKeys
 		);
 
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
-			useEdit(value, relationInfo, emitter);
+		const {
+			currentlyEditing,
+			editItem,
+			createNew,
+			editsAtStart,
+			stageEdits,
+			cancelEdit,
+			relatedPrimaryKey,
+			editModalActive,
+		} = useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(items, relationInfo, emitter);
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(
+			items,
+			initialItems,
+			relationInfo,
+			emitter
+		);
 
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
@@ -198,6 +234,7 @@ export default defineComponent({
 			loading,
 			currentlyEditing,
 			editItem,
+			createNew,
 			junctionCollection,
 			relationCollection,
 			editsAtStart,
@@ -218,6 +255,7 @@ export default defineComponent({
 			templateWithDefaults,
 			createAllowed,
 			selectAllowed,
+			customFilter,
 		};
 
 		function emitter(newVal: any[] | null) {

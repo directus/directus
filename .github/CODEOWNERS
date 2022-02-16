@@ -1,5 +1,3 @@
-* @rijkvanzanten
-
 /docs/*.md @benhaynes
 
 /packages/sdk @joselcvarela

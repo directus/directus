@@ -5,9 +5,9 @@
 				<v-icon name="cancel" outline />
 				<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
 			</div>
-			<button v-else class="select-all" @click="$emit('select-all')">
+			<button v-else class="select-all" @click="showSelect === 'multiple' ? $emit('select-all') : undefined">
 				<v-icon name="check_circle" outline />
-				<span class="label">{{ t('select_all') }}</span>
+				<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 			</button>
 		</div>
 		<div class="end">
@@ -54,7 +54,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field } from '@directus/shared/types';
+import { Field, ShowSelect } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
@@ -70,6 +70,10 @@ export default defineComponent({
 		sort: {
 			type: Array as PropType<string[]>,
 			required: true,
+		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'multiple',
 		},
 		selection: {
 			type: Array as PropType<Record<string, any>>,

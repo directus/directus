@@ -29,8 +29,8 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/) or
-[AWS Elastic Beanstalk](/getting-started/installation/aws)
+[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/),
+[Google Cloud Platform](/getting-started/installation/gcp) or [AWS Elastic Beanstalk](/getting-started/installation/aws)
 
 ::: tip First User
 
@@ -53,7 +53,12 @@ custom migration or an external service, for example).
 npx directus database install
 ```
 
-Installs the Directus system tables on an empty database. Used internally by `bootstrap`
+Installs the initial Directus system tables on an empty database. Used internally by `bootstrap`.
+
+It should be used only in specific cases, e.g. when you want to run something between `install` and `migrate`. You
+probably should call `directus database migrate:latest` afterwards manually.
+
+You may want to use `directus bootstrap` instead.
 
 ### Upgrade the Database
 
@@ -80,6 +85,14 @@ with your team. To generate the snapshot, run
 npx directus schema snapshot ./snapshot.yaml
 ```
 
+To run non-interactively (e.g. when running in a CI/CD workflow), run
+
+```
+npx directus schema snapshot --yes ./snapshot.yaml
+```
+
+Note, that this will force overwrite existing snapshot files.
+
 #### Applying a Snapshot
 
 To make a different instance up to date with the latest changes in your data model, you can apply the snapshot. By
@@ -91,6 +104,54 @@ To apply the generated snapshot, run
 
 ```
 npx directus schema apply ./path/to/snapshot.yaml
+```
+
+To run non-interactively (e.g. when running in a CI/CD workflow), run
+
+```
+npx directus schema apply --yes ./path/to/snapshot.yaml
+```
+
+### Creating Users
+
+To create a new user with a specific role, run
+
+```
+npx directus users create --email <user-email> --password <password> --role <role-uuid>
+```
+
+#### Updating User Password
+
+To update the password of an existing user, run
+
+```
+npx directus users passwd --email <user-email> --password <new-password>
+```
+
+### Creating Roles
+
+To create a new role, run
+
+```
+npx directus roles create --role <role-name>
+```
+
+These roles are created with the
+[minimum permissions required](/configuration/users-roles-permissions/#configuring-system-permissions) to properly
+access the App by default.
+
+To create a new role with admin access, set the `--admin` flag to `true`, such as
+
+```
+npx directus roles create --role <role-name> --admin true
+```
+
+### Count Items in a Collection
+
+To count the amount of items in a given collection, run
+
+```
+npx directus count <collection-name>
 ```
 
 ---
@@ -144,7 +205,7 @@ It's also worth mentioning that everything is data. Try for example running `dir
 #### Table
 
 The default output format. This is the "pretty" output, you'll most likely want to use this if you're not dealing with
-data in a way you need to pipe it to another command and/or store it it for parsing.
+data in a way you need to pipe it to another command and/or store it for parsing.
 
 This output will output colors and highlight content if it detects you're running in TTL.
 

@@ -163,7 +163,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria
 not_available_for_type: No disponible per aquest Tipus
 create_translations: Crea traduccions
 auto_refresh: Refrescament automàtic
@@ -214,9 +213,6 @@ dismiss: Descarta
 raw_value: Valor en brut
 edit_raw_value: Edita valor en brut
 enter_raw_value: Introdueix valor en brut...
-clear_value: Esborra el valor
-reset_to_default: Restableix valors predeterminats
-undo_changes: Desfer els canvis
 notifications: Notificacions
 show_all_activity: Mostra tota l'activitat
 page_not_found: Pàgina no trobada
@@ -246,10 +242,9 @@ related_collection: Col·lecció relacionada
 related_collections: Col·leccions relacionades
 translations_collection: Col·lecció de traduccions
 languages_collection: Col·lecció de idiomes
-export_data: Exporta les dades
+label_import: Importa
 format: Format
 use_current_filters_settings: Utilitza els filtres i ajustaments actuals
-export_collection: 'Exporta {collection}'
 last_page: Última pàgina
 last_access: Últim accés
 fill_template: Emplena amb el valor de plantilla
@@ -796,6 +791,10 @@ fields:
     auth_login_attempts: Intents d'autenticació
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
+  directus_shares:
+    name: Nom
+    role: Rol
+    password: Contrasenya
   directus_fields:
     collection: Nom de la col·lecció
     icon: Icona de la col·lecció
@@ -823,6 +822,7 @@ fields:
     data_label: Envia les dades de l'event
     triggers: Disparadors
     actions: Accions
+    collections: Col·leccions
 field_options:
   directus_settings:
     security_divider_title: Seguretat
@@ -1024,7 +1024,6 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta i divideix els camps en seccions
-    title_placeholder: Introdueix un títol...
     inline_title: Títol en línia
     inline_title_label: Mostra el títol dins la línia
     margin_top: Marge superior
@@ -1076,6 +1075,7 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Entra i previsualitza el markdown
+    edit: Edita
     customSyntax: Blocs personalitzats
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada
@@ -1156,6 +1156,8 @@ interfaces:
   boolean:
     toggle: Canvia
     description: Canvia entre Encés i apagat
+    color_on: Color activat
+    color_off: Color desactivat
     label_placeholder: Introdueix una etiqueta...
     label_default: Habilitat
   translations:
@@ -1178,6 +1180,8 @@ interfaces:
     toolbar: Barra d'eines
     custom_formats: Formats personalitzats
     options_override: Sobreescriptura d'opcions
+    imageToken: Testimoni d'Imatge
+    imageToken_label: Quin testimoni (estàtic) a afegir a els origen de la imatge
   input-autocomplete-api:
     input-autocomplete-api: Entrada autocompleta (API)
     description: Una cerca typeahead per valors d'API externes.
@@ -1237,9 +1241,18 @@ displays:
   formatted-value:
     formatted-value: Valor formatat
     description: Mostra una versió formatada del text
-    format_title: Títol del format
-    format_title_label: Auto formata les minúscules i majúscules
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Espai únic
+    bold: Negreta
     bold_label: Utilitza text en negreta
+    italic: Cursiva
+    prefix: Prefix
+    suffix: Sufix
+    color: Color
+    icon: Icona
+    text: Text
   formatted-json-value:
     formatted-json-value: Valor JSON formatat
     description: Mostra una versió formatada del l'objecte

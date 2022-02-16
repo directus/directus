@@ -64,16 +64,17 @@
 					v-tooltip="t('db_only_click_to_configure')"
 					class="collection-row hidden"
 					block
+					dense
 					clickable
 				>
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
 
-					<div class="collection-name" @click="openCollection(collection)">
+					<router-link class="collection-name" :to="`/settings/data-model/${collection.collection}`">
 						<v-icon class="collection-icon" name="dns" />
 						<span class="collection-name">{{ collection.name }}</span>
-					</div>
+					</router-link>
 
 					<collection-options :collection="collection" />
 				</v-list-item>
@@ -127,7 +128,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const collectionDialogActive = ref(false);
-		const editCollection = ref<Collection>();
+		const editCollection = ref<Collection | null>();
 
 		const collectionsStore = useCollectionsStore();
 
@@ -203,7 +204,7 @@ export default defineComponent({
 						})
 					)
 				);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			}
 		}

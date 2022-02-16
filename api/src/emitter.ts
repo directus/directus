@@ -1,8 +1,8 @@
+import { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
 import { EventEmitter2 } from 'eventemitter2';
 import logger from './logger';
-import { ActionHandler, FilterHandler, HookContext, InitHandler } from './types';
 
-class Emitter {
+export class Emitter {
 	private filterEmitter;
 	private actionEmitter;
 	private initEmitter;
@@ -22,16 +22,14 @@ class Emitter {
 		this.initEmitter = new EventEmitter2(emitterOptions);
 	}
 
-	public eventsToEmit(event: string, meta: Record<string, any>) {
-		if (event.startsWith('items')) {
-			return [event, `${meta.collection}.${event}`];
-		}
-		return [event];
-	}
-
-	public async emitFilter<T>(event: string, payload: T, meta: Record<string, any>, context: HookContext): Promise<T> {
-		const events = this.eventsToEmit(event, meta);
-		const listeners = events.flatMap((event) => this.filterEmitter.listeners(event)) as FilterHandler[];
+	public async emitFilter<T>(
+		event: string | string[],
+		payload: T,
+		meta: Record<string, any>,
+		context: EventContext
+	): Promise<T> {
+		const events = Array.isArray(event) ? event : [event];
+		const listeners: FilterHandler[] = events.flatMap((event) => this.filterEmitter.listeners(event));
 
 		let updatedPayload = payload;
 		for (const listener of listeners) {
@@ -45,8 +43,9 @@ class Emitter {
 		return updatedPayload;
 	}
 
-	public emitAction(event: string, meta: Record<string, any>, context: HookContext): void {
-		const events = this.eventsToEmit(event, meta);
+	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext): void {
+		const events = Array.isArray(event) ? event : [event];
+
 		for (const event of events) {
 			this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
 				logger.warn(`An error was thrown while executing action "${event}"`);
@@ -86,6 +85,12 @@ class Emitter {
 
 	public offInit(event: string, handler: InitHandler): void {
 		this.initEmitter.off(event, handler);
+	}
+
+	public offAll(): void {
+		this.filterEmitter.removeAllListeners();
+		this.actionEmitter.removeAllListeners();
+		this.initEmitter.removeAllListeners();
 	}
 }
 

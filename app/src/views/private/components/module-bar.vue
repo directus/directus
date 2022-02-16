@@ -23,6 +23,7 @@
 				<v-icon :name="modulePart.icon" outline />
 			</v-button>
 		</div>
+
 		<module-bar-avatar />
 	</div>
 </template>
