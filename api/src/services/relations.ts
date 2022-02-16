@@ -143,10 +143,8 @@ export class RelationsService {
 			);
 		}
 
-		const columnInfo = await this.schemaInspector.columnInfo(relation.collection, relation.field);
-
 		// A primary key should not be a foreign key
-		if (columnInfo.is_primary_key) {
+		if (this.schema.collections[relation.collection].primary === relation.field) {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
 			);
