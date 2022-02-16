@@ -1256,7 +1256,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1406,8 +1405,6 @@ interfaces:
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1514,8 +1511,6 @@ interfaces:
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.

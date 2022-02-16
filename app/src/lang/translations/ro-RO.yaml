@@ -1400,8 +1400,6 @@ interfaces:
     customSyntax_label: Adăugați tipuri de sintaxă personalizate
     customSyntax_add: Adaugă sintaxă personalizată
     box: Bloc / În linie
-    imageToken: Token imagine
-    imageToken_label: Ce token (static) să fie anexat la sursele imaginii
   map:
     map: Hartă
     description: Selectați o locație pe hartă
@@ -1508,8 +1506,6 @@ interfaces:
     custom_formats: Formate personalizate
     options_override: Suprascriere opțiuni
     folder_note: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
-    imageToken: Token imagine
-    imageToken_label: Ce token (static) să anexeze la sursele imaginii
   input-autocomplete-api:
     input-autocomplete-api: Autocompletare input (API)
     description: O căutare a literelor în avans pentru valori API externe.

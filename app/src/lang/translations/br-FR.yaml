@@ -985,8 +985,6 @@ interfaces:
     customSyntax_label: Ouzhpennañ doareoù sintaks personelaet
     customSyntax_add: Ouzhpennañ ur sintaks personelaet
     box: Bloc / Inline
-    imageToken: Token ur skeudenn
-    imageToken_label: Peseurt token (statek) ouzhpennañ d'an tarzhoù skeudennoù
   presentation-notice:
     notice: Evezhiadenn
     description: Diskwel un evezhiadenn verr
@@ -1068,8 +1066,6 @@ interfaces:
     toolbar: Barrenn ostilhoù
     custom_formats: Furmadoù personelaet
     options_override: Erlec'hiañ an dibarzhioù
-    imageToken: Token ur skeudenn
-    imageToken_label: Peseurt token (statek) ouzhpennañ d'an tarzhoù skeudennoù
   input-autocomplete-api:
     input-autocomplete-api: Maezienn Emleuniet (API)
     description: Un doare klask evit an talvoudoù API diavaez.

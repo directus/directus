@@ -1064,7 +1064,6 @@ interfaces:
     edit: Wijzig
     customSyntax: Aangepaste blokken
     box: Blok / Inline
-    imageToken: Afbeeldingstoken
   map:
     zoom: Zoom
   presentation-notice:
@@ -1123,7 +1122,6 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
-    imageToken: Afbeeldingstoken
 displays:
   translations:
     translations: Vertalingen
