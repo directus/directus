@@ -5,7 +5,7 @@
 				<p>{{ t('validation_errors_notice') }}</p>
 				<ul class="validation-errors-list">
 					<li v-for="(validationError, index) of validationErrors" :key="index">
-						<strong class="field">
+						<strong class="field" @click="scrollToField(validationError.group || validationError.field)">
 							<template v-if="validationError.field && validationError.hidden && validationError.group">
 								{{
 									`${formatTitle(validationError.field)} (${t('hidden_in_group', {
@@ -34,6 +34,11 @@
 				:is="`interface-${field.meta?.interface || 'group-standard'}`"
 				v-if="field.meta?.special?.includes('group')"
 				v-show="!field.meta?.hidden"
+				:ref="
+					(el: Element) => {
+						formFieldEls[field.field] = el;
+					}
+				"
 				:key="field.field"
 				:class="[field.meta?.width || 'full', index === firstVisibleFieldIndex ? 'first-visible-field' : '']"
 				:field="field"
@@ -52,6 +57,11 @@
 
 			<form-field
 				v-else-if="!field.meta?.hidden"
+				:ref="
+					(el: Element) => {
+						formFieldEls[field.field] = el;
+					}
+				"
 				:key="field.field"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="field"
@@ -75,7 +85,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, provide, watch } from 'vue';
+import { defineComponent, PropType, computed, ref, provide, watch, onBeforeUpdate } from 'vue';
 import { useFieldsStore } from '@/stores/';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
@@ -171,6 +181,12 @@ export default defineComponent({
 			}
 		});
 
+		const formFieldEls = ref<Record<string, any>>({});
+
+		onBeforeUpdate(() => {
+			formFieldEls.value = {};
+		});
+
 		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
@@ -222,6 +238,8 @@ export default defineComponent({
 			fieldsForGroup,
 			isDisabled,
 			formatTitle,
+			scrollToField,
+			formFieldEls,
 		};
 
 		function useForm() {
@@ -346,6 +364,11 @@ export default defineComponent({
 					setValue(field, field.schema?.default_value);
 				}
 			}
+		}
+
+		function scrollToField(field: string) {
+			if (!formFieldEls.value[field]) return;
+			formFieldEls.value[field].$el.scrollIntoView({ behavior: 'smooth' });
 		}
 	},
 });
