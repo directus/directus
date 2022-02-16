@@ -63,6 +63,9 @@ export default defineComponent({
 
 		onBeforeUnmount(() => {
 			if (flatpickr) {
+				const selectedDate = flatpickr.selectedDates.length > 0 ? flatpickr.selectedDates[0] : null;
+				emitValue(selectedDate);
+
 				flatpickr.destroy();
 				flatpickr = null;
 			}
