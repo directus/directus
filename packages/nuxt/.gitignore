@@ -1,0 +1,51 @@
+# Dependencies
+node_modules
+
+# Logs
+*.log*
+
+# Temp directories
+.temp
+.tmp
+.cache
+
+# Yarn
+**/.yarn/cache
+**/.yarn/*state*
+
+# Generated dirs
+dist
+
+# Nuxt
+.nuxt
+.output
+.vercel_build_output
+.build-*
+.env
+.netlify
+
+# Env
+.env
+
+# Testing
+reports
+coverage
+*.lcov
+.nyc_output
+
+# VSCode
+.vscode
+
+# Intellij idea
+*.iml
+.idea
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk

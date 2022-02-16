@@ -1,0 +1,53 @@
+{
+	"name": "@directus/nuxt",
+	"version": "9.5.1",
+	"description": "Official Nuxt module for Directus",
+	"keywords": [
+		"directus",
+		"nuxt",
+		"nuxt-module"
+	],
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/nuxt"
+	},
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./dist/module.mjs",
+			"require": "./dist/module.cjs"
+		}
+	},
+	"main": "./dist/module.cjs",
+	"types": "./dist/types.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"prepack": "nuxt-module-build",
+		"dev": "nuxi dev playground",
+		"dev:build": "nuxi build playground",
+		"dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
+		"build": "nuxt-module-build"
+	},
+	"dependencies": {
+		"@directus/sdk": "9.5.1",
+		"@nuxt/kit": "npm:@nuxt/kit-edge@latest",
+		"defu": "5.0.1"
+	},
+	"devDependencies": {
+		"@nuxt/module-builder": "latest",
+		"@nuxtjs/eslint-config-typescript": "latest",
+		"eslint": "latest",
+		"nuxt3": "latest"
+	},
+	"peerDependencies": {
+		"eslint-plugin-promise": "*",
+		"std-env": "*"
+	}
+}
