@@ -1373,8 +1373,6 @@ interfaces:
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
-    imageToken: Ключ изображения
-    imageToken_label: Статичный ключ, добавляемый к адресам изображений
   map:
     map: Карта
     description: Указать место на карте
@@ -1481,8 +1479,6 @@ interfaces:
     custom_formats: Пользовательские форматы
     options_override: Переопределение параметров
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
-    imageToken: Ключ изображения
-    imageToken_label: Статичный ключ, добавляемый к адресам изображений
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
     description: Автодополнение значений поиска через внешний API.
