@@ -25,12 +25,13 @@ type UsableLink = {
 
 export default function useLink(editor: Ref<any>, isEditorDirty: Ref<boolean>): UsableLink {
 	const linkDrawerOpen = ref(false);
-	const linkSelection = ref<LinkSelection>({
+	const defaultLinkSelection = {
 		url: null,
 		displayText: null,
 		title: null,
 		newTab: true,
-	});
+	};
+	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
 
 	const linkButton = {
 		icon: 'link',
@@ -58,35 +59,31 @@ export default function useLink(editor: Ref<any>, isEditorDirty: Ref<boolean>): 
 					newTab: target === '_blank',
 				};
 			} else {
-				defaultLinkSelection();
+				const overrideLinkSelection = { displayText: editor.value.selection.getContent() || null };
+				setLinkSelection(overrideLinkSelection);
 			}
 		},
 		onSetup: (buttonApi: any) => {
-			const onImageNodeSelect = (eventApi: any) => {
+			const onLinkNodeSelect = (eventApi: any) => {
 				buttonApi.setActive(eventApi.element.tagName === 'A');
 			};
 
-			editor.value.on('NodeChange', onImageNodeSelect);
+			editor.value.on('NodeChange', onLinkNodeSelect);
 
 			return function () {
-				editor.value.off('NodeChange', onImageNodeSelect);
+				editor.value.off('NodeChange', onLinkNodeSelect);
 			};
 		},
 	};
 
 	return { linkDrawerOpen, linkSelection, closeLinkDrawer, saveLink, linkButton };
 
-	function defaultLinkSelection() {
-		linkSelection.value = {
-			url: null,
-			displayText: null,
-			title: null,
-			newTab: true,
-		};
+	function setLinkSelection(overrideLinkSelection: Partial<LinkSelection> = {}) {
+		linkSelection.value = Object.assign({}, defaultLinkSelection, overrideLinkSelection);
 	}
 
 	function closeLinkDrawer() {
-		defaultLinkSelection();
+		setLinkSelection();
 		linkDrawerOpen.value = false;
 	}
 
