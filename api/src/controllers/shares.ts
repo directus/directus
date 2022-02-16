@@ -9,6 +9,7 @@ import asyncHandler from '../utils/async-handler';
 import { UUID_REGEX, COOKIE_OPTIONS } from '../constants';
 import Joi from 'joi';
 import env from '../env';
+import { loadUserRoleServices } from '../middleware/load-user-role-services';
 
 const router = express.Router();
 
@@ -121,8 +122,8 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.get('/', validateBatch('read'), readHandler, respond);
-router.search('/', validateBatch('read'), readHandler, respond);
+router.get('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
+router.search('/', loadUserRoleServices, validateBatch('read'), readHandler, respond);
 
 router.get(
 	`/info/:pk(${UUID_REGEX})`,
