@@ -1256,7 +1256,6 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
-weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:
@@ -1406,8 +1405,6 @@ interfaces:
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
     box: Block / Inline
-    imageToken: 图像Token
-    imageToken_label: 添加到源图片的Token
   map:
     map: 地图
     description: 选择地图上的位置
@@ -1514,8 +1511,6 @@ interfaces:
     custom_formats: 自定义格式
     options_override: 覆盖选项
     folder_note: 用于上传文件的文件夹。不影响现有文件。
-    imageToken: 图像Token
-    imageToken_label: 添加到源图片的Token
   input-autocomplete-api:
     input-autocomplete-api: 自动完成 Input (API)
     description: 一个事先搜索的外部API
