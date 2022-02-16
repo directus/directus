@@ -211,7 +211,7 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				(newValue) => {
+				async (newValue) => {
 					// When the newly configured value is a primitive, assume it's the primary key
 					// of the item and fetch it from the API to render the preview
 					if (
@@ -230,12 +230,17 @@ export default defineComponent({
 
 					// If value is already fullfilled, let's fetch all necessary
 					// fields for display template
-					else if (
-						!currentItem.value &&
-						typeof newValue === 'object' &&
-						newValue[relatedPrimaryKeyField.value!.field]
-					) {
-						fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
+					else if (!currentItem.value && typeof newValue === 'object') {
+						if (newValue[relatedPrimaryKeyField.value!.field]) {
+							await fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
+							if (currentItem.value) {
+								// Override with locally updated values
+								Object.assign(currentItem.value, newValue);
+							}
+						} else {
+							// Display newly created entry in nested m2o
+							currentItem.value = newValue;
+						}
 					}
 				},
 				{ immediate: true }
