@@ -1,6 +1,6 @@
 <template>
 	<value-null v-if="!displayValue" />
-	<v-menu v-else-if="displayValue.length > 1" show-arrow>
+	<v-menu v-else-if="displayValue.length > 0" show-arrow>
 		<template #activator="{ toggle }">
 			<span class="toggle" @click.stop="toggle">
 				<span class="label">
