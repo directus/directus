@@ -2488,7 +2488,7 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
-							const query = this.getQuery(args, selections || [], info.variableValues);
+							const query = await this.getQuery(args, selections || [], info.variableValues);
 
 							return await service.readOne(this.accountability.user, query);
 						}

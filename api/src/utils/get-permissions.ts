@@ -142,13 +142,19 @@ function parsePermissions(permissions: any[]) {
 
 		const extractPermissionData = (val: any) => {
 			if (typeof val === 'string' && val.startsWith('$CURRENT_USER.')) {
-				requiredPermissionData.$CURRENT_USER.push(val.replace('$CURRENT_USER.', ''));
-				containDynamicData = true;
+				const fieldString = val.replace('$CURRENT_USER.', '');
+				if (val && !requiredPermissionData.$CURRENT_USER.includes(fieldString)) {
+					requiredPermissionData.$CURRENT_USER.push(fieldString);
+					containDynamicData = true;
+				}
 			}
 
 			if (typeof val === 'string' && val.startsWith('$CURRENT_ROLE.')) {
-				requiredPermissionData.$CURRENT_ROLE.push(val.replace('$CURRENT_ROLE.', ''));
-				containDynamicData = true;
+				const fieldString = val.replace('$CURRENT_ROLE.', '');
+				if (val && !requiredPermissionData.$CURRENT_ROLE.includes(fieldString)) {
+					requiredPermissionData.$CURRENT_ROLE.push(fieldString);
+					containDynamicData = true;
+				}
 			}
 
 			return val;
