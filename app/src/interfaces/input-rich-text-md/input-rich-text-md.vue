@@ -252,7 +252,7 @@ export default defineComponent({
 			type: Array as PropType<CustomSyntax[]>,
 			default: () => [],
 		},
-		staticAccessToken: {
+		imageToken: {
 			type: String,
 			default: undefined,
 		},
@@ -381,8 +381,8 @@ export default defineComponent({
 
 			let url = getPublicURL() + `assets/` + image.id;
 
-			if (props.staticAccessToken) {
-				url += '?access_token=' + props.staticAccessToken;
+			if (props.imageToken) {
+				url += '?access_token=' + props.imageToken;
 			}
 
 			codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);

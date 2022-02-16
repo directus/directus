@@ -34,7 +34,7 @@ type UsableMedia = {
 	mediaButton: MediaButton;
 };
 
-export default function useMedia(editor: Ref<any>, staticAccessToken: Ref<string | undefined>): UsableMedia {
+export default function useMedia(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video', 'audio']);
@@ -80,7 +80,7 @@ export default function useMedia(editor: Ref<any>, staticAccessToken: Ref<string
 				...mediaSelection.value,
 				sourceUrl: newSource,
 			};
-			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, staticAccessToken.value || getToken());
+			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value || getToken());
 		},
 	});
 
@@ -132,7 +132,7 @@ export default function useMedia(editor: Ref<any>, staticAccessToken: Ref<string
 			if (sourceUrl === undefined) return;
 
 			// Add temporarily access token for preview
-			const previewUrl = replaceUrlAccessToken(sourceUrl, staticAccessToken.value || getToken());
+			const previewUrl = replaceUrlAccessToken(sourceUrl, imageToken.value || getToken());
 
 			mediaSelection.value = {
 				tag: tag === 'audio' ? 'audio' : tag === 'iframe' ? 'iframe' : 'video',
@@ -173,12 +173,12 @@ export default function useMedia(editor: Ref<any>, staticAccessToken: Ref<string
 		const tag = media.type.startsWith('audio') ? 'audio' : 'video';
 
 		mediaSelection.value = {
-			sourceUrl: replaceUrlAccessToken(sourceUrl, staticAccessToken.value),
+			sourceUrl: replaceUrlAccessToken(sourceUrl, imageToken.value),
 			width: media.width || 300,
 			height: media.height || 150,
 			tag,
 			type: media.type,
-			previewUrl: replaceUrlAccessToken(sourceUrl, staticAccessToken.value || getToken()),
+			previewUrl: replaceUrlAccessToken(sourceUrl, imageToken.value || getToken()),
 		};
 	}
 

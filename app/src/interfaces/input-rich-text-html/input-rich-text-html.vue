@@ -248,7 +248,7 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		staticAccessToken: {
+		imageToken: {
 			type: String,
 			default: undefined,
 		},
@@ -266,7 +266,7 @@ export default defineComponent({
 		const { t } = useI18n();
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
-		const { staticAccessToken } = toRefs(props);
+		const { imageToken } = toRefs(props);
 
 		let tinymceEditor: HTMLElement | null;
 		let count = ref(0);
@@ -297,7 +297,7 @@ export default defineComponent({
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
-			staticAccessToken
+			imageToken
 		);
 
 		const {
@@ -312,7 +312,7 @@ export default defineComponent({
 			mediaWidth,
 			mediaSource,
 			mediaButton,
-		} = useMedia(editorRef, staticAccessToken);
+		} = useMedia(editorRef, imageToken);
 
 		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
 

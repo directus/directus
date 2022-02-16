@@ -28,7 +28,7 @@ type UsableImage = {
 	imageButton: ImageButton;
 };
 
-export default function useImage(editor: Ref<any>, staticAccessToken: Ref<string | undefined>): UsableImage {
+export default function useImage(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
@@ -55,7 +55,7 @@ export default function useImage(editor: Ref<any>, staticAccessToken: Ref<string
 					alt,
 					width,
 					height,
-					previewUrl: replaceUrlAccessToken(imageUrl, staticAccessToken.value ?? getToken()),
+					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value ?? getToken()),
 				};
 			} else {
 				imageSelection.value = null;
@@ -85,11 +85,11 @@ export default function useImage(editor: Ref<any>, staticAccessToken: Ref<string
 		const assetUrl = getPublicURL() + 'assets/' + image.id;
 
 		imageSelection.value = {
-			imageUrl: replaceUrlAccessToken(assetUrl, staticAccessToken.value),
+			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 			alt: image.title,
 			width: image.width,
 			height: image.height,
-			previewUrl: replaceUrlAccessToken(assetUrl, staticAccessToken.value ?? getToken()),
+			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value ?? getToken()),
 		};
 	}
 

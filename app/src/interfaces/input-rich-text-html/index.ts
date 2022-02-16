@@ -257,11 +257,11 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'staticAccessToken',
-				name: '$t:interfaces.input-rich-text-html.staticAccessToken',
+				field: 'imageToken',
+				name: '$t:interfaces.input-rich-text-html.imageToken',
 				type: 'string',
 				meta: {
-					note: '$t:interfaces.input-rich-text-html.staticAccessToken_label',
+					note: '$t:interfaces.input-rich-text-html.imageToken_label',
 					width: 'half',
 					interface: 'input',
 				},
