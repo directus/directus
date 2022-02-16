@@ -223,7 +223,12 @@ export const useFieldsStore = defineStore({
 			});
 
 			relationsStore.relations = relationsStore.relations.filter((relation) => {
-				if (relation.collection === collectionKey && relation.field === fieldKey) return false;
+				if (
+					(relation.collection === collectionKey && relation.field === fieldKey) ||
+					(relation.related_collection === collectionKey && relation.meta?.one_field === fieldKey)
+				) {
+					return false;
+				}
 				return true;
 			});
 
