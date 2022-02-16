@@ -101,6 +101,7 @@ import { Filter } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { render } from 'micromustache';
 import { deepMap } from '@directus/shared/utils';
+import { merge } from 'lodash';
 
 /**
  * @NOTE
@@ -479,10 +480,7 @@ export default defineComponent({
 					emit('input', newEdits);
 				}
 
-				currentItem.value = {
-					...currentItem.value,
-					...newEdits,
-				};
+				currentItem.value = merge({}, currentItem.value, newEdits);
 			}
 		}
 	},
