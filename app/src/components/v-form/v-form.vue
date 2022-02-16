@@ -5,17 +5,19 @@
 				<p>{{ t('validation_errors_notice') }}</p>
 				<ul class="validation-errors-list">
 					<li v-for="(validationError, index) of validationErrors" :key="index">
-						<strong v-if="validationError.field && validationError.hidden && validationError.group">
-							{{
-								`${formatTitle(validationError.field)} (${t('hidden_in_group', {
-									group: formatTitle(validationError.group),
-								})}): `
-							}}
+						<strong class="field">
+							<template v-if="validationError.field && validationError.hidden && validationError.group">
+								{{
+									`${formatTitle(validationError.field)} (${t('hidden_in_group', {
+										group: formatTitle(validationError.group),
+									})}): `
+								}}
+							</template>
+							<template v-else-if="validationError.field && validationError.hidden">
+								{{ `${formatTitle(validationError.field)} (${t('hidden')}): ` }}
+							</template>
+							<template v-else-if="validationError.field">{{ `${formatTitle(validationError.field)}: ` }}</template>
 						</strong>
-						<strong v-else-if="validationError.field && validationError.hidden">
-							{{ `${formatTitle(validationError.field)} (${t('hidden')}): ` }}
-						</strong>
-						<strong v-else-if="validationError.field">{{ `${formatTitle(validationError.field)}: ` }}</strong>
 						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
 							{{ t('validationError.unique', validationError) }}
 						</template>
@@ -361,6 +363,15 @@ export default defineComponent({
 }
 
 .validation-errors-list {
+	margin-top: 4px;
 	padding-left: 28px;
+
+	.field {
+		cursor: pointer;
+	}
+
+	li:not(:last-child) {
+		margin-bottom: 4px;
+	}
 }
 </style>
