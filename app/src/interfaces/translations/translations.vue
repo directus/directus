@@ -446,10 +446,6 @@ export default defineComponent({
 		margin-top: 32px;
 	}
 
-	.v-divider {
-		margin-top: var(--form-vertical-gap);
-	}
-
 	.primary {
 		--v-divider-color: var(--primary-50);
 	}
@@ -461,6 +457,13 @@ export default defineComponent({
 			--primary: var(--blue);
 			--v-chip-color: var(--blue);
 			--v-chip-background-color: var(--blue-alt);
+		}
+	}
+
+	.primary,
+	.secondary {
+		.v-divider {
+			margin-top: var(--form-vertical-gap);
 		}
 	}
 }
