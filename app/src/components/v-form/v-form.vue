@@ -3,15 +3,19 @@
 		<v-notice v-if="!nested && validationErrors.length > 0" type="danger" class="full">
 			<div>
 				<p>{{ t('validation_errors_notice') }}</p>
-				<ul>
+				<ul class="validation-errors-list">
 					<li v-for="(validationError, index) of validationErrors" :key="index">
 						<strong v-if="validationError.field && validationError.hidden && validationError.group">
-							{{ `[${validationError.field}] (${t('hidden_in_group', { group: validationError.group })}) — ` }}
+							{{
+								`${formatTitle(validationError.field)} (${t('hidden_in_group', {
+									group: formatTitle(validationError.group),
+								})}): `
+							}}
 						</strong>
 						<strong v-else-if="validationError.field && validationError.hidden">
-							{{ `[${validationError.field}] (${t('hidden')}) — ` }}
+							{{ `${formatTitle(validationError.field)} (${t('hidden')}): ` }}
 						</strong>
-						<strong v-else-if="validationError.field">{{ `[${validationError.field}] — ` }}</strong>
+						<strong v-else-if="validationError.field">{{ `${formatTitle(validationError.field)}: ` }}</strong>
 						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
 							{{ t('validationError.unique', validationError) }}
 						</template>
@@ -77,6 +81,7 @@ import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
 import { applyConditions } from '@/utils/apply-conditions';
+import formatTitle from '@directus/format-title';
 
 type FieldValues = {
 	[field: string]: any;
@@ -214,6 +219,7 @@ export default defineComponent({
 			getFieldsForGroup,
 			fieldsForGroup,
 			isDisabled,
+			formatTitle,
 		};
 
 		function useForm() {
@@ -352,5 +358,9 @@ export default defineComponent({
 
 .v-form .first-visible-field :deep(.v-divider) {
 	margin-top: 0;
+}
+
+.validation-errors-list {
+	padding-left: 28px;
 }
 </style>
