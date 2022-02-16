@@ -132,19 +132,6 @@ export class PayloadService {
 
 			return value;
 		},
-		async 'sqlite-timestamp-in-datetime'({ action, value }) {
-			if (action !== 'read') {
-				// Convert incoming timestamps to UTC if timezone info is provided
-				if (typeof value === 'string' && value.length > 19) {
-					const newDate = new Date(value);
-					return new Date(newDate.getTime() - newDate.getTimezoneOffset() * 60 * 1000).toISOString().split('Z')[0];
-				}
-			}
-			return value;
-		},
-		async 'oracle-datetime-in-timestamp'({ value }) {
-			return value;
-		},
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
