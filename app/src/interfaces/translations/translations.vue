@@ -13,6 +13,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="translationsPrimaryKeyField?.field ? firstItemInitial?.[translationsPrimaryKeyField.field] : null"
 				:disabled="disabled"
 				:loading="valuesLoading"
 				:fields="fields"
@@ -36,6 +37,9 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="
+					translationsPrimaryKeyField?.field ? secondItemInitial?.[translationsPrimaryKeyField.field] : null
+				"
 				:disabled="disabled"
 				:loading="valuesLoading"
 				:initial-values="secondItemInitial"
