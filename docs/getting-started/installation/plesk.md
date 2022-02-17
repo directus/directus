@@ -73,11 +73,23 @@ startServer();
 
 ### 4. Add .npmrc
 
-Lastly, we need to make a small configuration for npm by creating a `.npmrc` file with the following content:
+We need to make a small configuration for npm by creating a `.npmrc` file with the following content:
 
 ```
 scripts-prepend-node-path=true
 ```
+
+### 5. Add document_root folder
+Lastly, we need to add a `document_root` folder inside our project-directory.
+
+It's required by plesk that the document root must be a subdirectory of the application root directory. The folder can stay empty. 
+
+::: Store `document_root` in a version control
+
+If you want to keep the folder in in a version controll like git, create a empty `.gitignore` file inside the folder.
+
+:::
+
 
 ## Activate and configure node.js
 
