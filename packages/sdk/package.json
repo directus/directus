@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.5.0",
+	"version": "9.5.1",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",

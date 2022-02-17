@@ -353,6 +353,7 @@ interface_label: Interfejs
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
+delete_share: Usuń udostępnienie
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -533,6 +534,9 @@ errors:
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
   ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
+  VALUE_TOO_LONG: Wartość jest zbyt długa
+  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
+  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
@@ -563,12 +567,15 @@ update_collection_success: Zaktualizowana kolekcja
 delete_collection_success: Usunięta kolekcja
 make_collection_visible: Spraw, aby kolekcja była widoczna
 make_collection_hidden: Spraw, aby kolekcja była ukryta
+make_folder_visible: Uwidocznij folder
+make_folder_hidden: Ukryj folder
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
 one_filtered_item: '1 przefiltrowany element'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć tę kolekcję? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. Ta akcja jest trwała.
+delete_folder_are_you_sure: Czy na pewno chcesz usunąć ten folder? Zagnieżdżone foldery i kolekcje zostaną przeniesione na najwyższy poziom.
 collections_shown: Wyświetlane kolekcje
 visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
@@ -728,6 +735,8 @@ unlimited: Nielimitowany
 open_link_in: Otwórz link w
 new_tab: Nowa karta
 current_tab: Aktualna karta
+save_image: Zapisz obraz
+save_media: Zapisz media
 wysiwyg_options:
   aligncenter: Wyśrodkuj
   alignjustify: Wyjustuj
@@ -1399,8 +1408,8 @@ interfaces:
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1507,8 +1516,8 @@ interfaces:
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.

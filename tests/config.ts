@@ -10,8 +10,8 @@ export type Config = {
 	envs: Record<Vendor, Record<string, string>>;
 };
 
-const migrationsDir = './tests/e2e/setup/migrations';
-const seedsDir = './tests/e2e/setup/seeds';
+const migrationsDir = './tests/setup/migrations';
+const seedsDir = './tests/setup/seeds';
 
 const knexConfig = {
 	waitTestSQL: 'SELECT 1',
@@ -35,6 +35,7 @@ const directusConfig = {
 	RATE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: 'error',
 	SERVE_APP: 'false',
+	DB_EXCLUDE_TABLES: 'knex_migrations,knex_migrations_lock,spatial_ref_sys,sysdiagrams',
 };
 
 const config: Config = {
@@ -227,5 +228,15 @@ const config: Config = {
 		},
 	},
 };
+
+export function getUrl(vendor: typeof allVendors[number]) {
+	let port = config.envs[vendor].PORT;
+
+	if (process.env.TEST_LOCAL) {
+		port = '8055';
+	}
+
+	return `http://localhost:${port}`;
+}
 
 export default config;

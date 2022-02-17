@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.5.0",
+	"version": "9.5.1",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -33,6 +33,7 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"sideEffects": false,
 	"scripts": {
 		"build": "run-p \"build:* -- {@}\" --",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",

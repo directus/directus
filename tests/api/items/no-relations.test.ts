@@ -1,6 +1,6 @@
 import axios from 'axios';
 import request from 'supertest';
-import config from '../../config';
+import config, { getUrl } from '../../config';
 import vendors from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createEvent, createGuest, createMany, seedTable } from '../../setup/utils/factories';
@@ -24,11 +24,10 @@ describe('/items', () => {
 	describe('/:collection/:id GET', () => {
 		describe('retrieves one artist', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
-				const response = await request(url)
+				const response = await request(getUrl(vendor))
 					.get(`/items/artists/${artist.id}`)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
@@ -39,14 +38,13 @@ describe('/items', () => {
 		});
 		describe(`retrieves a guest's favorite artist`, () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const guest = createGuest();
 				guest.favorite_artist = artist.id;
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 				await seedTable(databases.get(vendor)!, 1, 'guests', guest);
 
-				const response = await request(url)
+				const response = await request(getUrl(vendor))
 					.get(`/items/artists/${artist.id}`)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
@@ -57,7 +55,6 @@ describe('/items', () => {
 		});
 		describe('retrieves an artist and an event off the artists_events table', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 					select: ['id'],
 				});
@@ -74,7 +71,7 @@ describe('/items', () => {
 					},
 					{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
 				);
-				const response = await request(url)
+				const response = await request(getUrl(vendor))
 					.get(`/items/artists_events/${relation[0].id}?fields[]=artists_id.name&fields[]=events_id.cost`)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
@@ -89,10 +86,8 @@ describe('/items', () => {
 		describe('Error handling', () => {
 			describe('returns an error when an invalid id is used', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-
 					const response = await axios
-						.get(`${url}/items/artists/invalid_id`, {
+						.get(`${getUrl(vendor)}/items/artists/invalid_id`, {
 							headers: {
 								Authorization: 'Bearer AdminToken',
 								'Content-Type': 'application/json',
@@ -117,10 +112,8 @@ describe('/items', () => {
 			});
 			describe('returns an error when an invalid table is used', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-
 					const response = await axios
-						.get(`${url}/items/invalid_table/1`, {
+						.get(`${getUrl(vendor)}/items/invalid_table/1`, {
 							headers: {
 								Authorization: 'Bearer AdminToken',
 								'Content-Type': 'application/json',
@@ -141,12 +134,11 @@ describe('/items', () => {
 	describe('/:collection/:id PATCH', () => {
 		describe(`updates one artist's name with no relations`, () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
 				const body = { name: 'Tommy Cash' };
-				const response: any = await axios.patch(`${url}/items/artists/${artist.id}`, body, {
+				const response: any = await axios.patch(`${getUrl(vendor)}/items/artists/${artist.id}`, body, {
 					headers: { Authorization: 'Bearer AdminToken' },
 				});
 
@@ -160,11 +152,10 @@ describe('/items', () => {
 	describe('/:collection/:id DELETE', () => {
 		describe('deletes an artist with no relations', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 
-				const response: any = await axios.delete(`${url}/items/artists/${artist.id}`, {
+				const response: any = await axios.delete(`${getUrl(vendor)}/items/artists/${artist.id}`, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
@@ -179,9 +170,8 @@ describe('/items', () => {
 	describe('/:collection GET', () => {
 		describe('retrieves all items from artist table with no relations', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				await seedTable(databases.get(vendor)!, 50, 'artists', createArtist);
-				const response = await request(url)
+				const response = await request(getUrl(vendor))
 					.get('/items/artists')
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
@@ -193,10 +183,8 @@ describe('/items', () => {
 		describe('Error handling', () => {
 			describe('returns an error when an invalid table is used', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-
 					const response = await axios
-						.get(`${url}/items/invalid_table/`, {
+						.get(`${getUrl(vendor)}/items/invalid_table/`, {
 							headers: {
 								Authorization: 'Bearer AdminToken',
 								'Content-Type': 'application/json',
@@ -219,9 +207,8 @@ describe('/items', () => {
 		describe('createOne', () => {
 			describe('creates one artist', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const body = createArtist();
-					const response: any = await axios.post(`${url}/items/artists`, body, {
+					const response: any = await axios.post(`${getUrl(vendor)}/items/artists`, body, {
 						headers: {
 							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
@@ -234,9 +221,8 @@ describe('/items', () => {
 		describe('createMany', () => {
 			describe('creates 5 artists', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const body = createMany(createArtist, 5)!;
-					const response: any = await axios.post(`${url}/items/artists`, body, {
+					const response: any = await axios.post(`${getUrl(vendor)}/items/artists`, body, {
 						headers: {
 							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
@@ -249,10 +235,9 @@ describe('/items', () => {
 		describe('Error handling', () => {
 			describe('returns an error when an invalid table is used', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const body = createArtist();
 					const response = await axios
-						.post(`${url}/items/invalid_table`, body, {
+						.post(`${getUrl(vendor)}/items/invalid_table`, body, {
 							headers: {
 								Authorization: 'Bearer AdminToken',
 								'Content-Type': 'application/json',
@@ -274,8 +259,6 @@ describe('/items', () => {
 	describe('/:collection PATCH', () => {
 		describe('updates many artists to a different name', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
-
 				const artists = createMany(createArtist, 5, { id: uuid });
 				await seedTable(databases.get(vendor)!, 1, 'artists', artists);
 				const items = await databases.get(vendor)?.select('id').from('artists').limit(10);
@@ -285,7 +268,7 @@ describe('/items', () => {
 					keys: keys,
 					data: { name: 'Johnny Cash' },
 				};
-				const response: any = await axios.patch(`${url}/items/artists/?fields=name`, body, {
+				const response: any = await axios.patch(`${getUrl(vendor)}/items/artists/?fields=name`, body, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
@@ -303,14 +286,13 @@ describe('/items', () => {
 	describe('/:collection DELETE', () => {
 		describe('deletes many artists with no relations', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artists = createMany(createArtist, 10, { id: uuid });
 				await seedTable(databases.get(vendor)!, 1, 'artists', artists);
 				const body: any[] = [];
 				for (let row = 0; row < artists.length - 1; row++) {
 					body.push(artists[row]!.id);
 				}
-				const response: any = await axios.delete(`${url}/items/artists/`, {
+				const response: any = await axios.delete(`${getUrl(vendor)}/items/artists/`, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',

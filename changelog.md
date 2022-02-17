@@ -2,6 +2,84 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.5.1 (February 3, 2022)
+
+### :rocket: Improvements
+
+- **App**
+  - [#11415](https://github.com/directus/directus/pull/11415) Add missing error translations (by @dimitrov-adrian)
+  - [#11412](https://github.com/directus/directus/pull/11412) Fix performance drop in stacked drawer when many layers
+    (by @dimitrov-adrian)
+  - [#11318](https://github.com/directus/directus/pull/11318) App: Allow batch edit for 1 or more items (by
+    @joselcvarela)
+  - [#11294](https://github.com/directus/directus/pull/11294) Update toolbar items order in WYSIWYG editor (by
+    @azrikahar)
+  - [#11258](https://github.com/directus/directus/pull/11258) Refine option labels for Folders in Data Model (by
+    @azrikahar)
+  - [#10828](https://github.com/directus/directus/pull/10828) Add strings to accepted fields for Insights Panel
+    "Metrics" (by @jaycammarano)
+  - [#9421](https://github.com/directus/directus/pull/9421) Fix translations layout (by @Nitwel)
+- **API**
+  - [#11307](https://github.com/directus/directus/pull/11307) Bearer token no longer case sensitive for API
+    authenticatiom (by @jaycammarano)
+  - [#11279](https://github.com/directus/directus/pull/11279) Resolve transaction unreliability issues in schema
+    alterations (by @rijkvanzanten)
+  - [#11069](https://github.com/directus/directus/pull/11069) Prevent MySQL collation errors (by @Oreilles)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#11423](https://github.com/directus/directus/pull/11423) Don't parse preset object as filter structure (by
+    @rijkvanzanten)
+  - [#11359](https://github.com/directus/directus/pull/11359) Fixed issue when updating columns in Oracle (by
+    @aidenfoxx)
+  - [#11347](https://github.com/directus/directus/pull/11347) Fix update file endpoint (by @azrikahar)
+  - [#11279](https://github.com/directus/directus/pull/11279) Resolve transaction unreliability issues in schema
+    alterations (by @rijkvanzanten)
+  - [#11269](https://github.com/directus/directus/pull/11269) Use correct import for crdb dialect from schema-inspector
+    (by @rijkvanzanten)
+  - [#11268](https://github.com/directus/directus/pull/11268) Fix PG10 support (by @rijkvanzanten)
+  - [#11256](https://github.com/directus/directus/pull/11256) Return empty string as empty array in CSV type (by
+    @rijkvanzanten)
+- **specs**
+  - [#11347](https://github.com/directus/directus/pull/11347) Fix update file endpoint (by @azrikahar)
+  - [#11290](https://github.com/directus/directus/pull/11290) Update OpenAPI schema for file/files (by @azrikahar)
+- **Extensions**
+  - [#11329](https://github.com/directus/directus/pull/11329) Mark shared as side effects free (by @nickrum)
+- **shared**
+  - [#11329](https://github.com/directus/directus/pull/11329) Mark shared as side effects free (by @nickrum)
+- **App**
+  - [#11289](https://github.com/directus/directus/pull/11289) fix sorting of select-multiple-dropdown values (by
+    @azrikahar)
+  - [#11287](https://github.com/directus/directus/pull/11287) Prevent vue-i18n special characters causing error (by
+    @azrikahar)
+  - [#11284](https://github.com/directus/directus/pull/11284) Prevent group edited indicator in Shared View (by
+    @azrikahar)
+  - [#11281](https://github.com/directus/directus/pull/11281) Prevent editing of fields within groups in Share (by
+    @azrikahar)
+  - [#11265](https://github.com/directus/directus/pull/11265) Fix fields order in Fields Permissions (by @azrikahar)
+  - [#11263](https://github.com/directus/directus/pull/11263) fix tooltip directive modifiers (by @azrikahar)
+  - [#11251](https://github.com/directus/directus/pull/11251) Fix o2m nested image thumbnail extraction (by
+    @rijkvanzanten)
+  - [#9421](https://github.com/directus/directus/pull/9421) Fix translations layout (by @Nitwel)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#11381](https://github.com/directus/directus/pull/11381) Add a few missing DefinitelyTyped dependencies (by
+    @nickrum)
+
+### :memo: Documentation
+
+- [#11366](https://github.com/directus/directus/pull/11366) Document `--yes` option for creating schema snapshots (by
+  @eyecatchup)
+- [#11356](https://github.com/directus/directus/pull/11356) Document `--yes` option for applying schema snapshots (by
+  @eyecatchup)
+- [#11336](https://github.com/directus/directus/pull/11336) Added / amended env vars in docs example for Google Cloud
+  Logging (by @keesvanbemmel)
+- [#11267](https://github.com/directus/directus/pull/11267) Documentation Polishing (by @josdea)
+- [#10898](https://github.com/directus/directus/pull/10898) Make docs a lot more fancy. ✨ (by @Nitwel)
+
 ## v9.5.0 (January 24, 2022)
 
 ### :sparkles: New Features

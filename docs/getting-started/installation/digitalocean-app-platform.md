@@ -11,7 +11,9 @@ Create your DigitalOcean account — [get $100 of free credit](https://m.do.co/c
 
 ## 3. Create a Managed Database instance
 
-We recommend using Postgres 12. The exact size and need for a replica depends on your usage and project requirements.
+The exact size and need for a replica depends on your usage and project requirements. We recommend using the latest
+version of Postgres. DigitalOcean's MySQL offering isn't supported at this time. Please see
+https://github.com/knex/knex/issues/4141 for more information.
 
 ## 4. Create a new App using your previously created repo
 

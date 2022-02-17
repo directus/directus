@@ -1,12 +1,14 @@
 import { ITransport } from '../transport';
 import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items';
-import { ID } from '../types';
+import { ID, FieldType } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
 	protected transport: ITransport;
 	protected endpoint: string;
+	protected collection: string;
 
 	constructor(collection: string, transport: ITransport) {
+		this.collection = collection;
 		this.transport = transport;
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
 	}
@@ -19,7 +21,29 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		return response.data as T;
 	}
 
-	async readMany(query?: QueryMany<T>): Promise<ManyItems<T>> {
+	async readMany(ids: ID[], query?: QueryMany<T>): Promise<ManyItems<T>> {
+		const collectionFields = await this.transport.get<FieldType[]>(`/fields/${this.collection}`);
+
+		const primaryKeyField = collectionFields.data?.find((field: any) => field.schema.is_primary_key === true);
+
+		const { data, meta } = await this.transport.get<T[]>(`${this.endpoint}`, {
+			params: {
+				filter: {
+					[primaryKeyField!.field]: { _in: ids },
+					...query?.filter,
+				},
+				sort: query?.sort || primaryKeyField!.field,
+				...query,
+			},
+		});
+
+		return {
+			data,
+			meta,
+		};
+	}
+
+	async readByQuery(query?: QueryMany<T>): Promise<ManyItems<T>> {
 		const { data, meta } = await this.transport.get<T[]>(`${this.endpoint}`, {
 			params: query,
 		});

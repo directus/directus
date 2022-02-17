@@ -13,6 +13,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="translationsPrimaryKeyField?.field ? firstItemInitial?.[translationsPrimaryKeyField.field] : null"
 				:disabled="disabled"
 				:loading="valuesLoading"
 				:fields="fields"
@@ -36,6 +37,9 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="
+					translationsPrimaryKeyField?.field ? secondItemInitial?.[translationsPrimaryKeyField.field] : null
+				"
 				:disabled="disabled"
 				:loading="valuesLoading"
 				:initial-values="secondItemInitial"
@@ -289,12 +293,7 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(newVal, oldVal) => {
-					if (
-						newVal &&
-						!isEqual(newVal, oldVal) &&
-						newVal.every((item) => typeof item === 'string' || typeof item === 'number') &&
-						isUndo.value === false
-					) {
+					if (newVal && !oldVal && !isEqual(newVal, oldVal) && isUndo.value === false) {
 						loadItems();
 					}
 
@@ -451,10 +450,6 @@ export default defineComponent({
 		margin-top: 32px;
 	}
 
-	.v-divider {
-		margin-top: var(--form-vertical-gap);
-	}
-
 	.primary {
 		--v-divider-color: var(--primary-50);
 	}
@@ -466,6 +461,13 @@ export default defineComponent({
 			--primary: var(--blue);
 			--v-chip-color: var(--blue);
 			--v-chip-background-color: var(--blue-alt);
+		}
+	}
+
+	.primary,
+	.secondary {
+		.v-divider {
+			margin-top: var(--form-vertical-gap);
 		}
 	}
 }

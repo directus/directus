@@ -18,9 +18,9 @@
 		"pack": "node docker/pack",
 		"release": "lerna version --force-publish --exact",
 		"test": "lerna run test",
-		"test:e2e": "jest tests -c tests/e2e/jest.config.js",
+		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "npm run test:e2e -- --watch",
-		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/e2e/setup/teardown.ts",
+		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
 	},
 	"engines": {

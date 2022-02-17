@@ -1169,8 +1169,6 @@ interfaces:
     customSyntax_label: Tambahkan jenis sintaks khusus
     customSyntax_add: Tambahkan sintaks khusus
     box: Blokir / Sebaris
-    imageToken: Token Gambar
-    imageToken_label: Token (statis) apa yang akan ditambahkan ke sumber gambar
   map:
     zoom: Perbesar
   system-folder:
@@ -1186,9 +1184,6 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
-  input-rich-text-html:
-    imageToken: Token Gambar
-    imageToken_label: Token (statis) apa yang akan ditambahkan ke sumber gambar
 displays:
   translations:
     translations: Terjemahan

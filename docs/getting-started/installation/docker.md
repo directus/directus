@@ -119,7 +119,7 @@ services:
       ADMIN_PASSWORD: 'd1r3ctu5'
 
       # Make sure to set this in production
-      # (see https://docs.directus.io/reference/environment-variables/#general)
+      # (see https://docs.directus.io/configuration/config-options/#general)
       # PUBLIC_URL: 'https://directus.example.com'
 
 networks:
