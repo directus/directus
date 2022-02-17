@@ -4,14 +4,14 @@ function mounted(element: HTMLElement, binding: DirectiveBinding): void {
 	const contextMenu = binding.instance?.$refs[binding.value];
 
 	element.addEventListener('contextmenu', activateContextMenu(contextMenu));
-	element.addEventListener('focusout', deactivateContextMenu(contextMenu));
+	document.documentElement.addEventListener('pointerdown', deactivateContextMenu(contextMenu));
 }
 
 function unmounted(element: HTMLElement, binding: DirectiveBinding): void {
 	const contextMenu = binding.instance?.$refs[binding.value];
 
 	element.removeEventListener('contextmenu', activateContextMenu(contextMenu));
-	element.removeEventListener('focusout', deactivateContextMenu(contextMenu));
+	document.documentElement.removeEventListener('pointerdown', deactivateContextMenu(contextMenu));
 }
 
 const ContextMenu: Directive = {
@@ -26,12 +26,18 @@ function activateContextMenu(contextMenu: any) {
 		e.stopPropagation();
 		e.preventDefault();
 
-		if (contextMenu) contextMenu.activate(e);
+		if (!contextMenu) return;
+		contextMenu.activate(e);
 	};
 }
 
 function deactivateContextMenu(contextMenu: any) {
 	return (e: Event) => {
-		if (contextMenu) contextMenu.deactivate(e);
+		if (!contextMenu) return;
+
+		const composedPath = e.composedPath() as Element[];
+		if (composedPath.find((element) => element.id === contextMenu.id)) return;
+
+		contextMenu.deactivate(e);
 	};
 }
