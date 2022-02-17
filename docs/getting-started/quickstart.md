@@ -12,21 +12,39 @@ Run the following command in your terminal and follow the prompts.
 
 ```bash
 npm init directus-project example-project
+```
 
-? Choose your database client: SQLite # use up/down arrow keys to select SQL type
-? Database File Path: <file-path>/example-project/data.db #(re)defines .db file path
+Choose SQLite from the list. Use up/down arrow keys to select the SQL type.
 
+```bash
+? Choose your database client SQLite
+```
+
+After that a file path for `data.db`, your database, will be suggested. Hit the enter key to stick with the default
+path.
+
+```bash
+? Database File Path: <file-path>/example-project/data.db
+```
+
+Next you'll set your username/email and password.
+
+```bash
 Create your first admin user:
 ? Email: admin@example.com
 ? Password: ********
+```
 
+After that, you're all set!
+
+```
 Your project has been created at <file-path>/example-project.
 
 The configuration can be found in <file-path>/example-project/.env
 ```
 
-Once the installation is complete, you can start Directus by navigating to your project folder (in this case
-example-project) and running:
+Once the installation is complete, you can start Directus by navigating to your project folder _(in this case
+`example-project`)_ and running:
 
 ```bash
 npx directus start
@@ -55,7 +73,7 @@ Simply configure these according to your project's needs.
 ::: warning Directus seeds your database
 
 Directus installs a few dozen tables into the database it is linked to; so if you're adding it to a database with
-existing data, _be warned_! That said, installing Directus will not alter the existing data tables.
+existing data. However, installation of Directus will not alter the existing data tables.
 
 :::
 
@@ -72,7 +90,7 @@ Login using the admin credentials you configured during the installation in Step
 
 Once logged in, you're greeted with the option to create your first Collection:
 
-![Directus Empty State](../assets/getting-started/quickstart/empty-state.png)
+![Directus Empty State](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/empty-state-20220217A.webp)
 
 Follow the prompts and create a Collection. For the sake of this demo, we'll be calling ours `articles`, but feel free
 to make it your own!
@@ -86,12 +104,14 @@ For a more in-depth guide to setting up Collections, see [Collections](/app/cont
 ## 4. Create a Field
 
 With the Collection created, it's time to start adding some Fields. Click the **"Create Field"** button, and select
-"Standard Field":
+**"Input"**:
 
-![Directus Add a Field](../assets/getting-started/quickstart/add-field.png)
+<video autoplay muted loop controls>
+<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/add-field-20220217A.mp4" type="video/mp4" />
+</video>
 
 We'll be calling our Field `title`. While Directus offers a range of powerful field customization options, we'll be
-sticking to the defaults for now. These defaults use the "String" datatype and "Text Input" interface
+sticking to the defaults for now. These defaults use the "String" datatype.
 
 ::: tip More Info on Fields
 
@@ -103,11 +123,12 @@ To learn more about the different types of Fields, and all available options, se
 ## 5. Create an Item
 
 Now that we have a Collection with a Field configured, it's time to start adding some content. Navigate to the Content
-Module (top left), and click <span mi btn>add</span> in the top-right to get started.
+Module (top left), and click <span mi btn>add</span> in the top-right to get started. This will take you to the
+Create/Edit Item page:
 
-![Directus Create Item](../assets/getting-started/quickstart/create-item.png)
+![Directus Create Item](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/create-item-20220217A.webp)
 
-Once you're happy with your creation, click <span mi btn>check</span> in the top-right to save your item to the
+Once you're happy with your creation, click <span mi btn>check</span> in the top-right to save your Item to the
 database.
 
 ::: tip More Info on Items
@@ -124,15 +145,15 @@ items, we'll have to setup some permissions. Navigate to **Settings Module <span
 & Permissions**.
 
 Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select
-the public role, find your collection, and click the icon under the "eye" icon (read/view permission) to allow the
-public role to read the items in your collection.
+the Public Role, find your Collection, and click the icon under the <span mi icon>visibility</span> icon (read/view
+permission) to allow the Public Role to read the Items in your Collection.
 
-![Directus Permissions](../assets/getting-started/quickstart/permissions.png)
+![Directus Permissions](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/permissions-20220217A.webp)
 
 ::: tip More Info on Roles & Permissions
 
-Roles & Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting up
-roles & permissions, see [Roles](/reference/system/roles) & [Permissions](/reference/system/permissions).
+Roles & Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting these
+up, see [Roles](/reference/system/roles) & [Permissions](/reference/system/permissions).
 
 :::
 
