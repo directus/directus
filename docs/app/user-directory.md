@@ -116,3 +116,22 @@ The sidebar's info component also includes the following readonly details:
 
 1. Click
 2. Edit/Delete
+
+## Extensibility Options
+
+Directus Core is completely open-source, modular and extensible. Extensions allow you to expand or modify any part of
+Directus to fit your needs. Here are some great resources to get started down that track.
+
+Extensions > Introduction Extensions > Creating Extensions Contributing > Introduction Contributing > Codebase Overview
+
+::: tip Sponsoring Accelerated Development
+
+Working on an enterprise project and looking to outsource or financially sponsor the development of a Shares extension?
+Contact [our team](https://directus.io/contact/).
+
+:::
+
+## More Help
+
+Looking for technical support for your non-enterprise project? Chat with thousands of engineers within our growing
+[Community on Discord](https://discord.com/invite/directus).
