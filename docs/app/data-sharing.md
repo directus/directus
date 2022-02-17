@@ -4,8 +4,8 @@
 > are not users within the project.
 
 <video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/app-guide/content/data-shares/whats-a-share-look-like-20220212A.mp4" type="video/mp4" />
-<p>Your browser is not displaying the video for some reason. Here's a <a href="https://cdn.directus.io/docs/v9/app-guide/content/data-shares/whats-a-share-look-like-20220212A.mp4">link to the video</a> instead.</p>
+<source src="https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/data-shares-20220217A.mp4" type="video/mp4" />
+<p>Your browser is not displaying the video for some reason. Here's a <a href="https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/data-shares-20220217A.mp4">link to the video</a> instead.</p>
 </video>
 
 [[toc]]
@@ -38,8 +38,8 @@ tandem with Data Sharing.
 ## How It Works
 
 <video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/app-guide/content/data-shares/how-it-works-20220212A.mp4" type="video/mp4" />
-<p>Your browser is not displaying the video for some reason. Here's a <a href="https://cdn.directus.io/docs/v9/app-guide/content/data-shares/how-it-works-20220212A.mp4">link to the video</a> instead.</p>
+<source src="https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/how-shares-work-20220217A.mp4" type="video/mp4" />
+<p>Your browser is not displaying the video for some reason. Here's a <a href="https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/how-shares-work-20220217A.mp4">link to the video</a> instead.</p>
 </video>
 
 1. Navigate to the Content Module.
@@ -60,7 +60,7 @@ tandem with Data Sharing.
 
 8. Click the <span mi icon>more_horiz</span> button on the right side of your Share.
 
-![copy send edit delete shares menu](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/copy-send-edit-delete-shares-menu-20220211A.webp)
+![copy send edit delete shares menu](https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/copy-send-edit-delete-shares-menu-20220217A.webp)
 
 9. Here you have 4 options:
    - **Copy Link** – Creates a hyperlink that you can copy and paste.
@@ -80,7 +80,7 @@ the link or simply open the link in another browser.
 
 ## Share Options Menu
 
-![Share Options Menu](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/shares-options-menu-20220209A.webp)
+![Share Options Menu](https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/share-options-menu-20220217A.webp)
 
 - **Name** – Adds a name to describe the Share.
 - **Role** – [Assigns a Role](#assigning-a-role) for the Share to inherit permissions from.
@@ -121,7 +121,7 @@ permissions on those linked Collections.
 The Role option in the [Share Options Menu](#share-options-menu) lets you associate a Role to the Share. The Share will
 then inherit permissions of that Role.
 
-![Select Role for Share](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/select-role-for-share-20220210A.webp)
+![Select Role for Share](https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/select-existing-role-menu-20220217A.webp)
 
 ### Assign an Existing Role
 
@@ -136,7 +136,7 @@ _If your Role has the correct permissions configured_, you can create a new Role
 in the Share Options Menu. However, you will still need to navigate to **Settings > Roles and Permissions > [Role
 Name]** to configure any read permissions.
 
-![Creating / Editing a Role within Shares](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/creating-and-editing-roles-within-shares-20220211A.webp)
+![Creating / Editing a Role within Shares](https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/creating-and-edit-roles-menu-20220217A.webp)
 
 ### Create a New Role
 
