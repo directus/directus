@@ -267,13 +267,7 @@ export const useFieldsStore = defineStore({
 		 * fields inside groups starts their sort number from 1 to N again.
 		 */
 		getFieldsForCollectionSorted(collection: string): Field[] {
-			const fields = this.fields
-				.filter((field) => field.collection === collection)
-				.filter(
-					(field: Field) =>
-						field.meta?.special?.includes('group') ||
-						(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
-				);
+			const fields = this.fields.filter((field) => field.collection === collection);
 
 			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
 
