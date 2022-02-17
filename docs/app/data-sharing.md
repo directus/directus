@@ -1,7 +1,7 @@
 # Data Sharing
 
-> Data Sharing allows you to share an Item from a Collection with other people that do not have the proper permissions
-> to view that Item.
+> Data Sharing allows you to share an Item from a Collection with anyone, regardless of their permissions, even if they
+> are not users within the project.
 
 <video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/app-guide/content/data-shares/whats-a-share-look-like-20220212A.mp4" type="video/mp4" />
@@ -14,17 +14,15 @@
 
 In a given Project, some Collections will likely be hidden for the Public as well as other Roles. There may be cases
 when you want to share an Item with a person _(or people)_ that don't have the permissions to see it. This is where
-Shares come in to play. Shares let you give anybody access to an Item. When a Share is created on an Item, you assign
-some Role for the Share to inherit view permissions from, then you can _share_ the Item via hyperlink or email. The link
-leads to a page with nothing but the contents of that shared Item.
+Shares come in to play. Shares let you give anybody access to an Item. When a Share is created on an Item, you assign a
+Role for the Share to inherit view permissions from, then you can _share_ the Item via hyperlink or email. The link
+leads to a page with nothing but the read-only content of that shared Item.
 
 ::: tip Read-only
 
 At this time, Shares are read-only. However, Data Sharing is an extensible feature that could support full CRUD
-permissions. PRs to address this are welcome. Learn more about [extensions](/extensions/introduction/) and
-[contributions](/contributing/introduction/).
-
-Interested in financially sponsoring this extension? [Contact us](https://directus.io/contact/).
+permissions. We welcome any [pull-requests](/contributing/introduction/) to address this or interest in
+[sponsoring the feature](/getting-started/support/#sponsored-work).
 
 :::
 
@@ -198,31 +196,6 @@ that get shared.
 6. Click to check the Collection Fields you'd like to allow read permissions on.
 7. Select <span mi>check</span> in the side menu Header to confirm changes.
 
-## New User Options
-
-At the bottom of the Role Options Menu, there is an option to create new / add existing User(s) into the Role. Creating
-a Role within Shares is just the same as creating a new User in **User Directory > All Users >**
-<span mi btn>add</span>. This is going to be a _real_ User, available globally throughout the app. Learn more about the
-[User Directory](/app/user-directory/).
-
-### Create New User
-
-![Create User within Shares](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/creating-a-new-user-within-shares-20220211A.webp)
-
-1. Navigate into **Share Options Menu > Role > <span mi icon>open_in_new</span> > Users In Role**.
-2. Click "Create New". This will open **Creating Item in Directus Users**.
-3. Configure the new User as desired.
-4. Click <span mi btn>check</span> to confirm and create new User.
-
-### Add Existing User
-
-![Add Existing User Menu](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/add-existing-user-menu-20220211A.webp)
-
-1. Navigate into **Share Options Menu > Role > <span mi icon>open_in_new</span> > Users In Role**.
-2. Click "Add Existing".
-3. Click on the User(s) you wish to add.
-4. Click the <span mi btn>check</span> icon to confirm your selection.
-
 ## Extensibility Options
 
 Directus Core is completely open-source, modular and extensible. Extensions allow you to expand or modify any part of
@@ -233,7 +206,7 @@ Directus to fit your needs. Here are some great resources to get started down th
 - [Contributing > Introduction](/contributing/introduction/)
 - [Contributing > Codebase Overview](/contributing/codebase-overview/)
 
-::: tip Outsourcing and Sponsoring Development
+::: tip Sponsoring Accelerated Development
 
 Working on an enterprise project and looking to outsource or financially sponsor the development of a Shares extension?
 Contact [our team](https://directus.io/contact/).
