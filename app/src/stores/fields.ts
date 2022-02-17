@@ -1,6 +1,6 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { useRelationsStore } from '@/stores/';
+import { useRelationsStore, useCollectionsStore } from '@/stores/';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
@@ -76,7 +76,7 @@ export const useFieldsStore = defineStore({
 					const { language, translation } = field.meta.translations[i];
 
 					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
-					const literalInterpolatedTranslation = translation.replace(/([{}@$|])/g, "{'$1'}");
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : '';
 
 					i18n.global.mergeLocaleMessage(language, {
 						fields: {
@@ -212,6 +212,7 @@ export const useFieldsStore = defineStore({
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
 			const relationsStore = useRelationsStore();
+			const collectionsStore = useCollectionsStore();
 
 			const stateClone = [...this.fields];
 			const relationsStateClone = [...relationsStore.relations];
@@ -222,12 +223,18 @@ export const useFieldsStore = defineStore({
 			});
 
 			relationsStore.relations = relationsStore.relations.filter((relation) => {
-				if (relation.collection === collectionKey && relation.field === fieldKey) return false;
+				if (
+					(relation.collection === collectionKey && relation.field === fieldKey) ||
+					(relation.related_collection === collectionKey && relation.meta?.one_field === fieldKey)
+				) {
+					return false;
+				}
 				return true;
 			});
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
+				await collectionsStore.hydrate();
 			} catch (err: any) {
 				this.fields = stateClone;
 				relationsStore.relations = relationsStateClone;

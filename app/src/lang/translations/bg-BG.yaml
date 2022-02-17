@@ -353,6 +353,7 @@ interface_label: Интерфейс
 today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
+delete_share: Изтриване на споделянето
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -574,6 +575,7 @@ one_item: '1 запис'
 one_filtered_item: '1 филтриран запис'
 delete_collection_are_you_sure: >-
   Сигурни ли сте, че искате да изтриете колекцията? Всички записи и самата колекция ще бъдат изтрити. Действието е завинаги.
+delete_folder_are_you_sure: Сигурни ли сте, че искате да изтриете папката? Подпапките и колекциите ще бъдат преместени към кореновата папка.
 collections_shown: Показани колекции
 visible_collections: Видими колекции
 hidden_collections: Скрити колекции
@@ -1403,8 +1405,6 @@ interfaces:
     customSyntax_label: Добавяне на собствени синтактични типове
     customSyntax_add: Добавяне на собствен синтаксис
     box: Блоков / Вложен
-    imageToken: Токен за изображенията
-    imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
   map:
     map: Географска карта
     description: Избор на местоположение от карта
@@ -1511,8 +1511,6 @@ interfaces:
     custom_formats: Собтсвени формати
     options_override: Преопределяне на настройки
     folder_note: Папка за качените файлове. Съществуващите файлове не се променят.
-    imageToken: Токен за изображенията
-    imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
     description: Автоматично дописване на стойности чрез външно API.

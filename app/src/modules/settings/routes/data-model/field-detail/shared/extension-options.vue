@@ -12,12 +12,12 @@
 	/>
 
 	<component
-		:is="`${type}-options-${extensionInfo.id}`"
+		:is="`${type}-options-${extensionInfo!.id}`"
 		v-else
-		v-model="optionsValues"
 		:value="optionsValues"
 		:collection="collection"
 		:field="field"
+		@input="optionsValues = $event"
 	/>
 </template>
 
@@ -60,7 +60,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	emits: ['update:model-value'],
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -112,7 +112,7 @@ export default defineComponent({
 				return props.modelValue;
 			},
 			set(values: Record<string, any>) {
-				emit('update:model-value', values);
+				emit('update:modelValue', values);
 			},
 		});
 
