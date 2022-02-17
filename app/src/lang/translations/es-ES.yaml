@@ -270,6 +270,7 @@ note: Nota
 enter_a_value: Ingrese un valor...
 enter_a_placeholder: Ingrese un placeholder...
 length: Longitud
+soft_length: Límite suave
 precision_scale: Precisión y Escala
 readonly: Sólo lectura
 unique: Único
@@ -280,9 +281,13 @@ foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
 dismiss: Cerrar
 raw_value: Valor Plano
+copy_raw_value_success: Copiado
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
+clear_value: Limpiar valor
 clear_changes: Borrar Cambios
+reset_to_default: Restablecer ajustes predeterminados
+undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Presentar toda la actividad
 page_not_found: Página No Encontrada
@@ -313,9 +318,15 @@ related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de Colección
 languages_collection: Colección de Idiomas
+import_data_input_placeholder: CSV o JSON...
+import_data_button: Comenzar importación
+import_data_indeterminate: Importando datos...
 label_import: Importar
+label_export: Exportar
+import_export: Importar / Exportar
 format: Formato
 use_current_filters_settings: Usar Filtros y Ajustes Actuales
+export_data_button: Comenzar exportación
 last_page: Última Página
 last_access: Último Acceso
 fill_template: Rellenar con Valor de Plantilla
@@ -511,6 +522,9 @@ errors:
   INTERNAL_SERVER_ERROR: Error Inesperado
   NOT_NULL_VIOLATION: El valor no puede ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
+  VALUE_TOO_LONG: El valor es demasiado largo
+  VALUE_OUT_OF_RANGE: Valor fuera de rango
+  INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
 security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
@@ -541,6 +555,7 @@ update_collection_success: Colección Actualizada
 delete_collection_success: Colección Eliminada
 make_collection_visible: Hacer visible la colección
 make_collection_hidden: Hacer que la colección se oculte
+make_folder_visible: Hacer visible la carpeta
 start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
@@ -706,6 +721,8 @@ unlimited: Ilimitado
 open_link_in: Abrir enlace en
 new_tab: Nueva pestaña
 current_tab: Pestaña actual
+save_image: Guardar imagen
+save_media: Guardar archivo
 wysiwyg_options:
   aligncenter: Alinear al Centro
   alignjustify: Alinear Justificado
@@ -939,6 +956,7 @@ fields:
     external_identifier: Identificador externo
     last_page: Última Página
     last_access: Último Acceso
+    email_notifications: Notificaciones por correo electrónico
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -951,6 +969,7 @@ fields:
     basemaps_style: Estilo Mapbox
     mapbox_key: Token de acceso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribución
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     additional_transforms: Transformaciones adicionales
     project_name: Nombre del Proyecto
@@ -969,10 +988,15 @@ fields:
     storage_asset_transform: Transformaciones permitidas
     custom_css: CSS Personalizado
     module_bar: Barra de módulos
+    transformations_all: Permitir todas las transformaciones
   directus_shares:
     name: Nombre
     role: Rol
     password: Contraseña
+    date_start: Fecha Inicio
+    date_end: Fecha Fin
+    max_uses: Usos máximos
+    times_used: Veces usado
   directus_fields:
     collection: Nombre de Colección
     icon: Ícono de Colección
@@ -998,13 +1022,19 @@ fields:
     data: Datos
     header: Encabezado
     value: Valor
+    headers: Solicitar Encabezados
+    data_label: Enviar datos del evento
+    triggers: Disparadores
     actions: Acciones
     collections: Colecciones
 field_options:
   directus_settings:
+    project_name_placeholder: Mi proyecto...
     security_divider_title: Seguridad
     auth_password_policy:
       weak_text: Débil - 8 caracteres mínimos
+    storage_asset_presets:
+      fit_label: Ajustar
     additional_transforms: Transformaciones adicionales
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     mapbox_key: Token de acceso Mapbox
@@ -1029,15 +1059,20 @@ field_options:
     translation: Traducción
     collection_name: Nombre de Colección
     archive_divider: Archivar
+    archive_field_placeholder: Elija un campo...
     sort_divider: Ordenar
+    sort_field: Elija un campo...
     accountability_divider: Responsabilidad
     duplication_divider: Duplicación
+  directus_files:
+    title: Un título único...
   directus_roles:
     description: Una descripción de este rol...
     fields:
       icon_name: Ícono
       name_name: Nombre
       name_placeholder: Ingresar un título...
+      link_name: Enlace
     collections_name: Colecciones
     collections_addLabel: Añadir Colección...
   directus_users:
@@ -1055,6 +1090,7 @@ field_options:
   directus_webhooks:
     status_options_active: Activo
     status_options_inactive: Inactivo
+    data_label: Enviar datos del evento
     triggers_divider: Disparadores
     actions_create: Crear
     actions_update: Actualización
@@ -1064,14 +1100,27 @@ field_options:
       header: Encabezado
       value: Valor
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
+no_value: Sin valor
 do_nothing: No hacer nada
 generate_and_save_uuid: Generar y Guardar UUID
 save_current_user_id: Guardar ID de Usuario Actual
 save_current_user_role: Guardar Rol Actual de Usuario
 save_current_datetime: Guardar Fecha y Hora Actual
+always_open: Abrir Siempre
+start_open: Iniciar apertura
+start_collapsed: Iniciar colapsado
 block: Bloque
 inline: Alineado
 comment: Comentar
+shares: Compartido
+unlimited_usage: Uso ilimitado
+expired: Expirado
+upcoming: Próximamente
+share: Compartir
+share_copy_link: Copiar enlace
+share_copy_link_success: Enlace Copiado
+share_copy_link_error: Imposible copiar el archivo
+share_send_link: Enviar enlace
 relational_triggers: Disparadores Relacionales
 referential_action_field_label_m2o: Al eliminar {collection}...
 referential_action_field_label_o2m: Al deseleccionar {collection}...
@@ -1123,6 +1172,7 @@ relationship: Relación
 reset: Restablecer
 reset_password: Restablecer Contraseña
 revisions: Revisiones
+no_revisions: Aún no hay revisiones
 revert: Revertir
 save: Guardar
 schema: Esquema
@@ -1141,6 +1191,7 @@ sort_desc: Orden descendente
 template: Plantilla
 require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
+translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
@@ -1148,17 +1199,26 @@ start: Iniciar
 interfaces:
   filter:
     name: Filtro
+    description: Configurar un objeto de filtro.
     add_filter: Agregar Filtro
     add_group: Y / O grupo
+    add_value: Añadir valor
+    logic_type_and: "Y"
+    logic_type_or: O
     all: Todo
     any: Cualquiera
     and: "y"
+    of_the_following: de las siguientes
+    no_rules: No hay reglas configuradas
     change_value: Haga clic para cambiar el valor
+    placeholder: Arrastre archivos a esta zona
   group-accordion:
+    name: Acordeón
     start: Iniciar
     all_closed: Todo Cerrado
     first_opened: Primero Abierto
     all_opened: Todo Abierto
+    accordion_mode: Modo Accordion
   presentation-links:
     presentation-links: Botón de enlace
     links: Enlaces
@@ -1194,6 +1254,7 @@ interfaces:
     description: Introduzca o seleccione un valor de color
     placeholder: Seleccione un color...
     preset_colors: Colores preestablecidos
+    opacity: Opacidad
     preset_colors_add_label: Añadir nuevo color...
     name_placeholder: Introduce el nombre del color...
   datetime:
@@ -1263,6 +1324,8 @@ interfaces:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
     edit: Editar
+    preview: Vista previa
+    previewFont: Previsualizar fuente
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
     customSyntax_add: Añadir sintaxis personalizada
@@ -1270,6 +1333,7 @@ interfaces:
   map:
     map: Mapa
     zoom: Zoom
+    default_view: Vista predeterminada
     native: Nativo
     geojson: GeoJSON
     lnglat: Longitud, Latitud
@@ -1332,6 +1396,8 @@ interfaces:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
     language_field: Campo indicador de idioma
+  list-o2m-tree-view:
+    recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus
@@ -1347,14 +1413,21 @@ interfaces:
     options_override: Sobrescribir Opciones
   input-autocomplete-api:
     results_path: Ruta de Resultados
+    value_path: Ruta del valor
+    text_path: Ruta de texto
     trigger: Disparador
     rate: Tasa
   group-detail:
     header_icon: Iconos del encabezado
     header_color: Color del encabezado
+    start_open: Iniciar apertura
+    start_closed: Iniciar colapsado
 displays:
   translations:
     translations: Traducciones
+    description: Previsualizar traducciones
+    enable: Habilitado
+    user_language: Usar el idioma actual del usuario
     default_language: Idioma predeterminado
     language_field: Campo indicador de idioma
   boolean:
@@ -1396,7 +1469,9 @@ displays:
     formatted-value: Valor Formateado
     description: Presentar una versión formateada del texto
     format: Formato
+    format_label: Formato automático
     font: Fuente
+    font_sans_serif: Sans Serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Negrita
@@ -1482,6 +1557,7 @@ panels:
     field: Campo
   time_series:
     name: Series de tiempo
+    value_field: Tipo de campo
   label:
     name: Etiqueta
   list:
