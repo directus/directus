@@ -17,6 +17,7 @@ import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
+import { RelationsService } from './relations';
 import { getHelpers, Helpers } from '../database/helpers';
 import Keyv from 'keyv';
 
@@ -403,21 +404,17 @@ export class FieldsService {
 		);
 
 		await this.knex.transaction(async (trx) => {
-			if (
-				this.schema.collections[collection] &&
-				field in this.schema.collections[collection].fields &&
-				this.schema.collections[collection].fields[field].alias === false
-			) {
-				await trx.schema.table(collection, (table) => {
-					table.dropColumn(field);
-				});
-			}
-
 			const relations = this.schema.relations.filter((relation) => {
 				return (
 					(relation.collection === collection && relation.field === field) ||
 					(relation.related_collection === collection && relation.meta?.one_field === field)
 				);
+			});
+
+			const relationsService = new RelationsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
 			});
 
 			const fieldsService = new FieldsService({
@@ -429,9 +426,13 @@ export class FieldsService {
 			for (const relation of relations) {
 				const isM2O = relation.collection === collection && relation.field === field;
 
-				// If the current field is a m2o, delete the related o2m if it exists
-				if (isM2O && relation.related_collection && relation.meta?.one_field) {
-					await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
+				// If the current field is a m2o, delete the related o2m if it exists and remove the relationship
+				if (isM2O) {
+					await relationsService.deleteOne(collection, field);
+
+					if (relation.related_collection && relation.meta?.one_field) {
+						await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
+					}
 				}
 
 				// If the current field is a o2m, just delete the one field config from the relation
@@ -477,6 +478,16 @@ export class FieldsService {
 			}
 
 			await trx('directus_fields').delete().where({ collection, field });
+
+			if (
+				this.schema.collections[collection] &&
+				field in this.schema.collections[collection].fields &&
+				this.schema.collections[collection].fields[field].alias === false
+			) {
+				await trx.schema.table(collection, (table) => {
+					table.dropColumn(field);
+				});
+			}
 		});
 
 		if (this.cache && env.CACHE_AUTO_PURGE) {
