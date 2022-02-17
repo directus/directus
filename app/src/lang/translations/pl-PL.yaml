@@ -735,6 +735,8 @@ unlimited: Nielimitowany
 open_link_in: Otwórz link w
 new_tab: Nowa karta
 current_tab: Aktualna karta
+save_image: Zapisz obraz
+save_media: Zapisz media
 wysiwyg_options:
   aligncenter: Wyśrodkuj
   alignjustify: Wyjustuj
@@ -1406,8 +1408,8 @@ interfaces:
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1514,8 +1516,8 @@ interfaces:
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.
