@@ -735,6 +735,8 @@ unlimited: Illimitato
 open_link_in: Apri collegamento in
 new_tab: Nuova scheda
 current_tab: Scheda corrente
+save_image: Salva immagine
+save_media: Salva media
 wysiwyg_options:
   aligncenter: Centrato
   alignjustify: Giustificato
@@ -1256,6 +1258,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1405,6 +1408,8 @@ interfaces:
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
@@ -1511,6 +1516,8 @@ interfaces:
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.
