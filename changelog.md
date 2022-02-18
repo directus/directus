@@ -103,8 +103,7 @@ been renamed to `.readByQuery`. Please check / update your usage of the SDK befo
 ### :package: Dependency Updates
 
 - [#11710](https://github.com/directus/directus/pull/11710) Bump url-parse from 1.5.3 to 1.5.7 (by @dependabot[bot])
-
-Directus refs/tags/v9.5.2
+- [#11689](https://github.com/directus/directus/pull/11689) Update rollup-plugin-styles to v4 (by @abdonrd)
 
 ## v9.5.1 (February 3, 2022)
 
