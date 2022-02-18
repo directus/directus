@@ -46,7 +46,6 @@
 		>
 			<template #item="{ element }">
 				<collection-item
-					class="nested"
 					:collection="element"
 					:collections="collections"
 					@editCollection="$emit('editCollection', $event)"
@@ -84,7 +83,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['setNestedSort', 'editCollection', 'setCollectionNameWidth'],
+	emits: ['setNestedSort', 'editCollection'],
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 		const { t } = useI18n();
