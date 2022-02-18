@@ -357,6 +357,8 @@ delete_share: Elimina condivisione
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -1196,7 +1198,7 @@ choose_action: Scegli azione
 continue_label: Continua
 continue_as: >-
   {name} è attualmente autenticato. Se riconosci questo account, premi continua.
-editing_role: '{role} Ruolo'
+editing_role: 'Ruolo {role}'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
 delete_label: Elimina
@@ -1258,6 +1260,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
