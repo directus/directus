@@ -18,7 +18,7 @@
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
 				<span ref="collectionName" class="collection-name">{{ collection.name }}</span>
-				<span v-if="collection.meta?.note" class="collection-note">— {{ collection.meta.note }}</span>
+				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
 			</div>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
 				<v-progress-circular v-if="collapseLoading" small indeterminate />
@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, onMounted } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import CollectionOptions from './collection-options.vue';
 import { Collection } from '@/types';
 import Draggable from 'vuedraggable';
@@ -88,14 +88,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 		const { t } = useI18n();
-
-		const collectionName = ref<HTMLElement>();
-
-		onMounted(() => {
-			if (collectionName.value) {
-				emit('setCollectionNameWidth', collectionName.value.clientWidth);
-			}
-		});
 
 		const nestedCollections = computed(() =>
 			props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
@@ -137,7 +129,6 @@ export default defineComponent({
 			toggleCollapse,
 			collapseTooltip,
 			collapseLoading,
-			collectionName,
 		};
 
 		async function toggleCollapse() {
@@ -202,23 +193,24 @@ export default defineComponent({
 
 .collection-name {
 	flex-shrink: 0;
-	min-width: var(--collection-name-min-width);
 }
 
 .hidden .collection-name {
 	color: var(--foreground-subdued);
 }
 
-.collection-item.nested .collection-name {
-	min-width: auto;
-}
-
 .collection-note {
-	margin-left: 8px;
+	margin-left: 16px;
 	overflow: hidden;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	opacity: 0;
+	transition: opacity var(--fast) var(--transition);
+}
+
+.v-list-item:hover .collection-note {
+	opacity: 1;
 }
 
 .collection-icon {

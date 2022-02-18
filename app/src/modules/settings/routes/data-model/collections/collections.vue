@@ -35,13 +35,7 @@
 				</template>
 			</v-info>
 
-			<v-list
-				v-else
-				class="draggable-list"
-				:style="{
-					'--collection-name-min-width': `${collectionNameWidth}px`,
-				}"
-			>
+			<v-list v-else class="draggable-list">
 				<draggable
 					:force-fallback="true"
 					:model-value="rootCollections"
@@ -58,7 +52,6 @@
 							:collections="collections"
 							@editCollection="editCollection = $event"
 							@setNestedSort="onSort"
-							@set-collection-name-width="setCollectionNameWidth"
 						/>
 					</template>
 				</draggable>
@@ -87,19 +80,13 @@
 				</v-list-item>
 			</v-list>
 
-			<v-detail
-				:label="t('system_collections')"
-				:style="{
-					'--collection-name-min-width': `${systemCollectionNameWidth}px`,
-				}"
-			>
+			<v-detail :label="t('system_collections')">
 				<collection-item
 					v-for="collection of systemCollections"
 					:key="collection.collection"
 					:collection="collection"
 					:collections="systemCollections"
 					disable-drag
-					@set-collection-name-width="setSystemCollectionNameWidth"
 				/>
 			</v-detail>
 		</div>
@@ -139,9 +126,6 @@ export default defineComponent({
 	components: { SettingsNavigation, CollectionItem, CollectionOptions, Draggable, CollectionDialog },
 	setup() {
 		const { t } = useI18n();
-
-		const collectionNameWidth = ref(0);
-		const systemCollectionNameWidth = ref(0);
 
 		const collectionDialogActive = ref(false);
 		const editCollection = ref<Collection | null>();
@@ -197,10 +181,6 @@ export default defineComponent({
 			onSort,
 			rootCollections,
 			editCollection,
-			collectionNameWidth,
-			setCollectionNameWidth,
-			systemCollectionNameWidth,
-			setSystemCollectionNameWidth,
 		};
 
 		async function onSort(updates: Collection[], removeGroup = false) {
@@ -226,18 +206,6 @@ export default defineComponent({
 				);
 			} catch (err: any) {
 				unexpectedError(err);
-			}
-		}
-
-		function setCollectionNameWidth(width: number) {
-			if (width > collectionNameWidth.value) {
-				collectionNameWidth.value = width;
-			}
-		}
-
-		function setSystemCollectionNameWidth(width: number) {
-			if (width > systemCollectionNameWidth.value) {
-				systemCollectionNameWidth.value = width;
 			}
 		}
 	},
