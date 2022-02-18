@@ -185,13 +185,21 @@ export default defineComponent({
 	flex-grow: 1;
 	align-items: center;
 	height: 100%;
+	overflow: hidden;
 	font-family: var(--family-monospace);
 	pointer-events: none;
 }
 
+.collection-name {
+	flex-shrink: 0;
+}
+
 .collection-note {
 	margin-left: 8px;
+	overflow: hidden;
 	color: var(--foreground-subdued);
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .collection-icon {
