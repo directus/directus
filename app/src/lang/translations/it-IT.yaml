@@ -155,9 +155,9 @@ item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
-permissions_for_role: 'Campi che il ruolo {role} può {action}.'
-fields_for_role: 'Campi che il ruolo {role} può {action}.'
-validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
+permissions_for_role: 'Oggetti per cui è abilitata l''azione {action} per il ruolo {role}.'
+fields_for_role: 'Campi per cui è abilitata l''azione {action} per il ruolo {role}.'
+validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare all''azione {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
 revision_post_create: Ecco come appariva questo elemento quando è stato creato.
@@ -1260,7 +1260,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
