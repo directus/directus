@@ -1,5 +1,5 @@
 <template>
-	<v-menu :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
 			<v-input :active="active" clickable readonly :model-value="displayValue" :disabled="disabled" @click="toggle">
 				<template v-if="!disabled" #append>
@@ -15,6 +15,7 @@
 			:use-24="use24"
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
+			@close="dateTimeMenu?.deactivate"
 		/>
 	</v-menu>
 </template>
@@ -52,6 +53,8 @@ export default defineComponent({
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const dateTimeMenu = ref();
 
 		const { displayValue } = useDisplayValue();
 
@@ -93,7 +96,7 @@ export default defineComponent({
 			emit('input', null);
 		}
 
-		return { displayValue, unsetValue };
+		return { displayValue, unsetValue, dateTimeMenu };
 	},
 });
 </script>
