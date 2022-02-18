@@ -11,13 +11,14 @@
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>
-			<div class="collection-name">
+			<div class="collection-item-detail">
 				<v-icon
 					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<span>{{ collection.name }}</span>
+				<span class="collection-name">{{ collection.name }}</span>
+				<span v-if="collection.meta?.note" class="collection-note">- {{ collection.meta.note }}</span>
 			</div>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
 				<v-progress-circular v-if="collapseLoading" small indeterminate />
@@ -179,13 +180,18 @@ export default defineComponent({
 	margin-bottom: 8px;
 }
 
-.collection-name {
+.collection-item-detail {
 	display: flex;
 	flex-grow: 1;
 	align-items: center;
 	height: 100%;
 	font-family: var(--family-monospace);
 	pointer-events: none;
+}
+
+.collection-note {
+	margin-left: 8px;
+	color: var(--foreground-subdued);
 }
 
 .collection-icon {
@@ -196,8 +202,7 @@ export default defineComponent({
 	cursor: grab;
 }
 
-.hidden {
-	--v-list-item-color: var(--foreground-subdued);
-	--v-icon-color: var(--foreground-subdued);
+.hidden .collection-name {
+	color: var(--foreground-subdued);
 }
 </style>
