@@ -17,7 +17,7 @@
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<span class="collection-name">{{ collection.name }}</span>
+				<span ref="collectionName" class="collection-name">{{ collection.name }}</span>
 				<span v-if="collection.meta?.note" class="collection-note">— {{ collection.meta.note }}</span>
 			</div>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
@@ -46,6 +46,7 @@
 		>
 			<template #item="{ element }">
 				<collection-item
+					class="nested"
 					:collection="element"
 					:collections="collections"
 					@editCollection="$emit('editCollection', $event)"
@@ -57,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { defineComponent, PropType, computed, ref, onMounted } from 'vue';
 import CollectionOptions from './collection-options.vue';
 import { Collection } from '@/types';
 import Draggable from 'vuedraggable';
@@ -83,10 +84,18 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['setNestedSort', 'editCollection'],
+	emits: ['setNestedSort', 'editCollection', 'setCollectionNameWidth'],
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 		const { t } = useI18n();
+
+		const collectionName = ref<HTMLElement>();
+
+		onMounted(() => {
+			if (collectionName.value) {
+				emit('setCollectionNameWidth', collectionName.value.clientWidth);
+			}
+		});
 
 		const nestedCollections = computed(() =>
 			props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
@@ -128,6 +137,7 @@ export default defineComponent({
 			toggleCollapse,
 			collapseTooltip,
 			collapseLoading,
+			collectionName,
 		};
 
 		async function toggleCollapse() {
@@ -192,6 +202,15 @@ export default defineComponent({
 
 .collection-name {
 	flex-shrink: 0;
+	min-width: var(--collection-name-min-width);
+}
+
+.hidden .collection-name {
+	color: var(--foreground-subdued);
+}
+
+.collection-item.nested .collection-name {
+	min-width: auto;
 }
 
 .collection-note {
@@ -208,9 +227,5 @@ export default defineComponent({
 
 .drag-handle {
 	cursor: grab;
-}
-
-.hidden .collection-name {
-	color: var(--foreground-subdued);
 }
 </style>
