@@ -35,7 +35,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'close'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -63,10 +63,7 @@ export default defineComponent({
 
 		onBeforeUnmount(() => {
 			if (flatpickr) {
-				const selectedDate = flatpickr.selectedDates.length > 0 ? flatpickr.selectedDates[0] : null;
-				emitValue(selectedDate);
-
-				flatpickr.destroy();
+				flatpickr.close();
 				flatpickr = null;
 			}
 		});
@@ -84,6 +81,10 @@ export default defineComponent({
 				const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
 				emitValue(selectedDate);
 			},
+			onClose(selectedDates: Date[], _dateStr: string, _instance: Flatpickr.Instance) {
+				const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
+				emitValue(selectedDate);
+			},
 			onReady(_selectedDates: Date[], _dateStr: string, instance: Flatpickr.Instance) {
 				const setToNowButton: HTMLElement = document.createElement('button');
 				setToNowButton.innerHTML = t('interfaces.datetime.set_to_now');
@@ -91,6 +92,14 @@ export default defineComponent({
 				setToNowButton.tabIndex = -1;
 				setToNowButton.addEventListener('click', setToNow);
 				instance.calendarContainer.appendChild(setToNowButton);
+
+				if (!props.use24) {
+					instance.amPM?.addEventListener('keydown', enterToClose);
+				} else if (props.includeSeconds) {
+					instance.secondElement?.addEventListener('keydown', enterToClose);
+				} else {
+					instance.minuteElement?.addEventListener('keydown', enterToClose);
+				}
 			},
 		};
 
@@ -120,6 +129,12 @@ export default defineComponent({
 
 		function setToNow() {
 			flatpickr?.setDate(new Date(), true);
+		}
+
+		function enterToClose(e: any) {
+			if (e.key !== 'Enter') return;
+			flatpickr?.close();
+			emit('close');
 		}
 
 		return { t, wrapper };
