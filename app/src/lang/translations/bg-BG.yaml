@@ -357,6 +357,8 @@ delete_share: Изтриване на споделянето
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
@@ -735,6 +737,8 @@ unlimited: Неограничен
 open_link_in: Отваряне не връзката в
 new_tab: Нов таб
 current_tab: Текущ таб
+save_image: Запазване на изображението
+save_media: Запазване на медията
 wysiwyg_options:
   aligncenter: Центриране
   alignjustify: Двустранно подравняване
@@ -1256,6 +1260,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1405,6 +1410,8 @@ interfaces:
     customSyntax_label: Добавяне на собствени синтактични типове
     customSyntax_add: Добавяне на собствен синтаксис
     box: Блоков / Вложен
+    imageToken: Статичен токен за достъп
+    imageToken_label: Статичния токен за достъп се добавя след URL-a на файла
   map:
     map: Географска карта
     description: Избор на местоположение от карта
@@ -1511,6 +1518,8 @@ interfaces:
     custom_formats: Собтсвени формати
     options_override: Преопределяне на настройки
     folder_note: Папка за качените файлове. Съществуващите файлове не се променят.
+    imageToken: Статичен токен за достъп
+    imageToken_label: Статичния токен за достъп се добавя след URL-a на файла
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
     description: Автоматично дописване на стойности чрез външно API.
