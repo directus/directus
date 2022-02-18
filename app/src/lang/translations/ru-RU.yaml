@@ -284,14 +284,18 @@ foreign_key: Внешний Ключ
 finish_setup: Завершить Настройку
 dismiss: Скрыть
 raw_value: Сырое значение
+copy_raw_value: Копировать сырое значение
 copy_raw_value_success: Скопировано
 copy_raw_value_fail: Сбой копирования
+paste_raw_value: Вставить сырое значение
 paste_raw_value_success: Вставлено
 paste_raw_value_fail: Ошибка вставки
+view_raw_value: Посмотреть сырое значение
 edit_raw_value: Редактировать Сырое Значение
 enter_raw_value: Введите сырое значение...
 clear_value: Очистить значение
 clear_changes: Сбросить изменения
+reset_to_default: Сбросить до значений по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
 show_all_activity: Показать Всю Активность
@@ -352,6 +356,8 @@ delete_comment: Удалить комментарий
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
@@ -529,6 +535,8 @@ errors:
   INTERNAL_SERVER_ERROR: Неожиданная Ошибка
   NOT_NULL_VIOLATION: Значение не может быть null
   ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
+  VALUE_TOO_LONG: Значение слишком длинное
+  VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
   UNKNOWN: Неожиданная Ошибка
 security: Безопасность
 value_hashed: Значение Безопасно Хэшировано
