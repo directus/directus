@@ -216,4 +216,4 @@ Contact [our team](https://directus.io/contact/).
 ## More Help
 
 Looking for technical support for your non-enterprise project? Chat with thousands of engineers within our growing
-[Community on Discord](https://directus.io/contact/)
+[Community on Discord](https://discord.com/invite/directus).
