@@ -236,11 +236,6 @@ export default defineComponent({
 	--v-list-item-color: var(--foreground-subdued);
 }
 
-.collection-name {
-	flex-grow: 1;
-	font-family: var(--family-monospace);
-}
-
 .collection-icon {
 	margin-right: 8px;
 }
