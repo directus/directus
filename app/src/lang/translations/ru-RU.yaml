@@ -537,6 +537,7 @@ errors:
   ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
   VALUE_TOO_LONG: Значение слишком длинное
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
+  INVALID_FOREIGN_KEY: Неверный внешний ключ
   UNKNOWN: Неожиданная Ошибка
 security: Безопасность
 value_hashed: Значение Безопасно Хэшировано
@@ -567,12 +568,15 @@ update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
 make_collection_visible: Сделать коллекцию видимой
 make_collection_hidden: Сделать коллекцию скрытой
+make_folder_visible: Показать папку
+make_folder_hidden: Скрыть папку
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
 one_filtered_item: '1 отфильтрованный элемент'
 delete_collection_are_you_sure: >-
   Вы уверены, что хотите удалить эту коллекцию? Это действие приведет к удалению коллекции и всех ее элементов. Это действие необратимо.
+delete_folder_are_you_sure: Вы уверены, что хотите удалить эту папку? Вложенные папки и коллекции будут перемещены на самый верхний уровень.
 collections_shown: Показано Коллекций
 visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
@@ -732,6 +736,8 @@ unlimited: Без ограничения
 open_link_in: Открыть ссылку в
 new_tab: Новая вкладка
 current_tab: Текущая вкладка
+save_image: Сохранить изображение
+save_media: Сохранить медиа
 wysiwyg_options:
   aligncenter: По Середине
   alignjustify: По Ширине
