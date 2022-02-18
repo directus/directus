@@ -2,6 +2,110 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.5.2 (February 18, 2022)
+
+### ⚠️ (Potential) Breaking Change
+
+The SDKs type signature was tweaked to make it consistent with the API's internal services. The `.readMany` method has
+been renamed to `.readByQuery`. Please check / update your usage of the SDK before upgrading.
+
+### :rocket: Improvements
+
+- **App**
+  - [#11705](https://github.com/directus/directus/pull/11705) add "press enter to close" for time inputs (by @azrikahar)
+  - [#11703](https://github.com/directus/directus/pull/11703) Align displayed time for 24 hours format (by @azrikahar)
+  - [#11702](https://github.com/directus/directus/pull/11702) Show collection notes (by @azrikahar)
+  - [#11640](https://github.com/directus/directus/pull/11640) Add required field indicators to accordion group (by
+    @azrikahar)
+  - [#11599](https://github.com/directus/directus/pull/11599) Auto fill display text when adding link in WYSIWYG (by
+    @azrikahar)
+  - [#11597](https://github.com/directus/directus/pull/11597) Change relation delete rule to `NO ACTION` for
+    non-nullable fields (by @Oreilles)
+  - [#11561](https://github.com/directus/directus/pull/11561) Add delete share translation (by @licitdev)
+  - [#11433](https://github.com/directus/directus/pull/11433) Fix text when deleting data-model folder (by @Nitwel)
+  - [#11286](https://github.com/directus/directus/pull/11286) Fix notifications position when sidebar is open (by
+    @azrikahar)
+- **API**
+  - [#11656](https://github.com/directus/directus/pull/11656) Merge token claims and userinfo in openid flow (by
+    @aidenfoxx)
+- **sdk**
+  - :warning: [#11204](https://github.com/directus/directus/pull/11204) SDK: split `readMany` into itself and
+    `readByQuery` (by @joselcvarela)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#11697](https://github.com/directus/directus/pull/11697) Fix translations for singleton (by @azrikahar)
+  - [#11685](https://github.com/directus/directus/pull/11685) Fix alias fields not showing up in permissions (by
+    @azrikahar)
+  - [#11681](https://github.com/directus/directus/pull/11681) Fix context menu directive's deactivate event (by
+    @azrikahar)
+  - [#11672](https://github.com/directus/directus/pull/11672) Add nested translations support (by @azrikahar)
+  - [#11670](https://github.com/directus/directus/pull/11670) Emit value before unmounting datepicker (by @licitdev)
+  - [#11642](https://github.com/directus/directus/pull/11642) Fix stacked drawers layering (by @licitdev)
+  - [#11600](https://github.com/directus/directus/pull/11600) Hydrate collections store after field deletion (by
+    @Oreilles)
+  - [#11584](https://github.com/directus/directus/pull/11584) Remove relation from store when translations field is
+    deleted (by @azrikahar)
+  - [#11582](https://github.com/directus/directus/pull/11582) Fix nested M2O field breaking parent M2O preview (by
+    @azrikahar)
+  - [#11580](https://github.com/directus/directus/pull/11580) Fix dashboard panels distinct functions (by @azrikahar)
+  - [#11569](https://github.com/directus/directus/pull/11569) Fix share items hidden by adblockers (by @Oreilles)
+  - [#11567](https://github.com/directus/directus/pull/11567) Fix m2o interface display issues (by @licitdev)
+  - [#11526](https://github.com/directus/directus/pull/11526) Fix soft limit overflowing (by @azrikahar)
+  - [#11520](https://github.com/directus/directus/pull/11520) Fix o2m interface selection issues (by @licitdev)
+  - [#11503](https://github.com/directus/directus/pull/11503) Prevent filter's datepicker closing on month nav (by
+    @azrikahar)
+  - [#11501](https://github.com/directus/directus/pull/11501) Fix roles in users module navigation not updating (by
+    @azrikahar)
+  - [#11482](https://github.com/directus/directus/pull/11482) Prevent literal interpolation on null translations & apply
+    to collection translations (by @azrikahar)
+  - [#11469](https://github.com/directus/directus/pull/11469) Fix translations interface divider's margin top (by
+    @azrikahar)
+  - [#11467](https://github.com/directus/directus/pull/11467) fix field advanced display config not working (by
+    @azrikahar)
+  - [#11454](https://github.com/directus/directus/pull/11454) Fix Metrics type panel creation (by @azrikahar)
+  - [#11453](https://github.com/directus/directus/pull/11453) Fix repeater's extension options not updating when
+    configured (by @azrikahar)
+  - [#11431](https://github.com/directus/directus/pull/11431) Fix items' translations not loaded in relational modal (by
+    @Nitwel)
+  - [#10882](https://github.com/directus/directus/pull/10882) fix fields validation to include field presets (by
+    @azrikahar)
+  - [#10548](https://github.com/directus/directus/pull/10548) Remove access token from asset url when unnecessary (by
+    @licitdev)
+- **API**
+  - [#11682](https://github.com/directus/directus/pull/11682) validate first user email during installation (by
+    @azrikahar)
+  - [#11572](https://github.com/directus/directus/pull/11572) Fix timestamp created with unexpected property in MariaDB
+    (by @Oreilles)
+  - [#11560](https://github.com/directus/directus/pull/11560) Add shares to app access minimum permissions (by
+    @licitdev)
+  - [#11525](https://github.com/directus/directus/pull/11525) fix directus_notifications default app access permissions
+    fields not returning as array (by @azrikahar)
+  - [#11444](https://github.com/directus/directus/pull/11444) Prevent selection of Foreign Keys for collection sort (by
+    @licitdev)
+  - [#11441](https://github.com/directus/directus/pull/11441) Prevent creation of relationships on primary keys (by
+    @licitdev)
+  - [#11432](https://github.com/directus/directus/pull/11432) Fix not being able to delete folder in data-model (by
+    @Nitwel)
+
+### :memo: Documentation
+
+- [#11704](https://github.com/directus/directus/pull/11704) fix/removed typo: duplicated word (by @nesjett)
+- [#11698](https://github.com/directus/directus/pull/11698) CLI docs Tip: Create date based snapshots (by
+  @Dominic-Marcelino)
+- [#11583](https://github.com/directus/directus/pull/11583) minor typo in google cloud documentation (by @yanc0)
+- [#11540](https://github.com/directus/directus/pull/11540) Fix snapshot options documentation error (by @eyecatchup)
+- [#11488](https://github.com/directus/directus/pull/11488) Fixes reference to documentation about environment
+  variables. (by @ijpatricio)
+- [#11485](https://github.com/directus/directus/pull/11485) Fix GCP Kubernetes Engine typo (by @Ismaaa)
+
+### :package: Dependency Updates
+
+- [#11710](https://github.com/directus/directus/pull/11710) Bump url-parse from 1.5.3 to 1.5.7 (by @dependabot[bot])
+
+Directus refs/tags/v9.5.2
+
 ## v9.5.1 (February 3, 2022)
 
 ### :rocket: Improvements
