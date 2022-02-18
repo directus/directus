@@ -1,36 +1,14 @@
 # User Directory
 
-> The User Directory Module is an interface to manage all users within the project, each with their own customizable
-> profile page.
+> [Users](/getting-started/glossary#users) are the individual accounts for logging in to the App. Each user belongs to a
+> [Role](/getting-started/glossary#roles) which defines its [Permissions](/getting-started/glossary#permissions). The
+> User Directory shows all users within the project, each with their own customizable profile page.
 
 [[toc]]
 
-## How it Works
-
-<video autoplay muted loop controls>
-<source src="www.example.com/example.mp4" />
-<p>Your browser is not displaying the video for some reason. Here's a <a href="www.example.com/example.mp4">link to the video</a> instead.</p>
-</video>
-
-1. Nav to User Directory
-2. Create & Invite
-3. Edit
-4. Delete
-
 ## User Directory Overview
 
-[Users](/getting-started/glossary#users) are the individual accounts for logging in to the App. Each user belongs to a
-[Role](/getting-started/glossary#roles), which defines its [Permissions](/getting-started/glossary#permissions).
-**Expand Paragraph**
-
-Users are referenced throughout the app, often for accountability purposes. Hovering over a user in this context will
-provide a popover for basic information, and clicking that popover will navigate you to a read-only view of that user's
-profile page.
-
-You can access your profile page from the User Directory or by clicking the User Menu in the
-[Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
-[Item Page](/app/content-items/). Administrators can customize the fields on this page, but the following are available
-by default.
+![The User Directory Page](image.webp)
 
 ::: tip System Fields
 
@@ -38,27 +16,72 @@ Administrators have access to additional system fields.
 
 :::
 
-![User Directory Main Page](image.webp)
+### Administrators vs Other Users
 
-- Navbar – Filter by Role.
-- Header
-  - Filter
-  - Invite User
-  - Create Item (aka a User)
-  - Card Size
-  - Filter
-  - Sort By Asc/Desc
+You can access your profile page from the User Directory or by clicking the User Menu in the
+[Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
+[Item Page](/app/content-items/). Administrators can customize the fields on this page, but the following are available
+by default.
 
-## Browsing Users
+### Viewing a User
 
-![User Directory Overview](../assets/app/user-directory-overview.png)
+<video title="Descriptive Title Goes Here" autoplay muted loop controls>
+<source src="www.example.com/example.mp4" />
+<p>Your browser is not displaying the video for some reason. Here's a <a href="www.example.com/example.mp4">link to the video</a> instead.</p>
+</video>
 
-Lists all users of the project, with a navigation that allows quick access to the different role groups. This page has
-the same functionality as other [Content Pages](/app/content-collections/).
+Users are referenced throughout the app, often for accountability purposes. Hovering over a user in this context will
+provide a popover for basic information, and clicking that popover will navigate you to a read-only view of that user's
+profile page.
 
-## The User Page
+## How it Works
 
-Intro Paragraph.
+Intro paragraph
+
+<video title="Descriptive Title Goes Here" autoplay muted loop controls>
+<source src="www.example.com/example.mp4" />
+<p>Your browser is not displaying the video for some reason. Here's a <a href="www.example.com/example.mp4">link to the video</a> instead.</p>
+</video>
+
+### Create User
+
+1. d
+
+### Search User
+
+2. d
+
+### Edit User
+
+1. Navigate into **User Directory > User Page**.
+2. Edit User Details
+
+### Delete User
+
+## Select, Edit & Delete Multiple Users
+
+You can edit a single User or do batch editing to make the same change across multiple Users.
+![How to Select, Edit, and Delete Multiple Users](video.mp4)
+
+## Layout Options
+
+Intro sentence. Cards and Table. ![Directory Layout Options](video.mp4)
+
+### Layout
+
+### Layout Setup
+
+## Search & Filter Users
+
+## Inviting Users
+
+![How to Invite Users](video.mp4)
+
+1. Steps
+
+## User Page Overview
+
+![The User Page](image.webp) Intro Sentence.
 
 ### User Details
 
@@ -72,7 +95,7 @@ Intro Paragraph.
 - **Location** — The city, country, office, or branch name
 - **Title** — The professional staff title
 - **Description** — A freeform text description
-- **Tags** — Keywords for searchability
+- **Tags** — Keywords for search-ability
 
 ### User Preferences
 
@@ -87,11 +110,11 @@ Intro Paragraph.
 
 ![Admin Options](image.webp)
 
-- Status
-- Role
-- Token
-- Provider
-- External Identifier
+- **Status** –
+- **Role** –
+- **Token** –
+- **Provider** –
+- **External Identifier** –
 
 ### Readonly Info
 
@@ -100,22 +123,6 @@ The sidebar's info component also includes the following readonly details:
 - **User Key** — The primary key of the user
 - **Last Page** — The last App page accessed by the user
 - **Last Access** — The timestamp of the user's last App or API action
-
-## Editing / Deleting User(s)
-
-### Edit Existing User
-
-![Add Existing User Menu](https://cdn.directus.io/docs/v9/app-guide/content/data-shares/add-existing-user-menu-20220211A.webp)
-
-1. Navigate into **Share Options Menu > Role > <span mi icon>open_in_new</span> > Users In Role**.
-2. Click "Add Existing".
-3. Click on the User(s) you wish to add.
-4. Click the <span mi btn>check</span> icon to confirm your selection.
-
-### Editing / Deleting Multiple Users
-
-1. Click
-2. Edit/Delete
 
 ## Extensibility Options
 
