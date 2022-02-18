@@ -95,12 +95,16 @@ Note, that this will force overwrite existing snapshot files.
 
 ::: tip Date-based snapshots
 
-To keep multiple snapshot organized by date, create a folder `snapshots` in your project root directory add the following custom script to your `package.json`:
+To keep multiple snapshot organized by date, create a folder `snapshots` in your project root directory add the
+following custom script to your `package.json`:
+
 ```
 "create-snapshot": "npx directus schema snapshot ./snapshots/\"$(date \"+%F\")\"-snapshot-\"$(date \"+%s\")\".yaml"
 ```
 
-When you run the command via `npm run create-snapshot` it will create a new snapshot with the following naming schema: `[YYYY-MM-DD]-snapshot-[timestamp].json`. This command can be run e.g by your deployent pipeline before each deploy on your server to keep a schema backup.
+When you run the command via `npm run create-snapshot` it will create a new snapshot with the following naming schema:
+`[YYYY-MM-DD]-snapshot-[timestamp].json`. This command can be run e.g by your deployent pipeline before each deploy on
+your server to keep a schema backup.
 
 :::
 
