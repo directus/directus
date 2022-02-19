@@ -54,7 +54,9 @@ edit_collection: Editar Colección
 exclusive: Exclusivo
 children: Subsecciones
 db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
+show_active_items: Mostrar elementos activos
 show_archived_items: Mostrar Elementos Archivados
+show_all_items: Mostrar todos los elementos
 edited: Valor Editado
 required: Requerido
 required_for_app_access: Necesario para el acceso a App
