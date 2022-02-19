@@ -45,7 +45,11 @@ export function useFieldTree(
 		const fields = fieldsStore
 			.getFieldsForCollectionSorted(collection!)
 			.concat(injectedFields || [])
-			.filter((field) => !field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+			.filter(
+				(field) =>
+					field.meta?.special?.includes('group') ||
+					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+			)
 			.filter(filter)
 			.flatMap((field) => makeNode(field, parent));
 

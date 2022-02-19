@@ -156,6 +156,8 @@ fields:
         - decimal
         - integer
       allowNone: true
+      allowPrimaryKey: false
+      allowForeignKeys: false
     width: half
 
   - field: accountability_divider

@@ -6,7 +6,6 @@
 			:init="editorOptions"
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
-			@dirty="setDirty"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 		/>
@@ -60,7 +59,7 @@
 				<interface-input-code
 					:value="code"
 					language="htmlmixed"
-					line-wrapping="true"
+					:line-wrapping="true"
 					@input="code = $event"
 				></interface-input-code>
 			</div>
@@ -117,9 +116,14 @@
 				<v-tabs-items v-model="openMediaTab">
 					<v-tab-item value="video">
 						<template v-if="mediaSelection">
-							<video class="media-preview" controls="controls">
-								<source :src="mediaSelection.source" />
+							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="controls">
+								<source :src="mediaSelection.previewUrl" />
 							</video>
+							<iframe
+								v-if="mediaSelection.tag === 'iframe'"
+								class="media-preview"
+								:src="mediaSelection.previewUrl"
+							></iframe>
 							<div class="grid">
 								<div class="field">
 									<div class="type-label">{{ t('source') }}</div>
@@ -182,13 +186,10 @@ import 'tinymce/icons/default';
 
 import Editor from '@tinymce/tinymce-vue';
 import getEditorStyles from './get-editor-styles';
-import { escapeRegExp } from 'lodash';
 import useImage from './useImage';
 import useMedia from './useMedia';
 import useLink from './useLink';
 import useSourceCode from './useSourceCode';
-import { getToken } from '@/api';
-import { getPublicURL } from '@/utils/get-root-path';
 import { percentage } from '@/utils/percentage';
 
 type CustomFormat = {
@@ -265,13 +266,13 @@ export default defineComponent({
 		const { t } = useI18n();
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
-		const isEditorDirty = ref(false);
 		const { imageToken } = toRefs(props);
 
 		let tinymceEditor: HTMLElement | null;
 		let count = ref(0);
 		onMounted(() => {
 			let iframe;
+			let contentLoaded = false;
 			const wysiwyg = document.getElementById(props.field);
 
 			if (wysiwyg) iframe = wysiwyg.getElementsByTagName('iframe');
@@ -282,6 +283,11 @@ export default defineComponent({
 			if (tinymceEditor) {
 				const observer = new MutationObserver((_mutations) => {
 					count.value = tinymceEditor?.textContent?.replace('\n', '')?.length ?? 0;
+					if (!contentLoaded) {
+						contentLoaded = true;
+					} else {
+						emit('input', editorRef.value.getContent());
+					}
 				});
 
 				const config = { characterData: true, childList: true, subtree: true };
@@ -291,7 +297,6 @@ export default defineComponent({
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
-			isEditorDirty,
 			imageToken
 		);
 
@@ -307,51 +312,18 @@ export default defineComponent({
 			mediaWidth,
 			mediaSource,
 			mediaButton,
-		} = useMedia(editorRef, isEditorDirty, imageToken);
+		} = useMedia(editorRef, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef, isEditorDirty);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
 
-		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(
-			editorRef,
-			isEditorDirty
-		);
-
-		const replaceTokens = (value: string, token: string | null) => {
-			const url = getPublicURL();
-			const regex = new RegExp(
-				`(<[^]+?=")(${escapeRegExp(
-					url
-				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
-				'gi'
-			);
-
-			return value.replace(regex, (_, pre, matchedUrl, post) => {
-				const matched = new URL(matchedUrl.replace(/&amp;/g, '&'));
-				const params = new URLSearchParams(matched.search);
-
-				if (!token) {
-					params.delete('access_token');
-				} else {
-					params.set('access_token', token);
-				}
-
-				const paramsString = params.toString().length > 0 ? `?${params.toString().replace(/&/g, '&amp;')}` : '';
-
-				return `${pre}${matched.origin}${matched.pathname}${paramsString}${post}`;
-			});
-		};
+		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
 		const internalValue = computed({
 			get() {
-				if (!props.value) return '';
-				return replaceTokens(props.value, getToken());
+				return props.value || '';
 			},
-			set(newValue: string) {
-				if (!isEditorDirty.value) return;
-				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					const removeToken = replaceTokens(newValue, props.imageToken ?? null);
-					emit('input', removeToken);
-				}
+			set() {
+				return;
 			},
 		});
 
@@ -390,7 +362,7 @@ export default defineComponent({
 				menubar: false,
 				convert_urls: false,
 				image_dimensions: false,
-				extended_valid_elements: 'audio[loop],source',
+				extended_valid_elements: 'audio[loop|controls],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
 				file_picker_types: 'customImage customMedia image media',
@@ -410,7 +382,6 @@ export default defineComponent({
 			editorOptions,
 			internalValue,
 			setFocus,
-			setDirty,
 			onImageSelect,
 			saveImage,
 			imageDrawerOpen,
@@ -445,10 +416,6 @@ export default defineComponent({
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 			editor.ui.registry.addToggleButton('customLink', linkButton);
 			editor.ui.registry.addButton('customCode', sourceCodeButton);
-		}
-
-		function setDirty() {
-			isEditorDirty.value = true;
 		}
 
 		function setFocus(val: boolean) {

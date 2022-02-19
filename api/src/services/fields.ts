@@ -555,7 +555,7 @@ export class FieldsService {
 			if (!alter || alter.is_nullable === true) {
 				column.notNullable();
 			}
-		} else if (field.schema?.is_nullable === true) {
+		} else {
 			if (!alter || alter.is_nullable === false) {
 				column.nullable();
 			}

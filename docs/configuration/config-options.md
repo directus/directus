@@ -212,7 +212,7 @@ for example. The format for adding LEVELS values is:
 
 | Variable               | Description                                                                                                                                        | Default Value                 |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                            |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, `sqlite3`, `cockroachdb`.                      | --                            |
 | `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
 | `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
 | `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
