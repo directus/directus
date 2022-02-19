@@ -9,6 +9,7 @@
 				'_lte',
 				'_gte',
 				'_contains',
+				'_icontains',
 				'_ncontains',
 				'_starts_with',
 				'_nstarts_with',

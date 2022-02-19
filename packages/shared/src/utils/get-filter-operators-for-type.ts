@@ -9,6 +9,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		case 'csv':
 			return [
 				'contains',
+				'icontains',
 				'ncontains',
 				'starts_with',
 				'nstarts_with',
