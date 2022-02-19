@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { InvalidQueryException } from '../exceptions';
+import { InvalidQueryException } from '../../exceptions';
 import {
 	Aggregate,
 	Filter,
@@ -12,9 +12,10 @@ import {
 	RelationMeta,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { getColumn } from './get-column';
-import { getRelationType } from './get-relation-type';
-import { getHelpers } from '../database/helpers';
+import { getColumn } from './../get-column';
+import { getRelationType } from './../get-relation-type';
+import { getHelpers } from '../../database/helpers';
+import operators from './operators';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -420,27 +421,6 @@ export function applyFilter(
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
-			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
-			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
-				dbQuery[logical].whereNull(selectionRaw);
-			}
-
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
-				dbQuery[logical].whereNotNull(selectionRaw);
-			}
-
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.where(key, '=', '');
-				});
-			}
-
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.where(key, '!=', '');
-				});
-			}
-
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -467,99 +447,15 @@ export function applyFilter(
 				compareValue = compareValue.filter((val) => val !== undefined);
 			}
 
-			if (operator === '_eq') {
-				dbQuery[logical].where(selectionRaw, '=', compareValue);
-			}
-
-			if (operator === '_neq') {
-				dbQuery[logical].whereNot(selectionRaw, compareValue);
-			}
-
-			if (operator === '_contains') {
-				dbQuery[logical].where(selectionRaw, 'like', `%${compareValue}%`);
-			}
-
-			if (operator === '_ncontains') {
-				dbQuery[logical].whereNot(selectionRaw, 'like', `%${compareValue}%`);
-			}
-
-			if (operator === '_starts_with') {
-				dbQuery[logical].where(key, 'like', `${compareValue}%`);
-			}
-
-			if (operator === '_nstarts_with') {
-				dbQuery[logical].whereNot(key, 'like', `${compareValue}%`);
-			}
-
-			if (operator === '_ends_with') {
-				dbQuery[logical].where(key, 'like', `%${compareValue}`);
-			}
-
-			if (operator === '_nends_with') {
-				dbQuery[logical].whereNot(key, 'like', `%${compareValue}`);
-			}
-
-			if (operator === '_gt') {
-				dbQuery[logical].where(selectionRaw, '>', compareValue);
-			}
-
-			if (operator === '_gte') {
-				dbQuery[logical].where(selectionRaw, '>=', compareValue);
-			}
-
-			if (operator === '_lt') {
-				dbQuery[logical].where(selectionRaw, '<', compareValue);
-			}
-
-			if (operator === '_lte') {
-				dbQuery[logical].where(selectionRaw, '<=', compareValue);
-			}
-
-			if (operator === '_in') {
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
-
-				dbQuery[logical].whereIn(selectionRaw, value as string[]);
-			}
-
-			if (operator === '_nin') {
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
-
-				dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
-			}
-
-			if (operator === '_between') {
-				if (compareValue.length !== 2) return;
-
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
-
-				dbQuery[logical].whereBetween(selectionRaw, value);
-			}
-
-			if (operator === '_nbetween') {
-				if (compareValue.length !== 2) return;
-
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
-
-				dbQuery[logical].whereNotBetween(selectionRaw, value);
-			}
-
-			if (operator == '_intersects') {
-				dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
-			}
-
-			if (operator == '_nintersects') {
-				dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
-			}
-			if (operator == '_intersects_bbox') {
-				dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
-			}
-
-			if (operator == '_nintersects_bbox') {
-				dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
+			if (operator in operators) {
+				operators[operator].apply({
+					query: dbQuery[logical],
+					helpers,
+					selectionRaw,
+					compareValue,
+				});
+			} else {
+				throw new Error(`Operator ${operator} not supported`);
 			}
 		}
 
