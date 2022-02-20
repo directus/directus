@@ -637,18 +637,19 @@ registrations.
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                          | Description                                                            | Default Value |
-| --------------------------------- | ---------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                                                   | --            |
-| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.                           | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                                    | --            |
-| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                                       | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                                        | `cn`          |
-| `AUTH_<PROVIDER>_USER_SCOPE`      | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
-| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                                      | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group.                     | `member`      |
-| `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
+| Variable                             | Description                                                               | Default Value |
+| ------------------------------------ | ------------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`         | LDAP connection URL.                                                      | --            |
+| `AUTH_<PROVIDER>_BIND_DN`            | Bind user <sup>[1]</sup> distinguished name.                              | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`      | Bind user password.                                                       | --            |
+| `AUTH_<PROVIDER>_USER_DN`            | Directory path containing users.                                          | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`     | Attribute to identify users by.                                           | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`         | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.     | `one`         |
+| `AUTH_<PROVIDER>_GROUP_DN`           | Directory path containing groups.                                         | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`    | Attribute to identify user as a member of a group.                        | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`        | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>.    | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`     | Attribute containing the email of the user.                               | `mail`        |
+| `AUTH_<PROVIDER>_GROUP_MEMBER_IS_DN` | Attribute whether group attribute contains complete userdn <sup>[3]</sup> | `true`        |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
 
@@ -657,6 +658,8 @@ information and roles will be assigned from Active Directory.
 - `base`: Limits the scope to a single object defined by the associated DN.
 - `one`: Searches all objects within the associated DN.
 - `sub`: Searches all objects and sub-objects within the associated DN.
+
+<sup>[3]</sup> Set to false if group attribute contains uid instead of userdn (as for POSIX LDAP)
 
 ### Example: LDAP
 
