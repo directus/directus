@@ -1260,6 +1260,7 @@ translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
 view_project: Vezi proiect
+weeks: { }
 report_error: Raportare eroare
 start: Pornire
 interfaces:
@@ -1410,6 +1411,7 @@ interfaces:
     customSyntax_add: Adaugă sintaxă personalizată
     box: Bloc / În linie
     imageToken: Token acces static
+    imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
   map:
     map: Hartă
     description: Selectați o locație pe hartă
@@ -1517,6 +1519,7 @@ interfaces:
     options_override: Suprascriere opțiuni
     folder_note: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
     imageToken: Token acces static
+    imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
   input-autocomplete-api:
     input-autocomplete-api: Autocompletare input (API)
     description: O căutare a literelor în avans pentru valori API externe.
