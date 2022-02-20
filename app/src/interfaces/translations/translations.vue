@@ -298,8 +298,8 @@ export default defineComponent({
 					}
 
 					if (!newVal && oldVal) return; // when user clears whole translations value
-					if (newVal && newVal.some((item) => typeof item === 'object') && oldVal) return; // when there's any new edits since edits are objects
-					if (isEqual(newVal, oldVal)) return; // when user unfocus/blur inputs so they will be equal
+					if (newVal?.some((item) => typeof item === 'object')) return; // when there's any new edits since edits are objects
+					if (newVal?.some((item) => typeof item === 'object') && isEqual(newVal, oldVal)) return; // when user unfocus/blur inputs so they will be equal
 					if (isUndo.value) return; // when user undo to the original value
 
 					loadItems();
