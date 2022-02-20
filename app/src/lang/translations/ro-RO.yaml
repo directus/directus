@@ -353,9 +353,12 @@ interface_label: Interfață
 today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
+delete_share: Șterge distribuire
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM, d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: d MMM
@@ -533,6 +536,9 @@ errors:
   INTERNAL_SERVER_ERROR: Eroare neașteptată
   NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
   ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
+  VALUE_TOO_LONG: Valoarea este prea lungă
+  VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
+  INVALID_FOREIGN_KEY: Cheie străină nevalidă
   UNKNOWN: Eroare neașteptată
 security: Securitate
 value_hashed: Valoare criptată în mod securizat
@@ -571,6 +577,7 @@ one_item: '1 element'
 one_filtered_item: '1 element filtrat'
 delete_collection_are_you_sure: >-
   Sigur doriți să ștergeți această colecție? Această acțiune va șterge colecția și toate articolele din ea. Acțiunea este permanentă.
+delete_folder_are_you_sure: Sunteți sigur că doriți să ștergeți acest dosar? Dosarele și colecțiile imbricate vor fi mutate la nivelul cel mai de sus.
 collections_shown: Colecții afișate
 visible_collections: Colecții vizibile
 hidden_collections: Colecții ascunse
@@ -730,6 +737,8 @@ unlimited: Nelimitat
 open_link_in: Deschide link-ul în
 new_tab: Tab Nou
 current_tab: Tab curent
+save_image: Salvează imaginea
+save_media: Salvează media
 wysiwyg_options:
   aligncenter: Aliniere centru
   alignjustify: Aliniere pe toată lățimea
@@ -1400,6 +1409,7 @@ interfaces:
     customSyntax_label: Adăugați tipuri de sintaxă personalizate
     customSyntax_add: Adaugă sintaxă personalizată
     box: Bloc / În linie
+    imageToken: Token acces static
   map:
     map: Hartă
     description: Selectați o locație pe hartă
@@ -1506,6 +1516,7 @@ interfaces:
     custom_formats: Formate personalizate
     options_override: Suprascriere opțiuni
     folder_note: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
+    imageToken: Token acces static
   input-autocomplete-api:
     input-autocomplete-api: Autocompletare input (API)
     description: O căutare a literelor în avans pentru valori API externe.
