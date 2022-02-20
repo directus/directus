@@ -185,9 +185,8 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserGroups(userDn: string): Promise<string[]> {
-		const { groupDn, groupAttribute, groupScope } = this.config;
-
+	private async fetchUserGroups(userDn: string, identifier: string): Promise<string[]> {
+		const { groupDn, groupAttribute, groupMemberIsDn, groupScope } = this.config;
 		if (!groupDn) {
 			return Promise.resolve([]);
 		}
@@ -200,7 +199,10 @@ export class LDAPAuthDriver extends AuthDriver {
 				groupDn,
 				{
 					attributes: ['cn'],
-					filter: new EqualityFilter({ attribute: groupAttribute ?? 'member', value: userDn }),
+					filter: new EqualityFilter({
+						attribute: groupAttribute ?? 'member',
+						value: groupMemberIsDn ?? true ? userDn : identifier,
+					}),
 					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
@@ -253,7 +255,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		const userId = await this.fetchUserId(userDn);
-		const userGroups = await this.fetchUserGroups(userDn);
+		const userGroups = await this.fetchUserGroups(userDn, payload.identifier);
 
 		let userRole;
 
