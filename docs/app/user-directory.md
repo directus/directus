@@ -4,7 +4,7 @@
 > [Role](/getting-started/glossary#roles) which defines its [Permissions](/getting-started/glossary#permissions). The
 > User Directory is the management system for all Users within a Project.
 
-![User Directory Page](image.webp)
+![User Directory Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220219A/user-directory-20220219A.webp)
 
 [[toc]]
 
@@ -95,7 +95,7 @@ profile page.
 
 ## User Profile Page
 
-![The User Page](image.webp)
+![The User Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220219A/user-page-20220219A.webp)
 
 Users can access their profile page from the User Directory or by clicking the User Menu at the bottom of the
 [Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
@@ -104,7 +104,7 @@ by default.
 
 ### User Details
 
-![User Details](image.webp)
+![User Details](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220219A/user-details-20220219A.webp)
 
 - **First Name** – The given name.
 - **Last Name** – The family/surname.
@@ -118,7 +118,7 @@ by default.
 
 ### User Preferences
 
-![User Preferences](image.webp)
+![User Preferences](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220219A/user-preferences-20220219A.webp)
 
 - **Language** – The preferred App language/locale.
 - **Theme** – Light or Dark mode (or based on system preferences).
@@ -127,7 +127,7 @@ by default.
 
 ### Admin Options
 
-![Admin Options](image.webp)
+![Admin Options](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220219A/admin-options-20220219A.webp)
 
 - **Status** – Set User status Draft, Invited, Active, Suspended, Archived.
 - **Role** – Defines the User's Role.
@@ -137,7 +137,7 @@ by default.
 
 ### Read-only Info
 
-![User Profile Sidebar Information](image.webp)
+![User Profile Sidebar Information](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220219A/user-profile-sidebar-information-20220219A.webp)
 
 The sidebar's info component _(denoted by <span mi icon dark>info</span> when Sidebar minimized)_ also includes the
 following read-only details:
