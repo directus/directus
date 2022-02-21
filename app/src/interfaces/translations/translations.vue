@@ -13,6 +13,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="translationsPrimaryKeyField?.field ? firstItemInitial?.[translationsPrimaryKeyField.field] : null"
 				:disabled="disabled"
 				:loading="valuesLoading"
 				:fields="fields"
@@ -36,6 +37,9 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="
+					translationsPrimaryKeyField?.field ? secondItemInitial?.[translationsPrimaryKeyField.field] : null
+				"
 				:disabled="disabled"
 				:loading="valuesLoading"
 				:initial-values="secondItemInitial"
@@ -289,13 +293,16 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(newVal, oldVal) => {
-					if (newVal && !oldVal && !isEqual(newVal, oldVal) && isUndo.value === false) {
-						loadItems();
-					}
-
 					if (newVal === null || newVal.length === 0) {
 						items.value = [];
 					}
+
+					if (!newVal && oldVal) return; // when user clears whole translations value
+					if (newVal?.some((item) => typeof item === 'object')) return; // when there's any new edits since edits are objects
+					if (newVal?.some((item) => typeof item === 'object') && isEqual(newVal, oldVal)) return; // when user unfocus/blur inputs so they will be equal
+					if (isUndo.value) return; // when user undo to the original value
+
+					loadItems();
 				},
 				{ immediate: true }
 			);
@@ -446,10 +453,6 @@ export default defineComponent({
 		margin-top: 32px;
 	}
 
-	.v-divider {
-		margin-top: var(--form-vertical-gap);
-	}
-
 	.primary {
 		--v-divider-color: var(--primary-50);
 	}
@@ -461,6 +464,13 @@ export default defineComponent({
 			--primary: var(--blue);
 			--v-chip-color: var(--blue);
 			--v-chip-background-color: var(--blue-alt);
+		}
+	}
+
+	.primary,
+	.secondary {
+		.v-divider {
+			margin-top: var(--form-vertical-gap);
 		}
 	}
 }

@@ -1258,7 +1258,6 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
-weeks: { }
 report_error: Prijavi grešku
 start: Započni
 interfaces:
@@ -1408,8 +1407,6 @@ interfaces:
     customSyntax_label: Dodajte prilagođene vrste sintakse
     customSyntax_add: Dodajte prilagođenu sintaksu
     box: Blok / Inline
-    imageToken: Token slike
-    imageToken_label: Koji (statički) token dodati izvorima slike
   map:
     map: Karta
     description: Odaberite lokaciju na karti
@@ -1516,8 +1513,6 @@ interfaces:
     custom_formats: Prilagođeni formati
     options_override: Nadjačavanje opcija
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
-    imageToken: Token slike
-    imageToken_label: Koji (statički) token dodati izvorima slike
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete unos (API)
     description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'

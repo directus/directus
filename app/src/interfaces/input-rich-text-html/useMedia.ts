@@ -1,14 +1,15 @@
-import { addTokenToURL } from '@/api';
+import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
 import { computed, Ref, ref, watch } from 'vue';
 
 type MediaSelection = {
-	source: string;
+	sourceUrl: string;
 	width?: number;
 	height?: number;
-	tag?: 'video' | 'audio';
+	tag?: 'video' | 'audio' | 'iframe';
 	type?: string;
+	previewUrl?: string;
 };
 
 type MediaButton = {
@@ -33,11 +34,7 @@ type UsableMedia = {
 	mediaButton: MediaButton;
 };
 
-export default function useMedia(
-	editor: Ref<any>,
-	isEditorDirty: Ref<boolean>,
-	imageToken: Ref<string | undefined>
-): UsableMedia {
+export default function useMedia(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video', 'audio']);
@@ -76,10 +73,14 @@ export default function useMedia(
 
 	const mediaSource = computed({
 		get() {
-			return mediaSelection.value?.source;
+			return mediaSelection.value?.sourceUrl;
 		},
 		set(newSource: any) {
-			mediaSelection.value = { ...mediaSelection.value, source: newSource };
+			mediaSelection.value = {
+				...mediaSelection.value,
+				sourceUrl: newSource,
+			};
+			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value || getToken());
 		},
 	});
 
@@ -106,15 +107,15 @@ export default function useMedia(
 	watch(mediaSelection, (vid) => {
 		if (embed.value === '') {
 			if (vid === null) return;
-			embed.value = `<${vid.tag} width="${vid.width}" height="${vid.height}" controls><source src="${vid.source}" type="${vid.type}" /></${vid.tag}>`;
+			embed.value = `<${vid.tag} width="${vid.width}" height="${vid.height}" controls><source src="${vid.sourceUrl}" type="${vid.type}" /></${vid.tag}>`;
 		} else {
 			embed.value = embed.value
-				.replace(/src=".*?"/g, `src="${vid?.source}"`)
+				.replace(/src=".*?"/g, `src="${vid?.sourceUrl}"`)
 				.replace(/width=".*?"/g, `width="${vid?.width}"`)
 				.replace(/height=".*?"/g, `height="${vid?.height}"`)
 				.replace(/type=".*?"/g, `type="${vid?.type}"`)
-				.replaceAll(/<(video|audio)/g, `<${vid?.tag}`)
-				.replaceAll(/<\/(video|audio)/g, `</${vid?.tag}`);
+				.replaceAll(/<(video|audio|iframe)/g, `<${vid?.tag}`)
+				.replaceAll(/<\/(video|audio|iframe)/g, `</${vid?.tag}`);
 		}
 	});
 
@@ -122,20 +123,24 @@ export default function useMedia(
 		if (newEmbed === '') {
 			mediaSelection.value = null;
 		} else {
-			const tag = /<(video|audio)/g.exec(newEmbed)?.[1];
-			const source = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
+			const tag = /<(video|audio|iframe)/g.exec(newEmbed)?.[1];
+			const sourceUrl = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const type = /type="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 
-			if (source === undefined) return;
+			if (sourceUrl === undefined) return;
+
+			// Add temporarily access token for preview
+			const previewUrl = replaceUrlAccessToken(sourceUrl, imageToken.value || getToken());
 
 			mediaSelection.value = {
-				tag: tag === 'audio' ? 'audio' : 'video',
-				source,
+				tag: tag === 'audio' ? 'audio' : tag === 'iframe' ? 'iframe' : 'video',
+				sourceUrl,
 				width,
 				height,
 				type,
+				previewUrl,
 			};
 		}
 	});
@@ -164,23 +169,22 @@ export default function useMedia(
 	}
 
 	function onMediaSelect(media: Record<string, any>) {
-		const url = getPublicURL() + 'assets/' + media.id;
+		const sourceUrl = getPublicURL() + 'assets/' + media.id;
 		const tag = media.type.startsWith('audio') ? 'audio' : 'video';
-		const source = imageToken.value ? addTokenToURL(url, imageToken.value) : url;
 
 		mediaSelection.value = {
-			source,
+			sourceUrl: replaceUrlAccessToken(sourceUrl, imageToken.value),
 			width: media.width || 300,
 			height: media.height || 150,
 			tag,
 			type: media.type,
+			previewUrl: replaceUrlAccessToken(sourceUrl, imageToken.value || getToken()),
 		};
 	}
 
 	function saveMedia() {
 		if (embed.value === '') return;
 
-		isEditorDirty.value = true;
 		if (startEmbed.value !== '') {
 			const updatedContent = editor.value.getContent().replace(startEmbed.value, embed.value);
 			editor.value.setContent(updatedContent);
@@ -188,5 +192,28 @@ export default function useMedia(
 			editor.value.selection.setContent(embed.value);
 		}
 		closeMediaDrawer();
+	}
+
+	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
+		// Only process assets URL
+		if (!url.includes(getPublicURL() + 'assets/')) {
+			return url;
+		}
+		try {
+			const parsedUrl = new URL(url);
+			const params = new URLSearchParams(parsedUrl.search);
+
+			if (!token) {
+				params.delete('access_token');
+			} else {
+				params.set('access_token', token);
+			}
+
+			return Array.from(params).length > 0
+				? `${parsedUrl.origin}${parsedUrl.pathname}?${params.toString()}`
+				: `${parsedUrl.origin}${parsedUrl.pathname}`;
+		} catch {
+			return url;
+		}
 	}
 }

@@ -76,7 +76,7 @@ export const useFieldsStore = defineStore({
 					const { language, translation } = field.meta.translations[i];
 
 					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
-					const literalInterpolatedTranslation = translation.replace(/([{}@$|])/g, "{'$1'}");
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : '';
 
 					i18n.global.mergeLocaleMessage(language, {
 						fields: {
@@ -223,7 +223,12 @@ export const useFieldsStore = defineStore({
 			});
 
 			relationsStore.relations = relationsStore.relations.filter((relation) => {
-				if (relation.collection === collectionKey && relation.field === fieldKey) return false;
+				if (
+					(relation.collection === collectionKey && relation.field === fieldKey) ||
+					(relation.related_collection === collectionKey && relation.meta?.one_field === fieldKey)
+				) {
+					return false;
+				}
 				return true;
 			});
 
@@ -262,13 +267,7 @@ export const useFieldsStore = defineStore({
 		 * fields inside groups starts their sort number from 1 to N again.
 		 */
 		getFieldsForCollectionSorted(collection: string): Field[] {
-			const fields = this.fields
-				.filter((field) => field.collection === collection)
-				.filter(
-					(field: Field) =>
-						field.meta?.special?.includes('group') ||
-						(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
-				);
+			const fields = this.fields.filter((field) => field.collection === collection);
 
 			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
 
