@@ -220,6 +220,7 @@ export default defineComponent({
 
 			function emitValue(value: Record<string, any>[] | null) {
 				if (!value || value.length === 0) {
+					stagedValues.value = [];
 					emit('input', null);
 				} else {
 					stagedValues.value = value;
