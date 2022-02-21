@@ -144,25 +144,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 			return response.data.data;
 		} catch (err: any) {
-			if (err?.response?.data?.errors) {
-				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
-					.map((err: APIError) => {
-						return err.extensions;
-					});
-
-				const otherErrors = err.response.data.errors.filter(
-					(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
-				);
-
-				if (otherErrors.length > 0) {
-					otherErrors.forEach(unexpectedError);
-				}
-			} else {
-				unexpectedError(err);
-			}
-
-			throw err;
+			saveErrorHandler(err);
 		} finally {
 			saving.value = false;
 		}
@@ -207,19 +189,31 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (err: any) {
-			if (err?.response?.data?.errors) {
-				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
-					.map((err: APIError) => {
-						return err.extensions;
-					});
-			} else {
-				unexpectedError(err);
-				throw err;
-			}
+			saveErrorHandler(err);
 		} finally {
 			saving.value = false;
 		}
+	}
+
+	function saveErrorHandler(err: any) {
+		if (err?.response?.data?.errors) {
+			validationErrors.value = err.response.data.errors
+				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
+				.map((err: APIError) => {
+					return err.extensions;
+				});
+
+			const otherErrors = err.response.data.errors.filter(
+				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+			);
+
+			if (otherErrors.length > 0) {
+				otherErrors.forEach(unexpectedError);
+			}
+		} else {
+			unexpectedError(err);
+		}
+		throw err;
 	}
 
 	async function archive() {
