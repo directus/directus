@@ -209,14 +209,22 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 					.map((err: APIError) => {
 						return err.extensions;
 					});
+
+				const otherErrors = err.response.data.errors.filter(
+					(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+				);
+
+				if (otherErrors.length > 0) {
+					otherErrors.forEach(unexpectedError);
+				}
 			} else {
 				unexpectedError(err);
-				throw err;
 			}
+			throw err;
 		} finally {
 			saving.value = false;
 		}
