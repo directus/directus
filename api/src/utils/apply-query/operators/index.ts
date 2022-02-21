@@ -6,6 +6,13 @@ import greatherThanEqualsOperator from './greather-than-equals.operator';
 import greatherThanOperator from './greather-than.operator';
 import inOperator from './in.operator';
 import insensitiveContainsOperator from './insensitive-contains.operator';
+import insensitiveEndsWithOperator from './insensitive-ends-with.operator';
+import insensitiveEqualsOperator from './insensitive-equals.operator';
+import insensitiveNotContainsOperator from './insensitive-not-contains.operator';
+import insensitiveNotEndsWithOperator from './insensitive-not-ends-with.operator';
+import insensitiveNotEqualsOperator from './insensitive-not-equals.operator';
+import insensitiveNotStartsWithOperator from './insensitive-not-starts-with.operator';
+import insensitiveStartsWithOperator from './insensitive-starts-with.operator';
 import intersectsBboxOperator from './intersects-bbox.operator';
 import intersectsOperator from './intersects.operator';
 import isEmptyOperator from './is-empty.operator';
@@ -51,6 +58,13 @@ const operators = [
 	intersectsBboxOperator,
 	notIntersectsBboxOperator,
 	insensitiveContainsOperator,
+	insensitiveNotContainsOperator,
+	insensitiveEqualsOperator,
+	insensitiveNotEqualsOperator,
+	insensitiveStartsWithOperator,
+	insensitiveNotStartsWithOperator,
+	insensitiveEndsWithOperator,
+	insensitiveNotEndsWithOperator,
 ];
 
 export default operators.reduce((a, b) => ({ ...a, [b.operator]: b }), {}) as Record<string, OperatorRegister>;

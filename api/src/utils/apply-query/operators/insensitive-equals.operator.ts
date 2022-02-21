@@ -1,8 +1,8 @@
 import { registerOperator } from './operator-register';
 
 export default registerOperator({
-	operator: '_icontains',
+	operator: '_ieq',
 	apply: ({ query, selectionRaw, compareValue }) => {
-		query.whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+		query.whereRaw(`LOWER(??) = ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
 	},
 });
