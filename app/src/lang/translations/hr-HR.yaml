@@ -359,6 +359,8 @@ delete_share: Izbriši dijeljenje
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -737,6 +739,8 @@ unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
 new_tab: Nova kartica
 current_tab: Trenutna kartica
+save_image: Spremi sliku
+save_media: Spremi medijski zapis
 wysiwyg_options:
   aligncenter: Centriraj
   alignjustify: Poravnaj od ruba do ruba
@@ -1258,6 +1262,7 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
+weeks: { }
 report_error: Prijavi grešku
 start: Započni
 interfaces:
@@ -1407,6 +1412,8 @@ interfaces:
     customSyntax_label: Dodajte prilagođene vrste sintakse
     customSyntax_add: Dodajte prilagođenu sintaksu
     box: Blok / Inline
+    imageToken: Statički pristupni token
+    imageToken_label: Statički pristupni token se dodaje URL-u
   map:
     map: Karta
     description: Odaberite lokaciju na karti
@@ -1513,6 +1520,8 @@ interfaces:
     custom_formats: Prilagođeni formati
     options_override: Nadjačavanje opcija
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
+    imageToken: Statički pristupni token
+    imageToken_label: Statički pristupni token se dodaje URL-u
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete unos (API)
     description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'
